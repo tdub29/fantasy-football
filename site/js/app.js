@@ -1672,6 +1672,70 @@
       ),
     ));
 
+    // ===== "How to Trade With This Owner" panel =====
+    // Only shown when viewing someone else's roster AND user has a roster
+    // in this league. Frames trade angles from MY perspective looking at THEM.
+    if (!r.is_me) {
+      const myRoster = lg.rosters.find(rr => rr.is_me);
+      if (myRoster) {
+        const myRP_in_lg = getRosterPlayers(myRoster);
+        const mySurplus = rosterSurplusShortage(myRP_in_lg, lg);
+        const theirSurplus = ss; // already computed as rosterSurplusShortage(rp, lg)
+        const myStrength = computeRosterStrength(myRoster, lg);
+        const myCs = myStrength.rankedPlayers.filter(p => p.ranked.category === 'cornerstone').length;
+        const myValueTier = classifyValueTier(myStrength, rankInLeague(lg, myRoster.roster_id), lg.total_rosters, myCs);
+        const myArch = classifyValueArchetype(myRP_in_lg);
+        const myStance = stanceOf(myValueTier.tier, myArch.tag);
+        const theirStance = stanceOf(valueTier.tier, valueArchetype.tag);
+
+        const angles = [];
+        for (const pos of ['QB','RB','WR','TE']) {
+          if (mySurplus[pos].surplus >= 1 && theirSurplus[pos].surplus <= -1) {
+            angles.push({
+              direction: 'send',
+              pos,
+              text: `Send your spare ${pos} (you have ${mySurplus[pos].startables} startable, need ${mySurplus[pos].need}). They have ${theirSurplus[pos].startables} of ${theirSurplus[pos].need} ${pos}s. Ask for: ${(theirSurplus[Object.keys(theirSurplus).find(p2 => theirSurplus[p2].surplus >= 1) || pos]?.surplus >= 1 ? 'their surplus position' : 'a future 1st')}.`
+            });
+          }
+          if (theirSurplus[pos].surplus >= 1 && mySurplus[pos].surplus <= -1) {
+            angles.push({
+              direction: 'receive',
+              pos,
+              text: `Target their spare ${pos} (they have ${theirSurplus[pos].startables} startable, need ${theirSurplus[pos].need}). You have ${mySurplus[pos].startables} of ${mySurplus[pos].need} ${pos}s. Offer: a player from your strongest position or a 1st.`
+            });
+          }
+        }
+
+        const stanceMessage = (myStance === 'contend' && theirStance === 'rebuild')
+          ? "They're rebuilding, you're contending. They want picks + youth; you have starters they can't get from contenders. CLASSIC ASYMMETRIC."
+          : (myStance === 'rebuild' && theirStance === 'contend')
+            ? "They're contending, you're rebuilding. Their stars are stale to them; offer picks for their depth."
+            : (myStance === theirStance)
+              ? `Both ${myStance}. Hard to find asymmetric trades; only meaningful angle is positional surplus/shortage match.`
+              : `You: ${myStance}. Them: ${theirStance}. Mid-asymmetry; positional fit must do the work.`;
+
+        main.appendChild(h('h2', { class:'section-title' }, `How to Trade With ${r.team_name}`));
+        main.appendChild(h('div', { class:'card' },
+          h('div', { class:'tip', style:{ marginBottom:'10px' } }, stanceMessage),
+          angles.length
+            ? h('div', null, ...angles.map(a => h('div', { class:'priority-card', style:{ borderLeftColor: a.direction === 'send' ? 'var(--green)' : 'var(--blue)', marginBottom:'6px' } },
+                h('div', { class:'priority-icon' }, a.direction === 'send' ? '→' : '←'),
+                h('div', { class:'priority-text' }, a.text)
+              )))
+            : h('div', { class:'tip' }, 'No clean positional fit; trades will need to be value-for-value swaps within the same position.'),
+          h('div', { style:{ marginTop:'12px', display:'flex', gap:'8px' } },
+            h('a', { href:`#trade/${lg.id}` , onclick: () => {
+              TRADE_STATE.leagueId = lg.id;
+              TRADE_STATE.sideA = { rosterId: myRoster.roster_id, picks: new Set() };
+              TRADE_STATE.sideB = { rosterId: r.roster_id,        picks: new Set() };
+            }}, h('button', { class:'primary' }, 'Open Trade Calculator with This Pairing →')),
+            h('a', { href:`#compare/${lg.id}/${myRoster.roster_id}/${r.roster_id}` },
+              h('button', { class:'ghost' }, 'Compare Side-by-Side'))
+          )
+        ));
+      }
+    }
+
     // ===== Roster (slot-by-slot) =====
     main.appendChild(h('h2', { class:'section-title' }, 'Roster'));
     const sections = [
