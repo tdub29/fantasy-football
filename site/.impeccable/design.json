@@ -1,0 +1,246 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-05-07T00:00:00Z",
+  "title": "Design System: Tier Sheet",
+  "extensions": {
+    "colorMeta": {
+      "cornerstone-violet": {
+        "role": "primary",
+        "displayName": "Cornerstone Violet",
+        "canonical": "oklch(0.74 0.16 290)",
+        "tonalRamp": ["#1e1535", "#2f2156", "#3f2c78", "#5b21b6", "#7c4dde", "#a78bfa", "#c4b5fd", "#e7defe"]
+      },
+      "foundational-sky": {
+        "role": "secondary",
+        "displayName": "Foundational Sky",
+        "canonical": "oklch(0.74 0.14 245)",
+        "tonalRamp": ["#0c1c33", "#143158", "#1e4a85", "#2965b8", "#4187dc", "#60a5fa", "#93c5fd", "#dbeafe"]
+      },
+      "upside-mint": {
+        "role": "secondary",
+        "displayName": "Upside Mint",
+        "canonical": "oklch(0.78 0.15 162)",
+        "tonalRamp": ["#062b22", "#0a4736", "#0e6850", "#0f8a64", "#15a87a", "#34d399", "#6ee7b7", "#d1fae5"]
+      },
+      "tier-s-amber": {
+        "role": "tertiary",
+        "displayName": "Tier-S Amber",
+        "canonical": "oklch(0.83 0.15 78)",
+        "tonalRamp": ["#3a2a06", "#5a420a", "#7d5a0d", "#a37510", "#cb9112", "#fbbf24", "#fcd34d", "#fef3c7"]
+      },
+      "vet-orange": {
+        "role": "tertiary",
+        "displayName": "Vet Orange",
+        "canonical": "oklch(0.74 0.17 47)",
+        "tonalRamp": ["#3a1d05", "#5e2e08", "#86430e", "#b25813", "#dc6f1c", "#fb923c", "#fdba74", "#ffedd5"]
+      },
+      "depreciating-red": {
+        "role": "tertiary",
+        "displayName": "Depreciating Red",
+        "canonical": "oklch(0.71 0.17 22)",
+        "tonalRamp": ["#3a0c0c", "#5e1414", "#871c1c", "#b32626", "#df3636", "#f87171", "#fca5a5", "#fee2e2"]
+      },
+      "obsidian": {
+        "role": "neutral",
+        "displayName": "Obsidian",
+        "canonical": "oklch(0.16 0.01 270)",
+        "tonalRamp": ["#0b0d12", "#11141b", "#161a23", "#1e2330", "#262d3d", "#3a4258", "#4f5870", "#6b7280"]
+      },
+      "graphite": {
+        "role": "neutral",
+        "displayName": "Graphite",
+        "canonical": "oklch(0.20 0.01 270)",
+        "tonalRamp": ["#0b0d12", "#11141b", "#161a23", "#1e2330", "#262d3d", "#3a4258", "#4f5870", "#6b7280"]
+      },
+      "slate": {
+        "role": "neutral",
+        "displayName": "Slate",
+        "canonical": "oklch(0.24 0.01 265)",
+        "tonalRamp": ["#0b0d12", "#11141b", "#161a23", "#1e2330", "#262d3d", "#3a4258", "#4f5870", "#6b7280"]
+      },
+      "pewter": {
+        "role": "neutral",
+        "displayName": "Pewter",
+        "canonical": "oklch(0.28 0.012 265)",
+        "tonalRamp": ["#0b0d12", "#11141b", "#161a23", "#1e2330", "#262d3d", "#3a4258", "#4f5870", "#6b7280"]
+      },
+      "edge": {
+        "role": "neutral",
+        "displayName": "Edge",
+        "canonical": "oklch(0.32 0.015 265)",
+        "tonalRamp": ["#11141b", "#161a23", "#1e2330", "#262d3d", "#3a4258", "#4f5870", "#6b7280", "#9ca3af"]
+      },
+      "edge-hot": {
+        "role": "neutral",
+        "displayName": "Edge Hot",
+        "canonical": "oklch(0.39 0.02 260)",
+        "tonalRamp": ["#161a23", "#1e2330", "#262d3d", "#3a4258", "#4f5870", "#6b7280", "#9ca3af", "#d4d8e0"]
+      },
+      "porcelain": {
+        "role": "neutral",
+        "displayName": "Porcelain",
+        "canonical": "oklch(0.97 0.005 270)",
+        "tonalRamp": ["#11141b", "#262d3d", "#4f5870", "#6b7280", "#9ca3af", "#d4d8e0", "#e9ebf0", "#f3f4f6"]
+      },
+      "bone": {
+        "role": "neutral",
+        "displayName": "Bone",
+        "canonical": "oklch(0.87 0.005 270)",
+        "tonalRamp": ["#1e2330", "#3a4258", "#6b7280", "#9ca3af", "#bcc1cb", "#d4d8e0", "#e9ebf0", "#f3f4f6"]
+      },
+      "fog": {
+        "role": "neutral",
+        "displayName": "Fog",
+        "canonical": "oklch(0.69 0.01 270)",
+        "tonalRamp": ["#262d3d", "#3a4258", "#4f5870", "#6b7280", "#85899a", "#9ca3af", "#bcc1cb", "#d4d8e0"]
+      },
+      "ash": {
+        "role": "neutral",
+        "displayName": "Ash",
+        "canonical": "oklch(0.52 0.01 270)",
+        "tonalRamp": ["#1e2330", "#262d3d", "#3a4258", "#4f5870", "#6b7280", "#85899a", "#9ca3af", "#bcc1cb"]
+      }
+    },
+    "typographyMeta": {
+      "page-title": { "displayName": "Page Title", "purpose": "One per page; defines the route. Top-left of every screen." },
+      "card-title": { "displayName": "Card Title", "purpose": "Uppercase header on every card or panel; the constant rhythm element across screens." },
+      "body": { "displayName": "Body", "purpose": "Paragraph copy and table cell text. Single sans family, no decorative variants." },
+      "numeric": { "displayName": "Numeric", "purpose": "Scores, ranks, percentages, grades. Always tabular-nums for vertical alignment." },
+      "micro-label": { "displayName": "Micro Label", "purpose": "Uppercase metadata: column headers, nav-section titles, stat-pill labels." }
+    },
+    "shadows": [
+      { "name": "surface-lift", "value": "0 1px 0 rgba(255,255,255,0.04) inset, 0 1px 2px rgba(0,0,0,0.3)", "purpose": "Sticky table headers and the brand-logo lozenge. Functional float, never decorative." },
+      { "name": "hover-lift", "value": "0 4px 12px rgba(0,0,0,0.4)", "purpose": "Reserved for elements you actively pick up: drag handles, popover anchors. Not for rest-state cards." },
+      { "name": "focus-glow", "value": "0 0 0 1px #a78bfa, 0 0 20px rgba(167,139,250,0.18)", "purpose": "Focus-visible state on primary interactive elements. Doubles as keyboard-nav feedback." }
+    ],
+    "motion": [
+      { "name": "ease-fast", "value": "120ms cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "Default transition for hover state changes (background, border, color)." },
+      { "name": "ease-press", "value": "80ms ease-out", "purpose": "Button press translateY tic." },
+      { "name": "ease-bar", "value": "400ms cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "Strength-bar width transition. The only data-driven motion in the system." },
+      { "name": "ease-out-quart", "value": "cubic-bezier(0.25, 1, 0.5, 1)", "purpose": "Default exponential ease-out for any new entrance animation. Never bounce, never elastic." }
+    ],
+    "breakpoints": [
+      { "name": "mobile", "value": "720px" },
+      { "name": "compact", "value": "1100px" },
+      { "name": "max-content", "value": "1400px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Single primary action per screen. Reserved for committing trades, importing CSVs, or other unique state changes.",
+      "html": "<button class=\"ds-btn-primary\">Commit Trade</button>",
+      "css": ".ds-btn-primary { background: #5b21b6; color: #f3f4f6; border: 1px solid #a78bfa; border-radius: 6px; padding: 6px 12px; font: 600 0.94rem ui-sans-serif, -apple-system, 'SF Pro Text', 'Inter', sans-serif; cursor: pointer; transition: background 120ms cubic-bezier(0.22, 1, 0.36, 1), transform 80ms ease-out; } .ds-btn-primary:hover { background: #6d28d9; } .ds-btn-primary:active { transform: translateY(1px); } .ds-btn-primary:focus-visible { outline: none; box-shadow: 0 0 0 1px #a78bfa, 0 0 20px rgba(167,139,250,0.18); }"
+    },
+    {
+      "name": "Default Button",
+      "kind": "button",
+      "refersTo": "button-default",
+      "description": "Neutral utility button: cancel, apply filter, export. The workhorse.",
+      "html": "<button class=\"ds-btn-default\">Apply filter</button>",
+      "css": ".ds-btn-default { background: #161a23; color: #f3f4f6; border: 1px solid #262d3d; border-radius: 6px; padding: 6px 12px; font: 400 0.94rem ui-sans-serif, -apple-system, 'SF Pro Text', 'Inter', sans-serif; cursor: pointer; transition: background 120ms cubic-bezier(0.22, 1, 0.36, 1), border-color 120ms cubic-bezier(0.22, 1, 0.36, 1), transform 80ms ease-out; } .ds-btn-default:hover { background: #232938; border-color: #3a4258; } .ds-btn-default:active { transform: translateY(1px); } .ds-btn-default:focus-visible { outline: none; box-shadow: 0 0 0 1px #a78bfa, 0 0 20px rgba(167,139,250,0.18); }"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Default container. Flat at rest; tonal step from page (Obsidian) up to Graphite is what separates it.",
+      "html": "<div class=\"ds-card\"><h3 class=\"ds-card-title\">League Strength</h3><p>Top-line metrics aggregated across all rosters in the league.</p></div>",
+      "css": ".ds-card { background: #11141b; border: 1px solid #262d3d; border-radius: 10px; padding: 16px; color: #f3f4f6; font: 400 0.94rem/1.5 ui-sans-serif, -apple-system, 'SF Pro Text', 'Inter', sans-serif; font-feature-settings: 'ss01', 'cv11'; } .ds-card-title { margin: 0 0 8px 0; font-size: 0.95rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #d4d8e0; }"
+    },
+    {
+      "name": "Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Search and filter input. Slate surface with violet focus ring.",
+      "html": "<input class=\"ds-input\" type=\"search\" placeholder=\"Search players…\" />",
+      "css": ".ds-input { background: #161a23; color: #f3f4f6; border: 1px solid #262d3d; border-radius: 6px; padding: 6px 10px; font: 400 0.94rem ui-sans-serif, -apple-system, 'SF Pro Text', 'Inter', sans-serif; outline: none; min-width: 220px; transition: border-color 120ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 120ms cubic-bezier(0.22, 1, 0.36, 1); } .ds-input::placeholder { color: #6b7280; } .ds-input:focus { border-color: #a78bfa; box-shadow: 0 0 0 3px rgba(167,139,250,0.15); }"
+    },
+    {
+      "name": "Cornerstone Pill",
+      "kind": "chip",
+      "refersTo": "pill-cornerstone",
+      "description": "Category pill for Cornerstone-tier players. Same shape used for Foundational, Upside, Mainstay, Vet, and Short-Term Win, with their respective colors.",
+      "html": "<span class=\"ds-pill-cornerstone\"><svg width=\"10\" height=\"10\" viewBox=\"0 0 10 10\" fill=\"currentColor\" aria-hidden=\"true\"><circle cx=\"5\" cy=\"5\" r=\"3\"/></svg>Cornerstone</span>",
+      "css": ".ds-pill-cornerstone { display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border-radius: 999px; font: 600 0.75rem ui-sans-serif, -apple-system, 'SF Pro Text', 'Inter', sans-serif; letter-spacing: 0.02em; color: #a78bfa; border: 1px solid rgba(167,139,250,0.4); background: rgba(167,139,250,0.08); }"
+    },
+    {
+      "name": "Tier-S Chip",
+      "kind": "chip",
+      "refersTo": "tier-chip-s",
+      "description": "Tier badge with letter at full opacity — hue is reinforcement only. One variant per tier (S/A/B/C/D).",
+      "html": "<span class=\"ds-tier-chip-s\">S</span>",
+      "css": ".ds-tier-chip-s { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 6px; font: 700 0.78rem ui-sans-serif, -apple-system, 'SF Pro Text', 'Inter', sans-serif; color: #fbbf24; border: 1px solid rgba(251,191,36,0.4); background: rgba(251,191,36,0.1); }"
+    },
+    {
+      "name": "Sidebar Nav (Active Item)",
+      "kind": "nav",
+      "refersTo": "sidebar",
+      "description": "Active nav link. The system's only inset-stripe affordance — the violet-tinted background plus 2px inset Cornerstone Violet stripe on the left.",
+      "html": "<nav class=\"ds-nav\"><a href=\"#\" class=\"ds-nav-item ds-nav-item--active\">Dashboard</a><a href=\"#\" class=\"ds-nav-item\">Rankings</a><a href=\"#\" class=\"ds-nav-item\">Trade Calculator</a></nav>",
+      "css": ".ds-nav { display: flex; flex-direction: column; gap: 1px; padding: 8px 12px; background: #11141b; min-width: 240px; } .ds-nav-item { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 6px; color: #d4d8e0; text-decoration: none; font: 400 0.94rem ui-sans-serif, -apple-system, 'SF Pro Text', 'Inter', sans-serif; transition: background 120ms cubic-bezier(0.22, 1, 0.36, 1), color 120ms cubic-bezier(0.22, 1, 0.36, 1); } .ds-nav-item:hover { background: #161a23; color: #f3f4f6; } .ds-nav-item--active { background: rgba(167,139,250,0.12); color: #f3f4f6; box-shadow: inset 2px 0 0 #a78bfa; }"
+    },
+    {
+      "name": "Strength Bar",
+      "kind": "custom",
+      "refersTo": "strength-row",
+      "description": "Signature component. Encodes the Cornerstone+Foundational pillar pairing as the only data-driven gradient in the system.",
+      "html": "<div class=\"ds-strength-row\"><span class=\"ds-strength-rank\">3</span><div class=\"ds-strength-team\"><span class=\"ds-strength-team-name\">Sample Team</span><span class=\"ds-strength-owner\">tdub1329</span></div><span class=\"ds-strength-score\">68.4</span><div class=\"ds-strength-bar-wrap\"><div class=\"ds-strength-bar\" style=\"width:68%\"></div></div></div>",
+      "css": ".ds-strength-row { display: grid; grid-template-columns: 32px 1fr 80px 1fr; align-items: center; gap: 12px; padding: 10px 12px; background: #11141b; border: 1px solid #262d3d; border-radius: 6px; color: #f3f4f6; font-family: ui-sans-serif, -apple-system, 'SF Pro Text', 'Inter', sans-serif; transition: background 120ms cubic-bezier(0.22, 1, 0.36, 1); } .ds-strength-row:hover { background: #161a23; } .ds-strength-rank { font-size: 1.1rem; font-weight: 700; color: #9ca3af; text-align: center; font-variant-numeric: tabular-nums; } .ds-strength-team { display: flex; flex-direction: column; min-width: 0; } .ds-strength-team-name { font-weight: 600; color: #f3f4f6; } .ds-strength-owner { color: #6b7280; font-size: 0.8rem; } .ds-strength-score { font-size: 1.2rem; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; text-align: right; } .ds-strength-bar-wrap { background: #1e2330; height: 6px; border-radius: 4px; overflow: hidden; } .ds-strength-bar { height: 100%; background: linear-gradient(90deg, #a78bfa, #60a5fa); border-radius: 4px; transition: width 400ms cubic-bezier(0.22, 1, 0.36, 1); }"
+    },
+    {
+      "name": "Stat Block",
+      "kind": "custom",
+      "refersTo": "stat-num",
+      "description": "Compact KPI on the dashboard. Tabular-nums, no gradient, no hero-metric template flourish.",
+      "html": "<div class=\"ds-stat\"><span class=\"ds-stat-num\">+4.2</span><span class=\"ds-stat-label\">strength delta vs last week</span><span class=\"ds-stat-delta-up\">▲ 1.8</span></div>",
+      "css": ".ds-stat { display: flex; flex-direction: column; gap: 2px; font-family: ui-sans-serif, -apple-system, 'SF Pro Text', 'Inter', sans-serif; color: #f3f4f6; } .ds-stat-num { font-size: 1.7rem; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; line-height: 1; } .ds-stat-label { color: #9ca3af; font-size: 0.85rem; margin-top: 2px; } .ds-stat-delta-up { color: #34d399; font-size: 0.8rem; margin-top: 4px; font-variant-numeric: tabular-nums; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Tier Sheet, Live",
+    "overview": "This is what a printed dynasty tier sheet would become if you let it watch your rosters. Surfaces stay close to the page (graphite-on-obsidian, no glassy noise, no decorative gradient), category color is the only flourish, and the only thing that ever moves is data. The reader is an analyst at a console mid-week, not a fan scrolling on the couch. Every screen is a working document; nothing performs.\n\nThe aesthetic explicitly rejects three things: Sleeper's mobile-first cartoon-mascot energy, ESPN/Yahoo's ad-shaped portal clutter, and the generic SaaS purple-gradient hero that signals 'AI-tool landing page.' Cornerstone Violet is a category, not a marketing accent. We do not paint it onto buttons for personality.",
+    "keyCharacteristics": [
+      "Dark by default. The user is at a desk, mid-week, often at night.",
+      "Color is meaning. Every accent maps to a tier or a category. None are decoration.",
+      "Density over generosity. Tight rows, compact pills, monospace numbers, no card padding theatre.",
+      "Chrome disappears. Borders, shadows, and containers earn their place by separating real things.",
+      "Keyboard is the front door. Cmd+K is canonical, not an afterthought."
+    ],
+    "rules": [
+      { "name": "The Three-Pillar Rule", "body": "Cornerstone Violet, Foundational Sky, and Upside Mint are not three accents that happen to be close. They are the three category pillars. They appear as a triad together or alone with role-meaning. Never mix in a fourth pillar color.", "section": "colors" },
+      { "name": "The No-Decorative-Color Rule", "body": "If a hue appears on screen, it is communicating a category or a tier. There is no 'we needed something to break up the gray.' Break up the gray with hierarchy and density, not paint.", "section": "colors" },
+      { "name": "The Anti-Gradient Rule", "body": "Two gradients exist in the system: the brand-logo lozenge and the team-strength bar. Both encode the pillar pairing. Do not introduce a third.", "section": "colors" },
+      { "name": "The Tabular Numbers Rule", "body": "Anything quantitative renders in tabular-nums. Stats, scores, pick numbers, percentages, grades, ranks, ages. Non-tabular numbers in a tier sheet are visual chaos.", "section": "typography" },
+      { "name": "The Uppercase-as-Metadata Rule", "body": "ALL CAPS is reserved for labels about the data, never for the data itself. Card titles, column headers, nav sections — yes. Player names, team names, body copy — never.", "section": "typography" },
+      { "name": "The 65–75ch Rule", "body": "Body copy never exceeds 75 characters per line. Long-form prose caps at 65–75ch even if the parent grid is wider.", "section": "typography" },
+      { "name": "The Flat-By-Default Rule", "body": "Cards, rows, and panels at rest have no drop shadow. Their separation is the tonal step. If you reach for box-shadow on a static card, you wanted a tonal step instead.", "section": "elevation" },
+      { "name": "The Functional-Shadow Rule", "body": "Every shadow answers a functional question — am I sticky, am I focused, am I being picked up? Decorative ambient shadows under cards are forbidden.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do make tabular-nums the default for any column with numbers. Scores, ranks, ages, percentages, grades all line up vertically.",
+      "Do use Cornerstone Violet for 'this is yours' cues across league tables and roster views — the 'you' row tint, the active nav stripe, the focus ring. The user is the violet thread through the data.",
+      "Do pair every tier color with the tier letter (S/A/B/C/D) at full opacity. Color-blind users get the letter; everyone else gets reinforcement.",
+      "Do lean on the tonal ramp (Obsidian → Graphite → Slate → Pewter) for elevation before reaching for a shadow. Shadows are state, not chrome.",
+      "Do keep the brand-mark gradient and the strength-bar gradient as the only gradients in the product. Both encode the Cornerstone+Foundational pillar pairing.",
+      "Do prefer OKLCH when introducing new colors; the existing hex palette is grandfathered.",
+      "Do make Cmd+K discoverable on every page (the small ⌘K chip in the page header)."
+    ],
+    "donts": [
+      "Don't use a colored side-stripe (border-left / border-right > 1px) as a card or list-item accent. The only inset stripe is the active sidebar nav item.",
+      "Don't use gradient text (background-clip: text over a gradient). Emphasis is weight or size, never a multicolor fill.",
+      "Don't apply glassmorphism, backdrop-blur surfaces, or frosted panels.",
+      "Don't introduce a fourth pillar color or invent a 'warning purple' / 'info purple' — Cornerstone Violet is one thing.",
+      "Don't add a hero metric template (big number + small label + supporting stats + gradient flourish).",
+      "Don't add bounce, elastic, spring, or scale-in animations. Ease out exponentially.",
+      "Don't use em dashes anywhere. Use commas, colons, or periods.",
+      "Don't make this look like Sleeper. No mobile-first layouts forcing themselves onto desktop, no mascot iconography.",
+      "Don't make this look like ESPN/Yahoo. No ad-shaped containers, no ticker-tape strips.",
+      "Don't make this look like a generic SaaS landing page. No purple-to-blue marketing gradient hero.",
+      "Don't wrap every section in a container. Most rows don't need one.",
+      "Don't nest cards inside cards. If a section feels like it needs a sub-card, the outer card should be a layout region instead."
+    ]
+  }
+}

@@ -1,0 +1,65 @@
+[
+  {
+    "created": 1767233576966,
+    "creators": [
+      "465257670274707456"
+    ],
+    "draft_id": "1312276370591612928",
+    "draft_order": {
+      "1079677713377554432": 5,
+      "1080434570715144192": 1,
+      "465257670274707456": 7,
+      "696120266320842752": 10,
+      "696997492335656960": 6,
+      "726629031964975104": 9,
+      "922069180747218944": 8,
+      "965875938040848384": 3,
+      "966474139148034048": 4
+    },
+    "last_message_id": "1312276370591612928",
+    "last_message_time": 1767233576966,
+    "last_picked": null,
+    "league_id": "1312276370583220224",
+    "metadata": {
+      "description": "",
+      "name": "yuH",
+      "scoring_type": "idp_1qb",
+      "show_team_names": "0"
+    },
+    "season": "2026",
+    "season_type": "regular",
+    "settings": {
+      "alpha_sort": 0,
+      "autopause_enabled": 0,
+      "autopause_end_time": 1020,
+      "autopause_start_time": 300,
+      "autostart": 0,
+      "cpu_autopick": 1,
+      "enforce_position_limits": 1,
+      "nomination_timer": 60,
+      "pick_timer": 120,
+      "player_type": 0,
+      "position_limit_db": 3,
+      "position_limit_dl": 3,
+      "position_limit_lb": 5,
+      "position_limit_qb": 3,
+      "position_limit_rb": 8,
+      "position_limit_te": 3,
+      "position_limit_wr": 8,
+      "reversal_round": 0,
+      "rounds": 5,
+      "slots_bn": 14,
+      "slots_flex": 2,
+      "slots_idp_flex": 2,
+      "slots_qb": 1,
+      "slots_rb": 2,
+      "slots_te": 1,
+      "slots_wr": 2,
+      "teams": 10
+    },
+    "sport": "nfl",
+    "start_time": null,
+    "status": "pre_draft",
+    "type": "linear"
+  }
+]

@@ -1,0 +1,60 @@
+[
+  {
+    "created": 1774125854213,
+    "creators": [
+      "758858074722263040"
+    ],
+    "draft_id": "1341184676613595136",
+    "draft_order": {
+      "604168016833351680": 6,
+      "726629031964975104": 1,
+      "730166912843091968": 10,
+      "758858074722263040": 8,
+      "759876632923197440": 4,
+      "857839651556282368": 9,
+      "857852069871218688": 2,
+      "858193693599965184": 7,
+      "858364549793959936": 3,
+      "858446084786196480": 5
+    },
+    "last_message_id": "1358734259828817920",
+    "last_message_time": 1778310000907,
+    "last_picked": 1778296281785,
+    "league_id": "1341184676601028608",
+    "metadata": {
+      "description": "",
+      "elapsed_pick_timer": "13719078",
+      "is_autopaused": "true",
+      "name": "Password is taco",
+      "scoring_type": "dynasty_ppr",
+      "show_team_names": "0"
+    },
+    "season": "2026",
+    "season_type": "regular",
+    "settings": {
+      "alpha_sort": 0,
+      "autopause_enabled": 1,
+      "autopause_end_time": 840,
+      "autopause_start_time": 420,
+      "autostart": 1,
+      "cpu_autopick": 1,
+      "enforce_position_limits": 1,
+      "nomination_timer": 60,
+      "pick_timer": 28800,
+      "player_type": 1,
+      "reversal_round": 0,
+      "rounds": 4,
+      "slots_bn": 15,
+      "slots_flex": 4,
+      "slots_qb": 1,
+      "slots_rb": 2,
+      "slots_te": 1,
+      "slots_wr": 2,
+      "teams": 10
+    },
+    "sport": "nfl",
+    "start_time": 1778277640160,
+    "status": "paused",
+    "type": "linear"
+  }
+]
