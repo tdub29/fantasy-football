@@ -242,9 +242,10 @@
     return Math.round(val * 10) / 10;
   }
 
-  // League-aware starter slots: distributes FLEX over RB/WR/TE, SUPER_FLEX as 2nd QB.
+  // League-aware starter slots. Distributes FLEX over RB/WR/TE, SUPER_FLEX as
+  // 2nd QB, and IDP_FLEX over LB/DB/DL.
   function targetStartersByPos(league) {
-    let qb=0, rb=0, wr=0, te=0, flex=0, sf=0;
+    let qb=0, rb=0, wr=0, te=0, flex=0, sf=0, lb=0, db=0, dl=0, idp_flex=0;
     for (const p of (league.roster_positions || [])) {
       if (p === 'QB') qb++;
       else if (p === 'RB') rb++;
@@ -252,12 +253,19 @@
       else if (p === 'TE') te++;
       else if (p === 'FLEX') flex++;
       else if (p === 'SUPER_FLEX') sf++;
+      else if (p === 'LB') lb++;
+      else if (p === 'DB' || p === 'CB' || p === 'S') db++;
+      else if (p === 'DL' || p === 'DT' || p === 'DE' || p === 'NT') dl++;
+      else if (p === 'IDP_FLEX' || p === 'IDP') idp_flex++;
     }
     return {
       QB: qb + sf * 1.0,
       RB: rb + flex * 0.40,
       WR: wr + flex * 0.50,
       TE: te + flex * 0.10,
+      LB: lb + idp_flex * 0.55,
+      DB: db + idp_flex * 0.30,
+      DL: dl + idp_flex * 0.15,
     };
   }
 
@@ -271,18 +279,32 @@
   }
 
   // Surplus (>0) or shortage (<0) of startable players per position on a roster.
-  // This is the input to genuinely useful trade matching.
+  // For IDP leagues we also report LB/DB/DL slots. Note: my ranking sources
+  // (Domain + KTC) are offense-only, so IDP "startable" is approximated by
+  // count of rostered players at that position (best we can do without IDP ranks).
   function rosterSurplusShortage(rosterPlayers, league) {
     const targets = targetStartersByPos(league);
     const out = {};
-    for (const pos of ['QB','RB','WR','TE']) {
-      const startables = rosterPlayers.filter(p => p.ranked && p.ranked.pos === pos && isStartable(p.ranked, league));
+    const offensePos = ['QB','RB','WR','TE'];
+    const idpPos = ['LB','DB','DL'];
+    const positions = league.is_idp ? [...offensePos, ...idpPos] : offensePos;
+    for (const pos of positions) {
+      if (!targets[pos]) continue;
+      const isIDP = idpPos.includes(pos);
+      // RANKED startables (used everywhere downstream that expects p.ranked)
+      const rankedStartables = rosterPlayers.filter(p =>
+        p.ranked && p.ranked.pos === pos && isStartable(p.ranked, league));
+      // ROSTER-COUNT (includes unranked IDPs) for the lineup composition view
+      const rosterCount = isIDP
+        ? rosterPlayers.filter(p => p.sleeper && p.sleeper.pos === pos).length
+        : rankedStartables.length;
       const need = Math.ceil(targets[pos] || 0);
       out[pos] = {
-        startables: startables.length,
+        startables: rosterCount,
         need,
-        surplus: startables.length - need,
-        startablePlayers: startables,
+        surplus: rosterCount - need,
+        startablePlayers: rankedStartables, // always ranked-only, safe for downstream
+        idp_no_rankings: isIDP, // UI hint
       };
     }
     return out;
@@ -1530,7 +1552,9 @@
           h('th', { class:'right' }, 'Surplus'),
           h('th', null, 'Top startable players'),
         )),
-        h('tbody', null, ...['QB','RB','WR','TE'].map(pos => {
+        h('tbody', null, ...(lg.is_idp ? ['QB','RB','WR','TE','LB','DB','DL'] : ['QB','RB','WR','TE'])
+          .filter(pos => ss[pos])
+          .map(pos => {
           const info = ss[pos];
           const color = info.surplus >= 1 ? 'var(--green)' : info.surplus <= -1 ? 'var(--red)' : 'var(--fg-2)';
           const sign = info.surplus > 0 ? '+' : '';
