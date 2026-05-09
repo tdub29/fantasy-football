@@ -2609,9 +2609,92 @@
     }
     return h('div', { class:'group' }, h('label', null, 'League'), sel);
   }
+  // ---- Pick valuation helpers ----
+  // A pick key is "pick:season:round:originRosterId" e.g. "pick:2026:1:5"
+  function isPickKey(k) { return typeof k === 'string' && k.startsWith('pick:'); }
+  function parsePickKey(k) {
+    const [, season, round, originRosterId] = k.split(':');
+    return { season, round: parseInt(round, 10), originRosterId: parseInt(originRosterId, 10) };
+  }
+  function pickKey(season, round, originRosterId) {
+    return `pick:${season}:${round}:${originRosterId}`;
+  }
+  // Estimate origin roster's expected draft slot (1=earliest, 12=latest) from
+  // current league strength rank. Weakest team picks first in the rookie draft.
+  function originSlot(originRosterId, league) {
+    if (!originRosterId) return Math.ceil((league.total_rosters || 10) / 2);
+    const all = league.rosters.map(r => ({
+      id: r.roster_id, s: computeRosterStrength(r, league).total
+    })).sort((a, b) => a.s - b.s); // weakest first
+    const idx = all.findIndex(r => r.id === originRosterId);
+    return idx >= 0 ? idx + 1 : Math.ceil((league.total_rosters || 10) / 2);
+  }
+  function pickValue(season, round, originRosterId, league) {
+    const S = window.STRATEGY;
+    if (!S) return 0;
+    const slot = originSlot(originRosterId, league);
+    const currentYear = String(new Date().getFullYear());
+    const isFuture = season > currentYear;
+    if (round === 1) {
+      if (isFuture) {
+        if (slot <= 4) return S.pick_values_1qb["future_1.early"];
+        if (slot <= 8) return S.pick_values_1qb["future_1.mid"];
+        return S.pick_values_1qb["future_1.late"];
+      }
+      const key = `1.${String(slot).padStart(2,'0')}`;
+      return S.pick_values_1qb[key] || 30;
+    }
+    if (round === 2) {
+      if (isFuture) {
+        if (slot <= 4) return S.pick_values_1qb["future_2.early"];
+        if (slot <= 8) return S.pick_values_1qb["future_2.mid"];
+        return S.pick_values_1qb["future_2.late"];
+      }
+      const key = `2.${String(slot).padStart(2,'0')}`;
+      return S.pick_values_1qb[key] || 22;
+    }
+    if (round === 3) return slot <= 4 ? S.pick_values_1qb["3.early"] : slot <= 8 ? S.pick_values_1qb["3.mid"] : S.pick_values_1qb["3.late"];
+    if (round === 4) return slot <= 4 ? S.pick_values_1qb["4.early"] : slot <= 8 ? S.pick_values_1qb["4.mid"] : S.pick_values_1qb["4.late"];
+    return 0;
+  }
+  // Compute which picks a given roster currently owns, accounting for traded_picks.
+  // Returns array of { season, round, originRosterId, label, value }
+  function rosterOwnedPicks(rosterId, league) {
+    const result = [];
+    const traded = league.traded_picks || [];
+    const currentYear = String(new Date().getFullYear());
+    const seasons = [currentYear, String(parseInt(currentYear) + 1)];
+    const rounds = [1, 2, 3, 4];
+    // Default ownership: each roster owns its own picks across each (season, round)
+    // Then apply traded_picks: a pick has roster_id (originator), previous_owner_id,
+    // owner_id (current). For each roster, the picks they currently own are:
+    //   default own slate, MINUS any default pick where they are previous_owner and not current
+    //   PLUS any traded pick where they are current owner.
+    for (const season of seasons) {
+      for (const round of rounds) {
+        // Their own pick (originator = rosterId, season+round)
+        // Find traded record for this exact pick
+        const tradedAway = traded.find(tp => tp.season === season && tp.round === round
+          && tp.roster_id === rosterId && tp.owner_id !== rosterId);
+        if (!tradedAway) {
+          result.push({ season, round, originRosterId: rosterId, label: `${season} R${round}` });
+        }
+      }
+    }
+    // Acquired picks
+    for (const tp of traded) {
+      if (tp.owner_id !== rosterId) continue;
+      if (!seasons.includes(tp.season)) continue;
+      result.push({ season: tp.season, round: tp.round, originRosterId: tp.roster_id, label: `${tp.season} R${tp.round} (from R${tp.roster_id})` });
+    }
+    // Compute values + sort
+    for (const p of result) p.value = pickValue(p.season, p.round, p.originRosterId, league);
+    result.sort((a, b) => b.value - a.value);
+    return result;
+  }
+
   function buildTradeSide(label, lg, state, roster) {
     const card = h('div', { class:'trade-side-card' });
-    // Roster selector
     const rosterSel = h('select', { onchange: (e) => { state.rosterId = parseInt(e.target.value, 10); state.picks = new Set(); viewTrade(lg.id); } });
     for (const r of lg.rosters) {
       rosterSel.appendChild(h('option', { value:r.roster_id, selected: r.roster_id===state.rosterId?'':null }, `${r.team_name} (${r.owner_name})${r.is_me?' ★':''}`));
@@ -2621,30 +2704,44 @@
       rosterSel
     ));
 
-    // Selected pile
-    const selected = Array.from(state.picks).map(pid => {
-      const sleeper = window.PLAYERS[pid];
-      const ranked = sleeper ? (rankIndex().bySleeperId.get(pid) || rankIndex().byName.get(norm(sleeper.name))) : null;
-      return { pid, sleeper, ranked, value: ranked ? tierValue(ranked, lg) : 0 };
+    // Selected pile: handles both player_ids (numeric strings) and pick keys
+    const ownedPicks = roster ? rosterOwnedPicks(roster.roster_id, lg) : [];
+    const pickByKey = new Map(ownedPicks.map(p => [pickKey(p.season, p.round, p.originRosterId), p]));
+    const selected = Array.from(state.picks).map(k => {
+      if (isPickKey(k)) {
+        const meta = pickByKey.get(k) || (() => {
+          const { season, round, originRosterId } = parsePickKey(k);
+          return { season, round, originRosterId, label: `${season} R${round}`, value: pickValue(season, round, originRosterId, lg) };
+        })();
+        return { kind: 'pick', key: k, meta };
+      }
+      const sleeper = window.PLAYERS[k];
+      const ranked = sleeper ? (rankIndex().bySleeperId.get(k) || rankIndex().byName.get(norm(sleeper.name))) : null;
+      return { kind: 'player', key: k, sleeper, ranked, value: ranked ? tierValue(ranked, lg) : 0 };
     });
-    const totalVal = selected.reduce((s, p) => s + (p.value || 0), 0);
+    const totalVal = selected.reduce((s, x) => s + (x.kind === 'pick' ? x.meta.value : x.value || 0), 0);
 
     card.appendChild(h('div', { class:'trade-pile' },
       h('div', { class:'card-title' }, h('span', null, 'In Trade'), h('span', { class:'tnum', style:{ float:'right' } }, fmt.decimal(totalVal,1))),
       selected.length
-        ? h('div', null, ...selected.map(s => h('div', { class:'trade-pile-row', onclick:()=>{ state.picks.delete(s.pid); viewTrade(lg.id); } },
-            h('div', { class:'name-cell' },
-              s.sleeper ? posChip(s.sleeper.pos) : null,
-              s.sleeper ? teamChip(s.sleeper.team) : null,
-              h('span', { class:'name' }, s.sleeper ? s.sleeper.name : `[${s.pid}]`),
-            ),
-            s.ranked ? h('span', { class:'tnum' }, fmt.decimal(s.value,1)) : h('span', { class:'muted' }, ','),
+        ? h('div', null, ...selected.map(s => h('div', { class:'trade-pile-row', onclick:()=>{ state.picks.delete(s.key); viewTrade(lg.id); } },
+            s.kind === 'pick'
+              ? h('div', { class:'name-cell' },
+                  h('span', { class:'badge', style:{ background:'rgba(96,165,250,.15)', color:'var(--blue)', borderColor:'rgba(96,165,250,.4)' } }, 'PICK'),
+                  h('span', { class:'name' }, s.meta.label),
+                )
+              : h('div', { class:'name-cell' },
+                  s.sleeper ? posChip(s.sleeper.pos) : null,
+                  s.sleeper ? teamChip(s.sleeper.team) : null,
+                  h('span', { class:'name' }, s.sleeper ? s.sleeper.name : `[${s.key}]`),
+                ),
+            h('span', { class:'tnum' }, fmt.decimal(s.kind === 'pick' ? s.meta.value : s.value, 1)),
             h('span', { class:'tip', style:{ marginLeft:'8px' } }, '×')
           )))
-        : h('div', { class:'tip' }, 'Click players below to add.')
+        : h('div', { class:'tip' }, 'Click players or picks below to add.')
     ));
 
-    // Available player pool
+    // Player pool
     if (roster) {
       const arr = (roster.players || []).map(pid => {
         const sleeper = window.PLAYERS[pid];
@@ -2663,16 +2760,40 @@
             h('span', { class:'name' }, p.sleeper ? p.sleeper.name : `[${p.pid}]`),
             p.ranked ? tierChip(p.ranked.tier, p.ranked.category) : null
           ),
-          p.value ? h('span', { class:'tnum' }, fmt.decimal(p.value,1)) : h('span', { class:'muted' }, ',')
+          p.value ? h('span', { class:'tnum' }, fmt.decimal(p.value,1)) : h('span', { class:'muted' }, '.')
         ))
       ));
+
+      // Picks pool
+      if (ownedPicks.length) {
+        card.appendChild(h('div', { class:'trade-pool', style:{ marginTop:'12px' } },
+          h('div', { class:'card-title' }, `${roster.team_name} Picks`),
+          ...ownedPicks.map(p => {
+            const k = pickKey(p.season, p.round, p.originRosterId);
+            return h('div', {
+              class: 'trade-pool-row' + (state.picks.has(k) ? ' selected' : ''),
+              onclick: () => { if (state.picks.has(k)) state.picks.delete(k); else state.picks.add(k); viewTrade(lg.id); }
+            },
+              h('div', { class:'name-cell' },
+                h('span', { class:'badge', style:{ background:'rgba(96,165,250,.15)', color:'var(--blue)', borderColor:'rgba(96,165,250,.4)' } }, 'PICK'),
+                h('span', { class:'name' }, p.label),
+              ),
+              h('span', { class:'tnum' }, fmt.decimal(p.value, 1)),
+            );
+          })
+        ));
+      }
     }
     return card;
   }
   function tradeMiddleSummary(lg) {
-    const valOf = (state) => Array.from(state.picks).reduce((s, pid) => {
-      const sleeper = window.PLAYERS[pid]; if (!sleeper) return s;
-      const r = rankIndex().bySleeperId.get(pid) || rankIndex().byName.get(norm(sleeper.name));
+    const valOf = (state) => Array.from(state.picks).reduce((s, k) => {
+      if (isPickKey(k)) {
+        const { season, round, originRosterId } = parsePickKey(k);
+        return s + pickValue(season, round, originRosterId, lg);
+      }
+      const sleeper = window.PLAYERS[k]; if (!sleeper) return s;
+      const r = rankIndex().bySleeperId.get(k) || rankIndex().byName.get(norm(sleeper.name));
       return s + (r ? tierValue(r, lg) : 0);
     }, 0);
     const aVal = valOf(TRADE_STATE.sideA);
