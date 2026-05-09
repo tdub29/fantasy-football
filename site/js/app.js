@@ -1368,6 +1368,17 @@
       && p.sleeper.age && curves[pos]
       && p.sleeper.age >= curves[pos].sell_age
       && p.ranked.category !== 'cornerstone');
+    // Detect "same tier glut": 3+ players at the same position in the same
+    // (category, tier) bucket. Strong consolidation candidate signal.
+    const tierBuckets = {};
+    for (const p of rosterPlayers) {
+      if (!p.ranked) continue;
+      const key = `${p.ranked.pos}|${p.ranked.category}|${p.ranked.tier}`;
+      (tierBuckets[key] = tierBuckets[key] || []).push(p);
+    }
+    const same_tier_glut = Object.values(tierBuckets)
+      .filter(arr => arr.length >= 3 && ['RB','WR'].includes(arr[0].ranked.pos))
+      .flatMap(arr => arr.map(p => ({ name: p.sleeper.name, pos: p.ranked.pos })));
     const ctx = {
       stance, archetype, valueTier, surplus, league,
       rookie_count: rosterPlayers.filter(p => p.ranked?.rookie).length,
@@ -1379,6 +1390,13 @@
       te_breakout: rosterPlayers.filter(p => p.ranked && p.ranked.pos === 'TE'
         && p.sleeper.age >= 25 && p.sleeper.age <= 27 && p.ranked.category === 'foundational')
         .map(p => ({ name: p.sleeper.name, age: p.sleeper.age })),
+      same_tier_glut,
+      // 2026 rookie class is generally regarded as shallow past pick 1.07
+      // per Domain Dynasty. If the user has 2+ rookies past 1.06, warn.
+      weak_class_warning: rosterPlayers.filter(p => p.ranked?.rookie
+        && (p.ranked.category === 'mainstay' || p.ranked.category === 'productive_vet'
+            || (p.ranked.category === 'upside_premier' && p.ranked.tier === 'B'))
+      ).length >= 2,
     };
     const out = [];
     for (const rule of window.STRATEGY.coaching_tips) {

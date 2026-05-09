@@ -116,7 +116,103 @@ window.STRATEGY = {
       when: (ctx) => ctx.stance === 'rebuild' && ctx.aging_count >= 2,
       text: (ctx) => `${ctx.aging_count} players past their position curve on a rebuild. Each declining vet still has trade value to a contender; don't roster-rot, sell.`
     },
+    {
+      id: "consolidation-candidate",
+      when: (ctx) => ctx.same_tier_glut?.length >= 3,
+      text: (ctx) => `You have ${ctx.same_tier_glut.length} same-tier ${ctx.same_tier_glut[0].pos}s blocking each other's snaps. Package 2-3 into one elite (consolidation premium ~10-15%, lineup gain greater). Targeting the counterparty's positional need closes faster.`
+    },
+    {
+      id: "calendar-pre-rookie",
+      when: (ctx) => {
+        const m = new Date().getMonth();
+        return m === 3 || m === 4; // April or May
+      },
+      text: () => `April-May = pick prices PEAK. Sellers' window. If you're contending, this is the most expensive month to acquire picks; sell now, buy back in Sept.`
+    },
+    {
+      id: "calendar-summer-buy-low",
+      when: (ctx) => {
+        const m = new Date().getMonth();
+        return m >= 5 && m <= 7; // Jun-Aug
+      },
+      text: () => `Jun-Aug = camp-injury / depth-chart anxiety creates buy-low windows. Hunt for owners panicking on news; their loss is your discount.`
+    },
+    {
+      id: "rookie-draft-class-warning",
+      when: (ctx) => ctx.weak_class_warning,
+      text: () => `2026 rookie class is shallow past 1.07 per Domain. Past 1.06, picks are throwins. Don't pay 1QB-A prices for late 1sts.`
+    },
   ],
+
+  // Rebuild timeline (RotoWire 3-year arc applied + author's actual results).
+  // Each phase has a recommended posture and a trigger to advance.
+  rebuild_phases: {
+    "phase_1_teardown": {
+      label: "Phase I, Teardown",
+      year: 1,
+      posture: "Sell every veteran with trade value for picks and youth.",
+      trigger_in: "Just finished a championship run with aging core, OR mid-season collapse revealed depth issues.",
+      trigger_out: "Roster contains 4+ Cornerstone-A or Foundational players under 24, AND 4+ first-round picks across the next 2 cycles.",
+    },
+    "phase_2_restock": {
+      label: "Phase II, Restock",
+      year: 2,
+      posture: "Use accumulated picks aggressively. Avoid 3rd+ round picks (obsolete by Phase IV).",
+      trigger_in: "Phase I exit, OR strong young core developing.",
+      trigger_out: "2+ Cornerstones healthy + 1+ Foundational starter at every position.",
+    },
+    "phase_3_reassess": {
+      label: "Phase III, Reassess",
+      year: 3,
+      posture: "If pieces align, pivot toward contention. If not, run Phase II again with refreshed picks.",
+      trigger_in: "Phase II exit.",
+      trigger_out: "Top-3 league-strength rank achievable with one consolidation trade.",
+    },
+    "phase_4_just_win": {
+      label: "Phase IV, Just Win",
+      year: 4,
+      posture: "Aggressive contention. Trade 2027+ picks for proven starters. Cash in.",
+      trigger_in: "Phase III exit confirmed contention window.",
+      trigger_out: "Champions, OR core ages out and you start the cycle over.",
+    },
+  },
+
+  // Consolidation rules. 2-for-1 trades (or 3-for-1) are justified by
+  // positional scarcity + the consolidation premium: one elite > 2-3 mids
+  // because lineups have finite slots and depth past the bench rarely starts.
+  consolidation: {
+    when_to_consolidate: [
+      "Have 3+ same-tier players at a single position (RB or WR specifically).",
+      "Sitting on multiple late-1st or 2nd-round picks during a contention window.",
+      "Have depth pieces blocking each other's starting opportunities.",
+      "Your starting lineup has a clear hole an elite would fill.",
+    ],
+    when_to_decline: [
+      "The single elite returning is aging past their position-curve sell-window.",
+      "You're paying premium for someone with multi-year injury history.",
+      "The 2-for-1 weakens an already-thin position to fill a less-needed slot.",
+      "The 'elite' is propped up by an unsustainable touchdown rate (40%+ of points from TDs).",
+    ],
+    premium_rule_of_thumb: "Pay roughly 110-115% of the ledger-value sum to receive a single tier-up player. The extra 10-15% is the consolidation premium.",
+  },
+
+  // Trade execution tactics. Research-counterparty principle scoped tightly.
+  execution: [
+    "Research counterparty's roster BEFORE making an offer. Address THEIR need, not your surplus.",
+    "Don't propose lopsided trades. Resentment + league rule changes are real costs.",
+    "Wait for the right offer; impatience is the most expensive mistake in dynasty.",
+    "Evaluate the upcoming draft class before trading future picks. Strong class = hold; weak class = sell early.",
+    "Don't auto-sell a breakout player at peak value mid-season if you're contending. Hold for the run.",
+    "Avoid players whose recent fantasy output is 40%+ touchdowns. Touchdown variance kills trade value next year.",
+  ],
+
+  // Calendar awareness. Pick liquidity peaks just before rookie drafts.
+  calendar: {
+    "Apr-May": "Pick prices PEAK. Sellers maximum, buyers underwater. Ideal window to sell 2026 picks for proven players.",
+    "Jun-Aug": "Trade frenzy slows. Use this window for buy-low on perceived risk (training-camp injury, depth-chart concern).",
+    "Sep-Dec": "In-season buy-low window. Contenders buy starters at premiums; rebuilders dump aging vets for picks.",
+    "Jan-Mar": "Winners cash in by selling Year-N starters; losers begin pick-accumulation.",
+  },
 
   // Asset hierarchy (FantasyPros startup): "walk away with the most valuable
   // assets, not the best lineup." Used in About / Strategy explainer.
@@ -131,5 +227,10 @@ window.STRATEGY = {
     "2-3 year contention windows beat infinite-window thinking.",
     "Cornerstones are the exception to every age rule. Hold them.",
     "In Superflex, top-12 QBs are the most illiquid asset in the game.",
+    "Consolidate same-tier depth into one elite. The premium is 10-15%; the lineup gain is more.",
+    "Address the counterparty's need, not your surplus, when proposing a trade.",
+    "Don't pay for fantasy production that's 40%+ touchdown-derived. Variance will eat the gain.",
+    "Once a rebuild starts, sell aggressively in Year 1, restock in Year 2, reassess Year 3.",
+    "Most fantasy managers try to make one last run after the one last run. Don't.",
   ],
 };
