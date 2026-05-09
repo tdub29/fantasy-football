@@ -322,6 +322,7 @@
     { hash:'#players',      label:'All Players',   icon:'⌕',  section:'Overview' },
     { hash:'#leagues',      label:'My Leagues',    icon:'⚑',  section:'My Teams' },
     { hash:'#trade',        label:'Trade Calculator', icon:'⇄', section:'My Teams' },
+    { hash:'#action',       label:'Action Center', icon:'!', section:'My Teams' },
     { hash:'#strategy',     label:'Strategy',      icon:'◇',  section:'Settings' },
     { hash:'#sources',      label:'YouTuber Sources', icon:'▶', section:'Settings' },
     { hash:'#about',        label:'About',         icon:'?',  section:'Settings' },
@@ -2921,6 +2922,148 @@
   }
 
   // ============================================================
+  // ROUTE: Action Center
+  // Aggregates the highest-priority trade actions across all leagues
+  // ============================================================
+  function viewActionCenter() {
+    const main = $('#main');
+    main.innerHTML = '';
+    main.appendChild(h('div', { class:'page-header' },
+      h('div', null,
+        h('h1', { class:'page-title' }, 'Action Center'),
+        h('p', { class:'page-sub' }, 'Trade and roster moves to take this week, ranked by impact across all your leagues.')
+      )
+    ));
+
+    // Build action queue
+    const actions = [];
+    const myLeagues = (window.LEAGUES || []).filter(lg => lg.rosters.some(r => r.is_me));
+
+    for (const lg of myLeagues) {
+      const me = lg.rosters.find(r => r.is_me);
+      if (!me) continue;
+      const rp = getRosterPlayers(me);
+      const surplus = rosterSurplusShortage(rp, lg);
+      const strength = computeRosterStrength(me, lg);
+      const myRank = rankInLeague(lg, me.roster_id);
+      const cs = strength.rankedPlayers.filter(p => p.ranked.category === 'cornerstone').length;
+      const valueTier = classifyValueTier(strength, myRank, lg.total_rosters, cs);
+      const archetype = classifyValueArchetype(rp);
+      const stance = stanceOf(valueTier.tier, archetype.tag);
+      const buysSells = suggestBuysSells(rp, lg);
+      const partners = idealTradePartners(me, lg);
+      const curves = window.STRATEGY?.age_curve || {};
+
+      // 1) HARD SELLS, highest urgency
+      for (const sell of buysSells.sells) {
+        if (sell.intensity === 'HARD SELL') {
+          actions.push({
+            urgency: 1,
+            title: `HARD SELL ${sell.player.name}`,
+            league: lg.short_name,
+            leagueId: lg.id,
+            rosterId: me.roster_id,
+            body: sell.reason,
+            cta: { label: 'Open Trade Calculator', href: `#trade/${lg.id}` },
+            color: 'var(--red)',
+          });
+        }
+      }
+      // 2) Standard sells from age curves (sell window opens)
+      for (const sell of buysSells.sells) {
+        if (sell.intensity === 'SELL') {
+          actions.push({
+            urgency: 2,
+            title: `Sell ${sell.player.name} this window`,
+            league: lg.short_name,
+            leagueId: lg.id,
+            rosterId: me.roster_id,
+            body: sell.reason,
+            cta: { label: 'Open Trade Calculator', href: `#trade/${lg.id}` },
+            color: 'var(--amber)',
+          });
+        }
+      }
+      // 3) Top trade partner with positive fit + stance asymmetry
+      const bestPartner = partners[0];
+      if (bestPartner && bestPartner.fit >= 5) {
+        actions.push({
+          urgency: 3,
+          title: `Talk to ${bestPartner.roster.team_name} (${lg.short_name})`,
+          league: lg.short_name,
+          leagueId: lg.id,
+          rosterId: me.roster_id,
+          body: `Best mutual-fit partner. ${bestPartner.notes.slice(0,2).join('. ') || 'Stance asymmetry favors a trade.'}`,
+          cta: { label: 'View Their Roster', href: `#roster/${lg.id}/${bestPartner.roster.roster_id}` },
+          color: 'var(--accent-hot)',
+        });
+      }
+      // 4) Positional shortages worth targeting
+      for (const pos of ['QB','RB','WR','TE']) {
+        if (surplus[pos].surplus <= -2) {
+          actions.push({
+            urgency: 4,
+            title: `Acquire a ${pos} (${lg.short_name})`,
+            league: lg.short_name,
+            leagueId: lg.id,
+            rosterId: me.roster_id,
+            body: `${surplus[pos].startables} of ${surplus[pos].need} startable. Two-position shortage; do not enter the season this thin.`,
+            cta: { label: 'See Positional Targets', href: `#rankings` },
+            color: 'var(--blue)',
+          });
+        }
+      }
+      // 5) Stance-driven prompts
+      if (stance === 'contend' && actions.filter(a => a.leagueId === lg.id).length === 0) {
+        actions.push({
+          urgency: 5,
+          title: `${lg.short_name}: Contention window open`,
+          league: lg.short_name,
+          leagueId: lg.id,
+          rosterId: me.roster_id,
+          body: 'No glaring sells, no clear partner needs. Use the calculator to consolidate two starters into one elite if a partner is open.',
+          cta: { label: 'Open Roster Blueprint', href: `#roster/${lg.id}/${me.roster_id}` },
+          color: 'var(--green)',
+        });
+      }
+      if (stance === 'rebuild') {
+        actions.push({
+          urgency: 4,
+          title: `${lg.short_name}: Stack ${parseInt(new Date().getFullYear()) + 1} 1sts`,
+          league: lg.short_name,
+          leagueId: lg.id,
+          rosterId: me.roster_id,
+          body: 'Rebuild posture. Pick value peaks just before next rookie draft; stack early-1sts before that window opens.',
+          cta: { label: 'Open Roster Blueprint', href: `#roster/${lg.id}/${me.roster_id}` },
+          color: 'var(--blue)',
+        });
+      }
+    }
+
+    actions.sort((a, b) => a.urgency - b.urgency);
+
+    if (!actions.length) {
+      main.appendChild(h('div', { class:'empty' }, 'No actionable items detected. Roster is in a stable state.'));
+      return;
+    }
+
+    main.appendChild(h('div', { style:{ display:'grid', gap:'10px' } },
+      ...actions.map(a => h('div', { class:'card', style:{ borderLeft:`3px solid ${a.color}`, padding:'14px 18px' } },
+        h('div', { style:{ display:'flex', justifyContent:'space-between', alignItems:'baseline' } },
+          h('div', { class:'name', style:{ fontSize:'1rem', fontWeight:600, color:'var(--fg-0)' } }, a.title),
+          h('span', { class:'tip' }, a.league),
+        ),
+        h('div', { style:{ marginTop:'4px', color:'var(--fg-1)' } }, a.body),
+        h('div', { style:{ marginTop:'10px', display:'flex', gap:'8px' } },
+          h('a', { href: a.cta.href }, h('button', { class:'ghost' }, a.cta.label, ' →')),
+        ),
+      ))
+    ));
+    main.appendChild(h('div', { class:'tip', style:{ marginTop:'12px' } },
+      `${actions.length} actions queued. Coaching tips and trade scenarios on each roster blueprint go deeper.`));
+  }
+
+  // ============================================================
   // ROUTE: Strategy / Playbook
   // ============================================================
   function viewStrategy() {
@@ -3195,6 +3338,7 @@
         case 'trade':      return viewTrade(rest[0]);
         case 'compare':    return viewCompare(rest[0], rest[1], rest[2]);
         case 'strategy':   return viewStrategy();
+        case 'action':     return viewActionCenter();
         case 'sources':    return viewSources();
         case 'about':      return viewAbout();
         default:           return viewDashboard();
