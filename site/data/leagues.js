@@ -276,7 +276,8 @@ window.LEAGUES = [
           "8110",
           "9221",
           "9488",
-          "9493"
+          "9493",
+          "13330"
         ],
         "taxi": [
           "11569",
@@ -335,7 +336,8 @@ window.LEAGUES = [
           "9229",
           "9479",
           "9502",
-          "9754"
+          "9754",
+          "13279"
         ],
         "taxi": [
           "11599",
@@ -394,7 +396,8 @@ window.LEAGUES = [
           "9224",
           "9487",
           "9756",
-          "9758"
+          "9758",
+          "13294"
         ],
         "taxi": [
           "12467",
@@ -523,7 +526,9 @@ window.LEAGUES = [
           "8408",
           "9225",
           "9484",
-          "9997"
+          "9997",
+          "13298",
+          "13276"
         ],
         "taxi": [
           "12455",
@@ -588,7 +593,8 @@ window.LEAGUES = [
           "8180",
           "8676",
           "9486",
-          "9494"
+          "9494",
+          "13281"
         ],
         "taxi": [
           "12471",
@@ -714,7 +720,8 @@ window.LEAGUES = [
           "8137",
           "8150",
           "9228",
-          "96"
+          "96",
+          "13286"
         ],
         "taxi": [
           "12476",
@@ -775,7 +782,8 @@ window.LEAGUES = [
           "9226",
           "9482",
           "9504",
-          "9511"
+          "9511",
+          "13287"
         ],
         "taxi": [
           "11619",
@@ -846,7 +854,7 @@ window.LEAGUES = [
       {
         "draft_id": "1341184676613595136",
         "type": "linear",
-        "status": "paused",
+        "status": "drafting",
         "season": "2026",
         "start_time": 1778277640160,
         "settings": {
@@ -874,228 +882,212 @@ window.LEAGUES = [
     ],
     "traded_picks": [
       {
-        "round": 1,
-        "season": "2026",
-        "roster_id": 1,
-        "owner_id": 6,
-        "previous_owner_id": 4
+        "draft_id": "1341184676613595136",
+        "draft_slot": 1,
+        "is_keeper": null,
+        "metadata": {
+          "first_name": "Jeremiyah",
+          "injury_status": "",
+          "last_name": "Love",
+          "news_updated": "1777476032238",
+          "number": "4",
+          "player_id": "13287",
+          "position": "RB",
+          "sport": "nfl",
+          "status": "Active",
+          "team": "ARI",
+          "team_abbr": "",
+          "team_changed_at": "",
+          "years_exp": "0"
+        },
+        "pick_no": 1,
+        "picked_by": "726629031964975104",
+        "player_id": "13287",
+        "reactions": null,
+        "roster_id": 10,
+        "round": 1
       },
       {
-        "round": 2,
-        "season": "2026",
-        "roster_id": 1,
-        "owner_id": 6,
-        "previous_owner_id": 4
-      },
-      {
-        "round": 2,
-        "season": "2027",
-        "roster_id": 1,
-        "owner_id": 7,
-        "previous_owner_id": 1
-      },
-      {
-        "round": 1,
-        "season": "2026",
-        "roster_id": 2,
-        "owner_id": 3,
-        "previous_owner_id": 2
-      },
-      {
-        "round": 2,
-        "season": "2026",
-        "roster_id": 2,
-        "owner_id": 7,
-        "previous_owner_id": 2
-      },
-      {
-        "round": 1,
-        "season": "2027",
-        "roster_id": 2,
-        "owner_id": 3,
-        "previous_owner_id": 2
-      },
-      {
-        "round": 2,
-        "season": "2027",
-        "roster_id": 2,
-        "owner_id": 3,
-        "previous_owner_id": 2
-      },
-      {
-        "round": 2,
-        "season": "2028",
-        "roster_id": 2,
-        "owner_id": 6,
-        "previous_owner_id": 2
-      },
-      {
-        "round": 1,
-        "season": "2026",
+        "draft_id": "1341184676613595136",
+        "draft_slot": 2,
+        "is_keeper": null,
+        "metadata": {
+          "first_name": "Carnell",
+          "injury_status": "",
+          "last_name": "Tate",
+          "news_updated": "1777051210510",
+          "number": "14",
+          "player_id": "13279",
+          "position": "WR",
+          "sport": "nfl",
+          "status": "Active",
+          "team": "TEN",
+          "team_abbr": "",
+          "team_changed_at": "",
+          "years_exp": "0"
+        },
+        "pick_no": 2,
+        "picked_by": "857852069871218688",
+        "player_id": "13279",
+        "reactions": null,
         "roster_id": 3,
-        "owner_id": 3,
-        "previous_owner_id": 6
+        "round": 1
       },
       {
-        "round": 2,
-        "season": "2026",
-        "roster_id": 3,
-        "owner_id": 4,
-        "previous_owner_id": 6
-      },
-      {
-        "round": 3,
-        "season": "2026",
-        "roster_id": 4,
-        "owner_id": 3,
-        "previous_owner_id": 6
-      },
-      {
-        "round": 1,
-        "season": "2027",
-        "roster_id": 4,
-        "owner_id": 8,
-        "previous_owner_id": 4
-      },
-      {
-        "round": 1,
-        "season": "2026",
-        "roster_id": 5,
-        "owner_id": 2,
-        "previous_owner_id": 5
-      },
-      {
-        "round": 2,
-        "season": "2026",
-        "roster_id": 5,
-        "owner_id": 3,
-        "previous_owner_id": 2
-      },
-      {
-        "round": 3,
-        "season": "2026",
-        "roster_id": 5,
-        "owner_id": 3,
-        "previous_owner_id": 6
-      },
-      {
-        "round": 1,
-        "season": "2027",
-        "roster_id": 5,
-        "owner_id": 3,
-        "previous_owner_id": 2
-      },
-      {
-        "round": 2,
-        "season": "2027",
-        "roster_id": 5,
-        "owner_id": 10,
-        "previous_owner_id": 2
-      },
-      {
-        "round": 3,
-        "season": "2027",
-        "roster_id": 5,
-        "owner_id": 7,
-        "previous_owner_id": 2
-      },
-      {
-        "round": 1,
-        "season": "2026",
-        "roster_id": 6,
-        "owner_id": 4,
-        "previous_owner_id": 6
-      },
-      {
-        "round": 2,
-        "season": "2026",
-        "roster_id": 6,
-        "owner_id": 4,
-        "previous_owner_id": 6
-      },
-      {
-        "round": 3,
-        "season": "2026",
-        "roster_id": 6,
-        "owner_id": 4,
-        "previous_owner_id": 6
-      },
-      {
-        "round": 4,
-        "season": "2026",
+        "draft_id": "1341184676613595136",
+        "draft_slot": 3,
+        "is_keeper": null,
+        "metadata": {
+          "first_name": "Jordyn",
+          "injury_status": "",
+          "last_name": "Tyson",
+          "news_updated": "1777058411542",
+          "number": "0",
+          "player_id": "13281",
+          "position": "WR",
+          "sport": "nfl",
+          "status": "Active",
+          "team": "NO",
+          "team_abbr": "",
+          "team_changed_at": "",
+          "years_exp": "0"
+        },
+        "pick_no": 3,
+        "picked_by": "858364549793959936",
+        "player_id": "13281",
+        "reactions": null,
         "roster_id": 7,
-        "owner_id": 7,
-        "previous_owner_id": 1
+        "round": 1
       },
       {
-        "round": 1,
-        "season": "2026",
-        "roster_id": 8,
-        "owner_id": 6,
-        "previous_owner_id": 2
+        "draft_id": "1341184676613595136",
+        "draft_slot": 4,
+        "is_keeper": null,
+        "metadata": {
+          "first_name": "Makai",
+          "injury_status": "",
+          "last_name": "Lemon",
+          "news_updated": "1777578324517",
+          "number": "9",
+          "player_id": "13294",
+          "position": "WR",
+          "sport": "nfl",
+          "status": "Active",
+          "team": "PHI",
+          "team_abbr": "",
+          "team_changed_at": "",
+          "years_exp": "0"
+        },
+        "pick_no": 4,
+        "picked_by": "759876632923197440",
+        "player_id": "13294",
+        "reactions": null,
+        "roster_id": 4,
+        "round": 1
       },
       {
-        "round": 2,
-        "season": "2026",
-        "roster_id": 8,
-        "owner_id": 6,
-        "previous_owner_id": 2
-      },
-      {
-        "round": 3,
-        "season": "2026",
-        "roster_id": 8,
-        "owner_id": 6,
-        "previous_owner_id": 8
-      },
-      {
-        "round": 4,
-        "season": "2026",
-        "roster_id": 8,
-        "owner_id": 9,
-        "previous_owner_id": 8
-      },
-      {
-        "round": 1,
-        "season": "2027",
-        "roster_id": 8,
-        "owner_id": 10,
-        "previous_owner_id": 2
-      },
-      {
-        "round": 2,
-        "season": "2027",
-        "roster_id": 8,
-        "owner_id": 7,
-        "previous_owner_id": 8
-      },
-      {
-        "round": 3,
-        "season": "2027",
-        "roster_id": 8,
-        "owner_id": 10,
-        "previous_owner_id": 8
-      },
-      {
-        "round": 4,
-        "season": "2027",
-        "roster_id": 8,
-        "owner_id": 6,
-        "previous_owner_id": 8
-      },
-      {
-        "round": 2,
-        "season": "2028",
-        "roster_id": 8,
-        "owner_id": 10,
-        "previous_owner_id": 8
-      },
-      {
-        "round": 1,
-        "season": "2027",
+        "draft_id": "1341184676613595136",
+        "draft_slot": 5,
+        "is_keeper": null,
+        "metadata": {
+          "first_name": "Jadarian",
+          "injury_status": "",
+          "last_name": "Price",
+          "news_updated": "1778034040048",
+          "number": "8",
+          "player_id": "13286",
+          "position": "RB",
+          "sport": "nfl",
+          "status": "Active",
+          "team": "SEA",
+          "team_abbr": "",
+          "team_changed_at": "",
+          "years_exp": "0"
+        },
+        "pick_no": 5,
+        "picked_by": "858446084786196480",
+        "player_id": "13286",
+        "reactions": null,
         "roster_id": 9,
-        "owner_id": 8,
-        "previous_owner_id": 9
+        "round": 1
+      },
+      {
+        "draft_id": "1341184676613595136",
+        "draft_slot": 6,
+        "is_keeper": null,
+        "metadata": {
+          "first_name": "KC",
+          "injury_status": "",
+          "last_name": "Concepcion",
+          "news_updated": "1778268643068",
+          "number": "17",
+          "player_id": "13298",
+          "position": "WR",
+          "sport": "nfl",
+          "status": "Active",
+          "team": "CLE",
+          "team_abbr": "",
+          "team_changed_at": "",
+          "years_exp": "0"
+        },
+        "pick_no": 6,
+        "picked_by": "730166912843091968",
+        "player_id": "13298",
+        "reactions": null,
+        "roster_id": 6,
+        "round": 1
+      },
+      {
+        "draft_id": "1341184676613595136",
+        "draft_slot": 7,
+        "is_keeper": null,
+        "metadata": {
+          "first_name": "Kenyon",
+          "injury_status": "",
+          "last_name": "Sadiq",
+          "news_updated": "1777335620132",
+          "number": "16",
+          "player_id": "13330",
+          "position": "TE",
+          "sport": "nfl",
+          "status": "Active",
+          "team": "NYJ",
+          "team_abbr": "",
+          "team_changed_at": "",
+          "years_exp": "0"
+        },
+        "pick_no": 7,
+        "picked_by": "857839651556282368",
+        "player_id": "13330",
+        "reactions": null,
+        "roster_id": 2,
+        "round": 1
+      },
+      {
+        "draft_id": "1341184676613595136",
+        "draft_slot": 8,
+        "is_keeper": null,
+        "metadata": {
+          "first_name": "Omar",
+          "injury_status": "",
+          "last_name": "Cooper",
+          "news_updated": "1777062011782",
+          "number": "83",
+          "player_id": "13276",
+          "position": "WR",
+          "sport": "nfl",
+          "status": "Active",
+          "team": "NYJ",
+          "team_abbr": "",
+          "team_changed_at": "",
+          "years_exp": "0"
+        },
+        "pick_no": 8,
+        "picked_by": "730166912843091968",
+        "player_id": "13276",
+        "reactions": null,
+        "roster_id": 6,
+        "round": 1
       }
     ]
   },
@@ -2838,7 +2830,7 @@ window.LEAGUES = [
       {
         "roster_id": 9,
         "owner_id": null,
-        "owner_name": "\u2014",
+        "owner_name": ",",
         "team_name": "Roster 9",
         "is_me": false,
         "starters": [

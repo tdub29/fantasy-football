@@ -17,14 +17,13 @@
       "858364549793959936": 3,
       "858446084786196480": 5
     },
-    "last_message_id": "1358734259828817920",
-    "last_message_time": 1778310000907,
-    "last_picked": 1778296281785,
+    "last_message_id": "1358839955274616832",
+    "last_message_time": 1778335200664,
+    "last_picked": 1778321481538,
     "league_id": "1341184676601028608",
     "metadata": {
       "description": "",
       "elapsed_pick_timer": "13719078",
-      "is_autopaused": "true",
       "name": "Password is taco",
       "scoring_type": "dynasty_ppr",
       "show_team_names": "0"
@@ -54,7 +53,7 @@
     },
     "sport": "nfl",
     "start_time": 1778277640160,
-    "status": "paused",
+    "status": "drafting",
     "type": "linear"
   }
 ]
