@@ -1209,7 +1209,7 @@ textarea { resize: vertical; min-height: 80px; }
 }
 .heatmap-row {
   display: grid;
-  grid-template-columns: 220px repeat(6, 1fr) 80px;
+  grid-template-columns: 200px repeat(7, 1fr) 80px;
   align-items: stretch;
   border-top: 1px solid var(--border);
   cursor: pointer;
@@ -1265,7 +1265,7 @@ textarea { resize: vertical; min-height: 80px; }
 }
 
 @media (max-width: 900px) {
-  .heatmap-row { grid-template-columns: 130px repeat(6, 1fr) 60px; }
+  .heatmap-row { grid-template-columns: 110px repeat(7, 1fr) 60px; }
   .heatmap-leaguecell { padding: 8px; }
   .heatmap-team { display: none; }
 }

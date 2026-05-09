@@ -123,16 +123,18 @@ for name, lid in LEAGUES:
     # Merge in-progress draft picks into rosters. Sleeper only stamps the roster
     # `players` list when the draft completes; while it's still `drafting`,
     # picks live in /draft/:id/picks but the rosters look stale. Fold them in.
+    # IMPORTANT: use a different variable name (draft_picks, not picks) to avoid
+    # shadowing the traded_picks list that gets serialized below.
     in_progress = [d for d in drafts if d.get("status") == "drafting"]
     if in_progress:
         for d in in_progress:
             try:
-                picks = fetch_json(f"https://api.sleeper.app/v1/draft/{d['draft_id']}/picks")
-                print(f"  in-progress draft {d['draft_id']}: {len(picks)} picks merged")
+                draft_picks = fetch_json(f"https://api.sleeper.app/v1/draft/{d['draft_id']}/picks")
+                print(f"  in-progress draft {d['draft_id']}: {len(draft_picks)} picks merged")
                 roster_by_id = {r["roster_id"]: r for r in out_rosters}
-                for p in picks:
-                    rid = p.get("roster_id")
-                    pid = p.get("player_id")
+                for dp in draft_picks:
+                    rid = dp.get("roster_id")
+                    pid = dp.get("player_id")
                     if not rid or not pid: continue
                     target = roster_by_id.get(rid)
                     if not target: continue

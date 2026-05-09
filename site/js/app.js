@@ -636,23 +636,26 @@
     // leagues in one glance.
     main.appendChild(h('h2', { class:'page-title', style:{ fontSize:'1.2rem', marginTop:'24px' } }, 'Positional Grade Heatmap'));
     const heatmap = h('div', { class:'heatmap' });
-    // Header row
+    // Header row. New layout: per-position averages from slot-by-slot grades,
+    // plus a dedicated FLEX column, plus Bench / Draft / Overall.
     heatmap.appendChild(h('div', { class:'heatmap-row heatmap-head' },
       h('div', { class:'heatmap-cell heatmap-leaguecell' }, 'League'),
-      ...['QB','RB','WR','TE','Bench','Draft'].map(p => h('div', { class:'heatmap-cell' }, p)),
+      ...['QB','RB','WR','TE','FLEX','Bench','Draft'].map(p => h('div', { class:'heatmap-cell' }, p)),
       h('div', { class:'heatmap-cell heatmap-overallcell' }, 'Overall'),
     ));
     for (const { league, roster } of myRosters) {
       const players = getRosterPlayers(roster);
+      const slotResult = gradeLineupSlots(players, league);
       const g = {
-        QB: gradePosition(players, 'QB', league),
-        RB: gradePosition(players, 'RB', league),
-        WR: gradePosition(players, 'WR', league),
-        TE: gradePosition(players, 'TE', league),
+        QB: gradePositionFromSlots(slotResult, 'QB') || gradePosition(players, 'QB', league),
+        RB: gradePositionFromSlots(slotResult, 'RB') || gradePosition(players, 'RB', league),
+        WR: gradePositionFromSlots(slotResult, 'WR') || gradePosition(players, 'WR', league),
+        TE: gradePositionFromSlots(slotResult, 'TE') || gradePosition(players, 'TE', league),
+        FLEX: gradePositionFromSlots(slotResult, 'FLEX') || gradePositionFromSlots(slotResult, 'SF') || 0,
         Bench: gradeBench(players, league),
         Draft: gradeDraftCapital(roster, league.id),
       };
-      const overall = (g.QB + g.RB*1.1 + g.WR*1.2 + g.TE*0.8 + g.Bench*0.5 + g.Draft*0.4) / 5;
+      const overall = slotResult.overall || ((g.QB + g.RB*1.1 + g.WR*1.2 + g.TE*0.8 + g.Bench*0.5 + g.Draft*0.4) / 5);
       const heatCell = (val) => {
         const color = val >= 7.5 ? 'var(--green)' : val >= 5.5 ? 'var(--amber)' : val >= 3.5 ? 'var(--cat-vet)' : 'var(--red)';
         const pct = Math.max(4, Math.min(100, val*10));
@@ -667,7 +670,7 @@
           h('div', { class:'heatmap-leaguename' }, league.short_name),
           h('div', { class:'heatmap-team tip' }, roster.team_name + (league.is_superflex ? ' · SF' : league.is_idp ? ' · IDP' : '')),
         ),
-        heatCell(g.QB), heatCell(g.RB), heatCell(g.WR), heatCell(g.TE), heatCell(g.Bench), heatCell(g.Draft),
+        heatCell(g.QB), heatCell(g.RB), heatCell(g.WR), heatCell(g.TE), heatCell(g.FLEX), heatCell(g.Bench), heatCell(g.Draft),
         h('div', { class:'heatmap-cell heatmap-overallcell tnum', style:{ color: overallColor } }, overall.toFixed(1)),
       ));
     }
@@ -1277,9 +1280,12 @@
   // 0-10 grade per position, normalized within-position. The QB1 in dynasty
   // grades 10, the RB1 grades 10, etc. Backup adds capped bonus (max 1.5).
   // Depth past the backup is intentionally ignored.
+  // NOTE: Math.round (not ceil) on slot count so a 1.4-slot demand (TE in
+  // 1QB+4FLEX) doesn't dilute a TE1's grade by treating it as a 2-slot need.
+  // TE flex usage is rare; the +0.4 partial slot is captured by the backup bonus.
   function gradePosition(rosterPlayers, pos, league) {
     const targets = targetStartersByPos(league);
-    const slotCount = Math.max(1, Math.ceil(targets[pos] || 0));
+    const slotCount = Math.max(1, Math.round(targets[pos] || 0));
     const top = rosterPlayers.filter(p => p.ranked && p.ranked.pos === pos)
       .map(p => tierValue(p.ranked, league)).sort((a,b)=>b-a);
     const maxPV = maxPosValue(pos, league);
@@ -1292,6 +1298,135 @@
     const backupBonus = Math.min((backup / maxPV) * 1.5, 1.5);
     grade = Math.min(10, grade + backupBonus);
     return Math.round(grade * 10) / 10;
+  }
+
+  // Slot-by-slot grade: walks the league's actual roster_positions and assigns
+  // the best-available player to each starting slot, then grades that slot
+  // against the n-th-best player at that slot's eligible position(s) across
+  // all dynasty rankings. FLEX gets its own grade. SUPER_FLEX gets its own
+  // grade. The OVERALL grade is the slot-weighted average.
+  function gradeLineupSlots(rosterPlayers, league) {
+    const idx = rankIndex();
+    // Pre-sort owned players by tierValue desc per position
+    const byPos = { QB:[], RB:[], WR:[], TE:[], LB:[], DB:[], DL:[] };
+    for (const p of rosterPlayers) {
+      if (!p.ranked) continue;
+      if (byPos[p.ranked.pos]) byPos[p.ranked.pos].push(p);
+    }
+    for (const k of Object.keys(byPos)) {
+      byPos[k].sort((a, b) => tierValue(b.ranked, league) - tierValue(a.ranked, league));
+    }
+    // For IDP positions, fall back to all rostered (no rank discrimination)
+    if (league.is_idp) {
+      for (const idpPos of ['LB','DB','DL']) {
+        if (byPos[idpPos].length === 0) {
+          for (const p of rosterPlayers) {
+            if (p.sleeper && p.sleeper.pos === idpPos) byPos[idpPos].push(p);
+          }
+        }
+      }
+    }
+    // n-th best player at a position across dynasty (0-indexed)
+    const nthByPos = (pos, n) => {
+      const all = idx.all.filter(x => x.pos === pos);
+      return all[n] ? tierValue(all[n], league) : 0;
+    };
+    // n-th best FLEX-eligible (RB/WR/TE)
+    const nthFlex = (n) => {
+      const all = idx.all.filter(x => ['RB','WR','TE'].includes(x.pos))
+        .sort((a, b) => tierValue(b, league) - tierValue(a, league));
+      return all[n] ? tierValue(all[n], league) : 0;
+    };
+
+    const usage = { QB:0, RB:0, WR:0, TE:0, LB:0, DB:0, DL:0 };
+    let flexCount = 0, sfCount = 0, idpFlexCount = 0;
+    const slots = [];
+
+    for (const slot of (league.roster_positions || [])) {
+      if (['BN','TAXI','IR'].includes(slot)) continue;
+
+      let pick = null, refVal = 0, label = slot;
+      if (['QB','RB','WR','TE'].includes(slot)) {
+        const i = usage[slot];
+        pick = byPos[slot][i];
+        // Reference: max-equivalent at this slot rank in dynasty
+        // (e.g., RB2 vs the 2nd-best RB available across rankings)
+        const refPos = slot;
+        const refIdx = league.rosters && league.rosters.length ? Math.min(i, league.rosters.length - 1) : i;
+        refVal = nthByPos(refPos, refIdx);
+        label = `${slot}${i + 1}`;
+        usage[slot]++;
+      } else if (slot === 'FLEX') {
+        const remainingFlex = ['RB','WR','TE'].flatMap(p => byPos[p].slice(usage[p]));
+        remainingFlex.sort((a, b) => tierValue(b.ranked, league) - tierValue(a.ranked, league));
+        pick = remainingFlex[0];
+        if (pick) {
+          const pos = pick.ranked.pos;
+          if (byPos[pos][usage[pos]] === pick) usage[pos]++;
+        }
+        // FLEX reference: next-best FLEX-eligible after the league fills its
+        // dedicated RB/WR/TE slots. Approximate as 30 + flexCount in the
+        // FLEX-eligible pool (top-40-ish across leagues).
+        refVal = nthFlex((league.total_rosters || 10) * 3 + flexCount);
+        label = `FLEX${flexCount + 1}`;
+        flexCount++;
+      } else if (slot === 'SUPER_FLEX') {
+        // Best remaining QB or FLEX player. Almost always a QB.
+        const remainingQB = byPos.QB.slice(usage.QB);
+        const remainingFlex = ['RB','WR','TE'].flatMap(p => byPos[p].slice(usage[p]));
+        const candidates = [...remainingQB, ...remainingFlex]
+          .sort((a, b) => tierValue(b.ranked, league) - tierValue(a.ranked, league));
+        pick = candidates[0];
+        if (pick) {
+          const pos = pick.ranked.pos;
+          if (byPos[pos][usage[pos]] === pick) usage[pos]++;
+        }
+        // SF reference: 2nd-best QB available after each league's QB1 is taken
+        refVal = nthByPos('QB', league.total_rosters || 10);
+        label = 'SF';
+        sfCount++;
+      } else if (['LB','DB','DL'].includes(slot)) {
+        const i = usage[slot];
+        pick = byPos[slot][i];
+        // No IDP rank reference; use any non-zero baseline
+        refVal = pick ? tierValue(pick.ranked || { ktcValue: 1500 }, league) : 1;
+        label = `${slot}${i + 1}`;
+        usage[slot]++;
+      } else if (slot === 'IDP_FLEX' || slot === 'IDP') {
+        const remaining = ['LB','DB','DL'].flatMap(p => byPos[p].slice(usage[p]));
+        pick = remaining[0];
+        if (pick) {
+          const pos = pick.ranked?.pos || pick.sleeper.pos;
+          if (byPos[pos][usage[pos]] === pick) usage[pos]++;
+        }
+        refVal = pick ? (tierValue(pick.ranked, league) || 15) : 15;
+        label = `IDP${idpFlexCount + 1}`;
+        idpFlexCount++;
+      } else continue;
+
+      const myVal = pick ? tierValue(pick.ranked, league) : 0;
+      const grade = refVal > 0 ? Math.min(10, (myVal / refVal) * 10) : (pick ? 5 : 0);
+      slots.push({
+        slot: label,
+        player: pick?.sleeper?.name || '(empty)',
+        myVal: Math.round(myVal * 10) / 10,
+        refVal: Math.round(refVal * 10) / 10,
+        grade: Math.round(grade * 10) / 10,
+        rawSlot: slot,
+      });
+    }
+
+    const overall = slots.length
+      ? Math.round((slots.reduce((s, x) => s + x.grade, 0) / slots.length) * 10) / 10
+      : 0;
+    return { slots, overall };
+  }
+  // Helper: aggregated grade per high-level position group, derived from
+  // gradeLineupSlots. Used by the dashboard heatmap.
+  function gradePositionFromSlots(slotResult, posPrefix) {
+    const matching = slotResult.slots.filter(s => s.slot.startsWith(posPrefix));
+    if (!matching.length) return 0;
+    return Math.round((matching.reduce((s, x) => s + x.grade, 0) / matching.length) * 10) / 10;
   }
   function gradeBench(rosterPlayers, lg) {
     // Bench depth score from 4th-onward ranked-player tier values
@@ -1318,19 +1453,43 @@
   function getDraftCapitalSummary(roster, leagueId) {
     const lg = window.LEAGUES.find(l => l.id === leagueId);
     if (!lg) return { years: {}, totalAcquired: 0, totalLost: 0 };
-    const picks = lg.traded_picks || [];
+    // Only consider entries with a season; defensive against any contamination.
+    const picks = (lg.traded_picks || []).filter(p => p && p.season);
+    const draftRounds = (lg.drafts && lg.drafts[0]?.settings?.rounds) || 4;
+    const currentSeason = String(new Date().getFullYear());
+    // Show only seasons relevant for trading: current year + next year. Most
+    // leagues don't allow trading picks 2+ years out yet. If the current
+    // year's draft has finished, drop it from the display.
+    const draftStatusBySeason = {};
+    for (const d of (lg.drafts || [])) {
+      if (d.season) draftStatusBySeason[d.season] = d.status;
+    }
+    const candidateSeasons = [currentSeason, String(parseInt(currentSeason) + 1)];
     const years = {};
+    for (const yr of candidateSeasons) {
+      // Skip the current season entirely if its draft is complete.
+      if (yr === currentSeason && draftStatusBySeason[yr] === 'complete') continue;
+      years[yr] = {
+        default: Array.from({ length: draftRounds }, (_, i) => i + 1),
+        mine: [],
+        lost: [],
+        in_progress: yr === currentSeason && draftStatusBySeason[yr] === 'drafting',
+      };
+    }
+
     let totalAcquired = 0, totalLost = 0;
     for (const p of picks) {
       const yr = p.season;
       const rd = p.round;
-      if (!years[yr]) years[yr] = { mine:[], lost:[], default:[1,2,3,4] };
-      if (p.owner_id === roster.roster_id) {
-        if (p.roster_id !== roster.roster_id) { years[yr].mine.push({ round:rd, from:p.roster_id }); totalAcquired++; }
-      } else if (p.previous_owner_id === roster.roster_id) {
-        years[yr].lost.push({ round:rd, to:p.owner_id }); totalLost++;
-        // Remove from default if it's their own pick that's gone
+      if (!years[yr]) continue;
+      if (p.owner_id === roster.roster_id && p.roster_id !== roster.roster_id) {
+        years[yr].mine.push({ round: rd, from: p.roster_id });
+        totalAcquired++;
+      }
+      if (p.roster_id === roster.roster_id && p.owner_id !== roster.roster_id) {
+        years[yr].lost.push({ round: rd, to: p.owner_id });
         years[yr].default = years[yr].default.filter(d => d !== rd);
+        totalLost++;
       }
     }
     return { years, totalAcquired, totalLost };
@@ -1539,6 +1698,39 @@
       gradeCircle('Bench', grades.Bench),
       gradeCircle('Draft', grades.Draft),
     ));
+
+    // ===== Lineup Slots (slot-by-slot grades) =====
+    const slotResult = gradeLineupSlots(rp, lg);
+    if (slotResult.slots.length) {
+      main.appendChild(h('h2', { class:'section-title' }, 'Lineup Slots'));
+      main.appendChild(h('div', { class:'card', style:{ padding:0, overflow:'hidden' } },
+        h('table', { class:'data' },
+          h('thead', null, h('tr', null,
+            h('th', null, 'Slot'),
+            h('th', null, 'Player'),
+            h('th', { class:'right' }, 'Value'),
+            h('th', { class:'right' }, 'Slot Reference'),
+            h('th', { class:'right' }, 'Grade'),
+          )),
+          h('tbody', null, ...slotResult.slots.map(s => {
+            const color = s.grade >= 7.5 ? 'var(--green)'
+                        : s.grade >= 5.5 ? 'var(--amber)'
+                        : s.grade >= 3.5 ? 'var(--cat-vet)'
+                        : 'var(--red)';
+            return h('tr', null,
+              h('td', null, h('strong', null, s.slot)),
+              h('td', null, s.player === '(empty)' ? h('span', { class:'muted' }, '(empty)') : s.player),
+              h('td', { class:'right tnum' }, fmt.decimal(s.myVal, 1)),
+              h('td', { class:'right tnum muted' }, fmt.decimal(s.refVal, 1)),
+              h('td', { class:'right tnum', style:{ color, fontWeight:700 } }, fmt.decimal(s.grade, 1)),
+            );
+          }))
+        )
+      ));
+      main.appendChild(h('div', { class:'tip', style:{ marginTop:'8px' } },
+        `Each slot is graded against the n-th-best player at that slot rank in dynasty (e.g., RB2 vs the 2nd-best RB available across all rankings). FLEX is graded vs the next-best FLEX-eligible after league dedicated slots. Overall slot grade: ${slotResult.overall.toFixed(1)}/10.`
+      ));
+    }
 
     // ===== Lineup Composition (startable surplus / shortage) =====
     const ss = rosterSurplusShortage(rp, lg);
@@ -2318,25 +2510,32 @@
     );
     const years = Object.keys(dcSummary.years).sort();
     if (!years.length) {
-      card.appendChild(h('div', { class:'tip' }, 'You have your default slate of picks (no trades).'));
+      card.appendChild(h('div', { class:'tip' }, 'No tradable future picks visible. The current rookie draft has likely already completed.'));
       return card;
     }
     for (const yr of years) {
       const y = dcSummary.years[yr];
+      // Sort default picks ascending so they read R1 to RN in order
+      const defaultRounds = y.default.slice().sort((a, b) => a - b);
       const row = h('div', { class:'dc-row' },
-        h('div', { class:'dc-year' }, yr),
+        h('div', { class:'dc-year' },
+          yr,
+          y.in_progress ? h('div', { class:'tip', style:{ fontSize:'.7rem', color:'var(--amber)' } }, 'DRAFTING') : null,
+        ),
         h('div', { class:'dc-picks' },
-          ...y.default.map(rd => h('span', { class:'pick-chip', title:'Your default pick' }, `${rd}`)),
-          ...y.mine.map(p => h('span', { class:'pick-chip acquired', title:`Acquired from roster ${p.from}` }, `${p.round}+`)),
-          ...y.lost.map(p => h('span', { class:'pick-chip lost', title:`Traded away to roster ${p.to}` }, `${p.round}×`)),
+          ...defaultRounds.map(rd => h('span', { class:'pick-chip', title: y.in_progress
+            ? `Your default R${rd} pick (current draft is in progress; the slot may already be used live)`
+            : `Your default R${rd} pick` }, `${rd}`)),
+          ...y.mine.map(p => h('span', { class:'pick-chip acquired', title:`Acquired R${p.round} from roster ${p.from}` }, `${p.round}+`)),
+          ...y.lost.map(p => h('span', { class:'pick-chip lost', title:`Traded away R${p.round} to roster ${p.to}` }, `${p.round}×`)),
         ),
       );
       card.appendChild(row);
     }
     card.appendChild(h('div', { class:'tip', style:{ marginTop:'8px' } },
-      h('span', { class:'pick-chip' }, '#'), ' default · ',
-      h('span', { class:'pick-chip acquired' }, '#+'), ' acquired · ',
-      h('span', { class:'pick-chip lost' }, '#×'), ' traded away'
+      h('span', { class:'pick-chip' }, '#'), ' default. ',
+      h('span', { class:'pick-chip acquired' }, '#+'), ' acquired. ',
+      h('span', { class:'pick-chip lost' }, '#×'), ' traded away.'
     ));
     return card;
   }
