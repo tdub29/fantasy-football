@@ -2635,27 +2635,35 @@
     const slot = originSlot(originRosterId, league);
     const currentYear = String(new Date().getFullYear());
     const isFuture = season > currentYear;
+    let val = 0;
     if (round === 1) {
       if (isFuture) {
-        if (slot <= 4) return S.pick_values_1qb["future_1.early"];
-        if (slot <= 8) return S.pick_values_1qb["future_1.mid"];
-        return S.pick_values_1qb["future_1.late"];
+        val = slot <= 4 ? S.pick_values_1qb["future_1.early"]
+            : slot <= 8 ? S.pick_values_1qb["future_1.mid"]
+                        : S.pick_values_1qb["future_1.late"];
+      } else {
+        val = S.pick_values_1qb[`1.${String(slot).padStart(2,'0')}`] || 30;
       }
-      const key = `1.${String(slot).padStart(2,'0')}`;
-      return S.pick_values_1qb[key] || 30;
-    }
-    if (round === 2) {
+    } else if (round === 2) {
       if (isFuture) {
-        if (slot <= 4) return S.pick_values_1qb["future_2.early"];
-        if (slot <= 8) return S.pick_values_1qb["future_2.mid"];
-        return S.pick_values_1qb["future_2.late"];
+        val = slot <= 4 ? S.pick_values_1qb["future_2.early"]
+            : slot <= 8 ? S.pick_values_1qb["future_2.mid"]
+                        : S.pick_values_1qb["future_2.late"];
+      } else {
+        val = S.pick_values_1qb[`2.${String(slot).padStart(2,'0')}`] || 22;
       }
-      const key = `2.${String(slot).padStart(2,'0')}`;
-      return S.pick_values_1qb[key] || 22;
+    } else if (round === 3) {
+      val = slot <= 4 ? S.pick_values_1qb["3.early"] : slot <= 8 ? S.pick_values_1qb["3.mid"] : S.pick_values_1qb["3.late"];
+    } else if (round === 4) {
+      val = slot <= 4 ? S.pick_values_1qb["4.early"] : slot <= 8 ? S.pick_values_1qb["4.mid"] : S.pick_values_1qb["4.late"];
     }
-    if (round === 3) return slot <= 4 ? S.pick_values_1qb["3.early"] : slot <= 8 ? S.pick_values_1qb["3.mid"] : S.pick_values_1qb["3.late"];
-    if (round === 4) return slot <= 4 ? S.pick_values_1qb["4.early"] : slot <= 8 ? S.pick_values_1qb["4.mid"] : S.pick_values_1qb["4.late"];
-    return 0;
+    // Superflex premium: top picks (where rookie QBs are taken) hold extra
+    // value because dynasty SF QB rooms are scarce. Apply only to current-year R1.
+    if (league && league.is_superflex && !isFuture && round === 1) {
+      const sfBump = S.pick_sf_premium[`1.${String(slot).padStart(2,'0')}`] || 0;
+      val += sfBump;
+    }
+    return Math.round(val * 10) / 10;
   }
   // Compute which picks a given roster currently owns, accounting for traded_picks.
   // Returns array of { season, round, originRosterId, label, value }
