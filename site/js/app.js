@@ -322,6 +322,7 @@
     { hash:'#players',      label:'All Players',   icon:'⌕',  section:'Overview' },
     { hash:'#leagues',      label:'My Leagues',    icon:'⚑',  section:'My Teams' },
     { hash:'#trade',        label:'Trade Calculator', icon:'⇄', section:'My Teams' },
+    { hash:'#strategy',     label:'Strategy',      icon:'◇',  section:'Settings' },
     { hash:'#sources',      label:'YouTuber Sources', icon:'▶', section:'Settings' },
     { hash:'#about',        label:'About',         icon:'?',  section:'Settings' },
   ];
@@ -2727,6 +2728,156 @@
   }
 
   // ============================================================
+  // ROUTE: Strategy / Playbook
+  // ============================================================
+  function viewStrategy() {
+    const main = $('#main');
+    main.innerHTML = '';
+    main.appendChild(h('div', { class:'page-header' },
+      h('div', null,
+        h('h1', { class:'page-title' }, 'Strategy Playbook'),
+        h('p', { class:'page-sub' }, 'Distilled rules from public dynasty content. The site evaluates these against your rosters to surface coaching tips. Sources at the bottom.')
+      )
+    ));
+    if (!window.STRATEGY) {
+      main.appendChild(h('div', { class:'empty' }, 'Strategy data not loaded.'));
+      return;
+    }
+    const S = window.STRATEGY;
+
+    // ----- Principles -----
+    main.appendChild(h('h2', { class:'section-title' }, 'Core Principles'));
+    main.appendChild(h('div', { class:'card', style:{ padding:'18px 22px' } },
+      h('ol', { style:{ margin:0, paddingLeft:'20px', lineHeight:'1.8' } },
+        ...S.principles.map(p => h('li', { style:{ color:'var(--fg-1)' } }, p))
+      )
+    ));
+
+    // ----- Age curves -----
+    main.appendChild(h('h2', { class:'section-title' }, 'Position Age Curves'));
+    main.appendChild(h('div', { class:'card', style:{ padding:0, overflow:'hidden' } },
+      h('table', { class:'data' },
+        h('thead', null, h('tr', null,
+          h('th', null, 'Position'),
+          h('th', { class:'right' }, 'Peak Age'),
+          h('th', { class:'right' }, 'Sell Window'),
+          h('th', { class:'right' }, 'Hard Sell'),
+          h('th', null, 'Rule'),
+        )),
+        h('tbody', null,
+          ...Object.entries(S.age_curve).map(([pos, c]) => h('tr', null,
+            h('td', null, h('strong', null, pos)),
+            h('td', { class:'right tnum' }, c.peak_avg),
+            h('td', { class:'right tnum', style:{ color:'var(--amber)', fontWeight:600 } }, c.sell_age),
+            h('td', { class:'right tnum', style:{ color:'var(--red)', fontWeight:600 } }, c.hard_sell_age),
+            h('td', null, h('span', { class:'tip' },
+              pos === 'RB' ? 'Cliff is steep; trade window is the year before consensus catches on.'
+              : pos === 'WR' ? 'Decline is gradual; trade value peaks before production drops.'
+              : pos === 'TE' ? 'Breakouts often arrive at 25-27; hold if Foundational+.'
+              : 'QBs age slowest; rushing QBs decline faster than pocket passers.'
+            ))
+          ))
+        )
+      )
+    ));
+
+    // ----- Rebuild Phases -----
+    main.appendChild(h('h2', { class:'section-title' }, 'Rebuild Phases (3-Year Arc)'));
+    main.appendChild(h('div', { class:'card-grid cols-2' },
+      ...Object.values(S.rebuild_phases).map(p => h('div', { class:'card' },
+        h('div', { class:'card-title' }, p.label, ' · Year ', String(p.year)),
+        h('div', { style:{ marginBottom:'8px' } }, h('strong', null, 'Posture: '), p.posture),
+        h('div', { class:'tip', style:{ marginBottom:'4px' } }, h('strong', null, 'Enter when: '), p.trigger_in),
+        h('div', { class:'tip' }, h('strong', null, 'Exit when: '), p.trigger_out),
+      ))
+    ));
+
+    // ----- Consolidation -----
+    main.appendChild(h('h2', { class:'section-title' }, 'Consolidation (2-for-1 / 3-for-1)'));
+    main.appendChild(h('div', { class:'card-grid cols-2' },
+      h('div', { class:'card' },
+        h('div', { class:'card-title' }, h('span', { style:{ color:'var(--green)' } }, '✓ Consolidate When')),
+        h('ul', { style:{ paddingLeft:'18px', margin:0, lineHeight:'1.7' } },
+          ...S.consolidation.when_to_consolidate.map(r => h('li', null, r))
+        )
+      ),
+      h('div', { class:'card' },
+        h('div', { class:'card-title' }, h('span', { style:{ color:'var(--red)' } }, '✗ Decline When')),
+        h('ul', { style:{ paddingLeft:'18px', margin:0, lineHeight:'1.7' } },
+          ...S.consolidation.when_to_decline.map(r => h('li', null, r))
+        )
+      )
+    ));
+    main.appendChild(h('div', { class:'tip', style:{ marginTop:'8px' } }, S.consolidation.premium_rule_of_thumb));
+
+    // ----- Pick Values -----
+    main.appendChild(h('h2', { class:'section-title' }, 'Rookie Pick Values (1QB)'));
+    main.appendChild(h('div', { class:'card', style:{ padding:0, overflow:'hidden' } },
+      h('table', { class:'data' },
+        h('thead', null, h('tr', null,
+          h('th', null, 'Pick'),
+          h('th', { class:'right' }, '1QB Value'),
+          h('th', { class:'right' }, 'SF Premium'),
+          h('th', null, 'Equivalent'),
+        )),
+        h('tbody', null,
+          ...Object.entries(S.pick_values_1qb)
+            .filter(([k]) => !k.startsWith('future') && !k.startsWith('3.') && !k.startsWith('4.'))
+            .map(([pick, val]) => {
+              const sf = S.pick_sf_premium[pick] || 0;
+              const eq = val >= 70 ? 'Cornerstone-A asset'
+                : val >= 50 ? 'Cornerstone-B/C asset'
+                : val >= 35 ? 'Foundational-S asset'
+                : val >= 25 ? 'Foundational-A/B asset'
+                : 'Mid Foundational asset';
+              return h('tr', null,
+                h('td', null, h('strong', null, pick)),
+                h('td', { class:'right tnum' }, val),
+                h('td', { class:'right tnum', style:{ color: sf > 0 ? 'var(--amber)' : 'var(--fg-3)' } }, sf > 0 ? '+' + sf : '.'),
+                h('td', null, h('span', { class:'tip' }, eq)),
+              );
+            })
+        )
+      )
+    ));
+
+    // ----- Calendar -----
+    main.appendChild(h('h2', { class:'section-title' }, 'Calendar'));
+    main.appendChild(h('div', { class:'card-grid cols-2' },
+      ...Object.entries(S.calendar).map(([window, advice]) => h('div', { class:'card' },
+        h('div', { class:'card-title' }, window),
+        h('div', { style:{ color:'var(--fg-1)' } }, advice),
+      ))
+    ));
+
+    // ----- Execution -----
+    main.appendChild(h('h2', { class:'section-title' }, 'Trade Execution'));
+    main.appendChild(h('div', { class:'card', style:{ padding:'18px 22px' } },
+      h('ol', { style:{ margin:0, paddingLeft:'20px', lineHeight:'1.8' } },
+        ...S.execution.map(r => h('li', { style:{ color:'var(--fg-1)' } }, r))
+      )
+    ));
+
+    // ----- Sources -----
+    main.appendChild(h('h2', { class:'section-title' }, 'Sources'));
+    main.appendChild(h('div', { class:'card' },
+      h('div', { class:'tip', style:{ lineHeight:'1.8' } },
+        'Synthesized from public dynasty fantasy content:',
+        h('ul', { style:{ margin:'8px 0 0 0', paddingLeft:'18px' } },
+          h('li', null, h('a', { href:'https://www.fantasypros.com/2026/04/dynasty-fantasy-football-startup-draft-strategy-expert-tips-to-build-a-long-term-contender-2026/', target:'_blank', rel:'noopener' }, 'FantasyPros 2026 Dynasty Startup Strategy')),
+          h('li', null, h('a', { href:'https://www.fantasypros.com/2026/05/fantasy-football-rankings-dynasty-trade-value-chart-may-2026-update/', target:'_blank', rel:'noopener' }, 'FantasyPros Dynasty Trade Value Chart, May 2026')),
+          h('li', null, h('a', { href:'https://apexfantasyleagues.com/peak-age-nfl-running-back/', target:'_blank', rel:'noopener' }, 'Apex Fantasy: Peak Age for NFL RB')),
+          h('li', null, h('a', { href:'https://apexfantasyleagues.com/peak-age-for-nfl-wide-receiver/', target:'_blank', rel:'noopener' }, 'Apex Fantasy: Peak Age for NFL WR')),
+          h('li', null, h('a', { href:'https://www.fantasylife.com/articles/dynasty/dynasty-fantasy-football-2-for-1-trade-strategy', target:'_blank', rel:'noopener' }, 'FantasyLife: 2-for-1 Trade Strategy')),
+          h('li', null, h('a', { href:'https://www.rotowire.com/football/article/dynasty-fantasy-tanking-rebuilding-strategies-2025-93401', target:'_blank', rel:'noopener' }, 'RotoWire: Tanking and Rebuilding Strategies')),
+          h('li', null, h('a', { href:'https://www.playerprofiler.com/article/dynasty-fantasy-football-trades-a-comprehensive-guide/', target:'_blank', rel:'noopener' }, 'PlayerProfiler: Dynasty Trades Guide')),
+          h('li', null, 'Domain Dynasty YouTube channel (cornerstones + rookies + bakery videos)'),
+        )
+      )
+    ));
+  }
+
+  // ============================================================
   // ROUTE: About
   // ============================================================
   function viewAbout() {
@@ -2850,6 +3001,7 @@
         case 'roster':     return viewRoster(rest[0], rest[1]);
         case 'trade':      return viewTrade(rest[0]);
         case 'compare':    return viewCompare(rest[0], rest[1], rest[2]);
+        case 'strategy':   return viewStrategy();
         case 'sources':    return viewSources();
         case 'about':      return viewAbout();
         default:           return viewDashboard();
