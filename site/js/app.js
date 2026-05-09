@@ -1313,13 +1313,29 @@
   }
   function suggestBuysSells(rosterPlayers, lg) {
     const buys = [], sells = [];
-    // SELLS: depreciating pillars on this roster
+    const curves = (window.STRATEGY && window.STRATEGY.age_curve) || {};
+    // SELLS: position-aware age curves + depreciating pillars.
+    // Cornerstones are exempt because their value is insulated by definition.
     for (const p of rosterPlayers) {
       if (!p.ranked) continue;
+      const age = p.sleeper.age;
+      const curve = curves[p.ranked.pos];
       if (p.ranked.subtype === 'depreciating_pillar') {
-        sells.push({ player: p.ranked, sleeper: p.sleeper, intensity: p.sleeper.age >= 28 ? 'HARD SELL' : 'SOFT SELL', reason: 'Depreciating pillar, value will decay year-over-year.' });
-      } else if (p.sleeper.age >= 31 && p.ranked.category !== 'cornerstone') {
-        sells.push({ player: p.ranked, sleeper: p.sleeper, intensity: 'SOFT SELL', reason: `Age ${p.sleeper.age}, sell while value remains.` });
+        sells.push({
+          player: p.ranked, sleeper: p.sleeper,
+          intensity: age >= (curve?.hard_sell_age || 30) ? 'HARD SELL' : 'SOFT SELL',
+          reason: 'Depreciating pillar. Value will decay year-over-year.',
+        });
+      } else if (curve && age && age >= curve.hard_sell_age && p.ranked.category !== 'cornerstone') {
+        sells.push({
+          player: p.ranked, sleeper: p.sleeper, intensity: 'HARD SELL',
+          reason: `Age ${age} is past the ${p.ranked.pos} hard-sell window (${curve.hard_sell_age}). Move at any cost.`,
+        });
+      } else if (curve && age && age >= curve.sell_age && p.ranked.category !== 'cornerstone') {
+        sells.push({
+          player: p.ranked, sleeper: p.sleeper, intensity: 'SELL',
+          reason: `${p.ranked.pos} sell window opens at ${curve.sell_age}. ${p.sleeper.name} is ${age}. Trade a year too early, not too late.`,
+        });
       }
     }
     // BUYS: top-tier players I don't own. Match by Sleeper ID where possible,
@@ -1343,6 +1359,36 @@
     }
     return { buys, sells: sells.slice(0,5) };
   }
+  // Walk window.STRATEGY.coaching_tips and pick the rules whose `when`
+  // predicate matches the roster context. Returns rendered text strings.
+  function evaluateCoachingTips({ rosterPlayers, league, stance, archetype, valueTier, surplus }) {
+    if (!window.STRATEGY) return [];
+    const curves = window.STRATEGY.age_curve || {};
+    const aging = (pos) => rosterPlayers.filter(p => p.ranked && p.ranked.pos === pos
+      && p.sleeper.age && curves[pos]
+      && p.sleeper.age >= curves[pos].sell_age
+      && p.ranked.category !== 'cornerstone');
+    const ctx = {
+      stance, archetype, valueTier, surplus, league,
+      rookie_count: rosterPlayers.filter(p => p.ranked?.rookie).length,
+      depreciating: rosterPlayers.filter(p => p.ranked?.subtype === 'depreciating_pillar')
+        .map(p => ({ name: p.sleeper.name, age: p.sleeper.age })),
+      aging_rb: aging('RB').map(p => ({ name: p.sleeper.name, age: p.sleeper.age })),
+      aging_wr: aging('WR').map(p => ({ name: p.sleeper.name, age: p.sleeper.age })),
+      aging_count: ['QB','RB','WR','TE'].reduce((n, pos) => n + aging(pos).length, 0),
+      te_breakout: rosterPlayers.filter(p => p.ranked && p.ranked.pos === 'TE'
+        && p.sleeper.age >= 25 && p.sleeper.age <= 27 && p.ranked.category === 'foundational')
+        .map(p => ({ name: p.sleeper.name, age: p.sleeper.age })),
+    };
+    const out = [];
+    for (const rule of window.STRATEGY.coaching_tips) {
+      try {
+        if (rule.when(ctx)) out.push(rule.text(ctx));
+      } catch (e) { /* skip */ }
+    }
+    return out;
+  }
+
   function topPriorities(rp, lg, valueTier, archetype) {
     const out = [];
     const grades = {
@@ -1480,6 +1526,24 @@
         h('div', { class:'priority-text' }, p.text),
       ))
     ));
+
+    // ===== Coaching Tips (strategy.js context-aware rules) =====
+    const coachingTips = evaluateCoachingTips({
+      rosterPlayers: rp, league: lg,
+      stance: stanceOf(valueTier.tier, valueArchetype.tag),
+      archetype: rosterArchetype.tag,
+      valueTier: valueTier.tier,
+      surplus: rosterSurplusShortage(rp, lg),
+    });
+    if (coachingTips.length) {
+      main.appendChild(h('h2', { class:'section-title' }, 'Coaching Tips'));
+      main.appendChild(h('div', { class:'priorities' },
+        ...coachingTips.slice(0, 4).map(t => h('div', { class:'priority-card', style:{ borderLeftColor:'var(--blue)' } },
+          h('div', { class:'priority-icon', style:{ color:'var(--blue)' } }, '◆'),
+          h('div', { class:'priority-text' }, t),
+        ))
+      ));
+    }
 
     // ===== Buys / Sells / Market gauge =====
     main.appendChild(h('h2', { class:'section-title' }, 'Recommended Trade Activity'));
