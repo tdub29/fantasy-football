@@ -1399,6 +1399,26 @@
         && (p.ranked.category === 'mainstay' || p.ranked.category === 'productive_vet'
             || (p.ranked.category === 'upside_premier' && p.ranked.tier === 'B'))
       ).length >= 2,
+      // QB-skill same-team stacks: QB + WR/TE on the same NFL team. Each
+      // pair becomes a stack candidate.
+      stack_pairs: (() => {
+        const qbs = rosterPlayers.filter(p => p.ranked?.pos === 'QB' && p.ranked.team);
+        const skills = rosterPlayers.filter(p => ['WR','TE'].includes(p.ranked?.pos) && p.ranked.team);
+        const pairs = [];
+        for (const qb of qbs) {
+          for (const sk of skills) {
+            if (qb.ranked.team === sk.ranked.team) {
+              pairs.push({
+                qb: qb.sleeper.name,
+                skill: sk.sleeper.name,
+                skill_pos: sk.ranked.pos,
+                team: qb.ranked.team,
+              });
+            }
+          }
+        }
+        return pairs;
+      })(),
     };
     const out = [];
     for (const rule of window.STRATEGY.coaching_tips) {

@@ -142,6 +142,14 @@ window.STRATEGY = {
       when: (ctx) => ctx.weak_class_warning,
       text: () => `2026 rookie class is shallow past 1.07 per Domain. Past 1.06, picks are throwins. Don't pay 1QB-A prices for late 1sts.`
     },
+    {
+      id: "qb-wr-stack",
+      when: (ctx) => ctx.stack_pairs?.length >= 1,
+      text: (ctx) => {
+        const s = ctx.stack_pairs[0];
+        return `QB-${s.skill_pos} stack on roster: ${s.qb} + ${s.skill}. Stacks lift ceiling but raise variance. In head-to-head dynasty, this hurts your floor; consider trading one side for diversification unless you're ELITE-tier.`;
+      }
+    },
   ],
 
   // Rebuild timeline (RotoWire 3-year arc applied + author's actual results).
@@ -232,5 +240,7 @@ window.STRATEGY = {
     "Don't pay for fantasy production that's 40%+ touchdown-derived. Variance will eat the gain.",
     "Once a rebuild starts, sell aggressively in Year 1, restock in Year 2, reassess Year 3.",
     "Most fantasy managers try to make one last run after the one last run. Don't.",
+    "QB-WR same-team stacks raise ceiling but increase variance. In head-to-head dynasty, prefer diversification unless your roster is ELITE-tier.",
+    "Top-4 QB performance has 40% probability of top-4 WR1 performance. Useful in best-ball; risky in head-to-head.",
   ],
 };
