@@ -16,3 +16,6 @@ test-routes.cjs
 t.cjs
 t2.cjs
 test-*.cjs
+
+site/_shot.py
+site/_shots/

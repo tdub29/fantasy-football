@@ -682,10 +682,11 @@ textarea { resize: vertical; min-height: 80px; }
 }
 .slot-bar-row {
   display: grid;
-  grid-template-columns: 60px minmax(0, 1fr);
+  /* slot label | name | posrank chip | track-area | grade */
+  grid-template-columns: 56px minmax(0, 1fr) auto minmax(140px, 320px) 38px;
   align-items: center;
   gap: 12px;
-  padding: 4px 6px;
+  padding: 5px 8px;
   border-radius: 6px;
   cursor: default;
   transition: background 100ms ease-out;
@@ -693,61 +694,50 @@ textarea { resize: vertical; min-height: 80px; }
 }
 .slot-bar-row.clickable { cursor: pointer; }
 .slot-bar-row.clickable:hover { background: var(--bg-2); }
+.slot-bar-trackbox {
+  display: flex; justify-content: flex-end; align-items: center;
+  height: 14px;
+}
 .slot-bar-track {
   position: relative;
-  height: 26px;
+  height: 14px;
   background: var(--bg-3);
-  border-radius: 5px;
+  border-radius: 4px;
   overflow: hidden;
-  /* Track sits at far right of its column. The width style on the
-     element itself shrinks the channel for low-importance slots, while
-     left margin auto pushes it to the right edge so all rows share a
-     consistent right anchor. */
-  margin-left: auto;
-  display: flex;
-  align-items: center;
 }
 .slot-bar-fill {
   position: absolute; left: 0; top: 0; bottom: 0;
-  border-radius: 5px;
+  border-radius: 4px;
   transition: width 360ms ease-out;
 }
-.slot-bar-content {
-  position: relative;
-  display: flex; align-items: center; gap: 8px;
-  width: 100%;
-  padding: 0 10px;
-  z-index: 1;
-}
 .slot-bar-name {
-  flex: 1 1 auto;
   min-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   color: var(--fg-0);
-  font-size: 0.86rem;
+  font-size: 0.88rem;
   font-weight: 500;
-  /* Text shadow keeps name readable when it sits over the colored fill. */
-  text-shadow: 0 1px 2px rgba(0,0,0,0.55);
 }
+.slot-bar-nameitem { cursor: pointer; }
+.slot-bar-nameitem:hover { color: var(--accent-hot); }
+.slot-bar-namesep { color: var(--fg-3); }
 .slot-bar-row:not(.clickable) .slot-bar-name { color: var(--fg-1); font-weight: 400; }
 .slot-bar-grade {
-  flex: 0 0 auto;
   font-size: 0.92rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.55);
+  text-align: right;
 }
 .slot-bar-posrank {
-  flex: 0 0 auto;
-  font-size: 0.7rem;
-  background: rgba(0,0,0,0.35);
-  color: var(--fg-1);
+  font-size: 0.68rem;
+  background: var(--bg-3);
+  color: var(--fg-2);
   padding: 1px 6px;
   border-radius: 3px;
   font-weight: 600;
   letter-spacing: 0.04em;
+  white-space: nowrap;
 }
 /* Hover-revealed detail moves into the bar content slot when small */
 .slot-bar-detail {
@@ -811,33 +801,14 @@ textarea { resize: vertical; min-height: 80px; }
   font-size: 0.74rem;
 }
 .slot-bars-legend .sep { color: var(--fg-3); padding: 0 4px; }
-.slot-bar-track {
-  display: inline-block;
-  height: 8px;
-  background: var(--bg-3);
-  border-radius: 4px;
-  overflow: hidden;
-  flex-shrink: 0;
-  position: relative;
+/* Tick on the track marking the threshold for a passing grade (7.0). */
+.slot-bar-tick {
+  position: absolute; top: -2px; bottom: -2px;
+  width: 2px; background: var(--fg-2); opacity: 0.55;
+  border-radius: 1px;
 }
-.slot-bar-fill {
-  display: block;
-  height: 100%;
-  border-radius: 4px;
-  transition: width 320ms ease-out;
-}
-.slot-bar-grade {
-  font-size: 0.92rem;
-  font-weight: 700;
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
 @media (max-width: 720px) {
-  .slot-bar-row { grid-template-columns: 44px minmax(0, 1fr) 64px 36px; gap: 8px; }
-  .slot-bar-track { width: 64px !important; }
-  .slot-bar-detail { display: none; }
-  .slot-bar-player { font-size: 0.82rem; }
+  .slot-bar-row { grid-template-columns: 44px minmax(0, 1fr) auto 100px 32px; gap: 8px; }
 }
 .grade-cell { display:flex; flex-direction:column; align-items:center; gap: 6px; }
 .grade-svg-wrap { position: relative; width: 90px; height: 90px; }

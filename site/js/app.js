@@ -1662,7 +1662,20 @@
       WR: gradePosition(rp, 'WR', lg), TE: gradePosition(rp, 'TE', lg),
       Bench: gradeBench(rp, lg), Draft: gradeDraftCapital(r, leagueId),
     };
-    const overall = (grades.QB*1.0 + grades.RB*1.1 + grades.WR*1.2 + grades.TE*0.8 + grades.Bench*0.5 + grades.Draft*0.4) / 5.0;
+    // Compute slot result early so Overall Grade weights starting slots by
+    // their PPG impact (a great QB1 should outweigh a mediocre FLEX4).
+    const slotResult = gradeLineupSlots(rp, lg);
+    const slotWeighted = (() => {
+      let num = 0, den = 0;
+      for (const s of slotResult.slots) {
+        const w = slotPPG(s.slot, lg);
+        num += s.grade * w; den += w;
+      }
+      return den ? num / den : 0;
+    })();
+    // Overall = 75% PPG-weighted lineup + 15% bench + 10% draft capital.
+    // Lineup is what wins, bench is depth insurance, picks are future equity.
+    const overall = slotWeighted * 0.75 + grades.Bench * 0.15 + grades.Draft * 0.10;
     const buysSells = suggestBuysSells(rp, lg);
     const priorities = topPriorities(rp, lg, valueTier, rosterArchetype);
 
@@ -1685,12 +1698,8 @@
       kpiCard('Strength', fmt.decimal(s.total,1), `Rank #${myRank} of ${lg.total_rosters}`),
       kpiCard('Cornerstones', String(cs), 'Premier insulated assets'),
       kpiCard('Foundational', String(fnd), 'Building blocks'),
-      kpiCard('Overall Grade', fmt.decimal(overall, 1) + '/10', 'Composite of position grades'),
+      kpiCard('Overall Grade', fmt.decimal(overall, 1) + '/10', 'Lineup PPG-weighted + bench + picks'),
     ));
-
-    // ===== Lineup Slots (slot-by-slot grades) =====
-    // Compute first so we can render the per-slot circles.
-    const slotResult = gradeLineupSlots(rp, lg);
 
     // ===== Per-slot grade circles =====
     // Each starting lineup slot gets its own circular grade. The league's
@@ -1804,8 +1813,9 @@
         slotBarList.appendChild(h('div', { class:'slot-bar-divider' }, 'depth'));
         dividerInserted = true;
       }
+      // Track width = how much that slot matters (PPG impact). Fill % = grade.
       const ratio = ppgs[i] / maxPPG;
-      const trackWidth = Math.round(120 + ratio * 260); // 120-380px, larger min so labels fit
+      const trackPct = Math.round(25 + ratio * 75);  // 25-100% of track-area
       const fillPct = Math.max(2, Math.min(100, s.grade * 10));
       const color = s.grade >= 7.5 ? 'var(--green)'
                   : s.grade >= 5.5 ? 'var(--amber)'
@@ -1818,13 +1828,16 @@
       const onClick = isClickable ? () => openPlayerDetail(s.player) : null;
       const titleText = `${s.slot}: ${typeof s.player === 'string' ? s.player : s.player.join(', ')}. Grade ${s.grade.toFixed(1)}/10${detail ? ` (value ${detail})` : ''}.`;
 
-      // Inside-bar label content. For FLEX DEP, render player names as chips.
-      const inside = Array.isArray(s.player)
+      // Name column (separate from bar — readable on solid bg).
+      const nameCol = Array.isArray(s.player)
         ? h('span', { class:'slot-bar-name' },
-            ...s.player.map(name => h('span', {
-              class:'slot-bar-namechip',
-              onclick: (e) => { e.stopPropagation(); openPlayerDetail(name); },
-            }, name)))
+            ...s.player.flatMap((name, idx) => [
+              idx > 0 ? h('span', { class:'slot-bar-namesep' }, ' · ') : null,
+              h('span', {
+                class:'slot-bar-nameitem',
+                onclick: (e) => { e.stopPropagation(); openPlayerDetail(name); },
+              }, name),
+            ]).filter(Boolean))
         : h('span', { class:'slot-bar-name' }, s.player);
 
       const posRankChip = !Array.isArray(s.player) ? buildPosRankChip(s.player) : null;
@@ -1835,14 +1848,15 @@
         onclick: onClick,
       },
         h('span', { class:'slot-bar-label' }, s.slot),
-        h('span', { class:'slot-bar-track', style:{ width: trackWidth + 'px' } },
-          h('span', { class:'slot-bar-fill', style:{ width: fillPct + '%', background: color } }),
-          h('span', { class:'slot-bar-content' },
-            inside,
-            posRankChip,
-            h('span', { class:'slot-bar-grade', style:{ color } }, s.grade.toFixed(1)),
+        nameCol,
+        posRankChip || h('span'),
+        h('span', { class:'slot-bar-trackbox' },
+          h('span', { class:'slot-bar-track', style:{ width: trackPct + '%' }, title:'Tick = passing-grade threshold (7.0)' },
+            h('span', { class:'slot-bar-fill', style:{ width: fillPct + '%', background: color } }),
+            h('span', { class:'slot-bar-tick', style:{ left: '70%' } }),
           ),
         ),
+        h('span', { class:'slot-bar-grade', style:{ color } }, s.grade.toFixed(1)),
       ));
     });
     main.appendChild(slotBarList);
@@ -1854,37 +1868,7 @@
       h('span', null, 'Click a row for player detail.'),
     ));
 
-    // ===== Slot Detail table (transparency on the math behind each circle) =====
-    if (slotResult.slots.length) {
-      main.appendChild(h('h2', { class:'section-title' }, 'Slot Detail'));
-      main.appendChild(h('div', { class:'card', style:{ padding:0, overflow:'hidden' } },
-        h('table', { class:'data' },
-          h('thead', null, h('tr', null,
-            h('th', null, 'Slot'),
-            h('th', null, 'Player'),
-            h('th', { class:'right' }, 'Value'),
-            h('th', { class:'right' }, 'Slot Reference'),
-            h('th', { class:'right' }, 'Grade'),
-          )),
-          h('tbody', null, ...slotResult.slots.map(s => {
-            const color = s.grade >= 7.5 ? 'var(--green)'
-                        : s.grade >= 5.5 ? 'var(--amber)'
-                        : s.grade >= 3.5 ? 'var(--cat-vet)'
-                        : 'var(--red)';
-            return h('tr', null,
-              h('td', null, h('strong', null, s.slot)),
-              h('td', null, s.player === '(empty)' ? h('span', { class:'muted' }, '(empty)') : s.player),
-              h('td', { class:'right tnum' }, fmt.decimal(s.myVal, 1)),
-              h('td', { class:'right tnum muted' }, fmt.decimal(s.refVal, 1)),
-              h('td', { class:'right tnum', style:{ color, fontWeight:700 } }, fmt.decimal(s.grade, 1)),
-            );
-          }))
-        )
-      ));
-      main.appendChild(h('div', { class:'tip', style:{ marginTop:'8px' } },
-        `Each slot is graded against the n-th-best player at that slot rank in dynasty (e.g., RB2 vs the 2nd-best RB available across all rankings). FLEX is graded vs the next-best FLEX-eligible after league dedicated slots. Overall slot grade: ${slotResult.overall.toFixed(1)}/10.`
-      ));
-    }
+    // (Slot Detail table removed: bars carry the data; the table was redundant.)
 
     // ===== Lineup Composition (startable surplus / shortage) =====
     const ss = rosterSurplusShortage(rp, lg);
@@ -2596,6 +2580,33 @@
       return true;
     };
 
+    // Synthesize draft-pick assets so downtier scenarios can offer picks
+    // (a star vet for a starter + a future 1st is the canonical rebuild move).
+    const pickValues = (window.STRATEGY && window.STRATEGY.pick_values_1qb) || {};
+    const sfBumps = (window.STRATEGY && window.STRATEGY.pick_sf_premium) || {};
+    const nextYear = String(new Date().getFullYear() + 1);
+    const pickBuckets = [
+      ['future_1.early', `${nextYear} Early 1st`],
+      ['future_1.mid',   `${nextYear} Mid 1st`],
+      ['future_1.late',  `${nextYear} Late 1st`],
+      ['future_2.early', `${nextYear} Early 2nd`],
+      ['future_2.mid',   `${nextYear} Mid 2nd`],
+      ['future_2.late',  `${nextYear} Late 2nd`],
+    ];
+    const pickAssets = pickBuckets.map(([key, label]) => {
+      let v = pickValues[key] || 5;
+      if (lg.is_superflex) v += (sfBumps[key.replace('future_','') ] || 0);
+      // ktcValue-scale for tierValue compatibility (KTC range ~0-10000).
+      return {
+        name: label, pos: 'PICK', team: nextYear, age: null,
+        category: 'pick', tier: '-', ktcValue: Math.round(v * 100),
+        ktcAdp: null, _isPick: true,
+      };
+    });
+
+    // Augmented candidate pool — players + picks.
+    const allWithPicks = idx.all.concat(pickAssets);
+
     // Strongest = biggest surplus, Weakest = biggest shortage
     const sorted = Object.entries(surplus).sort((a,b) => b[1].surplus - a[1].surplus);
     const strongPos = sorted[0][0];                   // most surplus
@@ -2634,16 +2645,32 @@
         // Find 2-player packages around 0.45-0.65x of star's value, prioritizing
         // the user's shortage positions.
         const shortagePositions = Object.keys(surplus).filter(p => surplus[p].surplus < 0);
-        const candidates = idx.all.filter(c =>
+        const players = idx.all.filter(c =>
           !isOwnedByMe(c)
           && c.pos !== rp.ranked.pos
           && (shortagePositions.length === 0 || shortagePositions.includes(c.pos))
           && isCandidateAllowed(rp.ranked, c)
-          && tierValue(c, lg) > val * 0.40 && tierValue(c, lg) < val * 0.65
-        ).slice(0, 8);
+          && tierValue(c, lg) > val * 0.25 && tierValue(c, lg) < val * 0.75
+        ).slice(0, 16);
+        // Picks are kept separate so they don't get crowded out by player slice.
+        const picks = pickAssets.slice().sort((a,b) => tierValue(b,lg) - tierValue(a,lg));
         const options = [];
-        for (let i = 0; i + 1 < candidates.length && options.length < 3; i += 2) {
-          options.push({ get: [candidates[i], candidates[i+1]] });
+        // Prefer "starter + future pick" packages (canonical rebuild move).
+        for (const pk of picks) {
+          if (options.length >= 2) break;
+          const remainder = val - tierValue(pk, lg);
+          const pl = players.find(p =>
+            tierValue(p, lg) >= remainder * 0.75 &&
+            tierValue(p, lg) <= remainder * 1.25 &&
+            !options.some(o => o.get.includes(p))
+          );
+          if (pl) options.push({ get: [pl, pk] });
+        }
+        // Fill remaining slots with player + player packages.
+        const usedPlayers = new Set(options.flatMap(o => o.get));
+        const remainingPlayers = players.filter(p => !usedPlayers.has(p));
+        for (let i = 0; i + 1 < remainingPlayers.length && options.length < 3; i += 2) {
+          options.push({ get: [remainingPlayers[i], remainingPlayers[i+1]] });
         }
         if (options.length) downtier.push({ give: [rp.ranked], options });
       }
@@ -2697,8 +2724,11 @@
       const ranked = sc.options.map(o => {
         const getVal = o.get.reduce((s,p)=> s + tierValue(p, lg), 0);
         const fairness = giveVal > 0 ? Math.round((getVal / giveVal) * 100) : 0;
-        return { o, getVal, fairness };
-      }).sort((a,b) => b.fairness - a.fairness).slice(0, 3);
+        // Realism score: closest to 105% (a slight win) is best. Trades >125%
+        // are unrealistic (no one gives that much away), trades <90% are bad.
+        const realism = -Math.abs(fairness - 105);
+        return { o, getVal, fairness, realism };
+      }).sort((a,b) => b.realism - a.realism).slice(0, 3);
 
       const giveBlock = h('div', { class:'trade-give' },
         h('div', { class:'trade-give-head' },
