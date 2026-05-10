@@ -1697,30 +1697,81 @@
     // roster_positions drives the slot list (QB1, RB1, RB2, WR1, WR2, TE1,
     // FLEX1-N, SF, IDP_FLEX 1-N etc). Bench depth + Draft Capital cap the row.
     main.appendChild(h('h2', { class:'section-title' }, 'Slot Grades'));
-    // Compute "flex depth" = the next 2 best lineup-eligible players after
-    // every starting slot is filled. Gives a quick look at injury insurance.
+    // Position-specific depth: QB Depth (next best QB), TE Depth (next best TE),
+    // FLEX Depth (next best RB/WR/TE). Each gives a quick look at injury insurance
+    // for the part of the lineup that matters most.
     const benchDepth = (() => {
       const used = new Set(slotResult.slots
         .filter(s => s.player !== '(empty)')
         .map(s => s.player));
-      const remaining = rp.filter(p => p.ranked && !used.has(p.sleeper.name)
-        && ['QB','RB','WR','TE'].includes(p.ranked.pos))
-        .sort((a, b) => tierValue(b.ranked, lg) - tierValue(a.ranked, lg))
-        .slice(0, 2);
       const idx = rankIndex();
       const flexCount = (lg.roster_positions || []).filter(p => p === 'FLEX').length;
-      // Reference for "5th-best FLEX-eligible after starters" depth
-      const flexEligible = idx.all.filter(x => ['RB','WR','TE'].includes(x.pos))
-        .sort((a, b) => tierValue(b, lg) - tierValue(a, lg));
-      const depthRef = flexEligible[(lg.total_rosters || 10) * 3 + flexCount + 2];
-      const refVal = depthRef ? tierValue(depthRef, lg) : 1;
-      return remaining.map((p, i) => ({
-        slot: `Depth ${i + 1}`,
-        player: p.sleeper.name,
-        myVal: tierValue(p.ranked, lg),
-        refVal,
-        grade: refVal > 0 ? Math.min(10, Math.round((tierValue(p.ranked, lg) / refVal) * 10 * 10) / 10) : 0,
-      }));
+      const totalTeams = lg.total_rosters || 10;
+
+      const bestUnusedAtPos = (positions) => {
+        return rp.filter(p => p.ranked && positions.includes(p.ranked.pos) && !used.has(p.sleeper.name))
+          .sort((a, b) => tierValue(b.ranked, lg) - tierValue(a.ranked, lg))[0];
+      };
+      // Reference values: roughly the n-th-best player at the position
+      // representing where dynasty depth-buyer attention drops off.
+      const nthAtPos = (pos, n) => {
+        const sorted = idx.all.filter(x => x.pos === pos);
+        return sorted[n] ? tierValue(sorted[n], lg) : 1;
+      };
+      const flexRef = (() => {
+        const flexEligible = idx.all.filter(x => ['RB','WR','TE'].includes(x.pos))
+          .sort((a, b) => tierValue(b, lg) - tierValue(a, lg));
+        // ~3rd best FLEX-eligible past dedicated league slots
+        return flexEligible[totalTeams * 3 + flexCount + 2];
+      })();
+
+      const out = [];
+      // Backup QB = next QB after all starting QB slots filled
+      const backupQb = bestUnusedAtPos(['QB']);
+      if (backupQb) {
+        const refV = nthAtPos('QB', totalTeams);
+        out.push({
+          slot: 'Backup QB',
+          player: backupQb.sleeper.name,
+          myVal: tierValue(backupQb.ranked, lg),
+          refVal: refV,
+          grade: refV > 0 ? Math.min(10, Math.round(tierValue(backupQb.ranked, lg) / refV * 10 * 10) / 10) : 0,
+        });
+      }
+      // Backup TE = next TE after starting TE
+      const backupTe = bestUnusedAtPos(['TE']);
+      if (backupTe) {
+        const refV = nthAtPos('TE', totalTeams);
+        out.push({
+          slot: 'Backup TE',
+          player: backupTe.sleeper.name,
+          myVal: tierValue(backupTe.ranked, lg),
+          refVal: refV,
+          grade: refV > 0 ? Math.min(10, Math.round(tierValue(backupTe.ranked, lg) / refV * 10 * 10) / 10) : 0,
+        });
+      }
+      // FLEX Depth = average of the next 3 best unused FLEX-eligible (RB/WR/TE),
+      // excluding the player already counted as Backup TE so we don't double-count.
+      const teDepthName = backupTe ? backupTe.sleeper.name : null;
+      const flexCandidates = rp.filter(p => p.ranked
+          && ['RB','WR','TE'].includes(p.ranked.pos)
+          && !used.has(p.sleeper.name)
+          && p.sleeper.name !== teDepthName)
+        .sort((a, b) => tierValue(b.ranked, lg) - tierValue(a.ranked, lg))
+        .slice(0, 3);
+      if (flexCandidates.length) {
+        const avgVal = flexCandidates.reduce((s, p) => s + tierValue(p.ranked, lg), 0) / flexCandidates.length;
+        const refV = flexRef ? tierValue(flexRef, lg) : 1;
+        const names = flexCandidates.map(p => p.sleeper.name).join(', ');
+        out.push({
+          slot: 'FLEX Depth',
+          player: names + (flexCandidates.length < 3 ? ` (only ${flexCandidates.length})` : ''),
+          myVal: avgVal,
+          refVal: refV,
+          grade: refV > 0 ? Math.min(10, Math.round(avgVal / refV * 10 * 10) / 10) : 0,
+        });
+      }
+      return out;
     })();
     // Find the player attached to each slot for the bar label
     const slotPlayer = (s) => s.player && s.player !== '(empty)' ? s.player : '(empty)';
@@ -2093,6 +2144,7 @@
       'FLEX1': 13, 'FLEX2': 12, 'FLEX3': 11, 'FLEX4': 10,
       'IDP1': 7, 'IDP2': 6, 'IDP3': 5,
       'LB1': 8, 'LB2': 7, 'DB1': 6, 'DL1': 6,
+      'Backup QB': 6, 'Backup TE': 3, 'FLEX Depth': 7,
       'Depth 1': 5, 'Depth 2': 4,
       'Bench': 2,
       'Draft': 2,
