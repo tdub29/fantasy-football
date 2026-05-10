@@ -1825,16 +1825,10 @@
       return h('span', { class:'slot-bar-posrank tnum', title:`Dynasty position rank` }, `${entry.pos}${entry._posRank}`);
     };
 
-    const slotBarList = h('div', { class:'slot-bars' });
-    let dividerInserted = false;
-    allBars.forEach((s, i) => {
-      if (s.isDepth && !dividerInserted) {
-        slotBarList.appendChild(h('div', { class:'slot-bar-divider' }, 'depth'));
-        dividerInserted = true;
-      }
+    const buildSlotRow = (s, i) => {
       // Track width = how much that slot matters (PPG impact). Fill % = grade.
       const ratio = ppgs[i] / maxPPG;
-      const trackPct = Math.round(25 + ratio * 75);  // 25-100% of track-area
+      const trackPct = Math.round(25 + ratio * 75);
       const fillPct = Math.max(2, Math.min(100, s.grade * 10));
       const color = s.grade >= 7.5 ? 'var(--green)'
                   : s.grade >= 5.5 ? 'var(--amber)'
@@ -1847,7 +1841,6 @@
       const onClick = isClickable ? () => openPlayerDetail(s.player) : null;
       const titleText = `${s.slot}: ${typeof s.player === 'string' ? s.player : s.player.join(', ')}. Grade ${s.grade.toFixed(1)}/10${detail ? ` (value ${detail})` : ''}.`;
 
-      // Name column (separate from bar — readable on solid bg).
       const nameCol = Array.isArray(s.player)
         ? h('span', { class:'slot-bar-name' },
             ...s.player.flatMap((name, idx) => [
@@ -1861,7 +1854,7 @@
 
       const posRankChip = !Array.isArray(s.player) ? buildPosRankChip(s.player) : null;
 
-      slotBarList.appendChild(h('div', {
+      return h('div', {
         class: 'slot-bar-row' + (isClickable ? ' clickable' : ''),
         title: titleText,
         onclick: onClick,
@@ -1876,9 +1869,21 @@
           ),
         ),
         h('span', { class:'slot-bar-grade', style:{ color } }, s.grade.toFixed(1)),
-      ));
+      );
+    };
+
+    // Two side-by-side panels: starters on the left, depth on the right.
+    const startersPanel = h('div', { class:'slot-bars slot-bars-panel' },
+      h('div', { class:'slot-bars-heading' }, 'Starters'),
+    );
+    const depthPanel = h('div', { class:'slot-bars slot-bars-panel' },
+      h('div', { class:'slot-bars-heading' }, 'Depth'),
+    );
+    allBars.forEach((s, i) => {
+      const row = buildSlotRow(s, i);
+      (s.isDepth ? depthPanel : startersPanel).appendChild(row);
     });
-    main.appendChild(slotBarList);
+    main.appendChild(h('div', { class:'slot-bars-grid' }, startersPanel, depthPanel));
     main.appendChild(h('div', { class:'slot-bars-legend tip' },
       h('span', null, 'Bar length = expected PPG impact of the slot.'),
       h('span', { class:'sep' }, '·'),
