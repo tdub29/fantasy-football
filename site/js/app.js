@@ -1776,10 +1776,10 @@
     // Find the player attached to each slot for the bar label
     const slotPlayer = (s) => s.player && s.player !== '(empty)' ? s.player : '(empty)';
     const allBars = [
-      ...slotResult.slots.map(s => ({ slot: s.slot, grade: s.grade, player: slotPlayer(s) })),
-      ...benchDepth.map(s => ({ slot: s.slot, grade: s.grade, player: s.player })),
-      { slot: 'Bench', grade: gradeBench(rp, lg), player: 'roster depth' },
-      { slot: 'Draft', grade: gradeDraftCapital(r, leagueId), player: 'future picks' },
+      ...slotResult.slots.map(s => ({ slot: s.slot, grade: s.grade, player: slotPlayer(s), myVal: s.myVal, refVal: s.refVal })),
+      ...benchDepth.map(s => ({ slot: s.slot, grade: s.grade, player: s.player, myVal: s.myVal, refVal: s.refVal })),
+      { slot: 'Bench', grade: gradeBench(rp, lg), player: 'roster depth', myVal: null, refVal: null },
+      { slot: 'Draft', grade: gradeDraftCapital(r, leagueId), player: 'future picks', myVal: null, refVal: null },
     ];
     // Track widths scale by PPG importance: high-impact slots get the
     // widest tracks, depth/bench shrink. Track minimum keeps bars readable.
@@ -1794,12 +1794,18 @@
                     : s.grade >= 5.5 ? 'var(--amber)'
                     : s.grade >= 3.5 ? '#fb923c'
                     : 'var(--red)';
-        return h('div', { class:'slot-bar-row', title: `${s.slot} — ${s.player} — grade ${s.grade.toFixed(1)} of 10 (slot weight ~${ppgs[i]} PPG)` },
+        // Use the source's myVal/refVal where present so hover reveals the
+        // exact math (your value vs the slot reference dynasty value).
+        const detail = (s.myVal != null && s.refVal != null)
+          ? `${fmt.decimal(s.myVal, 1)} of ${fmt.decimal(s.refVal, 1)}`
+          : `~${ppgs[i]} PPG`;
+        return h('div', { class:'slot-bar-row', title: `${s.slot}: ${s.player}. Grade ${s.grade.toFixed(1)} of 10. Value vs slot ref: ${detail}.` },
           h('span', { class:'slot-bar-label' }, s.slot),
           h('span', { class:'slot-bar-player' }, s.player),
           h('span', { class:'slot-bar-track', style:{ width: trackWidth + 'px' } },
             h('span', { class:'slot-bar-fill', style:{ width: fillPct + '%', background: color } }),
           ),
+          h('span', { class:'slot-bar-detail' }, detail),
           h('span', { class:'slot-bar-grade tnum', style:{ color } }, s.grade.toFixed(1)),
         );
       })
