@@ -1680,25 +1680,44 @@
     const priorities = topPriorities(rp, lg, valueTier, rosterArchetype);
 
     // ===== Top Banner: Value Tier + Archetypes + Outlook =====
-    main.appendChild(h('div', { class:'blueprint-banner' },
-      h('div', { class:`value-tier vt-${valueTier.tier.toLowerCase()}` },
-        h('div', { class:'vt-label' }, 'Roster Value Tier'),
-        h('div', { class:'vt-value' }, valueTier.tier),
-        h('div', { class:'vt-desc' }, valueTier.desc)
+    // ===== Roster Blueprint (one-row) =====
+    // Distilled: tier + 3 archetypes + 4 stats collapsed into a single banner.
+    // Tier anchors left; three numeric stats sit in tabular columns; the
+    // three archetype chips run as a meta-line under the tier label.
+    const overallColor = overall >= 7.5 ? 'var(--green)'
+                       : overall >= 5.5 ? 'var(--amber)'
+                       : overall >= 3.5 ? '#fb923c'
+                       : 'var(--red)';
+    main.appendChild(h('div', { class:'blueprint-row' },
+      h('div', { class:`br-tier vt-${valueTier.tier.toLowerCase()}` },
+        h('div', { class:'br-eyebrow' }, 'Roster Value Tier'),
+        h('div', { class:'br-tier-value' }, valueTier.tier),
+        h('div', { class:'br-tier-desc' }, valueTier.desc),
+        h('div', { class:'br-arch-line' },
+          h('span', { class:'br-arch', title: valueArchetype.desc }, h('span', { class:'br-arch-tag' }, valueArchetype.tag), ' value'),
+          h('span', { class:'br-arch-sep' }, '·'),
+          h('span', { class:'br-arch', title: rosterArchetype.desc }, h('span', { class:'br-arch-tag' }, rosterArchetype.tag), ' roster'),
+          h('span', { class:'br-arch-sep' }, '·'),
+          h('span', { class:'br-arch', title: outlook.desc }, h('span', { class:'br-arch-tag' }, outlook.tag), ' outlook'),
+        ),
       ),
-      h('div', { class:'archetype-list' },
-        archetypeChip('Value Archetype', valueArchetype.tag, valueArchetype.desc),
-        archetypeChip('Roster Archetype', rosterArchetype.tag, rosterArchetype.desc),
-        archetypeChip('2-Year Outlook', outlook.tag, outlook.desc),
-      )
-    ));
-
-    // ===== Stat strip =====
-    main.appendChild(h('div', { class:'card-grid cols-4', style:{ marginTop:'14px' } },
-      kpiCard('Strength', fmt.decimal(s.total,1), `Rank #${myRank} of ${lg.total_rosters}`),
-      kpiCard('Cornerstones', String(cs), 'Premier insulated assets'),
-      kpiCard('Foundational', String(fnd), 'Building blocks'),
-      kpiCard('Overall Grade', fmt.decimal(overall, 1) + '/10', 'Lineup PPG-weighted + bench + picks'),
+      h('div', { class:'br-stat' },
+        h('div', { class:'br-stat-num tnum' }, fmt.decimal(s.total,1)),
+        h('div', { class:'br-eyebrow' }, 'Strength'),
+        h('div', { class:'br-stat-sub' }, `Rank #${myRank} of ${lg.total_rosters}`),
+      ),
+      h('div', { class:'br-stat' },
+        h('div', { class:'br-stat-num tnum' }, `${cs} / ${fnd}`),
+        h('div', { class:'br-eyebrow' }, 'Cornerstones / Foundational'),
+        h('div', { class:'br-stat-sub' }, 'Premier + building blocks'),
+      ),
+      h('div', { class:'br-stat br-stat-grade' },
+        h('div', { class:'br-stat-num tnum', style:{ color: overallColor } }, fmt.decimal(overall, 1) + '/10'),
+        h('div', { class:'br-eyebrow' }, 'Overall Grade'),
+        h('div', { class:'br-grade-bar' },
+          h('div', { class:'br-grade-fill', style:{ width: Math.max(2, overall*10) + '%', background: overallColor } }),
+        ),
+      ),
     ));
 
     // ===== Per-slot grade circles =====
