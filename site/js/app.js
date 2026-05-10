@@ -1728,8 +1728,12 @@
       { slot: 'Bench', grade: gradeBench(rp, lg) },
       { slot: 'Draft', grade: gradeDraftCapital(r, leagueId) },
     ];
+    // Compute slot weights (normalized 0..1 by max PPG in this league's
+    // lineup) so QB1 and RB1 visually dominate while depth/bench shrinks.
+    const ppgs = allCircles.map(s => slotPPG(s.slot, lg));
+    const maxPPG = Math.max(...ppgs, 1);
     main.appendChild(h('div', { class:'grade-grid' },
-      ...allCircles.map(s => gradeCircle(s.slot, s.grade))
+      ...allCircles.map((s, i) => gradeCircle(s.slot, s.grade, ppgs[i] / maxPPG))
     ));
 
     // ===== Slot Detail table (transparency on the math behind each circle) =====
@@ -2056,29 +2060,63 @@
       h('div', { class:'arch-desc' }, desc),
     );
   }
-  function gradeCircle(label, grade) {
+  // Approximate PPR fantasy points per game contributed by the n-th best
+  // player at a slot, used to size each grade circle proportionally to
+  // lineup impact. Numbers reflect dynasty-startable averages.
+  function slotPPG(label, league) {
+    const isSF = league?.is_superflex;
+    const tep = (league?.scoring?.bonus_rec_te || 0) * 4; // ~4 receptions/game
+    const t = {
+      'QB1': isSF ? 22 : 20,
+      'SF':  18,
+      'RB1': 18, 'RB2': 14,
+      'WR1': 16, 'WR2': 13,
+      'TE1': 9 + tep,
+      'FLEX1': 13, 'FLEX2': 12, 'FLEX3': 11, 'FLEX4': 10,
+      'IDP1': 7, 'IDP2': 6, 'IDP3': 5,
+      'LB1': 8, 'LB2': 7, 'DB1': 6, 'DL1': 6,
+      'Depth 1': 5, 'Depth 2': 4,
+      'Bench': 2,
+      'Draft': 2,
+    };
+    return t[label] != null ? t[label] : 8;
+  }
+
+  function gradeCircle(label, grade, weight = 1) {
     const ns = 'http://www.w3.org/2000/svg';
     const color = grade >= 7.5 ? 'var(--green)' : grade >= 5.5 ? 'var(--amber)' : grade >= 3.5 ? '#fb923c' : 'var(--red)';
+    // Scale the SVG by weight so high-impact slots (QB1, RB1) draw the eye.
+    // Min 0.55 keeps depth circles legible.
+    const scale = Math.max(0.55, Math.min(1.0, weight));
+    const size = Math.round(90 * scale);
+    const cxy = size / 2;
+    const r = Math.round(36 * scale);
+    const sw = Math.max(4, Math.round(7 * scale));
     const pct = Math.max(2, grade*10);
-    const circumference = 2 * Math.PI * 36;
+    const circumference = 2 * Math.PI * r;
     const dash = (pct/100) * circumference;
     const svg = document.createElementNS(ns, 'svg');
-    svg.setAttribute('width','90'); svg.setAttribute('height','90'); svg.setAttribute('viewBox','0 0 90 90');
+    svg.setAttribute('width', String(size));
+    svg.setAttribute('height', String(size));
+    svg.setAttribute('viewBox', `0 0 ${size} ${size}`);
     const bg = document.createElementNS(ns, 'circle');
-    bg.setAttribute('cx','45'); bg.setAttribute('cy','45'); bg.setAttribute('r','36');
-    bg.setAttribute('fill','none'); bg.setAttribute('stroke','var(--bg-3)'); bg.setAttribute('stroke-width','7');
+    bg.setAttribute('cx', String(cxy)); bg.setAttribute('cy', String(cxy)); bg.setAttribute('r', String(r));
+    bg.setAttribute('fill','none'); bg.setAttribute('stroke','var(--bg-3)'); bg.setAttribute('stroke-width', String(sw));
     svg.appendChild(bg);
     const fg = document.createElementNS(ns, 'circle');
-    fg.setAttribute('cx','45'); fg.setAttribute('cy','45'); fg.setAttribute('r','36');
-    fg.setAttribute('fill','none'); fg.setAttribute('stroke', color); fg.setAttribute('stroke-width','7');
+    fg.setAttribute('cx', String(cxy)); fg.setAttribute('cy', String(cxy)); fg.setAttribute('r', String(r));
+    fg.setAttribute('fill','none'); fg.setAttribute('stroke', color); fg.setAttribute('stroke-width', String(sw));
     fg.setAttribute('stroke-linecap','round');
     fg.setAttribute('stroke-dasharray', `${dash} ${circumference}`);
-    fg.setAttribute('transform','rotate(-90 45 45)');
+    fg.setAttribute('transform', `rotate(-90 ${cxy} ${cxy})`);
     svg.appendChild(fg);
+    // Number font also scales with size (capped). This keeps the visual
+    // weight of QB1 visibly larger than Depth.
+    const numSize = Math.round(1.4 * scale * 16); // px, base 22.4px, scaled
     return h('div', { class:'grade-cell' },
-      h('div', { class:'grade-svg-wrap' },
+      h('div', { class:'grade-svg-wrap', style:{ width: size + 'px', height: size + 'px' } },
         svg,
-        h('div', { class:'grade-num', style:{ color } }, grade.toFixed(1))
+        h('div', { class:'grade-num', style:{ color, fontSize: numSize + 'px' } }, grade.toFixed(1))
       ),
       h('div', { class:'grade-label' }, label)
     );
