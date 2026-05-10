@@ -1912,6 +1912,12 @@
       `Startable thresholds use league-wide positional slots (1QB target = ${(targetStartersByPos(lg).QB).toFixed(1)} per team, RB ${(targetStartersByPos(lg).RB).toFixed(1)}, WR ${(targetStartersByPos(lg).WR).toFixed(1)}, TE ${(targetStartersByPos(lg).TE).toFixed(1)}). Surplus ≥ 1 means you have spare startable assets to trade.`
     ));
 
+    // The advice blocks below only fire on the user's own roster. Telling
+    // someone else's team to "sell Cooper Kupp" is irrelevant — what the user
+    // wants on opponent rosters is read-only scouting (slot grades, lineup
+    // comp, roster by position).
+    if (r.is_me) {
+
     // ===== Top Priorities =====
     main.appendChild(h('h2', { class:'section-title' }, 'Top Priorities'));
     main.appendChild(h('div', { class:'priorities' },
@@ -2015,6 +2021,8 @@
         `Your stance: ${stanceLabel}. ${advice}`
       ));
     }
+
+    } // end if (r.is_me) — advice block
 
     // ===== Roster by Position =====
     main.appendChild(h('h2', { class:'section-title' }, 'Roster by Position'));
@@ -3756,6 +3764,105 @@
     const sleeper = window.PLAYERS[sleeperIdFor(name) || ''];
     document.body.appendChild(playerModal(name, ranked, sleeper));
   }
+  // ============================================================
+  // Historical career section (powered by data/history.js)
+  // ============================================================
+  const POS_STAT_COLS = {
+    QB:  [['G','games'], ['Yds','passing_yards'], ['TD','passing_tds'], ['INT','interceptions'], ['Ru Yd','rushing_yards'], ['Ru TD','rushing_tds'], ['FP/G','fp_4pt_ppr_per_g']],
+    RB:  [['G','games'], ['Att','carries'], ['Yds','rushing_yards'], ['TD','rushing_tds'], ['Rec','receptions'], ['Tgt','targets'], ['Rec Yd','receiving_yards'], ['FP/G','fp_ppr_per_g']],
+    WR:  [['G','games'], ['Tgt','targets'], ['Rec','receptions'], ['Yds','receiving_yards'], ['TD','receiving_tds'], ['FP/G','fp_ppr_per_g']],
+    TE:  [['G','games'], ['Tgt','targets'], ['Rec','receptions'], ['Yds','receiving_yards'], ['TD','receiving_tds'], ['FP/G','fp_ppr_per_g']],
+    LB:  [['G','games'], ['Solo','def_solo'], ['Sk','def_sacks'], ['INT','def_int'], ['FF','def_ff'], ['PD','def_pd'], ['FP/G','fp_idp_per_g']],
+    DB:  [['G','games'], ['Solo','def_solo'], ['Sk','def_sacks'], ['INT','def_int'], ['FF','def_ff'], ['PD','def_pd'], ['FP/G','fp_idp_per_g']],
+    DL:  [['G','games'], ['Solo','def_solo'], ['Sk','def_sacks'], ['INT','def_int'], ['FF','def_ff'], ['PD','def_pd'], ['FP/G','fp_idp_per_g']],
+    S:   [['G','games'], ['Solo','def_solo'], ['Sk','def_sacks'], ['INT','def_int'], ['FF','def_ff'], ['PD','def_pd'], ['FP/G','fp_idp_per_g']],
+    CB:  [['G','games'], ['Solo','def_solo'], ['Sk','def_sacks'], ['INT','def_int'], ['FF','def_ff'], ['PD','def_pd'], ['FP/G','fp_idp_per_g']],
+    DEF: [['G','games'], ['Solo','def_solo'], ['Sk','def_sacks'], ['INT','def_int'], ['FF','def_ff'], ['PD','def_pd'], ['FP/G','fp_idp_per_g']],
+  };
+  function fmtStat(v) {
+    if (v == null || v === '' || isNaN(v)) return '—';
+    const n = Number(v);
+    if (Math.abs(n) >= 100) return Math.round(n).toString();
+    if (Math.abs(n) >= 10)  return n.toFixed(1);
+    return n.toFixed(2);
+  }
+  function sparkline(spark, color = 'var(--accent)') {
+    if (!spark || spark.length < 2) return null;
+    const W = 168, H = 36, P = 3;
+    const xs = spark.map(d => d.y);
+    const ys = spark.map(d => d.v || 0);
+    const xMin = Math.min(...xs), xMax = Math.max(...xs);
+    const yMax = Math.max(...ys, 1);
+    const xScale = (x) => P + ((x - xMin) / Math.max(xMax - xMin, 1)) * (W - 2*P);
+    const yScale = (y) => H - P - (y / yMax) * (H - 2*P);
+    const points = spark.map(d => `${xScale(d.y).toFixed(1)},${yScale(d.v||0).toFixed(1)}`).join(' ');
+    const last = spark[spark.length - 1];
+    const lx = xScale(last.y), ly = yScale(last.v||0);
+    const svg = `
+      <svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <polyline points="${points}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
+        <circle cx="${lx.toFixed(1)}" cy="${ly.toFixed(1)}" r="2.5" fill="${color}"/>
+      </svg>`;
+    return h('span', { class:'spark', html: svg, title:`${spark[0].y}–${last.y} FP/G trend` });
+  }
+  function historyBlock(sleeper) {
+    if (!sleeper || !window.HISTORY) return null;
+    const hist = window.HISTORY[sleeper.id];
+    if (!hist) return null;
+    const pos = (hist.pos || sleeper.pos || '').toUpperCase();
+    const cols = POS_STAT_COLS[pos] || POS_STAT_COLS.WR;
+    const isIDP = ['LB','DB','DL','S','CB','DEF'].includes(pos);
+    const isQB  = pos === 'QB';
+
+    // Top KPI row
+    const headlinePeak = isIDP ? hist.peak_idp : (isQB ? hist.peak_4pt : hist.peak_ppr);
+    const fpLabel      = isIDP ? 'IDP' : (isQB ? '4pt PPR' : 'PPR');
+    const careerKey    = isIDP ? 'fp_idp_yuh' : (isQB ? 'fp_4pt_ppr' : 'fp_ppr');
+    const careerTotal  = hist.career[careerKey] || 0;
+
+    const kpis = h('div', { class:'hist-kpis' },
+      h('div', { class:'hist-kpi' },
+        h('div', { class:'hist-kpi-num tnum' }, fmtStat(careerTotal)),
+        h('div', { class:'hist-kpi-label' }, `Career ${fpLabel}`),
+      ),
+      h('div', { class:'hist-kpi' },
+        h('div', { class:'hist-kpi-num tnum' }, fmtStat(headlinePeak)),
+        h('div', { class:'hist-kpi-label' }, 'Peak season'),
+      ),
+      h('div', { class:'hist-kpi' },
+        h('div', { class:'hist-kpi-num tnum' }, hist.seasons),
+        h('div', { class:'hist-kpi-label' }, hist.seasons === 1 ? 'Season' : 'Seasons'),
+      ),
+      h('div', { class:'hist-spark' }, sparkline(hist.spark)),
+    );
+
+    // Recent seasons table
+    const head = h('thead', null,
+      h('tr', null,
+        h('th', null, 'Year'),
+        h('th', null, 'Tm'),
+        ...cols.map(([label]) => h('th', { class:'right' }, label)),
+      ),
+    );
+    const body = h('tbody', null,
+      ...hist.recent.map(r => h('tr', null,
+        h('td', { class:'tnum' }, r.year),
+        h('td', { class:'muted' }, ''),
+        ...cols.map(([, key]) => h('td', { class:'right tnum' }, fmtStat(r[key]))),
+      )),
+    );
+    const table = h('table', { class:'data hist-table' }, head, body);
+
+    return h('section', { class:'hist-block' },
+      h('div', { class:'hist-head' },
+        h('div', { class:'card-title' }, 'Historical'),
+        h('span', { class:'tip' }, `${hist.first}–${hist.last}`),
+      ),
+      kpis,
+      table,
+    );
+  }
+
   function playerModal(name, ranked, sleeper) {
     const close = () => $$('.modal-backdrop').forEach(e => e.remove());
     const onBackdrop = (e) => { if (e.target === e.currentTarget) close(); };
