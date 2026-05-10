@@ -3135,10 +3135,20 @@
     sideA: { rosterId: null, picks: new Set() },   // pids and pick-keys (year-round-from)
     sideB: { rosterId: null, picks: new Set() },
   };
+  // ============================================================
+  // ROUTE: Trade Calculator (kinetic)
+  // - Drag any player or pick from a roster pool onto its side's pile.
+  // - Drag back to remove. Click still works as a fallback.
+  // - Middle summary recomputes live during hover (preview math) and
+  //   commits with a spring overshoot on drop.
+  // - Full re-renders are avoided — toggles mutate DOM in place so
+  //   animations don't get reset every interaction.
+  // ============================================================
+  const KT = { reduced: false };
   function viewTrade(leagueIdArg) {
     const main = $('#main');
     main.innerHTML = '';
-    // Default league: first one with a "me" roster
+    KT.reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const myLeagues = (window.LEAGUES || []).filter(l => l.rosters.some(r => r.is_me));
     if (!TRADE_STATE.leagueId) TRADE_STATE.leagueId = leagueIdArg || (myLeagues[0]?.id);
     if (leagueIdArg && leagueIdArg !== TRADE_STATE.leagueId) {
@@ -3154,25 +3164,171 @@
     main.appendChild(h('div', { class:'page-header' },
       h('div', null,
         h('h1', { class:'page-title' }, 'Trade Calculator'),
-        h('p', { class:'page-sub' }, 'Build a trade. Pick players to send and receive, see the value swap and post-trade strength change.')
+        h('p', { class:'page-sub' }, 'Drag players or picks into the pile. Fairness updates live; drop to commit.')
       ),
       h('div', { class:'page-actions' },
         leagueSelector(lg.id, (newId) => { TRADE_STATE.leagueId = newId; TRADE_STATE.sideA = {rosterId:null, picks:new Set()}; TRADE_STATE.sideB = {rosterId:null, picks:new Set()}; viewTrade(newId); navigate(`#trade/${newId}`); })
       )
     ));
 
-    // Build sides
     const sideARoster = lg.rosters.find(r => r.roster_id === TRADE_STATE.sideA.rosterId);
     const sideBRoster = lg.rosters.find(r => r.roster_id === TRADE_STATE.sideB.rosterId);
 
+    // Refs we'll mutate after initial render.
+    const refs = { lg, A:{}, B:{}, middle:null };
+    TRADE_STATE._refs = refs;
+
     const grid = h('div', { class:'trade-calc' });
-    grid.appendChild(buildTradeSide('A', lg, TRADE_STATE.sideA, sideARoster));
-    grid.appendChild(tradeMiddleSummary(lg));
-    grid.appendChild(buildTradeSide('B', lg, TRADE_STATE.sideB, sideBRoster));
+    grid.appendChild(buildTradeSide('A', lg, TRADE_STATE.sideA, sideARoster, refs));
+    refs.middle = tradeMiddleSummary(lg);
+    grid.appendChild(refs.middle.node);
+    grid.appendChild(buildTradeSide('B', lg, TRADE_STATE.sideB, sideBRoster, refs));
     main.appendChild(grid);
 
-    main.appendChild(h('div', { class:'tip', style:{ marginTop:'12px' } }, 'Tip: clicking a player toggles them in/out of the trade. Values use your enabled rankings + format multipliers.'));
+    main.appendChild(h('div', { class:'tip', style:{ marginTop:'12px' } },
+      'Drag a row to its trade pile. Drop on the middle summary to wipe. Or click a row to toggle.'
+    ));
+
+    // Initial paint of middle (committed totals).
+    KT.refreshMiddle(lg);
   }
+
+  // Compute total value for a side (used by both committed math and preview).
+  KT.valOf = function(state, lg) {
+    return Array.from(state.picks).reduce((s, k) => {
+      if (isPickKey(k)) {
+        const { season, round, originRosterId } = parsePickKey(k);
+        return s + pickValue(season, round, originRosterId, lg);
+      }
+      const sleeper = window.PLAYERS[k]; if (!sleeper) return s;
+      const r = rankIndex().bySleeperId.get(k) || rankIndex().byName.get(norm(sleeper.name));
+      return s + (r ? tierValue(r, lg) : 0);
+    }, 0);
+  };
+
+  KT.computeFairness = function(aVal, bVal, aSize, bSize) {
+    if (!aSize || !bSize) return { label:'INCOMPLETE', color:'var(--fg-3)', pct: 0 };
+    const fairness = (Math.min(aVal, bVal) / Math.max(aVal, bVal, 1)) * 100;
+    const delta = bVal - aVal;
+    const verdict = fairness >= 90 ? { label:'FAIR', color:'var(--green)' }
+                  : fairness >= 75 ? { label:'CLOSE', color:'var(--amber)' }
+                  : { label: delta > 0 ? 'WIN FOR A' : 'WIN FOR B', color:'var(--red)' };
+    return { ...verdict, pct: fairness };
+  };
+
+  KT.refreshMiddle = function(lg, previewSide, previewKey, previewMode) {
+    const refs = TRADE_STATE._refs; if (!refs || !refs.middle) return;
+    // Optionally apply a preview override: pretend `previewKey` is added/removed
+    // from `previewSide`'s set without mutating state.
+    let aSet = TRADE_STATE.sideA.picks, bSet = TRADE_STATE.sideB.picks;
+    if (previewSide && previewKey) {
+      const target = previewSide === 'A' ? new Set(TRADE_STATE.sideA.picks) : new Set(TRADE_STATE.sideB.picks);
+      if (previewMode === 'add') target.add(previewKey);
+      else if (previewMode === 'remove') target.delete(previewKey);
+      if (previewSide === 'A') aSet = target; else bSet = target;
+    }
+    const aVal = KT.valOf({ picks: aSet }, lg);
+    const bVal = KT.valOf({ picks: bSet }, lg);
+    const v = KT.computeFairness(aVal, bVal, aSet.size, bSet.size);
+    const m = refs.middle;
+    m.aVal.textContent = fmt.decimal(aVal, 1);
+    m.bVal.textContent = fmt.decimal(bVal, 1);
+    m.verdict.textContent = v.label;
+    m.verdict.style.color = v.color;
+    m.fair.textContent = v.pct.toFixed(0) + '% fairness';
+    // Strength deltas
+    const postA = simulateRosterStrength(lg, TRADE_STATE.sideA.rosterId, aSet, bSet);
+    const postB = simulateRosterStrength(lg, TRADE_STATE.sideB.rosterId, bSet, aSet);
+    m.deltaA.textContent = (postA.delta >= 0 ? '+' : '') + fmt.decimal(postA.delta, 1);
+    m.deltaA.style.color = postA.delta >= 0 ? 'var(--green)' : 'var(--red)';
+    m.deltaB.textContent = (postB.delta >= 0 ? '+' : '') + fmt.decimal(postB.delta, 1);
+    m.deltaB.style.color = postB.delta >= 0 ? 'var(--green)' : 'var(--red)';
+    // Preview vs committed visual
+    refs.middle.node.classList.toggle('preview', !!(previewSide && previewKey));
+  };
+
+  // Toggle a key in/out of a side. Animates the row in/out and updates middle.
+  KT.toggle = function(side, key, sourceMode /* 'add'|'remove'|'auto' */) {
+    const lg = TRADE_STATE._refs.lg;
+    const state = side === 'A' ? TRADE_STATE.sideA : TRADE_STATE.sideB;
+    const has = state.picks.has(key);
+    const mode = sourceMode || (has ? 'remove' : 'add');
+    if (mode === 'add' && !has) state.picks.add(key);
+    if (mode === 'remove' && has) state.picks.delete(key);
+    KT.syncSide(side);
+    KT.refreshMiddle(lg);
+  };
+
+  // After a state change for one side, update the pile (add/remove rows) and
+  // mark pool rows as selected/unselected. Animates entries.
+  KT.syncSide = function(side) {
+    const refs = TRADE_STATE._refs;
+    const lg = refs.lg;
+    const state = side === 'A' ? TRADE_STATE.sideA : TRADE_STATE.sideB;
+    const sideRefs = refs[side];
+    const wantedKeys = state.picks;
+    const pile = sideRefs.pile;
+    const pool = sideRefs.pool;
+
+    // Remove rows that shouldn't be there (with exit animation).
+    Array.from(pile.querySelectorAll('[data-trade-key]')).forEach(row => {
+      const k = row.dataset.tradeKey;
+      if (!wantedKeys.has(k)) KT.springExit(row);
+    });
+
+    // Add rows that should be there.
+    for (const k of wantedKeys) {
+      const exists = pile.querySelector(`[data-trade-key="${cssEscape(k)}"]`);
+      if (!exists) {
+        const row = sideRefs.makePileRow(k);
+        pile.appendChild(row);
+        KT.springEnter(row);
+      }
+    }
+
+    // Hide the empty placeholder when there is content.
+    sideRefs.empty.style.display = wantedKeys.size ? 'none' : '';
+
+    // Update pool selected state.
+    Array.from(pool.querySelectorAll('[data-trade-key]')).forEach(row => {
+      const k = row.dataset.tradeKey;
+      row.classList.toggle('selected', wantedKeys.has(k));
+    });
+
+    // Update total label.
+    const total = KT.valOf(state, lg);
+    sideRefs.total.textContent = fmt.decimal(total, 1);
+  };
+
+  // CSS.escape polyfill-ish for our limited keys (alphanumeric + : -)
+  function cssEscape(s) {
+    if (window.CSS && CSS.escape) return CSS.escape(s);
+    return String(s).replace(/[^a-zA-Z0-9_-]/g, '\\$&');
+  }
+
+  KT.springEnter = function(node) {
+    if (KT.reduced) return;
+    node.animate(
+      [
+        { transform: 'scale(0.82) translateY(-6px)', opacity: 0 },
+        { transform: 'scale(1.05) translateY(0)',    opacity: 1, offset: 0.55 },
+        { transform: 'scale(0.98) translateY(0)',    opacity: 1, offset: 0.78 },
+        { transform: 'scale(1) translateY(0)',       opacity: 1 },
+      ],
+      { duration: 360, easing: 'cubic-bezier(0.22, 1.4, 0.36, 1)', fill: 'both' }
+    );
+  };
+  KT.springExit = function(node) {
+    if (KT.reduced) { node.remove(); return; }
+    const a = node.animate(
+      [
+        { transform: 'scale(1)',    opacity: 1 },
+        { transform: 'scale(0.85) translateX(-8px)', opacity: 0 },
+      ],
+      { duration: 200, easing: 'cubic-bezier(0.4, 0, 0.6, 1)', fill: 'forwards' }
+    );
+    a.onfinish = () => { try { node.remove(); } catch {} };
+  };
   function leagueSelector(currentId, onChange) {
     const sel = h('select', { onchange: (e) => onChange(e.target.value) });
     for (const lg of window.LEAGUES || []) {
@@ -3272,7 +3428,7 @@
     return result;
   }
 
-  function buildTradeSide(label, lg, state, roster) {
+  function buildTradeSide(label, lg, state, roster, refs) {
     const card = h('div', { class:'trade-side-card' });
     const rosterSel = h('select', { onchange: (e) => { state.rosterId = parseInt(e.target.value, 10); state.picks = new Set(); viewTrade(lg.id); } });
     for (const r of lg.rosters) {
@@ -3283,55 +3439,78 @@
       rosterSel
     ));
 
-    // Selected pile: handles both player_ids (numeric strings) and pick keys
     const ownedPicks = roster ? rosterOwnedPicks(roster.roster_id, lg) : [];
     const pickByKey = new Map(ownedPicks.map(p => [pickKey(p.season, p.round, p.originRosterId), p]));
-    const selected = Array.from(state.picks).map(k => {
-      if (isPickKey(k)) {
+
+    // Cached row factory for the pile (called when adding a row to pile).
+    const makePileRow = (k) => {
+      const isPickK = isPickKey(k);
+      let nameNode, val;
+      if (isPickK) {
         const meta = pickByKey.get(k) || (() => {
           const { season, round, originRosterId } = parsePickKey(k);
           return { season, round, originRosterId, label: `${season} R${round}`, value: pickValue(season, round, originRosterId, lg) };
         })();
-        return { kind: 'pick', key: k, meta };
+        nameNode = h('div', { class:'name-cell' },
+          h('span', { class:'badge', style:{ background:'rgba(96,165,250,.15)', color:'var(--blue)', borderColor:'rgba(96,165,250,.4)' } }, 'PICK'),
+          h('span', { class:'name' }, meta.label),
+        );
+        val = meta.value;
+      } else {
+        const sleeper = window.PLAYERS[k];
+        const ranked = sleeper ? (rankIndex().bySleeperId.get(k) || rankIndex().byName.get(norm(sleeper.name))) : null;
+        nameNode = h('div', { class:'name-cell' },
+          sleeper ? posChip(sleeper.pos) : null,
+          sleeper ? teamChip(sleeper.team) : null,
+          h('span', { class:'name' }, sleeper ? sleeper.name : `[${k}]`),
+        );
+        val = ranked ? tierValue(ranked, lg) : 0;
       }
-      const sleeper = window.PLAYERS[k];
-      const ranked = sleeper ? (rankIndex().bySleeperId.get(k) || rankIndex().byName.get(norm(sleeper.name))) : null;
-      return { kind: 'player', key: k, sleeper, ranked, value: ranked ? tierValue(ranked, lg) : 0 };
-    });
-    const totalVal = selected.reduce((s, x) => s + (x.kind === 'pick' ? x.meta.value : x.value || 0), 0);
+      const row = h('div', {
+        class:'trade-pile-row',
+        draggable: 'true',
+        dataset: { tradeKey: k, tradeSide: label, tradeOrigin: 'pile' },
+        title: 'Drag back to roster, or click to remove.',
+        onclick: () => KT.toggle(label, k, 'remove'),
+      },
+        nameNode,
+        h('span', { class:'tnum' }, fmt.decimal(val, 1)),
+        h('span', { class:'trade-pile-x' }, '×'),
+      );
+      attachDrag(row);
+      return row;
+    };
 
-    card.appendChild(h('div', { class:'trade-pile' },
-      h('div', { class:'card-title' }, h('span', null, 'In Trade'), h('span', { class:'tnum', style:{ float:'right' } }, fmt.decimal(totalVal,1))),
-      selected.length
-        ? h('div', null, ...selected.map(s => h('div', { class:'trade-pile-row', onclick:()=>{ state.picks.delete(s.key); viewTrade(lg.id); } },
-            s.kind === 'pick'
-              ? h('div', { class:'name-cell' },
-                  h('span', { class:'badge', style:{ background:'rgba(96,165,250,.15)', color:'var(--blue)', borderColor:'rgba(96,165,250,.4)' } }, 'PICK'),
-                  h('span', { class:'name' }, s.meta.label),
-                )
-              : h('div', { class:'name-cell' },
-                  s.sleeper ? posChip(s.sleeper.pos) : null,
-                  s.sleeper ? teamChip(s.sleeper.team) : null,
-                  h('span', { class:'name' }, s.sleeper ? s.sleeper.name : `[${s.key}]`),
-                ),
-            h('span', { class:'tnum' }, fmt.decimal(s.kind === 'pick' ? s.meta.value : s.value, 1)),
-            h('span', { class:'tip', style:{ marginLeft:'8px' } }, '×')
-          )))
-        : h('div', { class:'tip' }, 'Click players or picks below to add.')
-    ));
+    const totalSpan = h('span', { class:'tnum trade-pile-total' }, '0.0');
+    const pileEmpty = h('div', { class:'tip trade-pile-empty' }, 'Drag players or picks here, or click below to add.');
+    const pile = h('div', { class:'trade-pile-rows' });
+    const pileWrap = h('div', { class:'trade-pile' },
+      h('div', { class:'card-title' }, h('span', null, 'In Trade'), h('span', { style:{ float:'right' } }, totalSpan)),
+      pileEmpty,
+      pile,
+    );
+    // Pile is a drop target.
+    attachPileDropTarget(pileWrap, label);
+    card.appendChild(pileWrap);
 
     // Player pool
+    let pool;
     if (roster) {
       const arr = (roster.players || []).map(pid => {
         const sleeper = window.PLAYERS[pid];
         const ranked = sleeper ? (rankIndex().bySleeperId.get(pid) || rankIndex().byName.get(norm(sleeper.name))) : null;
         return { pid, sleeper, ranked, value: ranked ? tierValue(ranked, lg) : 0 };
       }).sort((a,b) => b.value - a.value);
-      card.appendChild(h('div', { class:'trade-pool' },
+      pool = h('div', { class:'trade-pool' },
         h('div', { class:'card-title' }, `${roster.team_name} Roster`),
-        ...arr.map(p => h('div', {
-          class:'trade-pool-row' + (state.picks.has(p.pid) ? ' selected' : ''),
-          onclick: () => { if (state.picks.has(p.pid)) state.picks.delete(p.pid); else state.picks.add(p.pid); viewTrade(lg.id); }
+      );
+      for (const p of arr) {
+        const row = h('div', {
+          class:'trade-pool-row',
+          draggable: 'true',
+          dataset: { tradeKey: p.pid, tradeSide: label, tradeOrigin: 'pool' },
+          title: 'Drag to pile, or click to add.',
+          onclick: () => KT.toggle(label, p.pid),
         },
           h('div', { class:'name-cell' },
             p.sleeper ? posChip(p.sleeper.pos) : null,
@@ -3340,80 +3519,164 @@
             p.ranked ? tierChip(p.ranked.tier, p.ranked.category) : null
           ),
           p.value ? h('span', { class:'tnum' }, fmt.decimal(p.value,1)) : h('span', { class:'muted' }, '.')
-        ))
-      ));
+        );
+        attachDrag(row);
+        pool.appendChild(row);
+      }
+      // Pool is also a drop target — drop a pile row here to remove.
+      attachPoolDropTarget(pool, label);
+      card.appendChild(pool);
 
-      // Picks pool
       if (ownedPicks.length) {
-        card.appendChild(h('div', { class:'trade-pool', style:{ marginTop:'12px' } },
+        const picksPool = h('div', { class:'trade-pool', style:{ marginTop:'12px' } },
           h('div', { class:'card-title' }, `${roster.team_name} Picks`),
-          ...ownedPicks.map(p => {
-            const k = pickKey(p.season, p.round, p.originRosterId);
-            return h('div', {
-              class: 'trade-pool-row' + (state.picks.has(k) ? ' selected' : ''),
-              onclick: () => { if (state.picks.has(k)) state.picks.delete(k); else state.picks.add(k); viewTrade(lg.id); }
-            },
-              h('div', { class:'name-cell' },
-                h('span', { class:'badge', style:{ background:'rgba(96,165,250,.15)', color:'var(--blue)', borderColor:'rgba(96,165,250,.4)' } }, 'PICK'),
-                h('span', { class:'name' }, p.label),
-              ),
-              h('span', { class:'tnum' }, fmt.decimal(p.value, 1)),
-            );
-          })
-        ));
+        );
+        for (const p of ownedPicks) {
+          const k = pickKey(p.season, p.round, p.originRosterId);
+          const row = h('div', {
+            class:'trade-pool-row',
+            draggable: 'true',
+            dataset: { tradeKey: k, tradeSide: label, tradeOrigin: 'pool' },
+            onclick: () => KT.toggle(label, k),
+          },
+            h('div', { class:'name-cell' },
+              h('span', { class:'badge', style:{ background:'rgba(96,165,250,.15)', color:'var(--blue)', borderColor:'rgba(96,165,250,.4)' } }, 'PICK'),
+              h('span', { class:'name' }, p.label),
+            ),
+            h('span', { class:'tnum' }, fmt.decimal(p.value, 1)),
+          );
+          attachDrag(row);
+          picksPool.appendChild(row);
+        }
+        attachPoolDropTarget(picksPool, label);
+        card.appendChild(picksPool);
       }
     }
+
+    refs[label] = { pile, pool, total: totalSpan, empty: pileEmpty, makePileRow };
+    // Initial pile population from existing state.
+    queueMicrotask(() => KT.syncSide(label));
     return card;
   }
-  function tradeMiddleSummary(lg) {
-    const valOf = (state) => Array.from(state.picks).reduce((s, k) => {
-      if (isPickKey(k)) {
-        const { season, round, originRosterId } = parsePickKey(k);
-        return s + pickValue(season, round, originRosterId, lg);
+
+  // Drag plumbing -- shared per row + per drop target.
+  function attachDrag(row) {
+    row.addEventListener('dragstart', (e) => {
+      KT.dragging = {
+        key: row.dataset.tradeKey,
+        side: row.dataset.tradeSide,
+        origin: row.dataset.tradeOrigin,
+        node: row,
+      };
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', row.dataset.tradeKey);
+      row.classList.add('dragging');
+      // Slight delay so the browser can capture the drag image first.
+      requestAnimationFrame(() => row.classList.add('drag-ghost'));
+    });
+    row.addEventListener('dragend', () => {
+      row.classList.remove('dragging', 'drag-ghost');
+      KT.clearDropHover();
+      // Clear preview highlight on middle.
+      const refs = TRADE_STATE._refs;
+      if (refs && refs.lg) KT.refreshMiddle(refs.lg);
+      KT.dragging = null;
+    });
+  }
+
+  function attachPileDropTarget(pile, side) {
+    pile.addEventListener('dragenter', (e) => {
+      if (!KT.dragging || KT.dragging.side !== side) return;
+      e.preventDefault();
+      pile.classList.add('drop-target');
+      // Live preview: show what totals look like if dropped.
+      const mode = KT.dragging.origin === 'pile' ? 'remove' : 'add';
+      KT.refreshMiddle(TRADE_STATE._refs.lg, side, KT.dragging.key, mode);
+    });
+    pile.addEventListener('dragover', (e) => {
+      if (!KT.dragging || KT.dragging.side !== side) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+    });
+    pile.addEventListener('dragleave', (e) => {
+      // Only clear if leaving the pile entirely (not a child).
+      if (!pile.contains(e.relatedTarget)) {
+        pile.classList.remove('drop-target');
       }
-      const sleeper = window.PLAYERS[k]; if (!sleeper) return s;
-      const r = rankIndex().bySleeperId.get(k) || rankIndex().byName.get(norm(sleeper.name));
-      return s + (r ? tierValue(r, lg) : 0);
-    }, 0);
-    const aVal = valOf(TRADE_STATE.sideA);
-    const bVal = valOf(TRADE_STATE.sideB);
-    const delta = bVal - aVal;
-    const fairness = (Math.min(aVal, bVal) / Math.max(aVal, bVal, 1)) * 100;
-    const verdict = !TRADE_STATE.sideA.picks.size || !TRADE_STATE.sideB.picks.size
-      ? { label:'INCOMPLETE', color:'var(--fg-3)' }
-      : fairness >= 90 ? { label:'FAIR', color:'var(--green)' }
-      : fairness >= 75 ? { label:'CLOSE', color:'var(--amber)' }
-      : { label: delta > 0 ? 'WIN FOR A' : 'WIN FOR B', color:'var(--red)' };
-    // Post-trade strength delta
-    const postA = simulateRosterStrength(lg, TRADE_STATE.sideA.rosterId, TRADE_STATE.sideA.picks, TRADE_STATE.sideB.picks);
-    const postB = simulateRosterStrength(lg, TRADE_STATE.sideB.rosterId, TRADE_STATE.sideB.picks, TRADE_STATE.sideA.picks);
-    return h('div', { class:'trade-middle' },
+    });
+    pile.addEventListener('drop', (e) => {
+      if (!KT.dragging || KT.dragging.side !== side) return;
+      e.preventDefault();
+      pile.classList.remove('drop-target');
+      KT.toggle(side, KT.dragging.key, 'add');
+    });
+  }
+
+  function attachPoolDropTarget(pool, side) {
+    pool.addEventListener('dragenter', (e) => {
+      if (!KT.dragging || KT.dragging.side !== side) return;
+      if (KT.dragging.origin !== 'pile') return;  // only a pile-row drop here removes
+      e.preventDefault();
+      pool.classList.add('drop-target-remove');
+      KT.refreshMiddle(TRADE_STATE._refs.lg, side, KT.dragging.key, 'remove');
+    });
+    pool.addEventListener('dragover', (e) => {
+      if (!KT.dragging || KT.dragging.side !== side) return;
+      if (KT.dragging.origin !== 'pile') return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+    });
+    pool.addEventListener('dragleave', (e) => {
+      if (!pool.contains(e.relatedTarget)) pool.classList.remove('drop-target-remove');
+    });
+    pool.addEventListener('drop', (e) => {
+      if (!KT.dragging || KT.dragging.side !== side) return;
+      if (KT.dragging.origin !== 'pile') return;
+      e.preventDefault();
+      pool.classList.remove('drop-target-remove');
+      KT.toggle(side, KT.dragging.key, 'remove');
+    });
+  }
+  KT.clearDropHover = function() {
+    document.querySelectorAll('.drop-target,.drop-target-remove').forEach(n => {
+      n.classList.remove('drop-target','drop-target-remove');
+    });
+  };
+
+  // Middle summary builds DOM once and exposes setter refs.
+  function tradeMiddleSummary(lg) {
+    const aVal = h('span', { class:'tnum' }, '0.0');
+    const bVal = h('span', { class:'tnum' }, '0.0');
+    const verdict = h('div', { class:'verdict' }, 'INCOMPLETE');
+    const fair = h('div', { class:'tip' }, '0% fairness');
+    const deltaA = h('span', { class:'tnum' }, '0.0');
+    const deltaB = h('span', { class:'tnum' }, '0.0');
+    const node = h('div', { class:'trade-middle' },
       h('div', { class:'trade-middle-card' },
         h('div', { class:'tip' }, 'Total Value'),
         h('div', { style:{ display:'flex', justifyContent:'space-between', fontSize:'1.1rem', fontWeight:700, marginTop:'4px' } },
-          h('span', { class:'tnum' }, fmt.decimal(aVal,1)),
+          aVal,
           h('span', { style:{color:'var(--fg-3)'} }, '⇄'),
-          h('span', { class:'tnum' }, fmt.decimal(bVal,1)),
+          bVal,
         ),
         h('div', { style:{ marginTop:'14px', textAlign:'center' } },
           h('div', { class:'tip' }, 'Verdict'),
-          h('div', { class:'verdict', style:{ color: verdict.color } }, verdict.label),
-          h('div', { class:'tip' }, fairness.toFixed(0) + '% fairness')
+          verdict,
+          fair,
         ),
         h('div', { style:{ marginTop:'14px' } },
           h('div', { class:'tip', style:{ marginBottom:'4px' } }, 'Post-Trade Strength Δ'),
-          h('div', { style:{ display:'flex', justifyContent:'space-between' } },
-            h('span', { class:'tnum', style:{ color: postA.delta >= 0 ? 'var(--green)' : 'var(--red)' } }, (postA.delta >= 0 ? '+' : '') + fmt.decimal(postA.delta, 1)),
-            h('span', { class:'tnum', style:{ color: postB.delta >= 0 ? 'var(--green)' : 'var(--red)' } }, (postB.delta >= 0 ? '+' : '') + fmt.decimal(postB.delta, 1)),
-          )
+          h('div', { style:{ display:'flex', justifyContent:'space-between' } }, deltaA, deltaB)
         ),
         h('div', { style:{ marginTop:'14px' } },
           h('button', { class:'ghost', style:{ width:'100%' }, onclick: () => {
-            TRADE_STATE.sideA.picks = new Set(); TRADE_STATE.sideB.picks = new Set(); viewTrade(lg.id);
+            TRADE_STATE.sideA.picks = new Set(); TRADE_STATE.sideB.picks = new Set();
+            KT.syncSide('A'); KT.syncSide('B'); KT.refreshMiddle(lg);
           }}, 'Reset Trade')
         )
       ),
     );
+    return { node, aVal, bVal, verdict, fair, deltaA, deltaB };
   }
   function simulateRosterStrength(lg, rosterId, removeIds, addIds) {
     const roster = lg.rosters.find(r => r.roster_id === rosterId);
@@ -3764,6 +4027,7 @@
     const sleeper = window.PLAYERS[sleeperIdFor(name) || ''];
     document.body.appendChild(playerModal(name, ranked, sleeper));
   }
+  window.openPlayerDetail = openPlayerDetail;
   // ============================================================
   // Historical career section (powered by data/history.js)
   // ============================================================
@@ -3836,18 +4100,16 @@
       h('div', { class:'hist-spark' }, sparkline(hist.spark)),
     );
 
-    // Recent seasons table
+    // Recent seasons table (last 5)
     const head = h('thead', null,
       h('tr', null,
         h('th', null, 'Year'),
-        h('th', null, 'Tm'),
         ...cols.map(([label]) => h('th', { class:'right' }, label)),
       ),
     );
     const body = h('tbody', null,
       ...hist.recent.map(r => h('tr', null,
         h('td', { class:'tnum' }, r.year),
-        h('td', { class:'muted' }, ''),
         ...cols.map(([, key]) => h('td', { class:'right tnum' }, fmtStat(r[key]))),
       )),
     );
@@ -3906,6 +4168,7 @@
           h('div', null, `${sleeper.pos} · ${sleeper.team || 'FA'}` + (sleeper.college ? ` · ${sleeper.college}` : '') + (sleeper.exp != null ? ` · exp ${sleeper.exp}` : '')),
           h('div', { class:'tip' }, `Sleeper id: ${sleeper.id}`)
         ) : h('div', { class:'tip' }, 'Not matched to a Sleeper player.'),
+        historyBlock(sleeper),
         ownerRows.length ? h('div', null,
           h('div', { class:'card-title', style:{ marginBottom:'6px' } }, 'Owned in your leagues'),
           h('table', { class:'data' },
