@@ -17,18 +17,25 @@ URL = "https://keeptradecut.com/dynasty-rankings"
 SITE_DATA = pathlib.Path(__file__).parent
 OUT = SITE_DATA / "ktc.js"
 
-# Pure rank-bracket mapping. KTC's `overallTier` field clusters too few players
-# into tiers 5-9 to keep foundational populated, so we ignore it and bracket
-# strictly by overall rank. This produces a sensible distribution across the
-# Domain framework: ~32 cornerstones, ~50 foundational, ~50 upside_premier, etc.
+# Tier brackets driven by EFFECTIVE rank, where effective = the better (lower)
+# of KTC's algorithmic overall rank vs the player's actual startup ADP. ADP
+# reflects real market behavior across thousands of human startup drafts; KTC's
+# value rank is an algorithm. When the two disagree (Travis Hunter: rank 125,
+# ADP 58), the market consensus wins, so Hunter classifies as Foundational A
+# instead of Foundational D.
 #
-# Brackets sized by category importance and the typical dynasty market shape:
-#   Cornerstones are scarce (top ~32),
-#   Foundational is the deepest tier (next ~50),
+# Brackets sized for the typical dynasty market shape:
+#   Cornerstones scarce (top ~32),
+#   Foundational the deepest tier (next ~50),
 #   Upside Premier captures developing players (~50),
 #   Mainstay/Vet/Short-term absorb the long tail.
-def map_tier(ktc_tier, ktc_rank):
+def map_tier(ktc_tier, ktc_rank, ktc_adp=None):
+    # Use ADP as the dominant signal whenever it's lower (better) than the
+    # algorithmic rank. Cap the ADP advantage at no more than ~30 ranks of
+    # promotion so genuine fallers don't get mis-categorized.
     r = ktc_rank
+    if ktc_adp and ktc_adp > 0 and ktc_adp < ktc_rank:
+        r = max(int(ktc_adp), ktc_rank - 60)
     if r <=   7: return ("cornerstone",    "S")
     if r <=  14: return ("cornerstone",    "A")
     if r <=  22: return ("cornerstone",    "B")
@@ -75,11 +82,19 @@ def build_ranking(players, key, label, format_str, default_enabled, max_n=350):
         tier = v.get("overallTier")
         if rank is None: continue
         rows.append((rank, p, v, tier))
-    rows.sort(key=lambda r: r[0])
+    # Sort by EFFECTIVE rank (market-aware), not just algorithmic rank. ADP
+    # outranks KTC's algorithm when the market disagrees with the value model.
+    def effective_rank(row):
+        rank = row[0]
+        adp = (row[2] or {}).get("startupAdp")
+        if adp and adp > 0 and adp < rank:
+            return max(int(adp), rank - 60)
+        return rank
+    rows.sort(key=effective_rank)
     rows = rows[:max_n]
     out_players = []
     for rank, p, v, ktc_tier in rows:
-        cat, t = map_tier(ktc_tier, rank)
+        cat, t = map_tier(ktc_tier, rank, v.get("startupAdp"))
         item = {
             "name": p["playerName"],
             "pos":  p["position"],
@@ -90,7 +105,14 @@ def build_ranking(players, key, label, format_str, default_enabled, max_n=350):
             "ktcValue": v.get("value"),
             "ktcAdp": v.get("startupAdp"),
             "ktcPosRank": v.get("positionalRank"),
-            "note": f"KTC {label} rank #{rank}, value {v.get('value')}, ADP {v.get('startupAdp')}.",
+            "note": (
+                f"KTC {label} rank #{rank}, value {v.get('value')}, ADP {v.get('startupAdp')}."
+                + (
+                    f" Tier driven by ADP (market consensus runs ahead of KTC's algorithmic rank)."
+                    if v.get('startupAdp') and v.get('startupAdp') > 0 and v.get('startupAdp') < rank
+                    else ""
+                )
+            ),
         }
         if p.get("rookie"): item["rookie"] = True
         out_players.append(item)
