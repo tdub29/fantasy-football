@@ -1726,28 +1726,32 @@
       })();
 
       const out = [];
-      // Backup QB = next QB after all starting QB slots filled
+      // Backup QB = next QB after all starting QB slots filled. Label
+      // matches the slot index so 1QB uses QB2, SF uses QB3, etc.
       const backupQb = bestUnusedAtPos(['QB']);
       if (backupQb) {
         const refV = nthAtPos('QB', totalTeams);
+        const startedQbs = (lg.roster_positions || []).filter(p => p === 'QB' || p === 'SUPER_FLEX').length;
         out.push({
-          slot: 'Backup QB',
+          slot: `QB${startedQbs + 1}`,
           player: backupQb.sleeper.name,
           myVal: tierValue(backupQb.ranked, lg),
           refVal: refV,
           grade: refV > 0 ? Math.min(10, Math.round(tierValue(backupQb.ranked, lg) / refV * 10 * 10) / 10) : 0,
+          isDepth: true,
         });
       }
-      // Backup TE = next TE after starting TE
+      // Backup TE
       const backupTe = bestUnusedAtPos(['TE']);
       if (backupTe) {
         const refV = nthAtPos('TE', totalTeams);
         out.push({
-          slot: 'Backup TE',
+          slot: 'TE2',
           player: backupTe.sleeper.name,
           myVal: tierValue(backupTe.ranked, lg),
           refVal: refV,
           grade: refV > 0 ? Math.min(10, Math.round(tierValue(backupTe.ranked, lg) / refV * 10 * 10) / 10) : 0,
+          isDepth: true,
         });
       }
       // FLEX Depth = average of the next 3 best unused FLEX-eligible (RB/WR/TE),
@@ -1762,13 +1766,13 @@
       if (flexCandidates.length) {
         const avgVal = flexCandidates.reduce((s, p) => s + tierValue(p.ranked, lg), 0) / flexCandidates.length;
         const refV = flexRef ? tierValue(flexRef, lg) : 1;
-        const names = flexCandidates.map(p => p.sleeper.name).join(', ');
         out.push({
-          slot: 'FLEX Depth',
-          player: names + (flexCandidates.length < 3 ? ` (only ${flexCandidates.length})` : ''),
+          slot: 'FLEX DEP',
+          player: flexCandidates.map(p => p.sleeper.name),  // array, rendered as chips
           myVal: avgVal,
           refVal: refV,
           grade: refV > 0 ? Math.min(10, Math.round(avgVal / refV * 10 * 10) / 10) : 0,
+          isDepth: true,
         });
       }
       return out;
@@ -1776,39 +1780,78 @@
     // Find the player attached to each slot for the bar label
     const slotPlayer = (s) => s.player && s.player !== '(empty)' ? s.player : '(empty)';
     const allBars = [
-      ...slotResult.slots.map(s => ({ slot: s.slot, grade: s.grade, player: slotPlayer(s), myVal: s.myVal, refVal: s.refVal })),
-      ...benchDepth.map(s => ({ slot: s.slot, grade: s.grade, player: s.player, myVal: s.myVal, refVal: s.refVal })),
-      { slot: 'Bench', grade: gradeBench(rp, lg), player: 'roster depth', myVal: null, refVal: null },
-      { slot: 'Draft', grade: gradeDraftCapital(r, leagueId), player: 'future picks', myVal: null, refVal: null },
+      ...slotResult.slots.map(s => ({ slot: s.slot, grade: s.grade, player: slotPlayer(s), myVal: s.myVal, refVal: s.refVal, isDepth: false })),
+      ...benchDepth.map(s => ({ slot: s.slot, grade: s.grade, player: s.player, myVal: s.myVal, refVal: s.refVal, isDepth: true })),
+      { slot: 'Bench', grade: gradeBench(rp, lg), player: 'roster depth', myVal: null, refVal: null, isDepth: true, isMeta: true },
+      { slot: 'Draft', grade: gradeDraftCapital(r, leagueId), player: 'future picks', myVal: null, refVal: null, isDepth: true, isMeta: true },
     ];
-    // Track widths scale by PPG importance: high-impact slots get the
-    // widest tracks, depth/bench shrink. Track minimum keeps bars readable.
+    // Track widths scale by PPG importance. All tracks share a common right
+    // edge so the eye scans grade fills cleanly.
     const ppgs = allBars.map(s => slotPPG(s.slot, lg));
     const maxPPG = Math.max(...ppgs, 1);
-    main.appendChild(h('div', { class:'slot-bars' },
-      ...allBars.map((s, i) => {
-        const ratio = ppgs[i] / maxPPG;
-        const trackWidth = Math.round(80 + ratio * 220); // 80-300px
-        const fillPct = Math.max(2, Math.min(100, s.grade * 10));
-        const color = s.grade >= 7.5 ? 'var(--green)'
-                    : s.grade >= 5.5 ? 'var(--amber)'
-                    : s.grade >= 3.5 ? '#fb923c'
-                    : 'var(--red)';
-        // Use the source's myVal/refVal where present so hover reveals the
-        // exact math (your value vs the slot reference dynasty value).
-        const detail = (s.myVal != null && s.refVal != null)
-          ? `${fmt.decimal(s.myVal, 1)} of ${fmt.decimal(s.refVal, 1)}`
-          : `~${ppgs[i]} PPG`;
-        return h('div', { class:'slot-bar-row', title: `${s.slot}: ${s.player}. Grade ${s.grade.toFixed(1)} of 10. Value vs slot ref: ${detail}.` },
-          h('span', { class:'slot-bar-label' }, s.slot),
-          h('span', { class:'slot-bar-player' }, s.player),
-          h('span', { class:'slot-bar-track', style:{ width: trackWidth + 'px' } },
-            h('span', { class:'slot-bar-fill', style:{ width: fillPct + '%', background: color } }),
+    const rankIdx = rankIndex();
+    const buildPosRankChip = (playerName) => {
+      if (!playerName || typeof playerName !== 'string') return null;
+      const entry = rankIdx.byName.get(norm(playerName));
+      if (!entry || !entry._posRank) return null;
+      return h('span', { class:'slot-bar-posrank tnum', title:`Dynasty position rank` }, `${entry.pos}${entry._posRank}`);
+    };
+
+    const slotBarList = h('div', { class:'slot-bars' });
+    let dividerInserted = false;
+    allBars.forEach((s, i) => {
+      if (s.isDepth && !dividerInserted) {
+        slotBarList.appendChild(h('div', { class:'slot-bar-divider' }, 'depth'));
+        dividerInserted = true;
+      }
+      const ratio = ppgs[i] / maxPPG;
+      const trackWidth = Math.round(120 + ratio * 260); // 120-380px, larger min so labels fit
+      const fillPct = Math.max(2, Math.min(100, s.grade * 10));
+      const color = s.grade >= 7.5 ? 'var(--green)'
+                  : s.grade >= 5.5 ? 'var(--amber)'
+                  : s.grade >= 3.5 ? '#fb923c'
+                  : 'var(--red)';
+      const detail = (s.myVal != null && s.refVal != null)
+        ? `${fmt.decimal(s.myVal, 1)}/${fmt.decimal(s.refVal, 1)}`
+        : null;
+      const isClickable = !s.isMeta && typeof s.player === 'string' && s.player !== '(empty)';
+      const onClick = isClickable ? () => openPlayerDetail(s.player) : null;
+      const titleText = `${s.slot}: ${typeof s.player === 'string' ? s.player : s.player.join(', ')}. Grade ${s.grade.toFixed(1)}/10${detail ? ` (value ${detail})` : ''}.`;
+
+      // Inside-bar label content. For FLEX DEP, render player names as chips.
+      const inside = Array.isArray(s.player)
+        ? h('span', { class:'slot-bar-name' },
+            ...s.player.map(name => h('span', {
+              class:'slot-bar-namechip',
+              onclick: (e) => { e.stopPropagation(); openPlayerDetail(name); },
+            }, name)))
+        : h('span', { class:'slot-bar-name' }, s.player);
+
+      const posRankChip = !Array.isArray(s.player) ? buildPosRankChip(s.player) : null;
+
+      slotBarList.appendChild(h('div', {
+        class: 'slot-bar-row' + (isClickable ? ' clickable' : ''),
+        title: titleText,
+        onclick: onClick,
+      },
+        h('span', { class:'slot-bar-label' }, s.slot),
+        h('span', { class:'slot-bar-track', style:{ width: trackWidth + 'px' } },
+          h('span', { class:'slot-bar-fill', style:{ width: fillPct + '%', background: color } }),
+          h('span', { class:'slot-bar-content' },
+            inside,
+            posRankChip,
+            h('span', { class:'slot-bar-grade', style:{ color } }, s.grade.toFixed(1)),
           ),
-          h('span', { class:'slot-bar-detail' }, detail),
-          h('span', { class:'slot-bar-grade tnum', style:{ color } }, s.grade.toFixed(1)),
-        );
-      })
+        ),
+      ));
+    });
+    main.appendChild(slotBarList);
+    main.appendChild(h('div', { class:'slot-bars-legend tip' },
+      h('span', null, 'Bar length = expected PPG impact of the slot.'),
+      h('span', { class:'sep' }, '·'),
+      h('span', null, 'Fill width = your grade.'),
+      h('span', { class:'sep' }, '·'),
+      h('span', null, 'Click a row for player detail.'),
     ));
 
     // ===== Slot Detail table (transparency on the math behind each circle) =====
@@ -1935,9 +1978,9 @@
     if (ts.downtier.length || ts.uptier.length || ts.pivot.length) {
       main.appendChild(h('h2', { class:'section-title' }, 'Trade Strategy'));
       main.appendChild(h('div', { class:'card-grid cols-3' },
-        tradeScenarioCard('↓ Downtier', ts.downtier, 'var(--blue)'),
-        tradeScenarioCard('↑ Uptier',   ts.uptier,   'var(--green)'),
-        tradeScenarioCard('⇄ Pivot',    ts.pivot,    'var(--accent-hot)'),
+        tradeScenarioCard('↓ Downtier', ts.downtier, 'var(--blue)', lg),
+        tradeScenarioCard('↑ Uptier',   ts.uptier,   'var(--green)', lg),
+        tradeScenarioCard('⇄ Pivot',    ts.pivot,    'var(--accent-hot)', lg),
       ));
       const ssWeak = ts.surplus[ts.weakPos];
       const ssStrong = ts.surplus[ts.strongPos];
@@ -2150,7 +2193,7 @@
       'FLEX1': 13, 'FLEX2': 12, 'FLEX3': 11, 'FLEX4': 10,
       'IDP1': 7, 'IDP2': 6, 'IDP3': 5,
       'LB1': 8, 'LB2': 7, 'DB1': 6, 'DL1': 6,
-      'Backup QB': 6, 'Backup TE': 3, 'FLEX Depth': 7,
+      'QB2': 6, 'QB3': 5, 'TE2': 3, 'FLEX DEP': 7,
       'Depth 1': 5, 'Depth 2': 4,
       'Bench': 2,
       'Draft': 2,
@@ -2535,14 +2578,23 @@
   }
 
   function tradeStrategy(myRosterPlayers, lg) {
-    // Surplus-aware: trade FROM positions where I have spare startable assets,
-    // TO positions where I have shortages. Match owned players by Sleeper ID
-    // AND by name so unmapped rookies on roster don't show up as targets.
     const idx = rankIndex();
     const surplus = rosterSurplusShortage(myRosterPlayers, lg);
     const myIds = new Set(myRosterPlayers.map(p => p.pid));
     const myNames = new Set(myRosterPlayers.map(p => norm(p.sleeper.name)));
     const isOwnedByMe = (p) => (p._sleeperId && myIds.has(p._sleeperId)) || myNames.has(norm(p.name));
+    // Format-aware candidate filter: IDP players belong only in IDP scenarios.
+    // Trading Ja'Marr Chase for two LBs is almost never the answer outside an
+    // explicit IDP-for-IDP swap.
+    const idpPositions = new Set(['LB','DB','DL','CB','S','DT','DE','NT']);
+    const isCandidateAllowed = (giveItem, candidate) => {
+      const candIsIDP = idpPositions.has(candidate.pos);
+      const giveIsIDP = giveItem && idpPositions.has(giveItem.pos);
+      // Allow IDP candidate only if league is IDP AND the give-side is IDP-related.
+      // Otherwise restrict to offensive skill positions.
+      if (candIsIDP) return lg.is_idp && giveIsIDP;
+      return true;
+    };
 
     // Strongest = biggest surplus, Weakest = biggest shortage
     const sorted = Object.entries(surplus).sort((a,b) => b[1].surplus - a[1].surplus);
@@ -2556,6 +2608,7 @@
       .sort((a,b) => a._val - b._val);   // trade the LOWEST of my startable surplus first
     const fillTargets = idx.all.filter(c =>
       c.pos === weakPos && !isOwnedByMe(c) && isStartable(c, lg)
+      && isCandidateAllowed({ pos: strongPos }, c)
     );
     if (surplus[strongPos].surplus >= 1 && surplus[weakPos].surplus <= -1) {
       for (const sg of mySurplusGuys.slice(0, 3)) {
@@ -2585,6 +2638,7 @@
           !isOwnedByMe(c)
           && c.pos !== rp.ranked.pos
           && (shortagePositions.length === 0 || shortagePositions.includes(c.pos))
+          && isCandidateAllowed(rp.ranked, c)
           && tierValue(c, lg) > val * 0.40 && tierValue(c, lg) < val * 0.65
         ).slice(0, 8);
         const options = [];
@@ -2601,6 +2655,7 @@
     const surplusForUptier = Object.entries(surplus).filter(([_, info]) => info.surplus >= 1);
     const cornerstoneTargets = idx.all.filter(c =>
       c.category === 'cornerstone' && !isOwnedByMe(c) && isStartable(c, lg)
+      && !idpPositions.has(c.pos)  // uptier targets are always offensive cornerstones
     );
     for (const [pos, info] of surplusForUptier) {
       const sortedStartable = info.startablePlayers
@@ -2620,7 +2675,7 @@
     return { downtier, uptier, pivot, weakPos, strongPos, surplus };
   }
 
-  function tradeScenarioCard(title, scenarios, color) {
+  function tradeScenarioCard(title, scenarios, color, lg) {
     if (!scenarios.length) return h('div', { class:'card' },
       h('div', { class:'card-title' }, h('span', { style:{ color } }, title)),
       h('div', { class:'tip' }, 'No scenarios, roster is balanced for this tier.')
@@ -2628,24 +2683,48 @@
     const card = h('div', { class:'card' },
       h('div', { class:'card-title' }, h('span', { style:{ color } }, title))
     );
+    const playerLine = (p) => h('div', {
+      class:'trade-player',
+      title: `${p.name} (${p.pos}, ${p.team || 'FA'})`,
+      onclick:()=>openPlayerDetail(p.name),
+    },
+      h('span', { class:'trade-poschip', 'data-pos': p.pos }, p.pos),
+      h('span', { class:'trade-name' }, p.name),
+      h('span', { class:'trade-team' }, p.team || 'FA'),
+    );
     for (const sc of scenarios.slice(0, 3)) {
-      const give = h('div', { class:'trade-side' },
-        h('div', { class:'trade-label' }, 'GIVE'),
-        ...sc.give.map(p => h('div', { class:'trade-player', onclick:()=>openPlayerDetail(p.name) },
-          posChip(p.pos), teamChip(p.team), h('span', null, p.name)
-        ))
+      const giveVal = sc.give.reduce((s,p)=> s + tierValue(p, lg), 0);
+      const ranked = sc.options.map(o => {
+        const getVal = o.get.reduce((s,p)=> s + tierValue(p, lg), 0);
+        const fairness = giveVal > 0 ? Math.round((getVal / giveVal) * 100) : 0;
+        return { o, getVal, fairness };
+      }).sort((a,b) => b.fairness - a.fairness).slice(0, 3);
+
+      const giveBlock = h('div', { class:'trade-give' },
+        h('div', { class:'trade-give-head' },
+          h('span', { class:'trade-give-label' }, 'You give'),
+          h('span', { class:'trade-give-val' }, `${Math.round(giveVal)} pts`),
+        ),
+        ...sc.give.map(playerLine),
       );
-      const opts = h('div', { class:'trade-options' });
-      for (const o of sc.options.slice(0,3)) {
-        const got = h('div', { class:'trade-option' },
-          h('span', { class:'arrow' }, '→'),
-          ...o.get.map(p => h('div', { class:'trade-player', onclick:()=>openPlayerDetail(p.name) },
-            posChip(p.pos), teamChip(p.team), h('span', null, p.name)
-          ))
+
+      const optsList = h('div', { class:'trade-opts' });
+      ranked.forEach((r, idx) => {
+        const fairColor = r.fairness >= 95 ? 'var(--green)' : r.fairness >= 85 ? 'var(--amber)' : 'var(--red)';
+        const opt = h('div', { class: 'trade-opt' + (idx === 0 ? ' best' : '') },
+          h('div', { class:'trade-opt-head' },
+            idx === 0
+              ? h('span', { class:'trade-best-badge' }, 'BEST FIT')
+              : h('span', { class:'trade-opt-rank' }, `#${idx+1}`),
+            h('span', { class:'trade-fairness', style:{ color: fairColor } }, `${r.fairness}%`),
+            h('span', { class:'trade-getval' }, `${Math.round(r.getVal)} pts`),
+          ),
+          ...r.o.get.map(playerLine),
         );
-        opts.appendChild(got);
-      }
-      card.appendChild(h('div', { class:'trade-row' }, give, opts));
+        optsList.appendChild(opt);
+      });
+
+      card.appendChild(h('div', { class:'trade-scenario' }, giveBlock, optsList));
     }
     return card;
   }
