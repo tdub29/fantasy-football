@@ -659,17 +659,16 @@ textarea { resize: vertical; min-height: 80px; }
 .arch-tag { font-size: 1.05rem; font-weight: 700; letter-spacing: -0.005em; }
 .arch-desc { color: var(--fg-2); font-size: 0.8rem; }
 
-/* ========== Positional Grades ========== */
+/* ========== Positional / Slot Grades ========== */
 .grade-grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
   gap: 12px;
   background: var(--bg-1);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 18px;
 }
-@media (max-width: 900px) { .grade-grid { grid-template-columns: repeat(3, 1fr); } }
 .grade-cell { display:flex; flex-direction:column; align-items:center; gap: 6px; }
 .grade-svg-wrap { position: relative; width: 90px; height: 90px; }
 .grade-num {

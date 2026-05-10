@@ -1688,21 +1688,53 @@
       kpiCard('Overall Grade', fmt.decimal(overall, 1) + '/10', 'Composite of position grades'),
     ));
 
-    // ===== Positional Grades =====
-    main.appendChild(h('h2', { class:'section-title' }, 'Positional Grades'));
+    // ===== Lineup Slots (slot-by-slot grades) =====
+    // Compute first so we can render the per-slot circles.
+    const slotResult = gradeLineupSlots(rp, lg);
+
+    // ===== Per-slot grade circles =====
+    // Each starting lineup slot gets its own circular grade. The league's
+    // roster_positions drives the slot list (QB1, RB1, RB2, WR1, WR2, TE1,
+    // FLEX1-N, SF, IDP_FLEX 1-N etc). Bench depth + Draft Capital cap the row.
+    main.appendChild(h('h2', { class:'section-title' }, 'Slot Grades'));
+    // Compute "flex depth" = the next 2 best lineup-eligible players after
+    // every starting slot is filled. Gives a quick look at injury insurance.
+    const benchDepth = (() => {
+      const used = new Set(slotResult.slots
+        .filter(s => s.player !== '(empty)')
+        .map(s => s.player));
+      const remaining = rp.filter(p => p.ranked && !used.has(p.sleeper.name)
+        && ['QB','RB','WR','TE'].includes(p.ranked.pos))
+        .sort((a, b) => tierValue(b.ranked, lg) - tierValue(a.ranked, lg))
+        .slice(0, 2);
+      const idx = rankIndex();
+      const flexCount = (lg.roster_positions || []).filter(p => p === 'FLEX').length;
+      // Reference for "5th-best FLEX-eligible after starters" depth
+      const flexEligible = idx.all.filter(x => ['RB','WR','TE'].includes(x.pos))
+        .sort((a, b) => tierValue(b, lg) - tierValue(a, lg));
+      const depthRef = flexEligible[(lg.total_rosters || 10) * 3 + flexCount + 2];
+      const refVal = depthRef ? tierValue(depthRef, lg) : 1;
+      return remaining.map((p, i) => ({
+        slot: `Depth ${i + 1}`,
+        player: p.sleeper.name,
+        myVal: tierValue(p.ranked, lg),
+        refVal,
+        grade: refVal > 0 ? Math.min(10, Math.round((tierValue(p.ranked, lg) / refVal) * 10 * 10) / 10) : 0,
+      }));
+    })();
+    const allCircles = [
+      ...slotResult.slots,
+      ...benchDepth,
+      { slot: 'Bench', grade: gradeBench(rp, lg) },
+      { slot: 'Draft', grade: gradeDraftCapital(r, leagueId) },
+    ];
     main.appendChild(h('div', { class:'grade-grid' },
-      gradeCircle('QB', grades.QB),
-      gradeCircle('RB', grades.RB),
-      gradeCircle('WR', grades.WR),
-      gradeCircle('TE', grades.TE),
-      gradeCircle('Bench', grades.Bench),
-      gradeCircle('Draft', grades.Draft),
+      ...allCircles.map(s => gradeCircle(s.slot, s.grade))
     ));
 
-    // ===== Lineup Slots (slot-by-slot grades) =====
-    const slotResult = gradeLineupSlots(rp, lg);
+    // ===== Slot Detail table (transparency on the math behind each circle) =====
     if (slotResult.slots.length) {
-      main.appendChild(h('h2', { class:'section-title' }, 'Lineup Slots'));
+      main.appendChild(h('h2', { class:'section-title' }, 'Slot Detail'));
       main.appendChild(h('div', { class:'card', style:{ padding:0, overflow:'hidden' } },
         h('table', { class:'data' },
           h('thead', null, h('tr', null,
