@@ -1722,18 +1722,36 @@
         grade: refVal > 0 ? Math.min(10, Math.round((tierValue(p.ranked, lg) / refVal) * 10 * 10) / 10) : 0,
       }));
     })();
-    const allCircles = [
-      ...slotResult.slots,
-      ...benchDepth,
-      { slot: 'Bench', grade: gradeBench(rp, lg) },
-      { slot: 'Draft', grade: gradeDraftCapital(r, leagueId) },
+    // Find the player attached to each slot for the bar label
+    const slotPlayer = (s) => s.player && s.player !== '(empty)' ? s.player : '(empty)';
+    const allBars = [
+      ...slotResult.slots.map(s => ({ slot: s.slot, grade: s.grade, player: slotPlayer(s) })),
+      ...benchDepth.map(s => ({ slot: s.slot, grade: s.grade, player: s.player })),
+      { slot: 'Bench', grade: gradeBench(rp, lg), player: 'roster depth' },
+      { slot: 'Draft', grade: gradeDraftCapital(r, leagueId), player: 'future picks' },
     ];
-    // Compute slot weights (normalized 0..1 by max PPG in this league's
-    // lineup) so QB1 and RB1 visually dominate while depth/bench shrinks.
-    const ppgs = allCircles.map(s => slotPPG(s.slot, lg));
+    // Track widths scale by PPG importance: high-impact slots get the
+    // widest tracks, depth/bench shrink. Track minimum keeps bars readable.
+    const ppgs = allBars.map(s => slotPPG(s.slot, lg));
     const maxPPG = Math.max(...ppgs, 1);
-    main.appendChild(h('div', { class:'grade-grid' },
-      ...allCircles.map((s, i) => gradeCircle(s.slot, s.grade, ppgs[i] / maxPPG))
+    main.appendChild(h('div', { class:'slot-bars' },
+      ...allBars.map((s, i) => {
+        const ratio = ppgs[i] / maxPPG;
+        const trackWidth = Math.round(80 + ratio * 220); // 80-300px
+        const fillPct = Math.max(2, Math.min(100, s.grade * 10));
+        const color = s.grade >= 7.5 ? 'var(--green)'
+                    : s.grade >= 5.5 ? 'var(--amber)'
+                    : s.grade >= 3.5 ? '#fb923c'
+                    : 'var(--red)';
+        return h('div', { class:'slot-bar-row', title: `${s.slot} — ${s.player} — grade ${s.grade.toFixed(1)} of 10 (slot weight ~${ppgs[i]} PPG)` },
+          h('span', { class:'slot-bar-label' }, s.slot),
+          h('span', { class:'slot-bar-player' }, s.player),
+          h('span', { class:'slot-bar-track', style:{ width: trackWidth + 'px' } },
+            h('span', { class:'slot-bar-fill', style:{ width: fillPct + '%', background: color } }),
+          ),
+          h('span', { class:'slot-bar-grade tnum', style:{ color } }, s.grade.toFixed(1)),
+        );
+      })
     ));
 
     // ===== Slot Detail table (transparency on the math behind each circle) =====
