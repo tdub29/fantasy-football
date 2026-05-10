@@ -1897,41 +1897,39 @@
     // ===== Lineup Composition (startable surplus / shortage) =====
     const ss = rosterSurplusShortage(rp, lg);
     main.appendChild(h('h2', { class:'section-title' }, 'Lineup Composition'));
-    main.appendChild(h('div', { class:'card', style:{ padding:0, overflow:'hidden' } },
-      h('table', { class:'data' },
-        h('thead', null, h('tr', null,
-          h('th', null, 'Position'),
-          h('th', { class:'right' }, 'Startable'),
-          h('th', { class:'right' }, 'Need'),
-          h('th', { class:'right' }, 'Surplus'),
-          h('th', null, 'Top startable players'),
-        )),
-        h('tbody', null, ...(lg.is_idp ? ['QB','RB','WR','TE','LB','DB','DL'] : ['QB','RB','WR','TE'])
-          .filter(pos => ss[pos])
-          .map(pos => {
-          const info = ss[pos];
-          const color = info.surplus >= 1 ? 'var(--green)' : info.surplus <= -1 ? 'var(--red)' : 'var(--fg-2)';
-          const sign = info.surplus > 0 ? '+' : '';
-          const top3 = info.startablePlayers
-            .map(p => ({ p, val: tierValue(p.ranked, lg) }))
-            .sort((a,b) => b.val - a.val).slice(0,3);
-          return h('tr', null,
-            h('td', null, h('strong', null, pos)),
-            h('td', { class:'right tnum' }, info.startables),
-            h('td', { class:'right tnum' }, info.need),
-            h('td', { class:'right tnum', style:{ color, fontWeight: 700 } }, sign + info.surplus),
-            h('td', null,
-              top3.length
-                ? h('div', { style:{ display:'flex', gap:'8px', flexWrap:'wrap' } },
-                    ...top3.map(({p,val}) => h('span', { class:'tip', style:{ cursor:'pointer' }, onclick:()=>openPlayerDetail(p.sleeper.name) },
-                      p.sleeper.name, h('span', { class:'tnum', style:{ color:'var(--fg-3)', marginLeft:'4px' } }, fmt.decimal(val,0))
-                    )))
-                : h('span', { class:'muted' }, 'no startable players at position')
-            )
-          );
-        }))
-      )
-    ));
+    const lineupCard = h('div', { class:'card lineup-comp' });
+    (lg.is_idp ? ['QB','RB','WR','TE','LB','DB','DL'] : ['QB','RB','WR','TE'])
+      .filter(pos => ss[pos])
+      .forEach(pos => {
+        const info = ss[pos];
+        const color = info.surplus >= 1 ? 'var(--green)' : info.surplus <= -1 ? 'var(--red)' : 'var(--fg-2)';
+        const sign = info.surplus > 0 ? '+' : '';
+        const top3 = info.startablePlayers
+          .map(p => ({ p, val: tierValue(p.ranked, lg) }))
+          .sort((a,b) => b.val - a.val).slice(0,3);
+        lineupCard.appendChild(h('div', { class:'lc-row' },
+          h('div', { class:'lc-pos' }, pos),
+          h('div', { class:'lc-stat' },
+            h('span', { class:'lc-num tnum' }, String(info.startables)),
+            h('span', { class:'lc-slash' }, '/'),
+            h('span', { class:'lc-num tnum' }, String(info.need)),
+            h('span', { class:'lc-eyebrow' }, 'startable / need'),
+          ),
+          h('div', { class:'lc-surplus tnum', style:{ color } },
+            sign + info.surplus,
+            h('span', { class:'lc-eyebrow' }, info.surplus > 0 ? 'surplus' : info.surplus < 0 ? 'short' : 'even'),
+          ),
+          h('div', { class:'lc-top' },
+            top3.length
+              ? top3.map(({p,val}) => h('span', { class:'lc-player', onclick:()=>openPlayerDetail(p.sleeper.name) },
+                  p.sleeper.name,
+                  h('span', { class:'lc-pval tnum' }, fmt.decimal(val,0)),
+                ))
+              : [h('span', { class:'muted' }, 'no startable players at this position')]
+          ),
+        ));
+      });
+    main.appendChild(lineupCard);
     main.appendChild(h('div', { class:'tip', style:{ marginTop:'6px' } },
       `Startable thresholds use league-wide positional slots (1QB target = ${(targetStartersByPos(lg).QB).toFixed(1)} per team, RB ${(targetStartersByPos(lg).RB).toFixed(1)}, WR ${(targetStartersByPos(lg).WR).toFixed(1)}, TE ${(targetStartersByPos(lg).TE).toFixed(1)}). Surplus ≥ 1 means you have spare startable assets to trade.`
     ));

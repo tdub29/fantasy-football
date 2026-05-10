@@ -648,6 +648,58 @@ textarea { resize: vertical; min-height: 80px; }
   border-radius: 2px;
 }
 
+/* ========== Lineup Composition rows ========== */
+.lineup-comp { padding: 0; overflow: hidden; }
+.lc-row {
+  display: grid;
+  grid-template-columns: 56px auto auto minmax(0, 1fr);
+  align-items: center;
+  gap: 18px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+}
+.lc-row:first-child { border-top: none; }
+.lc-row:hover { background: var(--bg-2); }
+.lc-pos {
+  font-size: 1rem; font-weight: 800; letter-spacing: 0.04em;
+  color: var(--fg-0);
+}
+.lc-stat {
+  display: flex; align-items: baseline; gap: 4px;
+}
+.lc-stat .lc-num {
+  font-size: 1.05rem; font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--fg-0);
+}
+.lc-stat .lc-slash { color: var(--fg-3); margin: 0 2px; }
+.lc-eyebrow {
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--fg-3);
+  font-weight: 600;
+  margin-left: 6px;
+  white-space: nowrap;
+}
+.lc-surplus {
+  font-size: 1.05rem; font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  display: flex; align-items: baseline; gap: 4px;
+}
+.lc-top {
+  display: flex; flex-wrap: wrap; gap: 12px;
+  font-size: 0.84rem;
+  color: var(--fg-2);
+}
+.lc-player { cursor: pointer; }
+.lc-player:hover { color: var(--accent-hot); }
+.lc-pval { color: var(--fg-3); margin-left: 4px; }
+@media (max-width: 720px) {
+  .lc-row { grid-template-columns: 44px auto auto; row-gap: 4px; }
+  .lc-top { grid-column: 1 / -1; }
+}
+
 /* ========== Blueprint Row: tier + 3 stats consolidated ========== */
 .blueprint-row {
   display: grid;
