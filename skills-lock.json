@@ -1,0 +1,202 @@
+{
+  "skills": {
+    "anti-slop-design": {
+      "source": "https://pols.dev/slop.md",
+      "sourceType": "url",
+      "computedHash": "860e2d6c661c4ba564fa9daad79d505d2bd86c15855bce2ddce79c2756b39e0e"
+    },
+    "deslop": {
+      "computedHash": "88095a619f65d6e47bf103f7c24f321ba5f77703829fb1c084c111b4a90533db",
+      "skillPath": ".agents/skills/deslop/SKILL.md",
+      "source": "aidenybai/react-doctor",
+      "sourceType": "github"
+    },
+    "find-similar-functions": {
+      "computedHash": "f4278f7ce83ca53c67cf2319194ab5b3db9b794a69afa7c972cdb8be5fb20a7e",
+      "skillPath": ".agents/skills/find-similar-functions/SKILL.md",
+      "source": "aidenybai/react-doctor",
+      "sourceType": "github"
+    },
+    "hallmark": {
+      "computedHash": "ea04b5806681ceaba893ea9883d92a8045cf7f0041b8b7c1c5e594f7e0eabb0f",
+      "skillPath": ".agents/skills/hallmark/SKILL.md",
+      "source": "nutlope/hallmark",
+      "sourceType": "github"
+    },
+    "make-interfaces-feel-better": {
+      "computedHash": "2c3576e63d8c39d75ed327f1dcf6aab7aec0edf293a55f6cb3f7b8571974a01c",
+      "skillPath": ".agents/skills/make-interfaces-feel-better/SKILL.md",
+      "source": "jakubkrehel/make-interfaces-feel-better",
+      "sourceType": "github"
+    },
+    "systematic-debugging": {
+      "computedHash": "4999cb851360485eca5074e727bbdd62ef20549c5d5b01216fcbf5831badb473",
+      "skillPath": ".agents/skills/systematic-debugging/SKILL.md",
+      "source": "obra/superpowers",
+      "sourceType": "github"
+    },
+    "transitions-dev": {
+      "computedHash": "c4dd7001f07f4b95219d9116854f506118af4877b16bb5bed22a03381622a22e",
+      "skillPath": ".agents/skills/transitions-dev/SKILL.md",
+      "source": "jakubantalik/transitions-dev",
+      "sourceType": "github"
+    },
+    "userinterface-wiki": {
+      "computedHash": "1d1fbf49afa29712573e39bea7669b932160ae93bdf96a16d729849641b1fa22",
+      "skillPath": ".agents/skills/userinterface-wiki/SKILL.md",
+      "source": "raphaelsalaja/userinterface-wiki",
+      "sourceType": "github"
+    },
+    "predictive-modeling": {
+      "computedHash": "0da0ac9fc799fc3f34c13e896466f3edd8de1f5516e3157a7f99d1da70d90a8b",
+      "skillPath": ".agents/skills/predictive-modeling/SKILL.md",
+      "source": "local/self",
+      "sourceType": "local"
+    },
+    "provost-data-science-for-business": {
+      "book": "Foster Provost and Tom Fawcett - Data Science for Business",
+      "computedHash": "ae017540cacf49b1d42916861eaca5051a5971b12af126a3b16be5fd21703c9a",
+      "skillPath": ".agents/skills/provost-data-science-for-business/SKILL.md",
+      "source": "local/book-to-skill",
+      "sourceType": "local"
+    },
+    "huyen-ml-systems-design": {
+      "book": "Chip Huyen - Designing Machine Learning Systems: An Iterative Process for Production-Ready Applications (O'Reilly, 2022)",
+      "computedHash": "59c9d165228358412aab6a624c20cbb2e78205de5fff4f24f85440d79e98c2f5",
+      "skillPath": ".agents/skills/huyen-ml-systems-design/SKILL.md",
+      "source": "local/book-to-skill",
+      "sourceType": "local"
+    },
+    "kimball-dimensional-modeling": {
+      "book": "Ralph Kimball and Margy Ross - The Data Warehouse Toolkit (3rd ed.)",
+      "computedHash": "61b48bbbaebc17419cd271e515e08ec8ab9f5535e30c552aecc5eb7dbdd6fae4",
+      "skillPath": ".agents/skills/kimball-dimensional-modeling/SKILL.md",
+      "source": "local/book-to-skill",
+      "sourceType": "local"
+    },
+    "tetlock-superforecasting": {
+      "book": "Philip E. Tetlock & Dan Gardner, Superforecasting: The Art and Science of Prediction (Crown, 2015)",
+      "computedHash": "ff729da40a5a6c5320a636cd8169eed429ddf16f78b5d4ba8b185192734dcb2f",
+      "skillPath": ".agents/skills/tetlock-superforecasting/SKILL.md",
+      "source": "local/book-to-skill",
+      "sourceType": "local"
+    },
+    "getting-to-yes": {
+      "book": "Roger Fisher, William Ury & Bruce Patton - Getting to Yes: Negotiating Agreement Without Giving In (Penguin, 3rd ed., 2011)",
+      "computedHash": "00fa70346f685ede8a0c942da9afbec3c78071500b27707d88a2d8b93529f31f",
+      "skillPath": ".agents/skills/getting-to-yes/SKILL.md",
+      "source": "local/book-to-skill",
+      "sourceType": "local"
+    },
+    "decision-making": {
+      "book": "Daniel Kahneman, Thinking, Fast and Slow (FSG, 2011); Dan Ariely, Predictably Irrational (HarperCollins, 2008); Daniel Kahneman, Olivier Sibony & Cass R. Sunstein, Noise: A Flaw in Human Judgment (Little, Brown Spark, 2021); Annie Duke, Thinking in Bets (Portfolio, 2018); Chip Heath & Dan Heath, Decisive (Crown Business, 2013); Julia Galef, The Scout Mindset (Portfolio, 2021); Richard H. Thaler & Cass R. Sunstein, Nudge (Yale University Press, 2008)",
+      "computedHash": "2ea34b56436469122202cdc8b60a7a1dbc16e6d793a483b2c4539f58c1b66501",
+      "skillPath": ".agents/skills/decision-making/SKILL.md",
+      "source": "local/book-to-skill",
+      "sourceType": "local"
+    },
+    "loopy": {
+      "source": "Forward-Future/loop-library",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/loopy/SKILL.md",
+      "computedHash": "b9b76d49be358e8978ea8acc200ff207743054aa59fac9c721c951ea48f7150d"
+    },
+    "caveman": {
+      "source": "JuliusBrussee/caveman",
+      "sourceType": "github",
+      "sourceCommit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
+      "skillPath": "skills/caveman/SKILL.md",
+      "computedHash": "429b284113acbcd2fe6d8721211efb700bba440ca5c4a625a614b781ad669c90"
+    },
+    "caveman-compress": {
+      "source": "JuliusBrussee/caveman",
+      "sourceType": "github",
+      "sourceCommit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
+      "skillPath": "skills/caveman-compress/SKILL.md",
+      "computedHash": "208475f3dcdd425f5452551b2b6acb8c1879e19edbbad47450113904e5f9732e"
+    },
+    "caveman-stats": {
+      "source": "JuliusBrussee/caveman",
+      "sourceType": "github",
+      "sourceCommit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
+      "skillPath": "skills/caveman-stats/SKILL.md",
+      "computedHash": "7d6ba2ee3fb9b1629b6e95b326a0559f758d881d2ba826120fdfd625f578218d"
+    },
+    "caveman-review": {
+      "source": "JuliusBrussee/caveman",
+      "sourceType": "github",
+      "sourceCommit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
+      "skillPath": "skills/caveman-review/SKILL.md",
+      "computedHash": "f5fcb5ec7cb461bfd95a6f5eb6dbe624967057dce7992e71213bcd3462ace742"
+    },
+    "caveman-commit": {
+      "source": "JuliusBrussee/caveman",
+      "sourceType": "github",
+      "sourceCommit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
+      "skillPath": "skills/caveman-commit/SKILL.md",
+      "computedHash": "54d5ca0894ecab0c74361d0077b71ff4e0bb60c67546880c1807bc8406ea7aab"
+    },
+    "caveman-help": {
+      "source": "JuliusBrussee/caveman",
+      "sourceType": "github",
+      "sourceCommit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
+      "skillPath": "skills/caveman-help/SKILL.md",
+      "computedHash": "c6fea66aacc891b9595aae54b2c8335c322e61f83ad8693e24d3b3ab8603849a"
+    },
+    "cavecrew": {
+      "source": "JuliusBrussee/caveman",
+      "sourceType": "github",
+      "sourceCommit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
+      "skillPath": "skills/cavecrew/SKILL.md",
+      "computedHash": "f1ce6b651c9431cc248061471bf247787c2491c0b02b912691fc8f690f01be04"
+    },
+    "ponytail": {
+      "source": "DietrichGebert/ponytail",
+      "sourceType": "github",
+      "sourceCommit": "bc9ee949d5f439e8b9f3bb92c6d6d3d1e6ebd324",
+      "skillPath": "skills/ponytail/SKILL.md",
+      "computedHash": "e575026e2a6dffe408b10e6f7acc7ed47c83d71fc69f9c0d3880115f3f6c6aa7"
+    },
+    "ponytail-audit": {
+      "source": "DietrichGebert/ponytail",
+      "sourceType": "github",
+      "sourceCommit": "40e50d9e03242aa5dd53ac771950f9127362b25f",
+      "skillPath": "skills/ponytail-audit/SKILL.md",
+      "computedHash": "49e835c96313009179ec162d80ccc9d91625e387c8af7cd3975c531ba105b2d5"
+    },
+    "ponytail-debt": {
+      "source": "DietrichGebert/ponytail",
+      "sourceType": "github",
+      "sourceCommit": "40e50d9e03242aa5dd53ac771950f9127362b25f",
+      "skillPath": "skills/ponytail-debt/SKILL.md",
+      "computedHash": "c0a5c0c0cc843cb53f15b792790946768500b45538d07fadbf0602ed6af63a47"
+    },
+    "ponytail-gain": {
+      "source": "DietrichGebert/ponytail",
+      "sourceType": "github",
+      "sourceCommit": "40e50d9e03242aa5dd53ac771950f9127362b25f",
+      "skillPath": "skills/ponytail-gain/SKILL.md",
+      "computedHash": "f8847c410b54978fff41eab775fc754d41ede19ad6fb72fac799b65616cc6683"
+    },
+    "ponytail-help": {
+      "source": "DietrichGebert/ponytail",
+      "sourceType": "github",
+      "sourceCommit": "40e50d9e03242aa5dd53ac771950f9127362b25f",
+      "skillPath": "skills/ponytail-help/SKILL.md",
+      "computedHash": "07e0fc50c722cee981d47f62a5d32a7def4cb65651f414724e5fd6939f145977"
+    },
+    "ponytail-review": {
+      "source": "DietrichGebert/ponytail",
+      "sourceType": "github",
+      "sourceCommit": "40e50d9e03242aa5dd53ac771950f9127362b25f",
+      "skillPath": "skills/ponytail-review/SKILL.md",
+      "computedHash": "6c8b7e5c897a406b66da6aabda7fa6509e8d1d447e73e602265d7986497445d1"
+    },
+    "void-transit-editorial": {
+      "source": "local/self",
+      "sourceType": "local",
+      "skillPath": "skills/void-transit-editorial/SKILL.md",
+      "computedHash": "87b6219f445122ed4e267ccac9bb00353146c953adbaae888611610eae6cd889"
+    }
+  }
+}

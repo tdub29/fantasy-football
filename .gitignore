@@ -4,9 +4,21 @@ node_modules/
 Thumbs.db
 __pycache__/
 *.pyc
+*.pyo
+.venv/
+venv/
 .env
 .env.*
+!.env.example
 *.local
+
+# Secrets / auth state
+*.pem
+*.key
+secrets.json
+credentials.json
+auth_state.json
+storage_state.json
 
 # Temporary working files
 research.json
@@ -19,3 +31,11 @@ test-*.cjs
 
 site/_shot.py
 site/_shots/
+_shot_modal.py
+
+# scratch: ad-hoc ranking scrapes + recovery backups
+_beyond_box_score_*.tsv
+_isolate_ranking.py
+_isolated_ranking.tsv
+_pasted_rankings.tsv
+*.bak.json

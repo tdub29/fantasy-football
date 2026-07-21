@@ -122,10 +122,50 @@ def extract_players(html):
     return json.loads(m.group(1))
 
 
+def parse_pick_name(name):
+    """Parse 'YYYY Early|Mid|Late Nst|nd|rd|th' into (season, round, slot)."""
+    m = re.match(r"(\d{4})\s+(Early|Mid|Late)\s+(\d+)(?:st|nd|rd|th)", name)
+    if not m: return None
+    return (int(m.group(1)), int(m.group(3)), m.group(2).lower())
+
+
+def build_picks(players, key, label):
+    """Pull KTC's rookie-draft-pick valuations from playersArray entries with
+    position 'RDP'. Returns a list of pick assets ready for roster-strength and
+    trade-calculator use."""
+    out = []
+    for p in players:
+        if p.get("position") != "RDP":
+            continue
+        v = p.get(key) or {}
+        if not v or v.get("value") is None:
+            continue
+        parsed = parse_pick_name(p.get("playerName", ""))
+        if not parsed:
+            continue
+        season, rnd, slot = parsed
+        out.append({
+            "name": p["playerName"],
+            "pos": "PICK",
+            "season": season,
+            "round": rnd,
+            "slot": slot,
+            "ktcValue": v.get("value"),
+            "ktcRank": v.get("rank"),
+            "note": f"KTC {label} pick value {v.get('value')} (rank #{v.get('rank')}).",
+        })
+    # Sort by season, round, slot order (early > mid > late)
+    slot_order = {"early": 0, "mid": 1, "late": 2}
+    out.sort(key=lambda x: (x["season"], x["round"], slot_order.get(x["slot"], 9)))
+    return out
+
+
 def build_ranking(players, key, label, format_str, default_enabled, max_n=350, started_lookup=None):
     # Sort by rank ascending in the chosen key block
     rows = []
     for p in players:
+        if p.get("position") == "RDP":
+            continue  # picks handled separately by build_picks
         v = p.get(key) or {}
         if not v: continue
         rank = v.get("rank")
@@ -177,6 +217,7 @@ def build_ranking(players, key, label, format_str, default_enabled, max_n=350, s
         "format": format_str,
         "defaultEnabled": default_enabled,
         "players": out_players,
+        "picks": build_picks(players, key, label),
     }
 
 

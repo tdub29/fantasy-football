@@ -7,8 +7,8 @@ window.RANKINGS_SOURCES = [
   {
     id: "domain-dynasty",
     name: "Domain Dynasty",
-    handle: "@DomainDynasty",
-    url: "https://www.youtube.com/@DomainDynasty",
+    handle: "@thedynastydomain",
+    url: "https://www.youtube.com/@thedynastydomain",
     color: "#7c3aed",
     description: "Created the player-category system (Cornerstone / Foundational / Upside Premier). Hosts: Nathan + co.",
     rankings: [
@@ -54,7 +54,7 @@ window.RANKINGS_SOURCES = [
 
           // ===== FOUNDATIONAL =====
           // S Tier
-          {name:"Tetairoa McMillan", pos:"WR", team:"CAR", age:22, category:"foundational", tier:"S", note:"One more year of production gets him to Cornerstone"},
+          {name:"Tetairoa McMillan", pos:"WR", team:"CAR", age:22, category:"foundational", tier:"S", note:"Loved as a talent; one more productive year gets him to Cornerstone, but the big breakout may be a year-3 story tied to Bryce Young's efficiency and volume"},
 
           // A Tier
           {name:"Carnell Tate", pos:"WR", team:"TEN", age:21, category:"foundational", tier:"A", note:"2026 rookie, top-5 capital, paired with Cam Ward. Could be Cornerstone next yr", rookie:true},
@@ -71,7 +71,7 @@ window.RANKINGS_SOURCES = [
           {name:"Jonathan Taylor", pos:"RB", team:"IND", age:27, category:"foundational", tier:"C", subtype:"depreciating_pillar", note:"Final third of career; turning 28"},
           {name:"Bo Nix", pos:"QB", team:"DEN", age:25, category:"foundational", tier:"C", note:"QB7 each of last 2 yrs; already 26 going on 27"},
           {name:"Justin Herbert", pos:"QB", team:"LAC", age:27, category:"foundational", tier:"C", note:"Promising 2-3 yr window w/ Mike McDaniel as OC + new weapons"},
-          {name:"Colston Loveland", pos:"TE", team:"CHI", age:22, category:"foundational", tier:"C", note:"Most unproven Foundational; finished last yr strong"},
+          {name:"Colston Loveland", pos:"TE", team:"CHI", age:22, category:"foundational", tier:"C", note:"Most unproven Foundational; finished last yr strong. DD's most-confident Chicago pass-catcher to 'go baller' in year two, near-lock to produce"},
 
           // D Tier
           {name:"Jalen Hurts", pos:"QB", team:"PHI", age:27, category:"foundational", tier:"D", subtype:"depreciating_pillar", note:"Depreciating pillar; passing regressed but rushing floor keeps QB1 finishes"},
@@ -84,17 +84,20 @@ window.RANKINGS_SOURCES = [
           {name:"Ladd McConkey", pos:"WR", team:"LAC", age:24, category:"upside_premier", tier:"S"},
           {name:"Quinshon Judkins", pos:"RB", team:"CLE", age:22, category:"upside_premier", tier:"S"},
           {name:"TreVeyon Henderson", pos:"RB", team:"NE", age:22, category:"upside_premier", tier:"S"},
-          {name:"Emeka Egbuka", pos:"WR", team:"TB", age:23, category:"upside_premier", tier:"S"},
+          {name:"Emeka Egbuka", pos:"WR", team:"TB", age:23, category:"upside_premier", tier:"S", note:"Breakout likely (Evans gone, more Z, target bump), but value already priced in — DeVonta Smith comp, capped-ceiling 'maintain' guy. Contender hold, not a rebuild value-grower"},
 
           // Mid Tier (alphabetical within tier; intra-tier order from transcript was unclear past these)
-          {name:"Rome Odunze", pos:"WR", team:"CHI", age:23, category:"upside_premier", tier:"A"},
-          {name:"Marvin Harrison Jr.", pos:"WR", team:"ARI", age:23, category:"upside_premier", tier:"A"},
-          {name:"Luther Burden III", pos:"WR", team:"CHI", age:22, category:"upside_premier", tier:"A"},
+          {name:"Rome Odunze", pos:"WR", team:"CHI", age:23, category:"upside_premier", tier:"A", note:"Good year expected, but ceiling capped by a crowded Chicago room (Burden, Loveland, Caleb). Not dead — was hurt and poorly used in year one"},
+          {name:"Marvin Harrison Jr.", pos:"WR", team:"ARI", age:23, category:"upside_premier", tier:"A", note:"DeVonta-Smith-style production jump almost certainly coming, but value is capped — already ~WR10 on KTC with little room to grow. Believe in the player, not the price"},
+          {name:"Luther Burden III", pos:"WR", team:"CHI", age:22, category:"upside_premier", tier:"A", note:"DD's favorite sophomore breakout — better positioned to jump than McMillan, and price has finally settled to a buy (~5th-rd ADP). Tier-2 WR ceiling (not Amon-Ra/Puka); Ben Johnson fit, plays inside and out"},
           {name:"Fernando Mendoza", pos:"QB", team:"LV", age:22, category:"upside_premier", tier:"A", note:"2026 rookie QB, Raiders. Bowers' new QB.", rookie:true},
           {name:"Tyler Warren", pos:"TE", team:"IND", age:23, category:"upside_premier", tier:"A"},
           {name:"Bucky Irving", pos:"RB", team:"TB", age:23, category:"upside_premier", tier:"A"},
           {name:"Cam Skattebo", pos:"RB", team:"NYG", age:24, category:"upside_premier", tier:"A"},
-          {name:"Brian Thomas Jr.", pos:"WR", team:"JAX", age:23, category:"upside_premier", tier:"A"}
+          {name:"Brian Thomas Jr.", pos:"WR", team:"JAX", age:23, category:"upside_premier", tier:"A"},
+          // Surfaced in the May '26 "These WRs Are About To Break Dynasty Leagues" video (Ve5iZKAjn4Y)
+          {name:"Travis Hunter", pos:"WR", team:"JAX", age:23, category:"upside_premier", tier:"A", note:"Smash buy at ~9th-round price. Best reception-perception of his rookie class; ascending before injury (24 PPR pts, 100 yds in his final game). Two-way role caps the ceiling and confidence, but he can still play ~80% of WR snaps — high-ceiling rebuild/reload shot"},
+          {name:"Matthew Golden", pos:"WR", team:"GB", age:22, category:"upside_premier", tier:"B", note:"Traitsy first-round project, but Green Bay spreads targets ('gross simple') and a year-two breakout is unlikely — more a year-three bet. Cheap reload/future stash that should at least maintain"}
         ]
       },
       // ===== Rookie-only set, post-NFL-draft. Folded into main aggregation =====

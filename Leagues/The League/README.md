@@ -3,7 +3,7 @@
 > **⚠️ SUPERFLEX LEAGUE** — a second QB can start in the SUPER_FLEX slot. QBs are dramatically more valuable here than in 1QB leagues; treat top-12 QBs as cornerstone-tier assets and adjust trade/draft valuations accordingly.
 
 - League ID: `1314860638501076992`
-- Status: pre_draft
+- Status: in_season
 - Season: 2026 (regular)
 - Teams: 10
 - Sport: nfl
@@ -39,41 +39,51 @@
 
 **Starters** (11)
 
-- Jaxson Dart (QB, NYG, age 22)
-- RJ Harvey (RB, DEN, age 25)
+- Caleb Williams (QB, CHI, age 24)
 - De'Von Achane (RB, MIA, age 24)
-- DeVonta Smith (WR, PHI, age 27)
+- RJ Harvey (RB, DEN, age 25)
+- [0]
 - Jaylen Waddle (WR, DEN, age 27)
 - Brock Bowers (TE, LV, age 23)
-- Oronde Gadsden (TE, LAC, age 22)
-- Malik Nabers (WR, NYG, age 22)
-- Jordan Addison (WR, MIN, age 24)
 - Cam Skattebo (RB, NYG, age 24)
-- Caleb Williams (QB, CHI, age 24)
+- DeVonta Smith (WR, PHI, age 27)
+- Oronde Gadsden (TE, LAC, age 23)
+- Kenny Gainwell (RB, TB, age 27)
+- Jaxson Dart (QB, NYG, age 23)
 
-**Bench** (16)
+**Bench** (20)
 
-- Emanuel Wilson (RB, SEA, age 27)
+- Kyler Murray (QB, MIN, age 28)
+- Jordan Addison (WR, MIN, age 24)
 - Jaylen Wright (RB, MIA, age 23)
-- Luke McCaffrey (WR, WAS, age 25)
+- Ted Hurst (WR, TB, age 22)
+- Tank Dell (WR, HOU, age 26)
+- Emanuel Wilson (RB, SEA, age 27)
+- Josh Downs (WR, IND, age 24)
+- Tank Bigsby (RB, PHI, age 23)
+- Zachariah Branch (WR, ATL, age 22)
 - Tyrone Tracy (RB, NYG, age 26)
+- Jadarian Price (RB, SEA, age 22)
 - Chimere Dike (WR, TEN, age 24)
 - Calvin Ridley (WR, TEN, age 31)
-- Kyler Murray (QB, MIN, age 28)
-- Jerry Jeudy (WR, CLE, age 27)
-- Kenneth Gainwell (RB, TB, age 27)
-- Cade Otton (TE, TB, age 27)
-- John Metchie (WR, CAR, age 25)
-- Isiah Pacheco (RB, DET, age 27)
-- Tank Bigsby (RB, PHI, age 23)
+- Luke McCaffrey (WR, WAS, age 25)
 - Bryce Young (QB, CAR, age 24)
-- Josh Downs (WR, IND, age 24)
-- Tank Dell (WR, HOU, age 26)
+- Isiah Pacheco (RB, DET, age 27)
+- Isaac TeSlaa (WR, DET, age 24)
+- Cade Otton (TE, TB, age 27)
+- Antonio Williams (WR, WAS, age 22)
+- Jerry Jeudy (WR, CLE, age 27)
 
-**Taxi** (2)
+**Taxi** (4)
 
 - Elijah Arroyo (TE, SEA, age 23)
-- Isaac TeSlaa (WR, DET, age 24)
+- Demond Claiborne (RB, MIN, age 22)
+- Brenen Thompson (WR, LAC, age 22)
+- Eli Raridon (TE, NE, age 22)
+
+**IR** (1)
+
+- Malik Nabers (WR, NYG, age 22)
 
 ### Future Draft Picks
 

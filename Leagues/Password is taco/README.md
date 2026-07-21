@@ -1,7 +1,7 @@
 # Password is taco — 2026
 
 - League ID: `1341184676601028608`
-- Status: drafting
+- Status: in_season
 - Season: 2026 (regular)
 - Teams: 10
 - Sport: nfl
@@ -37,38 +37,41 @@
 
 **Starters** (10)
 
-- Josh Allen (QB, BUF, age 29)
-- Emanuel Wilson (RB, SEA, age 27)
+- Josh Allen (QB, BUF, age 30)
 - De'Von Achane (RB, MIA, age 24)
-- Darnell Mooney (WR, NYG, age 28)
-- Olamide Zaccheaus (WR, ATL, age 28)
-- Trey McBride (TE, ARI, age 26)
-- Elic Ayomanor (WR, TEN, age 22)
-- Isaiah Davis (RB, NYJ, age 24)
-- Juwan Johnson (TE, NO, age 29)
-- Cooper Kupp (WR, SEA, age 32)
-
-**Bench** (15)
-
-- Caleb Williams (QB, CHI, age 24)
-- Ricky Pearsall (WR, SF, age 25)
-- Travis Hunter (WR, JAX, age 22)
+- Jeremiyah Love (RB, ARI, age 21)
 - Mike Evans (WR, SF, age 32)
+- Ricky Pearsall (WR, SF, age 25)
+- Trey McBride (TE, ARI, age 26)
+- Juwan Johnson (TE, NO, age 29)
+- Jauan Jennings (WR, MIN, age 29)
+- Chig Okonkwo (TE, WAS, age 26)
+- Eli Stowers (TE, PHI, age 23)
+
+**Bench** (19)
+
+- Emanuel Wilson (RB, SEA, age 27)
+- Caleb Williams (QB, CHI, age 24)
+- Isaiah Davis (RB, NYJ, age 24)
+- Ja'Lynn Polk (WR, NO, age 24)
+- Elic Ayomanor (WR, TEN, age 23)
+- Travis Hunter (WR, JAX, age 23)
+- Zachariah Branch (WR, ATL, age 22)
+- Kaelon Black (RB, SF, age 24)
 - Joe Mixon (RB, FA, age 29)
+- Cooper Kupp (WR, SEA, age 33)
 - Darius Slayton (WR, NYG, age 29)
+- Olamide Zaccheaus (WR, ATL, age 28)
 - Jordan Love (QB, GB, age 27)
-- Jauan Jennings (WR, MIN, age 28)
-- Joshua Palmer (WR, BUF, age 26)
+- Darnell Mooney (WR, NYG, age 28)
 - Jalen Tolbert (WR, MIA, age 27)
 - Isiah Pacheco (RB, DET, age 27)
-- Chig Okonkwo (TE, WAS, age 26)
-- Michael Mayer (TE, LV, age 24)
+- Michael Mayer (TE, LV, age 25)
 - Kayshon Boutte (WR, NE, age 24)
 - Keaton Mitchell (RB, LAC, age 24)
 
-**Taxi** (3)
+**Taxi** (2)
 
-- Ja'Lynn Polk (WR, NO, age 24)
 - Elijah Arroyo (TE, SEA, age 23)
 - Isaac TeSlaa (WR, DET, age 24)
 

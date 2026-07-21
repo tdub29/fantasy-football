@@ -150,7 +150,11 @@
   }
   function sleeperIdForFuzzy(name, pos) {
     const direct = sleeperIdFor(name);
-    if (direct) return direct;
+    if (direct) {
+      const player = window.PLAYERS?.[direct];
+      const positions = new Set([player?.pos, ...(player?.fantasy_positions || [])]);
+      if (!pos || positions.has(pos)) return direct;
+    }
     if (!pos) return null;
     const last = norm(name).split(' ').filter(Boolean).slice(-1)[0];
     if (!last || last.length < 3) return null;
@@ -223,7 +227,63 @@
     _rankIndexKey = enabledKey;
     return _rankIndex;
   }
-  function invalidateRankIndex() { _rankIndex = null; _rankIndexKey = null; }
+  function invalidateRankIndex() {
+    _rankIndex = null; _rankIndexKey = null;
+    _pickIndex = null; _pickIndexKey = null;
+    _leaguePickAvgCache.clear();
+    _valueShareCache.clear();
+  }
+
+  // KTC pick valuations: lookup by "season|slot|round" → { ktcValue, name }.
+  // Exact Sleeper draft order wins when known; originSlot() projects unknown
+  // future slots into KTC's Early / Mid / Late buckets.
+  let _pickIndex = null;
+  let _pickIndexKey = null;
+  function pickIndex() {
+    const key = JSON.stringify({ s: state.settings.enabledSources, r: state.settings.enabledRankings });
+    if (_pickIndex && _pickIndexKey === key) return _pickIndex;
+    const oneqb = new Map();
+    const sf    = new Map();
+    // Two passes. Pass 1 ingests enabled rankings (so an enabled alternative
+    // pick source could override KTC). Pass 2 backfills missing keys from ALL
+    // rankings, enabled or not: pick values are KTC-canonical and their format
+    // is determined by the LEAGUE, not by which player-ranking lists are toggled
+    // on. The ktc-superflex list defaults OFF, but SF leagues still need SF pick
+    // values — without this backfill they fall through to the legacy strategy.js
+    // table (a 2027 1st reads 30 instead of ~49-71).
+    const ingest = (onlyEnabled) => {
+      for (const src of (window.RANKINGS_SOURCES || [])) {
+        if (onlyEnabled && !state.settings.enabledSources[src.id]) continue;
+        for (const r of (src.rankings || [])) {
+          if (onlyEnabled && !state.settings.enabledRankings[r.id]) continue;
+          const target = r.format === 'dynasty_sf' ? sf
+                       : r.format === 'dynasty_1qb' ? oneqb
+                       : null;
+          if (!target) continue;
+          for (const p of (r.picks || [])) {
+            const k = `${p.season}|${p.slot}|${p.round}`;
+            if (!target.has(k)) target.set(k, p);
+          }
+        }
+      }
+    };
+    ingest(true);
+    ingest(false);
+    _pickIndex = { oneqb, sf };
+    _pickIndexKey = key;
+    return _pickIndex;
+  }
+
+  // Bucket a 1-N slot (1 = weakest = first pick = "early") to KTC's slot label.
+  // 12-team default: 1-4 → early, 5-8 → mid, 9-12 → late. Scales for 10/14.
+  function slotToBucket(slot, totalRosters) {
+    const N = totalRosters || 12;
+    const early = Math.ceil(N / 3);
+    const mid   = Math.ceil(2 * N / 3);
+    if (slot <= early) return 'early';
+    if (slot <= mid)   return 'mid';
+    return 'late';
+  }
 
   function tierValue(p, format) {
     if (!p) return 0;
@@ -310,7 +370,12 @@
     return out;
   }
 
-  function computeRosterStrength(roster, league) {
+  // Player-only strength (no picks). Used by originSlot() to project a team's
+  // expected finish, which then drives pick values. Separating these breaks
+  // the cycle computeRosterStrength → rosterOwnedPicks → pickValue → originSlot.
+  // It's also the right model: a team's expected finish reflects on-field
+  // roster, not future asset accumulation.
+  function computePlayerStrength(roster, league) {
     const idx = rankIndex();
     const breakdown = { cornerstone:0, foundational:0, upside_premier:0, mainstay:0, productive_vet:0, short_term:0, unranked:0 };
     let total = 0;
@@ -332,23 +397,180 @@
         unranked.push(sleeper);
       }
     }
-    return { total: Math.round(total*10)/10, breakdown, rankedCount, rankedPlayers, unranked, totalCount: (roster.players||[]).length };
+    return {
+      total: Math.round(total*10)/10,
+      breakdown,
+      rankedCount,
+      rankedPlayers,
+      unranked,
+      totalCount: (roster.players||[]).length,
+    };
+  }
+
+  // Aging retention for a player N years out. KTC value is forward-looking
+  // but only one year deep; for picks 2-3 seasons away we need to age the
+  // roster ourselves. Curve thresholds come from STRATEGY.age_curve
+  // (Apex Fantasy peak-age studies, distilled in strategy.js).
+  //
+  //   futureAge ≤ peak_avg              → 1.00  (still climbing / at peak)
+  //   peak_avg < futureAge ≤ sell_age   → 0.85  (mild decline, sell window)
+  //   sell_age < futureAge ≤ hard_sell  → 0.85 → 0.30 linear (steep drop)
+  //   futureAge > hard_sell_age         → 0.10  (replacement-level)
+  //
+  // Positions without a curve (defenders, K) decay 5% per year as a default.
+  function ageRetention(age, pos, yearsOut) {
+    if (!yearsOut) return 1;
+    if (!age) return Math.pow(0.95, yearsOut); // unknown age → modest decay
+    const futureAge = age + yearsOut;
+    const curve = window.STRATEGY?.age_curve?.[pos];
+    if (!curve) return Math.pow(0.95, yearsOut);
+    const { peak_avg, sell_age, hard_sell_age } = curve;
+    if (futureAge <= peak_avg) return 1.0;
+    if (futureAge <= sell_age) return 0.85;
+    if (futureAge <= hard_sell_age) {
+      const t = (futureAge - sell_age) / Math.max(1, hard_sell_age - sell_age);
+      return 0.85 - 0.55 * t;
+    }
+    return 0.10;
+  }
+
+  // Player-only strength PROJECTED N seasons into the future. Each player's
+  // current tierValue is multiplied by an aging retention factor. yearsOut=0
+  // matches computePlayerStrength exactly. Used by originSlot() so that a
+  // 2027 pick is bucketed by 2027's expected standings, not 2026's — a
+  // vet-heavy contender today will decline by 2028 and their future first
+  // is meaningfully more valuable than slotting it by today's strength.
+  function projectedPlayerStrength(roster, league, yearsOut) {
+    if (!yearsOut) return computePlayerStrength(roster, league);
+    const idx = rankIndex();
+    let total = 0;
+    for (const pid of (roster.players || [])) {
+      const sleeper = window.PLAYERS[pid];
+      if (!sleeper) continue;
+      const ranked = idx.bySleeperId.get(pid) || idx.byName.get(norm(sleeper.name));
+      if (!ranked) continue;
+      const v = tierValue(ranked, league);
+      total += v * ageRetention(sleeper.age, ranked.pos || sleeper.pos, yearsOut);
+    }
+    return { total: Math.round(total * 10) / 10 };
+  }
+
+  // Value share: this roster's player-only strength as a fraction of the
+  // league-wide total player-only strength. Picks excluded (per Dynasty
+  // Domain's framework, value share measures on-field assets, not stockpile).
+  // Cached per (league, enabled-rankings signature) since standings views
+  // compute it for every roster.
+  const _valueShareCache = new Map();
+  function leagueValueTotals(lg) {
+    const key = `${lg.id}::${JSON.stringify({ s: state.settings.enabledSources, r: state.settings.enabledRankings })}`;
+    const hit = _valueShareCache.get(key);
+    if (hit) return hit;
+    const totals = {};
+    let leagueTotal = 0;
+    for (const r of lg.rosters) {
+      const t = computePlayerStrength(r, lg).total;
+      totals[r.roster_id] = t;
+      leagueTotal += t;
+    }
+    const out = { totals, leagueTotal, baseline: 1 / Math.max(1, lg.rosters.length) };
+    _valueShareCache.set(key, out);
+    return out;
+  }
+  function valueShareFor(roster, lg) {
+    const { totals, leagueTotal, baseline } = leagueValueTotals(lg);
+    const mine = totals[roster.roster_id] || 0;
+    const share = leagueTotal > 0 ? mine / leagueTotal : 0;
+    return { share, baseline, mine, leagueTotal };
+  }
+  // Dynasty Domain bands: baseline = 1/N, contender-lock ~ 1.24× baseline,
+  // rebuild-floor ~ 0.72× baseline. Returns a label + color cue.
+  function classifyValueShare(share, baseline) {
+    const sf = window.STRATEGY?.share_framework;
+    const contenderLock = sf ? sf.contender_lock : baseline * 1.24;
+    const rebuildFloor  = sf ? sf.rebuild_floor  : baseline * 0.72;
+    if (share >= contenderLock) return { label: 'CONTENDER', tone: 'good',  delta: share - baseline };
+    if (share >= baseline)      return { label: 'ABOVE AVG', tone: 'mild',  delta: share - baseline };
+    if (share >= rebuildFloor)  return { label: 'BELOW AVG', tone: 'mild',  delta: share - baseline };
+    return                            { label: 'REBUILD',   tone: 'bad',   delta: share - baseline };
+  }
+
+  function computeRosterStrength(roster, league) {
+    const base = computePlayerStrength(roster, league);
+    // Picks: each owned pick contributes KTC value scaled to tierValue range.
+    // Pick value uses exact draft order when known. Unknown future slots use
+    // current player-only strength as best proxy for finish.
+    let picksValue = 0;
+    const ownedPicks = rosterOwnedPicks(roster.roster_id, league);
+    for (const p of ownedPicks) picksValue += p.value || 0;
+    const total = base.total + picksValue;
+    return {
+      ...base,
+      total: Math.round(total * 10) / 10,
+      breakdown: { ...base.breakdown, picks: Math.round(picksValue * 10) / 10 },
+      ownedPicks,
+      picksValue: Math.round(picksValue * 10) / 10,
+    };
   }
 
   // ============================================================
   // Layout: sidebar + content
   // ============================================================
   const ROUTES = [
-    { hash:'#dashboard',    label:'Dashboard',     icon:'◆',  section:'Overview' },
-    { hash:'#rankings',     label:'Rankings',      icon:'★',  section:'Overview' },
-    { hash:'#players',      label:'All Players',   icon:'⌕',  section:'Overview' },
-    { hash:'#leagues',      label:'My Leagues',    icon:'⚑',  section:'My Teams' },
-    { hash:'#trade',        label:'Trade Calculator', icon:'⇄', section:'My Teams' },
-    { hash:'#action',       label:'Action Center', icon:'!', section:'My Teams' },
-    { hash:'#strategy',     label:'Strategy',      icon:'◇',  section:'Settings' },
-    { hash:'#sources',      label:'YouTuber Sources', icon:'▶', section:'Settings' },
-    { hash:'#about',        label:'About',         icon:'?',  section:'Settings' },
+    { hash:'#dashboard',    label:'Dashboard',        icon:'◆',  section:'Overview' },
+    { hash:'#rankings',     label:'Tier Sheet',       icon:'★',  section:'Players' },
+    { hash:'#players',      label:'All Players',      icon:'⌕',  section:'Players' },
+    { hash:'#leagues',      label:'My Leagues',       icon:'⚑',  section:'Dynasty' },
+    { hash:'#action',       label:'Action Center',    icon:'!',  section:'Dynasty' },
+    { hash:'#trade',        label:'Trade Calculator', icon:'⇄',  section:'Tools' },
+    { hash:'#strategy',     label:'Framework',        icon:'◇',  section:'Reference' },
+    { hash:'#sources',      label:'Sources',          icon:'▶',  section:'Reference' },
+    { hash:'#about',        label:'About',            icon:'?',  section:'Reference' },
   ];
+
+  // ============================================================
+  // Tabs + breadcrumb helpers (sub-route nesting)
+  // ============================================================
+  // Sub-tab is the trailing path segment after a primary view's required args.
+  // `viewRoster` parses #roster/:lg/:rid/:tab, `viewLeague` parses #league/:id/:tab,
+  // `viewDashboard` parses #dashboard/:tab. Always falls back to the first tab.
+  function tabBar(tabs, activeKey, hashFor) {
+    const active = activeKey || tabs[0].key;
+    return h('nav', { class:'tab-bar', role:'tablist' },
+      ...tabs.map(t => h('a', {
+        href: hashFor(t.key),
+        role: 'tab',
+        'aria-selected': String(t.key === active),
+        class: `tab${t.key === active ? ' active' : ''}`,
+      },
+        t.icon ? h('span', { class:'tab-icon' }, t.icon) : null,
+        h('span', { class:'tab-label' }, t.label),
+        t.count != null ? h('span', { class:'tab-count tnum' }, String(t.count)) : null,
+      ))
+    );
+  }
+
+  function breadcrumbs(crumbs) {
+    // crumbs: [{ label, hash? }] - last one renders as plain text (current page)
+    const out = h('nav', { class:'crumbs', 'aria-label':'Breadcrumb' });
+    crumbs.forEach((c, i) => {
+      const isLast = i === crumbs.length - 1;
+      if (i > 0) out.appendChild(h('span', { class:'crumb-sep', 'aria-hidden':'true' }, '/'));
+      if (c.hash && !isLast) out.appendChild(h('a', { href: c.hash, class:'crumb-link' }, c.label));
+      else out.appendChild(h('span', { class:`crumb${isLast ? ' crumb-current' : ''}`, 'aria-current': isLast ? 'page' : null }, c.label));
+    });
+    return out;
+  }
+
+  function pageHeader({ eyebrow, title, sub, actions, badge }) {
+    return h('div', { class:'page-header' },
+      h('div', null,
+        eyebrow ? h('div', { class:'page-eyebrow' }, eyebrow) : null,
+        h('h1', { class:'page-title' }, title, badge ? h('span', { class:'page-title-badge' }, badge) : null),
+        sub ? h('p', { class:'page-sub' }, sub) : null
+      ),
+      h('div', { class:'page-actions' }, ...(actions || []))
+    );
+  }
 
   function renderSidebar() {
     const sidebar = $('#sidebar');
@@ -358,7 +580,13 @@
       h('div', null,
         h('div', { class:'name' }, 'Tier Sheet'),
         h('div', { class:'sub' }, 'tdub1329 · 2026'),
-      )
+      ),
+      // Mobile close button (only visible <960px when expanded)
+      h('button', {
+        class:'sidebar-close',
+        'aria-label':'Close navigation',
+        onclick: () => document.body.classList.remove('nav-open')
+      }, '×')
     ));
 
     // Cmd+K search trigger
@@ -369,32 +597,69 @@
       h('span', { class:'kbd' }, isMac ? '⌘' : 'Ctrl'), h('span', { class:'kbd' }, 'K')
     ));
 
-    const sections = {};
-    for (const r of ROUTES) (sections[r.section] = sections[r.section] || []).push(r);
-    for (const [section, items] of Object.entries(sections)) {
-      sidebar.appendChild(h('div', { class:'nav-section-title' }, section));
+    // Determine which league is currently in context (for highlighting + pinning)
+    const hash = location.hash || '#dashboard';
+    let activeLgId = null;
+    const m = hash.match(/^#(?:league|roster|trade|compare)\/([^\/]+)/);
+    if (m) activeLgId = m[1];
+
+    // Preserve original ROUTES order while grouping by section.
+    const sections = [];
+    const seen = new Map();
+    for (const r of ROUTES) {
+      if (!seen.has(r.section)) { seen.set(r.section, sections.length); sections.push({ name: r.section, items: [] }); }
+      sections[seen.get(r.section)].items.push(r);
+    }
+
+    for (const sec of sections) {
+      sidebar.appendChild(h('div', { class:'nav-section-title' }, sec.name));
       const nav = h('div', { class:'nav' });
-      for (const r of items) {
-        const a = h('a', { href:r.hash, dataset:{ route: r.hash } },
+      for (const r of sec.items) {
+        const a = h('a', { href:r.hash, dataset:{ route: r.hash }, onclick: () => document.body.classList.remove('nav-open') },
           h('span', { class:'icon' }, r.icon),
-          r.label
+          h('span', { class:'nav-label' }, r.label)
         );
         nav.appendChild(a);
       }
       sidebar.appendChild(nav);
     }
 
-    // Quick league shortcuts
+    // Quick league shortcuts. The active league (if any) gets a "context"
+    // sub-list under it with sub-tabs for the workspace.
     sidebar.appendChild(h('div', { class:'nav-section-title' }, 'Leagues'));
     const lnav = h('div', { class:'nav' });
     for (const lg of window.LEAGUES || []) {
       const me = (lg.rosters || []).find(r => r.is_me);
       const myTeam = me ? me.team_name : lg.short_name;
-      const a = h('a', { href:`#league/${lg.id}` },
+      const isActive = lg.id === activeLgId;
+      const formatTag = lg.is_superflex ? 'SF' : (lg.is_idp ? 'IDP' : '1QB');
+      const a = h('a', {
+        href:`#league/${lg.id}`,
+        class: isActive ? 'is-context' : '',
+        onclick: () => document.body.classList.remove('nav-open'),
+      },
         h('span', { class:'icon' }, lg.is_superflex ? '◆' : (lg.is_idp ? '◇' : '○')),
-        myTeam
+        h('span', { class:'nav-label' }, myTeam),
+        h('span', { class:'nav-tag' }, formatTag),
       );
       lnav.appendChild(a);
+
+      // Inline sub-nav for the active league: jump to its key sub-tabs.
+      if (isActive && me) {
+        const sub = h('div', { class:'nav-sub' },
+          h('a', { href: `#league/${lg.id}`,          onclick: () => document.body.classList.remove('nav-open') },
+            h('span', { class:'sub-bullet' }, '·'), 'Standings'),
+          h('a', { href: `#league/${lg.id}/players`,  onclick: () => document.body.classList.remove('nav-open') },
+            h('span', { class:'sub-bullet' }, '·'), 'Players'),
+          h('a', { href: `#league/${lg.id}/timeline`, onclick: () => document.body.classList.remove('nav-open') },
+            h('span', { class:'sub-bullet' }, '·'), 'Timeline'),
+          h('a', { href: `#roster/${lg.id}/${me.roster_id}/snapshot`, onclick: () => document.body.classList.remove('nav-open') },
+            h('span', { class:'sub-bullet' }, '·'), 'My Roster'),
+          h('a', { href: `#trade/${lg.id}`,           onclick: () => document.body.classList.remove('nav-open') },
+            h('span', { class:'sub-bullet' }, '·'), 'Trade Lab'),
+        );
+        lnav.appendChild(sub);
+      }
     }
     sidebar.appendChild(lnav);
   }
@@ -402,7 +667,22 @@
   function setActiveNav() {
     const hash = location.hash || '#dashboard';
     for (const a of $$('#sidebar .nav a')) {
-      a.classList.toggle('active', hash.startsWith(a.getAttribute('href')));
+      const href = a.getAttribute('href');
+      // Match nested routes: e.g., #roster/123/45 should keep `#roster` and the
+      // owning league active. We compare path prefixes after the # to avoid
+      // false positives like `#leagues` matching `#league`.
+      const isActive = (() => {
+        if (!href) return false;
+        if (href === hash) return true;
+        const hp = href.replace(/^#/, '').split('/');
+        const cp = hash.replace(/^#/, '').split('/');
+        // every segment in href must equal the corresponding segment in hash
+        for (let i = 0; i < hp.length; i++) {
+          if (hp[i] !== cp[i]) return false;
+        }
+        return true;
+      })();
+      a.classList.toggle('active', isActive);
     }
   }
 
@@ -438,8 +718,43 @@
     return p.subtype === 'depreciating_pillar' ? h('span', { class:'badge depreciating', title:'Depreciating pillar' }, 'DP') : null;
   }
 
+  let _jacobGibbsIndex = null;
+  function jacobGibbsIndex() {
+    if (_jacobGibbsIndex) return _jacobGibbsIndex;
+    const byId = new Map();
+    const byName = new Map();
+    for (const player of (window.JACOB_GIBBS_RANKINGS?.players || [])) {
+      if (player.sleeperId) byId.set(String(player.sleeperId), player);
+      byName.set(norm(player.name), player);
+    }
+    return (_jacobGibbsIndex = { byId, byName });
+  }
+  function jacobGibbsEntry(name, sleeperId) {
+    const idx = jacobGibbsIndex();
+    return (sleeperId && idx.byId.get(String(sleeperId))) || idx.byName.get(norm(name)) || null;
+  }
+  function jacobGibbsDateLabel() {
+    const parts = (window.JACOB_GIBBS_RANKINGS?.updatedAt || '').split('-');
+    return parts.length === 3 ? `${Number(parts[1])}/${Number(parts[2])}` : '2026';
+  }
+  function jacobGibbsHeader() {
+    const data = window.JACOB_GIBBS_RANKINGS;
+    const title = `${data?.source || 'Jacob Gibbs'} 2026 half-PPR rank, updated ${data?.updatedAt || 'unknown'}`;
+    return h('th', { class:'right gibbs-rank-col', title },
+      h('span', { 'aria-label':title }, 'Gibbs ' + jacobGibbsDateLabel()));
+  }
+  function jacobGibbsCell(name, sleeperId) {
+    const player = jacobGibbsEntry(name, sleeperId);
+    const updated = window.JACOB_GIBBS_RANKINGS?.updatedAt || 'unknown';
+    const title = player
+      ? `Jacob Gibbs: #${player.rank} overall, ${player.pos}${player.posRank}, 2026 half-PPR, updated ${updated}`
+      : `Not ranked by Jacob Gibbs, updated ${updated}`;
+    return h('td', { class:'right tnum gibbs-rank-col', title },
+      player ? `#${player.rank}` : h('span', { class:'muted' }, '.'));
+  }
+
   function playerRow(p, opts={}) {
-    const click = () => openPlayerDetail(p.name);
+    const click = () => openPlayerDetail(p.name, p._sleeperId);
     return h('div', { class:'player-row', onclick: click },
       tierChip(p.tier, p.category),
       h('div', { class:'meta' },
@@ -460,18 +775,30 @@
   // ============================================================
   // ROUTE: Dashboard
   // ============================================================
-  function viewDashboard() {
+  function viewDashboard(tabArg) {
     const main = $('#main');
     main.innerHTML = '';
+    const _validTabs = ['overview','leagues','trajectory','market','cornerstones'];
+    const tab = _validTabs.includes(tabArg) ? tabArg : 'overview';
+
     main.appendChild(h('div', { class:'page-header' },
       h('div', null,
+        h('div', { class:'page-eyebrow' }, 'OVERVIEW'),
         h('h1', { class:'page-title' }, 'Dashboard'),
-        h('p', { class:'page-sub' }, "Overview of your dynasty empire, categories, leagues, and standings.")
+        h('p', { class:'page-sub' }, "Your dynasty empire at a glance, leagues, market, and Cornerstones.")
       ),
       h('div', { class:'page-actions' },
         h('button', { class:'ghost', onclick: openCmdK }, h('span', { class:'kbd' }, 'Ctrl'), ' ', h('span', { class:'kbd' }, 'K'), ' Quick jump')
       )
     ));
+
+    main.appendChild(tabBar([
+      { key:'overview',     label:'Overview',     icon:'◆' },
+      { key:'leagues',      label:'Leagues',      icon:'⚑', count: (window.LEAGUES || []).length },
+      { key:'trajectory',   label:'Trajectory',   icon:'↗' },
+      { key:'market',       label:'Market',       icon:'⇅' },
+      { key:'cornerstones', label:'Cornerstones', icon:'★' },
+    ], tab, (k) => k === 'overview' ? '#dashboard' : `#dashboard/${k}`));
 
     const idx = rankIndex();
     const allPlayers = idx.all;
@@ -531,32 +858,34 @@
       );
     }
 
-    main.appendChild(h('section', { class:'empire' },
-      h('div', { class:'empire-head' },
-        h('div', { class:'empire-title' }, 'Dynasty Empire'),
-        h('div', { class:'empire-meta' },
-          `${totalLeagues} ${totalLeagues === 1 ? 'league' : 'leagues'}`,
-          h('span', { class:'sep' }, '·'),
-          `${totalCornerstonesOwned} cornerstones across rosters`,
+    if (tab === 'overview') {
+      main.appendChild(h('section', { class:'empire' },
+        h('div', { class:'empire-head' },
+          h('div', { class:'empire-title' }, 'Dynasty Empire'),
+          h('div', { class:'empire-meta' },
+            `${totalLeagues} ${totalLeagues === 1 ? 'league' : 'leagues'}`,
+            h('span', { class:'sep' }, '·'),
+            `${totalCornerstonesOwned} cornerstones across rosters`,
+          ),
         ),
-      ),
-      assetRow('cornerstone',    'Cornerstones',    'var(--cat-cornerstone)'),
-      assetRow('foundational',   'Foundational',    'var(--cat-foundational)'),
-      assetRow('upside_premier', 'Upside Premier',  'var(--cat-upside)'),
-    ));
+        assetRow('cornerstone',    'Cornerstones',    'var(--cat-cornerstone)'),
+        assetRow('foundational',   'Foundational',    'var(--cat-foundational)'),
+        assetRow('upside_premier', 'Upside Premier',  'var(--cat-upside)'),
+      ));
 
-    main.appendChild(h('div', { class:'card-grid cols-4', style:{ marginTop:'14px' } },
-      kpiCard('Leagues', String(totalLeagues), 'Active dynasty rosters'),
-      kpiCard('Sources Enabled', `${enabledRankings}`, 'Active ranking sets'),
-      kpiCard('Players Ranked', `${idx.all.length}`, 'Across enabled sources'),
-      kpiCard('Cornerstones Owned', `${totalCornerstonesOwned}`, 'Across all your rosters'),
-    ));
+      main.appendChild(h('div', { class:'card-grid cols-4', style:{ marginTop:'14px' } },
+        kpiCard('Leagues', String(totalLeagues), 'Active dynasty rosters'),
+        kpiCard('Sources Enabled', `${enabledRankings}`, 'Active ranking sets'),
+        kpiCard('Players Ranked', `${idx.all.length}`, 'Across enabled sources'),
+        kpiCard('Cornerstones Owned', `${totalCornerstonesOwned}`, 'Across all your rosters'),
+      ));
 
-    // ===== Auto-generated Insights strip =====
-    main.appendChild(insightsStrip(myRosters));
+      main.appendChild(insightsStrip(myRosters));
+    }
 
+    if (tab === 'leagues') {
     // My leagues at a glance
-    main.appendChild(h('h2', { class:'page-title', style:{ fontSize:'1.2rem', marginTop:'24px' } }, 'My Leagues'));
+    main.appendChild(h('h2', { class:'page-title', style:{ fontSize:'1.2rem', marginTop:'8px' } }, 'My Leagues'));
     const grid = h('div', { class:'card-grid cols-3' });
     for (const lg of window.LEAGUES || []) {
       const me = lg.rosters.find(r => r.is_me);
@@ -585,6 +914,7 @@
       ));
     }
     main.appendChild(grid);
+    } // end leagues tab (My Leagues grid)
 
     const cornerstones = [];
     for (const { league, roster } of myRosters) {
@@ -595,13 +925,13 @@
       }
     }
     // Sleeper Market: Risers / Fallers panel
-    if (window.SLEEPER_MARKET) {
+    if (tab === 'market' && window.SLEEPER_MARKET) {
       const market = window.SLEEPER_MARKET;
       const top = (arr, n=8) => arr.slice(0, n);
       const renderMover = (m, sign) => {
         const sp = window.PLAYERS[m.player_id];
         const ranked = sp ? (rankIndex().bySleeperId.get(m.player_id) || rankIndex().byName.get(norm(sp.name))) : null;
-        return h('div', { class:'mover-row', onclick: () => sp ? openPlayerDetail(sp.name) : null },
+        return h('div', { class:'mover-row', onclick: () => sp ? openPlayerDetail(sp.name, m.player_id) : null },
           h('span', { class:'mover-arrow', style:{ color: sign > 0 ? 'var(--green)' : 'var(--red)' } }, sign > 0 ? '↑' : '↓'),
           h('div', { class:'mover-meta' },
             h('div', { class:'name' }, sp ? sp.name : `Player ${m.player_id}`),
@@ -627,8 +957,9 @@
           ...top(market.fallers).map(m => renderMover(m, -1))
         )
       ));
-    }
+    } // end market tab (sleeper market)
 
+    if (tab === 'leagues') {
     // ===== Positional Grade Heatmap =====
     // Replaces the plain table with a visual heatmap. Each cell is a horizontal
     // bar sized to the grade and tinted by category color; the number sits on
@@ -675,9 +1006,169 @@
       ));
     }
     main.appendChild(heatmap);
+    } // end leagues tab (heatmap)
 
+    if (tab === 'trajectory') {
+      main.appendChild(h('h2', { class:'page-title', style:{ fontSize:'1.2rem', marginTop:'8px' } },
+        'Roster Value Trajectory',
+        h('span', { class:'tip', style:{ fontSize:'.78rem', fontWeight:400, marginLeft:'10px' } },
+          `${CURRENT_SEASON} through ${CURRENT_SEASON + PROJECTION_YEARS - 1}, projected with position-aware aging curves`)
+      ));
+
+      // Build year labels once
+      const yearLabels = [];
+      for (let y = 0; y < PROJECTION_YEARS; y++) yearLabels.push(String(CURRENT_SEASON + y));
+
+      // Compute curves for every league. Stash so we can scale all axes to a
+      // common max for cross-league readability.
+      const leagueCurves = myRosters.map(({ league, roster }) => {
+        const rp = getRosterPlayers(roster);
+        const curve = rosterValueCurve(rp, league);
+        return { league, roster, rp, curve };
+      });
+      const globalMax = Math.max(1, ...leagueCurves.flatMap(lc => lc.curve.totals));
+
+      // ===== Aggregate Present vs Future bar (across all my rosters) =====
+      const empire = leagueCurves.reduce((acc, lc) => {
+        for (let y = 0; y < PROJECTION_YEARS; y++) acc.totals[y] += lc.curve.totals[y];
+        acc.pv += lc.curve.pv;
+        acc.fv += lc.curve.fv;
+        return acc;
+      }, { totals: new Array(PROJECTION_YEARS).fill(0), pv: 0, fv: 0 });
+      const pvShare = empire.pv / (empire.pv + empire.fv || 1);
+
+      const pvFvBar = h('div', { class:'pv-fv-bar' },
+        h('div', { class:'pv-fv-fill present', style:{ width: `${(pvShare * 100).toFixed(1)}%` } },
+          h('span', { class:'pv-fv-label' }, `Present ${(pvShare * 100).toFixed(0)}%`),
+        ),
+        h('div', { class:'pv-fv-fill future', style:{ width: `${((1 - pvShare) * 100).toFixed(1)}%` } },
+          h('span', { class:'pv-fv-label' }, `Future ${((1 - pvShare) * 100).toFixed(0)}%`),
+        ),
+      );
+      main.appendChild(h('section', { class:'empire' },
+        h('div', { class:'empire-head' },
+          h('div', { class:'empire-title' }, 'Empire: Present vs Future'),
+          h('div', { class:'empire-meta' },
+            `${fmt.decimal(empire.pv, 0)} PV`,
+            h('span', { class:'sep' }, '·'),
+            `${fmt.decimal(empire.fv, 0)} FV (weighted ${yearLabels.slice(1).join(', ')})`,
+          ),
+        ),
+        pvFvBar,
+        h('div', { class:'tip', style:{ marginTop:'8px' } },
+          'PV (Present Value) = ' + CURRENT_SEASON + ' projected value. FV (Future Value) = decay-weighted average of ' +
+          (PROJECTION_YEARS - 1) + ' subsequent seasons. Aging curves are position-specific (RBs cliff hard at 27, WRs gentler at 30, QBs longest peak, TEs slow decline).'
+        ),
+      ));
+
+      // ===== Per-league trajectory rows =====
+      const tableWrap = h('div', { class:'traj-grid' });
+      tableWrap.appendChild(h('div', { class:'traj-row traj-head' },
+        h('div', { class:'traj-cell traj-leaguecell' }, 'League · Team'),
+        h('div', { class:'traj-cell traj-pvcell' }, 'PV / FV'),
+        h('div', { class:'traj-cell traj-sparkcell' }, yearLabels.map(y => h('span', { class:'traj-year tnum' }, y))),
+        h('div', { class:'traj-cell traj-arrowcell' }, 'Δ ' + CURRENT_SEASON + '→' + (CURRENT_SEASON + PROJECTION_YEARS - 1)),
+      ));
+      for (const { league, roster, curve } of leagueCurves) {
+        const last = curve.totals[PROJECTION_YEARS - 1];
+        const first = curve.totals[0];
+        const delta = last - first;
+        const deltaPct = first > 0 ? (delta / first) * 100 : 0;
+        const deltaColor = delta >= 0 ? 'var(--green)' : delta < -first * 0.20 ? 'var(--red)' : 'var(--amber)';
+        const myPvShare = curve.pv / (curve.pv + curve.fv || 1);
+        const archetypeColor = myPvShare > 0.58 ? 'var(--cat-vet)' : myPvShare < 0.42 ? 'var(--green)' : 'var(--amber)';
+        const archetypeLabel = myPvShare > 0.58 ? 'WIN-NOW' : myPvShare < 0.42 ? 'FUTURE' : 'BALANCED';
+
+        // Sparkline bars: one column per projected year, height scaled to globalMax
+        const spark = h('div', { class:'traj-spark' },
+          ...curve.totals.map((v, i) => {
+            const pct = Math.max(2, (v / globalMax) * 100);
+            const isPresent = i === 0;
+            return h('div', { class:'traj-bar-wrap', title: `${yearLabels[i]}: ${fmt.decimal(v, 0)}` },
+              h('div', {
+                class: `traj-bar ${isPresent ? 'present' : 'future'}`,
+                style:{ height: pct + '%' }
+              }),
+              h('div', { class:'traj-bar-val tnum' }, fmt.decimal(v, 0)),
+            );
+          })
+        );
+
+        tableWrap.appendChild(h('div', {
+          class:'traj-row',
+          onclick: () => navigate(`#roster/${league.id}/${roster.roster_id}`),
+        },
+          h('div', { class:'traj-cell traj-leaguecell' },
+            h('div', { class:'traj-leaguename' }, league.short_name),
+            h('div', { class:'traj-team tip' }, roster.team_name + (league.is_superflex ? ' · SF' : league.is_idp ? ' · IDP' : '')),
+          ),
+          h('div', { class:'traj-cell traj-pvcell' },
+            h('div', { class:'traj-pvfv-mini' },
+              h('div', { class:'traj-pvfv-fill present', style:{ width: `${(myPvShare * 100).toFixed(0)}%` } }),
+              h('div', { class:'traj-pvfv-fill future',  style:{ width: `${((1 - myPvShare) * 100).toFixed(0)}%` } }),
+            ),
+            h('div', { class:'tip', style:{ marginTop:'4px', color: archetypeColor, fontWeight:600 } },
+              archetypeLabel,
+              h('span', { class:'muted', style:{ marginLeft:'6px', fontWeight:400, color:'var(--fg-3)' } },
+                `${fmt.decimal(curve.pv, 0)} · ${fmt.decimal(curve.fv, 0)}`),
+            ),
+          ),
+          h('div', { class:'traj-cell traj-sparkcell' }, spark),
+          h('div', { class:'traj-cell traj-arrowcell tnum', style:{ color: deltaColor, fontWeight: 700 } },
+            (delta >= 0 ? '+' : '') + fmt.decimal(delta, 0),
+            h('div', { class:'tip', style:{ marginTop:'2px' } }, (deltaPct >= 0 ? '+' : '') + deltaPct.toFixed(0) + '%'),
+          ),
+        ));
+      }
+      main.appendChild(tableWrap);
+
+      // ===== Aging-cliff watchlist: who loses the most value over the window =====
+      const allRanked = [];
+      for (const { league, rp } of leagueCurves) {
+        for (const r of rp) {
+          if (!r.ranked) continue;
+          const curve = projectPlayerValue(r.ranked, league);
+          allRanked.push({ p: r.ranked, league, curve, drop: curve[0] - curve[PROJECTION_YEARS - 1] });
+        }
+      }
+      allRanked.sort((a, b) => b.drop - a.drop);
+      const watch = allRanked.slice(0, 8);
+      if (watch.length) {
+        main.appendChild(h('h2', { class:'page-title', style:{ fontSize:'1.1rem', marginTop:'20px' } }, 'Aging-Cliff Watchlist'));
+        main.appendChild(h('div', { class:'tip', style:{ marginTop:'-4px', marginBottom:'8px' } },
+          `Ranked players whose ${CURRENT_SEASON}→${CURRENT_SEASON + PROJECTION_YEARS - 1} projected value falls the most. Lock in trade value before the cliff.`
+        ));
+        const watchCard = h('div', { class:'card', style:{ padding:0, overflow:'hidden' } });
+        const watchTbl = h('table', { class:'data' },
+          h('thead', null, h('tr', null,
+            h('th', null, 'Player'),
+            jacobGibbsHeader(),
+            h('th', null, 'Age · League'),
+            h('th', { class:'right' }, CURRENT_SEASON + ' Val'),
+            h('th', { class:'right' }, (CURRENT_SEASON + PROJECTION_YEARS - 1) + ' Val'),
+            h('th', { class:'right' }, 'Drop'),
+          )),
+          h('tbody', null, ...watch.map(w => h('tr', { onclick: () => openPlayerDetail(w.p.name, w.p._sleeperId) },
+            h('td', null, h('div', { class:'name-cell' },
+              posChip(w.p.pos),
+              h('span', { class:'name' }, w.p.name),
+            )),
+            jacobGibbsCell(w.p.name, w.p._sleeperId),
+            h('td', null, `age ${w.p.age || '?'} · ${w.league.short_name}`),
+            h('td', { class:'right tnum' }, fmt.decimal(w.curve[0], 0)),
+            h('td', { class:'right tnum', style:{ color: 'var(--fg-2)' } }, fmt.decimal(w.curve[PROJECTION_YEARS - 1], 0)),
+            h('td', { class:'right tnum', style:{ color: 'var(--red)', fontWeight: 700 } },
+              '−' + fmt.decimal(w.drop, 0)),
+          )))
+        );
+        watchCard.appendChild(watchTbl);
+        main.appendChild(watchCard);
+      }
+    } // end trajectory tab
+
+    if (tab === 'cornerstones') {
     // Cornerstone summary
-    main.appendChild(h('h2', { class:'page-title', style:{ fontSize:'1.2rem', marginTop:'24px' } }, 'Your Cornerstones'));
+    main.appendChild(h('h2', { class:'page-title', style:{ fontSize:'1.2rem', marginTop:'8px' } }, 'Your Cornerstones'));
     cornerstones.sort((a,b) => b.value - a.value);
     if (!cornerstones.length) {
       main.appendChild(h('div', { class:'empty' }, 'No Cornerstones detected yet, check your roster mappings.'));
@@ -686,17 +1177,19 @@
       const tbl = h('table', { class:'data' },
         h('thead', null, h('tr', null,
           h('th', null, 'Player'),
+          jacobGibbsHeader(),
           h('th', null, 'Tier'),
           h('th', null, 'League'),
           h('th', { class:'right' }, 'Value'),
         )),
         h('tbody', null, ...cornerstones.map(c => {
           const sup = c.league.is_superflex && window.SUPERFLEX_POS_MULT[c.player.pos] > 1;
-          return h('tr', { onclick:()=>openPlayerDetail(c.player.name) },
+          return h('tr', { onclick:()=>openPlayerDetail(c.player.name, c.player._sleeperId) },
             h('td', null, h('div', { class:'name-cell' },
               posChip(c.player.pos), teamChip(c.player.team),
               h('span', { class:'name' }, c.player.name)
             )),
+            jacobGibbsCell(c.player.name, c.player._sleeperId),
             h('td', null, tierChip(c.player.tier, c.player.category)),
             h('td', null, c.league.short_name, sup ? h('span', { class:'badge', style:{ marginLeft:'6px' } }, 'SF Bonus') : null),
             h('td', { class:'right tnum' }, fmt.decimal(c.value, 1))
@@ -706,6 +1199,7 @@
       cs.appendChild(tbl);
       main.appendChild(cs);
     }
+    } // end cornerstones tab
   }
   // Auto-generates 3-4 narrative insight cards from the roster set.
   function insightsStrip(myRosters) {
@@ -806,8 +1300,9 @@
     main.innerHTML = '';
     main.appendChild(h('div', { class:'page-header' },
       h('div', null,
-        h('h1', { class:'page-title' }, 'Overall Rankings'),
-        h('p', { class:'page-sub' }, 'Flat 1 to N list aggregated from your enabled sources. Tier and category influence the ordering, but the rank is the rank.')
+        h('div', { class:'page-eyebrow' }, 'PLAYERS'),
+        h('h1', { class:'page-title' }, 'Tier Sheet'),
+        h('p', { class:'page-sub' }, 'Flat 1 to N rankings aggregated from your enabled sources. Filter by position or category, search, or hide unverified entries.')
       ),
       h('div', { class:'page-actions' },
         h('a', { href:'#sources' }, h('button', { class:'ghost' }, 'Manage Sources'))
@@ -849,7 +1344,19 @@
     function renderList() {
       tableWrap.innerHTML = '';
       const idx = rankIndex();
+      // Dynasty-asset filter: rankings sources don't cover DEF/DST/K/P as
+      // dynasty assets. IDP positions stay only if any of the user's leagues
+      // is IDP; otherwise they'd pollute a 1QB/SF-only view.
+      const anyIdp = (window.LEAGUES || []).some(l => l.is_idp);
+      const idpPositions = new Set(['LB','DB','DL','CB','S','DT','DE','NT']);
+      const irrelevantPositions = new Set(['DST','DEF','K','P']);
+      const isDynastyAssetPos = (pos) => {
+        if (irrelevantPositions.has(pos)) return false;
+        if (!anyIdp && idpPositions.has(pos)) return false;
+        return true;
+      };
       const filtered = idx.all.filter(p => {
+        if (!isDynastyAssetPos(p.pos)) return false;
         if (RANKINGS_FILTER.pos !== 'ALL' && p.pos !== RANKINGS_FILTER.pos) return false;
         if (RANKINGS_FILTER.cat !== 'ALL' && p.category !== RANKINGS_FILTER.cat) return false;
         if (RANKINGS_FILTER.hideUncertain && p.uncertain) return false;
@@ -868,10 +1375,11 @@
         for (const r of lg.rosters || []) {
           for (const pid of (r.players || [])) {
             (ownerMap.get(pid) || ownerMap.set(pid, []).get(pid))
-              .push({ league: lg.short_name, leagueId: lg.id, team: r.team_name, owner: r.owner_name, isMe: r.is_me });
+              .push({ league: lg.short_name, leagueId: lg.id, team: r.team_name, owner: r.owner_name, isMe: r.is_me, stance: rosterStance(r, lg) });
           }
         }
       }
+      const stanceLabels = { tank:'Tank', seller:'Seller', mid:'Mid', buyer:'Buyer', contender:'Contender' };
 
       // Compute position rank within filter (e.g., QB1, QB2)
       const posCounters = {};
@@ -880,6 +1388,7 @@
         h('thead', null, h('tr', null,
           h('th', { class:'right', style:{ width:'56px' } }, 'Rank'),
           h('th', null, 'Player'),
+          jacobGibbsHeader(),
           h('th', null, 'Pos'),
           h('th', null, 'Team'),
           h('th', { class:'right' }, 'Age'),
@@ -902,7 +1411,7 @@
           const youOwn = owners.some(o => o.isMe);
           const ownColor = owned == null ? 'var(--fg-3)' : owned > 80 ? 'var(--green)' : owned > 40 ? 'var(--amber)' : 'var(--fg-2)';
           const startColor = started == null ? 'var(--fg-3)' : started > 60 ? 'var(--green)' : started > 25 ? 'var(--amber)' : 'var(--red)';
-          return h('tr', { class: youOwn ? 'you' : '', onclick: () => openPlayerDetail(p.name), title: p.note || '' },
+          return h('tr', { class: youOwn ? 'you' : '', onclick: () => openPlayerDetail(p.name, sleeperId), title: p.note || '' },
             h('td', { class:'right tnum', style:{ fontWeight:700, color:'var(--fg-1)' } }, String(i + 1)),
             h('td', null, h('div', { class:'name-cell' },
               h('span', { class:'name' }, p.name),
@@ -911,6 +1420,7 @@
               p.subtype === 'depreciating_pillar' ? h('span', { class:'badge depreciating', style:{ marginLeft:'4px' } }, 'DP') : null,
               isDepth ? h('span', { class:'badge depreciating', style:{ marginLeft:'4px' }, title:'Owned but rarely started; depth piece, not a starter.' }, 'DEPTH') : null,
             )),
+            jacobGibbsCell(p.name, sleeperId),
             h('td', null, h('div', { style:{ display:'flex', alignItems:'center', gap:'6px' } },
               posChip(p.pos),
               h('span', { class:'tip tnum' }, posRank)
@@ -924,8 +1434,8 @@
             h('td', null,
               owners.length
                 ? h('div', { style:{ display:'flex', gap:'4px', flexWrap:'wrap' } }, ...owners.slice(0,3).map(o => h('span', {
-                    class:'badge' + (o.isMe ? ' you' : ''),
-                    title: `${o.team} (${o.owner}), ${o.league}`,
+                    class:`badge stance-${o.stance}` + (o.isMe ? ' you' : ''),
+                    title: `${o.team} (${o.owner}), ${o.league} — ${stanceLabels[o.stance] || ''}`,
                   }, o.league)))
                 : h('span', { class:'muted' }, '.')
             ),
@@ -949,6 +1459,7 @@
     main.innerHTML = '';
     main.appendChild(h('div', { class:'page-header' },
       h('div', null,
+        h('div', { class:'page-eyebrow' }, 'PLAYERS'),
         h('h1', { class:'page-title' }, 'All Players'),
         h('p', { class:'page-sub' }, 'Searchable Sleeper player database, overlaid with your enabled rankings.')
       )
@@ -1015,6 +1526,7 @@
       const tbl = h('table', { class:'data' },
         h('thead', null, h('tr', null,
           h('th', null, 'Player'),
+          jacobGibbsHeader(),
           h('th', null, 'Pos'),
           h('th', null, 'Team'),
           h('th', null, 'Category'),
@@ -1022,11 +1534,12 @@
           h('th', null, 'Owners'),
         )),
         h('tbody', null, ...limited.map(({pid,p,ranked,owners}) => {
-          return h('tr', { onclick: ()=>openPlayerDetail(p.name) },
+          return h('tr', { onclick: ()=>openPlayerDetail(p.name, pid) },
             h('td', null, h('div', { class:'name-cell' },
               h('span', { class:'name' }, p.name),
               p.age ? h('span', { class:'muted' }, ` · ${p.age}`) : null,
             )),
+            jacobGibbsCell(p.name, pid),
             h('td', null, posChip(p.pos)),
             h('td', null, teamChip(p.team)),
             h('td', null, ranked ? pillCategory(ranked.category) : h('span', { class:'muted' }, ',')),
@@ -1058,8 +1571,9 @@
     main.innerHTML = '';
     main.appendChild(h('div', { class:'page-header' },
       h('div', null,
+        h('div', { class:'page-eyebrow' }, 'DYNASTY'),
         h('h1', { class:'page-title' }, 'My Leagues'),
-        h('p', { class:'page-sub' }, '2026 dynasty rosters, team strength, and standings.')
+        h('p', { class:'page-sub' }, '2026 dynasty rosters, team strength, and standings. Click any card for the league workspace.')
       )
     ));
     const grid = h('div', { class:'card-grid cols-3' });
@@ -1093,26 +1607,75 @@
     all.sort((a,b)=>b.score-a.score);
     return all.findIndex(x => x.id === rosterId) + 1;
   }
-  function viewLeague(leagueId) {
+
+  // 5-level buy/sell stance for a fantasy roster, league-relative. Quintile of
+  // PLAYER-ONLY strength (picks excluded): a true contender carries stars and
+  // few picks because they traded picks for starters — including picks would
+  // mis-label them as a tank. The pick stockpile is the tank signal, not the
+  // contender signal.
+  const _stanceCache = new Map();
+  function rosterStance(roster, league) {
+    if (!roster || !league) return 'mid';
+    const cacheKey = `${league.id}::${roster.roster_id}`;
+    if (_stanceCache.has(cacheKey)) return _stanceCache.get(cacheKey);
+    const scored = (league.rosters || []).map(r => ({
+      id: r.roster_id,
+      score: computePlayerStrength(r, league).total,
+    })).sort((a, b) => b.score - a.score);
+    const rank = scored.findIndex(x => x.id === roster.roster_id) + 1;
+    const total = scored.length;
+    const pct = total > 1 ? (rank - 1) / (total - 1) : 0;
+    let stance;
+    if (pct < 0.20) stance = 'contender';
+    else if (pct < 0.40) stance = 'buyer';
+    else if (pct < 0.60) stance = 'mid';
+    else if (pct < 0.80) stance = 'seller';
+    else stance = 'tank';
+    _stanceCache.set(cacheKey, stance);
+    return stance;
+  }
+  function viewLeague(leagueId, tabArg) {
     const main = $('#main');
     const lg = (window.LEAGUES || []).find(l => l.id === leagueId);
     if (!lg) { main.innerHTML = ''; main.appendChild(h('div', { class:'empty' }, 'League not found.')); return; }
     const me = lg.rosters.find(r => r.is_me);
 
+    const validTabs = ['standings','players','timeline'];
+    const tab = validTabs.includes(tabArg) ? tabArg : 'standings';
+
     main.innerHTML = '';
+
+    main.appendChild(breadcrumbs([
+      { label:'My Leagues', hash:'#leagues' },
+      { label: lg.short_name || lg.name },
+    ]));
+
+    const formatTag = lg.is_superflex ? 'SUPERFLEX' : (lg.is_idp ? 'IDP' : '1QB');
     main.appendChild(h('div', { class:'page-header' },
       h('div', null,
+        h('div', { class:'page-eyebrow' },
+          'LEAGUE',
+          h('span', { class:'page-eyebrow-tag' }, formatTag),
+          lg.status === 'pre_draft' ? h('span', { class:'page-eyebrow-tag' }, 'PRE-DRAFT') : null,
+        ),
         h('h1', { class:'page-title' }, lg.name),
-        h('p', { class:'page-sub' }, `${me?.team_name || ','} · ${lg.total_rosters}-team · ${lg.status}`)
+        h('p', { class:'page-sub' }, `${me?.team_name || ','} · ${lg.total_rosters}-team`)
       ),
       h('div', { class:'page-actions' },
+        me ? h('a', { href:`#roster/${lg.id}/${me.roster_id}` }, h('button', { class:'primary' }, 'My Roster →')) : null,
         me ? h('a', { href:`#compare/${lg.id}/${me.roster_id}/${(lg.rosters.find(r => !r.is_me) || lg.rosters[1]).roster_id}` },
           h('button', { class:'ghost' }, 'Compare ⇄')) : null,
-        h('a', { href:`#trade/${lg.id}` }, h('button', { class:'ghost' }, 'Trade Calculator ⇄')),
+        h('a', { href:`#trade/${lg.id}` }, h('button', { class:'ghost' }, 'Trade Lab ⇄')),
         h('a', { href:`https://sleeper.com/leagues/${lg.id}/standings`, target:'_blank', rel:'noopener' },
           h('button', { class:'ghost' }, 'Open in Sleeper ↗'))
       )
     ));
+
+    main.appendChild(tabBar([
+      { key:'standings', label:'Standings', icon:'⚑', count: lg.total_rosters },
+      { key:'players',   label:'Players',   icon:'★' },
+      { key:'timeline',  label:'Timeline',  icon:'◷' },
+    ], tab, (k) => k === 'standings' ? `#league/${lg.id}` : `#league/${lg.id}/${k}`));
 
     if (lg.is_superflex) {
       main.appendChild(h('div', { class:'league-banner superflex' },
@@ -1124,12 +1687,41 @@
         'This league has IDP_FLEX slots. Defensive players (LB/DB/DL) score; LBs get a 1.10× multiplier in team strength.'));
     }
 
+    if (tab === 'standings') {
     // Standings / Strength rankings
     main.appendChild(h('h2', { class:'page-title', style:{ fontSize:'1.2rem', marginTop:'8px' } }, 'Team Strength Rankings'));
 
-    const computed = lg.rosters.map(r => ({ r, s: computeRosterStrength(r, lg) }));
+    // 3-year value outlook per team, folded into each row. Sparkline bars are
+    // the projected total for CURRENT_SEASON..+2 (position-aware aging curves +
+    // owned picks). Picks are passed as extra assets so the present (year-0) bar
+    // tracks the same total as the score (projectPlayerValue year-0 == tierValue).
+    const TRAJ_YEARS = 3;
+    const trajLabels = [];
+    for (let y = 0; y < TRAJ_YEARS; y++) trajLabels.push(String(CURRENT_SEASON + y));
+
+    const computed = lg.rosters.map(r => {
+      const s = computeRosterStrength(r, lg);
+      const pickAssets = (s.ownedPicks || []).map(p => ({
+        name: p.label, pos: 'PICK', _isPick: true, ktcValue: (p.value || 0) * 100, age: null, category: 'pick',
+      }));
+      const traj = rosterValueCurve(getRosterPlayers(r), lg, pickAssets).totals.slice(0, TRAJ_YEARS);
+      return { r, s, traj };
+    });
     computed.sort((a,b) => b.s.total - a.s.total);
     const maxTotal = computed[0].s.total || 1;
+    // Common sparkline scale across all teams. Zoom the y-axis to the actual
+    // [min,max] across every team-year rather than starting at 0 — dynasty
+    // value only swings ~5-20% over 3 years, so a 0-based axis flattens the
+    // slope to invisibility. Zoomed, bar height still ranks teams (taller =
+    // stronger) AND the within-team slope shows the trend.
+    const allTrajVals = computed.flatMap(c => c.traj);
+    const trajMax = Math.max(...allTrajVals);
+    const trajMin = Math.min(...allTrajVals);
+    const trajSpan = (trajMax - trajMin) || 1;
+    const trajH = (v) => 12 + ((v - trajMin) / trajSpan) * 88; // 12-100% band
+
+    main.appendChild(h('p', { class:'tip', style:{ marginTop:'-4px', marginBottom:'10px' } },
+      `Bars = projected team value ${trajLabels[0]}–${trajLabels[TRAJ_YEARS-1]} (position-aware aging + owned picks). Δ = ${TRAJ_YEARS}-year change.`));
 
     const standings = h('div');
     computed.forEach((row, i) => {
@@ -1138,6 +1730,24 @@
       const cs = s.rankedPlayers.filter(p => p.ranked.category === 'cornerstone').length;
       const fnd = s.rankedPlayers.filter(p => p.ranked.category === 'foundational').length;
       const ups = s.rankedPlayers.filter(p => p.ranked.category === 'upside_premier').length;
+
+      // Value share (Dynasty Domain framework) per row + classification.
+      const vs = valueShareFor(r, lg);
+      const vsCls = classifyValueShare(vs.share, vs.baseline);
+      const vsTone = vsCls.tone === 'good' ? 'var(--green)' : vsCls.tone === 'bad' ? 'var(--red)' : 'var(--fg-2)';
+
+      // 3-year trajectory: Δ direction + magnitude drive both the figure and the
+      // one-word tag. Rising = accumulating value, Aging = bleeding it.
+      const traj = row.traj;
+      const tFirst = traj[0] || 0, tLast = traj[traj.length - 1] || 0;
+      const tDelta = tLast - tFirst;
+      const tPct = tFirst > 0 ? (tDelta / tFirst) * 100 : 0;
+      const tDir = tPct >= 4 ? 'up' : tPct <= -10 ? 'down' : 'flat';
+      const tColor = tDir === 'up' ? 'var(--green)' : tDir === 'down' ? 'var(--amber)' : 'var(--blue)';
+      const tLabel = tDir === 'up' ? 'RISING' : tDir === 'down' ? 'AGING' : 'STEADY';
+      const spark = h('div', { class:'str-spark' }, ...traj.map((v, yi) =>
+        h('div', { class:'sp-bar-wrap', title:`${trajLabels[yi]}: ${fmt.decimal(v, 0)}` },
+          h('div', { class:'sp-bar', style:{ height: trajH(v) + '%', background: tColor, opacity: yi === traj.length - 1 ? 1 : 0.55 } }))));
 
       standings.appendChild(h('div', { class:`strength-row ${isMe?'you':''}`, onclick:()=>navigate(`#roster/${lg.id}/${r.roster_id}`) },
         h('div', { class:'rank' }, `#${i+1}`),
@@ -1151,50 +1761,541 @@
             h('span', { class:'seg' }, h('span', { class:'dot', style:{ background:'var(--cat-cornerstone)' } }), `${cs} CS`),
             h('span', { class:'seg' }, h('span', { class:'dot', style:{ background:'var(--cat-foundational)' } }), `${fnd} FND`),
             h('span', { class:'seg' }, h('span', { class:'dot', style:{ background:'var(--cat-upside)' } }), `${ups} UP`),
+            h('span', { class:'seg', title: `Value share vs 1/N baseline ${(vs.baseline*100).toFixed(1)}%. ${vsCls.label} band.` },
+              h('span', { class:'tnum', style:{ color: vsTone, fontWeight:700 } }, `${(vs.share*100).toFixed(1)}%`),
+              h('span', { style:{ color:'var(--fg-3)', marginLeft:'4px', fontSize:'0.7rem', textTransform:'uppercase', letterSpacing:'0.04em' } }, 'share'),
+            ),
           )
         ),
-        h('div', { class:'score' }, fmt.decimal(s.total,1)),
-        h('div', { class:'bar-wrap' }, h('div', { class:'bar', style:{ width: `${(s.total/maxTotal*100).toFixed(0)}%` } }))
+        h('div', { class:'score-cell' },
+          h('div', { class:'score' }, fmt.decimal(s.total,1)),
+          h('div', { class:'delta', style:{ color: tColor } }, (tDelta >= 0 ? '+' : '') + tPct.toFixed(0) + '%'),
+        ),
+        h('div', { class:'str-traj' },
+          spark,
+          h('div', { class:'str-traj-foot' },
+            h('span', { class:'yrs' }, `${trajLabels[0].slice(2)}–${trajLabels[TRAJ_YEARS-1].slice(2)}`),
+            h('span', { class:'arch', style:{ color: tColor } }, tLabel),
+          ),
+        )
       ));
     });
     main.appendChild(standings);
+    } // end standings tab
 
-    // Cornerstones owned across the league
-    main.appendChild(h('h2', { class:'page-title', style:{ fontSize:'1.2rem', marginTop:'24px' } }, 'Cornerstones Across the League'));
-    const csList = [];
+    if (tab === 'players') renderLeaguePlayers(main, lg);
+    if (tab === 'timeline') renderLeagueTimeline(main, lg);
+  }
+
+  // ============================================================
+  // viewLeague subviews: Players + Timeline
+  // ============================================================
+  // League-scoped player rankings. Shows the full dynasty ranking list
+  // overlaid with ownership in THIS league (which roster has them, or FA).
+  // Filters: position, category, ownership scope.
+  function renderLeaguePlayers(main, lg) {
+    const idx = rankIndex();
+    // Per-roster ownership lookup keyed by Sleeper player id.
+    const ownerByPid = new Map();
     for (const r of lg.rosters) {
-      const s = computeRosterStrength(r, lg);
-      for (const rp of s.rankedPlayers) {
-        if (rp.ranked.category !== 'cornerstone') continue;
-        csList.push({ roster:r, ranked: rp.ranked, value: rp.value });
+      for (const pid of (r.players || [])) ownerByPid.set(pid, r);
+    }
+    // Filter state lives on a per-league key in localStorage so settings
+    // survive nav between leagues.
+    const lsKey = `tier-sheet-league-players::${lg.id}`;
+    const filter = Object.assign(
+      { pos:'ALL', cat:'ALL', scope:'all', q:'', sort:'rank', dir:'asc' },
+      JSON.parse(localStorage.getItem(lsKey) || '{}')
+    );
+    const persist = () => { try { localStorage.setItem(lsKey, JSON.stringify(filter)); } catch {} };
+
+    main.appendChild(h('h2', { class:'page-title', style:{ fontSize:'1.2rem', marginTop:'8px' } }, 'Player Rankings'));
+
+    // Filter bar
+    const filterBar = h('div', { class:'filters' });
+    const search = h('input', { type:'search', placeholder:'Search players', value: filter.q,
+      oninput:(e) => { filter.q = e.target.value.trim(); persist(); render(); } });
+    filterBar.appendChild(h('div', { class:'group' }, h('label', null, 'Search'), search));
+
+    const posBtns = h('div', { class:'toggle-group' });
+    const posOptions = lg.is_idp ? ['ALL','QB','RB','WR','TE','LB','DB','DL'] : ['ALL','QB','RB','WR','TE'];
+    for (const p of posOptions) {
+      posBtns.appendChild(h('button', {
+        class:`toggle ${filter.pos===p?'active':''}`,
+        onclick:(e) => { filter.pos = p; persist();
+          posBtns.querySelectorAll('.toggle').forEach(b => b.classList.toggle('active', b===e.target));
+          render(); }
+      }, p));
+    }
+    filterBar.appendChild(h('div', { class:'group' }, h('label', null, 'Pos'), posBtns));
+
+    const catSel = h('select', { onchange:(e) => { filter.cat = e.target.value; persist(); render(); } });
+    catSel.appendChild(h('option', { value:'ALL' }, 'All Categories'));
+    for (const [cid, label] of Object.entries(window.CATEGORY_LABELS)) {
+      catSel.appendChild(h('option', { value:cid, selected: filter.cat===cid?'':null }, label));
+    }
+    filterBar.appendChild(h('div', { class:'group' }, h('label', null, 'Category'), catSel));
+
+    const scopeBtns = h('div', { class:'toggle-group' });
+    for (const [k, lbl] of [['all','All'],['rostered','Rostered'],['free','Free Agent'],['mine',"You"]]) {
+      scopeBtns.appendChild(h('button', {
+        class:`toggle ${filter.scope===k?'active':''}`,
+        onclick:(e) => { filter.scope = k; persist();
+          scopeBtns.querySelectorAll('.toggle').forEach(b => b.classList.toggle('active', b===e.target));
+          render(); }
+      }, lbl));
+    }
+    filterBar.appendChild(h('div', { class:'group' }, h('label', null, 'Scope'), scopeBtns));
+    main.appendChild(filterBar);
+
+    const tableWrap = h('div', { class:'card', style:{ padding:0, overflow:'hidden' } });
+    main.appendChild(tableWrap);
+
+    // Position scope: this league's lineup positions only. IDP positions
+    // (LB/DB/DL/CB/S/DT/DE/NT) only show in IDP leagues; DST/K are excluded
+    // entirely because the rankings sources don't cover them as dynasty
+    // assets. Without this, a 1QB-PPR league's Players list pulls in defenders
+    // from any IDP-aware source and pollutes the view.
+    const idpPositions = new Set(['LB','DB','DL','CB','S','DT','DE','NT']);
+    const irrelevantPositions = new Set(['DST','DEF','K','P']);
+    const isLeagueRelevantPos = (pos) => {
+      if (irrelevantPositions.has(pos)) return false;
+      if (!lg.is_idp && idpPositions.has(pos)) return false;
+      return true;
+    };
+
+    function render() {
+      tableWrap.innerHTML = '';
+      const filtered = idx.all.filter(p => {
+        if (!isLeagueRelevantPos(p.pos)) return false;
+        if (filter.pos !== 'ALL' && p.pos !== filter.pos) return false;
+        if (filter.cat !== 'ALL' && p.category !== filter.cat) return false;
+        if (filter.q && !norm(p.name).includes(norm(filter.q))) return false;
+        const ownerRoster = p._sleeperId ? ownerByPid.get(p._sleeperId) : null;
+        if (filter.scope === 'rostered' && !ownerRoster) return false;
+        if (filter.scope === 'free' && ownerRoster) return false;
+        if (filter.scope === 'mine' && !(ownerRoster && ownerRoster.is_me)) return false;
+        return true;
+      });
+      if (!filtered.length) {
+        tableWrap.appendChild(h('div', { class:'empty' }, 'No players match these filters.'));
+        return;
+      }
+      // Sort.
+      const dir = filter.dir === 'desc' ? -1 : 1;
+      const cmp = (a, b) => {
+        let av, bv;
+        switch (filter.sort) {
+          case 'value': av = tierValue(a, lg); bv = tierValue(b, lg); return (bv - av) * dir; // desc-natural
+          case 'gibbs': av = jacobGibbsEntry(a.name, a._sleeperId)?.rank ?? 9999; bv = jacobGibbsEntry(b.name, b._sleeperId)?.rank ?? 9999; return (av - bv) * dir;
+          case 'age':   av = a.age ?? 99; bv = b.age ?? 99; return (av - bv) * dir;
+          case 'pos':   av = `${a.pos}|${a._posRank||999}`; bv = `${b.pos}|${b._posRank||999}`; return av.localeCompare(bv) * dir;
+          case 'name':  return a.name.localeCompare(b.name) * dir;
+          default:      return ((a._overallRank||9999) - (b._overallRank||9999)) * dir;
+        }
+      };
+      const sorted = filtered.slice().sort(cmp);
+      const limit = 250;
+      const rows = sorted.slice(0, limit);
+
+      const sortHdr = (key, label, opts={}) => {
+        const isActive = filter.sort === key;
+        const arrow = isActive ? (filter.dir === 'desc' ? ' ↓' : ' ↑') : '';
+        return h('th', {
+          class: `clickable${isActive ? ' sort-active' : ''}${opts.right ? ' right' : ''}${opts.center ? ' center' : ''}`,
+          style: opts.style,
+          title: opts.title,
+          onclick: () => {
+            if (filter.sort === key) filter.dir = filter.dir === 'asc' ? 'desc' : 'asc';
+            else { filter.sort = key; filter.dir = (key === 'rank' || key === 'gibbs' || key === 'age' || key === 'pos' || key === 'name') ? 'asc' : 'desc'; }
+            persist();
+            render();
+          }
+        }, label + arrow);
+      };
+
+      const tbl = h('table', { class:'data data-sticky' },
+        h('thead', null, h('tr', null,
+          sortHdr('rank', 'Rank', { right:true, style:{ width:'52px' } }),
+          sortHdr('name', 'Player'),
+          sortHdr('gibbs', 'Gibbs ' + jacobGibbsDateLabel(), { right:true, style:{ width:'76px' }, title:'Jacob Gibbs 2026 half-PPR rank' }),
+          sortHdr('pos',  'Pos'),
+          h('th', null, 'Team'),
+          sortHdr('age',  'Age', { right:true }),
+          h('th', null, 'Category'),
+          h('th', { class:'center', style:{ width:'48px' } }, 'Tier'),
+          sortHdr('value','Value', { right:true }),
+          h('th', null, 'Owner'),
+        )),
+        h('tbody', null, ...rows.map((p, i) => {
+          const ownerRoster = p._sleeperId ? ownerByPid.get(p._sleeperId) : null;
+          const isMine = ownerRoster && ownerRoster.is_me;
+          const stance = ownerRoster ? rosterStance(ownerRoster, lg) : null;
+          const stanceLabel = { tank:'Tank', seller:'Seller', mid:'Mid', buyer:'Buyer', contender:'Contender' }[stance] || '';
+          const ownerCell = ownerRoster
+            ? h('div', { class:'name-cell' },
+                h('a', {
+                  href: `#roster/${lg.id}/${ownerRoster.roster_id}`,
+                  class: `badge stance-${stance}${isMine ? ' you' : ''} owner-link`,
+                  title: `${ownerRoster.team_name} (${ownerRoster.owner_name}) — ${stanceLabel}`,
+                  onclick: (e) => e.stopPropagation(),
+                }, ownerRoster.team_name),
+              )
+            : h('span', { class:'badge', style:{ background:'transparent', color:'var(--fg-3)', borderColor:'var(--border)' } }, 'FA');
+          return h('tr', {
+            class: isMine ? 'you' : '',
+            onclick:() => openPlayerDetail(p.name, p._sleeperId),
+            title: ownerRoster ? `Owned by ${ownerRoster.team_name}` : 'Free agent',
+          },
+            h('td', { class:'right tnum', style:{ fontWeight:700 } }, String(p._overallRank || i+1)),
+            h('td', null, h('div', { class:'name-cell' },
+              h('span', { class:'name' }, p.name),
+              p.rookie ? h('span', { class:'badge rookie', style:{ marginLeft:'4px' } }, 'Rookie') : null,
+              p.subtype === 'depreciating_pillar' ? h('span', { class:'badge depreciating', style:{ marginLeft:'4px' }, title:'Depreciating pillar' }, 'DP') : null,
+            )),
+            jacobGibbsCell(p.name, p._sleeperId),
+            h('td', null, h('div', { style:{ display:'flex', alignItems:'center', gap:'6px' } },
+              posChip(p.pos),
+              p._posRank ? h('span', { class:'tip tnum' }, `${p.pos}${p._posRank}`) : null,
+            )),
+            h('td', null, teamChip(p.team)),
+            h('td', { class:'right tnum' }, p.age ?? h('span', { class:'muted' }, '.')),
+            h('td', null, pillCategory(p.category)),
+            h('td', { class:'center' }, tierChip(p.tier, p.category)),
+            h('td', { class:'right tnum' }, fmt.decimal(tierValue(p, lg), 1)),
+            h('td', null, ownerCell),
+          );
+        }))
+      );
+      tableWrap.appendChild(tbl);
+      if (filtered.length > rows.length) {
+        tableWrap.appendChild(h('div', { class:'tip', style:{ padding:'10px 14px' } },
+          `Showing ${rows.length} of ${filtered.length}. Refine filters to narrow.`));
       }
     }
-    csList.sort((a,b)=>b.value-a.value);
-    if (!csList.length) {
-      main.appendChild(h('div', { class:'empty' }, 'No mapped Cornerstones in this league yet.'));
-    } else {
-      const card = h('div', { class:'card', style:{ padding:0, overflow:'hidden' } });
-      const tbl = h('table', { class:'data' },
-        h('thead', null, h('tr', null,
-          h('th', null, 'Player'),
-          h('th', null, 'Tier'),
-          h('th', null, 'Owner'),
-          h('th', { class:'right' }, 'Value'),
-        )),
-        h('tbody', null, ...csList.map(c => h('tr', {
-          class: c.roster.is_me ? 'you' : '',
-          onclick: ()=>navigate(`#roster/${lg.id}/${c.roster.roster_id}`)
-        },
-          h('td', null, h('div', { class:'name-cell' },
-            posChip(c.ranked.pos), teamChip(c.ranked.team), h('span', { class:'name' }, c.ranked.name)
-          )),
-          h('td', null, tierChip(c.ranked.tier, c.ranked.category)),
-          h('td', null, c.roster.team_name, c.roster.is_me ? h('span', { class:'badge you', style:{ marginLeft:'6px' } }, 'YOU') : null),
-          h('td', { class:'right tnum' }, fmt.decimal(c.value, 1))
-        )))
+    render();
+  }
+
+  // ============================================================
+  // Timeline: lazy-fetch Sleeper transactions for the league across all
+  // 18 weeks + the off-season window, group chronologically, render as a
+  // vertical feed of trades, waivers, free-agent moves, and the draft.
+  // Cached in localStorage keyed by leagueId for 30 min.
+  // ============================================================
+  function renderLeagueTimeline(main, lg) {
+    // Filter state per league.
+    const fkey = `tier-sheet-timeline-filter::${lg.id}`;
+    const filter = Object.assign(
+      { trade:true, waiver:true, free_agent:true, draft:true, mineOnly:false },
+      JSON.parse(localStorage.getItem(fkey) || '{}')
+    );
+    const persistF = () => { try { localStorage.setItem(fkey, JSON.stringify(filter)); } catch {} };
+
+    const header = h('div', { style:{ display:'flex', alignItems:'baseline', justifyContent:'space-between', marginTop:'8px', gap:'12px', flexWrap:'wrap' } },
+      h('h2', { class:'page-title', style:{ fontSize:'1.2rem', margin:0 } }, 'Timeline'),
+      h('div', { class:'timeline-controls' }),
+    );
+    main.appendChild(header);
+
+    const wrap = h('div', { class:'card' },
+      h('div', { class:'tip' }, 'Loading league transactions from Sleeper, this can take a few seconds…')
+    );
+    main.appendChild(wrap);
+
+    // Roster id → team name lookup for quick rendering.
+    const teamName = (rid) => {
+      const r = lg.rosters.find(x => x.roster_id === rid);
+      return r ? r.team_name : `R${rid}`;
+    };
+    const isMyRoster = (rid) => lg.rosters.find(x => x.roster_id === rid)?.is_me;
+    const playerName = (pid) => window.PLAYERS[pid]?.name || `#${pid}`;
+    const playerVal = (pid) => {
+      const sp = window.PLAYERS[pid]; if (!sp) return 0;
+      const r = rankIndex().bySleeperId.get(pid) || rankIndex().byName.get(norm(sp.name));
+      return r ? tierValue(r, lg) : 0;
+    };
+
+    // Cache key + TTL.
+    const ckey = `tier-sheet-timeline::${lg.id}`;
+    let cached = null;
+    try {
+      const raw = localStorage.getItem(ckey);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Date.now() - parsed.fetchedAt < 30 * 60 * 1000) cached = parsed;
+      }
+    } catch {}
+
+    const fetchAll = async () => {
+      // Sleeper API allows /league/{id}/transactions/{week}. Pre-season and
+      // off-season activity lives at week 1. In-season weeks 1-18. We fetch
+      // up to the current NFL week if the league is live, else all 18.
+      const nflWeek = (() => {
+        // Rough estimate: NFL season starts first Thursday of September.
+        const now = new Date();
+        if (now.getMonth() < 8) return 18; // before Sep, fetch all (off-season trades)
+        const seasonStart = new Date(now.getFullYear(), 8, 1);
+        const weeks = Math.min(18, Math.max(1, Math.ceil((now - seasonStart) / (7 * 24 * 3600 * 1000))));
+        return weeks;
+      })();
+      const weeks = Array.from({ length: nflWeek }, (_, i) => i + 1);
+      const results = await Promise.all(weeks.map(async (w) => {
+        try {
+          const r = await fetch(`https://api.sleeper.app/v1/league/${lg.id}/transactions/${w}`);
+          if (!r.ok) return [];
+          return await r.json();
+        } catch { return []; }
+      }));
+      const flat = [];
+      results.forEach((arr, i) => {
+        for (const t of (arr || [])) flat.push({ ...t, week: i + 1 });
+      });
+      // Dedupe by transaction_id; sort newest-first by status_updated || created.
+      const byId = new Map();
+      for (const t of flat) byId.set(t.transaction_id, t);
+      const out = Array.from(byId.values()).sort((a, b) =>
+        (b.status_updated || b.created || 0) - (a.status_updated || a.created || 0));
+      return out;
+    };
+
+    // Pick value helper for trade swing math. Uses KTC pickIndex with the
+    // known draft slot when available, otherwise projected player-only strength.
+    const pickAssetValue = (dp) => {
+      const slot = draftPickSlot(dp.season, dp.round, dp.roster_id, lg);
+      const bucket = slotToBucket(slot, lg.total_rosters);
+      const ktcMap = lg.is_superflex ? pickIndex().sf : pickIndex().oneqb;
+      const hit = ktcMap.get(`${dp.season}|${bucket}|${dp.round}`);
+      return hit ? Math.round(hit.ktcValue / 100 * 10) / 10 : 0;
+    };
+
+    // Exact slot when Sleeper publishes draft order; generic round otherwise.
+    const pickLabel = (dp) => {
+      return draftPickLabel(dp.season, dp.round, dp.roster_id, lg, dp.roster_id !== dp.previous_owner_id);
+    };
+
+    const fmtDate = (ms) => {
+      if (!ms) return 'Unknown';
+      const d = new Date(ms);
+      return d.toLocaleDateString(undefined, { month:'short', day:'numeric', year:'numeric' });
+    };
+    const monthKey = (ms) => {
+      if (!ms) return 'Unknown';
+      const d = new Date(ms);
+      return d.toLocaleDateString(undefined, { month:'long', year:'numeric' });
+    };
+    const matchesFilter = (item) => {
+      if (item.kind === 'draft') return filter.draft;
+      const t = item.tx;
+      if (filter.mineOnly) {
+        const involvesMe = (t.roster_ids || []).some(isMyRoster)
+          || Object.values(t.adds || {}).some(isMyRoster)
+          || Object.values(t.drops || {}).some(isMyRoster)
+          || (t.draft_picks || []).some(dp => isMyRoster(dp.owner_id) || isMyRoster(dp.previous_owner_id));
+        if (!involvesMe) return false;
+      }
+      if (t.type === 'trade')      return filter.trade;
+      if (t.type === 'waiver')     return filter.waiver;
+      if (t.type === 'free_agent') return filter.free_agent;
+      return true;
+    };
+
+    // Build the filter pills + refresh button into the header.
+    const buildControls = (txs, drafts) => {
+      const ctrls = header.querySelector('.timeline-controls');
+      if (!ctrls) return;
+      ctrls.innerHTML = '';
+      const pill = (key, label, count) => {
+        const active = filter[key];
+        const el = h('button', {
+          class: `tab${active ? ' active' : ''}`,
+          style:{ padding:'4px 10px', fontSize:'0.72rem' },
+          onclick:() => { filter[key] = !filter[key]; persistF(); doRender(txs, drafts); }
+        }, label, count != null ? h('span', { class:'tab-count tnum' }, String(count)) : null);
+        return el;
+      };
+      const txByType = (type) => txs.filter(t => t.type === type).length;
+      ctrls.appendChild(h('div', { style:{ display:'flex', gap:'4px', flexWrap:'wrap', alignItems:'center' } },
+        pill('trade',      'Trades',     txByType('trade')),
+        pill('waiver',     'Waivers',    txByType('waiver')),
+        pill('free_agent', 'FA',         txByType('free_agent')),
+        pill('draft',      'Drafts',     drafts.length),
+        h('span', { style:{ borderLeft:'1px solid var(--border)', height:'18px', margin:'0 6px' } }),
+        pill('mineOnly',   'My moves only'),
+        h('button', { class:'ghost', style:{ padding:'4px 10px', fontSize:'0.72rem', marginLeft:'auto' }, onclick:() => {
+          try { localStorage.removeItem(ckey); } catch {}
+          cached = null;
+          renderLeagueTimeline(main, lg);
+        }}, '↻ Refresh'),
+      ));
+    };
+
+    const doRender = (txs, drafts) => {
+      wrap.innerHTML = '';
+      buildControls(txs, drafts);
+      // Combine + sort newest-first.
+      const items = [
+        ...drafts.map(d => ({ kind:'draft', ts: d.ts, status: d.status, season: d.season })),
+        ...txs.map(t => ({ kind:'tx', tx: t, ts: t.status_updated || t.created || 0 })),
+      ].sort((a, b) => b.ts - a.ts).filter(matchesFilter);
+
+      if (!items.length) {
+        wrap.appendChild(h('div', { class:'empty' }, 'No items match these filters.'));
+        return;
+      }
+      let currentMonth = null;
+      const feed = h('div', { class:'timeline-feed' });
+      for (const item of items) {
+        const m = monthKey(item.ts);
+        if (m !== currentMonth) {
+          currentMonth = m;
+          feed.appendChild(h('div', { class:'timeline-month' }, m));
+        }
+        feed.appendChild(renderItem(item));
+      }
+      wrap.appendChild(feed);
+      const cacheNote = cached ? `Cached ${Math.floor((Date.now() - cached.fetchedAt)/60000)}m ago` : 'Live';
+      wrap.appendChild(h('div', { class:'tip', style:{ marginTop:'12px', textAlign:'center' } },
+        `${items.length} of ${txs.length + drafts.length} events shown · ${cacheNote}`));
+    };
+
+    const render = (txs) => {
+      const drafts = (lg.drafts || []).map(d => ({
+        kind: 'draft',
+        ts: d.start_time || d.last_picked || 0,
+        status: d.status,
+        season: d.season,
+      }));
+      doRender(txs, drafts);
+    };
+
+    // Pull common helpers up so renderItem can use them.
+    var _fmtDate = fmtDate;
+    var _pickAssetValue = pickAssetValue;
+    var _pickLabel = pickLabel;
+
+    const renderItem = (item) => {
+      if (item.kind === 'draft') {
+        const stateLbl = item.status === 'complete' ? 'Drafted' : item.status === 'drafting' ? 'In Progress' : 'Pre-Draft';
+        return h('div', { class:'timeline-row timeline-draft' },
+          h('div', { class:'timeline-icon', style:{ color:'var(--amber)' } }, '◆'),
+          h('div', { class:'timeline-body' },
+            h('div', { class:'timeline-headline' },
+              h('span', { class:'timeline-eyebrow' }, 'DRAFT'),
+              `${item.season} Rookie Draft`,
+            ),
+            h('div', { class:'tip' }, `${stateLbl} · ${item.ts ? fmtDate(item.ts) : '—'}`),
+          )
+        );
+      }
+      const t = item.tx;
+      if (t.type === 'trade') {
+        // Group adds/drops by roster_id to render "A sends, B sends" lines.
+        const sides = {};
+        for (const [pid, rid] of Object.entries(t.adds || {})) {
+          (sides[rid] = sides[rid] || { receives:[], sends:[], inVal:0, outVal:0 }).receives.push({ pid, val: playerVal(pid) });
+          sides[rid].inVal += playerVal(pid);
+        }
+        for (const [pid, rid] of Object.entries(t.drops || {})) {
+          (sides[rid] = sides[rid] || { receives:[], sends:[], inVal:0, outVal:0 }).sends.push({ pid, val: playerVal(pid) });
+          sides[rid].outVal += playerVal(pid);
+        }
+        for (const dp of (t.draft_picks || [])) {
+          const pVal = _pickAssetValue(dp);
+          const lbl = _pickLabel(dp);
+          (sides[dp.owner_id] = sides[dp.owner_id] || { receives:[], sends:[], inVal:0, outVal:0 })
+            .receives.push({ pick: lbl, val: pVal });
+          sides[dp.owner_id].inVal += pVal;
+          (sides[dp.previous_owner_id] = sides[dp.previous_owner_id] || { receives:[], sends:[], inVal:0, outVal:0 })
+            .sends.push({ pick: lbl, val: pVal });
+          sides[dp.previous_owner_id].outVal += pVal;
+        }
+        const sidesArr = Object.entries(sides);
+        const renderAsset = (a) => a.pick
+          ? h('span', { class:'tx-pick' }, a.pick, h('span', { class:'tnum tip', style:{ marginLeft:'6px' } }, fmt.decimal(a.val, 1)))
+          : h('span', { class:'tx-player', onclick:(e) => { e.stopPropagation(); openPlayerDetail(playerName(a.pid), a.pid); } },
+              playerName(a.pid),
+              h('span', { class:'tnum tip', style:{ marginLeft:'6px' } }, fmt.decimal(a.val, 1))
+            );
+        return h('div', { class:'timeline-row' },
+          h('div', { class:'timeline-icon', style:{ color:'var(--blue)' } }, '⇄'),
+          h('div', { class:'timeline-body' },
+            h('div', { class:'timeline-headline' },
+              h('span', { class:'timeline-eyebrow' }, 'TRADE'),
+              sidesArr.map(([rid, _], i) => h('span', { class: isMyRoster(parseInt(rid,10)) ? 'tx-team you' : 'tx-team' },
+                teamName(parseInt(rid,10)) + (i < sidesArr.length-1 ? ' ⇄ ' : '')
+              )),
+            ),
+            h('div', { class:'tx-grid' },
+              ...sidesArr.map(([rid, sides]) => {
+                const swing = sides.inVal - sides.outVal;
+                const swingColor = Math.abs(swing) < 1 ? 'var(--fg-2)' : swing > 0 ? 'var(--green)' : 'var(--red)';
+                return h('div', { class:'tx-side' },
+                  h('div', { class:'tx-side-label' },
+                    h('span', null, `${teamName(parseInt(rid,10))} gets`),
+                    h('span', { class:'tnum', style:{ color: swingColor, fontWeight:700, fontSize:'0.74rem' } },
+                      (swing >= 0 ? '+' : '') + fmt.decimal(swing, 1)),
+                  ),
+                  h('div', { class:'tx-assets' }, ...sides.receives.map(renderAsset))
+                );
+              }),
+            ),
+            h('div', { class:'tip', style:{ marginTop:'4px' } }, _fmtDate(item.ts), ` · Week ${t.week}`),
+          )
+        );
+      }
+      if (t.type === 'waiver' || t.type === 'free_agent') {
+        const rid = (t.roster_ids || [])[0];
+        const adds = Object.keys(t.adds || {});
+        const drops = Object.keys(t.drops || {});
+        const isMe = isMyRoster(rid);
+        const status = t.status === 'failed' ? 'FAILED' : null;
+        return h('div', { class:`timeline-row ${isMe?'is-me':''} ${status?'is-failed':''}` },
+          h('div', { class:'timeline-icon', style:{ color: t.type==='waiver' ? 'var(--green)' : 'var(--fg-3)' } },
+            t.type === 'waiver' ? '+' : '~'),
+          h('div', { class:'timeline-body' },
+            h('div', { class:'timeline-headline' },
+              h('span', { class:'timeline-eyebrow' }, t.type === 'waiver' ? 'WAIVER' : 'FREE AGENT'),
+              h('span', { class: isMe ? 'tx-team you' : 'tx-team' }, teamName(rid)),
+              status ? h('span', { class:'badge depreciating', style:{ marginLeft:'8px' } }, status) : null,
+            ),
+            h('div', { class:'tx-fa-line' },
+              adds.length ? h('span', null,
+                h('span', { class:'tip' }, 'add '),
+                ...adds.map(pid => h('span', { class:'tx-player', onclick:(e)=>{e.stopPropagation();openPlayerDetail(playerName(pid),pid);} }, playerName(pid)))
+              ) : null,
+              adds.length && drops.length ? h('span', { class:'tip', style:{ margin:'0 8px' } }, '·') : null,
+              drops.length ? h('span', null,
+                h('span', { class:'tip' }, 'drop '),
+                ...drops.map(pid => h('span', { class:'tx-player muted', onclick:(e)=>{e.stopPropagation();openPlayerDetail(playerName(pid),pid);} }, playerName(pid)))
+              ) : null,
+            ),
+            h('div', { class:'tip', style:{ marginTop:'4px' } }, fmtDate(item.ts), ` · Week ${t.week}`),
+          )
+        );
+      }
+      // Fallback (commissioner, draft pick trade outside trade type, etc.)
+      return h('div', { class:'timeline-row' },
+        h('div', { class:'timeline-icon' }, '·'),
+        h('div', { class:'timeline-body' },
+          h('div', { class:'timeline-headline' },
+            h('span', { class:'timeline-eyebrow' }, (t.type || 'event').toUpperCase()),
+          ),
+          h('div', { class:'tip' }, fmtDate(item.ts))
+        )
       );
-      card.appendChild(tbl);
-      main.appendChild(card);
+    };
+
+    if (cached) {
+      render(cached.txs);
+    } else {
+      fetchAll().then(txs => {
+        try { localStorage.setItem(ckey, JSON.stringify({ fetchedAt: Date.now(), txs })); } catch {}
+        cached = { fetchedAt: Date.now(), txs };
+        render(txs);
+      }).catch(err => {
+        wrap.innerHTML = '';
+        wrap.appendChild(h('div', { class:'empty' }, `Failed to load transactions: ${err.message}`));
+      });
     }
   }
 
@@ -1261,6 +2362,136 @@
     if (valueTier.tier === 'REBUILD' || (valueArchetype.tag === 'FUTURE VALUE' && draftPicksCount >= 4)) return { tag:'REBUILD', desc:'Long-term runway; accumulate young talent + picks.' };
     if (valueTier.tier === 'CONTENDING' && valueArchetype.tag !== 'WIN-NOW') return { tag:'RELOAD', desc:'Pivot ready, could swing either direction.' };
     return { tag:'CONTEND', desc:'In position to compete.' };
+  }
+
+  // ============================================================
+  // Player Value Trajectory (Present + Future Value)
+  // ============================================================
+  // Each ranked player gets a year-by-year value curve over the next
+  // PROJECTION_YEARS seasons. The curve compounds position-specific aging
+  // multipliers off the player's age + category context. The same engine
+  // powers per-player charts, per-roster value curves, and the dashboard
+  // Present-vs-Future split.
+  const PROJECTION_YEARS = 5; // 2026..2030 (year 0 = current)
+  const CURRENT_SEASON = (() => {
+    const m = new Date();
+    // Assume drafts/seasons rolled into next year by mid-Feb (Super Bowl over).
+    return m.getMonth() >= 1 ? m.getFullYear() : m.getFullYear() - 1;
+  })();
+
+  // Position aging curves. Each curve gives the season-over-season value
+  // multiplier as a function of the player's age IN THAT SEASON.
+  // Numbers are calibrated against dynasty consensus age curves:
+  //   - RBs peak 23-26 then cliff fast
+  //   - WRs peak 25-29, gentler decline
+  //   - QBs peak 27-33, long shoulders
+  //   - TEs peak 26-30, slow decline
+  // Picks (no age) compound at 0.93x/year (rookie pick value decays as the
+  // draft class approaches and the unknown shrinks).
+  function ageMultiplier(pos, age) {
+    if (age == null || age < 19) return 1.00;
+    const curves = {
+      QB: [[24, 1.06], [27, 1.01], [33, 0.98], [35, 0.92], [37, 0.82], [40, 0.65]],
+      RB: [[22, 1.08], [25, 1.00], [27, 0.92], [28, 0.82], [30, 0.65], [32, 0.45]],
+      WR: [[23, 1.07], [26, 1.02], [29, 0.97], [31, 0.88], [33, 0.75], [35, 0.55]],
+      TE: [[24, 1.05], [27, 1.00], [30, 0.95], [32, 0.86], [34, 0.72], [36, 0.55]],
+      // IDP positions: treat like WR aging unless we add real curves
+      LB: [[23, 1.06], [27, 1.00], [30, 0.94], [32, 0.84], [34, 0.70], [36, 0.55]],
+      DB: [[23, 1.06], [27, 1.00], [30, 0.94], [32, 0.84], [34, 0.70], [36, 0.55]],
+      DL: [[24, 1.06], [27, 1.00], [30, 0.94], [32, 0.84], [34, 0.70], [36, 0.55]],
+    };
+    const c = curves[pos] || curves.WR;
+    // Walk the breakpoints; use the multiplier of the bracket the age falls in.
+    let mult = c[0][1];
+    for (let i = 0; i < c.length; i++) {
+      if (age <= c[i][0]) { mult = c[i][1]; break; }
+      mult = c[i][1];
+      if (i === c.length - 1) {
+        // Beyond the last bracket, decay an extra 10% per year past it
+        const extra = Math.max(0, age - c[c.length - 1][0]);
+        mult *= Math.pow(0.85, extra);
+      }
+    }
+    return mult;
+  }
+
+  // Compute a per-year value array [v0, v1, v2, v3, v4] for a single player
+  // (or draft pick asset). v0 is THIS season's value.
+  function projectPlayerValue(p, league) {
+    const yrs = PROJECTION_YEARS;
+    const out = new Array(yrs);
+    const baseVal = tierValue(p, league);
+    // Draft picks: linear-ish growth into the next class, then decay as they
+    // convert. Future 1st = appreciating asset for 1 year, then flat.
+    if (p._isPick || p.pos === 'PICK') {
+      for (let y = 0; y < yrs; y++) {
+        // Pick value peaks the year before the draft conveys (y=0), then
+        // decays as the asset becomes a known player. Approximate that with
+        // 0.9^y compounding.
+        out[y] = baseVal * Math.pow(0.90, y);
+      }
+      return out;
+    }
+    const age = p.age || 25;
+    // Subtype + category adjustments. These bias the START rather than the
+    // shape (depreciating_pillar = front-loaded; upside_premier = back-loaded).
+    let presentBias = 1.00;
+    let futureBias  = 1.00;
+    if (p.subtype === 'depreciating_pillar') { presentBias *= 1.05; futureBias *= 0.80; }
+    if (p.rookie)                            { presentBias *= 0.75; futureBias *= 1.15; }
+    if (p.category === 'upside_premier')     { futureBias  *= 1.05; }
+    if (p.category === 'productive_vet')     { presentBias *= 1.08; futureBias *= 0.85; }
+    if (p.category === 'short_term')         { presentBias *= 1.10; futureBias *= 0.50; }
+
+    for (let y = 0; y < yrs; y++) {
+      // Compound through y years of aging.
+      let mult = 1.0;
+      for (let s = 1; s <= y; s++) {
+        mult *= ageMultiplier(p.pos, age + s);
+      }
+      // Blend present/future biases: bias applies most strongly to its own
+      // domain. Year 0 = pure present, last year = pure future.
+      const futureWeight = y / Math.max(1, yrs - 1);
+      const biasMult = presentBias * (1 - futureWeight) + futureBias * futureWeight;
+      out[y] = baseVal * mult * biasMult;
+    }
+    return out;
+  }
+
+  // Aggregate a roster's value over the projection window. Returns an object
+  // with per-year totals plus PV / FV summary (PV = year 0, FV = mean of years
+  // 1..N-1, weighted toward nearer years).
+  function rosterValueCurve(rosterPlayers, league, extraAssets) {
+    const yrs = PROJECTION_YEARS;
+    const totals = new Array(yrs).fill(0);
+    const breakdownByPos = { QB:new Array(yrs).fill(0), RB:new Array(yrs).fill(0),
+                             WR:new Array(yrs).fill(0), TE:new Array(yrs).fill(0),
+                             PICK:new Array(yrs).fill(0), OTHER:new Array(yrs).fill(0) };
+    const consider = [];
+    for (const rp of rosterPlayers) {
+      if (!rp.ranked) continue;
+      consider.push(rp.ranked);
+    }
+    for (const a of (extraAssets || [])) consider.push(a);
+    for (const p of consider) {
+      const curve = projectPlayerValue(p, league);
+      const bucket = breakdownByPos[p.pos] || breakdownByPos.OTHER;
+      for (let y = 0; y < yrs; y++) {
+        totals[y]  += curve[y];
+        bucket[y]  += curve[y];
+      }
+    }
+    // PV = this year. FV = weighted average of years 1..N-1 (decaying weight
+    // so 2027 counts more than 2030 even in "future").
+    const pv = totals[0];
+    let fvNum = 0, fvDen = 0;
+    for (let y = 1; y < yrs; y++) {
+      const w = Math.pow(0.85, y - 1);
+      fvNum += totals[y] * w;
+      fvDen += w;
+    }
+    const fv = fvDen ? fvNum / fvDen : 0;
+    return { totals, breakdownByPos, pv, fv, pvShare: pv / (pv + fv || 1) };
   }
   // Highest tierValue at a position across all enabled rankings. Used as the
   // 100% reference so a QB1-tier asset grades like a 10 even though no QB hits
@@ -1435,20 +2666,41 @@
     const total = fromFourth.reduce((a,b)=>a+b,0);
     return Math.round(Math.max(0, Math.min(10, total / 50)) * 10) / 10;
   }
+  // League average pick-stockpile cache. The avg is identical for every
+  // roster in a league, so the Roster Blueprint pages used to recompute it
+  // O(N) times per view (once per gradeDraftCapital call × N rosters touched).
+  // Key on leagueId + the enabled-rankings signature, so toggling sources
+  // (which changes pickIndex) busts the cache.
+  const _leaguePickAvgCache = new Map();
+  function leaguePickAvg(lg) {
+    const key = `${lg.id}::${JSON.stringify({s: state.settings.enabledSources, r: state.settings.enabledRankings})}`;
+    const hit = _leaguePickAvgCache.get(key);
+    if (hit != null) return hit;
+    let leagueTotal = 0;
+    for (const r of lg.rosters) {
+      const ps = rosterOwnedPicks(r.roster_id, lg);
+      leagueTotal += ps.reduce((s, p) => s + (p.value || 0), 0);
+    }
+    const avg = leagueTotal / Math.max(1, lg.rosters.length);
+    _leaguePickAvgCache.set(key, avg);
+    return avg;
+  }
+
   function gradeDraftCapital(roster, leagueId) {
     const lg = window.LEAGUES.find(l => l.id === leagueId);
     if (!lg) return 0;
-    const picks = lg.traded_picks || [];
-    let mine = 0, lost = 0;
-    // Default: each owner has their own pick R1-R4 for next 2 yrs (assume 4 rounds)
-    // Acquired picks: where owner_id == roster_id and roster_id (originator) != roster_id
-    for (const p of picks) {
-      if (p.owner_id === roster.roster_id && p.roster_id !== roster.roster_id) mine++;
-      if (p.previous_owner_id === roster.roster_id && p.owner_id !== roster.roster_id) lost++;
-    }
-    // Default 8 picks (4 rounds × 2 years), adjusted by net trades
-    const net = 8 + mine - lost;
-    return Math.round(Math.max(0, Math.min(10, net / 1.2)) * 10) / 10;
+    // Value-weighted: total KTC value of currently-owned picks vs. the
+    // league-wide average pick stockpile. A team holding a 2027 Early 1st
+    // (KTC ~73) is graded much higher than one with three 4ths (~20 total),
+    // even though raw counts would favor the latter.
+    const myValue = rosterOwnedPicks(roster.roster_id, lg)
+      .reduce((s, p) => s + (p.value || 0), 0);
+    const avg = leaguePickAvg(lg);
+    if (avg <= 0) return 5; // no data, neutral
+    // 1.0× avg = grade 5; 1.6× avg = grade 10; 0.4× avg = grade 0. Linear.
+    const ratio = myValue / avg;
+    const grade = (ratio - 0.4) / 0.12;
+    return Math.round(Math.max(0, Math.min(10, grade)) * 10) / 10;
   }
   function getDraftCapitalSummary(roster, leagueId) {
     const lg = window.LEAGUES.find(l => l.id === leagueId);
@@ -1544,7 +2796,7 @@
   }
   // Walk window.STRATEGY.coaching_tips and pick the rules whose `when`
   // predicate matches the roster context. Returns rendered text strings.
-  function evaluateCoachingTips({ rosterPlayers, league, stance, archetype, valueTier, surplus }) {
+  function evaluateCoachingTips({ rosterPlayers, league, stance, archetype, valueTier, surplus, roster, strength }) {
     if (!window.STRATEGY) return [];
     const curves = window.STRATEGY.age_curve || {};
     const aging = (pos) => rosterPlayers.filter(p => p.ranked && p.ranked.pos === pos
@@ -1580,6 +2832,36 @@
         && (p.ranked.category === 'mainstay' || p.ranked.category === 'productive_vet'
             || (p.ranked.category === 'upside_premier' && p.ranked.tier === 'B'))
       ).length >= 2,
+      // Upside Premier count — used by rebuild-pick-ceiling-warning to see
+      // if the rebuilder has any actual upside shots, not just pick stacks.
+      upside_premier_count: rosterPlayers.filter(p => p.ranked?.category === 'upside_premier').length,
+
+      // Dynasty Domain 27-pick framework. Walk owned picks via the league's
+      // traded_picks state + default ownership rules; count 27 firsts and
+      // late-bucket 27 firsts, plus compute pick value as % of total dynasty
+      // value (the "liquidity" warning trigger).
+      ...(() => {
+        if (!roster || !league || !strength) return {
+          future_first_count_27: 0, late_first_count_27: 0,
+          pick_value_share: 0, value_share: 0,
+        };
+        const owned = rosterOwnedPicks(roster.roster_id, league);
+        const first27 = owned.filter(p => String(p.season) === '2027' && p.round === 1);
+        const late27 = first27.filter(p => {
+          const slot = draftPickSlot(p.season, p.round, p.originRosterId, league);
+          return slotToBucket(slot, league.total_rosters) === 'late';
+        });
+        const pickVal = owned.reduce((s, p) => s + (p.value || 0), 0);
+        const pickShare = strength.total > 0 ? pickVal / strength.total : 0;
+        const { share: valueShare } = valueShareFor(roster, league);
+        return {
+          future_first_count_27: first27.length,
+          late_first_count_27: late27.length,
+          pick_value_share: pickShare,
+          value_share: valueShare,
+        };
+      })(),
+
       // QB-skill same-team stacks: QB + WR/TE on the same NFL team. Each
       // pair becomes a stack candidate.
       stack_pairs: (() => {
@@ -1627,23 +2909,56 @@
     return out.slice(0, 4);
   }
 
-  function viewRoster(leagueId, rosterId) {
+  function viewRoster(leagueId, rosterId, tabArg) {
     const main = $('#main');
     const lg = (window.LEAGUES || []).find(l => l.id === leagueId);
     if (!lg) { main.innerHTML=''; main.appendChild(h('div', { class:'empty' }, 'League not found.')); return; }
     const r = lg.rosters.find(x => String(x.roster_id) === String(rosterId));
     if (!r) { main.innerHTML=''; main.appendChild(h('div', { class:'empty' }, 'Roster not found.')); return; }
 
+    // Sub-tabs: snapshot (overview), strategy (advice; only on own roster),
+    // roster (positional grid + draft picks + slot table). For non-self rosters
+    // the strategy tab is replaced with a "Trade Angles" tab.
+    const validTabs = r.is_me ? ['snapshot','strategy','roster'] : ['snapshot','angles','roster'];
+    const tab = validTabs.includes(tabArg) ? tabArg : 'snapshot';
+
     main.innerHTML = '';
+
+    main.appendChild(breadcrumbs([
+      { label:'My Leagues', hash:'#leagues' },
+      { label: lg.short_name || lg.name, hash:`#league/${lg.id}` },
+      { label: r.team_name },
+    ]));
+
     main.appendChild(h('div', { class:'page-header' },
       h('div', null,
-        h('div', { class:'tip', style:{ marginBottom:'4px' } }, 'TEAM BLUEPRINT'),
-        h('h1', { class:'page-title' }, r.team_name, r.is_me ? h('span', { class:'badge you', style:{ marginLeft:'10px', verticalAlign:'middle' } }, 'YOU') : null),
+        h('div', { class:'page-eyebrow' },
+          'TEAM BLUEPRINT',
+          r.is_me ? h('span', { class:'page-eyebrow-tag', style:{ background:'rgba(167,139,250,.18)', color:'var(--cat-cornerstone)' } }, 'YOU') : null
+        ),
+        h('h1', { class:'page-title' }, r.team_name),
         h('p', { class:'page-sub' }, `${r.owner_name} · ${lg.name} · ${lg.total_rosters}-team ${lg.is_superflex ? 'SF' : '1QB'} · PPR`)
       ),
       h('div', { class:'page-actions' },
+        h('a', { href:`#trade/${lg.id}` }, h('button', { class:'ghost' }, 'Trade Lab ⇄')),
         h('a', { href:`#league/${lg.id}` }, h('button', { class:'ghost' }, '← League'))
       )
+    ));
+
+    main.appendChild(tabBar(
+      r.is_me
+        ? [
+            { key:'snapshot', label:'Snapshot', icon:'◆' },
+            { key:'strategy', label:'Strategy', icon:'⇄' },
+            { key:'roster',   label:'Roster',   icon:'⚑' },
+          ]
+        : [
+            { key:'snapshot', label:'Snapshot',     icon:'◆' },
+            { key:'angles',   label:'Trade Angles', icon:'⇄' },
+            { key:'roster',   label:'Roster',       icon:'⚑' },
+          ],
+      tab,
+      (k) => k === 'snapshot' ? `#roster/${lg.id}/${r.roster_id}` : `#roster/${lg.id}/${r.roster_id}/${k}`
     ));
 
     const s = computeRosterStrength(r, lg);
@@ -1704,8 +3019,47 @@
       h('div', { class:'br-stat' },
         h('div', { class:'br-stat-num tnum' }, fmt.decimal(s.total,1)),
         h('div', { class:'br-eyebrow' }, 'Strength'),
-        h('div', { class:'br-stat-sub' }, `Rank #${myRank} of ${lg.total_rosters}`),
+        h('div', { class:'br-stat-sub' },
+          `Rank #${myRank} of ${lg.total_rosters}`,
+          (() => {
+            // Liquidity: % of dynasty value sitting in future picks. Per
+            // Dynasty Domain, >35% means you can't move until next offseason.
+            const pickShare = s.total > 0 ? (s.picksValue || 0) / s.total : 0;
+            if (pickShare < 0.05) return null;
+            const pct = Math.round(pickShare * 100);
+            const tone = pickShare > 0.35 ? 'var(--red)' : pickShare > 0.22 ? 'var(--amber)' : 'var(--fg-2)';
+            return h('span', {
+              class:'br-stat-chip tnum',
+              title:'Share of total dynasty value held in future draft picks. >35% = liquidity-locked per Dynasty Domain.',
+              style:{ color: tone, marginLeft:'8px' },
+            }, `${pct}% picks`);
+          })()
+        ),
       ),
+      // ===== Value Share (Dynasty Domain framework) =====
+      // % of total league dynasty value (player-only) you hold. Baseline =
+      // 1/N. Above 1.24× baseline = contender-lock. Below 0.72× baseline =
+      // rebuild territory. Color-coded against those bands.
+      (() => {
+        const vs = valueShareFor(r, lg);
+        const cls = classifyValueShare(vs.share, vs.baseline);
+        const pct = (vs.share * 100).toFixed(1);
+        const basePct = (vs.baseline * 100).toFixed(1);
+        const deltaPct = (cls.delta * 100);
+        const tone = cls.tone === 'good' ? 'var(--green)'
+                   : cls.tone === 'bad'  ? 'var(--red)'
+                   : 'var(--amber)';
+        return h('div', { class:'br-stat' },
+          h('div', { class:'br-stat-num tnum', style:{ color: tone } }, `${pct}%`),
+          h('div', { class:'br-eyebrow' }, 'Value Share'),
+          h('div', { class:'br-stat-sub',
+            title:`Your % of league-wide player-only dynasty value. Baseline ${basePct}%. ${cls.label} band per Dynasty Domain framework.`,
+          },
+            `${deltaPct >= 0 ? '+' : ''}${deltaPct.toFixed(1)}pp vs base`,
+            h('span', { class:'br-stat-chip tnum', style:{ color: tone, marginLeft:'8px' } }, cls.label),
+          ),
+        );
+      })(),
       h('div', { class:'br-stat' },
         h('div', { class:'br-stat-num tnum' }, `${cs} / ${fnd}`),
         h('div', { class:'br-eyebrow' }, 'Cornerstones / Foundational'),
@@ -1720,6 +3074,7 @@
       ),
     ));
 
+    if (tab === 'snapshot') {
     // ===== Per-slot grade circles =====
     // Each starting lineup slot gets its own circular grade. The league's
     // roster_positions drives the slot list (QB1, RB1, RB2, WR1, WR2, TE1,
@@ -1895,8 +3250,9 @@
     // (Slot Detail table removed: bars carry the data; the table was redundant.)
 
     // ===== Lineup Composition (startable surplus / shortage) =====
+    // For my own rosters, render Lineup Composition + Top Priorities side
+    // by side so the diagnostic and the recommended actions read together.
     const ss = rosterSurplusShortage(rp, lg);
-    main.appendChild(h('h2', { class:'section-title' }, 'Lineup Composition'));
     const lineupCard = h('div', { class:'card lineup-comp' });
     (lg.is_idp ? ['QB','RB','WR','TE','LB','DB','DL'] : ['QB','RB','WR','TE'])
       .filter(pos => ss[pos])
@@ -1921,7 +3277,7 @@
           ),
           h('div', { class:'lc-top' },
             top3.length
-              ? top3.map(({p,val}) => h('span', { class:'lc-player', onclick:()=>openPlayerDetail(p.sleeper.name) },
+              ? top3.map(({p,val}) => h('span', { class:'lc-player', onclick:()=>openPlayerDetail(p.sleeper.name, p.sleeper.id) },
                   p.sleeper.name,
                   h('span', { class:'lc-pval tnum' }, fmt.decimal(val,0)),
                 ))
@@ -1929,33 +3285,49 @@
           ),
         ));
       });
-    main.appendChild(lineupCard);
-    main.appendChild(h('div', { class:'tip', style:{ marginTop:'6px' } },
+    const lineupNote = h('div', { class:'tip', style:{ marginTop:'6px' } },
       `Startable thresholds use league-wide positional slots (1QB target = ${(targetStartersByPos(lg).QB).toFixed(1)} per team, RB ${(targetStartersByPos(lg).RB).toFixed(1)}, WR ${(targetStartersByPos(lg).WR).toFixed(1)}, TE ${(targetStartersByPos(lg).TE).toFixed(1)}). Surplus ≥ 1 means you have spare startable assets to trade.`
-    ));
+    );
 
-    // The advice blocks below only fire on the user's own roster. Telling
-    // someone else's team to "sell Cooper Kupp" is irrelevant — what the user
-    // wants on opponent rosters is read-only scouting (slot grades, lineup
-    // comp, roster by position).
     if (r.is_me) {
+      // Two-column: Lineup Composition (left) | Top Priorities (right).
+      const prioritiesCard = h('div', { class:'card priorities-card' },
+        ...priorities.map(p => h('div', { class:'priority-card' },
+          h('div', { class:'priority-icon' }, p.icon),
+          h('div', { class:'priority-text' }, p.text),
+        ))
+      );
+      main.appendChild(h('div', { class:'lineup-priorities-grid' },
+        h('div', null,
+          h('h2', { class:'section-title' }, 'Lineup Composition'),
+          lineupCard,
+          lineupNote,
+        ),
+        h('div', null,
+          h('h2', { class:'section-title' }, 'Top Priorities'),
+          prioritiesCard,
+        ),
+      ));
+    } else {
+      main.appendChild(h('h2', { class:'section-title' }, 'Lineup Composition'));
+      main.appendChild(lineupCard);
+      main.appendChild(lineupNote);
+    }
+    } // end snapshot tab
 
-    // ===== Top Priorities =====
-    main.appendChild(h('h2', { class:'section-title' }, 'Top Priorities'));
-    main.appendChild(h('div', { class:'priorities' },
-      ...priorities.map(p => h('div', { class:'priority-card' },
-        h('div', { class:'priority-icon' }, p.icon),
-        h('div', { class:'priority-text' }, p.text),
-      ))
-    ));
+    // The advice blocks below only fire on the user's own roster on the
+    // 'strategy' sub-tab. Telling someone else's team to "sell Cooper Kupp"
+    // is irrelevant; non-self rosters get the 'angles' tab instead.
+    if (r.is_me && tab === 'strategy') {
 
     // ===== Coaching Tips (strategy.js context-aware rules) =====
     const coachingTips = evaluateCoachingTips({
-      rosterPlayers: rp, league: lg,
+      rosterPlayers: rp, league: lg, roster: r,
       stance: stanceOf(valueTier.tier, valueArchetype.tag),
       archetype: rosterArchetype.tag,
       valueTier: valueTier.tier,
       surplus: rosterSurplusShortage(rp, lg),
+      strength: s,
     });
     if (coachingTips.length) {
       main.appendChild(h('h2', { class:'section-title' }, 'Coaching Tips'));
@@ -2044,8 +3416,9 @@
       ));
     }
 
-    } // end if (r.is_me) — advice block
+    } // end if (r.is_me && tab === 'strategy') — advice block
 
+    if (tab === 'roster') {
     // ===== Roster by Position =====
     main.appendChild(h('h2', { class:'section-title' }, 'Roster by Position'));
     const byPos = { QB:[], RB:[], WR:[], TE:[], OTHER:[] };
@@ -2077,10 +3450,12 @@
       ),
     ));
 
+    } // end roster tab (Roster by Position + Draft Capital)
+
     // ===== "How to Trade With This Owner" panel =====
     // Only shown when viewing someone else's roster AND user has a roster
     // in this league. Frames trade angles from MY perspective looking at THEM.
-    if (!r.is_me) {
+    if (!r.is_me && tab === 'angles') {
       const myRoster = lg.rosters.find(rr => rr.is_me);
       if (myRoster) {
         const myRP_in_lg = getRosterPlayers(myRoster);
@@ -2141,6 +3516,7 @@
       }
     }
 
+    if (tab === 'roster') {
     // ===== Roster (slot-by-slot) =====
     main.appendChild(h('h2', { class:'section-title' }, 'Roster'));
     const sections = [
@@ -2149,6 +3525,16 @@
       ['Taxi',     r.taxi],
       ['IR/Reserve', r.reserve],
     ];
+    const yrHorizons = [0, 1, 2, 3, 4, 5];
+    // Color a projected-value cell by its retention vs today (yearsOut=0).
+    // >1.05 grew (cornerstone young player); 0.85-1.05 hold; 0.6-0.85 fade;
+    // <0.6 cliff. The "Today" column shows raw value with no relative tint.
+    const retentionClass = (ratio) => {
+      if (ratio >= 1.05) return 'val-grow';
+      if (ratio >= 0.85) return 'val-hold';
+      if (ratio >= 0.60) return 'val-fade';
+      return 'val-cliff';
+    };
     for (const [title, ids] of sections) {
       if (!ids.length) continue;
       main.appendChild(h('div', { class:'roster-section' },
@@ -2157,31 +3543,41 @@
           h('table', { class:'data' },
             h('thead', null, h('tr', null,
               h('th', null, 'Player'),
+              jacobGibbsHeader(),
               h('th', null, 'Pos'),
               h('th', null, 'Team'),
               h('th', null, 'Age'),
               h('th', null, 'Category'),
               h('th', null, 'Tier'),
-              h('th', { class:'right' }, 'Value'),
+              ...yrHorizons.map(n => h('th', { class:'right' }, n === 0 ? 'Today' : `+${n}y`)),
             )),
             h('tbody', null, ...ids.map(pid => {
               const sp = window.PLAYERS[pid];
-              if (!sp) return h('tr', null, h('td', { colspan:7 }, h('span', { class:'muted' }, `Unknown ${pid}`)));
+              if (!sp) return h('tr', null, h('td', { colspan: 7 + yrHorizons.length }, h('span', { class:'muted' }, `Unknown ${pid}`)));
               const ranked = rankIndex().bySleeperId.get(pid) || rankIndex().byName.get(norm(sp.name));
-              return h('tr', { onclick:()=>openPlayerDetail(sp.name) },
+              const v0 = ranked ? tierValue(ranked, lg) : 0;
+              const yrCells = yrHorizons.map(n => {
+                if (!ranked || !v0) return h('td', { class:'right' }, h('span', { class:'muted' }, '.'));
+                const vN = projectAssetValue(v0, sp.age, ranked.pos, n);
+                const cls = n === 0 ? '' : retentionClass(vN / v0);
+                return h('td', { class:`right tnum val-cell ${cls}` }, fmt.decimal(vN, 1));
+              });
+              return h('tr', { onclick:()=>openPlayerDetail(sp.name, pid) },
                 h('td', null, h('div', { class:'name-cell' }, h('span', { class:'name' }, sp.name))),
+                jacobGibbsCell(sp.name, pid),
                 h('td', null, posChip(sp.pos)),
                 h('td', null, teamChip(sp.team)),
                 h('td', null, sp.age ?? ','),
                 h('td', null, ranked ? pillCategory(ranked.category) : h('span', { class:'muted' }, ',')),
                 h('td', null, ranked ? tierChip(ranked.tier, ranked.category) : h('span', { class:'muted' }, ',')),
-                h('td', { class:'right tnum' }, ranked ? fmt.decimal(tierValue(ranked, lg),1) : h('span', { class:'muted' }, ',')),
+                ...yrCells,
               );
             }))
           )
         )
       ));
     }
+    } // end roster tab (slot-by-slot table)
   }
 
   // ---- Blueprint sub-components ----
@@ -2256,7 +3652,7 @@
   }
   function buyRow(b, isSell) {
     const col = isSell ? 'var(--red)' : 'var(--green)';
-    return h('div', { class:'buy-row', onclick: ()=>openPlayerDetail(b.player.name) },
+    return h('div', { class:'buy-row', onclick: ()=>openPlayerDetail(b.player.name, b.player._sleeperId) },
       h('div', null,
         h('div', { class:'name-cell' },
           posChip(b.player.pos), teamChip(b.player.team), h('span', { class:'name' }, b.player.name),
@@ -2312,7 +3708,7 @@
       const barColor = !p.ranked ? 'var(--bg-3)'
         : window.CATEGORY_COLORS[p.ranked.category] || 'var(--accent)';
       const titleAttr = `${sleeper.name} (${sleeper.pos}, ${sleeper.team || 'FA'}${sleeper.age ? ', age ' + sleeper.age : ''})${p.ranked ? ', value ' + fmt.decimal(val, 1) : ''}${isDepth ? ', DEPTH (owned ' + owned + '% / started ' + started + '%)' : ''}`;
-      rows.push(h('div', { class:'pos-col-row' + (p.ranked && i < startableCount ? ' starter' : '') + (isDepth ? ' is-depth' : '') , onclick:()=>openPlayerDetail(sleeper.name), title: titleAttr },
+      rows.push(h('div', { class:'pos-col-row' + (p.ranked && i < startableCount ? ' starter' : '') + (isDepth ? ' is-depth' : '') , onclick:()=>openPlayerDetail(sleeper.name, p.pid), title: titleAttr },
         h('span', { class:'pos-col-rank tnum' }, realPos ? `${pos}${posIdx}` : `#${posIdx}`),
         h('span', { class:'pos-col-pname' }, sleeper.name),
         h('span', { class:'pos-col-age tnum' }, sleeper.age ? sleeper.age : ''),
@@ -2612,24 +4008,35 @@
 
     // Synthesize draft-pick assets so downtier scenarios can offer picks
     // (a star vet for a starter + a future 1st is the canonical rebuild move).
-    const pickValues = (window.STRATEGY && window.STRATEGY.pick_values_1qb) || {};
-    const sfBumps = (window.STRATEGY && window.STRATEGY.pick_sf_premium) || {};
+    // Values come from KTC's published pick valuations via pickIndex(), with
+    // strategy.js as a fallback only if KTC didn't ship a value for that
+    // bucket. This keeps trade scenarios in sync with the market.
     const nextYear = String(new Date().getFullYear() + 1);
+    const pIdx = pickIndex();
+    const ktcPickMap = lg.is_superflex ? pIdx.sf : pIdx.oneqb;
+    const sPickValues = (window.STRATEGY && window.STRATEGY.pick_values_1qb) || {};
+    const sfBumps     = (window.STRATEGY && window.STRATEGY.pick_sf_premium) || {};
     const pickBuckets = [
-      ['future_1.early', `${nextYear} Early 1st`],
-      ['future_1.mid',   `${nextYear} Mid 1st`],
-      ['future_1.late',  `${nextYear} Late 1st`],
-      ['future_2.early', `${nextYear} Early 2nd`],
-      ['future_2.mid',   `${nextYear} Mid 2nd`],
-      ['future_2.late',  `${nextYear} Late 2nd`],
+      ['future_1.early', 'early', 1, `${nextYear} Early 1st`],
+      ['future_1.mid',   'mid',   1, `${nextYear} Mid 1st`],
+      ['future_1.late',  'late',  1, `${nextYear} Late 1st`],
+      ['future_2.early', 'early', 2, `${nextYear} Early 2nd`],
+      ['future_2.mid',   'mid',   2, `${nextYear} Mid 2nd`],
+      ['future_2.late',  'late',  2, `${nextYear} Late 2nd`],
     ];
-    const pickAssets = pickBuckets.map(([key, label]) => {
-      let v = pickValues[key] || 5;
-      if (lg.is_superflex) v += (sfBumps[key.replace('future_','') ] || 0);
-      // ktcValue-scale for tierValue compatibility (KTC range ~0-10000).
+    const pickAssets = pickBuckets.map(([sKey, slot, round, label]) => {
+      const ktcHit = ktcPickMap.get(`${nextYear}|${slot}|${round}`);
+      let ktcVal;
+      if (ktcHit && ktcHit.ktcValue) {
+        ktcVal = ktcHit.ktcValue;
+      } else {
+        let v = sPickValues[sKey] || 5;
+        if (lg.is_superflex) v += (sfBumps[sKey.replace('future_','') ] || 0);
+        ktcVal = Math.round(v * 100);
+      }
       return {
         name: label, pos: 'PICK', team: nextYear, age: null,
-        category: 'pick', tier: '-', ktcValue: Math.round(v * 100),
+        category: 'pick', tier: '-', ktcValue: ktcVal,
         ktcAdp: null, _isPick: true,
       };
     });
@@ -2708,25 +4115,44 @@
 
     // UPTIER: combine a quality startable + a depth piece from a surplus
     // position, to acquire a cornerstone-tier player at any position I want.
+    // Never give up so many startables at one position that we drop below the
+    // starter requirement (e.g. trading both QBs in a superflex).
     const uptier = [];
     const surplusForUptier = Object.entries(surplus).filter(([_, info]) => info.surplus >= 1);
     const cornerstoneTargets = idx.all.filter(c =>
       c.category === 'cornerstone' && !isOwnedByMe(c) && isStartable(c, lg)
       && !idpPositions.has(c.pos)  // uptier targets are always offensive cornerstones
     );
+    // Build a depth-piece pool: my own ranked but NON-startable players,
+    // preferring those at positions where I have surplus (safe to move).
+    const myDepthPieces = myRosterPlayers
+      .filter(p => p.ranked && !isStartable(p.ranked, lg) && !idpPositions.has(p.ranked.pos))
+      .map(p => ({ ranked: p.ranked, val: tierValue(p.ranked, lg), pos: p.ranked.pos }))
+      .sort((a, b) => b.val - a.val);
     for (const [pos, info] of surplusForUptier) {
       const sortedStartable = info.startablePlayers
         .map(rp => ({ rp, val: tierValue(rp.ranked, lg) }))
-        .sort((a,b) => b.val - a.val);
-      if (sortedStartable.length < 2) continue;
-      // Use my 1st + 2nd surplus startable as the package
-      const a = sortedStartable[0], b = sortedStartable[1];
-      const giveVal = a.val + b.val;
+        .sort((a, b) => b.val - a.val);
+      if (!sortedStartable.length) continue;
+      // Quality startable = my BEST surplus startable at this position. Giving
+      // it away still leaves me at-or-above the starter requirement because
+      // info.surplus >= 1.
+      const quality = sortedStartable[0];
+      // Depth piece: prefer a non-startable depth player from a surplus
+      // position; never another player from `pos` unless surplus there is >= 2.
+      const depthCandidates = myDepthPieces.filter(d =>
+        d.ranked !== quality.rp.ranked &&
+        (d.pos !== pos || (surplus[d.pos] && surplus[d.pos].surplus >= 2)) &&
+        (surplus[d.pos] && surplus[d.pos].surplus >= 1)
+      );
+      const depth = depthCandidates[0];
+      if (!depth) continue;
+      const giveVal = quality.val + depth.val;
       const fits = cornerstoneTargets.filter(t => {
         const tv = tierValue(t, lg);
         return tv <= giveVal * 1.10 && tv >= giveVal * 0.75;
       }).slice(0, 3);
-      if (fits.length) uptier.push({ give: [a.rp.ranked, b.rp.ranked], options: fits.map(t => ({ get:[t] })) });
+      if (fits.length) uptier.push({ give: [quality.rp.ranked, depth.ranked], options: fits.map(t => ({ get: [t] })) });
     }
 
     return { downtier, uptier, pivot, weakPos, strongPos, surplus };
@@ -2743,7 +4169,7 @@
     const playerLine = (p) => h('div', {
       class:'trade-player',
       title: `${p.name} (${p.pos}, ${p.team || 'FA'})`,
-      onclick:()=>openPlayerDetail(p.name),
+      onclick:()=>openPlayerDetail(p.name, p._sleeperId),
     },
       h('span', { class:'trade-poschip', 'data-pos': p.pos }, p.pos),
       h('span', { class:'trade-name' }, p.name),
@@ -2802,6 +4228,8 @@
       const y = dcSummary.years[yr];
       // Sort default picks ascending so they read R1 to RN in order
       const defaultRounds = y.default.slice().sort((a, b) => a - b);
+      const chipText = (round, originRosterId) =>
+        draftPickLabel(yr, round, originRosterId, lg).replace(`${yr} `, '');
       const row = h('div', { class:'dc-row' },
         h('div', { class:'dc-year' },
           yr,
@@ -2810,9 +4238,9 @@
         h('div', { class:'dc-picks' },
           ...defaultRounds.map(rd => h('span', { class:'pick-chip', title: y.in_progress
             ? `Your default R${rd} pick (current draft is in progress; the slot may already be used live)`
-            : `Your default R${rd} pick` }, `${rd}`)),
-          ...y.mine.map(p => h('span', { class:'pick-chip acquired', title:`Acquired R${p.round} from roster ${p.from}` }, `${p.round}+`)),
-          ...y.lost.map(p => h('span', { class:'pick-chip lost', title:`Traded away R${p.round} to roster ${p.to}` }, `${p.round}×`)),
+            : `Your ${draftPickLabel(yr, rd, rosterId, lg)}` }, chipText(rd, rosterId))),
+          ...y.mine.map(p => h('span', { class:'pick-chip acquired', title:`Acquired ${draftPickLabel(yr, p.round, p.from, lg, true)}` }, `${chipText(p.round, p.from)}+`)),
+          ...y.lost.map(p => h('span', { class:'pick-chip lost', title:`Traded away ${draftPickLabel(yr, p.round, rosterId, lg)} to roster ${p.to}` }, `${chipText(p.round, rosterId)}×`)),
         ),
       );
       card.appendChild(row);
@@ -2833,7 +4261,8 @@
     main.innerHTML = '';
     main.appendChild(h('div', { class:'page-header' },
       h('div', null,
-        h('h1', { class:'page-title' }, 'YouTuber Sources'),
+        h('div', { class:'page-eyebrow' }, 'REFERENCE'),
+        h('h1', { class:'page-title' }, 'Sources'),
         h('p', { class:'page-sub' }, 'Choose which analysts inform your aggregated rankings. Toggle individual videos within each source.')
       )
     ));
@@ -3130,13 +4559,13 @@
     csB.sort((x,y) => tierValue(y.ranked, lg) - tierValue(x.ranked, lg));
     main.appendChild(h('div', { class:'card-grid cols-2' },
       h('div', { class:'card' }, h('div', { class:'card-title' }, `${a.team_name} (${csA.length})`),
-        ...csA.map(p => h('div', { class:'pos-col-row', onclick: ()=>openPlayerDetail(p.sleeper.name) },
+        ...csA.map(p => h('div', { class:'pos-col-row', onclick: ()=>openPlayerDetail(p.sleeper.name, p.sleeper.id) },
           h('div', { class:'pos-col-name' }, posChip(p.sleeper.pos), tierChip(p.ranked.tier, p.ranked.category), h('span', null, p.sleeper.name)),
           h('span', { class:'tnum' }, fmt.decimal(tierValue(p.ranked, lg), 1))
         ))
       ),
       h('div', { class:'card' }, h('div', { class:'card-title' }, `${b.team_name} (${csB.length})`),
-        ...csB.map(p => h('div', { class:'pos-col-row', onclick: ()=>openPlayerDetail(p.sleeper.name) },
+        ...csB.map(p => h('div', { class:'pos-col-row', onclick: ()=>openPlayerDetail(p.sleeper.name, p.sleeper.id) },
           h('div', { class:'pos-col-name' }, posChip(p.sleeper.pos), tierChip(p.ranked.tier, p.ranked.category), h('span', null, p.sleeper.name)),
           h('span', { class:'tnum' }, fmt.decimal(tierValue(p.ranked, lg), 1))
         ))
@@ -3183,10 +4612,16 @@
     if (!TRADE_STATE.sideA.rosterId) TRADE_STATE.sideA.rosterId = (lg.rosters.find(r => r.is_me) || lg.rosters[0]).roster_id;
     if (!TRADE_STATE.sideB.rosterId) TRADE_STATE.sideB.rosterId = (lg.rosters.find(r => !r.is_me) || lg.rosters[1]).roster_id;
 
+    main.appendChild(breadcrumbs([
+      { label:'Tools' },
+      { label: lg.short_name || lg.name, hash:`#league/${lg.id}` },
+      { label: 'Trade Lab' },
+    ]));
     main.appendChild(h('div', { class:'page-header' },
       h('div', null,
+        h('div', { class:'page-eyebrow' }, 'TRADE LAB'),
         h('h1', { class:'page-title' }, 'Trade Calculator'),
-        h('p', { class:'page-sub' }, 'Drag players or picks into the pile. Fairness updates live; drop to commit.')
+        h('p', { class:'page-sub' }, 'Click players or picks to add to the pile. Fairness verdict updates live as you build the offer.')
       ),
       h('div', { class:'page-actions' },
         leagueSelector(lg.id, (newId) => { TRADE_STATE.leagueId = newId; TRADE_STATE.sideA = {rosterId:null, picks:new Set()}; TRADE_STATE.sideB = {rosterId:null, picks:new Set()}; viewTrade(newId); navigate(`#trade/${newId}`); })
@@ -3265,6 +4700,42 @@
     m.deltaA.style.color = postA.delta >= 0 ? 'var(--green)' : 'var(--red)';
     m.deltaB.textContent = (postB.delta >= 0 ? '+' : '') + fmt.decimal(postB.delta, 1);
     m.deltaB.style.color = postB.delta >= 0 ? 'var(--green)' : 'var(--red)';
+
+    // 3-year outlook. For each year horizon, net Δ for each side =
+    // value of pieces RECEIVED (projected forward) − value SENT (projected
+    // forward). Side A receives bSet, sends aSet (and vice versa).
+    const aIsValid = aSet.size > 0 && bSet.size > 0;
+    const cells = [
+      [m.y0, 0], [m.y1, 1], [m.y2, 2], [m.y3, 3], [m.y4, 4], [m.y5, 5],
+    ];
+    for (const [yr, n] of cells) {
+      if (!aIsValid) {
+        yr.aCell.textContent = '—'; yr.bCell.textContent = '—';
+        yr.aSub.textContent  = '';  yr.bSub.textContent  = '';
+        yr.aCell.style.color = 'var(--fg-3)'; yr.bCell.style.color = 'var(--fg-3)';
+        continue;
+      }
+      // Symmetric by construction: at horizon n, A's received-pile value is
+      // exactly B's sent-pile value (it's the same set of assets aged the
+      // same way). So we compute each pile once and assign both perspectives.
+      const aReceives = projectSideValue(bSet, lg, n);
+      const aSends    = projectSideValue(aSet, lg, n);
+      const netA = aReceives - aSends;
+      const netB = aSends - aReceives;
+      yr.aCell.textContent = (netA >= 0 ? '+' : '') + fmt.decimal(netA, 1);
+      yr.bCell.textContent = (netB >= 0 ? '+' : '') + fmt.decimal(netB, 1);
+      yr.aCell.style.color = Math.abs(netA) < 1 ? 'var(--fg-2)' : netA >= 0 ? 'var(--green)' : 'var(--red)';
+      yr.bCell.style.color = Math.abs(netB) < 1 ? 'var(--fg-2)' : netB >= 0 ? 'var(--green)' : 'var(--red)';
+      // Total team strength + rank in the league at year n, post-trade.
+      const ranks = projectedTradeRanks(lg, {
+        rosterId: TRADE_STATE.sideA.rosterId, send: aSet, recv: bSet,
+      }, {
+        rosterId: TRADE_STATE.sideB.rosterId, send: bSet, recv: aSet,
+      }, n);
+      yr.aSub.textContent = `${fmt.decimal(ranks.aTotal, 0)} · #${ranks.aRank}/${ranks.total}`;
+      yr.bSub.textContent = `${fmt.decimal(ranks.bTotal, 0)} · #${ranks.bRank}/${ranks.total}`;
+    }
+
     // Preview vs committed visual
     refs.middle.node.classList.toggle('preview', !!(previewSide && previewKey));
   };
@@ -3312,9 +4783,10 @@
     sideRefs.empty.style.display = wantedKeys.size ? 'none' : '';
 
     // Update pool selected state.
-    Array.from(pool.querySelectorAll('[data-trade-key]')).forEach(row => {
+    Array.from(sideRefs.card.querySelectorAll('.trade-pool [data-trade-key]')).forEach(row => {
       const k = row.dataset.tradeKey;
       row.classList.toggle('selected', wantedKeys.has(k));
+      row.setAttribute('aria-pressed', wantedKeys.has(k) ? 'true' : 'false');
     });
 
     // Update total label.
@@ -3368,20 +4840,87 @@
   function pickKey(season, round, originRosterId) {
     return `pick:${season}:${round}:${originRosterId}`;
   }
+  function knownDraftSlot(season, round, originRosterId, league) {
+    const draft = (league?.drafts || []).find(d => String(d.season) === String(season));
+    const order = draft?.draft_order;
+    if (!order || !Object.keys(order).length) return null;
+    const roster = (league.rosters || []).find(r => r.roster_id === Number(originRosterId));
+    const baseSlot = Number(order[String(roster?.owner_id)] ?? order[String(originRosterId)]);
+    if (!Number.isInteger(baseSlot) || baseSlot < 1) return null;
+    const teams = Number(draft.settings?.teams || league.total_rosters || 0);
+    return draft.type === 'snake' && Number(round) % 2 === 0 && teams
+      ? teams + 1 - baseSlot
+      : baseSlot;
+  }
+  function draftPickSlot(season, round, originRosterId, league) {
+    return knownDraftSlot(season, round, originRosterId, league)
+      ?? originSlot(originRosterId, league, pickYearsOut(season));
+  }
+  function draftPickLabel(season, round, originRosterId, league, includeOrigin=false) {
+    const knownSlot = knownDraftSlot(season, round, originRosterId, league);
+    let label = knownSlot
+      ? `${season} ${round}.${String(knownSlot).padStart(2, '0')}`
+      : `${season} R${round}`;
+    if (includeOrigin) {
+      const origin = (league?.rosters || []).find(r => r.roster_id === Number(originRosterId));
+      label += ` (from ${origin?.team_name || `R${originRosterId}`})`;
+    }
+    return label;
+  }
   // Estimate origin roster's expected draft slot (1=earliest, 12=latest) from
   // current league strength rank. Weakest team picks first in the rookie draft.
-  function originSlot(originRosterId, league) {
+  function originSlot(originRosterId, league, yearsOut) {
     if (!originRosterId) return Math.ceil((league.total_rosters || 10) / 2);
+    // Use PLAYER-only strength: a team's expected end-of-year finish is
+    // driven by their on-field roster, not their pick stockpile. Picks they
+    // accumulate aren't on the field. This also avoids a recursion cycle.
+    // For future-year picks (yearsOut > 0), age each roster forward so the
+    // slot reflects projected standings in the pick's actual season — a
+    // vet-heavy contender today drifts toward the back of the standings
+    // 2-3 years out, making their future first more valuable than today's.
     const all = league.rosters.map(r => ({
-      id: r.roster_id, s: computeRosterStrength(r, league).total
+      id: r.roster_id, s: projectedPlayerStrength(r, league, yearsOut || 0).total
     })).sort((a, b) => a.s - b.s); // weakest first
     const idx = all.findIndex(r => r.id === originRosterId);
     return idx >= 0 ? idx + 1 : Math.ceil((league.total_rosters || 10) / 2);
   }
+  function pickYearsOut(season) {
+    const cur = new Date().getFullYear();
+    const n = parseInt(season, 10);
+    return isNaN(n) ? 0 : Math.max(0, n - cur);
+  }
   function pickValue(season, round, originRosterId, league) {
+    const slot = draftPickSlot(season, round, originRosterId, league);
+    const bucket = slotToBucket(slot, league?.total_rosters);
+
+    // PRIMARY: KTC published pick values, bucketed by season + early/mid/late
+    // + round. Use SF list for SF leagues, 1QB otherwise. Values are KTC-scale
+    // (0..10000); tierValue() divides by 100 to get the site's ~0-110 scale.
+    const idx = pickIndex();
+    const ktcMap = league?.is_superflex ? idx.sf : idx.oneqb;
+    const ktcHit = ktcMap.get(`${season}|${bucket}|${round}`);
+    if (ktcHit && ktcHit.ktcValue) {
+      return Math.round(ktcHit.ktcValue / 100 * 10) / 10;
+    }
+    // Coverage warning: if KTC ships data for THIS season's window
+    // (current + next two years) but missed this specific pick, log once
+    // so we notice when the scraper or season rollover drifts.
+    const curYear = new Date().getFullYear();
+    const seasonInt = parseInt(season, 10);
+    if (round <= 2 && seasonInt >= curYear && seasonInt <= curYear + 2 && ktcMap.size > 0) {
+      const warnKey = `pickFallback:${season}|${bucket}|${round}`;
+      if (!pickValue._warned) pickValue._warned = new Set();
+      if (!pickValue._warned.has(warnKey)) {
+        pickValue._warned.add(warnKey);
+        console.warn(`pickValue: KTC missing ${season} ${bucket} ${round}${round===1?'st':'nd'}, falling back to strategy.js`);
+      }
+    }
+
+    // FALLBACK: strategy.js approximations (legacy). Kept so trades for rounds
+    // 3-4 (KTC doesn't publish those past R4 future) and missing seasons still
+    // resolve to a sane number.
     const S = window.STRATEGY;
     if (!S) return 0;
-    const slot = originSlot(originRosterId, league);
     const currentYear = String(new Date().getFullYear());
     const isFuture = season > currentYear;
     let val = 0;
@@ -3419,9 +4958,28 @@
   function rosterOwnedPicks(rosterId, league) {
     const result = [];
     const traded = league.traded_picks || [];
-    const currentYear = String(new Date().getFullYear());
-    const seasons = [currentYear, String(parseInt(currentYear) + 1)];
-    const rounds = [1, 2, 3, 4];
+    // A season's rookie picks stop being current assets once that draft
+    // completes — they've already converted into rostered rookies. Drop any
+    // season whose Sleeper draft is marked complete (so 2026 picks vanish the
+    // day the 2026 rookie draft ends) but keep seasons still pre-draft. This is
+    // why it's data-driven off draft status, not the calendar: e.g. yuH's 2026
+    // draft is still pre_draft, so its 2026 picks must remain.
+    const completed = new Set(
+      (league.drafts || [])
+        .filter(d => d.status === 'complete')
+        .map(d => String(d.season))
+    );
+    // Rolling 2-season window of upcoming draft classes, starting at the
+    // earliest calendar season whose draft has not completed yet.
+    const calYear = new Date().getFullYear();
+    const seasons = [];
+    for (let y = calYear; y <= calYear + 4 && seasons.length < 2; y++) {
+      if (!completed.has(String(y))) seasons.push(String(y));
+    }
+    const draftRounds = Math.max(4, ...(league.drafts || [])
+      .filter(d => seasons.includes(String(d.season)))
+      .map(d => Number(d.settings?.rounds) || 0));
+    const rounds = Array.from({ length: draftRounds }, (_, i) => i + 1);
     // Default ownership: each roster owns its own picks across each (season, round)
     // Then apply traded_picks: a pick has roster_id (originator), previous_owner_id,
     // owner_id (current). For each roster, the picks they currently own are:
@@ -3434,7 +4992,7 @@
         const tradedAway = traded.find(tp => tp.season === season && tp.round === round
           && tp.roster_id === rosterId && tp.owner_id !== rosterId);
         if (!tradedAway) {
-          result.push({ season, round, originRosterId: rosterId, label: `${season} R${round}` });
+          result.push({ season, round, originRosterId: rosterId, label: draftPickLabel(season, round, rosterId, league) });
         }
       }
     }
@@ -3442,7 +5000,8 @@
     for (const tp of traded) {
       if (tp.owner_id !== rosterId) continue;
       if (!seasons.includes(tp.season)) continue;
-      result.push({ season: tp.season, round: tp.round, originRosterId: tp.roster_id, label: `${tp.season} R${tp.round} (from R${tp.roster_id})` });
+      if (tp.roster_id === rosterId) continue; // returned own pick already comes from default slate
+      result.push({ season: tp.season, round: tp.round, originRosterId: tp.roster_id, label: draftPickLabel(tp.season, tp.round, tp.roster_id, league, true) });
     }
     // Compute values + sort
     for (const p of result) p.value = pickValue(p.season, p.round, p.originRosterId, league);
@@ -3471,11 +5030,23 @@
       if (isPickK) {
         const meta = pickByKey.get(k) || (() => {
           const { season, round, originRosterId } = parsePickKey(k);
-          return { season, round, originRosterId, label: `${season} R${round}`, value: pickValue(season, round, originRosterId, lg) };
+          return { season, round, originRosterId, label: draftPickLabel(season, round, originRosterId, lg), value: pickValue(season, round, originRosterId, lg) };
         })();
+        // Class-premium chip per Dynasty Domain May 2026: 27 firsts are
+        // already inflated 11-39% over their normal future-1st baseline.
+        // Show a small "+38%" tag next to those picks so contenders selling
+        // and rebuilders buying can see the inflation at a glance.
+        const slot = meta.originRosterId ? slotToBucket(draftPickSlot(meta.season, meta.round, meta.originRosterId, lg), lg.total_rosters) : null;
+        const classPremium = window.STRATEGY?.pick_class_premium?.[String(meta.season)];
+        const premiumPct = (classPremium && slot && meta.round === 1) ? classPremium[slot] : null;
         nameNode = h('div', { class:'name-cell' },
           h('span', { class:'badge', style:{ background:'rgba(96,165,250,.15)', color:'var(--blue)', borderColor:'rgba(96,165,250,.4)' } }, 'PICK'),
           h('span', { class:'name' }, meta.label),
+          premiumPct != null ? h('span', {
+            class:'badge',
+            title: `Class premium: ${meta.season} ${slot} 1sts are ${(premiumPct*100).toFixed(0)}% above the historical baseline at this point in the cycle. Per Dynasty Domain.`,
+            style:{ background:'rgba(251,191,36,.12)', color:'var(--amber)', borderColor:'rgba(251,191,36,.4)', marginLeft:'4px' },
+          }, `+${Math.round(premiumPct*100)}%`) : null,
         );
         val = meta.value;
       } else {
@@ -3555,15 +5126,31 @@
         );
         for (const p of ownedPicks) {
           const k = pickKey(p.season, p.round, p.originRosterId);
+          const slot = slotToBucket(draftPickSlot(p.season, p.round, p.originRosterId, lg), lg.total_rosters);
+          const classPremium = window.STRATEGY?.pick_class_premium?.[String(p.season)];
+          const premiumPct = (classPremium && p.round === 1) ? classPremium[slot] : null;
           const row = h('div', {
             class:'trade-pool-row',
             draggable: 'true',
+            role: 'button',
+            tabindex: '0',
+            'aria-pressed': state.picks.has(k) ? 'true' : 'false',
             dataset: { tradeKey: k, tradeSide: label, tradeOrigin: 'pool' },
-            onclick: () => KT.toggle(label, k),
+            onclick: () => KT.toggle(label, k, 'add'),
+            onkeydown: (e) => {
+              if (e.key !== 'Enter' && e.key !== ' ') return;
+              e.preventDefault();
+              KT.toggle(label, k, 'add');
+            },
           },
             h('div', { class:'name-cell' },
               h('span', { class:'badge', style:{ background:'rgba(96,165,250,.15)', color:'var(--blue)', borderColor:'rgba(96,165,250,.4)' } }, 'PICK'),
               h('span', { class:'name' }, p.label),
+              premiumPct != null ? h('span', {
+                class:'badge',
+                title: `Per Dynasty Domain: ${p.season} ${slot} 1sts are ${Math.round(premiumPct*100)}% above the historical future-1st baseline.`,
+                style:{ background:'rgba(251,191,36,.12)', color:'var(--amber)', borderColor:'rgba(251,191,36,.4)', marginLeft:'4px' },
+              }, `+${Math.round(premiumPct*100)}%`) : null,
             ),
             h('span', { class:'tnum' }, fmt.decimal(p.value, 1)),
           );
@@ -3575,7 +5162,7 @@
       }
     }
 
-    refs[label] = { pile, pool, total: totalSpan, empty: pileEmpty, makePileRow };
+    refs[label] = { card, pile, pool, total: totalSpan, empty: pileEmpty, makePileRow };
     // Initial pile population from existing state.
     queueMicrotask(() => KT.syncSide(label));
     return card;
@@ -3673,6 +5260,31 @@
     const fair = h('div', { class:'tip' }, '0% fairness');
     const deltaA = h('span', { class:'tnum' }, '0.0');
     const deltaB = h('span', { class:'tnum' }, '0.0');
+
+    // 3-year outlook scaffolding. Each year row shows the net change in
+    // dynasty value for each side, after applying age decay to current
+    // players. Color: green if your side gains net value that year, red
+    // if you lose. Picks float (treated as 1.0× per year).
+    const makeYearRow = (label) => {
+      const aCell = h('span', { class:'tnum t3y-delta' }, '—');
+      const bCell = h('span', { class:'tnum t3y-delta' }, '—');
+      const aSub  = h('div', { class:'tnum t3y-sub'   }, '');
+      const bSub  = h('div', { class:'tnum t3y-sub'   }, '');
+      const row = h('div', { class:'t3y-row' },
+        h('span', { class:'t3y-label' }, label),
+        h('div', { class:'t3y-cell' }, aCell, aSub),
+        h('span', { class:'t3y-sep' }, '·'),
+        h('div', { class:'t3y-cell' }, bCell, bSub),
+      );
+      return { row, aCell, bCell, aSub, bSub };
+    };
+    const y0 = makeYearRow('Today');
+    const y1 = makeYearRow('+1 yr');
+    const y2 = makeYearRow('+2 yr');
+    const y3 = makeYearRow('+3 yr');
+    const y4 = makeYearRow('+4 yr');
+    const y5 = makeYearRow('+5 yr');
+
     const node = h('div', { class:'trade-middle' },
       h('div', { class:'trade-middle-card' },
         h('div', { class:'tip' }, 'Total Value'),
@@ -3690,6 +5302,17 @@
           h('div', { class:'tip', style:{ marginBottom:'4px' } }, 'Post-Trade Strength Δ'),
           h('div', { style:{ display:'flex', justifyContent:'space-between' } }, deltaA, deltaB)
         ),
+        h('div', { class:'t3y' },
+          h('div', { class:'tip', style:{ marginBottom:'4px' } }, 'Year-by-Year Team Strength Δ'),
+          h('div', { class:'t3y-head' },
+            h('span', { class:'t3y-label' }, ''),
+            h('span', { class:'t3y-cell tip' }, 'Side A'),
+            h('span', { class:'t3y-sep' }, ''),
+            h('span', { class:'t3y-cell tip' }, 'Side B'),
+          ),
+          y0.row, y1.row, y2.row, y3.row, y4.row, y5.row,
+          h('div', { class:'tip t3y-note' }, 'On-field strength change in each season. Players age via position curve; picks count 0 until their draft year, then convert as age-22 WR and age forward.')
+        ),
         h('div', { style:{ marginTop:'14px' } },
           h('button', { class:'ghost', style:{ width:'100%' }, onclick: () => {
             TRADE_STATE.sideA.picks = new Set(); TRADE_STATE.sideB.picks = new Set();
@@ -3698,8 +5321,153 @@
         )
       ),
     );
-    return { node, aVal, bVal, verdict, fair, deltaA, deltaB };
+    return { node, aVal, bVal, verdict, fair, deltaA, deltaB, y0, y1, y2, y3, y4, y5 };
   }
+  // ============================================================
+  // Dynasty aging model — used by trade-calc 3-year outlook
+  // ============================================================
+  // dynastyDecay(currentAge, pos) returns the one-year multiplier on dynasty
+  // value. Position peaks come from public dynasty curves; RB cliff is steepest
+  // (28+ falls fast), WR/TE slower, QB slowest. Picks float at 1.0 (their
+  // value is the discounted-rookie expectation; conversion gain/loss roughly
+  // cancels within a few years).
+  function dynastyDecay(currentAge, pos) {
+    if (pos === 'PICK' || pos == null) return 1.0;
+    const peaks = { QB: [26, 33], RB: [23, 27], WR: [24, 29], TE: [25, 30] };
+    const [lo, hi] = peaks[pos] || [24, 29];
+    const next = currentAge + 1;
+    if (next < lo) return 1.06;       // pre-peak, growing
+    if (next <= hi) return 1.00;      // peak years
+    const yearsPast = next - hi;
+    const decayPerYear = { RB: 0.22, WR: 0.10, TE: 0.10, QB: 0.05 }[pos] || 0.10;
+    return Math.max(0.4, 1 - decayPerYear * yearsPast);
+  }
+
+  function projectAssetValue(currentVal, age, pos, yearsOut) {
+    let v = currentVal;
+    let a = age || 25; // unknown age → assume prime
+    for (let i = 0; i < yearsOut; i++) {
+      v *= dynastyDecay(a + i, pos);
+    }
+    return v;
+  }
+
+  // Project a trade-side ON-FIELD contribution at +N years. This is distinct
+  // from the dynasty trade value shown at the top of the calc: a 2027 R1 pick
+  // is worth real dynasty value today (you can trade it), but it does NOT help
+  // you win the 2026 season — it has no on-field contribution until it converts
+  // to a rookie at the 2027 draft.
+  //
+  // Picks model:
+  //   - N < yearsToDraft  → 0 (future pick, not on the field yet)
+  //   - N ≥ yearsToDraft  → converted to rookie. Modeled as an age-22 WR
+  //                         starting at the pick's value, then aged forward.
+  function projectSideValue(keys, lg, yearsOut) {
+    let total = 0;
+    const curYear = new Date().getFullYear();
+    for (const k of keys) {
+      if (isPickKey(k)) {
+        const { season, round, originRosterId } = parsePickKey(k);
+        const yearsToDraft = Math.max(0, parseInt(season, 10) - curYear);
+        if (yearsOut < yearsToDraft) continue; // not on field yet
+        const v = pickValue(season, round, originRosterId, lg);
+        total += projectAssetValue(v, 22, 'WR', yearsOut - yearsToDraft);
+        continue;
+      }
+      const sleeper = window.PLAYERS[k];
+      if (!sleeper) continue;
+      const ranked = rankIndex().bySleeperId.get(k) || rankIndex().byName.get(norm(sleeper.name));
+      if (!ranked) continue;
+      const v = tierValue(ranked, lg);
+      total += projectAssetValue(v, sleeper.age, ranked.pos, yearsOut);
+    }
+    return total;
+  }
+
+  // Project a roster's on-field team strength at horizon N.
+  // Same model as the trade-pile projection: current players age forward by
+  // position curve; picks contribute 0 until their draft year, then convert
+  // to age-22 WR rookies that age forward through the remaining horizon.
+  function projectedRosterStrength(roster, lg, yearsOut) {
+    if (!roster) return 0;
+    const curYear = new Date().getFullYear();
+    const idx = rankIndex();
+    let total = 0;
+    for (const pid of (roster.players || [])) {
+      const sleeper = window.PLAYERS[pid]; if (!sleeper) continue;
+      const ranked = idx.bySleeperId.get(pid) || idx.byName.get(norm(sleeper.name));
+      if (!ranked) continue;
+      total += projectAssetValue(tierValue(ranked, lg), sleeper.age, ranked.pos, yearsOut);
+    }
+    const ownedPicks = rosterOwnedPicks(roster.roster_id, lg);
+    for (const p of ownedPicks) {
+      const yearsToDraft = Math.max(0, parseInt(p.season, 10) - curYear);
+      if (yearsOut < yearsToDraft) continue;
+      const v = p.value || pickValue(p.season, p.round, p.originRosterId, lg);
+      total += projectAssetValue(v, 22, 'WR', yearsOut - yearsToDraft);
+    }
+    return total;
+  }
+
+  // Same as projectedRosterStrength but with a trade swap applied: remove
+  // sendKeys (players + picks the side is sending), add receiveKeys (players +
+  // picks coming in). Used to compute each side's post-trade strength + rank
+  // at each year of the outlook.
+  function projectedTradeStrength(lg, rosterId, sendKeys, receiveKeys, yearsOut) {
+    const roster = lg.rosters.find(r => r.roster_id === rosterId);
+    if (!roster) return 0;
+    const curYear = new Date().getFullYear();
+    const idx = rankIndex();
+    const sendPlayers = new Set(), sendPicks = new Set();
+    const recvPlayers = new Set(), recvPicks = new Set();
+    for (const k of sendKeys) (isPickKey(k) ? sendPicks : sendPlayers).add(k);
+    for (const k of receiveKeys) (isPickKey(k) ? recvPicks : recvPlayers).add(k);
+    const players = new Set(roster.players || []);
+    for (const id of sendPlayers) players.delete(id);
+    for (const id of recvPlayers) players.add(id);
+    const ownedPickKeys = new Set(rosterOwnedPicks(rosterId, lg).map(p => pickKey(p.season, p.round, p.originRosterId)));
+    for (const k of sendPicks) ownedPickKeys.delete(k);
+    for (const k of recvPicks) ownedPickKeys.add(k);
+    let total = 0;
+    for (const pid of players) {
+      const sleeper = window.PLAYERS[pid]; if (!sleeper) continue;
+      const ranked = idx.bySleeperId.get(pid) || idx.byName.get(norm(sleeper.name));
+      if (!ranked) continue;
+      total += projectAssetValue(tierValue(ranked, lg), sleeper.age, ranked.pos, yearsOut);
+    }
+    for (const k of ownedPickKeys) {
+      const { season, round, originRosterId } = parsePickKey(k);
+      const yearsToDraft = Math.max(0, parseInt(season, 10) - curYear);
+      if (yearsOut < yearsToDraft) continue;
+      const v = pickValue(season, round, originRosterId, lg);
+      total += projectAssetValue(v, 22, 'WR', yearsOut - yearsToDraft);
+    }
+    return total;
+  }
+
+  // For each year of the outlook, compute both sides' projected total + rank
+  // among the full league. Side A and Side B get the trade applied; the other
+  // rosters project untouched.
+  function projectedTradeRanks(lg, sideA, sideB, yearsOut) {
+    const scored = lg.rosters.map(r => {
+      let s;
+      if (r.roster_id === sideA.rosterId)      s = projectedTradeStrength(lg, r.roster_id, sideA.send, sideA.recv, yearsOut);
+      else if (r.roster_id === sideB.rosterId) s = projectedTradeStrength(lg, r.roster_id, sideB.send, sideB.recv, yearsOut);
+      else                                      s = projectedRosterStrength(r, lg, yearsOut);
+      return { id: r.roster_id, s };
+    }).sort((a, b) => b.s - a.s);
+    const rankOf = (id) => scored.findIndex(x => x.id === id) + 1;
+    const aRow = scored.find(x => x.id === sideA.rosterId);
+    const bRow = scored.find(x => x.id === sideB.rosterId);
+    return {
+      total: scored.length,
+      aTotal: aRow ? aRow.s : 0,
+      aRank:  aRow ? rankOf(sideA.rosterId) : 0,
+      bTotal: bRow ? bRow.s : 0,
+      bRank:  bRow ? rankOf(sideB.rosterId) : 0,
+    };
+  }
+
   function simulateRosterStrength(lg, rosterId, removeIds, addIds) {
     const roster = lg.rosters.find(r => r.roster_id === rosterId);
     if (!roster) return { before: 0, after: 0, delta: 0 };
@@ -3721,6 +5489,7 @@
     main.innerHTML = '';
     main.appendChild(h('div', { class:'page-header' },
       h('div', null,
+        h('div', { class:'page-eyebrow' }, 'DYNASTY'),
         h('h1', { class:'page-title' }, 'Action Center'),
         h('p', { class:'page-sub' }, 'Trade and roster moves to take this week, ranked by impact across all your leagues.')
       )
@@ -3862,8 +5631,9 @@
     main.innerHTML = '';
     main.appendChild(h('div', { class:'page-header' },
       h('div', null,
-        h('h1', { class:'page-title' }, 'Strategy Playbook'),
-        h('p', { class:'page-sub' }, 'Distilled rules from public dynasty content. The site evaluates these against your rosters to surface coaching tips. Sources at the bottom.')
+        h('div', { class:'page-eyebrow' }, 'REFERENCE'),
+        h('h1', { class:'page-title' }, 'Framework'),
+        h('p', { class:'page-sub' }, 'The dynasty rules this site evaluates against your rosters. Distilled from public dynasty content. Sources at the bottom.')
       )
     ));
     if (!window.STRATEGY) {
@@ -4012,6 +5782,7 @@
     main.innerHTML = '';
     main.appendChild(h('div', { class:'page-header' },
       h('div', null,
+        h('div', { class:'page-eyebrow' }, 'REFERENCE'),
         h('h1', { class:'page-title' }, 'About'),
         h('p', { class:'page-sub' }, 'How this site computes rankings and team strength.')
       )
@@ -4043,10 +5814,11 @@
   // ============================================================
   // Player detail modal
   // ============================================================
-  function openPlayerDetail(name) {
+  function openPlayerDetail(name, sleeperId = null) {
     const idx = rankIndex();
-    const ranked = idx.byName.get(norm(name));
-    const sleeper = window.PLAYERS[sleeperIdFor(name) || ''];
+    const ranked = sleeperId ? idx.bySleeperId.get(sleeperId) : idx.byName.get(norm(name));
+    const resolvedId = sleeperId || ranked?._sleeperId || sleeperIdForFuzzy(name, ranked?.pos);
+    const sleeper = window.PLAYERS[resolvedId || ''];
     document.body.appendChild(playerModal(name, ranked, sleeper));
   }
   window.openPlayerDetail = openPlayerDetail;
@@ -4147,10 +5919,289 @@
     );
   }
 
+  // ============================================================
+  // Opportunity / coaching / contract context (data/context.js)
+  // ============================================================
+  function fmtPct(v) {
+    if (v == null || isNaN(v)) return '—';
+    return `${(Number(v) * 100).toFixed(1)}%`;
+  }
+  function fmtMoney(n) {
+    if (!n || isNaN(n)) return '—';
+    const v = Number(n);
+    if (v >= 1e6) return `$${(v/1e6).toFixed(1)}M`;
+    if (v >= 1e3) return `$${Math.round(v/1e3)}K`;
+    return `$${Math.round(v)}`;
+  }
+  function deltaChip(deltaPct, kind = 'pos') {
+    if (deltaPct == null || isNaN(deltaPct)) return null;
+    const sign = deltaPct > 0 ? '+' : '';
+    const color = (deltaPct >= 0) === (kind === 'pos') ? 'var(--green)' : 'var(--red)';
+    return h('span', { class:'delta-chip tnum', style:{ color } }, `${sign}${(deltaPct*100).toFixed(1)}%`);
+  }
+  function contextBlock(sleeper) {
+    if (!sleeper || !window.CONTEXT) return null;
+    const playerCtx = window.CONTEXT.players[sleeper.id];
+    const teamAbbr = (playerCtx && playerCtx.team) || sleeper.team;
+    const teamCtx = teamAbbr && window.CONTEXT.teams ? window.CONTEXT.teams[teamAbbr] : null;
+    if (!teamCtx && !playerCtx) return null;
+
+    const blocks = [];
+
+    // -- Team market + QB context --
+    if (teamCtx && (teamCtx.market || teamCtx.qb)) {
+      const m = teamCtx.market;
+      const q = teamCtx.qb;
+      const proeColor = m
+        ? (m.proe >= 0.02 ? 'var(--blue)' : m.proe <= -0.02 ? 'var(--amber)' : 'var(--fg-2)')
+        : 'var(--fg-2)';
+      blocks.push(h('div', { class:'ctx-block market-block' },
+        h('div', { class:'card-title' }, `${teamAbbr} ${m ? m.season : ''} Tendencies`),
+        m ? h('div', { class:'kpi-row' },
+          h('div', { class:'mini-kpi' },
+            h('div', { class:'mini-kpi-num tnum' }, m.avg_implied.toFixed(1)),
+            h('div', { class:'mini-kpi-label' }, 'Avg implied'),
+          ),
+          h('div', { class:'mini-kpi' },
+            h('div', { class:'mini-kpi-num tnum', style:{ color: proeColor } },
+              `${m.proe >= 0 ? '+' : ''}${(m.proe*100).toFixed(1)}%`),
+            h('div', { class:'mini-kpi-label' }, 'PROE'),
+          ),
+          h('div', { class:'mini-kpi' },
+            h('div', { class:'mini-kpi-num tnum' }, m.plays_per_game.toFixed(1)),
+            h('div', { class:'mini-kpi-label' }, 'Plays/G'),
+          ),
+          h('div', { class:'mini-kpi' },
+            h('div', { class:'mini-kpi-num tnum' }, `${m.wins}-${m.losses}`),
+            h('div', { class:'mini-kpi-label' }, 'Record'),
+          ),
+        ) : null,
+        q ? h('div', { class:'qb-line' },
+          h('span', { class:'coach-role' }, 'QB'),
+          h('span', { class:'coach-name' }, q.qb_name || '—'),
+          q.is_new_starting_qb && q.prev_qb_name
+            ? h('span', { class:'flag-pill new', style:{ marginLeft:'8px' } },
+                `NEW QB · was ${q.prev_qb_name}`)
+            : q.continuity_streak > 1
+              ? h('span', { class:'tip', style:{ marginLeft:'8px' } }, `yr ${q.continuity_streak}`)
+              : null,
+          q.primary_pct < 0.7
+            ? h('span', { class:'flag-pill firstime', style:{ marginLeft:'8px' } },
+                `${(q.primary_pct*100).toFixed(0)}% snaps — committee`)
+            : null,
+        ) : null,
+      ));
+    }
+
+    // -- Coaching context --
+    if (teamCtx && teamCtx.coach) {
+      const c = teamCtx.coach;
+      const prev = teamCtx.coach_prev;
+      const flags = [];
+      if (c.new_hc) flags.push(h('span', { class:'flag-pill new' }, 'NEW HC'));
+      if (c.new_oc) flags.push(h('span', { class:'flag-pill new' }, 'NEW OC'));
+      if (c.new_play_caller) flags.push(h('span', { class:'flag-pill new' }, 'NEW PLAY CALLER'));
+      if (c.play_caller_first_season) flags.push(h('span', { class:'flag-pill firstime' }, 'FIRST-TIME PLAY CALLER'));
+      if (c.oc_first_season) flags.push(h('span', { class:'flag-pill firstime' }, 'FIRST-TIME OC'));
+
+      const lineHC = h('div', { class:'coach-line' },
+        h('span', { class:'coach-role' }, 'HC'),
+        h('span', { class:'coach-name' }, c.hc || '—'),
+      );
+      const lineOC = (c.oc && c.oc !== c.hc) ? h('div', { class:'coach-line' },
+        h('span', { class:'coach-role' }, 'OC'),
+        h('span', { class:'coach-name' }, c.oc),
+      ) : null;
+      const linePC = h('div', { class:'coach-line' },
+        h('span', { class:'coach-role' }, 'PC'),
+        h('span', { class:'coach-name' }, c.play_caller || '—'),
+        h('span', { class:'tip' },
+          c.scheme ? `${c.scheme}` : '',
+          c.pc_tenure_yr > 1 ? ` · yr ${c.pc_tenure_yr}` : ''),
+      );
+      const prevLine = prev && prev.play_caller && prev.play_caller !== c.play_caller
+        ? h('div', { class:'coach-prev tip' }, `prev: ${prev.play_caller} (${prev.scheme || ''})`)
+        : null;
+
+      blocks.push(h('div', { class:'ctx-row' },
+        h('div', { class:'ctx-col' },
+          h('div', { class:'card-title' }, `${teamAbbr} ${window.CONTEXT.current_season} Staff`),
+          lineHC, lineOC, linePC, prevLine,
+        ),
+        flags.length ? h('div', { class:'ctx-flags' }, ...flags) : null,
+      ));
+    }
+
+    // -- Team turnover --
+    if (teamCtx && teamCtx.turnover) {
+      const t = teamCtx.turnover;
+      const turnoverEl = h('div', { class:'ctx-block' },
+        h('div', { class:'card-title' }, `${teamAbbr} ${t.season} Turnover`),
+        h('div', { class:'kpi-row' },
+          h('div', { class:'mini-kpi' },
+            h('div', { class:'mini-kpi-num tnum' }, fmtPct(t.vacated_tgt)),
+            h('div', { class:'mini-kpi-label' }, 'Vacated TGT'),
+          ),
+          h('div', { class:'mini-kpi' },
+            h('div', { class:'mini-kpi-num tnum' }, fmtPct(t.vacated_rush)),
+            h('div', { class:'mini-kpi-label' }, 'Vacated RUSH'),
+          ),
+          h('div', { class:'mini-kpi' },
+            h('div', { class:'mini-kpi-num tnum' }, fmtPct(t.vacated_ay)),
+            h('div', { class:'mini-kpi-label' }, 'Vacated AY'),
+          ),
+        ),
+        t.top_leavers && t.top_leavers.length ? h('div', { class:'turn-list' },
+          h('div', { class:'turn-list-label' }, 'Leavers'),
+          ...t.top_leavers.slice(0, 3).map(l => h('div', { class:'turn-item' },
+            h('span', { class:'turn-name' }, l.name),
+            h('span', { class:'turn-pos tip' }, l.pos),
+            h('span', { class:'turn-share tnum' }, fmtPct(l.tgt + l.rush)),
+          )),
+        ) : null,
+        t.top_joiners && t.top_joiners.length ? h('div', { class:'turn-list' },
+          h('div', { class:'turn-list-label' }, 'Joiners'),
+          ...t.top_joiners.slice(0, 3).map(j => h('div', { class:'turn-item' },
+            h('span', { class:'turn-name' }, j.name),
+            h('span', { class:'turn-pos tip' }, j.pos, j.rookie ? ' · R' : ''),
+            h('span', { class:'turn-share tnum' }, fmtPct(j.tgt + j.rush)),
+          )),
+        ) : null,
+      );
+      blocks.push(turnoverEl);
+    }
+
+    // -- Per-player new-team transitions / contract --
+    if (playerCtx && playerCtx.transitions && playerCtx.transitions.length) {
+      const tx = playerCtx.transitions[0];
+      const delta = (tx.cur_tgt || 0) - (tx.expected_tgt || 0);
+      const rdelta = (tx.cur_rush || 0) - (tx.expected_rush || 0);
+      blocks.push(h('div', { class:'ctx-block' },
+        h('div', { class:'card-title' },
+          `New team — ${tx.season} ${tx.prev_team || (tx.is_rookie ? 'rookie' : '')} → ${tx.team}`),
+        h('div', { class:'kpi-row' },
+          h('div', { class:'mini-kpi' },
+            h('div', { class:'mini-kpi-num tnum' }, fmtMoney(tx.apy)),
+            h('div', { class:'mini-kpi-label' }, `APY · ${tx.apy_bucket || ''}`),
+          ),
+          tx.cur_tgt > 0 ? h('div', { class:'mini-kpi' },
+            h('div', { class:'mini-kpi-num tnum' },
+              fmtPct(tx.cur_tgt), ' ', deltaChip(delta),
+            ),
+            h('div', { class:'mini-kpi-label' }, `TGT (vs ${fmtPct(tx.expected_tgt)} exp)`),
+          ) : null,
+          tx.cur_rush > 0 ? h('div', { class:'mini-kpi' },
+            h('div', { class:'mini-kpi-num tnum' },
+              fmtPct(tx.cur_rush), ' ', deltaChip(rdelta),
+            ),
+            h('div', { class:'mini-kpi-label' }, `RUSH (vs ${fmtPct(tx.expected_rush)} exp)`),
+          ) : null,
+        ),
+        playerCtx.transitions.length > 1 ? h('div', { class:'tip' },
+          `${playerCtx.transitions.length} career team changes`) : null,
+      ));
+    } else if (playerCtx && playerCtx.tenure_team) {
+      // Stayed put — show APY if known
+      if (playerCtx.apy) {
+        blocks.push(h('div', { class:'ctx-block tenure' },
+          h('div', { class:'card-title' }, `Tenured · ${playerCtx.team}`),
+          h('div', { class:'kpi-row' },
+            h('div', { class:'mini-kpi' },
+              h('div', { class:'mini-kpi-num tnum' }, fmtMoney(playerCtx.apy)),
+              h('div', { class:'mini-kpi-label' }, 'APY'),
+            ),
+          ),
+        ));
+      }
+    }
+
+    // -- Per-player efficiency (recent 3 seasons) --
+    if (playerCtx && playerCtx.efficiency && playerCtx.efficiency.length) {
+      const eff = playerCtx.efficiency;
+      const showAdot = eff.some(e => e.adot > 0);
+      const showYac = eff.some(e => e.yac_per_rec > 0);
+      const showDrop = eff.some(e => e.drop_pct > 0);
+      const showBrk = eff.some(e => e.brk_tkl > 0);
+      blocks.push(h('div', { class:'ctx-block' },
+        h('div', { class:'card-title' }, 'Efficiency'),
+        h('table', { class:'data eff-table' },
+          h('thead', null, h('tr', null,
+            h('th', null, 'Year'),
+            h('th', { class:'right' }, 'Snap%'),
+            h('th', { class:'right' }, 'Tgt/G'),
+            showAdot ? h('th', { class:'right' }, 'aDOT') : null,
+            showYac ? h('th', { class:'right' }, 'YAC/R') : null,
+            showDrop ? h('th', { class:'right' }, 'Drop%') : null,
+            showBrk ? h('th', { class:'right' }, 'BrkTkl') : null,
+          )),
+          h('tbody', null, ...eff.map(e => h('tr', null,
+            h('td', { class:'tnum' }, e.season),
+            h('td', { class:'right tnum' }, e.snap_share > 0 ? fmtPct(e.snap_share) : '—'),
+            h('td', { class:'right tnum' }, e.tgt_per_g > 0 ? e.tgt_per_g.toFixed(1) : '—'),
+            showAdot ? h('td', { class:'right tnum' }, e.adot > 0 ? e.adot.toFixed(1) : '—') : null,
+            showYac ? h('td', { class:'right tnum' }, e.yac_per_rec > 0 ? e.yac_per_rec.toFixed(1) : '—') : null,
+            showDrop ? h('td', { class:'right tnum' }, e.drop_pct > 0 ? `${(e.drop_pct*100).toFixed(1)}%` : '—') : null,
+            showBrk ? h('td', { class:'right tnum' }, e.brk_tkl || '—') : null,
+          ))),
+        ),
+      ));
+    }
+
+    // -- Availability --
+    if (playerCtx && playerCtx.availability) {
+      const av = playerCtx.availability;
+      const color = av.pct >= 0.9 ? 'var(--green)' : av.pct >= 0.75 ? 'var(--fg-1)' : 'var(--red)';
+      blocks.push(h('div', { class:'ctx-block availability' },
+        h('div', { class:'avail-row' },
+          h('div', { class:'mini-kpi-label' }, 'Availability'),
+          h('div', { class:'avail-num tnum', style:{ color } }, fmtPct(av.pct)),
+          h('div', { class:'tip' }, `${av.games}/${av.potential} potential games · ${av.seasons} seasons`),
+        ),
+      ));
+    }
+
+    if (!blocks.length) return null;
+    return h('section', { class:'ctx-section' }, ...blocks);
+  }
+
   function playerModal(name, ranked, sleeper) {
-    const close = () => $$('.modal-backdrop').forEach(e => e.remove());
+    const restoreFocus = document.activeElement;
+    const titleId = `player-dialog-${norm(name).replace(/\s+/g, '-')}`;
+    const gibbs = jacobGibbsEntry(name, sleeper?.id || ranked?._sleeperId);
+    let backdrop;
+    let modal;
+    const close = () => {
+      if (!backdrop?.isConnected) return;
+      backdrop.remove();
+      document.removeEventListener('keydown', onKeydown);
+      if (restoreFocus instanceof HTMLElement && restoreFocus.isConnected) restoreFocus.focus();
+    };
     const onBackdrop = (e) => { if (e.target === e.currentTarget) close(); };
-    document.addEventListener('keydown', function esc(ev){ if (ev.key === 'Escape') { close(); document.removeEventListener('keydown', esc); }});
+    const onKeydown = (ev) => {
+      if (ev.key === 'Escape') {
+        ev.preventDefault();
+        close();
+        return;
+      }
+      if (ev.key !== 'Tab' || !modal) return;
+      const focusable = [...modal.querySelectorAll(
+        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      )].filter(el => !el.hidden && el.getClientRects().length);
+      if (!focusable.length) {
+        ev.preventDefault();
+        modal.focus();
+        return;
+      }
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (ev.shiftKey && (document.activeElement === first || document.activeElement === modal)) {
+        ev.preventDefault();
+        last.focus();
+      } else if (!ev.shiftKey && document.activeElement === last) {
+        ev.preventDefault();
+        first.focus();
+      }
+    };
 
     // Owners
     const ownerRows = [];
@@ -4164,10 +6215,12 @@
       }
     }
 
-    return h('div', { class:'modal-backdrop', onclick: onBackdrop },
-      h('div', { class:'modal', style:{ position:'relative' } },
+    backdrop = h('div', { class:'modal-backdrop', onclick: onBackdrop },
+      modal = h('div', {
+        class:'modal', style:{ position:'relative' }, role:'dialog', 'aria-modal':'true', 'aria-labelledby':titleId, tabindex:'-1'
+      },
         h('button', { class:'close-btn', onclick: close, 'aria-label':'Close' }, '×'),
-        h('h2', { style:{ marginTop:0, marginBottom:'4px' } }, name),
+        h('h2', { id:titleId, style:{ marginTop:0, marginBottom:'4px' } }, name),
         h('div', { class:'row gap-4 wrap', style:{ marginBottom:'12px' } },
           ranked ? posChip(ranked.pos) : sleeper ? posChip(sleeper.pos) : null,
           ranked ? teamChip(ranked.team) : sleeper ? teamChip(sleeper.team) : null,
@@ -4175,6 +6228,10 @@
           rookieBadge(ranked || {}),
           uncertainBadge(ranked || {}),
           depBadge(ranked || {}),
+          gibbs ? h('span', {
+            class:'badge',
+            title:`Jacob Gibbs 2026 half-PPR, updated ${window.JACOB_GIBBS_RANKINGS.updatedAt}`,
+          }, `Gibbs ${jacobGibbsDateLabel()}: #${gibbs.rank} · ${gibbs.pos}${gibbs.posRank}`) : null,
         ),
         ranked ? h('div', { class:'row gap-4', style:{ marginBottom:'12px' } },
           pillCategory(ranked.category), tierChip(ranked.tier, ranked.category),
@@ -4185,12 +6242,14 @@
           h('div', null, ranked.note),
           h('div', { class:'tip', style:{ marginTop:'6px' } }, `from ${ranked._src} / ${ranked._ranking}`)
         ) : null,
+        playerInfoBlock(name, sleeper),
         sleeper ? h('div', { class:'card', style:{ background:'var(--bg-2)', marginBottom:'12px' } },
           h('div', { class:'card-title' }, 'Sleeper'),
           h('div', null, `${sleeper.pos} · ${sleeper.team || 'FA'}` + (sleeper.college ? ` · ${sleeper.college}` : '') + (sleeper.exp != null ? ` · exp ${sleeper.exp}` : '')),
           h('div', { class:'tip' }, `Sleeper id: ${sleeper.id}`)
         ) : h('div', { class:'tip' }, 'Not matched to a Sleeper player.'),
         historyBlock(sleeper),
+        contextBlock(sleeper),
         ownerRows.length ? h('div', null,
           h('div', { class:'card-title', style:{ marginBottom:'6px' } }, 'Owned in your leagues'),
           h('table', { class:'data' },
@@ -4207,6 +6266,42 @@
         ) : null
       )
     );
+    document.addEventListener('keydown', onKeydown);
+    requestAnimationFrame(() => modal.querySelector('.close-btn')?.focus());
+    return backdrop;
+  }
+
+  function playerInfoBlock(name, sleeper) {
+    const database = window.PLAYER_INFO;
+    const info = sleeper?.id
+      ? database?.by_id?.[sleeper.id]
+      : database?.by_name?.[norm(name)];
+    if (!info?.takeaways?.length) return null;
+
+    return h('section', { class:'player-intel', 'aria-label':'Timestamped video takeaways' },
+      h('div', { class:'hist-head' },
+        h('div', null,
+          h('div', { class:'card-title' }, 'Video intel'),
+          h('div', { class:'intel-provenance' }, `${database.source} · captured ${database.captured_at}`)
+        ),
+        h('div', { class:'tip tnum' }, `${info.takeaways.length} takeaway${info.takeaways.length === 1 ? '' : 's'}`)
+      ),
+      h('div', { class:'intel-list' }, ...info.takeaways.map(item => {
+        const video = database.videos[item.video_id];
+        const href = `https://www.youtube.com/watch?v=${item.video_id}&t=${item.at}s`;
+        return h('article', { class:'intel-item' },
+          h('div', { class:'intel-meta' },
+            h('a', {
+              class:'intel-time tnum', href, target:'_blank', rel:'noopener',
+              title:`Open ${video.title} at ${item.timestamp}`
+            }, `Watch ${item.timestamp}`),
+            h('span', { class:'intel-date tnum' }, video.published_at),
+            h('span', { class:'intel-source', title:video.title }, video.title)
+          ),
+          h('div', { class:'intel-takeaway' }, item.takeaway)
+        );
+      }))
+    );
   }
 
   // ============================================================
@@ -4214,17 +6309,20 @@
   // ============================================================
   function navigate(hash) { location.hash = hash; }
   function route() {
+    renderSidebar();
     setActiveNav();
+    document.body.classList.remove('nav-open');
+    window.scrollTo(0, 0);
     const hash = location.hash || '#dashboard';
     const [path, ...rest] = hash.replace(/^#/, '').split('/');
     try {
       switch (path) {
-        case 'dashboard':  return viewDashboard();
-        case 'rankings':   return viewRankings();
+        case 'dashboard':  return viewDashboard(rest[0]);
+        case 'rankings':   return viewRankings(rest[0]);
         case 'players':    return viewAllPlayers();
         case 'leagues':    return viewLeagues();
-        case 'league':     return viewLeague(rest[0]);
-        case 'roster':     return viewRoster(rest[0], rest[1]);
+        case 'league':     return viewLeague(rest[0], rest[1]);
+        case 'roster':     return viewRoster(rest[0], rest[1], rest[2]);
         case 'trade':      return viewTrade(rest[0]);
         case 'compare':    return viewCompare(rest[0], rest[1], rest[2]);
         case 'strategy':   return viewStrategy();
@@ -4256,7 +6354,21 @@
       }
     }
     for (const p of idx.all) {
-      items.push({ kind:'ranked', label:p.name, hint:`${p.pos} · ${p.team} · ${window.CATEGORY_LABELS[p.category]} ${p.tier}`, icon:'★', name:p.name });
+      items.push({ kind:'ranked', label:p.name, hint:`${p.pos} · ${p.team} · ${window.CATEGORY_LABELS[p.category]} ${p.tier}`, icon:'★', name:p.name, pid:p._sleeperId });
+    }
+    // KTC published rookie-pick valuations as searchable entries. Hash sends
+    // to the first league's #trade route (where picks are tradeable assets).
+    const firstLeagueId = (window.LEAGUES || [])[0]?.id;
+    const tradeHash = firstLeagueId ? `#trade/${firstLeagueId}` : null;
+    const pIdx = pickIndex();
+    for (const [, pk] of pIdx.oneqb) {
+      items.push({
+        kind: 'pick',
+        label: pk.name,
+        hint: `Pick · KTC ${pk.ktcValue} (1QB)`,
+        icon: '◇',
+        hash: tradeHash,
+      });
     }
     // Add some Sleeper players (limit to those rostered in any league for relevance)
     const rostered = new Set();
@@ -4264,7 +6376,7 @@
     for (const pid of rostered) {
       const sp = window.PLAYERS[pid]; if (!sp) continue;
       if (idx.bySleeperId.has(pid)) continue; // already added as ranked
-      items.push({ kind:'player', label:sp.name, hint:`${sp.pos} · ${sp.team || 'FA'}`, icon:'·', name:sp.name });
+      items.push({ kind:'player', label:sp.name, hint:`${sp.pos} · ${sp.team || 'FA'}`, icon:'·', name:sp.name, pid });
     }
 
     let q = '', activeIdx = 0;
@@ -4298,7 +6410,7 @@
       fl.forEach((it, i) => {
         if (it.kind !== curSection) {
           curSection = it.kind;
-          const labels = { route:'Pages', league:'Leagues', roster:'Rosters', ranked:'Ranked Players', player:'Players' };
+          const labels = { route:'Pages', league:'Leagues', roster:'Rosters', ranked:'Ranked Players', player:'Players', pick:'Draft Picks' };
           results.appendChild(h('div', { class:'cmdk-section' }, labels[it.kind] || it.kind));
         }
         const row = h('div', { class:`cmdk-row ${i===activeIdx?'active':''}`, onclick:()=>activate(it) },
@@ -4311,7 +6423,7 @@
     function activate(it) {
       backdrop.remove();
       if (it.hash) navigate(it.hash);
-      else if (it.name) openPlayerDetail(it.name);
+      else if (it.name) openPlayerDetail(it.name, it.pid);
     }
     function onKey(e) {
       if (!document.body.contains(backdrop)) { document.removeEventListener('keydown', onKey); return; }
@@ -4335,11 +6447,22 @@
     ensureSourceDefaults();
     saveSettings();
     renderSidebar();
+
+    // Mobile nav toggle + scrim. The button + scrim live in index.html;
+    // toggling `body.nav-open` slides the sidebar in.
+    const navToggle = document.getElementById('nav-toggle');
+    const navScrim  = document.getElementById('nav-scrim');
+    if (navToggle) navToggle.addEventListener('click', () => document.body.classList.add('nav-open'));
+    if (navScrim)  navScrim.addEventListener('click',  () => document.body.classList.remove('nav-open'));
+
     window.addEventListener('hashchange', route);
     document.addEventListener('keydown', (e) => {
       if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) {
         e.preventDefault();
         openCmdK();
+      }
+      if (e.key === 'Escape' && document.body.classList.contains('nav-open')) {
+        document.body.classList.remove('nav-open');
       }
     });
     route();

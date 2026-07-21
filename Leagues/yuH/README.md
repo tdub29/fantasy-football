@@ -19,13 +19,13 @@
 |---|---|---|
 | 1 | noahstifle | Wyd step Burrow? |
 | 2 | matthewarmstrong02 | Wake N Baker |
-| 3 | MaryLynnfrolfs | MaryLynnFrolfs |
+| 3 | MaryLynnfrolfs | Dr.F |
 | 4 | JDillman5 | PapaZoot0 |
 | 5 | tdub1329  ⭐ | Team WHITE |
 | 6 | jonahlarson | Larsswag10 |
 | 7 | Nathanmetz | MT EVEREST |
 | 8 | JamesJessen | Jenny |
-| 9 | — | — |
+| 9 | tbonerito | tbonerito |
 | 10 | Dydelldaddy | Dydelldaddy |
 
 ## My Roster (tdub1329)
@@ -42,28 +42,28 @@
 - Jaylen Warren (RB, PIT, age 27)
 - Nico Collins (WR, HOU, age 27)
 - Ja'Marr Chase (WR, CIN, age 26)
-- Harold Fannin (TE, CLE, age 21)
-- Puka Nacua (WR, LAR, age 24)
+- Harold Fannin (TE, CLE, age 22)
+- Puka Nacua (WR, LAR, age 25)
 - Jaylen Waddle (WR, DEN, age 27)
 - Jack Campbell (LB, DET, age 25)
-- Blake Cashman (LB, MIN, age 29)
+- Blake Cashman (LB, MIN, age 30)
 
 **Bench** (14)
 
-- Breece Hall (RB, NYJ, age 24)
+- Breece Hall (RB, NYJ, age 25)
 - Michael Pittman (WR, PIT, age 28)
 - Jacoby Brissett (QB, ARI, age 33)
 - Zack Baun (LB, PHI, age 29)
 - Brian Thomas (WR, JAX, age 23)
-- Kyle Monangai (RB, CHI, age 23)
+- Kyle Monangai (RB, CHI, age 24)
 - Jacory Croskey-Merritt (RB, WAS, age 25)
 - Alec Pierce (WR, IND, age 26)
 - Marshawn Lynch (RB, FA, age 35)
 - Michael Carter (RB, TEN, age 27)
 - Isaiah Likely (TE, NYG, age 26)
 - Kimani Vidal (RB, LAC, age 24)
-- Sam Darnold (QB, SEA, age 28)
-- Oronde Gadsden (TE, LAC, age 22)
+- Sam Darnold (QB, SEA, age 29)
+- Oronde Gadsden (TE, LAC, age 23)
 
 **Taxi** (8)
 
@@ -74,7 +74,7 @@
 - Isaiah Bond (WR, CLE, age 22)
 - Jalen Milroe (QB, SEA, age 23)
 - Colston Loveland (TE, CHI, age 22)
-- Trevor Etienne (RB, CAR, age 21)
+- Trevor Etienne (RB, CAR, age 22)
 
 **IR** (3)
 

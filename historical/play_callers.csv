@@ -1,0 +1,225 @@
+season,team,head_coach,offensive_coordinator,play_caller,play_caller_role,scheme,notes
+2020,ARI,Kliff Kingsbury,Tom Clements,Kliff Kingsbury,HC,Air Raid,
+2020,ATL,Dan Quinn/Raheem Morris,Dirk Koetter,Dirk Koetter,OC,West Coast,Quinn fired Week 6
+2020,BAL,John Harbaugh,Greg Roman,Greg Roman,OC,RPO/Zone Read,
+2020,BUF,Sean McDermott,Brian Daboll,Brian Daboll,OC,Erhardt-Perkins,
+2020,CAR,Matt Rhule,Joe Brady,Joe Brady,OC,Air Raid/Hybrid,
+2020,CHI,Matt Nagy,Bill Lazor,Matt Nagy,HC,West Coast,Nagy retained PC duties
+2020,CIN,Zac Taylor,Brian Callahan,Zac Taylor,HC,McVay tree,
+2020,CLE,Kevin Stefanski,Alex Van Pelt,Kevin Stefanski,HC,Shanahan tree,
+2020,DAL,Mike McCarthy,Kellen Moore,Kellen Moore,OC,Hybrid,
+2020,DEN,Vic Fangio,Pat Shurmur,Pat Shurmur,OC,West Coast,
+2020,DET,Matt Patricia/Darrell Bevell,Darrell Bevell,Darrell Bevell,OC,West Coast,Patricia fired Week 12
+2020,GB,Matt LaFleur,Nathaniel Hackett,Matt LaFleur,HC,Shanahan tree,
+2020,HOU,Bill O'Brien/Romeo Crennel,Tim Kelly,Tim Kelly,OC,Spread,O'Brien fired Week 5
+2020,IND,Frank Reich,Nick Sirianni,Frank Reich,HC,West Coast,
+2020,JAX,Doug Marrone,Jay Gruden,Jay Gruden,OC,West Coast,
+2020,KC,Andy Reid,Eric Bieniemy,Andy Reid,HC,Reid system,
+2020,LV,Jon Gruden,Greg Olson,Jon Gruden,HC,West Coast,
+2020,LAC,Anthony Lynn,Shane Steichen,Shane Steichen,OC,McVay/Reid hybrid,
+2020,LA,Sean McVay,Kevin O'Connell,Sean McVay,HC,McVay system,
+2020,MIA,Brian Flores,Chan Gailey,Chan Gailey,OC,Run-and-Shoot,
+2020,MIN,Mike Zimmer,Gary Kubiak,Gary Kubiak,OC,Wide Zone,
+2020,NE,Bill Belichick,Josh McDaniels,Josh McDaniels,OC,Erhardt-Perkins,
+2020,NO,Sean Payton,Pete Carmichael,Sean Payton,HC,Payton system,
+2020,NYG,Joe Judge,Jason Garrett,Jason Garrett,OC,Coryell,
+2020,NYJ,Adam Gase,Dowell Loggains,Adam Gase,HC,Air Coryell,
+2020,PHI,Doug Pederson,Press Taylor,Doug Pederson,HC,Reid tree,
+2020,PIT,Mike Tomlin,Randy Fichtner,Randy Fichtner,OC,West Coast,
+2020,SF,Kyle Shanahan,Mike McDaniel (run game coord),Kyle Shanahan,HC,Shanahan system,
+2020,SEA,Pete Carroll,Brian Schottenheimer,Brian Schottenheimer,OC,Coryell,
+2020,TB,Bruce Arians,Byron Leftwich,Byron Leftwich,OC,Arians system,
+2020,TEN,Mike Vrabel,Arthur Smith,Arthur Smith,OC,Wide Zone,
+2020,WAS,Ron Rivera,Scott Turner,Scott Turner,OC,Coryell,
+2021,ARI,Kliff Kingsbury,Cam Turner,Kliff Kingsbury,HC,Air Raid,
+2021,ATL,Arthur Smith,Dave Ragone,Arthur Smith,HC,Wide Zone,first-year HC
+2021,BAL,John Harbaugh,Greg Roman,Greg Roman,OC,RPO/Zone Read,
+2021,BUF,Sean McDermott,Brian Daboll,Brian Daboll,OC,Erhardt-Perkins,
+2021,CAR,Matt Rhule,Joe Brady/Jeff Nixon,Joe Brady,OC,Air Raid/Hybrid,Brady fired Week 12
+2021,CHI,Matt Nagy,Bill Lazor,Matt Nagy,HC,West Coast,
+2021,CIN,Zac Taylor,Brian Callahan,Zac Taylor,HC,McVay tree,
+2021,CLE,Kevin Stefanski,Alex Van Pelt,Kevin Stefanski,HC,Shanahan tree,
+2021,DAL,Mike McCarthy,Kellen Moore,Kellen Moore,OC,Hybrid,
+2021,DEN,Vic Fangio,Pat Shurmur,Pat Shurmur,OC,West Coast,
+2021,DET,Dan Campbell,Anthony Lynn,Anthony Lynn,OC,Coryell,first-year HC
+2021,GB,Matt LaFleur,Nathaniel Hackett,Matt LaFleur,HC,Shanahan tree,
+2021,HOU,David Culley,Tim Kelly,Tim Kelly,OC,Spread,
+2021,IND,Frank Reich,Marcus Brady,Frank Reich,HC,West Coast,
+2021,JAX,Urban Meyer,Darrell Bevell,Darrell Bevell,OC,West Coast,
+2021,KC,Andy Reid,Eric Bieniemy,Andy Reid,HC,Reid system,
+2021,LV,Jon Gruden/Rich Bisaccia,Greg Olson,Greg Olson,OC,West Coast,Gruden resigned Week 7
+2021,LAC,Brandon Staley,Joe Lombardi,Joe Lombardi,OC,Drew Brees Saints,first-year HC
+2021,LA,Sean McVay,Kevin O'Connell,Sean McVay,HC,McVay system,
+2021,MIA,Brian Flores,George Godsey/Eric Studesville,Co-OCs,OC,Hybrid,
+2021,MIN,Mike Zimmer,Klint Kubiak,Klint Kubiak,OC,Wide Zone,first-time OC
+2021,NE,Bill Belichick,Josh McDaniels,Josh McDaniels,OC,Erhardt-Perkins,
+2021,NO,Sean Payton,Pete Carmichael,Sean Payton,HC,Payton system,
+2021,NYG,Joe Judge,Jason Garrett/Freddie Kitchens,Jason Garrett,OC,Coryell,Garrett fired Week 11
+2021,NYJ,Robert Saleh,Mike LaFleur,Mike LaFleur,OC,Shanahan tree,first-year HC and first-time OC
+2021,PHI,Nick Sirianni,Shane Steichen,Nick Sirianni,HC,McVay/Reid hybrid,first-year HC
+2021,PIT,Mike Tomlin,Matt Canada,Matt Canada,OC,Hybrid,first-time NFL OC
+2021,SF,Kyle Shanahan,Mike McDaniel,Kyle Shanahan,HC,Shanahan system,
+2021,SEA,Pete Carroll,Shane Waldron,Shane Waldron,OC,McVay tree,first-time OC
+2021,TB,Bruce Arians,Byron Leftwich,Byron Leftwich,OC,Arians system,
+2021,TEN,Mike Vrabel,Todd Downing,Todd Downing,OC,Wide Zone,first-time NFL OC
+2021,WAS,Ron Rivera,Scott Turner,Scott Turner,OC,Coryell,
+2022,ARI,Kliff Kingsbury,Cam Turner,Kliff Kingsbury,HC,Air Raid,
+2022,ATL,Arthur Smith,Dave Ragone,Arthur Smith,HC,Wide Zone,
+2022,BAL,John Harbaugh,Greg Roman,Greg Roman,OC,RPO/Zone Read,
+2022,BUF,Sean McDermott,Ken Dorsey,Ken Dorsey,OC,Erhardt-Perkins,first-time OC
+2022,CAR,Matt Rhule/Steve Wilks,Ben McAdoo,Ben McAdoo,OC,Coryell,Rhule fired Week 5
+2022,CHI,Matt Eberflus,Luke Getsy,Luke Getsy,OC,Shanahan tree,first-year HC and first-time OC
+2022,CIN,Zac Taylor,Brian Callahan,Zac Taylor,HC,McVay tree,
+2022,CLE,Kevin Stefanski,Alex Van Pelt,Kevin Stefanski,HC,Shanahan tree,
+2022,DAL,Mike McCarthy,Kellen Moore,Kellen Moore,OC,Hybrid,
+2022,DEN,Nathaniel Hackett,Justin Outten,Nathaniel Hackett,HC,Shanahan tree,first-year HC
+2022,DET,Dan Campbell,Ben Johnson,Ben Johnson,OC,Wide Zone,first-time NFL OC
+2022,GB,Matt LaFleur,Adam Stenavich,Matt LaFleur,HC,Shanahan tree,
+2022,HOU,Lovie Smith,Pep Hamilton,Pep Hamilton,OC,Spread,first-year HC
+2022,IND,Frank Reich/Jeff Saturday,Marcus Brady/Parks Frazier,Frank Reich,HC,West Coast,Reich fired Week 9
+2022,JAX,Doug Pederson,Press Taylor,Doug Pederson,HC,Reid tree,first-year HC
+2022,KC,Andy Reid,Eric Bieniemy,Andy Reid,HC,Reid system,
+2022,LV,Josh McDaniels,Mick Lombardi,Josh McDaniels,HC,Erhardt-Perkins,first-year HC
+2022,LAC,Brandon Staley,Joe Lombardi,Joe Lombardi,OC,Drew Brees Saints,
+2022,LA,Sean McVay,Liam Coen,Sean McVay,HC,McVay system,
+2022,MIA,Mike McDaniel,Frank Smith,Mike McDaniel,HC,Shanahan system,first-year HC
+2022,MIN,Kevin O'Connell,Wes Phillips,Kevin O'Connell,HC,McVay system,first-year HC
+2022,NE,Bill Belichick,Matt Patricia (de facto),Matt Patricia,OC,Erhardt-Perkins,non-OC titled play caller
+2022,NO,Dennis Allen,Pete Carmichael,Pete Carmichael,OC,Payton system,first-year HC
+2022,NYG,Brian Daboll,Mike Kafka,Mike Kafka,OC,Reid/Andy tree,first-year HC and first-time OC
+2022,NYJ,Robert Saleh,Mike LaFleur,Mike LaFleur,OC,Shanahan tree,
+2022,PHI,Nick Sirianni,Shane Steichen,Shane Steichen,OC,McVay/Reid hybrid,
+2022,PIT,Mike Tomlin,Matt Canada,Matt Canada,OC,Hybrid,
+2022,SF,Kyle Shanahan,Mike McDaniel/Bobby Slowik,Kyle Shanahan,HC,Shanahan system,
+2022,SEA,Pete Carroll,Shane Waldron,Shane Waldron,OC,McVay tree,
+2022,TB,Todd Bowles,Byron Leftwich,Byron Leftwich,OC,Arians system,first-year HC
+2022,TEN,Mike Vrabel,Todd Downing,Todd Downing,OC,Wide Zone,
+2022,WAS,Ron Rivera,Scott Turner,Scott Turner,OC,Coryell,
+2023,ARI,Jonathan Gannon,Drew Petzing,Drew Petzing,OC,Browns tree,first-year HC and first-time OC
+2023,ATL,Arthur Smith,Dave Ragone,Arthur Smith,HC,Wide Zone,
+2023,BAL,John Harbaugh,Todd Monken,Todd Monken,OC,Spread,first-time NFL OC since 2019
+2023,BUF,Sean McDermott,Ken Dorsey/Joe Brady,Ken Dorsey,OC,Erhardt-Perkins,Dorsey fired Week 11; Brady promoted
+2023,CAR,Frank Reich/Chris Tabor,Thomas Brown/Frank Reich,Frank Reich,HC,West Coast,Reich fired Week 13; first-year HC
+2023,CHI,Matt Eberflus,Luke Getsy,Luke Getsy,OC,Shanahan tree,
+2023,CIN,Zac Taylor,Brian Callahan,Zac Taylor,HC,McVay tree,
+2023,CLE,Kevin Stefanski,Alex Van Pelt,Kevin Stefanski,HC,Shanahan tree,
+2023,DAL,Mike McCarthy,Brian Schottenheimer,Mike McCarthy,HC,Reid/Coryell mix,
+2023,DEN,Sean Payton,Joe Lombardi,Sean Payton,HC,Payton system,first-year HC
+2023,DET,Dan Campbell,Ben Johnson,Ben Johnson,OC,Wide Zone,
+2023,GB,Matt LaFleur,Adam Stenavich,Matt LaFleur,HC,Shanahan tree,
+2023,HOU,DeMeco Ryans,Bobby Slowik,Bobby Slowik,OC,Shanahan tree,first-year HC and first-time OC
+2023,IND,Shane Steichen,Jim Bob Cooter,Shane Steichen,HC,McVay/Reid hybrid,first-year HC
+2023,JAX,Doug Pederson,Press Taylor,Press Taylor,OC,Reid tree,Pederson handed PC duties to Taylor
+2023,KC,Andy Reid,Matt Nagy,Andy Reid,HC,Reid system,
+2023,LV,Josh McDaniels/Antonio Pierce,Mick Lombardi/Bo Hardegree,Josh McDaniels,HC,Erhardt-Perkins,McDaniels fired Week 8
+2023,LAC,Brandon Staley/Giff Smith,Kellen Moore,Kellen Moore,OC,Hybrid,Staley fired Week 15
+2023,LA,Sean McVay,Mike LaFleur,Sean McVay,HC,McVay system,
+2023,MIA,Mike McDaniel,Frank Smith,Mike McDaniel,HC,Shanahan system,
+2023,MIN,Kevin O'Connell,Wes Phillips,Kevin O'Connell,HC,McVay system,
+2023,NE,Bill O'Brien (de facto)/Bill Belichick,Bill O'Brien,Bill O'Brien,OC,Erhardt-Perkins,O'Brien returned to NE
+2023,NO,Dennis Allen,Pete Carmichael,Pete Carmichael,OC,Payton system,
+2023,NYG,Brian Daboll,Mike Kafka,Mike Kafka,OC,Reid/Andy tree,
+2023,NYJ,Robert Saleh,Nathaniel Hackett,Nathaniel Hackett,OC,Shanahan tree,
+2023,PHI,Nick Sirianni,Brian Johnson,Brian Johnson,OC,McVay/Reid hybrid,first-time NFL OC
+2023,PIT,Mike Tomlin,Matt Canada/Mike Sullivan,Matt Canada,OC,Hybrid,Canada fired Week 11
+2023,SF,Kyle Shanahan,Bobby Slowik (departed)/no formal OC,Kyle Shanahan,HC,Shanahan system,
+2023,SEA,Pete Carroll,Shane Waldron,Shane Waldron,OC,McVay tree,
+2023,TB,Todd Bowles,Dave Canales,Dave Canales,OC,Hybrid,first-time NFL OC
+2023,TEN,Mike Vrabel,Tim Kelly,Tim Kelly,OC,Wide Zone,
+2023,WAS,Ron Rivera,Eric Bieniemy,Eric Bieniemy,OC,Reid system,first NFL play caller role
+2024,ARI,Jonathan Gannon,Drew Petzing,Drew Petzing,OC,Browns tree,
+2024,ATL,Raheem Morris,Zac Robinson,Zac Robinson,OC,McVay tree,first-year HC and first-time NFL OC
+2024,BAL,John Harbaugh,Todd Monken,Todd Monken,OC,Spread,
+2024,BUF,Sean McDermott,Joe Brady,Joe Brady,OC,Air Raid/Hybrid,first full-year as Bills OC
+2024,CAR,Dave Canales,Brad Idzik,Dave Canales,HC,Hybrid,first-year HC
+2024,CHI,Matt Eberflus/Thomas Brown,Shane Waldron/Thomas Brown,Shane Waldron,OC,McVay tree,Waldron fired Week 11; Eberflus fired Week 12
+2024,CIN,Zac Taylor,Dan Pitcher,Dan Pitcher,OC,McVay tree,first-time OC; Pitcher handed PC by Taylor
+2024,CLE,Kevin Stefanski,Ken Dorsey,Ken Dorsey,OC,Shanahan tree,
+2024,DAL,Mike McCarthy,Brian Schottenheimer,Mike McCarthy,HC,Reid/Coryell mix,
+2024,DEN,Sean Payton,Joe Lombardi,Sean Payton,HC,Payton system,
+2024,DET,Dan Campbell,Ben Johnson,Ben Johnson,OC,Wide Zone,
+2024,GB,Matt LaFleur,Adam Stenavich,Matt LaFleur,HC,Shanahan tree,
+2024,HOU,DeMeco Ryans,Bobby Slowik,Bobby Slowik,OC,Shanahan tree,
+2024,IND,Shane Steichen,Jim Bob Cooter,Shane Steichen,HC,McVay/Reid hybrid,
+2024,JAX,Doug Pederson,Press Taylor,Press Taylor,OC,Reid tree,
+2024,KC,Andy Reid,Matt Nagy,Andy Reid,HC,Reid system,
+2024,LV,Antonio Pierce,Luke Getsy,Luke Getsy,OC,Shanahan tree,first-year HC
+2024,LAC,Jim Harbaugh,Greg Roman,Greg Roman,OC,RPO/Zone Read,first-year HC
+2024,LA,Sean McVay,Mike LaFleur,Sean McVay,HC,McVay system,
+2024,MIA,Mike McDaniel,Frank Smith,Mike McDaniel,HC,Shanahan system,
+2024,MIN,Kevin O'Connell,Wes Phillips,Kevin O'Connell,HC,McVay system,
+2024,NE,Jerod Mayo,Alex Van Pelt,Alex Van Pelt,OC,Shanahan tree,first-year HC
+2024,NO,Dennis Allen/Darren Rizzi,Klint Kubiak,Klint Kubiak,OC,Shanahan/Kubiak system,first-year as NO OC
+2024,NYG,Brian Daboll,Mike Kafka,Brian Daboll,HC,Reid/Andy tree,Daboll took over PC from Kafka
+2024,NYJ,Robert Saleh/Jeff Ulbrich,Nathaniel Hackett/Todd Downing,Todd Downing,OC,Shanahan tree,Saleh fired Week 5; Downing assumed PC late
+2024,PHI,Nick Sirianni,Kellen Moore,Kellen Moore,OC,Hybrid,first-year as Eagles OC
+2024,PIT,Mike Tomlin,Arthur Smith,Arthur Smith,OC,Wide Zone,first-year as Steelers OC
+2024,SF,Kyle Shanahan,no formal OC,Kyle Shanahan,HC,Shanahan system,
+2024,SEA,Mike Macdonald,Ryan Grubb,Ryan Grubb,OC,Air Raid,first-year HC and first-time NFL OC
+2024,TB,Todd Bowles,Liam Coen,Liam Coen,OC,Shanahan/McVay,first-year as Bucs OC
+2024,TEN,Brian Callahan,Nick Holz,Brian Callahan,HC,McVay tree,first-year HC
+2024,WAS,Dan Quinn,Kliff Kingsbury,Kliff Kingsbury,OC,Air Raid,first-year HC and new OC
+2025,ARI,Jonathan Gannon,Drew Petzing,Drew Petzing,OC,Browns tree,
+2025,ATL,Raheem Morris,Zac Robinson,Zac Robinson,OC,McVay tree,
+2025,BAL,John Harbaugh,Todd Monken,Todd Monken,OC,Spread,
+2025,BUF,Sean McDermott,Joe Brady,Joe Brady,OC,Air Raid/Hybrid,
+2025,CAR,Dave Canales,Brad Idzik,Dave Canales,HC,Hybrid,
+2025,CHI,Ben Johnson,Declan Doyle,Ben Johnson,HC,Wide Zone,first-year HC
+2025,CIN,Zac Taylor,Dan Pitcher,Dan Pitcher,OC,McVay tree,
+2025,CLE,Kevin Stefanski,Tommy Rees,Kevin Stefanski,HC,Shanahan tree,Stefanski reclaimed PC; first-year for Rees as OC
+2025,DAL,Brian Schottenheimer,Klayton Adams,Brian Schottenheimer,HC,Coryell,first-year HC
+2025,DEN,Sean Payton,Joe Lombardi,Sean Payton,HC,Payton system,
+2025,DET,Dan Campbell,John Morton,John Morton,OC,West Coast,Johnson left to be Bears HC
+2025,GB,Matt LaFleur,Adam Stenavich,Matt LaFleur,HC,Shanahan tree,
+2025,HOU,DeMeco Ryans,Nick Caley,Nick Caley,OC,Erhardt-Perkins,first-time NFL OC; Slowik fired
+2025,IND,Shane Steichen,Jim Bob Cooter,Shane Steichen,HC,McVay/Reid hybrid,
+2025,JAX,Liam Coen,Grant Udinski,Liam Coen,HC,Shanahan/McVay,first-year HC
+2025,KC,Andy Reid,Matt Nagy,Andy Reid,HC,Reid system,
+2025,LV,Pete Carroll,Chip Kelly,Chip Kelly,OC,Spread,first-year HC for Carroll; Kelly returns
+2025,LAC,Jim Harbaugh,Greg Roman,Greg Roman,OC,RPO/Zone Read,
+2025,LA,Sean McVay,Mike LaFleur,Sean McVay,HC,McVay system,
+2025,MIA,Mike McDaniel,Frank Smith,Mike McDaniel,HC,Shanahan system,
+2025,MIN,Kevin O'Connell,Wes Phillips,Kevin O'Connell,HC,McVay system,
+2025,NE,Mike Vrabel,Josh McDaniels,Josh McDaniels,OC,Erhardt-Perkins,first-year HC for Vrabel
+2025,NO,Kellen Moore,Doug Nussmeier,Kellen Moore,HC,Hybrid,first-year HC
+2025,NYG,Brian Daboll,Mike Kafka,Mike Kafka,OC,Reid/Andy tree,
+2025,NYJ,Aaron Glenn,Tanner Engstrand,Tanner Engstrand,OC,Lions tree,first-year HC and first-time NFL OC
+2025,PHI,Nick Sirianni,Kevin Patullo,Nick Sirianni,HC,McVay/Reid hybrid,Patullo promoted from QBs; Moore left to NO HC
+2025,PIT,Mike Tomlin,Arthur Smith,Arthur Smith,OC,Wide Zone,
+2025,SF,Kyle Shanahan,Klay Kubiak,Kyle Shanahan,HC,Shanahan system,
+2025,SEA,Mike Macdonald,Klint Kubiak,Klint Kubiak,OC,Shanahan/Kubiak system,Grubb fired; new OC
+2025,TB,Todd Bowles,Josh Grizzard,Josh Grizzard,OC,Shanahan/McVay,first-time NFL OC; Coen left to JAX
+2025,TEN,Brian Callahan,Nick Holz,Brian Callahan,HC,McVay tree,
+2025,WAS,Dan Quinn,Kliff Kingsbury,Kliff Kingsbury,OC,Air Raid,
+2026,ARI,Jonathan Gannon,Drew Petzing,Drew Petzing,OC,Browns tree,projected
+2026,ATL,Raheem Morris,Zac Robinson,Zac Robinson,OC,McVay tree,projected
+2026,BAL,John Harbaugh,Todd Monken,Todd Monken,OC,Spread,projected
+2026,BUF,Sean McDermott,Joe Brady,Joe Brady,OC,Air Raid/Hybrid,projected
+2026,CAR,Dave Canales,Brad Idzik,Dave Canales,HC,Hybrid,projected
+2026,CHI,Ben Johnson,Declan Doyle,Ben Johnson,HC,Wide Zone,projected
+2026,CIN,Zac Taylor,Dan Pitcher,Dan Pitcher,OC,McVay tree,projected
+2026,CLE,Kevin Stefanski,Tommy Rees,Kevin Stefanski,HC,Shanahan tree,projected
+2026,DAL,Brian Schottenheimer,Klayton Adams,Brian Schottenheimer,HC,Coryell,projected
+2026,DEN,Sean Payton,Joe Lombardi,Sean Payton,HC,Payton system,projected
+2026,DET,Dan Campbell,John Morton,John Morton,OC,West Coast,projected
+2026,GB,Matt LaFleur,Adam Stenavich,Matt LaFleur,HC,Shanahan tree,projected
+2026,HOU,DeMeco Ryans,Nick Caley,Nick Caley,OC,Erhardt-Perkins,projected
+2026,IND,Shane Steichen,Jim Bob Cooter,Shane Steichen,HC,McVay/Reid hybrid,projected
+2026,JAX,Liam Coen,Grant Udinski,Liam Coen,HC,Shanahan/McVay,projected
+2026,KC,Andy Reid,Matt Nagy,Andy Reid,HC,Reid system,projected
+2026,LV,Pete Carroll,Chip Kelly,Chip Kelly,OC,Spread,projected
+2026,LAC,Jim Harbaugh,Greg Roman,Greg Roman,OC,RPO/Zone Read,projected
+2026,LA,Sean McVay,Mike LaFleur,Sean McVay,HC,McVay system,projected
+2026,MIA,Mike McDaniel,Frank Smith,Mike McDaniel,HC,Shanahan system,projected
+2026,MIN,Kevin O'Connell,Wes Phillips,Kevin O'Connell,HC,McVay system,projected
+2026,NE,Mike Vrabel,Josh McDaniels,Josh McDaniels,OC,Erhardt-Perkins,projected
+2026,NO,Kellen Moore,Doug Nussmeier,Kellen Moore,HC,Hybrid,projected
+2026,NYG,Brian Daboll,Mike Kafka,Mike Kafka,OC,Reid/Andy tree,projected
+2026,NYJ,Aaron Glenn,Tanner Engstrand,Tanner Engstrand,OC,Lions tree,projected
+2026,PHI,Nick Sirianni,Kevin Patullo,Nick Sirianni,HC,McVay/Reid hybrid,projected
+2026,PIT,Mike Tomlin,Arthur Smith,Arthur Smith,OC,Wide Zone,projected
+2026,SF,Kyle Shanahan,Klay Kubiak,Kyle Shanahan,HC,Shanahan system,projected
+2026,SEA,Mike Macdonald,Klint Kubiak,Klint Kubiak,OC,Shanahan/Kubiak system,projected
+2026,TB,Todd Bowles,Josh Grizzard,Josh Grizzard,OC,Shanahan/McVay,projected
+2026,TEN,Brian Callahan,Nick Holz,Brian Callahan,HC,McVay tree,projected
+2026,WAS,Dan Quinn,Kliff Kingsbury,Kliff Kingsbury,OC,Air Raid,projected

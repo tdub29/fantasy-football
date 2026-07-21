@@ -160,7 +160,7 @@ for name, lid in LEAGUES:
         "trade_deadline": settings.get("trade_deadline"),
         "rosters": out_rosters,
         "users": [{"user_id": u["user_id"], "display_name": u.get("display_name"), "team_name": (u.get("metadata") or {}).get("team_name")} for u in users],
-        "drafts": [{"draft_id": d["draft_id"], "type": d.get("type"), "status": d.get("status"), "season": d.get("season"), "start_time": d.get("start_time"), "settings": d.get("settings", {})} for d in drafts],
+        "drafts": [{"draft_id": d["draft_id"], "type": d.get("type"), "status": d.get("status"), "season": d.get("season"), "start_time": d.get("start_time"), "draft_order": d.get("draft_order", {}), "settings": d.get("settings", {})} for d in drafts],
         "traded_picks": picks,
     }
     leagues_out.append(league_out)

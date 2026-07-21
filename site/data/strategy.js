@@ -46,6 +46,47 @@ window.STRATEGY = {
     "1.07": 2, "1.08": 2, "1.09": 2, "1.10": 1, "1.11": 1, "1.12": 1,
   },
 
+  // Dynasty Domain "Jeremiah Smith is RUINING Dynasty Leagues" — May 2026.
+  // Source: https://www.youtube.com/watch?v=ZK5VpWQQveE
+  // The 2027 class is being priced at peak-value LEVELS a year before the
+  // draft (driven by Jeremiah Smith hype). Compared to where 2026 firsts
+  // sat at the same point last year, 2027 firsts are well above the
+  // historical "future 1st" baseline. That removes most of the upside
+  // that future firsts normally carry for rebuilders.
+  pick_class_premium: {
+    "2027": {
+      early: 0.385,   // +38.5% over historical baseline (KTC 7107 vs 5124)
+      mid:   0.175,   // +17.5% over baseline (5628 vs 4790)
+      late:  0.11,    // +11% over baseline (4905 vs 4420)
+      note:  "Jeremiah Smith hype has pulled 27 first prices toward their ceiling a year early. Holding gets you mostly value maintenance, not gains. Sells should target contenders pre-deadline.",
+      sourceVideo: "ZK5VpWQQveE",
+      sourceTitle: "Jeremiah Smith is RUINING Dynasty Leagues",
+    },
+  },
+
+  // Rookie pick hit-rate framework (also Dynasty Domain). "Hit" = sustains
+  // dynasty-startable value for 2+ years. Use these to discount the expected
+  // value of pick stockpiles when warning about over-concentration.
+  pick_hit_rates: {
+    // Round 1
+    "early_1st_rb":    0.80,  // Top-3 RB takes (Jeremiah Love, Bijan, etc.)
+    "early_1st_non_rb":0.65,  // Top-3 non-RB; ~65% sustain Cornerstone value
+    "mid_1st":         0.50,  // 50-50 in the 1.04-1.08 range
+    "late_1st":        0.35,  // Late 1sts are throwins as often as not
+    "2nd":             0.20,
+    "3rd_plus":        0.08,
+  },
+
+  // Value-share / production-share framework (Dynasty Domain). In a 12-team
+  // league, average value share = 8.33%. A top cornerstone alone = ~2.5%
+  // value share. Thresholds for classifying rebuild urgency / contender lock.
+  share_framework: {
+    league_avg: 1 / 12,                  // 8.33%
+    cornerstone_share: 0.025,            // ~2.5% per elite asset
+    contender_lock:   1 / 12 * 1.24,     // ~10.3% (top-2 expected)
+    rebuild_floor:    1 / 12 * 0.72,     // ~6.0% (bottom-third)
+  },
+
   // Coaching tips. Surfaced based on roster stance / state. Each rule has
   // `id`, `when({ stance, archetype, valueTier, surplus, depreciating, league })`,
   // and `text` to render. Order in the list = display priority.
@@ -149,6 +190,33 @@ window.STRATEGY = {
         const s = ctx.stack_pairs[0];
         return `QB-${s.skill_pos} stack on roster: ${s.qb} + ${s.skill}. Stacks lift ceiling but raise variance. In head-to-head dynasty, this hurts your floor; consider trading one side for diversification unless you're ELITE-tier.`;
       }
+    },
+
+    // ---- Dynasty Domain "27 pick strategy" tips (May 2026) ----
+    {
+      id: "27-pick-overconcentration",
+      when: (ctx) => (ctx.future_first_count_27 || 0) >= 3,
+      text: (ctx) => `${ctx.future_first_count_27} × 2027 firsts on this roster. Per Dynasty Domain: 27s are already 38% above the historical "future 1st" baseline (Jeremiah Smith hype). Holding all of them is value-maintenance, not value-building. Shop 1-2 to contenders before season for max return.`
+    },
+    {
+      id: "27-late-1st-sell-window-contender",
+      when: (ctx) => ctx.stance === 'contend' && (ctx.late_first_count_27 || 0) >= 1,
+      text: () => `You're contending and own a 27 late 1st. Late 27s are near their value ceiling (only +11% vs prior class at same point). Cash now for a proven WR/RB who plays this season; the late 1st won't gain meaningful value before your window closes.`
+    },
+    {
+      id: "rebuild-pick-ceiling-warning",
+      when: (ctx) => ctx.stance === 'rebuild' && (ctx.future_first_count_27 || 0) >= 2 && (ctx.upside_premier_count || 0) <= 2,
+      text: () => `Hard rebuild + heavy 27 firsts + few Upside Premier holdings. Per Dynasty Domain: rebuilds need value GROWTH, not value maintenance. 27s are near peak; redirect 1-2 firsts toward injured cornerstones (Nabers-type) or young Upside Premier where ceiling is uncapped.`
+    },
+    {
+      id: "pick-liquidity-warning",
+      when: (ctx) => (ctx.pick_value_share || 0) > 0.35,
+      text: (ctx) => `${Math.round((ctx.pick_value_share || 0) * 100)}% of your dynasty value sits in future picks. Per Dynasty Domain: tank teams who load up on 27s have zero in-season liquidity. You can't make a move that changes your roster until rookie season. Convert one pick to a player NOW.`
+    },
+    {
+      id: "value-share-contender-lock",
+      when: (ctx) => (ctx.value_share || 0) >= 0.103 && ctx.stance !== 'contend',
+      text: (ctx) => `Your value share is ${(ctx.value_share * 100).toFixed(1)}% (top-2 in league). Per Dynasty Domain framework: you should be contending now, not reloading. Production share lagging value share means you're sitting on assets instead of fielding them.`
     },
   ],
 

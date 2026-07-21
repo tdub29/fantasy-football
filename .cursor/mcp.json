@@ -1,0 +1,103 @@
+{
+  "mcpServers": {
+    "neon": {
+      "type": "http",
+      "url": "https://mcp.neon.tech/mcp"
+    },
+    "vercel": {
+      "type": "http",
+      "url": "https://mcp.vercel.com"
+    },
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/"
+    },
+    "linear": {
+      "type": "sse",
+      "url": "https://mcp.linear.app/sse"
+    },
+    "readwise": {
+      "type": "http",
+      "url": "https://highlights-mcp.readwise.io/"
+    },
+    "descript": {
+      "type": "http",
+      "url": "https://api.descript.com/v2/mcp"
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "C:/Users/TrevorWhite/Downloads/Big Projects/Fantasy Football"
+      ]
+    },
+    "fetch": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-fetch"
+      ]
+    },
+    "excalidraw": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp_excalidraw"
+      ]
+    },
+    "fal": {
+      "command": "uvx",
+      "args": [
+        "fal-mcp-server"
+      ],
+      "env": {
+        "FAL_KEY": "${FAL_KEY}"
+      }
+    },
+    "slack": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@slack/mcp-server"
+      ],
+      "env": {
+        "SLACK_BOT_TOKEN": "${SLACK_BOT_TOKEN}",
+        "SLACK_TEAM_ID": "${SLACK_TEAM_ID}"
+      }
+    },
+    "browserbase": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@browserbasehq/mcp-server-browserbase"
+      ],
+      "env": {
+        "BROWSERBASE_API_KEY": "${BROWSERBASE_API_KEY}",
+        "BROWSERBASE_PROJECT_ID": "${BROWSERBASE_PROJECT_ID}"
+      }
+    },
+    "ponytail": {
+      "command": "node",
+      "args": [
+        "C:/Users/TrevorWhite/Downloads/Big Projects/.agents/vendor/DietrichGebert-ponytail/ponytail-mcp/index.js"
+      ]
+    },
+    "caveman-shrink-filesystem": {
+      "command": "node",
+      "args": [
+        "C:/Users/TrevorWhite/Downloads/Big Projects/.agents/vendor/JuliusBrussee-caveman/src/mcp-servers/caveman-shrink/index.js",
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "C:/Users/TrevorWhite/Downloads/Big Projects/Fantasy Football"
+      ]
+    },
+    "caveman-shrink-codebase-memory": {
+      "command": "node",
+      "args": [
+        "C:/Users/TrevorWhite/Downloads/Big Projects/.agents/vendor/JuliusBrussee-caveman/src/mcp-servers/caveman-shrink/index.js",
+        "C:/Users/TrevorWhite/tools/codebase-memory-mcp/codebase-memory-mcp.exe"
+      ]
+    }
+  }
+}

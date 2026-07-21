@@ -286,6 +286,22 @@ input[type=checkbox] { accent-color: var(--accent); }
 .badge.depreciating { background: rgba(251,191,36,.12); border-color: rgba(251,191,36,.4); color: var(--amber); }
 .badge.you { background: rgba(167,139,250,.16); border-color: var(--accent); color: var(--accent-hot); font-weight: 700; }
 
+/* Roster stance scale: tank → seller → mid → buyer → contender.
+   Red = selling pressure (bottom of standings, dump vets for picks).
+   Green = championship window (top of standings). Used to color the
+   Owner / Owners badges in rankings tables. */
+.badge.stance-tank      { background: rgba(248,113,113,.14); border-color: rgba(248,113,113,.45); color: var(--red); }
+.badge.stance-seller    { background: rgba(251,146,60,.12);  border-color: rgba(251,146,60,.40);  color: var(--cat-vet); }
+.badge.stance-mid       { background: var(--bg-3);            border-color: var(--border);         color: var(--fg-2); }
+.badge.stance-buyer     { background: rgba(96,165,250,.12);  border-color: rgba(96,165,250,.40);  color: var(--blue); }
+.badge.stance-contender { background: rgba(52,211,153,.14);  border-color: rgba(52,211,153,.45);  color: var(--green); }
+/* "You" stance still wins on color but inherits the stance border tint */
+.badge.you.stance-tank,
+.badge.you.stance-seller,
+.badge.you.stance-mid,
+.badge.you.stance-buyer,
+.badge.you.stance-contender { color: var(--accent-hot); }
+
 /* ========== Tables ========== */
 table.data {
   width: 100%;
@@ -321,6 +337,7 @@ table.data tbody tr.you:hover { background: rgba(167,139,250,.10); }
 
 table.data .name-cell { display: flex; align-items: center; gap: 8px; min-width: 200px; }
 table.data .name-cell .name { font-weight: 500; color: var(--fg-0); }
+table.data .gibbs-rank-col { width: 76px; white-space: nowrap; }
 
 /* Tier blocks (rankings page) */
 .tier-block { margin-bottom: 24px; }
@@ -433,7 +450,7 @@ table.data .name-cell .name { font-weight: 500; color: var(--fg-0); }
 /* ========== Team Strength ========== */
 .strength-row {
   display: grid;
-  grid-template-columns: 32px 1fr 80px 1fr;
+  grid-template-columns: 32px 1fr 88px 132px;
   align-items: center;
   gap: 12px;
   padding: 10px 12px;
@@ -449,9 +466,20 @@ table.data .name-cell .name { font-weight: 500; color: var(--fg-0); }
 .strength-row .team { display: flex; flex-direction: column; min-width: 0; }
 .strength-row .team-name { font-weight: 600; color: var(--fg-0); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .strength-row .owner { color: var(--fg-3); font-size: 0.8rem; }
-.strength-row .score { font-size: 1.2rem; font-weight: 700; font-variant-numeric: tabular-nums; text-align: right; }
-.strength-row .bar-wrap { background: var(--bg-3); height: 6px; border-radius: 4px; overflow: hidden; }
-.strength-row .bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--blue)); border-radius: 4px; transition: width 400ms ease-out; }
+.strength-row .score-cell { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.strength-row .score { font-size: 1.2rem; font-weight: 700; font-variant-numeric: tabular-nums; text-align: right; line-height: 1.1; }
+.strength-row .score-cell .delta { font-size: 0.72rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+/* Inline 3-year value trajectory. One direction color carries the trend
+   (green = rising, amber = aging, neutral = steady); the final year's bar is
+   emphasized so the eye lands on where the team is heading. */
+.str-traj { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.str-spark { display: flex; align-items: flex-end; gap: 6px; height: 38px; }
+.str-spark .sp-bar-wrap { width: 16px; display: flex; align-items: flex-end; height: 100%; }
+.str-spark .sp-bar { width: 100%; min-height: 3px; border-radius: 3px 3px 0 0; transition: height 360ms ease-out; }
+.str-traj-foot { display: flex; justify-content: space-between; align-items: center; font-size: 0.66rem; color: var(--fg-3); }
+.str-traj-foot .yrs { letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
+.str-traj-foot .arch { font-weight: 700; letter-spacing: 0.04em; }
 
 .strength-detail {
   display: flex; gap: 12px;
@@ -553,8 +581,147 @@ table.data .name-cell .name { font-weight: 500; color: var(--fg-0); }
   background: rgba(167,139,250,.04);
   border-top: 1px solid rgba(167,139,250,.2);
 }
+
+/* ========== Timestamped video intel (player modal) ========== */
+.player-intel { margin: 18px 0 12px; }
+.intel-list { border-top: 1px solid var(--border); }
+.intel-item {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.intel-provenance {
+  margin-top: 2px;
+  color: var(--fg-2);
+  font-size: 0.75rem;
+}
+.player-intel .hist-head .tip { color: var(--fg-2); }
+.intel-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+  margin-bottom: 4px;
+  color: var(--fg-2);
+  font-size: 0.72rem;
+}
+.intel-time {
+  flex: 0 0 auto;
+  color: var(--accent-hot);
+  font-weight: 700;
+  text-decoration: none;
+}
+.intel-time:hover { text-decoration: underline; }
+.intel-time:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+.intel-date { flex: 0 0 auto; }
+.intel-source {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.intel-takeaway {
+  max-width: 72ch;
+  color: var(--fg-1);
+  font-size: 0.88rem;
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+@media (max-width: 520px) {
+  .intel-meta { align-items: flex-start; flex-wrap: wrap; gap: 0 10px; }
+  .intel-time {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  .intel-date { min-height: 44px; display: inline-flex; align-items: center; }
+  .intel-source { flex-basis: 100%; white-space: normal; overflow: visible; }
+}
 @media (prefers-reduced-motion: reduce) {
   .hist-spark svg { animation: none; }
+}
+
+/* ========== Context block (coach / turnover / new-team) ========== */
+.ctx-section { margin-top: 18px; display: grid; gap: 12px; }
+.ctx-block, .ctx-row {
+  padding: 12px 14px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.ctx-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+.ctx-col { flex: 1; min-width: 0; }
+.ctx-flags { display: flex; flex-wrap: wrap; gap: 6px; max-width: 50%; justify-content: flex-end; }
+.flag-pill {
+  font-size: 0.62rem; font-weight: 700; letter-spacing: 0.06em;
+  padding: 3px 7px; border-radius: 999px;
+  text-transform: uppercase;
+}
+.flag-pill.new { background: rgba(167,139,250,.12); color: var(--accent-hot); border: 1px solid rgba(167,139,250,.35); }
+.flag-pill.firstime { background: rgba(251,191,36,.10); color: var(--amber); border: 1px solid rgba(251,191,36,.35); }
+.coach-line {
+  display: flex; align-items: baseline; gap: 10px;
+  padding: 2px 0;
+}
+.coach-role {
+  font-size: 0.62rem; font-weight: 700; letter-spacing: 0.06em;
+  color: var(--fg-3); width: 24px; text-transform: uppercase;
+}
+.coach-name { font-size: 0.95rem; color: var(--fg-0); font-weight: 500; }
+.coach-prev { margin-top: 6px; margin-left: 34px; font-size: 0.75rem; }
+.kpi-row {
+  display: flex; gap: 24px; margin-top: 8px; flex-wrap: wrap;
+}
+.mini-kpi { display: flex; flex-direction: column; gap: 2px; }
+.mini-kpi-num {
+  font-size: 1rem; font-weight: 700; color: var(--fg-0);
+  letter-spacing: -0.01em;
+}
+.mini-kpi-label {
+  font-size: 0.62rem; font-weight: 600; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--fg-3);
+}
+.delta-chip {
+  font-size: 0.7rem; font-weight: 700;
+  margin-left: 4px;
+}
+.turn-list { margin-top: 10px; }
+.turn-list-label {
+  font-size: 0.62rem; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--fg-3);
+  margin-bottom: 4px;
+}
+.turn-item {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 10px;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(38,45,61,.5);
+  font-size: 0.85rem;
+}
+.turn-item:last-child { border-bottom: none; }
+.turn-name { color: var(--fg-1); }
+.turn-pos { font-size: 0.7rem; }
+.turn-share { color: var(--fg-2); }
+.ctx-block.tenure { opacity: 0.85; }
+.market-block .qb-line {
+  display: flex; align-items: baseline; gap: 10px;
+  margin-top: 10px; padding-top: 10px;
+  border-top: 1px solid rgba(38,45,61,.6);
+}
+.eff-table { width: 100%; margin-top: 4px; }
+.eff-table thead th { font-size: 0.66rem; padding: 6px 6px; }
+.eff-table tbody td { padding: 5px 6px; font-size: 0.85rem; }
+.ctx-block.availability {
+  padding: 10px 14px;
+}
+.avail-row {
+  display: flex; align-items: center; gap: 12px;
+}
+.avail-num {
+  font-size: 1.1rem; font-weight: 700;
 }
 .modal .close-btn {
   position: absolute; top: 12px; right: 12px;
@@ -765,6 +932,145 @@ textarea { resize: vertical; min-height: 80px; }
   line-height: 1.1;
 }
 .br-stat-sub { color: var(--fg-3); font-size: 0.78rem; }
+.br-stat-chip { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; }
+
+/* ============================================================
+   League Timeline feed (transactions + drafts)
+   Editorial vertical rail; thin border-left as the time axis.
+   ============================================================ */
+.timeline-feed {
+  border-left: 1px solid var(--border);
+  padding-left: 20px;
+  margin-top: 4px;
+}
+.timeline-month {
+  margin: 18px 0 10px -32px;
+  padding-left: 12px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+.timeline-month:first-child { margin-top: 4px; }
+.timeline-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.timeline-row:last-child { border-bottom: none; }
+.timeline-row.is-me { background: rgba(167,139,250,0.04); margin: 0 -14px; padding: 10px 14px; }
+.timeline-row.is-failed { opacity: 0.55; }
+.timeline-icon {
+  width: 24px; height: 24px;
+  margin-left: -32px;
+  border-radius: 999px;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  display: grid; place-items: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+.timeline-body { min-width: 0; }
+.timeline-headline {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+.timeline-eyebrow {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--fg-3);
+  background: var(--bg-2);
+  padding: 1px 6px;
+  border-radius: 999px;
+}
+.tx-team { font-weight: 600; color: var(--fg-1); }
+.tx-team.you { color: var(--accent-hot); }
+.tx-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-top: 8px;
+}
+.tx-side {
+  background: var(--bg-2);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+}
+.tx-side-label {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--fg-3);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.tx-assets { display: flex; flex-direction: column; gap: 4px; }
+.tx-player {
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--fg-0);
+  text-decoration: none;
+  border-bottom: 1px dashed transparent;
+  display: inline-flex; align-items: baseline; gap: 4px;
+}
+.tx-player:hover { color: var(--accent-hot); border-bottom-color: var(--accent); }
+.tx-player.muted { color: var(--fg-2); }
+.tx-pick {
+  display: inline-block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--blue);
+}
+.tx-fa-line {
+  display: flex; flex-wrap: wrap; align-items: center;
+  margin-top: 6px;
+  font-size: 0.88rem;
+}
+.tx-fa-line .tx-player { margin-left: 4px; }
+@media (max-width: 720px) {
+  .tx-grid { grid-template-columns: 1fr; }
+  .timeline-row { padding: 8px 0; }
+}
+
+/* ============================================================
+   Sortable table headers + sticky thead + owner-link in Players tab
+   ============================================================ */
+.data-sticky thead {
+  position: sticky;
+  top: 0;
+  background: var(--bg-1);
+  z-index: 2;
+}
+.data-sticky thead th {
+  border-bottom: 1px solid var(--border);
+}
+.data th.clickable {
+  cursor: pointer;
+  user-select: none;
+  transition: color 120ms;
+}
+.data th.clickable:hover { color: var(--accent-hot); }
+.data th.sort-active {
+  color: var(--accent-hot);
+}
+.tx-side-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.owner-link {
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+.owner-link:hover { border-color: var(--accent-hot); color: var(--accent-hot) !important; text-decoration: none; }
 .br-grade-bar {
   margin-top: 6px;
   height: 6px;
@@ -976,7 +1282,29 @@ textarea { resize: vertical; min-height: 80px; }
 }
 .grade-label { font-size: 0.85rem; color: var(--fg-2); font-weight: 600; }
 
-/* ========== Priorities ========== */
+/* ========== Lineup Composition + Top Priorities side-by-side ========== */
+.lineup-priorities-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+@media (max-width: 1100px) {
+  .lineup-priorities-grid { grid-template-columns: 1fr; }
+}
+/* Stacked priority list inside the right column. */
+.priorities-card {
+  display: flex; flex-direction: column; gap: 10px;
+  padding: 14px;
+}
+.priorities-card .priority-card {
+  border: none; border-left: 3px solid var(--accent);
+  background: var(--bg-2);
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+}
+
+/* ========== Priorities (legacy grid, used outside the side-by-side block) ========== */
 .priorities {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -1703,4 +2031,386 @@ textarea { resize: vertical; min-height: 80px; }
   .heatmap-row { grid-template-columns: 110px repeat(7, 1fr) 60px; }
   .heatmap-leaguecell { padding: 8px; }
   .heatmap-team { display: none; }
+}
+
+/* ============================================================
+   Tabs (sub-route navigation inside a view)
+   Editorial bar: thin underline, all-caps labels, no pills.
+   ============================================================ */
+.tab-bar {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--border);
+  margin: -8px 0 18px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+.tab-bar::-webkit-scrollbar { height: 4px; }
+.tab-bar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  color: var(--fg-2);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: color 120ms, border-color 120ms;
+}
+.tab:hover { color: var(--fg-0); text-decoration: none; }
+.tab .tab-icon { opacity: 0.6; font-size: 0.95rem; }
+.tab .tab-count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  padding: 0 6px;
+  height: 18px;
+  font-size: 0.7rem;
+  background: var(--bg-3);
+  color: var(--fg-2);
+  border-radius: 999px;
+  letter-spacing: 0;
+}
+.tab.active {
+  color: var(--accent-hot);
+  border-bottom-color: var(--accent);
+}
+.tab.active .tab-icon { opacity: 1; }
+.tab.active .tab-count { background: rgba(167,139,250,.18); color: var(--accent-hot); }
+
+/* ============================================================
+   Breadcrumbs
+   ============================================================ */
+.crumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: -4px 0 8px;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+  flex-wrap: wrap;
+}
+.crumb-link { color: var(--fg-2); text-decoration: none; font-weight: 600; }
+.crumb-link:hover { color: var(--accent-hot); text-decoration: none; }
+.crumb-current { color: var(--fg-1); font-weight: 600; }
+.crumb-sep { color: var(--border-hot); font-weight: 400; }
+
+/* ============================================================
+   Page eyebrow + title-badge
+   ============================================================ */
+.page-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+  margin-bottom: 6px;
+}
+.page-eyebrow-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 8px;
+  background: var(--bg-3);
+  color: var(--fg-1);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+.page-title-badge {
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
+/* ============================================================
+   Sidebar tweaks: nav-tag chip + nav-sub (active league context)
+   ============================================================ */
+.nav a .nav-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nav a .nav-tag {
+  margin-left: auto;
+  padding: 1px 6px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--fg-3);
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+.nav a.is-context {
+  background: rgba(167,139,250,.10);
+  color: var(--fg-0);
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+.nav a.is-context .nav-tag { color: var(--accent-hot); border-color: rgba(167,139,250,.35); background: rgba(167,139,250,.08); }
+.nav-sub {
+  margin: 2px 0 8px 22px;
+  border-left: 1px solid var(--border);
+  padding-left: 4px;
+}
+.nav-sub a {
+  display: flex; align-items: center; gap: 6px;
+  padding: 5px 10px;
+  border-radius: var(--radius-sm);
+  color: var(--fg-2);
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+.nav-sub a:hover { background: var(--bg-2); color: var(--fg-0); }
+.nav-sub a.active { color: var(--accent-hot); background: rgba(167,139,250,.06); }
+.nav-sub .sub-bullet { color: var(--fg-3); width: 10px; text-align: center; }
+
+/* ============================================================
+   Mobile: collapsing sidebar
+   ============================================================ */
+.sidebar-close {
+  display: none;
+  margin-left: auto;
+  width: 32px; height: 32px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--fg-1);
+  font-size: 1.2rem;
+  line-height: 1;
+}
+.nav-toggle {
+  display: none;
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 30;
+  width: 40px; height: 40px;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--fg-0);
+  font-size: 1rem;
+  line-height: 1;
+  align-items: center; justify-content: center;
+  box-shadow: var(--shadow-1);
+}
+.nav-scrim {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(11,13,18,.7);
+  z-index: 24;
+}
+
+@media (max-width: 960px) {
+  .app { grid-template-columns: 1fr; }
+  .sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: 280px;
+    z-index: 25;
+    transform: translateX(-100%);
+    transition: transform 220ms ease-out;
+    box-shadow: var(--shadow-2);
+  }
+  body.nav-open .sidebar { transform: translateX(0); }
+  body.nav-open .nav-scrim { display: block; }
+  .nav-toggle { display: inline-flex; }
+  .sidebar-close { display: inline-flex; align-items: center; justify-content: center; }
+  .main { padding: 64px 16px 48px; }
+  .page-header { gap: 12px; }
+  .tab-bar { margin-left: -16px; margin-right: -16px; padding: 0 16px; }
+}
+
+@media (max-width: 720px) {
+  .page-actions { width: 100%; }
+  .page-actions a, .page-actions button { font-size: 0.85rem; }
+  .crumbs { font-size: 0.72rem; }
+}
+
+/* ============================================================
+   Trade Calculator — 3-year outlook block (middle summary)
+   ============================================================ */
+.t3y {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.t3y-head, .t3y-row {
+  display: grid;
+  grid-template-columns: 60px 1fr 12px 1fr;
+  align-items: center;
+  column-gap: 6px;
+  padding: 5px 0;
+  font-size: 0.85rem;
+}
+.t3y-head { align-items: end; }
+.t3y-head .t3y-cell { font-size: 0.7rem; display: block; text-align: right; }
+.t3y-label {
+  color: var(--fg-3);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.t3y-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-variant-numeric: tabular-nums;
+}
+.t3y-delta {
+  font-weight: 600;
+  line-height: 1.1;
+}
+.t3y-sub {
+  font-size: 0.7rem;
+  color: var(--fg-3);
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.t3y-sep { color: var(--border-hot); text-align: center; align-self: center; }
+.t3y-note { font-size: 0.7rem; margin-top: 6px; opacity: 0.7; }
+
+/* Roster table — projected-value cells colored by aging retention vs today.
+   Each tier is a soft tint of the relevant token; the +1y..+5y cells communicate
+   how a player's dynasty value holds, fades, or cliffs across the horizon. */
+.val-cell        { font-weight: 600; }
+.val-cell.val-grow  { color: var(--green);   background: rgba(52,211,153,.08); }
+.val-cell.val-hold  { color: var(--fg-1);    background: transparent; }
+.val-cell.val-fade  { color: var(--cat-vet); background: rgba(251,146,60,.08); }
+.val-cell.val-cliff { color: var(--red);     background: rgba(248,113,113,.10); }
+
+/* ============================================================
+   Present vs Future value bar (empire-wide aggregate)
+   ============================================================ */
+.pv-fv-bar {
+  display: flex;
+  width: 100%;
+  height: 28px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--bg-2);
+}
+.pv-fv-fill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: width 320ms ease-out;
+}
+.pv-fv-fill.present { background: linear-gradient(90deg, rgba(251,146,60,.65), rgba(251,146,60,.45)); color: #fff5e6; }
+.pv-fv-fill.future  { background: linear-gradient(90deg, rgba(52,211,153,.45), rgba(52,211,153,.65)); color: #e8fff5; }
+.pv-fv-label { padding: 0 8px; }
+
+/* ============================================================
+   Trajectory grid (per-league value curve over PROJECTION_YEARS)
+   ============================================================ */
+.traj-grid {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--bg-1);
+  margin-top: 12px;
+}
+.traj-row {
+  display: grid;
+  grid-template-columns: 200px 220px 1fr 110px;
+  align-items: stretch;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 120ms;
+}
+.traj-row:last-child { border-bottom: none; }
+.traj-row:hover { background: var(--bg-2); }
+.traj-row.traj-head {
+  cursor: default;
+  background: var(--bg-2);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.72rem;
+  color: var(--fg-3);
+  font-weight: 600;
+}
+.traj-row.traj-head:hover { background: var(--bg-2); }
+.traj-cell {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.traj-leaguecell { gap: 2px; }
+.traj-leaguename { font-weight: 700; font-size: 0.95rem; color: var(--fg-0); }
+.traj-team { font-size: 0.78rem; }
+.traj-pvcell { gap: 4px; }
+.traj-pvfv-mini {
+  display: flex;
+  width: 100%;
+  height: 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--bg-2);
+}
+.traj-pvfv-fill { transition: width 320ms ease-out; }
+.traj-pvfv-fill.present { background: rgba(251,146,60,.6); }
+.traj-pvfv-fill.future  { background: rgba(52,211,153,.55); }
+.traj-sparkcell { padding: 12px 14px; }
+.traj-year { color: var(--fg-3); font-size: 0.7rem; }
+.traj-row.traj-head .traj-sparkcell {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 2px;
+}
+.traj-row.traj-head .traj-sparkcell .traj-year { text-align: center; }
+.traj-spark {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 2px;
+  height: 56px;
+  align-items: end;
+  padding-bottom: 16px;
+}
+.traj-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  position: relative;
+}
+.traj-bar {
+  width: 80%;
+  border-radius: 3px 3px 0 0;
+  transition: height 320ms ease-out;
+}
+.traj-bar.present { background: linear-gradient(180deg, var(--cat-vet), rgba(251,146,60,.55)); }
+.traj-bar.future  { background: linear-gradient(180deg, var(--cat-upside), rgba(52,211,153,.45)); }
+.traj-bar-val {
+  position: absolute;
+  bottom: -14px;
+  font-size: 0.62rem;
+  color: var(--fg-3);
+  letter-spacing: -0.01em;
+}
+.traj-arrowcell { align-items: flex-end; font-size: 1rem; }
+
+@media (max-width: 900px) {
+  .traj-row { grid-template-columns: 120px 1fr 90px; }
+  .traj-pvcell { display: none; }
+  .traj-row.traj-head .traj-pvcell { display: none; }
 }
