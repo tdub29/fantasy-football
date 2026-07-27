@@ -1,0 +1,677 @@
+{
+ "NE@SEA": {
+  "home": "SEA",
+  "away": "NE",
+  "total": 44.5,
+  "home_line": -3.5,
+  "implied_home": 24.0,
+  "implied_away": 20.5,
+  "commence": "2026-09-10T00:15:00Z"
+ },
+ "SF@LAR": {
+  "home": "LAR",
+  "away": "SF",
+  "total": 48.5,
+  "home_line": -3.5,
+  "implied_home": 26.0,
+  "implied_away": 22.5,
+  "commence": "2026-09-11T00:35:00Z"
+ },
+ "ATL@PIT": {
+  "home": "PIT",
+  "away": "ATL",
+  "total": 41.5,
+  "home_line": -3.0,
+  "implied_home": 22.25,
+  "implied_away": 19.25,
+  "commence": "2026-09-13T17:00:00Z"
+ },
+ "BAL@IND": {
+  "home": "IND",
+  "away": "BAL",
+  "total": 48.5,
+  "home_line": 3.5,
+  "implied_home": 22.5,
+  "implied_away": 26.0,
+  "commence": "2026-09-13T17:00:00Z"
+ },
+ "BUF@HOU": {
+  "home": "HOU",
+  "away": "BUF",
+  "total": 44.5,
+  "home_line": 1.0,
+  "implied_home": 21.75,
+  "implied_away": 22.75,
+  "commence": "2026-09-13T17:00:00Z"
+ },
+ "CHI@CAR": {
+  "home": "CAR",
+  "away": "CHI",
+  "total": 45.5,
+  "home_line": 2.5,
+  "implied_home": 21.5,
+  "implied_away": 24.0,
+  "commence": "2026-09-13T17:00:00Z"
+ },
+ "TB@CIN": {
+  "home": "CIN",
+  "away": "TB",
+  "total": 52.5,
+  "home_line": -3.5,
+  "implied_home": 28.0,
+  "implied_away": 24.5,
+  "commence": "2026-09-13T17:00:00Z"
+ },
+ "CLE@JAX": {
+  "home": "JAX",
+  "away": "CLE",
+  "total": 40.5,
+  "home_line": -7.5,
+  "implied_home": 24.0,
+  "implied_away": 16.5,
+  "commence": "2026-09-13T17:00:00Z"
+ },
+ "NO@DET": {
+  "home": "DET",
+  "away": "NO",
+  "total": 49.5,
+  "home_line": -7.0,
+  "implied_home": 28.25,
+  "implied_away": 21.25,
+  "commence": "2026-09-13T17:00:00Z"
+ },
+ "NYJ@TEN": {
+  "home": "TEN",
+  "away": "NYJ",
+  "total": 38.5,
+  "home_line": -2.5,
+  "implied_home": 20.5,
+  "implied_away": 18.0,
+  "commence": "2026-09-13T17:00:00Z"
+ },
+ "ARI@LAC": {
+  "home": "LAC",
+  "away": "ARI",
+  "total": 46.0,
+  "home_line": -10.5,
+  "implied_home": 28.25,
+  "implied_away": 17.75,
+  "commence": "2026-09-13T20:25:00Z"
+ },
+ "GB@MIN": {
+  "home": "MIN",
+  "away": "GB",
+  "total": 45.5,
+  "home_line": 0.0,
+  "implied_home": 22.75,
+  "implied_away": 22.75,
+  "commence": "2026-09-13T20:25:00Z"
+ },
+ "MIA@LV": {
+  "home": "LV",
+  "away": "MIA",
+  "total": 40.5,
+  "home_line": -3.5,
+  "implied_home": 22.0,
+  "implied_away": 18.5,
+  "commence": "2026-09-13T20:25:00Z"
+ },
+ "WAS@PHI": {
+  "home": "PHI",
+  "away": "WAS",
+  "total": 47.5,
+  "home_line": -4.0,
+  "implied_home": 25.75,
+  "implied_away": 21.75,
+  "commence": "2026-09-13T20:25:00Z"
+ },
+ "DAL@NYG": {
+  "home": "NYG",
+  "away": "DAL",
+  "total": 48.0,
+  "home_line": 2.5,
+  "implied_home": 22.75,
+  "implied_away": 25.25,
+  "commence": "2026-09-14T00:20:00Z"
+ },
+ "DEN@KC": {
+  "home": "KC",
+  "away": "DEN",
+  "total": 42.5,
+  "home_line": -3.0,
+  "implied_home": 22.75,
+  "implied_away": 19.75,
+  "commence": "2026-09-15T00:15:00Z"
+ },
+ "DET@BUF": {
+  "home": "BUF",
+  "away": "DET",
+  "total": 52.5,
+  "home_line": -3.0,
+  "implied_home": 27.75,
+  "implied_away": 24.75,
+  "commence": "2026-09-18T00:15:00Z"
+ },
+ "CAR@ATL": {
+  "home": "ATL",
+  "away": "CAR",
+  "total": 43.5,
+  "home_line": -1.5,
+  "implied_home": 22.5,
+  "implied_away": 21.0,
+  "commence": "2026-09-20T17:00:00Z"
+ },
+ "NO@BAL": {
+  "home": "BAL",
+  "away": "NO",
+  "total": 46.5,
+  "home_line": -7.5,
+  "implied_home": 27.0,
+  "implied_away": 19.5,
+  "commence": "2026-09-20T17:00:00Z"
+ },
+ "MIN@CHI": {
+  "home": "CHI",
+  "away": "MIN",
+  "total": 45.5,
+  "home_line": -3.5,
+  "implied_home": 24.5,
+  "implied_away": 21.0,
+  "commence": "2026-09-20T17:00:00Z"
+ },
+ "CIN@HOU": {
+  "home": "HOU",
+  "away": "CIN",
+  "total": 46.5,
+  "home_line": -2.5,
+  "implied_home": 24.5,
+  "implied_away": 22.0,
+  "commence": "2026-09-20T17:00:00Z"
+ },
+ "CLE@TB": {
+  "home": "TB",
+  "away": "CLE",
+  "total": 42.5,
+  "home_line": -6.2,
+  "implied_home": 24.35,
+  "implied_away": 18.15,
+  "commence": "2026-09-20T17:00:00Z"
+ },
+ "GB@NYJ": {
+  "home": "NYJ",
+  "away": "GB",
+  "total": 42.5,
+  "home_line": 6.0,
+  "implied_home": 18.25,
+  "implied_away": 24.25,
+  "commence": "2026-09-20T17:00:00Z"
+ },
+ "PIT@NE": {
+  "home": "NE",
+  "away": "PIT",
+  "total": 43.5,
+  "home_line": -4.5,
+  "implied_home": 24.0,
+  "implied_away": 19.5,
+  "commence": "2026-09-20T17:00:00Z"
+ },
+ "PHI@TEN": {
+  "home": "TEN",
+  "away": "PHI",
+  "total": 42.5,
+  "home_line": 4.5,
+  "implied_home": 19.0,
+  "implied_away": 23.5,
+  "commence": "2026-09-20T17:00:00Z"
+ },
+ "JAX@DEN": {
+  "home": "DEN",
+  "away": "JAX",
+  "total": 43.5,
+  "home_line": -2.5,
+  "implied_home": 23.0,
+  "implied_away": 20.5,
+  "commence": "2026-09-20T20:05:00Z"
+ },
+ "LV@LAC": {
+  "home": "LAC",
+  "away": "LV",
+  "total": 42.5,
+  "home_line": -8.5,
+  "implied_home": 25.5,
+  "implied_away": 17.0,
+  "commence": "2026-09-20T20:05:00Z"
+ },
+ "SEA@ARI": {
+  "home": "ARI",
+  "away": "SEA",
+  "total": 44.5,
+  "home_line": 10.0,
+  "implied_home": 17.25,
+  "implied_away": 27.25,
+  "commence": "2026-09-20T20:25:00Z"
+ },
+ "WAS@DAL": {
+  "home": "DAL",
+  "away": "WAS",
+  "total": 51.5,
+  "home_line": -4.5,
+  "implied_home": 28.0,
+  "implied_away": 23.5,
+  "commence": "2026-09-20T20:25:00Z"
+ },
+ "MIA@SF": {
+  "home": "SF",
+  "away": "MIA",
+  "total": 46.5,
+  "home_line": -10.5,
+  "implied_home": 28.5,
+  "implied_away": 18.0,
+  "commence": "2026-09-20T20:25:00Z"
+ },
+ "IND@KC": {
+  "home": "KC",
+  "away": "IND",
+  "total": 47.5,
+  "home_line": -6.0,
+  "implied_home": 26.75,
+  "implied_away": 20.75,
+  "commence": "2026-09-21T00:20:00Z"
+ },
+ "NYG@LAR": {
+  "home": "LAR",
+  "away": "NYG",
+  "total": 48.0,
+  "home_line": -9.0,
+  "implied_home": 28.5,
+  "implied_away": 19.5,
+  "commence": "2026-09-22T00:15:00Z"
+ },
+ "ATL@GB": {
+  "home": "GB",
+  "away": "ATL",
+  "total": 46.5,
+  "home_line": -7.5,
+  "implied_home": 27.0,
+  "implied_away": 19.5,
+  "commence": "2026-09-25T00:15:00Z"
+ },
+ "LAC@BUF": {
+  "home": "BUF",
+  "away": "LAC",
+  "total": 48.5,
+  "home_line": -3.0,
+  "implied_home": 25.75,
+  "implied_away": 22.75,
+  "commence": "2026-09-27T17:00:00Z"
+ },
+ "CAR@CLE": {
+  "home": "CLE",
+  "away": "CAR",
+  "total": 39.5,
+  "home_line": 1.5,
+  "implied_home": 19.0,
+  "implied_away": 20.5,
+  "commence": "2026-09-27T17:00:00Z"
+ },
+ "CIN@PIT": {
+  "home": "PIT",
+  "away": "CIN",
+  "total": 47.5,
+  "home_line": 1.5,
+  "implied_home": 23.0,
+  "implied_away": 24.5,
+  "commence": "2026-09-27T17:00:00Z"
+ },
+ "NYJ@DET": {
+  "home": "DET",
+  "away": "NYJ",
+  "total": 45.5,
+  "home_line": -9.5,
+  "implied_home": 27.5,
+  "implied_away": 18.0,
+  "commence": "2026-09-27T17:00:00Z"
+ },
+ "HOU@IND": {
+  "home": "IND",
+  "away": "HOU",
+  "total": 45.5,
+  "home_line": 1.5,
+  "implied_home": 22.0,
+  "implied_away": 23.5,
+  "commence": "2026-09-27T17:00:00Z"
+ },
+ "NE@JAX": {
+  "home": "JAX",
+  "away": "NE",
+  "total": 45.5,
+  "home_line": -1.5,
+  "implied_home": 23.5,
+  "implied_away": 22.0,
+  "commence": "2026-09-27T17:00:00Z"
+ },
+ "KC@MIA": {
+  "home": "MIA",
+  "away": "KC",
+  "total": 44.5,
+  "home_line": 7.2,
+  "implied_home": 18.65,
+  "implied_away": 25.85,
+  "commence": "2026-09-27T17:00:00Z"
+ },
+ "TEN@NYG": {
+  "home": "NYG",
+  "away": "TEN",
+  "total": 45.0,
+  "home_line": -3.0,
+  "implied_home": 24.0,
+  "implied_away": 21.0,
+  "commence": "2026-09-27T17:00:00Z"
+ },
+ "SEA@WAS": {
+  "home": "WAS",
+  "away": "SEA",
+  "total": 46.5,
+  "home_line": 3.5,
+  "implied_home": 21.5,
+  "implied_away": 25.0,
+  "commence": "2026-09-27T17:00:00Z"
+ },
+ "ARI@SF": {
+  "home": "SF",
+  "away": "ARI",
+  "total": 46.5,
+  "home_line": -11.5,
+  "implied_home": 29.0,
+  "implied_away": 17.5,
+  "commence": "2026-09-27T20:05:00Z"
+ },
+ "MIN@TB": {
+  "home": "TB",
+  "away": "MIN",
+  "total": 44.5,
+  "home_line": -1.5,
+  "implied_home": 23.0,
+  "implied_away": 21.5,
+  "commence": "2026-09-27T20:05:00Z"
+ },
+ "BAL@DAL": {
+  "home": "DAL",
+  "away": "BAL",
+  "total": 51.5,
+  "home_line": 2.5,
+  "implied_home": 24.5,
+  "implied_away": 27.0,
+  "commence": "2026-09-27T20:25:00Z"
+ },
+ "LV@NO": {
+  "home": "NO",
+  "away": "LV",
+  "total": 42.5,
+  "home_line": -3.2,
+  "implied_home": 22.85,
+  "implied_away": 19.65,
+  "commence": "2026-09-27T20:25:00Z"
+ },
+ "LAR@DEN": {
+  "home": "DEN",
+  "away": "LAR",
+  "total": 45.5,
+  "home_line": 3.0,
+  "implied_home": 21.25,
+  "implied_away": 24.25,
+  "commence": "2026-09-28T00:20:00Z"
+ },
+ "PHI@CHI": {
+  "home": "CHI",
+  "away": "PHI",
+  "total": 46.5,
+  "home_line": -1.5,
+  "implied_home": 24.0,
+  "implied_away": 22.5,
+  "commence": "2026-09-29T00:15:00Z"
+ },
+ "PIT@CLE": {
+  "home": "CLE",
+  "away": "PIT",
+  "total": 40.5,
+  "home_line": 2.5,
+  "implied_home": 19.0,
+  "implied_away": 21.5,
+  "commence": "2026-10-02T00:15:00Z"
+ },
+ "IND@WAS": {
+  "home": "WAS",
+  "away": "IND",
+  "total": 49.5,
+  "home_line": -1.5,
+  "implied_home": 25.5,
+  "implied_away": 24.0,
+  "commence": "2026-10-04T13:30:00Z"
+ },
+ "ARI@NYG": {
+  "home": "NYG",
+  "away": "ARI",
+  "total": 45.5,
+  "home_line": -7.0,
+  "implied_home": 26.25,
+  "implied_away": 19.25,
+  "commence": "2026-10-04T17:00:00Z"
+ },
+ "TEN@BAL": {
+  "home": "BAL",
+  "away": "TEN",
+  "total": 47.5,
+  "home_line": -8.5,
+  "implied_home": 28.0,
+  "implied_away": 19.5,
+  "commence": "2026-10-04T17:00:00Z"
+ },
+ "NE@BUF": {
+  "home": "BUF",
+  "away": "NE",
+  "total": 49.5,
+  "home_line": -3.0,
+  "implied_home": 26.25,
+  "implied_away": 23.25,
+  "commence": "2026-10-04T17:00:00Z"
+ },
+ "NYJ@CHI": {
+  "home": "CHI",
+  "away": "NYJ",
+  "total": 45.5,
+  "home_line": -8.5,
+  "implied_home": 27.0,
+  "implied_away": 18.5,
+  "commence": "2026-10-04T17:00:00Z"
+ },
+ "JAX@CIN": {
+  "home": "CIN",
+  "away": "JAX",
+  "total": 51.5,
+  "home_line": -2.5,
+  "implied_home": 27.0,
+  "implied_away": 24.5,
+  "commence": "2026-10-04T17:00:00Z"
+ },
+ "DAL@HOU": {
+  "home": "HOU",
+  "away": "DAL",
+  "total": 47.5,
+  "home_line": -2.5,
+  "implied_home": 25.0,
+  "implied_away": 22.5,
+  "commence": "2026-10-04T17:00:00Z"
+ },
+ "GB@TB": {
+  "home": "TB",
+  "away": "GB",
+  "total": 47.5,
+  "home_line": 1.5,
+  "implied_home": 23.0,
+  "implied_away": 24.5,
+  "commence": "2026-10-04T17:00:00Z"
+ },
+ "LAR@PHI": {
+  "home": "PHI",
+  "away": "LAR",
+  "total": 47.5,
+  "home_line": 1.5,
+  "implied_home": 23.0,
+  "implied_away": 24.5,
+  "commence": "2026-10-04T17:00:00Z"
+ },
+ "MIA@MIN": {
+  "home": "MIN",
+  "away": "MIA",
+  "total": 43.5,
+  "home_line": -7.5,
+  "implied_home": 25.5,
+  "implied_away": 18.0,
+  "commence": "2026-10-04T20:05:00Z"
+ },
+ "DEN@SF": {
+  "home": "SF",
+  "away": "DEN",
+  "total": 46.5,
+  "home_line": -2.5,
+  "implied_home": 24.5,
+  "implied_away": 22.0,
+  "commence": "2026-10-04T20:25:00Z"
+ },
+ "KC@LV": {
+  "home": "LV",
+  "away": "KC",
+  "total": 43.5,
+  "home_line": 5.5,
+  "implied_home": 19.0,
+  "implied_away": 24.5,
+  "commence": "2026-10-04T20:25:00Z"
+ },
+ "LAC@SEA": {
+  "home": "SEA",
+  "away": "LAC",
+  "total": 45.5,
+  "home_line": -3.0,
+  "implied_home": 24.25,
+  "implied_away": 21.25,
+  "commence": "2026-10-04T20:25:00Z"
+ },
+ "DET@CAR": {
+  "home": "CAR",
+  "away": "DET",
+  "total": 47.5,
+  "home_line": 3.0,
+  "implied_home": 22.25,
+  "implied_away": 25.25,
+  "commence": "2026-10-05T00:20:00Z"
+ },
+ "ATL@NO": {
+  "home": "NO",
+  "away": "ATL",
+  "total": 45.5,
+  "home_line": -2.5,
+  "implied_home": 24.0,
+  "implied_away": 21.5,
+  "commence": "2026-10-06T00:15:00Z"
+ },
+ "TB@DAL": {
+  "home": "DAL",
+  "away": "TB",
+  "total": 52.5,
+  "home_line": -3.5,
+  "implied_home": 28.0,
+  "implied_away": 24.5,
+  "commence": "2026-10-09T00:15:00Z"
+ },
+ "PHI@JAX": {
+  "home": "JAX",
+  "away": "PHI",
+  "total": 44.5,
+  "home_line": 1.5,
+  "implied_home": 21.5,
+  "implied_away": 23.0,
+  "commence": "2026-10-11T13:30:00Z"
+ },
+ "CIN@MIA": {
+  "home": "MIA",
+  "away": "CIN",
+  "total": 49.5,
+  "home_line": 5.8,
+  "implied_home": 21.85,
+  "implied_away": 27.65,
+  "commence": "2026-10-11T17:00:00Z"
+ },
+ "CLE@NYJ": {
+  "home": "NYJ",
+  "away": "CLE",
+  "total": 39.5,
+  "home_line": -1.5,
+  "implied_home": 20.5,
+  "implied_away": 19.0,
+  "commence": "2026-10-11T17:00:00Z"
+ },
+ "HOU@TEN": {
+  "home": "TEN",
+  "away": "HOU",
+  "total": 43.5,
+  "home_line": 3.5,
+  "implied_home": 20.0,
+  "implied_away": 23.5,
+  "commence": "2026-10-11T17:00:00Z"
+ },
+ "IND@PIT": {
+  "home": "PIT",
+  "away": "IND",
+  "total": 47.5,
+  "home_line": -2.5,
+  "implied_home": 25.0,
+  "implied_away": 22.5,
+  "commence": "2026-10-11T17:00:00Z"
+ },
+ "LV@NE": {
+  "home": "NE",
+  "away": "LV",
+  "total": 44.5,
+  "home_line": -8.5,
+  "implied_home": 26.5,
+  "implied_away": 18.0,
+  "commence": "2026-10-11T17:00:00Z"
+ },
+ "MIN@NO": {
+  "home": "NO",
+  "away": "MIN",
+  "total": 44.5,
+  "home_line": 1.5,
+  "implied_home": 21.5,
+  "implied_away": 23.0,
+  "commence": "2026-10-11T17:00:00Z"
+ },
+ "NYG@WAS": {
+  "home": "WAS",
+  "away": "NYG",
+  "total": 48.5,
+  "home_line": -2.0,
+  "implied_home": 25.25,
+  "implied_away": 23.25,
+  "commence": "2026-10-11T17:00:00Z"
+ },
+ "DEN@LAC": {
+  "home": "LAC",
+  "away": "DEN",
+  "total": 44.5,
+  "home_line": -2.5,
+  "implied_home": 23.5,
+  "implied_away": 21.0,
+  "commence": "2026-10-11T20:05:00Z"
+ },
+ "SF@SEA": {
+  "home": "SEA",
+  "away": "SF",
+  "total": 48.5,
+  "home_line": -3.5,
+  "implied_home": 26.0,
+  "implied_away": 22.5,
+  "commence": "2026-10-11T20:25:00Z"
+ }
+}
