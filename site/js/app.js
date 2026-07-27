@@ -523,6 +523,7 @@
     { hash:'#action',       label:'Action Center',    icon:'!',  section:'Dynasty' },
     { hash:'#trade',        label:'Trade Calculator', icon:'⇄',  section:'Tools' },
     { hash:'#projections',  label:'Projections',      icon:'Σ',  section:'Tools' },
+    { hash:'#sos',          label:'Strength of Sched', icon:'▦',  section:'Tools' },
     { hash:'#strategy',     label:'Framework',        icon:'◇',  section:'Reference' },
     { hash:'#sources',      label:'Sources',          icon:'▶',  section:'Reference' },
     { hash:'#about',        label:'About',            icon:'?',  section:'Reference' },
@@ -6857,6 +6858,69 @@
       (isDef ? 'Defense: PD/QB-hit/return-yds are best-estimated (no source projects them); tackles/sacks/INT/FF from Clay & Sleeper.' : 'Offense pts: PrizePicks lines vs Sleeper model vs blend. PP * = missing props (e.g. receptions) filled from Sleeper so pass-catchers aren’t undercounted.')));
   }
 
+  // ============================================================
+  // Strength of Schedule page — per position (QB/RB/WR/TE), teams as rows,
+  // weeks as columns, each cell the opponent colored by its defense-vs-position
+  // strength (last-season PPR allowed to that position, ranked). window.SOS_GRID.
+  // ============================================================
+  let SOS_GRID_POS = 'RB';
+  function defRankColor(rank, n) {
+    if (rank == null) return 'var(--fg-3)';
+    const f = rank / n;   // low rank = allows fewest = tough = red; high = easy = green
+    return f <= 0.25 ? 'var(--red)' : f <= 0.5 ? 'var(--amber)' : f <= 0.75 ? '#5eead4' : 'var(--green)';
+  }
+  function viewSosGrid(posArg) {
+    const main = $('#main'); main.innerHTML = '';
+    const G = window.SOS_GRID;
+    if (!G) { main.appendChild(h('div', { class: 'empty' }, 'sos-grid.js not loaded — run build_sos_grid.py.')); return; }
+    if (posArg && G.positions.includes(posArg.toUpperCase())) SOS_GRID_POS = posArg.toUpperCase();
+    const pos = SOS_GRID_POS, n = G.n_def, WEEKS = Array.from({ length: 18 }, (_, i) => i + 1);
+
+    main.appendChild(breadcrumbs([{ label: 'Tools' }, { label: 'Strength of Schedule' }]));
+    main.appendChild(h('div', { class: 'page-header' }, h('div', null,
+      h('div', { class: 'page-eyebrow' }, 'STRENGTH OF SCHEDULE'),
+      h('h1', { class: 'page-title' }, 'Season SOS by Position'),
+      h('p', { class: 'page-sub' }, `Each cell is the opponent, colored by its defense vs ${pos} (${G.season} PPR allowed to the position). Green = weak D (smash spot), red = elite D (tough). Rank 1 of ${n} = allows fewest.`))));
+
+    // position tabs
+    const tabs = h('div', { style: { display: 'flex', gap: '6px', marginBottom: '12px', flexWrap: 'wrap' } });
+    for (const p of G.positions) {
+      const on = p === pos;
+      tabs.appendChild(h('button', { class: 'ghost' + (on ? ' active' : ''),
+        style: on ? { background: 'var(--accent, #34d399)', color: '#08110d', fontWeight: 700, borderColor: 'transparent' } : {},
+        onclick: () => { SOS_GRID_POS = p; navigate(`#sos/${p}`); } }, p));
+    }
+    main.appendChild(tabs);
+
+    // per team: week->game map + avg opponent rank (higher = easier schedule)
+    const rowsData = G.teams.map(t => {
+      const wk = {}; let sum = 0, cnt = 0;
+      for (const g of G.grid[pos][t]) { wk[g.week] = g; if (g.rank != null) { sum += g.rank; cnt++; } }
+      return { team: t, wk, avg: cnt ? sum / cnt : null };
+    }).sort((a, b) => (b.avg || 0) - (a.avg || 0));  // easiest schedule first
+
+    const tbl = h('table', { class: 'data data-sticky', style: { fontSize: '11px' } },
+      h('thead', null, h('tr', null,
+        h('th', { class: 'right' }, '#'), h('th', null, 'Team'), h('th', { class: 'right', title: 'Avg opponent DvP rank (higher = easier)' }, 'SOS'),
+        ...WEEKS.map(w => h('th', { class: 'center', style: { minWidth: '34px' } }, 'W' + w)))),
+      h('tbody', null, ...rowsData.map((rd, i) => h('tr', null,
+        h('td', { class: 'right tnum muted' }, String(i + 1)),
+        h('td', null, teamChip(rd.team)),
+        h('td', { class: 'right tnum', style: { fontWeight: 700 } }, rd.avg != null ? fmt.decimal(rd.avg, 0) : '·'),
+        ...WEEKS.map(w => {
+          const g = rd.wk[w];
+          if (!g) return h('td', { class: 'center muted', style: { fontSize: '9px' } }, 'BYE');
+          return h('td', { class: 'center', title: `Wk${w} ${g.home ? 'vs ' : '@ '}${g.opp}: D vs ${pos} #${g.rank ?? '?'}/${n} (${g.fpa ?? '?'} PPR/g allowed)`, style: { color: defRankColor(g.rank, n), lineHeight: 1.05 } },
+            h('div', { style: { fontWeight: 700 } }, g.opp),
+            h('div', { style: { fontSize: '9px', opacity: .85 } }, g.rank != null ? '#' + g.rank : ''));
+        }))
+      ))
+    );
+    main.appendChild(h('div', { style: { overflowX: 'auto' } }, tbl));
+    main.appendChild(h('div', { class: 'tip', style: { marginTop: '10px' } },
+      `Defense-vs-position from ${G.season} actual PPR allowed. SOS column = average opponent DvP rank across the schedule (higher = easier season for ${pos}s).`));
+  }
+
   function navigate(hash) { location.hash = hash; }
   function route() {
     renderSidebar();
@@ -6875,6 +6939,7 @@
         case 'roster':     return viewRoster(rest[0], rest[1], rest[2]);
         case 'trade':      return viewTrade(rest[0]);
         case 'projections': return viewProjections(rest[0]);
+        case 'sos':        return viewSosGrid(rest[0]);
         case 'compare':    return viewCompare(rest[0], rest[1], rest[2]);
         case 'strategy':   return viewStrategy();
         case 'action':     return viewActionCenter();
