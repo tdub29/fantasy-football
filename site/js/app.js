@@ -6571,17 +6571,39 @@
     return h('div', { class: 'tip', style: { marginBottom: '12px' } },
       `Team environment: #${e.env_rank}/${e.total} (${e.tier}) · ${e.implied_pf} implied pts/game (off #${e.pf_rank}, def allows #${e.pa_rank})${sosTxt}`);
   }
-  // Game-by-game schedule strip (actual Vegas implied pts where lines posted).
+  // Opponent defense strength -> color for the game log (rank 1 = toughest D = red,
+  // rank 32 = weakest D = green; easy matchups read green).
+  function defColor(oppAbbr) {
+    const e = teamEnv(oppAbbr); if (!e) return 'var(--fg-2)';
+    const r = e.pa_rank;
+    return r <= 8 ? 'var(--red)' : r <= 16 ? 'var(--amber)' : r <= 24 ? '#5eead4' : 'var(--green)';
+  }
+  // Game log: week-by-week schedule, opponent acronym colored by the strength of the
+  // defense faced, with Vegas (or projected) implied points for/against.
   function scheduleStrip(sleeper) {
     const s = sleeper && teamSos(sleeper.team); if (!s || !s.schedule?.length) return null;
-    const cells = s.schedule.map(g => h('span', {
-      class: 'badge',
-      title: `Week ${g.week} ${g.home ? 'vs' : '@'} ${g.opp} — ${g.posted ? 'Vegas' : 'projected'} implied ${g.implied_pf ?? '?'} for / ${g.implied_pa ?? '?'} against`,
-      style: { fontSize: '10px', opacity: g.posted ? 1 : 0.55, marginRight: '3px', marginBottom: '3px' },
-    }, `${g.week}${g.home ? '' : '@'}${g.opp} ${g.implied_pf ?? '~'}`));
+    const row = (g) => {
+      const e = teamEnv(g.opp);
+      return h('tr', { title: e ? `${g.opp} defense: allows ${e.implied_pa}/g (#${e.pa_rank} of 32)` : '' },
+        h('td', { class: 'tnum', style: { color: 'var(--fg-3)' } }, `W${g.week}`),
+        h('td', null,
+          h('span', { class: 'muted', style: { fontSize: '10px' } }, g.home ? 'vs ' : '@ '),
+          h('span', { style: { fontWeight: 700, color: defColor(g.opp) } }, g.opp)),
+        h('td', { class: 'tnum', style: { textAlign: 'right' } }, g.implied_pf ?? '~'),
+        h('td', { class: 'tnum', style: { textAlign: 'right', color: 'var(--fg-3)' } }, g.implied_pa ?? '~'),
+        h('td', null, h('span', { class: 'muted', style: { fontSize: '9px' } }, g.posted ? 'VEG' : 'proj')));
+    };
     return h('div', { class: 'card', style: { background: 'var(--bg-2)', marginBottom: '12px' } },
-      h('div', { class: 'card-title' }, `Schedule · implied pts/game (actual Vegas thru wk ${window.TEAM_SOS.lines_through_week}, projected after)`),
-      h('div', { class: 'row wrap', style: { gap: '2px', marginTop: '6px' } }, ...cells));
+      h('div', { class: 'card-title' }, 'Game Log'),
+      h('div', { class: 'tip', style: { marginBottom: '6px' } },
+        `Opponent colored by defense faced — green = weak D (smash), red = elite D (tough). Implied pts: actual Vegas thru wk ${window.TEAM_SOS.lines_through_week}, projected after.`),
+      h('div', { style: { maxHeight: '260px', overflowY: 'auto' } },
+        h('table', { class: 'data', style: { fontSize: '12px' } },
+          h('thead', null, h('tr', null,
+            h('th', null, 'Wk'), h('th', null, 'Opp'),
+            h('th', { style: { textAlign: 'right' } }, 'Pts'), h('th', { style: { textAlign: 'right' } }, 'vs'),
+            h('th', null, 'Line'))),
+          h('tbody', null, ...s.schedule.map(row)))));
   }
 
   function projUnitData() { return (window.OFFENSE_PROJ || {})[PROJ_STATE.unit] || { sources: [], players: [], stat_keys: [] }; }
