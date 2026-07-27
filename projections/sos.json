@@ -65,48 +65,48 @@
      "opp": "GB",
      "home": false,
      "posted": false,
-     "implied_pf": 24.94,
-     "implied_pa": 26.61
+     "implied_pf": 23.42,
+     "implied_pa": 25.25
     },
     {
      "week": 7,
      "opp": "PHI",
      "home": false,
      "posted": false,
-     "implied_pf": 23.9,
-     "implied_pa": 25.65
+     "implied_pf": 22.9,
+     "implied_pa": 24.77
     },
     {
      "week": 8,
      "opp": "ARI",
      "home": true,
      "posted": false,
-     "implied_pf": 29.84,
-     "implied_pa": 20.24
+     "implied_pf": 26.87,
+     "implied_pa": 21.07
     },
     {
      "week": 9,
      "opp": "IND",
      "home": false,
      "posted": false,
-     "implied_pf": 27.32,
-     "implied_pa": 25.05
+     "implied_pf": 24.61,
+     "implied_pa": 24.48
     },
     {
      "week": 10,
      "opp": "SF",
      "home": true,
      "posted": false,
-     "implied_pf": 25.24,
-     "implied_pa": 26.84
+     "implied_pf": 24.57,
+     "implied_pa": 24.37
     },
     {
      "week": 11,
      "opp": "TEN",
      "home": true,
      "posted": false,
-     "implied_pf": 26.98,
-     "implied_pa": 22.33
+     "implied_pf": 25.44,
+     "implied_pa": 22.11
     },
     {
      "week": 12,
@@ -114,47 +114,47 @@
      "home": true,
      "posted": false,
      "implied_pf": 23.9,
-     "implied_pa": 25.65
+     "implied_pa": 23.77
     },
     {
      "week": 13,
      "opp": "SEA",
      "home": false,
      "posted": false,
-     "implied_pf": 23.64,
-     "implied_pa": 26.5
+     "implied_pf": 22.77,
+     "implied_pa": 25.2
     },
     {
      "week": 15,
      "opp": "LAR",
      "home": false,
      "posted": false,
-     "implied_pf": 24.85,
-     "implied_pa": 28.17
+     "implied_pf": 23.38,
+     "implied_pa": 26.03
     },
     {
      "week": 16,
      "opp": "JAX",
      "home": true,
      "posted": false,
-     "implied_pf": 25.73,
-     "implied_pa": 24.94
+     "implied_pf": 24.81,
+     "implied_pa": 23.42
     },
     {
      "week": 17,
      "opp": "NYG",
      "home": true,
      "posted": false,
-     "implied_pf": 26.81,
-     "implied_pa": 23.71
+     "implied_pf": 25.35,
+     "implied_pa": 22.8
     },
     {
      "week": 18,
      "opp": "WAS",
      "home": false,
      "posted": false,
-     "implied_pf": 27.67,
-     "implied_pa": 25.06
+     "implied_pf": 24.78,
+     "implied_pa": 24.48
     }
    ],
    "off_sos_rank": 11,
@@ -215,96 +215,96 @@
      "opp": "BAL",
      "home": false,
      "posted": false,
-     "implied_pf": 25.11,
-     "implied_pa": 26.15
+     "implied_pf": 23.5,
+     "implied_pa": 25.02
     },
     {
      "week": 8,
      "opp": "TEN",
      "home": true,
      "posted": false,
-     "implied_pf": 27.21,
-     "implied_pa": 20.87
+     "implied_pf": 25.55,
+     "implied_pa": 21.38
     },
     {
      "week": 9,
      "opp": "ATL",
      "home": false,
      "posted": false,
-     "implied_pf": 27.29,
-     "implied_pa": 21.38
+     "implied_pf": 24.59,
+     "implied_pa": 22.64
     },
     {
      "week": 10,
      "opp": "PIT",
      "home": true,
      "posted": false,
-     "implied_pf": 25.08,
-     "implied_pa": 21.65
+     "implied_pf": 24.49,
+     "implied_pa": 21.77
     },
     {
      "week": 11,
      "opp": "WAS",
      "home": false,
      "posted": false,
-     "implied_pf": 27.9,
-     "implied_pa": 23.6
+     "implied_pf": 24.9,
+     "implied_pa": 23.75
     },
     {
      "week": 12,
      "opp": "NO",
      "home": true,
      "posted": false,
-     "implied_pf": 26.43,
-     "implied_pa": 21.71
+     "implied_pf": 25.16,
+     "implied_pa": 21.8
     },
     {
      "week": 13,
      "opp": "CLE",
      "home": false,
      "posted": false,
-     "implied_pf": 25.63,
-     "implied_pa": 18.98
+     "implied_pf": 23.77,
+     "implied_pa": 21.44
     },
     {
      "week": 14,
      "opp": "KC",
      "home": true,
      "posted": false,
-     "implied_pf": 24.25,
-     "implied_pa": 24.25
+     "implied_pf": 24.07,
+     "implied_pa": 23.08
     },
     {
      "week": 15,
      "opp": "CAR",
      "home": false,
      "posted": false,
-     "implied_pf": 26.29,
-     "implied_pa": 20.91
+     "implied_pf": 24.09,
+     "implied_pa": 22.41
     },
     {
      "week": 16,
      "opp": "IND",
      "home": false,
      "posted": false,
-     "implied_pf": 27.55,
-     "implied_pa": 23.59
+     "implied_pf": 24.73,
+     "implied_pa": 23.75
     },
     {
      "week": 17,
      "opp": "BAL",
      "home": true,
      "posted": false,
-     "implied_pf": 25.11,
-     "implied_pa": 26.15
+     "implied_pf": 24.5,
+     "implied_pa": 24.02
     },
     {
      "week": 18,
      "opp": "CLE",
      "home": true,
      "posted": false,
-     "implied_pf": 25.63,
-     "implied_pa": 18.98
+     "implied_pf": 24.77,
+     "implied_pa": 20.44
     }
    ],
    "off_sos_rank": 12,
@@ -357,104 +357,104 @@
      "opp": "BUF",
      "home": true,
      "posted": false,
-     "implied_pf": 26.15,
-     "implied_pa": 25.17
+     "implied_pf": 25.02,
+     "implied_pa": 23.54
     },
     {
      "week": 6,
      "opp": "ARI",
      "home": true,
      "posted": false,
-     "implied_pf": 30.59,
-     "implied_pa": 17.67
+     "implied_pf": 27.24,
+     "implied_pa": 19.79
     },
     {
      "week": 7,
      "opp": "LV",
      "home": false,
      "posted": false,
-     "implied_pf": 27.43,
-     "implied_pa": 18.24
+     "implied_pf": 24.66,
+     "implied_pa": 21.07
     },
     {
      "week": 8,
      "opp": "LAC",
      "home": true,
      "posted": false,
-     "implied_pf": 25.17,
-     "implied_pa": 22.85
+     "implied_pf": 24.53,
+     "implied_pa": 22.38
     },
     {
      "week": 9,
      "opp": "WAS",
      "home": false,
      "posted": false,
-     "implied_pf": 28.42,
-     "implied_pa": 22.49
+     "implied_pf": 25.16,
+     "implied_pa": 23.2
     },
     {
      "week": 10,
      "opp": "ARI",
      "home": false,
      "posted": false,
-     "implied_pf": 30.59,
-     "implied_pa": 17.67
+     "implied_pf": 26.24,
+     "implied_pa": 20.79
     },
     {
      "week": 12,
      "opp": "GB",
      "home": true,
      "posted": false,
-     "implied_pf": 25.69,
-     "implied_pa": 24.04
+     "implied_pf": 24.8,
+     "implied_pa": 22.97
     },
     {
      "week": 13,
      "opp": "KC",
      "home": true,
      "posted": false,
-     "implied_pf": 24.77,
-     "implied_pa": 23.14
+     "implied_pf": 24.34,
+     "implied_pa": 22.52
     },
     {
      "week": 14,
      "opp": "SF",
      "home": false,
      "posted": false,
-     "implied_pf": 25.99,
-     "implied_pa": 24.27
+     "implied_pf": 23.95,
+     "implied_pa": 24.09
     },
     {
      "week": 15,
      "opp": "DAL",
      "home": true,
      "posted": false,
-     "implied_pf": 28.17,
-     "implied_pa": 24.85
+     "implied_pf": 26.03,
+     "implied_pa": 23.38
     },
     {
      "week": 16,
      "opp": "SEA",
      "home": false,
      "posted": false,
-     "implied_pf": 24.39,
-     "implied_pa": 23.93
+     "implied_pf": 23.14,
+     "implied_pa": 23.91
     },
     {
      "week": 17,
      "opp": "TB",
      "home": false,
      "posted": false,
-     "implied_pf": 27.1,
-     "implied_pa": 22.45
+     "implied_pf": 24.5,
+     "implied_pa": 23.18
     },
     {
      "week": 18,
      "opp": "SEA",
      "home": true,
      "posted": false,
-     "implied_pf": 24.39,
-     "implied_pa": 23.93
+     "implied_pf": 24.14,
+     "implied_pa": 22.91
     }
    ],
    "off_sos_rank": 14,
@@ -507,104 +507,104 @@
      "opp": "ARI",
      "home": false,
      "posted": false,
-     "implied_pf": 30.19,
-     "implied_pa": 18.19
+     "implied_pf": 26.05,
+     "implied_pa": 21.05
     },
     {
      "week": 7,
      "opp": "GB",
      "home": true,
      "posted": false,
-     "implied_pf": 25.29,
-     "implied_pa": 24.56
+     "implied_pf": 24.59,
+     "implied_pa": 23.23
     },
     {
      "week": 8,
      "opp": "MIN",
      "home": true,
      "posted": false,
-     "implied_pf": 25.75,
-     "implied_pa": 22.16
+     "implied_pf": 24.82,
+     "implied_pa": 22.03
     },
     {
      "week": 9,
      "opp": "MIA",
      "home": false,
      "posted": false,
-     "implied_pf": 28.07,
-     "implied_pa": 18.66
+     "implied_pf": 24.98,
+     "implied_pa": 21.28
     },
     {
      "week": 10,
      "opp": "NE",
      "home": true,
      "posted": false,
-     "implied_pf": 24.64,
-     "implied_pa": 23.39
+     "implied_pf": 24.27,
+     "implied_pa": 22.65
     },
     {
      "week": 11,
      "opp": "TB",
      "home": true,
      "posted": false,
-     "implied_pf": 26.7,
-     "implied_pa": 22.97
+     "implied_pf": 25.3,
+     "implied_pa": 22.44
     },
     {
      "week": 12,
      "opp": "CHI",
      "home": true,
      "posted": false,
-     "implied_pf": 26.16,
-     "implied_pa": 24.16
+     "implied_pf": 25.03,
+     "implied_pa": 23.03
     },
     {
      "week": 13,
      "opp": "ATL",
      "home": false,
      "posted": false,
-     "implied_pf": 27.41,
-     "implied_pa": 20.79
+     "implied_pf": 24.66,
+     "implied_pa": 22.34
     },
     {
      "week": 14,
      "opp": "TEN",
      "home": true,
      "posted": false,
-     "implied_pf": 27.33,
-     "implied_pa": 20.28
+     "implied_pf": 25.62,
+     "implied_pa": 21.09
     },
     {
      "week": 15,
      "opp": "MIN",
      "home": false,
      "posted": false,
-     "implied_pf": 25.75,
-     "implied_pa": 22.16
+     "implied_pf": 23.82,
+     "implied_pa": 23.03
     },
     {
      "week": 16,
      "opp": "NYG",
      "home": true,
      "posted": false,
-     "implied_pf": 27.16,
-     "implied_pa": 21.66
+     "implied_pf": 25.53,
+     "implied_pa": 21.78
     },
     {
      "week": 17,
      "opp": "CHI",
      "home": false,
      "posted": false,
-     "implied_pf": 26.16,
-     "implied_pa": 24.16
+     "implied_pf": 24.03,
+     "implied_pa": 24.03
     },
     {
      "week": 18,
      "opp": "GB",
      "home": false,
      "posted": false,
-     "implied_pf": 25.29,
-     "implied_pa": 24.56
+     "implied_pf": 23.59,
+     "implied_pa": 24.23
     }
    ],
    "off_sos_rank": 2,
@@ -657,104 +657,104 @@
      "opp": "LAR",
      "home": false,
      "posted": false,
-     "implied_pf": 25.17,
-     "implied_pa": 26.15
+     "implied_pf": 23.54,
+     "implied_pa": 25.02
     },
     {
      "week": 6,
      "opp": "LV",
      "home": false,
      "posted": false,
-     "implied_pf": 27.0,
-     "implied_pa": 18.79
+     "implied_pf": 24.45,
+     "implied_pa": 21.34
     },
     {
      "week": 8,
      "opp": "BAL",
      "home": true,
      "posted": false,
-     "implied_pf": 25.2,
-     "implied_pa": 25.59
+     "implied_pf": 24.55,
+     "implied_pa": 23.74
     },
     {
      "week": 9,
      "opp": "MIN",
      "home": false,
      "posted": false,
-     "implied_pf": 25.72,
-     "implied_pa": 22.19
+     "implied_pf": 23.81,
+     "implied_pa": 23.05
     },
     {
      "week": 10,
      "opp": "NYJ",
      "home": false,
      "posted": false,
-     "implied_pf": 26.57,
-     "implied_pa": 18.22
+     "implied_pf": 24.23,
+     "implied_pa": 21.06
     },
     {
      "week": 11,
      "opp": "MIA",
      "home": true,
      "posted": false,
-     "implied_pf": 28.04,
-     "implied_pa": 18.69
+     "implied_pf": 25.97,
+     "implied_pa": 20.3
     },
     {
      "week": 12,
      "opp": "KC",
      "home": true,
      "posted": false,
-     "implied_pf": 24.34,
-     "implied_pa": 23.69
+     "implied_pf": 24.12,
+     "implied_pa": 22.8
     },
     {
      "week": 13,
      "opp": "NE",
      "home": false,
      "posted": false,
-     "implied_pf": 24.61,
-     "implied_pa": 23.42
+     "implied_pf": 23.25,
+     "implied_pa": 23.66
     },
     {
      "week": 14,
      "opp": "GB",
      "home": false,
      "posted": false,
-     "implied_pf": 25.26,
-     "implied_pa": 24.59
+     "implied_pf": 23.58,
+     "implied_pa": 24.24
     },
     {
      "week": 15,
      "opp": "CHI",
      "home": true,
      "posted": false,
-     "implied_pf": 26.13,
-     "implied_pa": 24.19
+     "implied_pf": 25.02,
+     "implied_pa": 23.05
     },
     {
      "week": 16,
      "opp": "DEN",
      "home": false,
      "posted": false,
-     "implied_pf": 23.85,
-     "implied_pa": 22.06
+     "implied_pf": 22.88,
+     "implied_pa": 22.98
     },
     {
      "week": 17,
      "opp": "MIA",
      "home": false,
      "posted": false,
-     "implied_pf": 28.04,
-     "implied_pa": 18.69
+     "implied_pf": 24.97,
+     "implied_pa": 21.3
     },
     {
      "week": 18,
      "opp": "NYJ",
      "home": true,
      "posted": false,
-     "implied_pf": 26.57,
-     "implied_pa": 18.22
+     "implied_pf": 25.23,
+     "implied_pa": 20.06
     }
    ],
    "off_sos_rank": 30,
@@ -807,104 +807,104 @@
      "opp": "ATL",
      "home": false,
      "posted": false,
-     "implied_pf": 27.25,
-     "implied_pa": 20.3
+     "implied_pf": 24.57,
+     "implied_pa": 22.1
     },
     {
      "week": 6,
      "opp": "CLE",
      "home": false,
      "posted": false,
-     "implied_pf": 25.59,
-     "implied_pa": 17.9
+     "implied_pf": 23.74,
+     "implied_pa": 20.9
     },
     {
      "week": 7,
      "opp": "CIN",
      "home": true,
      "posted": false,
-     "implied_pf": 26.15,
-     "implied_pa": 25.11
+     "implied_pf": 25.02,
+     "implied_pa": 23.5
     },
     {
      "week": 8,
      "opp": "BUF",
      "home": false,
      "posted": false,
-     "implied_pf": 25.59,
-     "implied_pa": 25.2
+     "implied_pf": 23.74,
+     "implied_pa": 24.55
     },
     {
      "week": 9,
      "opp": "JAX",
      "home": true,
      "posted": false,
-     "implied_pf": 25.92,
-     "implied_pa": 22.4
+     "implied_pf": 24.91,
+     "implied_pa": 22.15
     },
     {
      "week": 10,
      "opp": "LAC",
      "home": true,
      "posted": false,
-     "implied_pf": 24.61,
-     "implied_pa": 22.88
+     "implied_pf": 24.25,
+     "implied_pa": 22.39
     },
     {
      "week": 11,
      "opp": "CAR",
      "home": false,
      "posted": false,
-     "implied_pf": 26.25,
-     "implied_pa": 19.83
+     "implied_pf": 24.07,
+     "implied_pa": 21.87
     },
     {
      "week": 12,
      "opp": "HOU",
      "home": false,
      "posted": false,
-     "implied_pf": 23.73,
-     "implied_pa": 21.88
+     "implied_pf": 22.81,
+     "implied_pa": 22.89
     },
     {
      "week": 14,
      "opp": "TB",
      "home": true,
      "posted": false,
-     "implied_pf": 26.54,
-     "implied_pa": 22.48
+     "implied_pf": 25.22,
+     "implied_pa": 22.19
     },
     {
      "week": 15,
      "opp": "PIT",
      "home": false,
      "posted": false,
-     "implied_pf": 25.04,
-     "implied_pa": 20.57
+     "implied_pf": 23.47,
+     "implied_pa": 22.23
     },
     {
      "week": 16,
      "opp": "CLE",
      "home": true,
      "posted": false,
-     "implied_pf": 25.59,
-     "implied_pa": 17.9
+     "implied_pf": 24.74,
+     "implied_pa": 19.9
     },
     {
      "week": 17,
      "opp": "CIN",
      "home": false,
      "posted": false,
-     "implied_pf": 26.15,
-     "implied_pa": 25.11
+     "implied_pf": 24.02,
+     "implied_pa": 24.5
     },
     {
      "week": 18,
      "opp": "PIT",
      "home": true,
      "posted": false,
-     "implied_pf": 25.04,
-     "implied_pa": 20.57
+     "implied_pf": 24.47,
+     "implied_pa": 21.23
     }
    ],
    "off_sos_rank": 13,
@@ -965,96 +965,96 @@
      "opp": "WAS",
      "home": true,
      "posted": false,
-     "implied_pf": 27.09,
-     "implied_pa": 22.88
+     "implied_pf": 25.49,
+     "implied_pa": 22.39
     },
     {
      "week": 7,
      "opp": "ATL",
      "home": false,
      "posted": false,
-     "implied_pf": 26.48,
-     "implied_pa": 20.66
+     "implied_pf": 24.19,
+     "implied_pa": 22.28
     },
     {
      "week": 9,
      "opp": "LV",
      "home": true,
      "posted": false,
-     "implied_pf": 26.1,
-     "implied_pa": 18.63
+     "implied_pf": 25.0,
+     "implied_pa": 20.27
     },
     {
      "week": 10,
      "opp": "DAL",
      "home": false,
      "posted": false,
-     "implied_pf": 26.84,
-     "implied_pa": 25.24
+     "implied_pf": 24.37,
+     "implied_pa": 24.57
     },
     {
      "week": 11,
      "opp": "MIN",
      "home": true,
      "posted": false,
-     "implied_pf": 24.82,
-     "implied_pa": 22.03
+     "implied_pf": 24.36,
+     "implied_pa": 21.96
     },
     {
      "week": 12,
      "opp": "SEA",
      "home": true,
      "posted": false,
-     "implied_pf": 23.06,
-     "implied_pa": 24.32
+     "implied_pf": 23.48,
+     "implied_pa": 23.11
     },
     {
      "week": 13,
      "opp": "NYG",
      "home": false,
      "posted": false,
-     "implied_pf": 26.23,
-     "implied_pa": 21.53
+     "implied_pf": 24.06,
+     "implied_pa": 22.71
     },
     {
      "week": 14,
      "opp": "LAR",
      "home": true,
      "posted": false,
-     "implied_pf": 24.27,
-     "implied_pa": 25.99
+     "implied_pf": 24.09,
+     "implied_pa": 23.95
     },
     {
      "week": 15,
      "opp": "LAC",
      "home": false,
      "posted": false,
-     "implied_pf": 23.84,
-     "implied_pa": 23.24
+     "implied_pf": 22.87,
+     "implied_pa": 23.57
     },
     {
      "week": 16,
      "opp": "KC",
      "home": false,
      "posted": false,
-     "implied_pf": 23.44,
-     "implied_pa": 23.53
+     "implied_pf": 22.67,
+     "implied_pa": 23.71
     },
     {
      "week": 17,
      "opp": "PHI",
      "home": true,
      "posted": false,
-     "implied_pf": 23.32,
-     "implied_pa": 23.47
+     "implied_pf": 23.61,
+     "implied_pa": 22.68
     },
     {
      "week": 18,
      "opp": "ARI",
      "home": false,
      "posted": false,
-     "implied_pf": 29.26,
-     "implied_pa": 18.06
+     "implied_pf": 25.58,
+     "implied_pa": 20.98
     }
    ],
    "off_sos_rank": 8,
@@ -1107,104 +1107,104 @@
      "opp": "CHI",
      "home": true,
      "posted": false,
-     "implied_pf": 25.0,
-     "implied_pa": 23.73
+     "implied_pf": 24.45,
+     "implied_pa": 22.82
     },
     {
      "week": 6,
      "opp": "DAL",
      "home": true,
      "posted": false,
-     "implied_pf": 26.61,
-     "implied_pa": 24.94
+     "implied_pf": 25.25,
+     "implied_pa": 23.42
     },
     {
      "week": 7,
      "opp": "DET",
      "home": false,
      "posted": false,
-     "implied_pf": 24.56,
-     "implied_pa": 25.29
+     "implied_pf": 23.23,
+     "implied_pa": 24.59
     },
     {
      "week": 8,
      "opp": "CAR",
      "home": true,
      "posted": false,
-     "implied_pf": 25.25,
-     "implied_pa": 19.89
+     "implied_pf": 24.57,
+     "implied_pa": 20.9
     },
     {
      "week": 9,
      "opp": "NE",
      "home": false,
      "posted": false,
-     "implied_pf": 23.48,
-     "implied_pa": 22.96
+     "implied_pf": 22.69,
+     "implied_pa": 23.43
     },
     {
      "week": 10,
      "opp": "MIN",
      "home": true,
      "posted": false,
-     "implied_pf": 24.59,
-     "implied_pa": 21.73
+     "implied_pf": 24.24,
+     "implied_pa": 21.82
     },
     {
      "week": 12,
      "opp": "LAR",
      "home": false,
      "posted": false,
-     "implied_pf": 24.04,
-     "implied_pa": 25.69
+     "implied_pf": 22.97,
+     "implied_pa": 24.8
     },
     {
      "week": 13,
      "opp": "NO",
      "home": false,
      "posted": false,
-     "implied_pf": 25.39,
-     "implied_pa": 20.69
+     "implied_pf": 23.64,
+     "implied_pa": 22.3
     },
     {
      "week": 14,
      "opp": "BUF",
      "home": true,
      "posted": false,
-     "implied_pf": 24.59,
-     "implied_pa": 25.26
+     "implied_pf": 24.24,
+     "implied_pa": 23.58
     },
     {
      "week": 15,
      "opp": "MIA",
      "home": true,
      "posted": false,
-     "implied_pf": 26.91,
-     "implied_pa": 18.23
+     "implied_pf": 25.41,
+     "implied_pa": 20.07
     },
     {
      "week": 16,
      "opp": "CHI",
      "home": false,
      "posted": false,
-     "implied_pf": 25.0,
-     "implied_pa": 23.73
+     "implied_pf": 23.45,
+     "implied_pa": 23.82
     },
     {
      "week": 17,
      "opp": "HOU",
      "home": true,
      "posted": false,
-     "implied_pf": 22.73,
-     "implied_pa": 21.94
+     "implied_pf": 23.31,
+     "implied_pa": 21.92
     },
     {
      "week": 18,
      "opp": "DET",
      "home": true,
      "posted": false,
-     "implied_pf": 24.56,
-     "implied_pa": 25.29
+     "implied_pf": 24.23,
+     "implied_pa": 23.59
     }
    ],
    "off_sos_rank": 16,
@@ -1257,104 +1257,104 @@
      "opp": "GB",
      "home": false,
      "posted": false,
-     "implied_pf": 23.73,
-     "implied_pa": 25.0
+     "implied_pf": 22.82,
+     "implied_pa": 24.45
     },
     {
      "week": 6,
      "opp": "ATL",
      "home": false,
      "posted": false,
-     "implied_pf": 25.85,
-     "implied_pa": 21.23
+     "implied_pf": 23.88,
+     "implied_pa": 22.56
     },
     {
      "week": 7,
      "opp": "NE",
      "home": true,
      "posted": false,
-     "implied_pf": 23.08,
-     "implied_pa": 23.83
+     "implied_pf": 23.49,
+     "implied_pa": 22.87
     },
     {
      "week": 8,
      "opp": "SEA",
      "home": false,
      "posted": false,
-     "implied_pf": 22.43,
-     "implied_pa": 24.89
+     "implied_pf": 22.16,
+     "implied_pa": 24.39
     },
     {
      "week": 9,
      "opp": "TB",
      "home": true,
      "posted": false,
-     "implied_pf": 25.14,
-     "implied_pa": 23.41
+     "implied_pf": 24.52,
+     "implied_pa": 22.66
     },
     {
      "week": 11,
      "opp": "NO",
      "home": true,
      "posted": false,
-     "implied_pf": 24.99,
-     "implied_pa": 21.56
+     "implied_pf": 24.45,
+     "implied_pa": 21.73
     },
     {
      "week": 12,
      "opp": "DET",
      "home": false,
      "posted": false,
-     "implied_pf": 24.16,
-     "implied_pa": 26.16
+     "implied_pf": 23.03,
+     "implied_pa": 25.03
     },
     {
      "week": 13,
      "opp": "JAX",
      "home": true,
      "posted": false,
-     "implied_pf": 24.52,
-     "implied_pa": 23.33
+     "implied_pf": 24.21,
+     "implied_pa": 22.62
     },
     {
      "week": 14,
      "opp": "MIA",
      "home": false,
      "posted": false,
-     "implied_pf": 26.51,
-     "implied_pa": 19.1
+     "implied_pf": 24.2,
+     "implied_pa": 21.5
     },
     {
      "week": 15,
      "opp": "BUF",
      "home": false,
      "posted": false,
-     "implied_pf": 24.19,
-     "implied_pa": 26.13
+     "implied_pf": 23.05,
+     "implied_pa": 25.02
     },
     {
      "week": 16,
      "opp": "GB",
      "home": true,
      "posted": false,
-     "implied_pf": 23.73,
-     "implied_pa": 25.0
+     "implied_pf": 23.82,
+     "implied_pa": 23.45
     },
     {
      "week": 17,
      "opp": "DET",
      "home": true,
      "posted": false,
-     "implied_pf": 24.16,
-     "implied_pa": 26.16
+     "implied_pf": 24.03,
+     "implied_pa": 24.03
     },
     {
      "week": 18,
      "opp": "MIN",
      "home": false,
      "posted": false,
-     "implied_pf": 24.19,
-     "implied_pa": 22.6
+     "implied_pf": 23.05,
+     "implied_pa": 23.25
     }
    ],
    "off_sos_rank": 24,
@@ -1415,96 +1415,96 @@
      "opp": "SF",
      "home": false,
      "posted": false,
-     "implied_pf": 22.88,
-     "implied_pa": 27.09
+     "implied_pf": 22.39,
+     "implied_pa": 25.49
     },
     {
      "week": 8,
      "opp": "PHI",
      "home": true,
      "posted": false,
-     "implied_pf": 21.54,
-     "implied_pa": 25.9
+     "implied_pf": 22.72,
+     "implied_pa": 23.9
     },
     {
      "week": 9,
      "opp": "LAR",
      "home": true,
      "posted": false,
-     "implied_pf": 22.49,
-     "implied_pa": 28.42
+     "implied_pf": 23.2,
+     "implied_pa": 25.16
     },
     {
      "week": 10,
      "opp": "NYG",
      "home": false,
      "posted": false,
-     "implied_pf": 24.45,
-     "implied_pa": 23.96
+     "implied_pf": 23.17,
+     "implied_pa": 23.93
     },
     {
      "week": 11,
      "opp": "CIN",
      "home": true,
      "posted": false,
-     "implied_pf": 23.6,
-     "implied_pa": 27.9
+     "implied_pf": 23.75,
+     "implied_pa": 24.9
     },
     {
      "week": 12,
      "opp": "ARI",
      "home": false,
      "posted": false,
-     "implied_pf": 27.48,
-     "implied_pa": 20.49
+     "implied_pf": 24.69,
+     "implied_pa": 22.2
     },
     {
      "week": 13,
      "opp": "TEN",
      "home": false,
      "posted": false,
-     "implied_pf": 24.62,
-     "implied_pa": 22.58
+     "implied_pf": 23.26,
+     "implied_pa": 23.24
     },
     {
      "week": 14,
      "opp": "HOU",
      "home": true,
      "posted": false,
-     "implied_pf": 21.18,
-     "implied_pa": 24.67
+     "implied_pf": 22.54,
+     "implied_pa": 23.28
     },
     {
      "week": 15,
      "opp": "ATL",
      "home": true,
      "posted": false,
-     "implied_pf": 24.7,
-     "implied_pa": 23.09
+     "implied_pf": 24.3,
+     "implied_pa": 22.49
     },
     {
      "week": 16,
      "opp": "MIN",
      "home": false,
      "posted": false,
-     "implied_pf": 23.04,
-     "implied_pa": 24.46
+     "implied_pf": 22.47,
+     "implied_pa": 24.18
     },
     {
      "week": 17,
      "opp": "JAX",
      "home": false,
      "posted": false,
-     "implied_pf": 23.37,
-     "implied_pa": 25.19
+     "implied_pf": 22.63,
+     "implied_pa": 24.55
     },
     {
      "week": 18,
      "opp": "DAL",
      "home": true,
      "posted": false,
-     "implied_pf": 25.06,
-     "implied_pa": 27.67
+     "implied_pf": 24.48,
+     "implied_pa": 24.78
     }
    ],
    "off_sos_rank": 5,
@@ -1565,96 +1565,96 @@
      "opp": "TEN",
      "home": true,
      "posted": false,
-     "implied_pf": 24.61,
-     "implied_pa": 22.23
+     "implied_pf": 24.26,
+     "implied_pa": 22.06
     },
     {
      "week": 7,
      "opp": "MIN",
      "home": false,
      "posted": false,
-     "implied_pf": 23.03,
-     "implied_pa": 24.11
+     "implied_pf": 22.46,
+     "implied_pa": 24.01
     },
     {
      "week": 8,
      "opp": "JAX",
      "home": false,
      "posted": false,
-     "implied_pf": 23.36,
-     "implied_pa": 24.84
+     "implied_pf": 22.63,
+     "implied_pa": 24.37
     },
     {
      "week": 9,
      "opp": "DAL",
      "home": true,
      "posted": false,
-     "implied_pf": 25.05,
-     "implied_pa": 27.32
+     "implied_pf": 24.48,
+     "implied_pa": 24.61
     },
     {
      "week": 10,
      "opp": "MIA",
      "home": true,
      "posted": false,
-     "implied_pf": 25.35,
-     "implied_pa": 20.61
+     "implied_pf": 24.62,
+     "implied_pa": 21.26
     },
     {
      "week": 11,
      "opp": "HOU",
      "home": false,
      "posted": false,
-     "implied_pf": 21.17,
-     "implied_pa": 24.32
+     "implied_pf": 21.54,
+     "implied_pa": 24.11
     },
     {
      "week": 12,
      "opp": "NYG",
      "home": true,
      "posted": false,
-     "implied_pf": 24.44,
-     "implied_pa": 23.61
+     "implied_pf": 24.17,
+     "implied_pa": 22.76
     },
     {
      "week": 14,
      "opp": "PHI",
      "home": false,
      "posted": false,
-     "implied_pf": 21.53,
-     "implied_pa": 25.55
+     "implied_pf": 21.71,
+     "implied_pa": 24.73
     },
     {
      "week": 15,
      "opp": "TEN",
      "home": false,
      "posted": false,
-     "implied_pf": 24.61,
-     "implied_pa": 22.23
+     "implied_pf": 23.26,
+     "implied_pa": 23.06
     },
     {
      "week": 16,
      "opp": "CIN",
      "home": true,
      "posted": false,
-     "implied_pf": 23.59,
-     "implied_pa": 27.55
+     "implied_pf": 23.75,
+     "implied_pa": 24.73
     },
     {
      "week": 17,
      "opp": "CLE",
      "home": false,
      "posted": false,
-     "implied_pf": 23.03,
-     "implied_pa": 20.34
+     "implied_pf": 22.46,
+     "implied_pa": 22.12
     },
     {
      "week": 18,
      "opp": "JAX",
      "home": true,
      "posted": false,
-     "implied_pf": 23.36,
-     "implied_pa": 24.84
+     "implied_pf": 23.63,
+     "implied_pa": 23.37
     }
    ],
    "off_sos_rank": 21,
@@ -1715,96 +1715,96 @@
      "opp": "DEN",
      "home": false,
      "posted": false,
-     "implied_pf": 22.61,
-     "implied_pa": 20.3
+     "implied_pf": 22.26,
+     "implied_pa": 22.1
     },
     {
      "week": 7,
      "opp": "KC",
      "home": true,
      "posted": false,
-     "implied_pf": 23.1,
-     "implied_pa": 21.93
+     "implied_pf": 23.5,
+     "implied_pa": 21.91
     },
     {
      "week": 8,
      "opp": "CHI",
      "home": true,
      "posted": false,
-     "implied_pf": 24.89,
-     "implied_pa": 22.43
+     "implied_pf": 24.39,
+     "implied_pa": 22.16
     },
     {
      "week": 9,
      "opp": "ARI",
      "home": true,
      "posted": false,
-     "implied_pf": 28.92,
-     "implied_pa": 16.46
+     "implied_pf": 26.41,
+     "implied_pa": 19.18
     },
     {
      "week": 10,
      "opp": "LV",
      "home": false,
      "posted": false,
-     "implied_pf": 25.76,
-     "implied_pa": 17.03
+     "implied_pf": 23.83,
+     "implied_pa": 20.46
     },
     {
      "week": 12,
      "opp": "SF",
      "home": false,
      "posted": false,
-     "implied_pf": 24.32,
-     "implied_pa": 23.06
+     "implied_pf": 23.11,
+     "implied_pa": 23.48
     },
     {
      "week": 13,
      "opp": "DAL",
      "home": true,
      "posted": false,
-     "implied_pf": 26.5,
-     "implied_pa": 23.64
+     "implied_pf": 25.2,
+     "implied_pa": 22.77
     },
     {
      "week": 14,
      "opp": "NYG",
      "home": true,
      "posted": false,
-     "implied_pf": 25.89,
-     "implied_pa": 19.93
+     "implied_pf": 24.89,
+     "implied_pa": 20.91
     },
     {
      "week": 15,
      "opp": "PHI",
      "home": false,
      "posted": false,
-     "implied_pf": 22.98,
-     "implied_pa": 21.87
+     "implied_pf": 22.44,
+     "implied_pa": 22.88
     },
     {
      "week": 16,
      "opp": "LAR",
      "home": true,
      "posted": false,
-     "implied_pf": 23.93,
-     "implied_pa": 24.39
+     "implied_pf": 23.91,
+     "implied_pa": 23.14
     },
     {
      "week": 17,
      "opp": "CAR",
      "home": false,
      "posted": false,
-     "implied_pf": 25.14,
-     "implied_pa": 18.59
+     "implied_pf": 23.52,
+     "implied_pa": 21.25
     },
     {
      "week": 18,
      "opp": "LAR",
      "home": false,
      "posted": false,
-     "implied_pf": 23.93,
-     "implied_pa": 24.39
+     "implied_pf": 22.91,
+     "implied_pa": 24.14
     }
    ],
    "off_sos_rank": 9,
@@ -1865,96 +1865,96 @@
      "opp": "PIT",
      "home": true,
      "posted": false,
-     "implied_pf": 22.45,
-     "implied_pa": 22.04
+     "implied_pf": 23.18,
+     "implied_pa": 21.97
     },
     {
      "week": 7,
      "opp": "CAR",
      "home": false,
      "posted": false,
-     "implied_pf": 23.66,
-     "implied_pa": 21.3
+     "implied_pf": 22.78,
+     "implied_pa": 22.6
     },
     {
      "week": 8,
      "opp": "ATL",
      "home": true,
      "posted": false,
-     "implied_pf": 24.66,
-     "implied_pa": 21.77
+     "implied_pf": 24.28,
+     "implied_pa": 21.84
     },
     {
      "week": 9,
      "opp": "CHI",
      "home": false,
      "posted": false,
-     "implied_pf": 23.41,
-     "implied_pa": 25.14
+     "implied_pf": 22.66,
+     "implied_pa": 24.52
     },
     {
      "week": 11,
      "opp": "DET",
      "home": false,
      "posted": false,
-     "implied_pf": 22.97,
-     "implied_pa": 26.7
+     "implied_pf": 22.44,
+     "implied_pa": 25.3
     },
     {
      "week": 12,
      "opp": "CAR",
      "home": true,
      "posted": false,
-     "implied_pf": 23.66,
-     "implied_pa": 21.3
+     "implied_pf": 23.78,
+     "implied_pa": 21.6
     },
     {
      "week": 13,
      "opp": "LAC",
      "home": true,
      "posted": false,
-     "implied_pf": 22.02,
-     "implied_pa": 24.35
+     "implied_pf": 22.96,
+     "implied_pa": 23.12
     },
     {
      "week": 14,
      "opp": "BAL",
      "home": false,
      "posted": false,
-     "implied_pf": 22.48,
-     "implied_pa": 26.54
+     "implied_pf": 22.19,
+     "implied_pa": 25.22
     },
     {
      "week": 15,
      "opp": "NO",
      "home": true,
      "posted": false,
-     "implied_pf": 23.8,
-     "implied_pa": 22.1
+     "implied_pf": 23.85,
+     "implied_pa": 22.0
     },
     {
      "week": 16,
      "opp": "ATL",
      "home": false,
      "posted": false,
-     "implied_pf": 24.66,
-     "implied_pa": 21.77
+     "implied_pf": 23.28,
+     "implied_pa": 22.84
     },
     {
      "week": 17,
      "opp": "LAR",
      "home": true,
      "posted": false,
-     "implied_pf": 22.45,
-     "implied_pa": 27.1
+     "implied_pf": 23.18,
+     "implied_pa": 24.5
     },
     {
      "week": 18,
      "opp": "NO",
      "home": false,
      "posted": false,
-     "implied_pf": 23.8,
-     "implied_pa": 22.1
+     "implied_pf": 22.85,
+     "implied_pa": 23.0
     }
    ],
    "off_sos_rank": 17,
@@ -2015,96 +2015,96 @@
      "opp": "HOU",
      "home": true,
      "posted": false,
-     "implied_pf": 21.06,
-     "implied_pa": 22.73
+     "implied_pf": 22.48,
+     "implied_pa": 22.31
     },
     {
      "week": 8,
      "opp": "IND",
      "home": true,
      "posted": false,
-     "implied_pf": 24.84,
-     "implied_pa": 23.36
+     "implied_pf": 24.37,
+     "implied_pa": 22.63
     },
     {
      "week": 9,
      "opp": "BAL",
      "home": false,
      "posted": false,
-     "implied_pf": 22.4,
-     "implied_pa": 25.92
+     "implied_pf": 22.15,
+     "implied_pa": 24.91
     },
     {
      "week": 10,
      "opp": "TEN",
      "home": false,
      "posted": false,
-     "implied_pf": 24.5,
-     "implied_pa": 20.64
+     "implied_pf": 23.2,
+     "implied_pa": 22.27
     },
     {
      "week": 11,
      "opp": "NYG",
      "home": false,
      "posted": false,
-     "implied_pf": 24.33,
-     "implied_pa": 22.02
+     "implied_pf": 23.12,
+     "implied_pa": 22.96
     },
     {
      "week": 12,
      "opp": "TEN",
      "home": true,
      "posted": false,
-     "implied_pf": 24.5,
-     "implied_pa": 20.64
+     "implied_pf": 24.2,
+     "implied_pa": 21.27
     },
     {
      "week": 13,
      "opp": "CHI",
      "home": false,
      "posted": false,
-     "implied_pf": 23.33,
-     "implied_pa": 24.52
+     "implied_pf": 22.62,
+     "implied_pa": 24.21
     },
     {
      "week": 14,
      "opp": "PIT",
      "home": true,
      "posted": false,
-     "implied_pf": 22.37,
-     "implied_pa": 21.42
+     "implied_pf": 23.14,
+     "implied_pa": 21.66
     },
     {
      "week": 15,
      "opp": "HOU",
      "home": false,
      "posted": false,
-     "implied_pf": 21.06,
-     "implied_pa": 22.73
+     "implied_pf": 21.48,
+     "implied_pa": 23.31
     },
     {
      "week": 16,
      "opp": "DAL",
      "home": false,
      "posted": false,
-     "implied_pf": 24.94,
-     "implied_pa": 25.73
+     "implied_pf": 23.42,
+     "implied_pa": 24.81
     },
     {
      "week": 17,
      "opp": "WAS",
      "home": true,
      "posted": false,
-     "implied_pf": 25.19,
-     "implied_pa": 23.37
+     "implied_pf": 24.55,
+     "implied_pa": 22.63
     },
     {
      "week": 18,
      "opp": "IND",
      "home": false,
      "posted": false,
-     "implied_pf": 24.84,
-     "implied_pa": 23.36
+     "implied_pf": 23.37,
+     "implied_pa": 23.63
     }
    ],
    "off_sos_rank": 22,
@@ -2165,96 +2165,96 @@
      "opp": "NYJ",
      "home": true,
      "posted": false,
-     "implied_pf": 24.27,
-     "implied_pa": 17.11
+     "implied_pf": 24.09,
+     "implied_pa": 19.5
     },
     {
      "week": 7,
      "opp": "CHI",
      "home": false,
      "posted": false,
-     "implied_pf": 23.83,
-     "implied_pa": 23.08
+     "implied_pf": 22.87,
+     "implied_pa": 23.49
     },
     {
      "week": 8,
      "opp": "MIA",
      "home": false,
      "posted": false,
-     "implied_pf": 25.74,
-     "implied_pa": 17.58
+     "implied_pf": 23.82,
+     "implied_pa": 20.74
     },
     {
      "week": 9,
      "opp": "GB",
      "home": true,
      "posted": false,
-     "implied_pf": 22.96,
-     "implied_pa": 23.48
+     "implied_pf": 23.43,
+     "implied_pa": 22.69
     },
     {
      "week": 10,
      "opp": "DET",
      "home": false,
      "posted": false,
-     "implied_pf": 23.39,
-     "implied_pa": 24.64
+     "implied_pf": 22.65,
+     "implied_pa": 24.27
     },
     {
      "week": 12,
      "opp": "LAC",
      "home": false,
      "posted": false,
-     "implied_pf": 22.44,
-     "implied_pa": 22.29
+     "implied_pf": 22.17,
+     "implied_pa": 23.09
     },
     {
      "week": 13,
      "opp": "BUF",
      "home": true,
      "posted": false,
-     "implied_pf": 23.42,
-     "implied_pa": 24.61
+     "implied_pf": 23.66,
+     "implied_pa": 23.25
     },
     {
      "week": 14,
      "opp": "MIN",
      "home": true,
      "posted": false,
-     "implied_pf": 23.42,
-     "implied_pa": 21.08
+     "implied_pf": 23.66,
+     "implied_pa": 21.49
     },
     {
      "week": 15,
      "opp": "KC",
      "home": false,
      "posted": false,
-     "implied_pf": 22.04,
-     "implied_pa": 22.58
+     "implied_pf": 21.97,
+     "implied_pa": 23.24
     },
     {
      "week": 16,
      "opp": "NYJ",
      "home": false,
      "posted": false,
-     "implied_pf": 24.27,
-     "implied_pa": 17.11
+     "implied_pf": 23.09,
+     "implied_pa": 20.5
     },
     {
      "week": 17,
      "opp": "DEN",
      "home": true,
      "posted": false,
-     "implied_pf": 21.55,
-     "implied_pa": 20.95
+     "implied_pf": 22.73,
+     "implied_pa": 21.42
     },
     {
      "week": 18,
      "opp": "MIA",
      "home": true,
      "posted": false,
-     "implied_pf": 25.74,
-     "implied_pa": 17.58
+     "implied_pf": 24.82,
+     "implied_pa": 19.74
     }
    ],
    "off_sos_rank": 26,
@@ -2307,104 +2307,104 @@
      "opp": "LAC",
      "home": true,
      "posted": false,
-     "implied_pf": 22.71,
-     "implied_pa": 22.02
+     "implied_pf": 23.3,
+     "implied_pa": 21.96
     },
     {
      "week": 7,
      "opp": "SEA",
      "home": false,
      "posted": false,
-     "implied_pf": 21.93,
-     "implied_pa": 23.1
+     "implied_pf": 21.91,
+     "implied_pa": 23.5
     },
     {
      "week": 8,
      "opp": "DEN",
      "home": false,
      "posted": false,
-     "implied_pf": 21.82,
-     "implied_pa": 20.68
+     "implied_pf": 21.86,
+     "implied_pa": 22.29
     },
     {
      "week": 9,
      "opp": "NYJ",
      "home": true,
      "posted": false,
-     "implied_pf": 24.54,
-     "implied_pa": 16.84
+     "implied_pf": 24.22,
+     "implied_pa": 19.37
     },
     {
      "week": 10,
      "opp": "ATL",
      "home": false,
      "posted": false,
-     "implied_pf": 25.35,
-     "implied_pa": 19.44
+     "implied_pf": 23.62,
+     "implied_pa": 21.67
     },
     {
      "week": 11,
      "opp": "ARI",
      "home": true,
      "posted": false,
-     "implied_pf": 28.13,
-     "implied_pa": 16.84
+     "implied_pf": 26.02,
+     "implied_pa": 19.37
     },
     {
      "week": 12,
      "opp": "BUF",
      "home": false,
      "posted": false,
-     "implied_pf": 23.69,
-     "implied_pa": 24.34
+     "implied_pf": 22.8,
+     "implied_pa": 24.12
     },
     {
      "week": 13,
      "opp": "LAR",
      "home": false,
      "posted": false,
-     "implied_pf": 23.14,
-     "implied_pa": 24.77
+     "implied_pf": 22.52,
+     "implied_pa": 24.34
     },
     {
      "week": 14,
      "opp": "CIN",
      "home": false,
      "posted": false,
-     "implied_pf": 24.25,
-     "implied_pa": 24.25
+     "implied_pf": 23.08,
+     "implied_pa": 24.07
     },
     {
      "week": 15,
      "opp": "NE",
      "home": true,
      "posted": false,
-     "implied_pf": 22.58,
-     "implied_pa": 22.04
+     "implied_pf": 23.24,
+     "implied_pa": 21.97
     },
     {
      "week": 16,
      "opp": "SF",
      "home": true,
      "posted": false,
-     "implied_pf": 23.53,
-     "implied_pa": 23.44
+     "implied_pf": 23.71,
+     "implied_pa": 22.67
     },
     {
      "week": 17,
      "opp": "LAC",
      "home": false,
      "posted": false,
-     "implied_pf": 22.71,
-     "implied_pa": 22.02
+     "implied_pf": 22.3,
+     "implied_pa": 22.96
     },
     {
      "week": 18,
      "opp": "LV",
      "home": true,
      "posted": false,
-     "implied_pf": 24.97,
-     "implied_pa": 17.41
+     "implied_pf": 24.44,
+     "implied_pa": 19.66
     }
    ],
    "off_sos_rank": 19,
@@ -2465,96 +2465,96 @@
      "opp": "KC",
      "home": false,
      "posted": false,
-     "implied_pf": 22.02,
-     "implied_pa": 22.71
+     "implied_pf": 21.96,
+     "implied_pa": 23.3
     },
     {
      "week": 8,
      "opp": "LAR",
      "home": false,
      "posted": false,
-     "implied_pf": 22.85,
-     "implied_pa": 25.17
+     "implied_pf": 22.38,
+     "implied_pa": 24.53
     },
     {
      "week": 9,
      "opp": "HOU",
      "home": true,
      "posted": false,
-     "implied_pf": 21.54,
-     "implied_pa": 21.42
+     "implied_pf": 22.72,
+     "implied_pa": 21.66
     },
     {
      "week": 10,
      "opp": "BAL",
      "home": false,
      "posted": false,
-     "implied_pf": 22.88,
-     "implied_pa": 24.61
+     "implied_pf": 22.39,
+     "implied_pa": 24.25
     },
     {
      "week": 11,
      "opp": "NYJ",
      "home": true,
      "posted": false,
-     "implied_pf": 24.25,
-     "implied_pa": 17.24
+     "implied_pf": 24.07,
+     "implied_pa": 19.57
     },
     {
      "week": 12,
      "opp": "NE",
      "home": true,
      "posted": false,
-     "implied_pf": 22.29,
-     "implied_pa": 22.44
+     "implied_pf": 23.09,
+     "implied_pa": 22.17
     },
     {
      "week": 13,
      "opp": "TB",
      "home": false,
      "posted": false,
-     "implied_pf": 24.35,
-     "implied_pa": 22.02
+     "implied_pf": 23.12,
+     "implied_pa": 22.96
     },
     {
      "week": 14,
      "opp": "LV",
      "home": false,
      "posted": false,
-     "implied_pf": 24.68,
-     "implied_pa": 17.81
+     "implied_pf": 23.29,
+     "implied_pa": 20.85
     },
     {
      "week": 15,
      "opp": "SF",
      "home": true,
      "posted": false,
-     "implied_pf": 23.24,
-     "implied_pa": 23.84
+     "implied_pf": 23.57,
+     "implied_pa": 22.87
     },
     {
      "week": 16,
      "opp": "MIA",
      "home": false,
      "posted": false,
-     "implied_pf": 25.72,
-     "implied_pa": 17.71
+     "implied_pf": 23.81,
+     "implied_pa": 20.8
     },
     {
      "week": 17,
      "opp": "KC",
      "home": true,
      "posted": false,
-     "implied_pf": 22.02,
-     "implied_pa": 22.71
+     "implied_pf": 22.96,
+     "implied_pa": 22.3
     },
     {
      "week": 18,
      "opp": "DEN",
      "home": false,
      "posted": false,
-     "implied_pf": 21.53,
-     "implied_pa": 21.08
+     "implied_pf": 21.71,
+     "implied_pa": 22.49
     }
    ],
    "off_sos_rank": 29,
@@ -2615,47 +2615,47 @@
      "opp": "CAR",
      "home": true,
      "posted": false,
-     "implied_pf": 24.29,
-     "implied_pa": 18.85
+     "implied_pf": 24.09,
+     "implied_pa": 20.38
     },
     {
      "week": 7,
      "opp": "DAL",
      "home": true,
      "posted": false,
-     "implied_pf": 25.65,
-     "implied_pa": 23.9
+     "implied_pf": 24.77,
+     "implied_pa": 22.9
     },
     {
      "week": 8,
      "opp": "WAS",
      "home": false,
      "posted": false,
-     "implied_pf": 25.9,
-     "implied_pa": 21.54
+     "implied_pf": 23.9,
+     "implied_pa": 22.72
     },
     {
      "week": 9,
      "opp": "NYG",
      "home": true,
      "posted": false,
-     "implied_pf": 25.04,
-     "implied_pa": 20.19
+     "implied_pf": 24.47,
+     "implied_pa": 21.05
     },
     {
      "week": 11,
      "opp": "PIT",
      "home": true,
      "posted": false,
-     "implied_pf": 23.08,
-     "implied_pa": 19.59
+     "implied_pf": 23.49,
+     "implied_pa": 20.74
     },
     {
      "week": 12,
      "opp": "DAL",
      "home": false,
      "posted": false,
-     "implied_pf": 25.65,
+     "implied_pf": 23.77,
      "implied_pa": 23.9
     },
     {
@@ -2663,48 +2663,48 @@
      "opp": "ARI",
      "home": false,
      "posted": false,
-     "implied_pf": 28.07,
-     "implied_pa": 16.72
+     "implied_pf": 24.98,
+     "implied_pa": 20.31
     },
     {
      "week": 14,
      "opp": "IND",
      "home": true,
      "posted": false,
-     "implied_pf": 25.55,
-     "implied_pa": 21.53
+     "implied_pf": 24.73,
+     "implied_pa": 21.71
     },
     {
      "week": 15,
      "opp": "SEA",
      "home": true,
      "posted": false,
-     "implied_pf": 21.87,
-     "implied_pa": 22.98
+     "implied_pf": 22.88,
+     "implied_pa": 22.44
     },
     {
      "week": 16,
      "opp": "HOU",
      "home": true,
      "posted": false,
-     "implied_pf": 21.77,
-     "implied_pa": 20.9
+     "implied_pf": 22.84,
+     "implied_pa": 21.4
     },
     {
      "week": 17,
      "opp": "SF",
      "home": false,
      "posted": false,
-     "implied_pf": 23.47,
-     "implied_pa": 23.32
+     "implied_pf": 22.68,
+     "implied_pa": 23.61
     },
     {
      "week": 18,
      "opp": "NYG",
      "home": false,
      "posted": false,
-     "implied_pf": 25.04,
-     "implied_pa": 20.19
+     "implied_pf": 23.47,
+     "implied_pa": 22.05
     }
    ],
    "off_sos_rank": 1,
@@ -2765,96 +2765,96 @@
      "opp": "NO",
      "home": true,
      "posted": false,
-     "implied_pf": 22.49,
-     "implied_pa": 22.56
+     "implied_pf": 23.2,
+     "implied_pa": 22.23
     },
     {
      "week": 7,
      "opp": "HOU",
      "home": false,
      "posted": false,
-     "implied_pf": 19.83,
-     "implied_pa": 23.81
+     "implied_pf": 20.87,
+     "implied_pa": 23.85
     },
     {
      "week": 9,
      "opp": "PHI",
      "home": false,
      "posted": false,
-     "implied_pf": 20.19,
-     "implied_pa": 25.04
+     "implied_pf": 21.05,
+     "implied_pa": 24.47
     },
     {
      "week": 10,
      "opp": "WAS",
      "home": true,
      "posted": false,
-     "implied_pf": 23.96,
-     "implied_pa": 24.45
+     "implied_pf": 23.93,
+     "implied_pa": 23.17
     },
     {
      "week": 11,
      "opp": "JAX",
      "home": true,
      "posted": false,
-     "implied_pf": 22.02,
-     "implied_pa": 24.33
+     "implied_pf": 22.96,
+     "implied_pa": 23.12
     },
     {
      "week": 12,
      "opp": "IND",
      "home": false,
      "posted": false,
-     "implied_pf": 23.61,
-     "implied_pa": 24.44
+     "implied_pf": 22.76,
+     "implied_pa": 24.17
     },
     {
      "week": 13,
      "opp": "SF",
      "home": true,
      "posted": false,
-     "implied_pf": 21.53,
-     "implied_pa": 26.23
+     "implied_pf": 22.71,
+     "implied_pa": 24.06
     },
     {
      "week": 14,
      "opp": "SEA",
      "home": false,
      "posted": false,
-     "implied_pf": 19.93,
-     "implied_pa": 25.89
+     "implied_pf": 20.91,
+     "implied_pa": 24.89
     },
     {
      "week": 15,
      "opp": "CLE",
      "home": true,
      "posted": false,
-     "implied_pf": 21.69,
-     "implied_pa": 19.83
+     "implied_pf": 22.8,
+     "implied_pa": 20.87
     },
     {
      "week": 16,
      "opp": "DET",
      "home": false,
      "posted": false,
-     "implied_pf": 21.66,
-     "implied_pa": 27.16
+     "implied_pf": 21.78,
+     "implied_pa": 25.53
     },
     {
      "week": 17,
      "opp": "DAL",
      "home": false,
      "posted": false,
-     "implied_pf": 23.71,
-     "implied_pa": 26.81
+     "implied_pf": 22.8,
+     "implied_pa": 25.35
     },
     {
      "week": 18,
      "opp": "PHI",
      "home": true,
      "posted": false,
-     "implied_pf": 20.19,
-     "implied_pa": 25.04
+     "implied_pf": 22.05,
+     "implied_pa": 23.47
     }
    ],
    "off_sos_rank": 4,
@@ -2915,96 +2915,96 @@
      "opp": "IND",
      "home": true,
      "posted": false,
-     "implied_pf": 24.11,
-     "implied_pa": 23.03
+     "implied_pf": 24.01,
+     "implied_pa": 22.46
     },
     {
      "week": 8,
      "opp": "DET",
      "home": false,
      "posted": false,
-     "implied_pf": 22.16,
-     "implied_pa": 25.75
+     "implied_pf": 22.03,
+     "implied_pa": 24.82
     },
     {
      "week": 9,
      "opp": "BUF",
      "home": true,
      "posted": false,
-     "implied_pf": 22.19,
-     "implied_pa": 25.72
+     "implied_pf": 23.05,
+     "implied_pa": 23.81
     },
     {
      "week": 10,
      "opp": "GB",
      "home": false,
      "posted": false,
-     "implied_pf": 21.73,
-     "implied_pa": 24.59
+     "implied_pf": 21.82,
+     "implied_pa": 24.24
     },
     {
      "week": 11,
      "opp": "SF",
      "home": false,
      "posted": false,
-     "implied_pf": 22.03,
-     "implied_pa": 24.82
+     "implied_pf": 21.96,
+     "implied_pa": 24.36
     },
     {
      "week": 12,
      "opp": "ATL",
      "home": true,
      "posted": false,
-     "implied_pf": 23.85,
-     "implied_pa": 20.82
+     "implied_pf": 23.88,
+     "implied_pa": 21.36
     },
     {
      "week": 13,
      "opp": "CAR",
      "home": true,
      "posted": false,
-     "implied_pf": 22.85,
-     "implied_pa": 20.35
+     "implied_pf": 23.38,
+     "implied_pa": 21.12
     },
     {
      "week": 14,
      "opp": "NE",
      "home": false,
      "posted": false,
-     "implied_pf": 21.08,
-     "implied_pa": 23.42
+     "implied_pf": 21.49,
+     "implied_pa": 23.66
     },
     {
      "week": 15,
      "opp": "DET",
      "home": true,
      "posted": false,
-     "implied_pf": 22.16,
-     "implied_pa": 25.75
+     "implied_pf": 23.03,
+     "implied_pa": 23.82
     },
     {
      "week": 16,
      "opp": "WAS",
      "home": true,
      "posted": false,
-     "implied_pf": 24.46,
-     "implied_pa": 23.04
+     "implied_pf": 24.18,
+     "implied_pa": 22.47
     },
     {
      "week": 17,
      "opp": "NYJ",
      "home": false,
      "posted": false,
-     "implied_pf": 23.04,
-     "implied_pa": 18.22
+     "implied_pf": 22.47,
+     "implied_pa": 21.06
     },
     {
      "week": 18,
      "opp": "CHI",
      "home": true,
      "posted": false,
-     "implied_pf": 22.6,
-     "implied_pa": 24.19
+     "implied_pf": 23.25,
+     "implied_pa": 23.05
     }
    ],
    "off_sos_rank": 6,
@@ -3065,15 +3065,15 @@
      "opp": "NYG",
      "home": false,
      "posted": false,
-     "implied_pf": 22.56,
-     "implied_pa": 22.49
+     "implied_pf": 22.23,
+     "implied_pa": 23.2
     },
     {
      "week": 7,
      "opp": "PIT",
      "home": true,
      "posted": false,
-     "implied_pf": 20.6,
+     "implied_pf": 22.25,
      "implied_pa": 21.89
     },
     {
@@ -3081,80 +3081,80 @@
      "opp": "CLE",
      "home": true,
      "posted": false,
-     "implied_pf": 21.15,
-     "implied_pa": 19.22
+     "implied_pf": 22.52,
+     "implied_pa": 20.56
     },
     {
      "week": 10,
      "opp": "CAR",
      "home": true,
      "posted": false,
-     "implied_pf": 21.81,
-     "implied_pa": 21.15
+     "implied_pf": 22.85,
+     "implied_pa": 21.52
     },
     {
      "week": 11,
      "opp": "CHI",
      "home": false,
      "posted": false,
-     "implied_pf": 21.56,
-     "implied_pa": 24.99
+     "implied_pf": 21.73,
+     "implied_pa": 24.45
     },
     {
      "week": 12,
      "opp": "CIN",
      "home": false,
      "posted": false,
-     "implied_pf": 21.71,
-     "implied_pa": 26.43
+     "implied_pf": 21.8,
+     "implied_pa": 25.16
     },
     {
      "week": 13,
      "opp": "GB",
      "home": true,
      "posted": false,
-     "implied_pf": 20.69,
-     "implied_pa": 25.39
+     "implied_pf": 22.3,
+     "implied_pa": 23.64
     },
     {
      "week": 14,
      "opp": "CAR",
      "home": false,
      "posted": false,
-     "implied_pf": 21.81,
-     "implied_pa": 21.15
+     "implied_pf": 21.85,
+     "implied_pa": 22.52
     },
     {
      "week": 15,
      "opp": "TB",
      "home": false,
      "posted": false,
-     "implied_pf": 22.1,
-     "implied_pa": 23.8
+     "implied_pf": 22.0,
+     "implied_pa": 23.85
     },
     {
      "week": 16,
      "opp": "ARI",
      "home": true,
      "posted": false,
-     "implied_pf": 25.59,
-     "implied_pa": 19.02
+     "implied_pf": 24.74,
+     "implied_pa": 20.46
     },
     {
      "week": 17,
      "opp": "ATL",
      "home": false,
      "posted": false,
-     "implied_pf": 22.81,
-     "implied_pa": 21.62
+     "implied_pf": 22.35,
+     "implied_pa": 22.76
     },
     {
      "week": 18,
      "opp": "TB",
      "home": true,
      "posted": false,
-     "implied_pf": 22.1,
-     "implied_pa": 23.8
+     "implied_pf": 23.0,
+     "implied_pa": 22.85
     }
    ],
    "off_sos_rank": 3,
@@ -3207,104 +3207,104 @@
      "opp": "BAL",
      "home": true,
      "posted": false,
-     "implied_pf": 20.3,
-     "implied_pa": 27.25
+     "implied_pf": 22.1,
+     "implied_pa": 24.57
     },
     {
      "week": 6,
      "opp": "CHI",
      "home": true,
      "posted": false,
-     "implied_pf": 21.23,
-     "implied_pa": 25.85
+     "implied_pf": 22.56,
+     "implied_pa": 23.88
     },
     {
      "week": 7,
      "opp": "SF",
      "home": true,
      "posted": false,
-     "implied_pf": 20.66,
-     "implied_pa": 26.48
+     "implied_pf": 22.28,
+     "implied_pa": 24.19
     },
     {
      "week": 8,
      "opp": "TB",
      "home": false,
      "posted": false,
-     "implied_pf": 21.77,
-     "implied_pa": 24.66
+     "implied_pf": 21.84,
+     "implied_pa": 24.28
     },
     {
      "week": 9,
      "opp": "CIN",
      "home": true,
      "posted": false,
-     "implied_pf": 21.38,
-     "implied_pa": 27.29
+     "implied_pf": 22.64,
+     "implied_pa": 24.59
     },
     {
      "week": 10,
      "opp": "KC",
      "home": true,
      "posted": false,
-     "implied_pf": 19.44,
-     "implied_pa": 25.35
+     "implied_pf": 21.67,
+     "implied_pa": 23.62
     },
     {
      "week": 12,
      "opp": "MIN",
      "home": false,
      "posted": false,
-     "implied_pf": 20.82,
-     "implied_pa": 23.85
+     "implied_pf": 21.36,
+     "implied_pa": 23.88
     },
     {
      "week": 13,
      "opp": "DET",
      "home": true,
      "posted": false,
-     "implied_pf": 20.79,
-     "implied_pa": 27.41
+     "implied_pf": 22.34,
+     "implied_pa": 24.66
     },
     {
      "week": 14,
      "opp": "CLE",
      "home": false,
      "posted": false,
-     "implied_pf": 20.82,
-     "implied_pa": 20.08
+     "implied_pf": 21.36,
+     "implied_pa": 21.99
     },
     {
      "week": 15,
      "opp": "WAS",
      "home": false,
      "posted": false,
-     "implied_pf": 23.09,
-     "implied_pa": 24.7
+     "implied_pf": 22.49,
+     "implied_pa": 24.3
     },
     {
      "week": 16,
      "opp": "TB",
      "home": true,
      "posted": false,
-     "implied_pf": 21.77,
-     "implied_pa": 24.66
+     "implied_pf": 22.84,
+     "implied_pa": 23.28
     },
     {
      "week": 17,
      "opp": "NO",
      "home": true,
      "posted": false,
-     "implied_pf": 21.62,
-     "implied_pa": 22.81
+     "implied_pf": 22.76,
+     "implied_pa": 22.35
     },
     {
      "week": 18,
      "opp": "CAR",
      "home": false,
      "posted": false,
-     "implied_pf": 21.48,
-     "implied_pa": 22.01
+     "implied_pf": 21.69,
+     "implied_pa": 22.95
     }
    ],
    "off_sos_rank": 20,
@@ -3365,96 +3365,96 @@
      "opp": "JAX",
      "home": false,
      "posted": false,
-     "implied_pf": 22.73,
-     "implied_pa": 21.06
+     "implied_pf": 22.31,
+     "implied_pa": 22.48
     },
     {
      "week": 7,
      "opp": "NYG",
      "home": true,
      "posted": false,
-     "implied_pf": 23.81,
-     "implied_pa": 19.83
+     "implied_pf": 23.85,
+     "implied_pa": 20.87
     },
     {
      "week": 9,
      "opp": "LAC",
      "home": false,
      "posted": false,
-     "implied_pf": 21.42,
-     "implied_pa": 21.54
+     "implied_pf": 21.66,
+     "implied_pa": 22.72
     },
     {
      "week": 10,
      "opp": "CLE",
      "home": false,
      "posted": false,
-     "implied_pf": 22.4,
-     "implied_pa": 16.56
+     "implied_pf": 22.15,
+     "implied_pa": 20.23
     },
     {
      "week": 11,
      "opp": "IND",
      "home": true,
      "posted": false,
-     "implied_pf": 24.32,
-     "implied_pa": 21.17
+     "implied_pf": 24.11,
+     "implied_pa": 21.54
     },
     {
      "week": 12,
      "opp": "BAL",
      "home": true,
      "posted": false,
-     "implied_pf": 21.88,
-     "implied_pa": 23.73
+     "implied_pf": 22.89,
+     "implied_pa": 22.81
     },
     {
      "week": 13,
      "opp": "PIT",
      "home": false,
      "posted": false,
-     "implied_pf": 21.85,
-     "implied_pa": 19.23
+     "implied_pf": 21.88,
+     "implied_pa": 21.56
     },
     {
      "week": 14,
      "opp": "WAS",
      "home": false,
      "posted": false,
-     "implied_pf": 24.67,
-     "implied_pa": 21.18
+     "implied_pf": 23.28,
+     "implied_pa": 22.54
     },
     {
      "week": 15,
      "opp": "JAX",
      "home": true,
      "posted": false,
-     "implied_pf": 22.73,
-     "implied_pa": 21.06
+     "implied_pf": 23.31,
+     "implied_pa": 21.48
     },
     {
      "week": 16,
      "opp": "PHI",
      "home": false,
      "posted": false,
-     "implied_pf": 20.9,
-     "implied_pa": 21.77
+     "implied_pf": 21.4,
+     "implied_pa": 22.84
     },
     {
      "week": 17,
      "opp": "GB",
      "home": false,
      "posted": false,
-     "implied_pf": 21.94,
-     "implied_pa": 22.73
+     "implied_pf": 21.92,
+     "implied_pa": 23.31
     },
     {
      "week": 18,
      "opp": "TEN",
      "home": true,
      "posted": false,
-     "implied_pf": 23.98,
-     "implied_pa": 18.45
+     "implied_pf": 23.94,
+     "implied_pa": 20.17
     }
    ],
    "off_sos_rank": 7,
@@ -3515,96 +3515,96 @@
      "opp": "IND",
      "home": false,
      "posted": false,
-     "implied_pf": 22.23,
-     "implied_pa": 24.61
+     "implied_pf": 22.06,
+     "implied_pa": 24.26
     },
     {
      "week": 7,
      "opp": "CLE",
      "home": true,
      "posted": false,
-     "implied_pf": 20.31,
-     "implied_pa": 20.0
+     "implied_pf": 22.1,
+     "implied_pa": 20.95
     },
     {
      "week": 8,
      "opp": "CIN",
      "home": false,
      "posted": false,
-     "implied_pf": 20.87,
-     "implied_pa": 27.21
+     "implied_pf": 21.38,
+     "implied_pa": 25.55
     },
     {
      "week": 10,
      "opp": "JAX",
      "home": true,
      "posted": false,
-     "implied_pf": 20.64,
-     "implied_pa": 24.5
+     "implied_pf": 22.27,
+     "implied_pa": 23.2
     },
     {
      "week": 11,
      "opp": "DAL",
      "home": false,
      "posted": false,
-     "implied_pf": 22.33,
-     "implied_pa": 26.98
+     "implied_pf": 22.11,
+     "implied_pa": 25.44
     },
     {
      "week": 12,
      "opp": "JAX",
      "home": false,
      "posted": false,
-     "implied_pf": 20.64,
-     "implied_pa": 24.5
+     "implied_pf": 21.27,
+     "implied_pa": 24.2
     },
     {
      "week": 13,
      "opp": "WAS",
      "home": true,
      "posted": false,
-     "implied_pf": 22.58,
-     "implied_pa": 24.62
+     "implied_pf": 23.24,
+     "implied_pa": 23.26
     },
     {
      "week": 14,
      "opp": "DET",
      "home": false,
      "posted": false,
-     "implied_pf": 20.28,
-     "implied_pa": 27.33
+     "implied_pf": 21.09,
+     "implied_pa": 25.62
     },
     {
      "week": 15,
      "opp": "IND",
      "home": true,
      "posted": false,
-     "implied_pf": 22.23,
-     "implied_pa": 24.61
+     "implied_pf": 23.06,
+     "implied_pa": 23.26
     },
     {
      "week": 16,
      "opp": "LV",
      "home": false,
      "posted": false,
-     "implied_pf": 21.59,
-     "implied_pa": 20.37
+     "implied_pf": 21.74,
+     "implied_pa": 22.13
     },
     {
      "week": 17,
      "opp": "PIT",
      "home": true,
      "posted": false,
-     "implied_pf": 19.76,
-     "implied_pa": 22.67
+     "implied_pf": 21.83,
+     "implied_pa": 22.29
     },
     {
      "week": 18,
      "opp": "HOU",
      "home": false,
      "posted": false,
-     "implied_pf": 18.45,
-     "implied_pa": 23.98
+     "implied_pf": 20.17,
+     "implied_pa": 23.94
     }
    ],
    "off_sos_rank": 15,
@@ -3665,96 +3665,96 @@
      "opp": "SEA",
      "home": true,
      "posted": false,
-     "implied_pf": 20.3,
-     "implied_pa": 22.61
+     "implied_pf": 22.1,
+     "implied_pa": 22.26
     },
     {
      "week": 7,
      "opp": "ARI",
      "home": false,
      "posted": false,
-     "implied_pf": 26.5,
-     "implied_pa": 16.35
+     "implied_pf": 24.2,
+     "implied_pa": 20.12
     },
     {
      "week": 8,
      "opp": "KC",
      "home": true,
      "posted": false,
-     "implied_pf": 20.68,
-     "implied_pa": 21.82
+     "implied_pf": 22.29,
+     "implied_pa": 21.86
     },
     {
      "week": 9,
      "opp": "CAR",
      "home": false,
      "posted": false,
-     "implied_pf": 22.72,
-     "implied_pa": 18.48
+     "implied_pf": 22.31,
+     "implied_pa": 21.19
     },
     {
      "week": 11,
      "opp": "LV",
      "home": true,
      "posted": false,
-     "implied_pf": 23.34,
-     "implied_pa": 16.92
+     "implied_pf": 23.62,
+     "implied_pa": 19.41
     },
     {
      "week": 12,
      "opp": "PIT",
      "home": false,
      "posted": false,
-     "implied_pf": 21.51,
-     "implied_pa": 19.22
+     "implied_pf": 21.7,
+     "implied_pa": 21.56
     },
     {
      "week": 13,
      "opp": "MIA",
      "home": true,
      "posted": false,
-     "implied_pf": 24.38,
-     "implied_pa": 16.82
+     "implied_pf": 24.14,
+     "implied_pa": 19.36
     },
     {
      "week": 14,
      "opp": "NYJ",
      "home": false,
      "posted": false,
-     "implied_pf": 22.91,
-     "implied_pa": 16.35
+     "implied_pf": 22.41,
+     "implied_pa": 20.12
     },
     {
      "week": 15,
      "opp": "LV",
      "home": false,
      "posted": false,
-     "implied_pf": 23.34,
-     "implied_pa": 16.92
+     "implied_pf": 22.62,
+     "implied_pa": 20.41
     },
     {
      "week": 16,
      "opp": "BUF",
      "home": true,
      "posted": false,
-     "implied_pf": 22.06,
-     "implied_pa": 23.85
+     "implied_pf": 22.98,
+     "implied_pa": 22.88
     },
     {
      "week": 17,
      "opp": "NE",
      "home": false,
      "posted": false,
-     "implied_pf": 20.95,
-     "implied_pa": 21.55
+     "implied_pf": 21.42,
+     "implied_pa": 22.73
     },
     {
      "week": 18,
      "opp": "LAC",
      "home": true,
      "posted": false,
-     "implied_pf": 21.08,
-     "implied_pa": 21.53
+     "implied_pf": 22.49,
+     "implied_pa": 21.71
     }
    ],
    "off_sos_rank": 23,
@@ -3807,104 +3807,104 @@
      "opp": "PHI",
      "home": false,
      "posted": false,
-     "implied_pf": 18.85,
-     "implied_pa": 24.29
+     "implied_pf": 20.38,
+     "implied_pa": 24.09
     },
     {
      "week": 7,
      "opp": "TB",
      "home": true,
      "posted": false,
-     "implied_pf": 21.3,
-     "implied_pa": 23.66
+     "implied_pf": 22.6,
+     "implied_pa": 22.78
     },
     {
      "week": 8,
      "opp": "GB",
      "home": false,
      "posted": false,
-     "implied_pf": 19.89,
-     "implied_pa": 25.25
+     "implied_pf": 20.9,
+     "implied_pa": 24.57
     },
     {
      "week": 9,
      "opp": "DEN",
      "home": true,
      "posted": false,
-     "implied_pf": 18.48,
-     "implied_pa": 22.72
+     "implied_pf": 21.19,
+     "implied_pa": 22.31
     },
     {
      "week": 10,
      "opp": "NO",
      "home": false,
      "posted": false,
-     "implied_pf": 21.15,
-     "implied_pa": 21.81
+     "implied_pf": 21.52,
+     "implied_pa": 22.85
     },
     {
      "week": 11,
      "opp": "BAL",
      "home": true,
      "posted": false,
-     "implied_pf": 19.83,
-     "implied_pa": 26.25
+     "implied_pf": 21.87,
+     "implied_pa": 24.07
     },
     {
      "week": 12,
      "opp": "TB",
      "home": false,
      "posted": false,
-     "implied_pf": 21.3,
-     "implied_pa": 23.66
+     "implied_pf": 21.6,
+     "implied_pa": 23.78
     },
     {
      "week": 13,
      "opp": "MIN",
      "home": false,
      "posted": false,
-     "implied_pf": 20.35,
-     "implied_pa": 22.85
+     "implied_pf": 21.12,
+     "implied_pa": 23.38
     },
     {
      "week": 14,
      "opp": "NO",
      "home": true,
      "posted": false,
-     "implied_pf": 21.15,
-     "implied_pa": 21.81
+     "implied_pf": 22.52,
+     "implied_pa": 21.85
     },
     {
      "week": 15,
      "opp": "CIN",
      "home": true,
      "posted": false,
-     "implied_pf": 20.91,
-     "implied_pa": 26.29
+     "implied_pf": 22.41,
+     "implied_pa": 24.09
     },
     {
      "week": 16,
      "opp": "PIT",
      "home": false,
      "posted": false,
-     "implied_pf": 19.8,
-     "implied_pa": 21.75
+     "implied_pf": 20.85,
+     "implied_pa": 22.82
     },
     {
      "week": 17,
      "opp": "SEA",
      "home": true,
      "posted": false,
-     "implied_pf": 18.59,
-     "implied_pa": 25.14
+     "implied_pf": 21.25,
+     "implied_pa": 23.52
     },
     {
      "week": 18,
      "opp": "ATL",
      "home": true,
      "posted": false,
-     "implied_pf": 22.01,
-     "implied_pa": 21.48
+     "implied_pf": 22.95,
+     "implied_pa": 21.69
     }
    ],
    "off_sos_rank": 27,
@@ -3965,8 +3965,8 @@
      "opp": "TB",
      "home": false,
      "posted": false,
-     "implied_pf": 22.04,
-     "implied_pa": 22.45
+     "implied_pf": 21.97,
+     "implied_pa": 23.18
     },
     {
      "week": 7,
@@ -3974,87 +3974,87 @@
      "home": false,
      "posted": false,
      "implied_pf": 21.89,
-     "implied_pa": 20.6
+     "implied_pa": 22.25
     },
     {
      "week": 8,
      "opp": "CLE",
      "home": true,
      "posted": false,
-     "implied_pf": 21.09,
-     "implied_pa": 17.87
+     "implied_pf": 22.49,
+     "implied_pa": 19.89
     },
     {
      "week": 10,
      "opp": "CIN",
      "home": false,
      "posted": false,
-     "implied_pf": 21.65,
-     "implied_pa": 25.08
+     "implied_pf": 21.77,
+     "implied_pa": 24.49
     },
     {
      "week": 11,
      "opp": "PHI",
      "home": false,
      "posted": false,
-     "implied_pf": 19.59,
-     "implied_pa": 23.08
+     "implied_pf": 20.74,
+     "implied_pa": 23.49
     },
     {
      "week": 12,
      "opp": "DEN",
      "home": true,
      "posted": false,
-     "implied_pf": 19.22,
-     "implied_pa": 21.51
+     "implied_pf": 21.56,
+     "implied_pa": 21.7
     },
     {
      "week": 13,
      "opp": "HOU",
      "home": true,
      "posted": false,
-     "implied_pf": 19.23,
-     "implied_pa": 21.85
+     "implied_pf": 21.56,
+     "implied_pa": 21.88
     },
     {
      "week": 14,
      "opp": "JAX",
      "home": false,
      "posted": false,
-     "implied_pf": 21.42,
-     "implied_pa": 22.37
+     "implied_pf": 21.66,
+     "implied_pa": 23.14
     },
     {
      "week": 15,
      "opp": "BAL",
      "home": true,
      "posted": false,
-     "implied_pf": 20.57,
-     "implied_pa": 25.04
+     "implied_pf": 22.23,
+     "implied_pa": 23.47
     },
     {
      "week": 16,
      "opp": "CAR",
      "home": true,
      "posted": false,
-     "implied_pf": 21.75,
-     "implied_pa": 19.8
+     "implied_pf": 22.82,
+     "implied_pa": 20.85
     },
     {
      "week": 17,
      "opp": "TEN",
      "home": false,
      "posted": false,
-     "implied_pf": 22.67,
-     "implied_pa": 19.76
+     "implied_pf": 22.29,
+     "implied_pa": 21.83
     },
     {
      "week": 18,
      "opp": "BAL",
      "home": false,
      "posted": false,
-     "implied_pf": 20.57,
-     "implied_pa": 25.04
+     "implied_pf": 21.23,
+     "implied_pa": 24.47
     }
    ],
    "off_sos_rank": 25,
@@ -4107,104 +4107,104 @@
      "opp": "DET",
      "home": true,
      "posted": false,
-     "implied_pf": 18.19,
-     "implied_pa": 30.19
+     "implied_pf": 21.05,
+     "implied_pa": 26.05
     },
     {
      "week": 6,
      "opp": "LAR",
      "home": false,
      "posted": false,
-     "implied_pf": 17.67,
-     "implied_pa": 30.59
+     "implied_pf": 19.79,
+     "implied_pa": 27.24
     },
     {
      "week": 7,
      "opp": "DEN",
      "home": true,
      "posted": false,
-     "implied_pf": 16.35,
-     "implied_pa": 26.5
+     "implied_pf": 20.12,
+     "implied_pa": 24.2
     },
     {
      "week": 8,
      "opp": "DAL",
      "home": false,
      "posted": false,
-     "implied_pf": 20.24,
-     "implied_pa": 29.84
+     "implied_pf": 21.07,
+     "implied_pa": 26.87
     },
     {
      "week": 9,
      "opp": "SEA",
      "home": false,
      "posted": false,
-     "implied_pf": 16.46,
-     "implied_pa": 28.92
+     "implied_pf": 19.18,
+     "implied_pa": 26.41
     },
     {
      "week": 10,
      "opp": "LAR",
      "home": true,
      "posted": false,
-     "implied_pf": 17.67,
-     "implied_pa": 30.59
+     "implied_pf": 20.79,
+     "implied_pa": 26.24
     },
     {
      "week": 11,
      "opp": "KC",
      "home": false,
      "posted": false,
-     "implied_pf": 16.84,
-     "implied_pa": 28.13
+     "implied_pf": 19.37,
+     "implied_pa": 26.02
     },
     {
      "week": 12,
      "opp": "WAS",
      "home": true,
      "posted": false,
-     "implied_pf": 20.49,
-     "implied_pa": 27.48
+     "implied_pf": 22.2,
+     "implied_pa": 24.69
     },
     {
      "week": 13,
      "opp": "PHI",
      "home": true,
      "posted": false,
-     "implied_pf": 16.72,
-     "implied_pa": 28.07
+     "implied_pf": 20.31,
+     "implied_pa": 24.98
     },
     {
      "week": 15,
      "opp": "NYJ",
      "home": true,
      "posted": false,
-     "implied_pf": 19.07,
-     "implied_pa": 22.66
+     "implied_pf": 21.48,
+     "implied_pa": 22.28
     },
     {
      "week": 16,
      "opp": "NO",
      "home": false,
      "posted": false,
-     "implied_pf": 19.02,
-     "implied_pa": 25.59
+     "implied_pf": 20.46,
+     "implied_pa": 24.74
     },
     {
      "week": 17,
      "opp": "LV",
      "home": true,
      "posted": false,
-     "implied_pf": 19.5,
-     "implied_pa": 23.23
+     "implied_pf": 21.7,
+     "implied_pa": 22.56
     },
     {
      "week": 18,
      "opp": "SF",
      "home": true,
      "posted": false,
-     "implied_pf": 18.06,
-     "implied_pa": 29.26
+     "implied_pf": 20.98,
+     "implied_pa": 25.58
     }
    ],
    "off_sos_rank": 31,
@@ -4265,96 +4265,96 @@
      "opp": "NYJ",
      "home": false,
      "posted": false,
-     "implied_pf": 19.54,
-     "implied_pa": 20.54
+     "implied_pf": 20.72,
+     "implied_pa": 22.22
     },
     {
      "week": 8,
      "opp": "NE",
      "home": true,
      "posted": false,
-     "implied_pf": 17.58,
-     "implied_pa": 25.74
+     "implied_pf": 20.74,
+     "implied_pa": 23.82
     },
     {
      "week": 9,
      "opp": "DET",
      "home": true,
      "posted": false,
-     "implied_pf": 18.66,
-     "implied_pa": 28.07
+     "implied_pf": 21.28,
+     "implied_pa": 24.98
     },
     {
      "week": 10,
      "opp": "IND",
      "home": false,
      "posted": false,
-     "implied_pf": 20.61,
-     "implied_pa": 25.35
+     "implied_pf": 21.26,
+     "implied_pa": 24.62
     },
     {
      "week": 11,
      "opp": "BUF",
      "home": false,
      "posted": false,
-     "implied_pf": 18.69,
-     "implied_pa": 28.04
+     "implied_pf": 20.3,
+     "implied_pa": 25.97
     },
     {
      "week": 12,
      "opp": "NYJ",
      "home": true,
      "posted": false,
-     "implied_pf": 19.54,
-     "implied_pa": 20.54
+     "implied_pf": 21.72,
+     "implied_pa": 21.22
     },
     {
      "week": 13,
      "opp": "DEN",
      "home": false,
      "posted": false,
-     "implied_pf": 16.82,
-     "implied_pa": 24.38
+     "implied_pf": 19.36,
+     "implied_pa": 24.14
     },
     {
      "week": 14,
      "opp": "CHI",
      "home": true,
      "posted": false,
-     "implied_pf": 19.1,
-     "implied_pa": 26.51
+     "implied_pf": 21.5,
+     "implied_pa": 24.2
     },
     {
      "week": 15,
      "opp": "GB",
      "home": false,
      "posted": false,
-     "implied_pf": 18.23,
-     "implied_pa": 26.91
+     "implied_pf": 20.07,
+     "implied_pa": 25.41
     },
     {
      "week": 16,
      "opp": "LAC",
      "home": true,
      "posted": false,
-     "implied_pf": 17.71,
-     "implied_pa": 25.72
+     "implied_pf": 20.8,
+     "implied_pa": 23.81
     },
     {
      "week": 17,
      "opp": "BUF",
      "home": true,
      "posted": false,
-     "implied_pf": 18.69,
-     "implied_pa": 28.04
+     "implied_pf": 21.3,
+     "implied_pa": 24.97
     },
     {
      "week": 18,
      "opp": "NE",
      "home": false,
      "posted": false,
-     "implied_pf": 17.58,
-     "implied_pa": 25.74
+     "implied_pf": 19.74,
+     "implied_pa": 24.82
     }
    ],
    "off_sos_rank": 28,
@@ -4415,96 +4415,96 @@
      "opp": "BUF",
      "home": true,
      "posted": false,
-     "implied_pf": 18.79,
-     "implied_pa": 27.0
+     "implied_pf": 21.34,
+     "implied_pa": 24.45
     },
     {
      "week": 7,
      "opp": "LAR",
      "home": true,
      "posted": false,
-     "implied_pf": 18.24,
-     "implied_pa": 27.43
+     "implied_pf": 21.07,
+     "implied_pa": 24.66
     },
     {
      "week": 8,
      "opp": "NYJ",
      "home": false,
      "posted": false,
-     "implied_pf": 19.64,
-     "implied_pa": 19.5
+     "implied_pf": 20.77,
+     "implied_pa": 21.7
     },
     {
      "week": 9,
      "opp": "SF",
      "home": false,
      "posted": false,
-     "implied_pf": 18.63,
-     "implied_pa": 26.1
+     "implied_pf": 20.27,
+     "implied_pa": 25.0
     },
     {
      "week": 10,
      "opp": "SEA",
      "home": true,
      "posted": false,
-     "implied_pf": 17.03,
-     "implied_pa": 25.76
+     "implied_pf": 20.46,
+     "implied_pa": 23.83
     },
     {
      "week": 11,
      "opp": "DEN",
      "home": false,
      "posted": false,
-     "implied_pf": 16.92,
-     "implied_pa": 23.34
+     "implied_pf": 19.41,
+     "implied_pa": 23.62
     },
     {
      "week": 12,
      "opp": "CLE",
      "home": false,
      "posted": false,
-     "implied_pf": 18.79,
-     "implied_pa": 19.7
+     "implied_pf": 20.34,
+     "implied_pa": 21.8
     },
     {
      "week": 14,
      "opp": "LAC",
      "home": true,
      "posted": false,
-     "implied_pf": 17.81,
-     "implied_pa": 24.68
+     "implied_pf": 20.85,
+     "implied_pa": 23.29
     },
     {
      "week": 15,
      "opp": "DEN",
      "home": true,
      "posted": false,
-     "implied_pf": 16.92,
-     "implied_pa": 23.34
+     "implied_pf": 20.41,
+     "implied_pa": 22.62
     },
     {
      "week": 16,
      "opp": "TEN",
      "home": true,
      "posted": false,
-     "implied_pf": 20.37,
-     "implied_pa": 21.59
+     "implied_pf": 22.13,
+     "implied_pa": 21.74
     },
     {
      "week": 17,
      "opp": "ARI",
      "home": false,
      "posted": false,
-     "implied_pf": 23.23,
-     "implied_pa": 19.5
+     "implied_pf": 22.56,
+     "implied_pa": 21.7
     },
     {
      "week": 18,
      "opp": "KC",
      "home": false,
      "posted": false,
-     "implied_pf": 17.41,
-     "implied_pa": 24.97
+     "implied_pf": 19.66,
+     "implied_pa": 24.44
     }
    ],
    "off_sos_rank": 32,
@@ -4565,96 +4565,96 @@
      "opp": "NE",
      "home": false,
      "posted": false,
-     "implied_pf": 17.11,
-     "implied_pa": 24.27
+     "implied_pf": 19.5,
+     "implied_pa": 24.09
     },
     {
      "week": 7,
      "opp": "MIA",
      "home": true,
      "posted": false,
-     "implied_pf": 20.54,
-     "implied_pa": 19.54
+     "implied_pf": 22.22,
+     "implied_pa": 20.72
     },
     {
      "week": 8,
      "opp": "LV",
      "home": true,
      "posted": false,
-     "implied_pf": 19.5,
-     "implied_pa": 19.64
+     "implied_pf": 21.7,
+     "implied_pa": 20.77
     },
     {
      "week": 9,
      "opp": "KC",
      "home": false,
      "posted": false,
-     "implied_pf": 16.84,
-     "implied_pa": 24.54
+     "implied_pf": 19.37,
+     "implied_pa": 24.22
     },
     {
      "week": 10,
      "opp": "BUF",
      "home": true,
      "posted": false,
-     "implied_pf": 18.22,
-     "implied_pa": 26.57
+     "implied_pf": 21.06,
+     "implied_pa": 24.23
     },
     {
      "week": 11,
      "opp": "LAC",
      "home": false,
      "posted": false,
-     "implied_pf": 17.24,
-     "implied_pa": 24.25
+     "implied_pf": 19.57,
+     "implied_pa": 24.07
     },
     {
      "week": 12,
      "opp": "MIA",
      "home": false,
      "posted": false,
-     "implied_pf": 20.54,
-     "implied_pa": 19.54
+     "implied_pf": 21.22,
+     "implied_pa": 21.72
     },
     {
      "week": 14,
      "opp": "DEN",
      "home": true,
      "posted": false,
-     "implied_pf": 16.35,
-     "implied_pa": 22.91
+     "implied_pf": 20.12,
+     "implied_pa": 22.41
     },
     {
      "week": 15,
      "opp": "ARI",
      "home": false,
      "posted": false,
-     "implied_pf": 22.66,
-     "implied_pa": 19.07
+     "implied_pf": 22.28,
+     "implied_pa": 21.48
     },
     {
      "week": 16,
      "opp": "NE",
      "home": true,
      "posted": false,
-     "implied_pf": 17.11,
-     "implied_pa": 24.27
+     "implied_pf": 20.5,
+     "implied_pa": 23.09
     },
     {
      "week": 17,
      "opp": "MIN",
      "home": true,
      "posted": false,
-     "implied_pf": 18.22,
-     "implied_pa": 23.04
+     "implied_pf": 21.06,
+     "implied_pa": 22.47
     },
     {
      "week": 18,
      "opp": "BUF",
      "home": false,
      "posted": false,
-     "implied_pf": 18.22,
-     "implied_pa": 26.57
+     "implied_pf": 20.06,
+     "implied_pa": 25.23
     }
    ],
    "off_sos_rank": 18,
@@ -4715,96 +4715,96 @@
      "opp": "BAL",
      "home": true,
      "posted": false,
-     "implied_pf": 17.9,
-     "implied_pa": 25.59
+     "implied_pf": 20.9,
+     "implied_pa": 23.74
     },
     {
      "week": 7,
      "opp": "TEN",
      "home": false,
      "posted": false,
-     "implied_pf": 20.0,
-     "implied_pa": 20.31
+     "implied_pf": 20.95,
+     "implied_pa": 22.1
     },
     {
      "week": 8,
      "opp": "PIT",
      "home": false,
      "posted": false,
-     "implied_pf": 17.87,
-     "implied_pa": 21.09
+     "implied_pf": 19.89,
+     "implied_pa": 22.49
     },
     {
      "week": 9,
      "opp": "NO",
      "home": false,
      "posted": false,
-     "implied_pf": 19.22,
-     "implied_pa": 21.15
+     "implied_pf": 20.56,
+     "implied_pa": 22.52
     },
     {
      "week": 10,
      "opp": "HOU",
      "home": true,
      "posted": false,
-     "implied_pf": 16.56,
-     "implied_pa": 22.4
+     "implied_pf": 20.23,
+     "implied_pa": 22.15
     },
     {
      "week": 12,
      "opp": "LV",
      "home": true,
      "posted": false,
-     "implied_pf": 19.7,
-     "implied_pa": 18.79
+     "implied_pf": 21.8,
+     "implied_pa": 20.34
     },
     {
      "week": 13,
      "opp": "CIN",
      "home": true,
      "posted": false,
-     "implied_pf": 18.98,
-     "implied_pa": 25.63
+     "implied_pf": 21.44,
+     "implied_pa": 23.77
     },
     {
      "week": 14,
      "opp": "ATL",
      "home": true,
      "posted": false,
-     "implied_pf": 20.08,
-     "implied_pa": 20.82
+     "implied_pf": 21.99,
+     "implied_pa": 21.36
     },
     {
      "week": 15,
      "opp": "NYG",
      "home": false,
      "posted": false,
-     "implied_pf": 19.83,
-     "implied_pa": 21.69
+     "implied_pf": 20.87,
+     "implied_pa": 22.8
     },
     {
      "week": 16,
      "opp": "BAL",
      "home": false,
      "posted": false,
-     "implied_pf": 17.9,
-     "implied_pa": 25.59
+     "implied_pf": 19.9,
+     "implied_pa": 24.74
     },
     {
      "week": 17,
      "opp": "IND",
      "home": true,
      "posted": false,
-     "implied_pf": 20.34,
-     "implied_pa": 23.03
+     "implied_pf": 22.12,
+     "implied_pa": 22.46
     },
     {
      "week": 18,
      "opp": "CIN",
      "home": false,
      "posted": false,
-     "implied_pf": 18.98,
-     "implied_pa": 25.63
+     "implied_pf": 20.44,
+     "implied_pa": 24.77
     }
    ],
    "off_sos_rank": 10,

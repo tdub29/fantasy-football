@@ -31,14 +31,17 @@ def num(v):
 def main():
     env = env_map()
     ab = lambda t: NFLVERSE_TO_ENV.get(t, t)
-    # league-average implied points allowed, for matchup-adjusting unposted games
-    avg_pa = sum(e["implied_pa"] for e in env.values()) / len(env)
-    # Vegas-derived implied points for a matchup when no retail line is posted yet:
-    # offense's season baseline shifted by how much this defense allows vs average.
-    def matchup(off, deff):
+    # How the environment article gets per-game numbers without posted lines: turn the
+    # Vegas season win totals into team ratings (offense=implied PF, defense=implied PA)
+    # and PROJECT each game's points. Projected team points = blend of its offense
+    # rating and the opponent's defense rating, plus home field. This is the standard
+    # ratings->game-line projection; it regenerates their per-game figures from the
+    # same inputs, for the weeks books have not posted.
+    HFA = 1.0  # NFL home-field edge, split +/- 0.5 across the two teams
+    def proj_points(off, deff, home):
         o, d = env.get(off), env.get(deff)
         if not o or not d: return None
-        return round(o["implied_pf"] + (d["implied_pa"] - avg_pa), 2)
+        return round((o["implied_pf"] + d["implied_pa"]) / 2 + (HFA / 2 if home else -HFA / 2), 2)
     games = fetch_games()
     # optional: actual lines from The Odds API (fetch_odds_api.py) override everything
     odds_path = HERE / "odds-api-lines.json"
@@ -54,8 +57,8 @@ def main():
             imp_home, imp_away, posted = ok["implied_home"], ok["implied_away"], True
         elif spread is not None and total is not None:  # 2) nflverse posted line
             imp_home, imp_away, posted = (total + spread) / 2, (total - spread) / 2, True
-        else:                                    # 3) matchup-adjusted projection
-            imp_home, imp_away, posted = matchup(home, away), matchup(away, home), False
+        else:                                    # 3) ratings-based game projection
+            imp_home, imp_away, posted = proj_points(home, away, True), proj_points(away, home, False), False
         if posted: posted_weeks.add(wk)
         if home in sched:
             sched[home].append({"week": wk, "opp": away, "home": True, "posted": posted,
