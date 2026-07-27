@@ -40,20 +40,23 @@ def main():
         if not o or not d: return None
         return round(o["implied_pf"] + (d["implied_pa"] - avg_pa), 2)
     games = fetch_games()
+    # optional: actual lines from The Odds API (fetch_odds_api.py) override everything
+    odds_path = HERE / "odds-api-lines.json"
+    odds = json.loads(odds_path.read_text(encoding="utf-8")) if odds_path.exists() else {}
     # per-team schedule of {week, opp, home, posted, implied_pf, implied_pa}
     sched = {t: [] for t in env}
     posted_weeks = set()
     for g in games:
         home, away = ab(g["home_team"]), ab(g["away_team"])
         wk = int(g["week"]); spread = num(g.get("spread_line")); total = num(g.get("total_line"))
-        posted = spread is not None and total is not None
+        ok = odds.get(f"{away}@{home}")
+        if ok:                                   # 1) real Odds-API line (any week)
+            imp_home, imp_away, posted = ok["implied_home"], ok["implied_away"], True
+        elif spread is not None and total is not None:  # 2) nflverse posted line
+            imp_home, imp_away, posted = (total + spread) / 2, (total - spread) / 2, True
+        else:                                    # 3) matchup-adjusted projection
+            imp_home, imp_away, posted = matchup(home, away), matchup(away, home), False
         if posted: posted_weeks.add(wk)
-        # actual implied from the line, else fall back to each team's season implied PF
-        if posted:
-            imp_home, imp_away = (total + spread) / 2, (total - spread) / 2
-        else:
-            imp_home = matchup(home, away)  # matchup-adjusted, not a flat team average
-            imp_away = matchup(away, home)
         if home in sched:
             sched[home].append({"week": wk, "opp": away, "home": True, "posted": posted,
                                 "implied_pf": round(imp_home, 2) if imp_home else None,
