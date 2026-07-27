@@ -31,6 +31,14 @@ def num(v):
 def main():
     env = env_map()
     ab = lambda t: NFLVERSE_TO_ENV.get(t, t)
+    # league-average implied points allowed, for matchup-adjusting unposted games
+    avg_pa = sum(e["implied_pa"] for e in env.values()) / len(env)
+    # Vegas-derived implied points for a matchup when no retail line is posted yet:
+    # offense's season baseline shifted by how much this defense allows vs average.
+    def matchup(off, deff):
+        o, d = env.get(off), env.get(deff)
+        if not o or not d: return None
+        return round(o["implied_pf"] + (d["implied_pa"] - avg_pa), 2)
     games = fetch_games()
     # per-team schedule of {week, opp, home, posted, implied_pf, implied_pa}
     sched = {t: [] for t in env}
@@ -44,8 +52,8 @@ def main():
         if posted:
             imp_home, imp_away = (total + spread) / 2, (total - spread) / 2
         else:
-            imp_home = env.get(home, {}).get("implied_pf")
-            imp_away = env.get(away, {}).get("implied_pf")
+            imp_home = matchup(home, away)  # matchup-adjusted, not a flat team average
+            imp_away = matchup(away, home)
         if home in sched:
             sched[home].append({"week": wk, "opp": away, "home": True, "posted": posted,
                                 "implied_pf": round(imp_home, 2) if imp_home else None,
