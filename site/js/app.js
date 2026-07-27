@@ -1191,7 +1191,7 @@
               h('span', { class:'name' }, c.player.name)
             )),
             jacobGibbsCell(c.player.name, c.player._sleeperId),
-            h('td', null, tierChip(c.player.tier, c.player.category)),
+            h('td', null, ourTierChip(c.player._sleeperId) || tierChip(c.player.tier, c.player.category)),
             h('td', null, c.league.short_name, sup ? h('span', { class:'badge', style:{ marginLeft:'6px' } }, 'SF Bonus') : null),
             h('td', { class:'right tnum' }, fmt.decimal(c.value, 1))
           );
@@ -1429,7 +1429,7 @@
             h('td', null, teamChip(p.team)),
             h('td', { class:'right tnum' }, p.age ?? h('span', { class:'muted' }, '.')),
             h('td', null, ourCatChip(p._sleeperId) || pillCategory(p.category)),
-            h('td', { class:'center' }, tierChip(p.tier, p.category)),
+            h('td', { class:'center' }, ourTierChip(p._sleeperId) || tierChip(p.tier, p.category)),
             h('td', { class:'right tnum', style:{ color: ownColor } }, owned != null ? owned.toFixed(0) + '%' : '.'),
             h('td', { class:'right tnum', style:{ color: startColor } }, started != null ? started.toFixed(0) + '%' : '.'),
             h('td', null,
@@ -1544,7 +1544,7 @@
             h('td', null, posChip(p.pos)),
             h('td', null, teamChip(p.team)),
             h('td', null, ranked ? (ourCatChip(ranked._sleeperId) || pillCategory(ranked.category)) : h('span', { class:'muted' }, ',')),
-            h('td', null, ranked ? tierChip(ranked.tier, ranked.category) : h('span', { class:'muted' }, ',')),
+            h('td', null, ranked ? (ourTierChip(ranked._sleeperId) || tierChip(ranked.tier, ranked.category)) : h('span', { class:'muted' }, ',')),
             h('td', null,
               ...(owners.length ? owners.slice(0,3).map(o => h('span', {
                 class:'badge' + (o.isMe ? ' you' : ''),
@@ -1838,7 +1838,7 @@
     // survive nav between leagues.
     const lsKey = `tier-sheet-league-players::${lg.id}`;
     const filter = Object.assign(
-      { pos:'ALL', cat:'ALL', scope:'all', q:'', sort:'rank', dir:'asc', proj:'blend' },
+      { pos:'ALL', cat:'ALL', scope:'all', q:'', sort:'rank', dir:'asc', proj:'blend', view:'stats' },
       JSON.parse(localStorage.getItem(lsKey) || '{}')
     );
     const persist = () => { try { localStorage.setItem(lsKey, JSON.stringify(filter)); } catch {} };
@@ -2014,7 +2014,7 @@
             h('td', null, teamChip(p.team), ' ', envChip((window.PLAYERS[p._sleeperId] || {}).team || p.team)),
             h('td', { class:'right tnum' }, p.age ?? h('span', { class:'muted' }, '.')),
             h('td', null, ourCatChip(p._sleeperId) || pillCategory(p.category)),
-            h('td', { class:'center' }, tierChip(p.tier, p.category)),
+            h('td', { class:'center' }, ourTierChip(p._sleeperId) || tierChip(p.tier, p.category)),
             h('td', { class:'right tnum' }, fmt.decimal(tierValue(p, lg), 1)),
             hasProj ? h('td', { class:'right tnum' }, (() => { const v = projPointsFor(p._sleeperId, filter.proj); return v == null ? h('span', { class:'muted' }, '·') : fmt.decimal(v, 1); })()) : null,
             h('td', null, ownerCell),
@@ -3623,7 +3623,7 @@
                 h('td', null, teamChip(sp.team)),
                 h('td', null, sp.age ?? ','),
                 h('td', null, ranked ? (ourCatChip(ranked._sleeperId) || pillCategory(ranked.category)) : h('span', { class:'muted' }, ',')),
-                h('td', null, ranked ? tierChip(ranked.tier, ranked.category) : h('span', { class:'muted' }, ',')),
+                h('td', null, ranked ? (ourTierChip(ranked._sleeperId) || tierChip(ranked.tier, ranked.category)) : h('span', { class:'muted' }, ',')),
                 ...yrCells,
               );
             }))
@@ -4614,13 +4614,13 @@
     main.appendChild(h('div', { class:'card-grid cols-2' },
       h('div', { class:'card' }, h('div', { class:'card-title' }, `${a.team_name} (${csA.length})`),
         ...csA.map(p => h('div', { class:'pos-col-row', onclick: ()=>openPlayerDetail(p.sleeper.name, p.sleeper.id) },
-          h('div', { class:'pos-col-name' }, posChip(p.sleeper.pos), tierChip(p.ranked.tier, p.ranked.category), h('span', null, p.sleeper.name)),
+          h('div', { class:'pos-col-name' }, posChip(p.sleeper.pos), (ourTierChip(p.sleeper.id) || tierChip(p.ranked.tier, p.ranked.category)), h('span', null, p.sleeper.name)),
           h('span', { class:'tnum' }, fmt.decimal(tierValue(p.ranked, lg), 1))
         ))
       ),
       h('div', { class:'card' }, h('div', { class:'card-title' }, `${b.team_name} (${csB.length})`),
         ...csB.map(p => h('div', { class:'pos-col-row', onclick: ()=>openPlayerDetail(p.sleeper.name, p.sleeper.id) },
-          h('div', { class:'pos-col-name' }, posChip(p.sleeper.pos), tierChip(p.ranked.tier, p.ranked.category), h('span', null, p.sleeper.name)),
+          h('div', { class:'pos-col-name' }, posChip(p.sleeper.pos), (ourTierChip(p.sleeper.id) || tierChip(p.ranked.tier, p.ranked.category)), h('span', null, p.sleeper.name)),
           h('span', { class:'tnum' }, fmt.decimal(tierValue(p.ranked, lg), 1))
         ))
       ),
@@ -6410,7 +6410,7 @@
           }, `Gibbs ${jacobGibbsDateLabel()}: #${gibbs.rank} · ${gibbs.pos}${gibbs.posRank}`) : null,
         ),
         ranked ? h('div', { class:'row gap-4', style:{ marginBottom:'12px' } },
-          (ourCatChip(sleeper?.id) || pillCategory(ranked.category)), tierChip(ranked.tier, ranked.category),
+          (ourCatChip(sleeper?.id) || pillCategory(ranked.category)), (ourTierChip(sleeper?.id) || tierChip(ranked.tier, ranked.category)),
           h('span', { class:'tip' }, `Tier value: ${tierValue(ranked, {})}`)
         ) : null,
         ranked?.note ? h('div', { class:'card', style:{ background:'var(--bg-2)', marginBottom:'12px' } },
@@ -6555,6 +6555,13 @@
     'Rotational': 'var(--fg-2)', 'Aging Depth': 'var(--fg-3)',
   };
   function ourCat(pid) { return (window.PLAYER_CATEGORIES && window.PLAYER_CATEGORIES.players) ? window.PLAYER_CATEGORIES.players[pid] : null; }
+  // Our own value tier (S..F), built from scratch by 1-D value k-means.
+  const OURTIER_COLOR = { S: 'var(--green)', A: '#5eead4', B: 'var(--blue)', C: 'var(--amber)', D: 'var(--fg-2)', F: 'var(--fg-3)' };
+  function ourTierChip(pid) {
+    const c = pid && ourCat(pid); if (!c || !c.tier) return null;
+    return h('span', { class: 'badge', title: `Tier ${c.tier} — our dynasty value tier (value ${c.value})`,
+      style: { color: OURTIER_COLOR[c.tier] || 'var(--fg-2)', borderColor: 'currentColor', background: 'transparent', fontWeight: 700 } }, c.tier);
+  }
   function ourCatChip(pid) {
     const c = pid && ourCat(pid); if (!c) return null;
     return h('span', { class: 'badge', title: `${c.category} — ${c.why} (dynasty value ${c.value}, age ${c.age}, proj ${c.proj})`,

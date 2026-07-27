@@ -133,8 +133,23 @@ def main():
                 out[r["pid"]] = {"category": name, "cluster": gid, "stage": sname, "tier": t, "why": why,
                                  "value": int(r["value"]), "age": round(r["age"], 1), "proj": round(r["proj"], 1)}
             gid += 1
-    payload = {"method": "age-stage split + 1-D k-means on dynasty value within each stage (contiguous value tiers = no in-group outliers)",
-               "legend": sorted(legend, key=lambda x: -x["avg_value"]), "players": out}
+    # OUR OWN tier (S..F) built from scratch: 1-D k-means on dynasty value across all
+    # players, ordered high->low. Pure value ladder, independent of the archetype label.
+    vv = np.array([r["value"] for r in rows], dtype=float).reshape(-1, 1)
+    kt = min(6, len(set(vv.flatten().round().tolist())))
+    _, tlab = kmeans(vv, kt) if kt > 1 else (None, np.zeros(len(rows), int))
+    torder = sorted(range(kt), key=lambda c: -vv[tlab == c].mean())
+    tletter = {c: "SABCDF"[i] for i, c in enumerate(torder)}
+    tier_legend = []
+    for i, c in enumerate(torder):
+        mv = vv[tlab == c].flatten()
+        tier_legend.append({"tier": "SABCDF"[i], "n": int((tlab == c).sum()),
+                            "value_range": [int(mv.min()), int(mv.max())]})
+    for i, r in enumerate(rows):
+        if r["pid"] and r["pid"] in out:
+            out[r["pid"]]["tier"] = tletter[int(tlab[i])]
+    payload = {"method": "age-stage split + 1-D k-means on dynasty value within each stage (contiguous value tiers = no in-group outliers); tiers = global 1-D value k-means",
+               "legend": sorted(legend, key=lambda x: -x["avg_value"]), "tier_legend": tier_legend, "players": out}
     SITE.mkdir(parents=True, exist_ok=True)
     (SITE / "categories.js").write_text("window.PLAYER_CATEGORIES = " + json.dumps(payload, separators=(",", ":"), ensure_ascii=False) + ";\n", encoding="utf-8")
     (HERE / "categories.json").write_text(json.dumps(payload, ensure_ascii=False, indent=1), encoding="utf-8")
