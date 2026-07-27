@@ -1894,6 +1894,16 @@
       }
       filterBar.appendChild(h('div', { class:'group' }, h('label', null, 'Proj Src'), projBtns));
     }
+    const viewBtns = h('div', { class:'toggle-group' });
+    for (const [k, lbl] of [['stats','Stats'],['sos','SOS (schedule)']]) {
+      viewBtns.appendChild(h('button', {
+        class:`toggle ${filter.view===k?'active':''}`,
+        onclick:(e) => { filter.view = k; persist();
+          viewBtns.querySelectorAll('.toggle').forEach(b => b.classList.toggle('active', b===e.target));
+          render(); }
+      }, lbl));
+    }
+    filterBar.appendChild(h('div', { class:'group' }, h('label', null, 'View'), viewBtns));
     main.appendChild(filterBar);
 
     const tableWrap = h('div', { class:'card', style:{ padding:0, overflow:'hidden' } });
@@ -1964,64 +1974,102 @@
         }, label + arrow);
       };
 
-      const tbl = h('table', { class:'data data-sticky' },
-        h('thead', null, h('tr', null,
-          h('th', { class:'right', style:{ width:'38px' }, title:'Position in current sort' }, '#'),
-          sortHdr('rank', 'Rank', { right:true, style:{ width:'52px' } }),
-          sortHdr('name', 'Player'),
-          sortHdr('gibbs', 'Gibbs ' + jacobGibbsDateLabel(), { right:true, style:{ width:'76px' }, title:'Jacob Gibbs 2026 half-PPR rank' }),
-          sortHdr('pos',  'Pos'),
-          h('th', null, 'Team'),
-          sortHdr('age',  'Age', { right:true }),
-          h('th', null, 'Category'),
-          h('th', { class:'center', style:{ width:'48px' } }, 'Tier'),
-          sortHdr('value','Value', { right:true }),
-          hasProj ? sortHdr('proj', 'Proj', { right:true, title:'Season fantasy projection (selected Proj Src)' }) : null,
-          h('th', null, 'Owner'),
-        )),
-        h('tbody', null, ...rows.map((p, i) => {
-          const ownerRoster = p._sleeperId ? ownerByPid.get(p._sleeperId) : null;
-          const isMine = ownerRoster && ownerRoster.is_me;
-          const stance = ownerRoster ? rosterStance(ownerRoster, lg) : null;
-          const stanceLabel = { tank:'Tank', seller:'Seller', mid:'Mid', buyer:'Buyer', contender:'Contender' }[stance] || '';
-          const ownerCell = ownerRoster
-            ? h('div', { class:'name-cell' },
-                h('a', {
-                  href: `#roster/${lg.id}/${ownerRoster.roster_id}`,
-                  class: `badge stance-${stance}${isMine ? ' you' : ''} owner-link`,
-                  title: `${ownerRoster.team_name} (${ownerRoster.owner_name}) — ${stanceLabel}`,
-                  onclick: (e) => e.stopPropagation(),
-                }, ownerRoster.team_name),
-              )
-            : h('span', { class:'badge', style:{ background:'transparent', color:'var(--fg-3)', borderColor:'var(--border)' } }, 'FA');
-          return h('tr', {
-            class: isMine ? 'you' : '',
-            onclick:() => openPlayerDetail(p.name, p._sleeperId),
-            title: ownerRoster ? `Owned by ${ownerRoster.team_name}` : 'Free agent',
-          },
-            h('td', { class:'right tnum', style:{ color:'var(--fg-3)' } }, String(i + 1)),
-            h('td', { class:'right tnum', style:{ fontWeight:700 } }, String(p._overallRank || i+1)),
-            h('td', null, h('div', { class:'name-cell' },
-              h('span', { class:'name' }, p.name),
-              p.rookie ? h('span', { class:'badge rookie', style:{ marginLeft:'4px' } }, 'Rookie') : null,
-              p.subtype === 'depreciating_pillar' ? h('span', { class:'badge depreciating', style:{ marginLeft:'4px' }, title:'Depreciating pillar' }, 'DP') : null,
-            )),
-            jacobGibbsCell(p.name, p._sleeperId),
-            h('td', null, h('div', { style:{ display:'flex', alignItems:'center', gap:'6px' } },
-              posChip(p.pos),
-              p._posRank ? h('span', { class:'tip tnum' }, `${p.pos}${p._posRank}`) : null,
-            )),
-            h('td', null, teamChip(p.team), ' ', envChip((window.PLAYERS[p._sleeperId] || {}).team || p.team)),
-            h('td', { class:'right tnum' }, p.age ?? h('span', { class:'muted' }, '.')),
-            h('td', null, ourCatChip(p._sleeperId) || pillCategory(p.category)),
-            h('td', { class:'center' }, ourTierChip(p._sleeperId) || tierChip(p.tier, p.category)),
-            h('td', { class:'right tnum' }, fmt.decimal(tierValue(p, lg), 1)),
-            hasProj ? h('td', { class:'right tnum' }, (() => { const v = projPointsFor(p._sleeperId, filter.proj); return v == null ? h('span', { class:'muted' }, '·') : fmt.decimal(v, 1); })()) : null,
-            h('td', null, ownerCell),
-          );
-        }))
-      );
-      tableWrap.appendChild(tbl);
+      // shared per-row helpers
+      const projPl = (pid) => (projO.get(pid) || projD.get(pid));
+      const teamOf = (pid) => (window.PLAYERS[pid] || {}).team;
+      const schedCache = {};
+      const schedFor = (team) => {
+        if (!(team in schedCache)) { const s = teamSos(team), m = {}; if (s) for (const g of s.schedule) m[g.week] = g; schedCache[team] = m; }
+        return schedCache[team];
+      };
+      const ownerInfo = (pid) => {
+        const r = pid ? ownerByPid.get(pid) : null;
+        const isMine = r && r.is_me;
+        const stance = r ? rosterStance(r, lg) : null;
+        const cell = r
+          ? h('a', { href: `#roster/${lg.id}/${r.roster_id}`, class: `badge stance-${stance}${isMine ? ' you' : ''} owner-link`,
+                     title: `${r.team_name} (${r.owner_name})`, onclick: (e) => e.stopPropagation() }, r.team_name)
+          : h('span', { class:'badge', style:{ background:'transparent', color:'var(--fg-3)', borderColor:'var(--border)' } }, 'FA');
+        return { r, isMine, cell };
+      };
+      const idCells = (p, i) => [
+        h('td', { class:'right tnum', style:{ color:'var(--fg-3)' } }, String(i + 1)),
+        h('td', { class:'right tnum', style:{ fontWeight:700 } }, String(p._overallRank || i+1)),
+        h('td', null, h('div', { class:'name-cell' }, h('span', { class:'name' }, p.name),
+          p.rookie ? h('span', { class:'badge rookie', style:{ marginLeft:'4px' } }, 'Rookie') : null)),
+        h('td', null, h('div', { style:{ display:'flex', alignItems:'center', gap:'6px' } }, posChip(p.pos),
+          p._posRank ? h('span', { class:'tip tnum' }, `${p.pos}${p._posRank}`) : null)),
+        h('td', null, teamChip(p.team), ' ', envChip(teamOf(p._sleeperId) || p.team)),
+      ];
+
+      let tbl;
+      if (filter.view === 'sos') {
+        // SOS mode: weeks 1-18, cell = opponent + its defense strength (implied pts allowed), colored.
+        const WEEKS = Array.from({ length: 18 }, (_, i) => i + 1);
+        tbl = h('table', { class:'data data-sticky', style:{ fontSize:'11px' } },
+          h('thead', null, h('tr', null,
+            h('th', { class:'right' }, '#'), sortHdr('name', 'Player'), sortHdr('pos', 'Pos'), h('th', null, 'Tm'), h('th', null, 'Own'),
+            ...WEEKS.map(w => h('th', { class:'center', style:{ minWidth:'32px' } }, 'W' + w)))),
+          h('tbody', null, ...rows.map((p, i) => {
+            const o = ownerInfo(p._sleeperId);
+            const sm = schedFor(teamOf(p._sleeperId) || p.team);
+            return h('tr', { class: o.isMine ? 'you' : '', onclick:() => openPlayerDetail(p.name, p._sleeperId) },
+              h('td', { class:'right tnum muted' }, String(i + 1)),
+              h('td', null, h('span', { class:'name' }, p.name)),
+              h('td', null, posChip(p.pos)),
+              h('td', null, teamChip(p.team)),
+              h('td', null, o.r ? h('span', { class:'badge' + (o.isMine ? ' you' : '') }, (o.r.team_name || '').slice(0, 6)) : h('span', { class:'muted' }, 'FA')),
+              ...WEEKS.map(w => {
+                const g = sm[w];
+                if (!g) return h('td', { class:'center muted', style:{ fontSize:'9px' } }, 'BYE');
+                const e = teamEnv(g.opp), v = e ? e.implied_pa : null;
+                return h('td', { class:'center', title: `Wk${w} ${g.home ? 'vs ' : '@ '}${g.opp}: opponent D allows ${v ?? '?'} pts/g (#${e ? e.pa_rank : '?'} of 32)`, style:{ color: defColor(g.opp), lineHeight:1.05 } },
+                  h('div', { style:{ fontWeight:700 } }, g.opp),
+                  h('div', { style:{ fontSize:'9px', opacity:.85 } }, v != null ? fmt.decimal(v, 0) : ''));
+              }));
+          })));
+      } else {
+        // Stats mode: identity + rankings + our category/tier + projection + projected
+        // stat line + offensive SOS rank + owner.
+        const OFFCOLS = [['pass_yd','PaYd'],['pass_td','PaTD'],['pass_int','INT'],['rush_yd','RuYd'],['rush_td','RuTD'],['rec','Rec'],['rec_yd','ReYd'],['rec_td','ReTD']];
+        tbl = h('table', { class:'data data-sticky' },
+          h('thead', null, h('tr', null,
+            h('th', { class:'right', style:{ width:'38px' }, title:'Position in current sort' }, '#'),
+            sortHdr('rank', 'Rank', { right:true, style:{ width:'52px' } }),
+            sortHdr('name', 'Player'),
+            sortHdr('pos',  'Pos'),
+            h('th', null, 'Team'),
+            sortHdr('age',  'Age', { right:true }),
+            h('th', null, 'Category'),
+            h('th', { class:'center', style:{ width:'40px' } }, 'Tier'),
+            sortHdr('value','Value', { right:true }),
+            hasProj ? sortHdr('proj', 'Proj', { right:true, title:'Season fantasy projection (selected Proj Src)' }) : null,
+            h('th', { class:'right', title:'Offensive strength of schedule rank (1 = easiest)' }, 'SOS'),
+            ...OFFCOLS.map(([, l]) => h('th', { class:'right' }, l)),
+            sortHdr('gibbs', 'Gibbs', { right:true, title:'Jacob Gibbs half-PPR rank' }),
+            h('th', null, 'Owner'),
+          )),
+          h('tbody', null, ...rows.map((p, i) => {
+            const o = ownerInfo(p._sleeperId);
+            const line = (projPl(p._sleeperId)?.stats?.blend) || {};
+            const sos = teamSos(teamOf(p._sleeperId) || p.team);
+            return h('tr', { class: o.isMine ? 'you' : '', onclick:() => openPlayerDetail(p.name, p._sleeperId),
+              title: o.r ? `Owned by ${o.r.team_name}` : 'Free agent' },
+              ...idCells(p, i),
+              h('td', { class:'right tnum' }, p.age ?? h('span', { class:'muted' }, '.')),
+              h('td', null, ourCatChip(p._sleeperId) || pillCategory(p.category)),
+              h('td', { class:'center' }, ourTierChip(p._sleeperId) || tierChip(p.tier, p.category)),
+              h('td', { class:'right tnum' }, fmt.decimal(tierValue(p, lg), 1)),
+              hasProj ? h('td', { class:'right tnum' }, (() => { const v = projPointsFor(p._sleeperId, filter.proj); return v == null ? h('span', { class:'muted' }, '·') : fmt.decimal(v, 1); })()) : null,
+              h('td', { class:'right tnum', style:{ color: sos && sos.off_sos_rank <= 10 ? 'var(--green)' : sos && sos.off_sos_rank >= 23 ? 'var(--red)' : 'var(--fg-2)' } }, sos ? String(sos.off_sos_rank) : h('span', { class:'muted' }, '·')),
+              ...OFFCOLS.map(([k]) => h('td', { class:'right tnum', style:{ color:'var(--fg-2)' } }, line[k] != null ? fmt.decimal(line[k], k.endsWith('_yd') ? 0 : 1) : h('span', { class:'muted' }, '·'))),
+              jacobGibbsCell(p.name, p._sleeperId),
+              h('td', null, o.cell),
+            );
+          }))
+        );
+      }
+      tableWrap.appendChild(h('div', { style:{ overflowX:'auto' } }, tbl));
       if (filtered.length > rows.length) {
         tableWrap.appendChild(h('div', { class:'tip', style:{ padding:'10px 14px' } },
           `Showing ${rows.length} of ${filtered.length}. Refine filters to narrow.`));
