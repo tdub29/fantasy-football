@@ -13,32 +13,10 @@
       "id": "sleeper-idp-2026",
       "title": "Sleeper IDP Usage Rankings (2026)",
       "url": "https://sleeper.com/research",
-      "publishedAt": "2026-07-20",
+      "publishedAt": "2026-07-27",
       "format": "idp",
       "defaultEnabled": true,
       "players": [
-        {
-          "name": "Myles Garrett",
-          "pos": "DL",
-          "team": "LAR",
-          "age": 30,
-          "category": "cornerstone",
-          "tier": "S",
-          "ktcValue": 7216,
-          "ktcAdp": null,
-          "note": "Sleeper: started 90.2%, owned 96.0%. DE1 by usage."
-        },
-        {
-          "name": "Maxx Crosby",
-          "pos": "DL",
-          "team": "LV",
-          "age": 28,
-          "category": "cornerstone",
-          "tier": "S",
-          "ktcValue": 7128,
-          "ktcAdp": null,
-          "note": "Sleeper: started 89.1%, owned 94.3%. DE2 by usage."
-        },
         {
           "name": "Aidan Hutchinson",
           "pos": "DL",
@@ -46,9 +24,20 @@
           "age": 25,
           "category": "cornerstone",
           "tier": "S",
-          "ktcValue": 7128,
+          "ktcValue": 7616,
           "ktcAdp": null,
-          "note": "Sleeper: started 89.1%, owned 93.1%. DL3 by usage."
+          "note": "Sleeper: started 95.2%, owned 96.4%. DL1 by usage."
+        },
+        {
+          "name": "Myles Garrett",
+          "pos": "DL",
+          "team": "LAR",
+          "age": 30,
+          "category": "cornerstone",
+          "tier": "S",
+          "ktcValue": 7520,
+          "ktcAdp": null,
+          "note": "Sleeper: started 94.0%, owned 97.6%. DE2 by usage."
         },
         {
           "name": "Roquan Smith",
@@ -57,9 +46,20 @@
           "age": 29,
           "category": "cornerstone",
           "tier": "S",
-          "ktcValue": 7128,
+          "ktcValue": 7232,
           "ktcAdp": null,
-          "note": "Sleeper: started 89.1%, owned 94.8%. LB1 by usage."
+          "note": "Sleeper: started 90.4%, owned 94.0%. LB1 by usage."
+        },
+        {
+          "name": "Maxx Crosby",
+          "pos": "DL",
+          "team": "LV",
+          "age": 28,
+          "category": "cornerstone",
+          "tier": "S",
+          "ktcValue": 7040,
+          "ktcAdp": null,
+          "note": "Sleeper: started 88.0%, owned 94.6%. DE3 by usage."
         },
         {
           "name": "T.J. Watt",
@@ -67,21 +67,10 @@
           "team": "PIT",
           "age": 31,
           "category": "cornerstone",
-          "tier": "A",
-          "ktcValue": 6624,
+          "tier": "S",
+          "ktcValue": 6848,
           "ktcAdp": null,
-          "note": "Sleeper: started 82.8%, owned 92.0%. LB2 by usage."
-        },
-        {
-          "name": "Will Anderson",
-          "pos": "DL",
-          "team": "HOU",
-          "age": 24,
-          "category": "cornerstone",
-          "tier": "A",
-          "ktcValue": 6296,
-          "ktcAdp": null,
-          "note": "Sleeper: started 78.7%, owned 90.8%. DL4 by usage."
+          "note": "Sleeper: started 85.6%, owned 94.6%. LB2 by usage."
         },
         {
           "name": "Carson Schwesinger",
@@ -89,21 +78,10 @@
           "team": "CLE",
           "age": 23,
           "category": "cornerstone",
-          "tier": "A",
-          "ktcValue": 6296,
+          "tier": "S",
+          "ktcValue": 6800,
           "ktcAdp": null,
-          "note": "Sleeper: started 78.7%, owned 92.0%. LB3 by usage."
-        },
-        {
-          "name": "Kyle Hamilton",
-          "pos": "DB",
-          "team": "BAL",
-          "age": 25,
-          "category": "cornerstone",
-          "tier": "A",
-          "ktcValue": 6256,
-          "ktcAdp": null,
-          "note": "Sleeper: started 78.2%, owned 92.0%. DB1 by usage."
+          "note": "Sleeper: started 85.0%, owned 93.4%. LB3 by usage."
         },
         {
           "name": "Nick Bosa",
@@ -112,9 +90,53 @@
           "age": 28,
           "category": "cornerstone",
           "tier": "A",
-          "ktcValue": 6256,
+          "ktcValue": 6560,
           "ktcAdp": null,
-          "note": "Sleeper: started 78.2%, owned 89.7%. DE5 by usage."
+          "note": "Sleeper: started 82.0%, owned 89.8%. DE4 by usage."
+        },
+        {
+          "name": "Kyle Hamilton",
+          "pos": "DB",
+          "team": "BAL",
+          "age": 25,
+          "category": "cornerstone",
+          "tier": "A",
+          "ktcValue": 6368,
+          "ktcAdp": null,
+          "note": "Sleeper: started 79.6%, owned 92.2%. DB1 by usage."
+        },
+        {
+          "name": "Will Anderson",
+          "pos": "DL",
+          "team": "HOU",
+          "age": 24,
+          "category": "cornerstone",
+          "tier": "A",
+          "ktcValue": 6320,
+          "ktcAdp": null,
+          "note": "Sleeper: started 79.0%, owned 93.4%. DL5 by usage."
+        },
+        {
+          "name": "Zack Baun",
+          "pos": "LB",
+          "team": "PHI",
+          "age": 29,
+          "category": "cornerstone",
+          "tier": "A",
+          "ktcValue": 6320,
+          "ktcAdp": null,
+          "note": "Sleeper: started 79.0%, owned 90.4%. LB4 by usage."
+        },
+        {
+          "name": "Brian Burns",
+          "pos": "DL",
+          "team": "NYG",
+          "age": 28,
+          "category": "cornerstone",
+          "tier": "A",
+          "ktcValue": 6128,
+          "ktcAdp": null,
+          "note": "Sleeper: started 76.6%, owned 89.2%. DE6 by usage."
         },
         {
           "name": "Fred Warner",
@@ -123,9 +145,9 @@
           "age": 29,
           "category": "cornerstone",
           "tier": "A",
-          "ktcValue": 6208,
+          "ktcValue": 6128,
           "ktcAdp": null,
-          "note": "Sleeper: started 77.6%, owned 89.1%. LB4 by usage."
+          "note": "Sleeper: started 76.6%, owned 91.0%. LB5 by usage."
         },
         {
           "name": "Edgerrin Cooper",
@@ -133,32 +155,10 @@
           "team": "GB",
           "age": 24,
           "category": "cornerstone",
-          "tier": "B",
-          "ktcValue": 5888,
+          "tier": "A",
+          "ktcValue": 6080,
           "ktcAdp": null,
-          "note": "Sleeper: started 73.6%, owned 85.1%. LB5 by usage."
-        },
-        {
-          "name": "Zack Baun",
-          "pos": "LB",
-          "team": "PHI",
-          "age": 29,
-          "category": "cornerstone",
-          "tier": "B",
-          "ktcValue": 5704,
-          "ktcAdp": null,
-          "note": "Sleeper: started 71.3%, owned 87.9%. LB6 by usage."
-        },
-        {
-          "name": "Brian Burns",
-          "pos": "DL",
-          "team": "NYG",
-          "age": 28,
-          "category": "cornerstone",
-          "tier": "B",
-          "ktcValue": 5656,
-          "ktcAdp": null,
-          "note": "Sleeper: started 70.7%, owned 86.2%. DE6 by usage."
+          "note": "Sleeper: started 76.0%, owned 86.8%. LB6 by usage."
         },
         {
           "name": "Jared Verse",
@@ -167,64 +167,9 @@
           "age": 25,
           "category": "cornerstone",
           "tier": "B",
-          "ktcValue": 5560,
+          "ktcValue": 5800,
           "ktcAdp": null,
-          "note": "Sleeper: started 69.5%, owned 89.1%. DL7 by usage."
-        },
-        {
-          "name": "Jamien Sherwood",
-          "pos": "LB",
-          "team": "NYJ",
-          "age": 26,
-          "category": "cornerstone",
-          "tier": "B",
-          "ktcValue": 5560,
-          "ktcAdp": null,
-          "note": "Sleeper: started 69.5%, owned 82.2%. LB7 by usage."
-        },
-        {
-          "name": "Quay Walker",
-          "pos": "LB",
-          "team": "LV",
-          "age": 26,
-          "category": "cornerstone",
-          "tier": "B",
-          "ktcValue": 5424,
-          "ktcAdp": null,
-          "note": "Sleeper: started 67.8%, owned 80.5%. LB8 by usage."
-        },
-        {
-          "name": "Nik Bonitto",
-          "pos": "LB",
-          "team": "DEN",
-          "age": 26,
-          "category": "cornerstone",
-          "tier": "B",
-          "ktcValue": 5376,
-          "ktcAdp": null,
-          "note": "Sleeper: started 67.2%, owned 86.2%. LB9 by usage."
-        },
-        {
-          "name": "Derwin James",
-          "pos": "DB",
-          "team": "LAC",
-          "age": 29,
-          "category": "cornerstone",
-          "tier": "B",
-          "ktcValue": 5336,
-          "ktcAdp": null,
-          "note": "Sleeper: started 66.7%, owned 85.1%. DB2 by usage."
-        },
-        {
-          "name": "Jack Campbell",
-          "pos": "LB",
-          "team": "DET",
-          "age": 25,
-          "category": "cornerstone",
-          "tier": "B",
-          "ktcValue": 5336,
-          "ktcAdp": null,
-          "note": "Sleeper: started 66.7%, owned 86.2%. LB10 by usage."
+          "note": "Sleeper: started 72.5%, owned 91.6%. DL7 by usage."
         },
         {
           "name": "Foyesade Oluokun",
@@ -233,20 +178,75 @@
           "age": 30,
           "category": "cornerstone",
           "tier": "B",
-          "ktcValue": 5192,
+          "ktcValue": 5704,
           "ktcAdp": null,
-          "note": "Sleeper: started 64.9%, owned 81.6%. LB11 by usage."
+          "note": "Sleeper: started 71.3%, owned 87.4%. LB7 by usage."
         },
         {
-          "name": "Daiyan Henley",
-          "pos": "LB",
+          "name": "Derwin James",
+          "pos": "DB",
           "team": "LAC",
+          "age": 29,
+          "category": "cornerstone",
+          "tier": "B",
+          "ktcValue": 5656,
+          "ktcAdp": null,
+          "note": "Sleeper: started 70.7%, owned 86.8%. DB2 by usage."
+        },
+        {
+          "name": "Jamien Sherwood",
+          "pos": "LB",
+          "team": "NYJ",
           "age": 26,
           "category": "cornerstone",
           "tier": "B",
-          "ktcValue": 5152,
+          "ktcValue": 5656,
           "ktcAdp": null,
-          "note": "Sleeper: started 64.4%, owned 79.9%. LB12 by usage."
+          "note": "Sleeper: started 70.7%, owned 83.2%. LB8 by usage."
+        },
+        {
+          "name": "Nik Bonitto",
+          "pos": "LB",
+          "team": "DEN",
+          "age": 26,
+          "category": "cornerstone",
+          "tier": "B",
+          "ktcValue": 5608,
+          "ktcAdp": null,
+          "note": "Sleeper: started 70.1%, owned 89.2%. LB9 by usage."
+        },
+        {
+          "name": "Jack Campbell",
+          "pos": "LB",
+          "team": "DET",
+          "age": 25,
+          "category": "cornerstone",
+          "tier": "B",
+          "ktcValue": 5464,
+          "ktcAdp": null,
+          "note": "Sleeper: started 68.3%, owned 89.8%. LB10 by usage."
+        },
+        {
+          "name": "Nick Bolton",
+          "pos": "LB",
+          "team": "KC",
+          "age": 26,
+          "category": "cornerstone",
+          "tier": "B",
+          "ktcValue": 5272,
+          "ktcAdp": null,
+          "note": "Sleeper: started 65.9%, owned 83.8%. LB11 by usage."
+        },
+        {
+          "name": "Quay Walker",
+          "pos": "LB",
+          "team": "LV",
+          "age": 26,
+          "category": "cornerstone",
+          "tier": "B",
+          "ktcValue": 5224,
+          "ktcAdp": null,
+          "note": "Sleeper: started 65.3%, owned 82.6%. LB12 by usage."
         },
         {
           "name": "Caleb Downs",
@@ -255,9 +255,9 @@
           "age": 21,
           "category": "cornerstone",
           "tier": "B",
-          "ktcValue": 4968,
+          "ktcValue": 5080,
           "ktcAdp": null,
-          "note": "Sleeper: started 62.1%, owned 86.2%. DB3 by usage."
+          "note": "Sleeper: started 63.5%, owned 83.2%. DB3 by usage."
         },
         {
           "name": "Brian Branch",
@@ -266,42 +266,9 @@
           "age": 24,
           "category": "cornerstone",
           "tier": "B",
-          "ktcValue": 4872,
+          "ktcValue": 4840,
           "ktcAdp": null,
-          "note": "Sleeper: started 60.9%, owned 80.5%. DB4 by usage."
-        },
-        {
-          "name": "Zaire Franklin",
-          "pos": "LB",
-          "team": "GB",
-          "age": 30,
-          "category": "cornerstone",
-          "tier": "C",
-          "ktcValue": 5008,
-          "ktcAdp": null,
-          "note": "Sleeper: started 62.6%, owned 80.5%. LB13 by usage."
-        },
-        {
-          "name": "Nick Bolton",
-          "pos": "LB",
-          "team": "KC",
-          "age": 26,
-          "category": "cornerstone",
-          "tier": "C",
-          "ktcValue": 5008,
-          "ktcAdp": null,
-          "note": "Sleeper: started 62.6%, owned 78.7%. LB14 by usage."
-        },
-        {
-          "name": "Sonny Styles",
-          "pos": "LB",
-          "team": "WAS",
-          "age": 21,
-          "category": "cornerstone",
-          "tier": "C",
-          "ktcValue": 4824,
-          "ktcAdp": null,
-          "note": "Sleeper: started 60.3%, owned 83.9%. LB15 by usage."
+          "note": "Sleeper: started 60.5%, owned 85.6%. DB4 by usage."
         },
         {
           "name": "Byron Young",
@@ -310,20 +277,31 @@
           "age": 28,
           "category": "cornerstone",
           "tier": "C",
-          "ktcValue": 4688,
+          "ktcValue": 5176,
           "ktcAdp": null,
-          "note": "Sleeper: started 58.6%, owned 79.3%. LB16 by usage."
+          "note": "Sleeper: started 64.7%, owned 80.8%. LB13 by usage."
         },
         {
-          "name": "Micah Parsons",
+          "name": "Daiyan Henley",
           "pos": "LB",
-          "team": "GB",
-          "age": 27,
+          "team": "LAC",
+          "age": 26,
           "category": "cornerstone",
           "tier": "C",
-          "ktcValue": 4552,
+          "ktcValue": 5176,
           "ktcAdp": null,
-          "note": "Sleeper: started 56.9%, owned 86.8%. LB17 by usage."
+          "note": "Sleeper: started 64.7%, owned 80.2%. LB14 by usage."
+        },
+        {
+          "name": "Zaire Franklin",
+          "pos": "LB",
+          "team": "GB",
+          "age": 30,
+          "category": "cornerstone",
+          "tier": "C",
+          "ktcValue": 5032,
+          "ktcAdp": null,
+          "note": "Sleeper: started 62.9%, owned 82.6%. LB15 by usage."
         },
         {
           "name": "Jordyn Brooks",
@@ -332,9 +310,31 @@
           "age": 28,
           "category": "cornerstone",
           "tier": "C",
-          "ktcValue": 4552,
+          "ktcValue": 4984,
           "ktcAdp": null,
-          "note": "Sleeper: started 56.9%, owned 77.6%. LB18 by usage."
+          "note": "Sleeper: started 62.3%, owned 80.2%. LB16 by usage."
+        },
+        {
+          "name": "Sonny Styles",
+          "pos": "LB",
+          "team": "WAS",
+          "age": 21,
+          "category": "cornerstone",
+          "tier": "C",
+          "ktcValue": 4936,
+          "ktcAdp": null,
+          "note": "Sleeper: started 61.7%, owned 89.2%. LB17 by usage."
+        },
+        {
+          "name": "Ernest Jones",
+          "pos": "LB",
+          "team": "SEA",
+          "age": 26,
+          "category": "cornerstone",
+          "tier": "C",
+          "ktcValue": 4744,
+          "ktcAdp": null,
+          "note": "Sleeper: started 59.3%, owned 76.0%. LB18 by usage."
         },
         {
           "name": "Nick Cross",
@@ -343,20 +343,9 @@
           "age": 24,
           "category": "cornerstone",
           "tier": "C",
-          "ktcValue": 4368,
+          "ktcValue": 4648,
           "ktcAdp": null,
-          "note": "Sleeper: started 54.6%, owned 71.3%. DB5 by usage."
-        },
-        {
-          "name": "Danielle Hunter",
-          "pos": "DL",
-          "team": "HOU",
-          "age": 31,
-          "category": "cornerstone",
-          "tier": "C",
-          "ktcValue": 4368,
-          "ktcAdp": null,
-          "note": "Sleeper: started 54.6%, owned 71.8%. DE8 by usage."
+          "note": "Sleeper: started 58.1%, owned 77.8%. DB5 by usage."
         },
         {
           "name": "Abdul Carter",
@@ -365,31 +354,9 @@
           "age": 22,
           "category": "cornerstone",
           "tier": "C",
-          "ktcValue": 4184,
+          "ktcValue": 4552,
           "ktcAdp": null,
-          "note": "Sleeper: started 52.3%, owned 79.3%. DL9 by usage."
-        },
-        {
-          "name": "Josh Hines-Allen",
-          "pos": "DL",
-          "team": "JAX",
-          "age": 29,
-          "category": "cornerstone",
-          "tier": "C",
-          "ktcValue": 4184,
-          "ktcAdp": null,
-          "note": "Sleeper: started 52.3%, owned 74.1%. DE10 by usage."
-        },
-        {
-          "name": "Trey Hendrickson",
-          "pos": "DL",
-          "team": "BAL",
-          "age": 31,
-          "category": "cornerstone",
-          "tier": "C",
-          "ktcValue": 4000,
-          "ktcAdp": null,
-          "note": "Sleeper: started 50.0%, owned 72.4%. DE11 by usage."
+          "note": "Sleeper: started 56.9%, owned 80.8%. DL8 by usage."
         },
         {
           "name": "Kam Curl",
@@ -398,9 +365,31 @@
           "age": 27,
           "category": "cornerstone",
           "tier": "C",
-          "ktcValue": 3952,
+          "ktcValue": 4456,
           "ktcAdp": null,
-          "note": "Sleeper: started 49.4%, owned 63.8%. DB6 by usage."
+          "note": "Sleeper: started 55.7%, owned 71.3%. DB6 by usage."
+        },
+        {
+          "name": "Danielle Hunter",
+          "pos": "DL",
+          "team": "HOU",
+          "age": 31,
+          "category": "cornerstone",
+          "tier": "C",
+          "ktcValue": 4456,
+          "ktcAdp": null,
+          "note": "Sleeper: started 55.7%, owned 79.0%. DE9 by usage."
+        },
+        {
+          "name": "Josh Hines-Allen",
+          "pos": "DL",
+          "team": "JAX",
+          "age": 29,
+          "category": "cornerstone",
+          "tier": "C",
+          "ktcValue": 4312,
+          "ktcAdp": null,
+          "note": "Sleeper: started 53.9%, owned 77.2%. DE10 by usage."
         },
         {
           "name": "Rueben Bain",
@@ -409,20 +398,64 @@
           "age": 21,
           "category": "cornerstone",
           "tier": "C",
-          "ktcValue": 3912,
+          "ktcValue": 4168,
           "ktcAdp": null,
-          "note": "Sleeper: started 48.9%, owned 77.6%. DL12 by usage."
+          "note": "Sleeper: started 52.1%, owned 79.0%. DL11 by usage."
         },
         {
-          "name": "Dillon Thieneman",
-          "pos": "DB",
-          "team": "CHI",
-          "age": 21,
+          "name": "Trey Hendrickson",
+          "pos": "DL",
+          "team": "BAL",
+          "age": 31,
           "category": "cornerstone",
           "tier": "C",
-          "ktcValue": 3680,
+          "ktcValue": 4168,
           "ktcAdp": null,
-          "note": "Sleeper: started 46.0%, owned 70.7%. DB7 by usage."
+          "note": "Sleeper: started 52.1%, owned 78.4%. DE12 by usage."
+        },
+        {
+          "name": "Budda Baker",
+          "pos": "DB",
+          "team": "ARI",
+          "age": 30,
+          "category": "cornerstone",
+          "tier": "C",
+          "ktcValue": 4120,
+          "ktcAdp": null,
+          "note": "Sleeper: started 51.5%, owned 69.5%. DB7 by usage."
+        },
+        {
+          "name": "Tre'von Moehrig",
+          "pos": "DB",
+          "team": "CAR",
+          "age": 27,
+          "category": "cornerstone",
+          "tier": "C",
+          "ktcValue": 3736,
+          "ktcAdp": null,
+          "note": "Sleeper: started 46.7%, owned 65.9%. DB8 by usage."
+        },
+        {
+          "name": "Carl Granderson",
+          "pos": "DL",
+          "team": "NO",
+          "age": 29,
+          "category": "cornerstone",
+          "tier": "C",
+          "ktcValue": 3736,
+          "ktcAdp": null,
+          "note": "Sleeper: started 46.7%, owned 70.7%. DE13 by usage."
+        },
+        {
+          "name": "Micah Parsons",
+          "pos": "LB",
+          "team": "GB",
+          "age": 27,
+          "category": "foundational",
+          "tier": "S",
+          "ktcValue": 4552,
+          "ktcAdp": null,
+          "note": "Sleeper: started 56.9%, owned 86.8%. LB19 by usage."
         },
         {
           "name": "Arvell Reese",
@@ -431,20 +464,9 @@
           "age": 20,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 4456,
+          "ktcValue": 4408,
           "ktcAdp": null,
-          "note": "Sleeper: started 55.7%, owned 80.5%. LB19 by usage."
-        },
-        {
-          "name": "Ernest Jones",
-          "pos": "LB",
-          "team": "SEA",
-          "age": 26,
-          "category": "foundational",
-          "tier": "S",
-          "ktcValue": 4272,
-          "ktcAdp": null,
-          "note": "Sleeper: started 53.4%, owned 70.1%. LB20 by usage."
+          "note": "Sleeper: started 55.1%, owned 82.0%. LB20 by usage."
         },
         {
           "name": "Andrew Van Ginkel",
@@ -453,20 +475,9 @@
           "age": 31,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 4136,
+          "ktcValue": 4120,
           "ktcAdp": null,
-          "note": "Sleeper: started 51.7%, owned 70.7%. LB21 by usage."
-        },
-        {
-          "name": "Budda Baker",
-          "pos": "DB",
-          "team": "ARI",
-          "age": 30,
-          "category": "foundational",
-          "tier": "S",
-          "ktcValue": 3584,
-          "ktcAdp": null,
-          "note": "Sleeper: started 44.8%, owned 64.4%. DB8 by usage."
+          "note": "Sleeper: started 51.5%, owned 76.6%. LB21 by usage."
         },
         {
           "name": "Devin Lloyd",
@@ -475,9 +486,9 @@
           "age": 27,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 3584,
+          "ktcValue": 3880,
           "ktcAdp": null,
-          "note": "Sleeper: started 44.8%, owned 67.8%. LB22 by usage."
+          "note": "Sleeper: started 48.5%, owned 73.7%. LB22 by usage."
         },
         {
           "name": "Greg Rousseau",
@@ -486,64 +497,9 @@
           "age": 26,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 3544,
+          "ktcValue": 3592,
           "ktcAdp": null,
-          "note": "Sleeper: started 44.3%, owned 66.7%. DE13 by usage."
-        },
-        {
-          "name": "Carl Granderson",
-          "pos": "DL",
-          "team": "NO",
-          "age": 29,
-          "category": "foundational",
-          "tier": "S",
-          "ktcValue": 3496,
-          "ktcAdp": null,
-          "note": "Sleeper: started 43.7%, owned 64.4%. DE14 by usage."
-        },
-        {
-          "name": "Tykee Smith",
-          "pos": "DB",
-          "team": "TB",
-          "age": 25,
-          "category": "foundational",
-          "tier": "S",
-          "ktcValue": 3400,
-          "ktcAdp": null,
-          "note": "Sleeper: started 42.5%, owned 60.3%. DB9 by usage."
-        },
-        {
-          "name": "Tre'von Moehrig",
-          "pos": "DB",
-          "team": "CAR",
-          "age": 27,
-          "category": "foundational",
-          "tier": "S",
-          "ktcValue": 3360,
-          "ktcAdp": null,
-          "note": "Sleeper: started 42.0%, owned 60.3%. DB10 by usage."
-        },
-        {
-          "name": "CJ Allen",
-          "pos": "LB",
-          "team": "IND",
-          "age": 21,
-          "category": "foundational",
-          "tier": "S",
-          "ktcValue": 3360,
-          "ktcAdp": null,
-          "note": "Sleeper: started 42.0%, owned 63.8%. LB23 by usage."
-        },
-        {
-          "name": "Terrel Bernard",
-          "pos": "LB",
-          "team": "BUF",
-          "age": 27,
-          "category": "foundational",
-          "tier": "S",
-          "ktcValue": 3312,
-          "ktcAdp": null,
-          "note": "Sleeper: started 41.4%, owned 60.3%. LB24 by usage."
+          "note": "Sleeper: started 44.9%, owned 66.5%. DE14 by usage."
         },
         {
           "name": "Tuli Tuipulotu",
@@ -552,20 +508,53 @@
           "age": 23,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 3216,
+          "ktcValue": 3544,
           "ktcAdp": null,
-          "note": "Sleeper: started 40.2%, owned 59.8%. DL15 by usage."
+          "note": "Sleeper: started 44.3%, owned 67.1%. DL15 by usage."
         },
         {
-          "name": "Jeffery Simmons",
-          "pos": "DL",
-          "team": "TEN",
-          "age": 28,
+          "name": "Dillon Thieneman",
+          "pos": "DB",
+          "team": "CHI",
+          "age": 21,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 3032,
+          "ktcValue": 3496,
           "ktcAdp": null,
-          "note": "Sleeper: started 37.9%, owned 59.8%. DT16 by usage."
+          "note": "Sleeper: started 43.7%, owned 71.9%. DB9 by usage."
+        },
+        {
+          "name": "Tykee Smith",
+          "pos": "DB",
+          "team": "TB",
+          "age": 25,
+          "category": "foundational",
+          "tier": "S",
+          "ktcValue": 3496,
+          "ktcAdp": null,
+          "note": "Sleeper: started 43.7%, owned 62.3%. DB10 by usage."
+        },
+        {
+          "name": "CJ Allen",
+          "pos": "LB",
+          "team": "IND",
+          "age": 21,
+          "category": "foundational",
+          "tier": "S",
+          "ktcValue": 3400,
+          "ktcAdp": null,
+          "note": "Sleeper: started 42.5%, owned 68.3%. LB23 by usage."
+        },
+        {
+          "name": "Robert Spillane",
+          "pos": "LB",
+          "team": "NE",
+          "age": 30,
+          "category": "foundational",
+          "tier": "S",
+          "ktcValue": 3304,
+          "ktcAdp": null,
+          "note": "Sleeper: started 41.3%, owned 65.3%. LB24 by usage."
         },
         {
           "name": "AJ Haulcy",
@@ -574,20 +563,20 @@
           "age": 22,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 2808,
+          "ktcValue": 3160,
           "ktcAdp": null,
-          "note": "Sleeper: started 35.1%, owned 59.8%. DB11 by usage."
+          "note": "Sleeper: started 39.5%, owned 60.5%. DB11 by usage."
         },
         {
-          "name": "Laiatu Latu",
+          "name": "Jeffery Simmons",
           "pos": "DL",
-          "team": "IND",
-          "age": 25,
+          "team": "TEN",
+          "age": 28,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 2760,
+          "ktcValue": 2968,
           "ktcAdp": null,
-          "note": "Sleeper: started 34.5%, owned 56.3%. DL17 by usage."
+          "note": "Sleeper: started 37.1%, owned 64.1%. DT16 by usage."
         },
         {
           "name": "Emmanuel McNeil-Warren",
@@ -596,75 +585,75 @@
           "age": 22,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 2624,
+          "ktcValue": 2824,
           "ktcAdp": null,
-          "note": "Sleeper: started 32.8%, owned 56.9%. DB12 by usage."
+          "note": "Sleeper: started 35.3%, owned 59.3%. DB12 by usage."
         },
         {
-          "name": "Nick Emmanwori",
-          "pos": "DB",
-          "team": "SEA",
-          "age": 22,
+          "name": "Laiatu Latu",
+          "pos": "DL",
+          "team": "IND",
+          "age": 25,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 2576,
+          "ktcValue": 2824,
           "ktcAdp": null,
-          "note": "Sleeper: started 32.2%, owned 57.5%. DB13 by usage."
+          "note": "Sleeper: started 35.3%, owned 61.7%. DL17 by usage."
         },
         {
-          "name": "Kevin Byard",
+          "name": "Jonathan Greenard",
+          "pos": "DL",
+          "team": "PHI",
+          "age": 29,
+          "category": "foundational",
+          "tier": "S",
+          "ktcValue": 2776,
+          "ktcAdp": null,
+          "note": "Sleeper: started 34.7%, owned 56.9%. DE18 by usage."
+        },
+        {
+          "name": "Julian Love",
           "pos": "DB",
-          "team": "NE",
-          "age": 32,
+          "team": "SEA",
+          "age": 28,
+          "category": "foundational",
+          "tier": "S",
+          "ktcValue": 2680,
+          "ktcAdp": null,
+          "note": "Sleeper: started 33.5%, owned 50.3%. DB13 by usage."
+        },
+        {
+          "name": "Keldric Faulk",
+          "pos": "DL",
+          "team": "TEN",
+          "age": 21,
+          "category": "foundational",
+          "tier": "S",
+          "ktcValue": 2680,
+          "ktcAdp": null,
+          "note": "Sleeper: started 33.5%, owned 63.5%. DL19 by usage."
+        },
+        {
+          "name": "Jessie Bates",
+          "pos": "DB",
+          "team": "ATL",
+          "age": 29,
           "category": "foundational",
           "tier": "S",
           "ktcValue": 2440,
           "ktcAdp": null,
-          "note": "Sleeper: started 30.5%, owned 56.9%. DB14 by usage."
+          "note": "Sleeper: started 30.5%, owned 55.7%. DB14 by usage."
         },
         {
-          "name": "Cedric Gray",
+          "name": "Terrel Bernard",
           "pos": "LB",
-          "team": "TEN",
-          "age": 23,
+          "team": "BUF",
+          "age": 27,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 3176,
+          "ktcValue": 3304,
           "ktcAdp": null,
-          "note": "Sleeper: started 39.7%, owned 63.2%. LB25 by usage."
-        },
-        {
-          "name": "Robert Spillane",
-          "pos": "LB",
-          "team": "NE",
-          "age": 30,
-          "category": "foundational",
-          "tier": "A",
-          "ktcValue": 3176,
-          "ktcAdp": null,
-          "note": "Sleeper: started 39.7%, owned 60.3%. LB26 by usage."
-        },
-        {
-          "name": "Harold Landry",
-          "pos": "LB",
-          "team": "NE",
-          "age": 30,
-          "category": "foundational",
-          "tier": "A",
-          "ktcValue": 3080,
-          "ktcAdp": null,
-          "note": "Sleeper: started 38.5%, owned 59.8%. LB27 by usage."
-        },
-        {
-          "name": "Alex Singleton",
-          "pos": "LB",
-          "team": "DEN",
-          "age": 32,
-          "category": "foundational",
-          "tier": "A",
-          "ktcValue": 3080,
-          "ktcAdp": null,
-          "note": "Sleeper: started 38.5%, owned 58.0%. LB28 by usage."
+          "note": "Sleeper: started 41.3%, owned 65.3%. LB25 by usage."
         },
         {
           "name": "David Bailey",
@@ -673,31 +662,31 @@
           "age": 22,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 3032,
+          "ktcValue": 3208,
           "ktcAdp": null,
-          "note": "Sleeper: started 37.9%, owned 65.5%. LB29 by usage."
+          "note": "Sleeper: started 40.1%, owned 69.5%. LB26 by usage."
         },
         {
-          "name": "Patrick Queen",
+          "name": "Harold Landry",
           "pos": "LB",
-          "team": "PIT",
-          "age": 26,
+          "team": "NE",
+          "age": 30,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 3032,
+          "ktcValue": 3208,
           "ktcAdp": null,
-          "note": "Sleeper: started 37.9%, owned 59.8%. LB30 by usage."
+          "note": "Sleeper: started 40.1%, owned 64.7%. LB27 by usage."
         },
         {
-          "name": "Rashan Gary",
+          "name": "Alex Singleton",
           "pos": "LB",
-          "team": "DAL",
-          "age": 28,
+          "team": "DEN",
+          "age": 32,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 2944,
+          "ktcValue": 3208,
           "ktcAdp": null,
-          "note": "Sleeper: started 36.8%, owned 57.5%. LB31 by usage."
+          "note": "Sleeper: started 40.1%, owned 59.9%. LB28 by usage."
         },
         {
           "name": "Tyrel Dodson",
@@ -706,64 +695,64 @@
           "age": 28,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 2896,
+          "ktcValue": 3160,
           "ktcAdp": null,
-          "note": "Sleeper: started 36.2%, owned 55.2%. LB32 by usage."
+          "note": "Sleeper: started 39.5%, owned 59.9%. LB29 by usage."
         },
         {
-          "name": "Julian Love",
-          "pos": "DB",
-          "team": "SEA",
-          "age": 28,
-          "category": "foundational",
-          "tier": "A",
-          "ktcValue": 2392,
-          "ktcAdp": null,
-          "note": "Sleeper: started 29.9%, owned 51.1%. DB15 by usage."
-        },
-        {
-          "name": "Keldric Faulk",
-          "pos": "DL",
+          "name": "Anthony Hill",
+          "pos": "LB",
           "team": "TEN",
           "age": 21,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 2296,
+          "ktcValue": 3112,
           "ktcAdp": null,
-          "note": "Sleeper: started 28.7%, owned 55.7%. DL18 by usage."
+          "note": "Sleeper: started 38.9%, owned 70.7%. LB30 by usage."
         },
         {
-          "name": "Jermod McCoy",
+          "name": "Cedric Gray",
+          "pos": "LB",
+          "team": "TEN",
+          "age": 23,
+          "category": "foundational",
+          "tier": "A",
+          "ktcValue": 3112,
+          "ktcAdp": null,
+          "note": "Sleeper: started 38.9%, owned 69.5%. LB31 by usage."
+        },
+        {
+          "name": "Patrick Queen",
+          "pos": "LB",
+          "team": "PIT",
+          "age": 26,
+          "category": "foundational",
+          "tier": "A",
+          "ktcValue": 3016,
+          "ktcAdp": null,
+          "note": "Sleeper: started 37.7%, owned 62.9%. LB32 by usage."
+        },
+        {
+          "name": "Nick Emmanwori",
           "pos": "DB",
-          "team": "LV",
-          "age": 20,
+          "team": "SEA",
+          "age": 22,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 2256,
+          "ktcValue": 2392,
           "ktcAdp": null,
-          "note": "Sleeper: started 28.2%, owned 51.7%. DB16 by usage."
+          "note": "Sleeper: started 29.9%, owned 65.9%. DB15 by usage."
         },
         {
-          "name": "Jonathan Greenard",
-          "pos": "DL",
-          "team": "PHI",
-          "age": 29,
-          "category": "foundational",
-          "tier": "A",
-          "ktcValue": 2256,
-          "ktcAdp": null,
-          "note": "Sleeper: started 28.2%, owned 50.0%. DE19 by usage."
-        },
-        {
-          "name": "Jessie Bates",
+          "name": "Kevin Byard",
           "pos": "DB",
-          "team": "ATL",
-          "age": 29,
+          "team": "NE",
+          "age": 32,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 2160,
+          "ktcValue": 2392,
           "ktcAdp": null,
-          "note": "Sleeper: started 27.0%, owned 56.9%. DB17 by usage."
+          "note": "Sleeper: started 29.9%, owned 58.1%. DB16 by usage."
         },
         {
           "name": "Xavier McKinney",
@@ -772,108 +761,20 @@
           "age": 27,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 2160,
+          "ktcValue": 2344,
           "ktcAdp": null,
-          "note": "Sleeper: started 27.0%, owned 54.6%. DB18 by usage."
+          "note": "Sleeper: started 29.3%, owned 56.9%. DB17 by usage."
         },
         {
-          "name": "Xavier Watts",
+          "name": "Jermod McCoy",
           "pos": "DB",
-          "team": "ATL",
-          "age": 24,
+          "team": "LV",
+          "age": 20,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 2112,
+          "ktcValue": 2344,
           "ktcAdp": null,
-          "note": "Sleeper: started 26.4%, owned 53.4%. DB19 by usage."
-        },
-        {
-          "name": "Mansoor Delane",
-          "pos": "DB",
-          "team": "KC",
-          "age": 22,
-          "category": "foundational",
-          "tier": "A",
-          "ktcValue": 2024,
-          "ktcAdp": null,
-          "note": "Sleeper: started 25.3%, owned 48.3%. DB20 by usage."
-        },
-        {
-          "name": "Kayvon Thibodeaux",
-          "pos": "DL",
-          "team": "NYG",
-          "age": 25,
-          "category": "foundational",
-          "tier": "A",
-          "ktcValue": 2024,
-          "ktcAdp": null,
-          "note": "Sleeper: started 25.3%, owned 48.3%. DL20 by usage."
-        },
-        {
-          "name": "Jalen Pitre",
-          "pos": "DB",
-          "team": "HOU",
-          "age": 27,
-          "category": "foundational",
-          "tier": "A",
-          "ktcValue": 1976,
-          "ktcAdp": null,
-          "note": "Sleeper: started 24.7%, owned 42.5%. DB21 by usage."
-        },
-        {
-          "name": "Avieon Terrell",
-          "pos": "DB",
-          "team": "ATL",
-          "age": 21,
-          "category": "foundational",
-          "tier": "A",
-          "ktcValue": 1928,
-          "ktcAdp": null,
-          "note": "Sleeper: started 24.1%, owned 45.4%. DB22 by usage."
-        },
-        {
-          "name": "Akheem Mesidor",
-          "pos": "DL",
-          "team": "LAC",
-          "age": 25,
-          "category": "foundational",
-          "tier": "A",
-          "ktcValue": 1928,
-          "ktcAdp": null,
-          "note": "Sleeper: started 24.1%, owned 50.6%. DL21 by usage."
-        },
-        {
-          "name": "Tyler Nubin",
-          "pos": "DB",
-          "team": "NYG",
-          "age": 25,
-          "category": "foundational",
-          "tier": "A",
-          "ktcValue": 1888,
-          "ktcAdp": null,
-          "note": "Sleeper: started 23.6%, owned 42.0%. DB23 by usage."
-        },
-        {
-          "name": "Kamari Ramsey",
-          "pos": "DB",
-          "team": "HOU",
-          "age": 21,
-          "category": "foundational",
-          "tier": "A",
-          "ktcValue": 1888,
-          "ktcAdp": null,
-          "note": "Sleeper: started 23.6%, owned 41.4%. DB24 by usage."
-        },
-        {
-          "name": "Montez Sweat",
-          "pos": "DL",
-          "team": "CHI",
-          "age": 29,
-          "category": "foundational",
-          "tier": "A",
-          "ktcValue": 1888,
-          "ktcAdp": null,
-          "note": "Sleeper: started 23.6%, owned 49.4%. DE22 by usage."
+          "note": "Sleeper: started 29.3%, owned 53.9%. DB18 by usage."
         },
         {
           "name": "Josh Sweat",
@@ -882,20 +783,31 @@
           "age": 29,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 1888,
+          "ktcValue": 2296,
           "ktcAdp": null,
-          "note": "Sleeper: started 23.6%, owned 47.1%. DE23 by usage."
+          "note": "Sleeper: started 28.7%, owned 49.1%. DE20 by usage."
         },
         {
-          "name": "Cooper DeJean",
-          "pos": "DB",
-          "team": "PHI",
+          "name": "Cashius Howell",
+          "pos": "DL",
+          "team": "CIN",
           "age": 23,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 1840,
+          "ktcValue": 2200,
           "ktcAdp": null,
-          "note": "Sleeper: started 23.0%, owned 52.3%. DB25 by usage."
+          "note": "Sleeper: started 27.5%, owned 52.1%. DL21 by usage."
+        },
+        {
+          "name": "Kayvon Thibodeaux",
+          "pos": "DL",
+          "team": "NYG",
+          "age": 25,
+          "category": "foundational",
+          "tier": "A",
+          "ktcValue": 2200,
+          "ktcAdp": null,
+          "note": "Sleeper: started 27.5%, owned 50.9%. DL22 by usage."
         },
         {
           "name": "Malaki Starks",
@@ -904,64 +816,20 @@
           "age": 22,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 1840,
+          "ktcValue": 2152,
           "ktcAdp": null,
-          "note": "Sleeper: started 23.0%, owned 48.3%. DB26 by usage."
+          "note": "Sleeper: started 26.9%, owned 52.7%. DB19 by usage."
         },
         {
-          "name": "Yaya Diaby",
-          "pos": "DL",
-          "team": "TB",
-          "age": 27,
-          "category": "foundational",
-          "tier": "A",
-          "ktcValue": 1840,
-          "ktcAdp": null,
-          "note": "Sleeper: started 23.0%, owned 38.5%. DL24 by usage."
-        },
-        {
-          "name": "Devon Witherspoon",
+          "name": "Avieon Terrell",
           "pos": "DB",
-          "team": "SEA",
-          "age": 25,
+          "team": "ATL",
+          "age": 21,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 1792,
+          "ktcValue": 2152,
           "ktcAdp": null,
-          "note": "Sleeper: started 22.4%, owned 42.5%. DB27 by usage."
-        },
-        {
-          "name": "Joshua Metellus",
-          "pos": "DB",
-          "team": "MIN",
-          "age": 28,
-          "category": "foundational",
-          "tier": "A",
-          "ktcValue": 1792,
-          "ktcAdp": null,
-          "note": "Sleeper: started 22.4%, owned 36.2%. DB28 by usage."
-        },
-        {
-          "name": "Zach Allen",
-          "pos": "DL",
-          "team": "DEN",
-          "age": 28,
-          "category": "foundational",
-          "tier": "A",
-          "ktcValue": 1792,
-          "ktcAdp": null,
-          "note": "Sleeper: started 22.4%, owned 41.4%. DE25 by usage."
-        },
-        {
-          "name": "Talanoa Hufanga",
-          "pos": "DB",
-          "team": "DEN",
-          "age": 26,
-          "category": "foundational",
-          "tier": "A",
-          "ktcValue": 1656,
-          "ktcAdp": null,
-          "note": "Sleeper: started 20.7%, owned 58.0%. DB29 by usage."
+          "note": "Sleeper: started 26.9%, owned 50.3%. DB20 by usage."
         },
         {
           "name": "Antoine Winfield",
@@ -970,9 +838,141 @@
           "age": 27,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 1656,
+          "ktcValue": 2104,
           "ktcAdp": null,
-          "note": "Sleeper: started 20.7%, owned 47.7%. DB30 by usage."
+          "note": "Sleeper: started 26.3%, owned 46.7%. DB21 by usage."
+        },
+        {
+          "name": "Jalen Pitre",
+          "pos": "DB",
+          "team": "HOU",
+          "age": 27,
+          "category": "foundational",
+          "tier": "A",
+          "ktcValue": 2056,
+          "ktcAdp": null,
+          "note": "Sleeper: started 25.7%, owned 44.3%. DB22 by usage."
+        },
+        {
+          "name": "Mansoor Delane",
+          "pos": "DB",
+          "team": "KC",
+          "age": 22,
+          "category": "foundational",
+          "tier": "A",
+          "ktcValue": 2008,
+          "ktcAdp": null,
+          "note": "Sleeper: started 25.1%, owned 53.3%. DB23 by usage."
+        },
+        {
+          "name": "Kamari Ramsey",
+          "pos": "DB",
+          "team": "HOU",
+          "age": 21,
+          "category": "foundational",
+          "tier": "A",
+          "ktcValue": 1968,
+          "ktcAdp": null,
+          "note": "Sleeper: started 24.6%, owned 50.3%. DB24 by usage."
+        },
+        {
+          "name": "Akheem Mesidor",
+          "pos": "DL",
+          "team": "LAC",
+          "age": 25,
+          "category": "foundational",
+          "tier": "A",
+          "ktcValue": 1968,
+          "ktcAdp": null,
+          "note": "Sleeper: started 24.6%, owned 56.3%. DL23 by usage."
+        },
+        {
+          "name": "Yaya Diaby",
+          "pos": "DL",
+          "team": "TB",
+          "age": 27,
+          "category": "foundational",
+          "tier": "A",
+          "ktcValue": 1968,
+          "ktcAdp": null,
+          "note": "Sleeper: started 24.6%, owned 46.1%. DL24 by usage."
+        },
+        {
+          "name": "Talanoa Hufanga",
+          "pos": "DB",
+          "team": "DEN",
+          "age": 26,
+          "category": "foundational",
+          "tier": "A",
+          "ktcValue": 1920,
+          "ktcAdp": null,
+          "note": "Sleeper: started 24.0%, owned 55.1%. DB25 by usage."
+        },
+        {
+          "name": "Montez Sweat",
+          "pos": "DL",
+          "team": "CHI",
+          "age": 29,
+          "category": "foundational",
+          "tier": "A",
+          "ktcValue": 1920,
+          "ktcAdp": null,
+          "note": "Sleeper: started 24.0%, owned 48.5%. DE25 by usage."
+        },
+        {
+          "name": "Zach Allen",
+          "pos": "DL",
+          "team": "DEN",
+          "age": 28,
+          "category": "foundational",
+          "tier": "A",
+          "ktcValue": 1920,
+          "ktcAdp": null,
+          "note": "Sleeper: started 24.0%, owned 41.9%. DE26 by usage."
+        },
+        {
+          "name": "Xavier Watts",
+          "pos": "DB",
+          "team": "ATL",
+          "age": 24,
+          "category": "foundational",
+          "tier": "A",
+          "ktcValue": 1872,
+          "ktcAdp": null,
+          "note": "Sleeper: started 23.4%, owned 56.9%. DB26 by usage."
+        },
+        {
+          "name": "Tyler Nubin",
+          "pos": "DB",
+          "team": "NYG",
+          "age": 25,
+          "category": "foundational",
+          "tier": "A",
+          "ktcValue": 1872,
+          "ktcAdp": null,
+          "note": "Sleeper: started 23.4%, owned 43.1%. DB27 by usage."
+        },
+        {
+          "name": "Joshua Metellus",
+          "pos": "DB",
+          "team": "MIN",
+          "age": 28,
+          "category": "foundational",
+          "tier": "A",
+          "ktcValue": 1872,
+          "ktcAdp": null,
+          "note": "Sleeper: started 23.4%, owned 40.7%. DB28 by usage."
+        },
+        {
+          "name": "Cooper DeJean",
+          "pos": "DB",
+          "team": "PHI",
+          "age": 23,
+          "category": "foundational",
+          "tier": "A",
+          "ktcValue": 1824,
+          "ktcAdp": null,
+          "note": "Sleeper: started 22.8%, owned 52.7%. DB29 by usage."
         },
         {
           "name": "Jalen Carter",
@@ -981,20 +981,9 @@
           "age": 25,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 1608,
+          "ktcValue": 1728,
           "ktcAdp": null,
-          "note": "Sleeper: started 20.1%, owned 43.7%. DL26 by usage."
-        },
-        {
-          "name": "Tremaine Edmunds",
-          "pos": "LB",
-          "team": "NYG",
-          "age": 28,
-          "category": "foundational",
-          "tier": "B",
-          "ktcValue": 2712,
-          "ktcAdp": null,
-          "note": "Sleeper: started 33.9%, owned 57.5%. LB33 by usage."
+          "note": "Sleeper: started 21.6%, owned 47.3%. DL27 by usage."
         },
         {
           "name": "Blake Cashman",
@@ -1003,53 +992,20 @@
           "age": 30,
           "category": "foundational",
           "tier": "B",
-          "ktcValue": 2712,
+          "ktcValue": 3016,
           "ktcAdp": null,
-          "note": "Sleeper: started 33.9%, owned 54.0%. LB34 by usage."
+          "note": "Sleeper: started 37.7%, owned 58.1%. LB33 by usage."
         },
         {
-          "name": "Azeez Al-Shaair",
+          "name": "Rashan Gary",
           "pos": "LB",
-          "team": "HOU",
+          "team": "DAL",
           "age": 28,
           "category": "foundational",
           "tier": "B",
-          "ktcValue": 2664,
+          "ktcValue": 2920,
           "ktcAdp": null,
-          "note": "Sleeper: started 33.3%, owned 54.6%. LB35 by usage."
-        },
-        {
-          "name": "Jihaad Campbell",
-          "pos": "LB",
-          "team": "PHI",
-          "age": 22,
-          "category": "foundational",
-          "tier": "B",
-          "ktcValue": 2528,
-          "ktcAdp": null,
-          "note": "Sleeper: started 31.6%, owned 56.3%. LB36 by usage."
-        },
-        {
-          "name": "Travon Walker",
-          "pos": "LB",
-          "team": "JAX",
-          "age": 25,
-          "category": "foundational",
-          "tier": "B",
-          "ktcValue": 2480,
-          "ktcAdp": null,
-          "note": "Sleeper: started 31.0%, owned 48.3%. LB37 by usage."
-        },
-        {
-          "name": "Anthony Hill",
-          "pos": "LB",
-          "team": "TEN",
-          "age": 21,
-          "category": "foundational",
-          "tier": "B",
-          "ktcValue": 2392,
-          "ktcAdp": null,
-          "note": "Sleeper: started 29.9%, owned 62.1%. LB38 by usage."
+          "note": "Sleeper: started 36.5%, owned 64.1%. LB34 by usage."
         },
         {
           "name": "Nakobe Dean",
@@ -1058,9 +1014,42 @@
           "age": 25,
           "category": "foundational",
           "tier": "B",
-          "ktcValue": 2344,
+          "ktcValue": 2824,
           "ktcAdp": null,
-          "note": "Sleeper: started 29.3%, owned 64.4%. LB39 by usage."
+          "note": "Sleeper: started 35.3%, owned 74.3%. LB35 by usage."
+        },
+        {
+          "name": "Tremaine Edmunds",
+          "pos": "LB",
+          "team": "NYG",
+          "age": 28,
+          "category": "foundational",
+          "tier": "B",
+          "ktcValue": 2824,
+          "ktcAdp": null,
+          "note": "Sleeper: started 35.3%, owned 58.7%. LB36 by usage."
+        },
+        {
+          "name": "Jihaad Campbell",
+          "pos": "LB",
+          "team": "PHI",
+          "age": 22,
+          "category": "foundational",
+          "tier": "B",
+          "ktcValue": 2776,
+          "ktcAdp": null,
+          "note": "Sleeper: started 34.7%, owned 59.9%. LB37 by usage."
+        },
+        {
+          "name": "Azeez Al-Shaair",
+          "pos": "LB",
+          "team": "HOU",
+          "age": 28,
+          "category": "foundational",
+          "tier": "B",
+          "ktcValue": 2536,
+          "ktcAdp": null,
+          "note": "Sleeper: started 31.7%, owned 55.7%. LB38 by usage."
         },
         {
           "name": "Josiah Trotter",
@@ -1071,29 +1060,18 @@
           "tier": "B",
           "ktcValue": 2344,
           "ktcAdp": null,
-          "note": "Sleeper: started 29.3%, owned 56.3%. LB40 by usage."
+          "note": "Sleeper: started 29.3%, owned 62.3%. LB39 by usage."
         },
         {
-          "name": "Jaquan Brisker",
-          "pos": "DB",
+          "name": "Alex Highsmith",
+          "pos": "LB",
           "team": "PIT",
-          "age": 27,
+          "age": 28,
           "category": "foundational",
           "tier": "B",
-          "ktcValue": 1560,
+          "ktcValue": 2344,
           "ktcAdp": null,
-          "note": "Sleeper: started 19.5%, owned 36.8%. DB31 by usage."
-        },
-        {
-          "name": "Cashius Howell",
-          "pos": "DL",
-          "team": "CIN",
-          "age": 23,
-          "category": "foundational",
-          "tier": "B",
-          "ktcValue": 1520,
-          "ktcAdp": null,
-          "note": "Sleeper: started 19.0%, owned 43.1%. DL27 by usage."
+          "note": "Sleeper: started 29.3%, owned 52.7%. LB40 by usage."
         },
         {
           "name": "Jeremy Chinn",
@@ -1102,9 +1080,9 @@
           "age": 28,
           "category": "foundational",
           "tier": "B",
-          "ktcValue": 1472,
+          "ktcValue": 1584,
           "ktcAdp": null,
-          "note": "Sleeper: started 18.4%, owned 47.1%. DB32 by usage."
+          "note": "Sleeper: started 19.8%, owned 46.1%. DB30 by usage."
         },
         {
           "name": "Grant Delpit",
@@ -1113,42 +1091,20 @@
           "age": 27,
           "category": "foundational",
           "tier": "B",
-          "ktcValue": 1424,
+          "ktcValue": 1584,
           "ktcAdp": null,
-          "note": "Sleeper: started 17.8%, owned 37.4%. DB33 by usage."
+          "note": "Sleeper: started 19.8%, owned 40.7%. DB31 by usage."
         },
         {
-          "name": "Quinnen Williams",
-          "pos": "DL",
-          "team": "DAL",
-          "age": 28,
+          "name": "Devon Witherspoon",
+          "pos": "DB",
+          "team": "SEA",
+          "age": 25,
           "category": "foundational",
           "tier": "B",
-          "ktcValue": 1424,
+          "ktcValue": 1584,
           "ktcAdp": null,
-          "note": "Sleeper: started 17.8%, owned 36.8%. DT28 by usage."
-        },
-        {
-          "name": "Derrick Brown",
-          "pos": "DL",
-          "team": "CAR",
-          "age": 28,
-          "category": "foundational",
-          "tier": "B",
-          "ktcValue": 1376,
-          "ktcAdp": null,
-          "note": "Sleeper: started 17.2%, owned 31.0%. DT29 by usage."
-        },
-        {
-          "name": "Chop Robinson",
-          "pos": "DL",
-          "team": "MIA",
-          "age": 23,
-          "category": "foundational",
-          "tier": "B",
-          "ktcValue": 1336,
-          "ktcAdp": null,
-          "note": "Sleeper: started 16.7%, owned 37.9%. DE30 by usage."
+          "note": "Sleeper: started 19.8%, owned 40.7%. DB32 by usage."
         },
         {
           "name": "DeForest Buckner",
@@ -1157,31 +1113,20 @@
           "age": 32,
           "category": "foundational",
           "tier": "B",
-          "ktcValue": 1336,
+          "ktcValue": 1584,
           "ktcAdp": null,
-          "note": "Sleeper: started 16.7%, owned 36.8%. DT31 by usage."
+          "note": "Sleeper: started 19.8%, owned 39.5%. DT28 by usage."
         },
         {
-          "name": "Kamari Lassiter",
+          "name": "Jaquan Brisker",
           "pos": "DB",
-          "team": "HOU",
-          "age": 23,
+          "team": "PIT",
+          "age": 27,
           "category": "foundational",
           "tier": "B",
-          "ktcValue": 1288,
+          "ktcValue": 1536,
           "ktcAdp": null,
-          "note": "Sleeper: started 16.1%, owned 37.4%. DB34 by usage."
-        },
-        {
-          "name": "Minkah Fitzpatrick",
-          "pos": "DB",
-          "team": "NYJ",
-          "age": 29,
-          "category": "foundational",
-          "tier": "B",
-          "ktcValue": 1288,
-          "ktcAdp": null,
-          "note": "Sleeper: started 16.1%, owned 25.9%. DB35 by usage."
+          "note": "Sleeper: started 19.2%, owned 41.3%. DB33 by usage."
         },
         {
           "name": "Leonard Williams",
@@ -1190,53 +1135,152 @@
           "age": 32,
           "category": "foundational",
           "tier": "B",
-          "ktcValue": 1288,
+          "ktcValue": 1536,
           "ktcAdp": null,
-          "note": "Sleeper: started 16.1%, owned 37.4%. DE32 by usage."
+          "note": "Sleeper: started 19.2%, owned 40.1%. DE29 by usage."
         },
         {
-          "name": "Geno Stone",
+          "name": "Quinnen Williams",
+          "pos": "DL",
+          "team": "DAL",
+          "age": 28,
+          "category": "foundational",
+          "tier": "B",
+          "ktcValue": 1488,
+          "ktcAdp": null,
+          "note": "Sleeper: started 18.6%, owned 43.7%. DT30 by usage."
+        },
+        {
+          "name": "Chop Robinson",
+          "pos": "DL",
+          "team": "MIA",
+          "age": 23,
+          "category": "foundational",
+          "tier": "B",
+          "ktcValue": 1488,
+          "ktcAdp": null,
+          "note": "Sleeper: started 18.6%, owned 39.5%. DE31 by usage."
+        },
+        {
+          "name": "Quentin Lake",
           "pos": "DB",
-          "team": "BUF",
+          "team": "LAR",
           "age": 27,
           "category": "foundational",
           "tier": "B",
-          "ktcValue": 1240,
+          "ktcValue": 1392,
           "ktcAdp": null,
-          "note": "Sleeper: started 15.5%, owned 32.8%. DB36 by usage."
+          "note": "Sleeper: started 17.4%, owned 34.1%. DB34 by usage."
         },
         {
-          "name": "Dexter Lawrence",
-          "pos": "DL",
-          "team": "CIN",
+          "name": "Chamarri Conner",
+          "pos": "DB",
+          "team": "KC",
+          "age": 26,
+          "category": "foundational",
+          "tier": "B",
+          "ktcValue": 1344,
+          "ktcAdp": null,
+          "note": "Sleeper: started 16.8%, owned 52.7%. DB35 by usage."
+        },
+        {
+          "name": "Brandon Jones",
+          "pos": "DB",
+          "team": "DEN",
           "age": 28,
           "category": "foundational",
           "tier": "B",
-          "ktcValue": 1240,
+          "ktcValue": 1344,
           "ktcAdp": null,
-          "note": "Sleeper: started 15.5%, owned 33.9%. DT33 by usage."
+          "note": "Sleeper: started 16.8%, owned 27.5%. DB36 by usage."
         },
         {
-          "name": "Alex Highsmith",
-          "pos": "LB",
-          "team": "PIT",
+          "name": "Derrick Brown",
+          "pos": "DL",
+          "team": "CAR",
           "age": 28,
           "category": "foundational",
-          "tier": "C",
-          "ktcValue": 2296,
+          "tier": "B",
+          "ktcValue": 1344,
           "ktcAdp": null,
-          "note": "Sleeper: started 28.7%, owned 50.0%. LB41 by usage."
+          "note": "Sleeper: started 16.8%, owned 34.1%. DT32 by usage."
         },
         {
-          "name": "Demetrius Knight",
-          "pos": "LB",
+          "name": "Boye Mafe",
+          "pos": "DL",
           "team": "CIN",
+          "age": 27,
+          "category": "foundational",
+          "tier": "B",
+          "ktcValue": 1296,
+          "ktcAdp": null,
+          "note": "Sleeper: started 16.2%, owned 37.7%. DL33 by usage."
+        },
+        {
+          "name": "Calijah Kancey",
+          "pos": "DL",
+          "team": "TB",
+          "age": 25,
+          "category": "foundational",
+          "tier": "B",
+          "ktcValue": 1296,
+          "ktcAdp": null,
+          "note": "Sleeper: started 16.2%, owned 29.3%. DL34 by usage."
+        },
+        {
+          "name": "Minkah Fitzpatrick",
+          "pos": "DB",
+          "team": "NYJ",
+          "age": 29,
+          "category": "foundational",
+          "tier": "B",
+          "ktcValue": 1248,
+          "ktcAdp": null,
+          "note": "Sleeper: started 15.6%, owned 28.1%. DB37 by usage."
+        },
+        {
+          "name": "Kamari Lassiter",
+          "pos": "DB",
+          "team": "HOU",
+          "age": 23,
+          "category": "foundational",
+          "tier": "B",
+          "ktcValue": 1200,
+          "ktcAdp": null,
+          "note": "Sleeper: started 15.0%, owned 40.1%. DB38 by usage."
+        },
+        {
+          "name": "Cam Bynum",
+          "pos": "DB",
+          "team": "IND",
+          "age": 28,
+          "category": "foundational",
+          "tier": "B",
+          "ktcValue": 1200,
+          "ktcAdp": null,
+          "note": "Sleeper: started 15.0%, owned 30.5%. DB39 by usage."
+        },
+        {
+          "name": "Jalon Walker",
+          "pos": "DL",
+          "team": "ATL",
+          "age": 22,
+          "category": "foundational",
+          "tier": "B",
+          "ktcValue": 1200,
+          "ktcAdp": null,
+          "note": "Sleeper: started 15.0%, owned 34.7%. DL35 by usage."
+        },
+        {
+          "name": "Travon Walker",
+          "pos": "LB",
+          "team": "JAX",
           "age": 25,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 2160,
+          "ktcValue": 2200,
           "ktcAdp": null,
-          "note": "Sleeper: started 27.0%, owned 54.0%. LB42 by usage."
+          "note": "Sleeper: started 27.5%, owned 50.3%. LB41 by usage."
         },
         {
           "name": "Dee Winters",
@@ -1245,20 +1289,9 @@
           "age": 25,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 1888,
+          "ktcValue": 2056,
           "ktcAdp": null,
-          "note": "Sleeper: started 23.6%, owned 43.7%. LB43 by usage."
-        },
-        {
-          "name": "T.J. Edwards",
-          "pos": "LB",
-          "team": "CHI",
-          "age": 29,
-          "category": "foundational",
-          "tier": "C",
-          "ktcValue": 1840,
-          "ktcAdp": null,
-          "note": "Sleeper: started 23.0%, owned 44.3%. LB44 by usage."
+          "note": "Sleeper: started 25.7%, owned 46.7%. LB42 by usage."
         },
         {
           "name": "Frankie Luvu",
@@ -1267,9 +1300,20 @@
           "age": 29,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 1840,
+          "ktcValue": 2056,
           "ktcAdp": null,
-          "note": "Sleeper: started 23.0%, owned 42.0%. LB45 by usage."
+          "note": "Sleeper: started 25.7%, owned 44.9%. LB43 by usage."
+        },
+        {
+          "name": "Demetrius Knight",
+          "pos": "LB",
+          "team": "CIN",
+          "age": 26,
+          "category": "foundational",
+          "tier": "C",
+          "ktcValue": 2008,
+          "ktcAdp": null,
+          "note": "Sleeper: started 25.1%, owned 57.5%. LB44 by usage."
         },
         {
           "name": "Payton Wilson",
@@ -1278,20 +1322,31 @@
           "age": 26,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 1792,
+          "ktcValue": 2008,
           "ktcAdp": null,
-          "note": "Sleeper: started 22.4%, owned 42.5%. LB46 by usage."
+          "note": "Sleeper: started 25.1%, owned 45.5%. LB45 by usage."
         },
         {
-          "name": "Demario Davis",
+          "name": "Quincy Williams",
           "pos": "LB",
-          "team": "NYJ",
-          "age": 37,
+          "team": "CLE",
+          "age": 29,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 1744,
+          "ktcValue": 1968,
           "ktcAdp": null,
-          "note": "Sleeper: started 21.8%, owned 41.4%. LB47 by usage."
+          "note": "Sleeper: started 24.6%, owned 48.5%. LB46 by usage."
+        },
+        {
+          "name": "Jaelan Phillips",
+          "pos": "LB",
+          "team": "CAR",
+          "age": 27,
+          "category": "foundational",
+          "tier": "C",
+          "ktcValue": 1776,
+          "ktcAdp": null,
+          "note": "Sleeper: started 22.2%, owned 49.7%. LB47 by usage."
         },
         {
           "name": "Nate Landman",
@@ -1300,9 +1355,20 @@
           "age": 27,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 1704,
+          "ktcValue": 1728,
           "ktcAdp": null,
-          "note": "Sleeper: started 21.3%, owned 56.3%. LB48 by usage."
+          "note": "Sleeper: started 21.6%, owned 59.3%. LB48 by usage."
+        },
+        {
+          "name": "Kaden Elliss",
+          "pos": "LB",
+          "team": "NO",
+          "age": 31,
+          "category": "foundational",
+          "tier": "C",
+          "ktcValue": 1728,
+          "ktcAdp": null,
+          "note": "Sleeper: started 21.6%, owned 46.1%. LB49 by usage."
         },
         {
           "name": "Devin Bush",
@@ -1311,31 +1377,31 @@
           "age": 28,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 1704,
+          "ktcValue": 1632,
           "ktcAdp": null,
-          "note": "Sleeper: started 21.3%, owned 56.3%. LB49 by usage."
+          "note": "Sleeper: started 20.4%, owned 56.3%. LB50 by usage."
         },
         {
-          "name": "Dallas Turner",
-          "pos": "LB",
-          "team": "MIN",
-          "age": 23,
-          "category": "foundational",
-          "tier": "C",
-          "ktcValue": 1704,
-          "ktcAdp": null,
-          "note": "Sleeper: started 21.3%, owned 48.3%. LB50 by usage."
-        },
-        {
-          "name": "Chamarri Conner",
+          "name": "Kerby Joseph",
           "pos": "DB",
-          "team": "KC",
-          "age": 26,
+          "team": "DET",
+          "age": 25,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 1192,
+          "ktcValue": 1152,
           "ktcAdp": null,
-          "note": "Sleeper: started 14.9%, owned 44.3%. DB37 by usage."
+          "note": "Sleeper: started 14.4%, owned 26.3%. DB40 by usage."
+        },
+        {
+          "name": "Mike Sainristil",
+          "pos": "DB",
+          "team": "WAS",
+          "age": 25,
+          "category": "foundational",
+          "tier": "C",
+          "ktcValue": 1152,
+          "ktcAdp": null,
+          "note": "Sleeper: started 14.4%, owned 22.2%. DB41 by usage."
         },
         {
           "name": "Peter Woods",
@@ -1344,31 +1410,20 @@
           "age": 21,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 1192,
-          "ktcAdp": null,
-          "note": "Sleeper: started 14.9%, owned 39.1%. DL34 by usage."
-        },
-        {
-          "name": "Cam Bynum",
-          "pos": "DB",
-          "team": "IND",
-          "age": 28,
-          "category": "foundational",
-          "tier": "C",
           "ktcValue": 1152,
           "ktcAdp": null,
-          "note": "Sleeper: started 14.4%, owned 28.7%. DB38 by usage."
+          "note": "Sleeper: started 14.4%, owned 44.3%. DL36 by usage."
         },
         {
-          "name": "George Karlaftis",
+          "name": "Dorance Armstrong",
           "pos": "DL",
-          "team": "KC",
-          "age": 25,
+          "team": "WAS",
+          "age": 29,
           "category": "foundational",
           "tier": "C",
           "ktcValue": 1152,
           "ktcAdp": null,
-          "note": "Sleeper: started 14.4%, owned 27.6%. DL35 by usage."
+          "note": "Sleeper: started 14.4%, owned 29.3%. DE37 by usage."
         },
         {
           "name": "Chris Jones",
@@ -1379,40 +1434,7 @@
           "tier": "C",
           "ktcValue": 1152,
           "ktcAdp": null,
-          "note": "Sleeper: started 14.4%, owned 21.3%. DT36 by usage."
-        },
-        {
-          "name": "Brandon Jones",
-          "pos": "DB",
-          "team": "DEN",
-          "age": 28,
-          "category": "foundational",
-          "tier": "C",
-          "ktcValue": 1104,
-          "ktcAdp": null,
-          "note": "Sleeper: started 13.8%, owned 24.7%. DB39 by usage."
-        },
-        {
-          "name": "Paulson Adebo",
-          "pos": "DB",
-          "team": "NYG",
-          "age": 27,
-          "category": "foundational",
-          "tier": "C",
-          "ktcValue": 1104,
-          "ktcAdp": null,
-          "note": "Sleeper: started 13.8%, owned 24.1%. CB40 by usage."
-        },
-        {
-          "name": "Quentin Lake",
-          "pos": "DB",
-          "team": "LAR",
-          "age": 27,
-          "category": "foundational",
-          "tier": "C",
-          "ktcValue": 1056,
-          "ktcAdp": null,
-          "note": "Sleeper: started 13.2%, owned 33.9%. DB41 by usage."
+          "note": "Sleeper: started 14.4%, owned 26.3%. DT38 by usage."
         },
         {
           "name": "Jalen Thompson",
@@ -1423,29 +1445,51 @@
           "tier": "C",
           "ktcValue": 1056,
           "ktcAdp": null,
-          "note": "Sleeper: started 13.2%, owned 22.4%. DB42 by usage."
+          "note": "Sleeper: started 13.2%, owned 22.8%. DB42 by usage."
         },
         {
-          "name": "Jalon Walker",
+          "name": "Dexter Lawrence",
           "pos": "DL",
-          "team": "ATL",
-          "age": 22,
+          "team": "CIN",
+          "age": 28,
           "category": "foundational",
           "tier": "C",
           "ktcValue": 1056,
           "ktcAdp": null,
-          "note": "Sleeper: started 13.2%, owned 31.6%. DL37 by usage."
+          "note": "Sleeper: started 13.2%, owned 40.1%. DT39 by usage."
         },
         {
-          "name": "Boye Mafe",
+          "name": "George Karlaftis",
           "pos": "DL",
-          "team": "CIN",
+          "team": "KC",
+          "age": 25,
+          "category": "foundational",
+          "tier": "C",
+          "ktcValue": 1056,
+          "ktcAdp": null,
+          "note": "Sleeper: started 13.2%, owned 33.5%. DL40 by usage."
+        },
+        {
+          "name": "Geno Stone",
+          "pos": "DB",
+          "team": "BUF",
           "age": 27,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 1056,
+          "ktcValue": 1008,
           "ktcAdp": null,
-          "note": "Sleeper: started 13.2%, owned 31.6%. DL38 by usage."
+          "note": "Sleeper: started 12.6%, owned 31.7%. DB43 by usage."
+        },
+        {
+          "name": "Reed Blankenship",
+          "pos": "DB",
+          "team": "HOU",
+          "age": 27,
+          "category": "foundational",
+          "tier": "C",
+          "ktcValue": 1008,
+          "ktcAdp": null,
+          "note": "Sleeper: started 12.6%, owned 26.9%. DB44 by usage."
         },
         {
           "name": "Will McDonald",
@@ -1454,108 +1498,9 @@
           "age": 27,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 1056,
-          "ktcAdp": null,
-          "note": "Sleeper: started 13.2%, owned 24.1%. DE39 by usage."
-        },
-        {
-          "name": "Kerby Joseph",
-          "pos": "DB",
-          "team": "DET",
-          "age": 25,
-          "category": "foundational",
-          "tier": "C",
           "ktcValue": 1008,
           "ktcAdp": null,
-          "note": "Sleeper: started 12.6%, owned 25.9%. DB43 by usage."
-        },
-        {
-          "name": "Ed Oliver",
-          "pos": "DL",
-          "team": "BUF",
-          "age": 28,
-          "category": "foundational",
-          "tier": "C",
-          "ktcValue": 1008,
-          "ktcAdp": null,
-          "note": "Sleeper: started 12.6%, owned 26.4%. DT40 by usage."
-        },
-        {
-          "name": "Calijah Kancey",
-          "pos": "DL",
-          "team": "TB",
-          "age": 25,
-          "category": "foundational",
-          "tier": "C",
-          "ktcValue": 968,
-          "ktcAdp": null,
-          "note": "Sleeper: started 12.1%, owned 28.7%. DL41 by usage."
-        },
-        {
-          "name": "Zach Sieler",
-          "pos": "DL",
-          "team": "MIA",
-          "age": 30,
-          "category": "foundational",
-          "tier": "C",
-          "ktcValue": 968,
-          "ktcAdp": null,
-          "note": "Sleeper: started 12.1%, owned 23.6%. DT42 by usage."
-        },
-        {
-          "name": "Pat Surtain",
-          "pos": "DB",
-          "team": "DEN",
-          "age": 26,
-          "category": "foundational",
-          "tier": "C",
-          "ktcValue": 920,
-          "ktcAdp": null,
-          "note": "Sleeper: started 11.5%, owned 23.6%. CB44 by usage."
-        },
-        {
-          "name": "Brandon Cisse",
-          "pos": "DB",
-          "team": "GB",
-          "age": 21,
-          "category": "foundational",
-          "tier": "C",
-          "ktcValue": 872,
-          "ktcAdp": null,
-          "note": "Sleeper: started 10.9%, owned 24.1%. DB45 by usage."
-        },
-        {
-          "name": "Dorance Armstrong",
-          "pos": "DL",
-          "team": "WAS",
-          "age": 29,
-          "category": "foundational",
-          "tier": "C",
-          "ktcValue": 872,
-          "ktcAdp": null,
-          "note": "Sleeper: started 10.9%, owned 30.5%. DE43 by usage."
-        },
-        {
-          "name": "Kobie Turner",
-          "pos": "DL",
-          "team": "LAR",
-          "age": 27,
-          "category": "foundational",
-          "tier": "C",
-          "ktcValue": 872,
-          "ktcAdp": null,
-          "note": "Sleeper: started 10.9%, owned 25.3%. DT44 by usage."
-        },
-        {
-          "name": "Jordan Battle",
-          "pos": "DB",
-          "team": "CIN",
-          "age": 25,
-          "category": "foundational",
-          "tier": "C",
-          "ktcValue": 824,
-          "ktcAdp": null,
-          "note": "Sleeper: started 10.3%, owned 33.3%. DB46 by usage."
+          "note": "Sleeper: started 12.6%, owned 25.7%. DE41 by usage."
         },
         {
           "name": "Alontae Taylor",
@@ -1564,9 +1509,119 @@
           "age": 27,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 824,
+          "ktcValue": 960,
           "ktcAdp": null,
-          "note": "Sleeper: started 10.3%, owned 28.2%. DB47 by usage."
+          "note": "Sleeper: started 12.0%, owned 32.3%. DB45 by usage."
+        },
+        {
+          "name": "Paulson Adebo",
+          "pos": "DB",
+          "team": "NYG",
+          "age": 27,
+          "category": "foundational",
+          "tier": "C",
+          "ktcValue": 960,
+          "ktcAdp": null,
+          "note": "Sleeper: started 12.0%, owned 25.7%. CB46 by usage."
+        },
+        {
+          "name": "Kobie Turner",
+          "pos": "DL",
+          "team": "LAR",
+          "age": 27,
+          "category": "foundational",
+          "tier": "C",
+          "ktcValue": 912,
+          "ktcAdp": null,
+          "note": "Sleeper: started 11.4%, owned 31.7%. DT42 by usage."
+        },
+        {
+          "name": "Ed Oliver",
+          "pos": "DL",
+          "team": "BUF",
+          "age": 28,
+          "category": "foundational",
+          "tier": "C",
+          "ktcValue": 912,
+          "ktcAdp": null,
+          "note": "Sleeper: started 11.4%, owned 28.1%. DT43 by usage."
+        },
+        {
+          "name": "Brandon Cisse",
+          "pos": "DB",
+          "team": "GB",
+          "age": 21,
+          "category": "foundational",
+          "tier": "C",
+          "ktcValue": 864,
+          "ktcAdp": null,
+          "note": "Sleeper: started 10.8%, owned 23.4%. DB47 by usage."
+        },
+        {
+          "name": "Keith Abney",
+          "pos": "DB",
+          "team": "DET",
+          "age": 21,
+          "category": "foundational",
+          "tier": "C",
+          "ktcValue": 864,
+          "ktcAdp": null,
+          "note": "Sleeper: started 10.8%, owned 23.4%. DB48 by usage."
+        },
+        {
+          "name": "Chase Young",
+          "pos": "DL",
+          "team": "NO",
+          "age": 27,
+          "category": "foundational",
+          "tier": "C",
+          "ktcValue": 864,
+          "ktcAdp": null,
+          "note": "Sleeper: started 10.8%, owned 35.3%. DE44 by usage."
+        },
+        {
+          "name": "Zach Sieler",
+          "pos": "DL",
+          "team": "MIA",
+          "age": 30,
+          "category": "foundational",
+          "tier": "C",
+          "ktcValue": 864,
+          "ktcAdp": null,
+          "note": "Sleeper: started 10.8%, owned 26.9%. DT45 by usage."
+        },
+        {
+          "name": "Kayden McDonald",
+          "pos": "DL",
+          "team": "HOU",
+          "age": 21,
+          "category": "foundational",
+          "tier": "C",
+          "ktcValue": 864,
+          "ktcAdp": null,
+          "note": "Sleeper: started 10.8%, owned 23.4%. DL46 by usage."
+        },
+        {
+          "name": "Mykel Williams",
+          "pos": "DL",
+          "team": "SF",
+          "age": 22,
+          "category": "foundational",
+          "tier": "C",
+          "ktcValue": 864,
+          "ktcAdp": null,
+          "note": "Sleeper: started 10.8%, owned 21.0%. DL47 by usage."
+        },
+        {
+          "name": "Cole Bishop",
+          "pos": "DB",
+          "team": "BUF",
+          "age": 23,
+          "category": "foundational",
+          "tier": "C",
+          "ktcValue": 816,
+          "ktcAdp": null,
+          "note": "Sleeper: started 10.2%, owned 31.1%. DB49 by usage."
         },
         {
           "name": "DeShon Elliott",
@@ -1575,53 +1630,53 @@
           "age": 29,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 824,
+          "ktcValue": 816,
           "ktcAdp": null,
-          "note": "Sleeper: started 10.3%, owned 27.0%. DB48 by usage."
+          "note": "Sleeper: started 10.2%, owned 26.9%. DB50 by usage."
         },
         {
-          "name": "Christian Gonzalez",
-          "pos": "DB",
-          "team": "NE",
-          "age": 24,
-          "category": "foundational",
-          "tier": "C",
-          "ktcValue": 824,
-          "ktcAdp": null,
-          "note": "Sleeper: started 10.3%, owned 22.4%. DB49 by usage."
-        },
-        {
-          "name": "Marcus Jones",
-          "pos": "DB",
-          "team": "NE",
-          "age": 27,
-          "category": "foundational",
-          "tier": "C",
-          "ktcValue": 824,
-          "ktcAdp": null,
-          "note": "Sleeper: started 10.3%, owned 19.5%. DB50 by usage."
-        },
-        {
-          "name": "Jonathon Cooper",
+          "name": "Malachi Lawrence",
           "pos": "DL",
-          "team": "DEN",
-          "age": 28,
+          "team": "DAL",
+          "age": 23,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 824,
+          "ktcValue": 816,
           "ktcAdp": null,
-          "note": "Sleeper: started 10.3%, owned 24.1%. DL45 by usage."
+          "note": "Sleeper: started 10.2%, owned 26.3%. DL48 by usage."
         },
         {
-          "name": "Cameron Heyward",
-          "pos": "DL",
-          "team": "PIT",
+          "name": "Dallas Turner",
+          "pos": "LB",
+          "team": "MIN",
+          "age": 23,
+          "category": "foundational",
+          "tier": "D",
+          "ktcValue": 1632,
+          "ktcAdp": null,
+          "note": "Sleeper: started 20.4%, owned 55.1%. LB51 by usage."
+        },
+        {
+          "name": "Demario Davis",
+          "pos": "LB",
+          "team": "NYJ",
           "age": 37,
           "category": "foundational",
-          "tier": "C",
-          "ktcValue": 824,
+          "tier": "D",
+          "ktcValue": 1632,
           "ktcAdp": null,
-          "note": "Sleeper: started 10.3%, owned 20.7%. DT46 by usage."
+          "note": "Sleeper: started 20.4%, owned 43.7%. LB52 by usage."
+        },
+        {
+          "name": "T.J. Edwards",
+          "pos": "LB",
+          "team": "CHI",
+          "age": 29,
+          "category": "foundational",
+          "tier": "D",
+          "ktcValue": 1536,
+          "ktcAdp": null,
+          "note": "Sleeper: started 19.2%, owned 46.1%. LB53 by usage."
         },
         {
           "name": "Teddye Buchanan",
@@ -1630,86 +1685,9 @@
           "age": 23,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 1656,
+          "ktcValue": 1440,
           "ktcAdp": null,
-          "note": "Sleeper: started 20.7%, owned 37.9%. LB51 by usage."
-        },
-        {
-          "name": "Kaden Elliss",
-          "pos": "LB",
-          "team": "NO",
-          "age": 31,
-          "category": "foundational",
-          "tier": "D",
-          "ktcValue": 1608,
-          "ktcAdp": null,
-          "note": "Sleeper: started 20.1%, owned 45.4%. LB52 by usage."
-        },
-        {
-          "name": "Jaelan Phillips",
-          "pos": "LB",
-          "team": "CAR",
-          "age": 27,
-          "category": "foundational",
-          "tier": "D",
-          "ktcValue": 1472,
-          "ktcAdp": null,
-          "note": "Sleeper: started 18.4%, owned 49.4%. LB53 by usage."
-        },
-        {
-          "name": "Quincy Williams",
-          "pos": "LB",
-          "team": "CLE",
-          "age": 29,
-          "category": "foundational",
-          "tier": "D",
-          "ktcValue": 1472,
-          "ktcAdp": null,
-          "note": "Sleeper: started 18.4%, owned 44.8%. LB54 by usage."
-        },
-        {
-          "name": "Christian Rozeboom",
-          "pos": "LB",
-          "team": "TB",
-          "age": 29,
-          "category": "foundational",
-          "tier": "D",
-          "ktcValue": 1424,
-          "ktcAdp": null,
-          "note": "Sleeper: started 17.8%, owned 38.5%. LB55 by usage."
-        },
-        {
-          "name": "Odafe Oweh",
-          "pos": "LB",
-          "team": "WAS",
-          "age": 27,
-          "category": "foundational",
-          "tier": "D",
-          "ktcValue": 1424,
-          "ktcAdp": null,
-          "note": "Sleeper: started 17.8%, owned 28.7%. LB56 by usage."
-        },
-        {
-          "name": "Henry To'oTo'o",
-          "pos": "LB",
-          "team": "HOU",
-          "age": 25,
-          "category": "foundational",
-          "tier": "D",
-          "ktcValue": 1336,
-          "ktcAdp": null,
-          "note": "Sleeper: started 16.7%, owned 42.5%. LB57 by usage."
-        },
-        {
-          "name": "SirVocea Dennis",
-          "pos": "LB",
-          "team": "TB",
-          "age": 26,
-          "category": "foundational",
-          "tier": "D",
-          "ktcValue": 1288,
-          "ktcAdp": null,
-          "note": "Sleeper: started 16.1%, owned 36.2%. LB58 by usage."
+          "note": "Sleeper: started 18.0%, owned 34.7%. LB54 by usage."
         },
         {
           "name": "Bradley Chubb",
@@ -1718,119 +1696,64 @@
           "age": 30,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 1240,
+          "ktcValue": 1392,
           "ktcAdp": null,
-          "note": "Sleeper: started 15.5%, owned 40.8%. LB59 by usage."
+          "note": "Sleeper: started 17.4%, owned 40.7%. LB55 by usage."
         },
         {
-          "name": "Alex Anzalone",
+          "name": "Christian Rozeboom",
           "pos": "LB",
           "team": "TB",
-          "age": 31,
+          "age": 29,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 1192,
+          "ktcValue": 1392,
           "ktcAdp": null,
-          "note": "Sleeper: started 14.9%, owned 41.4%. LB60 by usage."
+          "note": "Sleeper: started 17.4%, owned 39.5%. LB56 by usage."
         },
         {
-          "name": "Mike Sainristil",
-          "pos": "DB",
-          "team": "WAS",
-          "age": 25,
-          "category": "foundational",
-          "tier": "D",
-          "ktcValue": 824,
-          "ktcAdp": null,
-          "note": "Sleeper: started 10.3%, owned 18.4%. DB51 by usage."
-        },
-        {
-          "name": "Cole Bishop",
-          "pos": "DB",
-          "team": "BUF",
-          "age": 23,
-          "category": "foundational",
-          "tier": "D",
-          "ktcValue": 784,
-          "ktcAdp": null,
-          "note": "Sleeper: started 9.8%, owned 31.0%. DB52 by usage."
-        },
-        {
-          "name": "Keith Abney",
-          "pos": "DB",
-          "team": "DET",
-          "age": 21,
-          "category": "foundational",
-          "tier": "D",
-          "ktcValue": 784,
-          "ktcAdp": null,
-          "note": "Sleeper: started 9.8%, owned 22.4%. DB53 by usage."
-        },
-        {
-          "name": "Chase Young",
-          "pos": "DL",
-          "team": "NO",
-          "age": 27,
-          "category": "foundational",
-          "tier": "D",
-          "ktcValue": 784,
-          "ktcAdp": null,
-          "note": "Sleeper: started 9.8%, owned 36.2%. DE47 by usage."
-        },
-        {
-          "name": "Mykel Williams",
-          "pos": "DL",
-          "team": "SF",
-          "age": 22,
-          "category": "foundational",
-          "tier": "D",
-          "ktcValue": 784,
-          "ktcAdp": null,
-          "note": "Sleeper: started 9.8%, owned 20.7%. DL48 by usage."
-        },
-        {
-          "name": "Reed Blankenship",
-          "pos": "DB",
-          "team": "HOU",
-          "age": 27,
-          "category": "foundational",
-          "tier": "D",
-          "ktcValue": 736,
-          "ktcAdp": null,
-          "note": "Sleeper: started 9.2%, owned 26.4%. DB54 by usage."
-        },
-        {
-          "name": "Isaiah Pola-Mao",
-          "pos": "DB",
-          "team": "LV",
-          "age": 27,
-          "category": "foundational",
-          "tier": "D",
-          "ktcValue": 736,
-          "ktcAdp": null,
-          "note": "Sleeper: started 9.2%, owned 19.5%. DB55 by usage."
-        },
-        {
-          "name": "Malik Mustapha",
-          "pos": "DB",
-          "team": "SF",
-          "age": 24,
-          "category": "foundational",
-          "tier": "D",
-          "ktcValue": 736,
-          "ktcAdp": null,
-          "note": "Sleeper: started 9.2%, owned 19.0%. DB56 by usage."
-        },
-        {
-          "name": "Jevon Holland",
-          "pos": "DB",
-          "team": "NYG",
+          "name": "SirVocea Dennis",
+          "pos": "LB",
+          "team": "TB",
           "age": 26,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 736,
+          "ktcValue": 1344,
           "ktcAdp": null,
-          "note": "Sleeper: started 9.2%, owned 17.8%. DB57 by usage."
+          "note": "Sleeper: started 16.8%, owned 36.5%. LB57 by usage."
+        },
+        {
+          "name": "Dre Greenlaw",
+          "pos": "LB",
+          "team": "SF",
+          "age": 29,
+          "category": "foundational",
+          "tier": "D",
+          "ktcValue": 1344,
+          "ktcAdp": null,
+          "note": "Sleeper: started 16.8%, owned 36.5%. LB58 by usage."
+        },
+        {
+          "name": "Cody Barton",
+          "pos": "LB",
+          "team": "TEN",
+          "age": 29,
+          "category": "foundational",
+          "tier": "D",
+          "ktcValue": 1296,
+          "ktcAdp": null,
+          "note": "Sleeper: started 16.2%, owned 34.1%. LB59 by usage."
+        },
+        {
+          "name": "Henry To'oTo'o",
+          "pos": "LB",
+          "team": "HOU",
+          "age": 25,
+          "category": "foundational",
+          "tier": "D",
+          "ktcValue": 1248,
+          "ktcAdp": null,
+          "note": "Sleeper: started 15.6%, owned 44.3%. LB60 by usage."
         },
         {
           "name": "Alohi Gilman",
@@ -1839,42 +1762,31 @@
           "age": 28,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 736,
+          "ktcValue": 816,
           "ktcAdp": null,
-          "note": "Sleeper: started 9.2%, owned 16.1%. DB58 by usage."
+          "note": "Sleeper: started 10.2%, owned 18.6%. DB51 by usage."
         },
         {
-          "name": "Kayden McDonald",
-          "pos": "DL",
-          "team": "HOU",
-          "age": 21,
-          "category": "foundational",
-          "tier": "D",
-          "ktcValue": 736,
-          "ktcAdp": null,
-          "note": "Sleeper: started 9.2%, owned 23.6%. DL49 by usage."
-        },
-        {
-          "name": "Trent McDuffie",
+          "name": "Amani Hooker",
           "pos": "DB",
-          "team": "LAR",
-          "age": 25,
+          "team": "TEN",
+          "age": 28,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 688,
+          "ktcValue": 768,
           "ktcAdp": null,
-          "note": "Sleeper: started 8.6%, owned 21.3%. DB59 by usage."
+          "note": "Sleeper: started 9.6%, owned 21.6%. DB52 by usage."
         },
         {
-          "name": "Coby Bryant",
+          "name": "Jevon Holland",
           "pos": "DB",
-          "team": "CHI",
-          "age": 27,
+          "team": "NYG",
+          "age": 26,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 688,
+          "ktcValue": 768,
           "ktcAdp": null,
-          "note": "Sleeper: started 8.6%, owned 20.1%. DB60 by usage."
+          "note": "Sleeper: started 9.6%, owned 18.6%. DB53 by usage."
         },
         {
           "name": "James Pearce",
@@ -1883,53 +1795,53 @@
           "age": 22,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 688,
+          "ktcValue": 768,
           "ktcAdp": null,
-          "note": "Sleeper: started 8.6%, owned 25.9%. DL50 by usage."
+          "note": "Sleeper: started 9.6%, owned 26.9%. DL49 by usage."
         },
         {
-          "name": "Nic Scourton",
+          "name": "Cameron Heyward",
           "pos": "DL",
-          "team": "CAR",
-          "age": 21,
+          "team": "PIT",
+          "age": 37,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 688,
+          "ktcValue": 768,
           "ktcAdp": null,
-          "note": "Sleeper: started 8.6%, owned 24.1%. DL51 by usage."
+          "note": "Sleeper: started 9.6%, owned 25.7%. DT50 by usage."
         },
         {
-          "name": "Malachi Lawrence",
+          "name": "Jonathon Cooper",
           "pos": "DL",
-          "team": "DAL",
-          "age": 22,
-          "category": "foundational",
-          "tier": "D",
-          "ktcValue": 640,
-          "ktcAdp": null,
-          "note": "Sleeper: started 8.0%, owned 24.1%. DL52 by usage."
-        },
-        {
-          "name": "Nnamdi Madubuike",
-          "pos": "DL",
-          "team": "BAL",
+          "team": "DEN",
           "age": 28,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 640,
+          "ktcValue": 768,
           "ktcAdp": null,
-          "note": "Sleeper: started 8.0%, owned 23.6%. DT53 by usage."
+          "note": "Sleeper: started 9.6%, owned 25.1%. DL51 by usage."
         },
         {
-          "name": "Mike Green",
-          "pos": "DL",
-          "team": "BAL",
-          "age": 22,
+          "name": "Javon Bullard",
+          "pos": "DB",
+          "team": "GB",
+          "age": 23,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 640,
+          "ktcValue": 720,
           "ktcAdp": null,
-          "note": "Sleeper: started 8.0%, owned 23.0%. DL54 by usage."
+          "note": "Sleeper: started 9.0%, owned 16.8%. DB54 by usage."
+        },
+        {
+          "name": "Justin Reid",
+          "pos": "DB",
+          "team": "NO",
+          "age": 29,
+          "category": "foundational",
+          "tier": "D",
+          "ktcValue": 720,
+          "ktcAdp": null,
+          "note": "Sleeper: started 9.0%, owned 16.8%. DB55 by usage."
         },
         {
           "name": "Christen Miller",
@@ -1938,9 +1850,97 @@
           "age": 21,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 600,
+          "ktcValue": 720,
           "ktcAdp": null,
-          "note": "Sleeper: started 7.5%, owned 25.9%. DL55 by usage."
+          "note": "Sleeper: started 9.0%, owned 25.7%. DL52 by usage."
+        },
+        {
+          "name": "Nnamdi Madubuike",
+          "pos": "DL",
+          "team": "BAL",
+          "age": 28,
+          "category": "foundational",
+          "tier": "D",
+          "ktcValue": 720,
+          "ktcAdp": null,
+          "note": "Sleeper: started 9.0%, owned 24.0%. DT53 by usage."
+        },
+        {
+          "name": "Isaiah Pola-Mao",
+          "pos": "DB",
+          "team": "LV",
+          "age": 27,
+          "category": "foundational",
+          "tier": "D",
+          "ktcValue": 672,
+          "ktcAdp": null,
+          "note": "Sleeper: started 8.4%, owned 19.8%. DB56 by usage."
+        },
+        {
+          "name": "Nic Scourton",
+          "pos": "DL",
+          "team": "CAR",
+          "age": 21,
+          "category": "foundational",
+          "tier": "D",
+          "ktcValue": 672,
+          "ktcAdp": null,
+          "note": "Sleeper: started 8.4%, owned 24.6%. DL54 by usage."
+        },
+        {
+          "name": "Mike Green",
+          "pos": "DL",
+          "team": "BAL",
+          "age": 22,
+          "category": "foundational",
+          "tier": "D",
+          "ktcValue": 672,
+          "ktcAdp": null,
+          "note": "Sleeper: started 8.4%, owned 22.8%. DL55 by usage."
+        },
+        {
+          "name": "Jordan Battle",
+          "pos": "DB",
+          "team": "CIN",
+          "age": 25,
+          "category": "foundational",
+          "tier": "D",
+          "ktcValue": 624,
+          "ktcAdp": null,
+          "note": "Sleeper: started 7.8%, owned 28.7%. DB57 by usage."
+        },
+        {
+          "name": "Evan Williams",
+          "pos": "DB",
+          "team": "GB",
+          "age": 24,
+          "category": "foundational",
+          "tier": "D",
+          "ktcValue": 624,
+          "ktcAdp": null,
+          "note": "Sleeper: started 7.8%, owned 19.8%. DB58 by usage."
+        },
+        {
+          "name": "Chris Johnson",
+          "pos": "DB",
+          "team": "MIA",
+          "age": 21,
+          "category": "foundational",
+          "tier": "D",
+          "ktcValue": 624,
+          "ktcAdp": null,
+          "note": "Sleeper: started 7.8%, owned 17.4%. DB59 by usage."
+        },
+        {
+          "name": "Keisean Nixon",
+          "pos": "DB",
+          "team": "GB",
+          "age": 29,
+          "category": "foundational",
+          "tier": "D",
+          "ktcValue": 624,
+          "ktcAdp": null,
+          "note": "Sleeper: started 7.8%, owned 17.4%. CB60 by usage."
         },
         {
           "name": "Jordan Davis",
@@ -1949,9 +1949,20 @@
           "age": 26,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 552,
+          "ktcValue": 576,
           "ktcAdp": null,
-          "note": "Sleeper: started 6.9%, owned 14.9%. DL56 by usage."
+          "note": "Sleeper: started 7.2%, owned 17.4%. DL56 by usage."
+        },
+        {
+          "name": "R Mason Thomas",
+          "pos": "DL",
+          "team": "KC",
+          "age": 22,
+          "category": "foundational",
+          "tier": "D",
+          "ktcValue": 528,
+          "ktcAdp": null,
+          "note": "Sleeper: started 6.6%, owned 21.6%. DL57 by usage."
         },
         {
           "name": "Jalyx Hunt",
@@ -1960,31 +1971,9 @@
           "age": 25,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 504,
+          "ktcValue": 480,
           "ktcAdp": null,
-          "note": "Sleeper: started 6.3%, owned 26.4%. DE57 by usage."
-        },
-        {
-          "name": "Caden Curry",
-          "pos": "DL",
-          "team": "IND",
-          "age": 23,
-          "category": "foundational",
-          "tier": "D",
-          "ktcValue": 456,
-          "ktcAdp": null,
-          "note": "Sleeper: started 5.7%, owned 16.7%. DL58 by usage."
-        },
-        {
-          "name": "Donovan Ezeiruaku",
-          "pos": "DL",
-          "team": "DAL",
-          "age": 22,
-          "category": "foundational",
-          "tier": "D",
-          "ktcValue": 456,
-          "ktcAdp": null,
-          "note": "Sleeper: started 5.7%, owned 16.7%. DL59 by usage."
+          "note": "Sleeper: started 6.0%, owned 28.7%. DE58 by usage."
         },
         {
           "name": "Milton Williams",
@@ -1993,9 +1982,20 @@
           "age": 27,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 416,
+          "ktcValue": 480,
           "ktcAdp": null,
-          "note": "Sleeper: started 5.2%, owned 17.2%. DT60 by usage."
+          "note": "Sleeper: started 6.0%, owned 19.8%. DT59 by usage."
+        },
+        {
+          "name": "Caden Curry",
+          "pos": "DL",
+          "team": "IND",
+          "age": 23,
+          "category": "foundational",
+          "tier": "D",
+          "ktcValue": 480,
+          "ktcAdp": null,
+          "note": "Sleeper: started 6.0%, owned 16.2%. DL60 by usage."
         }
       ]
     }

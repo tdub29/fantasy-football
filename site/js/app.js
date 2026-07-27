@@ -522,6 +522,7 @@
     { hash:'#leagues',      label:'My Leagues',       icon:'⚑',  section:'Dynasty' },
     { hash:'#action',       label:'Action Center',    icon:'!',  section:'Dynasty' },
     { hash:'#trade',        label:'Trade Calculator', icon:'⇄',  section:'Tools' },
+    { hash:'#projections',  label:'Projections',      icon:'Σ',  section:'Tools' },
     { hash:'#strategy',     label:'Framework',        icon:'◇',  section:'Reference' },
     { hash:'#sources',      label:'Sources',          icon:'▶',  section:'Reference' },
     { hash:'#about',        label:'About',            icon:'?',  section:'Reference' },
@@ -1427,7 +1428,7 @@
             )),
             h('td', null, teamChip(p.team)),
             h('td', { class:'right tnum' }, p.age ?? h('span', { class:'muted' }, '.')),
-            h('td', null, pillCategory(p.category)),
+            h('td', null, ourCatChip(p._sleeperId) || pillCategory(p.category)),
             h('td', { class:'center' }, tierChip(p.tier, p.category)),
             h('td', { class:'right tnum', style:{ color: ownColor } }, owned != null ? owned.toFixed(0) + '%' : '.'),
             h('td', { class:'right tnum', style:{ color: startColor } }, started != null ? started.toFixed(0) + '%' : '.'),
@@ -1542,7 +1543,7 @@
             jacobGibbsCell(p.name, pid),
             h('td', null, posChip(p.pos)),
             h('td', null, teamChip(p.team)),
-            h('td', null, ranked ? pillCategory(ranked.category) : h('span', { class:'muted' }, ',')),
+            h('td', null, ranked ? (ourCatChip(ranked._sleeperId) || pillCategory(ranked.category)) : h('span', { class:'muted' }, ',')),
             h('td', null, ranked ? tierChip(ranked.tier, ranked.category) : h('span', { class:'muted' }, ',')),
             h('td', null,
               ...(owners.length ? owners.slice(0,3).map(o => h('span', {
@@ -1608,11 +1609,34 @@
     return all.findIndex(x => x.id === rosterId) + 1;
   }
 
+  // Number of starting (non-bench) OFFENSE slots — the value model is offense-only,
+  // so we compare best-lineup value over these slots.
+  function offenseStarterCount(league) {
+    let n = 0;
+    for (const s of (league.roster_positions || [])) if (['QB', 'RB', 'WR', 'TE', 'FLEX', 'SUPER_FLEX'].includes(s)) n++;
+    return n || 9;
+  }
+  // Starting-lineup strength: sum of a roster's top-K most valuable players
+  // (K = offense starter slots). This is the contention signal — NOT the sum of
+  // every rostered player, which just rewards hoarding depth and mislabels a
+  // deep-but-weak-starter roster as a contender.
+  function startingStrength(roster, league) {
+    const idx = rankIndex();
+    const vals = [];
+    for (const pid of (roster.players || [])) {
+      const sp = window.PLAYERS[pid]; if (!sp) continue;
+      const r = idx.bySleeperId.get(pid) || idx.byName.get(norm(sp.name));
+      if (r) vals.push(tierValue(r, league));
+    }
+    vals.sort((a, b) => b - a);
+    return vals.slice(0, offenseStarterCount(league)).reduce((a, b) => a + b, 0);
+  }
+
   // 5-level buy/sell stance for a fantasy roster, league-relative. Quintile of
-  // PLAYER-ONLY strength (picks excluded): a true contender carries stars and
-  // few picks because they traded picks for starters — including picks would
-  // mis-label them as a tank. The pick stockpile is the tank signal, not the
-  // contender signal.
+  // STARTING-lineup strength (best-K, picks excluded): a true contender fields
+  // strong starters. Ranking by total roster value instead would reward a team
+  // that hoards mediocre depth — that was mislabeling weak-starter rosters as
+  // contenders.
   const _stanceCache = new Map();
   function rosterStance(roster, league) {
     if (!roster || !league) return 'mid';
@@ -1620,7 +1644,7 @@
     if (_stanceCache.has(cacheKey)) return _stanceCache.get(cacheKey);
     const scored = (league.rosters || []).map(r => ({
       id: r.roster_id,
-      score: computePlayerStrength(r, league).total,
+      score: startingStrength(r, league),
     })).sort((a, b) => b.score - a.score);
     const rank = scored.findIndex(x => x.id === roster.roster_id) + 1;
     const total = scored.length;
@@ -1800,11 +1824,21 @@
     for (const r of lg.rosters) {
       for (const pid of (r.players || [])) ownerByPid.set(pid, r);
     }
+    // Projection lookup (offense + defense) for the Proj column + source toggle.
+    const projO = new Map(), projD = new Map();
+    for (const p of (window.OFFENSE_PROJ?.offense?.players || [])) if (p.id) projO.set(p.id, p);
+    for (const p of (window.OFFENSE_PROJ?.defense?.players || [])) if (p.id) projD.set(p.id, p);
+    const hasProj = projO.size || projD.size;
+    const projPointsFor = (pid, src) => {
+      if (!pid) return null;
+      const rec = projO.get(pid) || projD.get(pid);
+      return rec && rec[src] != null ? rec[src] : null;
+    };
     // Filter state lives on a per-league key in localStorage so settings
     // survive nav between leagues.
     const lsKey = `tier-sheet-league-players::${lg.id}`;
     const filter = Object.assign(
-      { pos:'ALL', cat:'ALL', scope:'all', q:'', sort:'rank', dir:'asc' },
+      { pos:'ALL', cat:'ALL', scope:'all', q:'', sort:'rank', dir:'asc', proj:'blend' },
       JSON.parse(localStorage.getItem(lsKey) || '{}')
     );
     const persist = () => { try { localStorage.setItem(lsKey, JSON.stringify(filter)); } catch {} };
@@ -1818,7 +1852,7 @@
     filterBar.appendChild(h('div', { class:'group' }, h('label', null, 'Search'), search));
 
     const posBtns = h('div', { class:'toggle-group' });
-    const posOptions = lg.is_idp ? ['ALL','QB','RB','WR','TE','LB','DB','DL'] : ['ALL','QB','RB','WR','TE'];
+    const posOptions = lg.is_idp ? ['ALL','QB','RB','WR','TE','FLEX','LB','DB','DL'] : ['ALL','QB','RB','WR','TE','FLEX'];
     for (const p of posOptions) {
       posBtns.appendChild(h('button', {
         class:`toggle ${filter.pos===p?'active':''}`,
@@ -1846,6 +1880,20 @@
       }, lbl));
     }
     filterBar.appendChild(h('div', { class:'group' }, h('label', null, 'Scope'), scopeBtns));
+
+    if (hasProj) {
+      const projBtns = h('div', { class:'toggle-group' });
+      for (const [k, lbl] of [['blend','Blended'],['pp','PP'],['sleeper','Sleeper'],['clay','Clay']]) {
+        projBtns.appendChild(h('button', {
+          class:`toggle ${filter.proj===k?'active':''}`,
+          title: k==='pp' ? 'PrizePicks (offense only)' : k==='clay' ? 'Clay (IDP only)' : '',
+          onclick:(e) => { filter.proj = k; persist();
+            projBtns.querySelectorAll('.toggle').forEach(b => b.classList.toggle('active', b===e.target));
+            render(); }
+        }, lbl));
+      }
+      filterBar.appendChild(h('div', { class:'group' }, h('label', null, 'Proj Src'), projBtns));
+    }
     main.appendChild(filterBar);
 
     const tableWrap = h('div', { class:'card', style:{ padding:0, overflow:'hidden' } });
@@ -1868,7 +1916,8 @@
       tableWrap.innerHTML = '';
       const filtered = idx.all.filter(p => {
         if (!isLeagueRelevantPos(p.pos)) return false;
-        if (filter.pos !== 'ALL' && p.pos !== filter.pos) return false;
+        if (filter.pos === 'FLEX') { if (!['RB','WR','TE'].includes(p.pos)) return false; }
+        else if (filter.pos !== 'ALL' && p.pos !== filter.pos) return false;
         if (filter.cat !== 'ALL' && p.category !== filter.cat) return false;
         if (filter.q && !norm(p.name).includes(norm(filter.q))) return false;
         const ownerRoster = p._sleeperId ? ownerByPid.get(p._sleeperId) : null;
@@ -1887,6 +1936,7 @@
         let av, bv;
         switch (filter.sort) {
           case 'value': av = tierValue(a, lg); bv = tierValue(b, lg); return (bv - av) * dir; // desc-natural
+          case 'proj':  av = projPointsFor(a._sleeperId, filter.proj) ?? -1; bv = projPointsFor(b._sleeperId, filter.proj) ?? -1; return (bv - av) * dir;
           case 'gibbs': av = jacobGibbsEntry(a.name, a._sleeperId)?.rank ?? 9999; bv = jacobGibbsEntry(b.name, b._sleeperId)?.rank ?? 9999; return (av - bv) * dir;
           case 'age':   av = a.age ?? 99; bv = b.age ?? 99; return (av - bv) * dir;
           case 'pos':   av = `${a.pos}|${a._posRank||999}`; bv = `${b.pos}|${b._posRank||999}`; return av.localeCompare(bv) * dir;
@@ -1916,6 +1966,7 @@
 
       const tbl = h('table', { class:'data data-sticky' },
         h('thead', null, h('tr', null,
+          h('th', { class:'right', style:{ width:'38px' }, title:'Position in current sort' }, '#'),
           sortHdr('rank', 'Rank', { right:true, style:{ width:'52px' } }),
           sortHdr('name', 'Player'),
           sortHdr('gibbs', 'Gibbs ' + jacobGibbsDateLabel(), { right:true, style:{ width:'76px' }, title:'Jacob Gibbs 2026 half-PPR rank' }),
@@ -1925,6 +1976,7 @@
           h('th', null, 'Category'),
           h('th', { class:'center', style:{ width:'48px' } }, 'Tier'),
           sortHdr('value','Value', { right:true }),
+          hasProj ? sortHdr('proj', 'Proj', { right:true, title:'Season fantasy projection (selected Proj Src)' }) : null,
           h('th', null, 'Owner'),
         )),
         h('tbody', null, ...rows.map((p, i) => {
@@ -1947,6 +1999,7 @@
             onclick:() => openPlayerDetail(p.name, p._sleeperId),
             title: ownerRoster ? `Owned by ${ownerRoster.team_name}` : 'Free agent',
           },
+            h('td', { class:'right tnum', style:{ color:'var(--fg-3)' } }, String(i + 1)),
             h('td', { class:'right tnum', style:{ fontWeight:700 } }, String(p._overallRank || i+1)),
             h('td', null, h('div', { class:'name-cell' },
               h('span', { class:'name' }, p.name),
@@ -1958,11 +2011,12 @@
               posChip(p.pos),
               p._posRank ? h('span', { class:'tip tnum' }, `${p.pos}${p._posRank}`) : null,
             )),
-            h('td', null, teamChip(p.team)),
+            h('td', null, teamChip(p.team), ' ', envChip((window.PLAYERS[p._sleeperId] || {}).team || p.team)),
             h('td', { class:'right tnum' }, p.age ?? h('span', { class:'muted' }, '.')),
-            h('td', null, pillCategory(p.category)),
+            h('td', null, ourCatChip(p._sleeperId) || pillCategory(p.category)),
             h('td', { class:'center' }, tierChip(p.tier, p.category)),
             h('td', { class:'right tnum' }, fmt.decimal(tierValue(p, lg), 1)),
+            hasProj ? h('td', { class:'right tnum' }, (() => { const v = projPointsFor(p._sleeperId, filter.proj); return v == null ? h('span', { class:'muted' }, '·') : fmt.decimal(v, 1); })()) : null,
             h('td', null, ownerCell),
           );
         }))
@@ -3460,7 +3514,7 @@
       if (myRoster) {
         const myRP_in_lg = getRosterPlayers(myRoster);
         const mySurplus = rosterSurplusShortage(myRP_in_lg, lg);
-        const theirSurplus = ss; // already computed as rosterSurplusShortage(rp, lg)
+        const theirSurplus = rosterSurplusShortage(getRosterPlayers(r), lg); // viewed roster's needs
         const myStrength = computeRosterStrength(myRoster, lg);
         const myCs = myStrength.rankedPlayers.filter(p => p.ranked.category === 'cornerstone').length;
         const myValueTier = classifyValueTier(myStrength, rankInLeague(lg, myRoster.roster_id), lg.total_rosters, myCs);
@@ -3568,7 +3622,7 @@
                 h('td', null, posChip(sp.pos)),
                 h('td', null, teamChip(sp.team)),
                 h('td', null, sp.age ?? ','),
-                h('td', null, ranked ? pillCategory(ranked.category) : h('span', { class:'muted' }, ',')),
+                h('td', null, ranked ? (ourCatChip(ranked._sleeperId) || pillCategory(ranked.category)) : h('span', { class:'muted' }, ',')),
                 h('td', null, ranked ? tierChip(ranked.tier, ranked.category) : h('span', { class:'muted' }, ',')),
                 ...yrCells,
               );
@@ -4596,6 +4650,22 @@
   //   animations don't get reset every interaction.
   // ============================================================
   const KT = { reduced: false };
+  // Jump to the Trade Lab with a player pre-loaded on the owner's side.
+  // My player -> YOU SEND (side A); opponent's -> YOU RECEIVE (side B).
+  function openTradeFor(sleeperId, leagueId, rosterId) {
+    const lg = (window.LEAGUES || []).find(l => l.id === leagueId); if (!lg) return;
+    const owner = lg.rosters.find(r => r.roster_id === rosterId);
+    const mine = lg.rosters.find(r => r.is_me);
+    TRADE_STATE.leagueId = leagueId; // set before navigate so viewTrade won't reset picks
+    if (owner && owner.is_me) {
+      TRADE_STATE.sideA = { rosterId, picks: new Set([String(sleeperId)]) };
+      TRADE_STATE.sideB = { rosterId: (lg.rosters.find(r => !r.is_me) || lg.rosters[0]).roster_id, picks: new Set() };
+    } else {
+      TRADE_STATE.sideB = { rosterId, picks: new Set([String(sleeperId)]) };
+      TRADE_STATE.sideA = { rosterId: (mine || lg.rosters[0]).roster_id, picks: new Set() };
+    }
+    navigate(`#trade/${leagueId}`);
+  }
   function viewTrade(leagueIdArg) {
     const main = $('#main');
     main.innerHTML = '';
@@ -4646,8 +4716,114 @@
       'Drag a row to its trade pile. Drop on the middle summary to wipe. Or click a row to toggle.'
     ));
 
+    // League-wide positional needs — who to target in a trade.
+    main.appendChild(buildTeamNeeds(lg));
+
     // Initial paint of middle (committed totals).
     KT.refreshMiddle(lg);
+  }
+
+  // League-wide positional needs, quality-weighted: each team's top starters at
+  // a position (blended KTC value via tierValue) vs its starter slots. Rendered
+  // at the bottom of the Trade Lab. Offense only — ranking sources don't cover
+  // IDP. Rows sorted by TE need (neediest first) to answer "who needs a TE?".
+  function buildTeamNeeds(lg) {
+    const idx = rankIndex();
+    const targets = targetStartersByPos(lg);
+    const POS = ['QB', 'RB', 'WR', 'TE'];
+    const starterN = {};
+    for (const p of POS) starterN[p] = Math.max(1, Math.round(targets[p] || 1));
+
+    const teams = lg.rosters.map(r => {
+      const byPos = { QB: [], RB: [], WR: [], TE: [] };
+      for (const pid of (r.players || [])) {
+        const sp = window.PLAYERS[pid]; if (!sp) continue;
+        const ranked = idx.bySleeperId.get(pid) || idx.byName.get(norm(sp.name));
+        if (!ranked) continue;
+        const pos = ranked.pos || sp.pos;
+        if (!byPos[pos]) continue;
+        byPos[pos].push({ name: sp.name, pid, age: sp.age, value: tierValue(ranked, lg), posRank: ranked.ktcPosRank || ranked._posRank || null });
+      }
+      const posVal = {}, posTop = {};
+      for (const p of POS) {
+        byPos[p].sort((a, b) => b.value - a.value);
+        posVal[p] = byPos[p].slice(0, starterN[p]).reduce((s, x) => s + x.value, 0);
+        posTop[p] = byPos[p][0] || null;
+      }
+      return { r, posVal, posTop };
+    });
+
+    // Rank each position across teams (ascending value = neediest first).
+    const n = teams.length;
+    const label = {};
+    for (const p of POS) {
+      const order = teams.map((t, i) => ({ i, v: t.posVal[p] })).sort((a, b) => a.v - b.v);
+      order.forEach((o, rank) => {
+        const frac = n > 1 ? rank / (n - 1) : 1;
+        let cls = 'ok', txt = 'OK';
+        if (frac < 0.20) { cls = 'need'; txt = 'NEED'; }
+        else if (frac < 0.45) { cls = 'thin'; txt = 'THIN'; }
+        else if (frac >= 0.80) { cls = 'strong'; txt = 'STRONG'; }
+        (label[o.i] = label[o.i] || {})[p] = { frac, cls, txt };
+      });
+    }
+    const COLOR = { need: 'var(--red)', thin: 'var(--amber)', ok: 'var(--fg-2)', strong: 'var(--green)' };
+
+    teams.forEach((t, i) => {
+      let worst = null;
+      for (const p of POS) { const l = label[i][p]; if (!worst || l.frac < worst.frac) worst = { p, ...l }; }
+      t.topNeed = worst;
+    });
+
+    // Biggest TE need = lowest best-TE value; also drives row order.
+    const teByBest = teams.map((t, i) => ({ i, best: t.posTop.TE })).sort((a, b) => (a.best?.value || 0) - (b.best?.value || 0));
+    const neediest = teByBest[0];
+
+    const posCell = (i, p) => {
+      const t = teams[i], l = label[i][p], top = t.posTop[p];
+      return h('td', { style: { textAlign: 'center' } },
+        h('div', { style: { fontWeight: 600 } }, fmt.decimal(t.posVal[p], 0)),
+        h('div', { style: { fontSize: '11px', color: COLOR[l.cls], fontWeight: 700, letterSpacing: '.03em' } }, l.txt),
+        top ? h('div', { class: 'muted', style: { fontSize: '10px' } }, `${top.name}${top.posRank ? ` · ${p}${top.posRank}` : ''}`)
+            : h('div', { class: 'muted', style: { fontSize: '10px' } }, '—')
+      );
+    };
+
+    const wrap = h('div', { style: { marginTop: '26px' } });
+    wrap.appendChild(h('div', { class: 'page-eyebrow' }, 'TEAM NEEDS'));
+    wrap.appendChild(h('h2', { class: 'page-title', style: { fontSize: '20px', margin: '2px 0 6px' } }, 'Roster Needs by Position'));
+    wrap.appendChild(h('p', { class: 'page-sub', style: { marginBottom: '12px' } },
+      'Quality-weighted: each cell is the blended value of a team’s top starters at that spot vs its league slots. Red = biggest gap, sorted by TE need. Offense only (IDP not ranked).'));
+
+    if (neediest && neediest.best) {
+      const t = teams[neediest.i];
+      wrap.appendChild(h('div', { style: { marginBottom: '12px', borderLeft: '3px solid var(--red)', paddingLeft: '12px' } },
+        h('strong', null, 'Biggest TE need: '),
+        h('span', null, `${t.r.team_name} — best TE ${neediest.best.name}${neediest.best.posRank ? ` (TE${neediest.best.posRank})` : ''}, value ${fmt.decimal(neediest.best.value, 0)}.`)
+      ));
+    }
+
+    const tableWrap = h('div', { class: 'card', style: { padding: 0, overflow: 'hidden' } });
+    tableWrap.appendChild(h('table', { class: 'data' },
+      h('thead', null, h('tr', null,
+        h('th', null, 'Team'),
+        ...POS.map(p => h('th', { style: { textAlign: 'center' } }, p)),
+        h('th', null, 'Top Need'),
+      )),
+      h('tbody', null, ...teByBest.map(({ i }) => {
+        const t = teams[i];
+        return h('tr', { style: { background: t.r.is_me ? 'rgba(96,165,250,.10)' : 'transparent' } },
+          h('td', null, h('div', { class: 'name-cell' },
+            h('span', { class: 'name' }, t.r.team_name),
+            t.r.is_me ? h('span', { class: 'badge you', style: { marginLeft: '6px' } }, 'YOU') : null,
+          )),
+          ...POS.map(p => posCell(i, p)),
+          h('td', null, h('span', { style: { color: COLOR[t.topNeed.cls], fontWeight: 700 } }, `${t.topNeed.p} · ${t.topNeed.txt}`)),
+        );
+      }))
+    ));
+    wrap.appendChild(tableWrap);
+    return wrap;
   }
 
   // Compute total value for a side (used by both committed math and preview).
@@ -6234,7 +6410,7 @@
           }, `Gibbs ${jacobGibbsDateLabel()}: #${gibbs.rank} · ${gibbs.pos}${gibbs.posRank}`) : null,
         ),
         ranked ? h('div', { class:'row gap-4', style:{ marginBottom:'12px' } },
-          pillCategory(ranked.category), tierChip(ranked.tier, ranked.category),
+          (ourCatChip(sleeper?.id) || pillCategory(ranked.category)), tierChip(ranked.tier, ranked.category),
           h('span', { class:'tip' }, `Tier value: ${tierValue(ranked, {})}`)
         ) : null,
         ranked?.note ? h('div', { class:'card', style:{ background:'var(--bg-2)', marginBottom:'12px' } },
@@ -6243,24 +6419,30 @@
           h('div', { class:'tip', style:{ marginTop:'6px' } }, `from ${ranked._src} / ${ranked._ranking}`)
         ) : null,
         playerInfoBlock(name, sleeper),
-        sleeper ? h('div', { class:'card', style:{ background:'var(--bg-2)', marginBottom:'12px' } },
-          h('div', { class:'card-title' }, 'Sleeper'),
-          h('div', null, `${sleeper.pos} · ${sleeper.team || 'FA'}` + (sleeper.college ? ` · ${sleeper.college}` : '') + (sleeper.exp != null ? ` · exp ${sleeper.exp}` : '')),
-          h('div', { class:'tip' }, `Sleeper id: ${sleeper.id}`)
-        ) : h('div', { class:'tip' }, 'Not matched to a Sleeper player.'),
+        projectionBlock(sleeper, close),
+        sleeper ? h('div', { class:'tip', style:{ marginBottom:'12px' } },
+          [sleeper.college, (sleeper.exp != null ? `${sleeper.exp} yr exp` : null), `Sleeper #${sleeper.id}`].filter(Boolean).join('  ·  ')
+        ) : h('div', { class:'tip', style:{ marginBottom:'12px' } }, 'Not matched to a Sleeper player.'),
+        envInfoLine(sleeper),
+        scheduleStrip(sleeper),
         historyBlock(sleeper),
         contextBlock(sleeper),
         ownerRows.length ? h('div', null,
           h('div', { class:'card-title', style:{ marginBottom:'6px' } }, 'Owned in your leagues'),
           h('table', { class:'data' },
             h('thead', null, h('tr', null,
-              h('th', null, 'League'), h('th', null, 'Team'), h('th', null, 'Owner'), h('th', null, 'Slot')
+              h('th', null, 'League'), h('th', null, 'Team'), h('th', null, 'Owner'), h('th', null, 'Slot'), h('th', null, 'Trade')
             )),
             h('tbody', null, ...ownerRows.map(o => h('tr', { class: o.roster.is_me ? 'you' : '', onclick:()=>{ close(); navigate(`#roster/${o.league.id}/${o.roster.roster_id}`); } },
               h('td', null, o.league.short_name),
               h('td', null, o.roster.team_name, o.roster.is_me ? h('span', { class:'badge you', style:{ marginLeft:'6px' } }, 'YOU') : null),
               h('td', null, o.roster.owner_name),
               h('td', null, o.isStarter ? h('span', { class:'badge' }, 'STARTER') : o.isTaxi ? h('span', { class:'badge' }, 'TAXI') : o.isReserve ? h('span', { class:'badge' }, 'IR') : h('span', { class:'badge' }, 'BENCH')),
+              h('td', null, sleeper?.id ? h('button', {
+                class:'ghost', style:{ padding:'2px 10px', fontSize:'12px' },
+                title: o.roster.is_me ? 'Add to YOU SEND in the Trade Lab' : 'Add to YOU RECEIVE in the Trade Lab',
+                onclick:(e) => { e.stopPropagation(); close(); openTradeFor(sleeper.id, o.league.id, o.roster.roster_id); },
+              }, 'Trade ⇄') : null),
             )))
           )
         ) : null
@@ -6269,6 +6451,35 @@
     document.addEventListener('keydown', onKeydown);
     requestAnimationFrame(() => modal.querySelector('.close-btn')?.focus());
     return backdrop;
+  }
+
+  // Season fantasy projection for the modal: pts from every source + the
+  // projected stat line. Reuses window.OFFENSE_PROJ (offense + defense).
+  function projectionBlock(sleeper, close) {
+    if (!sleeper || !window.OFFENSE_PROJ) return null;
+    const O = window.OFFENSE_PROJ;
+    let unit = null, rec = null, cfg = null;
+    for (const u of ['offense', 'defense']) {
+      const r = (O[u]?.players || []).find(p => p.id === sleeper.id);
+      if (r) { unit = u; rec = r; cfg = O[u]; break; }
+    }
+    if (!rec) return null;
+    const line = (rec.stats && rec.stats.blend) || {};
+    const yd = (k) => k === 'pass_yd' || k === 'rush_yd' || k === 'rec_yd';
+    const statStr = (cfg.stat_keys || []).filter(k => line[k] != null)
+      .map(k => `${STAT_LABEL[k] || k} ${fmt.decimal(line[k], yd(k) ? 0 : 1)}`).join('  ·  ');
+    return h('div', { class: 'card', style: { background: 'var(--bg-2)', marginBottom: '12px' } },
+      h('div', { class: 'row', style: { justifyContent: 'space-between', alignItems: 'baseline' } },
+        h('div', { class: 'card-title' }, `Season projection · ${unit === 'defense' ? 'IDP' : 'Offense'}`),
+        h('a', { href: '#projections', onclick: () => { if (close) close(); }, class: 'tip', style: { textDecoration: 'none' } }, 'view all →')),
+      h('div', { class: 'row gap-4 wrap', style: { margin: '6px 0' } },
+        ...(cfg.sources || []).map(s => h('span', {
+          class: 'badge' + (s === cfg.default ? ' you' : ''),
+          title: s === cfg.default ? 'default source' : '',
+        }, `${PROJ_SRC_LABEL[s] || s} ${rec[s] == null ? '—' : fmt.decimal(rec[s], 1)}`))),
+      statStr ? h('div', { class: 'tip' }, `Blended line: ${statStr}`) : null,
+      unit === 'defense' ? h('div', { class: 'tip', style: { marginTop: '4px', opacity: .8 } }, 'PD/QB-hit best-estimated; no Vegas market for IDP.') : null,
+    );
   }
 
   function playerInfoBlock(name, sleeper) {
@@ -6307,6 +6518,268 @@
   // ============================================================
   // Router
   // ============================================================
+  // ============================================================
+  // Projections — fantasy points from free sources, source-selectable.
+  // Offense: PrizePicks / Sleeper / Blended. Defense (IDP): Clay / Sleeper /
+  // Blended (no PP — Vegas has no tackle market). Data: window.OFFENSE_PROJ =
+  // { offense:{default,sources,stat_keys,players}, defense:{...} }.
+  // ============================================================
+  const PROJ_STATE = { leagueId: null, unit: 'offense', source: null, pos: 'ALL', sort: null };
+  const PROJ_SRC_LABEL = { blend: 'Blended', pp: 'PrizePicks', sleeper: 'Sleeper', clay: 'Clay' };
+  const STAT_LABEL = {
+    pass_yd: 'Pa Yd', pass_td: 'Pa TD', pass_int: 'INT', rush_yd: 'Ru Yd', rush_td: 'Ru TD',
+    rec: 'Rec', rec_yd: 'Re Yd', rec_td: 'Re TD',
+    solo: 'Solo', ast: 'Ast', sack: 'Sk', tfl: 'TFL', int: 'INT', ff: 'FF', pass_def: 'PD', qb_hit: 'QBH', fum_rec: 'FR',
+  };
+  const POS_CHIPS = { offense: ['ALL', 'QB', 'RB', 'WR', 'TE', 'FLEX'], defense: ['ALL', 'LB', 'DB', 'DL'] };
+  const FLEX_GROUPS = ['RB', 'WR', 'TE'];
+  function projPosMatch(pos, filter) {
+    if (filter === 'ALL') return true;
+    const g = projPosGroup(pos);
+    return filter === 'FLEX' ? FLEX_GROUPS.includes(g) : g === filter;
+  }
+
+  // Team environment / SOS (Draft Sharks Fantasy Environment Score, window.TEAM_ENV).
+  const ENV_TIER_COLOR = { target: 'var(--green)', good: 'var(--blue)', neutral: 'var(--fg-3)', below: 'var(--amber)', avoid: 'var(--red)' };
+  function teamEnv(abbr) { return (window.TEAM_ENV && window.TEAM_ENV.teams) ? window.TEAM_ENV.teams[abbr] : null; }
+  function envChip(abbr) {
+    const e = teamEnv(abbr); if (!e) return null;
+    return h('span', { class: 'badge', title: `Fantasy environment #${e.env_rank}/${e.total} (${e.tier}) — ${e.implied_pf} implied pts/game (offense #${e.pf_rank})`, style: { color: ENV_TIER_COLOR[e.tier], borderColor: 'currentColor', background: 'transparent' } }, `Env ${e.env_rank}`);
+  }
+  // Our own data-clustered dynasty category (window.PLAYER_CATEGORIES) — replaces
+  // the off-base third-party category field.
+  const OURCAT_COLOR = {
+    'Cornerstone': 'var(--green)', 'Win-Now Star': 'var(--green)',
+    'Ascending': 'var(--blue)', 'Win-Now Starter': 'var(--blue)', 'Young Upside': '#5eead4',
+    'Aging Elite': 'var(--amber)', 'Veteran Starter': 'var(--amber)',
+    'Rotational': 'var(--fg-2)', 'Aging Depth': 'var(--fg-3)',
+  };
+  function ourCat(pid) { return (window.PLAYER_CATEGORIES && window.PLAYER_CATEGORIES.players) ? window.PLAYER_CATEGORIES.players[pid] : null; }
+  function ourCatChip(pid) {
+    const c = pid && ourCat(pid); if (!c) return null;
+    return h('span', { class: 'badge', title: `${c.category} — ${c.why} (dynasty value ${c.value}, age ${c.age}, proj ${c.proj})`,
+      style: { color: OURCAT_COLOR[c.category] || 'var(--fg-2)', borderColor: 'currentColor', background: 'transparent', fontWeight: 600 } }, c.category);
+  }
+
+  function teamSos(abbr) { return (window.TEAM_SOS && window.TEAM_SOS.teams) ? window.TEAM_SOS.teams[abbr] : null; }
+  function envInfoLine(sleeper) {
+    const e = sleeper && teamEnv(sleeper.team); if (!e) return null;
+    const s = teamSos(sleeper.team);
+    const sosTxt = s && s.off_sos_rank
+      ? ` · SOS: offense #${s.off_sos_rank}/32, defense/IDP #${s.def_sos_rank}/32`
+      : '';
+    return h('div', { class: 'tip', style: { marginBottom: '12px' } },
+      `Team environment: #${e.env_rank}/${e.total} (${e.tier}) · ${e.implied_pf} implied pts/game (off #${e.pf_rank}, def allows #${e.pa_rank})${sosTxt}`);
+  }
+  // Game-by-game schedule strip (actual Vegas implied pts where lines posted).
+  function scheduleStrip(sleeper) {
+    const s = sleeper && teamSos(sleeper.team); if (!s || !s.schedule?.length) return null;
+    const cells = s.schedule.map(g => h('span', {
+      class: 'badge',
+      title: `Week ${g.week} ${g.home ? 'vs' : '@'} ${g.opp} — ${g.posted ? 'Vegas' : 'projected'} implied ${g.implied_pf ?? '?'} for / ${g.implied_pa ?? '?'} against`,
+      style: { fontSize: '10px', opacity: g.posted ? 1 : 0.55, marginRight: '3px', marginBottom: '3px' },
+    }, `${g.week}${g.home ? '' : '@'}${g.opp} ${g.implied_pf ?? '~'}`));
+    return h('div', { class: 'card', style: { background: 'var(--bg-2)', marginBottom: '12px' } },
+      h('div', { class: 'card-title' }, `Schedule · implied pts/game (actual Vegas thru wk ${window.TEAM_SOS.lines_through_week}, projected after)`),
+      h('div', { class: 'row wrap', style: { gap: '2px', marginTop: '6px' } }, ...cells));
+  }
+
+  function projUnitData() { return (window.OFFENSE_PROJ || {})[PROJ_STATE.unit] || { sources: [], players: [], stat_keys: [] }; }
+  function projMap(unit) {
+    const m = new Map();
+    for (const p of ((((window.OFFENSE_PROJ || {})[unit]) || {}).players || [])) if (p.id) m.set(p.id, p);
+    return m;
+  }
+  function offenseSlots(lg) {
+    let qb = 0, rb = 0, wr = 0, te = 0, flex = 0, sf = 0;
+    for (const s of (lg.roster_positions || [])) {
+      if (s === 'QB') qb++; else if (s === 'RB') rb++; else if (s === 'WR') wr++;
+      else if (s === 'TE') te++; else if (s === 'FLEX') flex++; else if (s === 'SUPER_FLEX') sf++;
+    }
+    return { qb, rb, wr, te, flex, sf };
+  }
+  function idpSlotCount(lg) {
+    let n = 0;
+    for (const s of (lg.roster_positions || []))
+      if (['IDP_FLEX', 'IDP', 'LB', 'DB', 'DL', 'CB', 'S', 'DE', 'DT', 'NT'].includes(s)) n++;
+    return n;
+  }
+  function projPosGroup(pos) {
+    if (['QB', 'RB', 'WR', 'TE'].includes(pos)) return pos;
+    if (pos === 'LB') return 'LB';
+    if (['CB', 'S', 'DB'].includes(pos)) return 'DB';
+    return 'DL'; // IDL/EDGE/DE/DT/NT/DL
+  }
+  function optimalOffense(roster, lg, src) {
+    const map = projMap('offense');
+    const byPos = { QB: [], RB: [], WR: [], TE: [] };
+    for (const pid of (roster.players || [])) {
+      const p = map.get(pid); if (!p) continue;
+      const pts = p[src]; if (pts == null) continue;
+      if (byPos[p.pos]) byPos[p.pos].push({ name: p.name, pos: p.pos, pts });
+    }
+    for (const k in byPos) byPos[k].sort((a, b) => b.pts - a.pts);
+    const slots = offenseSlots(lg), used = new Set(), picks = [];
+    const take = (pos) => { for (const c of byPos[pos]) if (!used.has(c)) { used.add(c); picks.push(c); return; } };
+    for (let i = 0; i < slots.qb; i++) take('QB');
+    for (let i = 0; i < slots.rb; i++) take('RB');
+    for (let i = 0; i < slots.wr; i++) take('WR');
+    for (let i = 0; i < slots.te; i++) take('TE');
+    const bestRem = (list) => { let b = null; for (const pos of list) for (const c of byPos[pos]) if (!used.has(c) && (!b || c.pts > b.pts)) b = c; return b; };
+    for (let i = 0; i < slots.flex; i++) { const c = bestRem(['RB', 'WR', 'TE']); if (c) { used.add(c); picks.push(c); } }
+    for (let i = 0; i < slots.sf; i++) { const c = bestRem(['QB', 'RB', 'WR', 'TE']); if (c) { used.add(c); picks.push(c); } }
+    return { total: Math.round(picks.reduce((s, c) => s + c.pts, 0) * 10) / 10, picks };
+  }
+  function optimalDefense(roster, lg, src) {
+    const map = projMap('defense'), cand = [];
+    for (const pid of (roster.players || [])) {
+      const p = map.get(pid); if (p && p[src] != null) cand.push({ name: p.name, pos: p.pos, pts: p[src] });
+    }
+    cand.sort((a, b) => b.pts - a.pts);
+    const picks = cand.slice(0, idpSlotCount(lg));
+    return { total: Math.round(picks.reduce((s, c) => s + c.pts, 0) * 10) / 10, picks };
+  }
+
+  function viewProjections(leagueId) {
+    const main = $('#main'); main.innerHTML = '';
+    const leagues = window.LEAGUES || [];
+    const lg = leagues.find(l => l.id === leagueId)
+            || leagues.find(l => l.id === PROJ_STATE.leagueId)
+            || leagues.find(l => l.rosters.some(r => r.is_me)) || leagues[0];
+    if (!lg) { main.appendChild(h('div', { class: 'empty' }, 'No league.')); return; }
+    PROJ_STATE.leagueId = lg.id;
+    if (!window.OFFENSE_PROJ) { main.appendChild(h('div', { class: 'empty' }, 'projections.js not loaded — run score_offense.py + score_defense.py.')); return; }
+
+    const data = projUnitData();
+    if (!data.sources.includes(PROJ_STATE.source)) PROJ_STATE.source = data.default || data.sources[0];
+    const src = PROJ_STATE.source;
+    const statKeys = data.stat_keys || [];
+
+    main.appendChild(breadcrumbs([{ label: 'Tools' }, { label: 'Projections' }]));
+    main.appendChild(h('div', { class: 'page-header' },
+      h('div', null,
+        h('div', { class: 'page-eyebrow' }, 'PROJECTIONS'),
+        h('h1', { class: 'page-title' }, 'Player Projections'),
+        h('p', { class: 'page-sub' }, 'Season fantasy points + projected stat lines. Offense: PrizePicks / Sleeper / Blended. Defense: Clay / Sleeper / Blended (Vegas has no tackle market).')
+      ),
+      h('div', { class: 'page-actions' }, leagueSelector(lg.id, (id) => { PROJ_STATE.leagueId = id; navigate(`#projections/${id}`); }))
+    ));
+
+    // unit + source segmented controls
+    const segRow = (label, items, active, onPick, mk) => {
+      const seg = h('div', { style: { display: 'flex', gap: '6px', alignItems: 'center', marginBottom: '10px', flexWrap: 'wrap' } },
+        h('span', { class: 'muted', style: { fontSize: '12px', width: '54px' } }, label));
+      for (const it of items) {
+        const on = it === active;
+        seg.appendChild(h('button', {
+          class: 'ghost' + (on ? ' active' : ''), 'aria-pressed': String(on),
+          style: on ? { background: 'var(--accent, #34d399)', color: '#08110d', fontWeight: 700, borderColor: 'transparent' } : {},
+          onclick: () => onPick(it),
+        }, mk ? mk(it) : it));
+      }
+      return seg;
+    };
+    main.appendChild(segRow('Unit', ['offense', 'defense'], PROJ_STATE.unit,
+      (u) => { PROJ_STATE.unit = u; PROJ_STATE.source = null; PROJ_STATE.pos = 'ALL'; PROJ_STATE.sort = null; viewProjections(lg.id); },
+      (u) => u === 'offense' ? 'Offense' : 'Defense (IDP)'));
+    main.appendChild(segRow('Source', data.sources, src,
+      (s) => { PROJ_STATE.source = s; viewProjections(lg.id); },
+      (s) => PROJ_SRC_LABEL[s] || s));
+
+    // ---- per-team best starting lineup under selected unit + source ----
+    const isDef = PROJ_STATE.unit === 'defense';
+    const idpN = idpSlotCount(lg);
+    if (isDef && idpN === 0) {
+      main.appendChild(h('div', { class: 'card', style: { marginBottom: '18px' } },
+        h('div', { class: 'card-title' }, 'Team defense'),
+        h('div', { class: 'tip' }, `${lg.name} has no IDP starting slots — defense projections are informational only here.`)));
+    } else {
+      const teams = lg.rosters.map(r => ({ r, ...(isDef ? optimalDefense(r, lg, src) : optimalOffense(r, lg, src)) }))
+        .sort((a, b) => b.total - a.total);
+      main.appendChild(h('div', { class: 'card', style: { marginBottom: '18px' } },
+        h('div', { class: 'card-title' }, `Team ${isDef ? `IDP starters (top ${idpN})` : 'offense — best lineup'} · ${PROJ_SRC_LABEL[src]}`),
+        h('table', { class: 'data' },
+          h('thead', null, h('tr', null, h('th', null, '#'), h('th', null, 'Team'), h('th', { style: { textAlign: 'right' } }, 'Proj Pts'), h('th', null, 'Core'))),
+          h('tbody', null, ...teams.map((t, i) => h('tr', { style: { background: t.r.is_me ? 'rgba(96,165,250,.10)' : 'transparent' } },
+            h('td', { class: 'muted' }, String(i + 1)),
+            h('td', null, h('div', { class: 'name-cell' }, h('span', { class: 'name' }, t.r.team_name), t.r.is_me ? h('span', { class: 'badge you', style: { marginLeft: '6px' } }, 'YOU') : null)),
+            h('td', { class: 'tnum', style: { textAlign: 'right', fontWeight: 700 } }, fmt.decimal(t.total, 1)),
+            h('td', { class: 'muted', style: { fontSize: '11px' } }, t.picks.slice(0, 3).map(c => `${c.name} ${Math.round(c.pts)}`).join(', ')),
+          )))
+        )));
+    }
+
+    // ---- position filter ----
+    const posChips = h('div', { style: { display: 'flex', gap: '6px', marginBottom: '10px', flexWrap: 'wrap' } });
+    for (const pos of POS_CHIPS[PROJ_STATE.unit]) {
+      posChips.appendChild(h('button', {
+        class: 'ghost' + (PROJ_STATE.pos === pos ? ' active' : ''),
+        style: PROJ_STATE.pos === pos ? { fontWeight: 700 } : {},
+        onclick: () => { PROJ_STATE.pos = pos; viewProjections(lg.id); },
+      }, pos));
+    }
+    main.appendChild(posChips);
+
+    // ---- detailed player table: stat line (selected source) + all-source pts ----
+    // Sortable: default by selected source pts desc; click any header to sort.
+    const sortKey = PROJ_STATE.sort?.key || src;
+    const sortDir = PROJ_STATE.sort?.dir || 'desc';
+    const isSourceKey = (k) => data.sources.includes(k);
+    const sortVal = (p, k) => isSourceKey(k) ? p[k] : ((p.stats && p.stats[src]) || {})[k];
+    const setSort = (k) => {
+      PROJ_STATE.sort = (PROJ_STATE.sort && PROJ_STATE.sort.key === k)
+        ? { key: k, dir: PROJ_STATE.sort.dir === 'desc' ? 'asc' : 'desc' }
+        : { key: k, dir: 'desc' };
+      viewProjections(lg.id);
+    };
+    const rows = (data.players || [])
+      .filter(p => projPosMatch(p.pos, PROJ_STATE.pos))
+      .filter(p => p[src] != null)
+      .sort((a, b) => {
+        const av = sortVal(a, sortKey), bv = sortVal(b, sortKey);
+        const an = av == null, bn = bv == null;
+        if (an && bn) return 0;
+        if (an) return 1;      // nulls last regardless of dir
+        if (bn) return -1;
+        return sortDir === 'desc' ? bv - av : av - bv;
+      })
+      .slice(0, 300);
+    const arrow = (k) => k === sortKey ? (sortDir === 'desc' ? ' ▼' : ' ▲') : '';
+    const sortTh = (k, label, active) => h('th', {
+      style: { textAlign: 'right', cursor: 'pointer', whiteSpace: 'nowrap', ...(active ? { color: 'var(--green)' } : {}) },
+      title: 'Sort', onclick: () => setSort(k),
+    }, label + arrow(k));
+    const statTh = statKeys.map(k => sortTh(k, STAT_LABEL[k] || k, false));
+    const ptsTh = data.sources.map(s => sortTh(s, PROJ_SRC_LABEL[s], s === src));
+    const table = h('div', { class: 'card', style: { padding: 0, overflowX: 'auto' } },
+      h('table', { class: 'data', style: { minWidth: '760px' } },
+        h('thead', null, h('tr', null,
+          h('th', { style: { textAlign: 'right' } }, '#'), h('th', null, 'Player'), h('th', null, 'Pos'), h('th', null, 'Tm'), h('th', null, 'Env'),
+          ...statTh, ...ptsTh)),
+        h('tbody', null, ...rows.map((p, i) => {
+          const line = (p.stats && p.stats[src]) || {};
+          const statTd = statKeys.map(k => h('td', { class: 'tnum', style: { textAlign: 'right', color: 'var(--fg-2)' } },
+            line[k] == null ? '·' : fmt.decimal(line[k], (k.endsWith('_td') || k === 'int' || k === 'pass_int' || k === 'ff' || k === 'fum_rec' || k === 'pass_def' || k === 'qb_hit' || k === 'sack') ? 1 : 0)));
+          const ptsTd = data.sources.map(s => h('td', {
+            class: 'tnum', style: { textAlign: 'right', ...(s === src ? { fontWeight: 700 } : { color: 'var(--fg-3)' }) },
+            title: (s === 'pp' && p.pp_partial) ? 'Includes Sleeper fill for props PrizePicks did not post (e.g. receptions)' : '',
+          }, p[s] == null ? '—' : (fmt.decimal(p[s], 1) + (s === 'pp' && p.pp_partial ? '*' : ''))));
+          return h('tr', p.id ? { onclick: () => openPlayerDetail(p.name, p.id), style: { cursor: 'pointer' } } : {},
+            h('td', { class: 'tnum', style: { textAlign: 'right', color: 'var(--fg-3)' } }, String(i + 1)),
+            h('td', null, h('span', { class: 'name' }, p.name)),
+            h('td', null, posChip(p.pos)),
+            h('td', null, teamChip(p.team)),
+            h('td', null, envChip(p.team) || h('span', { class: 'muted' }, '·')),
+            ...statTd, ...ptsTd);
+        }))
+      )
+    );
+    main.appendChild(table);
+    main.appendChild(h('div', { class: 'tip', style: { marginTop: '10px' } },
+      `${rows.length} ${PROJ_STATE.unit} players · stat line shown for ${PROJ_SRC_LABEL[src]}. ` +
+      (isDef ? 'Defense: PD/QB-hit/return-yds are best-estimated (no source projects them); tackles/sacks/INT/FF from Clay & Sleeper.' : 'Offense pts: PrizePicks lines vs Sleeper model vs blend. PP * = missing props (e.g. receptions) filled from Sleeper so pass-catchers aren’t undercounted.')));
+  }
+
   function navigate(hash) { location.hash = hash; }
   function route() {
     renderSidebar();
@@ -6324,6 +6797,7 @@
         case 'league':     return viewLeague(rest[0], rest[1]);
         case 'roster':     return viewRoster(rest[0], rest[1], rest[2]);
         case 'trade':      return viewTrade(rest[0]);
+        case 'projections': return viewProjections(rest[0]);
         case 'compare':    return viewCompare(rest[0], rest[1], rest[2]);
         case 'strategy':   return viewStrategy();
         case 'action':     return viewActionCenter();

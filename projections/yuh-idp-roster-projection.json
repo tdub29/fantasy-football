@@ -1,0 +1,778 @@
+{
+ "slots": 2,
+ "scoring": "yuH IDP, blend of Clay+Sleeper",
+ "teams": [
+  {
+   "team": "Team WHITE",
+   "owner": "tdub1329",
+   "is_me": true,
+   "start_pts": 317.8,
+   "starters": [
+    {
+     "name": "Jack Campbell",
+     "pos": "LB",
+     "team": "DET",
+     "blend": 175.7,
+     "clay": 149.9,
+     "sleeper": 138.0
+    },
+    {
+     "name": "Zack Baun",
+     "pos": "LB",
+     "team": "PHI",
+     "blend": 142.1,
+     "clay": 120.7,
+     "sleeper": 116.0
+    }
+   ],
+   "depth": [
+    {
+     "name": "Jack Campbell",
+     "pos": "LB",
+     "team": "DET",
+     "blend": 175.7,
+     "clay": 149.9,
+     "sleeper": 138.0
+    },
+    {
+     "name": "Zack Baun",
+     "pos": "LB",
+     "team": "PHI",
+     "blend": 142.1,
+     "clay": 120.7,
+     "sleeper": 116.0
+    }
+   ]
+  },
+  {
+   "team": "MT EVEREST",
+   "owner": "Nathanmetz",
+   "is_me": false,
+   "start_pts": 317.3,
+   "starters": [
+    {
+     "name": "Carson Schwesinger",
+     "pos": "LB",
+     "team": "CLE",
+     "blend": 161.0,
+     "clay": 143.0,
+     "sleeper": 120.0
+    },
+    {
+     "name": "Fred Warner",
+     "pos": "LB",
+     "team": "SF",
+     "blend": 156.3,
+     "clay": 146.8,
+     "sleeper": 118.0
+    }
+   ],
+   "depth": [
+    {
+     "name": "Carson Schwesinger",
+     "pos": "LB",
+     "team": "CLE",
+     "blend": 161.0,
+     "clay": 143.0,
+     "sleeper": 120.0
+    },
+    {
+     "name": "Fred Warner",
+     "pos": "LB",
+     "team": "SF",
+     "blend": 156.3,
+     "clay": 146.8,
+     "sleeper": 118.0
+    },
+    {
+     "name": "Will Anderson",
+     "pos": "DL",
+     "team": "HOU",
+     "blend": 146.0,
+     "clay": 114.1,
+     "sleeper": 79.0
+    },
+    {
+     "name": "Nate Landman",
+     "pos": "LB",
+     "team": "LAR",
+     "blend": 142.5,
+     "clay": 130.7,
+     "sleeper": 108.5
+    },
+    {
+     "name": "Abdul Carter",
+     "pos": "DL",
+     "team": "NYG",
+     "blend": 108.6,
+     "clay": 71.1,
+     "sleeper": 77.0
+    }
+   ]
+  },
+  {
+   "team": "Dydelldaddy",
+   "owner": "Dydelldaddy",
+   "is_me": false,
+   "start_pts": 315.7,
+   "starters": [
+    {
+     "name": "Nick Bolton",
+     "pos": "LB",
+     "team": "KC",
+     "blend": 159.8,
+     "clay": 148.7,
+     "sleeper": 115.0
+    },
+    {
+     "name": "Jordyn Brooks",
+     "pos": "LB",
+     "team": "MIA",
+     "blend": 155.9,
+     "clay": 167.3,
+     "sleeper": 87.0
+    }
+   ],
+   "depth": [
+    {
+     "name": "Nick Bolton",
+     "pos": "LB",
+     "team": "KC",
+     "blend": 159.8,
+     "clay": 148.7,
+     "sleeper": 115.0
+    },
+    {
+     "name": "Jordyn Brooks",
+     "pos": "LB",
+     "team": "MIA",
+     "blend": 155.9,
+     "clay": 167.3,
+     "sleeper": 87.0
+    },
+    {
+     "name": "Brian Burns",
+     "pos": "DE",
+     "team": "NYG",
+     "blend": 151.0,
+     "clay": 111.1,
+     "sleeper": 93.0
+    },
+    {
+     "name": "Danielle Hunter",
+     "pos": "DE",
+     "team": "HOU",
+     "blend": 145.6,
+     "clay": 102.6,
+     "sleeper": 88.0
+    },
+    {
+     "name": "Budda Baker",
+     "pos": "DB",
+     "team": "ARI",
+     "blend": 142.6,
+     "clay": 112.6,
+     "sleeper": 95.5
+    },
+    {
+     "name": "Zaire Franklin",
+     "pos": "LB",
+     "team": "GB",
+     "blend": 127.0,
+     "clay": 107.9,
+     "sleeper": 101.5
+    },
+    {
+     "name": "Caleb Downs",
+     "pos": "DB",
+     "team": "DAL",
+     "blend": 123.3,
+     "clay": 90.3,
+     "sleeper": 93.5
+    },
+    {
+     "name": "Micah Parsons",
+     "pos": "LB",
+     "team": "GB",
+     "blend": 101.2,
+     "clay": 74.0,
+     "sleeper": 55.5
+    },
+    {
+     "name": "Travis Hunter",
+     "pos": "WR",
+     "team": "JAX",
+     "blend": 76.7,
+     "clay": 61.2,
+     "sleeper": 34.5
+    }
+   ]
+  },
+  {
+   "team": "tbonerito",
+   "owner": "tbonerito",
+   "is_me": false,
+   "start_pts": 310.4,
+   "starters": [
+    {
+     "name": "Kyle Hamilton",
+     "pos": "DB",
+     "team": "BAL",
+     "blend": 155.5,
+     "clay": 118.4,
+     "sleeper": 115.5
+    },
+    {
+     "name": "Aidan Hutchinson",
+     "pos": "DL",
+     "team": "DET",
+     "blend": 154.9,
+     "clay": 102.4,
+     "sleeper": 105.5
+    }
+   ],
+   "depth": [
+    {
+     "name": "Kyle Hamilton",
+     "pos": "DB",
+     "team": "BAL",
+     "blend": 155.5,
+     "clay": 118.4,
+     "sleeper": 115.5
+    },
+    {
+     "name": "Aidan Hutchinson",
+     "pos": "DL",
+     "team": "DET",
+     "blend": 154.9,
+     "clay": 102.4,
+     "sleeper": 105.5
+    },
+    {
+     "name": "Arvell Reese",
+     "pos": "LB",
+     "team": "NYG",
+     "blend": 129.2,
+     "clay": 112.6,
+     "sleeper": 92.0
+    },
+    {
+     "name": "T.J. Edwards",
+     "pos": "LB",
+     "team": "CHI",
+     "blend": 114.8,
+     "clay": 120.4,
+     "sleeper": 70.0
+    },
+    {
+     "name": "Dillon Thieneman",
+     "pos": "DB",
+     "team": "CHI",
+     "blend": 109.1,
+     "clay": 83.2,
+     "sleeper": 79.5
+    },
+    {
+     "name": "DeForest Buckner",
+     "pos": "DT",
+     "team": "IND",
+     "blend": 98.8,
+     "clay": 85.6,
+     "sleeper": 53.5
+    },
+    {
+     "name": "Rueben Bain",
+     "pos": "DL",
+     "team": "TB",
+     "blend": 94.0,
+     "clay": 66.7,
+     "sleeper": 58.5
+    }
+   ]
+  },
+  {
+   "team": "Wake N Baker",
+   "owner": "matthewarmstrong02",
+   "is_me": false,
+   "start_pts": 310.1,
+   "starters": [
+    {
+     "name": "Nick Emmanwori",
+     "pos": "DB",
+     "team": "SEA",
+     "blend": 161.5,
+     "clay": 113.9,
+     "sleeper": 87.5
+    },
+    {
+     "name": "Roquan Smith",
+     "pos": "LB",
+     "team": "BAL",
+     "blend": 148.6,
+     "clay": 126.6,
+     "sleeper": 122.0
+    }
+   ],
+   "depth": [
+    {
+     "name": "Nick Emmanwori",
+     "pos": "DB",
+     "team": "SEA",
+     "blend": 161.5,
+     "clay": 113.9,
+     "sleeper": 87.5
+    },
+    {
+     "name": "Roquan Smith",
+     "pos": "LB",
+     "team": "BAL",
+     "blend": 148.6,
+     "clay": 126.6,
+     "sleeper": 122.0
+    },
+    {
+     "name": "Devin Bush",
+     "pos": "LB",
+     "team": "CHI",
+     "blend": 132.7,
+     "clay": 119.4,
+     "sleeper": 102.5
+    },
+    {
+     "name": "Tyrel Dodson",
+     "pos": "LB",
+     "team": "MIA",
+     "blend": 131.2,
+     "clay": 127.0,
+     "sleeper": 88.0
+    },
+    {
+     "name": "Patrick Queen",
+     "pos": "LB",
+     "team": "PIT",
+     "blend": 128.2,
+     "clay": 113.0,
+     "sleeper": 100.5
+    },
+    {
+     "name": "Jihaad Campbell",
+     "pos": "LB",
+     "team": "PHI",
+     "blend": 118.0,
+     "clay": 105.9,
+     "sleeper": 92.5
+    },
+    {
+     "name": "Bud Clark",
+     "pos": "DB",
+     "team": "SEA",
+     "blend": null,
+     "clay": null,
+     "sleeper": null
+    },
+    {
+     "name": "Julian Neal",
+     "pos": "DB",
+     "team": "SEA",
+     "blend": null,
+     "clay": null,
+     "sleeper": null
+    }
+   ]
+  },
+  {
+   "team": "Dr.F",
+   "owner": "MaryLynnfrolfs",
+   "is_me": false,
+   "start_pts": 305.1,
+   "starters": [
+    {
+     "name": "Maxx Crosby",
+     "pos": "DE",
+     "team": "LV",
+     "blend": 158.5,
+     "clay": 132.0,
+     "sleeper": 79.5
+    },
+    {
+     "name": "Cedric Gray",
+     "pos": "LB",
+     "team": "TEN",
+     "blend": 146.6,
+     "clay": 141.3,
+     "sleeper": 101.5
+    }
+   ],
+   "depth": [
+    {
+     "name": "Maxx Crosby",
+     "pos": "DE",
+     "team": "LV",
+     "blend": 158.5,
+     "clay": 132.0,
+     "sleeper": 79.5
+    },
+    {
+     "name": "Cedric Gray",
+     "pos": "LB",
+     "team": "TEN",
+     "blend": 146.6,
+     "clay": 141.3,
+     "sleeper": 101.5
+    },
+    {
+     "name": "Tremaine Edmunds",
+     "pos": "LB",
+     "team": "NYG",
+     "blend": 130.0,
+     "clay": 121.5,
+     "sleeper": 96.0
+    },
+    {
+     "name": "Byron Young",
+     "pos": "LB",
+     "team": "LAR",
+     "blend": 129.7,
+     "clay": null,
+     "sleeper": 91.0
+    },
+    {
+     "name": "T.J. Watt",
+     "pos": "LB",
+     "team": "PIT",
+     "blend": 128.9,
+     "clay": 93.1,
+     "sleeper": 83.5
+    }
+   ]
+  },
+  {
+   "team": "PapaZoot0",
+   "owner": "JDillman5",
+   "is_me": false,
+   "start_pts": 299.0,
+   "starters": [
+    {
+     "name": "Myles Garrett",
+     "pos": "DE",
+     "team": "LAR",
+     "blend": 165.6,
+     "clay": 117.6,
+     "sleeper": 98.0
+    },
+    {
+     "name": "Nick Bosa",
+     "pos": "DE",
+     "team": "SF",
+     "blend": 133.4,
+     "clay": 108.8,
+     "sleeper": 70.0
+    }
+   ],
+   "depth": [
+    {
+     "name": "Myles Garrett",
+     "pos": "DE",
+     "team": "LAR",
+     "blend": 165.6,
+     "clay": 117.6,
+     "sleeper": 98.0
+    },
+    {
+     "name": "Nick Bosa",
+     "pos": "DE",
+     "team": "SF",
+     "blend": 133.4,
+     "clay": 108.8,
+     "sleeper": 70.0
+    },
+    {
+     "name": "CJ Allen",
+     "pos": "LB",
+     "team": "IND",
+     "blend": 105.5,
+     "clay": 85.8,
+     "sleeper": 82.5
+    },
+    {
+     "name": "Jalon Walker",
+     "pos": "DL",
+     "team": "ATL",
+     "blend": 93.3,
+     "clay": 67.0,
+     "sleeper": 62.5
+    },
+    {
+     "name": "Dre Greenlaw",
+     "pos": "LB",
+     "team": "SF",
+     "blend": 93.1,
+     "clay": 100.9,
+     "sleeper": 48.5
+    },
+    {
+     "name": "AJ Haulcy",
+     "pos": "DB",
+     "team": "IND",
+     "blend": 60.6,
+     "clay": null,
+     "sleeper": 40.0
+    },
+    {
+     "name": "Devin White",
+     "pos": "LB",
+     "team": null,
+     "blend": null,
+     "clay": null,
+     "sleeper": null
+    }
+   ]
+  },
+  {
+   "team": "Wyd step Burrow?",
+   "owner": "noahstifle",
+   "is_me": false,
+   "start_pts": 298.3,
+   "starters": [
+    {
+     "name": "Nakobe Dean",
+     "pos": "LB",
+     "team": "LV",
+     "blend": 164.4,
+     "clay": 138.7,
+     "sleeper": 128.5
+    },
+    {
+     "name": "Edgerrin Cooper",
+     "pos": "LB",
+     "team": "GB",
+     "blend": 133.9,
+     "clay": 114.1,
+     "sleeper": 107.0
+    }
+   ],
+   "depth": [
+    {
+     "name": "Nakobe Dean",
+     "pos": "LB",
+     "team": "LV",
+     "blend": 164.4,
+     "clay": 138.7,
+     "sleeper": 128.5
+    },
+    {
+     "name": "Edgerrin Cooper",
+     "pos": "LB",
+     "team": "GB",
+     "blend": 133.9,
+     "clay": 114.1,
+     "sleeper": 107.0
+    },
+    {
+     "name": "Jared Verse",
+     "pos": "DL",
+     "team": "CLE",
+     "blend": 127.6,
+     "clay": 86.8,
+     "sleeper": 88.5
+    },
+    {
+     "name": "Dallas Turner",
+     "pos": "LB",
+     "team": "MIN",
+     "blend": 126.3,
+     "clay": 95.1,
+     "sleeper": 79.0
+    },
+    {
+     "name": "Laiatu Latu",
+     "pos": "DL",
+     "team": "IND",
+     "blend": 109.0,
+     "clay": 75.8,
+     "sleeper": 71.5
+    },
+    {
+     "name": "Payton Wilson",
+     "pos": "LB",
+     "team": "PIT",
+     "blend": 98.9,
+     "clay": 68.3,
+     "sleeper": 95.0
+    },
+    {
+     "name": "Brian Branch",
+     "pos": "DB",
+     "team": "DET",
+     "blend": 86.5,
+     "clay": 76.0,
+     "sleeper": 51.0
+    }
+   ]
+  },
+  {
+   "team": "Jenny",
+   "owner": "JamesJessen",
+   "is_me": false,
+   "start_pts": 291.6,
+   "starters": [
+    {
+     "name": "Quay Walker",
+     "pos": "LB",
+     "team": "LV",
+     "blend": 148.1,
+     "clay": 134.7,
+     "sleeper": 99.5
+    },
+    {
+     "name": "Derwin James",
+     "pos": "DB",
+     "team": "LAC",
+     "blend": 143.5,
+     "clay": 113.0,
+     "sleeper": 100.5
+    }
+   ],
+   "depth": [
+    {
+     "name": "Quay Walker",
+     "pos": "LB",
+     "team": "LV",
+     "blend": 148.1,
+     "clay": 134.7,
+     "sleeper": 99.5
+    },
+    {
+     "name": "Derwin James",
+     "pos": "DB",
+     "team": "LAC",
+     "blend": 143.5,
+     "clay": 113.0,
+     "sleeper": 100.5
+    },
+    {
+     "name": "Nik Bonitto",
+     "pos": "LB",
+     "team": "DEN",
+     "blend": 132.4,
+     "clay": 86.7,
+     "sleeper": 84.5
+    },
+    {
+     "name": "Xavier McKinney",
+     "pos": "DB",
+     "team": "GB",
+     "blend": 131.3,
+     "clay": 102.4,
+     "sleeper": 95.5
+    },
+    {
+     "name": "Daiyan Henley",
+     "pos": "LB",
+     "team": "LAC",
+     "blend": 128.7,
+     "clay": 116.0,
+     "sleeper": 96.0
+    },
+    {
+     "name": "David Bailey",
+     "pos": "LB",
+     "team": "NYJ",
+     "blend": 106.3,
+     "clay": 78.0,
+     "sleeper": 63.0
+    },
+    {
+     "name": "Bobby Okereke",
+     "pos": "LB",
+     "team": null,
+     "blend": null,
+     "clay": null,
+     "sleeper": null
+    }
+   ]
+  },
+  {
+   "team": "Larsswag10",
+   "owner": "jonahlarson",
+   "is_me": false,
+   "start_pts": 290.8,
+   "starters": [
+    {
+     "name": "Sonny Styles",
+     "pos": "LB",
+     "team": "WAS",
+     "blend": 147.6,
+     "clay": 119.3,
+     "sleeper": 123.0
+    },
+    {
+     "name": "Foyesade Oluokun",
+     "pos": "LB",
+     "team": "JAX",
+     "blend": 143.2,
+     "clay": null,
+     "sleeper": 122.5
+    }
+   ],
+   "depth": [
+    {
+     "name": "Sonny Styles",
+     "pos": "LB",
+     "team": "WAS",
+     "blend": 147.6,
+     "clay": 119.3,
+     "sleeper": 123.0
+    },
+    {
+     "name": "Foyesade Oluokun",
+     "pos": "LB",
+     "team": "JAX",
+     "blend": 143.2,
+     "clay": null,
+     "sleeper": 122.5
+    },
+    {
+     "name": "Tuli Tuipulotu",
+     "pos": "DL",
+     "team": "LAC",
+     "blend": 141.7,
+     "clay": 97.8,
+     "sleeper": 86.0
+    },
+    {
+     "name": "Ernest Jones",
+     "pos": "LB",
+     "team": "SEA",
+     "blend": 138.1,
+     "clay": 132.3,
+     "sleeper": 99.0
+    },
+    {
+     "name": "Cam Bynum",
+     "pos": "DB",
+     "team": "IND",
+     "blend": 120.9,
+     "clay": null,
+     "sleeper": 86.0
+    },
+    {
+     "name": "Mack Wilson",
+     "pos": "LB",
+     "team": "ARI",
+     "blend": 118.7,
+     "clay": 113.5,
+     "sleeper": 82.5
+    },
+    {
+     "name": "Bobby Wagner",
+     "pos": "LB",
+     "team": null,
+     "blend": 100.3,
+     "clay": null,
+     "sleeper": 82.5
+    }
+   ]
+  }
+ ]
+}

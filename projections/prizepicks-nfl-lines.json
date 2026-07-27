@@ -1,0 +1,2565 @@
+{
+ "league": "9",
+ "count": 178,
+ "rows": [
+  {
+   "player": "Sam Darnold",
+   "team": "SEA",
+   "pos": "QB",
+   "stat_type": "Pass Yards",
+   "line": 229.5,
+   "start_time": "2026-09-09T20:20:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Drake Maye",
+   "team": "NE",
+   "pos": "QB",
+   "stat_type": "Pass Yards",
+   "line": 223.5,
+   "start_time": "2026-09-09T20:20:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Jaxon Smith-Njigba",
+   "team": "SEA",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 87.5,
+   "start_time": "2026-09-09T20:20:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "A.J. Brown",
+   "team": "NE",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 62.5,
+   "start_time": "2026-09-09T20:20:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Romeo Doubs",
+   "team": "NE",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 37.5,
+   "start_time": "2026-09-09T20:20:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Cooper Kupp",
+   "team": "SEA",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 35.5,
+   "start_time": "2026-09-09T20:20:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Hunter Henry",
+   "team": "NE",
+   "pos": "TE",
+   "stat_type": "Receiving Yards",
+   "line": 33.5,
+   "start_time": "2026-09-09T20:20:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Drake Maye",
+   "team": "NE",
+   "pos": "QB",
+   "stat_type": "Rush Yards",
+   "line": 28.5,
+   "start_time": "2026-09-09T20:20:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Sam Darnold",
+   "team": "SEA",
+   "pos": "QB",
+   "stat_type": "Rush Yards",
+   "line": 3.5,
+   "start_time": "2026-09-09T20:20:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Jaxon Smith-Njigba",
+   "team": "SEA",
+   "pos": "WR",
+   "stat_type": "Rush+Rec TDs",
+   "line": 0.5,
+   "start_time": "2026-09-09T20:20:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Rashid Shaheed",
+   "team": "SEA",
+   "pos": "WR",
+   "stat_type": "Rush Yards",
+   "line": 0.5,
+   "start_time": "2026-09-09T20:20:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Drake Maye",
+   "team": "NE",
+   "pos": "QB",
+   "stat_type": "INT",
+   "line": 0.5,
+   "start_time": "2026-09-09T20:20:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Sam Darnold",
+   "team": "SEA",
+   "pos": "QB",
+   "stat_type": "INT",
+   "line": 0.5,
+   "start_time": "2026-09-09T20:20:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Davante Adams",
+   "team": "LA",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 54.5,
+   "start_time": "2026-09-10T20:35:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Matthew Stafford",
+   "team": "LA",
+   "pos": "QB",
+   "stat_type": "Pass Yards",
+   "line": 264.5,
+   "start_time": "2026-09-10T20:35:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Brock Purdy",
+   "team": "SF",
+   "pos": "QB",
+   "stat_type": "Pass Yards",
+   "line": 242.5,
+   "start_time": "2026-09-10T20:35:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Puka Nacua",
+   "team": "LA",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 90.5,
+   "start_time": "2026-09-10T20:35:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Christian McCaffrey",
+   "team": "SF",
+   "pos": "RB",
+   "stat_type": "Rush Yards",
+   "line": 61.5,
+   "start_time": "2026-09-10T20:35:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Kyren Williams",
+   "team": "LA",
+   "pos": "RB",
+   "stat_type": "Rush Yards",
+   "line": 59.5,
+   "start_time": "2026-09-10T20:35:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Mike Evans",
+   "team": "SF",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 54.5,
+   "start_time": "2026-09-10T20:35:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Christian McCaffrey",
+   "team": "SF",
+   "pos": "RB",
+   "stat_type": "Receiving Yards",
+   "line": 40.5,
+   "start_time": "2026-09-10T20:35:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Brock Purdy",
+   "team": "SF",
+   "pos": "QB",
+   "stat_type": "Rush Yards",
+   "line": 14.5,
+   "start_time": "2026-09-10T20:35:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Byron Young",
+   "team": "LA",
+   "pos": "OLB",
+   "stat_type": "Sacks",
+   "line": 0.75,
+   "start_time": "2026-09-10T20:35:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Nick Bosa",
+   "team": "SF",
+   "pos": "DL",
+   "stat_type": "Sacks",
+   "line": 0.75,
+   "start_time": "2026-09-10T20:35:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Kyren Williams",
+   "team": "LA",
+   "pos": "RB",
+   "stat_type": "Rush+Rec TDs",
+   "line": 0.5,
+   "start_time": "2026-09-10T20:35:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Puka Nacua",
+   "team": "LA",
+   "pos": "WR",
+   "stat_type": "Rush Yards",
+   "line": 0.5,
+   "start_time": "2026-09-10T20:35:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Matthew Stafford",
+   "team": "LA",
+   "pos": "QB",
+   "stat_type": "INT",
+   "line": 0.5,
+   "start_time": "2026-09-10T20:35:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Brock Purdy",
+   "team": "SF",
+   "pos": "QB",
+   "stat_type": "INT",
+   "line": 0.5,
+   "start_time": "2026-09-10T20:35:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Caleb Williams",
+   "team": "CHI",
+   "pos": "QB",
+   "stat_type": "Pass Yards",
+   "line": 239.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Bryce Young",
+   "team": "CAR",
+   "pos": "QB",
+   "stat_type": "Pass Yards",
+   "line": 196.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Tetairoa McMillan",
+   "team": "CAR",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 59.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Colston Loveland",
+   "team": "CHI",
+   "pos": "TE",
+   "stat_type": "Receiving Yards",
+   "line": 56.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Luther Burden III",
+   "team": "CHI",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 54.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Rome Odunze",
+   "team": "CHI",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 50.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Caleb Williams",
+   "team": "CHI",
+   "pos": "QB",
+   "stat_type": "Rush Yards",
+   "line": 19.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Bryce Young",
+   "team": "CAR",
+   "pos": "QB",
+   "stat_type": "Rush Yards",
+   "line": 14.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Luther Burden III",
+   "team": "CHI",
+   "pos": "WR",
+   "stat_type": "Rush Yards",
+   "line": 0.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Montez Sweat",
+   "team": "CHI",
+   "pos": "DL",
+   "stat_type": "Sacks",
+   "line": 0.25,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Aaron Rodgers",
+   "team": "PIT",
+   "pos": "QB",
+   "stat_type": "Pass Yards",
+   "line": 216.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Bijan Robinson",
+   "team": "ATL",
+   "pos": "RB",
+   "stat_type": "Rush Yards",
+   "line": 83.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Drake London",
+   "team": "ATL",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 72.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Kyle Pitts Sr.",
+   "team": "ATL",
+   "pos": "TE",
+   "stat_type": "Receiving Yards",
+   "line": 52.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "DK Metcalf",
+   "team": "PIT",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 49.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Michael Pittman Jr.",
+   "team": "PIT",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 42.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Bijan Robinson",
+   "team": "ATL",
+   "pos": "RB",
+   "stat_type": "Receiving Yards",
+   "line": 38.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Germie Bernard",
+   "team": "PIT",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 28.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Aaron Rodgers",
+   "team": "PIT",
+   "pos": "QB",
+   "stat_type": "Rush Yards",
+   "line": 0.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Lamar Jackson",
+   "team": "BAL",
+   "pos": "QB",
+   "stat_type": "Pass Yards",
+   "line": 219.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Derrick Henry",
+   "team": "BAL",
+   "pos": "RB",
+   "stat_type": "Rush Yards",
+   "line": 86.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Jonathan Taylor",
+   "team": "IND",
+   "pos": "RB",
+   "stat_type": "Rush Yards",
+   "line": 74.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Zay Flowers",
+   "team": "BAL",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 66.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Alec Pierce",
+   "team": "IND",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 56.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Tyler Warren",
+   "team": "IND",
+   "pos": "TE",
+   "stat_type": "Receiving Yards",
+   "line": 47.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Lamar Jackson",
+   "team": "BAL",
+   "pos": "QB",
+   "stat_type": "Rush Yards",
+   "line": 31.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Jonathan Taylor",
+   "team": "IND",
+   "pos": "RB",
+   "stat_type": "Receiving Yards",
+   "line": 13.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Derrick Henry",
+   "team": "BAL",
+   "pos": "RB",
+   "stat_type": "Receiving Yards",
+   "line": 4.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Zay Flowers",
+   "team": "BAL",
+   "pos": "WR",
+   "stat_type": "Rush Yards",
+   "line": 0.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Geno Smith",
+   "team": "NYJ",
+   "pos": "QB",
+   "stat_type": "Pass Yards",
+   "line": 199.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Cam Ward",
+   "team": "TEN",
+   "pos": "QB",
+   "stat_type": "Pass Yards",
+   "line": 190.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Garrett Wilson",
+   "team": "NYJ",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 67.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Breece Hall",
+   "team": "NYJ",
+   "pos": "RB",
+   "stat_type": "Rush Yards",
+   "line": 64.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Tony Pollard",
+   "team": "TEN",
+   "pos": "RB",
+   "stat_type": "Rush Yards",
+   "line": 61.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Carnell Tate",
+   "team": "TEN",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 51.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Wan'Dale Robinson",
+   "team": "TEN",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 47.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Breece Hall",
+   "team": "NYJ",
+   "pos": "RB",
+   "stat_type": "Receiving Yards",
+   "line": 17.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Cam Ward",
+   "team": "TEN",
+   "pos": "QB",
+   "stat_type": "Rush Yards",
+   "line": 7.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Geno Smith",
+   "team": "NYJ",
+   "pos": "QB",
+   "stat_type": "Rush Yards",
+   "line": 6.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Geno Smith",
+   "team": "NYJ",
+   "pos": "QB",
+   "stat_type": "INT",
+   "line": 0.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Cam Ward",
+   "team": "TEN",
+   "pos": "QB",
+   "stat_type": "INT",
+   "line": 0.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Trevor Lawrence",
+   "team": "JAC",
+   "pos": "QB",
+   "stat_type": "Pass Yards",
+   "line": 234.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Quinshon Judkins",
+   "team": "CLE",
+   "pos": "RB",
+   "stat_type": "Rush Yards",
+   "line": 63.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Brian Thomas Jr.",
+   "team": "JAC",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 48.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Harold Fannin Jr.",
+   "team": "CLE",
+   "pos": "TE",
+   "stat_type": "Receiving Yards",
+   "line": 45.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "KC Concepcion",
+   "team": "CLE",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 42.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Denzel Boston",
+   "team": "CLE",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 31.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Trevor Lawrence",
+   "team": "JAC",
+   "pos": "QB",
+   "stat_type": "Rush Yards",
+   "line": 19.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Quinshon Judkins",
+   "team": "CLE",
+   "pos": "RB",
+   "stat_type": "Receiving Yards",
+   "line": 9.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Trevor Lawrence",
+   "team": "JAC",
+   "pos": "QB",
+   "stat_type": "INT",
+   "line": 0.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Jared Goff",
+   "team": "DET",
+   "pos": "QB",
+   "stat_type": "Pass Yards",
+   "line": 271.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Tyler Shough",
+   "team": "NO",
+   "pos": "QB",
+   "stat_type": "Pass Yards",
+   "line": 249.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Amon-Ra St. Brown",
+   "team": "DET",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 78.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Jahmyr Gibbs",
+   "team": "DET",
+   "pos": "RB",
+   "stat_type": "Rush Yards",
+   "line": 76.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Chris Olave",
+   "team": "NO",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 69.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Jameson Williams",
+   "team": "DET",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 65.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Jordyn Tyson",
+   "team": "NO",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 55.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Sam LaPorta",
+   "team": "DET",
+   "pos": "TE",
+   "stat_type": "Receiving Yards",
+   "line": 47.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Jahmyr Gibbs",
+   "team": "DET",
+   "pos": "RB",
+   "stat_type": "Receiving Yards",
+   "line": 32.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Isiah Pacheco",
+   "team": "DET",
+   "pos": "RB",
+   "stat_type": "Rush Yards",
+   "line": 29.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Tyler Shough",
+   "team": "NO",
+   "pos": "QB",
+   "stat_type": "Rush Yards",
+   "line": 17.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Aidan Hutchinson",
+   "team": "DET",
+   "pos": "DE",
+   "stat_type": "Sacks",
+   "line": 0.75,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Amon-Ra St. Brown",
+   "team": "DET",
+   "pos": "WR",
+   "stat_type": "Rush+Rec TDs",
+   "line": 0.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Tyler Shough",
+   "team": "NO",
+   "pos": "QB",
+   "stat_type": "INT",
+   "line": 0.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Jared Goff",
+   "team": "DET",
+   "pos": "QB",
+   "stat_type": "INT",
+   "line": 0.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Joe Burrow",
+   "team": "CIN",
+   "pos": "QB",
+   "stat_type": "Pass Yards",
+   "line": 265.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Baker Mayfield",
+   "team": "TB",
+   "pos": "QB",
+   "stat_type": "Pass Yards",
+   "line": 248.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Ja'Marr Chase",
+   "team": "CIN",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 89.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Tee Higgins",
+   "team": "CIN",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 60.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Emeka Egbuka",
+   "team": "TB",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 59.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Chase Brown",
+   "team": "CIN",
+   "pos": "RB",
+   "stat_type": "Rush Yards",
+   "line": 56.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Baker Mayfield",
+   "team": "TB",
+   "pos": "QB",
+   "stat_type": "Rush Yards",
+   "line": 16.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Joe Burrow",
+   "team": "CIN",
+   "pos": "QB",
+   "stat_type": "Rush Yards",
+   "line": 5.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Ja'Marr Chase",
+   "team": "CIN",
+   "pos": "WR",
+   "stat_type": "Rush+Rec TDs",
+   "line": 0.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Baker Mayfield",
+   "team": "TB",
+   "pos": "QB",
+   "stat_type": "INT",
+   "line": 0.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Joe Burrow",
+   "team": "CIN",
+   "pos": "QB",
+   "stat_type": "INT",
+   "line": 0.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "C.J. Stroud",
+   "team": "HOU",
+   "pos": "QB",
+   "stat_type": "Pass Yards",
+   "line": 228.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Josh Allen",
+   "team": "BUF",
+   "pos": "QB",
+   "stat_type": "Pass Yards",
+   "line": 223.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "James Cook III",
+   "team": "BUF",
+   "pos": "RB",
+   "stat_type": "Rush Yards",
+   "line": 76.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Nico Collins",
+   "team": "HOU",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 70.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "David Montgomery",
+   "team": "HOU",
+   "pos": "RB",
+   "stat_type": "Rush Yards",
+   "line": 54.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "DJ Moore",
+   "team": "BUF",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 52.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Josh Allen",
+   "team": "BUF",
+   "pos": "QB",
+   "stat_type": "Rush Yards",
+   "line": 32.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "James Cook III",
+   "team": "BUF",
+   "pos": "RB",
+   "stat_type": "Receiving Yards",
+   "line": 15.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "C.J. Stroud",
+   "team": "HOU",
+   "pos": "QB",
+   "stat_type": "Rush Yards",
+   "line": 7.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Danielle Hunter",
+   "team": "HOU",
+   "pos": "DE",
+   "stat_type": "Sacks",
+   "line": 0.75,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Will Anderson Jr.",
+   "team": "HOU",
+   "pos": "DE",
+   "stat_type": "Sacks",
+   "line": 0.75,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "James Cook III",
+   "team": "BUF",
+   "pos": "RB",
+   "stat_type": "Rush+Rec TDs",
+   "line": 0.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Josh Allen",
+   "team": "BUF",
+   "pos": "QB",
+   "stat_type": "Rush+Rec TDs",
+   "line": 0.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Josh Allen",
+   "team": "BUF",
+   "pos": "QB",
+   "stat_type": "INT",
+   "line": 0.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "C.J. Stroud",
+   "team": "HOU",
+   "pos": "QB",
+   "stat_type": "INT",
+   "line": 0.5,
+   "start_time": "2026-09-13T13:00:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "De'Von Achane",
+   "team": "MIA",
+   "pos": "RB",
+   "stat_type": "Rush+Rec TDs",
+   "line": 0.5,
+   "start_time": "2026-09-13T16:25:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Jalen Hurts",
+   "team": "PHI",
+   "pos": "QB",
+   "stat_type": "Rush+Rec TDs",
+   "line": 0.5,
+   "start_time": "2026-09-13T16:25:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Justin Herbert",
+   "team": "LAC",
+   "pos": "QB",
+   "stat_type": "Pass Yards",
+   "line": 246.5,
+   "start_time": "2026-09-13T16:25:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Omarion Hampton",
+   "team": "LAC",
+   "pos": "RB",
+   "stat_type": "Rush Yards",
+   "line": 65.5,
+   "start_time": "2026-09-13T16:25:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Trey McBride",
+   "team": "ARI",
+   "pos": "TE",
+   "stat_type": "Receiving Yards",
+   "line": 63.5,
+   "start_time": "2026-09-13T16:25:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Jeremiyah Love",
+   "team": "ARI",
+   "pos": "RB",
+   "stat_type": "Rush Yards",
+   "line": 58.5,
+   "start_time": "2026-09-13T16:25:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Ladd McConkey",
+   "team": "LAC",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 58.5,
+   "start_time": "2026-09-13T16:25:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Michael Wilson",
+   "team": "ARI",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 52.5,
+   "start_time": "2026-09-13T16:25:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Marvin Harrison Jr.",
+   "team": "ARI",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 50.5,
+   "start_time": "2026-09-13T16:25:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Justin Herbert",
+   "team": "LAC",
+   "pos": "QB",
+   "stat_type": "Rush Yards",
+   "line": 22.5,
+   "start_time": "2026-09-13T16:25:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Jordan Love",
+   "team": "GB",
+   "pos": "QB",
+   "stat_type": "Pass Yards",
+   "line": 231.5,
+   "start_time": "2026-09-13T16:25:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Justin Jefferson",
+   "team": "MIN",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 76.5,
+   "start_time": "2026-09-13T16:25:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Christian Watson",
+   "team": "GB",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 54.5,
+   "start_time": "2026-09-13T16:25:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Tucker Kraft",
+   "team": "GB",
+   "pos": "TE",
+   "stat_type": "Receiving Yards",
+   "line": 52.5,
+   "start_time": "2026-09-13T16:25:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Jordan Love",
+   "team": "GB",
+   "pos": "QB",
+   "stat_type": "Rush Yards",
+   "line": 8.5,
+   "start_time": "2026-09-13T16:25:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Malik Willis",
+   "team": "MIA",
+   "pos": "QB",
+   "stat_type": "Pass Yards",
+   "line": 178.5,
+   "start_time": "2026-09-13T16:25:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "De'Von Achane",
+   "team": "MIA",
+   "pos": "RB",
+   "stat_type": "Rush Yards",
+   "line": 76.5,
+   "start_time": "2026-09-13T16:25:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Ashton Jeanty",
+   "team": "LV",
+   "pos": "RB",
+   "stat_type": "Rush Yards",
+   "line": 76.5,
+   "start_time": "2026-09-13T16:25:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Brock Bowers",
+   "team": "LV",
+   "pos": "TE",
+   "stat_type": "Receiving Yards",
+   "line": 63.5,
+   "start_time": "2026-09-13T16:25:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Malik Willis",
+   "team": "MIA",
+   "pos": "QB",
+   "stat_type": "Rush Yards",
+   "line": 40.5,
+   "start_time": "2026-09-13T16:25:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "De'Von Achane",
+   "team": "MIA",
+   "pos": "RB",
+   "stat_type": "Receiving Yards",
+   "line": 29.5,
+   "start_time": "2026-09-13T16:25:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Ashton Jeanty",
+   "team": "LV",
+   "pos": "RB",
+   "stat_type": "Receiving Yards",
+   "line": 19.5,
+   "start_time": "2026-09-13T16:25:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Maxx Crosby",
+   "team": "LV",
+   "pos": "DE",
+   "stat_type": "Sacks",
+   "line": 0.75,
+   "start_time": "2026-09-13T16:25:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Ashton Jeanty",
+   "team": "LV",
+   "pos": "RB",
+   "stat_type": "Rush+Rec TDs",
+   "line": 0.5,
+   "start_time": "2026-09-13T16:25:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Jayden Daniels",
+   "team": "WAS",
+   "pos": "QB",
+   "stat_type": "Pass Yards",
+   "line": 223.5,
+   "start_time": "2026-09-13T16:25:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Jalen Hurts",
+   "team": "PHI",
+   "pos": "QB",
+   "stat_type": "Pass Yards",
+   "line": 215.5,
+   "start_time": "2026-09-13T16:25:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Saquon Barkley",
+   "team": "PHI",
+   "pos": "RB",
+   "stat_type": "Rush Yards",
+   "line": 78.5,
+   "start_time": "2026-09-13T16:25:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "DeVonta Smith",
+   "team": "PHI",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 65.5,
+   "start_time": "2026-09-13T16:25:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Terry McLaurin",
+   "team": "WAS",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 59.5,
+   "start_time": "2026-09-13T16:25:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Jayden Daniels",
+   "team": "WAS",
+   "pos": "QB",
+   "stat_type": "Rush Yards",
+   "line": 39.5,
+   "start_time": "2026-09-13T16:25:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Makai Lemon",
+   "team": "PHI",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 38.5,
+   "start_time": "2026-09-13T16:25:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Jalen Hurts",
+   "team": "PHI",
+   "pos": "QB",
+   "stat_type": "Rush Yards",
+   "line": 29.5,
+   "start_time": "2026-09-13T16:25:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Saquon Barkley",
+   "team": "PHI",
+   "pos": "RB",
+   "stat_type": "Receiving Yards",
+   "line": 13.5,
+   "start_time": "2026-09-13T16:25:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Saquon Barkley",
+   "team": "PHI",
+   "pos": "RB",
+   "stat_type": "Rush+Rec TDs",
+   "line": 0.5,
+   "start_time": "2026-09-13T16:25:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Jayden Daniels",
+   "team": "WAS",
+   "pos": "QB",
+   "stat_type": "INT",
+   "line": 0.5,
+   "start_time": "2026-09-13T16:25:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Dak Prescott",
+   "team": "DAL",
+   "pos": "QB",
+   "stat_type": "Pass Yards",
+   "line": 257.5,
+   "start_time": "2026-09-13T20:20:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Jaxson Dart",
+   "team": "NYG",
+   "pos": "QB",
+   "stat_type": "Pass Yards",
+   "line": 215.5,
+   "start_time": "2026-09-13T20:20:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "CeeDee Lamb",
+   "team": "DAL",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 74.5,
+   "start_time": "2026-09-13T20:20:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Javonte Williams",
+   "team": "DAL",
+   "pos": "RB",
+   "stat_type": "Rush Yards",
+   "line": 68.5,
+   "start_time": "2026-09-13T20:20:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "George Pickens",
+   "team": "DAL",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 66.5,
+   "start_time": "2026-09-13T20:20:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Cam Skattebo",
+   "team": "NYG",
+   "pos": "RB",
+   "stat_type": "Rush Yards",
+   "line": 57.5,
+   "start_time": "2026-09-13T20:20:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Jake Ferguson",
+   "team": "DAL",
+   "pos": "TE",
+   "stat_type": "Receiving Yards",
+   "line": 32.5,
+   "start_time": "2026-09-13T20:20:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Jaxson Dart",
+   "team": "NYG",
+   "pos": "QB",
+   "stat_type": "Rush Yards",
+   "line": 30.5,
+   "start_time": "2026-09-13T20:20:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Cam Skattebo",
+   "team": "NYG",
+   "pos": "RB",
+   "stat_type": "Receiving Yards",
+   "line": 19.5,
+   "start_time": "2026-09-13T20:20:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Javonte Williams",
+   "team": "DAL",
+   "pos": "RB",
+   "stat_type": "Receiving Yards",
+   "line": 10.5,
+   "start_time": "2026-09-13T20:20:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Dak Prescott",
+   "team": "DAL",
+   "pos": "QB",
+   "stat_type": "Rush Yards",
+   "line": 6.5,
+   "start_time": "2026-09-13T20:20:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Brian Burns",
+   "team": "NYG",
+   "pos": "OLB",
+   "stat_type": "Sacks",
+   "line": 0.75,
+   "start_time": "2026-09-13T20:20:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Cam Skattebo",
+   "team": "NYG",
+   "pos": "RB",
+   "stat_type": "Rush+Rec TDs",
+   "line": 0.5,
+   "start_time": "2026-09-13T20:20:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Jaxson Dart",
+   "team": "NYG",
+   "pos": "QB",
+   "stat_type": "INT",
+   "line": 0.5,
+   "start_time": "2026-09-13T20:20:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Patrick Mahomes",
+   "team": "KC",
+   "pos": "QB",
+   "stat_type": "Pass Yards",
+   "line": 244.5,
+   "start_time": "2026-09-14T20:15:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Bo Nix",
+   "team": "DEN",
+   "pos": "QB",
+   "stat_type": "Pass Yards",
+   "line": 226.5,
+   "start_time": "2026-09-14T20:15:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Kenneth Walker III",
+   "team": "KC",
+   "pos": "RB",
+   "stat_type": "Rush Yards",
+   "line": 64.5,
+   "start_time": "2026-09-14T20:15:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Jaylen Waddle",
+   "team": "DEN",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 53.5,
+   "start_time": "2026-09-14T20:15:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Courtland Sutton",
+   "team": "DEN",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "line": 49.5,
+   "start_time": "2026-09-14T20:15:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Travis Kelce",
+   "team": "KC",
+   "pos": "TE",
+   "stat_type": "Receiving Yards",
+   "line": 43.5,
+   "start_time": "2026-09-14T20:15:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Nik Bonitto",
+   "team": "DEN",
+   "pos": "OLB",
+   "stat_type": "Sacks",
+   "line": 0.75,
+   "start_time": "2026-09-14T20:15:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Kenneth Walker III",
+   "team": "KC",
+   "pos": "RB",
+   "stat_type": "Rush+Rec TDs",
+   "line": 0.5,
+   "start_time": "2026-09-14T20:15:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Bo Nix",
+   "team": "DEN",
+   "pos": "QB",
+   "stat_type": "INT",
+   "line": 0.5,
+   "start_time": "2026-09-14T20:15:00.000-04:00",
+   "odds_type": "standard"
+  },
+  {
+   "player": "Patrick Mahomes",
+   "team": "KC",
+   "pos": "QB",
+   "stat_type": "INT",
+   "line": 0.5,
+   "start_time": "2026-09-14T20:15:00.000-04:00",
+   "odds_type": "standard"
+  }
+ ],
+ "players": [
+  {
+   "player": "Sam Darnold",
+   "team": "SEA",
+   "pos": "QB",
+   "lines": {
+    "Pass Yards": 229.5,
+    "Rush Yards": 3.5,
+    "INT": 0.5
+   }
+  },
+  {
+   "player": "Drake Maye",
+   "team": "NE",
+   "pos": "QB",
+   "lines": {
+    "Pass Yards": 223.5,
+    "Rush Yards": 28.5,
+    "INT": 0.5
+   }
+  },
+  {
+   "player": "Jaxon Smith-Njigba",
+   "team": "SEA",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 87.5,
+    "Rush+Rec TDs": 0.5
+   }
+  },
+  {
+   "player": "A.J. Brown",
+   "team": "NE",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 62.5
+   }
+  },
+  {
+   "player": "Romeo Doubs",
+   "team": "NE",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 37.5
+   }
+  },
+  {
+   "player": "Cooper Kupp",
+   "team": "SEA",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 35.5
+   }
+  },
+  {
+   "player": "Hunter Henry",
+   "team": "NE",
+   "pos": "TE",
+   "lines": {
+    "Receiving Yards": 33.5
+   }
+  },
+  {
+   "player": "Rashid Shaheed",
+   "team": "SEA",
+   "pos": "WR",
+   "lines": {
+    "Rush Yards": 0.5
+   }
+  },
+  {
+   "player": "Davante Adams",
+   "team": "LA",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 54.5
+   }
+  },
+  {
+   "player": "Matthew Stafford",
+   "team": "LA",
+   "pos": "QB",
+   "lines": {
+    "Pass Yards": 264.5,
+    "INT": 0.5
+   }
+  },
+  {
+   "player": "Brock Purdy",
+   "team": "SF",
+   "pos": "QB",
+   "lines": {
+    "Pass Yards": 242.5,
+    "Rush Yards": 14.5,
+    "INT": 0.5
+   }
+  },
+  {
+   "player": "Puka Nacua",
+   "team": "LA",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 90.5,
+    "Rush Yards": 0.5
+   }
+  },
+  {
+   "player": "Christian McCaffrey",
+   "team": "SF",
+   "pos": "RB",
+   "lines": {
+    "Rush Yards": 61.5,
+    "Receiving Yards": 40.5
+   }
+  },
+  {
+   "player": "Kyren Williams",
+   "team": "LA",
+   "pos": "RB",
+   "lines": {
+    "Rush Yards": 59.5,
+    "Rush+Rec TDs": 0.5
+   }
+  },
+  {
+   "player": "Mike Evans",
+   "team": "SF",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 54.5
+   }
+  },
+  {
+   "player": "Byron Young",
+   "team": "LA",
+   "pos": "OLB",
+   "lines": {
+    "Sacks": 0.75
+   }
+  },
+  {
+   "player": "Nick Bosa",
+   "team": "SF",
+   "pos": "DL",
+   "lines": {
+    "Sacks": 0.75
+   }
+  },
+  {
+   "player": "Caleb Williams",
+   "team": "CHI",
+   "pos": "QB",
+   "lines": {
+    "Pass Yards": 239.5,
+    "Rush Yards": 19.5
+   }
+  },
+  {
+   "player": "Bryce Young",
+   "team": "CAR",
+   "pos": "QB",
+   "lines": {
+    "Pass Yards": 196.5,
+    "Rush Yards": 14.5
+   }
+  },
+  {
+   "player": "Tetairoa McMillan",
+   "team": "CAR",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 59.5
+   }
+  },
+  {
+   "player": "Colston Loveland",
+   "team": "CHI",
+   "pos": "TE",
+   "lines": {
+    "Receiving Yards": 56.5
+   }
+  },
+  {
+   "player": "Luther Burden III",
+   "team": "CHI",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 54.5,
+    "Rush Yards": 0.5
+   }
+  },
+  {
+   "player": "Rome Odunze",
+   "team": "CHI",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 50.5
+   }
+  },
+  {
+   "player": "Montez Sweat",
+   "team": "CHI",
+   "pos": "DL",
+   "lines": {
+    "Sacks": 0.25
+   }
+  },
+  {
+   "player": "Aaron Rodgers",
+   "team": "PIT",
+   "pos": "QB",
+   "lines": {
+    "Pass Yards": 216.5,
+    "Rush Yards": 0.5
+   }
+  },
+  {
+   "player": "Bijan Robinson",
+   "team": "ATL",
+   "pos": "RB",
+   "lines": {
+    "Rush Yards": 83.5,
+    "Receiving Yards": 38.5
+   }
+  },
+  {
+   "player": "Drake London",
+   "team": "ATL",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 72.5
+   }
+  },
+  {
+   "player": "Kyle Pitts Sr.",
+   "team": "ATL",
+   "pos": "TE",
+   "lines": {
+    "Receiving Yards": 52.5
+   }
+  },
+  {
+   "player": "DK Metcalf",
+   "team": "PIT",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 49.5
+   }
+  },
+  {
+   "player": "Michael Pittman Jr.",
+   "team": "PIT",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 42.5
+   }
+  },
+  {
+   "player": "Germie Bernard",
+   "team": "PIT",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 28.5
+   }
+  },
+  {
+   "player": "Lamar Jackson",
+   "team": "BAL",
+   "pos": "QB",
+   "lines": {
+    "Pass Yards": 219.5,
+    "Rush Yards": 31.5
+   }
+  },
+  {
+   "player": "Derrick Henry",
+   "team": "BAL",
+   "pos": "RB",
+   "lines": {
+    "Rush Yards": 86.5,
+    "Receiving Yards": 4.5
+   }
+  },
+  {
+   "player": "Jonathan Taylor",
+   "team": "IND",
+   "pos": "RB",
+   "lines": {
+    "Rush Yards": 74.5,
+    "Receiving Yards": 13.5
+   }
+  },
+  {
+   "player": "Zay Flowers",
+   "team": "BAL",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 66.5,
+    "Rush Yards": 0.5
+   }
+  },
+  {
+   "player": "Alec Pierce",
+   "team": "IND",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 56.5
+   }
+  },
+  {
+   "player": "Tyler Warren",
+   "team": "IND",
+   "pos": "TE",
+   "lines": {
+    "Receiving Yards": 47.5
+   }
+  },
+  {
+   "player": "Geno Smith",
+   "team": "NYJ",
+   "pos": "QB",
+   "lines": {
+    "Pass Yards": 199.5,
+    "Rush Yards": 6.5,
+    "INT": 0.5
+   }
+  },
+  {
+   "player": "Cam Ward",
+   "team": "TEN",
+   "pos": "QB",
+   "lines": {
+    "Pass Yards": 190.5,
+    "Rush Yards": 7.5,
+    "INT": 0.5
+   }
+  },
+  {
+   "player": "Garrett Wilson",
+   "team": "NYJ",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 67.5
+   }
+  },
+  {
+   "player": "Breece Hall",
+   "team": "NYJ",
+   "pos": "RB",
+   "lines": {
+    "Rush Yards": 64.5,
+    "Receiving Yards": 17.5
+   }
+  },
+  {
+   "player": "Tony Pollard",
+   "team": "TEN",
+   "pos": "RB",
+   "lines": {
+    "Rush Yards": 61.5
+   }
+  },
+  {
+   "player": "Carnell Tate",
+   "team": "TEN",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 51.5
+   }
+  },
+  {
+   "player": "Wan'Dale Robinson",
+   "team": "TEN",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 47.5
+   }
+  },
+  {
+   "player": "Trevor Lawrence",
+   "team": "JAC",
+   "pos": "QB",
+   "lines": {
+    "Pass Yards": 234.5,
+    "Rush Yards": 19.5,
+    "INT": 0.5
+   }
+  },
+  {
+   "player": "Quinshon Judkins",
+   "team": "CLE",
+   "pos": "RB",
+   "lines": {
+    "Rush Yards": 63.5,
+    "Receiving Yards": 9.5
+   }
+  },
+  {
+   "player": "Brian Thomas Jr.",
+   "team": "JAC",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 48.5
+   }
+  },
+  {
+   "player": "Harold Fannin Jr.",
+   "team": "CLE",
+   "pos": "TE",
+   "lines": {
+    "Receiving Yards": 45.5
+   }
+  },
+  {
+   "player": "KC Concepcion",
+   "team": "CLE",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 42.5
+   }
+  },
+  {
+   "player": "Denzel Boston",
+   "team": "CLE",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 31.5
+   }
+  },
+  {
+   "player": "Jared Goff",
+   "team": "DET",
+   "pos": "QB",
+   "lines": {
+    "Pass Yards": 271.5,
+    "INT": 0.5
+   }
+  },
+  {
+   "player": "Tyler Shough",
+   "team": "NO",
+   "pos": "QB",
+   "lines": {
+    "Pass Yards": 249.5,
+    "Rush Yards": 17.5,
+    "INT": 0.5
+   }
+  },
+  {
+   "player": "Amon-Ra St. Brown",
+   "team": "DET",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 78.5,
+    "Rush+Rec TDs": 0.5
+   }
+  },
+  {
+   "player": "Jahmyr Gibbs",
+   "team": "DET",
+   "pos": "RB",
+   "lines": {
+    "Rush Yards": 76.5,
+    "Receiving Yards": 32.5
+   }
+  },
+  {
+   "player": "Chris Olave",
+   "team": "NO",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 69.5
+   }
+  },
+  {
+   "player": "Jameson Williams",
+   "team": "DET",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 65.5
+   }
+  },
+  {
+   "player": "Jordyn Tyson",
+   "team": "NO",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 55.5
+   }
+  },
+  {
+   "player": "Sam LaPorta",
+   "team": "DET",
+   "pos": "TE",
+   "lines": {
+    "Receiving Yards": 47.5
+   }
+  },
+  {
+   "player": "Isiah Pacheco",
+   "team": "DET",
+   "pos": "RB",
+   "lines": {
+    "Rush Yards": 29.5
+   }
+  },
+  {
+   "player": "Aidan Hutchinson",
+   "team": "DET",
+   "pos": "DE",
+   "lines": {
+    "Sacks": 0.75
+   }
+  },
+  {
+   "player": "Joe Burrow",
+   "team": "CIN",
+   "pos": "QB",
+   "lines": {
+    "Pass Yards": 265.5,
+    "Rush Yards": 5.5,
+    "INT": 0.5
+   }
+  },
+  {
+   "player": "Baker Mayfield",
+   "team": "TB",
+   "pos": "QB",
+   "lines": {
+    "Pass Yards": 248.5,
+    "Rush Yards": 16.5,
+    "INT": 0.5
+   }
+  },
+  {
+   "player": "Ja'Marr Chase",
+   "team": "CIN",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 89.5,
+    "Rush+Rec TDs": 0.5
+   }
+  },
+  {
+   "player": "Tee Higgins",
+   "team": "CIN",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 60.5
+   }
+  },
+  {
+   "player": "Emeka Egbuka",
+   "team": "TB",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 59.5
+   }
+  },
+  {
+   "player": "Chase Brown",
+   "team": "CIN",
+   "pos": "RB",
+   "lines": {
+    "Rush Yards": 56.5
+   }
+  },
+  {
+   "player": "C.J. Stroud",
+   "team": "HOU",
+   "pos": "QB",
+   "lines": {
+    "Pass Yards": 228.5,
+    "Rush Yards": 7.5,
+    "INT": 0.5
+   }
+  },
+  {
+   "player": "Josh Allen",
+   "team": "BUF",
+   "pos": "QB",
+   "lines": {
+    "Pass Yards": 223.5,
+    "Rush Yards": 32.5,
+    "Rush+Rec TDs": 0.5,
+    "INT": 0.5
+   }
+  },
+  {
+   "player": "James Cook III",
+   "team": "BUF",
+   "pos": "RB",
+   "lines": {
+    "Rush Yards": 76.5,
+    "Receiving Yards": 15.5,
+    "Rush+Rec TDs": 0.5
+   }
+  },
+  {
+   "player": "Nico Collins",
+   "team": "HOU",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 70.5
+   }
+  },
+  {
+   "player": "David Montgomery",
+   "team": "HOU",
+   "pos": "RB",
+   "lines": {
+    "Rush Yards": 54.5
+   }
+  },
+  {
+   "player": "DJ Moore",
+   "team": "BUF",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 52.5
+   }
+  },
+  {
+   "player": "Danielle Hunter",
+   "team": "HOU",
+   "pos": "DE",
+   "lines": {
+    "Sacks": 0.75
+   }
+  },
+  {
+   "player": "Will Anderson Jr.",
+   "team": "HOU",
+   "pos": "DE",
+   "lines": {
+    "Sacks": 0.75
+   }
+  },
+  {
+   "player": "De'Von Achane",
+   "team": "MIA",
+   "pos": "RB",
+   "lines": {
+    "Rush+Rec TDs": 0.5,
+    "Rush Yards": 76.5,
+    "Receiving Yards": 29.5
+   }
+  },
+  {
+   "player": "Jalen Hurts",
+   "team": "PHI",
+   "pos": "QB",
+   "lines": {
+    "Rush+Rec TDs": 0.5,
+    "Pass Yards": 215.5,
+    "Rush Yards": 29.5
+   }
+  },
+  {
+   "player": "Justin Herbert",
+   "team": "LAC",
+   "pos": "QB",
+   "lines": {
+    "Pass Yards": 246.5,
+    "Rush Yards": 22.5
+   }
+  },
+  {
+   "player": "Omarion Hampton",
+   "team": "LAC",
+   "pos": "RB",
+   "lines": {
+    "Rush Yards": 65.5
+   }
+  },
+  {
+   "player": "Trey McBride",
+   "team": "ARI",
+   "pos": "TE",
+   "lines": {
+    "Receiving Yards": 63.5
+   }
+  },
+  {
+   "player": "Jeremiyah Love",
+   "team": "ARI",
+   "pos": "RB",
+   "lines": {
+    "Rush Yards": 58.5
+   }
+  },
+  {
+   "player": "Ladd McConkey",
+   "team": "LAC",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 58.5
+   }
+  },
+  {
+   "player": "Michael Wilson",
+   "team": "ARI",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 52.5
+   }
+  },
+  {
+   "player": "Marvin Harrison Jr.",
+   "team": "ARI",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 50.5
+   }
+  },
+  {
+   "player": "Jordan Love",
+   "team": "GB",
+   "pos": "QB",
+   "lines": {
+    "Pass Yards": 231.5,
+    "Rush Yards": 8.5
+   }
+  },
+  {
+   "player": "Justin Jefferson",
+   "team": "MIN",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 76.5
+   }
+  },
+  {
+   "player": "Christian Watson",
+   "team": "GB",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 54.5
+   }
+  },
+  {
+   "player": "Tucker Kraft",
+   "team": "GB",
+   "pos": "TE",
+   "lines": {
+    "Receiving Yards": 52.5
+   }
+  },
+  {
+   "player": "Malik Willis",
+   "team": "MIA",
+   "pos": "QB",
+   "lines": {
+    "Pass Yards": 178.5,
+    "Rush Yards": 40.5
+   }
+  },
+  {
+   "player": "Ashton Jeanty",
+   "team": "LV",
+   "pos": "RB",
+   "lines": {
+    "Rush Yards": 76.5,
+    "Receiving Yards": 19.5,
+    "Rush+Rec TDs": 0.5
+   }
+  },
+  {
+   "player": "Brock Bowers",
+   "team": "LV",
+   "pos": "TE",
+   "lines": {
+    "Receiving Yards": 63.5
+   }
+  },
+  {
+   "player": "Maxx Crosby",
+   "team": "LV",
+   "pos": "DE",
+   "lines": {
+    "Sacks": 0.75
+   }
+  },
+  {
+   "player": "Jayden Daniels",
+   "team": "WAS",
+   "pos": "QB",
+   "lines": {
+    "Pass Yards": 223.5,
+    "Rush Yards": 39.5,
+    "INT": 0.5
+   }
+  },
+  {
+   "player": "Saquon Barkley",
+   "team": "PHI",
+   "pos": "RB",
+   "lines": {
+    "Rush Yards": 78.5,
+    "Receiving Yards": 13.5,
+    "Rush+Rec TDs": 0.5
+   }
+  },
+  {
+   "player": "DeVonta Smith",
+   "team": "PHI",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 65.5
+   }
+  },
+  {
+   "player": "Terry McLaurin",
+   "team": "WAS",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 59.5
+   }
+  },
+  {
+   "player": "Makai Lemon",
+   "team": "PHI",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 38.5
+   }
+  },
+  {
+   "player": "Dak Prescott",
+   "team": "DAL",
+   "pos": "QB",
+   "lines": {
+    "Pass Yards": 257.5,
+    "Rush Yards": 6.5
+   }
+  },
+  {
+   "player": "Jaxson Dart",
+   "team": "NYG",
+   "pos": "QB",
+   "lines": {
+    "Pass Yards": 215.5,
+    "Rush Yards": 30.5,
+    "INT": 0.5
+   }
+  },
+  {
+   "player": "CeeDee Lamb",
+   "team": "DAL",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 74.5
+   }
+  },
+  {
+   "player": "Javonte Williams",
+   "team": "DAL",
+   "pos": "RB",
+   "lines": {
+    "Rush Yards": 68.5,
+    "Receiving Yards": 10.5
+   }
+  },
+  {
+   "player": "George Pickens",
+   "team": "DAL",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 66.5
+   }
+  },
+  {
+   "player": "Cam Skattebo",
+   "team": "NYG",
+   "pos": "RB",
+   "lines": {
+    "Rush Yards": 57.5,
+    "Receiving Yards": 19.5,
+    "Rush+Rec TDs": 0.5
+   }
+  },
+  {
+   "player": "Jake Ferguson",
+   "team": "DAL",
+   "pos": "TE",
+   "lines": {
+    "Receiving Yards": 32.5
+   }
+  },
+  {
+   "player": "Brian Burns",
+   "team": "NYG",
+   "pos": "OLB",
+   "lines": {
+    "Sacks": 0.75
+   }
+  },
+  {
+   "player": "Patrick Mahomes",
+   "team": "KC",
+   "pos": "QB",
+   "lines": {
+    "Pass Yards": 244.5,
+    "INT": 0.5
+   }
+  },
+  {
+   "player": "Bo Nix",
+   "team": "DEN",
+   "pos": "QB",
+   "lines": {
+    "Pass Yards": 226.5,
+    "INT": 0.5
+   }
+  },
+  {
+   "player": "Kenneth Walker III",
+   "team": "KC",
+   "pos": "RB",
+   "lines": {
+    "Rush Yards": 64.5,
+    "Rush+Rec TDs": 0.5
+   }
+  },
+  {
+   "player": "Jaylen Waddle",
+   "team": "DEN",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 53.5
+   }
+  },
+  {
+   "player": "Courtland Sutton",
+   "team": "DEN",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 49.5
+   }
+  },
+  {
+   "player": "Travis Kelce",
+   "team": "KC",
+   "pos": "TE",
+   "lines": {
+    "Receiving Yards": 43.5
+   }
+  },
+  {
+   "player": "Nik Bonitto",
+   "team": "DEN",
+   "pos": "OLB",
+   "lines": {
+    "Sacks": 0.75
+   }
+  }
+ ]
+}
