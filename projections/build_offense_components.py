@@ -69,10 +69,23 @@ def main():
     pp = pp_components()
     slp = sleeper_components()
     raw = json.loads((ROOT / "players-nfl.json").read_text(encoding="utf-8"))
-    id_by_name = {}
+    # name -> candidate offensive players; resolve prefers matching position + active,
+    # so a same-name inactive/other-position player (e.g. retired WR Kenneth Walker vs
+    # active RB Kenneth Walker III) never steals the id. PP already carries the position.
+    cand = {}
     for pid, p in raw.items():
         if p.get("position") in OFF_POS:
-            id_by_name.setdefault(norm(p.get("full_name") or ""), pid)
+            nm = norm(p.get("full_name") or "")
+            if nm: cand.setdefault(nm, []).append((pid, p))
+    def resolve(nm, pos):
+        lst = cand.get(nm, [])
+        for pid, p in lst:
+            if p.get("position") == pos and p.get("active"): return pid
+        for pid, p in lst:
+            if p.get("position") == pos: return pid
+        for pid, p in lst:
+            if p.get("active"): return pid
+        return lst[0][0] if lst else None
 
     # PrizePicks only boards SOME stat props per player (often no receptions/rec-yds
     # for RBs). Pure-PP then undercounts pass-catchers. Fill any missing scoring stat
@@ -94,7 +107,7 @@ def main():
                         "pos": rec["pos"], "sleeper_stats": rec["stats"], "pp_stats": None, "pp_borrowed": []}
     matched_pp = 0
     for nm, rec in pp.items():
-        pid = id_by_name.get(nm)
+        pid = resolve(nm, rec["pos"])
         if pid and pid in players:
             filled, borrowed = fill(rec["stats"], players[pid]["sleeper_stats"])
             players[pid]["pp_stats"] = filled; players[pid]["pp_borrowed"] = borrowed; matched_pp += 1

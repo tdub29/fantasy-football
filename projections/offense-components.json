@@ -1,5 +1,5 @@
 {
- "count": 562,
+ "count": 561,
  "players": [
   {
    "sleeper_id": "10217",
@@ -3389,8 +3389,16 @@
     "rec_td": 2.0,
     "fum_lost": 1.0
    },
-   "pp_stats": null,
-   "pp_borrowed": []
+   "pp_stats": {
+    "rush_yd": 925.5,
+    "rush_td": 7.5,
+    "rec": 38.5,
+    "rec_yd": 299.5,
+    "rec_td": 2.0
+   },
+   "pp_borrowed": [
+    "rec_td"
+   ]
   },
   {
    "sleeper_id": "8154",
@@ -8944,20 +8952,6 @@
     "rec": 49.5,
     "rec_yd": 649.5,
     "rec_td": 4.5
-   },
-   "pp_borrowed": []
-  },
-  {
-   "sleeper_id": "4634",
-   "name": "Kenneth Walker III",
-   "team": "KC",
-   "pos": "RB",
-   "sleeper_stats": null,
-   "pp_stats": {
-    "rush_yd": 925.5,
-    "rush_td": 7.5,
-    "rec": 38.5,
-    "rec_yd": 299.5
    },
    "pp_borrowed": []
   }

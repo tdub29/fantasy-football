@@ -57,6 +57,7 @@ for pid, p in PLAYERS.items():
         "pos": pos,
         "team": team or "FA",
         "age": p.get("age"),
+        "birth_date": p.get("birth_date"),
         "exp": p.get("years_exp"),
         "status": status,
         "college": p.get("college"),

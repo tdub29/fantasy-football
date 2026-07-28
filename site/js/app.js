@@ -1428,7 +1428,7 @@
               h('span', { class:'tip tnum' }, posRank)
             )),
             h('td', null, teamChip(p.team)),
-            h('td', { class:'right tnum' }, p.age ?? h('span', { class:'muted' }, '.')),
+            h('td', { class:'right tnum' }, (() => { const a = ageOf(p._sleeperId, p.age); return a != null ? fmt.decimal(a, 1) : h('span', { class:'muted' }, '.'); })()),
             h('td', null, ourCatChip(p._sleeperId) || pillCategory(p.category)),
             h('td', { class:'center' }, ourTierChip(p._sleeperId) || tierChip(p.tier, p.category)),
             h('td', { class:'right tnum', style:{ color: ownColor } }, owned != null ? owned.toFixed(0) + '%' : '.'),
@@ -2045,10 +2045,10 @@
             h('th', { class:'center', style:{ width:'40px' } }, 'Tier'),
             sortHdr('value','Value', { right:true }),
             hasProj ? sortHdr('proj', 'Proj', { right:true, title:'Season fantasy projection (selected Proj Src)' }) : null,
+            h('th', null, 'Owner'),
+            sortHdr('gibbs', 'Gibbs', { right:true, title:'Jacob Gibbs half-PPR rank' }),
             h('th', { class:'right', title:'Offensive strength of schedule rank (1 = easiest)' }, 'SOS'),
             ...OFFCOLS.map(([, l]) => h('th', { class:'right' }, l)),
-            sortHdr('gibbs', 'Gibbs', { right:true, title:'Jacob Gibbs half-PPR rank' }),
-            h('th', null, 'Owner'),
           )),
           h('tbody', null, ...rows.map((p, i) => {
             const o = ownerInfo(p._sleeperId);
@@ -2057,15 +2057,15 @@
             return h('tr', { class: o.isMine ? 'you' : '', onclick:() => openPlayerDetail(p.name, p._sleeperId),
               title: o.r ? `Owned by ${o.r.team_name}` : 'Free agent' },
               ...idCells(p, i),
-              h('td', { class:'right tnum' }, p.age ?? h('span', { class:'muted' }, '.')),
+              h('td', { class:'right tnum' }, (() => { const a = ageOf(p._sleeperId, p.age); return a != null ? fmt.decimal(a, 1) : h('span', { class:'muted' }, '.'); })()),
               h('td', null, ourCatChip(p._sleeperId) || pillCategory(p.category)),
               h('td', { class:'center' }, ourTierChip(p._sleeperId) || tierChip(p.tier, p.category)),
               h('td', { class:'right tnum' }, fmt.decimal(tierValue(p, lg), 1)),
               hasProj ? h('td', { class:'right tnum' }, (() => { const v = projPointsFor(p._sleeperId, filter.proj); return v == null ? h('span', { class:'muted' }, '·') : fmt.decimal(v, 1); })()) : null,
+              h('td', null, o.cell),
+              jacobGibbsCell(p.name, p._sleeperId),
               h('td', { class:'right tnum', style:{ color: sos && sos.off_sos_rank <= 10 ? 'var(--green)' : sos && sos.off_sos_rank >= 23 ? 'var(--red)' : 'var(--fg-2)' } }, sos ? String(sos.off_sos_rank) : h('span', { class:'muted' }, '·')),
               ...OFFCOLS.map(([k]) => h('td', { class:'right tnum', style:{ color:'var(--fg-2)' } }, line[k] != null ? fmt.decimal(line[k], k.endsWith('_yd') ? 0 : 1) : h('span', { class:'muted' }, '·'))),
-              jacobGibbsCell(p.name, p._sleeperId),
-              h('td', null, o.cell),
             );
           }))
         );
@@ -6449,7 +6449,7 @@
         h('div', { class:'row gap-4 wrap', style:{ marginBottom:'12px' } },
           ranked ? posChip(ranked.pos) : sleeper ? posChip(sleeper.pos) : null,
           ranked ? teamChip(ranked.team) : sleeper ? teamChip(sleeper.team) : null,
-          (ranked?.age ?? sleeper?.age) ? h('span', { class:'muted' }, `age ${ranked?.age ?? sleeper?.age}`) : null,
+          (() => { const a = ageOf(sleeper?.id, ranked?.age ?? sleeper?.age); return a != null ? h('span', { class:'muted' }, `age ${fmt.decimal(a, 1)}`) : null; })(),
           rookieBadge(ranked || {}),
           uncertainBadge(ranked || {}),
           depBadge(ranked || {}),
@@ -6590,6 +6590,13 @@
 
   // Team environment / SOS (Draft Sharks Fantasy Environment Score, window.TEAM_ENV).
   const ENV_TIER_COLOR = { target: 'var(--green)', good: 'var(--blue)', neutral: 'var(--fg-3)', below: 'var(--amber)', avoid: 'var(--red)' };
+  // Fractional age from birth_date (Sleeper's `age` is a whole number).
+  function ageOf(pid, fallback) {
+    const sp = pid ? window.PLAYERS[pid] : null;
+    const bd = sp && sp.birth_date;
+    if (bd) { const ms = Date.now() - new Date(bd).getTime(); if (ms > 0) return ms / 31557600000; }
+    return fallback != null ? fallback : (sp ? sp.age : null);
+  }
   function teamEnv(abbr) { return (window.TEAM_ENV && window.TEAM_ENV.teams) ? window.TEAM_ENV.teams[abbr] : null; }
   function envChip(abbr) {
     const e = teamEnv(abbr); if (!e) return null;
