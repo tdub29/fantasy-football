@@ -1730,10 +1730,12 @@
         name: p.label, pos: 'PICK', _isPick: true, ktcValue: (p.value || 0) * 100, age: null, category: 'pick',
       }));
       const traj = rosterValueCurve(getRosterPlayers(r), lg, pickAssets).totals.slice(0, TRAJ_YEARS);
-      return { r, s, traj };
+      return { r, s, traj, st: startingStrength(r, lg) };
     });
-    computed.sort((a,b) => b.s.total - a.s.total);
-    const maxTotal = computed[0].s.total || 1;
+    // Rank by STARTING-lineup strength (best-K), not sum of every rostered player —
+    // total-value rewards hoarding depth and buries a strong-starters/thin team.
+    computed.sort((a,b) => b.st - a.st);
+    const maxTotal = computed[0].st || 1;
     // Common sparkline scale across all teams. Zoom the y-axis to the actual
     // [min,max] across every team-year rather than starting at 0 — dynasty
     // value only swings ~5-20% over 3 years, so a 0-based axis flattens the
@@ -1750,7 +1752,7 @@
 
     const standings = h('div');
     computed.forEach((row, i) => {
-      const r = row.r, s = row.s;
+      const r = row.r, s = row.s, st = row.st;
       const isMe = r.is_me;
       const cs = s.rankedPlayers.filter(p => p.ranked.category === 'cornerstone').length;
       const fnd = s.rankedPlayers.filter(p => p.ranked.category === 'foundational').length;
@@ -1793,7 +1795,7 @@
           )
         ),
         h('div', { class:'score-cell' },
-          h('div', { class:'score' }, fmt.decimal(s.total,1)),
+          h('div', { class:'score', title:'Starting-lineup strength (best-K by value)' }, fmt.decimal(st,1)),
           h('div', { class:'delta', style:{ color: tColor } }, (tDelta >= 0 ? '+' : '') + tPct.toFixed(0) + '%'),
         ),
         h('div', { class:'str-traj' },
@@ -1945,6 +1947,14 @@
       const dir = filter.dir === 'desc' ? -1 : 1;
       const cmp = (a, b) => {
         let av, bv;
+        if (typeof filter.sort === 'string' && filter.sort.startsWith('wk:')) {
+          const wnum = +filter.sort.slice(3);
+          const oppPA = (p) => { const s = teamSos((window.PLAYERS[p._sleeperId] || {}).team || p.team); if (!s) return null; const g = s.schedule.find(x => x.week === wnum); if (!g) return null; const e = teamEnv(g.opp); return e ? e.implied_pa : null; };
+          av = oppPA(a); bv = oppPA(b);
+          if (av == null && bv == null) return 0;
+          if (av == null) return 1; if (bv == null) return -1;
+          return (bv - av) * dir; // desc = weakest opponent D (easiest) first
+        }
         switch (filter.sort) {
           case 'value': av = tierValue(a, lg); bv = tierValue(b, lg); return (bv - av) * dir; // desc-natural
           case 'proj':  av = projPointsFor(a._sleeperId, filter.proj) ?? -1; bv = projPointsFor(b._sleeperId, filter.proj) ?? -1; return (bv - av) * dir;
@@ -2010,7 +2020,9 @@
         tbl = h('table', { class:'data data-sticky', style:{ fontSize:'11px' } },
           h('thead', null, h('tr', null,
             h('th', { class:'right' }, '#'), sortHdr('name', 'Player'), sortHdr('pos', 'Pos'), h('th', null, 'Tm'), h('th', null, 'Own'),
-            ...WEEKS.map(w => h('th', { class:'center', style:{ minWidth:'32px' } }, 'W' + w)))),
+            ...WEEKS.map(w => h('th', { class:'center clickable', style:{ minWidth:'32px', cursor:'pointer' }, title:`Sort by week ${w} matchup (easiest first)`,
+              onclick:() => { const k = 'wk:' + w; if (filter.sort === k) filter.dir = filter.dir === 'asc' ? 'desc' : 'asc'; else { filter.sort = k; filter.dir = 'desc'; } persist(); render(); } },
+              'W' + w + (filter.sort === 'wk:' + w ? (filter.dir === 'desc' ? '↓' : '↑') : ''))))),
           h('tbody', null, ...rows.map((p, i) => {
             const o = ownerInfo(p._sleeperId);
             const sm = schedFor(teamOf(p._sleeperId) || p.team);
@@ -6600,7 +6612,7 @@
   function teamEnv(abbr) { return (window.TEAM_ENV && window.TEAM_ENV.teams) ? window.TEAM_ENV.teams[abbr] : null; }
   function envChip(abbr) {
     const e = teamEnv(abbr); if (!e) return null;
-    return h('span', { class: 'badge', title: `Fantasy environment #${e.env_rank}/${e.total} (${e.tier}) — ${e.implied_pf} implied pts/game (offense #${e.pf_rank})`, style: { color: ENV_TIER_COLOR[e.tier], borderColor: 'currentColor', background: 'transparent' } }, `Env ${e.env_rank}`);
+    return h('span', { class: 'badge', title: `Fantasy environment #${e.env_rank}/${e.total} (${e.tier}) — ${e.implied_pf} implied pts/game (offense #${e.pf_rank})`, style: { color: ENV_TIER_COLOR[e.tier], borderColor: 'currentColor', background: 'transparent' } }, String(e.env_rank));
   }
   // Our own data-clustered dynasty category (window.PLAYER_CATEGORIES) — replaces
   // the off-base third-party category field.
@@ -6871,6 +6883,7 @@
   // strength (last-season PPR allowed to that position, ranked). window.SOS_GRID.
   // ============================================================
   let SOS_GRID_POS = 'RB';
+  let SOS_GRID_SORT = { key: 'avg', dir: 'desc' }; // key = 'avg' or a week number; desc = easiest first
   function defRankColor(rank, n) {
     if (rank == null) return 'var(--fg-3)';
     const f = rank / n;   // low rank = allows fewest = tough = red; high = easy = green
@@ -6904,12 +6917,17 @@
       const wk = {}; let sum = 0, cnt = 0;
       for (const g of G.grid[pos][t]) { wk[g.week] = g; if (g.rank != null) { sum += g.rank; cnt++; } }
       return { team: t, wk, avg: cnt ? sum / cnt : null };
-    }).sort((a, b) => (b.avg || 0) - (a.avg || 0));  // easiest schedule first
+    });
+    const gsort = (key) => { if (SOS_GRID_SORT.key === key) SOS_GRID_SORT.dir = SOS_GRID_SORT.dir === 'asc' ? 'desc' : 'asc'; else SOS_GRID_SORT = { key, dir: 'desc' }; viewSosGrid(pos); };
+    const garrow = (key) => SOS_GRID_SORT.key === key ? (SOS_GRID_SORT.dir === 'desc' ? '↓' : '↑') : '';
+    const gval = (rd) => SOS_GRID_SORT.key === 'avg' ? rd.avg : (rd.wk[SOS_GRID_SORT.key] ? rd.wk[SOS_GRID_SORT.key].rank : null);
+    rowsData.sort((a, b) => { const av = gval(a), bv = gval(b); if (av == null && bv == null) return 0; if (av == null) return 1; if (bv == null) return -1; return SOS_GRID_SORT.dir === 'desc' ? bv - av : av - bv; });
 
     const tbl = h('table', { class: 'data data-sticky', style: { fontSize: '11px' } },
       h('thead', null, h('tr', null,
-        h('th', { class: 'right' }, '#'), h('th', null, 'Team'), h('th', { class: 'right', title: 'Avg opponent DvP rank (higher = easier)' }, 'SOS'),
-        ...WEEKS.map(w => h('th', { class: 'center', style: { minWidth: '34px' } }, 'W' + w)))),
+        h('th', { class: 'right' }, '#'), h('th', null, 'Team'),
+        h('th', { class: 'right clickable', style: { cursor: 'pointer' }, title: 'Sort by avg opponent DvP rank (easiest first)', onclick: () => gsort('avg') }, 'SOS' + garrow('avg')),
+        ...WEEKS.map(w => h('th', { class: 'center clickable', style: { minWidth: '34px', cursor: 'pointer' }, title: `Sort by week ${w} matchup`, onclick: () => gsort(w) }, 'W' + w + garrow(w))))),
       h('tbody', null, ...rowsData.map((rd, i) => h('tr', null,
         h('td', { class: 'right tnum muted' }, String(i + 1)),
         h('td', null, teamChip(rd.team)),
