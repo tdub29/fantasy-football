@@ -1621,16 +1621,23 @@
   // (K = offense starter slots). This is the contention signal — NOT the sum of
   // every rostered player, which just rewards hoarding depth and mislabels a
   // deep-but-weak-starter roster as a contender.
-  function startingStrength(roster, league) {
+  // yearsOut=0 -> Present Value (starters now). yearsOut>0 -> Future Value: each
+  // player's value aged by the position age-curve, then the best-K re-picked (so a
+  // young riser can crack the future lineup over an aging vet).
+  function startingStrength(roster, league, yearsOut = 0) {
     const idx = rankIndex();
     const vals = [];
     for (const pid of (roster.players || [])) {
       const sp = window.PLAYERS[pid]; if (!sp) continue;
       const r = idx.bySleeperId.get(pid) || idx.byName.get(norm(sp.name));
-      if (r) vals.push(tierValue(r, league));
+      if (r) {
+        let v = tierValue(r, league);
+        if (yearsOut) v *= ageRetention(sp.age, r.pos || sp.pos, yearsOut);
+        vals.push(v);
+      }
     }
     vals.sort((a, b) => b - a);
-    return vals.slice(0, offenseStarterCount(league)).reduce((a, b) => a + b, 0);
+    return Math.round(vals.slice(0, offenseStarterCount(league)).reduce((a, b) => a + b, 0) * 10) / 10;
   }
 
   // 5-level buy/sell stance for a fantasy roster, league-relative. Quintile of
@@ -1730,7 +1737,7 @@
         name: p.label, pos: 'PICK', _isPick: true, ktcValue: (p.value || 0) * 100, age: null, category: 'pick',
       }));
       const traj = rosterValueCurve(getRosterPlayers(r), lg, pickAssets).totals.slice(0, TRAJ_YEARS);
-      return { r, s, traj, st: startingStrength(r, lg) };
+      return { r, s, traj, st: startingStrength(r, lg), fv: startingStrength(r, lg, 3) };
     });
     // Rank by STARTING-lineup strength (best-K), not sum of every rostered player —
     // total-value rewards hoarding depth and buries a strong-starters/thin team.
@@ -1795,8 +1802,8 @@
           )
         ),
         h('div', { class:'score-cell' },
-          h('div', { class:'score', title:'Starting-lineup strength (best-K by value)' }, fmt.decimal(st,1)),
-          h('div', { class:'delta', style:{ color: tColor } }, (tDelta >= 0 ? '+' : '') + tPct.toFixed(0) + '%'),
+          h('div', { class:'score', title:'PV — present starting-lineup value (now)' }, fmt.decimal(st,1)),
+          (() => { const fv = row.fv, d = st > 0 ? (fv - st) / st * 100 : 0; const c = d >= 2 ? 'var(--green)' : d <= -8 ? 'var(--amber)' : 'var(--fg-2)'; return h('div', { class:'delta', style:{ color: c }, title:'FV — future value, starters aged 3 seasons' }, `FV ${fmt.decimal(fv, 0)} · ${d >= 0 ? '+' : ''}${d.toFixed(0)}%`); })(),
         ),
         h('div', { class:'str-traj' },
           spark,
