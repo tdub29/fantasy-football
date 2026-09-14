@@ -1,91 +1,72 @@
 {
   "skills": {
+    "ai-writing-detection": {
+      "computedHash": "bb2eb759461cff1812d62002f2d2a9744e022ba857600a128213eed5af33bf7a",
+      "source": "local/self",
+      "sourceType": "local"
+    },
     "anti-slop-design": {
       "source": "https://pols.dev/slop.md",
       "sourceType": "url",
       "computedHash": "860e2d6c661c4ba564fa9daad79d505d2bd86c15855bce2ddce79c2756b39e0e"
     },
-    "deslop": {
-      "computedHash": "88095a619f65d6e47bf103f7c24f321ba5f77703829fb1c084c111b4a90533db",
-      "skillPath": ".agents/skills/deslop/SKILL.md",
-      "source": "aidenybai/react-doctor",
-      "sourceType": "github"
+    "anti-slop-design-law": {
+      "computedHash": "4921bbd76f1adbf3c2adbf9d3055c06767b6a6fad2ed222e925100490b450a65",
+      "source": "https://pols.dev/slop.md",
+      "sourceType": "url"
     },
-    "find-similar-functions": {
-      "computedHash": "f4278f7ce83ca53c67cf2319194ab5b3db9b794a69afa7c972cdb8be5fb20a7e",
-      "skillPath": ".agents/skills/find-similar-functions/SKILL.md",
-      "source": "aidenybai/react-doctor",
-      "sourceType": "github"
+    "cavecrew": {
+      "source": "JuliusBrussee/caveman",
+      "sourceType": "github",
+      "sourceCommit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
+      "skillPath": "skills/cavecrew/SKILL.md",
+      "computedHash": "f1ce6b651c9431cc248061471bf247787c2491c0b02b912691fc8f690f01be04"
     },
-    "hallmark": {
-      "computedHash": "ea04b5806681ceaba893ea9883d92a8045cf7f0041b8b7c1c5e594f7e0eabb0f",
-      "skillPath": ".agents/skills/hallmark/SKILL.md",
-      "source": "nutlope/hallmark",
-      "sourceType": "github"
+    "caveman": {
+      "source": "JuliusBrussee/caveman",
+      "sourceType": "github",
+      "sourceCommit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
+      "skillPath": "skills/caveman/SKILL.md",
+      "computedHash": "429b284113acbcd2fe6d8721211efb700bba440ca5c4a625a614b781ad669c90"
     },
-    "make-interfaces-feel-better": {
-      "computedHash": "2c3576e63d8c39d75ed327f1dcf6aab7aec0edf293a55f6cb3f7b8571974a01c",
-      "skillPath": ".agents/skills/make-interfaces-feel-better/SKILL.md",
-      "source": "jakubkrehel/make-interfaces-feel-better",
-      "sourceType": "github"
+    "caveman-commit": {
+      "source": "JuliusBrussee/caveman",
+      "sourceType": "github",
+      "sourceCommit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
+      "skillPath": "skills/caveman-commit/SKILL.md",
+      "computedHash": "54d5ca0894ecab0c74361d0077b71ff4e0bb60c67546880c1807bc8406ea7aab"
     },
-    "systematic-debugging": {
-      "computedHash": "4999cb851360485eca5074e727bbdd62ef20549c5d5b01216fcbf5831badb473",
-      "skillPath": ".agents/skills/systematic-debugging/SKILL.md",
-      "source": "obra/superpowers",
-      "sourceType": "github"
+    "caveman-compress": {
+      "source": "JuliusBrussee/caveman",
+      "sourceType": "github",
+      "sourceCommit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
+      "skillPath": "skills/caveman-compress/SKILL.md",
+      "computedHash": "208475f3dcdd425f5452551b2b6acb8c1879e19edbbad47450113904e5f9732e"
     },
-    "transitions-dev": {
-      "computedHash": "c4dd7001f07f4b95219d9116854f506118af4877b16bb5bed22a03381622a22e",
-      "skillPath": ".agents/skills/transitions-dev/SKILL.md",
-      "source": "jakubantalik/transitions-dev",
-      "sourceType": "github"
+    "caveman-help": {
+      "source": "JuliusBrussee/caveman",
+      "sourceType": "github",
+      "sourceCommit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
+      "skillPath": "skills/caveman-help/SKILL.md",
+      "computedHash": "c6fea66aacc891b9595aae54b2c8335c322e61f83ad8693e24d3b3ab8603849a"
     },
-    "userinterface-wiki": {
-      "computedHash": "1d1fbf49afa29712573e39bea7669b932160ae93bdf96a16d729849641b1fa22",
-      "skillPath": ".agents/skills/userinterface-wiki/SKILL.md",
-      "source": "raphaelsalaja/userinterface-wiki",
-      "sourceType": "github"
+    "caveman-review": {
+      "source": "JuliusBrussee/caveman",
+      "sourceType": "github",
+      "sourceCommit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
+      "skillPath": "skills/caveman-review/SKILL.md",
+      "computedHash": "f5fcb5ec7cb461bfd95a6f5eb6dbe624967057dce7992e71213bcd3462ace742"
     },
-    "predictive-modeling": {
-      "computedHash": "0da0ac9fc799fc3f34c13e896466f3edd8de1f5516e3157a7f99d1da70d90a8b",
-      "skillPath": ".agents/skills/predictive-modeling/SKILL.md",
+    "caveman-stats": {
+      "source": "JuliusBrussee/caveman",
+      "sourceType": "github",
+      "sourceCommit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
+      "skillPath": "skills/caveman-stats/SKILL.md",
+      "computedHash": "7d6ba2ee3fb9b1629b6e95b326a0559f758d881d2ba826120fdfd625f578218d"
+    },
+    "de-slop": {
+      "computedHash": "07465f495943f82cb6f7af82e3b9d542e41b4afdabbebd3203e3f8dd749f1c0f",
       "source": "local/self",
-      "sourceType": "local"
-    },
-    "provost-data-science-for-business": {
-      "book": "Foster Provost and Tom Fawcett - Data Science for Business",
-      "computedHash": "ae017540cacf49b1d42916861eaca5051a5971b12af126a3b16be5fd21703c9a",
-      "skillPath": ".agents/skills/provost-data-science-for-business/SKILL.md",
-      "source": "local/book-to-skill",
-      "sourceType": "local"
-    },
-    "huyen-ml-systems-design": {
-      "book": "Chip Huyen - Designing Machine Learning Systems: An Iterative Process for Production-Ready Applications (O'Reilly, 2022)",
-      "computedHash": "59c9d165228358412aab6a624c20cbb2e78205de5fff4f24f85440d79e98c2f5",
-      "skillPath": ".agents/skills/huyen-ml-systems-design/SKILL.md",
-      "source": "local/book-to-skill",
-      "sourceType": "local"
-    },
-    "kimball-dimensional-modeling": {
-      "book": "Ralph Kimball and Margy Ross - The Data Warehouse Toolkit (3rd ed.)",
-      "computedHash": "61b48bbbaebc17419cd271e515e08ec8ab9f5535e30c552aecc5eb7dbdd6fae4",
-      "skillPath": ".agents/skills/kimball-dimensional-modeling/SKILL.md",
-      "source": "local/book-to-skill",
-      "sourceType": "local"
-    },
-    "tetlock-superforecasting": {
-      "book": "Philip E. Tetlock & Dan Gardner, Superforecasting: The Art and Science of Prediction (Crown, 2015)",
-      "computedHash": "ff729da40a5a6c5320a636cd8169eed429ddf16f78b5d4ba8b185192734dcb2f",
-      "skillPath": ".agents/skills/tetlock-superforecasting/SKILL.md",
-      "source": "local/book-to-skill",
-      "sourceType": "local"
-    },
-    "getting-to-yes": {
-      "book": "Roger Fisher, William Ury & Bruce Patton - Getting to Yes: Negotiating Agreement Without Giving In (Penguin, 3rd ed., 2011)",
-      "computedHash": "00fa70346f685ede8a0c942da9afbec3c78071500b27707d88a2d8b93529f31f",
-      "skillPath": ".agents/skills/getting-to-yes/SKILL.md",
-      "source": "local/book-to-skill",
       "sourceType": "local"
     },
     "decision-making": {
@@ -95,60 +76,112 @@
       "source": "local/book-to-skill",
       "sourceType": "local"
     },
+    "deslop": {
+      "computedHash": "88095a619f65d6e47bf103f7c24f321ba5f77703829fb1c084c111b4a90533db",
+      "skillPath": ".agents/skills/deslop/SKILL.md",
+      "source": "aidenybai/react-doctor",
+      "sourceType": "github"
+    },
+    "dynasty-age-curve-timing": {
+      "computedHash": "5dd51d5ea16da3c6dc1e74570c397ccb207fa61259a6f33c7724706c4e1bc8ef",
+      "source": "local/self",
+      "sourceType": "local"
+    },
+    "dynasty-championship-equity-horizon": {
+      "computedHash": "ca8e6249920838c7a745bc26305bb2a6d7921c05ec1e7a7e0e8932da9190692c",
+      "source": "local/self",
+      "sourceType": "local"
+    },
+    "dynasty-league-format-leverage": {
+      "computedHash": "8c11fafa0d69e84322d25351ba91a8d0379e6324fd5bb03636bc466cfec4b829",
+      "source": "local/self",
+      "sourceType": "local"
+    },
+    "dynasty-pick-portfolio-valuation": {
+      "computedHash": "93b73aef51411fabb42f425ca3d0e25820ebe931479448de839ceede4d8b7695",
+      "source": "local/self",
+      "sourceType": "local"
+    },
+    "dynasty-player-evaluation": {
+      "computedHash": "2176f1c2854fdd9e704393f636b3da23ecb5cbb884f26ba7053e670622ef91e9",
+      "source": "local/self",
+      "sourceType": "local"
+    },
+    "dynasty-rebuild-clock": {
+      "computedHash": "2939ca1602a2e17f2337f021a550eea27f1de3caea8d237ffe691c478bc88efc",
+      "source": "local/self",
+      "sourceType": "local"
+    },
+    "dynasty-replacement-level": {
+      "computedHash": "605da1401a052064d1130c90fb868abb0dbd150cc85c942f12fc554607228a60",
+      "source": "local/self",
+      "sourceType": "local"
+    },
+    "dynasty-roster-phase-diagnosis": {
+      "computedHash": "f127620a59f98cdc64b3472b324acd971ff069abc0cc933d905f3439502a3883",
+      "source": "local/self",
+      "sourceType": "local"
+    },
+    "dynasty-trade-construction": {
+      "computedHash": "104a402ccb95970f938bdbe00d5eb723f22d3ac7249ae9120914480a95a5eac9",
+      "source": "local/self",
+      "sourceType": "local"
+    },
+    "find-similar-functions": {
+      "computedHash": "f4278f7ce83ca53c67cf2319194ab5b3db9b794a69afa7c972cdb8be5fb20a7e",
+      "skillPath": ".agents/skills/find-similar-functions/SKILL.md",
+      "source": "aidenybai/react-doctor",
+      "sourceType": "github"
+    },
+    "getting-to-yes": {
+      "book": "Roger Fisher, William Ury & Bruce Patton - Getting to Yes: Negotiating Agreement Without Giving In (Penguin, 3rd ed., 2011)",
+      "computedHash": "00fa70346f685ede8a0c942da9afbec3c78071500b27707d88a2d8b93529f31f",
+      "skillPath": ".agents/skills/getting-to-yes/SKILL.md",
+      "source": "local/book-to-skill",
+      "sourceType": "local"
+    },
+    "hallmark": {
+      "computedHash": "ea04b5806681ceaba893ea9883d92a8045cf7f0041b8b7c1c5e594f7e0eabb0f",
+      "skillPath": ".agents/skills/hallmark/SKILL.md",
+      "source": "nutlope/hallmark",
+      "sourceType": "github"
+    },
+    "huyen-ml-systems-design": {
+      "book": "Chip Huyen - Designing Machine Learning Systems: An Iterative Process for Production-Ready Applications (O'Reilly, 2022)",
+      "computedHash": "59c9d165228358412aab6a624c20cbb2e78205de5fff4f24f85440d79e98c2f5",
+      "skillPath": ".agents/skills/huyen-ml-systems-design/SKILL.md",
+      "source": "local/book-to-skill",
+      "sourceType": "local"
+    },
+    "impeccable": {
+      "computedHash": "881f679f4c96b4cb38b6b9a4bfb8d78275fd2b54860c60c313ee094cb7b1a76a",
+      "skillPath": ".agents/skills/impeccable/SKILL.md",
+      "source": "pbakaus/impeccable",
+      "sourceType": "github"
+    },
+    "kimball-dimensional-modeling": {
+      "book": "Ralph Kimball and Margy Ross - The Data Warehouse Toolkit (3rd ed.)",
+      "computedHash": "61b48bbbaebc17419cd271e515e08ec8ab9f5535e30c552aecc5eb7dbdd6fae4",
+      "skillPath": ".agents/skills/kimball-dimensional-modeling/SKILL.md",
+      "source": "local/book-to-skill",
+      "sourceType": "local"
+    },
     "loopy": {
       "source": "Forward-Future/loop-library",
       "sourceType": "github",
       "skillPath": ".agents/skills/loopy/SKILL.md",
       "computedHash": "b9b76d49be358e8978ea8acc200ff207743054aa59fac9c721c951ea48f7150d"
     },
-    "caveman": {
-      "source": "JuliusBrussee/caveman",
-      "sourceType": "github",
-      "sourceCommit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
-      "skillPath": "skills/caveman/SKILL.md",
-      "computedHash": "429b284113acbcd2fe6d8721211efb700bba440ca5c4a625a614b781ad669c90"
+    "make-interfaces-feel-better": {
+      "computedHash": "2c3576e63d8c39d75ed327f1dcf6aab7aec0edf293a55f6cb3f7b8571974a01c",
+      "skillPath": ".agents/skills/make-interfaces-feel-better/SKILL.md",
+      "source": "jakubkrehel/make-interfaces-feel-better",
+      "sourceType": "github"
     },
-    "caveman-compress": {
-      "source": "JuliusBrussee/caveman",
-      "sourceType": "github",
-      "sourceCommit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
-      "skillPath": "skills/caveman-compress/SKILL.md",
-      "computedHash": "208475f3dcdd425f5452551b2b6acb8c1879e19edbbad47450113904e5f9732e"
-    },
-    "caveman-stats": {
-      "source": "JuliusBrussee/caveman",
-      "sourceType": "github",
-      "sourceCommit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
-      "skillPath": "skills/caveman-stats/SKILL.md",
-      "computedHash": "7d6ba2ee3fb9b1629b6e95b326a0559f758d881d2ba826120fdfd625f578218d"
-    },
-    "caveman-review": {
-      "source": "JuliusBrussee/caveman",
-      "sourceType": "github",
-      "sourceCommit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
-      "skillPath": "skills/caveman-review/SKILL.md",
-      "computedHash": "f5fcb5ec7cb461bfd95a6f5eb6dbe624967057dce7992e71213bcd3462ace742"
-    },
-    "caveman-commit": {
-      "source": "JuliusBrussee/caveman",
-      "sourceType": "github",
-      "sourceCommit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
-      "skillPath": "skills/caveman-commit/SKILL.md",
-      "computedHash": "54d5ca0894ecab0c74361d0077b71ff4e0bb60c67546880c1807bc8406ea7aab"
-    },
-    "caveman-help": {
-      "source": "JuliusBrussee/caveman",
-      "sourceType": "github",
-      "sourceCommit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
-      "skillPath": "skills/caveman-help/SKILL.md",
-      "computedHash": "c6fea66aacc891b9595aae54b2c8335c322e61f83ad8693e24d3b3ab8603849a"
-    },
-    "cavecrew": {
-      "source": "JuliusBrussee/caveman",
-      "sourceType": "github",
-      "sourceCommit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
-      "skillPath": "skills/cavecrew/SKILL.md",
-      "computedHash": "f1ce6b651c9431cc248061471bf247787c2491c0b02b912691fc8f690f01be04"
+    "no-ai-slop": {
+      "computedHash": "4d25b59a76256f996d86ae7b0bc66f4971fae4410fd2b6b7e9eaad6d86e77bf8",
+      "source": "petergyang/no-ai-slop",
+      "sourceType": "github"
     },
     "ponytail": {
       "source": "DietrichGebert/ponytail",
@@ -191,6 +224,44 @@
       "sourceCommit": "40e50d9e03242aa5dd53ac771950f9127362b25f",
       "skillPath": "skills/ponytail-review/SKILL.md",
       "computedHash": "6c8b7e5c897a406b66da6aabda7fa6509e8d1d447e73e602265d7986497445d1"
+    },
+    "predictive-modeling": {
+      "computedHash": "0da0ac9fc799fc3f34c13e896466f3edd8de1f5516e3157a7f99d1da70d90a8b",
+      "skillPath": ".agents/skills/predictive-modeling/SKILL.md",
+      "source": "local/self",
+      "sourceType": "local"
+    },
+    "provost-data-science-for-business": {
+      "book": "Foster Provost and Tom Fawcett - Data Science for Business",
+      "computedHash": "ae017540cacf49b1d42916861eaca5051a5971b12af126a3b16be5fd21703c9a",
+      "skillPath": ".agents/skills/provost-data-science-for-business/SKILL.md",
+      "source": "local/book-to-skill",
+      "sourceType": "local"
+    },
+    "systematic-debugging": {
+      "computedHash": "4999cb851360485eca5074e727bbdd62ef20549c5d5b01216fcbf5831badb473",
+      "skillPath": ".agents/skills/systematic-debugging/SKILL.md",
+      "source": "obra/superpowers",
+      "sourceType": "github"
+    },
+    "tetlock-superforecasting": {
+      "book": "Philip E. Tetlock & Dan Gardner, Superforecasting: The Art and Science of Prediction (Crown, 2015)",
+      "computedHash": "ff729da40a5a6c5320a636cd8169eed429ddf16f78b5d4ba8b185192734dcb2f",
+      "skillPath": ".agents/skills/tetlock-superforecasting/SKILL.md",
+      "source": "local/book-to-skill",
+      "sourceType": "local"
+    },
+    "transitions-dev": {
+      "computedHash": "c4dd7001f07f4b95219d9116854f506118af4877b16bb5bed22a03381622a22e",
+      "skillPath": ".agents/skills/transitions-dev/SKILL.md",
+      "source": "jakubantalik/transitions-dev",
+      "sourceType": "github"
+    },
+    "userinterface-wiki": {
+      "computedHash": "1d1fbf49afa29712573e39bea7669b932160ae93bdf96a16d729849641b1fa22",
+      "skillPath": ".agents/skills/userinterface-wiki/SKILL.md",
+      "source": "raphaelsalaja/userinterface-wiki",
+      "sourceType": "github"
     },
     "void-transit-editorial": {
       "source": "local/self",

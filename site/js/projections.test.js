@@ -20,21 +20,49 @@ assert(O.offense.players[0].stats && O.offense.players[0].stats.pp, 'offense sta
 assert(O.defense.players[0].stats && O.defense.players[0].stats.clay, 'defense stat line missing');
 
 const app = fs.readFileSync(`${__dirname}/app.js`, 'utf8');
+// optimalOffense now runs through the SHARED lineup machinery (slot model, legal
+// filler, startable filter, league rescoring), so the harness needs both blocks.
+const sharedStart = app.indexOf('function offenseStarterCount');
+const sharedEnd = app.indexOf('  // Starting-lineup strength', sharedStart);
 const start = app.indexOf('function projUnitData()');
 const end = app.indexOf('function viewProjections(');
+assert(sharedStart >= 0 && sharedEnd > sharedStart, 'shared lineup helpers not found');
 assert(start >= 0 && end > start, 'projection helpers not found');
 const helpers = new Function('window',
-  `${app.slice(start, end)}; return { offenseSlots, idpSlotCount, optimalOffense, optimalDefense, projPosGroup };`
+  `${app.slice(sharedStart, sharedEnd)}\n${app.slice(start, end)}
+   return { offenseStartingSlots, idpSlotCount, optimalOffense, optimalDefense, projPosGroup,
+            startableIds, leagueScorePoints, projPoints, isSidelined };`
 )(ctx.window);
 
 const yuH = ctx.window.LEAGUES.find(l => l.short_name === 'yuH');
 const me = yuH.rosters.find(r => r.is_me);
 
-const slots = helpers.offenseSlots(yuH);
-assert.equal(slots.qb + slots.rb + slots.wr + slots.te + slots.flex + slots.sf, 8, 'yuH offense slots != 8');
+const slots = helpers.offenseStartingSlots(yuH);
+assert.equal(slots.length, 8, 'yuH offense slots != 8');
 assert.equal(helpers.idpSlotCount(yuH), 2, 'yuH IDP slots != 2');
 assert.equal(helpers.projPosGroup('CB'), 'DB');
 assert.equal(helpers.projPosGroup('EDGE'), 'DL');
+
+// Taxi and IR are not startable. This is the regression that mattered: the old
+// code read roster.players raw and started stashed players.
+const stashed = [...(me.taxi || []), ...(me.reserve || [])].map(String);
+const startable = helpers.startableIds(me);
+for (const pid of stashed) assert(!startable.includes(pid), `taxi/IR player ${pid} must not be startable`);
+assert.equal(helpers.startableIds(me, { includeStashed: true }).length, (me.players || []).length);
+if (stashed.length) assert(startable.length < (me.players || []).length, 'startable set must shrink');
+
+// League scoring is applied from the raw stat line, not the file's fixed baseline.
+const taco = ctx.window.LEAGUES.find(l => l.short_name === 'Password is taco');
+assert.equal(taco.scoring.pass_int, -2, 'taco is the INT -2 league this test relies on');
+const qb = O.offense.players.find(p => p.pos === 'QB' && (p.stats.blend || {}).pass_int > 0);
+const tacoPts = helpers.leagueScorePoints(qb.stats.blend, taco);
+const stdPts = helpers.leagueScorePoints(qb.stats.blend, { scoring: { pass_int: -1 } });
+assert(tacoPts < stdPts, 'INT -2 must score a picky QB lower than INT -1');
+assert.equal(Math.round((stdPts - tacoPts) * 10) / 10, Math.round(qb.stats.blend.pass_int * 10) / 10);
+// No stat line -> null, so the caller falls back instead of reporting a zero.
+assert.equal(helpers.leagueScorePoints({}, taco), null);
+assert.equal(helpers.leagueScorePoints(null, taco), null);
+assert.equal(helpers.projPoints({ blend: 123.4, stats: {} }, taco, 'blend'), 123.4, 'must fall back to the file total');
 
 for (const s of ['pp', 'sleeper', 'blend']) {
   const r = helpers.optimalOffense(me, yuH, s);
@@ -44,6 +72,53 @@ for (const s of ['clay', 'sleeper', 'blend']) {
   const r = helpers.optimalDefense(me, yuH, s);
   assert(r.total > 0 && r.picks.length <= 2, `defense ${s} bad: ${JSON.stringify(r).slice(0,80)}`);
 }
+// Injury gating. Synthetic PLAYERS map so this doesn't depend on who is hurt
+// this week — the rule is what's under test, not the current injury report.
+ctx.window.PLAYERS = {
+  healthy: { name: 'Healthy', injury_status: null, status: 'Active' },
+  q:       { name: 'Q',       injury_status: 'Questionable', status: 'Active' },
+  out:     { name: 'Out',     injury_status: 'Out', status: 'Active' },
+  doubt:   { name: 'Doubt',   injury_status: 'Doubtful', status: 'Active' },
+  ir:      { name: 'IR',      injury_status: 'IR', status: 'Inactive' },
+  irList:  { name: 'IRList',  injury_status: null, status: 'Injured Reserve' },
+};
+assert.equal(helpers.isSidelined('healthy'), false);
+assert.equal(helpers.isSidelined('q'), false, 'Questionable still starts — benching every Q would gut in-season projections');
+assert.equal(helpers.isSidelined('out'), true);
+assert.equal(helpers.isSidelined('doubt'), true);
+assert.equal(helpers.isSidelined('ir'), true);
+assert.equal(helpers.isSidelined('irList'), true, 'roster status Injured Reserve counts even with a null injury_status');
+assert.equal(helpers.isSidelined('nobody'), false, 'an unknown id is not sidelined');
+
+// What-if splice: additive, and adding a player already on the roster is a no-op
+// once the caller de-dupes, so the same set always yields the same lineup.
+const taco2 = ctx.window.LEAGUES.find(l => l.short_name === 'Password is taco');
+const tacoMe = taco2.rosters.find(r => r.is_me);
+const baseline = helpers.optimalOffense(tacoMe, taco2, 'blend');
+const spliced = (extra) => helpers.optimalOffense(
+  { ...tacoMe, players: [...helpers.startableIds(tacoMe), ...extra] }, taco2, 'blend');
+assert.equal(spliced([]).total, baseline.total, 'an empty what-if must not move the number');
+// Pick the best projected WR who is NOT already rostered. Hardcoding a name here
+// broke the day Trevor traded for him: the splice became a no-op and the assertion
+// failed on real data rather than on a real defect.
+const onRoster = new Set(helpers.startableIds(tacoMe).map(String));
+const freeWr = O.offense.players
+  .filter(p => p.pos === 'WR' && !onRoster.has(String(p.id)) && p.blend != null)
+  .sort((a, b) => b.blend - a.blend)[0];
+assert(freeWr, 'no unrostered WR to splice, the what-if assertion would prove nothing');
+const withHim = spliced([freeWr.id]);
+assert(withHim.total > baseline.total, `adding ${freeWr.name} (WR1-tier, unrostered) must raise the lineup`);
+assert.equal(spliced([freeWr.id]).total, withHim.total, 'the same what-if must be idempotent');
+assert.equal(withHim.picks.length, baseline.picks.length, 'a what-if fills slots, it does not add them');
+// Re-adding a player who is ALREADY STARTING must not double-count him. Picking
+// a bench body here would let the assertion pass for the wrong reason.
+const projById = new Map(O.offense.players.map(p => [String(p.id), p]));
+const startingId = helpers.startableIds(tacoMe)
+  .find(id => baseline.picks.some(c => c.name === projById.get(id)?.name));
+assert(startingId, 'expected at least one of my starters to be resolvable');
+assert.equal(spliced([startingId]).total, baseline.total, 'a starter added twice must not score twice');
+assert.equal(spliced([startingId, freeWr.id]).total, withHim.total, 'dupes are inert alongside a real add');
+
 const offPP = helpers.optimalOffense(me, yuH, 'pp');
 const defClay = helpers.optimalDefense(me, yuH, 'clay');
 console.log(`PASS projections: ${me.team_name} offense(PP)=${offPP.total} [${offPP.picks.length} st], IDP(Clay)=${defClay.total} [${defClay.picks.map(p=>p.name).join(', ')}]`);

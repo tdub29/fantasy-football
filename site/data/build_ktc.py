@@ -116,9 +116,11 @@ def fetch_html():
 
 
 def extract_players(html):
-    m = re.search(r"playersArray\s*=\s*(\[.*?\]);", html, re.DOTALL)
+    # KTC moved the board out of an inline `playersArray = [...]` literal and into
+    # a JSON <script id="ktc-players"> tag that the page parses on load.
+    m = re.search(r"<script[^>]*id=[\"']ktc-players[\"'][^>]*>(.*?)</script>", html, re.DOTALL)
     if not m:
-        sys.exit("playersArray not found in KTC HTML")
+        sys.exit("ktc-players JSON script tag not found in KTC HTML")
     return json.loads(m.group(1))
 
 
@@ -151,8 +153,8 @@ def build_picks(players, key, label):
             "round": rnd,
             "slot": slot,
             "ktcValue": v.get("value"),
-            "ktcRank": v.get("rank"),
-            "note": f"KTC {label} pick value {v.get('value')} (rank #{v.get('rank')}).",
+            "ktcRank": v.get("rank") or v.get("pickRank"),
+            "note": f"KTC {label} pick value {v.get('value')} (rank #{v.get('rank') or v.get('pickRank')}).",
         })
     # Sort by season, round, slot order (early > mid > late)
     slot_order = {"early": 0, "mid": 1, "late": 2}

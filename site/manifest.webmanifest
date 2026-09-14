@@ -1,7 +1,7 @@
 {
-  "name": "Tier Sheet — tdub1329",
-  "short_name": "Tier Sheet",
-  "description": "Dynasty fantasy football rankings, tiers, and Sleeper league view.",
+  "name": "The Fantasy Hub — tdub1329",
+  "short_name": "Fantasy Hub",
+  "description": "Dynasty fantasy football rankings, tiers, projections, and Sleeper league view.",
   "start_url": "index.html",
   "scope": "./",
   "display": "standalone",

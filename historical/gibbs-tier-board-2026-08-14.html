@@ -1,0 +1,437 @@
+<!doctype html><html lang=en><head><meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<title>Gibbs 2026 tier board, top 175</title>
+<meta name="color-scheme" content="dark">
+<style>
+:root{
+  --obsidian:#0b0d12; --graphite:#11141b; --slate:#161a23; --pewter:#1e2330;
+  --edge:#262d3d; --edge-hot:#3a4258;
+  --porcelain:#f3f4f6; --bone:#d4d8e0; --fog:#9ca3af; --ash:#6b7280;
+  --violet:#a78bfa; --mint:#34d399; --red:#f87171; --amber:#fbbf24;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--obsidian); color:var(--porcelain);
+  font-family:ui-sans-serif,-apple-system,'SF Pro Text','Inter','Segoe UI',Roboto,sans-serif;
+  font-size:.94rem; line-height:1.5; font-variant-numeric:tabular-nums;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 14px 64px}
+h1{font-size:1.6rem;font-weight:700;letter-spacing:-.015em;line-height:1.2;margin:0 0 4px}
+.sub{color:var(--fog);font-size:.85rem;margin:0 0 14px}
+.sub b{color:var(--bone);font-weight:600}
+.rule{height:1px;background:var(--edge);margin:14px 0}
+.counts{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px}
+.count{font-size:.75rem;font-weight:600;letter-spacing:.06em;padding:2px 8px;border-radius:999px;
+  border:1px solid var(--edge);background:var(--graphite);color:var(--fog)}
+.controls{position:sticky;top:0;z-index:5;background:var(--obsidian);
+  padding:10px 0;border-bottom:1px solid var(--edge);margin-bottom:6px}
+input[type=search]{width:100%;background:var(--slate);color:var(--porcelain);
+  border:1px solid var(--edge);border-radius:6px;padding:8px 10px;font:inherit;font-size:1rem}
+input[type=search]:focus{outline:none;border-color:var(--violet);box-shadow:0 0 0 2px rgba(167,139,250,.35)}
+.filters{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+button{font:inherit;font-size:.8rem;font-weight:600;letter-spacing:.04em;background:var(--slate);
+  color:var(--bone);border:1px solid var(--edge);border-radius:6px;padding:5px 13px;cursor:pointer;
+  min-height:40px;transition:background-color 120ms,border-color 120ms}
+button:hover{background:#232938;border-color:var(--edge-hot)}
+button:active{transform:translateY(1px)}
+button:focus-visible{outline:2px solid var(--violet);outline-offset:2px}
+button[aria-pressed=true]{background:var(--pewter);border-color:var(--edge-hot);color:var(--porcelain)}
+button.qb[aria-pressed=true]{color:var(--red)} button.rb[aria-pressed=true]{color:#60a5fa}
+button.wr[aria-pressed=true]{color:var(--mint)} button.te[aria-pressed=true]{color:var(--amber)}
+button.mine[aria-pressed=true]{color:var(--violet);border-color:var(--violet)}
+.tier{margin-top:18px}
+.tier-head{display:flex;align-items:baseline;gap:8px;padding:0 0 6px;border-bottom:1px solid var(--edge)}
+.tier-n{font-size:.75rem;font-weight:600;letter-spacing:.06em;color:var(--violet)}
+.tier-meta{font-size:.75rem;color:var(--fog);letter-spacing:.04em}
+table{width:100%;border-collapse:collapse}
+tr{border-bottom:1px solid rgba(38,45,61,.55)}
+tr:last-child{border-bottom:none}
+tr.mine{background:rgba(167,139,250,.07)}
+td{padding:7px 4px;vertical-align:baseline}
+td.rk{width:2.6em;text-align:right;color:var(--fog);font-size:.85rem;font-weight:600;padding-right:9px}
+td.nm{font-weight:600}
+.team{color:var(--fog);font-weight:400;font-size:.82rem;margin-left:5px;white-space:nowrap}
+td.ps{width:3.1em;text-align:right}
+.pill{display:inline-block;font-size:.7rem;font-weight:600;letter-spacing:.05em;
+  padding:1px 7px;border-radius:999px;border:1px solid;background:var(--graphite)}
+td.mv{width:3.6em;text-align:right;font-size:.78rem;font-weight:600}
+.move.up{color:var(--mint)} .move.down{color:var(--red)}
+.move.flat,.move.new{color:var(--fog);font-weight:400}
+.own{display:inline-block;font-size:.66rem;font-weight:600;letter-spacing:.04em;color:var(--violet);
+  border:1px solid rgba(167,139,250,.4);background:rgba(167,139,250,.08);
+  border-radius:999px;padding:0 6px;margin-left:5px;white-space:nowrap}
+.empty{display:none;color:var(--fog);padding:22px 2px;font-size:.9rem}
+.movers{margin:16px 0 0;border:1px solid var(--edge);border-radius:10px;
+  background:var(--graphite);padding:12px 14px}
+.movers h2{font-size:.75rem;font-weight:600;letter-spacing:.06em;color:var(--fog);margin:0 0 8px}
+.movers ul{list-style:none;margin:0;padding:0;
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:2px 18px}
+.movers li{font-size:.82rem;padding:2px 0;display:flex;gap:8px;align-items:baseline}
+.movers .d{width:3.2em;text-align:right;font-weight:600;flex:none}
+.movers .who{color:var(--bone)}
+.movers .at{color:var(--ash);font-size:.75rem}
+.movers .out{margin:10px 0 0;font-size:.78rem;color:var(--fog);line-height:1.55}
+.movers .out b{color:var(--bone);font-weight:600}
+.leagues{margin:10px 0 0;border:1px solid var(--edge);border-radius:10px;
+  background:var(--graphite);padding:12px 14px}
+.leagues h2{font-size:.75rem;font-weight:600;letter-spacing:.06em;color:var(--fog);margin:0 0 10px}
+.lg{padding:9px 0;border-top:1px solid var(--edge)}
+.lg:first-of-type{border-top:none;padding-top:0}
+.lg-h{display:flex;flex-wrap:wrap;gap:8px;align-items:baseline;margin-bottom:4px}
+.lg-n{font-weight:600;color:var(--porcelain);font-size:.9rem}
+.lg-l{margin:2px 0;font-size:.82rem;color:var(--bone);line-height:1.5}
+.lg-l .k{display:inline-block;min-width:8.4em;color:var(--ash);font-size:.72rem;
+  font-weight:600;letter-spacing:.05em;text-transform:uppercase}
+.leagues .at{color:var(--ash);font-size:.75rem;font-weight:400}
+.leagues .out{margin:10px 0 0;font-size:.78rem;color:var(--fog);line-height:1.55}
+@media (max-width:430px){.lg-l .k{display:block;min-width:0;margin-top:5px}}
+.note{color:var(--fog);font-size:.78rem;line-height:1.55;margin-top:26px;
+  border-top:1px solid var(--edge);padding-top:12px}
+.note b{color:var(--bone);font-weight:600}
+@media (max-width:430px){
+  .wrap{padding:16px 11px 56px}
+  h1{font-size:1.35rem}
+  .team{display:block;margin-left:0}
+  td{padding:8px 3px}
+}
+</style></head><body><div class=wrap>
+<h1>Gibbs 2026 tier board</h1>
+<p class=sub>Top 175 overall in 16 tiers, single-QB managed leagues, half-PPR redraft. Jacob Gibbs, as of <b>2026-08-14</b>.</p>
+<div class=counts>
+<span class=count>QB 25</span>
+<span class=count>RB 60</span>
+<span class=count>WR 71</span>
+<span class=count>TE 19</span>
+<span class=count>49 on your rosters</span>
+<span class=count id=shown aria-live=polite></span>
+</div>
+<section class=movers>
+<h2>BIGGEST MOVES SINCE 2026-07-20</h2>
+<ul>
+<li><span class="d move up">+141</span><span class=who>De'Zhaun Stribling <span class=at>WR, now 133</span></span></li>
+<li><span class="d move up">+136</span><span class=who>Cyrus Allen <span class=at>WR, now 150</span></span></li>
+<li><span class="d move up">+84</span><span class=who>Jack Bech <span class=at>WR, now 151</span></span></li>
+<li><span class="d move up">+81</span><span class=who>Stefon Diggs <span class=at>WR, now 75</span></span></li>
+<li><span class="d move up">+66</span><span class=who>Malik Washington <span class=at>WR, now 148</span></span></li>
+<li><span class="d move down">-48</span><span class=who>Travis Kelce <span class=at>TE, now 155</span></span></li>
+<li><span class="d move down">-33</span><span class=who>Dak Prescott <span class=at>QB, now 119</span></span></li>
+<li><span class="d move down">-32</span><span class=who>Mark Andrews <span class=at>TE, now 161</span></span></li>
+<li><span class="d move down">-30</span><span class=who>Jordan Love <span class=at>QB, now 154</span></span></li>
+<li><span class="d move down">-29</span><span class=who>Patrick Mahomes II <span class=at>QB, now 122</span></span></li>
+</ul>
+<p class=out><b>Fell out of the top 175:</b> Ricky Pearsall (89), Sam Darnold (144), Chig Okonkwo (151), Brian Robinson Jr. (159), Hunter Henry (161), Dalton Schultz (162), Bryce Young (168), Juwan Johnson (169), and 4 more. The number is where he had them before.</p>
+</section>
+<section class=leagues>
+<h2>YOUR THREE ROSTERS ON THIS BOARD</h2>
+<div class=lg>
+<div class=lg-h><span class=lg-n>Password is taco</span><span class=at>10 teams, 1QB, 11 ranked</span></div>
+<p class=lg-l><span class=k>Best you hold</span> De'Von Achane <span class=at>22</span>, Jeremiyah Love <span class=at>26</span>, Trey McBride <span class=at>33</span>, Mike Evans <span class=at>39</span>, Josh Allen <span class=at>46</span></p>
+<p class=lg-l><span class=k>Gibbs soured on</span> Jordan Love <span class="move down">-30</span>, Caleb Williams <span class="move down">-11</span>, Isiah Pacheco <span class="move down">-11</span></p>
+<p class=lg-l><span class=k>Gibbs warmed to</span> Zachariah Branch <span class="move up">+23</span>, Jauan Jennings <span class="move up">+10</span></p>
+<p class=lg-l><span class=k>Still free</span> Cyrus Allen <span class=at>150 WR</span>, Ray Davis <span class=at>165 RB</span></p>
+</div>
+<div class=lg>
+<div class=lg-h><span class=lg-n>The League</span><span class=at>10 teams, superflex, 22 ranked</span></div>
+<p class=lg-l><span class=k>Best you hold</span> Malik Nabers <span class=at>20</span>, De'Von Achane <span class=at>22</span>, Brock Bowers <span class=at>23</span>, DeVonta Smith <span class=at>28</span>, Jaylen Waddle <span class=at>32</span></p>
+<p class=lg-l><span class=k>Gibbs soured on</span> Antonio Williams <span class="move down">-27</span>, Jaxson Dart <span class="move down">-22</span>, Caleb Williams <span class="move down">-11</span></p>
+<p class=lg-l><span class=k>Gibbs warmed to</span> Ryan Flournoy <span class="move up">+31</span>, Malik Nabers <span class="move up">+27</span>, Josh Downs <span class="move up">+26</span></p>
+<p class=lg-l><span class=k>Still free</span> Dontayvion Wicks <span class=at>172 WR</span></p>
+</div>
+<div class=lg>
+<div class=lg-h><span class=lg-n>yuH</span><span class=at>10 teams, 1QB, IDP, 26 ranked</span></div>
+<p class=lg-l><span class=k>Best you hold</span> Jahmyr Gibbs <span class=at>1</span>, Ja'Marr Chase <span class=at>2</span>, Puka Nacua <span class=at>3</span>, Jaylen Waddle <span class=at>32</span>, Colston Loveland <span class=at>34</span></p>
+<p class=lg-l><span class=k>Gibbs soured on</span> Antonio Williams <span class="move down">-27</span>, Alec Pierce <span class="move down">-25</span>, Drake Maye <span class="move down">-20</span></p>
+<p class=lg-l><span class=k>Gibbs warmed to</span> De'Zhaun Stribling <span class="move up">+141</span>, Cyrus Allen <span class="move up">+136</span>, Jayden Reed <span class="move up">+34</span></p>
+<p class=lg-l><span class=k>Still free</span> Tank Bigsby <span class=at>139 RB</span>, Kimani Vidal <span class=at>140 RB</span>, MarShawn Lloyd <span class=at>141 RB</span>, Keaton Mitchell <span class=at>149 RB</span>, Terrance Ferguson <span class=at>160 TE</span>, Dontayvion Wicks <span class=at>172 WR</span></p>
+</div>
+<p class=out>Moves are against his 2026-07-20 board. Free agents are players nobody in that league rosters, so the list being short is the league being deep, not the board being thin.</p>
+</section>
+<div class=controls>
+<input id=q type=search aria-label="Search the board by player or team" placeholder="Search a player or team" autocomplete=off>
+<div class=filters>
+<button class="qb" data-pos="QB" aria-pressed=false>QB</button>
+<button class="rb" data-pos="RB" aria-pressed=false>RB</button>
+<button class="wr" data-pos="WR" aria-pressed=false>WR</button>
+<button class="te" data-pos="TE" aria-pressed=false>TE</button>
+<button id=mine class=mine aria-pressed=false>On my rosters</button>
+</div></div>
+<section class=tier>
+<div class=tier-head><span class=tier-n>TIER 1</span><span class=tier-meta>1 to 5, 5 players</span></div>
+<table><tbody>
+<tr data-n="jahmyr gibbs" data-tm="det" data-p="RB" data-own="1" class=mine><td class=rk>1</td><td class=nm>Jahmyr Gibbs<span class=own>yuH</span><span class=team>DET bye 6</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB1</span></td><td class=mv><span class="move flat">0</span></td></tr>
+<tr data-n="ja'marr chase" data-tm="cin" data-p="WR" data-own="1" class=mine><td class=rk>2</td><td class=nm>Ja'Marr Chase<span class=own>yuH</span><span class=team>CIN bye 6</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR1</span></td><td class=mv><span class="move up">+1</span></td></tr>
+<tr data-n="puka nacua" data-tm="lar" data-p="WR" data-own="1" class=mine><td class=rk>3</td><td class=nm>Puka Nacua<span class=own>yuH</span><span class=team>LAR bye 11</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR2</span></td><td class=mv><span class="move up">+1</span></td></tr>
+<tr data-n="bijan robinson" data-tm="atl" data-p="RB" data-own="0"><td class=rk>4</td><td class=nm>Bijan Robinson<span class=team>ATL bye 11</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB2</span></td><td class=mv><span class="move down">-2</span></td></tr>
+<tr data-n="christian mccaffrey" data-tm="sf" data-p="RB" data-own="0"><td class=rk>5</td><td class=nm>Christian McCaffrey<span class=team>SF bye 8</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB3</span></td><td class=mv><span class="move flat">0</span></td></tr>
+</tbody></table></section>
+<section class=tier>
+<div class=tier-head><span class=tier-n>TIER 2</span><span class=tier-meta>6 to 8, 3 players</span></div>
+<table><tbody>
+<tr data-n="amon-ra st. brown" data-tm="det" data-p="WR" data-own="0"><td class=rk>6</td><td class=nm>Amon-Ra St. Brown<span class=team>DET bye 6</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR3</span></td><td class=mv><span class="move up">+1</span></td></tr>
+<tr data-n="jaxon smith-njigba" data-tm="sea" data-p="WR" data-own="0"><td class=rk>7</td><td class=nm>Jaxon Smith-Njigba<span class=team>SEA bye 11</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR4</span></td><td class=mv><span class="move down">-1</span></td></tr>
+<tr data-n="ceedee lamb" data-tm="dal" data-p="WR" data-own="0"><td class=rk>8</td><td class=nm>CeeDee Lamb<span class=team>DAL bye 14</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR5</span></td><td class=mv><span class="move flat">0</span></td></tr>
+</tbody></table></section>
+<section class=tier>
+<div class=tier-head><span class=tier-n>TIER 3</span><span class=tier-meta>9 to 13, 5 players</span></div>
+<table><tbody>
+<tr data-n="james cook iii" data-tm="buf" data-p="RB" data-own="0"><td class=rk>9</td><td class=nm>James Cook III<span class=team>BUF bye 7</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB4</span></td><td class=mv><span class="move up">+2</span></td></tr>
+<tr data-n="ashton jeanty" data-tm="lv" data-p="RB" data-own="0"><td class=rk>10</td><td class=nm>Ashton Jeanty<span class=team>LV bye 13</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB5</span></td><td class=mv><span class="move down">-1</span></td></tr>
+<tr data-n="jonathan taylor" data-tm="ind" data-p="RB" data-own="0"><td class=rk>11</td><td class=nm>Jonathan Taylor<span class=team>IND bye 13</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB6</span></td><td class=mv><span class="move down">-1</span></td></tr>
+<tr data-n="omarion hampton" data-tm="lac" data-p="RB" data-own="0"><td class=rk>12</td><td class=nm>Omarion Hampton<span class=team>LAC bye 7</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB7</span></td><td class=mv><span class="move up">+1</span></td></tr>
+<tr data-n="chase brown" data-tm="cin" data-p="RB" data-own="0"><td class=rk>13</td><td class=nm>Chase Brown<span class=team>CIN bye 6</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB8</span></td><td class=mv><span class="move up">+1</span></td></tr>
+</tbody></table></section>
+<section class=tier>
+<div class=tier-head><span class=tier-n>TIER 4</span><span class=tier-meta>14 to 22, 9 players</span></div>
+<table><tbody>
+<tr data-n="a.j. brown" data-tm="ne" data-p="WR" data-own="0"><td class=rk>14</td><td class=nm>A.J. Brown<span class=team>NE bye 11</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR6</span></td><td class=mv><span class="move up">+1</span></td></tr>
+<tr data-n="kenneth walker iii" data-tm="kc" data-p="RB" data-own="0"><td class=rk>15</td><td class=nm>Kenneth Walker III<span class=team>KC bye 5</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB9</span></td><td class=mv><span class="move up">+2</span></td></tr>
+<tr data-n="derrick henry" data-tm="bal" data-p="RB" data-own="0"><td class=rk>16</td><td class=nm>Derrick Henry<span class=team>BAL bye 13</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB10</span></td><td class=mv><span class="move up">+5</span></td></tr>
+<tr data-n="saquon barkley" data-tm="phi" data-p="RB" data-own="0"><td class=rk>17</td><td class=nm>Saquon Barkley<span class=team>PHI bye 10</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB11</span></td><td class=mv><span class="move up">+3</span></td></tr>
+<tr data-n="justin jefferson" data-tm="min" data-p="WR" data-own="0"><td class=rk>18</td><td class=nm>Justin Jefferson<span class=team>MIN bye 6</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR7</span></td><td class=mv><span class="move down">-6</span></td></tr>
+<tr data-n="george pickens" data-tm="dal" data-p="WR" data-own="0"><td class=rk>19</td><td class=nm>George Pickens<span class=team>DAL bye 14</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR8</span></td><td class=mv><span class="move up">+3</span></td></tr>
+<tr data-n="malik nabers" data-tm="nyg" data-p="WR" data-own="1" class=mine><td class=rk>20</td><td class=nm>Malik Nabers<span class=own>League</span><span class=team>NYG bye 8</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR9</span></td><td class=mv><span class="move up">+27</span></td></tr>
+<tr data-n="drake london" data-tm="atl" data-p="WR" data-own="0"><td class=rk>21</td><td class=nm>Drake London<span class=team>ATL bye 11</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR10</span></td><td class=mv><span class="move down">-5</span></td></tr>
+<tr data-n="de'von achane" data-tm="mia" data-p="RB" data-own="1" class=mine><td class=rk>22</td><td class=nm>De'Von Achane<span class=own>taco</span><span class=own>League</span><span class=team>MIA bye 6</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB12</span></td><td class=mv><span class="move down">-4</span></td></tr>
+</tbody></table></section>
+<section class=tier>
+<div class=tier-head><span class=tier-n>TIER 5</span><span class=tier-meta>23 to 28, 6 players</span></div>
+<table><tbody>
+<tr data-n="brock bowers" data-tm="lv" data-p="TE" data-own="1" class=mine><td class=rk>23</td><td class=nm>Brock Bowers<span class=own>League</span><span class=team>LV bye 13</span></td><td class=ps><span class=pill style="color:#fbbf24;border-color:#fbbf2466">TE1</span></td><td class=mv><span class="move down">-4</span></td></tr>
+<tr data-n="nico collins" data-tm="hou" data-p="WR" data-own="0"><td class=rk>24</td><td class=nm>Nico Collins<span class=team>HOU bye 8</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR11</span></td><td class=mv><span class="move down">-1</span></td></tr>
+<tr data-n="emeka egbuka" data-tm="tb" data-p="WR" data-own="0"><td class=rk>25</td><td class=nm>Emeka Egbuka<span class=team>TB bye 10</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR12</span></td><td class=mv><span class="move up">+12</span></td></tr>
+<tr data-n="jeremiyah love" data-tm="ari" data-p="RB" data-own="1" class=mine><td class=rk>26</td><td class=nm>Jeremiyah Love<span class=own>taco</span><span class=team>ARI bye 14</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB13</span></td><td class=mv><span class="move down">-2</span></td></tr>
+<tr data-n="zay flowers" data-tm="bal" data-p="WR" data-own="0"><td class=rk>27</td><td class=nm>Zay Flowers<span class=team>BAL bye 13</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR13</span></td><td class=mv><span class="move down">-2</span></td></tr>
+<tr data-n="devonta smith" data-tm="phi" data-p="WR" data-own="1" class=mine><td class=rk>28</td><td class=nm>DeVonta Smith<span class=own>League</span><span class=team>PHI bye 10</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR14</span></td><td class=mv><span class="move up">+3</span></td></tr>
+</tbody></table></section>
+<section class=tier>
+<div class=tier-head><span class=tier-n>TIER 6</span><span class=tier-meta>29 to 37, 9 players</span></div>
+<table><tbody>
+<tr data-n="chris olave" data-tm="no" data-p="WR" data-own="0"><td class=rk>29</td><td class=nm>Chris Olave<span class=team>NO bye 8</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR15</span></td><td class=mv><span class="move down">-3</span></td></tr>
+<tr data-n="ladd mcconkey" data-tm="lac" data-p="WR" data-own="0"><td class=rk>30</td><td class=nm>Ladd McConkey<span class=team>LAC bye 7</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR16</span></td><td class=mv><span class="move up">+3</span></td></tr>
+<tr data-n="tee higgins" data-tm="cin" data-p="WR" data-own="0"><td class=rk>31</td><td class=nm>Tee Higgins<span class=team>CIN bye 6</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR17</span></td><td class=mv><span class="move up">+3</span></td></tr>
+<tr data-n="jaylen waddle" data-tm="den" data-p="WR" data-own="1" class=mine><td class=rk>32</td><td class=nm>Jaylen Waddle<span class=own>League</span><span class=own>yuH</span><span class=team>DEN bye 10</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR18</span></td><td class=mv><span class="move up">+3</span></td></tr>
+<tr data-n="trey mcbride" data-tm="ari" data-p="TE" data-own="1" class=mine><td class=rk>33</td><td class=nm>Trey McBride<span class=own>taco</span><span class=team>ARI bye 14</span></td><td class=ps><span class=pill style="color:#fbbf24;border-color:#fbbf2466">TE2</span></td><td class=mv><span class="move down">-3</span></td></tr>
+<tr data-n="colston loveland" data-tm="chi" data-p="TE" data-own="1" class=mine><td class=rk>34</td><td class=nm>Colston Loveland<span class=own>yuH</span><span class=team>CHI bye 10</span></td><td class=ps><span class=pill style="color:#fbbf24;border-color:#fbbf2466">TE3</span></td><td class=mv><span class="move down">-7</span></td></tr>
+<tr data-n="javonte williams" data-tm="dal" data-p="RB" data-own="0"><td class=rk>35</td><td class=nm>Javonte Williams<span class=team>DAL bye 14</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB14</span></td><td class=mv><span class="move down">-3</span></td></tr>
+<tr data-n="cam skattebo" data-tm="nyg" data-p="RB" data-own="1" class=mine><td class=rk>36</td><td class=nm>Cam Skattebo<span class=own>League</span><span class=team>NYG bye 8</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB15</span></td><td class=mv><span class="move up">+5</span></td></tr>
+<tr data-n="luther burden iii" data-tm="chi" data-p="WR" data-own="0"><td class=rk>37</td><td class=nm>Luther Burden III<span class=team>CHI bye 10</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR19</span></td><td class=mv><span class="move up">+13</span></td></tr>
+</tbody></table></section>
+<section class=tier>
+<div class=tier-head><span class=tier-n>TIER 7</span><span class=tier-meta>38 to 42, 5 players</span></div>
+<table><tbody>
+<tr data-n="rashee rice" data-tm="kc" data-p="WR" data-own="0"><td class=rk>38</td><td class=nm>Rashee Rice<span class=team>KC bye 5</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR20</span></td><td class=mv><span class="move down">-10</span></td></tr>
+<tr data-n="mike evans" data-tm="sf" data-p="WR" data-own="1" class=mine><td class=rk>39</td><td class=nm>Mike Evans<span class=own>taco</span><span class=team>SF bye 8</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR21</span></td><td class=mv><span class="move up">+7</span></td></tr>
+<tr data-n="tetairoa mcmillan" data-tm="car" data-p="WR" data-own="0"><td class=rk>40</td><td class=nm>Tetairoa McMillan<span class=team>CAR bye 5</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR22</span></td><td class=mv><span class="move down">-2</span></td></tr>
+<tr data-n="christian watson" data-tm="gb" data-p="WR" data-own="0"><td class=rk>41</td><td class=nm>Christian Watson<span class=team>GB bye 11</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR23</span></td><td class=mv><span class="move up">+14</span></td></tr>
+<tr data-n="davante adams" data-tm="lar" data-p="WR" data-own="0"><td class=rk>42</td><td class=nm>Davante Adams<span class=team>LAR bye 11</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR24</span></td><td class=mv><span class="move up">+15</span></td></tr>
+</tbody></table></section>
+<section class=tier>
+<div class=tier-head><span class=tier-n>TIER 8</span><span class=tier-meta>43 to 62, 20 players</span></div>
+<table><tbody>
+<tr data-n="josh jacobs" data-tm="gb" data-p="RB" data-own="0"><td class=rk>43</td><td class=nm>Josh Jacobs<span class=team>GB bye 11</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB16</span></td><td class=mv><span class="move down">-7</span></td></tr>
+<tr data-n="kyren williams" data-tm="lar" data-p="RB" data-own="0"><td class=rk>44</td><td class=nm>Kyren Williams<span class=team>LAR bye 11</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB17</span></td><td class=mv><span class="move down">-15</span></td></tr>
+<tr data-n="d'andre swift" data-tm="chi" data-p="RB" data-own="0"><td class=rk>45</td><td class=nm>D'Andre Swift<span class=team>CHI bye 10</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB18</span></td><td class=mv><span class="move down">-2</span></td></tr>
+<tr data-n="josh allen" data-tm="buf" data-p="QB" data-own="1" class=mine><td class=rk>46</td><td class=nm>Josh Allen<span class=own>taco</span><span class=team>BUF bye 7</span></td><td class=ps><span class=pill style="color:#f87171;border-color:#f8717166">QB1</span></td><td class=mv><span class="move down">-6</span></td></tr>
+<tr data-n="bucky irving" data-tm="tb" data-p="RB" data-own="0"><td class=rk>47</td><td class=nm>Bucky Irving<span class=team>TB bye 10</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB19</span></td><td class=mv><span class="move down">-3</span></td></tr>
+<tr data-n="breece hall" data-tm="nyj" data-p="RB" data-own="1" class=mine><td class=rk>48</td><td class=nm>Breece Hall<span class=own>yuH</span><span class=team>NYJ bye 13</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB20</span></td><td class=mv><span class="move down">-9</span></td></tr>
+<tr data-n="bhayshul tuten" data-tm="jac" data-p="RB" data-own="0"><td class=rk>49</td><td class=nm>Bhayshul Tuten<span class=team>JAC bye 7</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB21</span></td><td class=mv><span class="move up">+11</span></td></tr>
+<tr data-n="garrett wilson" data-tm="nyj" data-p="WR" data-own="0"><td class=rk>50</td><td class=nm>Garrett Wilson<span class=team>NYJ bye 13</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR25</span></td><td class=mv><span class="move down">-5</span></td></tr>
+<tr data-n="rome odunze" data-tm="chi" data-p="WR" data-own="0"><td class=rk>51</td><td class=nm>Rome Odunze<span class=team>CHI bye 10</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR26</span></td><td class=mv><span class="move up">+12</span></td></tr>
+<tr data-n="jameson williams" data-tm="det" data-p="WR" data-own="0"><td class=rk>52</td><td class=nm>Jameson Williams<span class=team>DET bye 6</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR27</span></td><td class=mv><span class="move flat">0</span></td></tr>
+<tr data-n="sam laporta" data-tm="det" data-p="TE" data-own="0"><td class=rk>53</td><td class=nm>Sam LaPorta<span class=team>DET bye 6</span></td><td class=ps><span class=pill style="color:#fbbf24;border-color:#fbbf2466">TE4</span></td><td class=mv><span class="move up">+16</span></td></tr>
+<tr data-n="treveyon henderson" data-tm="ne" data-p="RB" data-own="0"><td class=rk>54</td><td class=nm>TreVeyon Henderson<span class=team>NE bye 11</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB22</span></td><td class=mv><span class="move up">+5</span></td></tr>
+<tr data-n="quinshon judkins" data-tm="cle" data-p="RB" data-own="0"><td class=rk>55</td><td class=nm>Quinshon Judkins<span class=team>CLE bye 11</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB23</span></td><td class=mv><span class="move up">+1</span></td></tr>
+<tr data-n="david montgomery" data-tm="hou" data-p="RB" data-own="0"><td class=rk>56</td><td class=nm>David Montgomery<span class=team>HOU bye 8</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB24</span></td><td class=mv><span class="move up">+2</span></td></tr>
+<tr data-n="tyler warren" data-tm="ind" data-p="TE" data-own="0"><td class=rk>57</td><td class=nm>Tyler Warren<span class=team>IND bye 13</span></td><td class=ps><span class=pill style="color:#fbbf24;border-color:#fbbf2466">TE5</span></td><td class=mv><span class="move up">+13</span></td></tr>
+<tr data-n="terry mclaurin" data-tm="was" data-p="WR" data-own="0"><td class=rk>58</td><td class=nm>Terry McLaurin<span class=team>WAS bye 7</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR28</span></td><td class=mv><span class="move down">-16</span></td></tr>
+<tr data-n="parker washington" data-tm="jac" data-p="WR" data-own="1" class=mine><td class=rk>59</td><td class=nm>Parker Washington<span class=own>yuH</span><span class=team>JAC bye 7</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR29</span></td><td class=mv><span class="move up">+13</span></td></tr>
+<tr data-n="dj moore" data-tm="buf" data-p="WR" data-own="0"><td class=rk>60</td><td class=nm>DJ Moore<span class=team>BUF bye 7</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR30</span></td><td class=mv><span class="move up">+1</span></td></tr>
+<tr data-n="tucker kraft" data-tm="gb" data-p="TE" data-own="0"><td class=rk>61</td><td class=nm>Tucker Kraft<span class=team>GB bye 11</span></td><td class=ps><span class=pill style="color:#fbbf24;border-color:#fbbf2466">TE6</span></td><td class=mv><span class="move down">-10</span></td></tr>
+<tr data-n="jordyn tyson" data-tm="no" data-p="WR" data-own="0"><td class=rk>62</td><td class=nm>Jordyn Tyson<span class=team>NO bye 8</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR31</span></td><td class=mv><span class="move up">+4</span></td></tr>
+</tbody></table></section>
+<section class=tier>
+<div class=tier-head><span class=tier-n>TIER 9</span><span class=tier-meta>63 to 72, 10 players</span></div>
+<table><tbody>
+<tr data-n="travis etienne jr." data-tm="no" data-p="RB" data-own="0"><td class=rk>63</td><td class=nm>Travis Etienne Jr.<span class=team>NO bye 8</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB25</span></td><td class=mv><span class="move down">-10</span></td></tr>
+<tr data-n="josh downs" data-tm="ind" data-p="WR" data-own="1" class=mine><td class=rk>64</td><td class=nm>Josh Downs<span class=own>League</span><span class=own>yuH</span><span class=team>IND bye 13</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR32</span></td><td class=mv><span class="move up">+26</span></td></tr>
+<tr data-n="jayden reed" data-tm="gb" data-p="WR" data-own="1" class=mine><td class=rk>65</td><td class=nm>Jayden Reed<span class=own>yuH</span><span class=team>GB bye 11</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR33</span></td><td class=mv><span class="move up">+34</span></td></tr>
+<tr data-n="carnell tate" data-tm="ten" data-p="WR" data-own="0"><td class=rk>66</td><td class=nm>Carnell Tate<span class=team>TEN bye 9</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR34</span></td><td class=mv><span class="move down">-2</span></td></tr>
+<tr data-n="jadarian price" data-tm="sea" data-p="RB" data-own="1" class=mine><td class=rk>67</td><td class=nm>Jadarian Price<span class=own>League</span><span class=team>SEA bye 11</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB26</span></td><td class=mv><span class="move up">+8</span></td></tr>
+<tr data-n="harold fannin jr." data-tm="cle" data-p="TE" data-own="1" class=mine><td class=rk>68</td><td class=nm>Harold Fannin Jr.<span class=own>yuH</span><span class=team>CLE bye 11</span></td><td class=ps><span class=pill style="color:#fbbf24;border-color:#fbbf2466">TE7</span></td><td class=mv><span class="move flat">0</span></td></tr>
+<tr data-n="drake maye" data-tm="ne" data-p="QB" data-own="1" class=mine><td class=rk>69</td><td class=nm>Drake Maye<span class=own>yuH</span><span class=team>NE bye 11</span></td><td class=ps><span class=pill style="color:#f87171;border-color:#f8717166">QB2</span></td><td class=mv><span class="move down">-20</span></td></tr>
+<tr data-n="lamar jackson" data-tm="bal" data-p="QB" data-own="0"><td class=rk>70</td><td class=nm>Lamar Jackson<span class=team>BAL bye 13</span></td><td class=ps><span class=pill style="color:#f87171;border-color:#f8717166">QB3</span></td><td class=mv><span class="move down">-22</span></td></tr>
+<tr data-n="michael pittman jr." data-tm="pit" data-p="WR" data-own="0"><td class=rk>71</td><td class=nm>Michael Pittman Jr.<span class=team>PIT bye 9</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR35</span></td><td class=mv><span class="move up">+11</span></td></tr>
+<tr data-n="rhamondre stevenson" data-tm="ne" data-p="RB" data-own="0"><td class=rk>72</td><td class=nm>Rhamondre Stevenson<span class=team>NE bye 11</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB27</span></td><td class=mv><span class="move up">+8</span></td></tr>
+</tbody></table></section>
+<section class=tier>
+<div class=tier-head><span class=tier-n>TIER 10</span><span class=tier-meta>73 to 89, 17 players</span></div>
+<table><tbody>
+<tr data-n="quentin johnston" data-tm="lac" data-p="WR" data-own="0"><td class=rk>73</td><td class=nm>Quentin Johnston<span class=team>LAC bye 7</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR36</span></td><td class=mv><span class="move up">+22</span></td></tr>
+<tr data-n="jayden daniels" data-tm="was" data-p="QB" data-own="0"><td class=rk>74</td><td class=nm>Jayden Daniels<span class=team>WAS bye 7</span></td><td class=ps><span class=pill style="color:#f87171;border-color:#f8717166">QB4</span></td><td class=mv><span class="move down">-20</span></td></tr>
+<tr data-n="stefon diggs" data-tm="was" data-p="WR" data-own="0"><td class=rk>75</td><td class=nm>Stefon Diggs<span class=team>WAS bye 7</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR37</span></td><td class=mv><span class="move up">+81</span></td></tr>
+<tr data-n="makai lemon" data-tm="phi" data-p="WR" data-own="0"><td class=rk>76</td><td class=nm>Makai Lemon<span class=team>PHI bye 10</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR38</span></td><td class=mv><span class="move up">+2</span></td></tr>
+<tr data-n="jonathon brooks" data-tm="car" data-p="RB" data-own="1" class=mine><td class=rk>77</td><td class=nm>Jonathon Brooks<span class=own>yuH</span><span class=team>CAR bye 5</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB28</span></td><td class=mv><span class="move up">+10</span></td></tr>
+<tr data-n="caleb williams" data-tm="chi" data-p="QB" data-own="1" class=mine><td class=rk>78</td><td class=nm>Caleb Williams<span class=own>taco</span><span class=own>League</span><span class=team>CHI bye 10</span></td><td class=ps><span class=pill style="color:#f87171;border-color:#f8717166">QB5</span></td><td class=mv><span class="move down">-11</span></td></tr>
+<tr data-n="justin herbert" data-tm="lac" data-p="QB" data-own="0"><td class=rk>79</td><td class=nm>Justin Herbert<span class=team>LAC bye 7</span></td><td class=ps><span class=pill style="color:#f87171;border-color:#f8717166">QB6</span></td><td class=mv><span class="move down">-14</span></td></tr>
+<tr data-n="jalen hurts" data-tm="phi" data-p="QB" data-own="0"><td class=rk>80</td><td class=nm>Jalen Hurts<span class=team>PHI bye 10</span></td><td class=ps><span class=pill style="color:#f87171;border-color:#f8717166">QB7</span></td><td class=mv><span class="move down">-6</span></td></tr>
+<tr data-n="jaylen warren" data-tm="pit" data-p="RB" data-own="1" class=mine><td class=rk>81</td><td class=nm>Jaylen Warren<span class=own>yuH</span><span class=team>PIT bye 9</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB29</span></td><td class=mv><span class="move flat">0</span></td></tr>
+<tr data-n="chris godwin jr." data-tm="tb" data-p="WR" data-own="0"><td class=rk>82</td><td class=nm>Chris Godwin Jr.<span class=team>TB bye 10</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR39</span></td><td class=mv><span class="move up">+9</span></td></tr>
+<tr data-n="joe burrow" data-tm="cin" data-p="QB" data-own="0"><td class=rk>83</td><td class=nm>Joe Burrow<span class=team>CIN bye 6</span></td><td class=ps><span class=pill style="color:#f87171;border-color:#f8717166">QB8</span></td><td class=mv><span class="move down">-21</span></td></tr>
+<tr data-n="trevor lawrence" data-tm="jac" data-p="QB" data-own="0"><td class=rk>84</td><td class=nm>Trevor Lawrence<span class=team>JAC bye 7</span></td><td class=ps><span class=pill style="color:#f87171;border-color:#f8717166">QB9</span></td><td class=mv><span class="move down">-11</span></td></tr>
+<tr data-n="marvin harrison jr." data-tm="ari" data-p="WR" data-own="0"><td class=rk>85</td><td class=nm>Marvin Harrison Jr.<span class=team>ARI bye 14</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR40</span></td><td class=mv><span class="move down">-8</span></td></tr>
+<tr data-n="jakobi meyers" data-tm="jac" data-p="WR" data-own="0"><td class=rk>86</td><td class=nm>Jakobi Meyers<span class=team>JAC bye 7</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR41</span></td><td class=mv><span class="move up">+2</span></td></tr>
+<tr data-n="michael wilson" data-tm="ari" data-p="WR" data-own="0"><td class=rk>87</td><td class=nm>Michael Wilson<span class=team>ARI bye 14</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR42</span></td><td class=mv><span class="move up">+22</span></td></tr>
+<tr data-n="kyle pitts sr." data-tm="atl" data-p="TE" data-own="0"><td class=rk>88</td><td class=nm>Kyle Pitts Sr.<span class=team>ATL bye 11</span></td><td class=ps><span class=pill style="color:#fbbf24;border-color:#fbbf2466">TE8</span></td><td class=mv><span class="move down">-9</span></td></tr>
+<tr data-n="isaiah likely" data-tm="nyg" data-p="TE" data-own="1" class=mine><td class=rk>89</td><td class=nm>Isaiah Likely<span class=own>yuH</span><span class=team>NYG bye 8</span></td><td class=ps><span class=pill style="color:#fbbf24;border-color:#fbbf2466">TE9</span></td><td class=mv><span class="move up">+15</span></td></tr>
+</tbody></table></section>
+<section class=tier>
+<div class=tier-head><span class=tier-n>TIER 11</span><span class=tier-meta>90 to 102, 13 players</span></div>
+<table><tbody>
+<tr data-n="rachaad white" data-tm="was" data-p="RB" data-own="0"><td class=rk>90</td><td class=nm>Rachaad White<span class=team>WAS bye 7</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB30</span></td><td class=mv><span class="move up">+18</span></td></tr>
+<tr data-n="kyle monangai" data-tm="chi" data-p="RB" data-own="1" class=mine><td class=rk>91</td><td class=nm>Kyle Monangai<span class=own>yuH</span><span class=team>CHI bye 10</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB31</span></td><td class=mv><span class="move down">-8</span></td></tr>
+<tr data-n="rico dowdle" data-tm="pit" data-p="RB" data-own="0"><td class=rk>92</td><td class=nm>Rico Dowdle<span class=team>PIT bye 9</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB32</span></td><td class=mv><span class="move up">+6</span></td></tr>
+<tr data-n="jordan addison" data-tm="min" data-p="WR" data-own="1" class=mine><td class=rk>93</td><td class=nm>Jordan Addison<span class=own>League</span><span class=team>MIN bye 6</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR43</span></td><td class=mv><span class="move up">+17</span></td></tr>
+<tr data-n="wan'dale robinson" data-tm="ten" data-p="WR" data-own="0"><td class=rk>94</td><td class=nm>Wan'Dale Robinson<span class=team>TEN bye 9</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR44</span></td><td class=mv><span class="move up">+8</span></td></tr>
+<tr data-n="brian thomas jr." data-tm="jac" data-p="WR" data-own="0"><td class=rk>95</td><td class=nm>Brian Thomas Jr.<span class=team>JAC bye 7</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR45</span></td><td class=mv><span class="move up">+2</span></td></tr>
+<tr data-n="alec pierce" data-tm="ind" data-p="WR" data-own="1" class=mine><td class=rk>96</td><td class=nm>Alec Pierce<span class=own>yuH</span><span class=team>IND bye 13</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR46</span></td><td class=mv><span class="move down">-25</span></td></tr>
+<tr data-n="tony pollard" data-tm="ten" data-p="RB" data-own="0"><td class=rk>97</td><td class=nm>Tony Pollard<span class=team>TEN bye 9</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB33</span></td><td class=mv><span class="move down">-13</span></td></tr>
+<tr data-n="kenny gainwell" data-tm="tb" data-p="RB" data-own="1" class=mine><td class=rk>98</td><td class=nm>Kenny Gainwell<span class=own>League</span><span class=team>TB bye 10</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB34</span></td><td class=mv><span class="move up">+15</span></td></tr>
+<tr data-n="blake corum" data-tm="lar" data-p="RB" data-own="0"><td class=rk>99</td><td class=nm>Blake Corum<span class=team>LAR bye 11</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB35</span></td><td class=mv><span class="move up">+7</span></td></tr>
+<tr data-n="jordan mason" data-tm="min" data-p="RB" data-own="0"><td class=rk>100</td><td class=nm>Jordan Mason<span class=team>MIN bye 6</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB36</span></td><td class=mv><span class="move up">+35</span></td></tr>
+<tr data-n="aaron jones sr." data-tm="min" data-p="RB" data-own="0"><td class=rk>101</td><td class=nm>Aaron Jones Sr.<span class=team>MIN bye 6</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB37</span></td><td class=mv><span class="move up">+26</span></td></tr>
+<tr data-n="brock purdy" data-tm="sf" data-p="QB" data-own="0"><td class=rk>102</td><td class=nm>Brock Purdy<span class=team>SF bye 8</span></td><td class=ps><span class=pill style="color:#f87171;border-color:#f8717166">QB10</span></td><td class=mv><span class="move down">-26</span></td></tr>
+</tbody></table></section>
+<section class=tier>
+<div class=tier-head><span class=tier-n>TIER 12</span><span class=tier-meta>103 to 124, 22 players</span></div>
+<table><tbody>
+<tr data-n="rj harvey" data-tm="den" data-p="RB" data-own="1" class=mine><td class=rk>103</td><td class=nm>RJ Harvey<span class=own>League</span><span class=team>DEN bye 10</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB38</span></td><td class=mv><span class="move up">+16</span></td></tr>
+<tr data-n="zach charbonnet" data-tm="sea" data-p="RB" data-own="0"><td class=rk>104</td><td class=nm>Zach Charbonnet<span class=team>SEA bye 11</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB39</span></td><td class=mv><span class="move up">+22</span></td></tr>
+<tr data-n="j.k. dobbins" data-tm="den" data-p="RB" data-own="0"><td class=rk>105</td><td class=nm>J.K. Dobbins<span class=team>DEN bye 10</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB40</span></td><td class=mv><span class="move down">-13</span></td></tr>
+<tr data-n="kyler murray" data-tm="min" data-p="QB" data-own="1" class=mine><td class=rk>106</td><td class=nm>Kyler Murray<span class=own>League</span><span class=own>yuH</span><span class=team>MIN bye 6</span></td><td class=ps><span class=pill style="color:#f87171;border-color:#f8717166">QB11</span></td><td class=mv><span class="move up">+6</span></td></tr>
+<tr data-n="jaxson dart" data-tm="nyg" data-p="QB" data-own="1" class=mine><td class=rk>107</td><td class=nm>Jaxson Dart<span class=own>League</span><span class=team>NYG bye 8</span></td><td class=ps><span class=pill style="color:#f87171;border-color:#f8717166">QB12</span></td><td class=mv><span class="move down">-22</span></td></tr>
+<tr data-n="kc concepcion" data-tm="cle" data-p="WR" data-own="1" class=mine><td class=rk>108</td><td class=nm>KC Concepcion<span class=own>yuH</span><span class=team>CLE bye 11</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR47</span></td><td class=mv><span class="move up">+7</span></td></tr>
+<tr data-n="dk metcalf" data-tm="pit" data-p="WR" data-own="0"><td class=rk>109</td><td class=nm>DK Metcalf<span class=team>PIT bye 9</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR48</span></td><td class=mv><span class="move down">-15</span></td></tr>
+<tr data-n="jayden higgins" data-tm="hou" data-p="WR" data-own="0"><td class=rk>110</td><td class=nm>Jayden Higgins<span class=team>HOU bye 8</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR49</span></td><td class=mv><span class="move up">+21</span></td></tr>
+<tr data-n="jalen coker" data-tm="car" data-p="WR" data-own="0"><td class=rk>111</td><td class=nm>Jalen Coker<span class=team>CAR bye 5</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR50</span></td><td class=mv><span class="move up">+22</span></td></tr>
+<tr data-n="jacory croskey-merritt" data-tm="was" data-p="RB" data-own="1" class=mine><td class=rk>112</td><td class=nm>Jacory Croskey-Merritt<span class=own>yuH</span><span class=team>WAS bye 7</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB41</span></td><td class=mv><span class="move down">-1</span></td></tr>
+<tr data-n="dallas goedert" data-tm="phi" data-p="TE" data-own="0"><td class=rk>113</td><td class=nm>Dallas Goedert<span class=team>PHI bye 10</span></td><td class=ps><span class=pill style="color:#fbbf24;border-color:#fbbf2466">TE10</span></td><td class=mv><span class="move up">+7</span></td></tr>
+<tr data-n="courtland sutton" data-tm="den" data-p="WR" data-own="0"><td class=rk>114</td><td class=nm>Courtland Sutton<span class=team>DEN bye 10</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR51</span></td><td class=mv><span class="move down">-14</span></td></tr>
+<tr data-n="xavier worthy" data-tm="kc" data-p="WR" data-own="0"><td class=rk>115</td><td class=nm>Xavier Worthy<span class=team>KC bye 5</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR52</span></td><td class=mv><span class="move up">+7</span></td></tr>
+<tr data-n="romeo doubs" data-tm="ne" data-p="WR" data-own="0"><td class=rk>116</td><td class=nm>Romeo Doubs<span class=team>NE bye 11</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR53</span></td><td class=mv><span class="move up">+5</span></td></tr>
+<tr data-n="malik willis" data-tm="mia" data-p="QB" data-own="1" class=mine><td class=rk>117</td><td class=nm>Malik Willis<span class=own>yuH</span><span class=team>MIA bye 6</span></td><td class=ps><span class=pill style="color:#f87171;border-color:#f8717166">QB13</span></td><td class=mv><span class="move up">+1</span></td></tr>
+<tr data-n="bo nix" data-tm="den" data-p="QB" data-own="0"><td class=rk>118</td><td class=nm>Bo Nix<span class=team>DEN bye 10</span></td><td class=ps><span class=pill style="color:#f87171;border-color:#f8717166">QB14</span></td><td class=mv><span class="move down">-22</span></td></tr>
+<tr data-n="dak prescott" data-tm="dal" data-p="QB" data-own="0"><td class=rk>119</td><td class=nm>Dak Prescott<span class=team>DAL bye 14</span></td><td class=ps><span class=pill style="color:#f87171;border-color:#f8717166">QB15</span></td><td class=mv><span class="move down">-33</span></td></tr>
+<tr data-n="chris rodriguez jr." data-tm="jac" data-p="RB" data-own="1" class=mine><td class=rk>120</td><td class=nm>Chris Rodriguez Jr.<span class=own>yuH</span><span class=team>JAC bye 7</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB42</span></td><td class=mv><span class="move up">+10</span></td></tr>
+<tr data-n="baker mayfield" data-tm="tb" data-p="QB" data-own="0"><td class=rk>121</td><td class=nm>Baker Mayfield<span class=team>TB bye 10</span></td><td class=ps><span class=pill style="color:#f87171;border-color:#f8717166">QB16</span></td><td class=mv><span class="move up">+4</span></td></tr>
+<tr data-n="patrick mahomes ii" data-tm="kc" data-p="QB" data-own="0"><td class=rk>122</td><td class=nm>Patrick Mahomes II<span class=team>KC bye 5</span></td><td class=ps><span class=pill style="color:#f87171;border-color:#f8717166">QB17</span></td><td class=mv><span class="move down">-29</span></td></tr>
+<tr data-n="jared goff" data-tm="det" data-p="QB" data-own="0"><td class=rk>123</td><td class=nm>Jared Goff<span class=team>DET bye 6</span></td><td class=ps><span class=pill style="color:#f87171;border-color:#f8717166">QB18</span></td><td class=mv><span class="move flat">0</span></td></tr>
+<tr data-n="matthew stafford" data-tm="lar" data-p="QB" data-own="0"><td class=rk>124</td><td class=nm>Matthew Stafford<span class=team>LAR bye 11</span></td><td class=ps><span class=pill style="color:#f87171;border-color:#f8717166">QB19</span></td><td class=mv><span class="move down">-21</span></td></tr>
+</tbody></table></section>
+<section class=tier>
+<div class=tier-head><span class=tier-n>TIER 13</span><span class=tier-meta>125 to 135, 11 players</span></div>
+<table><tbody>
+<tr data-n="dalton kincaid" data-tm="buf" data-p="TE" data-own="0"><td class=rk>125</td><td class=nm>Dalton Kincaid<span class=team>BUF bye 7</span></td><td class=ps><span class=pill style="color:#fbbf24;border-color:#fbbf2466">TE11</span></td><td class=mv><span class="move up">+3</span></td></tr>
+<tr data-n="george kittle" data-tm="sf" data-p="TE" data-own="0"><td class=rk>126</td><td class=nm>George Kittle<span class=team>SF bye 8</span></td><td class=ps><span class=pill style="color:#fbbf24;border-color:#fbbf2466">TE12</span></td><td class=mv><span class="move down">-21</span></td></tr>
+<tr data-n="matthew golden" data-tm="gb" data-p="WR" data-own="0"><td class=rk>127</td><td class=nm>Matthew Golden<span class=team>GB bye 11</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR54</span></td><td class=mv><span class="move down">-10</span></td></tr>
+<tr data-n="chuba hubbard" data-tm="car" data-p="RB" data-own="0"><td class=rk>128</td><td class=nm>Chuba Hubbard<span class=team>CAR bye 5</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB43</span></td><td class=mv><span class="move down">-27</span></td></tr>
+<tr data-n="tyrone tracy jr." data-tm="nyg" data-p="RB" data-own="1" class=mine><td class=rk>129</td><td class=nm>Tyrone Tracy Jr.<span class=own>League</span><span class=team>NYG bye 8</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB44</span></td><td class=mv><span class="move up">+5</span></td></tr>
+<tr data-n="jonah coleman" data-tm="den" data-p="RB" data-own="0"><td class=rk>130</td><td class=nm>Jonah Coleman<span class=team>DEN bye 10</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB45</span></td><td class=mv><span class="move up">+7</span></td></tr>
+<tr data-n="deebo samuel sr." data-tm="sf" data-p="WR" data-own="0"><td class=rk>131</td><td class=nm>Deebo Samuel Sr.<span class=team>SF bye 8</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR55</span></td><td class=mv><span class="move up">+57</span></td></tr>
+<tr data-n="ryan flournoy" data-tm="dal" data-p="WR" data-own="1" class=mine><td class=rk>132</td><td class=nm>Ryan Flournoy<span class=own>League</span><span class=own>yuH</span><span class=team>DAL bye 14</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR56</span></td><td class=mv><span class="move up">+31</span></td></tr>
+<tr data-n="de'zhaun stribling" data-tm="sf" data-p="WR" data-own="1" class=mine><td class=rk>133</td><td class=nm>De'Zhaun Stribling<span class=own>yuH</span><span class=team>SF bye 8</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR57</span></td><td class=mv><span class="move up">+141</span></td></tr>
+<tr data-n="jake ferguson" data-tm="dal" data-p="TE" data-own="0"><td class=rk>134</td><td class=nm>Jake Ferguson<span class=team>DAL bye 14</span></td><td class=ps><span class=pill style="color:#fbbf24;border-color:#fbbf2466">TE13</span></td><td class=mv><span class="move down">-20</span></td></tr>
+<tr data-n="brenton strange" data-tm="jac" data-p="TE" data-own="0"><td class=rk>135</td><td class=nm>Brenton Strange<span class=team>JAC bye 7</span></td><td class=ps><span class=pill style="color:#fbbf24;border-color:#fbbf2466">TE14</span></td><td class=mv><span class="move down">-3</span></td></tr>
+</tbody></table></section>
+<section class=tier>
+<div class=tier-head><span class=tier-n>TIER 14</span><span class=tier-meta>136 to 150, 15 players</span></div>
+<table><tbody>
+<tr data-n="oronde gadsden ii" data-tm="lac" data-p="TE" data-own="1" class=mine><td class=rk>136</td><td class=nm>Oronde Gadsden II<span class=own>League</span><span class=own>yuH</span><span class=team>LAC bye 7</span></td><td class=ps><span class=pill style="color:#fbbf24;border-color:#fbbf2466">TE15</span></td><td class=mv><span class="move up">+9</span></td></tr>
+<tr data-n="tyjae spears" data-tm="ten" data-p="RB" data-own="0"><td class=rk>137</td><td class=nm>Tyjae Spears<span class=team>TEN bye 9</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB46</span></td><td class=mv><span class="move up">+13</span></td></tr>
+<tr data-n="woody marks" data-tm="hou" data-p="RB" data-own="0"><td class=rk>138</td><td class=nm>Woody Marks<span class=team>HOU bye 8</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB47</span></td><td class=mv><span class="move up">+2</span></td></tr>
+<tr data-n="tank bigsby" data-tm="phi" data-p="RB" data-own="1" class=mine><td class=rk>139</td><td class=nm>Tank Bigsby<span class=own>League</span><span class=team>PHI bye 10</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB48</span></td><td class=mv><span class="move up">+16</span></td></tr>
+<tr data-n="kimani vidal" data-tm="lac" data-p="RB" data-own="0"><td class=rk>140</td><td class=nm>Kimani Vidal<span class=team>LAC bye 7</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB49</span></td><td class=mv><span class="move up">+14</span></td></tr>
+<tr data-n="marshawn lloyd" data-tm="gb" data-p="RB" data-own="0"><td class=rk>141</td><td class=nm>MarShawn Lloyd<span class=team>GB bye 11</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB50</span></td><td class=mv><span class="move up">+31</span></td></tr>
+<tr data-n="emmett johnson" data-tm="kc" data-p="RB" data-own="0"><td class=rk>142</td><td class=nm>Emmett Johnson<span class=team>KC bye 5</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB51</span></td><td class=mv><span class="move up">+4</span></td></tr>
+<tr data-n="demond claiborne" data-tm="min" data-p="RB" data-own="1" class=mine><td class=rk>143</td><td class=nm>Demond Claiborne<span class=own>League</span><span class=team>MIN bye 6</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB52</span></td><td class=mv><span class="move up">+5</span></td></tr>
+<tr data-n="khalil shakir" data-tm="buf" data-p="WR" data-own="0"><td class=rk>144</td><td class=nm>Khalil Shakir<span class=team>BUF bye 7</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR58</span></td><td class=mv><span class="move down">-8</span></td></tr>
+<tr data-n="tyler shough" data-tm="no" data-p="QB" data-own="0"><td class=rk>145</td><td class=nm>Tyler Shough<span class=team>NO bye 8</span></td><td class=ps><span class=pill style="color:#f87171;border-color:#f8717166">QB20</span></td><td class=mv><span class="move down">-29</span></td></tr>
+<tr data-n="omar cooper jr." data-tm="nyj" data-p="WR" data-own="0"><td class=rk>146</td><td class=nm>Omar Cooper Jr.<span class=team>NYJ bye 13</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR59</span></td><td class=mv><span class="move down">-4</span></td></tr>
+<tr data-n="jauan jennings" data-tm="min" data-p="WR" data-own="1" class=mine><td class=rk>147</td><td class=nm>Jauan Jennings<span class=own>taco</span><span class=team>MIN bye 6</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR60</span></td><td class=mv><span class="move up">+10</span></td></tr>
+<tr data-n="malik washington" data-tm="mia" data-p="WR" data-own="0"><td class=rk>148</td><td class=nm>Malik Washington<span class=team>MIA bye 6</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR61</span></td><td class=mv><span class="move up">+66</span></td></tr>
+<tr data-n="keaton mitchell" data-tm="lac" data-p="RB" data-own="1" class=mine><td class=rk>149</td><td class=nm>Keaton Mitchell<span class=own>taco</span><span class=team>LAC bye 7</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB53</span></td><td class=mv><span class="move down">-8</span></td></tr>
+<tr data-n="cyrus allen" data-tm="kc" data-p="WR" data-own="1" class=mine><td class=rk>150</td><td class=nm>Cyrus Allen<span class=own>yuH</span><span class=team>KC bye 5</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR62</span></td><td class=mv><span class="move up">+136</span></td></tr>
+</tbody></table></section>
+<section class=tier>
+<div class=tier-head><span class=tier-n>TIER 15</span><span class=tier-meta>151 to 167, 17 players</span></div>
+<table><tbody>
+<tr data-n="jack bech" data-tm="lv" data-p="WR" data-own="0"><td class=rk>151</td><td class=nm>Jack Bech<span class=team>LV bye 13</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR63</span></td><td class=mv><span class="move up">+84</span></td></tr>
+<tr data-n="jalen mcmillan" data-tm="tb" data-p="WR" data-own="0"><td class=rk>152</td><td class=nm>Jalen McMillan<span class=team>TB bye 10</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR64</span></td><td class=mv><span class="move up">+6</span></td></tr>
+<tr data-n="chris bell" data-tm="mia" data-p="WR" data-own="0"><td class=rk>153</td><td class=nm>Chris Bell<span class=team>MIA bye 6</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR65</span></td><td class=mv><span class="move up">+44</span></td></tr>
+<tr data-n="jordan love" data-tm="gb" data-p="QB" data-own="1" class=mine><td class=rk>154</td><td class=nm>Jordan Love<span class=own>taco</span><span class=team>GB bye 11</span></td><td class=ps><span class=pill style="color:#f87171;border-color:#f8717166">QB21</span></td><td class=mv><span class="move down">-30</span></td></tr>
+<tr data-n="travis kelce" data-tm="kc" data-p="TE" data-own="0"><td class=rk>155</td><td class=nm>Travis Kelce<span class=team>KC bye 5</span></td><td class=ps><span class=pill style="color:#fbbf24;border-color:#fbbf2466">TE16</span></td><td class=mv><span class="move down">-48</span></td></tr>
+<tr data-n="c.j. stroud" data-tm="hou" data-p="QB" data-own="0"><td class=rk>156</td><td class=nm>C.J. Stroud<span class=team>HOU bye 8</span></td><td class=ps><span class=pill style="color:#f87171;border-color:#f8717166">QB22</span></td><td class=mv><span class="move down">-18</span></td></tr>
+<tr data-n="gunnar helm" data-tm="ten" data-p="TE" data-own="0"><td class=rk>157</td><td class=nm>Gunnar Helm<span class=team>TEN bye 9</span></td><td class=ps><span class=pill style="color:#fbbf24;border-color:#fbbf2466">TE17</span></td><td class=mv><span class="move up">+18</span></td></tr>
+<tr data-n="daniel jones" data-tm="ind" data-p="QB" data-own="0"><td class=rk>158</td><td class=nm>Daniel Jones<span class=team>IND bye 13</span></td><td class=ps><span class=pill style="color:#f87171;border-color:#f8717166">QB23</span></td><td class=mv><span class="move down">-19</span></td></tr>
+<tr data-n="cam ward" data-tm="ten" data-p="QB" data-own="0"><td class=rk>159</td><td class=nm>Cam Ward<span class=team>TEN bye 9</span></td><td class=ps><span class=pill style="color:#f87171;border-color:#f8717166">QB24</span></td><td class=mv><span class="move up">+5</span></td></tr>
+<tr data-n="terrance ferguson" data-tm="lar" data-p="TE" data-own="0"><td class=rk>160</td><td class=nm>Terrance Ferguson<span class=team>LAR bye 11</span></td><td class=ps><span class=pill style="color:#fbbf24;border-color:#fbbf2466">TE18</span></td><td class=mv><span class="move up">+51</span></td></tr>
+<tr data-n="mark andrews" data-tm="bal" data-p="TE" data-own="0"><td class=rk>161</td><td class=nm>Mark Andrews<span class=team>BAL bye 13</span></td><td class=ps><span class=pill style="color:#fbbf24;border-color:#fbbf2466">TE19</span></td><td class=mv><span class="move down">-32</span></td></tr>
+<tr data-n="dylan sampson" data-tm="cle" data-p="RB" data-own="0"><td class=rk>162</td><td class=nm>Dylan Sampson<span class=team>CLE bye 11</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB54</span></td><td class=mv><span class="move down">-19</span></td></tr>
+<tr data-n="isiah pacheco" data-tm="det" data-p="RB" data-own="1" class=mine><td class=rk>163</td><td class=nm>Isiah Pacheco<span class=own>taco</span><span class=own>League</span><span class=team>DET bye 6</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB55</span></td><td class=mv><span class="move down">-11</span></td></tr>
+<tr data-n="tyler allgeier" data-tm="ari" data-p="RB" data-own="0"><td class=rk>164</td><td class=nm>Tyler Allgeier<span class=team>ARI bye 14</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB56</span></td><td class=mv><span class="move down">-15</span></td></tr>
+<tr data-n="ray davis" data-tm="buf" data-p="RB" data-own="0"><td class=rk>165</td><td class=nm>Ray Davis<span class=team>BUF bye 7</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB57</span></td><td class=mv><span class="move down">-5</span></td></tr>
+<tr data-n="jaydon blue" data-tm="dal" data-p="RB" data-own="0"><td class=rk>166</td><td class=nm>Jaydon Blue<span class=team>DAL bye 14</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB58</span></td><td class=mv><span class="move up">+33</span></td></tr>
+<tr data-n="rashid shaheed" data-tm="sea" data-p="WR" data-own="0"><td class=rk>167</td><td class=nm>Rashid Shaheed<span class=team>SEA bye 11</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR66</span></td><td class=mv><span class="move down">-2</span></td></tr>
+</tbody></table></section>
+<section class=tier>
+<div class=tier-head><span class=tier-n>TIER 16</span><span class=tier-meta>168 to 175, 8 players</span></div>
+<table><tbody>
+<tr data-n="ollie gordon ii" data-tm="mia" data-p="RB" data-own="0"><td class=rk>168</td><td class=nm>Ollie Gordon II<span class=team>MIA bye 6</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB59</span></td><td class=mv><span class="move up">+14</span></td></tr>
+<tr data-n="kaytron allen" data-tm="was" data-p="RB" data-own="0"><td class=rk>169</td><td class=nm>Kaytron Allen<span class=team>WAS bye 7</span></td><td class=ps><span class=pill style="color:#60a5fa;border-color:#60a5fa66">RB60</span></td><td class=mv><span class="move down">-16</span></td></tr>
+<tr data-n="tre' harris" data-tm="lac" data-p="WR" data-own="0"><td class=rk>170</td><td class=nm>Tre' Harris<span class=team>LAC bye 7</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR67</span></td><td class=mv><span class="move down">-4</span></td></tr>
+<tr data-n="pat bryant" data-tm="den" data-p="WR" data-own="0"><td class=rk>171</td><td class=nm>Pat Bryant<span class=team>DEN bye 10</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR68</span></td><td class=mv><span class="move up">+36</span></td></tr>
+<tr data-n="dontayvion wicks" data-tm="phi" data-p="WR" data-own="0"><td class=rk>172</td><td class=nm>Dontayvion Wicks<span class=team>PHI bye 10</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR69</span></td><td class=mv><span class="move down">-5</span></td></tr>
+<tr data-n="zachariah branch" data-tm="atl" data-p="WR" data-own="1" class=mine><td class=rk>173</td><td class=nm>Zachariah Branch<span class=own>taco</span><span class=own>League</span><span class=team>ATL bye 11</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR70</span></td><td class=mv><span class="move up">+23</span></td></tr>
+<tr data-n="antonio williams" data-tm="was" data-p="WR" data-own="1" class=mine><td class=rk>174</td><td class=nm>Antonio Williams<span class=own>League</span><span class=own>yuH</span><span class=team>WAS bye 7</span></td><td class=ps><span class=pill style="color:#34d399;border-color:#34d39966">WR71</span></td><td class=mv><span class="move down">-27</span></td></tr>
+<tr data-n="fernando mendoza" data-tm="lv" data-p="QB" data-own="0"><td class=rk>175</td><td class=nm>Fernando Mendoza<span class=team>LV bye 13</span></td><td class=ps><span class=pill style="color:#f87171;border-color:#f8717166">QB25</span></td><td class=mv><span class="move up">+30</span></td></tr>
+</tbody></table></section>
+<p class=empty>Nothing matches that filter.</p>
+<p class=note>The right-hand number is the move since Gibbs' previous board (2026-07-20), green up, red down. Violet rows and tags are players you already roster. This is a <b>redraft</b> board, so it prices 2026 production only. KTC stays the dynasty value source of truth.</p>
+</div><script>
+(function(){
+  var q = document.getElementById('q');
+  var rows = Array.prototype.slice.call(document.querySelectorAll('tr[data-n]'));
+  var pos = '', mine = false;
+  function apply(){
+    var t = q.value.trim().toLowerCase();
+    rows.forEach(function(r){
+      var ok = (!t || r.dataset.n.indexOf(t) > -1 || r.dataset.tm.indexOf(t) > -1)
+            && (!pos || r.dataset.p === pos)
+            && (!mine || r.dataset.own === '1');
+      r.hidden = !ok;
+    });
+    var shown = 0;
+    document.querySelectorAll('section.tier').forEach(function(s){
+      var live = s.querySelectorAll('tr[data-n]:not([hidden])').length;
+      s.hidden = live === 0; shown += live;
+    });
+    document.querySelector('.empty').style.display = shown ? 'none' : 'block';
+    document.getElementById('shown').textContent = shown + ' shown';
+  }
+  q.addEventListener('input', apply);
+  document.querySelectorAll('button[data-pos]').forEach(function(b){
+    b.addEventListener('click', function(){
+      pos = (pos === b.dataset.pos) ? '' : b.dataset.pos;
+      document.querySelectorAll('button[data-pos]').forEach(function(o){
+        o.setAttribute('aria-pressed', String(o.dataset.pos === pos));
+      });
+      apply();
+    });
+  });
+  var mb = document.getElementById('mine');
+  mb.addEventListener('click', function(){
+    mine = !mine; mb.setAttribute('aria-pressed', String(mine)); apply();
+  });
+  apply();
+})();
+</script></body></html>

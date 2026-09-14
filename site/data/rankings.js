@@ -9,7 +9,7 @@ window.RANKINGS_SOURCES = [
     name: "Domain Dynasty",
     handle: "@thedynastydomain",
     url: "https://www.youtube.com/@thedynastydomain",
-    color: "#7c3aed",
+    color: "#0d9488",
     description: "Created the player-category system (Cornerstone / Foundational / Upside Premier). Hosts: Nathan + co.",
     rankings: [
       {
@@ -188,7 +188,7 @@ window.CATEGORY_LABELS = {
 };
 
 window.CATEGORY_COLORS = {
-  cornerstone: "#a78bfa",      // purple
+  cornerstone: "#2dd4bf",      // purple
   foundational: "#60a5fa",     // blue
   upside_premier: "#34d399",   // green
   mainstay: "#fbbf24",         // amber
@@ -198,7 +198,7 @@ window.CATEGORY_COLORS = {
 
 window.TIER_COLORS = {
   S: "#fbbf24",  // gold
-  A: "#a78bfa",  // purple
+  A: "#2dd4bf",  // purple
   B: "#60a5fa",  // blue
   C: "#34d399",  // green
   D: "#9ca3af"   // gray

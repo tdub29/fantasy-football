@@ -19,6 +19,8 @@ Visit http://localhost:8000
   - `js/app.js` — full SPA logic
   - `data/` — generated data files + Python build scripts
   - `PRODUCT.md`, `DESIGN.md`, `CLAUDE.md` — design system + product context
+- `projections/` — scoring pipeline: `python projections/build_all.py` builds `site/data/projections.js` + SoS + environment feeds
+- `historical/` — nflverse-style historical data
 - `Leagues/` — raw Sleeper league API data (one folder per league)
 - `transcripts/` — cleaned auto-transcripts of recent Dynasty Domain ranking videos
 - `players-nfl.json` — full Sleeper player dictionary (auto-fetched)

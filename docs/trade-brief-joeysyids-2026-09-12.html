@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Trade brief: Watson + Johnston</title>
+<style>
+:root{
+  --obsidian:#0b0d12; --graphite:#11141b; --slate:#161a23; --pewter:#1e2330;
+  --edge:#262d3d; --edge-hot:#3a4258;
+  --porcelain:#f3f4f6; --bone:#d4d8e0; --fog:#9ca3af; --ash:#6b7280;
+  --violet:#a78bfa; --violet-bright:#c4b5fd; --violet-deep:#5b21b6;
+  --sky:#60a5fa; --mint:#34d399; --amber:#fbbf24; --orange:#fb923c; --red:#f87171;
+  --r-sm:6px; --r-md:10px; --r-lg:14px; --r-pill:999px;
+  --sans:ui-sans-serif,-apple-system,'SF Pro Text','Inter','Segoe UI',Roboto,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--obsidian); color:var(--bone);
+  font-family:var(--sans); font-size:0.94rem; line-height:1.55;
+  font-feature-settings:'ss01','cv11';
+  padding:20px 16px 64px; max-width:680px; margin-inline:auto;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{color:var(--porcelain); margin:0; letter-spacing:-0.015em}
+h1{font-size:1.5rem; font-weight:700; line-height:1.2; text-wrap:balance}
+h2{font-size:1.02rem; font-weight:600; letter-spacing:0.04em; text-transform:uppercase;
+   color:var(--fog); margin:38px 0 12px; padding-bottom:7px; border-bottom:1px solid var(--edge)}
+h3{font-size:0.97rem; font-weight:600; margin:22px 0 6px; letter-spacing:-0.005em}
+p{margin:0 0 12px}
+strong{color:var(--porcelain); font-weight:600}
+em{color:var(--bone); font-style:italic}
+a{color:var(--sky); text-decoration:none; border-bottom:1px solid rgba(96,165,250,.35)}
+.kicker{font-size:0.72rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--ash); margin:0 0 8px}
+.sub{color:var(--fog); font-size:0.85rem; margin:8px 0 0}
+
+.verdict{
+  margin:22px 0 6px; padding:16px 16px 14px; background:var(--graphite);
+  border:1px solid var(--edge); border-left:3px solid var(--amber); border-radius:var(--r-md);
+}
+.verdict .call{font-size:1.12rem; font-weight:700; color:var(--porcelain); line-height:1.3;
+  letter-spacing:-0.01em; text-wrap:balance}
+.verdict p{margin:9px 0 0; color:var(--bone)}
+.verdict p:last-child{margin-bottom:0}
+
+.deal{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:18px 0 4px}
+.deal .col{background:var(--graphite); border:1px solid var(--edge); border-radius:var(--r-md); padding:12px}
+.deal .col.out{border-top:2px solid var(--orange)}
+.deal .col.in{border-top:2px solid var(--mint)}
+.deal h4{margin:0 0 8px; font-size:0.7rem; letter-spacing:0.09em; text-transform:uppercase;
+  color:var(--ash); font-weight:600}
+.deal ul{margin:0; padding:0; list-style:none}
+.deal li{display:flex; justify-content:space-between; gap:10px; padding:4px 0; font-size:0.88rem}
+.deal li + li{border-top:1px solid rgba(38,45,61,.6)}
+.deal .v{color:var(--fog); font-variant-numeric:tabular-nums; font-weight:600}
+.deal .tot{margin-top:8px; padding-top:8px; border-top:1px solid var(--edge-hot);
+  display:flex; justify-content:space-between; font-size:0.88rem; color:var(--porcelain); font-weight:700}
+.deal .tot .v{color:var(--porcelain)}
+
+.scroll{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:0 0 12px;
+  border:1px solid var(--edge); border-radius:var(--r-md); background:var(--graphite)}
+table{border-collapse:collapse; width:100%; font-size:0.87rem; min-width:min(100%,440px)}
+th,td{padding:9px 10px; text-align:right; white-space:nowrap}
+th:first-child,td:first-child{text-align:left; white-space:normal; min-width:112px}
+table.tight th,table.tight td{padding:9px 7px; font-size:0.84rem}
+thead th{font-size:0.68rem; letter-spacing:0.07em; text-transform:uppercase; color:var(--ash);
+  font-weight:600; border-bottom:1px solid var(--edge); background:var(--slate)}
+tbody tr + tr td{border-top:1px solid rgba(38,45,61,.55)}
+td{font-variant-numeric:tabular-nums; color:var(--bone)}
+tbody tr.hi td{background:rgba(52,211,153,.06); color:var(--porcelain); font-weight:600}
+tbody tr.hi td:first-child{box-shadow:inset 2px 0 0 var(--mint)}
+tbody tr.dim td{color:var(--ash)}
+caption{caption-side:bottom; text-align:left; padding:9px 12px; color:var(--ash);
+  font-size:0.76rem; line-height:1.45; border-top:1px solid var(--edge)}
+
+.pill{display:inline-block; padding:2px 9px; border-radius:var(--r-pill); font-size:0.72rem;
+  font-weight:600; letter-spacing:0.03em; background:var(--graphite); border:1px solid var(--edge)}
+.pill.up{color:var(--mint)} .pill.warn{color:var(--orange)} .pill.down{color:var(--red)}
+
+.note{background:var(--graphite); border:1px solid var(--edge); border-left:3px solid var(--amber);
+  border-radius:var(--r-md); padding:13px 14px; margin:16px 0; font-size:0.89rem}
+.note strong:first-child{display:block; margin-bottom:4px; color:var(--amber);
+  font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase}
+
+ol.steps{counter-reset:s; list-style:none; margin:12px 0 0; padding:0}
+ol.steps li{counter-increment:s; position:relative; padding:0 0 0 34px; margin-bottom:13px}
+ol.steps li::before{content:counter(s); position:absolute; left:0; top:1px; width:23px; height:23px;
+  border-radius:var(--r-sm); background:var(--pewter); color:var(--violet);
+  font-size:0.76rem; font-weight:700; display:grid; place-items:center;
+  font-variant-numeric:tabular-nums}
+ul.plain{margin:10px 0 0; padding-left:19px}
+ul.plain li{margin-bottom:8px}
+footer{margin-top:42px; padding-top:14px; border-top:1px solid var(--edge);
+  color:var(--ash); font-size:0.78rem; line-height:1.5}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:0.82em;
+  background:var(--slate); padding:1px 5px; border-radius:4px; color:var(--bone)}
+@media (max-width:420px){
+  .deal{grid-template-columns:1fr}
+  body{padding:16px 13px 56px}
+}
+</style>
+</head>
+<body>
+
+<p class="kicker">Password is taco &middot; 12 September 2026</p>
+<h1>Watson and Johnston for three picks</h1>
+<p class="sub">JoeysYIDS offer plus Deal A. Written off the morning Sleeper pull, corrected off the 22:00 pull after both trades went through.</p>
+
+<div class="verdict">
+  <div class="call">Both trades are done, and you were right about the picks.</div>
+  <p>You sent your own 2027 2nd and 3rd and kept the ones you had acquired. This brief originally told you to do the reverse. That advice priced your picks at the slot you held <em>before</em> the deals, and buying five starting receivers moves you from third worst to third best in the same instant, which makes your own picks cheaper and the acquired ones dearer.</p>
+  <p>The verdict that held: good for 2026, cost lands in years five through seven, and it only made sense paired with Deal A. Both went through, so it is paired.</p>
+</div>
+
+<div class="deal">
+  <div class="col out">
+    <h4>You send</h4>
+    <ul>
+      <li><span>2027 2nd, your own</span><span class="v">4,406</span></li>
+      <li><span>2028 1st, your own</span><span class="v">5,545</span></li>
+      <li><span>2027 3rd, your own</span><span class="v">3,009</span></li>
+    </ul>
+    <div class="tot"><span>Total</span><span class="v">12,960</span></div>
+  </div>
+  <div class="col in">
+    <h4>You receive</h4>
+    <ul>
+      <li><span>Christian Watson</span><span class="v">4,896</span></li>
+      <li><span>Quentin Johnston</span><span class="v">4,480</span></li>
+      <li><span>2028 4th, Joey&rsquo;s</span><span class="v">2,031</span></li>
+    </ul>
+    <div class="tot"><span>Total</span><span class="v">11,407</span></div>
+  </div>
+</div>
+<p class="sub">Those pick figures are the pre-trade slotting, left as published. The real post-trade numbers are below.</p>
+
+<h2>What the picks were actually worth</h2>
+<p>A pick&rsquo;s price is set by where its origin team finishes, and the trade is what changes that. Slot them off the rosters as they look <em>after</em> the deal, never before.</p>
+<div class="scroll">
+<table>
+  <thead><tr><th>The same-round choice</th><th>Pre-trade</th><th>Real</th><th>Do</th></tr></thead>
+  <tbody>
+    <tr><td>Your own 2027 2nd</td><td>4,410</td><td>4,000</td><td>send</td></tr>
+    <tr class="hi"><td>Acquired 2027 2nd</td><td>4,070</td><td>4,150</td><td>keep</td></tr>
+    <tr><td>Your own 2027 3rd</td><td>3,010</td><td>2,840</td><td>send</td></tr>
+    <tr class="hi"><td>Acquired 2027 3rd</td><td>2,980</td><td>3,040</td><td>keep</td></tr>
+  </tbody>
+  <caption>The two columns rank opposite ways, and the flip is the trade itself. You sent your own, which was right by about 150 KTC on the 2nd and 200 on the 3rd.</caption>
+</table>
+</div>
+<p>Across all five picks you sent, the bill was <strong>24,480, not the 26,140</strong> this brief first claimed. Four of the five were your own and every one got cheaper as it left. The exception runs your way too: Breece&rsquo;s 2027 first, which you took in Deal A, went from 6,470 to 6,930 because selling Collins, Waddle and Downs made him the worst team in the league.</p>
+<p>The title-odds table below was never affected. The simulator slots every converted pick off the post-trade rosters already. Only the hand-built ledger used the old world.</p>
+
+<h2>What it does to your odds</h2>
+<div class="scroll">
+<table class="tight">
+  <thead><tr><th>Scenario</th><th>Title</th><th>Playoff</th><th>Rank</th><th>Equity</th></tr></thead>
+  <tbody>
+    <tr class="dim"><td>Do nothing</td><td>0.8%</td><td>22.6%</td><td>8th</td><td>27.0</td></tr>
+    <tr><td>JoeysYIDS alone</td><td>2.4%</td><td>39.6%</td><td>8th</td><td>29.5</td></tr>
+    <tr><td>Deal A alone</td><td>~5%</td><td>61%</td><td>5th</td><td>33.0</td></tr>
+    <tr class="hi"><td>Both (what happened)</td><td>8.0%</td><td>73.4%</td><td>5th</td><td>37.4</td></tr>
+  </tbody>
+  <caption>Title, playoff and rank are 2026; equity is the discounted seven-year sum. The repo&rsquo;s own simulator, 7 seasons, 2,500 sims, two paired seeds. Seed B lands at 0.84 / 2.32 / 4.56 / 7.84 on title and agrees on every sign. Deal A&rsquo;s 2026 title number is the only one that moves enough between seeds to be worth rounding, hence &ldquo;about five percent.&rdquo;</caption>
+</table>
+</div>
+
+<p><strong>They stack.</strong> This trade spends the 2027 2nd, the 2028 1st and a 2027 3rd. Deal A spends the two 2027 <em>firsts</em>, which you still hold. Doing one does not price you out of the other.</p>
+
+<div class="note">
+  <strong>The cost of doing both</strong>
+  You hold 7 picks in 2027 and 5 in 2028 today. After both trades it is three in 2027, five in 2028 with no first, and <strong>your next first-round pick is 2029</strong>. The model already charges you for that, which is why Both reads 37 equity rather than the 60 its 2026 column would imply. That is the shape of the bet: three seasons with a 24 to 27 year old receiving corps, and the reload starts in 2029.
+</div>
+
+<h2>Why it is worth sending anyway</h2>
+
+<h3>Your picks are expensive because your team is bad</h3>
+<p>Projected draft order ranks starting-lineup value, weakest first, and you sit at <strong>slot 3 of 10</strong>. Your own 2028 1st is an early first at 5,545, not the 4,748 a late one fetches. You are selling at the top of the price range, which is the same fact that makes the pick expensive to keep.</p>
+
+<h3>You own a lot and field almost none of it</h3>
+<p>Dynasty value share <strong>11.44 percent</strong>, second in the league. Starting lineup <strong>8th of 10</strong>. That gap is the production-share lag, and converting paper into starters is the only cure. Thirty percent of your value sits in picks.</p>
+
+<h2>What it does not buy</h2>
+<p><strong>It does not get you into the playoffs.</strong> 109.9 to 118.3 points per game against a sixth-place line of 122.5. Same answer under every projection source:</p>
+<div class="scroll">
+<table>
+  <thead><tr><th>Source</th><th>Now</th><th>After</th><th>Rank</th></tr></thead>
+  <tbody>
+    <tr><td>Blend</td><td>109.9</td><td>118.3</td><td>8th</td></tr>
+    <tr><td>Market props only</td><td>107.9</td><td>114.9</td><td>8th</td></tr>
+    <tr><td>Sleeper only</td><td>111.8</td><td>121.7</td><td>8th</td></tr>
+  </tbody>
+</table>
+</div>
+<p>Playoff odds still climb 17 points, because 22.6 percent was never about points alone. It makes you a live eighth seed chasing a six-team field, not a contender.</p>
+
+<p><strong>It patches the WR room rather than fixing it.</strong> Watson lands at WR2 behind Mike Evans, who is 33 and played eight games last season at 10.6 per game. Both sources have him back near 12 per game across a full year, so the 206 is an availability bet rather than a bounce-back bet. If Evans misses time again, Watson stops being depth and becomes the WR1.</p>
+<p>Two of your ten projected starters carry no market line at all. Jauan Jennings at 105.7 and Cooper Kupp at 86.4 are Sleeper-only, the same soft spot the August doc named, and they are also the two this trade displaces.</p>
+
+<h2>The risk you are buying</h2>
+<div class="note">
+  <strong>Availability</strong>
+  Watson has played 47 of a possible 68 games across four seasons and has never cleared 14 in one. His career high of 164.1 PPR sits below the 189.2 projected here, and the simulator uses a generic positional injury rate, so it does not know any of this.
+</div>
+<div class="scroll">
+<table>
+  <thead><tr><th>Watson availability</th><th>Starter ppg</th><th>Gain</th></tr></thead>
+  <tbody>
+    <tr><td>Full 17 games</td><td>118.3</td><td>+8.4</td></tr>
+    <tr><td>85 percent</td><td>116.6</td><td>+6.8</td></tr>
+    <tr><td>76 percent</td><td>115.6</td><td>+5.8</td></tr>
+    <tr><td>69 percent, his career rate</td><td>114.8</td><td>+5.0</td></tr>
+  </tbody>
+</table>
+</div>
+<p>Johnston is the quieter half and the steadier bet: 174.7 PPR in 2024, 171.2 in 13 games in 2025, and this model projects him <em>down</em> to 156.9. Watson is the one the market flagged as overpriced on 30 August, drafted at WR30 against a market projection of WR36.</p>
+
+<div class="note">
+  <strong>Retracted</strong>
+  This brief said to send the acquired 2027 2nd and 3rd and keep your own, on pre-trade prices of 4,071 and 2,978 against 4,406 and 3,009. Post-trade those invert. You did the right thing.
+</div>
+
+<h2>Counters I priced and rejected</h2>
+<p>The instinct is to pay with the quarterbacks you cannot start. You roster Allen, Caleb Williams and Jordan Love in a one-QB league, about 10,400 KTC of bench. Every version scores worse.</p>
+<div class="scroll">
+<table>
+  <thead><tr><th>Counter</th><th>2026 title</th><th>7-yr equity</th></tr></thead>
+  <tbody>
+    <tr class="hi"><td>The proposed trade</td><td>2.4%</td><td>29.5</td></tr>
+    <tr><td>Caleb + Love, no picks</td><td>1.6%</td><td>24.4</td></tr>
+    <tr><td>Caleb + Juwan Johnson, keeps Love</td><td>1.8%</td><td>27.7</td></tr>
+    <tr><td>Caleb + the acquired 2027 2nd</td><td>1.6%</td><td>27.6</td></tr>
+    <tr class="dim"><td>Ship both backup QBs for nothing</td><td>0.5%</td><td>22.0</td></tr>
+  </tbody>
+  <caption>Seed A shown. The QB counters already include claiming the best free agent arm, otherwise the model charges an empty QB slot.</caption>
+</table>
+</div>
+<p>Replacement level moved against you. August priced the best free-agent QB at 196 points; today every team rosters two or three and the best unrostered arm is <strong>Jacoby Brissett at 158.8</strong>. Caleb Williams is a 136-point swing behind a quarterback who has a bye week and gets hurt like everyone else.</p>
+
+<h2>The one assumption that decides it</h2>
+<p>Everything long-run rests on the relation that turns a pick into the points its rookie scores. It prices your 2028 first at about 143 points in year one and a fourth at about 45. Scale that up for every roster, so nobody gets an unfair edge, and the seven-year answer inverts.</p>
+<div class="scroll">
+<table>
+  <thead><tr><th>Pick conversion</th><th>This trade</th><th>Deal A</th></tr></thead>
+  <tbody>
+    <tr class="hi"><td>As calibrated</td><td>+1.5</td><td>+5.7</td></tr>
+    <tr><td>1.3x</td><td>-4.8</td><td>-9.1</td></tr>
+    <tr><td>1.6x</td><td>-12.0</td><td>-22.0</td></tr>
+    <tr><td>2.0x</td><td>-23.5</td><td>-32.2</td></tr>
+  </tbody>
+  <caption>Seven-year equity against holding. The sign flips at about 1.07x.</caption>
+</table>
+</div>
+<p>Three things keep that from being a reason to refuse. <strong>The 2026 column does not move at all</strong> across the whole sweep, because a pick that has not converted cannot play this season, so the win-now half is arithmetic rather than assumption. <strong>1.3x is probably too generous</strong>, since it makes every fourth-rounder a 60-point rookie against a documented hit rate near 8 percent for third rounders and later. And <strong>you are pick-rich</strong>, so any upward revision in what picks are worth helps you more than the field, which is the same fact as your picks being expensive because your team is bad.</p>
+<p>What it does mean: do not send this one standalone. A trade that leaves you 8th, costs an early first, and needs a calibration to hold within seven percent does not stand by itself. Paired with Deal A it is a contender&rsquo;s move and the arithmetic stops being close.</p>
+
+<h2>What is left</h2>
+<ol class="steps">
+  <li>Sell the third quarterback. Allen, Caleb Williams and Jordan Love in a one-QB league is about 10,400 KTC that cannot start, and the best free agent arm is Brissett at 158.8, so the last QB is worth its gap over him, not its sticker.</li>
+  <li>No first-round pick before 2029. Three picks in 2027, four in 2028, no firsts. Every further buy-now move comes out of players from here.</li>
+  <li>The tight end room is the next surplus: six rostered, two started, about 8,800 KTC of bench behind McBride.</li>
+  <li>Mike Evans is 33 and projects 206. Starter today, and the sell window closes fast at that age. Deadline call, not a today call.</li>
+</ol>
+
+<h2>Where this could be wrong</h2>
+<ul class="plain">
+  <li>The simulator has no waiver pool and no trade market, so depth is worth more in the model than in the league. That is exactly why the QB counters read worse than instinct says.</li>
+  <li>Injury rates are positional, not personal. The Watson table above is a sensitivity, not a rerun.</li>
+  <li>Every roster in the pull is 0-0. This is all projection with none of the season in it.</li>
+  <li>Trust 2026 through 2028. The out-years oscillate by more than the differences between them.</li>
+  <li>Your 2028 1st is worth 5,545 because you project third worst. Win five games and it is closer to 4,800.</li>
+</ul>
+
+<footer>
+  Canonical write-up: <code>docs/TRADE-DECISION-2026-09-joeysyids.md</code>. Numbers come from
+  <code>championshipOdds</code> and <code>titleEquity</code> in <code>site/js/app.js</code>, KTC one-QB values,
+  and the nine-book projection board. Refresh with
+  <code>python site/data/fetch_sleeper.py &amp;&amp; python site/data/build_site_data.py</code> before re-running.
+</footer>
+
+</body>
+</html>

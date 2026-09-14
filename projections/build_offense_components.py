@@ -24,7 +24,13 @@ PP_MAP = {
 OFF_POS = {"QB", "RB", "WR", "TE"}
 
 def pp_components():
-    d = json.loads((HERE / "prizepicks-nfl-season-lines.json").read_text(encoding="utf-8"))
+    # season-props.json is fetch_season_props.py's output: BettingPros consensus (9 books,
+    # both sides priced, scriptable) merged over the PrizePicks dump. Same shape, so this
+    # reader is unchanged. Falls back to the raw PrizePicks dump if that fetch never ran.
+    f = HERE / "season-props.json"
+    if not f.exists():
+        f = HERE / "prizepicks-nfl-season-lines.json"
+    d = json.loads(f.read_text(encoding="utf-8"))
     out = {}
     for p in d["players"]:
         pos = (p.get("pos") or "").upper()

@@ -1,53 +1,63 @@
 /* ========== Reset + tokens ========== */
 *,*::before,*::after { box-sizing: border-box; }
-html, body { margin:0; padding:0; }
+html, body { margin:0; padding:0; overflow-x: clip; }
 html { font-size: 15px; }
 
 :root {
-  /* surfaces */
-  --bg-0: #0b0d12;
-  --bg-1: #11141b;
-  --bg-2: #161a23;
-  --bg-3: #1e2330;
-  --bg-hover: #232938;
-  --border: #262d3d;
-  --border-hot: #3a4258;
+  /* ===== Palette "Teal Console" (OKLCH) =====
+     Re-anchored off purple. Brand/Cornerstone accent is now teal; surfaces are a
+     neutral cool-slate ink (hue 210, near-zero chroma — reads as clean charcoal,
+     NOT tinted purple). Semantic pillars stay distinct on the wheel: cornerstone
+     teal (192), foundational blue (250), upside green (158), tier-S amber (85),
+     vet orange (55), danger red (22) — spaced so the three cool pillars don't
+     collapse into each other. Contrast raised so captions clear WCAG AA. Token
+     NAMES unchanged, so the whole app re-skins from this block. */
 
-  /* text */
-  --fg-0: #f3f4f6;
-  --fg-1: #d4d8e0;
-  --fg-2: #9ca3af;
-  --fg-3: #6b7280;
+  /* surfaces — neutral cool-slate ink (no purple tint) */
+  --bg-0: oklch(15% 0.008 210);   /* obsidian — the page */
+  --bg-1: oklch(19% 0.01 210);    /* graphite — card/sidebar */
+  --bg-2: oklch(23% 0.012 210);   /* slate — inputs, default buttons */
+  --bg-3: oklch(28% 0.014 210);   /* pewter — chips */
+  --bg-hover: oklch(32% 0.016 210);
+  --border: oklch(34% 0.014 210); /* edge */
+  --border-hot: oklch(48% 0.03 192);
 
-  /* accents */
-  --accent: #a78bfa;       /* purple, Cornerstone */
-  --accent-hot: #c4b5fd;
-  --accent-dim: #5b21b6;
+  /* text — faint cool tint, contrast raised for AA */
+  --fg-0: oklch(97% 0.003 210);   /* porcelain */
+  --fg-1: oklch(90% 0.006 210);   /* bone */
+  --fg-2: oklch(78% 0.01 210);    /* fog  (~6.8:1 on --bg-1) */
+  --fg-3: oklch(66% 0.012 210);   /* ash  (~4.6:1 on --bg-1) */
 
-  --blue: #60a5fa;          /* Foundational */
-  --green: #34d399;         /* Upside Premier */
-  --amber: #fbbf24;         /* tier S, gold */
-  --red: #f87171;           /* danger / depreciating */
+  /* accents — teal brand + spaced semantic hues */
+  --accent: oklch(74% 0.12 192);       /* Cornerstone teal — the anchor */
+  --accent-hot: oklch(84% 0.10 192);   /* link / hover */
+  --accent-dim: oklch(46% 0.11 192);   /* primary surface / press */
+  --accent-press: oklch(40% 0.11 192); /* primary :hover */
+
+  --blue: oklch(72% 0.13 250);          /* Foundational */
+  --green: oklch(78% 0.15 158);         /* Upside / positive delta */
+  --amber: oklch(83% 0.145 85);         /* tier S, gold */
+  --red: oklch(68% 0.19 22);            /* danger / depreciating */
 
   /* tier accents */
-  --tier-S: #fbbf24;
-  --tier-A: #a78bfa;
-  --tier-B: #60a5fa;
-  --tier-C: #34d399;
-  --tier-D: #9ca3af;
+  --tier-S: var(--amber);
+  --tier-A: var(--accent);
+  --tier-B: var(--blue);
+  --tier-C: var(--green);
+  --tier-D: var(--fg-2);
 
   /* category accents */
-  --cat-cornerstone: #a78bfa;
-  --cat-foundational: #60a5fa;
-  --cat-upside: #34d399;
-  --cat-mainstay: #fbbf24;
-  --cat-vet: #fb923c;
-  --cat-stlw: #f87171;
+  --cat-cornerstone: var(--accent);
+  --cat-foundational: var(--blue);
+  --cat-upside: var(--green);
+  --cat-mainstay: var(--amber);
+  --cat-vet: oklch(74% 0.16 55);        /* productive vet orange */
+  --cat-stlw: var(--red);
 
   /* shadows */
   --shadow-1: 0 1px 0 rgba(255,255,255,0.04) inset, 0 1px 2px rgba(0,0,0,0.3);
   --shadow-2: 0 4px 12px rgba(0,0,0,0.4);
-  --shadow-glow: 0 0 0 1px var(--accent), 0 0 20px rgba(167,139,250,.18);
+  --shadow-glow: 0 0 0 1px var(--accent), 0 0 20px rgba(45,212,191,.18);
 
   /* sizing */
   --radius-sm: 6px;
@@ -81,7 +91,7 @@ button {
 button:hover { background: var(--bg-hover); border-color: var(--border-hot); }
 button:active { transform: translateY(1px); }
 button.primary { background: var(--accent-dim); border-color: var(--accent); color: var(--fg-0); }
-button.primary:hover { background: #6d28d9; }
+button.primary:hover { background: var(--accent-press); }
 button.ghost { background: transparent; }
 
 input, select {
@@ -94,7 +104,7 @@ input, select {
   outline: none;
   transition: border-color 120ms, box-shadow 120ms;
 }
-input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(167,139,250,.15); }
+input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(45,212,191,.15); }
 input[type=checkbox] { accent-color: var(--accent); }
 
 /* ========== Layout ========== */
@@ -103,6 +113,10 @@ input[type=checkbox] { accent-color: var(--accent); }
   grid-template-columns: 240px 1fr;
   min-height: 100vh;
 }
+/* Grid tracks default to min-width:auto, so wide children (data tables) expand the
+   content column past the viewport and the whole page scrolls sideways. min-width:0
+   lets the column shrink; wide tables then scroll inside their own overflow-x wrapper. */
+.app > * { min-width: 0; }
 
 .sidebar {
   background: var(--bg-1);
@@ -113,6 +127,14 @@ input[type=checkbox] { accent-color: var(--accent); }
   height: 100vh;
   overflow-y: auto;
 }
+.data-fresh {
+  display: flex; align-items: center; gap: 7px;
+  margin-top: 16px; padding: 8px 10px;
+  border-top: 1px solid var(--border);
+  font-size: 0.68rem; color: var(--fg-3); cursor: pointer;
+}
+.data-fresh:hover { color: var(--fg-2); }
+.data-fresh-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
 .brand {
   display: flex; align-items: center; gap: 8px;
   padding: 4px 8px 16px 8px;
@@ -148,13 +170,13 @@ input[type=checkbox] { accent-color: var(--accent); }
 }
 .nav a:hover { background: var(--bg-2); color: var(--fg-0); text-decoration: none; }
 .nav a.active {
-  background: rgba(167,139,250,.12);
+  background: rgba(45,212,191,.12);
   color: var(--fg-0);
   box-shadow: inset 2px 0 0 var(--accent);
 }
 .nav a .icon { width: 18px; opacity: 0.8; }
 
-.main { padding: 24px 32px 64px; max-width: 1400px; }
+.main { padding: 24px 32px 64px; max-width: 1400px; min-width: 0; }
 
 .page-header {
   display: flex; align-items: flex-end; justify-content: space-between;
@@ -213,7 +235,7 @@ input[type=checkbox] { accent-color: var(--accent); }
   border: 1px solid;
   letter-spacing: 0.02em;
 }
-.pill.cornerstone   { color: var(--cat-cornerstone);  border-color: rgba(167,139,250,.4);  background: rgba(167,139,250,.08); }
+.pill.cornerstone   { color: var(--cat-cornerstone);  border-color: rgba(45,212,191,.4);  background: rgba(45,212,191,.08); }
 .pill.foundational  { color: var(--cat-foundational); border-color: rgba(96,165,250,.4);   background: rgba(96,165,250,.08); }
 .pill.upside_premier{ color: var(--cat-upside);       border-color: rgba(52,211,153,.4);   background: rgba(52,211,153,.08); }
 .pill.mainstay      { color: var(--cat-mainstay);     border-color: rgba(251,191,36,.4);   background: rgba(251,191,36,.08); }
@@ -229,7 +251,7 @@ input[type=checkbox] { accent-color: var(--accent); }
   border: 1px solid var(--border);
 }
 .tier-chip.S { color: var(--tier-S); border-color: rgba(251,191,36,.4); background: rgba(251,191,36,.1); }
-.tier-chip.A { color: var(--tier-A); border-color: rgba(167,139,250,.4); background: rgba(167,139,250,.1); }
+.tier-chip.A { color: var(--tier-A); border-color: rgba(45,212,191,.4); background: rgba(45,212,191,.1); }
 .tier-chip.B { color: var(--tier-B); border-color: rgba(96,165,250,.4); background: rgba(96,165,250,.1); }
 .tier-chip.C { color: var(--tier-C); border-color: rgba(52,211,153,.4); background: rgba(52,211,153,.1); }
 .tier-chip.D { color: var(--tier-D); border-color: rgba(156,163,175,.4); background: rgba(156,163,175,.1); }
@@ -250,15 +272,21 @@ input[type=checkbox] { accent-color: var(--accent); }
   border-radius: 4px;
   font-size: 0.7rem; font-weight: 700;
   letter-spacing: 0.04em;
+  /* Dark-surface chip: position hue lives at 12% fill / 38% border / 100% text,
+     the same idiom as the tier chips — no more light pastels glowing on the ink. */
+  --c: var(--fg-2);
+  background: color-mix(in oklab, var(--c) 13%, var(--bg-2));
+  border: 1px solid color-mix(in oklab, var(--c) 38%, transparent);
+  color: var(--c);
 }
-.pos-chip.QB { background: #fee2e2; color: #991b1b; }
-.pos-chip.RB { background: #dcfce7; color: #166534; }
-.pos-chip.WR { background: #dbeafe; color: #1e40af; }
-.pos-chip.TE { background: #fef3c7; color: #92400e; }
-.pos-chip.K  { background: #ede9fe; color: #5b21b6; }
-.pos-chip.DEF{ background: #f5f5f4; color: #44403c; }
-.pos-chip.LB,.pos-chip.DB,.pos-chip.DL,.pos-chip.CB,.pos-chip.S,.pos-chip.DT,.pos-chip.DE,.pos-chip.NT { background: #cffafe; color: #155e75; }
-.pos-chip.FB { background: #f3e8ff; color: #6b21a8; }
+.pos-chip.QB { --c: var(--red); }
+.pos-chip.RB { --c: var(--green); }
+.pos-chip.WR { --c: var(--blue); }
+.pos-chip.TE { --c: var(--amber); }
+.pos-chip.K  { --c: var(--accent); }
+.pos-chip.DEF{ --c: var(--fg-2); }
+.pos-chip.LB,.pos-chip.DB,.pos-chip.DL,.pos-chip.CB,.pos-chip.S,.pos-chip.DT,.pos-chip.DE,.pos-chip.NT { --c: oklch(76% 0.1 200); }
+.pos-chip.FB { --c: var(--accent); }
 
 .team-chip {
   display: inline-grid; place-items: center;
@@ -284,7 +312,7 @@ input[type=checkbox] { accent-color: var(--accent); }
 .badge.rookie { background: rgba(52,211,153,.12); border-color: rgba(52,211,153,.4); color: var(--green); }
 .badge.uncertain { background: rgba(248,113,113,.12); border-color: rgba(248,113,113,.4); color: var(--red); }
 .badge.depreciating { background: rgba(251,191,36,.12); border-color: rgba(251,191,36,.4); color: var(--amber); }
-.badge.you { background: rgba(167,139,250,.16); border-color: var(--accent); color: var(--accent-hot); font-weight: 700; }
+.badge.you { background: rgba(45,212,191,.16); border-color: var(--accent); color: var(--accent-hot); font-weight: 700; }
 
 /* Roster stance scale: tank → seller → mid → buyer → contender.
    Red = selling pressure (bottom of standings, dump vets for picks).
@@ -332,12 +360,60 @@ table.data tbody td {
   color: var(--fg-1);
 }
 table.data tbody tr:hover { background: var(--bg-2); }
-table.data tbody tr.you { background: rgba(167,139,250,.06); }
-table.data tbody tr.you:hover { background: rgba(167,139,250,.10); }
+table.data tbody tr.you { background: rgba(45,212,191,.06); }
+table.data tbody tr.you:hover { background: rgba(45,212,191,.10); }
 
 table.data .name-cell { display: flex; align-items: center; gap: 8px; min-width: 200px; }
 table.data .name-cell .name { font-weight: 500; color: var(--fg-0); }
-table.data .gibbs-rank-col { width: 76px; white-space: nowrap; }
+table.data .gibbs-rank-col,
+table.data .expert-rank-col { width: 76px; white-space: nowrap; }
+
+.rankings-table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.rankings-pos-toggle { flex-wrap: wrap; }
+.weekly-rankings-table { min-width: 780px; }
+.sleeper-weeks-table { min-width: 1480px; }
+.weekly-rankings-table tbody tr,
+.sleeper-weeks-table tbody tr { cursor: pointer; }
+.player-name-button {
+  appearance: none;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--fg-0);
+  font: inherit;
+  text-align: left;
+}
+.player-name-button:hover { background: transparent; color: var(--accent-hot); }
+.player-name-button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.weekly-rankings-table thead th,
+.sleeper-weeks-table thead th { white-space: nowrap; }
+.sleeper-weeks-table tbody td { padding-top: 8px; padding-bottom: 8px; }
+.rankings-source-note {
+  padding: 10px 14px;
+  border-top: 1px solid var(--border);
+}
+
+/* Horizontal-scroll container for data tables (added at render by
+   wrapDataTables() in app.js). On desktop the wrapper is an inert block: no
+   overflow, so it isn't a scroll container and the table's sticky thead still
+   pins to the page scroll. min-width:0 lets it shrink inside grid/flex parents.
+   On a phone it becomes the scroll container so a table wider than the viewport
+   scrolls inside itself instead of being clipped by the page's overflow:clip.
+   overflow:auto coerces overflow-y to auto too, so max-height gives the sticky
+   thead an internal scrollport to pin against (preserves req #5). */
+.tbl-scroll { min-width: 0; }
+@media (max-width: 480px) {
+  .tbl-scroll {
+    overflow: auto;
+    max-height: calc(100dvh - 84px);
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+}
 
 /* Tier blocks (rankings page) */
 .tier-block { margin-bottom: 24px; }
@@ -450,7 +526,7 @@ table.data .gibbs-rank-col { width: 76px; white-space: nowrap; }
 /* ========== Team Strength ========== */
 .strength-row {
   display: grid;
-  grid-template-columns: 32px 1fr 88px 132px;
+  grid-template-columns: 32px 1fr 88px 176px;
   align-items: center;
   gap: 12px;
   padding: 10px 12px;
@@ -461,7 +537,7 @@ table.data .gibbs-rank-col { width: 76px; white-space: nowrap; }
   transition: background 120ms;
 }
 .strength-row:hover { background: var(--bg-2); }
-.strength-row.you { border-color: var(--accent); background: rgba(167,139,250,.08); }
+.strength-row.you { border-color: var(--accent); background: rgba(45,212,191,.08); }
 .strength-row .rank { font-size: 1.1rem; font-weight: 700; color: var(--fg-2); text-align: center; }
 .strength-row .team { display: flex; flex-direction: column; min-width: 0; }
 .strength-row .team-name { font-weight: 600; color: var(--fg-0); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -474,11 +550,11 @@ table.data .gibbs-rank-col { width: 76px; white-space: nowrap; }
    (green = rising, amber = aging, neutral = steady); the final year's bar is
    emphasized so the eye lands on where the team is heading. */
 .str-traj { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
-.str-spark { display: flex; align-items: flex-end; gap: 6px; height: 38px; }
-.str-spark .sp-bar-wrap { width: 16px; display: flex; align-items: flex-end; height: 100%; }
-.str-spark .sp-bar { width: 100%; min-height: 3px; border-radius: 3px 3px 0 0; transition: height 360ms ease-out; }
-.str-traj-foot { display: flex; justify-content: space-between; align-items: center; font-size: 0.66rem; color: var(--fg-3); }
-.str-traj-foot .yrs { letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
+.str-spark { display: flex; align-items: flex-end; gap: 4px; height: 52px; }
+.str-spark .sp-bar-wrap { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+.str-spark .sp-bar-val { font-size: 0.54rem; line-height: 1; color: var(--fg-2); margin-bottom: 3px; font-variant-numeric: tabular-nums; }
+.str-spark .sp-bar { width: 14px; min-height: 3px; border-radius: 3px 3px 0 0; transition: height 360ms ease-out; }
+.str-traj-foot { display: flex; justify-content: flex-end; align-items: center; font-size: 0.66rem; color: var(--fg-3); }
 .str-traj-foot .arch { font-weight: 700; letter-spacing: 0.04em; }
 
 .strength-detail {
@@ -526,8 +602,7 @@ table.data .gibbs-rank-col { width: 76px; white-space: nowrap; }
 /* ========== Player detail modal ========== */
 .modal-backdrop {
   position: fixed; inset: 0;
-  background: rgba(0,0,0,.6);
-  backdrop-filter: blur(4px);
+  background: rgba(0,0,0,.66);
   display: grid; place-items: center;
   z-index: 100;
   animation: fadeIn 120ms ease-out;
@@ -561,6 +636,13 @@ table.data .gibbs-rank-col { width: 76px; white-space: nowrap; }
   border-radius: var(--radius);
   margin-bottom: 10px;
 }
+/* Narrow modal: 3 max-content KPI columns + gaps overflow ~297px inner width,
+   forcing a scrollbar inside the modal. Drop to 2 columns and stack the ctx row. */
+@media (max-width: 520px) {
+  .hist-kpis { grid-template-columns: repeat(2, 1fr); gap: 12px 16px; }
+  .ctx-row { flex-direction: column; }
+  .ctx-flags { max-width: none; justify-content: flex-start; }
+}
 .hist-kpi { display: flex; flex-direction: column; gap: 2px; }
 .hist-kpi-num {
   font-size: 1.35rem; font-weight: 700; line-height: 1;
@@ -578,8 +660,8 @@ table.data .gibbs-rank-col { width: 76px; white-space: nowrap; }
 }
 .hist-table tbody td { padding: 6px 8px; }
 .hist-table tbody tr:last-child td {
-  background: rgba(167,139,250,.04);
-  border-top: 1px solid rgba(167,139,250,.2);
+  background: rgba(45,212,191,.04);
+  border-top: 1px solid rgba(45,212,191,.2);
 }
 
 /* ========== Timestamped video intel (player modal) ========== */
@@ -659,7 +741,7 @@ table.data .gibbs-rank-col { width: 76px; white-space: nowrap; }
   padding: 3px 7px; border-radius: 999px;
   text-transform: uppercase;
 }
-.flag-pill.new { background: rgba(167,139,250,.12); color: var(--accent-hot); border: 1px solid rgba(167,139,250,.35); }
+.flag-pill.new { background: rgba(45,212,191,.12); color: var(--accent-hot); border: 1px solid rgba(45,212,191,.35); }
 .flag-pill.firstime { background: rgba(251,191,36,.10); color: var(--amber); border: 1px solid rgba(251,191,36,.35); }
 .coach-line {
   display: flex; align-items: baseline; gap: 10px;
@@ -792,7 +874,7 @@ textarea { resize: vertical; min-height: 80px; }
 .tag-list { display: flex; flex-wrap: wrap; gap: 6px; }
 
 /* Sticky page actions */
-.page-actions { display: flex; gap: 8px; }
+.page-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
 /* Search highlight */
 .hl { background: rgba(251,191,36,.18); padding: 0 1px; border-radius: 2px; }
@@ -810,8 +892,8 @@ textarea { resize: vertical; min-height: 80px; }
 .section-title::before {
   content: '';
   display: inline-block;
-  width: 4px; height: 18px;
-  background: linear-gradient(180deg, var(--accent), var(--blue));
+  width: 3px; height: 18px;
+  background: var(--accent); /* solid — the only 2 gradients are brand mark + strength bar */
   border-radius: 2px;
 }
 
@@ -891,11 +973,11 @@ textarea { resize: vertical; min-height: 80px; }
 .br-tier::before {
   content:''; position:absolute; left:0; top:10px; bottom:10px; width:3px; border-radius: 2px;
 }
-.br-tier.vt-elite::before        { background: linear-gradient(180deg, #fbbf24, #f59e0b); }
-.br-tier.vt-championship::before { background: linear-gradient(180deg, #a78bfa, #7c3aed); }
-.br-tier.vt-contending::before   { background: linear-gradient(180deg, #60a5fa, #3b82f6); }
-.br-tier.vt-reload::before       { background: linear-gradient(180deg, #34d399, #10b981); }
-.br-tier.vt-rebuild::before      { background: linear-gradient(180deg, #fb923c, #ea580c); }
+.br-tier.vt-elite::before        { background: var(--amber); }
+.br-tier.vt-championship::before { background: var(--accent); }
+.br-tier.vt-contending::before   { background: var(--blue); }
+.br-tier.vt-reload::before       { background: var(--green); }
+.br-tier.vt-rebuild::before      { background: var(--cat-vet); }
 .br-tier-value {
   font-size: 1.7rem; font-weight: 800; letter-spacing: -0.02em;
   margin: 1px 0 3px;
@@ -962,7 +1044,7 @@ textarea { resize: vertical; min-height: 80px; }
   border-bottom: 1px solid var(--border);
 }
 .timeline-row:last-child { border-bottom: none; }
-.timeline-row.is-me { background: rgba(167,139,250,0.04); margin: 0 -14px; padding: 10px 14px; }
+.timeline-row.is-me { background: rgba(45,212,191,0.04); margin: 0 -14px; padding: 10px 14px; }
 .timeline-row.is-failed { opacity: 0.55; }
 .timeline-icon {
   width: 24px; height: 24px;
@@ -1057,6 +1139,7 @@ textarea { resize: vertical; min-height: 80px; }
   transition: color 120ms;
 }
 .data th.clickable:hover { color: var(--accent-hot); }
+.data th.clickable:focus-visible { outline: 2px solid var(--accent); outline-offset: -3px; }
 .data th.sort-active {
   color: var(--accent-hot);
 }
@@ -1269,6 +1352,17 @@ textarea { resize: vertical; min-height: 80px; }
   width: 2px; background: var(--fg-2); opacity: 0.55;
   border-radius: 1px;
 }
+/* FV marker: a diamond at the player's projected grade in 3 years. Green = rising,
+   amber = aging, grey = steady. Shows where the slot heads relative to the PV fill. */
+.slot-bar-fv {
+  position: absolute; top: 50%; width: 9px; height: 9px;
+  transform: translate(-50%, -50%) rotate(45deg);
+  background: var(--fg-2); border: 1px solid var(--bg-1); border-radius: 1px;
+  z-index: 2;
+}
+.slot-bar-fv.rising { background: var(--green); }
+.slot-bar-fv.aging  { background: var(--amber); }
+.slot-bar-fv.steady { background: var(--fg-2); }
 @media (max-width: 720px) {
   .slot-bar-row { grid-template-columns: 44px minmax(0, 1fr) auto 100px 32px; gap: 8px; }
 }
@@ -1298,7 +1392,7 @@ textarea { resize: vertical; min-height: 80px; }
   padding: 14px;
 }
 .priorities-card .priority-card {
-  border: none; border-left: 3px solid var(--accent);
+  border: 1px solid var(--border);
   background: var(--bg-2);
   padding: 10px 12px;
   border-radius: var(--radius-sm);
@@ -1313,7 +1407,6 @@ textarea { resize: vertical; min-height: 80px; }
 .priority-card {
   background: var(--bg-1);
   border: 1px solid var(--border);
-  border-left: 3px solid var(--accent);
   border-radius: var(--radius);
   padding: 12px 14px;
   display: flex; gap: 10px; align-items: flex-start;
@@ -1514,8 +1607,8 @@ textarea { resize: vertical; min-height: 80px; }
   margin-bottom: 8px;
   padding: 8px 10px;
   background: var(--bg-2);
-  border-left: 2px solid var(--fg-3);
-  border-radius: 0 6px 6px 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
 }
 .trade-give-head {
   display: flex; align-items: baseline; justify-content: space-between;
@@ -1534,11 +1627,11 @@ textarea { resize: vertical; min-height: 80px; }
   padding: 8px 10px;
   background: var(--bg-2);
   border-radius: 6px;
-  border-left: 2px solid transparent;
+  border: 1px solid transparent;
 }
 .trade-opt.best {
   background: color-mix(in oklab, var(--green) 8%, var(--bg-2));
-  border-left-color: var(--green);
+  border-color: color-mix(in oklab, var(--green) 42%, transparent);
 }
 .trade-opt-head {
   display: flex; align-items: baseline; gap: 8px;
@@ -1591,13 +1684,192 @@ textarea { resize: vertical; min-height: 80px; }
 }
 
 /* ========== Trade Calculator ========== */
+/* Player-card verdict banner */
+.verdict-banner {
+  display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+  padding: 10px 12px; margin-bottom: 12px;
+  background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-sm);
+}
+.verdict-label { font-weight: 800; letter-spacing: 0.04em; font-size: 0.9rem; flex-shrink: 0; }
+.verdict-why { color: var(--fg-1); font-size: 0.85rem; line-height: 1.4; min-width: 0; }
+.price-line { font-size: 0.9rem; color: var(--fg-1); }
+
+/* Trade Finder rows */
+.trade-find-row {
+  display: grid; grid-template-columns: 140px 1fr 48px; align-items: center; gap: 12px;
+  padding: 10px 12px; background: var(--bg-1); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); cursor: pointer; transition: border-color 120ms, background 120ms;
+}
+.trade-find-row:hover { border-color: var(--border-hot); background: var(--bg-2); }
+.trade-find-row .tf-partner { font-weight: 600; color: var(--fg-1); font-size: 0.86rem; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.trade-find-row .tf-deal { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; min-width: 0; }
+.trade-find-row .tf-side { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }
+.trade-find-row .tf-side .name { font-size: 0.86rem; color: var(--fg-0); }
+.trade-find-row .tf-val { color: var(--fg-3); font-size: 0.78rem; }
+.trade-find-row .tf-tag { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.06em; padding: 1px 4px; border-radius: 3px; }
+.trade-find-row .tf-tag.out { color: var(--red); background: color-mix(in oklab, var(--red) 14%, transparent); }
+.trade-find-row .tf-tag.in { color: var(--green); background: color-mix(in oklab, var(--green) 14%, transparent); }
+.trade-find-row .tf-arrow { color: var(--fg-3); }
+.trade-find-row .tf-fair { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; font-size: 0.82rem; }
+.trade-find-row .tf-why { grid-column: 1 / -1; font-size: 0.72rem; color: var(--fg-3); }
+.pile-vor { margin-left: 6px; font-size: 0.66rem; color: var(--fg-3); letter-spacing: 0.04em; }
+/* Overview command cards */
+.cmd-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin-top: 8px; }
+.cmd-card {
+  background: var(--bg-1); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 14px; cursor: pointer; transition: border-color 120ms, background 120ms;
+}
+.cmd-card:hover { border-color: var(--border-hot); background: var(--bg-2); }
+.cmd-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.cmd-name { font-weight: 700; font-size: 1.02rem; color: var(--fg-0); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cmd-sub { color: var(--fg-3); font-size: 0.74rem; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.04em; }
+.cmd-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0 4px; }
+.cmd-stat { text-align: center; }
+.cmd-stat-val { font-size: 1.15rem; font-weight: 700; }
+.cmd-stat-lbl { font-size: 0.64rem; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+.cmd-waiver { font-size: 0.78rem; color: var(--fg-2); margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+.cmd-waiver-lbl { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg-3); margin-right: 6px; }
+.cmd-links { display: flex; gap: 14px; margin-top: 10px; font-size: 0.8rem; }
+
+/* Action Center personal to-dos */
+.todo-add { display: flex; gap: 8px; margin: 8px 0 12px; }
+.todo-list { display: flex; flex-direction: column; }
+.todo-row { display: flex; align-items: center; gap: 10px; padding: 8px 4px; border-top: 1px solid var(--border); }
+.todo-row:first-child { border-top: none; }
+.todo-row input[type=checkbox] { flex-shrink: 0; }
+.todo-text { flex: 1; min-width: 0; color: var(--fg-0); font-size: 0.92rem; }
+.todo-row.done .todo-text { color: var(--fg-3); text-decoration: line-through; }
+.todo-x { background: transparent; border: none; color: var(--fg-3); font-size: 1.1rem; padding: 0 6px; opacity: 0.5; }
+.todo-x:hover { opacity: 1; color: var(--red); background: transparent; border: none; }
+.todo-add-btn { font-size: 0.72rem; padding: 3px 8px; }
+
+.picks-strip { margin-top: 14px; }
+.picks-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.pick-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 9px; border-radius: var(--radius-sm);
+  background: color-mix(in oklab, var(--blue) 10%, var(--bg-2));
+  border: 1px solid color-mix(in oklab, var(--blue) 32%, transparent);
+  font-size: 0.8rem;
+}
+.pick-chip-label { color: var(--fg-1); font-weight: 600; }
+.pick-chip-val { color: var(--fg-3); font-variant-numeric: tabular-nums; }
+@media (max-width: 620px) {
+  .trade-find-row { grid-template-columns: 1fr auto; }
+  .trade-find-row .tf-deal { grid-column: 1 / -1; order: 3; }
+}
+
 .trade-calc {
   display: grid;
   grid-template-columns: 1fr 240px 1fr;
   gap: 14px;
   align-items: stretch;
 }
-@media (max-width: 1100px) { .trade-calc { grid-template-columns: 1fr; } }
+/* Grid tracks default to min-width:auto, so a long "Team (Owner) ★" option in the
+   roster select forces its track wider than 1fr and blows the whole grid out (the
+   overlapping-headers report). Let every track shrink and clip internally instead. */
+.trade-calc > * { min-width: 0; }
+.trade-side-head select { flex: 0 1 auto; min-width: 0; max-width: 62%; }
+/* Collapse to one column below 1280px, not 1100 — the 240px sidebar + middle rail
+   crush the two side cards well before 1100 on a laptop. */
+@media (max-width: 1280px) {
+  /* Single column: the middle summary must NOT stay sticky, or the (later-painted)
+     opposite side scrolls up over the stuck card — the "jacked up" overlap. Let it
+     flow inline, and float it to the top so the live verdict is the first thing seen. */
+  .trade-calc { grid-template-columns: 1fr; }
+  .trade-middle { position: static; top: auto; order: -1; }
+  .trade-side-head select { max-width: none; }
+  .trade-pool { max-height: 360px; }
+}
+
+/* Team-agnostic player search: find a player without knowing their team, then
+   add to either side. Results overlay the grid so typing doesn't shove it down. */
+.trade-search { margin: 4px 0 14px; }
+.trade-search-label { letter-spacing: 0.06em; font-weight: 700; margin-bottom: 6px; }
+.trade-search-box { position: relative; }
+.trade-search-input { width: 100%; }
+.trade-search-results {
+  position: absolute; left: 0; right: 0; top: calc(100% + 4px);
+  z-index: 30;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 12px 30px rgba(0,0,0,.35);
+  max-height: 340px; overflow-y: auto;
+  padding: 4px;
+}
+.trade-search-empty { padding: 10px 8px; color: var(--fg-3); font-style: italic; font-size: 0.82rem; }
+.trade-search-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 7px 8px; border-radius: 6px;
+}
+.trade-search-row + .trade-search-row { border-top: 1px dashed var(--border); }
+.trade-search-row:hover { background: var(--bg-2); }
+.trade-search-row .name-cell { flex: 1; min-width: 0; display: flex; align-items: center; gap: 6px; }
+.trade-search-owner {
+  margin-left: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  max-width: 14ch;
+}
+.trade-search-val { color: var(--fg-2); font-variant-numeric: tabular-nums; margin-left: 4px; }
+.trade-search-actions { display: flex; gap: 6px; flex: 0 0 auto; }
+.trade-search-add {
+  padding: 4px 8px; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.02em;
+  border-radius: 5px; min-width: 62px;
+}
+.trade-search-add:hover { border-color: var(--accent); color: var(--accent-hot); }
+.trade-search-add[disabled] { opacity: .45; cursor: default; }
+.trade-search-add[disabled]:hover { border-color: var(--border); color: inherit; }
+
+/* ---- What-if tray (Projections board) ----
+   Color carries meaning: the tray is teal-edged while armed so the board below
+   is never mistaken for the real standings. */
+.whatif { margin-bottom: 12px; }
+.whatif.card { border-color: var(--border); }
+.whatif-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.whatif-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 8px; font-size: 0.78rem; border-radius: 5px;
+  border: 1px solid var(--border-hot); background: var(--bg-3); color: var(--fg-1);
+}
+.whatif-chip:hover { border-color: var(--accent); color: var(--accent-hot); }
+.whatif-x { font-weight: 700; color: var(--fg-3); }
+.whatif-chip:hover .whatif-x { color: var(--accent-hot); }
+.whatif-clear { padding: 4px 8px; font-size: 0.78rem; }
+.badge.whatif-on { background: rgba(45,212,191,.16); border-color: var(--accent); color: var(--accent-hot); font-weight: 700; }
+
+/* Rank movement + point delta under a what-if. */
+.rank-up, .rank-down { margin-left: 4px; font-size: 0.72rem; font-weight: 700; }
+.rank-up { color: var(--green); }
+.rank-down { color: var(--red); }
+.delta-up { color: var(--green); font-weight: 700; }
+.delta-down { color: var(--red); font-weight: 700; }
+/* Marks a Vegas-minus-Sleeper delta whose Vegas side was mostly filled in from
+   Sleeper. Muted and superscript so it reads as a footnote on the number, not
+   as a second number competing with it. */
+.vs-borrowed {
+  margin-left: 2px;
+  color: var(--fg-3);
+  font-weight: 400;
+  font-size: 0.72em;
+  vertical-align: super;
+  line-height: 0;
+  cursor: help;
+}
+
+/* Injury designation. Out/Doubtful/IR read as danger because those players are
+   benched by the lineup math; Questionable is a caution, still startable. */
+.badge.injury { background: rgba(217,164,65,.14); border-color: var(--amber); color: var(--amber); font-weight: 700; }
+.badge.injury.injury-out { background: rgba(220,80,70,.14); border-color: var(--red); color: var(--red); }
+
+/* FV-adjusted future pick: the projected slot chip explains that the value
+   reflects the owning team's strength, not a flat round number. */
+.badge.pick-proj {
+  margin-left: 4px;
+  cursor: help;
+  background: color-mix(in oklab, var(--accent) 10%, var(--bg-2));
+  border-color: color-mix(in oklab, var(--accent) 35%, var(--border));
+  color: var(--accent-hot);
+}
 
 .trade-side-card {
   background: var(--bg-1);
@@ -1627,7 +1899,7 @@ textarea { resize: vertical; min-height: 80px; }
   background: color-mix(in oklab, var(--accent) 10%, var(--bg-2));
   border: 1px solid var(--accent);
   border-style: solid;
-  box-shadow: 0 0 0 4px rgba(167,139,250,.10), 0 0 24px rgba(167,139,250,.18);
+  box-shadow: 0 0 0 4px rgba(45,212,191,.10), 0 0 24px rgba(45,212,191,.18);
 }
 .trade-pile-empty {
   font-size: 0.78rem;
@@ -1676,8 +1948,8 @@ textarea { resize: vertical; min-height: 80px; }
 .trade-pool-row:active { cursor: grabbing; }
 .trade-pool-row:hover { background: var(--bg-2); }
 .trade-pool-row.selected {
-  background: rgba(167,139,250,.18);
-  border-left: 2px solid var(--accent);
+  background: color-mix(in oklab, var(--accent) 18%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--accent) 50%, transparent);
   opacity: 0.55;
 }
 
@@ -1690,8 +1962,14 @@ textarea { resize: vertical; min-height: 80px; }
 .trade-middle {
   display: flex; flex-direction: column;
   gap: 12px;
-  position: sticky; top: 16px;
   align-self: start;
+  position: relative; z-index: 1;
+}
+/* Sticky ONLY on genuinely wide screens (3-column layout with room). Below that,
+   sticky made this card float over the pool rows behind it (the overlap bug).
+   Scoped to min-width so it can't apply in the single-column/narrow layout. */
+@media (min-width: 1101px) {
+  .trade-middle { position: sticky; top: 16px; }
 }
 .trade-middle-card {
   background: var(--bg-1);
@@ -1702,7 +1980,7 @@ textarea { resize: vertical; min-height: 80px; }
 }
 .trade-middle.preview .trade-middle-card {
   border-color: var(--accent);
-  box-shadow: 0 0 0 1px var(--accent), 0 0 28px rgba(167,139,250,.16);
+  box-shadow: 0 0 0 1px var(--accent), 0 0 28px rgba(45,212,191,.16);
   transform: translateY(-2px);
 }
 .trade-middle.preview .verdict::after {
@@ -1728,8 +2006,7 @@ textarea { resize: vertical; min-height: 80px; }
 /* ========== Cmd+K palette ========== */
 .cmdk-backdrop {
   position: fixed; inset: 0;
-  background: rgba(0,0,0,.5);
-  backdrop-filter: blur(6px);
+  background: rgba(0,0,0,.62);
   z-index: 200;
   display: grid; place-items: flex-start center;
   padding-top: 12vh;
@@ -1778,8 +2055,9 @@ textarea { resize: vertical; min-height: 80px; }
   transition: transform 120ms cubic-bezier(.2,.8,.2,1), box-shadow 120ms, border-color 120ms, background 120ms;
 }
 .player-row:active, .league-card:active { transform: translateY(0); }
-@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(167,139,250,.4); } 70% { box-shadow: 0 0 0 8px rgba(167,139,250,0); } 100% { box-shadow: 0 0 0 0 rgba(167,139,250,0); } }
-.badge.you { animation: pulse 2.5s ease-out infinite; }
+/* .badge.you is styled statically above (violet tint + border). No infinite
+   pulse — "only data moves," and a looping glow down every table row ignored
+   prefers-reduced-motion. */
 
 .kbd {
   display: inline-grid; place-items: center;
@@ -1817,8 +2095,7 @@ textarea { resize: vertical; min-height: 80px; }
 }
 .toast {
   background: var(--bg-1);
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--accent);
+  border: 1px solid var(--border-hot);
   border-radius: var(--radius-sm);
   padding: 10px 16px;
   box-shadow: var(--shadow-2);
@@ -1901,8 +2178,8 @@ textarea { resize: vertical; min-height: 80px; }
 }
 .empire-cell:hover { transform: translateY(-1px); filter: brightness(1.2); }
 .empire-cell.cat-cornerstone {
-  background: rgba(167,139,250,.18); color: var(--cat-cornerstone);
-  border: 1px solid rgba(167,139,250,.4);
+  background: rgba(45,212,191,.18); color: var(--cat-cornerstone);
+  border: 1px solid rgba(45,212,191,.4);
 }
 .empire-cell.cat-foundational {
   background: rgba(96,165,250,.18); color: var(--cat-foundational);
@@ -1923,7 +2200,6 @@ textarea { resize: vertical; min-height: 80px; }
 .insight {
   background: var(--bg-1);
   border: 1px solid var(--border);
-  border-left: 3px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 12px 14px;
   display: flex; gap: 10px; align-items: flex-start;
@@ -1938,9 +2214,10 @@ textarea { resize: vertical; min-height: 80px; }
   from { opacity: 0; transform: translateY(4px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-.insight-good    { border-left-color: var(--green); }
-.insight-bad     { border-left-color: var(--red); }
-.insight-neutral { border-left-color: var(--blue); }
+/* Semantic tone carried by a full-border tint + the colored icon, not a side-stripe. */
+.insight-good    { border-color: color-mix(in oklab, var(--green) 42%, var(--border)); }
+.insight-bad     { border-color: color-mix(in oklab, var(--red) 42%, var(--border)); }
+.insight-neutral { border-color: color-mix(in oklab, var(--blue) 42%, var(--border)); }
 .insight-icon { font-size: 1.1rem; flex-shrink: 0; line-height: 1; }
 .insight-good .insight-icon    { color: var(--green); }
 .insight-bad .insight-icon     { color: var(--red); }
@@ -2082,7 +2359,7 @@ textarea { resize: vertical; min-height: 80px; }
   border-bottom-color: var(--accent);
 }
 .tab.active .tab-icon { opacity: 1; }
-.tab.active .tab-count { background: rgba(167,139,250,.18); color: var(--accent-hot); }
+.tab.active .tab-count { background: rgba(45,212,191,.18); color: var(--accent-hot); }
 
 /* ============================================================
    Breadcrumbs
@@ -2150,11 +2427,11 @@ textarea { resize: vertical; min-height: 80px; }
   border-radius: 999px;
 }
 .nav a.is-context {
-  background: rgba(167,139,250,.10);
+  background: rgba(45,212,191,.10);
   color: var(--fg-0);
   box-shadow: inset 2px 0 0 var(--accent);
 }
-.nav a.is-context .nav-tag { color: var(--accent-hot); border-color: rgba(167,139,250,.35); background: rgba(167,139,250,.08); }
+.nav a.is-context .nav-tag { color: var(--accent-hot); border-color: rgba(45,212,191,.35); background: rgba(45,212,191,.08); }
 .nav-sub {
   margin: 2px 0 8px 22px;
   border-left: 1px solid var(--border);
@@ -2169,7 +2446,7 @@ textarea { resize: vertical; min-height: 80px; }
   font-size: 0.85rem;
 }
 .nav-sub a:hover { background: var(--bg-2); color: var(--fg-0); }
-.nav-sub a.active { color: var(--accent-hot); background: rgba(167,139,250,.06); }
+.nav-sub a.active { color: var(--accent-hot); background: rgba(45,212,191,.06); }
 .nav-sub .sub-bullet { color: var(--fg-3); width: 10px; text-align: center; }
 
 /* ============================================================
@@ -2189,10 +2466,10 @@ textarea { resize: vertical; min-height: 80px; }
 .nav-toggle {
   display: none;
   position: fixed;
-  top: 12px;
-  left: 12px;
+  top: max(12px, env(safe-area-inset-top));
+  left: max(12px, env(safe-area-inset-left));
   z-index: 30;
-  width: 40px; height: 40px;
+  width: 44px; height: 44px;
   background: var(--bg-1);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
@@ -2219,12 +2496,15 @@ textarea { resize: vertical; min-height: 80px; }
     transform: translateX(-100%);
     transition: transform 220ms ease-out;
     box-shadow: var(--shadow-2);
+    padding-top: max(16px, env(safe-area-inset-top));
+    padding-left: max(12px, env(safe-area-inset-left));
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
   }
   body.nav-open .sidebar { transform: translateX(0); }
   body.nav-open .nav-scrim { display: block; }
   .nav-toggle { display: inline-flex; }
-  .sidebar-close { display: inline-flex; align-items: center; justify-content: center; }
-  .main { padding: 64px 16px 48px; }
+  .sidebar-close { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; }
+  .main { padding: max(64px, calc(env(safe-area-inset-top) + 52px)) max(16px, env(safe-area-inset-right)) 48px max(16px, env(safe-area-inset-left)); }
   .page-header { gap: 12px; }
   .tab-bar { margin-left: -16px; margin-right: -16px; padding: 0 16px; }
 }
@@ -2233,6 +2513,40 @@ textarea { resize: vertical; min-height: 80px; }
   .page-actions { width: 100%; }
   .page-actions a, .page-actions button { font-size: 0.85rem; }
   .crumbs { font-size: 0.72rem; }
+  /* Tap targets: comfortable hit areas on touch. */
+  button, .tab-bar a, .nav a, .nav-sub a, .toggle, .cmd-links a, input, select { min-height: 44px; }
+  button, .toggle { display: inline-flex; align-items: center; justify-content: center; }
+  .tab-bar a, .nav a { display: flex; align-items: center; }
+  /* 16px control text so iOS Safari doesn't zoom the page on focus. */
+  input, select, textarea { font-size: 16px; }
+  /* Roster-picker selects (Compare page .filters) shrink to fit the card instead of
+     forcing their widest-option intrinsic width past the viewport edge (same guard as
+     .trade-side-head select). Without min-width:0 the flex item can't shrink below content. */
+  .filters .group { min-width: 0; }
+  .filters .group select { min-width: 0; max-width: 100%; }
+}
+@media (max-width: 560px) {
+  /* Standings row: shrink the sparkline column so rank/team/score/bars all fit at 320px. */
+  .strength-row { grid-template-columns: 26px minmax(0,1fr) 70px 92px; gap: 8px; padding: 10px 8px; }
+  .strength-row .str-spark { height: 42px; gap: 2px; }
+  .strength-row .str-spark .sp-bar { width: 9px; }
+  .strength-row .str-spark .sp-bar-val { font-size: 0.46rem; }
+  .strength-row .score { font-size: 1.05rem; }
+  /* Trade side cards: tighten so the pile/pool read on a phone. */
+  .trade-side-card, .trade-middle-card { padding: 10px; }
+}
+@media (max-width: 480px) {
+  /* At phone width the 4-track standings row (rank | team | score | sparkline)
+     crams score + delta + share badges into ~90px, so the "FV … · -%" delta and
+     the CS/FND/UP + share text paint over the sparkline. Drop to rank | team |
+     score, give the sparkline its own full-width row, and let the detail badges
+     wrap instead of overflowing right into the chart. */
+  .strength-row { grid-template-columns: 26px minmax(0, 1fr) auto; column-gap: 10px; row-gap: 10px; }
+  .strength-row .str-traj { grid-column: 1 / -1; }
+  .strength-row .str-spark { height: 48px; }
+  .strength-row .str-spark .sp-bar { width: 60%; max-width: 20px; }
+  .strength-row .str-spark .sp-bar-val { font-size: 0.58rem; }
+  .strength-row .strength-detail { flex-wrap: wrap; gap: 4px 10px; }
 }
 
 /* ============================================================
@@ -2413,4 +2727,305 @@ textarea { resize: vertical; min-height: 80px; }
   .traj-row { grid-template-columns: 120px 1fr 90px; }
   .traj-pvcell { display: none; }
   .traj-row.traj-head .traj-pvcell { display: none; }
+}
+.odds-btn { float: right; padding: 4px 10px; font-size: 0.76rem; font-weight: 700; }
+
+/* ========== Draft Room: Sleeper-style board grid + resizable team drawer ========== */
+/* The exit. Weighted like a real action, because the alternative was a sidebar
+   link that renders as the page you are already on. */
+.btn-exit {
+  padding: 4px 10px;
+  font-size: 0.78rem; font-weight: 700;
+  color: var(--fg-0);
+  background: var(--bg-2);
+  border: 1px solid var(--border-hot);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+}
+.btn-exit:hover { background: var(--bg-hover); color: var(--accent-hot); }
+.page-actions select { padding: 4px 8px; font-size: 0.78rem; max-width: 210px; }
+.draft-board-wrap {
+  overflow: auto;
+  max-height: 52vh;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-1);
+}
+.draft-board { display: grid; gap: 3px; padding: 3px; min-width: max-content; }
+.draft-head {
+  position: sticky; top: 0; z-index: 3;
+  background: var(--bg-1);
+  padding: 6px 4px 8px;
+  text-align: center;
+  border-radius: var(--radius-sm);
+}
+.draft-head.mine { background: color-mix(in oklab, var(--accent) 18%, var(--bg-1)); }
+.draft-head-slot { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em; color: var(--fg-3); }
+.draft-head-name {
+  font-size: 0.72rem; font-weight: 700; color: var(--fg-1);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.draft-cell {
+  --c: var(--fg-3);
+  min-width: 108px; min-height: 54px;
+  padding: 4px 6px;
+  border-radius: var(--radius-sm);
+  background: color-mix(in oklab, var(--bg-1) 55%, var(--bg-2));
+  border: 1px solid transparent;
+  display: flex; flex-direction: column; gap: 2px;
+  font-size: 0.7rem; line-height: 1.16;
+  overflow: hidden;
+}
+.draft-cell.filled {
+  background: color-mix(in oklab, var(--c) 14%, var(--bg-2));
+  border-color: color-mix(in oklab, var(--c) 40%, transparent);
+  cursor: pointer;
+}
+.draft-cell.mine { box-shadow: inset 0 0 0 1.5px var(--accent); }
+.draft-cell.onclock { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.draft-cell-top {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 4px;
+  color: var(--fg-3); font-size: 0.6rem; font-variant-numeric: tabular-nums;
+}
+.draft-cell-abs { color: color-mix(in oklab, var(--fg-3) 65%, transparent); }
+/* Two-line name, the way Sleeper does it: at 108px wide "Christian McCaffrey"
+   on one line is an ellipsis, and the last name is the half you read. */
+.draft-cell-first {
+  font-size: 0.62rem; color: var(--fg-2); line-height: 1.05;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.draft-cell-name {
+  font-weight: 700; color: var(--fg-0); line-height: 1.1;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.draft-cell-arrow { margin-top: auto; color: var(--fg-3); font-size: 0.72rem; }
+.draft-cell-meta { color: var(--c); font-weight: 600; font-size: 0.62rem; }
+.draft-cell.QB { --c: var(--red); }
+.draft-cell.RB { --c: var(--green); }
+.draft-cell.WR { --c: var(--blue); }
+.draft-cell.TE { --c: var(--amber); }
+.draft-cell.K  { --c: var(--accent); }
+.draft-cell.DEF { --c: var(--fg-2); }
+.draft-cell.LB, .draft-cell.DB, .draft-cell.DL, .draft-cell.CB,
+.draft-cell.S, .draft-cell.DT, .draft-cell.DE, .draft-cell.NT { --c: oklch(76% 0.1 200); }
+
+/* Bottom drawer: your team, collapsible and drag-resizable from its grip. */
+.draft-drawer {
+  position: fixed; left: 240px; right: 0; bottom: 0; z-index: 40;
+  display: flex; flex-direction: column;
+  background: var(--bg-1);
+  border-top: 1px solid var(--border-hot);
+  box-shadow: 0 -10px 28px rgba(0, 0, 0, 0.45);
+}
+.draft-drawer-handle {
+  display: flex; align-items: center; gap: 12px;
+  padding: 7px 16px 8px;
+  border-bottom: 1px solid var(--border);
+  cursor: ns-resize;
+  user-select: none;
+  touch-action: none;
+}
+.draft-drawer-handle.closed { cursor: default; border-bottom-color: transparent; }
+.draft-drawer-grip { width: 36px; height: 4px; border-radius: 999px; background: var(--border-hot); flex: none; }
+.draft-drawer-handle.closed .draft-drawer-grip { background: var(--border); }
+.draft-drawer-sub { font-size: 0.72rem; color: var(--fg-3); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.draft-drawer-toggle { margin-left: auto; flex: none; padding: 2px 10px; font-size: 0.74rem; font-weight: 700; }
+.draft-drawer-body { display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
+.draft-drawer-tabs { flex: none; }
+.draft-drawer-filters { flex: none; padding: 8px 14px 0; }
+.draft-drawer-filters .filters { margin-bottom: 8px; }
+.draft-pane { flex: 1; min-height: 0; overflow: auto; padding: 0 14px 14px; }
+.draft-pane table.data { font-size: 0.8rem; }
+/* Denser rows: this table is a live draft board, so more of it on screen beats
+   comfortable padding. */
+.draft-pane table.data thead th { padding: 7px 10px; }
+.draft-pane table.data tbody td { padding: 5px 10px; font-size: 0.82rem; }
+.draft-pane table.data .name-cell { min-width: 148px; }
+.draft-team-cell { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+
+/* Your own ranking column: click the number to type, drag the grip to nudge. */
+.my-rank { white-space: nowrap; }
+/* The whole cell is the drag target. A grip glyph alone was a ~10px hit area and
+   read as decoration, so it is now a visible affordance on a grabbable cell. */
+.my-rank.grabbable {
+  cursor: grab; user-select: none; touch-action: none;
+  background: color-mix(in oklab, var(--accent) 7%, transparent);
+  border-left: 2px solid color-mix(in oklab, var(--accent) 45%, transparent);
+}
+.my-rank.grabbable:hover { background: color-mix(in oklab, var(--accent) 16%, transparent); }
+.my-rank.grabbable:active { cursor: grabbing; }
+/* Keyboard users get the same affordance the pointer gets. */
+.my-rank.grabbable:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+  background: color-mix(in oklab, var(--accent) 20%, transparent);
+}
+.draft-drawer-filters button[disabled] { opacity: 0.45; cursor: not-allowed; }
+.my-rank-grip {
+  color: var(--accent); font-size: 0.9rem; line-height: 1;
+  margin-right: 6px; letter-spacing: -2px;
+  opacity: 0.75;
+}
+.my-rank.grabbable:hover .my-rank-grip { opacity: 1; }
+.my-rank-num {
+  cursor: text; font-weight: 700; color: var(--fg-0);
+  padding: 1px 4px; border-radius: 4px;
+  border: 1px solid transparent;
+}
+.my-rank-num:hover { border-color: var(--border-hot); background: var(--bg-2); }
+.my-rank-num.unranked { color: var(--fg-3); font-weight: 600; }
+.my-rank-input {
+  width: 46px; padding: 1px 4px; text-align: right;
+  font-size: 0.82rem; font-weight: 700;
+}
+.draft-reorder td { cursor: default; }
+tr.dragging { opacity: 0.55; background: var(--bg-3) !important; }
+
+@media (max-width: 960px) {
+  .draft-drawer { left: 0; }
+  .draft-board-wrap { max-height: 40vh; }
+}
+@media (max-width: 700px) {
+  /* At 390px the filter row wrapped to 302px of a 354px tray, leaving room for
+     exactly one table row. Scroll it sideways in a single line instead: every
+     control stays reachable and it costs ~44px. */
+  .draft-drawer-filters .filters {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 8px 10px;
+    gap: 8px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .draft-drawer-filters .filters .group { flex: none; }
+  .draft-drawer-filters .filters .spacer { display: none; }
+  .draft-drawer-filters .filters input[type=search] { min-width: 130px; }
+  /* Same for the tray bar: the summary truncates rather than pushing the tabs
+     and the collapse control onto a second line. */
+  .draft-drawer-handle { flex-wrap: nowrap; gap: 8px; padding: 7px 10px 8px; }
+  .draft-drawer-grip { display: none; }
+  .draft-drawer-sub { flex: 1 1 auto; }
+}
+
+/* ============================================================
+   What to Look For - the weekly watch board
+   ============================================================
+   Three panels of the same row shape. The league color is passed in as --lg on
+   each chip so one rule paints every league, and the number column is tabular
+   so the eye can compare down the column instead of reading each value. */
+.watch-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.watch-key-item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--lg);
+  border-radius: 8px;
+  background: var(--bg-1);
+  color: var(--fg-1);
+  text-decoration: none;
+  font-size: 0.82rem;
+}
+.watch-key-item:hover { background: var(--bg-hover); border-color: var(--border-hot); }
+.watch-key-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--lg);
+  align-self: center;
+}
+.watch-key-name { font-weight: 600; }
+.watch-key-buyin { color: var(--fg-2); }
+.watch-key-opp { color: var(--fg-3); font-size: 0.76rem; }
+
+.watch-panels {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  align-items: start;
+}
+.watch-panel { margin-top: 0; }
+.watch-panel + .watch-panel { margin-top: 0; }
+.watch-panel-count {
+  margin-left: 8px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--bg-3);
+  color: var(--fg-2);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+.watch-panel-sub {
+  color: var(--fg-3);
+  font-size: 0.78rem;
+  line-height: 1.45;
+  margin: 0 0 10px;
+}
+
+.watch-rows { display: flex; flex-direction: column; }
+.watch-row {
+  /* Chips get their own line at every width. Sharing a line with the name meant
+     a player in three leagues rendered as "Bre..." while his chips ran to the
+     edge, which loses the one field the row exists to show. */
+  display: grid;
+  grid-template-columns: 1.6rem minmax(0, 1fr) 2.6rem 3.4rem;
+  grid-template-areas:
+    "rank name  proj  index"
+    ".    chips chips chips"
+    ".    bar   bar   bar";
+  align-items: center;
+  column-gap: 8px;
+  row-gap: 4px;
+  padding: 8px 0 9px;
+  border-top: 1px solid var(--border);
+}
+.watch-row:first-child { border-top: 0; }
+.watch-rank { grid-area: rank; color: var(--fg-3); font-size: 0.78rem; text-align: right; }
+.watch-name { grid-area: name; display: flex; flex-direction: column; min-width: 0; }
+.watch-player {
+  font-weight: 600;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.watch-meta { color: var(--fg-3); font-size: 0.72rem; }
+.watch-chips { grid-area: chips; display: flex; flex-wrap: wrap; gap: 4px; }
+.watch-chip {
+  border: 1px solid var(--lg);
+  border-radius: 999px;
+  padding: 1px 6px;
+  font-size: 0.66rem;
+  font-weight: 600;
+  color: var(--lg);
+  white-space: nowrap;
+}
+/* Starting against you reads as an outline, starting for you reads as filled:
+   the two sides have to be tellable apart without relying on the arrow alone. */
+.watch-chip.for { background: color-mix(in oklab, var(--lg) 18%, transparent); }
+.watch-chip.against { background: transparent; opacity: 0.85; border-style: dashed; }
+.watch-proj { grid-area: proj; color: var(--fg-2); font-size: 0.8rem; text-align: right; }
+.watch-index { grid-area: index; font-weight: 700; font-size: 0.9rem; text-align: right; }
+.watch-index.up { color: var(--green); }
+.watch-index.down { color: var(--red); }
+.watch-bar {
+  grid-area: bar;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--bg-3);
+  overflow: hidden;
+}
+.watch-bar-fill { display: block; height: 100%; background: var(--fg-3); border-radius: 2px; }
+.watch-bar-fill.up { background: var(--green); }
+.watch-bar-fill.down { background: var(--red); }
+
+@media (max-width: 1100px) {
+  .watch-panels { grid-template-columns: 1fr; }
+}
+@media (max-width: 520px) {
+  .watch-row { grid-template-columns: 1.4rem minmax(0, 1fr) 2.4rem 3.2rem; column-gap: 6px; }
+  .watch-key-opp { display: none; }
 }

@@ -13,6 +13,16 @@ Then re-run build_sos.py; posted Odds-API games override the projected weeks.
 """
 import json, os, sys, argparse, urllib.request, urllib.error, statistics, pathlib
 
+# Corporate TLS inspection re-signs certs with a root that Windows trusts but Python's
+# bundled CA set does not, so urlopen dies with CERTIFICATE_VERIFY_FAILED. truststore
+# points ssl at the OS store instead. Verification stays ON either way -- if truststore
+# is missing (pip install truststore) we fall back to the bundled CAs, never to no check.
+try:
+    import truststore
+    truststore.inject_into_ssl()
+except ImportError:
+    pass
+
 HERE = pathlib.Path(__file__).parent
 KEYFILE = HERE / "odds-api.key"
 NAME_TO_ABBR = {
@@ -52,6 +62,9 @@ def main():
             print(f"requests remaining this month: {r.headers.get('x-requests-remaining')}")
     except urllib.error.HTTPError as e:
         print(f"Odds API HTTP {e.code}: {e.read().decode()[:200]}"); sys.exit(1)
+    except urllib.error.URLError as e:
+        hint = " (TLS chain rejected: pip install truststore)" if "CERTIFICATE_VERIFY" in str(e.reason) else ""
+        print(f"Odds API unreachable: {e.reason}{hint}"); sys.exit(1)
 
     lines = {}
     for ev in events:

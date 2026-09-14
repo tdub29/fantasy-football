@@ -6,6 +6,7 @@ import json, pathlib, urllib.request, time
 ROOT = pathlib.Path(__file__).parent.parent.parent  # Fantasy Football/
 LEAGUES = [
     ("Password is taco", "1341184676601028608"),
+    ("Phi Kap Fantasy",  "1389722402430136320"),
     ("The League",       "1314860638501076992"),
     ("yuH",              "1312276370583220224"),
 ]

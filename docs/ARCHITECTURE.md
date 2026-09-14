@@ -26,6 +26,7 @@ Hash-based, single-level dispatcher in `route()`:
 #roster/:leagueId/:rosterId/:tab?   tabs: snapshot | strategy | roster | angles
 #trade/:leagueId?
 #compare/:leagueId/:rA/:rB
+#draft/:draftId?
 #strategy
 #action
 #sources
@@ -36,6 +37,56 @@ Hash-based, single-level dispatcher in `route()`:
 required args is the sub-tab. `viewDashboard`, `viewLeague`, `viewRoster`
 all accept a `tabArg` and validate it against an allowed list, defaulting
 to the first tab.
+
+## Draft Room (`#draft`), the one live-polling view
+
+`viewDraft` is the only view whose data comes from Sleeper at render time
+rather than from `data/*.js`. Two facts shape it:
+
+- **Any draft is readable by id, mocks included.** A mock carries
+  `league_id: null` and `metadata.type: 'league_mock'`, and never appears in
+  `/user/<id>/drafts`, which is why the picker takes a pasted URL. The board
+  itself does not care which kind it got.
+- **`draftAsLeague(d)` turns a draft into a league object.** The draft
+  publishes `slots_*` and `scoring_type`, enough to build `roster_positions`
+  and `scoring` and hand them to `offenseStartingSlots`, `fillLineup`,
+  `projPoints` and `vorByPid` unchanged. When the draft belongs to a league
+  in `window.LEAGUES` the real scoring map is borrowed instead, because
+  `scoring_type` alone loses per-league tweaks (an INT at -2, TE premium).
+
+The layout copies Sleeper on purpose, because that is the shape muscle memory
+expects mid-draft:
+
+- **The board is a grid, teams across and rounds down**, not a feed. Cells carry
+  the snake label (`2.11`), the player, and `POS-TEAM (bye)`, tinted by position
+  with the same `--c` idiom as `.pos-chip`. Your column is ringed, the cell on
+  the clock gets an accent border, and the grid scrolls that cell into view when
+  a pick lands.
+- **The tray at the bottom holds everything you act on**, Sleeper-style: two
+  tabs, `Available` (the best-available table plus its filters) and `Your team`.
+  Tap the bar to open or close it, drag the bar to resize; a press that moves
+  under 4px counts as a tap, anything more is a resize. A tab tapped while the
+  tray is shut opens it on that tab. Tab, open state and height persist per
+  draft. The tray body is a flex column so the filters stay pinned while only
+  the table scrolls.
+- **`Mine` is your own editable ranking**, seeded from the full-PPR Gibbs board
+  and stored in `localStorage` (`ff-my-rankings-v1`) as an ORDERED ARRAY of
+  sleeper ids, so rank is the index and a gap or a tie is unrepresentable. Type
+  a number to jump a player; drag the grip to nudge him, which is enabled only
+  when sorted by `Mine` ascending. The store is global, not per-draft.
+- **What it polls depends on the draft's live status, which is re-read.** Not
+  running (`pre_draft` / `paused`) asks only whether it started, every 15s.
+  Running polls `/picks` at 1s-2s (10s once stalled) and re-reads status every
+  fifteenth beat. `complete` is terminal and holds no timer. The `Live` button
+  reports which of those states it is in.
+- The tray is `position: fixed` and pads `#main` to stay clear of the board,
+  which is why leaving the view calls `teardownDraftView()` rather than just
+  clearing the poll timer.
+Best available sorts by **VOR** by default, not points: raw points always
+drafts a QB first. Kickers and defenses carry no projection in this repo, so
+they never appear on the board. `_draftTimer` is the only interval the app
+holds, and `route()` calls `stopDraftPoll()` so navigating away cannot leave
+it polling a view that is gone.
 
 `tabBar(tabs, activeKey, hashFor)` + `breadcrumbs(crumbs)` are reusable
 helpers, defined near the top of app.js next to `pageHeader(...)`.
@@ -70,15 +121,20 @@ the league. But if pick values feed roster strength, and strength feeds pick
 values, we get an infinite loop.
 
 **Solution:**
-- `computePlayerStrength(roster, league)` — players only, NO picks
-- `computeRosterStrength(roster, league)` — calls computePlayerStrength
+- `startingStrength(roster, league, yearsOut, includePicks=false)` — best legal
+  lineup, NO picks when `includePicks` is false
+- `computeRosterStrength(roster, league)` — calls `computePlayerStrength`
   then adds owned picks via `rosterOwnedPicks` + `pickValue` (which calls
-  `originSlot` → `computePlayerStrength`, terminating)
-- `originSlot()` uses player-only strength to break the cycle, and this is
-  also semantically correct: a team's expected end-of-year finish is
-  driven by their on-field roster, not by their pick stockpile.
+  `originSlot` → `startingStrength` with picks off, terminating)
+- `originSlot()` ranks by picks-free STARTING strength. That breaks the cycle
+  and is the correct model twice over: finish is driven by the lineup you
+  field, not by a pick stockpile *and not by roster depth*. It used to rank on
+  `computePlayerStrength` (sum of every rostered player), which ranked a
+  depth-hoarding rebuilder among the best teams and priced their future first
+  as a late-round pick. `js/origin-slot.test.js` pins this.
 
-If you ever refactor `computeRosterStrength`, preserve this split.
+If you ever refactor `computeRosterStrength`, preserve this split, and never
+pass `includePicks: true` from `originSlot`.
 
 ## Value share
 
@@ -149,7 +205,11 @@ on overflow. `.page-actions` becomes full-width below 720px.
 ```bash
 # from repo root
 python site/data/build_ktc.py        # refresh KTC players + picks
-python site/data/build_jacob_gibbs.py path/to/FantasyPros.csv  # refresh dated half-PPR context
+# refresh the dated half-PPR context board (hand-fed CSV; --source/--title label it)
+python site/data/build_jacob_gibbs.py site/data/_sources/jacob-gibbs-2026-08-14.csv \
+  --updated-at 2026-08-14 --source "Jacob Gibbs via CBS Sports" --title "2026 Top-175 Overall (Half-PPR)"
+python site/data/build_expert_rankings.py   # rebuild the toggleable analyst columns
+python site/data/_sources/build_gibbs_brief.py  # regenerate site/gibbs-tiers.html to match
 python Leagues/build_league_folders.py  # refresh Sleeper roster cache
 python site/data/build_site_data.py  # rebuild site data from caches
 ```

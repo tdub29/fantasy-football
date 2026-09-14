@@ -1,19 +1,29 @@
 """Pull PrizePicks NFL player lines (free, no key) and parse to clean per-player rows.
 
 PrizePicks' pick'em numbers ARE the market line for each stat (Pass Yards, Rush+Rec
-Yds, Receptions, etc.). Public JSON:API endpoint, no auth. BUT Cloudflare 403s
-datacenter/cloud IPs -- run this from your own machine (residential IP) or feed it a
-JSON dump you saved from a browser.
+Yds, Receptions, etc.). JSON:API endpoint, no auth. BUT it now sits behind DataDome
+on top of Cloudflare, so the live fetch is effectively dead from a script: verified
+2026-08-11 that curl_cffi (browser TLS) 403s and headless Chrome gets served a
+geo.captcha-delivery.com challenge even from this residential IP. The parser is the
+valuable part -- feed it a dump saved from a real logged-in browser.
 
-Usage:
-  python fetch_prizepicks.py                      # live fetch, NFL (league 9)
-  python fetch_prizepicks.py --league 7           # another league id
+Leagues: 9 = NFL weekly props. 163 = NFLSZN, the season-long board that
+build_offense_components.py reads (prizepicks-nfl-season-lines.json).
+
+Usage (plain `python` is fine -- these scripts are stdlib-only, no venv needed):
+  python fetch_prizepicks.py                      # try live fetch, NFL weekly (league 9)
   python fetch_prizepicks.py --all-odds           # include demon/goblin variants
-  python fetch_prizepicks.py --from-file raw.json # parse a browser-saved dump (403 fallback)
+  # season board, from a browser dump (the path that actually works):
+  python fetch_prizepicks.py --league 163 --from-file szn.json --out prizepicks-nfl-season-lines.json
 
-403 fallback: open the URL it prints in your browser, Ctrl+S / copy the JSON to
-raw.json, then run with --from-file raw.json. The parser is the valuable part and
-works offline.
+Getting the dump (~1 min, real browser, no keys): open
+https://api.prizepicks.com/projections?league_id=163&per_page=250&page=1&single_stat=true
+in the Chrome you already browse PrizePicks in and save the JSON. ONE page is the
+whole board -- `per_page` is ignored on this endpoint and the response says
+`meta.total_pages: 1` (1346 rows / 290 players on 2026-08-11), so page=2 and page=3
+return byte-identical copies. Don't bother walking pages by hand. --from-file still
+takes several files for the day PrizePicks starts paginating again:
+  --from-file page1.json page2.json
 """
 import json, sys, argparse, urllib.request, urllib.error, pathlib, time
 
@@ -110,11 +120,13 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--league", default="9", help="PrizePicks league id (9=NFL)")
     ap.add_argument("--all-odds", action="store_true", help="include demon/goblin alt lines")
-    ap.add_argument("--from-file", help="parse a browser-saved projections JSON instead of fetching")
+    ap.add_argument("--from-file", nargs="+", help="parse browser-saved projections JSON (one file per API page) instead of fetching")
+    ap.add_argument("--out", default="prizepicks-nfl-lines.json",
+                    help="output filename in projections/ (season board: prizepicks-nfl-season-lines.json)")
     args = ap.parse_args()
 
     if args.from_file:
-        docs = [json.loads(pathlib.Path(args.from_file).read_text(encoding="utf-8"))]
+        docs = [json.loads(pathlib.Path(f).read_text(encoding="utf-8")) for f in args.from_file]
     else:
         docs = fetch_pages(args.league)
     rows = parse(docs, args.all_odds)
@@ -127,11 +139,11 @@ def main():
         pivot.setdefault(key, {"player": r["player"], "team": r["team"], "pos": r["pos"], "lines": {}})
         pivot[key]["lines"][r["stat_type"]] = r["line"]
 
-    (HERE / "prizepicks-nfl-lines.json").write_text(
+    (HERE / args.out).write_text(
         json.dumps({"league": args.league, "count": len(rows), "rows": rows,
                     "players": list(pivot.values())}, ensure_ascii=False, indent=1), encoding="utf-8")
     stats = sorted({r["stat_type"] for r in rows})
-    print(f"parsed {len(rows)} lines across {len(pivot)} players -> prizepicks-nfl-lines.json")
+    print(f"parsed {len(rows)} lines across {len(pivot)} players -> {args.out}")
     print("stat types:", ", ".join(s for s in stats if s))
     for r in rows[:12]:
         print(f"  {r['player']:22s} {r['team'] or '?':3s} {r['stat_type']:18s} {r['line']}")

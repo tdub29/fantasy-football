@@ -1,0 +1,186 @@
+### Jacob Gibbs 2026 Fantasy Football Rankings - Top 175 overall, 16 tiers
+### Single-QB managed leagues, half-PPR redraft. Published by CBS Sports 2026-08-14;
+### the rankings exist only as two embedded images, so every row is typed by hand.
+###
+### THIS IS NOT A BUILD INPUT. jacob-gibbs-2026-08-14.csv is what build_jacob_gibbs.py
+### reads. This file is a SECOND, independent transcription of the same two images
+### (Trevor's phone photos, kept at ../_shots/gibbs-tiers-2026-08-16-p*.jpg), made
+### without reading that CSV. site/js/gibbs-tiers-source.test.js pins the generated
+### board to this file, which is only a real check because the two were typed apart.
+### They agree on every field of all 175 rows. Do not regenerate this from the CSV.
+rank	tier	name	team	bye	pos
+1	1	Jahmyr Gibbs	DET	6	RB
+2	1	Ja'Marr Chase	CIN	6	WR
+3	1	Puka Nacua	LAR	11	WR
+4	1	Bijan Robinson	ATL	11	RB
+5	1	Christian McCaffrey	SF	8	RB
+6	2	Amon-Ra St. Brown	DET	6	WR
+7	2	Jaxon Smith-Njigba	SEA	11	WR
+8	2	CeeDee Lamb	DAL	14	WR
+9	3	James Cook III	BUF	7	RB
+10	3	Ashton Jeanty	LV	13	RB
+11	3	Jonathan Taylor	IND	13	RB
+12	3	Omarion Hampton	LAC	7	RB
+13	3	Chase Brown	CIN	6	RB
+14	4	A.J. Brown	NE	11	WR
+15	4	Kenneth Walker III	KC	5	RB
+16	4	Derrick Henry	BAL	13	RB
+17	4	Saquon Barkley	PHI	10	RB
+18	4	Justin Jefferson	MIN	6	WR
+19	4	George Pickens	DAL	14	WR
+20	4	Malik Nabers	NYG	8	WR
+21	4	Drake London	ATL	11	WR
+22	4	De'Von Achane	MIA	6	RB
+23	5	Brock Bowers	LV	13	TE
+24	5	Nico Collins	HOU	8	WR
+25	5	Emeka Egbuka	TB	10	WR
+26	5	Jeremiyah Love	ARI	14	RB
+27	5	Zay Flowers	BAL	13	WR
+28	5	DeVonta Smith	PHI	10	WR
+29	6	Chris Olave	NO	8	WR
+30	6	Ladd McConkey	LAC	7	WR
+31	6	Tee Higgins	CIN	6	WR
+32	6	Jaylen Waddle	DEN	10	WR
+33	6	Trey McBride	ARI	14	TE
+34	6	Colston Loveland	CHI	10	TE
+35	6	Javonte Williams	DAL	14	RB
+36	6	Cam Skattebo	NYG	8	RB
+37	6	Luther Burden III	CHI	10	WR
+38	7	Rashee Rice	KC	5	WR
+39	7	Mike Evans	SF	8	WR
+40	7	Tetairoa McMillan	CAR	5	WR
+41	7	Christian Watson	GB	11	WR
+42	7	Davante Adams	LAR	11	WR
+43	8	Josh Jacobs	GB	11	RB
+44	8	Kyren Williams	LAR	11	RB
+45	8	D'Andre Swift	CHI	10	RB
+46	8	Josh Allen	BUF	7	QB
+47	8	Bucky Irving	TB	10	RB
+48	8	Breece Hall	NYJ	13	RB
+49	8	Bhayshul Tuten	JAC	7	RB
+50	8	Garrett Wilson	NYJ	13	WR
+51	8	Rome Odunze	CHI	10	WR
+52	8	Jameson Williams	DET	6	WR
+53	8	Sam LaPorta	DET	6	TE
+54	8	TreVeyon Henderson	NE	11	RB
+55	8	Quinshon Judkins	CLE	11	RB
+56	8	David Montgomery	HOU	8	RB
+57	8	Tyler Warren	IND	13	TE
+58	8	Terry McLaurin	WAS	7	WR
+59	8	Parker Washington	JAC	7	WR
+60	8	DJ Moore	BUF	7	WR
+61	8	Tucker Kraft	GB	11	TE
+62	8	Jordyn Tyson	NO	8	WR
+63	9	Travis Etienne Jr.	NO	8	RB
+64	9	Josh Downs	IND	13	WR
+65	9	Jayden Reed	GB	11	WR
+66	9	Carnell Tate	TEN	9	WR
+67	9	Jadarian Price	SEA	11	RB
+68	9	Harold Fannin Jr.	CLE	11	TE
+69	9	Drake Maye	NE	11	QB
+70	9	Lamar Jackson	BAL	13	QB
+71	9	Michael Pittman Jr.	PIT	9	WR
+72	9	Rhamondre Stevenson	NE	11	RB
+73	10	Quentin Johnston	LAC	7	WR
+74	10	Jayden Daniels	WAS	7	QB
+75	10	Stefon Diggs	WAS	7	WR
+76	10	Makai Lemon	PHI	10	WR
+77	10	Jonathon Brooks	CAR	5	RB
+78	10	Caleb Williams	CHI	10	QB
+79	10	Justin Herbert	LAC	7	QB
+80	10	Jalen Hurts	PHI	10	QB
+81	10	Jaylen Warren	PIT	9	RB
+82	10	Chris Godwin Jr.	TB	10	WR
+83	10	Joe Burrow	CIN	6	QB
+84	10	Trevor Lawrence	JAC	7	QB
+85	10	Marvin Harrison Jr.	ARI	14	WR
+86	10	Jakobi Meyers	JAC	7	WR
+87	10	Michael Wilson	ARI	14	WR
+88	10	Kyle Pitts Sr.	ATL	11	TE
+89	10	Isaiah Likely	NYG	8	TE
+90	11	Rachaad White	WAS	7	RB
+91	11	Kyle Monangai	CHI	10	RB
+92	11	Rico Dowdle	PIT	9	RB
+93	11	Jordan Addison	MIN	6	WR
+94	11	Wan'Dale Robinson	TEN	9	WR
+95	11	Brian Thomas Jr.	JAC	7	WR
+96	11	Alec Pierce	IND	13	WR
+97	11	Tony Pollard	TEN	9	RB
+98	11	Kenny Gainwell	TB	10	RB
+99	11	Blake Corum	LAR	11	RB
+100	11	Jordan Mason	MIN	6	RB
+101	11	Aaron Jones Sr.	MIN	6	RB
+102	11	Brock Purdy	SF	8	QB
+103	12	RJ Harvey	DEN	10	RB
+104	12	Zach Charbonnet	SEA	11	RB
+105	12	J.K. Dobbins	DEN	10	RB
+106	12	Kyler Murray	MIN	6	QB
+107	12	Jaxson Dart	NYG	8	QB
+108	12	KC Concepcion	CLE	11	WR
+109	12	DK Metcalf	PIT	9	WR
+110	12	Jayden Higgins	HOU	8	WR
+111	12	Jalen Coker	CAR	5	WR
+112	12	Jacory Croskey-Merritt	WAS	7	RB
+113	12	Dallas Goedert	PHI	10	TE
+114	12	Courtland Sutton	DEN	10	WR
+115	12	Xavier Worthy	KC	5	WR
+116	12	Romeo Doubs	NE	11	WR
+117	12	Malik Willis	MIA	6	QB
+118	12	Bo Nix	DEN	10	QB
+119	12	Dak Prescott	DAL	14	QB
+120	12	Chris Rodriguez Jr.	JAC	7	RB
+121	12	Baker Mayfield	TB	10	QB
+122	12	Patrick Mahomes II	KC	5	QB
+123	12	Jared Goff	DET	6	QB
+124	12	Matthew Stafford	LAR	11	QB
+125	13	Dalton Kincaid	BUF	7	TE
+126	13	George Kittle	SF	8	TE
+127	13	Matthew Golden	GB	11	WR
+128	13	Chuba Hubbard	CAR	5	RB
+129	13	Tyrone Tracy Jr.	NYG	8	RB
+130	13	Jonah Coleman	DEN	10	RB
+131	13	Deebo Samuel Sr.	SF	8	WR
+132	13	Ryan Flournoy	DAL	14	WR
+133	13	De'Zhaun Stribling	SF	8	WR
+134	13	Jake Ferguson	DAL	14	TE
+135	13	Brenton Strange	JAC	7	TE
+136	14	Oronde Gadsden II	LAC	7	TE
+137	14	Tyjae Spears	TEN	9	RB
+138	14	Woody Marks	HOU	8	RB
+139	14	Tank Bigsby	PHI	10	RB
+140	14	Kimani Vidal	LAC	7	RB
+141	14	MarShawn Lloyd	GB	11	RB
+142	14	Emmett Johnson	KC	5	RB
+143	14	Demond Claiborne	MIN	6	RB
+144	14	Khalil Shakir	BUF	7	WR
+145	14	Tyler Shough	NO	8	QB
+146	14	Omar Cooper Jr.	NYJ	13	WR
+147	14	Jauan Jennings	MIN	6	WR
+148	14	Malik Washington	MIA	6	WR
+149	14	Keaton Mitchell	LAC	7	RB
+150	14	Cyrus Allen	KC	5	WR
+151	15	Jack Bech	LV	13	WR
+152	15	Jalen McMillan	TB	10	WR
+153	15	Chris Bell	MIA	6	WR
+154	15	Jordan Love	GB	11	QB
+155	15	Travis Kelce	KC	5	TE
+156	15	C.J. Stroud	HOU	8	QB
+157	15	Gunnar Helm	TEN	9	TE
+158	15	Daniel Jones	IND	13	QB
+159	15	Cam Ward	TEN	9	QB
+160	15	Terrance Ferguson	LAR	11	TE
+161	15	Mark Andrews	BAL	13	TE
+162	15	Dylan Sampson	CLE	11	RB
+163	15	Isiah Pacheco	DET	6	RB
+164	15	Tyler Allgeier	ARI	14	RB
+165	15	Ray Davis	BUF	7	RB
+166	15	Jaydon Blue	DAL	14	RB
+167	15	Rashid Shaheed	SEA	11	WR
+168	16	Ollie Gordon II	MIA	6	RB
+169	16	Kaytron Allen	WAS	7	RB
+170	16	Tre' Harris	LAC	7	WR
+171	16	Pat Bryant	DEN	10	WR
+172	16	Dontayvion Wicks	PHI	10	WR
+173	16	Zachariah Branch	ATL	11	WR
+174	16	Antonio Williams	WAS	7	WR
+175	16	Fernando Mendoza	LV	13	QB

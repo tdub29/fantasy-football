@@ -73,15 +73,33 @@ function findAll(node, tag, out = []) {
 const flat = text(wrap);
 assert(flat.includes('Biggest TE need:'), 'headline missing');
 const headline = flat.slice(flat.indexOf('Biggest TE need:'), flat.indexOf('Biggest TE need:') + 80);
-assert(headline.includes('MT EVEREST'), `neediest TE team should be MT EVEREST, got: ${headline}`);
 
 const tbody = findAll(wrap, 'tbody')[0];
 assert(tbody, 'no tbody');
 const rows = tbody.children.filter(c => c.tag === 'tr');
 assert.equal(rows.length, yuH.rosters.length, `expected ${yuH.rosters.length} team rows, got ${rows.length}`);
 
-// first row (neediest TE) is MT EVEREST and its TE cell says NEED
-assert(text(rows[0]).includes('MT EVEREST'), 'top row should be MT EVEREST');
-assert(text(rows[0]).includes('NEED'), 'MT EVEREST should carry a NEED label');
+// Assert the CONTRACT, not a snapshot of who happens to be neediest. Naming a team
+// here made this test fail on a data refresh that changed nothing but the tie-break:
+// two teams sat on the same best-TE value (38) and swapped places.
+// td layout: [team, QB, RB, WR, TE, top-need] — POS = ['QB','RB','WR','TE'].
+const teVal = (row) => {
+  const tds = row.children.filter(c => c.tag === 'td');
+  assert.equal(tds.length, 6, `expected 6 cells per row, got ${tds.length}`);
+  const v = parseFloat(text(tds[4]).trim().split(/\s+/)[0]);
+  assert(Number.isFinite(v), `unparseable TE value in row: ${text(row)}`);
+  return v;
+};
+const teVals = rows.map(teVal);
+for (let i = 1; i < teVals.length; i++) {
+  assert(teVals[i] >= teVals[i - 1],
+    `rows must sort by ascending best-TE value (neediest first); row ${i} (${teVals[i]}) < row ${i - 1} (${teVals[i - 1]})`);
+}
 
-console.log(`PASS team-needs: ${rows.length} teams, biggest TE need = ${headline.replace('Biggest TE need: ', '').split('—')[0].trim()}`);
+// The headline names the same team as the top row, and that row's TE cell is flagged.
+const topTeam = text(rows[0].children.filter(c => c.tag === 'td')[0]).replace('YOU', '').trim();
+assert(headline.includes(topTeam), `headline should name the top row team ${topTeam}, got: ${headline}`);
+assert(/NEED|THIN/.test(text(rows[0].children.filter(c => c.tag === 'td')[4])),
+  `neediest team's TE cell should carry NEED or THIN, got: ${text(rows[0])}`);
+
+console.log(`PASS team-needs: ${rows.length} teams, biggest TE need = ${topTeam} (TE value ${teVals[0]}, max ${teVals[teVals.length - 1]})`);

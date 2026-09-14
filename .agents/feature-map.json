@@ -1,0 +1,357 @@
+{
+  "app": "fantasy-hub",
+  "entry": {
+    "type": "file",
+    "path": "site/index.html"
+  },
+  "viewport": {
+    "width": 1600,
+    "height": 1000
+  },
+  "timeoutMs": 15000,
+  "failOnConsoleError": true,
+  "features": [
+    {
+      "id": "shell-sidebar",
+      "name": "App shell and sidebar nav",
+      "path": [],
+      "selector": "#sidebar",
+      "assert": "document.querySelectorAll('#sidebar a[href^=\"#\"]').length >= 11",
+      "notes": "Eleven routes in four sections, re-rendered by renderSidebar() on every route change. Fewer than eleven links means a ROUTES entry was dropped or renderSidebar threw before finishing, which also leaves the previous view on screen."
+    },
+    {
+      "id": "dashboard",
+      "name": "Dashboard: Overview tab",
+      "path": [],
+      "selector": ".page-title",
+      "expect": {
+        "textMatches": "(?i)dashboard"
+      },
+      "assert": "document.querySelectorAll('#main .cmd-card').length >= 1 && document.querySelectorAll('#main .tab').length === 5",
+      "notes": "The default route when the hash is empty. Five tabs (Overview, Leagues, Trajectory, Market, Cornerstones) plus the command cards. An empty cmd-grid means the leagues data failed to load, and every other view will be thin too."
+    },
+    {
+      "id": "dashboard-leagues",
+      "name": "Dashboard: Leagues tab and positional heatmap",
+      "path": [
+        {
+          "eval": "location.hash='#dashboard/leagues'"
+        }
+      ],
+      "selector": "#main .heatmap",
+      "assert": "document.querySelectorAll('#main .league-card').length >= 3 && document.querySelectorAll('#main .heatmap-row').length >= 3",
+      "notes": "One card and one heatmap row per league (3 leagues for 2026). A missing row is a league whose roster failed to resolve, not a styling problem."
+    },
+    {
+      "id": "dashboard-trajectory",
+      "name": "Dashboard: Trajectory tab",
+      "path": [
+        {
+          "eval": "location.hash='#dashboard/trajectory'"
+        }
+      ],
+      "selector": "#main .traj-grid",
+      "assert": "document.querySelectorAll('#main .pv-fv-bar').length >= 1 && document.querySelectorAll('#main .traj-row').length >= 1",
+      "notes": "Present value vs future value per league plus the multi-year grid. The PV/FV bar width is inline-styled, so a NaN collapses the bar while the row still renders."
+    },
+    {
+      "id": "dashboard-market",
+      "name": "Dashboard: Market movers tab",
+      "path": [
+        {
+          "eval": "location.hash='#dashboard/market'"
+        }
+      ],
+      "selector": "#main .mover-row",
+      "assert": "document.querySelectorAll('#main .mover-row').length >= 3",
+      "notes": "Risers and fallers from the KTC snapshot. Empty means ktc.js loaded but the previous snapshot is missing, so every delta computed as zero and got filtered out."
+    },
+    {
+      "id": "dashboard-cornerstones",
+      "name": "Dashboard: Cornerstones tab",
+      "path": [
+        {
+          "eval": "location.hash='#dashboard/cornerstones'"
+        }
+      ],
+      "selector": "#main table.data",
+      "assert": "document.querySelectorAll('#main table.data tbody tr').length >= 5",
+      "notes": "The players you hold across leagues, tier-chipped. Rows are the intersection of rosters and rankings, so a rankings file rename empties this table with no error."
+    },
+    {
+      "id": "leagues",
+      "name": "My Leagues table",
+      "path": [
+        {
+          "eval": "location.hash='#leagues'"
+        }
+      ],
+      "selector": "#main table.data",
+      "assert": "document.querySelectorAll('#main table.data tbody tr').length === 5",
+      "notes": "One row per tracked league (4 Sleeper plus 1 ESPN for 2026). A different count means generated league data drifted and downstream views are stale."
+    },
+    {
+      "id": "league-detail",
+      "name": "League detail: standings",
+      "path": [
+        {
+          "eval": "location.hash='#leagues'"
+        },
+        {
+          "click": "#main table.data tbody tr"
+        }
+      ],
+      "selector": "#main .strength-row",
+      "assert": "location.hash.startsWith('#league/') && document.querySelectorAll('#main .strength-row').length >= 8",
+      "notes": "Reached by clicking a league row, which is the path a person actually uses, so the league id stays out of the map. One strength-row per team; fewer means the roster-to-team join lost owners."
+    },
+    {
+      "id": "league-players",
+      "name": "League detail: Players tab",
+      "path": [
+        {
+          "eval": "location.hash='#leagues'"
+        },
+        {
+          "click": "#main table.data tbody tr"
+        },
+        {
+          "click": "#main .tab[href$='/players']"
+        }
+      ],
+      "selector": "#main table.data",
+      "assert": "document.querySelectorAll('#main table.data tbody tr').length >= 100",
+      "notes": "Every rostered player in the league, with filters. This replaced the old All Players route, so it is the only full list left; a short table means the Sleeper roster payload truncated."
+    },
+    {
+      "id": "league-weekly-rankings",
+      "name": "League Players: weekly rankings and Sleeper grid",
+      "path": [
+        {
+          "eval": "location.hash='#league/1389722402430136320/players'"
+        }
+      ],
+      "selector": "#main table.weekly-rankings-table",
+      "assert": "document.querySelectorAll('#main table.weekly-rankings-table tbody tr').length >= 400 && document.querySelectorAll('#main table.weekly-rankings-table thead th').length === 10 && Array.from(document.querySelectorAll('#main table.weekly-rankings-table thead th')).some(th => th.textContent.replace(/[↓↑]/g, '').trim() === 'V−S') && document.querySelector('#main .player-table-views button[aria-pressed=\"true\"]')?.textContent === 'Weekly'",
+      "notes": "Phi Kap Fantasy is redraft, so its Players tab defaults to Weekly. Columns include league ownership, Vegas, Sleeper, FantasyPros ECR, and isolated Jacob Gibbs ranks."
+    },
+    {
+      "id": "league-sleeper-weeks",
+      "name": "League Players: Sleeper weeks 1 through 18",
+      "path": [
+        {
+          "eval": "location.hash='#league/1389722402430136320/players'"
+        },
+        {
+          "click": "#main .player-table-views button:nth-child(3)"
+        }
+      ],
+      "selector": "#main table.sleeper-weeks-table",
+      "assert": "document.querySelectorAll('#main table.sleeper-weeks-table thead th').length === 23 && document.querySelectorAll('#main table.sleeper-weeks-table tbody tr').length >= 400",
+      "notes": "Five identity and ownership columns plus W1 through W18 Sleeper PPR projections."
+    },
+    {
+      "id": "espn-league-import",
+      "name": "ESPN league: roster ownership and weekly Players view",
+      "path": [
+        {
+          "eval": "location.hash='#league/1532688686/timeline'"
+        },
+        {
+          "waitFor": "#main .strength-row"
+        },
+        {
+          "eval": "location.hash='#league/1532688686/players'"
+        }
+      ],
+      "selector": "#main table.weekly-rankings-table",
+      "assert": "document.querySelector('#main .page-title')?.textContent === 'Washington Football League' && document.querySelector('#main .page-eyebrow-tag')?.textContent === 'REDRAFT' && document.querySelectorAll('#main table.weekly-rankings-table .owner-link').length >= 150 && !Array.from(document.querySelectorAll('#main .tab')).some(el => el.textContent.includes('Transactions')) && !document.querySelector('#sidebar a[href=\"#league/1532688686/transactions\"]')",
+      "notes": "Public ESPN league 1532688686 imports 12 teams and maps ESPN roster players to Sleeper ids so shared rankings and projections retain ownership overlays."
+    },
+    {
+      "id": "league-transactions",
+      "name": "League detail: Transactions tab",
+      "path": [
+        {
+          "eval": "location.hash='#leagues'"
+        },
+        {
+          "click": "#main table.data tbody tr"
+        },
+        {
+          "click": "#main .tab[href$='/transactions']"
+        }
+      ],
+      "selector": "#main .timeline-controls",
+      "notes": "Trade and waiver timeline with its own controls. The timeline is legitimately empty in the preseason, so this asserts the controls render, never a row count."
+    },
+    {
+      "id": "roster-view",
+      "name": "Roster view: team blueprint",
+      "path": [
+        {
+          "eval": "location.hash='#leagues'"
+        },
+        {
+          "click": "#main table.data tbody tr"
+        },
+        {
+          "click": "#main a[href^='#roster/']"
+        }
+      ],
+      "selector": "#main .blueprint-row",
+      "assert": "location.hash.startsWith('#roster/') && document.querySelectorAll('#main .br-stat').length >= 1",
+      "notes": "Per-team tier, archetype and headline stats, with Snapshot / Strategy / Roster tabs. A missing tier value means the roster phase diagnosis returned undefined for that team."
+    },
+    {
+      "id": "action-center",
+      "name": "Action Center to-do list",
+      "path": [
+        {
+          "eval": "location.hash='#action'"
+        }
+      ],
+      "selector": "#main .todo-add",
+      "assert": "!!document.querySelector('#main .todo-list')",
+      "notes": "Your weekly to-do list, persisted in localStorage. Legitimately empty on a fresh profile, so this asserts the add box and the list container, not rows."
+    },
+    {
+      "id": "trade-calculator",
+      "name": "Trade Calculator",
+      "path": [
+        {
+          "eval": "location.hash='#trade'"
+        }
+      ],
+      "selector": "#main .trade-calc",
+      "assert": "document.querySelectorAll('#main .trade-side-card').length === 2 && !!document.querySelector('#main .trade-search-input')",
+      "notes": "Two side cards plus player search. The fairness verdict only appears once both piles have something, so the empty state is correct; losing a side card is the real break."
+    },
+    {
+      "id": "projections",
+      "name": "Player Projections tables",
+      "path": [
+        {
+          "eval": "location.hash='#projections'"
+        }
+      ],
+      "selector": "#main table.data",
+      "assert": "document.querySelectorAll('#main table.data tbody tr').length >= 100",
+      "notes": "Blended PrizePicks / Sleeper projections, offense and defense in separate tables (~180 rows). A sharp drop means one source file failed to parse and the blend silently fell back to a single source."
+    },
+    {
+      "id": "sos-grid",
+      "name": "Strength of Schedule grid",
+      "path": [
+        {
+          "eval": "location.hash='#sos'"
+        }
+      ],
+      "selector": "#main table.data",
+      "assert": "document.querySelectorAll('#main table.data tbody tr').length === 32 && document.querySelectorAll('#main .team-chip').length >= 32",
+      "notes": "All 32 NFL teams, one row each, cells colored by opponent defense vs the selected position. Under 32 means sos-grid.js lost a team, which shifts every bye week after it."
+    },
+    {
+      "id": "draft-room",
+      "name": "Draft Room entry form",
+      "path": [
+        {
+          "eval": "location.hash='#draft'"
+        }
+      ],
+      "selector": "#main .card-title",
+      "expect": {
+        "textMatches": "(?i)draft"
+      },
+      "notes": "Best-available board for a Sleeper draft URL. Without a draft id it shows the paste form, the only state reachable offline; the live board needs the Sleeper API and is deliberately not verified here."
+    },
+    {
+      "id": "my-rankings",
+      "name": "My Rankings editable board",
+      "path": [
+        {
+          "eval": "location.hash='#rankings'"
+        }
+      ],
+      "selector": "#main table.data",
+      "assert": "document.querySelectorAll('#main table.data tbody tr').length >= 400 && document.querySelectorAll('#main .my-rank-grip').length >= 1",
+      "notes": "Your saved order seeded from Gibbs full-PPR (~527 rows), drag-reorderable by the grip. Losing the grips makes the board read-only with no error shown."
+    },
+    {
+      "id": "framework",
+      "name": "Framework (the dynasty rules)",
+      "path": [
+        {
+          "eval": "location.hash='#strategy'"
+        }
+      ],
+      "selector": "#main table.data",
+      "assert": "document.querySelectorAll('#main table.data tbody tr').length >= 20",
+      "notes": "The rule set every roster evaluation cites, rendered from strategy.js. An empty table means the roster views still render but with no reasoning behind them."
+    },
+    {
+      "id": "sources",
+      "name": "Sources: analyst toggles",
+      "path": [
+        {
+          "eval": "location.hash='#sources'"
+        }
+      ],
+      "selector": "#main .source-card",
+      "assert": "document.querySelectorAll('#main .switch').length >= 1 && document.querySelectorAll('#main .ranking-row').length >= 1",
+      "notes": "Which analysts feed the aggregate, with per-video toggles written to localStorage. A lost switch silently freezes the aggregate at its last state."
+    },
+    {
+      "id": "about",
+      "name": "About: methodology table",
+      "path": [
+        {
+          "eval": "location.hash='#about'"
+        }
+      ],
+      "selector": "#main table.data",
+      "assert": "document.querySelectorAll('#main table.data tbody tr').length >= 10",
+      "notes": "How rankings and team strength are computed. This is the page that keeps the numbers honest, so an empty table is a real regression, not a cosmetic one."
+    },
+    {
+      "id": "cmdk-palette",
+      "name": "Cmd+K command palette",
+      "path": [
+        {
+          "press": "Control+k"
+        }
+      ],
+      "selector": ".cmdk-backdrop",
+      "assert": "document.querySelectorAll('.cmdk-row').length >= 5",
+      "notes": "The front door: routes, leagues, rosters and ranked players are all searchable here, plus the two static Gibbs pages. Zero rows means rankIndex() threw while building the index, leaving an overlay you can only escape with Esc."
+    },
+    {
+      "id": "mobile-nav-toggle",
+      "name": "Mobile nav toggle",
+      "path": [
+        {
+          "click": "#nav-toggle"
+        }
+      ],
+      "selector": "#nav-scrim",
+      "assert": "document.body.classList.contains('nav-open')",
+      "notes": "The hamburger at phone widths; it sets body.nav-open and shows the scrim. Verified at 420px because the button is display:none on desktop, which is why this feature carries its own viewport. route() clears nav-open on every navigation, so a sidebar stuck open after a click is that line being lost.",
+      "viewport": {
+        "width": 420,
+        "height": 860
+      }
+    },
+    {
+      "id": "no-render-error",
+      "name": "Boot renders a view, not the error branch",
+      "path": [],
+      "selector": "#main .page-title",
+      "assert": "!document.querySelector('#main .empty')",
+      "notes": "route() catches render errors and prints them into a .empty div, so a thrown view looks like an empty page rather than a crash. This asserts that branch was not taken; failOnConsoleError covers the rest."
+    }
+  ],
+  "ignore": [
+    "api\\.sleeper\\.app"
+  ],
+  "ignoreReason": "Draft Room calls the live Sleeper API on mount to list your 2026 drafts. That call is the one deliberately-online surface in an otherwise file:// app, so it fails in a headless offline run. Scoped to the single host: any other failed request still fails the gate."
+}
