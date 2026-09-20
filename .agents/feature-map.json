@@ -102,8 +102,26 @@
         }
       ],
       "selector": "#main .strength-row",
-      "assert": "location.hash.startsWith('#league/') && document.querySelectorAll('#main .strength-row').length >= 8",
-      "notes": "Reached by clicking a league row, which is the path a person actually uses, so the league id stays out of the map. One strength-row per team; fewer means the roster-to-team join lost owners."
+      "assert": "location.hash.startsWith('#league/') && document.querySelectorAll('#main .strength-row').length >= 8 && !!document.querySelector('#main .standings-sort select') && !!document.querySelector('#main .standings-dir') && document.querySelector('#main .sos-head')?.textContent.includes('OPP BYE')",
+      "notes": "Reached by clicking a league row, which is the path a person actually uses. Strength ranks stay fixed while rows sort. Schedule difficulty exposes gross starter-bye production missing from the opponents this team will face."
+    },
+    {
+      "id": "standings-sort",
+      "name": "League standings: sensible sort order",
+      "path": [
+        {
+          "eval": "location.hash='#league/1341184676601028608'"
+        },
+        {
+          "sleepMs": 300
+        },
+        {
+          "eval": "(() => { const s=document.querySelector('#main .standings-sort select'); s.value='pa'; s.dispatchEvent(new Event('change',{bubbles:true})); })()"
+        }
+      ],
+      "selector": "#main .standings-dir",
+      "assert": "(() => { const rows=[...document.querySelectorAll('#main .strength-row')]; return rows.length >= 8 && Number(rows[0].dataset.pa) <= Number(rows.at(-1).dataset.pa) && rows.every(r => r.querySelector('.rank').textContent === '#' + r.dataset.strengthRank); })()",
+      "notes": "Points Against defaults low-first. Reordering never renumbers the underlying current-strength rank."
     },
     {
       "id": "league-players",
@@ -132,8 +150,8 @@
         }
       ],
       "selector": "#main table.weekly-rankings-table",
-      "assert": "document.querySelectorAll('#main table.weekly-rankings-table tbody tr').length >= 400 && document.querySelectorAll('#main table.weekly-rankings-table thead th').length === 10 && Array.from(document.querySelectorAll('#main table.weekly-rankings-table thead th')).some(th => th.textContent.replace(/[↓↑]/g, '').trim() === 'V−S') && document.querySelector('#main .player-table-views button[aria-pressed=\"true\"]')?.textContent === 'Weekly'",
-      "notes": "Phi Kap Fantasy is redraft, so its Players tab defaults to Weekly. Columns include league ownership, Vegas, Sleeper, FantasyPros ECR, and isolated Jacob Gibbs ranks."
+      "assert": "document.querySelectorAll('#main table.weekly-rankings-table tbody tr').length >= 400 && Array.from(document.querySelectorAll('#main table.weekly-rankings-table thead th')).map(th => th.textContent.replace(/[↓↑]/g, '').trim()).length >= 12 && ['Opp', 'V−S', 'FP ECR', 'FP ROS'].every(label => Array.from(document.querySelectorAll('#main table.weekly-rankings-table thead th')).map(th => th.textContent.replace(/[↓↑]/g, '').trim()).includes(label)) && document.querySelectorAll('#main table.weekly-rankings-table .weekly-opp-team').length >= 400 && Array.from(document.querySelectorAll('#main table.weekly-rankings-table .weekly-opp-rank')).some(el => /^#\\d+$/.test(el.textContent.trim())) && document.querySelector('#main .player-table-views button[aria-pressed=\"true\"]')?.textContent === 'Weekly'",
+      "notes": "Phi Kap Fantasy is redraft, so its Players tab defaults to Weekly. Opp shows this week's opponent plus position-specific defense rank from the same SOS grid. Other columns include league ownership, Vegas, Sleeper, FantasyPros weekly ECR, FantasyPros rest-of-season ECR, and isolated Jacob Gibbs ranks. A Gibbs ROS column renders only when he publishes a rest-of-season board, so the header count is a floor, not an equality."
     },
     {
       "id": "league-sleeper-weeks",
@@ -143,12 +161,27 @@
           "eval": "location.hash='#league/1389722402430136320/players'"
         },
         {
-          "click": "#main .player-table-views button:nth-child(3)"
+          "click": "#main .player-table-views button:text-is(\"Sleeper weeks\")"
         }
       ],
       "selector": "#main table.sleeper-weeks-table",
       "assert": "document.querySelectorAll('#main table.sleeper-weeks-table thead th').length === 23 && document.querySelectorAll('#main table.sleeper-weeks-table tbody tr').length >= 400",
       "notes": "Five identity and ownership columns plus W1 through W18 Sleeper PPR projections."
+    },
+    {
+      "id": "league-ros-rankings",
+      "name": "League Players: ROS tab opens on the rest-of-season column",
+      "path": [
+        {
+          "eval": "location.hash='#league/1389722402430136320/players'"
+        },
+        {
+          "click": "#main .player-table-views button:text-is(\"ROS\")"
+        }
+      ],
+      "selector": "#main table.weekly-rankings-table",
+      "assert": "document.querySelector('#main .player-table-views button[aria-pressed=\"true\"]')?.textContent === 'ROS' && Array.from(document.querySelectorAll('#main table.weekly-rankings-table thead th')).map(th => th.textContent.replace(/[\\u2193\\u2191]/g, '').trim()).includes('FP ROS') && document.querySelector('#main table.weekly-rankings-table thead th.sort-active')?.textContent.replace(/[\\u2193\\u2191]/g, '').trim() === 'FP ROS' && document.querySelectorAll('#main table.weekly-rankings-table tbody tr').length >= 400",
+      "notes": "Trevor could not find the rest-of-season rankings on 2026-09-16. They existed only as the 10th of eighteen columns inside a view named after the WEEK, with nothing in the navigation saying ROS. This pins the tab, that it lands sorted on FP ROS, and that the column is still there, so a later column shuffle cannot quietly bury it again."
     },
     {
       "id": "espn-league-import",
@@ -224,8 +257,32 @@
         }
       ],
       "selector": "#main .trade-calc",
-      "assert": "document.querySelectorAll('#main .trade-side-card').length === 2 && !!document.querySelector('#main .trade-search-input')",
-      "notes": "Two side cards plus player search. The fairness verdict only appears once both piles have something, so the empty state is correct; losing a side card is the real break."
+      "assert": "document.querySelectorAll('#main .trade-side-card').length === 2 && !!document.querySelector('#main .trade-search-input') && !!document.querySelector('#main .trade-title-run')",
+      "notes": "Two side cards, player search and an on-demand championship odds simulation. The fairness verdict only appears once both piles have something, so the empty state is correct."
+    },
+    {
+      "id": "trade-partners",
+      "name": "Trade Lab: who you trade with",
+      "path": [
+        {
+          "eval": "location.hash='#trade/1341184676601028608'"
+        },
+        {
+          "waitFor": "#main .trade-partners .partner-history > summary"
+        },
+        {
+          "eval": "(()=>{const d=[...document.querySelectorAll('#main .trade-partners .partner-history')].find(x=>x.querySelector('summary')?.textContent.includes('Karl Havoc'));if(d)d.open=true;return !!d})()"
+        },
+        {
+          "waitFor": "#main .trade-partners .partner-history[open] .partner-history-body .partner-load"
+        },
+        {
+          "sleepMs": 1200
+        }
+      ],
+      "selector": ".trade-partners .partner-history[open]",
+      "assert": "(()=>{const t=document.querySelector('#main .trade-partners .partner-history[open]')?.textContent||'';return ['@JCon4','2025 R1 (1.07 → Colston Loveland)','2025 R2 (2.07 → Tre Harris)','2025 R3 (3.07 → Elijah Arroyo)','2025 R3 (3.09 → Elic Ayomanor)'].every(v=>t.includes(v))})()",
+      "notes": "Counts completed trades per partner across every season in the previous_league_id chain. Generated Sleeper data makes the panel instant; the live API remains a fallback. Partner rows include the Sleeper username when available. Historical picks join season, round and stable original-owner user ID to the completed rookie draft, then show the exact slot and player selected."
     },
     {
       "id": "projections",
@@ -236,7 +293,7 @@
         }
       ],
       "selector": "#main table.data",
-      "assert": "document.querySelectorAll('#main table.data tbody tr').length >= 100",
+      "assert": "document.querySelectorAll('#main table.data tbody tr').length >= 100 && document.querySelectorAll('#main .seg-control-row').length === 2",
       "notes": "Blended PrizePicks / Sleeper projections, offense and defense in separate tables (~180 rows). A sharp drop means one source file failed to parse and the blend silently fell back to a single source."
     },
     {
@@ -248,8 +305,8 @@
         }
       ],
       "selector": "#main table.data",
-      "assert": "document.querySelectorAll('#main table.data tbody tr').length === 32 && document.querySelectorAll('#main .team-chip').length >= 32",
-      "notes": "All 32 NFL teams, one row each, cells colored by opponent defense vs the selected position. Under 32 means sos-grid.js lost a team, which shifts every bye week after it."
+      "assert": "document.querySelectorAll('#main table.data tbody tr').length === 32 && document.querySelectorAll('#main .team-chip').length >= 32 && document.querySelectorAll('#main .sos-position-tabs button[aria-pressed]').length === 4 && document.querySelector('#main .page-sub').textContent.includes('Week 1')",
+      "notes": "All 32 NFL teams, one row each, using pooled 2025 and completed 2026 games through Week 1. Under 32 means sos-grid.js lost a team, which shifts every bye week after it."
     },
     {
       "id": "draft-room",
@@ -318,6 +375,12 @@
       "name": "Cmd+K command palette",
       "path": [
         {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 300
+        },
+        {
           "press": "Control+k"
         }
       ],
@@ -348,6 +411,440 @@
       "selector": "#main .page-title",
       "assert": "!document.querySelector('#main .empty')",
       "notes": "route() catches render errors and prints them into a .empty div, so a thrown view looks like an empty page rather than a crash. This asserts that branch was not taken; failOnConsoleError covers the rest."
+    },
+    {
+      "id": "faab-archetypes",
+      "name": "League Transactions: FAAB archetype cost panel",
+      "path": [
+        {
+          "eval": "location.hash='#league/1341184676601028608/transactions'"
+        }
+      ],
+      "selector": ".faab-panel",
+      "assert": "document.querySelectorAll('#main .faab-panel .faab-row').length >= 8 && !!document.querySelector('#main .faab-panel .faab-box') && !!document.querySelector('#main .faab-panel .faab-median') && document.querySelectorAll('#main .faab-panel .faab-tabs .tab').length >= 3",
+      "notes": "Box plots use three decision-time dimensions: situation, position and NFL experience. Post-claim production is excluded because it was unknown when the bid was made. Every number is priced per league because budgets and local markets differ."
+    },
+    {
+      "id": "faab-archetype-history",
+      "name": "League FAAB: drill into archetype claim history",
+      "path": [
+        {
+          "eval": "location.hash='#league/1341184676601028608/transactions'"
+        },
+        {
+          "sleepMs": 600
+        },
+        {
+          "click": ".faab-panel .faab-history > summary"
+        },
+        {
+          "sleepMs": 300
+        }
+      ],
+      "selector": "#main .faab-history[open] .faab-history-table tbody tr",
+      "assert": "(() => { const d = document.querySelector('#main .faab-history[open]'); return !!d && Number(d.querySelector('.faab-n').textContent.replace('n=', '')) === d.querySelectorAll('tbody tr').length; })()",
+      "notes": "Each league-specific archetype row opens its paid claim history. Visible row count must equal displayed n. $0 adds stay in recommendation samples and zero-share, not paid-history n."
+    },
+    {
+      "id": "faab-league-tab",
+      "name": "League: FAAB tab beside Standings / Players / Transactions",
+      "path": [
+        {
+          "eval": "location.hash='#leagues'"
+        },
+        {
+          "sleepMs": 600
+        },
+        {
+          "click": "#main table.data tbody tr"
+        },
+        {
+          "sleepMs": 900
+        },
+        {
+          "click": ".tab-bar .tab[href$='/faab']"
+        },
+        {
+          "sleepMs": 600
+        }
+      ],
+      "selector": "#main .faab-panel",
+      "assert": "document.querySelectorAll('#main .faab-panel .faab-row').length >= 5 && document.querySelectorAll('#main .waiver-table tbody tr').length >= 3",
+      "notes": "FAAB is a league view like the others. It previously existed only at the top of the Transactions feed and inside a collapsed panel on the Action Center, which read as unimplemented three separate times. Trade Lab moved into this same bar and links out to its own #trade route rather than being re-implemented as a tab body. Note validTabs in viewLeague gates the sub-route: a tab present in the bar but absent from that list silently falls back to standings. Also asserts the week's waiver board, which carries the recommended bid range per candidate. Note the tab guard reads formats[fmt].situation.length: formats[fmt] is an object keyed by dimension, and an array .length check there silently removes the tab."
+    },
+    {
+      "id": "player-card-team-context",
+      "name": "Player card: team context blocks (tendencies, QB, turnover)",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 300
+        },
+        {
+          "eval": "location.hash='#rankings'"
+        },
+        {
+          "sleepMs": 2500
+        },
+        {
+          "press": "Control+k"
+        },
+        {
+          "fill": ".cmdk-input-wrap input",
+          "value": "Marvin Mims"
+        },
+        {
+          "sleepMs": 800
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "sleepMs": 1200
+        },
+        {
+          "eval": "[...document.querySelectorAll('.pm-tabs .tab')].find(t => /context/i.test(t.textContent)).click()"
+        },
+        {
+          "sleepMs": 400
+        }
+      ],
+      "selector": ".ctx-block .qb-line",
+      "assert": "document.querySelectorAll('.ctx-block').length >= 5 && document.querySelectorAll('.ctx-block .mini-kpi').length >= 4 && !!document.querySelector('.ctx-block .turn-list') && !!document.querySelector('.ctx-block .qb-line .coach-name') && !!document.querySelector('.ctx-block.availability')",
+      "notes": "The blocks contextBlock() builds from site/data/context.js: tendencies, the QB line, turnover, the new-team transition and career availability. Each reads a DIFFERENT derived file whose newest season is a different year, and a missing key does not throw, it renders nothing. On 2026-09-17 turnover moved to 2026 while qb_changes still topped out at 2025, a shared latest-season lookup missed, and all 32 teams silently lost the QB line while every other block and every other feature stayed green. So the markers are asserted BY NAME, not by a block count: .qb-line for the QB, .turn-list for turnover, .availability for career health (whose builder is the one the season_window guard protects). Mutation-checked by stripping the 32 qb objects out of context.js, which fails this case and nothing else. Lives behind the card's Context tab since the Value/Production/Context shell landed, so the path clicks that tab first; the element renders either way but is display:none until then."
+    },
+    {
+      "id": "player-card-career-chart",
+      "name": "Player card: career PPG chart",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 300
+        },
+        {
+          "eval": "location.hash='#rankings'"
+        },
+        {
+          "sleepMs": 2500
+        },
+        {
+          "press": "Control+k"
+        },
+        {
+          "fill": ".cmdk-input-wrap input",
+          "value": "Marvin Mims"
+        },
+        {
+          "sleepMs": 800
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "sleepMs": 1200
+        }
+      ],
+      "selector": ".cchart",
+      "assert": "document.querySelectorAll('.cchart polyline').length >= 1 && document.querySelectorAll('.cchart-now').length >= 1 && (document.querySelectorAll('.cchart-tabs').length === 0 || document.querySelectorAll('.cchart-tab.active').length === 1)",
+      "notes": "Career chart in KTC's grammar: filled area, high and low labelled, current value called out, signed delta. Replaced a 168x36 teal polyline with no axis, no years and no values. The KTC tab only appears once site/data/build_ktc_history.py has written ktc-history.js, so the tab bar is optional and a single series must still draw. Unit test: site/js/career-chart.test.js. UPDATE 2026-09-17: the KTC series was promoted out of this chart into ktcValueChart(), which opens the Value tab with its own 3mo/1yr/All range control and a signed change callout. This chart is points-per-game only now, so careerChart renders it with no tab strip at all, which is why the tab clause here is written to accept zero .cchart-tabs. The chart also now lives inside the hidden Production panel, so the assertion must not depend on visibility."
+    },
+    {
+      "id": "player-card-this-week",
+      "name": "Player card: this week's projection, opponent and DvP",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 300
+        },
+        {
+          "eval": "location.hash='#rankings'"
+        },
+        {
+          "sleepMs": 2500
+        },
+        {
+          "press": "Control+k"
+        },
+        {
+          "fill": ".cmdk-input-wrap input",
+          "value": "Marvin Mims"
+        },
+        {
+          "sleepMs": 800
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "sleepMs": 1200
+        }
+      ],
+      "selector": ".tw-card",
+      "assert": "document.querySelectorAll('.tw-card .tw-cell').length >= 2 && [...document.querySelectorAll('.tw-card .tw-val')].some(n => /[0-9]/.test(n.textContent))",
+      "notes": "Answers the weekly start-sit question the card previously answered with a season projection. Reads WEEKLY_RANKINGS for the per-week projection and sos-grid.js for defense-vs-position, which index.html had been loading unread. A bye renders as a bye rather than a zero, and an IDP shows the opponent without a DvP rank because the grid covers QB/RB/WR/TE only. Runs LAST of the three features that share the Cmd+K player-card path: an open modal swallows the next feature's Control+k, so inserting this one first made team-context time out waiting for .qb-line."
+    },
+    {
+      "id": "player-card-number-band",
+      "name": "Player card: six-cell number band",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 300
+        },
+        {
+          "eval": "location.hash='#rankings'"
+        },
+        {
+          "sleepMs": 2500
+        },
+        {
+          "press": "Control+k"
+        },
+        {
+          "fill": ".cmdk-input-wrap input",
+          "value": "Jahmyr Gibbs"
+        },
+        {
+          "sleepMs": 800
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "sleepMs": 1400
+        }
+      ],
+      "selector": ".num-band",
+      "assert": "document.querySelectorAll('.num-band .num-cell').length >= 4 && ['Value','Value rank','Tier','Proj pts','VOR','Age'].every(l => [...document.querySelectorAll('.num-band .num-cell-label')].some(e => e.textContent.trim() === l)) && document.querySelectorAll('.price-line').length === 0",
+      "notes": "The six figures the card is read for, in one fixed order, replacing two stacked rows of chips that wrapped differently on every player. Gibbs is used deliberately: he is ranked AND has an offense projection, so all six cells are reachable and a missing one is a real defect. Six is a ceiling, not a floor, for other players: Value and Tier need a ranking, Value rank and Proj pts come from mispricingIndex() which is built from OFFENSE_PROJ.offense only (so an IDP has neither), and Cooper Rush correctly renders one cell. The .price-line clause is the anti-duplication check: that class was the old chip row, and it must stay gone or every number prints twice. Browser matrix: site/_playercard_check.py."
+    },
+    {
+      "id": "player-card-detail-tabs",
+      "name": "Player card: Value / Production / Context tabs",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 300
+        },
+        {
+          "eval": "location.hash='#rankings'"
+        },
+        {
+          "sleepMs": 2500
+        },
+        {
+          "press": "Control+k"
+        },
+        {
+          "fill": ".cmdk-input-wrap input",
+          "value": "Jahmyr Gibbs"
+        },
+        {
+          "sleepMs": 800
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "sleepMs": 1400
+        }
+      ],
+      "selector": ".pm-tab-bar",
+      "assert": "document.querySelectorAll('.pm-tab-bar [role=tab]').length === 3 && [...document.querySelectorAll('.pm-panel')].filter(p => !p.hidden).length === 1 && document.querySelectorAll('.pm-tab-bar [role=tab][aria-selected=\"true\"]').length === 1 && !!document.querySelector('.pm-panel:not([hidden]) .ktcv-block')",
+      "notes": "Seventeen reference blocks behind three tabs, reusing .tab-bar / .tab so the card inherits the 44px touch target rather than growing a second tab component. Exactly one panel visible is the load-bearing assertion: the panels are siblings and a stale hidden flag shows two at once. The last clause pins the judge's ordering decision, that the KTC value chart opens the default Value tab instead of sitting behind a points-per-game tab inside historyBlock. A group with no surviving blocks drops its own tab, so an unranked player with no KTC history gets two tabs, not three with one blank; that case is covered in site/_playercard_check.py rather than here, because this feature asserts the full-data shape."
+    },
+    {
+      "id": "action-center-marks",
+      "name": "Action Center: user-maintained target / trade-block board",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "location.hash='#action'"
+        },
+        {
+          "sleepMs": 900
+        }
+      ],
+      "selector": "#main .marks-board",
+      "assert": "document.querySelectorAll('#main .marks-board .card').length >= 1 && !/No computed suggestions/.test(document.querySelector('#main').textContent)",
+      "notes": "Replaced a computed suggestion queue that was usually empty and otherwise guessed at intent it cannot see. Driven by two marks the manager sets: star a player NOT on his roster (target) or flag one of his own (trade block), stored per league in localStorage under tier-sheet-marks-v1 because wanting a man in yuH is a different plan from wanting him in taco. Toggles live on the player card and in the league Players list; note that list renders through the name cell near app.js:3075, NOT weeklyNameCell, which is why an earlier pass added the button and nothing appeared."
+    },
+    {
+      "id": "experts-list",
+      "name": "Experts: browse boards and manage weekly rotation",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "location.hash='#experts'"
+        },
+        {
+          "sleepMs": 1600
+        }
+      ],
+      "selector": "#main button[data-expert-id]",
+      "assert": "(() => { const n=window.FP_EXPERTS.experts.length; return n > 100 && document.querySelectorAll('#main button[data-expert-id]').length === n && document.querySelectorAll('#main a[href^=\"#experts/\"]').length === n && !document.querySelector('#main .fp-controls'); })()",
+      "notes": "Experts is a directory, not a player comparison tool. Every FantasyPros board gets one native Add or Added button and one detail link. Rotation is stored with site settings and controls analyst columns in Weekly Rankings."
+    },
+    {
+      "id": "experts-rotation-weekly",
+      "name": "Experts: added analyst appears in Weekly Rankings",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "location.hash='#experts'"
+        },
+        {
+          "sleepMs": 1600
+        },
+        {
+          "eval": "(()=>{const buttons=[...document.querySelectorAll('#main button[data-expert-id]')];const b=buttons.find(x=>x.getAttribute('aria-pressed')==='false')||buttons[0];const e=window.FP_EXPERTS.experts.find(x=>String(x.id)===b.dataset.expertId);window.__expertRotationTest={id:String(e.id),label:e.name.split(/\\s+/).pop()};if(b.getAttribute('aria-pressed')==='false')b.click();location.hash='#league/1341184676601028608/players';})()"
+        },
+        {
+          "sleepMs": 2200
+        },
+        {
+          "eval": "[...document.querySelectorAll('.player-table-views button')].find(e=>e.textContent.trim()==='Weekly')?.click()"
+        },
+        {
+          "sleepMs": 1600
+        }
+      ],
+      "selector": "#main table.weekly-rankings-table",
+      "assert": "(() => { const x=window.__expertRotationTest; const heads=[...document.querySelectorAll('#main table.weekly-rankings-table th')]; const i=heads.findIndex(h=>h.textContent.includes(x.label)); if(i<0)return false; const settings=JSON.parse(localStorage.getItem('ff-site-settings-v2')||'{}'); const cells=[...document.querySelectorAll(`#main table.weekly-rankings-table tbody tr td:nth-child(${i+1})`)]; return (settings.weeklyExpertIds||[]).map(String).includes(x.id) && cells.some(td=>/[0-9]/.test(td.textContent)); })()",
+      "notes": "Adding an expert changes the real Weekly table, not just directory state. Check pins persisted ID, matching analyst header, and at least one ranked player cell."
+    },
+    {
+      "id": "weekly-expert-rotation-columns",
+      "name": "Weekly table: one rank column per selected analyst",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "location.hash='#league/1341184676601028608/players'"
+        },
+        {
+          "sleepMs": 2800
+        },
+        {
+          "eval": "[...document.querySelectorAll('.player-table-views button, .player-table-views a')].find(e=>e.textContent.trim()==='Weekly')?.click()"
+        },
+        {
+          "sleepMs": 2000
+        }
+      ],
+      "selector": "table.weekly-rankings-table",
+      "assert": "(() => { const settings=JSON.parse(localStorage.getItem('ff-site-settings-v2')||'{}'); const ids=Array.isArray(settings.weeklyExpertIds)?settings.weeklyExpertIds:(window.WEEKLY_RANKINGS.trackedExperts||[]).filter(x=>x.players>0).map(x=>x.id); const experts=ids.map(id=>window.FP_EXPERTS.experts.find(e=>String(e.id)===String(id))).filter(Boolean); const heads=[...document.querySelectorAll('table.weekly-rankings-table thead th')].map(h=>h.textContent.trim().replace(/[↑↓]/g,'').trim()); return experts.length > 0 && experts.every(e=>heads.some(h=>h.includes(e.name.split(/\\s+/).pop()))); })()",
+      "notes": "Weekly analyst columns follow Expert Rotation settings. Current tracked four seed first visit; any current FantasyPros board can replace or join them without rebuilding weekly data. Ranks come from the same-week FP matrix and missing values sort last both ways."
+    },
+    {
+      "id": "league-weekly-kickers",
+      "name": "League Players: kicker projections only where K starts",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "location.hash='#league/1389722402430136320/players'"
+        },
+        {
+          "sleepMs": 1500
+        },
+        {
+          "click": "#main .player-table-views button:text-is(\"Weekly\")"
+        },
+        {
+          "sleepMs": 500
+        },
+        {
+          "click": "#main .rankings-pos-toggle button:text-is(\"K\")"
+        },
+        {
+          "sleepMs": 700
+        }
+      ],
+      "selector": "#main table.weekly-rankings-table tbody tr",
+      "assert": "(() => { const rows=[...document.querySelectorAll('#main table.weekly-rankings-table tbody tr')]; const heads=[...document.querySelectorAll('#main table.weekly-rankings-table thead th')].map(h=>h.textContent.replace(/[↑↓]/g,'').trim()); return rows.length >= 30 && rows.every(r=>r.children[2]?.textContent.trim()==='K') && ['Sleeper pts','K Proj','Floor','Ceil','15+'].every(h=>heads.includes(h)) && [...document.querySelectorAll('#main table.weekly-rankings-table tbody td:nth-child(8)')].some(td=>/[0-9]/.test(td.textContent)) && !document.querySelector('[href=\"#kickers\"]'); })()",
+      "notes": "Kicker model now lives inside a league's Weekly player table. K filter exists only for leagues whose roster_positions include K, and selecting it replaces irrelevant Vegas, ECR, ROS, expert and offensive-stat columns with Sleeper points plus dedicated expected, floor, ceiling and 15-plus projections. Missing model matches remain blank and sort last."
+    },
+    {
+      "id": "idp-matchup-grid",
+      "name": "IDP league: which offenses feed defenders",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "location.hash='#league/1312276370583220224/standings'"
+        },
+        {
+          "sleepMs": 2600
+        }
+      ],
+      "selector": ".card:has(.card-title) table.slot-table",
+      "assert": "(() => { const cards=[...document.querySelectorAll('#main .card')]; const c=cards.find(x=>x.textContent.includes('IDP matchups')); if(!c) return false; const rows=c.querySelectorAll('tbody tr'); const D=window.IDP_DVP; const opp=[...c.querySelectorAll('tbody tr')].filter(r=>!r.textContent.includes('bye or not scheduled')).length; return rows.length === Object.keys(D.offenses).length && opp >= 20; })()",
+      "notes": "The mirror of the offense SOS grid, and only rendered for an IDP league (idpMatchupBlock returns null otherwise, so the other four leagues are unaffected). Two clauses carry weight: the row count must match the payload so a partial build is visible, and at least 20 rows must resolve a week-N opponent. That second one is the bug this test exists for: the opponent lookup first read SOS_GRID.teams, which is a flat list of team codes with its grid keyed by POSITION, and then window.SOS, which does not exist. The schedule is window.TEAM_SOS.teams[abbr].schedule. Both wrong versions rendered a full, plausible table with every opponent cell reading 'bye or not scheduled'."
+    },
+    {
+      "id": "gibbs-ros-x-column",
+      "name": "Weekly table: Gibbs rest-of-season rank from his X posts",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "location.hash='#league/1341184676601028608/players'"
+        },
+        {
+          "sleepMs": 2800
+        },
+        {
+          "eval": "[...document.querySelectorAll('.player-table-views button, .player-table-views a')].find(e=>e.textContent.trim()==='Weekly')?.click()"
+        },
+        {
+          "sleepMs": 2000
+        }
+      ],
+      "selector": "table.weekly-rankings-table",
+      "assert": "(() => { const g = window.GIBBS_ROS; if (!g) return false; const heads=[...document.querySelectorAll('table.weekly-rankings-table thead th')].map(h=>h.textContent.replace(/[↑↓]/g,'').trim().toUpperCase()); const i=heads.indexOf('GIBBS X'); if(i<0) return false; const ranked=new Set(); for(const rows of Object.values(g.positions)) for(const r of rows) if(r.sleeperId) ranked.add(String(r.sleeperId)); const cells=[...document.querySelectorAll('table.weekly-rankings-table tbody tr')].map(tr=>tr.children[i]?.textContent.trim()).filter(t=>t && t!=='·'); return ranked.size >= 140 && cells.length >= 100 && /^(RB|WR|QB|TE)\\d+/.test(cells[0]); })()",
+      "notes": "His rest-of-season positional board, captured from his own X posts and transcribed by two independent readers before it was allowed into the repo (WR agreed 77 of 77, RB 69 of 70, the split being the spelling of Jeremiyah Love). Separate from the JACOB_GIBBS_RANKINGS overall draft board and from the FantasyPros-sourced 'Gibbs ROS' column beside it: FantasyPros lagged this by a day at capture and never carries his positional ROS lists at all. The assert checks the payload and the DOM together so a stale or empty gibbs-ros.js cannot pass as a rendered column. Only RB and WR are populated because those are the only boards he posted; QBs showing a dot rather than a number is correct, not a gap. HALF-PPR, which is what he publishes, while all three leagues are full PPR, so the cell shows HIS rank and never a rescored one."
     }
   ],
   "ignore": [

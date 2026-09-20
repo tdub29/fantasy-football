@@ -1,25 +1,33 @@
 ---
-name: Tier Sheet
+name: Backyard
 description: A dynasty fantasy football tier sheet, live and overlaid on every league you run.
 colors:
-  cornerstone-violet: "#a78bfa"
-  cornerstone-violet-bright: "#c4b5fd"
-  cornerstone-violet-deep: "#5b21b6"
-  foundational-sky: "#60a5fa"
-  upside-mint: "#34d399"
-  tier-s-amber: "#fbbf24"
-  vet-orange: "#fb923c"
-  depreciating-red: "#f87171"
-  obsidian: "#0b0d12"
-  graphite: "#11141b"
-  slate: "#161a23"
-  pewter: "#1e2330"
-  edge: "#262d3d"
-  edge-hot: "#3a4258"
-  porcelain: "#f3f4f6"
-  bone: "#d4d8e0"
-  fog: "#9ca3af"
-  ash: "#6b7280"
+  gold: "#ffd42a"
+  gold-deep: "#e0a915"
+  ink: "#12131f"
+  band: "#7b7bc4"
+  band-deep: "#4f4f96"
+  panel: "#e9e9fa"
+  panel-alt: "#d5d5f0"
+  periwinkle: "#b9b9e4"
+  turf: "#3f9f43"
+  turf-deep: "#2c7a31"
+  endzone: "#3a2a7a"
+  chalk: "#ffffff"
+  navy: "#1f2450"
+  navy-soft: "#343a6b"
+  label: "#4d5488"
+  caption: "#5f669b"
+  cornerstone-teal: "#0d767c"
+  foundational-blue: "#2842b0"
+  upside-green: "#1a7a54"
+  tier-s-amber: "#966a10"
+  vet-orange: "#9e5418"
+  depreciating-red: "#a82a22"
+  led: "#4dff6a"
+  led-bg: "#0a1a0e"
+  wood: "#7a5a2e"
+  metal: "#c6ced9"
 typography:
   page-title:
     fontFamily: "ui-sans-serif, -apple-system, 'SF Pro Text', 'Inter', 'Segoe UI', Roboto, sans-serif"
@@ -66,267 +74,365 @@ spacing:
   xl: "24px"
 components:
   button-primary:
-    backgroundColor: "{colors.cornerstone-violet-deep}"
-    textColor: "{colors.porcelain}"
+    backgroundColor: "{colors.gold-deep}"
+    textColor: "{colors.navy}"
     rounded: "{rounded.sm}"
     padding: "6px 12px"
   button-primary-hover:
-    backgroundColor: "{colors.cornerstone-violet-deep}"
-    textColor: "{colors.porcelain}"
+    backgroundColor: "{colors.gold-deep}"
+    textColor: "{colors.navy}"
     rounded: "{rounded.sm}"
     padding: "6px 12px"
   button-default:
-    backgroundColor: "{colors.slate}"
-    textColor: "{colors.porcelain}"
+    backgroundColor: "{colors.panel-alt}"
+    textColor: "{colors.navy}"
     rounded: "{rounded.sm}"
     padding: "6px 12px"
   button-ghost:
-    backgroundColor: "{colors.obsidian}"
-    textColor: "{colors.porcelain}"
+    backgroundColor: "{colors.turf}"
+    textColor: "{colors.navy}"
     rounded: "{rounded.sm}"
     padding: "6px 12px"
   card:
-    backgroundColor: "{colors.graphite}"
-    textColor: "{colors.porcelain}"
+    backgroundColor: "{colors.panel}"
+    textColor: "{colors.navy}"
     rounded: "{rounded.md}"
     padding: "16px"
   input:
-    backgroundColor: "{colors.slate}"
-    textColor: "{colors.porcelain}"
+    backgroundColor: "{colors.panel-alt}"
+    textColor: "{colors.navy}"
     rounded: "{rounded.sm}"
     padding: "6px 10px"
   pill-cornerstone:
-    backgroundColor: "{colors.graphite}"
-    textColor: "{colors.cornerstone-violet}"
+    backgroundColor: "{colors.panel}"
+    textColor: "{colors.cornerstone-teal}"
     rounded: "{rounded.pill}"
     padding: "2px 8px"
   pill-foundational:
-    backgroundColor: "{colors.graphite}"
-    textColor: "{colors.foundational-sky}"
+    backgroundColor: "{colors.panel}"
+    textColor: "{colors.foundational-blue}"
     rounded: "{rounded.pill}"
     padding: "2px 8px"
   pill-upside:
-    backgroundColor: "{colors.graphite}"
-    textColor: "{colors.upside-mint}"
+    backgroundColor: "{colors.panel}"
+    textColor: "{colors.upside-green}"
     rounded: "{rounded.pill}"
     padding: "2px 8px"
   tier-chip-s:
-    backgroundColor: "{colors.graphite}"
+    backgroundColor: "{colors.panel}"
     textColor: "{colors.tier-s-amber}"
     rounded: "{rounded.sm}"
     padding: "0"
     width: "22px"
     height: "22px"
   tier-chip-a:
-    backgroundColor: "{colors.graphite}"
-    textColor: "{colors.cornerstone-violet}"
+    backgroundColor: "{colors.panel}"
+    textColor: "{colors.cornerstone-teal}"
     rounded: "{rounded.sm}"
     padding: "0"
     width: "22px"
     height: "22px"
   tier-chip-b:
-    backgroundColor: "{colors.graphite}"
-    textColor: "{colors.foundational-sky}"
+    backgroundColor: "{colors.panel}"
+    textColor: "{colors.foundational-blue}"
     rounded: "{rounded.sm}"
     padding: "0"
     width: "22px"
     height: "22px"
   tier-chip-c:
-    backgroundColor: "{colors.graphite}"
-    textColor: "{colors.upside-mint}"
+    backgroundColor: "{colors.panel}"
+    textColor: "{colors.upside-green}"
     rounded: "{rounded.sm}"
     padding: "0"
     width: "22px"
     height: "22px"
   tier-chip-d:
-    backgroundColor: "{colors.graphite}"
-    textColor: "{colors.fog}"
+    backgroundColor: "{colors.panel}"
+    textColor: "{colors.label}"
     rounded: "{rounded.sm}"
     padding: "0"
     width: "22px"
     height: "22px"
 ---
 
-# Design System: Tier Sheet
+# Design System: Backyard
 
 ## 1. Overview
 
-**Creative North Star: "The Tier Sheet, Live"**
+**Creative North Star: "The Backyard Tier Sheet"**
 
-This is what a printed dynasty tier sheet would become if you let it watch your rosters. Surfaces stay close to the page (graphite-on-obsidian, no glassy noise, no decorative gradient), category color is the only flourish, and the only thing that ever moves is data. The reader is an analyst at a console mid-week, not a fan scrolling on the couch. Every screen is a working document; nothing performs.
+A dynasty tier sheet rebuilt as a late-90s sports-game interface. Every surface is a physical plate
+stamped with a near-black outline, the ground is turf rather than a page, and selection is a gold
+fill you can see across a room. The reader is still an analyst mid-week, but the console he is
+sitting at is a Dreamcast, not a terminal.
 
-The aesthetic explicitly rejects three things: Sleeper's mobile-first cartoon-mascot energy, ESPN/Yahoo's ad-shaped portal clutter, and the generic SaaS purple-gradient hero that signals "AI-tool landing page." Cornerstone Violet is a category, not a marketing accent. We do not paint it onto buttons for personality.
+The reference world is inventoried screen by screen in
+[BACKYARD-INVENTORY.md](BACKYARD-INVENTORY.md), including the IP boundary. Read that file before
+adding a component. This file is the standard; that file is the evidence behind it.
 
-**Key Characteristics:**
-- Dark by default. The user is at a desk, mid-week, often at night.
-- Color is meaning. Every accent maps to a tier or a category. None are decoration.
-- Density over generosity. Tight rows, compact pills, monospace numbers, no card padding theatre.
-- Chrome disappears. Borders, shadows, and containers earn their place by separating real things.
-- Keyboard is the front door. Cmd+K is canonical, not an afterthought.
+This replaced the previous "Tier Sheet, Live" standard on 2026-09-15, which called for
+graphite-on-obsidian surfaces, flat-by-default elevation, and no decorative gradients. Those three
+rules are now reversed on purpose. Anything in the repo still asserting them is stale.
 
-## 2. Colors: The Tier Sheet Palette
+The aesthetic still rejects three things, and the list has not changed: Sleeper's mobile-first
+mascot energy, ESPN and Yahoo's ad-shaped portal clutter, and the generic SaaS gradient hero. The
+retro direction is a specific historical register, not a licence for decoration in general. A
+plate, a bevel and a gold selection are the vocabulary. A purple marketing gradient is still wrong.
 
-A four-temperature system: cool obsidian as the page; the **three-pillar accent triad** (Cornerstone / Foundational / Upside) as category meaning; **tier-amber** and **vet-orange** as warm callouts; **depreciating-red** as a warning. Saturation stays mid-range — never neon, never washed out — because tier sheets are read for hours.
+**Key characteristics:**
+- Light and loud. Turf ground, lavender plates, navy ink, gold selection.
+- Every surface is an outlined plate. A 2px near-black edge plus a hard bevel, on everything.
+- Nothing is flat. Every fill is a vertical gradient or a texture.
+- Selection is a gold fill swap with ink text. Never a tint, never a stripe, never an underline.
+- Ratings are discrete and countable. Five pips or a segmented meter, not a percentage.
+- Labels are quiet small caps, values are chunky. The label never competes with the number.
+- Chrome is physical. Folder tabs, stamped chips, an LED panel for the freshness readout.
+- Keyboard is still the front door. Cmd+K is canonical.
+
+## 2. Colors: the Backyard palette
+
+Four families: **turf** as the ground, **lavender and periwinkle** as the plates and their header
+bands, **gold** as selection, and the **six semantic hues** as category and tier meaning.
 
 ### Primary
 
-- **Cornerstone Violet** (#a78bfa) — the anchor accent. Used for the highest-conviction player category, primary buttons (deep variant), the active sidebar nav stripe, the brand logo, focus rings, and "you" highlights in league tables. It is *the* color of the system. Bright (#c4b5fd) is the link/hover hot variant; deep (#5b21b6) is the press-state and primary button surface.
+- **Gold** (#ffd42a, deep #e0a915) is the selection color of the entire system. A selected menu
+  row, the sorted table column, the active tab, his own team's row, the active nav item, a page
+  title fill. If something is chosen, it is gold with ink text. This is the single loudest rule in
+  the system and the one that most cheaply produces the reference's feel.
+- **Ink** (#12131f) is the outline on every plate and the text on every gold fill. Near-black on
+  purpose: a softer outline reads as a modern web card, and the plate is the aesthetic.
 
-### Secondary
+### Surfaces
 
-- **Foundational Sky** (#60a5fa) — the second pillar category. Tier B chip color. Used in the strength-bar gradient that pairs Cornerstone → Foundational across team strength visualizations.
-- **Upside Mint** (#34d399) — the third pillar category. Tier C chip. Also the *up-arrow / positive delta* color in stat blocks; rookie badges. The only green allowed.
+- **Turf** (#3f9f43, deep #2c7a31) is the page ground, a vertical gradient with a halftone dot mesh
+  and chalk yardlines over it.
+- **Panel** (#e9e9fa) is the card and plate face. Light enough that navy ink clears AA on it.
+- **Panel Alt** (#d5d5f0) is the even table row and the default button face.
+- **Periwinkle** (#b9b9e4) is chip backgrounds.
+- **Band** (#7b7bc4, deep #4f4f96) is the header band across a card or a table head, always with
+  chalk text on it. Every panel in the reference announces itself with one.
+- **Chalk** (#ffffff) is gridlines, yardlines, and text on a band.
 
-### Tertiary
+### Text
 
-- **Tier-S Amber** (#fbbf24) — top-of-everything signal. Used for the S tier badge, the Mainstay category, and a rare "this is the best you've got" callout. Never used for ordinary status.
-- **Vet Orange** (#fb923c) — productive_vet category only.
-- **Depreciating Red** (#f87171) — danger, sell signal, depreciating badge, down-arrow stats. Never used for emphasis on neutral content.
+- **Navy** (#1f2450) is primary text, about 11.5:1 on Panel.
+- **Navy Soft** (#343a6b) is body text in tables and paragraphs.
+- **Label** (#4d5488) is secondary text and captions, about 6.0:1 on Panel.
+- **Caption** (#5f669b) is tertiary text and disabled state, about 4.6:1 on Panel.
 
-### Neutral
+### Semantic hues
 
-- **Obsidian** (#0b0d12) — the page itself. The bottom of every elevation stack.
-- **Graphite** (#11141b) — card and sidebar surface. The first lift off the page.
-- **Slate** (#161a23) — input and default-button background. Interactive surfaces sit one tonal step above Graphite.
-- **Pewter** (#1e2330) — chip backgrounds; the "this is data, not surface" tone.
-- **Edge** (#262d3d) — every divider, every default border.
-- **Edge Hot** (#3a4258) — the active/hovered border tier. Reserved for "this thing is live."
-- **Porcelain** (#f3f4f6) — primary text. High contrast on every dark surface.
-- **Bone** (#d4d8e0) — body text in tables and paragraphs. One step softer than Porcelain.
-- **Fog** (#9ca3af) — secondary text, captions, owner names.
-- **Ash** (#6b7280) — tertiary text, disabled state, oh-by-the-way labels.
+Cornerstone Teal (#0d767c), Foundational Blue (#2842b0), Upside Green (#1a7a54), Tier-S Amber
+(#966a10), Vet Orange (#9e5418), Depreciating Red (#a82a22). Every one sits between 45% and 62%
+lightness. The old theme ran these at 74% to 84% for a dark ground; at that lightness they are
+invisible on lavender, which is why the inversion had to move all six and not just the surfaces.
 
-### Named Rules
+### Scoreboard hues
 
-**The Three-Pillar Rule.** Cornerstone Violet, Foundational Sky, and Upside Mint are not three accents that happen to be close. They are *the* three category pillars. They appear as a triad together (in the strength bar, in the legend, in the category filter group) or they appear alone with role-meaning. Never mix in a fourth pillar color unless you are adding a fourth player category to the framework.
+LED (#4dff6a on #0a1a0e), Wood (#7a5a2e) for rating pips, Metal (#c6ced9) for brushed slabs. These
+are chrome, not meaning. They appear in the freshness panel and the rating tracks only.
 
-**The No-Decorative-Color Rule.** If a hue appears on screen, it is communicating a category or a tier. There is no "we needed something to break up the gray." Break up the gray with hierarchy and density, not paint.
+### Named rules
 
-**The Anti-Gradient Rule.** Two gradients exist in the system: the brand-logo lozenge (Violet → Sky) and the team-strength bar (same). Both encode the pillar pairing. Do not introduce a third. Especially not on a button, never on a hero, never as a text fill.
+**The Gold-Selection Rule.** Gold plus ink text is the selected state on every surface in the
+product. There is no second way to say "this one." A 6% tint of an accent hue was the old answer
+and it was unreadable on a phone in daylight, which is where this app is actually used.
+
+**The Three-Pillar Rule** still holds. Cornerstone Teal, Foundational Blue and Upside Green are the
+three category pillars. They appear as a triad or alone with role meaning. Never a fourth.
+
+**The No-Decorative-Hue Rule** still holds for the six semantic hues. Lavender, periwinkle, turf,
+gold, chalk and ink are chrome and may be used structurally. Teal, blue, green, amber, orange and
+red always mean a category or a tier.
+
+**The Gradient Rule, inverted.** Every fill is a vertical gradient: panels, buttons, bands, gold,
+turf. They are defined once as `--grad-panel`, `--grad-btn`, `--grad-band`, `--grad-gold`,
+`--grad-band` and `--grad-turf`, and a component uses one of those rather than writing its own.
+A bespoke gradient in a component is the thing to avoid now, not gradients themselves.
 
 ## 3. Typography
 
-**Display & Body Font:** the system sans stack — `ui-sans-serif, -apple-system, "SF Pro Text", "Inter", "Segoe UI", Roboto, sans-serif`. One family, every weight.
+**Display and body font:** the system sans stack. One family, every weight, weights pushed heavier
+than before (700 to 900 where the old system used 600 to 700). The reference has no thin type.
 
-**Numeric Font:** the same stack with `font-variant-numeric: tabular-nums` enforced. Every score, rank, percentage, and grade lines up vertically — that's the whole point of a tier sheet.
+**Numeric font:** the same stack with `font-variant-numeric: tabular-nums` enforced everywhere.
 
-**Character:** the body voice is the operating-system voice — neutral, fast, native. Type is not the personality; the data is. Two stylistic features (`ss01`, `cv11`) are turned on globally, which gives the sans a slightly sharper one-storey 'a' and a less-rounded 'g' — small editorial signature inside an otherwise standard stack.
+**Character:** the personality now lives partly in the type, which is a change. Page titles are
+gold with a 3px ink stroke via `-webkit-text-stroke` and `paint-order: stroke fill`, uppercase,
+with a hard drop shadow. That is the reference's arced outlined wordmark, done with live text so it
+stays selectable, translatable and responsive.
 
 ### Hierarchy
 
-- **Page Title** (700, 1.6rem, line-height 1.2, letter-spacing -0.015em): one per page, top-left, defines the route.
-- **Card Title** (600, 0.95rem, letter-spacing 0.05em, **uppercase**): every card, every panel header. The constant rhythm element across every screen.
-- **Body** (400, 0.94rem, line-height 1.5): paragraph copy and table cell text.
-- **Numeric** (700, tabular-nums, letter-spacing -0.02em): scores, ranks, percentages, grades. Always tabular.
-- **Micro-Label** (600, 0.75rem, letter-spacing 0.06em, **uppercase**): table column headers, nav-section titles, stat-pill labels. The "this is metadata" signal.
+- **Page Title** (900, 1.6rem, uppercase, gold fill, 3px ink stroke, hard shadow): one per route.
+- **Card Title** (800, 0.72rem, uppercase, 0.09em tracking, chalk on a band): every card header.
+- **Body** (400 to 600, 0.94rem, line-height 1.5): paragraph copy and table cell text.
+- **Numeric** (700 to 800, tabular-nums): scores, ranks, percentages, grades.
+- **Micro-Label** (700, 0.68rem, uppercase, 0.07em tracking): column headers, stat labels.
 
-### Named Rules
+### Named rules
 
-**The Tabular Numbers Rule.** Anything quantitative renders in tabular-nums. Stats, scores, pick numbers, percentages, grades, ranks, ages. Non-tabular numbers in a tier sheet are visual chaos.
+**The Tabular Numbers Rule** is unchanged. Anything quantitative renders tabular.
 
-**The Uppercase-as-Metadata Rule.** ALL CAPS is reserved for *labels about the data*, never for the data itself. Card titles, column headers, nav sections, micro-labels — yes. Player names, team names, body copy — never.
+**The Uppercase-as-Metadata Rule** has one new exception: page titles are uppercase, because the
+display lockup requires it. Everything else holds. Player names, team names and body copy are never
+uppercase.
 
-**The 65–75ch Rule.** Body copy never exceeds 75 characters per line. Long-form (game notes, blueprint commentary, README-style prose) caps at 65–75ch even if the parent grid is wider.
+**The Stroke-Is-For-Titles Rule.** `-webkit-text-stroke` appears on `.page-title` and nowhere else.
+Stroked body text is unreadable at small sizes and stroked labels turn a table into a poster.
+
+**The 65 to 75ch Rule** is unchanged for body copy.
 
 ## 4. Elevation
 
-**Flat-by-default with state-driven lift.** The page is a stack of tonal surfaces (Obsidian → Graphite → Slate → Pewter), and that ramp does almost all of the depth work. Shadows are not the default lift between layers; the tonal step is.
+**Stamped-by-default.** Every plate carries an outline, a bevel and a hard 2px drop. Depth comes
+from the edge treatment rather than from a tonal ramp or a blurred shadow.
 
-Two specific surfaces use a small, ambient inner-highlight + drop combination, *only because they functionally float*: the sticky table headers (which the user scrolls past) and the brand-logo lozenge (which is structurally a floating mark). One additional shadow exists as a focus-state response: a violet ring + halo on hover/focus of high-conviction interactive elements.
+The bevel is the load-bearing part: `inset 0 1px 0 rgba(255,255,255,.72)` on the top edge and
+`inset 0 -2px 0 rgba(0,0,0,.16)` on the bottom, so the surface reads as stamped rather than drawn.
 
-### Shadow Vocabulary
+### Shadow vocabulary
 
-- **Surface lift** (`box-shadow: 0 1px 0 rgba(255,255,255,0.04) inset, 0 1px 2px rgba(0,0,0,0.3)`): sticky surfaces and the brand mark. Functional, never decorative.
-- **Hover lift** (`box-shadow: 0 4px 12px rgba(0,0,0,0.4)`): reserved for elements you actively pick up (modal trigger surfaces, draggable trade slots, popover anchors). Not used on rest-state cards.
-- **Focus glow** (`box-shadow: 0 0 0 1px var(--cornerstone-violet), 0 0 20px rgba(167,139,250,.18)`): focus-visible state on primary interactive elements. Doubles as keyboard-navigation feedback.
+- **Plate drop** (`0 2px 0 rgba(0,0,0,.28)`, token `--shadow-1`): every card, button and chip.
+- **Lifted plate** (`0 4px 0 rgba(0,0,0,.32)`, token `--shadow-2`): modals, and his own team's row.
+- **Bevel** (`--bevel`) and **inset bevel** (`--bevel-in`): raised and recessed surfaces. Inputs,
+  the LED panel and a pressed button use the inset form.
+- **Focus** (`0 0 0 3px var(--gold), 0 0 0 5px var(--ink)`, token `--shadow-glow`): a gold ring
+  inside an ink ring. Visible on turf, on lavender and on gold.
 
-### Named Rules
+### Named rules
 
-**The Flat-By-Default Rule.** Cards, rows, and panels at rest have no drop shadow. Their separation is the tonal step (Graphite on Obsidian, Slate on Graphite). If you find yourself reaching for `box-shadow` on a static card, you wanted a tonal step instead.
+**The No-Blur Rule.** Shadow offsets are hard, with zero blur radius. A blurred shadow is the
+single tell that gives a retro plate away as a modern card. The only blur left in the product is
+the modal scrim.
 
-**The Functional-Shadow Rule.** Every shadow in the system answers a functional question — *am I sticky, am I focused, am I being picked up?* Decorative ambient shadows under cards "just to give them dimension" are forbidden.
+**The Press-Travels Rule.** A pressed button moves `translateY(2px)` and swaps to the inset bevel,
+so it looks physically depressed. This replaces the old 1px nudge and it is the only interaction
+feel tic in the system. No bounces, no scales, no color flashes.
 
 ## 5. Components
 
 ### Buttons
 
-- **Shape:** small radius (6px). Never pill-shaped, never sharp-cornered (0px). Pills are reserved for category badges; sharp corners are a different aesthetic register.
-- **Default:** Slate (#161a23) background, Edge border, Porcelain text, 6×12px padding. The neutral utility button.
-- **Primary:** Cornerstone-Violet-Deep (#5b21b6) background, Cornerstone-Violet border, Porcelain text. Reserved for the *single primary action per screen* — committing a trade, importing a CSV. Not for "Cancel" / "Apply filter" / "Export."
-- **Ghost:** transparent background, no border, Porcelain text. Tertiary actions inside dense rows.
-- **Hover:** background lifts one tonal step (Slate → bg-hover #232938), border shifts to Edge-Hot. 120ms transition on background and border-color, 80ms on press translate.
-- **Press:** `transform: translateY(1px)`. The only interaction "feel" tic in the system; do not add bounces, scales, or color flashes.
+- **Shape:** small radius (6px). Never pill-shaped, never sharp-cornered.
+- **Default:** `--grad-btn` face, 2px ink border, navy text, bevel plus plate drop, weight 700.
+- **Primary, active, and `aria-pressed="true"`:** `--grad-gold` face, ink text, white top
+  highlight on the text. These three selectors are deliberately styled as one thing, because
+  primary and selected are the same visual idea in this system.
+- **Ghost:** transparent, no border, no shadow. On hover it gains a white wash and an ink border.
+- **Press:** `translateY(2px)` plus the inset bevel.
 
 ### Pills (category badges)
 
-- **Style:** pill radius (999px), 1px border in the category color at 40% alpha, fill in the same color at 8% alpha, text in the category color at 100%. Tiny: 0.75rem, weight 600, 2×8px padding.
-- **Variants:** one per player category — Cornerstone (violet), Foundational (sky), Upside (mint), Mainstay (amber), Productive Vet (orange), Short-Term Win (red).
-- **Behavior:** always paired with the category label or icon. Hue is never the only signal. Pills are not buttons; do not give them hover states.
+- **Style:** pill radius, 2px ink border, the category hue as the fill, weight 800, 0.68rem.
+  Stamped, not tinted: the old 8%-alpha fill does not survive on a light ground.
+- **Variants:** one per player category. Hue is never the only signal; the label always shows.
 
 ### Tier Chips
 
-- **Style:** 22×22 square, 6px radius, weight 700, single uppercase letter (S/A/B/C/D). Background and border in the tier hue at 10% / 40% alpha; text in the hue at 100%.
-- **Behavior:** the letter is non-negotiable. Hue is reinforcement, not the message. A color-blind reader sees "S" or "A" the same way.
+- **Style:** square with a 4px radius, 2px ink border, weight 900, single uppercase letter.
+- **Behavior:** the letter is non-negotiable. Hue is reinforcement. A color-blind reader sees the
+  letter identically.
 
 ### Cards / Containers
 
-- **Corner Style:** medium radius (10px). The single most-used radius in the system.
-- **Background:** Graphite (#11141b) on the page. Slate (#161a23) when nested inside a Graphite section (rare; usually a sign the layout should not have nested at all).
-- **Shadow Strategy:** flat at rest. See Elevation.
-- **Border:** 1px Edge (#262d3d).
-- **Internal Padding:** 16px (the lg spacing token).
+- **Corners:** medium radius (10px).
+- **Face:** `--grad-panel`.
+- **Border:** 2px ink, plus the bevel and the plate drop. Not flat at rest; see Elevation.
+- **Header:** a `--grad-band` title bar bled 4px past the card padding, chalk text.
+- **Padding:** 14px.
 
 ### Inputs / Fields
 
-- **Style:** Slate background, Edge border, 6px radius, 6×10px padding, Porcelain text.
-- **Focus:** border shifts to Cornerstone Violet, plus a 3px ring in violet at 15% alpha. 120ms transition. This is the only place the focus glow appears at rest scale.
-- **Error / Disabled:** error border in Depreciating Red; disabled fades text to Ash and lowers background by one tonal step.
+- **Style:** chalk background, 2px ink border, inset bevel, weight 600 text. The recessed
+  counterpart to a button's raised plate.
+- **Focus:** the gold-in-ink double ring.
 
 ### Sidebar Navigation
 
-- **Style:** fixed 240px left rail on Graphite, 16×12px outer padding. Brand mark anchored top-left; nav sections stacked below with a Micro-Label header per section.
-- **Default link:** Bone text, Slate hover background, no visible border.
-- **Active link:** background tinted with Cornerstone Violet at 12% alpha, text upgraded to Porcelain, **2px inset Cornerstone Violet stripe on the left edge** (`box-shadow: inset 2px 0 0 var(--accent)`). This is the system's one ribbon-style affordance, and it exists *only* on the active nav item.
-- **Mobile (<720px):** sidebar collapses inline, full-width.
+- **Style:** 240px left rail on `--grad-panel` with a 3px ink right edge.
+- **Default link:** navy text, 2px transparent border. Hover adds a white wash and an ink border.
+- **Active link:** gold fill, ink text, weight 800. The old 12%-alpha tint plus inset violet
+  stripe is gone, and with it the system's one ribbon affordance.
 
 ### Data Tables
 
-- **Style:** sticky thead (Micro-Label voice), Edge bottom border per row, 0.9rem body cells, hover row background bumps to Slate.
-- **"You" row:** background tinted Cornerstone Violet at 6% alpha; deepens to 10% on hover. The single emphasized row per league table.
-- **Sort affordance:** Header cell turns to Cornerstone-Violet-Bright when active sort. No sort arrows; the color shift is the signal.
-- **Numeric columns:** tabular-nums, right-aligned where natively numeric (rank, score, age).
+The signature surface, modeled on the reference's Game Summary panel.
+
+- **Head:** `--grad-band` with chalk text, 3px ink bottom border, uppercase micro-label voice.
+- **Sorted column:** gold head with ink text. The color swap is still the sort signal.
+- **Rows:** 2px **chalk** bottom borders and alternating panel and panel-alt fills. Thick light
+  separators are what make the table read as stitched plates rather than a spreadsheet.
+- **"You" row:** a full gold gradient fill with ink text at weight 700.
+- **Numeric columns:** tabular-nums, right-aligned where natively numeric.
 
 ### Strength Bar (signature component)
 
-The team-strength row is the system's defining custom pattern. A 4-column grid: rank number → team identity → score → a 6px gradient bar (Cornerstone Violet → Foundational Sky) sized to the strength percentage. Filled-bar transition: `width 400ms ease-out`. The bar is the only data-driven gradient in the system; it encodes the pillar pairing.
+Still a 4-column grid: rank, team identity, score, bar. The bar is now the reference's segmented
+roster meter (`.seg-meter`): an LED-green fill cut into discrete 6px cells inside an ink-bordered
+recessed track. Same geometry as the old continuous gradient bar, so nothing reflows.
+
+### Rating Track (new)
+
+Five pips (`.rating-track`), filled in wood tone, empty in near-white, each with a 1.5px ink
+border. This is the reference's five-football attribute row and it is the preferred rendering for
+any 0-to-100 score on the face of a card. It is instantly countable and refuses false precision.
+A percentage is still fine inside a table cell, where precision is the point.
+
+### Tab Bar
+
+Folder tabs. Each tab is a plate with no bottom border sitting 3px low over a 3px ink bar; the
+active tab rises flush and paints over that bar with a negative bottom margin, so the tab and the
+panel below read as one surface.
+
+### Freshness Panel
+
+The data-freshness footer in the sidebar is the reference's LED dot-matrix panel: an ink-bordered
+recessed plate, near-black green ground with a 4px dot mesh, LED-green monospace uppercase text,
+and a glowing status dot. Same element and same click target as before.
 
 ### Cmd+K Palette
 
-The keyboard-first front door. Triggered by `⌘K` / `Ctrl+K` from anywhere; fuzzy-jumps to any league, roster, route, or player. Visually a centered Slate panel on a dimmed Obsidian backdrop, single search input on top (no border, no chrome), result rows below at table density. Result rows show name + path + a Tier Chip if relevant. **Always keep this discoverable** — a small "⌘K" hint chip lives in the top-right of every page header.
+Unchanged in behavior. Visually a 3px-ink-bordered `--grad-panel` plate on a dimmed backdrop, with
+the highlighted result row in gold with ink text.
 
 ## 6. Do's and Don'ts
 
 ### Do:
 
-- **Do** make tabular-nums the default for any column with numbers. Scores, ranks, ages, percentages, grades, dollar values all line up vertically.
-- **Do** use Cornerstone Violet for "this is yours" cues across league tables and roster views — the "you" row tint, the active nav stripe, the focus ring. The user is the violet thread through the data.
-- **Do** pair every tier color with the tier letter (S/A/B/C/D) at full opacity. Color-blind users get the letter; everyone else gets reinforcement.
-- **Do** lean on the tonal ramp (Obsidian → Graphite → Slate → Pewter) for elevation before reaching for a shadow. Shadows are state, not chrome.
-- **Do** keep the brand-mark gradient and the strength-bar gradient as the *only* gradients in the product. Both encode the Cornerstone+Foundational pillar pairing.
-- **Do** prefer OKLCH when introducing *new* colors; the existing hex palette is grandfathered. New additions should be specified in OKLCH and approximated to hex for the frontmatter.
-- **Do** make Cmd+K discoverable on every page (the small `⌘K` chip in the page header).
+- **Do** make tabular-nums the default for any column with numbers.
+- **Do** use gold plus ink text for every "this one is selected" and "this one is yours" cue. The
+  user is the gold thread through the data.
+- **Do** put a 2px ink border and a bevel on any new surface. A borderless panel does not belong.
+- **Do** pair every tier color with the tier letter at full opacity.
+- **Do** use one of the six `--grad-*` tokens rather than writing a new gradient in a component.
+- **Do** reach for `.rating-track` or `.seg-meter` before printing a bare 0-to-100 score on a card.
+- **Do** keep shadow offsets hard and blur at zero.
+- **Do** prefer OKLCH for new colors; the hex frontmatter above is the approximation, and
+  `css/styles.css` is the source of truth.
+- **Do** keep Cmd+K discoverable on every page.
 
 ### Don't:
 
-- **Don't** use a colored side-stripe (`border-left` / `border-right` > 1px) as a card or list-item accent. The only inset stripe in the system is the **active sidebar nav item**; that is the *only* allowed exception.
-- **Don't** use gradient text (`background-clip: text` over a gradient). Emphasis is weight or size, never a multicolor fill.
-- **Don't** apply glassmorphism, backdrop-blur surfaces, or "frosted" panels. The Cmd+K palette is the closest thing to overlay we have, and it uses a flat dimmed backdrop, not a blurred one.
-- **Don't** introduce a fourth pillar color or invent a "warning purple" / "info purple" — Cornerstone Violet is one thing.
-- **Don't** add a hero metric template (big number + small label + supporting stats + gradient flourish). Stat cards exist, but they stay flat, monochrome, and compact.
-- **Don't** add bounce, elastic, spring, or scale-in animations. Ease out exponentially (`ease-out-quart` / `quint`) on entrances if needed; otherwise no motion.
-- **Don't** use em dashes anywhere (`—` or `--`). Use commas, colons, or periods.
-- **Don't** make this look like Sleeper. No mobile-first layouts forcing themselves onto desktop, no mascot iconography, no neon-on-charcoal accent stacks.
-- **Don't** make this look like ESPN/Yahoo. No ad-shaped containers, no ticker-tape strips, no tab-bar overload.
-- **Don't** make this look like a generic SaaS landing page. No purple-to-blue marketing gradient hero, no "Linear-clone" aesthetic, no full-bleed accent panels.
-- **Don't** wrap every section in a container. Most rows don't need one. The page-title divider does most of the framing work.
-- **Don't** nest cards inside cards. If a section feels like it needs a sub-card, the outer card should be a layout region (no card chrome) instead.
+- **Don't** use a blurred drop shadow on a plate. Hard offsets only.
+- **Don't** express selection as an alpha tint, a left stripe, or an underline. Gold fill or
+  nothing.
+- **Don't** put `-webkit-text-stroke` on anything except `.page-title`.
+- **Don't** introduce a fourth pillar color, or a "warning teal" / "info teal."
+- **Don't** apply glassmorphism, backdrop-blur, or frosted panels. A plate is opaque.
+- **Don't** add bounce, elastic, spring, or scale-in animations. Transitions are 80ms and linear;
+  the reference has snap, not easing.
+- **Don't** use em dashes anywhere. Use commas, colons, or periods.
+- **Don't** copy, trace, or approximate anything owned from the reference: the Backyard Football
+  and BFU marks, the kid characters, the NFL shield, any team logo, or the italic
+  "BACKYARD FOOTBALL" strip. The grammar is takeable, the assets are not. See
+  [BACKYARD-INVENTORY.md](BACKYARD-INVENTORY.md).
+- **Don't** make this look like Sleeper. Retro game chrome is not mascot energy, and the line is
+  that our ornament is hardware and stationery, never a cartoon character.
+- **Don't** make this look like ESPN or Yahoo. No ad-shaped containers, no tab-bar overload.
+- **Don't** make this look like a generic SaaS landing page.
+- **Don't** nest cards inside cards. A plate inside a plate is twice the outline and half the
+  clarity; the outer one should be a layout region with no card chrome.
+- **Don't** let a restyle move layout. The 26 features in `.agents/feature-map.json` are the
+  contract, and `verify-app.py` is how you find out.

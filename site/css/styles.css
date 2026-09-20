@@ -4,40 +4,95 @@ html, body { margin:0; padding:0; overflow-x: clip; }
 html { font-size: 15px; }
 
 :root {
-  /* ===== Palette "Teal Console" (OKLCH) =====
-     Re-anchored off purple. Brand/Cornerstone accent is now teal; surfaces are a
-     neutral cool-slate ink (hue 210, near-zero chroma — reads as clean charcoal,
-     NOT tinted purple). Semantic pillars stay distinct on the wheel: cornerstone
-     teal (192), foundational blue (250), upside green (158), tier-S amber (85),
-     vet orange (55), danger red (22) — spaced so the three cool pillars don't
-     collapse into each other. Contrast raised so captions clear WCAG AA. Token
-     NAMES unchanged, so the whole app re-skins from this block. */
+  /* ===== Palette "Backyard" (OKLCH) =====
+     Re-anchored off the Backyard Football reference world (see
+     site/BACKYARD-INVENTORY.md). The ground is turf, panels are light lavender
+     inside periwinkle bands, text is deep navy, and SELECTION IS GOLD on every
+     surface. Token NAMES are unchanged from the old Teal Console dark theme, so
+     the whole app re-skins from this block; what inverted is their VALUES.
 
-  /* surfaces — neutral cool-slate ink (no purple tint) */
-  --bg-0: oklch(15% 0.008 210);   /* obsidian — the page */
-  --bg-1: oklch(19% 0.01 210);    /* graphite — card/sidebar */
-  --bg-2: oklch(23% 0.012 210);   /* slate — inputs, default buttons */
-  --bg-3: oklch(28% 0.014 210);   /* pewter — chips */
-  --bg-hover: oklch(32% 0.016 210);
-  --border: oklch(34% 0.014 210); /* edge */
-  --border-hot: oklch(48% 0.03 192);
+     Two rules to keep when editing this block:
+       1. Every semantic hue sits at 45-62% lightness. The old theme ran them at
+          74-84% for a dark ground; at that lightness they vanish on lavender.
+       2. --ink is the outline on every plate and the text on every gold fill.
+          It is near-black on purpose. A softer outline reads as a web card, not
+          as a physical plate, and the plate is the whole aesthetic. */
 
-  /* text — faint cool tint, contrast raised for AA */
-  --fg-0: oklch(97% 0.003 210);   /* porcelain */
-  --fg-1: oklch(90% 0.006 210);   /* bone */
-  --fg-2: oklch(78% 0.01 210);    /* fog  (~6.8:1 on --bg-1) */
-  --fg-3: oklch(66% 0.012 210);   /* ash  (~4.6:1 on --bg-1) */
+  /* surfaces - turf ground, lavender plates, periwinkle bands */
+  --bg-0: oklch(48% 0.13 145);    /* turf - the page ground */
+  --bg-1: oklch(93% 0.028 285);   /* light lavender - card / panel face */
+  --bg-2: oklch(87% 0.045 285);   /* lavender - inputs, default buttons */
+  --bg-3: oklch(81% 0.065 285);   /* periwinkle - chips */
+  --bg-hover: oklch(84% 0.055 285);
+  --border: oklch(20% 0.03 275);  /* the plate outline, near-black */
+  --border-hot: oklch(78% 0.165 88);
 
-  /* accents — teal brand + spaced semantic hues */
-  --accent: oklch(74% 0.12 192);       /* Cornerstone teal — the anchor */
-  --accent-hot: oklch(84% 0.10 192);   /* link / hover */
-  --accent-dim: oklch(46% 0.11 192);   /* primary surface / press */
-  --accent-press: oklch(40% 0.11 192); /* primary :hover */
+  /* text - deep navy on lavender */
+  --fg-0: oklch(24% 0.06 275);    /* navy ink        (~11.5:1 on --bg-1) */
+  --fg-1: oklch(30% 0.055 275);   /* body            (~9.2:1 on --bg-1) */
+  --fg-2: oklch(40% 0.045 275);   /* label           (~6.0:1 on --bg-1) */
+  /* Caption was tuned to clear AA on --bg-1 only, and small bold text lands on
+     --bg-2 and --bg-3 all over the app, where it measured 4.4:1 and 3.6:1. It
+     is now specified against --bg-3, the darkest surface it sits on. */
+  --fg-3: oklch(42% 0.04 275);    /* caption  (5.7:1 on --bg-2, 4.7:1 on --bg-3) */
 
-  --blue: oklch(72% 0.13 250);          /* Foundational */
-  --green: oklch(78% 0.15 158);         /* Upside / positive delta */
-  --amber: oklch(83% 0.145 85);         /* tier S, gold */
-  --red: oklch(68% 0.19 22);            /* danger / depreciating */
+  /* accents - darkened so they read on a light panel */
+  --accent: oklch(42% 0.11 192);       /* Cornerstone teal - the anchor */
+  --accent-hot: oklch(36% 0.11 192);   /* link / hover */
+  --accent-dim: oklch(58% 0.11 192);   /* primary surface */
+  --accent-press: oklch(38% 0.10 192); /* primary :hover */
+
+  --blue: oklch(40% 0.16 265);          /* Foundational */
+  --green: oklch(40% 0.13 150);         /* Upside / positive delta */
+  --amber: oklch(44% 0.12 75);          /* tier S */
+  --red: oklch(43% 0.19 25);            /* danger / depreciating */
+
+  /* Alpha-composable copies of every semantic hue. The app tints rows and
+     chips with rgba(var(--x-rgb), a); keeping the triples here is what lets one
+     palette edit carry all of them instead of 57 scattered literals. */
+  --accent-rgb: 0, 94, 92;
+  --blue-rgb: 27, 61, 156;
+  --green-rgb: 0, 90, 28;
+  --amber-rgb: 120, 70, 0;
+  --vet-rgb: 143, 53, 0;
+  --red-rgb: 158, 0, 11;
+
+  /* ===== Retro plate system ===== */
+  --ink: oklch(18% 0.03 275);           /* outline + text on gold */
+  --gold: oklch(86% 0.17 90);           /* SELECTION. Top of the gold gradient */
+  --gold-deep: oklch(74% 0.165 82);     /* bottom of the gold gradient */
+  --band: oklch(58% 0.115 285);         /* periwinkle header band, white text */
+  --band-deep: oklch(46% 0.115 283);
+  --turf: oklch(48% 0.13 145);
+  --turf-deep: oklch(38% 0.12 145);
+  --endzone: oklch(34% 0.13 290);       /* the halftone purple */
+  --metal: oklch(78% 0.015 250);
+  --metal-deep: oklch(62% 0.018 250);
+  --wood: oklch(44% 0.075 60);
+  --led: oklch(84% 0.24 145);
+  --led-bg: oklch(18% 0.05 145);
+  --chalk: oklch(99% 0 0);              /* yardline + gridline white */
+
+  /* Vertical gradients. Law 2 of the reference: nothing is flat. */
+  --grad-panel: linear-gradient(180deg, oklch(96% 0.02 285), var(--bg-1));
+  --grad-btn: linear-gradient(180deg, var(--bg-2), oklch(78% 0.06 285));
+  --grad-gold: linear-gradient(180deg, var(--gold), var(--gold-deep));
+  --grad-band: linear-gradient(180deg, var(--band), var(--band-deep));
+  --grad-metal: linear-gradient(180deg, oklch(88% 0.012 250), var(--metal-deep));
+  --grad-turf: linear-gradient(180deg, var(--turf), var(--turf-deep));
+
+  /* Plate edges. --bevel is the hard top highlight plus bottom shade that makes
+     a surface read as stamped metal rather than as a flat div. */
+  --plate-edge: 2px solid var(--ink);
+  --bevel: inset 0 0 0 2px rgba(255,255,255,.55), inset 0 1px 0 2px rgba(255,255,255,.75), inset 0 -2px 0 rgba(0,0,0,.16);
+  --bevel-in: inset 0 2px 0 rgba(0,0,0,.20), inset 0 -1px 0 rgba(255,255,255,.35);
+  --well: inset 0 0 0 2px rgba(0,0,0,.28), inset 0 3px 4px rgba(0,0,0,.22);
+
+  /* shadows - hard offsets, no blur. A blurred shadow is the tell that gives a
+     retro plate away as a modern card. */
+  --shadow-1: 0 2px 0 rgba(0,0,0,.28);
+  --shadow-2: 0 4px 0 rgba(0,0,0,.32);
+  --shadow-glow: 0 0 0 3px var(--gold), 0 0 0 5px var(--ink);
 
   /* tier accents */
   --tier-S: var(--amber);
@@ -51,22 +106,31 @@ html { font-size: 15px; }
   --cat-foundational: var(--blue);
   --cat-upside: var(--green);
   --cat-mainstay: var(--amber);
-  --cat-vet: oklch(74% 0.16 55);        /* productive vet orange */
+  --cat-vet: oklch(45% 0.14 50);        /* productive vet orange */
   --cat-stlw: var(--red);
-
-  /* shadows */
-  --shadow-1: 0 1px 0 rgba(255,255,255,0.04) inset, 0 1px 2px rgba(0,0,0,0.3);
-  --shadow-2: 0 4px 12px rgba(0,0,0,0.4);
-  --shadow-glow: 0 0 0 1px var(--accent), 0 0 20px rgba(45,212,191,.18);
 
   /* sizing */
   --radius-sm: 6px;
+  /* Width of the fixed phone nav button. The page header reserves this plus its
+     12px offset; hard-coding 56px in the header is what let the two drift apart. */
+  --nav-toggle-w: 76px;
   --radius: 10px;
   --radius-lg: 14px;
 }
 
 body {
-  font-family: ui-sans-serif, -apple-system, "SF Pro Text", "Inter", "Segoe UI", Roboto, sans-serif;
+  /* Nunito is the body face: rounded like Baloo 2 so the page reads as one
+     world, but with the x-height and counters to stay legible at the 9 to 13px
+     this app actually renders, and with real tabular figures for the tables.
+     The system stack stays behind it as the offline fallback. */
+  font-family: "Nunito", ui-sans-serif, -apple-system, "SF Pro Text", "Inter", "Segoe UI", Roboto, sans-serif;
+  /* Display face for titles, bands and micro-labels. Baloo 2 is the heavy
+     rounded geometric the reference screens use, loaded from Google Fonts in
+     index.html. The system rounded faces stay behind it as the offline
+     fallback: "Arial Rounded MT Bold" is absent on most Windows machines, so
+     this stack alone fell through to Trebuchet and read as a generic UI sans. */
+  --font-display: "Baloo 2", "Arial Rounded MT Bold", ui-rounded, "SF Pro Rounded", "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Nunito", ui-sans-serif, -apple-system, "SF Pro Text", "Inter", "Segoe UI", Roboto, sans-serif;
   background: var(--bg-0);
   color: var(--fg-0);
   -webkit-font-smoothing: antialiased;
@@ -104,7 +168,7 @@ input, select {
   outline: none;
   transition: border-color 120ms, box-shadow 120ms;
 }
-input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(45,212,191,.15); }
+input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(var(--accent-rgb),.15); }
 input[type=checkbox] { accent-color: var(--accent); }
 
 /* ========== Layout ========== */
@@ -130,24 +194,29 @@ input[type=checkbox] { accent-color: var(--accent); }
 .data-fresh {
   display: flex; align-items: center; gap: 7px;
   margin-top: 16px; padding: 8px 10px;
-  border-top: 1px solid var(--border);
   font-size: 0.68rem; color: var(--fg-3); cursor: pointer;
 }
 .data-fresh:hover { color: var(--fg-2); }
 .data-fresh-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
 .brand {
-  display: flex; align-items: center; gap: 8px;
-  padding: 4px 8px 16px 8px;
+  display: flex; align-items: center; gap: 10px;
+  padding: 4px 8px 14px 8px;
   font-weight: 700;
   letter-spacing: -0.01em;
 }
 .brand .logo {
-  width: 28px; height: 28px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, var(--accent), var(--blue));
-  display: grid; place-items: center;
-  font-size: 16px;
-  box-shadow: var(--shadow-1);
+  /* The mark carries its own ink outline and hard shadow, so the old gradient
+     plate behind it would be a second frame around a framed thing. */
+  /* 28px was sized for a letter in a plate. This mark carries a purple slab, a
+     gold Y, a base and a turf strip inside its own outline, so at 28px it was four
+     details in a 28px box and read as a smudge. 44px is the smallest size where the
+     uprights separate, and it matches the 44px touch-target floor used elsewhere. */
+  width: 44px; height: 44px;
+  display: block;
+  object-fit: contain;
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
 }
 .brand .name { font-size: 1.05rem; }
 .brand .sub { color: var(--fg-2); font-weight: 400; font-size: 0.78rem; }
@@ -170,7 +239,7 @@ input[type=checkbox] { accent-color: var(--accent); }
 }
 .nav a:hover { background: var(--bg-2); color: var(--fg-0); text-decoration: none; }
 .nav a.active {
-  background: rgba(45,212,191,.12);
+  background: rgba(var(--accent-rgb),.12);
   color: var(--fg-0);
   box-shadow: inset 2px 0 0 var(--accent);
 }
@@ -235,12 +304,12 @@ input[type=checkbox] { accent-color: var(--accent); }
   border: 1px solid;
   letter-spacing: 0.02em;
 }
-.pill.cornerstone   { color: var(--cat-cornerstone);  border-color: rgba(45,212,191,.4);  background: rgba(45,212,191,.08); }
-.pill.foundational  { color: var(--cat-foundational); border-color: rgba(96,165,250,.4);   background: rgba(96,165,250,.08); }
-.pill.upside_premier{ color: var(--cat-upside);       border-color: rgba(52,211,153,.4);   background: rgba(52,211,153,.08); }
-.pill.mainstay      { color: var(--cat-mainstay);     border-color: rgba(251,191,36,.4);   background: rgba(251,191,36,.08); }
-.pill.productive_vet{ color: var(--cat-vet);          border-color: rgba(251,146,60,.4);   background: rgba(251,146,60,.08); }
-.pill.short_term    { color: var(--cat-stlw);         border-color: rgba(248,113,113,.4);  background: rgba(248,113,113,.08); }
+.pill.cornerstone   { color: var(--cat-cornerstone);  border-color: rgba(var(--accent-rgb),.4);  background: rgba(var(--accent-rgb),.08); }
+.pill.foundational  { color: var(--cat-foundational); border-color: rgba(var(--blue-rgb),.4);   background: rgba(var(--blue-rgb),.08); }
+.pill.upside_premier{ color: var(--cat-upside);       border-color: rgba(var(--green-rgb),.4);   background: rgba(var(--green-rgb),.08); }
+.pill.mainstay      { color: var(--cat-mainstay);     border-color: rgba(var(--amber-rgb),.4);   background: rgba(var(--amber-rgb),.08); }
+.pill.productive_vet{ color: var(--cat-vet);          border-color: rgba(var(--vet-rgb),.4);   background: rgba(var(--vet-rgb),.08); }
+.pill.short_term    { color: var(--cat-stlw);         border-color: rgba(var(--red-rgb),.4);  background: rgba(var(--red-rgb),.08); }
 
 .tier-chip {
   display: inline-grid; place-items: center;
@@ -250,10 +319,10 @@ input[type=checkbox] { accent-color: var(--accent); }
   background: var(--bg-3);
   border: 1px solid var(--border);
 }
-.tier-chip.S { color: var(--tier-S); border-color: rgba(251,191,36,.4); background: rgba(251,191,36,.1); }
-.tier-chip.A { color: var(--tier-A); border-color: rgba(45,212,191,.4); background: rgba(45,212,191,.1); }
-.tier-chip.B { color: var(--tier-B); border-color: rgba(96,165,250,.4); background: rgba(96,165,250,.1); }
-.tier-chip.C { color: var(--tier-C); border-color: rgba(52,211,153,.4); background: rgba(52,211,153,.1); }
+.tier-chip.S { color: var(--tier-S); border-color: rgba(var(--amber-rgb),.4); background: rgba(var(--amber-rgb),.1); }
+.tier-chip.A { color: var(--tier-A); border-color: rgba(var(--accent-rgb),.4); background: rgba(var(--accent-rgb),.1); }
+.tier-chip.B { color: var(--tier-B); border-color: rgba(var(--blue-rgb),.4); background: rgba(var(--blue-rgb),.1); }
+.tier-chip.C { color: var(--tier-C); border-color: rgba(var(--green-rgb),.4); background: rgba(var(--green-rgb),.1); }
 .tier-chip.D { color: var(--tier-D); border-color: rgba(156,163,175,.4); background: rgba(156,163,175,.1); }
 
 /* Muted variant: used for tiers inside non-elite categories (mainstay,
@@ -273,7 +342,7 @@ input[type=checkbox] { accent-color: var(--accent); }
   font-size: 0.7rem; font-weight: 700;
   letter-spacing: 0.04em;
   /* Dark-surface chip: position hue lives at 12% fill / 38% border / 100% text,
-     the same idiom as the tier chips — no more light pastels glowing on the ink. */
+     the same idiom as the tier chips, no more light pastels glowing on the ink. */
   --c: var(--fg-2);
   background: color-mix(in oklab, var(--c) 13%, var(--bg-2));
   border: 1px solid color-mix(in oklab, var(--c) 38%, transparent);
@@ -309,20 +378,20 @@ input[type=checkbox] { accent-color: var(--accent); }
   border: 1px solid var(--border);
   color: var(--fg-1);
 }
-.badge.rookie { background: rgba(52,211,153,.12); border-color: rgba(52,211,153,.4); color: var(--green); }
-.badge.uncertain { background: rgba(248,113,113,.12); border-color: rgba(248,113,113,.4); color: var(--red); }
-.badge.depreciating { background: rgba(251,191,36,.12); border-color: rgba(251,191,36,.4); color: var(--amber); }
-.badge.you { background: rgba(45,212,191,.16); border-color: var(--accent); color: var(--accent-hot); font-weight: 700; }
+.badge.rookie { background: rgba(var(--green-rgb),.12); border-color: rgba(var(--green-rgb),.4); color: var(--green); }
+.badge.uncertain { background: rgba(var(--red-rgb),.12); border-color: rgba(var(--red-rgb),.4); color: var(--red); }
+.badge.depreciating { background: rgba(var(--amber-rgb),.12); border-color: rgba(var(--amber-rgb),.4); color: var(--amber); }
+.badge.you { background: rgba(var(--accent-rgb),.16); border-color: var(--accent); color: var(--accent-hot); font-weight: 700; }
 
 /* Roster stance scale: tank → seller → mid → buyer → contender.
    Red = selling pressure (bottom of standings, dump vets for picks).
    Green = championship window (top of standings). Used to color the
    Owner / Owners badges in rankings tables. */
-.badge.stance-tank      { background: rgba(248,113,113,.14); border-color: rgba(248,113,113,.45); color: var(--red); }
-.badge.stance-seller    { background: rgba(251,146,60,.12);  border-color: rgba(251,146,60,.40);  color: var(--cat-vet); }
+.badge.stance-tank      { background: rgba(var(--red-rgb),.14); border-color: rgba(var(--red-rgb),.45); color: var(--red); }
+.badge.stance-seller    { background: rgba(var(--vet-rgb),.12);  border-color: rgba(var(--vet-rgb),.40);  color: var(--cat-vet); }
 .badge.stance-mid       { background: var(--bg-3);            border-color: var(--border);         color: var(--fg-2); }
-.badge.stance-buyer     { background: rgba(96,165,250,.12);  border-color: rgba(96,165,250,.40);  color: var(--blue); }
-.badge.stance-contender { background: rgba(52,211,153,.14);  border-color: rgba(52,211,153,.45);  color: var(--green); }
+.badge.stance-buyer     { background: rgba(var(--blue-rgb),.12);  border-color: rgba(var(--blue-rgb),.40);  color: var(--blue); }
+.badge.stance-contender { background: rgba(var(--green-rgb),.14);  border-color: rgba(var(--green-rgb),.45);  color: var(--green); }
 /* "You" stance still wins on color but inherits the stance border tint */
 .badge.you.stance-tank,
 .badge.you.stance-seller,
@@ -360,11 +429,21 @@ table.data tbody td {
   color: var(--fg-1);
 }
 table.data tbody tr:hover { background: var(--bg-2); }
-table.data tbody tr.you { background: rgba(45,212,191,.06); }
-table.data tbody tr.you:hover { background: rgba(45,212,191,.10); }
+table.data tbody tr.you { background: rgba(var(--accent-rgb),.06); }
+table.data tbody tr.you:hover { background: rgba(var(--accent-rgb),.10); }
 
 table.data .name-cell { display: flex; align-items: center; gap: 8px; min-width: 200px; }
-table.data .name-cell .name { font-weight: 500; color: var(--fg-0); }
+/* The name is the row's SUBJECT and everything else in the row is an attribute of
+   it, so it is the largest and heaviest thing in the row, not the lightest. It was
+   weight 500 here, and this selector (0-0-3-1) outranked the .player-name-button
+   rule that tried to set it, so the name rendered lighter than the numbers. */
+table.data .name-cell .name,
+table.data .name-cell .player-name-button {
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--fg-0);
+  letter-spacing: -0.012em;
+}
 table.data .gibbs-rank-col,
 table.data .expert-rank-col { width: 76px; white-space: nowrap; }
 
@@ -374,7 +453,7 @@ table.data .expert-rank-col { width: 76px; white-space: nowrap; }
   -webkit-overflow-scrolling: touch;
 }
 .rankings-pos-toggle { flex-wrap: wrap; }
-.weekly-rankings-table { min-width: 780px; }
+.weekly-rankings-table { min-width: 840px; }
 .sleeper-weeks-table { min-width: 1480px; }
 .weekly-rankings-table tbody tr,
 .sleeper-weeks-table tbody tr { cursor: pointer; }
@@ -391,6 +470,9 @@ table.data .expert-rank-col { width: 76px; white-space: nowrap; }
 .player-name-button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .weekly-rankings-table thead th,
 .sleeper-weeks-table thead th { white-space: nowrap; }
+.weekly-rankings-table .weekly-opp { min-width: 54px; line-height: 1.05; }
+.weekly-rankings-table .weekly-opp-team { font-weight: 800; }
+.weekly-rankings-table .weekly-opp-rank { margin-top: 2px; font-size: 0.65rem; opacity: 0.85; }
 .sleeper-weeks-table tbody td { padding-top: 8px; padding-bottom: 8px; }
 .rankings-source-note {
   padding: 10px 14px;
@@ -537,7 +619,7 @@ table.data .expert-rank-col { width: 76px; white-space: nowrap; }
   transition: background 120ms;
 }
 .strength-row:hover { background: var(--bg-2); }
-.strength-row.you { border-color: var(--accent); background: rgba(45,212,191,.08); }
+.strength-row.you { border-color: var(--accent); background: rgba(var(--accent-rgb),.08); }
 .strength-row .rank { font-size: 1.1rem; font-weight: 700; color: var(--fg-2); text-align: center; }
 .strength-row .team { display: flex; flex-direction: column; min-width: 0; }
 .strength-row .team-name { font-weight: 600; color: var(--fg-0); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -581,14 +663,19 @@ table.data .expert-rank-col { width: 76px; white-space: nowrap; }
 .league-card .meta { color: var(--fg-2); font-size: 0.85rem; margin-top: 4px; }
 .league-card .badges { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
 
+.leagues-table-card { padding: 0; overflow-x: auto; }
+table.data.leagues-table thead th { padding: 16px 18px; font-size: 0.85rem; }
+table.data.leagues-table tbody td { padding: 18px; font-size: 1rem; }
+table.data.leagues-table .name-cell .name { font-size: 1.1rem; }
+
 .league-banner {
   padding: 10px 14px;
   border-radius: var(--radius-sm);
   margin-bottom: 16px;
   font-size: 0.9rem;
 }
-.league-banner.superflex { background: rgba(251,191,36,.08); border: 1px solid rgba(251,191,36,.4); color: var(--amber); }
-.league-banner.idp { background: rgba(96,165,250,.08); border: 1px solid rgba(96,165,250,.4); color: var(--blue); }
+.league-banner.superflex { background: rgba(var(--amber-rgb),.08); border: 1px solid rgba(var(--amber-rgb),.4); color: var(--amber); }
+.league-banner.idp { background: rgba(var(--blue-rgb),.08); border: 1px solid rgba(var(--blue-rgb),.4); color: var(--blue); }
 
 /* ========== Roster sections ========== */
 .roster-section {
@@ -660,8 +747,8 @@ table.data .expert-rank-col { width: 76px; white-space: nowrap; }
 }
 .hist-table tbody td { padding: 6px 8px; }
 .hist-table tbody tr:last-child td {
-  background: rgba(45,212,191,.04);
-  border-top: 1px solid rgba(45,212,191,.2);
+  background: rgba(var(--accent-rgb),.04);
+  border-top: 1px solid rgba(var(--accent-rgb),.2);
 }
 
 /* ========== Timestamped video intel (player modal) ========== */
@@ -741,8 +828,8 @@ table.data .expert-rank-col { width: 76px; white-space: nowrap; }
   padding: 3px 7px; border-radius: 999px;
   text-transform: uppercase;
 }
-.flag-pill.new { background: rgba(45,212,191,.12); color: var(--accent-hot); border: 1px solid rgba(45,212,191,.35); }
-.flag-pill.firstime { background: rgba(251,191,36,.10); color: var(--amber); border: 1px solid rgba(251,191,36,.35); }
+.flag-pill.new { background: rgba(var(--accent-rgb),.12); color: var(--accent-hot); border: 1px solid rgba(var(--accent-rgb),.35); }
+.flag-pill.firstime { background: rgba(var(--amber-rgb),.10); color: var(--amber); border: 1px solid rgba(var(--amber-rgb),.35); }
 .coach-line {
   display: flex; align-items: baseline; gap: 10px;
   padding: 2px 0;
@@ -877,7 +964,7 @@ textarea { resize: vertical; min-height: 80px; }
 .page-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
 /* Search highlight */
-.hl { background: rgba(251,191,36,.18); padding: 0 1px; border-radius: 2px; }
+.hl { background: rgba(var(--amber-rgb),.18); padding: 0 1px; border-radius: 2px; }
 
 /* ========== Section titles ========== */
 .section-title {
@@ -893,7 +980,7 @@ textarea { resize: vertical; min-height: 80px; }
   content: '';
   display: inline-block;
   width: 3px; height: 18px;
-  background: var(--accent); /* solid — the only 2 gradients are brand mark + strength bar */
+  background: var(--accent); /* solid, the only 2 gradients are brand mark + strength bar */
   border-radius: 2px;
 }
 
@@ -1044,7 +1131,7 @@ textarea { resize: vertical; min-height: 80px; }
   border-bottom: 1px solid var(--border);
 }
 .timeline-row:last-child { border-bottom: none; }
-.timeline-row.is-me { background: rgba(45,212,191,0.04); margin: 0 -14px; padding: 10px 14px; }
+.timeline-row.is-me { background: rgba(var(--accent-rgb),0.04); margin: 0 -14px; padding: 10px 14px; }
 .timeline-row.is-failed { opacity: 0.55; }
 .timeline-icon {
   width: 24px; height: 24px;
@@ -1201,10 +1288,13 @@ textarea { resize: vertical; min-height: 80px; }
 /* Side-by-side panels: starters | depth. */
 .slot-bars-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 14px;
   align-items: start;
 }
+/* Both tables carry the same six numeric columns, so an uneven split clipped the
+   narrower one's Grade column off its right edge. */
+.slot-bars-panel { min-width: 0; overflow: hidden; }
 @media (max-width: 1100px) {
   .slot-bars-grid { grid-template-columns: 1fr; }
 }
@@ -1227,8 +1317,11 @@ textarea { resize: vertical; min-height: 80px; }
 }
 .slot-bar-row {
   display: grid;
-  /* slot label | name | posrank chip | track-area | grade */
-  grid-template-columns: 56px minmax(0, 1fr) auto minmax(140px, 320px) 38px;
+  /* slot label | name | posrank chip | track-area | VOR | grade.
+     The VOR column was added without widening this template, which put 6 children
+     in 5 columns: the grade wrapped under the name and the depth panel overflowed.
+     The label column also has to hold "FLEX1 DEP", which 56px could not. */
+  grid-template-columns: 74px minmax(0, 1fr) auto 44px 40px minmax(110px, 240px) 42px 38px;
   align-items: center;
   gap: 12px;
   padding: 5px 8px;
@@ -1364,7 +1457,12 @@ textarea { resize: vertical; min-height: 80px; }
 .slot-bar-fv.aging  { background: var(--amber); }
 .slot-bar-fv.steady { background: var(--fg-2); }
 @media (max-width: 720px) {
-  .slot-bar-row { grid-template-columns: 44px minmax(0, 1fr) auto 100px 32px; gap: 8px; }
+  /* Phone: the track gives up the most, since its length is comparative and the
+     two numbers beside it are absolute. */
+  /* Phone drops points and age, which are absolute and available on the player
+     card, and keeps the two comparative cells plus the grade. */
+  .slot-bar-row { grid-template-columns: 62px minmax(0, 1fr) auto 0 0 68px 34px 30px; gap: 6px; }
+  
 }
 .grade-cell { display:flex; flex-direction:column; align-items:center; gap: 6px; }
 .grade-svg-wrap { position: relative; width: 90px; height: 90px; }
@@ -1573,8 +1671,8 @@ textarea { resize: vertical; min-height: 80px; }
   border: 1px solid var(--border);
   color: var(--fg-1);
 }
-.pick-chip.acquired { background: rgba(52,211,153,.15); border-color: rgba(52,211,153,.4); color: var(--green); }
-.pick-chip.lost { background: rgba(248,113,113,.10); border-color: rgba(248,113,113,.4); color: var(--red); text-decoration: line-through; }
+.pick-chip.acquired { background: rgba(var(--green-rgb),.15); border-color: rgba(var(--green-rgb),.4); color: var(--green); }
+.pick-chip.lost { background: rgba(var(--red-rgb),.10); border-color: rgba(var(--red-rgb),.4); color: var(--red); text-decoration: line-through; }
 
 /* ========== Trade grid (3-col with gauge) ========== */
 .trade-grid {
@@ -1695,10 +1793,25 @@ textarea { resize: vertical; min-height: 80px; }
 .price-line { font-size: 0.9rem; color: var(--fg-1); }
 
 /* Trade Finder rows */
+.trade-finder { margin-top: 20px; }
+.trade-finder-note,
+.trade-finder-empty {
+  margin: 0 0 10px;
+  padding: 10px 12px;
+  color: var(--fg-1);
+  background: var(--grad-panel);
+  border: var(--plate-edge);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--bevel), var(--shadow-1);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+.trade-finder-empty { font-weight: 700; }
 .trade-find-row {
   display: grid; grid-template-columns: 140px 1fr 48px; align-items: center; gap: 12px;
   padding: 10px 12px; background: var(--bg-1); border: 1px solid var(--border);
   border-radius: var(--radius-sm); cursor: pointer; transition: border-color 120ms, background 120ms;
+  width: 100%; color: var(--fg-0); text-align: left; box-shadow: var(--shadow-1);
 }
 .trade-find-row:hover { border-color: var(--border-hot); background: var(--bg-2); }
 .trade-find-row .tf-partner { font-weight: 600; color: var(--fg-1); font-size: 0.86rem; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -1765,16 +1878,53 @@ textarea { resize: vertical; min-height: 80px; }
   gap: 14px;
   align-items: stretch;
 }
+.trade-title-odds { margin-top: 14px; padding-top: 12px; border-top: 2px solid var(--border); }
+.trade-title-values,
+.trade-lineup-values { display: grid; gap: 6px; margin-top: 2px; }
+.trade-title-side,
+.trade-lineup-side {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+}
+.trade-title-side + .trade-title-side,
+.trade-lineup-side + .trade-lineup-side {
+  padding-top: 6px;
+  border-top: 1px solid color-mix(in oklab, var(--border) 45%, transparent);
+}
+.trade-title-side-label,
+.trade-lineup-side-label {
+  color: var(--fg-3);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.trade-title-value,
+.trade-lineup-value {
+  min-width: 0;
+  color: var(--fg-1);
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.35;
+  text-align: right;
+  white-space: normal;
+}
+.trade-title-run { width: 100%; min-height: 44px; margin-top: 12px; }
+.trade-title-meta { margin-top: 8px; line-height: 1.45; }
 /* Grid tracks default to min-width:auto, so a long "Team (Owner) ★" option in the
    roster select forces its track wider than 1fr and blows the whole grid out (the
    overlapping-headers report). Let every track shrink and clip internally instead. */
 .trade-calc > * { min-width: 0; }
 .trade-side-head select { flex: 0 1 auto; min-width: 0; max-width: 62%; }
-/* Collapse to one column below 1280px, not 1100 — the 240px sidebar + middle rail
+/* Collapse to one column below 1280px, not 1100, the 240px sidebar + middle rail
    crush the two side cards well before 1100 on a laptop. */
 @media (max-width: 1280px) {
   /* Single column: the middle summary must NOT stay sticky, or the (later-painted)
-     opposite side scrolls up over the stuck card — the "jacked up" overlap. Let it
+     opposite side scrolls up over the stuck card, the "jacked up" overlap. Let it
      flow inline, and float it to the top so the live verdict is the first thing seen. */
   .trade-calc { grid-template-columns: 1fr; }
   .trade-middle { position: static; top: auto; order: -1; }
@@ -1835,7 +1985,7 @@ textarea { resize: vertical; min-height: 80px; }
 .whatif-x { font-weight: 700; color: var(--fg-3); }
 .whatif-chip:hover .whatif-x { color: var(--accent-hot); }
 .whatif-clear { padding: 4px 8px; font-size: 0.78rem; }
-.badge.whatif-on { background: rgba(45,212,191,.16); border-color: var(--accent); color: var(--accent-hot); font-weight: 700; }
+.badge.whatif-on { background: rgba(var(--accent-rgb),.16); border-color: var(--accent); color: var(--accent-hot); font-weight: 700; }
 
 /* Rank movement + point delta under a what-if. */
 .rank-up, .rank-down { margin-left: 4px; font-size: 0.72rem; font-weight: 700; }
@@ -1899,7 +2049,7 @@ textarea { resize: vertical; min-height: 80px; }
   background: color-mix(in oklab, var(--accent) 10%, var(--bg-2));
   border: 1px solid var(--accent);
   border-style: solid;
-  box-shadow: 0 0 0 4px rgba(45,212,191,.10), 0 0 24px rgba(45,212,191,.18);
+  box-shadow: 0 0 0 4px rgba(var(--accent-rgb),.10), 0 0 24px rgba(var(--accent-rgb),.18);
 }
 .trade-pile-empty {
   font-size: 0.78rem;
@@ -1920,7 +2070,7 @@ textarea { resize: vertical; min-height: 80px; }
 }
 .trade-pile-row:active { cursor: grabbing; }
 .trade-pile-row:first-of-type { border-top: none; }
-.trade-pile-row:hover { background: rgba(248,113,113,0.06); }
+.trade-pile-row:hover { background: rgba(var(--red-rgb),0.06); }
 .trade-pile-row .name-cell { flex: 1; min-width: 0; display: flex; align-items: center; gap: 6px; }
 .trade-pile-row .trade-pile-x {
   color: var(--fg-3); font-size: 0.85rem;
@@ -1945,6 +2095,16 @@ textarea { resize: vertical; min-height: 80px; }
   font-size: 0.86rem;
   transition: background 80ms, opacity 80ms, transform 80ms;
 }
+.trade-pool-row .name-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.trade-pool-row .name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.trade-pool-row > .tnum,
+.trade-pool-row > .muted { flex: 0 0 auto; margin-left: 12px; }
 .trade-pool-row:active { cursor: grabbing; }
 .trade-pool-row:hover { background: var(--bg-2); }
 .trade-pool-row.selected {
@@ -1968,7 +2128,7 @@ textarea { resize: vertical; min-height: 80px; }
 /* Sticky ONLY on genuinely wide screens (3-column layout with room). Below that,
    sticky made this card float over the pool rows behind it (the overlap bug).
    Scoped to min-width so it can't apply in the single-column/narrow layout. */
-@media (min-width: 1101px) {
+@media (min-width: 1281px) {
   .trade-middle { position: sticky; top: 16px; }
 }
 .trade-middle-card {
@@ -1980,7 +2140,7 @@ textarea { resize: vertical; min-height: 80px; }
 }
 .trade-middle.preview .trade-middle-card {
   border-color: var(--accent);
-  box-shadow: 0 0 0 1px var(--accent), 0 0 28px rgba(45,212,191,.16);
+  box-shadow: 0 0 0 1px var(--accent), 0 0 28px rgba(var(--accent-rgb),.16);
   transform: translateY(-2px);
 }
 .trade-middle.preview .verdict::after {
@@ -2056,7 +2216,7 @@ textarea { resize: vertical; min-height: 80px; }
 }
 .player-row:active, .league-card:active { transform: translateY(0); }
 /* .badge.you is styled statically above (violet tint + border). No infinite
-   pulse — "only data moves," and a looping glow down every table row ignored
+   pulse, "only data moves," and a looping glow down every table row ignored
    prefers-reduced-motion. */
 
 .kbd {
@@ -2178,16 +2338,16 @@ textarea { resize: vertical; min-height: 80px; }
 }
 .empire-cell:hover { transform: translateY(-1px); filter: brightness(1.2); }
 .empire-cell.cat-cornerstone {
-  background: rgba(45,212,191,.18); color: var(--cat-cornerstone);
-  border: 1px solid rgba(45,212,191,.4);
+  background: rgba(var(--accent-rgb),.18); color: var(--cat-cornerstone);
+  border: 1px solid rgba(var(--accent-rgb),.4);
 }
 .empire-cell.cat-foundational {
-  background: rgba(96,165,250,.18); color: var(--cat-foundational);
-  border: 1px solid rgba(96,165,250,.4);
+  background: rgba(var(--blue-rgb),.18); color: var(--cat-foundational);
+  border: 1px solid rgba(var(--blue-rgb),.4);
 }
 .empire-cell.cat-upside_premier {
-  background: rgba(52,211,153,.18); color: var(--cat-upside);
-  border: 1px solid rgba(52,211,153,.4);
+  background: rgba(var(--green-rgb),.18); color: var(--cat-upside);
+  border: 1px solid rgba(var(--green-rgb),.4);
 }
 
 /* ========== Dashboard: Insights strip ========== */
@@ -2359,7 +2519,7 @@ textarea { resize: vertical; min-height: 80px; }
   border-bottom-color: var(--accent);
 }
 .tab.active .tab-icon { opacity: 1; }
-.tab.active .tab-count { background: rgba(45,212,191,.18); color: var(--accent-hot); }
+.tab.active .tab-count { background: rgba(var(--accent-rgb),.18); color: var(--accent-hot); }
 
 /* ============================================================
    Breadcrumbs
@@ -2427,11 +2587,11 @@ textarea { resize: vertical; min-height: 80px; }
   border-radius: 999px;
 }
 .nav a.is-context {
-  background: rgba(45,212,191,.10);
+  background: rgba(var(--accent-rgb),.10);
   color: var(--fg-0);
   box-shadow: inset 2px 0 0 var(--accent);
 }
-.nav a.is-context .nav-tag { color: var(--accent-hot); border-color: rgba(45,212,191,.35); background: rgba(45,212,191,.08); }
+.nav a.is-context .nav-tag { color: var(--accent-hot); border-color: rgba(var(--accent-rgb),.35); background: rgba(var(--accent-rgb),.08); }
 .nav-sub {
   margin: 2px 0 8px 22px;
   border-left: 1px solid var(--border);
@@ -2446,7 +2606,7 @@ textarea { resize: vertical; min-height: 80px; }
   font-size: 0.85rem;
 }
 .nav-sub a:hover { background: var(--bg-2); color: var(--fg-0); }
-.nav-sub a.active { color: var(--accent-hot); background: rgba(45,212,191,.06); }
+.nav-sub a.active { color: var(--accent-hot); background: rgba(var(--accent-rgb),.06); }
 .nav-sub .sub-bullet { color: var(--fg-3); width: 10px; text-align: center; }
 
 /* ============================================================
@@ -2463,22 +2623,37 @@ textarea { resize: vertical; min-height: 80px; }
   font-size: 1.2rem;
   line-height: 1;
 }
+/* On mobile the sidebar is off-canvas, so the brand mark was never on screen at
+   all and this button sat exactly where it would have been. Putting the mark IN
+   the button gives the logo a permanent home and keeps one fixed element in the
+   corner instead of two fighting for it. The bars stay so it still reads as a menu. */
 .nav-toggle {
   display: none;
   position: fixed;
   top: max(12px, env(safe-area-inset-top));
   left: max(12px, env(safe-area-inset-left));
   z-index: 30;
-  width: 44px; height: 44px;
+  gap: 6px;
+  width: var(--nav-toggle-w);
+  height: 44px;
+  padding: 0 6px;
   background: var(--bg-1);
-  border: 1px solid var(--border);
+  border: 2px solid var(--ink);
   border-radius: var(--radius-sm);
   color: var(--fg-0);
   font-size: 1rem;
   line-height: 1;
   align-items: center; justify-content: center;
-  box-shadow: var(--shadow-1);
+  box-shadow: var(--bevel);
 }
+.nav-toggle-logo {
+  width: 32px; height: 32px;
+  display: block;
+  object-fit: contain;
+  /* The mark carries its own outline; a plate behind it would frame a framed thing. */
+  background: none; box-shadow: none; border-radius: 0;
+}
+.nav-toggle-bars { font-size: 0.95rem; color: var(--fg-2); }
 .nav-scrim {
   display: none;
   position: fixed; inset: 0;
@@ -2503,6 +2678,7 @@ textarea { resize: vertical; min-height: 80px; }
   body.nav-open .sidebar { transform: translateX(0); }
   body.nav-open .nav-scrim { display: block; }
   .nav-toggle { display: inline-flex; }
+  body.nav-open .nav-toggle { visibility: hidden; pointer-events: none; }
   .sidebar-close { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; }
   .main { padding: max(64px, calc(env(safe-area-inset-top) + 52px)) max(16px, env(safe-area-inset-right)) 48px max(16px, env(safe-area-inset-left)); }
   .page-header { gap: 12px; }
@@ -2526,31 +2702,12 @@ textarea { resize: vertical; min-height: 80px; }
   .filters .group select { min-width: 0; max-width: 100%; }
 }
 @media (max-width: 560px) {
-  /* Standings row: shrink the sparkline column so rank/team/score/bars all fit at 320px. */
-  .strength-row { grid-template-columns: 26px minmax(0,1fr) 70px 92px; gap: 8px; padding: 10px 8px; }
-  .strength-row .str-spark { height: 42px; gap: 2px; }
-  .strength-row .str-spark .sp-bar { width: 9px; }
-  .strength-row .str-spark .sp-bar-val { font-size: 0.46rem; }
-  .strength-row .score { font-size: 1.05rem; }
   /* Trade side cards: tighten so the pile/pool read on a phone. */
   .trade-side-card, .trade-middle-card { padding: 10px; }
 }
-@media (max-width: 480px) {
-  /* At phone width the 4-track standings row (rank | team | score | sparkline)
-     crams score + delta + share badges into ~90px, so the "FV … · -%" delta and
-     the CS/FND/UP + share text paint over the sparkline. Drop to rank | team |
-     score, give the sparkline its own full-width row, and let the detail badges
-     wrap instead of overflowing right into the chart. */
-  .strength-row { grid-template-columns: 26px minmax(0, 1fr) auto; column-gap: 10px; row-gap: 10px; }
-  .strength-row .str-traj { grid-column: 1 / -1; }
-  .strength-row .str-spark { height: 48px; }
-  .strength-row .str-spark .sp-bar { width: 60%; max-width: 20px; }
-  .strength-row .str-spark .sp-bar-val { font-size: 0.58rem; }
-  .strength-row .strength-detail { flex-wrap: wrap; gap: 4px 10px; }
-}
 
 /* ============================================================
-   Trade Calculator — 3-year outlook block (middle summary)
+   Trade Calculator, 3-year outlook block (middle summary)
    ============================================================ */
 .t3y {
   margin-top: 14px;
@@ -2592,16 +2749,18 @@ textarea { resize: vertical; min-height: 80px; }
   white-space: nowrap;
 }
 .t3y-sep { color: var(--border-hot); text-align: center; align-self: center; }
-.t3y-note { font-size: 0.7rem; margin-top: 6px; opacity: 0.7; }
+/* opacity was doing the dimming, which drops contrast to 3.4:1. A real color
+   token dims it the same amount and stays readable. */
+.t3y-note { font-size: 0.7rem; margin-top: 6px; color: var(--fg-3); }
 
-/* Roster table — projected-value cells colored by aging retention vs today.
+/* Roster table, projected-value cells colored by aging retention vs today.
    Each tier is a soft tint of the relevant token; the +1y..+5y cells communicate
    how a player's dynasty value holds, fades, or cliffs across the horizon. */
 .val-cell        { font-weight: 600; }
-.val-cell.val-grow  { color: var(--green);   background: rgba(52,211,153,.08); }
+.val-cell.val-grow  { color: var(--green);   background: rgba(var(--green-rgb),.08); }
 .val-cell.val-hold  { color: var(--fg-1);    background: transparent; }
-.val-cell.val-fade  { color: var(--cat-vet); background: rgba(251,146,60,.08); }
-.val-cell.val-cliff { color: var(--red);     background: rgba(248,113,113,.10); }
+.val-cell.val-fade  { color: var(--cat-vet); background: rgba(var(--vet-rgb),.08); }
+.val-cell.val-cliff { color: var(--red);     background: rgba(var(--red-rgb),.10); }
 
 /* ============================================================
    Present vs Future value bar (empire-wide aggregate)
@@ -2627,8 +2786,8 @@ textarea { resize: vertical; min-height: 80px; }
   overflow: hidden;
   transition: width 320ms ease-out;
 }
-.pv-fv-fill.present { background: linear-gradient(90deg, rgba(251,146,60,.65), rgba(251,146,60,.45)); color: #fff5e6; }
-.pv-fv-fill.future  { background: linear-gradient(90deg, rgba(52,211,153,.45), rgba(52,211,153,.65)); color: #e8fff5; }
+.pv-fv-fill.present { background: linear-gradient(90deg, rgba(var(--vet-rgb),.65), rgba(var(--vet-rgb),.45)); color: #fff5e6; }
+.pv-fv-fill.future  { background: linear-gradient(90deg, rgba(var(--green-rgb),.45), rgba(var(--green-rgb),.65)); color: #e8fff5; }
 .pv-fv-label { padding: 0 8px; }
 
 /* ============================================================
@@ -2681,8 +2840,8 @@ textarea { resize: vertical; min-height: 80px; }
   background: var(--bg-2);
 }
 .traj-pvfv-fill { transition: width 320ms ease-out; }
-.traj-pvfv-fill.present { background: rgba(251,146,60,.6); }
-.traj-pvfv-fill.future  { background: rgba(52,211,153,.55); }
+.traj-pvfv-fill.present { background: rgba(var(--vet-rgb),.6); }
+.traj-pvfv-fill.future  { background: rgba(var(--green-rgb),.55); }
 .traj-sparkcell { padding: 12px 14px; }
 .traj-year { color: var(--fg-3); font-size: 0.7rem; }
 .traj-row.traj-head .traj-sparkcell {
@@ -2712,8 +2871,8 @@ textarea { resize: vertical; min-height: 80px; }
   border-radius: 3px 3px 0 0;
   transition: height 320ms ease-out;
 }
-.traj-bar.present { background: linear-gradient(180deg, var(--cat-vet), rgba(251,146,60,.55)); }
-.traj-bar.future  { background: linear-gradient(180deg, var(--cat-upside), rgba(52,211,153,.45)); }
+.traj-bar.present { background: linear-gradient(180deg, var(--cat-vet), rgba(var(--vet-rgb),.55)); }
+.traj-bar.future  { background: linear-gradient(180deg, var(--cat-upside), rgba(var(--green-rgb),.45)); }
 .traj-bar-val {
   position: absolute;
   bottom: -14px;
@@ -2945,7 +3104,21 @@ tr.dragging { opacity: 0.55; background: var(--bg-3) !important; }
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
-  align-items: start;
+  /* stretch, not start: comparative panels share a top AND a bottom edge. */
+  align-items: stretch;
+}
+.watch-panel { display: flex; flex-direction: column; }
+/* The rows area absorbs the difference in row count. 33 against 8 against 35
+   cannot be equalised by padding, so the tall ones scroll inside a shared frame. */
+.watch-panel .watch-rows {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  /* Gutter for the scrollbar. Without it the track sits flush against the INDEX
+     column, so the page's largest number reads as if it were clipped. */
+  padding-right: 10px;
+  scrollbar-gutter: stable;
 }
 .watch-panel { margin-top: 0; }
 .watch-panel + .watch-panel { margin-top: 0; }
@@ -2963,6 +3136,19 @@ tr.dragging { opacity: 0.55; background: var(--bg-3) !important; }
   font-size: 0.78rem;
   line-height: 1.45;
   margin: 0 0 10px;
+  /* One line reserved, which all three now fit, so the header block is the same
+     height in every panel and the first row lines up. */
+  min-height: calc(0.78rem * 1.45 * 1);
+}
+/* Deep enough to be worth comparing, and bounded so the rows scroll instead of the
+   panel growing past the page. On the PANEL, not the grid: a stretched grid item
+   ignores the container's max-height and overflows it. */
+.watch-panel { max-height: min(78vh, 900px); }
+@media (max-width: 1100px) {
+  /* Stacked, so equal heights would only add dead space. */
+  .watch-panel { max-height: none; }
+  .watch-panel .watch-rows { overflow-y: visible; }
+  .watch-panel-sub { min-height: 0; }
 }
 
 .watch-rows { display: flex; flex-direction: column; }
@@ -2983,11 +3169,24 @@ tr.dragging { opacity: 0.55; background: var(--bg-3) !important; }
   border-top: 1px solid var(--border);
 }
 .watch-row:first-child { border-top: 0; }
-.watch-rank { grid-area: rank; color: var(--fg-3); font-size: 0.78rem; text-align: right; }
+/* Four steps, ~1.2 ratio off a 0.72rem base:
+     0.6   label   column headings, uppercase and letterspaced
+     0.72  support rank, team/pos meta, league chip
+     0.86  subject player name
+     1.05  figure  the index, the one number the panel exists to show
+   Size alone does not carry it: the figure also takes the display face, the
+   heaviest weight and the only saturated colour in the row. */
+.watch-rank {
+  grid-area: rank;
+  color: var(--fg-3);
+  font-size: 0.72rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
 .watch-name { grid-area: name; display: flex; flex-direction: column; min-width: 0; }
 .watch-player {
-  font-weight: 600;
-  font-size: 0.9rem;
+  font-weight: 700;
+  font-size: 0.86rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -3006,9 +3205,24 @@ tr.dragging { opacity: 0.55; background: var(--bg-3) !important; }
 /* Starting against you reads as an outline, starting for you reads as filled:
    the two sides have to be tellable apart without relying on the arrow alone. */
 .watch-chip.for { background: color-mix(in oklab, var(--lg) 18%, transparent); }
-.watch-chip.against { background: transparent; opacity: 0.85; border-style: dashed; }
-.watch-proj { grid-area: proj; color: var(--fg-2); font-size: 0.8rem; text-align: right; }
-.watch-index { grid-area: index; font-weight: 700; font-size: 0.9rem; text-align: right; }
+.watch-chip.against { background: transparent; border-width: 1.5px; border-style: solid; opacity: 1; }
+.watch-proj {
+  grid-area: proj;
+  color: var(--fg-3);
+  font-size: 0.72rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.watch-index {
+  grid-area: index;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.05rem;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
 .watch-index.up { color: var(--green); }
 .watch-index.down { color: var(--red); }
 .watch-bar {
@@ -3029,3 +3243,2203 @@ tr.dragging { opacity: 0.55; background: var(--bg-3) !important; }
   .watch-row { grid-template-columns: 1.4rem minmax(0, 1fr) 2.4rem 3.2rem; column-gap: 6px; }
   .watch-key-opp { display: none; }
 }
+
+/* ==========================================================================
+   Backyard plate system
+   ==========================================================================
+   The retro layer, applied on top of the structural rules above. It is appended
+   rather than woven in so the geometry of every view stays exactly where it
+   was and only the surface treatment changes: a restyle that moves layout
+   breaks the 26 mapped features in .agents/feature-map.json.
+
+   The nine laws it implements are inventoried in site/BACKYARD-INVENTORY.md.
+   The load-bearing ones here: every surface is an outlined plate (1), nothing
+   is flat (2), and selection is always a gold fill with ink text (3).
+   ========================================================================== */
+
+/* --- Law 1 + 2: the ground is turf, not a flat page ---------------------- */
+body {
+  background: var(--grad-turf);
+  background-attachment: fixed;
+}
+/* Halftone dot mesh plus yardline chalk, the two textures the reference uses on
+   its field. Fixed and non-interactive so it never scrolls under a sticky
+   header or eats a click. */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    radial-gradient(rgba(255,255,255,.07) 1px, transparent 1px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.055) 0 2px, transparent 2px 148px);
+  background-size: 7px 7px, auto;
+  /* Behind content, not above it. Anything that raises .app to clear this
+     texture breaks the drawer, because the scrim is .app's sibling. */
+  z-index: -1;
+}
+
+/* --- Law 1: plates ------------------------------------------------------- */
+.card,
+.strength-row,
+.filters {
+  border: var(--plate-edge);
+  border-radius: var(--radius);
+  box-shadow: var(--bevel), var(--shadow-1);
+}
+.card { background: var(--grad-panel); padding: 14px; }
+.card + .card { margin-top: 16px; }
+
+/* A card heading is a periwinkle band across the plate, the way every panel in
+   the reference announces itself. */
+.card-title {
+  background: var(--grad-band);
+  color: var(--chalk);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-sm);
+  margin: -4px -4px 12px -4px;
+  padding: 5px 10px;
+  font-size: 0.72rem;
+  letter-spacing: 0.09em;
+  font-weight: 800;
+  text-shadow: 0 1px 0 rgba(0,0,0,.45);
+  box-shadow: var(--bevel);
+}
+
+.sidebar {
+  background: var(--grad-panel);
+  border-right: 3px solid var(--ink);
+  box-shadow: inset -2px 0 0 rgba(255,255,255,.4);
+}
+
+/* --- Law 2 + 3: buttons are gradient plates, selected is gold ----------- */
+button {
+  background: var(--grad-btn);
+  border: var(--plate-edge);
+  box-shadow: var(--bevel), var(--shadow-1);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 6px 13px;
+}
+button:hover {
+  background: linear-gradient(180deg, oklch(91% 0.05 285), oklch(82% 0.065 285));
+  border-color: var(--ink);
+}
+/* The press is a real 2px travel onto its own shadow, so the plate looks
+   physically depressed rather than tinted. */
+button:active { transform: translateY(2px); box-shadow: var(--bevel-in); }
+button.primary,
+button.active,
+button[aria-pressed="true"] {
+  background: var(--grad-gold);
+  border-color: var(--ink);
+  color: var(--ink);
+  text-shadow: 0 1px 0 rgba(255,255,255,.45);
+}
+button.primary:hover,
+button.active:hover,
+button[aria-pressed="true"]:hover {
+  background: linear-gradient(180deg, oklch(90% 0.17 92), var(--gold));
+}
+button.ghost { background: transparent; box-shadow: none; border-color: transparent; }
+button.ghost:hover { background: rgba(255,255,255,.35); border-color: var(--ink); }
+
+input, select {
+  background: var(--chalk);
+  border: var(--plate-edge);
+  box-shadow: var(--bevel-in);
+  font-weight: 600;
+}
+input:focus, select:focus { box-shadow: var(--shadow-glow); border-color: var(--ink); }
+
+/* --- Law 5: labels are quiet small caps, values are chunky -------------- */
+.stat-label {
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+.stat-num { font-weight: 800; text-shadow: 0 1px 0 rgba(255,255,255,.5); }
+
+/* --- Law 1 + 5: the Game Summary table --------------------------------- */
+/* Its separators are thick and LIGHT, the row fills alternate, and the head is
+   a band. That combination is what makes the reference table read as stitched
+   plates instead of a spreadsheet, and it is the single highest-return change
+   in this file: it is the surface Trevor looks at most. */
+table.data {
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--bg-1);
+}
+table.data thead th {
+  background: var(--grad-band);
+  color: var(--chalk);
+  font-weight: 800;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  border-bottom: 3px solid var(--ink);
+  text-shadow: 0 1px 0 rgba(0,0,0,.4);
+}
+table.data thead th.sortable:hover { color: var(--gold); }
+table.data thead th.sorted,
+table.data thead th.sort-active {
+  background: var(--grad-gold);
+  color: var(--ink);
+  text-shadow: none;
+}
+table.data tbody td {
+  border-bottom: 2px solid var(--chalk);
+  color: var(--fg-0);
+  font-weight: 600;
+}
+table.data tbody tr:nth-child(even) { background: oklch(88% 0.04 285); }
+table.data tbody tr:hover { background: oklch(84% 0.06 285); }
+/* Law 3. His own team is the selection state of a table, so it is gold, not a
+   6% teal wash that a phone in daylight cannot show at all. */
+table.data tbody tr.you,
+table.data tbody tr.you:nth-child(even) {
+  background: linear-gradient(180deg, var(--gold), var(--gold-deep));
+  color: var(--ink);
+}
+table.data tbody tr.you:hover {
+  background: linear-gradient(180deg, oklch(90% 0.17 92), var(--gold));
+}
+table.data tbody tr.you td { color: var(--ink); font-weight: 700; }
+
+/* --- Law 3 everywhere else --------------------------------------------- */
+.badge.you,
+.badge.whatif-on,
+.strength-row.you,
+.timeline-row.is-me,
+.tab.active,
+.nav a.active,
+.cmdk-item.active,
+.cmdk-item[aria-selected="true"] {
+  background: var(--grad-gold);
+  border-color: var(--ink);
+  color: var(--ink);
+  font-weight: 800;
+}
+.strength-row.you { box-shadow: var(--bevel), var(--shadow-2); }
+.tab.active .tab-count,
+.nav a.active .nav-count { background: rgba(0,0,0,.22); color: var(--ink); }
+
+.nav a {
+  border: 2px solid transparent;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+}
+.nav a:hover { background: rgba(255,255,255,.45); border-color: var(--ink); text-decoration: none; }
+
+/* --- Law 7: folder tabs joined to their panel -------------------------- */
+.tab-bar {
+  border-bottom: 3px solid var(--ink);
+  gap: 3px;
+  padding-bottom: 0;
+}
+.tab {
+  background: var(--grad-btn);
+  border: 2px solid var(--ink);
+  border-bottom: none;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  padding: 6px 12px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--fg-1);
+  position: relative;
+  top: 3px;
+}
+/* The active tab sits flush and paints over the bar's own border, which is the
+   whole folder illusion: the tab and the panel below become one surface. */
+.tab.active {
+  top: 0;
+  padding-bottom: 9px;
+  margin-bottom: -3px;
+  z-index: 2;
+}
+
+/* --- Law 1 + 3: chips and pills are stamped, not tinted ---------------- */
+.pill {
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  padding: 1px 9px;
+  box-shadow: var(--bevel);
+}
+/* Square chips with a hard outline, the numbered-chip rail from the play-call
+   screen. The tier letter stays the loud thing, so it keeps its hue. */
+.tier-chip {
+  border: 2px solid var(--ink);
+  border-radius: 4px;
+  font-weight: 900;
+  box-shadow: var(--bevel);
+}
+.badge {
+  border: 2px solid var(--ink);
+  border-radius: 4px;
+  font-weight: 800;
+  box-shadow: var(--bevel);
+}
+
+/* --- Law 6: the display lockup ----------------------------------------- */
+/* Outlined, multi-weight, and stroked. -webkit-text-stroke is the only way to
+   get a real outer stroke on live text, and paint-order keeps the stroke behind
+   the fill so the letterforms do not thin out. */
+.page-title {
+  font-weight: 900;
+  letter-spacing: -0.015em;
+  color: var(--gold);
+  -webkit-text-stroke: 3px var(--ink);
+  paint-order: stroke fill;
+  text-shadow: 0 3px 0 rgba(0,0,0,.35);
+  text-transform: uppercase;
+}
+.page-title-badge {
+  -webkit-text-stroke: 0;
+  color: var(--ink);
+  background: var(--grad-panel);
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  vertical-align: middle;
+  text-shadow: none;
+  box-shadow: var(--bevel);
+}
+.section-title { text-transform: uppercase; letter-spacing: 0.08em; font-weight: 800; }
+
+/* --- Law 8: the scoreboard shell --------------------------------------- */
+/* The freshness footer becomes the LED dot-matrix panel from the bottom chrome
+   of the PC build. Same element, same click target; only the surface changed. */
+.data-fresh {
+  background: var(--led-bg);
+  background-image: radial-gradient(rgba(255,255,255,.16) 1px, transparent 1px);
+  background-size: 4px 4px;
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--bevel-in);
+  color: var(--led);
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 7px 9px;
+}
+.data-fresh:hover { color: var(--chalk); }
+.data-fresh-dot { box-shadow: 0 0 6px currentColor; }
+
+/* --- Law 4: discrete, countable ratings -------------------------------- */
+/* Five-slot icon track, the attribute rows from Meet the Players. Any 0-100
+   score can be rendered countable with five pips and no per-call markup. */
+.rating-track { display: inline-flex; gap: 3px; vertical-align: middle; }
+.rating-track .pip {
+  width: 11px; height: 8px;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px / 60%;
+  background: oklch(96% 0.01 285);
+}
+.rating-track .pip.on { background: var(--wood); }
+
+/* Segmented meter, the green roster bars. Same geometry as a continuous bar so
+   nothing reflows, but the fill is cut into discrete cells. */
+.seg-meter {
+  height: 12px;
+  border: 2px solid var(--ink);
+  border-radius: 3px;
+  background: var(--led-bg);
+  box-shadow: var(--bevel-in);
+  overflow: hidden;
+}
+.seg-meter > i {
+  display: block; height: 100%;
+  background-image: linear-gradient(90deg, var(--led) 0 6px, transparent 6px 9px);
+  background-size: 9px 100%;
+  background-repeat: repeat-x;
+}
+
+/* --- Modals sit on the same plates ------------------------------------- */
+.modal, .cmdk-panel, .player-modal {
+  border: 3px solid var(--ink);
+  box-shadow: var(--shadow-2);
+  background: var(--grad-panel);
+}
+
+/* Motion: the reference has no easing curves, it has snap. Keep transitions
+   short and linear so a hover reads as a switch, not a fade. */
+@media (prefers-reduced-motion: no-preference) {
+  button, .tab, .nav a, table.data tbody tr {
+    transition-duration: 80ms;
+    transition-timing-function: linear;
+  }
+}
+
+/* --- On-turf text -------------------------------------------------------- */
+/* Anything that sits directly on the field, outside a plate, has to be chalk.
+   Navy ink at 40% lightness on turf at 48% is very nearly no contrast at all,
+   which is what shipped in the first pass of the inversion: legible in a
+   screenshot thumbnail, unreadable on a phone outdoors. The hard shadow is
+   what keeps white legible over the halftone texture. */
+.page-eyebrow,
+.page-sub,
+.page-header > .page-actions > button.ghost,
+.section-title {
+  color: var(--chalk);
+  text-shadow: 0 2px 0 rgba(0,0,0,.45);
+}
+.page-sub { font-weight: 600; }
+.page-header > .page-actions > button.ghost { text-shadow: none; }
+/* Section titles keep the gold display treatment; they only needed the shadow
+   for the ink stroke to sit on turf without haloing. */
+.section-title { color: var(--gold); -webkit-text-stroke: 2px var(--ink); paint-order: stroke fill; }
+
+/* ==========================================================================
+   Backyard, second pass
+   ==========================================================================
+   Corrections from a fresh-lens audit of the six reference screens against the
+   first pass. Each block names the image that settles it, because four of these
+   fix a rule the first pass got wrong rather than one it merely missed.
+   ========================================================================== */
+
+/* --- The display face --------------------------------------------------- */
+/* Every screen uses a heavy rounded geometric face. The first pass specified
+   weight and stroke and then left the body sans in place, which is why it read
+   as a modern app wearing retro chrome. */
+.page-title, .section-title, .card-title,
+table.data thead th, .tab, .pill, .tier-chip, .badge, button {
+  font-family: var(--font-display);
+}
+
+/* --- Titles sit on a plaque -------------------------------------------- */
+/* All six images put the title on something: a lozenge (1), a bordered plate
+   (4, 5), or a full team banner (3, 6). A borderless stroked title broke law 1
+   in the one place every single reference screen agrees. */
+.page-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--grad-band);
+  border: 3px solid var(--ink);
+  border-radius: 999px;
+  padding: 4px 20px;
+  box-shadow: var(--bevel), var(--shadow-2);
+  /* Title case, not caps: the reference titles are "Main Menu", "Meet the
+     Players", "Game Summary". ALL CAPS there is reserved for team wordmarks. */
+  text-transform: none;
+  -webkit-text-stroke: 2px var(--ink);
+  text-shadow: 0 2px 0 rgba(0,0,0,.45);
+}
+
+/* --- Tabs select by lightening, not by gold ----------------------------- */
+/* Images 3 and 6 are explicit: the active roster tab and the active PLAYERS tab
+   are the SAME lavender, lightened. Gold selection is image 1's menu, and it
+   stays there. Applying gold to tabs as well overstated one screen's rule
+   across a screen that contradicts it. */
+.tab.active {
+  background: linear-gradient(180deg, oklch(97% 0.02 285), var(--bg-1));
+  color: var(--fg-0);
+}
+.tab.active .tab-count { background: rgba(0,0,0,.14); color: var(--fg-0); }
+
+/* --- Wells: recessed panels inside raised plates ------------------------ */
+/* Image 2's score boxes and CHARGE panel, image 3's black roster list and
+   ticker, image 5's logo wells, image 6's photo panel. */
+.well,
+.rankings-table-scroll,
+.str-spark {
+  background: var(--bg-2);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--well);
+}
+
+/* --- Law 4, actually rendered ------------------------------------------ */
+/* .rating-track and .seg-meter shipped in the first pass and were referenced by
+   nothing, so the "most transferable idea in the reference" drew zero pixels.
+   A mask cuts the EXISTING trajectory bars into cells without touching the
+   colors JS sets on them, so it needs no markup and no app.js change. */
+.str-spark .sp-bar {
+  /* No segment mask. The audit of the reference screens found the green meters
+     read as CONTINUOUS bars with a top highlight; cutting them into cells was a
+     derivation, and at this size it turned each bar into a noisy ladder. An ink
+     border and a highlight give the stamped look without the noise. */
+  border: 1px solid var(--ink);
+  border-radius: 2px 2px 0 0;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.55);
+}
+
+/* --- Texture stays where the reference puts it -------------------------- */
+/* Image 1 confines the halftone mesh to the purple bands and the chalk lines to
+   the turf. The first pass laid both over the whole page at once. */
+body::before {
+  /* A real field. The TILE carries only what belongs to a sideline, the yard
+     numerals and the two hash rows, drawn once at the top and once at the bottom
+     with repeat-x. The 5-YARD CHALK stays a full-height repeating gradient so the
+     lines run the whole page; folding chalk into the tile shortened them to two
+     180px bands, which is the regression this comment exists to prevent.
+     Grid: 1 yard = 24px, chalk every 120px. Numerals every 240px offset by half a
+     segment so a chalk line never runs through a glyph. Hash ticks at y 86 and 142,
+     a clear 34px below the glyph band that ends at y 52.
+     ONE MALFORMED LAYER VOIDS THE WHOLE DECLARATION and the field ships flat green.
+     That happened twice, from a raw hash and from a bad string-slice edit, so
+     site/check-field-tile.py asserts every layer parses and the geometry holds.
+     Keep the SVG single-quoted and percent-encoded. */
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='2400' height='180'%3E%3Cg fill='white' fill-opacity='0.16'%3E%3Crect x='24' y='86' width='3' height='12'/%3E%3Crect x='48' y='86' width='3' height='12'/%3E%3Crect x='72' y='86' width='3' height='12'/%3E%3Crect x='96' y='86' width='3' height='12'/%3E%3Crect x='144' y='86' width='3' height='12'/%3E%3Crect x='168' y='86' width='3' height='12'/%3E%3Crect x='192' y='86' width='3' height='12'/%3E%3Crect x='216' y='86' width='3' height='12'/%3E%3Crect x='264' y='86' width='3' height='12'/%3E%3Crect x='288' y='86' width='3' height='12'/%3E%3Crect x='312' y='86' width='3' height='12'/%3E%3Crect x='336' y='86' width='3' height='12'/%3E%3Crect x='384' y='86' width='3' height='12'/%3E%3Crect x='408' y='86' width='3' height='12'/%3E%3Crect x='432' y='86' width='3' height='12'/%3E%3Crect x='456' y='86' width='3' height='12'/%3E%3Crect x='504' y='86' width='3' height='12'/%3E%3Crect x='528' y='86' width='3' height='12'/%3E%3Crect x='552' y='86' width='3' height='12'/%3E%3Crect x='576' y='86' width='3' height='12'/%3E%3Crect x='624' y='86' width='3' height='12'/%3E%3Crect x='648' y='86' width='3' height='12'/%3E%3Crect x='672' y='86' width='3' height='12'/%3E%3Crect x='696' y='86' width='3' height='12'/%3E%3Crect x='744' y='86' width='3' height='12'/%3E%3Crect x='768' y='86' width='3' height='12'/%3E%3Crect x='792' y='86' width='3' height='12'/%3E%3Crect x='816' y='86' width='3' height='12'/%3E%3Crect x='864' y='86' width='3' height='12'/%3E%3Crect x='888' y='86' width='3' height='12'/%3E%3Crect x='912' y='86' width='3' height='12'/%3E%3Crect x='936' y='86' width='3' height='12'/%3E%3Crect x='984' y='86' width='3' height='12'/%3E%3Crect x='1008' y='86' width='3' height='12'/%3E%3Crect x='1032' y='86' width='3' height='12'/%3E%3Crect x='1056' y='86' width='3' height='12'/%3E%3Crect x='1104' y='86' width='3' height='12'/%3E%3Crect x='1128' y='86' width='3' height='12'/%3E%3Crect x='1152' y='86' width='3' height='12'/%3E%3Crect x='1176' y='86' width='3' height='12'/%3E%3Crect x='1224' y='86' width='3' height='12'/%3E%3Crect x='1248' y='86' width='3' height='12'/%3E%3Crect x='1272' y='86' width='3' height='12'/%3E%3Crect x='1296' y='86' width='3' height='12'/%3E%3Crect x='1344' y='86' width='3' height='12'/%3E%3Crect x='1368' y='86' width='3' height='12'/%3E%3Crect x='1392' y='86' width='3' height='12'/%3E%3Crect x='1416' y='86' width='3' height='12'/%3E%3Crect x='1464' y='86' width='3' height='12'/%3E%3Crect x='1488' y='86' width='3' height='12'/%3E%3Crect x='1512' y='86' width='3' height='12'/%3E%3Crect x='1536' y='86' width='3' height='12'/%3E%3Crect x='1584' y='86' width='3' height='12'/%3E%3Crect x='1608' y='86' width='3' height='12'/%3E%3Crect x='1632' y='86' width='3' height='12'/%3E%3Crect x='1656' y='86' width='3' height='12'/%3E%3Crect x='1704' y='86' width='3' height='12'/%3E%3Crect x='1728' y='86' width='3' height='12'/%3E%3Crect x='1752' y='86' width='3' height='12'/%3E%3Crect x='1776' y='86' width='3' height='12'/%3E%3Crect x='1824' y='86' width='3' height='12'/%3E%3Crect x='1848' y='86' width='3' height='12'/%3E%3Crect x='1872' y='86' width='3' height='12'/%3E%3Crect x='1896' y='86' width='3' height='12'/%3E%3Crect x='1944' y='86' width='3' height='12'/%3E%3Crect x='1968' y='86' width='3' height='12'/%3E%3Crect x='1992' y='86' width='3' height='12'/%3E%3Crect x='2016' y='86' width='3' height='12'/%3E%3Crect x='2064' y='86' width='3' height='12'/%3E%3Crect x='2088' y='86' width='3' height='12'/%3E%3Crect x='2112' y='86' width='3' height='12'/%3E%3Crect x='2136' y='86' width='3' height='12'/%3E%3Crect x='2184' y='86' width='3' height='12'/%3E%3Crect x='2208' y='86' width='3' height='12'/%3E%3Crect x='2232' y='86' width='3' height='12'/%3E%3Crect x='2256' y='86' width='3' height='12'/%3E%3Crect x='2304' y='86' width='3' height='12'/%3E%3Crect x='2328' y='86' width='3' height='12'/%3E%3Crect x='2352' y='86' width='3' height='12'/%3E%3Crect x='2376' y='86' width='3' height='12'/%3E%3Crect x='24' y='142' width='3' height='12'/%3E%3Crect x='48' y='142' width='3' height='12'/%3E%3Crect x='72' y='142' width='3' height='12'/%3E%3Crect x='96' y='142' width='3' height='12'/%3E%3Crect x='144' y='142' width='3' height='12'/%3E%3Crect x='168' y='142' width='3' height='12'/%3E%3Crect x='192' y='142' width='3' height='12'/%3E%3Crect x='216' y='142' width='3' height='12'/%3E%3Crect x='264' y='142' width='3' height='12'/%3E%3Crect x='288' y='142' width='3' height='12'/%3E%3Crect x='312' y='142' width='3' height='12'/%3E%3Crect x='336' y='142' width='3' height='12'/%3E%3Crect x='384' y='142' width='3' height='12'/%3E%3Crect x='408' y='142' width='3' height='12'/%3E%3Crect x='432' y='142' width='3' height='12'/%3E%3Crect x='456' y='142' width='3' height='12'/%3E%3Crect x='504' y='142' width='3' height='12'/%3E%3Crect x='528' y='142' width='3' height='12'/%3E%3Crect x='552' y='142' width='3' height='12'/%3E%3Crect x='576' y='142' width='3' height='12'/%3E%3Crect x='624' y='142' width='3' height='12'/%3E%3Crect x='648' y='142' width='3' height='12'/%3E%3Crect x='672' y='142' width='3' height='12'/%3E%3Crect x='696' y='142' width='3' height='12'/%3E%3Crect x='744' y='142' width='3' height='12'/%3E%3Crect x='768' y='142' width='3' height='12'/%3E%3Crect x='792' y='142' width='3' height='12'/%3E%3Crect x='816' y='142' width='3' height='12'/%3E%3Crect x='864' y='142' width='3' height='12'/%3E%3Crect x='888' y='142' width='3' height='12'/%3E%3Crect x='912' y='142' width='3' height='12'/%3E%3Crect x='936' y='142' width='3' height='12'/%3E%3Crect x='984' y='142' width='3' height='12'/%3E%3Crect x='1008' y='142' width='3' height='12'/%3E%3Crect x='1032' y='142' width='3' height='12'/%3E%3Crect x='1056' y='142' width='3' height='12'/%3E%3Crect x='1104' y='142' width='3' height='12'/%3E%3Crect x='1128' y='142' width='3' height='12'/%3E%3Crect x='1152' y='142' width='3' height='12'/%3E%3Crect x='1176' y='142' width='3' height='12'/%3E%3Crect x='1224' y='142' width='3' height='12'/%3E%3Crect x='1248' y='142' width='3' height='12'/%3E%3Crect x='1272' y='142' width='3' height='12'/%3E%3Crect x='1296' y='142' width='3' height='12'/%3E%3Crect x='1344' y='142' width='3' height='12'/%3E%3Crect x='1368' y='142' width='3' height='12'/%3E%3Crect x='1392' y='142' width='3' height='12'/%3E%3Crect x='1416' y='142' width='3' height='12'/%3E%3Crect x='1464' y='142' width='3' height='12'/%3E%3Crect x='1488' y='142' width='3' height='12'/%3E%3Crect x='1512' y='142' width='3' height='12'/%3E%3Crect x='1536' y='142' width='3' height='12'/%3E%3Crect x='1584' y='142' width='3' height='12'/%3E%3Crect x='1608' y='142' width='3' height='12'/%3E%3Crect x='1632' y='142' width='3' height='12'/%3E%3Crect x='1656' y='142' width='3' height='12'/%3E%3Crect x='1704' y='142' width='3' height='12'/%3E%3Crect x='1728' y='142' width='3' height='12'/%3E%3Crect x='1752' y='142' width='3' height='12'/%3E%3Crect x='1776' y='142' width='3' height='12'/%3E%3Crect x='1824' y='142' width='3' height='12'/%3E%3Crect x='1848' y='142' width='3' height='12'/%3E%3Crect x='1872' y='142' width='3' height='12'/%3E%3Crect x='1896' y='142' width='3' height='12'/%3E%3Crect x='1944' y='142' width='3' height='12'/%3E%3Crect x='1968' y='142' width='3' height='12'/%3E%3Crect x='1992' y='142' width='3' height='12'/%3E%3Crect x='2016' y='142' width='3' height='12'/%3E%3Crect x='2064' y='142' width='3' height='12'/%3E%3Crect x='2088' y='142' width='3' height='12'/%3E%3Crect x='2112' y='142' width='3' height='12'/%3E%3Crect x='2136' y='142' width='3' height='12'/%3E%3Crect x='2184' y='142' width='3' height='12'/%3E%3Crect x='2208' y='142' width='3' height='12'/%3E%3Crect x='2232' y='142' width='3' height='12'/%3E%3Crect x='2256' y='142' width='3' height='12'/%3E%3Crect x='2304' y='142' width='3' height='12'/%3E%3Crect x='2328' y='142' width='3' height='12'/%3E%3Crect x='2352' y='142' width='3' height='12'/%3E%3Crect x='2376' y='142' width='3' height='12'/%3E%3C/g%3E%3Cg fill='white' fill-opacity='0.13' font-family='Arial Black, Arial, sans-serif' font-weight='900' font-size='44' text-anchor='middle'%3E%3Ctext x='300' y='52'%3E10%3C/text%3E%3Ctext x='540' y='52'%3E20%3C/text%3E%3Ctext x='780' y='52'%3E30%3C/text%3E%3Ctext x='1020' y='52'%3E40%3C/text%3E%3Ctext x='1260' y='52'%3E50%3C/text%3E%3Ctext x='1500' y='52'%3E40%3C/text%3E%3Ctext x='1740' y='52'%3E30%3C/text%3E%3Ctext x='1980' y='52'%3E20%3C/text%3E%3Ctext x='2220' y='52'%3E10%3C/text%3E%3C/g%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='2400' height='180'%3E%3Cg fill='white' fill-opacity='0.16'%3E%3Crect x='24' y='86' width='3' height='12'/%3E%3Crect x='48' y='86' width='3' height='12'/%3E%3Crect x='72' y='86' width='3' height='12'/%3E%3Crect x='96' y='86' width='3' height='12'/%3E%3Crect x='144' y='86' width='3' height='12'/%3E%3Crect x='168' y='86' width='3' height='12'/%3E%3Crect x='192' y='86' width='3' height='12'/%3E%3Crect x='216' y='86' width='3' height='12'/%3E%3Crect x='264' y='86' width='3' height='12'/%3E%3Crect x='288' y='86' width='3' height='12'/%3E%3Crect x='312' y='86' width='3' height='12'/%3E%3Crect x='336' y='86' width='3' height='12'/%3E%3Crect x='384' y='86' width='3' height='12'/%3E%3Crect x='408' y='86' width='3' height='12'/%3E%3Crect x='432' y='86' width='3' height='12'/%3E%3Crect x='456' y='86' width='3' height='12'/%3E%3Crect x='504' y='86' width='3' height='12'/%3E%3Crect x='528' y='86' width='3' height='12'/%3E%3Crect x='552' y='86' width='3' height='12'/%3E%3Crect x='576' y='86' width='3' height='12'/%3E%3Crect x='624' y='86' width='3' height='12'/%3E%3Crect x='648' y='86' width='3' height='12'/%3E%3Crect x='672' y='86' width='3' height='12'/%3E%3Crect x='696' y='86' width='3' height='12'/%3E%3Crect x='744' y='86' width='3' height='12'/%3E%3Crect x='768' y='86' width='3' height='12'/%3E%3Crect x='792' y='86' width='3' height='12'/%3E%3Crect x='816' y='86' width='3' height='12'/%3E%3Crect x='864' y='86' width='3' height='12'/%3E%3Crect x='888' y='86' width='3' height='12'/%3E%3Crect x='912' y='86' width='3' height='12'/%3E%3Crect x='936' y='86' width='3' height='12'/%3E%3Crect x='984' y='86' width='3' height='12'/%3E%3Crect x='1008' y='86' width='3' height='12'/%3E%3Crect x='1032' y='86' width='3' height='12'/%3E%3Crect x='1056' y='86' width='3' height='12'/%3E%3Crect x='1104' y='86' width='3' height='12'/%3E%3Crect x='1128' y='86' width='3' height='12'/%3E%3Crect x='1152' y='86' width='3' height='12'/%3E%3Crect x='1176' y='86' width='3' height='12'/%3E%3Crect x='1224' y='86' width='3' height='12'/%3E%3Crect x='1248' y='86' width='3' height='12'/%3E%3Crect x='1272' y='86' width='3' height='12'/%3E%3Crect x='1296' y='86' width='3' height='12'/%3E%3Crect x='1344' y='86' width='3' height='12'/%3E%3Crect x='1368' y='86' width='3' height='12'/%3E%3Crect x='1392' y='86' width='3' height='12'/%3E%3Crect x='1416' y='86' width='3' height='12'/%3E%3Crect x='1464' y='86' width='3' height='12'/%3E%3Crect x='1488' y='86' width='3' height='12'/%3E%3Crect x='1512' y='86' width='3' height='12'/%3E%3Crect x='1536' y='86' width='3' height='12'/%3E%3Crect x='1584' y='86' width='3' height='12'/%3E%3Crect x='1608' y='86' width='3' height='12'/%3E%3Crect x='1632' y='86' width='3' height='12'/%3E%3Crect x='1656' y='86' width='3' height='12'/%3E%3Crect x='1704' y='86' width='3' height='12'/%3E%3Crect x='1728' y='86' width='3' height='12'/%3E%3Crect x='1752' y='86' width='3' height='12'/%3E%3Crect x='1776' y='86' width='3' height='12'/%3E%3Crect x='1824' y='86' width='3' height='12'/%3E%3Crect x='1848' y='86' width='3' height='12'/%3E%3Crect x='1872' y='86' width='3' height='12'/%3E%3Crect x='1896' y='86' width='3' height='12'/%3E%3Crect x='1944' y='86' width='3' height='12'/%3E%3Crect x='1968' y='86' width='3' height='12'/%3E%3Crect x='1992' y='86' width='3' height='12'/%3E%3Crect x='2016' y='86' width='3' height='12'/%3E%3Crect x='2064' y='86' width='3' height='12'/%3E%3Crect x='2088' y='86' width='3' height='12'/%3E%3Crect x='2112' y='86' width='3' height='12'/%3E%3Crect x='2136' y='86' width='3' height='12'/%3E%3Crect x='2184' y='86' width='3' height='12'/%3E%3Crect x='2208' y='86' width='3' height='12'/%3E%3Crect x='2232' y='86' width='3' height='12'/%3E%3Crect x='2256' y='86' width='3' height='12'/%3E%3Crect x='2304' y='86' width='3' height='12'/%3E%3Crect x='2328' y='86' width='3' height='12'/%3E%3Crect x='2352' y='86' width='3' height='12'/%3E%3Crect x='2376' y='86' width='3' height='12'/%3E%3Crect x='24' y='142' width='3' height='12'/%3E%3Crect x='48' y='142' width='3' height='12'/%3E%3Crect x='72' y='142' width='3' height='12'/%3E%3Crect x='96' y='142' width='3' height='12'/%3E%3Crect x='144' y='142' width='3' height='12'/%3E%3Crect x='168' y='142' width='3' height='12'/%3E%3Crect x='192' y='142' width='3' height='12'/%3E%3Crect x='216' y='142' width='3' height='12'/%3E%3Crect x='264' y='142' width='3' height='12'/%3E%3Crect x='288' y='142' width='3' height='12'/%3E%3Crect x='312' y='142' width='3' height='12'/%3E%3Crect x='336' y='142' width='3' height='12'/%3E%3Crect x='384' y='142' width='3' height='12'/%3E%3Crect x='408' y='142' width='3' height='12'/%3E%3Crect x='432' y='142' width='3' height='12'/%3E%3Crect x='456' y='142' width='3' height='12'/%3E%3Crect x='504' y='142' width='3' height='12'/%3E%3Crect x='528' y='142' width='3' height='12'/%3E%3Crect x='552' y='142' width='3' height='12'/%3E%3Crect x='576' y='142' width='3' height='12'/%3E%3Crect x='624' y='142' width='3' height='12'/%3E%3Crect x='648' y='142' width='3' height='12'/%3E%3Crect x='672' y='142' width='3' height='12'/%3E%3Crect x='696' y='142' width='3' height='12'/%3E%3Crect x='744' y='142' width='3' height='12'/%3E%3Crect x='768' y='142' width='3' height='12'/%3E%3Crect x='792' y='142' width='3' height='12'/%3E%3Crect x='816' y='142' width='3' height='12'/%3E%3Crect x='864' y='142' width='3' height='12'/%3E%3Crect x='888' y='142' width='3' height='12'/%3E%3Crect x='912' y='142' width='3' height='12'/%3E%3Crect x='936' y='142' width='3' height='12'/%3E%3Crect x='984' y='142' width='3' height='12'/%3E%3Crect x='1008' y='142' width='3' height='12'/%3E%3Crect x='1032' y='142' width='3' height='12'/%3E%3Crect x='1056' y='142' width='3' height='12'/%3E%3Crect x='1104' y='142' width='3' height='12'/%3E%3Crect x='1128' y='142' width='3' height='12'/%3E%3Crect x='1152' y='142' width='3' height='12'/%3E%3Crect x='1176' y='142' width='3' height='12'/%3E%3Crect x='1224' y='142' width='3' height='12'/%3E%3Crect x='1248' y='142' width='3' height='12'/%3E%3Crect x='1272' y='142' width='3' height='12'/%3E%3Crect x='1296' y='142' width='3' height='12'/%3E%3Crect x='1344' y='142' width='3' height='12'/%3E%3Crect x='1368' y='142' width='3' height='12'/%3E%3Crect x='1392' y='142' width='3' height='12'/%3E%3Crect x='1416' y='142' width='3' height='12'/%3E%3Crect x='1464' y='142' width='3' height='12'/%3E%3Crect x='1488' y='142' width='3' height='12'/%3E%3Crect x='1512' y='142' width='3' height='12'/%3E%3Crect x='1536' y='142' width='3' height='12'/%3E%3Crect x='1584' y='142' width='3' height='12'/%3E%3Crect x='1608' y='142' width='3' height='12'/%3E%3Crect x='1632' y='142' width='3' height='12'/%3E%3Crect x='1656' y='142' width='3' height='12'/%3E%3Crect x='1704' y='142' width='3' height='12'/%3E%3Crect x='1728' y='142' width='3' height='12'/%3E%3Crect x='1752' y='142' width='3' height='12'/%3E%3Crect x='1776' y='142' width='3' height='12'/%3E%3Crect x='1824' y='142' width='3' height='12'/%3E%3Crect x='1848' y='142' width='3' height='12'/%3E%3Crect x='1872' y='142' width='3' height='12'/%3E%3Crect x='1896' y='142' width='3' height='12'/%3E%3Crect x='1944' y='142' width='3' height='12'/%3E%3Crect x='1968' y='142' width='3' height='12'/%3E%3Crect x='1992' y='142' width='3' height='12'/%3E%3Crect x='2016' y='142' width='3' height='12'/%3E%3Crect x='2064' y='142' width='3' height='12'/%3E%3Crect x='2088' y='142' width='3' height='12'/%3E%3Crect x='2112' y='142' width='3' height='12'/%3E%3Crect x='2136' y='142' width='3' height='12'/%3E%3Crect x='2184' y='142' width='3' height='12'/%3E%3Crect x='2208' y='142' width='3' height='12'/%3E%3Crect x='2232' y='142' width='3' height='12'/%3E%3Crect x='2256' y='142' width='3' height='12'/%3E%3Crect x='2304' y='142' width='3' height='12'/%3E%3Crect x='2328' y='142' width='3' height='12'/%3E%3Crect x='2352' y='142' width='3' height='12'/%3E%3Crect x='2376' y='142' width='3' height='12'/%3E%3C/g%3E%3Cg fill='white' fill-opacity='0.13' font-family='Arial Black, Arial, sans-serif' font-weight='900' font-size='44' text-anchor='middle'%3E%3Ctext x='300' y='52'%3E10%3C/text%3E%3Ctext x='540' y='52'%3E20%3C/text%3E%3Ctext x='780' y='52'%3E30%3C/text%3E%3Ctext x='1020' y='52'%3E40%3C/text%3E%3Ctext x='1260' y='52'%3E50%3C/text%3E%3Ctext x='1500' y='52'%3E40%3C/text%3E%3Ctext x='1740' y='52'%3E30%3C/text%3E%3Ctext x='1980' y='52'%3E20%3C/text%3E%3Ctext x='2220' y='52'%3E10%3C/text%3E%3C/g%3E%3C/svg%3E"),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.20) 0 4px, transparent 4px 120px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.035) 0 120px, rgba(0,0,0,.05) 120px 240px);
+  background-size: 2400px 180px, 2400px 180px, auto, auto;
+  background-position: 0 24px, 0 calc(100% - 24px), 0 0, 0 0;
+  background-repeat: repeat-x, repeat-x, repeat, repeat;
+}
+
+
+
+
+/* --- On-turf text, the rest of it --------------------------------------- */
+/* Same problem as .page-eyebrow: these sit on the field, outside any plate, so
+   navy ink on turf is very nearly no contrast. Found by reading a real
+   screenshot rather than the stylesheet, which is the only way this class of
+   bug shows up. */
+.crumbs, .crumb-link, .crumb-current, .crumb-sep,
+.page-header .page-actions > a {
+  color: var(--chalk);
+  text-shadow: 0 2px 0 rgba(0,0,0,.45);
+  font-weight: 700;
+}
+.crumb-link:hover, .page-header .page-actions > a:hover { color: var(--gold); }
+.crumb-sep { color: rgba(255,255,255,.6); }
+
+/* --- Position and tier chips: stamped and legible ----------------------- */
+/* Both were built for the dark theme as a 10-13% hue wash behind hue-colored
+   text, which needs a dark ground to work. On lavender that leaves small bold
+   text sitting on a near-white fill at roughly 2:1, failing 1.4.3 at the two
+   densest columns in the product.
+   The fix is the reference's own idiom: a SOLID hue fill, a 2px ink border and
+   chalk text. Chalk on each of the six hues at their current 48 to 62%
+   lightness clears 4.5:1, with two exceptions that take ink text instead
+   because their hue is too light to carry white: amber and the IDP blue. */
+.pos-chip,
+.tier-chip {
+  background: var(--c, var(--fg-2));
+  border: 2px solid var(--ink);
+  color: var(--chip-fg, var(--chalk));
+  box-shadow: var(--bevel);
+  text-shadow: none;
+  font-weight: 800;
+}
+.pos-chip { min-width: 32px; border-radius: 4px; }
+.tier-chip { width: 22px; height: 22px; border-radius: 4px; }
+
+/* Amber is the one hue light enough that chalk fails on it, so its chips carry
+   ink text. Same call for the IDP blue, darkened from 76% to 52% besides. */
+.pos-chip.TE { --c: var(--amber); }
+.tier-chip.S { --c: var(--amber); }
+.pos-chip.LB, .pos-chip.DB, .pos-chip.DL, .pos-chip.CB,
+.pos-chip.S, .pos-chip.DT, .pos-chip.DE, .pos-chip.NT { --c: oklch(42% 0.10 205); }
+
+/* The tier chips carried their hue as `color` and their fill as an alpha wash,
+   so each one needs its hue moved into --c to fill the chip. */
+.tier-chip.A { --c: var(--tier-A); }
+.tier-chip.B { --c: var(--tier-B); }
+.tier-chip.C { --c: var(--tier-C); }
+.tier-chip.D { --c: oklch(46% 0.02 275); }
+/* Muted keeps its job (a tier inside a non-elite category should not read as
+   elite) but does it with a gray fill rather than with opacity, which dropped
+   contrast on an element that was already failing. */
+.tier-chip.muted { --c: oklch(58% 0.015 275); --chip-fg: var(--chalk); opacity: 1; }
+
+.team-chip {
+  background: var(--bg-1);
+  border: 2px solid var(--ink);
+  color: var(--fg-0);
+  box-shadow: var(--bevel);
+  font-weight: 800;
+}
+
+/* --- Contrast on the small chips in the nav ----------------------------- */
+/* .nav-tag measured 4.4:1 against the lavender rail at 9.3px bold, just under
+   the 4.5:1 that 1.4.3 wants. It is the league format label, so it has to be
+   readable, not merely present: --fg-3 gives way to --fg-1 and the fill goes
+   to chalk, which lands near 9:1 with room to spare. */
+.nav a .nav-tag {
+  color: var(--fg-1);
+  background: var(--chalk);
+  border: 2px solid var(--ink);
+  font-weight: 800;
+}
+.nav a.active .nav-tag { background: rgba(255,255,255,.85); color: var(--ink); }
+.nav a.is-context .nav-tag { color: var(--fg-1); background: var(--chalk); border-color: var(--ink); }
+
+/* --- Phone: the header was taller than the screen ----------------------- */
+/* Measured on a 400x860 phone at the league Players tab: the first player row
+   started at y=896px, so every visit began with a full screen of chrome. The
+   four costs were the stacked action buttons (225px of page-header), the
+   filter card (444px), a repeated title plaque (41px) and the breadcrumb.
+   The tap-target minimums stay at 44px throughout; the height comes back from
+   layout, not from shrinking anything you have to hit. */
+@media (max-width: 720px) {
+  /* The sidebar and the title both name the league, so the crumb trail is the
+     third copy and the only one that costs its own row. */
+  .crumbs { display: none; }
+
+  /* One nowrap scroll row instead of four stacked full-width buttons. */
+  .page-header { gap: 8px; flex-direction: column; align-items: stretch; }
+  .page-actions {
+    width: 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+  .page-actions::-webkit-scrollbar { display: none; }
+  .page-actions > a, .page-actions > button { flex: 0 0 auto; white-space: nowrap; }
+
+  /* The format tag rides the eyebrow line, which also carries the sub text. */
+  .page-eyebrow { margin-bottom: 2px; font-size: 0.66rem; }
+  .page-title { font-size: 1.25rem; padding: 2px 14px; border-width: 2px; }
+  .page-sub { margin-top: 2px; font-size: 0.82rem; }
+
+  /* The disclosure that replaces the filter card. Full-width so it is an easy
+     target, and it keeps the plate treatment so it reads as a control. */
+  .filters-toggle {
+    width: 100%;
+    justify-content: space-between;
+    margin: 8px 0 4px;
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.72rem;
+  }
+  .filters-toggle.is-open { background: var(--grad-gold); color: var(--ink); }
+  .filters-toggle-caret { transition: transform 80ms linear; }
+  .filters-toggle.is-open .filters-toggle-caret { transform: rotate(180deg); }
+
+  /* When it is open, each group scrolls sideways on one line rather than
+     wrapping into three. */
+  .filters { padding: 10px; gap: 8px; }
+  .filters .group { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  .filters .group::-webkit-scrollbar { display: none; }
+  .filters .group > * { flex: 0 0 auto; }
+}
+
+/* Desktop keeps the card open, so the button never renders there. */
+.filters-toggle { display: none; }
+@media (max-width: 720px) { .filters-toggle { display: inline-flex; } }
+
+/* `.filters` sets display:flex, which outranks the user-agent rule for the
+   hidden attribute, so el.hidden alone left the card on screen. This is the
+   general fix rather than a per-component one: anything toggled with .hidden
+   in this app should actually disappear. */
+[hidden] { display: none !important; }
+
+/* --- Header actions are buttons, so they look like buttons -------------- */
+/* Compare, Trade Lab and Open in Sleeper are button.ghost inside an anchor,
+   and .ghost is deliberately surface-free: transparent, no border, no shadow.
+   That works inside a card, where the card is the surface behind it. In
+   .page-actions there is no card, only turf, so they read as plain text and
+   nothing says they are tappable. They get the standard plate here, with
+   .primary still gold so the one main action stays obvious. */
+.page-actions button.ghost {
+  background: var(--grad-btn);
+  border: var(--plate-edge);
+  box-shadow: var(--bevel), var(--shadow-1);
+  color: var(--fg-0);
+  text-shadow: none;
+}
+.page-actions button.ghost:hover {
+  background: linear-gradient(180deg, oklch(91% 0.05 285), oklch(82% 0.065 285));
+  border-color: var(--ink);
+}
+.page-actions button.ghost:active { transform: translateY(2px); box-shadow: var(--bevel-in); }
+/* The anchor wrapping each one was given chalk header text, which the button
+   must not inherit now that it has its own light plate. */
+.page-header .page-actions > a { text-shadow: none; }
+
+/* --- Phone: reclaim the band the hamburger was reserving ---------------- */
+/* .main padded 64px down so content cleared the fixed hamburger, which left a
+   full-width empty band with a 44px button in the corner of it. The eyebrow is
+   a short line, so it goes BESIDE the button instead and the padding drops to
+   the button's own height. Measured: 64px of top padding plus a 12px and a
+   26px inter-row gap, for about 85px of turf that showed no information. */
+@media (max-width: 720px) {
+  .main {
+    padding-top: max(8px, env(safe-area-inset-top));
+  }
+  /* Clear the fixed hamburger. The whole lockup is one row now, so the
+     clearance belongs to the row rather than to the eyebrow alone. */
+  .page-eyebrow { min-height: 44px; margin-bottom: 0; }
+  .page-header > div:first-child { padding-left: calc(var(--nav-toggle-w) + 18px); min-height: 44px; }
+  .page-header { margin-top: 0; }
+  .page-header + .tab-bar { margin-top: 2px; }
+  .tab-bar { margin-bottom: 0; }
+  .filters-toggle { margin-top: 4px; }
+}
+
+/* The page-header carried 16px of padding, 20px of margin and a hairline rule
+   under it: 37px of empty turf between the action buttons and the tab bar, on
+   the one screen where vertical space is the scarce thing. The tab bar already
+   draws a 3px ink rule of its own, so the hairline was a second divider. */
+@media (max-width: 720px) {
+  .page-header { padding-bottom: 4px; margin-bottom: 6px; border-bottom: none; }
+  .page-sub { margin-top: 0; }
+  /* The league plaque and the team line are both short, so they share a row and
+     the header loses a whole line. The eyebrow keeps its own line because it has
+     to clear the fixed hamburger. align-items:baseline sits the team text on the
+     plaque's text baseline instead of centring it against the plaque box. */
+  .page-header > div:first-child {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 10px;
+    row-gap: 2px;
+  }
+  .page-header > div:first-child > .page-eyebrow { flex: 0 0 auto; }
+  .page-title { flex: 0 0 auto; }
+  .page-sub { flex: 1 1 auto; min-width: 0; }
+}
+
+/* --- Tab bar: no stray rule, no phantom scrollbar ---------------------- */
+/* Two symptoms, one cause. The active tab was lifted with `top: 0` against
+   `top: 3px` siblings plus `padding-bottom: 9px` and `margin-bottom: -3px`, so
+   its content was taller than the bar. The bar carries `overflow-x: auto`, and
+   that coerces overflow-y to auto too, so the overhang produced a real vertical
+   scrollbar on a 46px row. The bar's own 3px ink border then ran the full width
+   of the turf as a detached black line, which is the "thin black box".
+   The fill already carries selection (images 3 and 6 select by lightening), so
+   the overhang trick is not needed to sell the folder. */
+.tab-bar {
+  border-bottom: none;
+  overflow-y: hidden;
+  align-items: flex-end;
+  padding-bottom: 0;
+}
+.tab { top: 0; }
+.tab.active { top: 0; padding-bottom: 6px; margin-bottom: 0; }
+
+/* --- Desktop gets the phone's header, minus the hamburger clearance ---- */
+/* Same four rows collapsed the same way: the crumb trail duplicates the title
+   and the sidebar, and the plaque plus the team line are both short enough to
+   share one row. */
+.crumbs { display: none; }
+.page-header > div:first-child {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 10px;
+  row-gap: 2px;
+}
+.page-header > div:first-child > .page-eyebrow { flex: 0 0 auto; margin-bottom: 0; }
+.page-header > div:first-child > .page-title { flex: 0 0 auto; }
+.page-header > div:first-child > .page-sub { flex: 1 1 auto; min-width: 0; margin-top: 0; }
+
+/* --- Controls that sit on the turf need their own plate ----------------- */
+/* The Find-a-player block and the league picker are appended straight to #main,
+   so there is no card behind them and their labels were navy ink on turf: the
+   same near-zero contrast as the earlier page-header text, and the search input
+   read as a bare strip rather than a control. Anything that lands directly on
+   the field gets a plate of its own. */
+#main > .trade-search,
+#main > .group {
+  background: var(--grad-panel);
+  border: var(--plate-edge);
+  border-radius: var(--radius);
+  box-shadow: var(--bevel), var(--shadow-1);
+  padding: 10px 12px;
+  margin-bottom: 14px;
+}
+#main > .group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: fit-content;
+  max-width: 100%;
+}
+#main > .group > label,
+#main > .trade-search .trade-search-label {
+  color: var(--fg-0);
+  text-shadow: none;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-size: 0.68rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+#main > .group > select { min-width: 0; }
+
+/* The league picker lives in .page-actions, which sits on the turf beside the
+   title, so its label needs the same chalk treatment the other header text got
+   rather than a plate of its own. */
+.page-actions .group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.page-actions .group > label {
+  color: var(--chalk);
+  text-shadow: 0 2px 0 rgba(0,0,0,.45);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-size: 0.68rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+/* --- Trade partner rows ------------------------------------------------- */
+/* Name, bid-share meter, count, seasons. A grid so the meters line up and can
+   be read against each other, which is the whole point of the panel. */
+.trade-partners .partner-rows { display: grid; gap: 4px; }
+.partner-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 92px 28px auto;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 6px 6px 28px;
+  border: 2px solid transparent;
+  border-radius: var(--radius-sm);
+  position: relative;
+  list-style: none;
+}
+.partner-row::-webkit-details-marker { display: none; }
+.partner-row::before { content: '+'; position: absolute; left: 8px; font-weight: 900; color: var(--accent-hot); }
+.partner-history[open] > .partner-row::before { content: '−'; }
+.partner-row:hover { background: var(--grad-gold); border-color: var(--ink); }
+.partner-name { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.partner-username { margin-left: 6px; color: var(--fg-2); font-size: 0.76rem; font-weight: 700; }
+.partner-n { font-weight: 800; text-align: right; }
+.partner-seasons { white-space: nowrap; }
+.partner-history-body {
+  margin: 2px 6px 8px 28px;
+  padding: 8px;
+  background: var(--bg-2);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--bevel-in);
+}
+.partner-load { margin-bottom: 8px; }
+.partner-trade { padding: 8px 4px; border-top: 1px solid var(--border); color: var(--fg-1); font-size: 0.82rem; }
+.partner-trade:first-of-type { border-top: 0; }
+.partner-trade-when { color: var(--fg-2); font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; }
+/* .seg-meter's fill is a block child, so the meter has to be a block itself to
+   give it a width to fill. */
+.partner-meter { display: block; }
+@media (max-width: 720px) {
+  .partner-row { grid-template-columns: minmax(0, 1fr) 56px 26px; }
+  .partner-seasons { display: none; }
+}
+
+/* --- The black line above the tabs ------------------------------------- */
+/* .page-header carries border-bottom: 1px solid var(--border), and --border is
+   now near-black ink rather than the old faint slate, so on turf it read as a
+   hard black rule across the page. The phone fix removed it inside a media
+   query only, which is why it survived on desktop. */
+.page-header { border-bottom: none; padding-bottom: 6px; margin-bottom: 10px; }
+
+/* Baloo 2 sits high in its em box, so display text needs a touch more line box
+   than the system sans did or the plaque clips the descenders. */
+.page-title, .section-title { line-height: 1.35; }
+
+/* --- Trajectory: labels clear of the well, archetype with its numbers --- */
+/* The sparkline became a recessed well in the retro pass, and --well casts an
+   inset dark edge that the per-bar value labels sat directly under, so 588 and
+   571 were being clipped by their own container. Top padding gives them room. */
+/* The bars are sized as a percentage of their wrapper, so the sparkline needs a
+   real height. `height: auto` collapsed it to content and the percentages had
+   nothing to resolve against, which is what turned the bars into stubs. The
+   extra height over the original 52px is the room the value labels and the top
+   padding take, so the bars themselves keep their full travel. */
+.strength-row .str-spark { padding: 5px 4px 0; height: 66px; }
+.str-spark .sp-bar-val { margin-bottom: 3px; position: relative; z-index: 1; }
+/* The archetype word now lives in the score cell, labelling PV and FV rather
+   than the bars it never described. */
+.score-cell .arch {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: var(--font-display);
+  margin-top: 1px;
+}
+.str-traj-foot { display: none; }
+
+/* --- League format as a dot, not a badge -------------------------------- */
+/* Shape is the lineup, color is the horizon. Drawn in CSS rather than with
+   glyphs so a diamond is a real rotated square instead of whatever the font
+   happens to ship for U+25C6. */
+.nav-shape {
+  flex: 0 0 auto;
+  width: 11px;
+  height: 11px;
+  /* No --bevel here. It paints a 2px white inner ring, which on an 11px dot is
+     the entire interior, so the fill colour vanished and every league read as a
+     hollow outline. A plain ink border is what a mark this small can carry. */
+  border: 1.5px solid var(--ink);
+}
+.nav-shape-std { border-radius: 50%; }
+.nav-shape-tep { border-radius: 2px; }
+.nav-shape-sf { border-radius: 2px; transform: rotate(45deg); }
+.nav-shape.is-dynasty { background: var(--accent); }
+.nav-shape.is-redraft { background: var(--cat-vet); }
+.nav a.active .nav-shape, .nav a.is-context .nav-shape { border-color: var(--ink); }
+
+/* Screen-reader text for the words the dot replaced. */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --- Any caption that lands on the turf ---------------------------------- */
+/* Measured across 11 routes: .tip appears unplated as a direct child of #main
+   on 6 of them, and navy ink on turf is near-zero contrast. This is the general
+   rule rather than a seventh one-off selector, because every new caption
+   appended straight to #main hits the same wall. */
+#main > .tip,
+#main > p.tip,
+#main > p,
+#main > .empty {
+  color: var(--chalk);
+  text-shadow: 0 2px 0 rgba(0,0,0,.5);
+  font-weight: 700;
+}
+
+/* Nunito ships tabular figures as an opentype feature rather than as the
+   default, so the numeric columns ask for them explicitly. Without this every
+   score column jitters by a few pixels as the digits change. */
+.tnum, .stat-num, table.data td, table.data th, .score, .delta, .partner-n {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* --- Standings: one panel, banded rows --------------------------------- */
+/* Each .strength-row used to be its own outlined plate with turf between, so a
+   ten-team list read as ten unrelated cards. Inside the panel the rows become
+   bands separated by chalk, which is how the reference marks a row list. */
+.standings-tab-bar { margin-bottom: 8px; }
+.standings-heading {
+  margin: 0 0 4px;
+  font-size: 1.2rem;
+}
+.standings-list { padding: 4px; }
+.standings-sort {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px;
+}
+.standings-sort-label { display: flex; align-items: center; gap: 8px; color: var(--fg-1); font-weight: 800; }
+.standings-sort-label > span { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.standings-sort select { min-width: 170px; }
+.standings-sort button.standings-dir {
+  flex: 0 0 auto;
+  color: var(--fg-0);
+  background: var(--grad-btn);
+  border: var(--plate-edge);
+  box-shadow: var(--bevel), var(--shadow-1);
+}
+.standings-list .strength-row {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  margin: 0;
+  border-bottom: 2px solid var(--chalk);
+  background: var(--bg-1);
+}
+.standings-list .strength-row:nth-child(even) { background: oklch(88% 0.04 285); }
+.standings-list .strength-row:first-child { border-radius: var(--radius-sm) var(--radius-sm) 0 0; }
+.standings-list .strength-row:last-child { border-bottom: none; border-radius: 0 0 var(--radius-sm) var(--radius-sm); }
+.standings-list .strength-row:hover { background: oklch(84% 0.06 285); }
+/* His own team stays the gold selection, now as a full-width band. */
+.standings-list .strength-row.you,
+.standings-list .strength-row.you:nth-child(even) {
+  background: var(--grad-gold);
+  box-shadow: none;
+}
+.standings-list .strength-row.you:hover { background: linear-gradient(180deg, oklch(90% 0.17 92), var(--gold)); }
+
+/* The panel's own caption. Inside the plate, so it takes panel ink rather than
+   the chalk that on-turf text needs, and it must not be banded like a row. */
+.standings-list .standings-note {
+  margin: 2px 6px 8px;
+  color: var(--fg-2);
+  font-weight: 600;
+  text-shadow: none;
+}
+/* The rows are nth-child banded, and the note is now child 1, so the banding
+   has to count from the rows themselves instead. */
+.standings-list .strength-row:nth-child(even) { background: var(--bg-1); }
+.standings-list .strength-row:nth-child(odd) { background: oklch(88% 0.04 285); }
+.standings-list .standings-note + .strength-row { border-radius: var(--radius-sm) var(--radius-sm) 0 0; }
+.standings-list .strength-row.you,
+.standings-list .strength-row.you:nth-child(even),
+.standings-list .strength-row.you:nth-child(odd) { background: var(--grad-gold); }
+
+/* --- Segmented control for secondary actions --------------------------- */
+/* Two control groups shared one screen in two different languages: the tab bar
+   was a joined folder rail while the four header actions were four detached
+   plates with equal gaps, so nothing said which was navigation and which was a
+   jump, or that three of the four were secondary. The tabs stay joined because
+   they navigate within the league. The three secondary jumps join into one
+   plate, and the gold primary stands apart from it. */
+.page-actions .btn-group {
+  display: flex;
+  align-items: stretch;
+  border: var(--plate-edge);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--bevel), var(--shadow-1);
+  overflow: hidden;
+}
+.page-actions .btn-group > a { display: flex; }
+.page-actions .btn-group button.ghost,
+.page-actions .btn-group button {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  background: var(--grad-btn);
+  /* A hairline of ink between segments, so the group reads as one control with
+     divisions rather than as three buttons that happen to touch. */
+  border-left: 2px solid var(--ink);
+}
+.page-actions .btn-group > a:first-child button { border-left: none; }
+.page-actions .btn-group button:hover {
+  background: linear-gradient(180deg, oklch(91% 0.05 285), oklch(82% 0.065 285));
+}
+.page-actions .btn-group button:active { transform: none; box-shadow: var(--bevel-in); }
+
+/* --- Standings row: metrics get their own column ----------------------- */
+/* The team column was 1fr, so on a wide screen it stretched and left a long
+   dead gap between the team name and its numbers while the composition metrics
+   sat as a cramped third line underneath. Promoting them to their own column
+   uses that space and pairs each value with its label. */
+.strength-row {
+  grid-template-columns: 38px minmax(140px, 1fr) minmax(0, 1.4fr) 104px 190px;
+  align-items: center;
+  gap: 16px;
+}
+.strength-row .strength-detail {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  /* Tight inside a pair, generous between pairs: that ratio is what makes
+     "12.4% PV SHARE" read as one thing instead of two. */
+  gap: 4px 18px;
+  margin-top: 0;
+}
+.strength-row .strength-detail .seg { display: inline-flex; align-items: center; gap: 4px; }
+@media (max-width: 1100px) {
+  /* Below this the metrics drop back under the team name rather than squeezing
+     five columns into a phone. */
+  .strength-row { grid-template-columns: 34px minmax(0, 1fr) 96px 150px; gap: 10px; }
+  .strength-row .strength-detail { grid-column: 2 / -1; gap: 3px 14px; }
+}
+
+/* --- Standings row type scale ------------------------------------------ */
+/* The row had five roles sitting within 0.16rem of each other, so nothing led:
+   rank 1.1 and score 1.2 both read as primary, and the metrics at 0.78 fell
+   between owner 0.8 and delta 0.72. This is a real scale with 1.15 to 1.25
+   steps, and it assigns one job per step.
+   Sizes stay under 1rem below the score on purpose. This is a data-dense table,
+   which is the case the type reference exempts from the 16px body minimum, and
+   DESIGN.md section 3 already sets density as the standard here. */
+.strength-row .score {
+  font-size: 1.5rem;          /* primary: the number the row is sorted by */
+  font-weight: 800;
+  line-height: 1.1;
+  font-family: var(--font-display);
+}
+.strength-row .rank {
+  font-size: 0.95rem;         /* an index, not a headline: small, quiet, bold */
+  font-weight: 800;
+  color: var(--fg-3);
+  font-family: var(--font-display);
+}
+.strength-row .team-name { font-size: 1rem; font-weight: 700; line-height: 1.25; }
+.strength-row .owner { font-size: 0.74rem; font-weight: 600; }
+.strength-row .score-cell .delta { font-size: 0.78rem; font-weight: 700; }
+/* The state tag is a label, so it gets label treatment: small, heavy, tracked
+   out, not merely shrunk. */
+.strength-row .score-cell .arch {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+/* Second level: the counts and the share percentages are the values, their
+   words are captions. Splitting size AND weight is what separates them. */
+.strength-row .strength-detail { font-size: 0.86rem; }
+.strength-row .strength-detail .seg { font-weight: 700; color: var(--fg-1); }
+.strength-row .strength-detail .seg > span[style*="0.7rem"] { font-weight: 600; }
+
+@media (max-width: 480px) {
+  .standings-list .strength-row {
+    grid-template-columns: 72px minmax(0, 1fr);
+    column-gap: 12px;
+    row-gap: 8px;
+    padding: 12px 10px;
+  }
+  .standings-list .strength-row .rank {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: start;
+    padding-top: 2px;
+    text-align: right;
+  }
+  .standings-list .strength-row .team { grid-column: 2; grid-row: 1; }
+  .standings-list .strength-row .strength-detail {
+    grid-column: 2;
+    grid-row: 2;
+    gap: 4px 10px;
+  }
+  .standings-list .strength-row .score-cell {
+    grid-column: 1;
+    grid-row: 3;
+    align-self: start;
+    align-items: flex-end;
+    min-width: 0;
+  }
+  .standings-list .strength-row .score { font-size: 1.25rem; }
+  .standings-list .strength-row .str-traj {
+    grid-column: 2;
+    grid-row: 3;
+    min-width: 0;
+  }
+  .standings-list .strength-row .str-spark { height: 54px; gap: 3px; }
+  .standings-list .strength-row .str-spark .sp-bar { width: 60%; max-width: 20px; }
+  .standings-list .strength-row .str-spark .sp-bar-val { font-size: 0.54rem; }
+}
+
+/* --- Multi-player slots stack instead of truncating -------------------- */
+/* .slot-bar-name was nowrap with an ellipsis, which is right for a one-man
+   slot and wrong for FLEX: four names on one line hit the ellipsis and the
+   last two were simply unreadable. A slot holding several players becomes a
+   vertical list, and the interpunct separators go away because the line break
+   already does that job. */
+.slot-bar-name:has(.slot-bar-nameitem ~ .slot-bar-nameitem) {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+}
+.slot-bar-name:has(.slot-bar-nameitem ~ .slot-bar-nameitem) .slot-bar-namesep { display: none; }
+.slot-bar-nameitem { min-width: 0; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* The row is centre-aligned, so a stacked name column would drag the grade and
+   the track off-centre; top-align the row once any slot stacks. */
+.slot-bar-row:has(.slot-bar-nameitem ~ .slot-bar-nameitem) { align-items: start; }
+
+/* --- YOU badge on a gold row ------------------------------------------- */
+/* .badge.you is gold because gold is the selection colour, and his own row is
+   gold for the same reason, so the badge vanished into it. On a gold ground the
+   badge inverts: ink fill, gold text. Same idea for the header, where the badge
+   sat on turf with no plate behind it. */
+.strength-row.you .badge.you,
+tr.you .badge.you {
+  background: var(--ink);
+  color: var(--gold);
+  border-color: var(--ink);
+  text-shadow: none;
+}
+.page-header .badge.you,
+.page-title .badge.you {
+  background: var(--ink);
+  color: var(--gold);
+  border: 2px solid var(--chalk);
+  text-shadow: none;
+}
+
+/* --- FAAB archetype panel ---------------------------------------------- */
+/* A row per waiver situation with a real box plot: whisker to the extremes,
+   box across the middle half, a line at the median. One shared scale so the
+   rows can be read against each other. */
+.faab-panel .faab-note { color: var(--fg-2); text-shadow: none; margin: 2px 4px 10px; }
+.faab-rows { display: grid; gap: 3px; }
+.faab-row {
+  display: grid;
+  grid-template-columns: minmax(0, 17rem) minmax(0, 1fr) 3.5rem 3.5rem;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 6px;
+  border-radius: var(--radius-sm);
+}
+.faab-row:nth-child(odd) { background: oklch(88% 0.04 285); }
+.faab-history > summary {
+  cursor: pointer;
+  list-style: none;
+}
+.faab-history > summary::-webkit-details-marker { display: none; }
+.faab-history .faab-name::before { content: '+'; display: inline-block; width: 0.9rem; }
+.faab-history[open] .faab-name::before { content: '-'; }
+.faab-history:nth-child(odd) > .faab-row { background: oklch(88% 0.04 285); }
+.faab-history[open] > .faab-row { background: var(--grad-gold); color: var(--ink); }
+.faab-history-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 4px 6px 10px;
+}
+table.data.faab-history-table { min-width: 760px; }
+table.data.faab-history-table tbody td { padding-block: 7px; font-size: 0.8rem; }
+.faab-claim-profile { min-width: 30rem; }
+/* Wrap rather than ellipsis. "starter left the team (cut or traded)" and
+   "usage takeover, no big box score yet" both truncated, and a title tooltip is
+   not a phone affordance, so the meaning was simply gone on the device this is
+   read on. */
+.faab-name { font-weight: 700; line-height: 1.2; }
+.faab-med { font-weight: 800; text-align: right; }
+.faab-n { color: var(--fg-3); font-size: 0.72rem; text-align: right; }
+/* A thin sample is dimmed rather than hidden: the situation is real, the rate
+   is not yet trustworthy, and hiding it would imply it never happens. */
+.faab-row.is-thin { opacity: 0.6; }
+.faab-row.is-thin .faab-med { font-weight: 700; }
+
+.faab-plot {
+  position: relative;
+  display: block;
+  height: 14px;
+  border: 2px solid var(--ink);
+  border-radius: 3px;
+  background: var(--bg-1);
+  box-shadow: var(--bevel-in);
+  overflow: hidden;
+}
+.faab-plot > i { position: absolute; top: 0; bottom: 0; display: block; }
+/* On Action Center the panel is closed by default. Discoverability was the whole
+   bug, and a summary line naming the format and the sample answers it while
+   16 dynasty rows plus 12 redraft rows stay out of the way of the suggestion
+   queue this page exists for. <details> because the platform already does this. */
+.faab-action-wrap {
+  background: var(--grad-panel);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-1);
+  margin-top: 16px;
+  padding: 14px;
+}
+/* The summary IS the card heading, so it wears the same periwinkle band every
+   other panel on this page wears, plus a disclosure caret. */
+.faab-action-wrap > summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  background: var(--grad-band);
+  color: var(--chalk);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-sm);
+  margin: -4px -4px 0 -4px;
+  padding: 5px 10px;
+  font-size: 0.72rem;
+  letter-spacing: 0.09em;
+  font-weight: 800;
+  text-shadow: 0 1px 0 rgba(0,0,0,.45);
+  box-shadow: var(--bevel);
+}
+.faab-action-wrap > summary::-webkit-details-marker { display: none; }
+.faab-action-wrap > summary::before {
+  content: '▸';
+  display: inline-block;
+  transition: transform 140ms ease;
+}
+.faab-action-wrap[open] > summary::before { transform: rotate(90deg); }
+.faab-action-wrap[open] > summary { margin-bottom: 12px; }
+.faab-action-wrap > summary:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.faab-sum-note { font-weight: 600; letter-spacing: 0.02em; opacity: 0.9; margin-left: 8px; }
+/* The card inside is already inside a plate, so it drops its own chrome and its
+   own title, which the summary now carries. */
+.faab-action-wrap > .faab-panel {
+  background: none;
+  border: 0;
+  box-shadow: none;
+  margin: 0;
+  padding: 0;
+}
+.faab-action-wrap > .faab-panel > .card-title { display: none; }
+
+.faab-whisker { border-top: 2px dashed var(--fg-3); top: 50%; bottom: auto; height: 0; }
+.faab-box { background: var(--grad-gold); border-left: 1px solid var(--ink); border-right: 1px solid var(--ink); }
+.faab-median { width: 3px; background: var(--ink); }
+@media (max-width: 720px) {
+  .faab-row { grid-template-columns: minmax(0, 1fr) 3rem 3rem; gap: 6px; }
+  .faab-plot { grid-column: 1 / -1; }
+}
+
+/* --- Fantasy schedule difficulty --------------------------------------- */
+.sos-panel .sos-note { color: var(--fg-2); text-shadow: none; margin: 2px 4px 8px; }
+.sos-head, .sos-row {
+  display: grid;
+  grid-template-columns: 2.6rem minmax(0, 1fr) minmax(0, 10rem) 4rem 4rem 5rem;
+  align-items: center;
+  gap: 10px;
+  padding: 3px 6px;
+}
+.sos-head { padding-bottom: 0; }
+.sos-head .tip { text-align: right; text-shadow: none; }
+.sos-rows { display: grid; gap: 2px; }
+.sos-row:nth-child(odd) { background: oklch(88% 0.04 285); }
+.sos-row.you { background: var(--grad-gold); }
+.sos-rank { color: var(--fg-3); font-weight: 800; }
+.sos-team { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+            display: flex; align-items: center; gap: 6px; }
+.sos-val { font-weight: 800; text-align: right; }
+.sos-played { color: var(--fg-3); text-align: right; font-size: 0.78rem; }
+.sos-bar {
+  display: block; height: 12px;
+  border: 2px solid var(--ink); border-radius: 3px;
+  background: var(--bg-1); box-shadow: var(--bevel-in); overflow: hidden;
+}
+/* Harder schedule reads hotter, so the bar runs amber rather than gold: gold is
+   the selection colour and must not double as a data value. */
+.sos-bar > i { display: block; height: 100%; background: var(--cat-vet); }
+@media (max-width: 720px) {
+  /* Phone drops the bar, which is comparative, and keeps all three numbers. */
+  .sos-head, .sos-row { grid-template-columns: 2.2rem minmax(0, 1fr) 0 3.2rem 3.2rem 4rem; }
+  .sos-row .sos-bar, .sos-head span:nth-child(3) { display: none; }
+  .sos-bar { display: none; }
+}
+
+/* ==========================================================================
+   Injury marker on a starting slot
+   ==========================================================================
+   A Questionable man who still projects for the most points at his slot KEEPS
+   the slot, because that is what the points say. Benching him would be a silent
+   lie in the other direction. So the lineup stays honest and the badge carries
+   the risk. Amber for Questionable, red for anything worse.
+   ========================================================================== */
+.slot-bar-chips { display: inline-flex; align-items: center; gap: 4px; min-width: 0; }
+.slot-bar-inj {
+  flex: 0 0 auto;
+  font-family: var(--font-display);
+  font-size: 0.62rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  padding: 2px 4px;
+  border: 1.5px solid var(--ink);
+  border-radius: 4px;
+  background: var(--red);
+  color: #fff;
+}
+.slot-bar-inj.is-q { background: var(--amber); }
+
+/* --- The freshness LED, legible ---------------------------------------- */
+/* It is a dot-matrix readout, so it gets readout structure: a label on the left,
+   the number pushed right, and the status in the dot rather than in a second
+   copy of the same sentence. Tabular digits so the age does not jitter as it
+   ticks from 3h to 12h to 4d. */
+.data-fresh { justify-content: flex-start; gap: 8px; }
+.data-fresh-label {
+  flex: 0 0 auto;
+  opacity: 0.72;
+  letter-spacing: 0.1em;
+}
+.data-fresh-age {
+  margin-left: auto;
+  flex: 0 0 auto;
+  color: var(--chalk);
+  letter-spacing: 0.02em;
+}
+.data-fresh-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  border: 1px solid rgba(0,0,0,.45);
+}
+
+/* ==========================================================================
+   Career value chart
+   ==========================================================================
+   KTC's Dynasty Value grammar: filled area, high and low labelled on the right,
+   current number called out, signed delta with a direction mark. Replaces a
+   168x36 teal polyline that carried no axis, no years and no values. Teal is not
+   in this palette and the career best takes gold, because gold is selection.
+   ========================================================================== */
+.cchart {
+  margin: 10px 0 4px;
+  padding: 8px 10px 6px;
+  background: var(--bg-1);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--well);
+}
+.cchart-head { display: flex; align-items: baseline; gap: 7px; margin-bottom: 4px; }
+.cchart-unit {
+  font-family: var(--font-display);
+  font-size: 0.6rem; font-weight: 800;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--fg-2);
+  margin-right: auto;
+}
+.cchart-delta { font-family: var(--font-display); font-size: 0.78rem; font-weight: 800; }
+.cchart-delta.up { color: var(--green); }
+.cchart-delta.down { color: var(--red); }
+.cchart-delta.flat { color: var(--fg-3); }
+.cchart-deltalabel { font-size: 0.58rem; color: var(--fg-3); }
+.cchart-body { display: flex; align-items: stretch; gap: 8px; }
+.cchart-plot { flex: 1 1 auto; min-width: 0; height: 96px; }
+.cchart-svg { width: 100%; height: 100%; display: block; }
+.cchart-axis {
+  flex: 0 0 auto;
+  display: flex; flex-direction: column; justify-content: space-between;
+  align-items: flex-end;
+  font-variant-numeric: tabular-nums;
+}
+.cchart-hi, .cchart-lo { font-size: 0.62rem; color: var(--fg-3); }
+.cchart-now {
+  font-family: var(--font-display);
+  font-size: 1.25rem; font-weight: 800; line-height: 1;
+  color: var(--band-deep);
+}
+.cchart-years {
+  display: flex; justify-content: space-between;
+  margin-top: 3px;
+  font-size: 0.58rem; color: var(--fg-3);
+  font-variant-numeric: tabular-nums;
+}
+/* A long career would crowd the year row. Past ten seasons only the ends stay. */
+.cchart-years:has(span:nth-child(11)) span:not(:first-child):not(:last-child) { display: none; }
+
+/* A panel whose data is an offseason behind says so on its own face, because the
+   year in the title sits next to live projections and reads as current. */
+.ctx-stale {
+  margin-left: 8px;
+  font-family: var(--font-display);
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  background: var(--amber);
+  color: #fff;
+  vertical-align: middle;
+  cursor: help;
+}
+
+/* Same chip, different claim. "a year behind" is a defect and wears amber.
+   "roster-based" is not a defect: the season is current, the membership just
+   came from the roster file because too few weeks have been played for
+   participation to mean anything. It is a label, so it stays neutral. */
+.ctx-basis {
+  margin-left: 8px;
+  font-family: var(--font-display);
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  background: var(--chalk);
+  color: var(--ink);
+  vertical-align: middle;
+  cursor: help;
+}
+
+/* --- Career chart series tabs ------------------------------------------ */
+/* PPG is per-season and KTC value is weekly since 2023, so they are two axes,
+   not two lines on one. Tabs select by lightening, which is what the reference
+   folder tabs do; gold selection stays for rows and nav. */
+.cchart-tabs { display: flex; gap: 5px; margin: 10px 0 0; }
+.cchart-tab {
+  font-family: var(--font-display);
+  font-size: 0.62rem; font-weight: 800;
+  letter-spacing: 0.05em; text-transform: uppercase;
+  padding: 4px 10px;
+  border: 2px solid var(--ink);
+  border-bottom: none;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  background: var(--grad-btn);
+  color: var(--fg-1);
+  cursor: pointer;
+}
+.cchart-tab.active {
+  background: linear-gradient(180deg, oklch(97% 0.02 285), var(--bg-1));
+  color: var(--fg-0);
+}
+/* The tabs border-join to the plate below them, so it loses its own top radius. */
+.cchart-tabs + .cchart-host .cchart { margin-top: 0; border-radius: 0 var(--radius-sm) var(--radius-sm) var(--radius-sm); }
+
+/* ==========================================================================
+   Numeric column alignment
+   ==========================================================================
+   `.right` is one class (0-0-1-0). `table.data thead th` is a class plus two
+   elements (0-0-1-2), so it won the text-align and every numeric HEADER stayed
+   left while its cells went right. Forty-eight `.right` usages across 24 tables
+   were all misaligned by it: the Rookie Pick Values header row was the one that
+   made it obvious, with "1QB VALUE" sitting a column away from 90 / 80 / 70.
+   ========================================================================== */
+table.data thead th.right,  table.data tbody td.right  { text-align: right; }
+table.data thead th.center, table.data tbody td.center { text-align: center; }
+
+/* ==========================================================================
+   Narrow tables do not stretch
+   ==========================================================================
+   `table.data` is width:100%, which is right for the 14-to-25 column boards
+   and wrong for every small one. The Rookie Pick Values table measured 374px
+   of content and rendered at 1192px, so "1QB VALUE" sat three columns away
+   from 90 / 80 / 70. That is the sprawl half of the complaint, and the header
+   alignment rule above does NOT touch it: the header was over its own column
+   the whole time, just 300px of dead space from its own numbers.
+
+   `fit-content` is the native answer. The table takes exactly the width its
+   content needs, and `max-width:100%` keeps it inside the card on a phone,
+   where it falls back to wrapping exactly as before. Measured with
+   site/_table_audit.py: the eight flagged tables went from 1.54x-3.19x their
+   content width to 1.00x, and nothing moved at 390px.
+
+   Do NOT add this to the wide boards. `fit-content` resolves against the
+   AVAILABLE width, so on a 25-column table it would shrink toward min-content
+   and crush the very columns that `.tbl-scroll` plus the `min-width` on
+   .weekly-rankings-table / .sleeper-weeks-table exist to keep scrollable at
+   full size. Snug is opt-in per table for that reason.
+   ========================================================================== */
+table.data.snug { width: fit-content; max-width: 100%; }
+
+/* The plate has to hug the table, or capping the table just moves the problem:
+   a 374px table inside a 1196px card leaves 800px of empty plate, which reads
+   as a broken card rather than a deliberately small table. `:has()` lets the
+   wrapper and the card size to their own content, so app.js does not need a
+   second class for "this card holds a small table".
+
+   `max-width:100%` is what makes this safe. A card that holds a snug table AND
+   a paragraph resolves fit-content against the prose, hits the cap, and stays
+   full width, which is the current behaviour. So the rule can only ever shrink
+   a card whose content is genuinely narrow. */
+.tbl-scroll:has(> table.data.snug) { width: fit-content; max-width: 100%; }
+.card:has(table.data.snug)        { width: fit-content; max-width: 100%; }
+
+/* Same problem, different shape: two tables sit in a card whose OWN chrome is
+   full width (the About card has a heading plus a paragraph, the projections
+   card has a title bar and a footnote). `snug` there leaves a 692px table
+   under a 993px title bar, which reads as a table that failed to render its
+   right-hand side. So keep the table full width and tighten the COLUMNS
+   instead: `width:1px` on a cell under `table-layout:auto` means "as narrow
+   as the content allows", and all the slack lands in the one column left
+   unconstrained. Pick a last column that genuinely wants the room. Here they
+   are "Built" (a timestamp) and "Core" (a list of player names), so the slack
+   goes where it is useful and no numeric column is separated from its header.
+   Do not add `nowrap` to a column that needs to wrap. */
+table.data.fill-last thead th:not(:last-child),
+table.data.fill-last tbody td:not(:last-child) { width: 1px; white-space: nowrap; }
+
+/* Third shape: an all-numeric table in a card that has full-width chrome, where
+   `fill-last` is wrong because the last column is a number too and dumping 250px
+   of slack into it just moves the gap inside the data. Centre it instead. A
+   compact table centred under its title bar reads as deliberate; the same table
+   pinned left reads as a table that failed to draw its right half. The card
+   deliberately does NOT shrink here, so this class is spelled differently from
+   `snug` and the `.card:has(table.data.snug)` rule above does not match it. */
+table.data.snug-center { width: fit-content; max-width: 100%; margin-inline: auto; }
+
+/* ==========================================================================
+   The player name is content, not a control
+   ==========================================================================
+   It is a <button> for keyboard reachability, and the retro pass styles every
+   button as a plate. `.player-name-button` already zeroed the background,
+   border and padding, but not box-shadow, so `--bevel`'s inset white rings
+   still drew a soft lozenge around every name, and the display face from the
+   type rule made it read as a chip. A name competing with POS / TEAM / OWNER
+   as though it were the same kind of object is backwards: those three are
+   metadata chips, the name is the row's subject and should be the plainest,
+   heaviest thing in it.
+   ========================================================================== */
+.player-name-button,
+.pos-col-pname > button,
+button.name {
+  box-shadow: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  /* Body face, not the display face every other button gets. */
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.94rem;
+  letter-spacing: -0.01em;
+  color: var(--fg-0);
+  cursor: pointer;
+}
+/* The affordance is the name itself, underlined on approach, rather than a
+   plate that has to be drawn all the time to say "clickable once". */
+.player-name-button:hover,
+button.name:hover {
+  background: none;
+  box-shadow: none;
+  color: var(--fg-0);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+}
+.player-name-button:active,
+button.name:active { transform: none; box-shadow: none; }
+
+/* A play-caller who IS the head coach or the OC is named by role, not printed a
+   second time, so the eye does not read two coaches where there is one. */
+.coach-name.is-dup { color: var(--fg-2); font-style: italic; font-weight: 600; }
+
+/* A share is a share OF something. The unit rides with the number so a rushing
+   share can never be read as a target share, which is what let a quarterback
+   appear to hold 4.5% of the targets. */
+.turn-share-val { font-variant-numeric: tabular-nums; }
+.turn-share-unit {
+  margin-left: 2px;
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+.turn-share-sep { display: inline-block; width: 6px; }
+
+/* ==========================================================================
+   Week block on the player card
+   ==========================================================================
+   The card used to answer a weekly start-sit question with a season projection.
+   This is the week in front of you: projected points, market against model,
+   the opponent, and how that opponent defends the position. Cells scroll
+   horizontally rather than wrapping, so the row holds at 390px.
+   ========================================================================== */
+.tw-card { background: var(--bg-2); margin-bottom: 12px; }
+.tw-row {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+}
+.tw-row::-webkit-scrollbar { display: none; }
+.tw-cell {
+  flex: 0 0 auto;
+  min-width: 92px;
+  padding: 8px 12px;
+  background: var(--bg-1);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--bevel);
+}
+.tw-val {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1.05;
+  color: var(--fg-0);
+  font-variant-numeric: tabular-nums;
+}
+.tw-lab {
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+  margin-top: 1px;
+}
+.tw-sub { font-size: 0.62rem; color: var(--fg-3); margin-top: 3px; }
+/* Matchup quality reads at a glance, on the same four-band scale the schedule
+   strip already uses, so a smash spot and a tough draw are not the same grey. */
+.tw-sub.dvp-smash   { color: var(--green); font-weight: 700; }
+.tw-sub.dvp-soft    { color: var(--green); }
+.tw-sub.dvp-average { color: var(--fg-3); }
+.tw-sub.dvp-tough   { color: var(--red); font-weight: 700; }
+.tw-note { margin: 8px 0 0; }
+/* The injury tag belongs beside the name on the one surface where the question
+   gets asked, so the title row has to leave it room. */
+.modal h2 .badge.injury { margin-left: 8px; vertical-align: middle; font-size: 0.6rem; }
+
+/* Numeric columns step back half a shade so the name leads without shouting. The
+   name is 1rem/800 on --fg-0; these stay 0.9rem on --fg-1 and only lose the
+   accidental weight they picked up from being the only thing with a colour. */
+table.data tbody td.tnum { font-weight: 600; }
+
+/* Signed VOR beside a slot grade. The 0-to-10 grade cannot express "below what the
+   waiver wire offers", so the number that can sits next to it. */
+.slot-bar-vor {
+  flex: 0 0 auto;
+  min-width: 34px;
+  text-align: right;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--green);
+  font-variant-numeric: tabular-nums;
+}
+.slot-bar-vor.neg { color: var(--red); }
+
+/* Slot labels are short codes and must not wrap or bleed into the name column. */
+.slot-bar-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The two facts the 0-to-10 grade is derived from, in the space the row was wasting:
+   projected points rest of season, and age. Both already computed for every slot. */
+.slot-bar-pts, .slot-bar-age {
+  text-align: right;
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--fg-1);
+}
+.slot-bar-age { color: var(--fg-3); font-size: 0.68rem; }
+
+/* Season-to-date stats in the standings row. The row previously rendered one
+   number in a redraft league, because every category segment beside it is
+   dynasty-only, so the record and scoring that ARE the standings went unshown. */
+.strength-detail .seg.ytd { gap: 3px; }
+.ytd-rec { font-weight: 800; font-size: 0.86rem; color: var(--fg-0); font-variant-numeric: tabular-nums; }
+.ytd-val { font-weight: 700; font-size: 0.8rem; color: var(--fg-1); font-variant-numeric: tabular-nums; }
+.ytd-lab {
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+
+
+/* ==========================================================================
+   Player card: number band, value chart, tab panels
+   ==========================================================================
+   The band replaced two stacked rows of loose chips. Those rows wrapped, so on
+   a phone the same six figures landed in a different order and on a different
+   number of lines for every player, and "is he worth more than he scores" was
+   never a comparison you could make without hunting. One scroll rail fixes the
+   order: the cells are always these six, always left to right, and the rail
+   scrolls instead of the page.
+   ========================================================================== */
+.num-band {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  margin: 0 0 14px;
+  padding-bottom: 6px;
+  /* The rail is the scroll container, so the PAGE never gains a horizontal
+     scrollbar from it. That is the 390px non-negotiable. */
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+.num-band::-webkit-scrollbar { height: 4px; }
+.num-band::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.num-cell {
+  flex: 0 0 auto;
+  min-width: 96px;
+  padding: 8px 12px;
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-sm);
+  background: var(--grad-panel);
+  box-shadow: var(--bevel);
+  /* A cell is a plate like every other surface here, so it gets the ink border
+     and the hard bevel rather than a flat tint. */
+}
+.num-cell-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+  white-space: nowrap;
+}
+.num-cell-value {
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--fg-0);
+  letter-spacing: -0.015em;
+  white-space: nowrap;
+}
+.num-cell-sub {
+  font-size: 0.66rem;
+  color: var(--fg-3);
+  white-space: nowrap;
+}
+/* The Tier cell holds two chips instead of a numeral, so it opts out of the
+   numeric line-height and lets its chips set their own. */
+.num-cell-chips .num-cell-chiprow { display: flex; align-items: center; gap: 4px; margin-top: 2px; }
+.num-cell-chips .num-cell-chiprow.num-cell-sub { margin-top: 3px; }
+
+/* ---- Dynasty value chart (opens the Value tab) ---- */
+.ktcv-block { margin-bottom: 14px; }
+.ktcv-tabs { margin: 0; flex: 0 0 auto; }
+/* .cchart-tab is a FOLDER tab: it drops its bottom border so it border-joins
+   the plate directly beneath it. These three sit in the block heading next to
+   the title, with a callout line between them and the chart, so there is no
+   plate to join and the missing edge just read as an unfinished button. Close
+   the box and round all four corners. Selection still lightens rather than
+   gold-fills, because DESIGN.md reserves the gold fill for rows, nav items and
+   sorted columns, and has folder tabs select by lightening. */
+.ktcv-tabs .cchart-tab {
+  border-bottom: 2px solid var(--ink);
+  border-radius: var(--radius-sm);
+}
+.ktcv-tabs .cchart-tab.active { box-shadow: var(--bevel); }
+.ktcv-callout {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 2px 0 8px;
+}
+.ktcv-callout strong { font-size: 1.05rem; font-weight: 800; }
+/* careerChartOne draws its own delta in the chart head ("▲ 788 since 2025-09").
+   The callout above is the richer version of the same figure: signed, with the
+   percent, and naming the window the range tabs actually selected. Printing
+   both put 788 on the card twice, so the chart's copy is suppressed HERE only,
+   inside this block, leaving it intact for the PPG chart in Production. */
+.ktcv-block .cchart-delta,
+.ktcv-block .cchart-deltalabel { display: none; }
+.ktcv-callout.up   strong { color: var(--green); }
+.ktcv-callout.down strong { color: var(--red); }
+.ktcv-callout.flat strong { color: var(--fg-2); }
+
+/* ---- The three reference tabs ---- */
+.pm-tab-bar {
+  /* The view-level .tab-bar pulls itself up under a page title with a negative
+     margin. Inside the modal there is no title above it, so that margin drags
+     the bar into the block before it. */
+  margin: 4px 0 14px;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  /* The modal is --bg-1. --bg-0 is the TURF, so using it here painted a green
+     strip across a light card, which is what the first screenshot showed. A
+     sticky bar does need an opaque background or the content scrolls through
+     it, so this is --bg-1 rather than transparent. */
+  background: var(--bg-1);
+}
+.pm-tab-bar .tab { padding: 12px 14px; }
+/* A panel is a plain flow container. It must not become a scroll or transform
+   context: the sticky thead on the tables inside it pins to the modal's own
+   scroller, and a new containing block here would strand it mid-panel. */
+.pm-panel > :last-child { margin-bottom: 0; }
+
+@media (max-width: 720px) {
+  .num-cell { min-width: 88px; padding: 7px 10px; }
+  .num-cell-value { font-size: 1.1rem; }
+  .pm-tab-bar .tab { padding: 12px 11px; font-size: 0.72rem; }
+}
+
+/* ==========================================================================
+   Slot grades as a table
+   ==========================================================================
+   Was an 8-column CSS grid. Every row wrapped onto two lines, which put the
+   grade underneath the player's name and left the two new numbers with no
+   heading at all. A table gives each column a label and cannot wrap a row.
+   ========================================================================== */
+.slot-table { width: 100%; }
+.slot-table thead th {
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  padding: 6px 6px;
+  white-space: nowrap;
+}
+.slot-table tbody td {
+  padding: 6px 6px;
+  font-size: 0.82rem;
+  vertical-align: middle;
+}
+.slot-table tr.clickable { cursor: pointer; }
+.sr-slot {
+  width: 1%;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+  white-space: nowrap;
+}
+/* The name is the row's subject here too, so it is the heaviest thing in it. It
+   also has to CLIP rather than overrun: table-layout:fixed does not stop text
+   spilling into the next cell on its own, which ran "Jeremiyah L" into its RB3
+   chip. A multi-name FLEX cell still stacks instead of truncating. */
+.sr-name {
+  font-weight: 800;
+  color: var(--fg-0);
+  white-space: nowrap;
+}
+.sr-name .slot-bar-name { font-weight: 800; min-width: 0; }
+.slot-table tr:has(.slot-bar-nameitem ~ .slot-bar-nameitem) .sr-name { white-space: normal; }
+.sr-pos { width: 1%; white-space: nowrap; }
+.sr-num { width: 52px; text-align: right; font-variant-numeric: tabular-nums; }
+.sr-age { width: 44px; color: var(--fg-3); }
+.sr-vor { width: 50px; font-weight: 700; color: var(--green); }
+.sr-vor.neg { color: var(--red); }
+.sr-bar { width: 14%; min-width: 60px; }
+.sr-bar .slot-bar-track { display: inline-block; vertical-align: middle; }
+.sr-grade {
+  width: 52px;
+  text-align: right;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 800;
+}
+/* Phone: the bar and age go, since both are comparative or available elsewhere,
+   and the table stops being a table below the grid's own breakpoint. */
+@media (max-width: 720px) {
+  .slot-table .sr-bar, .slot-table .sr-age,
+  .slot-table thead th:nth-child(5), .slot-table thead th:nth-child(7) { display: none; }
+
+  .slot-table tbody td { padding: 6px 4px; font-size: 0.78rem; }
+}
+
+/* Opponent bye cost: gross points unavailable from starters on teams still faced,
+   with the number of opposing starter-bye slots behind it. */
+.sos-bye {
+  text-align: right;
+  font-weight: 700;
+  color: var(--amber);
+  font-variant-numeric: tabular-nums;
+}
+.sos-bye-n {
+  margin-left: 3px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--fg-3);
+}
+.sos-bye-n::before { content: '×'; margin-right: 1px; }
+
+/* ==========================================================================
+   FAAB: budget, four dimensions, and the weekly waiver board
+   ==========================================================================
+   The first version drew one of the four dimensions the spec asked for and no
+   budget at all. These carry the rest: a KPI band with your own money, one tab
+   per dimension, a rival-budget disclosure, and the week's board.
+   ========================================================================== */
+.faab-scope {
+  margin-left: 8px;
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+.faab-kpis { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; margin: 8px 0 4px; }
+.faab-kpis::-webkit-scrollbar { display: none; }
+.faab-kpi {
+  flex: 0 0 auto;
+  min-width: 132px;
+  padding: 8px 12px;
+  background: var(--bg-1);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--bevel);
+}
+.faab-kpi-num {
+  font-family: var(--font-display);
+  font-size: 1.3rem; font-weight: 800; line-height: 1.05;
+  color: var(--fg-0); font-variant-numeric: tabular-nums;
+}
+.faab-kpi-lab {
+  font-size: 0.58rem; font-weight: 800; letter-spacing: 0.07em;
+  text-transform: uppercase; color: var(--fg-2); margin-top: 1px;
+}
+.faab-kpi-sub { font-size: 0.62rem; color: var(--fg-3); margin-top: 3px; }
+/* Dimension tabs select by lightening, same as the card and league tab bars. */
+.faab-tabs { margin: 10px 0 0; }
+.faab-head, .faab-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 14rem) 3.4rem 5rem 3.6rem 3.4rem;
+  align-items: center;
+  gap: 8px;
+}
+.faab-range { text-align: right; font-size: 0.74rem; color: var(--fg-2); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.faab-pct { text-align: right; font-size: 0.72rem; color: var(--fg-3); font-variant-numeric: tabular-nums; }
+.faab-rivals { margin-top: 10px; }
+.faab-rivals > summary { cursor: pointer; font-weight: 700; }
+.faab-rival-rows { display: grid; gap: 2px; margin-top: 6px; }
+.faab-rival {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 10rem) 3.6rem;
+  align-items: center; gap: 8px;
+  padding: 2px 4px;
+}
+.faab-rival.you { background: var(--grad-gold); border-radius: 4px; }
+.faab-rival-team { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.faab-rival-bar {
+  position: relative; height: 10px;
+  background: color-mix(in oklch, var(--ink) 14%, transparent);
+  border: 1.5px solid var(--ink); border-radius: 3px; overflow: hidden;
+}
+.faab-rival-bar > i { position: absolute; inset: 0 auto 0 0; background: var(--grad-band); }
+.faab-rival-val { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
+/* Waiver board reuses the slot table, plus a bid column that goes red when the
+   low end of the range is already more than you have left. */
+.waiver-card { margin-bottom: 12px; }
+.waiver-table .wb-profile { min-width: 9rem; color: var(--fg-2); font-weight: 700; }
+.waiver-table .wb-profile-sample { display: block; margin-top: 2px; color: var(--fg-3); font-size: 0.68rem; font-weight: 600; }
+.waiver-table .wb-player-line { display: flex; align-items: center; gap: 4px; min-width: 0; }
+.waiver-table .wb-player-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.waiver-table .wb-profile-mobile { display: none; }
+.waiver-table .wb-bid { font-weight: 800; color: var(--fg-0); }
+.waiver-table .wb-bid.over { color: var(--red); }
+@media (max-width: 720px) {
+  .waiver-table { table-layout: fixed; }
+  .waiver-table .wb-profile-head,
+  .waiver-table .wb-profile { display: none; }
+  .waiver-table th:nth-child(5), .waiver-table td:nth-child(5),
+  .waiver-table th:nth-child(7), .waiver-table td:nth-child(7) { display: none; }
+  .waiver-table .wb-profile-mobile {
+    display: block;
+    margin-top: 3px;
+    overflow: hidden;
+    color: var(--fg-2);
+    font-size: 0.68rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .waiver-table .wb-profile-mobile-sample {
+    display: block;
+    color: var(--fg-3);
+    font-size: 0.62rem;
+    font-weight: 600;
+  }
+  .waiver-table th:nth-child(1), .waiver-table td:nth-child(1) { width: 28px; }
+  .waiver-table th:nth-child(3), .waiver-table td:nth-child(3) { width: 50px; }
+  .waiver-table th:nth-child(6), .waiver-table td:nth-child(6) { width: 46px; }
+  .waiver-table th:nth-child(8), .waiver-table td:nth-child(8) { width: 62px; }
+  .faab-head, .faab-row { grid-template-columns: minmax(0, 1fr) 0 3.2rem 3.2rem 3rem; }
+  .faab-row .faab-plot, .faab-head span:nth-child(2) { display: none; }
+}
+
+/* ==========================================================================
+   Target / trade-block marks
+   ==========================================================================
+   The two facts only the manager knows, replacing a computed suggestion queue
+   that was usually empty. Compact enough to sit in a table row, explicit enough
+   to read on a card. Off is an outline, on is a gold fill, which is the same
+   selection rule the rest of the app uses.
+   ========================================================================== */
+.mark-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  font-family: var(--font-display);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  border: 2px solid var(--ink);
+  /* One shape in both places. This used to be a pill on a card and a square plate
+     in a table, so the same control read as two different controls. The plate is
+     what the rest of the app uses, so the pill went. */
+  border-radius: var(--radius-sm);
+  background: var(--bg-2);
+  box-shadow: none;
+  color: var(--fg-2);
+  cursor: pointer;
+  vertical-align: middle;
+  min-block-size: 26px;
+}
+.mark-btn:hover { background: var(--bg-3); color: var(--fg-0); }
+.mark-btn.on {
+  background: var(--grad-gold);
+  color: var(--ink);
+  box-shadow: var(--bevel);
+}
+.mark-glyph { font-size: 0.72rem; line-height: 1; }
+/* In a dense table the label is noise; the glyph plus the tooltip carry it. The
+   card keeps the words, because that is where a first-time click happens. */
+table.data .mark-btn {
+  margin-left: 8px;
+  inline-size: 26px;
+  min-inline-size: 26px;
+  block-size: 26px;
+  padding: 0;
+  justify-content: center;
+}
+/* A finger needs 44px, a cursor does not, and a 44px block in every row of a
+   dense table set the row height on its own. Grow the target only on touch. */
+@media (pointer: coarse) {
+  table.data .mark-btn {
+    inline-size: 44px;
+    min-inline-size: 44px;
+    block-size: 44px;
+  }
+}
+table.data .mark-btn .mark-label { display: none; }
+.mark-glyph { inline-size: 1em; text-align: center; }
+.mark-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.mark-cell { display: inline-flex; align-items: center; gap: 6px; }
+.mark-lg {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+.marks-board { display: grid; gap: 12px; }
+
+/* Watch-board column headings. The two numbers per row were bare, and the only
+   explanation was a card at the bottom of the page. */
+.watch-row-head {
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 2px;
+  margin-bottom: 2px;
+}
+.watch-row-head .watch-proj,
+.watch-row-head .watch-index {
+  font-family: var(--font-display);
+  font-size: 0.6rem;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+  cursor: help;
+}
+.watch-row-head .watch-bar { border: 0; background: none; }
+
+/* Comparative panels share a header height, or the first row of each starts at a
+   different y and the columns stop lining up. */
+.watch-panel > .card-title { min-height: 1.9rem; display: flex; align-items: center; }
+/* Grid cells, not a stack: the generic `.card + .card` margin pushed panels 2 and 3
+   down 16px, so the three tops did not line up. Declared after that rule so it
+   actually wins, which the earlier copy of this reset did not. */
+.watch-panels > .card + .card { margin-top: 0; }
+
+/* The title plate was 0.72rem and its own subtitle 0.78rem, so the caption was
+   LARGER than the heading above it, and the count chip matched the title exactly.
+   Sized on the same four-step scale as the rows: the title takes the heading step
+   (and reads heavier than its px because it is letterspaced caps on a filled
+   plate), the count and the caption both drop to the label step so neither
+   competes with a player name at 0.86. Scoped to this panel rather than every
+   .card-title in the app, which is a different job at a different density. */
+.watch-panel > .card-title { font-size: 0.82rem; letter-spacing: 0.08em; }
+.watch-panel .watch-panel-count { font-size: 0.7rem; font-weight: 700; }
+.watch-panel .watch-panel-sub {
+  font-size: 0.7rem;
+  line-height: 1.4;
+  color: var(--fg-3);
+  min-height: calc(0.7rem * 1.4 * 1);
+}
+
+/* ==========================================================================
+   Watch board type scale
+   ==========================================================================
+   html is 15px, so the earlier sub-1rem values rendered at 9 to 13px: the column
+   headers landed at 9px, the subtitle at 10.5px, and nothing on the page reached
+   the 16px body floor. Rebuilt on a ~1.2 ratio with a real floor:
+
+     0.8   11.7px  label    column headings, caps + letterspaced
+     0.85  12.8px  support  rank, team/pos meta, chip
+     1.0   15px    heading  panel title (caps on a filled plate, reads heavier)
+     1.05  15.8px  subject  player name
+     1.3   19.5px  figure   the index, the number the panel exists for
+
+   Size is not doing this alone: the figure also takes the display face, the
+   heaviest weight, and the only saturated colour in the row.
+   ========================================================================== */
+.watch-panel > .card-title { font-size: 1rem; letter-spacing: 0.07em; }
+.watch-panel .watch-panel-count { font-size: 0.85rem; font-weight: 700; }
+.watch-panel .watch-panel-sub {
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--fg-2);
+  min-height: calc(0.88rem * 1.45);
+}
+.watch-row-head .watch-proj,
+.watch-row-head .watch-index {
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+}
+.watch-rank { font-size: 0.85rem; }
+.watch-meta { font-size: 0.85rem; }
+.watch-player { font-size: 1.05rem; }
+.watch-proj { font-size: 0.92rem; }
+.watch-rows .watch-row:not(.watch-row-head) .watch-index { font-size: 1.3rem; }
+/* A league chip carries two things, a name and a buy-in. Equal weight made it one
+   undifferentiated string, so the buy-in steps back. */
+.watch-chip { font-size: 0.85rem; font-weight: 700; letter-spacing: -0.005em; }
+.watch-chip .wc-amt { font-weight: 500; opacity: 0.8; font-variant-numeric: tabular-nums; }
+
+/* ==========================================================================
+   FantasyPros experts
+   ========================================================================== */
+/* Four selects that read as one sentence: position, player, omission filter,
+   depth floor. They wrap on a phone rather than shrinking into unreadable stubs. */
+.fp-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.fp-controls select { max-width: 100%; min-width: 0; }
+@media (max-width: 720px) {
+  .fp-controls { flex-direction: column; align-items: stretch; }
+}
+
+/* Control plates stay readable when they sit directly on turf. */
+.seg-control-row,
+.sos-position-tabs {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  width: fit-content;
+  max-width: 100%;
+  margin-bottom: 10px;
+  padding: 6px 8px;
+  color: var(--fg-0);
+  background: var(--grad-panel);
+  border: var(--plate-edge);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--bevel), var(--shadow-1);
+}
+.sos-position-tabs { margin-bottom: 12px; }
+.seg-control-label {
+  width: 54px;
+  color: var(--fg-1);
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.seg-control-row button.ghost,
+.sos-position-tabs button.ghost {
+  color: var(--fg-0);
+  background: var(--grad-btn);
+  border: var(--plate-edge);
+  box-shadow: var(--bevel), var(--shadow-1);
+}
+.seg-control-row button[aria-pressed="true"],
+.sos-position-tabs button[aria-pressed="true"] { background: var(--grad-gold); color: var(--ink); }
+
+/* One affordance rule catches dynamic rows without restyling every component. */
+:where(a[href], button, summary, select, [role="button"], .clickable, [onclick]) { cursor: pointer; }
+:where(summary, [role="button"], .clickable, [onclick]):hover { filter: brightness(1.06); }
+:where(a[href], button, summary, select, [role="button"], .clickable, [onclick]):focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+button:disabled { cursor: wait; opacity: 0.7; }
+
+/* Theme browser scrollbars as recessed track plus periwinkle grip. */
+* { scrollbar-color: var(--band) var(--bg-2); }
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-track { background: var(--bg-2); }
+*::-webkit-scrollbar-thumb {
+  background: var(--grad-band);
+  border: 2px solid var(--bg-2);
+  border-radius: 999px;
+}
+*::-webkit-scrollbar-thumb:hover { background: var(--grad-gold); }
+*::-webkit-scrollbar-corner { background: var(--bg-2); }

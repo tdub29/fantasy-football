@@ -35,18 +35,23 @@ Do this per league. A 10-teamer and a 14-teamer are different worlds.
 
 ### Measured, Password is taco, 2026 (10 teams, 25 roster spots)
 
-559 projected skill players. 302 rostered, **257 free (46%)**.
+Re-derived 2026-09-17, in season. 557 projected skill players. 288 rostered,
+**269 free (48%)**.
 
-| Pos | Best free agent | Points | Free agents |
-|---|---|---|---|
-| QB | Geno Smith | 196 | 40 |
-| TE | Pat Freiermuth | 120 | 84 |
-| WR | Chimere Dike | 89 | 82 |
-| RB | Chris Brooks | 62 | 51 |
+| Pos | Best free agent | Points | Free agents | Preseason (2026-08) |
+|---|---|---|---|---|
+| QB | Jacoby Brissett | 154 | 45 | Geno Smith 196 |
+| WR | Chimere Dike | 89 | 87 | Chimere Dike 89 |
+| TE | Mike Gesicki | 84 | 83 | Pat Freiermuth 120 |
+| RB | Isaiah Davis | 61 | 54 | Chris Brooks 62 |
 
-Read that QB line again. **A 196-point QB is free in this league.** Roughly half of
-all relevant NFL skill players are unrostered. That is not a shallow bench, it is an
-open supply of starters, and it reprices everything on the roster.
+Roughly half of all relevant NFL skill players are still unrostered, so the free pool
+is still an open supply rather than a shallow bench, and it still reprices everything
+on the roster. **What changed is the top of that pool, and it changed in one direction.**
+QB fell 196 to 154 and TE fell 120 to 84 as the season started and startable bodies got
+claimed; WR and RB did not move. Every number downstream of "best free agent" moves with
+them, which is why the rest of this file is dated and why you re-derive rather than quote.
+The free SHARE is the stable claim here. The free CEILING is not.
 
 ## The rule that falls out
 
@@ -61,7 +66,8 @@ open supply of starters, and it reprices everything on the roster.
 
 ### Worked: the owner's QB room, measured
 
-Josh Allen 353, Caleb Williams 293, Jordan Love 270, best FA QB 196.
+Josh Allen 355, Caleb Williams 294, Jordan Love 270, best FA QB 154 (2026-09-17;
+the sim deltas below were run against the preseason 353 / 293 / 270 / 196 board).
 
 **Method.** Every delta below is a mean over 5 independent seeds x 15,000 sims,
 paired by seed so the common noise cancels. Baseline 1.46%, seed-to-seed sd
@@ -92,7 +98,9 @@ Keep exactly one QB, and hold the second only until it converts. It nearly alway
 converts, because 0.47pp is a cheap thing to sell and a startable WR is not.
 
 The same logic, weaker, on tight ends: dropping Okonkwo, Juwan Johnson and Mayer
-together costs 0.51pp, because the best free TE projects 120 and Okonkwo projects 144.
+together costs 0.51pp, because the best free TE projected 120 and Okonkwo projects 144.
+That 120 is now 84, so re-run this one before acting on it: the same sim with a 36-point
+lower TE floor prices the TE surplus higher than 0.51pp, not lower.
 
 **These are one-season deltas.** They price the insurance, not the plan. Any
 hold-versus-sell verdict that turns on a rebuild must be scored over
@@ -111,20 +119,33 @@ insurance = P(starter misses time) x (backup points - best FA points) x (fractio
 
 For a QB1 with ~1.5 expected missed games out of 17, measured on this roster:
 
-| Backup | Projects | Edge over best FA QB (196) | Insurance value |
+| Backup | Projects | Edge over best FA QB | Insurance value |
 |---|---|---|---|
-| Caleb Williams | 293 | 97 pts/season, 5.7 pts/game | **8.5 pts/season** |
-| Jordan Love | 270 | 74 pts/season, 4.3 pts/game | **6.5 pts/season** |
+| Caleb Williams | 294 | 140 pts/season, 8.2 pts/game | **12.4 pts/season** |
+| Jordan Love | 270 | 116 pts/season, 6.8 pts/game | **10.2 pts/season** |
+| _preseason, best FA QB 196_ | _293 / 270_ | _97 and 74 pts/season_ | _8.5 and 6.5_ |
 
-Eight points. Not eighty. Sell the backup unless the return is under ~10 points of
-lineup value, which in practice means: always sell, because nothing trades for that
-little.
+**Re-derived 2026-09-17, and the arithmetic no longer says what it said in August.** The
+threshold in the next paragraph is ~10 points of lineup value. At a 196-point free QB both
+backups sat under it, so "always sell" followed. At a 154-point free QB, Williams prices at
+12.4 and Love at 10.2, and both clear it. The conclusion did not change because anyone
+re-argued it. It changed because the replacement level moved 42 points.
 
-**Exception, and run it as an actual check, not a vibe.** Hold one backup only when
-BOTH of these are true: the best free agent is under ~60% of your starter's output,
-AND your starter is injury-flagged. On this roster the first fires and the second
-does not. Geno Smith 196 against Josh Allen 353 is 55.5%, under the line, but
-`players.js` shows Allen with `injury_status: null`. One of two is not the rule. Sell.
+Sell the backup unless the return is under ~10 points of lineup value. In August that meant
+always sell, because nothing trades for that little. It does not mean that today.
+
+**Two gates, and they now disagree. Say so rather than picking one.** Hold one backup only
+when BOTH of these are true: the best free agent is under ~60% of your starter's output, AND
+your starter is injury-flagged. Brissett 154 against Allen 355 is 43.4%, so the first gate
+fires much harder than the 55.5% that made it marginal in August, but `players.js` still
+shows Allen with `injury_status: null`, so the second does not fire. One of two is still not
+the rule, so the two-gate check says sell. The ~10-point threshold now says hold. **Do not
+sell a QB2 out of this room on the August number without re-running both.**
+
+Honest bound on that: 12.4 against a round ~10 is not a wide margin, and the insurance
+formula fixes P(starter misses) at 1.5 of 17 games rather than fitting it. Read it as "the
+margin closed, re-check before selling", not as a hold verdict. Derived and self-checked in
+one pass on 2026-09-17, with no second lens on it.
 
 Re-run the second half of that check before every lineup answer; `injury_status`
 goes stale fast (`python site/data/fetch_sleeper.py`).

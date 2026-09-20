@@ -24,6 +24,8 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
+from season_window import completed_week_files
+
 ROOT = Path(__file__).parent
 OUT = ROOT / "derived"
 
@@ -53,13 +55,8 @@ def build_qb_changes() -> None:
     # Primary QB per (team, season) by passing attempts
     qb_atts: dict[tuple, dict[str, int]] = defaultdict(lambda: defaultdict(int))
     qb_names: dict[str, str] = {}
-    for f in sorted((ROOT / "player_stats").glob("week_*.csv")):
-        try:
-            yr = int(f.stem.replace("week_", "").replace("_derived", ""))
-        except ValueError:
-            continue
-        if yr < 2014:
-            continue
+    # Season-level claim, so the season being played is excluded (season_window).
+    for yr, f in completed_week_files():
         with open(f, encoding="utf-8") as fin:
             for r in csv.DictReader(fin):
                 if r.get("season_type") != "REG":
@@ -173,13 +170,8 @@ def build_player_efficiency() -> None:
     out_rows = []
     pl_agg: dict[tuple, dict[str, float]] = defaultdict(lambda: defaultdict(float))
     pl_info: dict[tuple, dict] = {}
-    for f in sorted((ROOT / "player_stats").glob("week_*.csv")):
-        try:
-            yr = int(f.stem.replace("week_", "").replace("_derived", ""))
-        except ValueError:
-            continue
-        if yr < 2014:
-            continue
+    # Season-level claim, so the season being played is excluded (season_window).
+    for yr, f in completed_week_files():
         with open(f, encoding="utf-8") as fin:
             for r in csv.DictReader(fin):
                 if r.get("season_type") != "REG":
@@ -306,13 +298,8 @@ def build_career_health() -> None:
 
     pl_games: dict[str, dict] = defaultdict(lambda: {"games": 0, "potential": 0, "seasons": set(),
                                                       "name": "", "pos": ""})
-    for f in sorted((ROOT / "player_stats").glob("week_*.csv")):
-        try:
-            yr = int(f.stem.replace("week_", "").replace("_derived", ""))
-        except ValueError:
-            continue
-        if yr < 2014:
-            continue
+    # Season-level claim, so the season being played is excluded (season_window).
+    for yr, f in completed_week_files():
         with open(f, encoding="utf-8") as fin:
             seen_pids_this_year: set[str] = set()
             for r in csv.DictReader(fin):

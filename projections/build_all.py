@@ -26,17 +26,28 @@ STEPS = [
     ("raw Sleeper dump + leagues", SITE_DATA / "fetch_sleeper.py",        True),
     ("KTC dynasty rankings",       SITE_DATA / "build_ktc.py",            True),
     ("site data (players/leagues)", SITE_DATA / "build_site_data.py",     True),
+    ("trade partner history",       SITE_DATA / "build_trade_history.py", True),
+    ("league FAAB history",         PROJ / "build_faab_site_data.py",      True),
     ("IDP rankings",               SITE_DATA / "build_idp.py",            True),
     ("player info (contracts)",    SITE_DATA / "build_player_info.py",    True),
     # (Jacob Gibbs ranks are a manual import — build_jacob_gibbs.py takes an input
     #  file arg, so it's not part of the automated rebuild.)
     # opens a real headed Chrome for ~15s on purpose -- headless gets a DataDome 403.
-    ("PrizePicks season board",    PROJ / "grab_prizepicks_browser.py",   True),
+    ("PrizePicks weekly board",    PROJ / "grab_prizepicks_browser.py",   True),
     ("season props (9-book market)", PROJ / "fetch_season_props.py",      True),
     ("offense components",         PROJ / "build_offense_components.py",  True),
     ("score offense",              PROJ / "score_offense.py",             True),
     ("score defense",              PROJ / "score_defense.py",             True),
     ("weekly rankings",            PROJ / "build_weekly_rankings.py",     True),
+    ("FantasyPros expert boards",  PROJ / "build_fantasypros_experts.py", True),
+    ("IDP defense-vs-position",    PROJ / "build_idp_dvp.py",             True),
+    # The kicker board is modelled in a SEPARATE repo and written back into
+    # site/data/kickers.js. It belongs in this list anyway: leaving it out is
+    # how a board silently stays on last week beside freshly rebuilt columns,
+    # which on a phone look identical. It needs the market lines, so it runs
+    # after the odds steps.
+    ("kicker board (kicker-analysis)",
+     ROOT.parent / "kicker-analysis" / "src" / "kicker_analysis" / "predict_week.py", False),
     ("team environment",           PROJ / "build_environment.py",         True),
     ("strength of schedule",       PROJ / "build_sos.py",                 True),
     ("SOS grid (DvP)",             PROJ / "build_sos_grid.py",            True),
@@ -50,7 +61,8 @@ STEPS = [
 TRACKED = [
     "ktc.js", "players.js", "leagues.js", "projections.js", "categories.js",
     "environment.js", "sos.js", "sos-grid.js", "sleeper-idp.js", "player-info.js",
-    "jacob-gibbs.js", "expert-rankings.js", "weekly-rankings.js", "sleeper-market.js", "context.js", "history.js",
+    "jacob-gibbs.js", "expert-rankings.js", "fantasypros-experts.js",
+    "idp-dvp.js", "kickers.js", "weekly-rankings.js", "sleeper-market.js", "faab.js", "trade-history.js", "context.js", "history.js",
 ]
 
 def run(label, script, timeout=600):

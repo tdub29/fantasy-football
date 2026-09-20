@@ -21,12 +21,25 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
+from season_window import INFLIGHT_WEEK_FLOOR, weeks_on_disk
+
 ROOT = Path(__file__).parent
 OUT = ROOT / "derived"
 OUT.mkdir(exist_ok=True)
 
 # Skill positions only — offensive opportunity is meaningful here
 SKILL = {"QB", "RB", "WR", "TE", "FB"}
+
+# A season is "in flight" until enough REG weeks are on disk for participation
+# (games >= 1) to mean anything. Under that floor one missed game reads as a
+# leaver, so membership for that season comes from the roster file instead.
+# The floor itself lives in season_window, which is also what keeps the
+# season-complete aggregates in the other builders off the season in progress.
+
+# Roster statuses that mean "on this team". CUT and RET are not.
+ON_ROSTER = {"ACT", "RES", "DEV", "EXE"}
+# A practice-squad body is on the team but is not a signing worth listing.
+JOINER_STATUS = {"ACT", "RES"}
 
 
 def to_f(x) -> float:
@@ -201,6 +214,43 @@ def build_redzone_shares(p_share: dict) -> None:
 
 
 # ============================================================
+# 3a. Season roster membership (for the in-flight season)
+# ============================================================
+def load_season_roster(season: int) -> tuple[dict, dict]:
+    """Returns (team -> set of gsis ids on the roster, pid -> meta).
+
+    Skill positions only. Empty dicts when the roster file is not on disk.
+    """
+    f = ROOT / "rosters" / f"{season}.csv"
+    if not f.exists():
+        return {}, {}
+    by_team: dict[str, set[str]] = defaultdict(set)
+    meta: dict[str, dict] = {}
+    with open(f, encoding="utf-8") as fin:
+        for r in csv.DictReader(fin):
+            status = (r.get("status") or "").upper()
+            if status not in ON_ROSTER:
+                continue
+            pos = (r.get("position") or "").upper()
+            if pos not in SKILL:
+                continue
+            pid, team = r.get("gsis_id"), r.get("team")
+            if not (pid and team):
+                continue
+            by_team[team].add(pid)
+            # ACT beats DEV when a player somehow appears twice
+            if pid not in meta or status in JOINER_STATUS:
+                meta[pid] = {
+                    "name": r.get("full_name") or r.get("football_name"),
+                    "pos": pos,
+                    "status": status,
+                    "rookie_year": r.get("rookie_year") or r.get("entry_year") or "",
+                    "draft_number": to_f(r.get("draft_number")),
+                }
+    return dict(by_team), meta
+
+
+# ============================================================
 # 3. Roster turnover: leavers / joiners per team-season
 # ============================================================
 def build_turnover(p_share: dict) -> tuple[dict, dict]:
@@ -300,6 +350,7 @@ def build_turnover(p_share: dict) -> tuple[dict, dict]:
 
         turnover[(team, season)] = {
             "team": team, "season": season,
+            "basis": "participation",
             "vacated_target_share": round(vacated_t, 4),
             "vacated_rush_share": round(vacated_r, 4),
             "vacated_air_yards_share": round(vacated_ay, 4),
@@ -308,7 +359,97 @@ def build_turnover(p_share: dict) -> tuple[dict, dict]:
             "top_leavers": leaver_list[:5],
             "top_joiners": joiner_list[:5],
         }
+
+    # The in-flight season gets membership from the roster file. Participation
+    # cannot answer "who left" after one or two weeks: every healthy scratch and
+    # every player on a bye-adjacent inactive list reads as a leaver.
+    for season in sorted({s for (_, s) in team_roster} | {s + 1 for (_, s) in team_roster}):
+        by_team, meta = load_season_roster(season)
+        if not by_team:
+            continue
+        played = weeks_on_disk(season)
+        if played >= INFLIGHT_WEEK_FLOOR:
+            continue  # enough of the season is on disk, participation is honest
+        for team, cur_ids in by_team.items():
+            prev_roster = team_roster.get((team, season - 1))
+            if not prev_roster:
+                continue
+            turnover[(team, season)] = roster_turnover_row(
+                team, season, played, prev_roster, cur_ids, meta,
+                p_share, player_seasons,
+            )
+
     return turnover, player_new_team
+
+
+def roster_turnover_row(team, season, weeks_played, prev_roster, cur_ids, meta,
+                        p_share, player_seasons) -> dict:
+    """One (team, season) turnover row built from roster membership.
+
+    Leavers keep the same meaning and the same numbers as the participation
+    path: who played for this team last season and is no longer on the roster,
+    priced at the share they held. Joiners cannot carry a current-season share
+    that means anything yet, so they carry their prior share elsewhere and the
+    row is flagged basis=roster so the UI can say which number it is showing.
+    """
+    vacated_t = vacated_r = vacated_ay = 0.0
+    leaver_list = []
+    for pid in prev_roster - cur_ids:
+        prev_p = p_share.get((pid, str(season - 1), team))
+        if not prev_p:
+            continue
+        vacated_t += prev_p["target_share"]
+        vacated_r += prev_p["rush_share"]
+        vacated_ay += prev_p["air_yards_share"]
+        leaver_list.append({
+            "player_id": pid, "name": prev_p["name"], "pos": prev_p["position"],
+            "prev_target_share": prev_p["target_share"],
+            "prev_rush_share": prev_p["rush_share"],
+            "prev_air_yards_share": prev_p["air_yards_share"],
+        })
+    leaver_list.sort(key=lambda x: -(x["prev_target_share"] + x["prev_rush_share"]))
+
+    joiner_list = []
+    for pid in cur_ids - prev_roster:
+        m = meta.get(pid) or {}
+        if m.get("status") not in JOINER_STATUS:
+            continue  # practice squad counts as membership, not as a signing
+        prior = [x for x in player_seasons.get(pid, []) if x[0] == season - 1]
+        prior_t = prior[0][2] if prior else 0
+        prior_r = prior[0][3] if prior else 0
+        cur_p = p_share.get((pid, str(season), team)) or {}
+        joiner_list.append({
+            "player_id": pid,
+            "name": m.get("name") or (cur_p.get("name") if cur_p else pid),
+            "pos": m.get("pos") or cur_p.get("position") or "",
+            "cur_target_share": cur_p.get("target_share", 0),
+            "cur_rush_share": cur_p.get("rush_share", 0),
+            "prior_target_share_elsewhere": prior_t,
+            "prior_rush_share_elsewhere": prior_r,
+            "rookie": str(m.get("rookie_year") or "") == str(season) or not player_seasons.get(pid),
+        })
+    # Rank on the only share a joiner has before the season runs: what he held
+    # elsewhere. Rookies have none, so a drafted rookie is ordered by pick.
+    def joiner_key(j):
+        held = j["prior_target_share_elsewhere"] + j["prior_rush_share_elsewhere"]
+        if held:
+            return (0, -held)
+        pick = (meta.get(j["player_id"]) or {}).get("draft_number") or 999
+        return (1, pick)
+    joiner_list.sort(key=joiner_key)
+
+    return {
+        "team": team, "season": season,
+        "basis": "roster",
+        "weeks_played": weeks_played,
+        "vacated_target_share": round(vacated_t, 4),
+        "vacated_rush_share": round(vacated_r, 4),
+        "vacated_air_yards_share": round(vacated_ay, 4),
+        "leaver_count": len(leaver_list),
+        "joiner_count": len(joiner_list),
+        "top_leavers": leaver_list[:5],
+        "top_joiners": joiner_list[:5],
+    }
 
 
 # ============================================================
@@ -365,17 +506,44 @@ def apy_for_season(contracts: list[dict], season: int, team: str | None) -> dict
 # ============================================================
 # Main
 # ============================================================
+def write_turnover(turnover: dict) -> None:
+    with open(OUT / "team_turnover.csv", "w", encoding="utf-8", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["team", "season", "basis", "weeks_played",
+                    "vacated_target_share", "vacated_rush_share",
+                    "vacated_air_yards_share", "leaver_count", "joiner_count",
+                    "top_leavers", "top_joiners"])
+        for (team, season), t in sorted(turnover.items()):
+            w.writerow([team, season, t.get("basis", "participation"),
+                        t.get("weeks_played", ""), t["vacated_target_share"],
+                        t["vacated_rush_share"], t["vacated_air_yards_share"],
+                        t["leaver_count"], t["joiner_count"],
+                        json.dumps(t["top_leavers"], separators=(",", ":")),
+                        json.dumps(t["top_joiners"], separators=(",", ":"))])
+    print(f"  wrote team_turnover.csv: {len(turnover)} rows")
+
+
 def main() -> int:
+    # --turnover-only refreshes team_turnover.csv and nothing else. Turnover
+    # needs no red-zone or contract join, and the other derived files are
+    # season-complete aggregates that an in-flight season would dilute.
+    turnover_only = "--turnover-only" in sys.argv
+
     print("Building player_team_share + team totals...")
     t_agg, p_share = build_player_team_share()
     print(f"  players: {len(p_share)}, team-seasons: {len(t_agg)}")
 
-    print("Building red-zone shares from PBP...")
-    build_redzone_shares(p_share)
+    if not turnover_only:
+        print("Building red-zone shares from PBP...")
+        build_redzone_shares(p_share)
 
     print("Building turnover...")
     turnover, player_new_team = build_turnover(p_share)
     print(f"  turnover rows: {len(turnover)}, player-seasons flagged: {len(player_new_team)}")
+
+    if turnover_only:
+        write_turnover(turnover)
+        return 0
 
     print("Joining contracts...")
     contracts_idx = build_contracts_index()
@@ -516,19 +684,7 @@ def main() -> int:
             w.writerow({c: p.get(c, 0) for c in cols})
     print(f"  wrote player_team_share.csv: {len(p_share)} rows")
 
-    # team_turnover.csv
-    with open(OUT / "team_turnover.csv", "w", encoding="utf-8", newline="") as f:
-        w = csv.writer(f)
-        w.writerow(["team", "season", "vacated_target_share", "vacated_rush_share",
-                    "vacated_air_yards_share", "leaver_count", "joiner_count",
-                    "top_leavers", "top_joiners"])
-        for (team, season), t in sorted(turnover.items()):
-            w.writerow([team, season, t["vacated_target_share"],
-                        t["vacated_rush_share"], t["vacated_air_yards_share"],
-                        t["leaver_count"], t["joiner_count"],
-                        json.dumps(t["top_leavers"], separators=(",", ":")),
-                        json.dumps(t["top_joiners"], separators=(",", ":"))])
-    print(f"  wrote team_turnover.csv: {len(turnover)} rows")
+    write_turnover(turnover)
 
     # player_new_team.csv
     with open(OUT / "player_new_team.csv", "w", encoding="utf-8", newline="") as f:

@@ -117,6 +117,10 @@ def compact_turnover(t: dict) -> dict | None:
         return None
     return {
         "season": t["season"],
+        # participation = who played; roster = who is on the roster file, used
+        # for a season too young for "games >= 1" to separate gone from inactive
+        "basis": t.get("basis") or "participation",
+        "weeks_played": int(t.get("weeks_played") or 0),
         "vacated_tgt": round(t["vacated_target_share"], 3),
         "vacated_rush": round(t["vacated_rush_share"], 3),
         "vacated_ay": round(t["vacated_air_yards_share"], 3),
@@ -130,6 +134,8 @@ def compact_turnover(t: dict) -> dict | None:
             {"name": j["name"], "pos": j["pos"],
              "tgt": round(j["cur_target_share"], 3),
              "rush": round(j["cur_rush_share"], 3),
+             "ptgt": round(j.get("prior_target_share_elsewhere", 0) or 0, 3),
+             "prush": round(j.get("prior_rush_share_elsewhere", 0) or 0, 3),
              "rookie": j.get("rookie", False)}
             for j in (t["top_joiners"] or [])[:4]
         ],
@@ -249,9 +255,26 @@ def main() -> int:
     efficiency = load_player_efficiency()
     health = load_career_health()
 
-    # latest completed season we have data for (per turnover):
+    # Newest season each source actually carries. These are NOT the same number
+    # and reading one off another is how the QB block disappeared: turnover
+    # moved to 2026 the day the roster-based in-flight path landed, while
+    # qb_changes still topped out at 2025, so a shared "latest season" looked up
+    # a key that does not exist and every team silently lost its QB panel.
+    # Each source now finds its own newest season, per team, walking back a few
+    # years so one team missing a row does not blank the block for all of them.
     latest_turnover_season = max((s for (_, s) in turnover), default=CURRENT_SEASON - 1)
     print(f"latest turnover season: {latest_turnover_season}; current target: {CURRENT_SEASON}")
+    print(f"  coaches: {max((s for (_, s) in coaches), default='none')}, "
+          f"market: {max((s for (_, s) in market), default='none')}, "
+          f"qb_changes: {max((s for (_, s) in qb_changes), default='none')}")
+
+    def newest(index: dict, team: str, span: int = 4):
+        """Newest (team, season) row in `index` at or below CURRENT_SEASON."""
+        for season in range(CURRENT_SEASON, CURRENT_SEASON - span, -1):
+            row = index.get((team, season))
+            if row:
+                return row
+        return None
 
     # Build shared team context once (small ~32 teams)
     teams_out: dict[str, dict] = {}
@@ -268,7 +291,7 @@ def main() -> int:
         if t:
             entry["turnover"] = compact_turnover(t)
         # Market context (most recent year with data)
-        mkt = market.get((team, latest_turnover_season)) or market.get((team, latest_turnover_season - 1))
+        mkt = newest(market, team)
         if mkt:
             entry["market"] = {
                 "season": mkt["season"],
@@ -279,8 +302,8 @@ def main() -> int:
                 "wins": mkt["wins"], "losses": mkt["losses"],
             }
         # QB context for skill players: latest season's primary QB, change flag
-        qb_now = qb_changes.get((team, latest_turnover_season))
-        qb_prev = qb_changes.get((team, latest_turnover_season - 1))
+        qb_now = newest(qb_changes, team)
+        qb_prev = qb_changes.get((team, qb_now["season"] - 1)) if qb_now else None
         if qb_now:
             entry["qb"] = {
                 "season": qb_now["season"],
@@ -345,8 +368,15 @@ def main() -> int:
         players_out[sid] = entry
         matched += 1
 
+    # This used to be latest_turnover_season, which was true while turnover only
+    # ever covered finished seasons. It is not true now: an in-flight season gets
+    # a roster-basis row, so the newest turnover season can be the season still
+    # being played. Completed means a participation-basis row.
+    latest_completed = max((s for (_, s), t in turnover.items()
+                            if (t.get("basis") or "participation") == "participation"),
+                           default=CURRENT_SEASON - 1)
     out = {"teams": teams_out, "players": players_out, "current_season": CURRENT_SEASON,
-           "latest_completed_season": latest_turnover_season}
+           "latest_completed_season": latest_completed}
     out_path = SITE_DATA / "context.js"
     out_path.write_text(
         "window.CONTEXT = " + json.dumps(out, separators=(",", ":")) + ";\n",

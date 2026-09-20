@@ -87,7 +87,7 @@ const rows = [];
 for (const p of projSkill) {
   const pl = PLAYERS[String(p.id)];
   if (!pl || pl.owned == null || pl.started == null) continue;
-  rows.push({ owned: pl.owned, gap: pl.owned - pl.started, y: pts(p) });
+  rows.push({ owned: pl.owned, gap: pl.owned - pl.started, y: pts(p), pos: p.pos });
 }
 const corr = (a, b) => {
   const n = a.length;
@@ -99,7 +99,25 @@ const corr = (a, b) => {
 assert(rows.length > 250, `only ${rows.length} players carry rostership data`);
 const rOwned = corr(rows.map(r => r.owned), rows.map(r => r.y));
 const rGap = corr(rows.map(r => r.gap), rows.map(r => r.y));
-near(rOwned, 0.88, 0.10, 'owned% vs projected points correlation');
+// Pin this claim PER POSITION, not pooled. Pooling QB/RB/WR/TE mixes four different points
+// scales, so the pooled r tracks sample COMPOSITION rather than the relationship it is supposed
+// to measure. On 2026-09-17 the pooled figure read 0.780 while every single position sat between
+// 0.824 and 0.909, so the pooled number was below all four of its own parts. One overnight
+// refresh moved it 0.814 to 0.780 on a 297-row sample losing one row, while no position moved
+// more than 0.053 and QB actually rose. The old pooled band failed on that wobble and would have
+// blocked a deploy over a statistic that had not shifted. Per position is both stabler and
+// stricter: a real decay shows up in the position it happens in.
+const rByPos = {};
+for (const pos of ['QB', 'RB', 'WR', 'TE']) {
+  const s = rows.filter(r => r.pos === pos);
+  assert(s.length >= 30, `${pos}: only ${s.length} rows carry rostership data, too thin to fit`);
+  rByPos[pos] = corr(s.map(r => r.owned), s.map(r => r.y));
+  near(rByPos[pos], 0.88, 0.10, `owned% vs projected points correlation, ${pos}`);
+}
+// Pooled survives only as a loose floor. It is the mixture, not the doctrine.
+assert(rOwned > 0.70,
+  `pooled owned% correlation fell to ${rOwned.toFixed(3)}; the per-position bands above should ` +
+  'have caught a real decay first, so this firing means the position mix itself broke');
 assert(rOwned > 3 * rGap,
   `owned% (r=${rOwned.toFixed(2)}) no longer dominates the owned-minus-started gap (r=${rGap.toFixed(2)}); ` +
   'the "depth trap flag is weak, use VOR" ruling needs re-deriving');
@@ -137,5 +155,6 @@ assert(projSkill.some(p => !kByName.has(norm(p.name)) && pts(p) > 100),
 console.log('dynasty-claims: ok');
 console.log(`  free pool ${free.length}/${projSkill.length} (${(freeShare * 100).toFixed(0)}%), best free QB ${bestFree.QB.toFixed(0)}`);
 console.log(`  QB relative discount ${qbRelative.toFixed(3)}x over ${paired} paired players`);
-console.log(`  owned% r=${rOwned.toFixed(3)}, gap r=${rGap.toFixed(3)}, n=${rows.length}`);
+console.log(`  owned% r=${rOwned.toFixed(3)} pooled, gap r=${rGap.toFixed(3)}, n=${rows.length}`);
+console.log(`  owned% r per position ${['QB', 'RB', 'WR', 'TE'].map(p => `${p} ${rByPos[p].toFixed(3)}`).join(', ')}`);
 console.log(`  taxi used per team [${taxiUsed.join(', ')}], owner ${(mine.taxi || []).length}`);

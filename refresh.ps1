@@ -4,7 +4,7 @@
 
 .DESCRIPTION
   Wraps the four things that were previously run by hand and in the wrong order:
-    1. projections/build_all.py   (17 steps: Sleeper dump, KTC, site data, projections, weekly, SOS)
+    1. projections/build_all.py   (Sleeper dump, KTC, site data, FAAB, projections, weekly, SOS)
     2. the JS test suite          (a green pipeline that breaks the site is not green)
     3. deploy-phone-apps.ps1      (stage + Cloudflare Pages)
     4. a live fetch               (staged does not mean deployed; that bit us on 2026-09-12)
@@ -45,7 +45,7 @@ if ($LASTEXITCODE -ne 0) { throw "build_all.py failed with exit $LASTEXITCODE" }
 Step 2 'Checking every data file actually regenerated'
 $stale = @()
 $today = (Get-Date).Date
-foreach ($f in 'ktc.js','projections.js','weekly-rankings.js','players.js','leagues.js','sos.js','categories.js') {
+foreach ($f in 'ktc.js','projections.js','weekly-rankings.js','players.js','leagues.js','faab.js','trade-history.js','sos.js','sos-grid.js','categories.js') {
   $p = Join-Path $root "site\data\$f"
   if (-not (Test-Path $p)) { $stale += "$f MISSING"; continue }
   $age = (Get-Item $p).LastWriteTime
@@ -64,12 +64,31 @@ if ($DataOnly) { Write-Host "`nData refreshed. Skipped tests and deploy (-DataOn
 Step 3 'Running the JS test suite'
 node --check site/js/app.js
 if ($LASTEXITCODE -ne 0) { throw 'app.js failed syntax check' }
-$failed = @()
-foreach ($t in 'starting-lineup','title-odds','projections','team-needs','trade-picks','trade-consolidation','pick-fv','dynasty-claims') {
-  node "site/js/$t.test.js" *> $null
-  if ($LASTEXITCODE -ne 0) { $failed += $t } else { Write-Host "  ok   $t" -ForegroundColor Green }
+# `*> $null` on a NATIVE command is a trap in PowerShell 5.1: redirecting node's stderr wraps
+# each line in an ErrorRecord (NativeCommandError), and under $ErrorActionPreference = 'Stop'
+# that TERMINATES on the first failing test. So the loop never reached the remaining tests and
+# the "tests failed: <name>" message below never printed. What you got instead was
+# `NotSpecified: (node:internal/assert/utils:77:String) [], RemoteException` at this line, with
+# no test named. Hit for real on 2026-09-17 when dynasty-claims went red. Keep stderr CAPTURED
+# rather than redirected, and drop to Continue for the loop. Check: test-refresh-testloop.ps1
+$failed  = @()
+$failOut = @{}
+$prevEAP = $ErrorActionPreference
+$ErrorActionPreference = 'Continue'
+foreach ($t in 'starting-lineup','title-odds','projections','team-needs','trade-picks','trade-consolidation','pick-fv','dynasty-claims','standings-sort','fantasy-sos','waiver-board','trade-history-picks') {
+  $out = & node "site/js/$t.test.js" 2>&1 | Out-String
+  if ($LASTEXITCODE -ne 0) { $failed += $t; $failOut[$t] = $out } else { Write-Host "  ok   $t" -ForegroundColor Green }
 }
-if ($failed.Count) { throw "tests failed: $($failed -join ', '). Not deploying." }
+$ErrorActionPreference = $prevEAP
+if ($failed.Count) {
+  foreach ($t in $failed) {
+    Write-Host "  FAIL $t" -ForegroundColor Red
+    # Quote the shortest decisive line, not the whole node stack.
+    $why = ($failOut[$t] -split "`r?`n" | Where-Object { $_ -match 'AssertionError|Error:|doctrine says' } | Select-Object -First 1)
+    if ($why) { Write-Host "       $($why.Trim())" -ForegroundColor Red }
+  }
+  throw "tests failed: $($failed -join ', '). Not deploying."
+}
 
 if ($SkipDeploy) { Write-Host "`nRefreshed and tested. Skipped deploy (-SkipDeploy)." -ForegroundColor Green; exit 0 }
 

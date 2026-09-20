@@ -11,6 +11,15 @@ for (const f of ['leagues.js', 'projections.js']) {
   vm.runInNewContext(fs.readFileSync(`${root}/data/${f}`, 'utf8'), ctx);
 }
 const app = fs.readFileSync(`${__dirname}/app.js`, 'utf8');
+const css = fs.readFileSync(`${root}/css/styles.css`, 'utf8');
+assert.equal((app.match(/class:'trade-title-side'/g) || []).length, 2,
+  'championship odds must stack labeled Side A and Side B rows');
+assert.equal((app.match(/class:'trade-lineup-side'/g) || []).length, 2,
+  'starting-lineup comparisons must stack labeled Side A and Side B rows');
+assert.match(css, /\.trade-title-value,\s*\.trade-lineup-value\s*\{[^}]*white-space:\s*normal/s,
+  'long lineup and odds comparisons must wrap instead of colliding');
+assert.match(css, /@media \(min-width:\s*1281px\)\s*\{\s*\.trade-middle\s*\{\s*position:\s*sticky/s,
+  'the verdict may become sticky only when the three-column trade layout fits');
 const cut = (a, b) => {
   const i = app.indexOf(a), j = app.indexOf(b, i);
   assert(i >= 0 && j > i, `slice failed: ${a}`);

@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Replacement level moved, 2026-09-17</title>
+<style>
+  /* Backyard system, per Fantasy Football/site/DESIGN.md. Locked project system, so it
+     overrides the anti-slop defaults where they differ: turf ground, ink-outlined plates,
+     gold as the single selection colour, system font stack, tabular numerals. */
+  :root{
+    --gold:#ffd42a; --gold-deep:#e0a915; --ink:#12131f;
+    --band:#7b7bc4; --band-deep:#4f4f96;
+    --panel:#e9e9fa; --panel-alt:#d5d5f0; --periwinkle:#b9b9e4;
+    --turf:#3f9f43; --turf-deep:#2c7a31; --chalk:#ffffff;
+    --navy:#1f2450; --navy-soft:#343a6b; --label:#4d5488; --caption:#5f669b;
+    --red:#a82a22; --green:#1a7a54;
+    --sys:ui-sans-serif,-apple-system,"SF Pro Text","Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; padding:18px 14px 44px;
+    font:400 .94rem/1.5 var(--sys);
+    color:var(--navy); background:var(--turf-deep);
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(255,255,255,.10) 1px, transparent 1px),
+      linear-gradient(180deg, var(--turf) 0%, var(--turf-deep) 100%);
+    background-size:7px 7px, 100% 100%;
+  }
+  .wrap{max-width:660px; margin:0 auto}
+  /* Masthead is its own ink plate rather than type floating on the turf. White at 12px
+     on turf measures 3.4:1, which clears AA for the 25px headline and fails it for the
+     stamp line; on navy both clear comfortably (about 14:1 and 11:1). */
+  .masthead{
+    background:var(--navy); border:2px solid var(--ink); border-radius:10px;
+    padding:14px 14px 12px; margin:0 0 14px;
+  }
+  h1{
+    font-size:1.6rem; font-weight:700; line-height:1.2; letter-spacing:-.015em;
+    color:var(--chalk); margin:0 0 6px;
+  }
+  .stamp{
+    font-size:.75rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--periwinkle); margin:0;
+  }
+  .plate{
+    background:var(--panel); border:2px solid var(--ink); border-radius:10px;
+    margin:0 0 14px; overflow:hidden;
+  }
+  .band{
+    background:var(--band-deep); color:var(--chalk);
+    font-size:.75rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase;
+    padding:8px 12px; border-bottom:2px solid var(--ink);
+  }
+  .body{padding:12px}
+  .verdict{
+    background:var(--gold); border-bottom:2px solid var(--ink);
+    padding:12px; color:var(--ink);
+  }
+  .verdict b{display:block; font-size:1.05rem; font-weight:700; line-height:1.3; margin-bottom:5px}
+  .verdict span{display:block; font-size:.9rem; line-height:1.45}
+  p{margin:0 0 10px}
+  p:last-child{margin-bottom:0}
+  small.note{display:block; color:var(--label); font-size:.8rem; line-height:1.45; margin-top:10px}
+  table{width:100%; border-collapse:collapse; font-size:.88rem}
+  caption{
+    caption-side:top; text-align:left; color:var(--label);
+    font-size:.75rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase;
+    padding:0 0 7px;
+  }
+  th{
+    text-align:left; color:var(--label); font-size:.75rem; font-weight:600;
+    letter-spacing:.06em; text-transform:uppercase;
+    padding:0 8px 6px 0; border-bottom:2px solid var(--band);
+  }
+  th.n, td.n{text-align:right; font-variant-numeric:tabular-nums; padding-right:0}
+  td{
+    padding:7px 8px 7px 0; color:var(--navy-soft);
+    border-bottom:1px solid var(--periwinkle);
+  }
+  tbody tr:nth-child(even) td{background:var(--panel-alt)}
+  tbody tr:last-child td{border-bottom:0}
+  td.n{font-weight:700; color:var(--navy); letter-spacing:-.02em}
+  .dn{color:var(--red)}
+  .flat{color:var(--caption)}
+  .gates{list-style:none; margin:0; padding:0}
+  .gates li{
+    display:grid; grid-template-columns:74px 1fr; gap:11px; align-items:start;
+    padding:9px 0; border-bottom:1px solid var(--periwinkle);
+  }
+  .gates li:last-child{border-bottom:0; padding-bottom:0}
+  .tag{
+    font-size:.7rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase;
+    text-align:center; padding:3px 0; border-radius:6px; border:1px solid var(--ink);
+  }
+  .tag.hold{background:var(--gold); color:var(--ink)}
+  .tag.sell{background:var(--panel-alt); color:var(--navy)}
+  code{
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.83em;
+    background:var(--periwinkle); border-radius:4px; padding:1px 4px; color:var(--navy);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="masthead">
+    <h1>Replacement level moved 42 points</h1>
+    <p class="stamp">Password is taco &middot; measured 2026-09-17 &middot; 10 teams, 25 spots</p>
+  </div>
+
+  <div class="plate">
+    <div class="verdict">
+      <b>Do not sell Caleb Williams or Jordan Love on the August math.</b>
+      <span>The best free QB fell from 196 to 154, which lifts both backups above the
+      10-point lineup-value bar that made &ldquo;always sell&rdquo; the answer six weeks ago.
+      Williams now prices at 12.4 points of insurance, Love at 10.2.</span>
+    </div>
+    <div class="body">
+      <p>Nothing was re-argued. The replacement level moved and the arithmetic followed it.
+      Every downstream number in <code>dynasty-replacement-level</code> was keyed to a
+      196-point free QB, and that QB is now Jacoby Brissett at 154.</p>
+      <small class="note">Derived and self-checked in one pass, no second lens on it.
+      12.4 against a round 10 is not a wide margin, and the insurance formula fixes
+      P(starter misses) at 1.5 of 17 games rather than fitting it. Read it as the margin
+      closing, not as a hold verdict.</small>
+    </div>
+  </div>
+
+  <div class="plate">
+    <div class="band">Best free agent, by position</div>
+    <div class="body">
+      <table>
+        <caption>Preseason 2026-08 to today</caption>
+        <thead>
+          <tr>
+            <th scope="col">Pos</th>
+            <th scope="col">Best free agent</th>
+            <th scope="col" class="n">Now</th>
+            <th scope="col" class="n">Was</th>
+            <th scope="col" class="n">Change</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>QB</td><td>Jacoby Brissett</td><td class="n">154</td><td class="n">196</td><td class="n dn">&minus;42</td></tr>
+          <tr><td>TE</td><td>Mike Gesicki</td><td class="n">84</td><td class="n">120</td><td class="n dn">&minus;36</td></tr>
+          <tr><td>WR</td><td>Chimere Dike</td><td class="n">89</td><td class="n">89</td><td class="n flat">0</td></tr>
+          <tr><td>RB</td><td>Isaiah Davis</td><td class="n">61</td><td class="n">62</td><td class="n flat">&minus;1</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:12px">QB and TE lost their startable free bodies as the season
+      started. WR and RB did not move. The free <em>share</em> held at 48 percent, so waivers
+      are still an acquisition channel. It is the free <em>ceiling</em> that dropped.</p>
+    </div>
+  </div>
+
+  <div class="plate">
+    <div class="band">The two gates now disagree</div>
+    <div class="body">
+      <ul class="gates">
+        <li>
+          <span class="tag hold">Hold</span>
+          <span>The 10-point threshold. Williams 12.4, Love 10.2, both clear it. In August
+          they read 8.5 and 6.5 and neither did.</span>
+        </li>
+        <li>
+          <span class="tag sell">Sell</span>
+          <span>The two-of-two exception. Brissett 154 against Allen 355 is 43.4 percent, so
+          the under-60 gate fires harder than the 55.5 percent that made it marginal. But
+          <code>injury_status</code> on Allen is still null, so the second gate does not fire,
+          and one of two is not the rule.</span>
+        </li>
+      </ul>
+      <small class="note">Re-run the injury half before any lineup answer. It goes stale
+      fast: <code>python site/data/fetch_sleeper.py</code>.</small>
+    </div>
+  </div>
+
+  <div class="plate">
+    <div class="band">Also fixed, so the deploy stops failing on it</div>
+    <div class="body">
+      <p>The doctrine guard measured the owned-percent correlation pooled across all four
+      positions, and a pooled correlation tracks which positions happen to carry rostership
+      data rather than the relationship itself. It read 0.780 while every position sat between
+      0.824 and 0.909, below all four of its own parts. One overnight rebuild moved it 0.814 to
+      0.780 on a sample that lost a single row, and that is what blocked today's deploy.</p>
+      <p>It is pinned per position now, which is both stabler and stricter. The claim that
+      owned-percent is a second market price is intact. Only the pooled digit was ever fragile.</p>
+      <p>Data is refreshed and live on your phone. All eight JS suites green.</p>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -81,7 +81,18 @@ function startingKtc(roster, whatIf) {
   // The trade being priced changes the lineup that sets the slot, so apply it FIRST.
   const wi = (whatIf && whatIf[roster.roster_id]) || {};
   const drop = new Set((wi.drop || []).map(String));
-  const ids = [...(roster.players || []).filter(p => !drop.has(String(p))), ...(wi.add || [])];
+  // Taxi and IR are in `players` and cannot start, which is the whole point of
+  // `startableIds(roster)` in app.js. This file re-implements the lineup and for months
+  // re-implemented it WITHOUT that filter, so five taxi bodies were being counted inside
+  // starting lineups and inflating the draft-slot input: djcomstock read 39,378 against a
+  // real 38,142 (Cyrus Allen 3,463 and Pat Bryant 3,290 are on his taxi). Caught by an
+  // adversarial pass 2026-09-16. It did not move the slot ORDER or any pick price in the
+  // Tee Higgins set, checked both ways, but a closer call would have priced wrong.
+  const sidelined = new Set([...(roster.taxi || []), ...(roster.reserve || [])].map(String));
+  const ids = [
+    ...(roster.players || []).filter(p => !drop.has(String(p)) && !sidelined.has(String(p))),
+    ...(wi.add || []),
+  ];
   const pool = ids
     .map(pid => ctx.window.PLAYERS[pid])
     .filter(p => p && ['QB', 'RB', 'WR', 'TE'].includes(p.pos) && !BENCHED.has(p.injury_status))
@@ -118,13 +129,29 @@ function slotsUnder(whatIf) {
 }
 const slotOf = slotsUnder(null);
 
+// KTC publishes three rookie classes and stops. A question about a 2029 pick is a real
+// question and "KTC missing 2029 R1" is not an answer, so anything past the last published
+// class is synthesized from it: one more year out is one more DECAY. It applies to EVERY
+// roster, so the comparison stays fair. 0.88 is the honest middle. The live 2027 -> 2028 step
+// measures 0.82 to 0.86 per slot, and that step is also unwinding the Jeremiah Smith premium
+// sitting on 2027 (see strategy.js::pick_class_premium), which a plain year of time discount
+// is not. Run DECAY=0.80 and DECAY=1.00 before trusting a sign that turns on a synthesized
+// class; measured 2026-09-16 on the Tee Higgins pair, the ordering did not move.
+const PICK_DECAY = Number(process.env.DECAY || 0.88);
+const LAST_KTC_SEASON = Math.max(...ranking.picks.map(p => Number(p.season)));
+function anchorAt(season, slot, round) {
+  const want = Number(season);
+  const v = anchor.get(`${Math.min(want, LAST_KTC_SEASON)}|${slot}|${round}`);
+  return v == null ? null : v * Math.pow(PICK_DECAY, Math.max(0, want - LAST_KTC_SEASON));
+}
+
 // Interpolates between KTC's early / mid / late anchors by exact projected slot, same as
 // interpPickValue in app.js. Site scale is KTC / 100. Pass the trade's whatIf to price a
 // pick at what it is worth once that trade has happened.
 function pv(season, round, originRid, whatIf) {
-  const at = (b) => anchor.get(`${season}|${b}|${round}`);
+  const at = (b) => anchorAt(season, b, round);
   const vE = at('early'), vM = at('mid'), vL = at('late');
-  assert(vE != null && vM != null && vL != null, `KTC missing ${season} R${round}`);
+  assert(vE != null && vM != null && vL != null, `KTC missing R${round} in every published class`);
   const mid = (1 + N) / 2;
   const sm = whatIf ? slotsUnder(whatIf) : slotOf;
   const s = Math.min(Math.max(sm.get(originRid), 1), N);
@@ -152,8 +179,23 @@ function repriceUnder(whatIf, picks) {
 }
 
 // ---- who owns which pick, from traded_picks
-const ROUNDS = Math.max(4, ...(lg.drafts || []).map(d => Number(d.settings?.rounds) || 0));
-const SEASONS = [String(H.CURRENT_SEASON + 1), String(H.CURRENT_SEASON + 2)];
+// KTC prices rounds 1 to 4 and stops, so a deeper rookie draft is clamped to what it
+// actually prices rather than having a 5th-round anchor invented for it. yuH drafts 5
+// rounds and that assertion-failed every run here until 2026-09-17. A 5th in a 10-team
+// league is a near-zero asset, so clamping costs the model almost nothing; fabricating
+// its value would not be free. Clamped loudly, never silently.
+const LAST_KTC_ROUND = Math.max(...ranking.picks.map(p => Number(p.round)));
+const DRAFT_ROUNDS = Math.max(4, ...(lg.drafts || []).map(d => Number(d.settings?.rounds) || 0));
+const ROUNDS = Math.min(DRAFT_ROUNDS, LAST_KTC_ROUND);
+if (DRAFT_ROUNDS > ROUNDS) {
+  console.log(`note: ${LEAGUE_NAME} drafts ${DRAFT_ROUNDS} rounds, KTC prices ${ROUNDS}. `
+            + `Rounds ${ROUNDS + 1} to ${DRAFT_ROUNDS} are left out of every roster's slate.`);
+}
+// HORIZON classes forward. Two by default, which is what KTC publishes and what every
+// scenario before 2026-09-16 assumed. Raise it to reach a 2029 pick; `pv` synthesizes the
+// anchors past KTC's last class and hands the extra slate to all ten rosters, never just one.
+const HORIZON = Number(process.env.HORIZON || 2);
+const SEASONS = Array.from({ length: HORIZON }, (_, i) => String(H.CURRENT_SEASON + 1 + i));
 const moved = new Map((lg.traded_picks || []).map(t => [`${t.season}|${t.round}|${t.roster_id}`, Number(t.owner_id)]));
 const PICKS = Object.fromEntries(lg.rosters.map(r => [r.roster_id, []]));
 for (const season of SEASONS) {
@@ -194,7 +236,8 @@ const SCENARIOS = {
 };
 
 const ktcOf = (pid) => ktcByName.get(norm((ctx.window.PLAYERS[pid] || {}).name)) || 0;
-module.exports = { lg, H, slotOf, slotsUnder, startingKtc, ktcOf, pv, pick, label, repriceUnder, PICKS, SCENARIOS, run, ME };
+module.exports = { lg, H, slotOf, slotsUnder, startingKtc, ktcOf, pv, pick, label, repriceUnder, PICKS, SCENARIOS, run, ME,
+                   LAST_KTC_SEASON, PICK_DECAY, HORIZON, SEASONS };
 
 if (require.main === module) {
   const rows = Object.entries(SCENARIOS).map(([name, wi]) => run(name, wi));

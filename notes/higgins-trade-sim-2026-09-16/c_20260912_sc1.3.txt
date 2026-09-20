@@ -1,0 +1,49 @@
+ran: Stand pat
+ran: A  Lance + 27 3rd + 28 2nd
+ran: B  Lance + own 2029 1st
+ran: C  Caleb Williams straight up
+ran: C+ Caleb, claim a waiver QB2
+ran: D  Jordan Love + Lance
+ran: E  Quentin Johnston + Lance
+ran: F  Josh Downs + Lance
+ran: G  Christian Watson straight up
+ran: H  Jordan Love + own 2029 2nd
+ran: ceiling  Higgins for free
+
+Password is taco | 7 seasons | 4000 sims | seed 20260912 | SCALE 1.3 | DECAY 0.88
+scenario                           title26  playoff   equity  d-equity  KTC out  vs 5779
+Stand pat                            7.65%    73.4%    35.42      0.00        -        -
+A  Lance + 27 3rd + 28 2nd          11.20%    81.2%    40.41      4.99     9482      64%
+B  Lance + own 2029 1st             11.20%    81.2%    41.22      5.79     6792      18%
+C  Caleb Williams straight up       10.00%    78.3%    35.19     -0.23     5998       4%
+C+ Caleb, claim a waiver QB2         9.28%    77.8%    35.73      0.31     5998       4%
+D  Jordan Love + Lance              10.08%    80.2%    39.59      4.17     6875      19%
+E  Quentin Johnston + Lance         10.42%    77.5%    40.34      4.92     6844      18%
+F  Josh Downs + Lance                9.45%    76.6%    37.41      1.98     6821      18%
+G  Christian Watson straight up      7.80%    75.3%    36.25      0.83     5033     -13%
+H  Jordan Love + own 2029 2nd       10.42%    78.6%    39.81      4.39     7519      30%
+ceiling  Higgins for free           10.00%    80.5%    41.84      6.42        -        -
+
+per-year title odds (%)
+  Stand pat                        2026:7.6  2027:8.1  2028:7.3  2029:6.9  2030:8.5  2031:4.9  2032:5.7
+  A  Lance + 27 3rd + 28 2nd       2026:11.2  2027:10.5  2028:8.1  2029:6.6  2030:6.6  2031:4.9  2032:5.7
+  B  Lance + own 2029 1st          2026:11.2  2027:11.3  2028:9.3  2029:7.4  2030:5.3  2031:5.8  2032:3.4
+  C  Caleb Williams straight up    2026:10.0  2027:9.1  2028:7.6  2029:5.5  2030:5.4  2031:4.0  2032:4.7
+  C+ Caleb, claim a waiver QB2     2026:9.3  2027:9.9  2028:7.3  2029:6.4  2030:5.5  2031:4.8  2032:4.2
+  D  Jordan Love + Lance           2026:10.1  2027:9.6  2028:9.0  2029:7.4  2030:5.7  2031:5.8  2032:5.5
+  E  Quentin Johnston + Lance      2026:10.4  2027:9.4  2028:8.9  2029:7.0  2030:7.3  2031:4.7  2032:6.6
+  F  Josh Downs + Lance            2026:9.4  2027:9.1  2028:7.8  2029:6.4  2030:6.8  2031:5.3  2032:5.6
+  G  Christian Watson straight up  2026:7.8  2027:8.9  2028:7.9  2029:6.5  2030:6.9  2031:5.2  2032:7.0
+  H  Jordan Love + own 2029 2nd    2026:10.4  2027:10.0  2028:8.9  2029:6.6  2030:6.5  2031:6.2  2032:4.6
+  ceiling  Higgins for free        2026:10.0  2027:11.1  2028:9.5  2029:7.7  2030:5.9  2031:6.9  2032:5.0
+
+site Trade Lab verdict (headliner rule + consolidation premium)
+  package                               out   head   prem  fairness  verdict
+  A  Lance + 27 3rd + 28 2nd           9482   3940   3.2%       63%  WIN FOR DJCOMSTOCK
+  B  Lance + own 2029 1st              6880   4418   1.2%       85%  CLOSE
+  C  Caleb Williams straight up        5998   5998   0.0%       96%  FAIR
+  D  Jordan Love + Lance               6875   4413   1.2%       85%  CLOSE
+  E  Quentin Johnston + Lance          6844   4382   1.2%       85%  CLOSE
+  F  Josh Downs + Lance                6821   4359   1.2%       86%  CLOSE
+  G  Christian Watson straight up      5033   5033   0.0%       87%  CLOSE
+  H  Jordan Love + own 2029 2nd        7590   4413   1.2%       77%  CLOSE

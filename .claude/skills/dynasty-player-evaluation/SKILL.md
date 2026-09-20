@@ -46,27 +46,33 @@ the age curve alone explains it before calling the market wrong.
 
 ## Rostership: what it does and does not tell you
 
-Measured 2026-08-09 across 397 projected players carrying rostership data:
+Measured 2026-09-17 across 296 projected players carrying rostership data. The pooled
+figure is the one to stop quoting:
 
 | Signal | Correlation with projected points |
 |---|---|
-| owned% | **0.886** |
-| started% | 0.83 |
-| owned% minus started% | 0.233 |
+| owned%, per position | **QB 0.875, RB 0.909, WR 0.907, TE 0.824** |
+| owned%, pooled over all four | 0.780 |
+| owned% minus started%, pooled | 0.187 |
 
-These drift with every `build_site_data.py` refresh (they moved 0.880 to 0.886 and
-0.198 to 0.233 in two days as rostership settled). The RANKING is what is stable, and
-`site/js/dynasty-claims.test.js` re-derives it and fails if owned% ever stops
-dominating the gap by 3x. Re-run it after any data refresh rather than trusting these
-digits.
+**The pooled number sits below all four of its own parts, and that is the mixture, not a
+paradox.** QB, RB, WR and TE live on different points scales, so a pooled correlation
+tracks which positions happen to carry rostership data on a given refresh rather than the
+relationship it is supposed to measure. One overnight rebuild moved it 0.814 to 0.780 on a
+297-row sample losing a single row, while no position moved more than 0.053 and QB rose.
+Quote the per-position figures. `site/js/dynasty-claims.test.js` now pins each position at
+0.88 +/- 0.10 and keeps pooled only as a loose floor, after the pooled band failed on that
+wobble and blocked a deploy over a statistic that had not shifted. Earlier readings, kept
+for the drift record: 0.880 pooled over 379 players, then 0.886 over 397 on 2026-08-09.
 
 owned% is a strong consensus signal, effectively a second market price. Use it as a
 sanity check: a player nobody rosters, whom your projection likes, is more often a
 projection artifact than an edge.
 
-**The "depth trap" heuristic (high owned, low started) is weak.** The gap correlates
-about a quarter as strongly as owned% alone, because owned% saturates at the top, so
-the gap mostly identifies mid-tier players rather than overvalued ones. Do not treat
+**The "depth trap" heuristic (high owned, low started) is weak.** The gap sits at r=0.19
+against owned% at 0.82 to 0.91, so roughly a fifth as strongly, because owned% saturates
+at the top and the gap mostly identifies mid-tier players rather than overvalued ones. Do
+not treat
 it as a sell signal. Use value over replacement instead
 (`dynasty-replacement-level`).
 

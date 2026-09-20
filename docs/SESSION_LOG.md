@@ -1,8 +1,8 @@
-# Session log — what was built when
+# Session log, what was built when
 
 Chronological summary of work done in chat. Most recent at the bottom.
 
-## May 2026 — IA + dynasty framework session
+## May 2026, IA + dynasty framework session
 
 ### Trade-suggestion bug (UPTIER both QBs in superflex)
 
@@ -37,8 +37,8 @@ exactly two sources averaged) and STD.DEV = `|unknown − pasted| / 2`.
 
 Outputs saved at repo root:
 - `_isolate_ranking.py`
-- `_pasted_rankings.tsv` — the FantasyPros draft list
-- `_isolated_ranking.tsv` — the reverse-engineered second source
+- `_pasted_rankings.tsv`, the FantasyPros draft list
+- `_isolated_ranking.tsv`, the reverse-engineered second source
 
 ### Beyond the Box Score positional rankings
 
@@ -96,9 +96,9 @@ User asked for a self-review of the work. Identified and fixed:
 Pulled YouTube transcript via yt-dlp, extracted principles, encoded into
 `strategy.js`:
 
-- `pick_class_premium["2027"]` — +38.5% early / +17.5% mid / +11% late
-- `pick_hit_rates` — empirical hit rates per round
-- `share_framework` — baseline / contender_lock / rebuild_floor
+- `pick_class_premium["2027"]`, +38.5% early / +17.5% mid / +11% late
+- `pick_hit_rates`, empirical hit rates per round
+- `share_framework`, baseline / contender_lock / rebuild_floor
 - Five new coaching tips: `27-pick-overconcentration`,
   `27-late-1st-sell-window-contender`, `rebuild-pick-ceiling-warning`,
   `pick-liquidity-warning`, `value-share-contender-lock`
@@ -126,7 +126,7 @@ Verified: in the 10-team taco league, baseline = 10%, user sits at 9.5%
 
 Replaced the old "Cornerstones" tab with two new ones:
 
-**Players** — ranking view scoped to the league:
+**Players**, ranking view scoped to the league:
 - Full dynasty list overlaid with this-league ownership
 - Sortable columns (Rank/Player/Pos/Age/Value) with arrow indicators
 - Sticky thead, clickable owner cell links to that roster
@@ -135,7 +135,7 @@ Replaced the old "Cornerstones" tab with two new ones:
 - **DST/K excluded always; IDP excluded unless league is IDP** (user
   feedback)
 
-**Timeline** — lazy-fetched Sleeper transactions:
+**Timeline**, lazy-fetched Sleeper transactions:
 - Pulls `/league/{id}/transactions/{week}` in parallel up to current week
   (season) or week 18 (off-season)
 - 30-min localStorage cache, refresh button busts
@@ -149,40 +149,40 @@ Replaced the old "Cornerstones" tab with two new ones:
 ### Docs consolidation (this commit)
 
 Created `CLAUDE.md` at repo root + `docs/` folder with:
-- `USER.md` — Trevor's profile, voice, preferences, feedback history
-- `FRAMEWORKS.md` — KTC, Dynasty Domain, headliner rule, value share,
-  liquidity, aging curves — all in one place
-- `ARCHITECTURE.md` — internals: caches, recursion break, routing, views
-- `SESSION_LOG.md` — this file
+- `USER.md`, Trevor's profile, voice, preferences, feedback history
+- `FRAMEWORKS.md`, KTC, Dynasty Domain, headliner rule, value share,
+  liquidity, aging curves, all in one place
+- `ARCHITECTURE.md`, internals: caches, recursion break, routing, views
+- `SESSION_LOG.md`, this file
 
-## 2026-07-29 — app.js refactor audit + plan (docs only, no code moved)
+## 2026-07-29, app.js refactor audit + plan (docs only, no code moved)
 
 Demonstration run of the workspace `refactor-god-file` skill on `site/js/app.js`
-(measured 7,718 lines — one IIFE, ~220 symbols, zero exports). Produced three
+(measured 7,718 lines, one IIFE, ~220 symbols, zero exports). Produced three
 docs under `site/refactor/` (additive scratch, no app code touched):
 
-- `AUDIT.md` — every top-level symbol inventoried into 15 concern groups with
+- `AUDIT.md`, every top-level symbol inventoried into 15 concern groups with
   line numbers, side effects, and dependencies; notes the dead views
-  (`viewRankings`/`viewAllPlayers` are unreachable — router maps `#rankings`/
+  (`viewRankings`/`viewAllPlayers` are unreachable, router maps `#rankings`/
   `#players` → dashboard), the 9 memo caches, and the single `fetch` (in
   `renderLeagueTimeline`).
-- `REFACTOR-PLAN.md` — target ES-module tree under `site/js/` (config/dom/state
+- `REFACTOR-PLAN.md`, target ES-module tree under `site/js/` (config/dom/state
   → data/indexes → scoring/* → picks/projections → ui → views → router → slim
   `app.js`), a 22-step leaf-first extraction sequence, and the inverted-shim
   strategy (imports pulled *back* into `app.js` since nothing external imports
   it). Preserves the no-build constraint and the `computePlayerStrength` vs
   `computeRosterStrength` cycle-break as a module edge.
-- `CHECKPOINT.md` — Phases 0-2 done; next action is Phase 3 (lock the plan).
+- `CHECKPOINT.md`, Phases 0-2 done; next action is Phase 3 (lock the plan).
 
 Not started: Phase 0's git branch + baseline. The existing `.test.js` files
-can't import the IIFE, so they aren't a real parity net — a render smoke test
+can't import the IIFE, so they aren't a real parity net, a render smoke test
 is needed before any code moves. Nothing here changes the app.
 
-## Aug 2026 — Trade calc: headliner / consolidation premium
+## Aug 2026, Trade calc: headliner / consolidation premium
 
 The Trade Calculator now applies KTC's "Value Adjustment." Before, the verdict
 was pure `min/max` of raw KTC sums, so trading one 9,000 stud for three pieces
-that sum to 9,000 read as perfectly FAIR — which violates the house headliner
+that sum to 9,000 read as perfectly FAIR, which violates the house headliner
 rule (a pile of lesser pieces does not substitute for a stud). Now the side
 giving up the bigger single asset gets a premium added to its *sent* value, so
 a raw-even swap correctly reads as favoring whoever receives the headliner.
@@ -205,7 +205,7 @@ asserts `drafts[0].status === 'pre_draft'` but live Sleeper data now says
 `jacobGibbsCell(` which a concurrent expert-rankings refactor was mid-way
 through renaming.
 
-## August 2026 — Expert rankings registry (extensible columns)
+## August 2026, Expert rankings registry (extensible columns)
 
 
 
@@ -261,7 +261,7 @@ wants alongside the Vegas market (PP-Slp) and Sleeper context columns.
 
   RB1/WR1/WR2/RB2..., toggling Kiorkof off hides only its column, no console errors.
 
-## August 2026 — lineup truth + what-if
+## August 2026, lineup truth + what-if
 
 Design doc: [`plans/2026-08-07-lineup-truth-and-whatif-design.md`](plans/2026-08-07-lineup-truth-and-whatif-design.md).
 
@@ -270,8 +270,8 @@ fixing the four ways the app was answering that question wrong.
 
 ### Legal lineups (the big one)
 
-`startingStrength` — which powers PV, FV, the trajectory chart, and every
-roster's contender/rebuilder stance — summed the top-K assets by value with no
+`startingStrength`, which powers PV, FV, the trajectory chart, and every
+roster's contender/rebuilder stance, summed the top-K assets by value with no
 regard for position. In a 1QB league it started two quarterbacks whenever the
 QB2 outvalued a flex body. Replaced with `offenseStartingSlots` (reads real
 `roster_positions`) + `fillLineup`, which assigns value-sorted assets to their
@@ -295,7 +295,7 @@ projection. The pipeline now carries `injury_status` / `injury_body_part` /
 `injury_start_date` / `injury_notes` / `practice`, `isSidelined()` benches
 Out / Doubtful / IR / PUP / NA / Sus / DNR / COV, and an `injuryChip` renders
 on roster rows, position columns, and search results. Questionable deliberately
-still starts — benching every Q would gut every in-season projection.
+still starts, benching every Q would gut every in-season projection.
 
 ### League-specific scoring
 
@@ -307,7 +307,7 @@ as "skip", never as zero.
 
 ### Rookie startability on converted picks
 
-FV folded a converted pick in at full KTC value, so a 2027 2nd read 44.3 — the
+FV folded a converted pick in at full KTC value, so a 2027 2nd read 44.3, the
 same as a proven WR3. Calibrated the gap against this repo's own data (2026
 blended projections vs KTC 1QB value, 330 matched players): median actual /
 value-implied points runs 0.85 at 21-22, 0.93 at 24, 1.09 at 26-27, 1.42 at 30+,
@@ -323,7 +323,7 @@ want points.
 
 New tray above the Projections board (`buildWhatIfTray`). Search any projected
 player, add him to your roster hypothetically, and the whole board re-ranks with
-per-team Δ and ▲/▼ rank movement. Adds only — what you'd give up is the Trade
+per-team Δ and ▲/▼ rank movement. Adds only, what you'd give up is the Trade
 Lab's job. Not persisted, by design.
 
 ### Trade search: one button
@@ -337,7 +337,7 @@ he's anyone else's, with the owning team named inline.
 New `starting-lineup.test.js` (slot legality, SUPER_FLEX, pick-can't-steal-QB,
 rookie ramp, degenerate rosters). `projections.test.js` extended with taxi/IR
 exclusion, league rescoring, injury gating against a synthetic PLAYERS map, and
-what-if splice idempotence (a starter added twice must not score twice — this
+what-if splice idempotence (a starter added twice must not score twice, this
 caught a real double-count).
 
 ### Championship odds (the "% chance to win a ship" ask)
@@ -352,7 +352,7 @@ Per simulated season, per player:
 - a **season-long lognormal projection error** (sigma 0.35), drawn once. This is
   the load-bearing piece. Summing only weekly noise assumes the projections are
   RIGHT and just the weeks are random, which makes the favorite win far too often
-  — the first cut had the top roster at 31% and the 8th at 0.2%.
+, the first cut had the top roster at 31% and the 8th at 0.2%.
 - weekly noise (CV 0.34 QB / 0.55 RB / 0.62 WR / 0.60 TE)
 - a random bye week
 - an **injury process with duration**, not a per-week coin flip: expected games
@@ -360,7 +360,7 @@ Per simulated season, per player:
   past a positional age shoulder, converted to a weekly hazard, mean absence 3
   weeks. Live Sleeper designations start a player already out (IR = 6 weeks).
 - plus a correlated **team-week shock** (CV 0.14), because ten starters summed
-  independently is far too smooth — real teams share game scripts and blowouts.
+  independently is far too smooth, real teams share game scripts and blowouts.
 
 Lineups are set each week on EXPECTED points among available players, then
 actuals are sampled. That order is what makes depth show up as value: a manager
@@ -368,7 +368,7 @@ cannot see Sunday. `mulberry32` + Box-Muller keep it deterministic, because a
 title percentage that jitters between renders is useless for comparing trades.
 
 **Performance.** First working version took 30s for 2000 sims. A CPU profile
-(not guesswork — two wrong guesses preceded it) put 50% of the time in the RNG
+(not guesswork, two wrong guesses preceded it) put 50% of the time in the RNG
 closure, which turned out to be `vm.runInContext` overhead in the test harness,
 ~12x slower than the main realm. Real cost is ~2s for 4000 sims. Two genuine
 wins stayed: `fillLineup` gained an early exit and a `presorted` flag, and
@@ -639,7 +639,7 @@ produced "rebuild wins by 0.216". Replaced with the measured trajectories, which
 the same mechanic (the raw sum favours patience, discounting reverses it) without
 arguing for a teardown the data rejects.
 
-## August 16, 2026 — Gibbs top-175 tier sheet, transcription guard, and a tier board
+## August 16, 2026, Gibbs top-175 tier sheet, transcription guard, and a tier board
 
 CBS Sports published Jacob Gibbs' 2026 board on August 14 (top 175 overall, 16 tiers,
 single-QB managed half-PPR redraft) with the rankings living only inside two embedded
@@ -658,15 +658,15 @@ position and team Sleeper carries.
 
 **New artifacts.**
 
-- `site/data/_sources/jacob-gibbs-2026-08-14_independent-transcription.tsv` — the second
+- `site/data/_sources/jacob-gibbs-2026-08-14_independent-transcription.tsv`, the second
   transcription. It is **not** a build input; `jacob-gibbs-2026-08-14.csv` is. Its only
   job is to be a copy nobody derived from the CSV. `site/data/_shots/gibbs-tiers-2026-08-16-p*.jpg`
   are the phone photos it was typed from.
-- `site/js/gibbs-tiers-source.test.js` — pins the generated board to that TSV field by
+- `site/js/gibbs-tiers-source.test.js`, pins the generated board to that TSV field by
   field, re-checks the one-bye-per-team invariant, and asserts the deep board survives.
   Added to the suite line in CLAUDE.md. Regenerating the TSV from the CSV would leave this
   test asserting a file against itself, which is why the file says so at the top.
-- `site/data/_sources/build_gibbs_brief.py` — the one tier-board generator, writing
+- `site/data/_sources/build_gibbs_brief.py`, the one tier-board generator, writing
   `site/gibbs-tiers.html` (linked from the Sources page, live at `/ff/gibbs-tiers.html`).
   Search, position filters, bye weeks, which of the three Sleeper rosters own each player,
   the rank move since the previous Gibbs board, and a per-league read: best you hold, who
@@ -707,7 +707,7 @@ it is the only reason the numbers can be called verified rather than proofread. 
 board arrives as images again, the transcription is worth doing twice on purpose; the
 tooling around it is not.
 
-### Aug 16, 2026 — the two Gibbs jobs reconciled to one board
+### Aug 16, 2026, the two Gibbs jobs reconciled to one board
 
 Two jobs ingested the same rankings at the same time. They are now one path.
 
@@ -753,7 +753,7 @@ python site/data/_sources/build_gibbs_brief.py
 powershell -NoProfile -ExecutionPolicy Bypass -File ..\.agents\scripts\deploy-phone-apps.ps1 -Deploy
 ```
 
-### Aug 16, 2026 — a full-PPR board, because he publishes half and every league is full
+### Aug 16, 2026, a full-PPR board, because he publishes half and every league is full
 
 All three Sleeper leagues score 1.0 per reception. Gibbs ranks for 0.5. That gap is worth
 about 53 points to a 107-catch receiver and 9 to a 17-catch back, so his board was being read
@@ -802,7 +802,7 @@ python site/data/_sources/build_gibbs_fullppr.py
 python site/data/_sources/build_gibbs_brief.py
 ```
 
-### Aug 16, 2026 — the PPR column in every players table
+### Aug 16, 2026, the PPR column in every players table
 
 Turned the derived full-PPR source on by default (`defaultEnabled: true` in
 `build_gibbs_fullppr.py`), since every league here is full PPR and an off-by-default column
@@ -829,7 +829,7 @@ bug and was not: the per-league Players tab builds a sortable header inline with
 new offense-gated projections pair are now asserted by shape, and all three new guards were
 proven to fail against a modified `app.js`.
 
-## August 22, 2026 — Gibbs republished at 200 deep, and the copy that lied about it
+## August 22, 2026, Gibbs republished at 200 deep, and the copy that lied about it
 
 Trevor photographed Gibbs' board off his phone again and sent both pages over Telegram. It
 is a different artifact from the August 14 one: 200 players instead of 175, 17 tier bands
@@ -1075,7 +1075,7 @@ Skipped by choice: column grouping (27 columns stays). `ui-ux-pro-max` is a
 broken bundle here (SKILL.md only, no `scripts/search.py` or CSV data) and is
 queued as a dashboard task rather than fixed inline.
 
-### 2026-08-25 — Market prop refresh + deploy
+### 2026-08-25, Market prop refresh + deploy
 
 Full `python projections/build_all.py`, 16/16 steps ok. Board was a week stale
 (Aug 18). Fresh: BettingPros 9-book season board at 1,189 props / 310 players,
@@ -1171,3 +1171,364 @@ cheaper when the deal lands. Trap written into `CLAUDE.md`.
 
 State of the roster after both: Collins, Waddle, Downs, Watson and Johnston in, no
 first-round pick before 2029, three QBs in a one-QB league still unsold.
+
+## September 2026 - FAAB bid archetypes (notes/)
+
+Priced every waiver claim in the four Sleeper leagues, 2022 to 2026, against four archetype
+dimensions: NFL experience at the pickup, situation of emergence, position, and realized
+point-production profile. 1,548 claims with a non-null `settings.waiver_bid`, 1,062 completed,
+678 of those priced above $0.
+
+Note, chart and data: [`notes/faab-bid-archetypes-2026-09-16.md`](../notes/faab-bid-archetypes-2026-09-16.md)
+(prose classification rules), `notes/faab-bid-archetypes-2026-09-16.html` (box plots plus the
+n / median / IQR / max tables), `notes/faab-bids-2026-09-16.csv` (raw rows), and
+`notes/faab_extract.py` (re-runnable, caches every Sleeper pull under `notes/faab-cache/`,
+gitignored).
+
+Three findings worth carrying into roster decisions:
+
+- **The market pays for news, not for role.** Dynasty medians: a spike box score $20 (n=25), a
+  starter out three-plus weeks $16 (n=86), a starter out one to two weeks $9.50 (n=52), an
+  entrenched NFL starter nobody had rostered $8.50 (n=104, the largest bucket), a quiet usage
+  takeover with no box score $6 (n=22). A visible event costs twice an existing full-time job.
+- **FAAB spend does not predict production.** Dynasty medians are $11 for claims that turned
+  into upside plays, $10 for floor plays, $10 for claims that never returned a startable week.
+  Redraft is inverted, $4 against $8.
+- **The dynasty and redraft medians are the same at 5% of budget.** What differs is timing:
+  155 of 568 priced dynasty claims are offseason or preseason, and Phi Kap Fantasy has zero.
+
+Washington Football League is excluded because it runs on ESPN, which has no key-free
+waiver-bid endpoint and is not on `api.sleeper.app`.
+
+## 2026-09-16, ROS rankings got a tab because they were invisible as a column
+
+Trevor: "it's unclear to me where ROS rankings for fantasy football are in the site."
+He was right, and the data had been there the whole time. FantasyPros rest-of-season
+consensus, 352 players, was the 10th of eighteen columns inside a view named after the
+WEEK, and the four view tabs read Stats / Weekly / Sleeper weeks / SOS with nothing
+anywhere in the navigation saying ROS.
+
+Added a fifth tab, `['ros','ROS','weekly-ros','asc']`, next to Weekly. It is the same
+weekly table opened on the FP ROS column ascending rather than on the week's Sleeper
+projection, so it reuses every cell renderer instead of forking a second board. The two
+views now share one `weeklyTable` predicate rather than two copies of
+`filter.view === 'weekly'`, so a later column or layout change cannot land on Weekly and
+skip ROS. In the ROS view the source note leads with the board date and coverage and says
+plainly that the other columns are still the current week.
+
+Also fixed the thing that made this change break something else. `.agents/feature-map.json`
+reached the Sleeper weeks tab with `button:nth-child(3)`, so inserting a tab silently
+pointed that check at the wrong button: verify-app went 27/27 to 26/27 and the failure had
+nothing to do with Sleeper weeks. Positional selector replaced with
+`button:text-is("Sleeper weeks")`, which no future tab can move. The ROS tab has its own
+mapped feature now, asserting the tab is pressed, that FP ROS is the sort-active header,
+and that the column is still present, so a column shuffle cannot quietly bury it again.
+
+`node --check` clean, all 15 `site/js/*.test.js` pass, verify-app 28/28 VERIFIED.
+
+## 2026-09-16, the Higgins offer, and the six prices that all buy the same thing
+
+Trevor had two versions of a Tee Higgins buy from djcomstock on the table: Bryce Lance plus
+his own 2029 first, and the one composed on his Sleeper screen, Bryce Lance plus the 2027 3rd
+and 2028 2nd that had come FROM djcomstock. The question was which one to send.
+
+Neither. Higgins enters the fourth FLEX and pushes Quentin Johnston out, and nothing else he
+would send is in his lineup, so **every package buys the identical +57.5 season points**. That
+makes it a pure price question, and six prices were on the board from 5,998 KTC to 9,482 for a
+5,779 player. The attached is a 64% overpay whose biggest single piece is 68% of Higgins, under
+the 70% anchor floor, so it declines on the headliner rule before the ledger opens.
+
+Three packages already on the roster buy the same thing without a pick. The separator turned
+out to be depth, not the lineup: knocking each starter out in turn and averaging the fall
+(`_depth-cost.js`) gives Jordan Love plus Lance a cost of exactly **0.0**, Caleb Williams
+straight up **-2.5**, and Quentin Johnston plus Lance **-12.7**. Love is a strict zero in a 1QB
+lineup and Caleb stays as the Allen insurance, so no branch of the season gets worse. That
+reordered the recommendation after it was first written with Johnston on top.
+
+The QB surplus this spends was already on the books: `trade-sim.js` names it as the open item
+from 2026-09-12, and that doc rejected QB-surplus counters, but that run shipped BOTH backups
+and left the roster on Jacoby Brissett at 148.8. Shipping one is a different trade.
+
+New in the repo, all runnable: `site/js/trade-sim-higgins.js` and
+`site/js/trade-sim-higgins-counters.js` (eleven scenarios priced in title odds, both sides
+modelled, three seeds plus SCALE=1.3 and a 2029-decay stress), `_lineup-cost.js`,
+`_depth-cost.js`, `_shape-check.js`, `_replacement-qb.js`, and
+`docs/_build_higgins_brief.py`, which builds the phone brief straight off the sim output
+rather than from hand-typed numbers. KTC stops at 2028, so the 2029 class is synthesized as
+the 2028 anchors times a decay factor and handed to all ten rosters, never just his.
+
+Decision doc: `docs/TRADE-DECISION-2026-09-djcomstock-higgins.md`. Brief:
+`docs/trade-brief-djcomstock-higgins-2026-09-16.html`. `node --check` clean, all 15
+`site/js/*.test.js` pass.
+
+**Follow-on the same day: the 2029 gap moved into the tool that owns it.** KTC publishes three
+rookie classes and stops, `trade-sim.js` built its slate for exactly two, and a question about a
+2029 pick died on `assert(KTC missing 2029 R1)`. That forced the synthesis into the caller, where
+nothing checked it. `pv()` now falls back to the last published class times `DECAY` per year
+beyond it (0.88 default, env-overridable), the slate takes a `HORIZON` (2 by default, so every
+scenario written before today is unchanged), and `trade-sim.test.js` gained six assertions that
+run green under HORIZON 2 through 5 and DECAY 0.7 through 1.0: the decay compounds evenly, it
+never touches a class KTC actually publishes, slot interpolation survives into a synthesized
+class, and the slate stays a whole number of rounds. The counters script now calls
+`pick('2029', ...)` instead of hand-rolling it. That refactor landed after the brief was
+generated and moves a pre-trade 2029 price by about 0.2% (4,418 to 4,410) purely from rounding
+order, which changes no verdict; the brief is built from the committed run output in
+`notes/higgins-trade-sim-2026-09-16/`.
+
+**Then an adversarial pass refuted the first draft and two of its scripts.** The reviewer did
+not do the work, which is the point. It found that the first draft answered a "should I make
+this trade" question with points alone while the title-odds runs were already sitting finished
+in `.sim-out/`, that the run ranks the three counters it recommended 4th, 9th and 3rd of nine
+against the two it declined, and that at `SCALE=1.3` the second-choice counter goes negative.
+It also found three real defects that the rewrite alone would not have caught:
+
+- `startingKtc` in `trade-sim.js` never excluded taxi or IR, so five taxi bodies across three
+  rosters sat inside starting lineups and inflated the draft-slot input. djcomstock read 39,378
+  against a real 38,142. Fixed, and pinned by a test that asserts promoting a roster's taxi
+  strictly RAISES its lineup total, so a `>=` check cannot pass against the old code. Slot order
+  and every pick price in the brief are unchanged, verified both ways, which is exactly why
+  nothing downstream complained for months.
+- `_shape-check.js` counted all three quarterbacks in a **1QB** league toward "14 startable
+  bodies, no depth problem." By slot it is 11 non-QB bodies for 9 non-QB slots. It also counted
+  a man on IR in the WR age profile. Both fixed; the WR room is 13 fieldable bodies and 39% of
+  player value, not 14 and 41%.
+- The doc mischaracterised the 2026-09-12 QB-counter rejection as having shipped BOTH backups.
+  That doc's table has two single-arm counters and both lost. The correction strengthens the
+  current verdict rather than weakening it.
+
+Two findings survive as live caveats and are now in the brief rather than assumed away. The 70%
+anchor floor for the 2029 first breaks at DECAY 0.8222, inside the 0.82 to 0.86 band the code's
+own comment cites, so that half of the verdict is a calibration bet (the title-odds half is not:
+at DECAY 0.80 it still finishes first). And `dynasty-league-format-leverage` hard-rejects any
+win-now trade under +5 points a week, where this is +4.1; the rule's convexity table is anchored
+on a generic projected-8th roster at 1.25x where this one measures 1.35x, and its "a first is
+the 5.5th player off the board" premise does not describe a late 2029 first that converts to
+100.9 rookie points against a 104.9 replacement FLEX.
+
+The B-over-A gap was inside the noise floor at 4,000 sims, and the table admitted it: B read
++10.34 against a "Higgins for free" control at +9.43, and you cannot beat free. Re-ran A and B
+alone at **16,000 sims on both paired seeds**: B ahead by +0.86 and +0.38 against a standard
+error near 0.34, so **seven of seven runs**. 2026 title odds settle at 7.83% to 10.56% and 7.66%
+to 10.51%, a 1.35x lift. Review and all runs kept in `notes/higgins-trade-sim-2026-09-16/`.
+
+## 2026-09-17, the 2026 offseason and a panel nobody could find
+
+### Team Turnover was a full offseason stale, and the date range was not the bug
+
+`historical/derived/team_turnover.csv` stopped at 2025, so a 2026 player card showed the 2025
+offseason with an amber "a year behind" chip on it. The obvious fix is to widen the season loop.
+That produces a wrong answer, because `build_turnover()` decides who left a team from
+participation: `team_roster[(team, season)]` is everyone with `games >= 1`. One week into a
+season that set is tiny, so every healthy scratch, every inactive and every backup who has not
+touched the field yet reads as a departure, and vacated share goes to nearly 100% for all 32
+teams.
+
+So an in-flight season takes membership from the nflverse roster file instead
+(`roster_turnover_row()`), gated by `weeks_on_disk(season) < INFLIGHT_WEEK_FLOOR` (8). Statuses
+`ACT|RES|DEV|EXE` count as on the team; `CUT` and `RET` do not. Practice-squad bodies count for
+membership (so a `DEV` player is not called a leaver) but not as joiners, because a practice-squad
+signing is not a signing worth listing. Every row now carries `basis` = `participation` or
+`roster`, plus `weeks_played`, and the panel says which one it is showing.
+
+Leavers keep the same meaning and the same numbers either way: who played for this team last
+season and is no longer on the roster, priced at the share they held. Joiners could not, because
+a player one week into a new team has no share worth printing. They carry their prior share
+elsewhere, are ranked on it (rookies, having none, are ordered by draft pick), and the panel
+labels the column "Joiners (prior share)" with the tooltip naming the season.
+
+**Validated against the distribution, not by eye.** Median vacated target share: 0.279 for 2026
+against 0.274 for 2025 and 0.221 for 2024. Leaver count median 8 against 9 and 9; joiner median
+8 against 10 and 10. The roster basis reproduces the participation distribution rather than
+inventing one, which is the check that would have caught the naive widening.
+
+`--turnover-only` was added because `week_2026.csv` now sits on disk with one week in it, and a
+full `build_opportunity.py` run would fold a one-game 2026 season into `player_card.json`,
+`season_summary.csv` and the rest, which are season-complete aggregates.
+
+Chips: `.ctx-stale` stays amber because it marks a defect. `.ctx-basis` is neutral because
+"roster-based" is a label, not a fault.
+
+### FAAB: the feature existed, rendered, passed its test, and was still unfindable
+
+Asked for a third time where the FAAB section was. It was at the top of `renderLeagueTimeline`,
+one sub-tab of one league page, behind a click nobody makes until they are already mid-claim.
+`faabPanel(lg)` now also mounts on Action Center, where a waiver decision starts, one card per
+distinct league format: dynasty and redraft price the same situation differently and a single
+card would silently show one league's market as both. Deduped by a `faabSeen` set over
+`myLeagues`, so the dynasty card (Password is taco / The League / yuH) and the redraft card
+(Phi Kap Fantasy) both appear. Verified in a real headless browser: 16 dynasty rows and 12
+redraft rows, zero console errors. `faab-action-center` is in `.agents/feature-map.json`, so
+hiding it again fails the gate. 30/30 features pass.
+
+### The turnover fix broke the QB line on all 32 teams, and every test stayed green
+
+Caught by checking the other derived files rather than by a failure. `build_context.py` had one
+`latest_turnover_season`, computed off turnover, and then used it to look up `market` AND
+`qb_changes` as well. The moment turnover moved to 2026 that key missed in `qb_changes`, which
+still tops out at 2025, so `qb_now` came back `None` for every team and the QB line vanished from
+all 32 player cards. Market survived only by luck, on an `or ... - 1` fallback that happened to
+be there. 32 teams with a QB block became 0, and `verify-app.py` reported 30/30 the whole time.
+
+Each source now finds its own newest season per team (`newest(index, team)`, walking back four
+years), and the builder prints each source's newest season so a divergence is visible in the run
+output instead of being inferred from a blank panel.
+
+Added `player-card-team-context` to the feature map, which drives the Cmd+K palette to a real
+player card and asserts `.qb-line` **by name** alongside the tendencies KPIs and the turnover
+list. A block that renders nothing when its key misses cannot be caught by a count, so it is
+named. Mutation-checked: strip the 32 `"qb"` objects out of `context.js` and the case fails,
+restore them and it passes. 31/31.
+
+### The same landmine was under four other builders, so it moved into one place
+
+Putting `player_stats/week_2026.csv` on disk armed every builder that globs
+`week_*.csv` with no upper bound. Measured, not guessed: bypass the guard and rerun
+`build_qb_changes` and **nine of 32 teams** get a 2026 row flagged `is_new_starting_qb`, naming
+the week-1 passer as the new starter. ATL Cooper Rush over Michael Penix, SF Mac Jones over
+Brock Purdy, MIA Malik Willis over Tua, WAS Marcus Mariota over Jayden Daniels, SEA Drew Lock
+over Sam Darnold. Every one of those is a start the incumbent missed, not a job he lost, and the
+player card would have said NEW QB with the incumbent's name in the "was" slot. Career
+availability is worse in a quieter way: a season in progress adds a full 17 games of potential
+against the 1 that has been played, so every active player's percentage drops at once.
+
+`historical/season_window.py` now owns the rule: `weeks_on_disk`, `newest_season`, `is_inflight`
+and `completed_week_files`, with `INFLIGHT_WEEK_FLOOR = 8`. Four season-level aggregates iterate
+`completed_week_files()` instead of the raw glob (qb_changes, player_efficiency, career_health in
+`build_player_features.py`, and def_vs_pos in `build_def_vs_pos.py`). Week-level output keeps the
+plain glob, because a row keyed by week is honest at week 1. `build_opportunity` imports the same
+floor rather than carrying its own copy.
+
+The self-check caught a design bug before it shipped: a week count alone is not the test. The
+first version called any short season in-flight, which would have silently dropped a strike year
+or a partially-published old file from real history. `is_inflight` now also requires the season
+to be the newest one on disk.
+
+Proof it holds and proof it is load-bearing, both: with `week_2026.csv` present, all six
+regenerated derived files (`qb_changes`, `player_efficiency`, `career_health`,
+`strength_of_schedule`, `def_vs_pos`, `def_vs_pos_ranks`) are **byte-identical** to their
+pre-change versions and all still top out at 2025; bypass the guard and the 2026 row appears with
+its nine false NEW QB flags. `python historical/season_window.py` runs the self-check in under a
+second.
+
+### Design audit on the two new surfaces, from screenshots rather than from the code
+
+Three things only a rendered screenshot shows, all three fixed:
+
+- **The FAAB cards buried the page's own job.** 16 dynasty rows plus 12 redraft rows pushed the
+  suggestion queue roughly 1,700px down on desktop, which trades one discoverability bug for
+  another. Each card is now a `<details>` closed by default, with the summary carrying the format
+  and the sample ("16 situations, 568 priced claims") in the same periwinkle band every other panel
+  wears. Native element, no library, no state to manage. Verified open and closed at 1500px and at
+  390px, and the verification case now clicks the summary, so a summary that renders but does not
+  open fails the gate.
+- **Three situation labels were truncated.** "starter left the team (cut or tr...",
+  "entrenched NFL starter, unros...", "usage takeover, no big box sco...". A `title` tooltip is not
+  a phone affordance, so the meaning was simply gone on the device this is read on. `.faab-name`
+  wraps now instead of ellipsing, column widened to 17rem. Checked by measuring
+  `scrollWidth > clientWidth` across every row at both widths: 0 truncated.
+- **A rookie joiner printed "R" twice**, once in the position pill and again where the share goes.
+  The share cell now prints the codebase's own no-value glyph.
+
+Also caught a fifth instance of the invisible-control-character trap, and the first in a file that
+was newly WRITTEN rather than patched: `content: '\25B8'` written through a Python heredoc landed
+as `0x15` plus a literal `B8`, because Python read the doubled backslash as an octal escape. Valid
+CSS, clean build, tofu box in the caret. Written up in
+`.agents/memory/environment-traps.md`. In a stylesheet, write the character.
+
+
+### Data table layout: 25 tables measured, 12 given a sizing contract (2026-09-17)
+
+Full report, with the per-table numbers and the two corrections to the task brief:
+[`notes/table-layout-audit-2026-09-17.md`](../notes/table-layout-audit-2026-09-17.md).
+
+`table.data` was `width:100%` with no column sizing, which is right for the 14-to-25 column
+boards and wrong for every small one. The Rookie Pick Values table Trevor called unreadable
+measured **374px of content rendered at 1192px, a 3.19x stretch**, so "1QB VALUE" sat three
+columns away from 90 / 80 / 70. The header-alignment fix that landed earlier was real but
+separate: the headers were already over the right columns, just 300px from their values.
+
+Two counts in the brief were wrong. There are **25** tables, not 24; the brief's
+`grep "class:.data"` also matched four `data-fresh*` sidebar classes and missed the five
+tables written `class: 'data'` with a space after the colon. And the a11y pass it names does
+not exist in this repo (no axe-core, no a11y script anywhere), so WCAG 1.4.10 Reflow was
+checked instead: no route needs horizontal page scroll at 320px.
+
+Three classes, not one, because a single `fit-content` rule looked broken in two ways that
+the stretch number could not see:
+
+- **`snug`** (8 tables), `fit-content` plus `:has()` rules that let `.tbl-scroll` and `.card`
+  shrink with it. For tables that ARE the card's content, so the plate hugs the table.
+- **`fill-last`** (2 tables), table stays full width, columns tighten, slack lands in the one
+  unconstrained column. For cards with their own full-width chrome. `snug` there left a 692px
+  table under a 993px title bar, which reads as a table that failed to draw its right half.
+  Team offense now renders `#` 40px, `Team` 224px, `Proj Pts` 73px, `Core` 827px.
+- **`snug-center`** (2 tables), `fit-content` plus `margin-inline:auto`, card stays wide. For
+  all-numeric tables under full-width chrome, where `fill-last` would move the gap into the data.
+
+Never put any of the three on the wide boards. `fit-content` resolves against the AVAILABLE
+width, so on a 25-column table it shrinks toward min-content and crushes the columns that
+`.tbl-scroll` and the `min-width` on `.weekly-rankings-table` / `.sleeper-weeks-table` exist to
+keep scrollable at full size.
+
+The clipping half of the task was already solved and needed nothing: `wrapDataTables()` wraps
+every `table.data` in `.tbl-scroll` on every route, which defeats the cards' `overflow:hidden`.
+Nothing measured as clipped at any width.
+
+New tooling, both reusable: `site/_table_audit.py` measures every table on every mapped route at
+any width, taking content width from a hidden `width:max-content` clone rather than guessing from
+text length, and it reads each table's own class so a `fill-last` table is scored on its data
+columns instead of being reported as 1.68x sprawl. `site/_table_shots.py` frames each affected
+card at 1500px and 390px, because stranding is invisible to the numbers.
+
+Five tables could not be rendered and were not touched. `viewAllPlayers` is dead code, since
+`route()` maps `case 'players'` to `navigate('#dashboard')`. Three `renderDraftBoard` tables need
+a live Sleeper draft. One `renderLeaguePlayers` sticky table did not appear on any sub-tab.
+
+After: 0 flagged at 1500 / 390 / 320px, 33/33 features pass, all 16 node tests pass,
+`check-field-tile.py` clean.
+
+## 2026-09-18: the three draft-board tables, measured without a live draft
+
+The previous entry left three `renderDraftBoard` tables unmeasured with a note to check them
+during the next real draft. That was a wait, not a gate. `renderDraftBoard` depends on exactly
+two Sleeper endpoints, so `_table_audit.py` now stubs `window.fetch` for `/v1/draft/<id>` and
+`/v1/draft/<id>/picks` with a 12-team superflex fixture (`DRAFT_FIXTURE_ID`, `fixture_steps`),
+which renders the whole board out of season with no network. `_table_shots.py` reuses the same
+fixture. `status` is `paused` so the live poll never starts mid-measurement, and the drawer tab
+and board mode come from seeding `localStorage['ff-draft-view::<id>']` instead of clicking the
+tab bar, whose order moves.
+
+One of the three was wrong, and it was the largest remaining stretch in the app: the your-team
+lineup table measured **2.70x** (456px of content rendered at 1232px), which put a player name
+about 350px from his own team chip. `snug` applied; it now measures 0.91x. The available board
+(28 cols, 0.88x) and the SOS grid (23 cols, 0.86x) want nothing.
+
+`snug` does not strand here, and the reason is worth keeping: `.draft-pane` is not a `.card`, so
+neither `:has()` rule fires. The table shrinks to its content and left-anchors under a `.tip`
+line that starts at the same left edge, with no plate border around it to sit half empty. That
+border is what made `snug` wrong on the About and projections cards. Confirmed by screenshot at
+both widths, not by the metric alone. At 390px `max-width:100%` restores full width and the
+names wrap.
+
+Two corrections to the follow-up task. There is no separate 4-column `Team | Need | Tier` table;
+`Need` is a column inside the 28-column available board. And the census is **28** `h('table'`
+matches, not 25, so the position indices the task named point at the wrong tables. Anchor on the
+surrounding source text.
+
+After: 0 flagged at 1500 / 390 / 320px, **36/36 features pass, VERIFIED**, all 16 node tests
+pass, `node --check` clean, `check-field-tile.py` clean.
+
+## 2026-09-18: consistent player marks and unobstructed mobile brand
+
+The icon-only target and trade-block controls now share one 44 by 44 square plate in data tables,
+instead of letting the wider star glyph create a different pill from the flag. The visible glyphs
+stay centered, every control meets the touch-target floor, and `aria-pressed` now tracks saved state.
+
+Opening the mobile drawer now hides its opener and moves focus to the close control, so the opener
+no longer covers the 44px Fantasy Hub logo. Closing by button, scrim, or Escape restores focus and
+keeps `aria-expanded` accurate through one shared helper.
+
+`mobile-controls.test.js`, `node --check`, and the other 17 non-waiver JS test files pass. The full
+suite still has one unrelated generated-data failure in `waiver-board.test.js` (`$0 count mismatch`,
+0 actual versus 189 expected). The 100-file phone-app bundle staged, but production deploy did not
+run because this sandbox has no installed or cached Wrangler package and blocks registry access.

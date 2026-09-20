@@ -215,3 +215,49 @@ buyer's own pick does not get strictly cheaper once his trade lands.
 converted picks off the post-trade finish. The error lived only in a KTC ledger hand-built
 beside it, and every verification pass tested the simulator. When a doc carries a model number
 and a hand number for the same thing, the check that matters is whether they agree.
+
+## Five rules the 2026-09-16 Tee Higgins call added
+
+**A pick has two prices and only one of them is on KTC.** KTC is what the LEAGUE will pay.
+`pickRookiePoints` is what the pick will DO for the roster that holds it, and on a deep roster
+those diverge by a factor of two. Measured 2026-09-16: roster 10's own late 2029 first prices at
+4,330 KTC and converts to about 110 season points, against a measured replacement-level FLEX of
+104.9. It can never enter a lineup that already fields 14 startable bodies. djcomstock's 2027 3rd
+and 2028 2nd price at 3,080 and 3,940 and convert to about 75 and 99, both below replacement.
+That is why a package the Trade Lab called a 64% overpay scored SECOND of nine in title equity,
+and why the package the Trade Lab called 96% fair scored LAST. **Quote both numbers when they
+disagree, and say which question each one answers.**
+
+**Where the simulator is blind: it turns a pick into a rookie, never into a trade.** It has no
+model of flipping a pick to a third team for a starter, which is exactly what roster 10 did with
+five picks on 2026-09-12. So the model systematically UNDERVALUES picks held by a manager who
+trades them, and the KTC ledger is the right lens for that manager. When the two disagree, ask
+whether the picks are going to become rookies or become players. On 2026-09-16 both lenses
+happened to point the same way, at the cheaper of the two pick packages, which is the only
+reason that verdict was safe to state plainly.
+
+**QB3 is a strict zero in-season and the succession over the horizon.** `dynasty-trade-construction`
+calls a third quarterback in a 1QB league an unconditional sell, and that is correct about this
+week's lineup: it cannot enter one short of two simultaneous injuries. It is wrong over
+`H >= 7` when the starter is 30, the best unrostered arm in the league projects 148.8 (Jacoby
+Brissett, 2026-09-16, 296 players rostered) and the QB slot is the highest-scoring slot on the
+roster at 343.9. Paying with the 24-year-old backup scored +1.02 mean equity against +9.18 for
+paying with picks, across three seeds. **The skill sets the in-season rule; `titleEquity` over the
+horizon overrides it, and the two are not in conflict, they answer different questions.**
+
+**Measure depth by knocking starters out, not by counting bodies.** Six packages all bought the
+identical +57.5 season points, because the incoming player took the same lineup slot in every
+one. They separate only when a starter misses: average the best legal lineup across knocking out
+each of the ten starters in turn and Jordan Love plus a below-replacement body costs 0.0, Caleb
+Williams costs 2.5 (Love at 257.5 rather than Caleb at 281.8 covering the starter's absence), and
+Quentin Johnston costs 12.7 (Boutte at 125.2 rather than Johnston at 160.7 as the first man up).
+`site/js/_depth-cost.js` is the tool; a season total will never show this.
+
+**KTC stops at three rookie classes, and a question about the fourth is still a real question.**
+`pv()` in `site/js/trade-sim.js` now synthesizes any class past the last published one as those
+anchors times `DECAY` per year beyond it (0.88 default), and `HORIZON` extends the slate; both are
+handed to EVERY roster so the comparison stays fair. 0.88 is the honest middle because the live
+2027 to 2028 step measures 0.82 to 0.86 per slot AND that step is also unwinding the Jeremiah
+Smith premium on 2027, which a plain year of discount is not. Six assertions in
+`trade-sim.test.js` pin it under HORIZON 2 to 5 and DECAY 0.7 to 1.0. **Run DECAY at 0.80 and
+1.00 before trusting any sign that turns on a synthesized class.**

@@ -15,6 +15,8 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
+from season_window import completed_week_files
+
 ROOT = Path(__file__).parent
 OUT = ROOT / "derived"
 
@@ -51,13 +53,8 @@ def main() -> int:
     agg: dict[tuple, dict[str, float]] = defaultdict(lambda: defaultdict(float))
     games_seen: dict[tuple, set] = defaultdict(set)
 
-    for f in sorted((ROOT / "player_stats").glob("week_*.csv")):
-        try:
-            yr = int(f.stem.replace("week_", "").replace("_derived", ""))
-        except ValueError:
-            continue
-        if yr < 2014:
-            continue
+    # Season-level claim, so the season being played is excluded (season_window).
+    for yr, f in completed_week_files():
         with open(f, encoding="utf-8") as fin:
             for r in csv.DictReader(fin):
                 if r.get("season_type") != "REG":

@@ -1,6 +1,6 @@
 ---
 name: de-slop
-description: Removes obvious AI artifacts and cleanup noise before a PR. Use when the user says "de-slop", "clean up before PR", "remove AI slop", or asks to tidy the codebase before submitting or merging.
+description: "Strip AI artifacts from CODE before a PR"
 ---
 
 # De-Slop

@@ -1,6 +1,17 @@
 """Derive coach-change / first-time-OC / first-time-play-caller flags from
 play_callers.csv. Output team_coaches.csv enriched with year-over-year deltas.
 
+Head coaches are OVERLAID from nflverse before the flags are derived. The 2026 source
+rows were verified on 2026-09-19 against ESPN's all-team staff table and NFL Nation's
+all-team play-caller audit, then cross-checked against the NFL hiring tracker. That
+verified current-season snapshot wins over nflverse, whose scheduled-game metadata
+still carries three fired 2025 coaches. nflverse remains the historical HC authority.
+
+Sources:
+  https://g.espncdn.com/s/ffldraftkit/26/NFLDK2026_CS_ClayProjections2026.pdf
+  https://abc7.com/post/calls-plays-every-nfl-team-2026-what-know/19783946/
+  https://www.nfl.com/news/nfl-coaching-gm-tracker-latest-news-interviews-developments-2026-hiring-cycle
+
 Columns added:
   is_new_hc                 head coach is different from prior season (same team)
   is_new_oc                 OC is different from prior season (same team)
@@ -14,13 +25,79 @@ Columns added:
 from __future__ import annotations
 
 import csv
+import io
 import sys
-from collections import defaultdict
+import urllib.request
+from collections import Counter, defaultdict
 from pathlib import Path
 
 ROOT = Path(__file__).parent
 SRC = ROOT / "play_callers.csv"
 OUT = ROOT / "derived" / "team_coaches.csv"
+NFLVERSE_GAMES = "https://github.com/nflverse/nfldata/raw/master/data/games.csv"
+CURRENT_STAFF_SEASON = 2026
+NFL_TEAMS = {
+    "ARI", "ATL", "BAL", "BUF", "CAR", "CHI", "CIN", "CLE",
+    "DAL", "DEN", "DET", "GB", "HOU", "IND", "JAX", "KC",
+    "LA", "LAC", "LV", "MIA", "MIN", "NE", "NO", "NYG",
+    "NYJ", "PHI", "PIT", "SEA", "SF", "TB", "TEN", "WAS",
+}
+# nflverse occasionally carries a display-name typo in otherwise authoritative game data.
+COACH_NAME_FIXES = {"Klint Kubliak": "Klint Kubiak"}
+EXPECTED_CURRENT_CHANGES = {"head_coach": 10, "offensive_coordinator": 21, "play_caller": 19}
+
+
+def validate_current_staff(rows: list[dict]) -> None:
+    current = [r for r in rows if r["season"] == CURRENT_STAFF_SEASON]
+    teams = [r["team"] for r in current]
+    if len(current) != 32 or len(set(teams)) != 32 or set(teams) != NFL_TEAMS:
+        missing = sorted(NFL_TEAMS - set(teams))
+        extra = sorted(set(teams) - NFL_TEAMS)
+        raise ValueError(f"{CURRENT_STAFF_SEASON} staff must cover 32 teams; missing={missing}, extra={extra}")
+    for r in current:
+        missing = [k for k in ("head_coach", "offensive_coordinator", "play_caller") if not r.get(k)]
+        if missing:
+            raise ValueError(f'{r["team"]} {CURRENT_STAFF_SEASON} missing {", ".join(missing)}')
+        expected_role = "HC" if r["play_caller"] == r["head_coach"] else "OC"
+        if r.get("play_caller_role") != expected_role or (
+                expected_role == "OC" and r["play_caller"] != r["offensive_coordinator"]):
+            raise ValueError(f'{r["team"]} {CURRENT_STAFF_SEASON} play-caller role mismatch')
+        if r.get("notes", "").strip().lower() == "projected":
+            raise ValueError(f'{r["team"]} {CURRENT_STAFF_SEASON} still marked projected')
+    previous = {r["team"]: r for r in rows if r["season"] == CURRENT_STAFF_SEASON - 1}
+    changes = {field: sum(r[field] != previous[r["team"]][field] for r in current)
+               for field in EXPECTED_CURRENT_CHANGES}
+    if changes != EXPECTED_CURRENT_CHANGES:
+        raise ValueError(f"{CURRENT_STAFF_SEASON} staff change counts wrong: {changes}")
+    print(f"  validated {CURRENT_STAFF_SEASON} staff: 32 teams, changes={changes}")
+
+
+def nflverse_head_coaches() -> dict[tuple[str, int], str]:
+    """(team, season) -> head coach, from who actually coached the games.
+
+    Returns {} on any network failure rather than raising: a missing overlay leaves
+    the hand-maintained names in place, which is worse data but still a build.
+    """
+    try:
+        req = urllib.request.Request(NFLVERSE_GAMES, headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(req, timeout=60) as r:
+            raw = r.read().decode("utf-8", "ignore")
+    except Exception as exc:
+        print(f"  nflverse unavailable ({exc}); keeping play_callers.csv head coaches")
+        return {}
+    tally: dict[tuple[str, int], Counter] = defaultdict(Counter)
+    for row in csv.DictReader(io.StringIO(raw)):
+        try:
+            season = int(row.get("season") or 0)
+        except ValueError:
+            continue
+        for side in ("home", "away"):
+            team, coach = row.get(f"{side}_team"), row.get(f"{side}_coach")
+            if team and coach:
+                tally[(team, season)][COACH_NAME_FIXES.get(coach, coach)] += 1
+    # A mid-season firing leaves two names on one team-season. The modal coach is the
+    # one who coached most of it, which is what a season-level row should carry.
+    return {k: c.most_common(1)[0][0] for k, c in tally.items()}
 
 
 def first_name(s: str) -> str:
@@ -36,6 +113,41 @@ def main() -> int:
             for k in ("head_coach", "offensive_coordinator", "play_caller"):
                 r[k] = first_name(r.get(k, ""))
             rows.append(r)
+
+    validate_current_staff(rows)
+
+    # Overlay historical rows before sorting, so every downstream flag is derived
+    # from the coach who worked the games rather than the preseason guess.
+    truth = nflverse_head_coaches()
+    fixed = []
+    for r in rows:
+        real = truth.get((r["team"], r["season"]))
+        if real and real != r["head_coach"] and r["season"] < CURRENT_STAFF_SEASON:
+            fixed.append(f'{r["team"]} {r["season"]}: {r["head_coach"]!r} -> {real!r}')
+            # The OC and play caller stay as play_callers.csv has them. nflverse
+            # carries no coordinator, and inventing one for a staff this overlay just
+            # discovered would be a worse guess than the one being corrected.
+            r["head_coach"] = real
+    if truth:
+        print(f"  nflverse head coaches: {len(truth)} team-seasons, corrected {len(fixed)}")
+        for line in fixed[:12]:
+            print(f"    {line}")
+        if len(fixed) > 12:
+            print(f"    ... and {len(fixed) - 12} more")
+    # A play caller carried over from a staff that was replaced is not a stale name,
+    # it is a wrong one: after the overlay Miami read "HC Jeff Hafley / PC Mike
+    # McDaniel", crediting the plays to the coach who was fired. When the head coach
+    # changed and the listed play caller IS the coach who left, nobody here knows who
+    # calls plays, and saying so beats naming the wrong man.
+    prior_hc = {}
+    for r in sorted(rows, key=lambda r: (r["team"], r["season"])):
+        was = prior_hc.get(r["team"])
+        if was and r["head_coach"] != was:
+            for role in ("play_caller", "offensive_coordinator"):
+                if r.get(role) == was:
+                    r[role] = ""
+        prior_hc[r["team"]] = r["head_coach"]
+
     rows.sort(key=lambda r: (r["team"], r["season"]))
 
     # Build first-season indexes

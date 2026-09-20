@@ -1,0 +1,2083 @@
+{
+ "RB": {
+  "gibbs_total_experts": 1,
+  "gibbs_count": 97,
+  "gibbs_last_updated": "9/15",
+  "gibbs_last_updated_ts": 1789501542,
+  "cons_count": 128,
+  "cons_experts": 7,
+  "cons_last_updated": "9/18",
+  "gibbs": [
+   [
+    1,
+    "Bijan Robinson",
+    "ATL",
+    "11"
+   ],
+   [
+    2,
+    "Jahmyr Gibbs",
+    "DET",
+    "6"
+   ],
+   [
+    3,
+    "Christian McCaffrey",
+    "SF",
+    "8"
+   ],
+   [
+    4,
+    "Jonathan Taylor",
+    "IND",
+    "13"
+   ],
+   [
+    5,
+    "James Cook III",
+    "BUF",
+    "7"
+   ],
+   [
+    6,
+    "De'Von Achane",
+    "MIA",
+    "6"
+   ],
+   [
+    7,
+    "Ashton Jeanty",
+    "LV",
+    "13"
+   ],
+   [
+    8,
+    "Chase Brown",
+    "CIN",
+    "6"
+   ],
+   [
+    9,
+    "Saquon Barkley",
+    "PHI",
+    "10"
+   ],
+   [
+    10,
+    "Kenneth Walker III",
+    "KC",
+    "5"
+   ],
+   [
+    11,
+    "Omarion Hampton",
+    "LAC",
+    "7"
+   ],
+   [
+    12,
+    "Josh Jacobs",
+    "GB",
+    "11"
+   ],
+   [
+    13,
+    "Derrick Henry",
+    "BAL",
+    "13"
+   ],
+   [
+    14,
+    "Travis Etienne Jr.",
+    "NO",
+    "8"
+   ],
+   [
+    15,
+    "Jeremiyah Love",
+    "ARI",
+    "14"
+   ],
+   [
+    16,
+    "Breece Hall",
+    "NYJ",
+    "13"
+   ],
+   [
+    17,
+    "Javonte Williams",
+    "DAL",
+    "14"
+   ],
+   [
+    18,
+    "Kyren Williams",
+    "LAR",
+    "11"
+   ],
+   [
+    19,
+    "Bucky Irving",
+    "TB",
+    "10"
+   ],
+   [
+    20,
+    "Cam Skattebo",
+    "NYG",
+    "8"
+   ],
+   [
+    21,
+    "TreVeyon Henderson",
+    "NE",
+    "11"
+   ],
+   [
+    22,
+    "Quinshon Judkins",
+    "CLE",
+    "11"
+   ],
+   [
+    23,
+    "D'Andre Swift",
+    "CHI",
+    "10"
+   ],
+   [
+    24,
+    "David Montgomery",
+    "HOU",
+    "8"
+   ],
+   [
+    25,
+    "RJ Harvey",
+    "DEN",
+    "10"
+   ],
+   [
+    26,
+    "Bhayshul Tuten",
+    "JAC",
+    "7"
+   ],
+   [
+    27,
+    "Jaylen Warren",
+    "PIT",
+    "9"
+   ],
+   [
+    28,
+    "Chuba Hubbard",
+    "CAR",
+    "5"
+   ],
+   [
+    29,
+    "Rico Dowdle",
+    "PIT",
+    "9"
+   ],
+   [
+    30,
+    "Jadarian Price",
+    "SEA",
+    "11"
+   ],
+   [
+    31,
+    "Rhamondre Stevenson",
+    "NE",
+    "11"
+   ],
+   [
+    32,
+    "Tony Pollard",
+    "TEN",
+    "9"
+   ],
+   [
+    33,
+    "Kenny Gainwell",
+    "TB",
+    "10"
+   ],
+   [
+    34,
+    "Kyle Monangai",
+    "CHI",
+    "10"
+   ],
+   [
+    35,
+    "Blake Corum",
+    "LAR",
+    "11"
+   ],
+   [
+    36,
+    "Aaron Jones Sr.",
+    "MIN",
+    "6"
+   ],
+   [
+    37,
+    "J.K. Dobbins",
+    "DEN",
+    "10"
+   ],
+   [
+    38,
+    "Jacory Croskey-Merritt",
+    "WAS",
+    "7"
+   ],
+   [
+    39,
+    "Tyrone Tracy Jr.",
+    "NYG",
+    "8"
+   ],
+   [
+    40,
+    "Tyler Allgeier",
+    "ARI",
+    "14"
+   ],
+   [
+    41,
+    "Jordan Mason",
+    "MIN",
+    "6"
+   ],
+   [
+    42,
+    "Rachaad White",
+    "WAS",
+    "7"
+   ],
+   [
+    43,
+    "Zach Charbonnet",
+    "SEA",
+    "11"
+   ],
+   [
+    44,
+    "Tyjae Spears",
+    "TEN",
+    "9"
+   ],
+   [
+    45,
+    "Chris Rodriguez Jr.",
+    "JAC",
+    "7"
+   ],
+   [
+    46,
+    "Alvin Kamara",
+    "NO",
+    "8"
+   ],
+   [
+    47,
+    "James Conner",
+    "ARI",
+    "14"
+   ],
+   [
+    48,
+    "Woody Marks",
+    "HOU",
+    "8"
+   ],
+   [
+    49,
+    "Isiah Pacheco",
+    "DET",
+    "6"
+   ],
+   [
+    50,
+    "Keaton Mitchell",
+    "LAC",
+    "7"
+   ],
+   [
+    51,
+    "Dylan Sampson",
+    "CLE",
+    "11"
+   ],
+   [
+    52,
+    "Jonah Coleman",
+    "DEN",
+    "10"
+   ],
+   [
+    53,
+    "Jonathon Brooks",
+    "CAR",
+    "5"
+   ],
+   [
+    54,
+    "Emanuel Wilson",
+    "SEA",
+    "11"
+   ],
+   [
+    55,
+    "Brian Robinson Jr.",
+    "ATL",
+    "11"
+   ],
+   [
+    56,
+    "Braelon Allen",
+    "NYJ",
+    "13"
+   ],
+   [
+    57,
+    "Tank Bigsby",
+    "PHI",
+    "10"
+   ],
+   [
+    58,
+    "Mike Washington Jr.",
+    "LV",
+    "13"
+   ],
+   [
+    59,
+    "Kimani Vidal",
+    "LAC",
+    "7"
+   ],
+   [
+    60,
+    "Ray Davis",
+    "BUF",
+    "7"
+   ],
+   [
+    61,
+    "Nicholas Singleton",
+    "TEN",
+    "9"
+   ],
+   [
+    62,
+    "Emmett Johnson",
+    "KC",
+    "5"
+   ],
+   [
+    63,
+    "Kaytron Allen",
+    "WAS",
+    "7"
+   ],
+   [
+    64,
+    "Sean Tucker",
+    "TB",
+    "10"
+   ],
+   [
+    65,
+    "Kaleb Johnson",
+    "GB",
+    "11"
+   ],
+   [
+    66,
+    "Jaylen Wright",
+    "MIA",
+    "6"
+   ],
+   [
+    67,
+    "Devin Neal",
+    "FA",
+    null
+   ],
+   [
+    68,
+    "Trey Benson",
+    "ARI",
+    "14"
+   ],
+   [
+    69,
+    "Ollie Gordon II",
+    "MIA",
+    "6"
+   ],
+   [
+    70,
+    "Kendre Miller",
+    "NO",
+    "8"
+   ],
+   [
+    71,
+    "Najee Harris",
+    "NYG",
+    "8"
+   ],
+   [
+    72,
+    "Brashard Smith",
+    "KC",
+    "5"
+   ],
+   [
+    73,
+    "Isaiah Davis",
+    "NYJ",
+    "13"
+   ],
+   [
+    74,
+    "Ty Johnson",
+    "BUF",
+    "7"
+   ],
+   [
+    75,
+    "Devin Singletary",
+    "NYG",
+    "8"
+   ],
+   [
+    76,
+    "Jaydon Blue",
+    "PHI",
+    "10"
+   ],
+   [
+    77,
+    "Joe Mixon",
+    "FA",
+    null
+   ],
+   [
+    78,
+    "Jordan James",
+    "SF",
+    "8"
+   ],
+   [
+    79,
+    "LeQuint Allen Jr.",
+    "JAC",
+    "7"
+   ],
+   [
+    80,
+    "Samaje Perine",
+    "CIN",
+    "6"
+   ],
+   [
+    81,
+    "Chris Brooks",
+    "GB",
+    "11"
+   ],
+   [
+    82,
+    "Justice Hill",
+    "BAL",
+    "13"
+   ],
+   [
+    83,
+    "Emari Demercado",
+    "DAL",
+    "14"
+   ],
+   [
+    84,
+    "George Holani",
+    "SEA",
+    "11"
+   ],
+   [
+    85,
+    "DJ Giddens",
+    "IND",
+    "13"
+   ],
+   [
+    86,
+    "Tahj Brooks",
+    "CIN",
+    "6"
+   ],
+   [
+    87,
+    "Demond Claiborne",
+    "MIN",
+    "6"
+   ],
+   [
+    88,
+    "Jaleel McLaughlin",
+    "CLE",
+    "11"
+   ],
+   [
+    89,
+    "Austin Ekeler",
+    "FA",
+    null
+   ],
+   [
+    90,
+    "Trevor Etienne",
+    "CAR",
+    "5"
+   ],
+   [
+    91,
+    "Audric Estime",
+    "NO",
+    "8"
+   ],
+   [
+    92,
+    "Adam Randall",
+    "BAL",
+    "13"
+   ],
+   [
+    93,
+    "MarShawn Lloyd",
+    "GB",
+    "11"
+   ],
+   [
+    94,
+    "Bam Knight",
+    "ARI",
+    "14"
+   ],
+   [
+    95,
+    "Seth McGowan",
+    "IND",
+    "13"
+   ],
+   [
+    96,
+    "Jarquez Hunter",
+    "MIA",
+    "6"
+   ],
+   [
+    97,
+    "Michael Carter",
+    "TEN",
+    "9"
+   ]
+  ],
+  "cons": {
+   "Jahmyr Gibbs": 1,
+   "Bijan Robinson": 2,
+   "Jonathan Taylor": 3,
+   "James Cook III": 4,
+   "Christian McCaffrey": 5,
+   "Chase Brown": 6,
+   "Kenneth Walker III": 7,
+   "Saquon Barkley": 8,
+   "Ashton Jeanty": 9,
+   "Derrick Henry": 10,
+   "De'Von Achane": 11,
+   "Omarion Hampton": 12,
+   "Breece Hall": 13,
+   "Javonte Williams": 14,
+   "Jeremiyah Love": 15,
+   "D'Andre Swift": 16,
+   "Kyren Williams": 17,
+   "Travis Etienne Jr.": 18,
+   "Bucky Irving": 19,
+   "David Montgomery": 20,
+   "Cam Skattebo": 21,
+   "Bhayshul Tuten": 22,
+   "Rhamondre Stevenson": 23,
+   "Quinshon Judkins": 24,
+   "Jadarian Price": 25,
+   "Jaylen Warren": 26,
+   "TreVeyon Henderson": 27,
+   "Rico Dowdle": 28,
+   "Jonathon Brooks": 29,
+   "Blake Corum": 30,
+   "J.K. Dobbins": 31,
+   "RJ Harvey": 32,
+   "Tony Pollard": 33,
+   "MarShawn Lloyd": 34,
+   "Chuba Hubbard": 35,
+   "Kenny Gainwell": 36,
+   "Rachaad White": 37,
+   "Jordan Mason": 38,
+   "Jacory Croskey-Merritt": 39,
+   "Kyle Monangai": 40,
+   "Aaron Jones Sr.": 41,
+   "Josh Jacobs": 42,
+   "Tyler Allgeier": 43,
+   "Mike Washington Jr.": 44,
+   "Keaton Mitchell": 45,
+   "Tyjae Spears": 46,
+   "Kaelon Black": 47,
+   "Woody Marks": 48,
+   "Jonah Coleman": 49,
+   "Chris Rodriguez Jr.": 50,
+   "Tank Bigsby": 51,
+   "Alvin Kamara": 52,
+   "Emmett Johnson": 53,
+   "Zach Charbonnet": 54,
+   "Dylan Sampson": 55,
+   "Brian Robinson Jr.": 56,
+   "Braelon Allen": 57,
+   "Ray Davis": 58,
+   "Kimani Vidal": 59,
+   "Najee Harris": 60,
+   "Tyrone Tracy Jr.": 61,
+   "Jaylen Wright": 62,
+   "George Holani": 63,
+   "Samaje Perine": 64,
+   "Kaleb Johnson": 65,
+   "Kaytron Allen": 66,
+   "Nicholas Singleton": 67,
+   "Sean Tucker": 68,
+   "Justice Hill": 69,
+   "Chris Brooks": 70,
+   "Kendre Miller": 71,
+   "Demond Claiborne": 72,
+   "Seth McGowan": 73,
+   "James Conner": 74,
+   "Jordan James": 75,
+   "Emanuel Wilson": 76,
+   "Isiah Pacheco": 77,
+   "Devin Singletary": 78,
+   "Isaiah Davis": 79,
+   "Ollie Gordon II": 80,
+   "DJ Giddens": 81,
+   "LeQuint Allen Jr.": 82,
+   "Ty Johnson": 83,
+   "Emari Demercado": 84,
+   "Raheim Sanders": 85,
+   "Eli Heidenreich": 86,
+   "Adam Randall": 87,
+   "Will Shipley": 88,
+   "Bam Knight": 89,
+   "Brashard Smith": 90,
+   "Trevor Etienne": 91,
+   "Kareem Hunt": 92,
+   "Jarquez Hunter": 93,
+   "Sione Vaki": 94,
+   "Audric Estime": 95,
+   "Jawhar Jordan": 96,
+   "Devin Neal": 97,
+   "Phil Mafah": 98,
+   "Jacob Saylors": 99,
+   "Tahj Brooks": 100,
+   "Roschon Johnson": 101,
+   "Trey Benson": 102,
+   "J'Mari Taylor": 103,
+   "Jaydon Blue": 104,
+   "Kyle Juszczyk": 105,
+   "Rasheen Ali": 106,
+   "Jaleel McLaughlin": 107,
+   "Dylan Laube": 108,
+   "Corey Kiner": 109,
+   "Roman Hemby": 110,
+   "Miles Sanders": 111,
+   "Ameer Abdullah": 112,
+   "British Brooks": 113,
+   "AJ Dillon": 114,
+   "Kene Nwangwu": 115,
+   "Jerome Ford": 116,
+   "Reggie Gilliam": 117,
+   "Michael Carter": 118,
+   "Alec Ingold": 119,
+   "Max Bredeson": 120,
+   "Patrick Ricard": 121,
+   "Hunter Luepke": 122,
+   "Lan Larison": 123,
+   "Hassan Haskins": 124,
+   "Jam Miller": 125,
+   "Joe Mixon": 126,
+   "Tyler Goodson": 127,
+   "Antonio Williams": 128
+  }
+ },
+ "WR": {
+  "gibbs_total_experts": 1,
+  "gibbs_count": 96,
+  "gibbs_last_updated": "9/18",
+  "gibbs_last_updated_ts": 1789764392,
+  "cons_count": 154,
+  "cons_experts": 6,
+  "cons_last_updated": "9/17",
+  "gibbs": [
+   [
+    1,
+    "Ja'Marr Chase",
+    "CIN",
+    "6"
+   ],
+   [
+    2,
+    "Puka Nacua",
+    "LAR",
+    "11"
+   ],
+   [
+    3,
+    "Jaxon Smith-Njigba",
+    "SEA",
+    "11"
+   ],
+   [
+    4,
+    "CeeDee Lamb",
+    "DAL",
+    "14"
+   ],
+   [
+    5,
+    "Amon-Ra St. Brown",
+    "DET",
+    "6"
+   ],
+   [
+    6,
+    "Justin Jefferson",
+    "MIN",
+    "6"
+   ],
+   [
+    7,
+    "Drake London",
+    "ATL",
+    "11"
+   ],
+   [
+    8,
+    "Nico Collins",
+    "HOU",
+    "8"
+   ],
+   [
+    9,
+    "Rashee Rice",
+    "KC",
+    "5"
+   ],
+   [
+    10,
+    "Malik Nabers",
+    "NYG",
+    "8"
+   ],
+   [
+    11,
+    "George Pickens",
+    "DAL",
+    "14"
+   ],
+   [
+    12,
+    "Chris Olave",
+    "NO",
+    "8"
+   ],
+   [
+    13,
+    "A.J. Brown",
+    "NE",
+    "11"
+   ],
+   [
+    14,
+    "DeVonta Smith",
+    "PHI",
+    "10"
+   ],
+   [
+    15,
+    "Tetairoa McMillan",
+    "CAR",
+    "5"
+   ],
+   [
+    16,
+    "Tee Higgins",
+    "CIN",
+    "6"
+   ],
+   [
+    17,
+    "Garrett Wilson",
+    "NYJ",
+    "13"
+   ],
+   [
+    18,
+    "Zay Flowers",
+    "BAL",
+    "13"
+   ],
+   [
+    19,
+    "Jaylen Waddle",
+    "DEN",
+    "10"
+   ],
+   [
+    20,
+    "Ladd McConkey",
+    "LAC",
+    "7"
+   ],
+   [
+    21,
+    "Luther Burden III",
+    "CHI",
+    "10"
+   ],
+   [
+    22,
+    "Terry McLaurin",
+    "WAS",
+    "7"
+   ],
+   [
+    23,
+    "Davante Adams",
+    "LAR",
+    "11"
+   ],
+   [
+    24,
+    "Jameson Williams",
+    "DET",
+    "6"
+   ],
+   [
+    25,
+    "Emeka Egbuka",
+    "TB",
+    "10"
+   ],
+   [
+    26,
+    "Mike Evans",
+    "SF",
+    "8"
+   ],
+   [
+    27,
+    "Rome Odunze",
+    "CHI",
+    "10"
+   ],
+   [
+    28,
+    "DJ Moore",
+    "BUF",
+    "7"
+   ],
+   [
+    29,
+    "Christian Watson",
+    "GB",
+    "11"
+   ],
+   [
+    30,
+    "Marvin Harrison Jr.",
+    "ARI",
+    "14"
+   ],
+   [
+    31,
+    "Courtland Sutton",
+    "DEN",
+    "10"
+   ],
+   [
+    32,
+    "Jakobi Meyers",
+    "JAC",
+    "7"
+   ],
+   [
+    33,
+    "Michael Wilson",
+    "ARI",
+    "14"
+   ],
+   [
+    34,
+    "DK Metcalf",
+    "PIT",
+    "9"
+   ],
+   [
+    35,
+    "Brian Thomas Jr.",
+    "JAC",
+    "7"
+   ],
+   [
+    36,
+    "Chris Godwin Jr.",
+    "TB",
+    "10"
+   ],
+   [
+    37,
+    "Parker Washington",
+    "JAC",
+    "7"
+   ],
+   [
+    38,
+    "Alec Pierce",
+    "IND",
+    "13"
+   ],
+   [
+    39,
+    "Michael Pittman Jr.",
+    "PIT",
+    "9"
+   ],
+   [
+    40,
+    "Josh Downs",
+    "IND",
+    "13"
+   ],
+   [
+    41,
+    "Jordan Addison",
+    "MIN",
+    "6"
+   ],
+   [
+    42,
+    "Wan'Dale Robinson",
+    "TEN",
+    "9"
+   ],
+   [
+    43,
+    "Carnell Tate",
+    "TEN",
+    "9"
+   ],
+   [
+    44,
+    "Jordyn Tyson",
+    "NO",
+    "8"
+   ],
+   [
+    45,
+    "Jayden Reed",
+    "GB",
+    "11"
+   ],
+   [
+    46,
+    "Khalil Shakir",
+    "BUF",
+    "7"
+   ],
+   [
+    47,
+    "Quentin Johnston",
+    "LAC",
+    "7"
+   ],
+   [
+    48,
+    "Matthew Golden",
+    "GB",
+    "11"
+   ],
+   [
+    49,
+    "Xavier Worthy",
+    "KC",
+    "5"
+   ],
+   [
+    50,
+    "Makai Lemon",
+    "PHI",
+    "10"
+   ],
+   [
+    51,
+    "Romeo Doubs",
+    "NE",
+    "11"
+   ],
+   [
+    52,
+    "Jalen Coker",
+    "CAR",
+    "5"
+   ],
+   [
+    53,
+    "Deebo Samuel Sr.",
+    "SF",
+    "8"
+   ],
+   [
+    54,
+    "Rashid Shaheed",
+    "SEA",
+    "11"
+   ],
+   [
+    55,
+    "Travis Hunter",
+    "JAC",
+    "7"
+   ],
+   [
+    56,
+    "Stefon Diggs",
+    "WAS",
+    "7"
+   ],
+   [
+    57,
+    "Jerry Jeudy",
+    "CLE",
+    "11"
+   ],
+   [
+    58,
+    "Jauan Jennings",
+    "MIN",
+    "6"
+   ],
+   [
+    59,
+    "KC Concepcion Jr.",
+    "CLE",
+    "11"
+   ],
+   [
+    60,
+    "Adonai Mitchell",
+    "NYJ",
+    "13"
+   ],
+   [
+    61,
+    "Jalen McMillan",
+    "TB",
+    "10"
+   ],
+   [
+    62,
+    "Kayshon Boutte",
+    "HOU",
+    "8"
+   ],
+   [
+    63,
+    "Calvin Ridley",
+    "TEN",
+    "9"
+   ],
+   [
+    64,
+    "Chimere Dike",
+    "TEN",
+    "9"
+   ],
+   [
+    65,
+    "Ryan Flournoy",
+    "DAL",
+    "14"
+   ],
+   [
+    66,
+    "Tre' Harris",
+    "LAC",
+    "7"
+   ],
+   [
+    67,
+    "Denzel Boston",
+    "CLE",
+    "11"
+   ],
+   [
+    68,
+    "Elic Ayomanor",
+    "TEN",
+    "9"
+   ],
+   [
+    69,
+    "Pat Bryant",
+    "DEN",
+    "10"
+   ],
+   [
+    70,
+    "Jaylin Noel",
+    "HOU",
+    "8"
+   ],
+   [
+    71,
+    "Omar Cooper Jr.",
+    "NYJ",
+    "13"
+   ],
+   [
+    72,
+    "Tre Tucker",
+    "LV",
+    "13"
+   ],
+   [
+    73,
+    "Dontayvion Wicks",
+    "PHI",
+    "10"
+   ],
+   [
+    74,
+    "Darnell Mooney",
+    "NYG",
+    "8"
+   ],
+   [
+    75,
+    "Isaac TeSlaa",
+    "DET",
+    "6"
+   ],
+   [
+    76,
+    "Rashod Bateman",
+    "BAL",
+    "13"
+   ],
+   [
+    77,
+    "Tory Horton",
+    "SEA",
+    "11"
+   ],
+   [
+    78,
+    "Jalen Nailor",
+    "LV",
+    "13"
+   ],
+   [
+    79,
+    "Cooper Kupp",
+    "SEA",
+    "11"
+   ],
+   [
+    80,
+    "Jack Bech",
+    "LV",
+    "13"
+   ],
+   [
+    81,
+    "Tank Dell",
+    "HOU",
+    "8"
+   ],
+   [
+    82,
+    "Kyle Williams",
+    "NE",
+    "11"
+   ],
+   [
+    83,
+    "Keenan Allen",
+    "IND",
+    "13"
+   ],
+   [
+    84,
+    "Malik Washington",
+    "MIA",
+    "6"
+   ],
+   [
+    85,
+    "Elijah Sarratt",
+    "BAL",
+    "13"
+   ],
+   [
+    86,
+    "Zachariah Branch",
+    "ATL",
+    "11"
+   ],
+   [
+    87,
+    "Antonio Williams",
+    "WAS",
+    "7"
+   ],
+   [
+    88,
+    "Germie Bernard",
+    "PIT",
+    "9"
+   ],
+   [
+    89,
+    "Malachi Fields",
+    "NYG",
+    "8"
+   ],
+   [
+    90,
+    "Xavier Legette",
+    "CAR",
+    "5"
+   ],
+   [
+    91,
+    "Tez Johnson",
+    "TB",
+    "10"
+   ],
+   [
+    92,
+    "Devaughn Vele",
+    "NO",
+    "8"
+   ],
+   [
+    93,
+    "Chris Bell",
+    "MIA",
+    "6"
+   ],
+   [
+    94,
+    "Tyquan Thornton",
+    "KC",
+    "5"
+   ],
+   [
+    95,
+    "Treylon Burks",
+    "WAS",
+    "7"
+   ],
+   [
+    96,
+    "De'Zhaun Stribling",
+    "SF",
+    "8"
+   ]
+  ],
+  "cons": {
+   "Ja'Marr Chase": 1,
+   "Puka Nacua": 2,
+   "Jaxon Smith-Njigba": 3,
+   "Amon-Ra St. Brown": 4,
+   "Justin Jefferson": 5,
+   "CeeDee Lamb": 6,
+   "Nico Collins": 7,
+   "Chris Olave": 8,
+   "George Pickens": 9,
+   "Drake London": 10,
+   "Malik Nabers": 11,
+   "Zay Flowers": 12,
+   "DeVonta Smith": 13,
+   "Jaylen Waddle": 14,
+   "Garrett Wilson": 15,
+   "Rashee Rice": 16,
+   "Emeka Egbuka": 17,
+   "Tee Higgins": 18,
+   "A.J. Brown": 19,
+   "Tetairoa McMillan": 20,
+   "Ladd McConkey": 21,
+   "Christian Watson": 22,
+   "Parker Washington": 23,
+   "DJ Moore": 24,
+   "Mike Evans": 25,
+   "Luther Burden III": 26,
+   "Jameson Williams": 27,
+   "Terry McLaurin": 28,
+   "Davante Adams": 29,
+   "Carnell Tate": 30,
+   "Rome Odunze": 31,
+   "Chris Godwin Jr.": 32,
+   "DK Metcalf": 33,
+   "Stefon Diggs": 34,
+   "Marvin Harrison Jr.": 35,
+   "Quentin Johnston": 36,
+   "Courtland Sutton": 37,
+   "Michael Pittman Jr.": 38,
+   "Brian Thomas Jr.": 39,
+   "Makai Lemon": 40,
+   "Alec Pierce": 41,
+   "Wan'Dale Robinson": 42,
+   "Josh Downs": 43,
+   "Jalen Coker": 44,
+   "KC Concepcion Jr.": 45,
+   "Matthew Golden": 46,
+   "Deebo Samuel Sr.": 47,
+   "Michael Wilson": 48,
+   "Jayden Reed": 49,
+   "Jakobi Meyers": 50,
+   "Jordan Addison": 51,
+   "Romeo Doubs": 52,
+   "Khalil Shakir": 53,
+   "Denzel Boston": 54,
+   "Xavier Worthy": 55,
+   "De'Zhaun Stribling": 56,
+   "Jordyn Tyson": 57,
+   "Rashid Shaheed": 58,
+   "Keenan Allen": 59,
+   "Adonai Mitchell": 60,
+   "Dontayvion Wicks": 61,
+   "Kayshon Boutte": 62,
+   "Tre Tucker": 63,
+   "Tre' Harris": 64,
+   "Pat Bryant": 65,
+   "Caleb Douglas": 66,
+   "Jerry Jeudy": 67,
+   "Malachi Fields": 68,
+   "Jalen McMillan": 69,
+   "Jaylin Noel": 70,
+   "Omar Cooper Jr.": 71,
+   "Ryan Flournoy": 72,
+   "Jalen Nailor": 73,
+   "Rashod Bateman": 74,
+   "Chris Bell": 75,
+   "Jauan Jennings": 76,
+   "Ja'Kobi Lane": 77,
+   "Devaughn Vele": 78,
+   "Calvin Ridley": 79,
+   "Antonio Williams": 80,
+   "Malik Washington": 81,
+   "Cooper Kupp": 82,
+   "Ted Hurst III": 83,
+   "Travis Hunter": 84,
+   "Cyrus Allen": 85,
+   "Isaac TeSlaa": 86,
+   "Germie Bernard": 87,
+   "Darnell Mooney": 88,
+   "Zachariah Branch": 89,
+   "DeMario Douglas": 90,
+   "Bryce Lance": 91,
+   "Troy Franklin": 92,
+   "Kyle Williams": 93,
+   "Mack Hollins": 94,
+   "Kalif Raymond": 95,
+   "Kendrick Bourne": 96,
+   "Chimere Dike": 97,
+   "Jack Bech": 98,
+   "Elic Ayomanor": 99,
+   "Marvin Mims Jr.": 100,
+   "Xavier Legette": 101,
+   "Jahan Dotson": 102,
+   "Elijah Sarratt": 103,
+   "Andrei Iosivas": 104,
+   "Tyquan Thornton": 105,
+   "Roman Wilson": 106,
+   "Kevin Coleman Jr.": 107,
+   "Keon Coleman": 108,
+   "Christian Kirk": 109,
+   "Skyler Bell": 110,
+   "Tank Dell": 111,
+   "Malik Benson": 112,
+   "Tory Horton": 113,
+   "Joshua Palmer": 114,
+   "Brenen Thompson": 115,
+   "Hollywood Brown": 116,
+   "Demarcus Robinson": 117,
+   "Colbie Young": 118,
+   "Xavier Hutchinson": 119,
+   "Odell Beckham Jr.": 120,
+   "Barion Brown": 121,
+   "Konata Mumpfield": 122,
+   "Olamide Zaccheaus": 123,
+   "Zavion Thomas": 124,
+   "Tutu Atwell": 125,
+   "KaVontae Turpin": 126,
+   "Isaiah Bond": 127,
+   "Jalen Tolbert": 128,
+   "Treylon Burks": 129,
+   "CJ Daniels": 130,
+   "Tez Johnson": 131,
+   "Darius Slayton": 132,
+   "Tyreek Hill": 133,
+   "Jalen Royals": 134,
+   "Cedric Tillman": 135,
+   "Savion Williams": 136,
+   "Brandon Aiyuk": 137,
+   "Isaiah Williams": 138,
+   "Jaylin Lane": 139,
+   "Jahdae Walker": 140,
+   "Luke McCaffrey": 141,
+   "Deion Burks": 142,
+   "Tai Felton": 143,
+   "Kaden Wetjen": 144,
+   "Jordan Whittington": 145,
+   "Devontez Walker": 146,
+   "Dyami Brown": 147,
+   "Jimmy Horn Jr.": 148,
+   "Dont'e Thornton Jr.": 149,
+   "Darius Cooper": 150,
+   "Greg Dortch": 151,
+   "Ashton Dulin": 152,
+   "Nick Westbrook-Ikhine": 153,
+   "Chris Brazzell II": 154
+  }
+ },
+ "QB": {
+  "gibbs_total_experts": 1,
+  "gibbs_count": 39,
+  "gibbs_last_updated": "9/15",
+  "gibbs_last_updated_ts": 1789501543,
+  "cons_count": 66,
+  "cons_experts": 7,
+  "cons_last_updated": "9/16",
+  "gibbs": [
+   [
+    1,
+    "Josh Allen",
+    "BUF",
+    "7"
+   ],
+   [
+    2,
+    "Lamar Jackson",
+    "BAL",
+    "13"
+   ],
+   [
+    3,
+    "Caleb Williams",
+    "CHI",
+    "10"
+   ],
+   [
+    4,
+    "Drake Maye",
+    "NE",
+    "11"
+   ],
+   [
+    5,
+    "Trevor Lawrence",
+    "JAC",
+    "7"
+   ],
+   [
+    6,
+    "Jayden Daniels",
+    "WAS",
+    "7"
+   ],
+   [
+    7,
+    "Jalen Hurts",
+    "PHI",
+    "10"
+   ],
+   [
+    8,
+    "Joe Burrow",
+    "CIN",
+    "6"
+   ],
+   [
+    9,
+    "Brock Purdy",
+    "SF",
+    "8"
+   ],
+   [
+    10,
+    "Justin Herbert",
+    "LAC",
+    "7"
+   ],
+   [
+    11,
+    "Jaxson Dart",
+    "NYG",
+    "8"
+   ],
+   [
+    12,
+    "Malik Willis",
+    "MIA",
+    "6"
+   ],
+   [
+    13,
+    "Dak Prescott",
+    "DAL",
+    "14"
+   ],
+   [
+    14,
+    "Kyler Murray",
+    "MIN",
+    "6"
+   ],
+   [
+    15,
+    "Baker Mayfield",
+    "TB",
+    "10"
+   ],
+   [
+    16,
+    "Patrick Mahomes II",
+    "KC",
+    "5"
+   ],
+   [
+    17,
+    "Jared Goff",
+    "DET",
+    "6"
+   ],
+   [
+    18,
+    "Matthew Stafford",
+    "LAR",
+    "11"
+   ],
+   [
+    19,
+    "Tyler Shough",
+    "NO",
+    "8"
+   ],
+   [
+    20,
+    "Bo Nix",
+    "DEN",
+    "10"
+   ],
+   [
+    21,
+    "Jordan Love",
+    "GB",
+    "11"
+   ],
+   [
+    22,
+    "C.J. Stroud",
+    "HOU",
+    "8"
+   ],
+   [
+    23,
+    "Bryce Young",
+    "CAR",
+    "5"
+   ],
+   [
+    24,
+    "Daniel Jones",
+    "IND",
+    "13"
+   ],
+   [
+    25,
+    "Cam Ward",
+    "TEN",
+    "9"
+   ],
+   [
+    26,
+    "Sam Darnold",
+    "SEA",
+    "11"
+   ],
+   [
+    27,
+    "Jacoby Brissett",
+    "ARI",
+    "14"
+   ],
+   [
+    28,
+    "Fernando Mendoza",
+    "LV",
+    "13"
+   ],
+   [
+    29,
+    "Aaron Rodgers",
+    "PIT",
+    "9"
+   ],
+   [
+    30,
+    "Geno Smith",
+    "NYJ",
+    "13"
+   ],
+   [
+    31,
+    "Michael Penix Jr.",
+    "ATL",
+    "11"
+   ],
+   [
+    32,
+    "Tua Tagovailoa",
+    "ATL",
+    "11"
+   ],
+   [
+    33,
+    "Kirk Cousins",
+    "LV",
+    "13"
+   ],
+   [
+    34,
+    "Deshaun Watson",
+    "CLE",
+    "11"
+   ],
+   [
+    35,
+    "J.J. McCarthy",
+    "MIN",
+    "6"
+   ],
+   [
+    36,
+    "Shedeur Sanders",
+    "CLE",
+    "11"
+   ],
+   [
+    37,
+    "Carson Beck",
+    "ARI",
+    "14"
+   ],
+   [
+    38,
+    "Mac Jones",
+    "SF",
+    "8"
+   ],
+   [
+    39,
+    "Taylen Green",
+    "CLE",
+    "11"
+   ]
+  ],
+  "cons": {
+   "Josh Allen": 1,
+   "Lamar Jackson": 2,
+   "Jalen Hurts": 3,
+   "Caleb Williams": 4,
+   "Drake Maye": 5,
+   "Joe Burrow": 6,
+   "Trevor Lawrence": 7,
+   "Jayden Daniels": 8,
+   "Justin Herbert": 9,
+   "Brock Purdy": 10,
+   "Dak Prescott": 11,
+   "Jaxson Dart": 12,
+   "Patrick Mahomes II": 13,
+   "Jared Goff": 14,
+   "Bo Nix": 15,
+   "Malik Willis": 16,
+   "Jordan Love": 17,
+   "Matthew Stafford": 18,
+   "Baker Mayfield": 19,
+   "Tyler Shough": 20,
+   "Kyler Murray": 21,
+   "Bryce Young": 22,
+   "C.J. Stroud": 23,
+   "Daniel Jones": 24,
+   "Sam Darnold": 25,
+   "Geno Smith": 26,
+   "Cam Ward": 27,
+   "Aaron Rodgers": 28,
+   "Fernando Mendoza": 29,
+   "Jacoby Brissett": 30,
+   "Kirk Cousins": 31,
+   "Tua Tagovailoa": 32,
+   "Shedeur Sanders": 33,
+   "Michael Penix Jr.": 34,
+   "Deshaun Watson": 35,
+   "Carson Wentz": 36,
+   "Carson Beck": 37,
+   "Mac Jones": 38,
+   "Joe Flacco": 39,
+   "J.J. McCarthy": 40,
+   "Justin Fields": 41,
+   "Jameis Winston": 42,
+   "Marcus Mariota": 43,
+   "Cade Klubnik": 44,
+   "Ty Simpson": 45,
+   "Anthony Richardson Sr.": 46,
+   "Tyson Bagent": 47,
+   "Tyrod Taylor": 48,
+   "Gardner Minshew II": 49,
+   "Davis Mills": 50,
+   "Haynes King": 51,
+   "Joe Milton III": 52,
+   "Trey Lance": 53,
+   "Drew Allar": 54,
+   "Spencer Rattler": 55,
+   "Tyler Huntley": 56,
+   "Jimmy Garoppolo": 57,
+   "Kyle Allen": 58,
+   "Jalen Milroe": 59,
+   "Taylen Green": 60,
+   "Jarrett Stidham": 61,
+   "Quinn Ewers": 62,
+   "Tommy DeVito": 63,
+   "Riley Leonard": 64,
+   "Cooper Rush": 65,
+   "Sam Howell": 66
+  }
+ },
+ "TE": {
+  "gibbs_total_experts": 1,
+  "gibbs_count": 35,
+  "gibbs_last_updated": "9/15",
+  "gibbs_last_updated_ts": 1789501543,
+  "cons_count": 79,
+  "cons_experts": 7,
+  "cons_last_updated": "9/18",
+  "gibbs": [
+   [
+    1,
+    "Trey McBride",
+    "ARI",
+    "14"
+   ],
+   [
+    2,
+    "Brock Bowers",
+    "LV",
+    "13"
+   ],
+   [
+    3,
+    "Colston Loveland",
+    "CHI",
+    "10"
+   ],
+   [
+    4,
+    "Tyler Warren",
+    "IND",
+    "13"
+   ],
+   [
+    5,
+    "Harold Fannin Jr.",
+    "CLE",
+    "11"
+   ],
+   [
+    6,
+    "Tucker Kraft",
+    "GB",
+    "11"
+   ],
+   [
+    7,
+    "Sam LaPorta",
+    "DET",
+    "6"
+   ],
+   [
+    8,
+    "Kyle Pitts Sr.",
+    "ATL",
+    "11"
+   ],
+   [
+    9,
+    "Dalton Kincaid",
+    "BUF",
+    "7"
+   ],
+   [
+    10,
+    "Oronde Gadsden II",
+    "LAC",
+    "7"
+   ],
+   [
+    11,
+    "Jake Ferguson",
+    "DAL",
+    "14"
+   ],
+   [
+    12,
+    "Travis Kelce",
+    "KC",
+    "5"
+   ],
+   [
+    13,
+    "Isaiah Likely",
+    "NYG",
+    "8"
+   ],
+   [
+    14,
+    "Dallas Goedert",
+    "PHI",
+    "10"
+   ],
+   [
+    15,
+    "Brenton Strange",
+    "JAC",
+    "7"
+   ],
+   [
+    16,
+    "Juwan Johnson",
+    "NO",
+    "8"
+   ],
+   [
+    17,
+    "Mark Andrews",
+    "BAL",
+    "13"
+   ],
+   [
+    18,
+    "George Kittle",
+    "SF",
+    "8"
+   ],
+   [
+    19,
+    "Hunter Henry",
+    "NE",
+    "11"
+   ],
+   [
+    20,
+    "Dalton Schultz",
+    "HOU",
+    "8"
+   ],
+   [
+    21,
+    "T.J. Hockenson",
+    "MIN",
+    "6"
+   ],
+   [
+    22,
+    "Chig Okonkwo",
+    "WAS",
+    "7"
+   ],
+   [
+    23,
+    "Mason Taylor",
+    "NYJ",
+    "13"
+   ],
+   [
+    24,
+    "AJ Barner",
+    "SEA",
+    "11"
+   ],
+   [
+    25,
+    "Kenyon Sadiq",
+    "NYJ",
+    "13"
+   ],
+   [
+    26,
+    "Terrance Ferguson",
+    "LAR",
+    "11"
+   ],
+   [
+    27,
+    "David Njoku",
+    "LAC",
+    "7"
+   ],
+   [
+    28,
+    "Colby Parkinson",
+    "LAR",
+    "11"
+   ],
+   [
+    29,
+    "Gunnar Helm",
+    "TEN",
+    "9"
+   ],
+   [
+    30,
+    "Evan Engram",
+    "DEN",
+    "10"
+   ],
+   [
+    31,
+    "Cade Otton",
+    "TB",
+    "10"
+   ],
+   [
+    32,
+    "Pat Freiermuth",
+    "PIT",
+    "9"
+   ],
+   [
+    33,
+    "Theo Johnson",
+    "NYG",
+    "8"
+   ],
+   [
+    34,
+    "Eli Stowers",
+    "PHI",
+    "10"
+   ],
+   [
+    35,
+    "Jake Tonges",
+    "SF",
+    "8"
+   ]
+  ],
+  "cons": {
+   "Trey McBride": 1,
+   "Brock Bowers": 2,
+   "Colston Loveland": 3,
+   "Tyler Warren": 4,
+   "Sam LaPorta": 5,
+   "Tucker Kraft": 6,
+   "Harold Fannin Jr.": 7,
+   "Dalton Kincaid": 8,
+   "George Kittle": 9,
+   "Kyle Pitts Sr.": 10,
+   "Dallas Goedert": 11,
+   "Isaiah Likely": 12,
+   "Travis Kelce": 13,
+   "Juwan Johnson": 14,
+   "Mark Andrews": 15,
+   "Jake Ferguson": 16,
+   "Brenton Strange": 17,
+   "Dalton Schultz": 18,
+   "Hunter Henry": 19,
+   "Greg Dulcich": 20,
+   "T.J. Hockenson": 21,
+   "Terrance Ferguson": 22,
+   "Chig Okonkwo": 23,
+   "AJ Barner": 24,
+   "Kenyon Sadiq": 25,
+   "Cade Otton": 26,
+   "Pat Freiermuth": 27,
+   "Gunnar Helm": 28,
+   "Oronde Gadsden II": 29,
+   "David Njoku": 30,
+   "Evan Engram": 31,
+   "Charlie Kolar": 32,
+   "Darren Waller": 33,
+   "Mike Gesicki": 34,
+   "Michael Mayer": 35,
+   "Colby Parkinson": 36,
+   "Eli Raridon": 37,
+   "Mason Taylor": 38,
+   "Theo Johnson": 39,
+   "Erick All Jr.": 40,
+   "Elijah Arroyo": 41,
+   "Eli Stowers": 42,
+   "Tyler Higbee": 43,
+   "Darnell Washington": 44,
+   "Cole Kmet": 45,
+   "Noah Fant": 46,
+   "Dawson Knox": 47,
+   "Noah Gray": 48,
+   "Ben Sinnott": 49,
+   "Jake Tonges": 50,
+   "Jonnu Smith": 51,
+   "Matt Hibner": 52,
+   "Oscar Delp": 53,
+   "Marlin Klein": 54,
+   "Tommy Tremble": 55,
+   "Ja'Tavion Sanders": 56,
+   "Mitchell Evans": 57,
+   "Max Klare": 58,
+   "Daniel Bellinger": 59,
+   "Nate Boerkircher": 60,
+   "Justin Joly": 61,
+   "Austin Hooper": 62,
+   "Zach Ertz": 63,
+   "Sam Roush": 64,
+   "Jared Wiley": 65,
+   "John Bates": 66,
+   "Luke Schoonmaker": 67,
+   "Josh Whyle": 68,
+   "Tanner Koziol": 69,
+   "Josh Oliver": 70,
+   "Will Kacmarek": 71,
+   "Elijah Higgins": 72,
+   "Luke Musgrave": 73,
+   "Cade Stover": 74,
+   "Adam Trautman": 75,
+   "Jeremy Ruckert": 76,
+   "Jackson Hawes": 77,
+   "Taysom Hill": 78,
+   "Jelani Woods": 79
+  }
+ }
+}

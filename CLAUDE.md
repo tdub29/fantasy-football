@@ -34,7 +34,7 @@ Match the execution shape to the task - **solo**, **subagents**, a **workflow**,
 
 - **Check for a skill before starting, not after getting stuck.** A skill costs instructions, not a spawn, so there is no cost argument for skipping one that fits. Design, review, writing, research, data, decisions, finance, security and docs are all covered. Unsure what exists? `scout-skills` (first token `mid` | `high` | `max`), and if it flags a real gap, install that skill as a complete local bundle rather than noting the gap and moving on.
 - **A verdict is not certified by whoever produced it.** Rankings, design choices, exploitability calls, "is this right", any number reaching a person: fresh lens, or be the reviewer only if you did not do the work.
-- **Breadth gets workers.** More than a handful of files, sources, claims or candidates: one worker per real shard, then deterministic code decides what survives.
+- **Breadth gets workers.** Three or more independent shards (files, sources, claims, candidates, or skills to import, each carrying its own proof and verification): one worker per shard, then deterministic code decides what survives. "More than a handful" used to be the trigger and it read as affirmative permission to stay solo on three: graded 2026-09-15 on skill-install-pass-also-retires-the-unrun, where three skills times gap-proof plus bundle fetch plus four-tree mirror plus lockfile hash is twelve real shards that the old wording gave no way to see.
 - **None of this licenses spawning for trivial work.** A one-file mechanical edit stays solo and self-inspected; the cost gate still applies and over-orchestration is its own failure. The line is judgement and breadth, not effort.
 
 **Here:** Fan out player and stat analysis; rank trade offers as a **tournament**, not by absolute score, and remember a dynasty trade is anchored by its biggest single asset (a pile of small pieces does not substitute even at equal KTC total). **Solo** for site edits -- it is vanilla JS with no build step.
@@ -67,8 +67,11 @@ build step.
    `computePlayerStrength` and `computeRosterStrength`, where picks flow, how
    trade math is computed.
 4. **[site/PRODUCT.md](site/PRODUCT.md)** + **[site/DESIGN.md](site/DESIGN.md)**
-   visual and UX standards. "Tier sheet, live" aesthetic. Read before any UI
-   change. For shared motion/transition/interaction vocabulary and the
+   visual and UX standards. "Backyard" aesthetic: retro game-UI plates, gold
+   selection, turf ground. Read before any UI change, along with
+   [site/BACKYARD-INVENTORY.md](site/BACKYARD-INVENTORY.md), which inventories
+   the reference screens and states the IP boundary (the grammar is takeable,
+   the Backyard Football and NFL marks are not). For shared motion/transition/interaction vocabulary and the
    DESIGN.md workflow, see
    [`../.agents/memory/reference_design-vocabulary.md`](../.agents/memory/reference_design-vocabulary.md)
    (userinterface-wiki, transitions-dev, make-interfaces-feel-better, hallmark).
@@ -143,6 +146,16 @@ relevant one before answering any contend/rebuild/trade question:
 | `dynasty-replacement-level` | Pricing any bench body, backup or depth piece against what is FREE. Owns the waiver/FAAB channel and the QB-count call. |
 | `dynasty-player-evaluation` | A question about ONE player, and the hard line between what the repo can measure about him and what it cannot |
 
+**Re-derive replacement level, never quote it.** Best free QB fell 196 to 154 and TE 120 to 84 by
+2026-09-17, which flipped `dynasty-replacement-level` from always-sell-the-QB2 to a hold on its own
+10-point bar while its two-of-two gate still says sell:
+[notes/replacement-level-shift-2026-09-17.html](notes/replacement-level-shift-2026-09-17.html).
+
+**FAAB prices are measured here, not guessed.** What a waiver claim costs in THESE leagues, by
+archetype, with the classification rules and a re-runnable extractor:
+[notes/faab-bid-archetypes-2026-09-16.md](notes/faab-bid-archetypes-2026-09-16.md). The vacancy sets
+the price, not the player, and spend does not predict production.
+
 **Four rules that decide answers, reasoning in [docs/FRAMEWORKS.md](docs/FRAMEWORKS.md):**
 replacement level is the baseline for every depth question and `dynasty-replacement-level` wins any
 disagreement about QB count; never quote a title-odds delta from one Monte Carlo run, because the
@@ -159,6 +172,12 @@ Full pipeline detail, and the evidence behind every trap below, is in
 
 - `node --check site/js/app.js`, then `for f in site/js/*.test.js; do node "$f"; done` from the repo
   root. The three Gibbs tests use repo-relative paths and fail if you run them from `site/js/`.
+- **`python site/check-field-tile.py` after any edit to the turf background.** CSS drops a
+  `background-image` declaration ATOMICALLY, so one malformed layer among five ships the page as
+  flat green. That has happened twice, once from a raw `#` in the SVG data URI and once from a
+  string-slice edit that broke a `url(` quote. `node --check` does not read CSS and `verify-app.py`
+  asserts on DOM nodes, not painted pixels, so neither catches it. The check also asserts the
+  geometry: numerals clear of the chalk lines, hash rows below the glyph band.
 - **`python ../.agents/scripts/verify-app.py "Fantasy Football"` before claiming any UI change works.**
   It drives all 23 mapped features headlessly and exits 1 on a failure or a console error. A new
   view ships with its entry in `.agents/feature-map.json`, in the same change.
@@ -185,8 +204,12 @@ Full pipeline detail, and the evidence behind every trap below, is in
 - Vanilla ES, no frameworks
 - Helpers defined in `site/js/app.js` (single-file)
 - DOM via the `h(...)` helper at the top of app.js
-- Tier-sheet aesthetic: flat-by-default, color carries meaning, no em dashes,
-  no decorative gradients, no SaaS purple
+- Backyard aesthetic: every surface is an outlined plate, nothing is flat, and
+  SELECTION IS A GOLD FILL with ink text. Vertical gradients come from the six
+  `--grad-*` tokens, never hand-written in a component. Hard shadow offsets,
+  zero blur. No em dashes, no SaaS purple. Replaced the old flat-by-default
+  tier-sheet standard on 2026-09-15; `site/DESIGN.md` is the standard and
+  `site/BACKYARD-INVENTORY.md` is the reference world behind it
 - Comments: short. Explain *why* something exists when the why isn't obvious.
   Don't comment what the code already says.
 

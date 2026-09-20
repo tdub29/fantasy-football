@@ -191,35 +191,35 @@ season,team,head_coach,offensive_coordinator,play_caller,play_caller_role,scheme
 2025,TB,Todd Bowles,Josh Grizzard,Josh Grizzard,OC,Shanahan/McVay,first-time NFL OC; Coen left to JAX
 2025,TEN,Brian Callahan,Nick Holz,Brian Callahan,HC,McVay tree,
 2025,WAS,Dan Quinn,Kliff Kingsbury,Kliff Kingsbury,OC,Air Raid,
-2026,ARI,Jonathan Gannon,Drew Petzing,Drew Petzing,OC,Browns tree,projected
-2026,ATL,Raheem Morris,Zac Robinson,Zac Robinson,OC,McVay tree,projected
-2026,BAL,John Harbaugh,Todd Monken,Todd Monken,OC,Spread,projected
-2026,BUF,Sean McDermott,Joe Brady,Joe Brady,OC,Air Raid/Hybrid,projected
-2026,CAR,Dave Canales,Brad Idzik,Dave Canales,HC,Hybrid,projected
-2026,CHI,Ben Johnson,Declan Doyle,Ben Johnson,HC,Wide Zone,projected
-2026,CIN,Zac Taylor,Dan Pitcher,Dan Pitcher,OC,McVay tree,projected
-2026,CLE,Kevin Stefanski,Tommy Rees,Kevin Stefanski,HC,Shanahan tree,projected
-2026,DAL,Brian Schottenheimer,Klayton Adams,Brian Schottenheimer,HC,Coryell,projected
-2026,DEN,Sean Payton,Joe Lombardi,Sean Payton,HC,Payton system,projected
-2026,DET,Dan Campbell,John Morton,John Morton,OC,West Coast,projected
-2026,GB,Matt LaFleur,Adam Stenavich,Matt LaFleur,HC,Shanahan tree,projected
-2026,HOU,DeMeco Ryans,Nick Caley,Nick Caley,OC,Erhardt-Perkins,projected
-2026,IND,Shane Steichen,Jim Bob Cooter,Shane Steichen,HC,McVay/Reid hybrid,projected
-2026,JAX,Liam Coen,Grant Udinski,Liam Coen,HC,Shanahan/McVay,projected
-2026,KC,Andy Reid,Matt Nagy,Andy Reid,HC,Reid system,projected
-2026,LV,Pete Carroll,Chip Kelly,Chip Kelly,OC,Spread,projected
-2026,LAC,Jim Harbaugh,Greg Roman,Greg Roman,OC,RPO/Zone Read,projected
-2026,LA,Sean McVay,Mike LaFleur,Sean McVay,HC,McVay system,projected
-2026,MIA,Mike McDaniel,Frank Smith,Mike McDaniel,HC,Shanahan system,projected
-2026,MIN,Kevin O'Connell,Wes Phillips,Kevin O'Connell,HC,McVay system,projected
-2026,NE,Mike Vrabel,Josh McDaniels,Josh McDaniels,OC,Erhardt-Perkins,projected
-2026,NO,Kellen Moore,Doug Nussmeier,Kellen Moore,HC,Hybrid,projected
-2026,NYG,Brian Daboll,Mike Kafka,Mike Kafka,OC,Reid/Andy tree,projected
-2026,NYJ,Aaron Glenn,Tanner Engstrand,Tanner Engstrand,OC,Lions tree,projected
-2026,PHI,Nick Sirianni,Kevin Patullo,Nick Sirianni,HC,McVay/Reid hybrid,projected
-2026,PIT,Mike Tomlin,Arthur Smith,Arthur Smith,OC,Wide Zone,projected
-2026,SF,Kyle Shanahan,Klay Kubiak,Kyle Shanahan,HC,Shanahan system,projected
-2026,SEA,Mike Macdonald,Klint Kubiak,Klint Kubiak,OC,Shanahan/Kubiak system,projected
-2026,TB,Todd Bowles,Josh Grizzard,Josh Grizzard,OC,Shanahan/McVay,projected
-2026,TEN,Brian Callahan,Nick Holz,Brian Callahan,HC,McVay tree,projected
-2026,WAS,Dan Quinn,Kliff Kingsbury,Kliff Kingsbury,OC,Air Raid,projected
+2026,ARI,Mike LaFleur,Nathaniel Hackett,Mike LaFleur,HC,McVay/Shanahan,
+2026,ATL,Kevin Stefanski,Tommy Rees,Tommy Rees,OC,Stefanski/Rees,
+2026,BAL,Jesse Minter,Declan Doyle,Declan Doyle,OC,Payton/West Coast,
+2026,BUF,Joe Brady,Pete Carmichael Jr.,Joe Brady,HC,Brady/Spread,
+2026,CAR,Dave Canales,Brad Idzik,Brad Idzik,OC,Canales system,
+2026,CHI,Ben Johnson,Press Taylor,Ben Johnson,HC,Johnson system,
+2026,CIN,Zac Taylor,Dan Pitcher,Zac Taylor,HC,McVay tree,
+2026,CLE,Todd Monken,Travis Switzer,Todd Monken,HC,Monken/Spread,
+2026,DAL,Brian Schottenheimer,Klayton Adams,Brian Schottenheimer,HC,Coryell,
+2026,DEN,Sean Payton,Davis Webb,Davis Webb,OC,Payton system,
+2026,DET,Dan Campbell,Drew Petzing,Drew Petzing,OC,Petzing/West Coast,
+2026,GB,Matt LaFleur,Adam Stenavich,Matt LaFleur,HC,Shanahan tree,
+2026,HOU,DeMeco Ryans,Nick Caley,Nick Caley,OC,Erhardt-Perkins,
+2026,IND,Shane Steichen,Jim Bob Cooter,Shane Steichen,HC,McVay/Reid hybrid,
+2026,JAX,Liam Coen,Grant Udinski,Liam Coen,HC,Shanahan/McVay,
+2026,KC,Andy Reid,Eric Bieniemy,Andy Reid,HC,Reid system,
+2026,LV,Klint Kubiak,Andrew Janocko,Klint Kubiak,HC,Shanahan/Kubiak system,
+2026,LAC,Jim Harbaugh,Mike McDaniel,Mike McDaniel,OC,Shanahan system,
+2026,LA,Sean McVay,Nate Scheelhaase,Sean McVay,HC,McVay system,
+2026,MIA,Jeff Hafley,Bobby Slowik,Bobby Slowik,OC,Shanahan system,
+2026,MIN,Kevin O'Connell,Wes Phillips,Kevin O'Connell,HC,McVay system,
+2026,NE,Mike Vrabel,Josh McDaniels,Josh McDaniels,OC,Erhardt-Perkins,
+2026,NO,Kellen Moore,Doug Nussmeier,Kellen Moore,HC,Moore/West Coast,
+2026,NYG,John Harbaugh,Matt Nagy,Matt Nagy,OC,Reid/West Coast,
+2026,NYJ,Aaron Glenn,Frank Reich,Frank Reich,OC,Reich/West Coast,
+2026,PHI,Nick Sirianni,Sean Mannion,Sean Mannion,OC,McVay/Shanahan,
+2026,PIT,Mike McCarthy,Brian Angelichio,Mike McCarthy,HC,West Coast,
+2026,SF,Kyle Shanahan,Klay Kubiak,Kyle Shanahan,HC,Shanahan system,
+2026,SEA,Mike Macdonald,Brian Fleury,Brian Fleury,OC,Shanahan/Kubiak system,
+2026,TB,Todd Bowles,Zac Robinson,Zac Robinson,OC,McVay system,
+2026,TEN,Robert Saleh,Brian Daboll,Brian Daboll,OC,Erhardt-Perkins,
+2026,WAS,Dan Quinn,David Blough,David Blough,OC,Johnson/McVay,

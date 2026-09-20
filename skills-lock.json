@@ -20,49 +20,49 @@
       "sourceType": "github",
       "sourceCommit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
       "skillPath": "skills/cavecrew/SKILL.md",
-      "computedHash": "f1ce6b651c9431cc248061471bf247787c2491c0b02b912691fc8f690f01be04"
+      "computedHash": "c05f8e8d16bd8ae1c8d0b0abf6e8b9671051bde61653c4986304c2de3a1cf5d4"
     },
     "caveman": {
       "source": "JuliusBrussee/caveman",
       "sourceType": "github",
       "sourceCommit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
       "skillPath": "skills/caveman/SKILL.md",
-      "computedHash": "429b284113acbcd2fe6d8721211efb700bba440ca5c4a625a614b781ad669c90"
+      "computedHash": "0bf09a0a9a017d004a81d4b693e5a2d830e1a28230a5885df773e1ed9c0571cc"
     },
     "caveman-commit": {
       "source": "JuliusBrussee/caveman",
       "sourceType": "github",
       "sourceCommit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
       "skillPath": "skills/caveman-commit/SKILL.md",
-      "computedHash": "54d5ca0894ecab0c74361d0077b71ff4e0bb60c67546880c1807bc8406ea7aab"
+      "computedHash": "c788a282fc75b981b421dfdad5d84ea7f83f946c126daa39cfc7d3f97845e193"
     },
     "caveman-compress": {
       "source": "JuliusBrussee/caveman",
       "sourceType": "github",
       "sourceCommit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
       "skillPath": "skills/caveman-compress/SKILL.md",
-      "computedHash": "208475f3dcdd425f5452551b2b6acb8c1879e19edbbad47450113904e5f9732e"
+      "computedHash": "377b0b8682d9db1a832c20ee6732ed0f19f55e4f7048955296128244c869c916"
     },
     "caveman-help": {
       "source": "JuliusBrussee/caveman",
       "sourceType": "github",
       "sourceCommit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
       "skillPath": "skills/caveman-help/SKILL.md",
-      "computedHash": "c6fea66aacc891b9595aae54b2c8335c322e61f83ad8693e24d3b3ab8603849a"
+      "computedHash": "3effbc5b8943900c7500da48f73ab9de297866705c105df1b324d4337dec3a9a"
     },
     "caveman-review": {
       "source": "JuliusBrussee/caveman",
       "sourceType": "github",
       "sourceCommit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
       "skillPath": "skills/caveman-review/SKILL.md",
-      "computedHash": "f5fcb5ec7cb461bfd95a6f5eb6dbe624967057dce7992e71213bcd3462ace742"
+      "computedHash": "599330563f19b5c59c3efddffcd7e8d9098b74c29817ab422ccd3253b103fcb8"
     },
     "caveman-stats": {
       "source": "JuliusBrussee/caveman",
       "sourceType": "github",
       "sourceCommit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
       "skillPath": "skills/caveman-stats/SKILL.md",
-      "computedHash": "7d6ba2ee3fb9b1629b6e95b326a0559f758d881d2ba826120fdfd625f578218d"
+      "computedHash": "4632f1611a56483df7851a0dabcc1e0c1952393cd8f5d08ddeda17f81a4e1e50"
     },
     "de-slop": {
       "computedHash": "07465f495943f82cb6f7af82e3b9d542e41b4afdabbebd3203e3f8dd749f1c0f",
@@ -77,7 +77,7 @@
       "sourceType": "local"
     },
     "deslop": {
-      "computedHash": "88095a619f65d6e47bf103f7c24f321ba5f77703829fb1c084c111b4a90533db",
+      "computedHash": "904469de58dd7a8159164b4405a8f00da8e377e70dba56fd0c7d17760599c388",
       "skillPath": ".agents/skills/deslop/SKILL.md",
       "source": "aidenybai/react-doctor",
       "sourceType": "github"
@@ -103,7 +103,7 @@
       "sourceType": "local"
     },
     "dynasty-player-evaluation": {
-      "computedHash": "2176f1c2854fdd9e704393f636b3da23ecb5cbb884f26ba7053e670622ef91e9",
+      "computedHash": "c806991f723239c3fc5c436f958839ad5f7c2783c7d14a5612faa3dcd1e11a2c",
       "source": "local/self",
       "sourceType": "local"
     },
@@ -113,7 +113,7 @@
       "sourceType": "local"
     },
     "dynasty-replacement-level": {
-      "computedHash": "605da1401a052064d1130c90fb868abb0dbd150cc85c942f12fc554607228a60",
+      "computedHash": "04e9d9d52f10b4654ec9cfd5506f9b5504b068efede88651a68ac20e006ad531",
       "source": "local/self",
       "sourceType": "local"
     },
@@ -128,7 +128,7 @@
       "sourceType": "local"
     },
     "find-similar-functions": {
-      "computedHash": "f4278f7ce83ca53c67cf2319194ab5b3db9b794a69afa7c972cdb8be5fb20a7e",
+      "computedHash": "031456b7aae6cc2cc26db1587ec9c525c1c8b08cea036e5505dfae28da04a641",
       "skillPath": ".agents/skills/find-similar-functions/SKILL.md",
       "source": "aidenybai/react-doctor",
       "sourceType": "github"
@@ -141,7 +141,7 @@
       "sourceType": "local"
     },
     "hallmark": {
-      "computedHash": "ea04b5806681ceaba893ea9883d92a8045cf7f0041b8b7c1c5e594f7e0eabb0f",
+      "computedHash": "814fcf95a17ac8ce45b7d9c22584e1dcc592ce7a22c86d23bce20f297139366b",
       "skillPath": ".agents/skills/hallmark/SKILL.md",
       "source": "nutlope/hallmark",
       "sourceType": "github"
@@ -154,7 +154,7 @@
       "sourceType": "local"
     },
     "impeccable": {
-      "computedHash": "881f679f4c96b4cb38b6b9a4bfb8d78275fd2b54860c60c313ee094cb7b1a76a",
+      "computedHash": "3895765e9434400dfc1b30e364be002cf499c1718fb2431e65b907c14ae2cb27",
       "skillPath": ".agents/skills/impeccable/SKILL.md",
       "source": "pbakaus/impeccable",
       "sourceType": "github"
@@ -173,13 +173,13 @@
       "computedHash": "b9b76d49be358e8978ea8acc200ff207743054aa59fac9c721c951ea48f7150d"
     },
     "make-interfaces-feel-better": {
-      "computedHash": "2c3576e63d8c39d75ed327f1dcf6aab7aec0edf293a55f6cb3f7b8571974a01c",
+      "computedHash": "d180fda81e7996d0b632692bc4b4f4e244e9c99c4fc80f7f1c9a854bf9828203",
       "skillPath": ".agents/skills/make-interfaces-feel-better/SKILL.md",
       "source": "jakubkrehel/make-interfaces-feel-better",
       "sourceType": "github"
     },
     "no-ai-slop": {
-      "computedHash": "4d25b59a76256f996d86ae7b0bc66f4971fae4410fd2b6b7e9eaad6d86e77bf8",
+      "computedHash": "1c1abfa4e447e2e96f02832cc3d31d8b298184027aab1bb4cf5aa33179dc2f81",
       "source": "petergyang/no-ai-slop",
       "sourceType": "github"
     },
@@ -188,7 +188,7 @@
       "sourceType": "github",
       "sourceCommit": "bc9ee949d5f439e8b9f3bb92c6d6d3d1e6ebd324",
       "skillPath": "skills/ponytail/SKILL.md",
-      "computedHash": "e575026e2a6dffe408b10e6f7acc7ed47c83d71fc69f9c0d3880115f3f6c6aa7"
+      "computedHash": "46a57e26a2632e7fa40eae6a3cf3011ccdc4d8db19d8f8617907d6b5deef055e"
     },
     "ponytail-audit": {
       "source": "DietrichGebert/ponytail",
@@ -239,7 +239,7 @@
       "sourceType": "local"
     },
     "systematic-debugging": {
-      "computedHash": "4999cb851360485eca5074e727bbdd62ef20549c5d5b01216fcbf5831badb473",
+      "computedHash": "808fc5717aa88ad65efff312b11c186294d3e6ee301afb584e2f86599b137787",
       "skillPath": ".agents/skills/systematic-debugging/SKILL.md",
       "source": "obra/superpowers",
       "sourceType": "github"
@@ -252,13 +252,13 @@
       "sourceType": "local"
     },
     "transitions-dev": {
-      "computedHash": "c4dd7001f07f4b95219d9116854f506118af4877b16bb5bed22a03381622a22e",
+      "computedHash": "1c76817d92f8ec0e90dda504ba3d672e1552f9729fe65368ed153127be60e514",
       "skillPath": ".agents/skills/transitions-dev/SKILL.md",
       "source": "jakubantalik/transitions-dev",
       "sourceType": "github"
     },
     "userinterface-wiki": {
-      "computedHash": "1d1fbf49afa29712573e39bea7669b932160ae93bdf96a16d729849641b1fa22",
+      "computedHash": "92ed9c083b6fe040062314c6ddc35c23a742e93f47784145df3220835aac7657",
       "skillPath": ".agents/skills/userinterface-wiki/SKILL.md",
       "source": "raphaelsalaja/userinterface-wiki",
       "sourceType": "github"

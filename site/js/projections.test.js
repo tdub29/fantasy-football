@@ -64,6 +64,26 @@ assert.equal(helpers.leagueScorePoints({}, taco), null);
 assert.equal(helpers.leagueScorePoints(null, taco), null);
 assert.equal(helpers.projPoints({ blend: 123.4, stats: {} }, taco, 'blend'), 123.4, 'must fall back to the file total');
 
+// IDP scoring comes from the league too. This is the gap that shipped: the weight
+// table had no IDP terms, so every defender scored 0 through leagueScorePoints
+// and optimalDefense fell back to the baked blend, silently ignoring that yuH
+// pays 5.0 an interception and 3.0 a pass defensed.
+const idp = O.defense.players.find(p => (p.stats.blend || {}).solo > 0 && (p.stats.blend || {}).sack > 0);
+assert(idp, 'need a defender with a real stat line');
+const yuhIdp = helpers.leagueScorePoints(idp.stats.blend, yuH);
+assert(yuhIdp > 0, `yuH IDP scoring must not be zero, got ${yuhIdp}`);
+// Double the sack rate and the score has to move by exactly yuH's sack weight.
+const sackW = yuH.scoring.idp_sack;
+const plusOne = helpers.leagueScorePoints({ ...idp.stats.blend, sack: idp.stats.blend.sack + 1 }, yuH);
+assert.equal(Math.round((plusOne - yuhIdp) * 10) / 10, Math.round(sackW * 10) / 10,
+  `one more sack must be worth idp_sack (${sackW})`);
+// A league that pays nothing for tackles must score the same player lower than
+// yuH, which pays 1.0 a solo. Proves the weights are read per league.
+const noTkl = helpers.leagueScorePoints(idp.stats.blend, { scoring: { ...yuH.scoring, idp_tkl_solo: 0 } });
+assert(noTkl < yuhIdp, 'idp_tkl_solo must change the total');
+assert.equal(Math.round((yuhIdp - noTkl) * 10) / 10,
+  Math.round(idp.stats.blend.solo * yuH.scoring.idp_tkl_solo * 10) / 10);
+
 for (const s of ['pp', 'sleeper', 'blend']) {
   const r = helpers.optimalOffense(me, yuH, s);
   assert(r.total > 0 && r.picks.length <= 8, `offense ${s} bad: ${JSON.stringify(r).slice(0,80)}`);

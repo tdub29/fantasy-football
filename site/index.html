@@ -3,20 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>The Fantasy Hub — tdub1329</title>
+  <title>The Fantasy Hub, tdub1329</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap">
   <link rel="stylesheet" href="css/styles.css">
-  <link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%232dd4bf'/><text x='32' y='42' text-anchor='middle' font-family='-apple-system,sans-serif' font-weight='700' font-size='32' fill='%230b0d12'>H</text></svg>">
+  <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
+  <link rel="icon" type="image/png" sizes="192x192" href="img/logo-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="img/logo-512.png">
   <!-- PWA (additive: installable + offline app-shell; changes no existing behavior) -->
-  <meta name="theme-color" content="#0b0d12">
+  <meta name="theme-color" content="#2c7a31">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Fantasy Hub">
 </head>
 <body>
-  <button id="nav-toggle" class="nav-toggle" aria-label="Open navigation" aria-controls="sidebar" type="button">☰</button>
+  <button id="nav-toggle" class="nav-toggle" aria-label="Open navigation" aria-controls="sidebar" aria-expanded="false" type="button"><img class="nav-toggle-logo" src="img/logo-192.png" alt="" width="32" height="32"><span class="nav-toggle-bars" aria-hidden="true">☰</span></button>
   <div id="nav-scrim" class="nav-scrim" aria-hidden="true"></div>
   <div class="app">
     <aside id="sidebar" class="sidebar"></aside>
@@ -39,8 +44,18 @@
   <script src="data/categories.js"></script>
   <script src="data/sos-grid.js"></script>
   <script src="data/jacob-gibbs.js"></script>
+  <script src="data/gibbs-ros.js"></script>
   <script src="data/expert-rankings.js"></script>
+  <script src="data/fantasypros-experts.js"></script>
+  <script src="data/kickers.js"></script>
+  <script src="data/idp-dvp.js"></script>
   <script src="data/strategy.js"></script>
+  <script src="data/schedule.js"></script>
+  <script src="data/faab.js"></script>
+  <script src="data/trade-history.js"></script>
+  <!-- KTC daily value history (build_ktc_history.py). Optional: the career chart
+       falls back to its PPG series alone when this is absent. -->
+  <script src="data/ktc-history.js"></script>
   <script src="data/build-info.js"></script>
   <script src="js/app.js"></script>
   <script>

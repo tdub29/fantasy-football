@@ -1,6 +1,6 @@
 ---
 name: anti-slop-design
-description: Make interfaces look designed-on-purpose, not AI-generated. Use when building OR reviewing any UI, website, landing page, dashboard, app shell, component, hero, pricing, footer, or marketing page, and whenever the concern is that a design looks generic, templated, "AI slop", or machine-made — or should look premium, bespoke, and unique. Covers the specific visual tells (blue-purple gradients, glowy pill buttons, Inter/Space-Grotesk/Cormorant defaults, icon-in-a-tile, faux app windows, the SaaS meta-template, grid backgrounds, botched glass/shadows), the absolute correctness rules (content visible by default, clear the cut, actually center it, working controls), and what premium actually looks like (one signature artifact, atmosphere, layered depth, character type, cohesion). Triggers: "does this look AI-generated", "looks like slop", "make it premium/bespoke", "anti-slop", "de-slop the design", design critique, visual polish, "why does this look generic". NOT for code cleanup — that is the `deslop` skill.
+description: "Kill the AI look. Named visual tells, build or review."
 version: "1.0.0"
 ---
 
