@@ -3163,13 +3163,23 @@
       // His X board is a separate, fresher source than his FantasyPros feed.
       const gibbsRosPosted = window.GIBBS_ROS ? window.GIBBS_ROS.postedAt : null;
       const gibbsWeekPosted = window.GIBBS_WEEK ? window.GIBBS_WEEK.postedAt : null;
-      const gibbsWeekScoring = window.GIBBS_WEEK
-        ? (window.GIBBS_WEEK.format === 'mixed'
-            ? 'Scoring differs by position on his cards: '
-              + Object.entries(window.GIBBS_WEEK.formatByPosition || {})
-                  .map(([k, v]) => `${k} ${v.replace('_', '-').toUpperCase()}`).join(', ')
-            : gibbsScoringLabel(window.GIBBS_WEEK, 'RB'))
-        : '';
+      // The builder writes a position-accurate sentence, because most of this
+      // board is now his PPR ranks (the scoring these leagues actually play)
+      // and only the positions still coming off an X card are not. A blanket
+      // "he publishes half-PPR" caveat would be false for three quarters of
+      // the rows, and a caveat that is usually wrong gets ignored when it is
+      // right. Fall back to composing one only for an older payload.
+      const gibbsWeekScoring = !window.GIBBS_WEEK ? ''
+        : (window.GIBBS_WEEK.scoringWarning
+            || (window.GIBBS_WEEK.format === 'mixed'
+                  ? 'Scoring differs by position: '
+                    + Object.entries(window.GIBBS_WEEK.formatByPosition || {})
+                        .map(([k, v]) => `${k} ${v.replace('_', '-').toUpperCase()}`).join(', ')
+                  : gibbsScoringLabel(window.GIBBS_WEEK, 'RB')));
+      const gibbsWeekUpdated = window.GIBBS_WEEK?.updatedLabel || null;
+      const gibbsWeekDepth = window.GIBBS_WEEK
+        ? Object.values(window.GIBBS_WEEK.positions || {}).reduce((n, r) => n + r.length, 0)
+        : 0;
       // He publishes half-PPR and these leagues are full PPR, so the scoring of
       // his board is part of the number. The builder takes whichever scoring he
       // submitted last, which is not always the PPR one: measured 2026-09-19 his
@@ -3225,7 +3235,11 @@
             gibbsRosPosted ? sortHdr('weekly-gibbs-x', 'Gibbs X', { right:true,
               title:`Jacob Gibbs rest-of-season positional rank from his own X posts, ${gibbsRosPosted}. His FantasyPros board is usually a day or more behind this and never carries the positional ROS lists at all. HALF-PPR, which is what he publishes, while this league is full PPR.` }) : null,
             gibbsWeekPosted ? sortHdr('weekly-gibbs-wk', 'Gibbs Wk', { right:true,
-              title:`Jacob Gibbs's own top-12 board for this week, posted ${gibbsWeekPosted}. This is the start/sit list and it is normally the freshest thing he publishes; the ROS column beside it answers a different question. ${gibbsWeekScoring}, while this league is full PPR. Only the top 12 at each position are ranked, so a blank means unranked on that card, not unrostered.` }) : null,
+              title:`Jacob Gibbs's own board for this week, the start/sit list; `
+                + `the ROS column beside it answers a different question. `
+                + `${gibbsWeekScoring} `
+                + `Scraped ${gibbsWeekPosted}${gibbsWeekUpdated ? `, page said "${gibbsWeekUpdated}"` : ''}, `
+                + `${gibbsWeekDepth} players ranked. A blank means he has not ranked that player, not that nobody rosters him.` }) : null,
               ...VEGAS_COMPONENTS.map(c => sortHdr(`wc:${c.k}`, c.label, { right:true,
                 title:`Expected ${c.label} behind the Vegas points column. Greyed when that stat had no market line and was filled from Sleeper.` })),
             ]))),
@@ -3290,11 +3304,24 @@
                 if (!g) return h('td', { class:'right tnum' }, emptyValue());
                 const ros = gibbsRosRank(p._sleeperId);
                 const moved = ros && ros.pos === g.pos ? ros.rank - g.rank : null;
+                // Scoring has to match before a cross-board delta means
+                // anything. The week board is PPR and the ROS board is
+                // half-PPR, so a "moved N spots" on mismatched scoring is
+                // partly just the scoring, not his opinion changing.
+                const sameScoring = ros
+                  && gibbsScoringLabel(window.GIBBS_WEEK, g.pos)
+                     === gibbsScoringLabel(window.GIBBS_ROS, ros.pos);
                 return h('td', { class:'right tnum', title:
-                  `${g.pos}${g.rank} on his week board posted ${gibbsWeekPosted}, `
-                  + `${gibbsScoringLabel(window.GIBBS_WEEK, g.pos)}.`
+                  `${g.pos}${g.rank} on his week board`
+                  + (g.flexRank ? `, #${g.flexRank} overall among flex starters` : '')
+                  + `, ${gibbsScoringLabel(window.GIBBS_WEEK, g.pos)}.`
+                  + (g.opp ? ` Opponent ${g.opp}.` : '')
                   + (moved ? ` He has him ${Math.abs(moved)} spot${Math.abs(moved) === 1 ? '' : 's'} `
-                      + `${moved > 0 ? 'higher' : 'lower'} this week than on his rest-of-season board.` : '') },
+                      + `${moved > 0 ? 'higher' : 'lower'} this week than on his rest-of-season board`
+                      + (sameScoring ? '.'
+                          : `, though that board is ${gibbsScoringLabel(window.GIBBS_ROS, ros.pos)} `
+                            + `and this one is ${gibbsScoringLabel(window.GIBBS_WEEK, g.pos)}, `
+                            + `so part of the gap is the scoring rather than his opinion.`) : '') },
                   `${g.pos}${g.rank}`,
                   moved ? h('span', { class: moved > 0 ? 'delta-up' : 'delta-down',
                     style:{ marginLeft:'4px', fontSize:'11px' } },

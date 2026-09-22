@@ -1,0 +1,263 @@
+{
+  "source": "Jacob Gibbs (@jagibbs_23)",
+  "board": "week-3",
+  "posted": "2026-09-22",
+  "captured": "2026-09-22",
+  "scoringByPosition": {
+    "QB": "non_ppr",
+    "RB": "half_ppr",
+    "WR": "half_ppr",
+    "TE": "half_ppr"
+  },
+  "provenance": "Four card graphics posted to X on 2026-09-22 between 05:22 and 06:18 local, titled \"Early look at Week 3 Fantasy Football rankings\". Transcribed by two independent readers and reconciled by code: 48 of 48 rows agreed on rank, name and team, with zero disagreements. The cards print rank, name and team only, so there is no ECR, VS. ECR, opponent or bye to carry and those stay null rather than being sourced from anywhere else. Each card names its own scoring and they differ: the QB card is NON-PPR, the RB, WR and TE cards are HALF-PPR.",
+  "positions": {
+    "QB": [
+      {
+        "rank": 1,
+        "player": "Josh Allen",
+        "team": "BUF"
+      },
+      {
+        "rank": 2,
+        "player": "Lamar Jackson",
+        "team": "BAL"
+      },
+      {
+        "rank": 3,
+        "player": "Jalen Hurts",
+        "team": "PHI"
+      },
+      {
+        "rank": 4,
+        "player": "Brock Purdy",
+        "team": "SF"
+      },
+      {
+        "rank": 5,
+        "player": "Patrick Mahomes",
+        "team": "KC"
+      },
+      {
+        "rank": 6,
+        "player": "Trevor Lawrence",
+        "team": "JAC"
+      },
+      {
+        "rank": 7,
+        "player": "Dak Prescott",
+        "team": "DAL"
+      },
+      {
+        "rank": 8,
+        "player": "Jared Goff",
+        "team": "DET"
+      },
+      {
+        "rank": 9,
+        "player": "Tyler Shough",
+        "team": "NO"
+      },
+      {
+        "rank": 10,
+        "player": "Jordan Love",
+        "team": "GB"
+      },
+      {
+        "rank": 11,
+        "player": "Joe Burrow",
+        "team": "CIN"
+      },
+      {
+        "rank": 12,
+        "player": "Matthew Stafford",
+        "team": "LAR"
+      }
+    ],
+    "RB": [
+      {
+        "rank": 1,
+        "player": "Jahmyr Gibbs",
+        "team": "DET"
+      },
+      {
+        "rank": 2,
+        "player": "Kenneth Walker",
+        "team": "KC"
+      },
+      {
+        "rank": 3,
+        "player": "Christian McCaffrey",
+        "team": "SF"
+      },
+      {
+        "rank": 4,
+        "player": "Bijan Robinson",
+        "team": "ATL"
+      },
+      {
+        "rank": 5,
+        "player": "Derrick Henry",
+        "team": "BAL"
+      },
+      {
+        "rank": 6,
+        "player": "Jonathan Taylor",
+        "team": "IND"
+      },
+      {
+        "rank": 7,
+        "player": "James Cook",
+        "team": "BUF"
+      },
+      {
+        "rank": 8,
+        "player": "Ashton Jeanty",
+        "team": "LV"
+      },
+      {
+        "rank": 9,
+        "player": "Javonte Williams",
+        "team": "DAL"
+      },
+      {
+        "rank": 10,
+        "player": "Chase Brown",
+        "team": "CIN"
+      },
+      {
+        "rank": 11,
+        "player": "Saquon Barkley",
+        "team": "PHI"
+      },
+      {
+        "rank": 12,
+        "player": "Kyren Williams",
+        "team": "LAR"
+      }
+    ],
+    "WR": [
+      {
+        "rank": 1,
+        "player": "Jaxon Smith-Njigba",
+        "team": "SEA"
+      },
+      {
+        "rank": 2,
+        "player": "Amon-Ra St. Brown",
+        "team": "DET"
+      },
+      {
+        "rank": 3,
+        "player": "Chris Olave",
+        "team": "NO"
+      },
+      {
+        "rank": 4,
+        "player": "Ja'Marr Chase",
+        "team": "CIN"
+      },
+      {
+        "rank": 5,
+        "player": "CeeDee Lamb",
+        "team": "DAL"
+      },
+      {
+        "rank": 6,
+        "player": "Zay Flowers",
+        "team": "BAL"
+      },
+      {
+        "rank": 7,
+        "player": "DeVonta Smith",
+        "team": "PHI"
+      },
+      {
+        "rank": 8,
+        "player": "Justin Jefferson",
+        "team": "MIN"
+      },
+      {
+        "rank": 9,
+        "player": "Parker Washington",
+        "team": "JAC"
+      },
+      {
+        "rank": 10,
+        "player": "Christian Watson",
+        "team": "GB"
+      },
+      {
+        "rank": 11,
+        "player": "Garrett Wilson",
+        "team": "NYJ"
+      },
+      {
+        "rank": 12,
+        "player": "Malik Nabers",
+        "team": "NYG"
+      }
+    ],
+    "TE": [
+      {
+        "rank": 1,
+        "player": "Dalton Kincaid",
+        "team": "BUF"
+      },
+      {
+        "rank": 2,
+        "player": "Trey McBride",
+        "team": "ARI"
+      },
+      {
+        "rank": 3,
+        "player": "Sam LaPorta",
+        "team": "DET"
+      },
+      {
+        "rank": 4,
+        "player": "Brock Bowers",
+        "team": "LV"
+      },
+      {
+        "rank": 5,
+        "player": "Travis Kelce",
+        "team": "KC"
+      },
+      {
+        "rank": 6,
+        "player": "Tucker Kraft",
+        "team": "GB"
+      },
+      {
+        "rank": 7,
+        "player": "George Kittle",
+        "team": "SF"
+      },
+      {
+        "rank": 8,
+        "player": "Isaiah Likely",
+        "team": "NYG"
+      },
+      {
+        "rank": 9,
+        "player": "Dalton Schultz",
+        "team": "HOU"
+      },
+      {
+        "rank": 10,
+        "player": "Juwan Johnson",
+        "team": "NO"
+      },
+      {
+        "rank": 11,
+        "player": "Tyler Warren",
+        "team": "IND"
+      },
+      {
+        "rank": 12,
+        "player": "Terrance Ferguson",
+        "team": "LAR"
+      }
+    ]
+  }
+}

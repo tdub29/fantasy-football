@@ -35,7 +35,14 @@ PLAYERS_PATH = ROOT / "players-nfl.json"
 OUTPUT_PATH = ROOT / "site" / "data" / "gibbs-ros.js"
 WEEKLY_PATH = ROOT / "site" / "data" / "gibbs-week.js"
 OFFENSE = {"QB", "RB", "WR", "TE"}
-NAME_ALIASES = {"Hollywood Brown": "Marquise Brown"}
+# Legal name on one source, the name he goes by on the other. Neither side is
+# wrong, so the mapping lives here rather than being "fixed" in a transcription.
+# CBS prints the formal version; Sleeper prints the short one.
+NAME_ALIASES = {
+    "Hollywood Brown": "Marquise Brown",
+    "Christopher Brooks": "Chris Brooks",
+    "Kenneth Gainwell": "Kenny Gainwell",
+}
 # Sleeper's codes, for the match only. The board keeps whatever he printed.
 TEAM_ALIASES = {"JAC": "JAX", "WSH": "WAS", "LA": "LAR"}
 
@@ -83,6 +90,32 @@ def index_team(pid: str | None, index: dict) -> str | None:
     return None
 
 
+def _scoring_warning(by_pos: dict) -> str:
+    """Say which positions are in this site's scoring and which are not.
+
+    Every league here is full PPR. A position ranked in PPR needs no caveat at
+    all; one ranked in half-PPR or non-PPR does, and saying so per position is
+    the difference between a caveat a reader uses and one a reader learns to
+    skip.
+    """
+    ppr = sorted(p for p, f in by_pos.items() if f == "ppr")
+    off = sorted((p for p, f in by_pos.items() if f != "ppr"),
+                 key=lambda p: (by_pos[p], p))
+    parts = []
+    if ppr:
+        parts.append(f"{', '.join(ppr)} are his FULL PPR ranks, the same "
+                     f"scoring every league here plays.")
+    for fmt in sorted({by_pos[p] for p in off}):
+        names = ", ".join(p for p in off if by_pos[p] == fmt)
+        parts.append(f"{names} {'is' if len(names) <= 3 else 'are'} "
+                     f"{fmt.replace('_', '-').upper()}, which is NOT this "
+                     f"site's scoring, so treat that rank as his opinion and "
+                     f"not as a PPR rank.")
+    if off:
+        parts.append("A rescored version must never be presented as his.")
+    return " ".join(parts)
+
+
 def build(src: dict, index: dict) -> dict:
     # Scoring is per BOARD, not per artifact, and assuming otherwise silently
     # mislabels a whole position. His week 3 cards prove it: the QB graphic is
@@ -100,13 +133,14 @@ def build(src: dict, index: dict) -> dict:
         "postedAt": src["posted"],
         "capturedAt": src["captured"],
         "provenance": src.get("provenance", ""),
-        "scoringWarning": (
-            "He publishes "
-            + " and ".join(f.replace("_", "-").upper() for f in formats)
-            + (", position by position" if len(formats) > 1 else "")
-            + ". All leagues here are full PPR, so this is his board and not a "
-              "full-PPR board. A derived full-PPR version must never be "
-              "presented as his."),
+        # A blanket "this is not a full-PPR board" was right when everything he
+        # published was half-PPR, and became false the moment the RB/WR/TE
+        # ranks started coming from his PPR board. A caveat that is wrong for
+        # three quarters of the rows teaches the reader to ignore it, so it
+        # names the positions it actually applies to.
+        "scoringWarning": _scoring_warning(
+            {p: by_pos.get(p, src.get("format", "half_ppr"))
+             for p in src["positions"]}),
         "positions": {},
     }
     mismatches: list[str] = []
@@ -181,6 +215,26 @@ def self_check() -> int:
     assert m["formatByPosition"]["QB"] == "non_ppr"
     assert m["formatByPosition"]["RB"] == "half_ppr"
     assert "NON-PPR" in m["scoringWarning"] and "HALF-PPR" in m["scoringWarning"]
+
+    # The caveat has to be position-accurate. A board whose RB ranks really are
+    # PPR must not carry a blanket "this is not a full-PPR board", because a
+    # caveat that is false for most rows trains the reader to skip all of them.
+    mixed2 = {"posted": "x", "captured": "y",
+              "scoringByPosition": {"QB": "non_ppr", "RB": "ppr"},
+              "positions": {"QB": [{"rank": 1, "player": "A", "team": "BUF"}],
+                            "RB": [{"rank": 1, "player": "B", "team": "DET"}]}}
+    w = build(mixed2, idx)["scoringWarning"]
+    assert "RB are his FULL PPR ranks" in w, w
+    assert "QB is NON-PPR" in w, w
+    assert "not a full-PPR board" not in w, w
+
+    # All-PPR needs no caveat at all beyond stating it.
+    allppr = {"posted": "x", "captured": "y",
+              "scoringByPosition": {"RB": "ppr"},
+              "positions": {"RB": [{"rank": 1, "player": "B", "team": "DET"}]}}
+    w2 = build(allppr, idx)["scoringWarning"]
+    assert "NOT this site's scoring" not in w2, w2
+    assert "rescored version" not in w2, w2
 
     # A hole in the ranks must raise, not renumber. This is the capture-gap rule
     # in code: 1,2,4 means rank 3 was never read, and inventing it is the failure.

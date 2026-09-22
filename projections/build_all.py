@@ -40,6 +40,17 @@ STEPS = [
     ("score defense",              PROJ / "score_defense.py",             True),
     ("weekly rankings",            PROJ / "build_weekly_rankings.py",     True),
     ("FantasyPros expert boards",  PROJ / "build_fantasypros_experts.py", True),
+    # Gibbs keeps his weekly board current on CBS, in PPR, 150 deep. That is
+    # the same scoring these leagues play and it beats the half-PPR top-12
+    # cards he posts to X, which only moved when someone screenshotted them.
+    # Registered here so the column ages with everything else instead of
+    # quietly sitting on whichever week it was last captured by hand.
+    ("Gibbs weekly board (CBS)",   SITE_DATA / "build_gibbs_cbs.py",      True),
+    # Two independent publications of the same man's rankings. Agreement is
+    # what proves the scrape is still pointed at HIM and at THIS week; a slug
+    # that silently resolves to another analyst produces a perfectly healthy
+    # looking board, and nothing else in this pipeline would notice.
+    ("Gibbs CBS vs his X cards",   SITE_DATA / "check_gibbs_sources.py",  True),
     ("IDP defense-vs-position",    PROJ / "build_idp_dvp.py",             True),
     # The kicker board is modelled in a SEPARATE repo and written back into
     # site/data/kickers.js. It belongs in this list anyway: leaving it out is
@@ -62,7 +73,7 @@ TRACKED = [
     "ktc.js", "players.js", "leagues.js", "projections.js", "categories.js",
     "environment.js", "sos.js", "sos-grid.js", "sleeper-idp.js", "player-info.js",
     "jacob-gibbs.js", "expert-rankings.js", "fantasypros-experts.js",
-    "idp-dvp.js", "kickers.js", "weekly-rankings.js", "sleeper-market.js", "faab.js", "trade-history.js", "context.js", "history.js",
+    "idp-dvp.js", "kickers.js", "gibbs-week.js", "weekly-rankings.js", "sleeper-market.js", "faab.js", "trade-history.js", "context.js", "history.js",
 ]
 
 def run(label, script, timeout=600):

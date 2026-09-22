@@ -56,15 +56,40 @@ assert.doesNotMatch(
 // And the built board must actually carry that distinction.
 const wk = fs.readFileSync(path.join(__dirname, '..', 'data', 'gibbs-week.js'), 'utf8');
 const data = JSON.parse(wk.slice(wk.indexOf('{'), wk.lastIndexOf('}') + 1));
-assert.equal(data.board, 'week-3');
-assert.equal(data.format, 'mixed', 'week 3 mixes non-PPR QB with half-PPR skill positions');
+assert.equal(data.board, 'week');
+
+// RB, WR and TE come from his CBS board, which is PPR: the scoring these
+// leagues actually play. Asserting that explicitly is the point, because the
+// value of moving off the X cards was getting out of half-PPR.
+for (const pos of ['RB', 'WR', 'TE']) {
+  assert.equal(data.formatByPosition[pos], 'ppr', `${pos} must be his PPR ranks`);
+  assert.match(data.sourceByPosition[pos], /CBS/, `${pos} must come from CBS`);
+}
+// QB is the exception and has to stay labelled as one: CBS has no per-position
+// page for him, so those ranks are still the NON-PPR X card.
 assert.equal(data.formatByPosition.QB, 'non_ppr');
-assert.equal(data.formatByPosition.RB, 'half_ppr');
+assert.equal(data.format, 'mixed', 'PPR skill positions beside a non-PPR QB card');
+
+// The caveat must be position-accurate. A blanket "not a full-PPR board" is
+// now false for three quarters of the rows, and a caveat that is usually
+// wrong gets ignored on the one position where it matters.
+assert.match(data.scoringWarning, /FULL PPR ranks/);
+assert.match(data.scoringWarning, /QB is NON-PPR/);
+assert.doesNotMatch(data.scoringWarning, /not a full-PPR board/);
+
+const depth = Object.values(data.positions).reduce((n, r) => n + r.length, 0);
+assert(depth >= 100, `board should be deep, got ${depth} players`);
 for (const [pos, rows] of Object.entries(data.positions)) {
-  assert.equal(rows.length, 12, `${pos} card is a top-12`);
-  assert.deepEqual(rows.map((r) => r.rank), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-    `${pos} ranks must be 1..12 with no hole`);
+  assert.deepEqual(rows.map((r) => r.rank), rows.map((_, i) => i + 1),
+    `${pos} ranks must be 1..n with no hole`);
   assert(rows.every((r) => r.sleeperId), `${pos} must resolve every player to Sleeper`);
 }
+// The flex rank is what this source adds over a per-position card: it is the
+// only way to compare an RB against a WR for one flex slot.
+for (const pos of ['RB', 'WR', 'TE']) {
+  assert(data.positions[pos].every((r) => Number.isInteger(r.flexRank)),
+    `${pos} rows must carry the overall flex rank`);
+}
+assert.equal(data.teamMismatches.length, 0, 'every printed team should match Sleeper');
 
 console.log('gibbs-week-column tests ok');
