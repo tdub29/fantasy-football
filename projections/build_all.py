@@ -46,6 +46,12 @@ STEPS = [
     # Registered here so the column ages with everything else instead of
     # quietly sitting on whichever week it was last captured by hand.
     ("Gibbs weekly board (CBS)",   SITE_DATA / "build_gibbs_cbs.py",      True),
+    # He DOES have a rest-of-season board on FantasyPros, reachable only as
+    # filters=1576:1576; the bare form is ignored and hands back consensus.
+    # These two run in order: the deep board first, then his own newer
+    # per-player restatements from X layered on top of it.
+    ("Gibbs ROS board (FantasyPros)", SITE_DATA / "build_gibbs_ros_fp.py", True),
+    ("Gibbs ROS per-player updates (X)", SITE_DATA / "refresh_gibbs_ros.py", False),
     # Two independent publications of the same man's rankings. Agreement is
     # what proves the scrape is still pointed at HIM and at THIS week; a slug
     # that silently resolves to another analyst produces a perfectly healthy
@@ -73,7 +79,7 @@ TRACKED = [
     "ktc.js", "players.js", "leagues.js", "projections.js", "categories.js",
     "environment.js", "sos.js", "sos-grid.js", "sleeper-idp.js", "player-info.js",
     "jacob-gibbs.js", "expert-rankings.js", "fantasypros-experts.js",
-    "idp-dvp.js", "kickers.js", "gibbs-week.js", "weekly-rankings.js", "sleeper-market.js", "faab.js", "trade-history.js", "context.js", "history.js",
+    "idp-dvp.js", "kickers.js", "gibbs-week.js", "gibbs-ros.js", "weekly-rankings.js", "sleeper-market.js", "faab.js", "trade-history.js", "context.js", "history.js",
 ]
 
 def run(label, script, timeout=600):
