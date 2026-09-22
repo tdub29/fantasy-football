@@ -1,13 +1,14 @@
-"""Keep his rest-of-season board current from his own X posts, no OCR.
+"""Layer his newest per-player restatements onto the rest-of-season board.
 
-FantasyPros does NOT carry a rest-of-season board for him. Only five experts
-file one there and he is not among them (he files weekly, expert 1576), and CBS
-has no ROS board for him either: ?period=ros and the top200 URL both serve the
-identical weekly list. So the ROS column has exactly one source, his X posts,
-and between full-board posts it goes stale silently.
+Runs AFTER build_gibbs_ros_fp.py, which fetches the deep board from his own
+FantasyPros page. This script exists because that page is the PUBLISHED board
+and he is usually ahead of it: `ep.fantasypros.com/nfl/ranker/ros-half-ppr/` is
+his editing surface, and a move he makes there does not reach the public API
+until it is published. Measured 2026-09-22: the API still served the 9/18 board
+while he was on stream showing a newer one.
 
-It does not have to. His "Beyond the Box Score" posts carry the new rank in
-PLAIN TEXT, one player at a time:
+His "Beyond the Box Score" posts carry the new rank in PLAIN TEXT, one player
+at a time, and those land before the API does:
 
     Beyond the Box Score - Week 2
     De'Von Achane, Miami Dolphins
@@ -15,8 +16,12 @@ PLAIN TEXT, one player at a time:
     Rest of season Fantasy Football rank - RB12
 
 That is parseable with no transcription and no second reader, because nothing
-was read off an image. Measured 2026-09-22 against a 2026-09-18 board: 9 of 11
-named backs had moved, one of them by 7 spots.
+was read off an image. Measured 2026-09-22 against the published 9/18 board:
+9 of 11 named backs had moved, one of them by 7 spots.
+
+`--manual` takes the same shape from a hand-built JSON file, for when the only
+record of a change is him moving players on screen. That path is a
+transcription and gets the two-reader treatment before it is trusted.
 
 A rank is a POSITION IN AN ORDER, not a field. Writing RB2 onto a player who
 was RB5 without moving anyone else produces two RB2s and no RB5. So the board
@@ -221,12 +226,22 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--board", type=pathlib.Path, default=BOARD)
     ap.add_argument("--posts", type=pathlib.Path, help="cached x.ps1 json")
+    ap.add_argument("--manual", type=pathlib.Path,
+                    help="transcribed board: [{pos, player, rank, at}], same "
+                         "shape updates_from produces")
     ap.add_argument("-n", type=int, default=POSTS)
     ap.add_argument("--self-check", action="store_true")
     a = ap.parse_args()
     if a.self_check:
         return self_check()
 
+    if a.manual:
+        # Same downstream path as a parsed post, so a hand-transcribed board
+        # gets the identical reorder and the identical "every stated rank
+        # landed" assertion. The transcription is the risky part, not the
+        # arithmetic, so it is two-reader reconciled before it reaches here.
+        updates = json.loads(a.manual.read_text(encoding="utf-8"))
+        return write(a, updates, source="manual")
     if a.posts:
         posts = json.loads(a.posts.read_text(encoding="utf-8"))["data"]
     else:
@@ -244,6 +259,10 @@ def main() -> int:
               f"board unchanged")
         return 0
 
+    return write(a, updates, source="posts")
+
+
+def write(a, updates: list[dict], source: str) -> int:
     raw = a.board.read_text(encoding="utf-8")
     board = json.loads(raw[raw.index("{"):raw.rindex("}") + 1])
     changed = apply(board, updates)
@@ -255,14 +274,19 @@ def main() -> int:
     newest = max(u["at"] or "" for u in updates)[:10]
     board["capturedAt"] = dt.date.today().isoformat()
     board["rosUpdatedThrough"] = newest
+    how = ("the plain text of his \"Beyond the Box Score\" posts"
+           if source == "posts" else
+           "a two-reader transcription of his live ranker, captured from his "
+           "stream while the published board still trailed it")
     board["provenance"] = (
         (board.get("provenance", "").rstrip() + " ")
-        + f"Per-player rest-of-season updates were then applied from the plain "
-          f"text of his \"Beyond the Box Score\" posts through {newest}: "
-          f"{len(updates)} player(s) restated, no image and no transcription "
-          f"involved. FantasyPros does not carry a rest-of-season board for him "
-          f"and neither does CBS, so these posts are the only way this column "
-          f"moves between full-board posts. Each restated player's ECR "
+        + f"Per-player rest-of-season updates were then applied from {how} "
+          f"through {newest}: "
+          f"{len(updates)} player(s) restated. His FantasyPros page is the "
+          f"PUBLISHED board and he is routinely ahead of it, because the ranker "
+          f"he edits does not reach the public API until it publishes, so these "
+          f"restatements are how this column keeps up in between. Each restated "
+          f"player's ECR "
           f"comparison was dropped rather than recomputed against his new rank, "
           f"because that comparison is something he published, not something to "
           f"derive.").strip()
