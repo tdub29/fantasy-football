@@ -1235,18 +1235,33 @@
   // Half-PPR, like everything he publishes, while all three leagues here are
   // full PPR. Shown as HIS rank, never rescored into a full-PPR number and
   // passed off as his.
-  let _gibbsRosById = null;
-  function gibbsRosRank(sleeperId) {
-    if (!window.GIBBS_ROS) return null;
-    if (!_gibbsRosById) {
-      _gibbsRosById = new Map();
-      for (const [pos, rows] of Object.entries(window.GIBBS_ROS.positions || {})) {
-        for (const r of rows) {
-          if (r.sleeperId) _gibbsRosById.set(String(r.sleeperId), { ...r, pos });
-        }
+  // Two boards, same shape, different questions. GIBBS_ROS is the deep
+  // rest-of-season list (RB 1-70 and so on); GIBBS_WEEK is the top-12 card he
+  // posts for the upcoming slate, which is the start/sit answer and is usually
+  // days fresher. One lookup serves both rather than two copies drifting apart.
+  const _gibbsIdx = new Map();
+  function gibbsBoardRank(board, sleeperId) {
+    const data = window[board];
+    if (!data) return null;
+    if (!_gibbsIdx.has(board)) {
+      const m = new Map();
+      for (const [pos, rows] of Object.entries(data.positions || {})) {
+        for (const r of rows) if (r.sleeperId) m.set(String(r.sleeperId), { ...r, pos });
       }
+      _gibbsIdx.set(board, m);
     }
-    return _gibbsRosById.get(String(sleeperId)) || null;
+    return _gibbsIdx.get(board).get(String(sleeperId)) || null;
+  }
+  const gibbsRosRank = (id) => gibbsBoardRank('GIBBS_ROS', id);
+  const gibbsWeekRank = (id) => gibbsBoardRank('GIBBS_WEEK', id);
+
+  // His scoring is per POSITION, not per board: the week 3 QB card is NON-PPR
+  // while RB, WR and TE are HALF-PPR. Saying "half-PPR" over all four would be
+  // wrong for a quarter of it, so the label is read off the data.
+  function gibbsScoringLabel(data, pos) {
+    const f = (data && data.formatByPosition && data.formatByPosition[pos])
+      || (data && data.format) || 'half_ppr';
+    return f === 'mixed' ? 'mixed scoring' : f.replace('_', '-').toUpperCase();
   }
 
   function expertSources() {
@@ -2950,6 +2965,10 @@
             || filter.sort === 'weekly-ecr' || filter.sort === 'weekly-gibbs'
             || filter.sort === 'weekly-ros' || filter.sort === 'weekly-gibbs-ros'
             || filter.sort === 'weekly-vsdelta'
+            // Both Gibbs X columns were handled INSIDE weeklyValue but never
+            // listed here, so the comparator never routed to them and clicking
+            // either header sorted nothing. The handler below was dead code.
+            || filter.sort === 'weekly-gibbs-x' || filter.sort === 'weekly-gibbs-wk'
             || (typeof filter.sort === 'string' && filter.sort.startsWith('weekly-x:'))
             || (typeof filter.sort === 'string' && filter.sort.startsWith('kicker-'))
             || (typeof filter.sort === 'string' && filter.sort.startsWith('sw:'))
@@ -2974,7 +2993,13 @@
             }
             if (filter.sort === 'weekly-ros') return row.ros;
             if (filter.sort === 'weekly-gibbs-ros') return row.gibbsRos;
-            if (filter.sort === 'weekly-gibbs-x') return gibbsRosRank(p._sleeperId)?.rank ?? null;
+            // `player`, not `p`. weeklyValue's parameter is named `player`, and
+            // `p` resolves to nothing here, so this threw ReferenceError and
+            // took the whole table render down with it. It never surfaced
+            // because the comparator was not routed to these keys either: two
+            // bugs that hid each other, and the column just looked inert.
+            if (filter.sort === 'weekly-gibbs-x') return gibbsRosRank(player._sleeperId)?.rank ?? null;
+            if (filter.sort === 'weekly-gibbs-wk') return gibbsWeekRank(player._sleeperId)?.rank ?? null;
             // Null either side means no comparison exists, so the row stays
             // blank. The null branch below pushes it last in BOTH directions,
             // which is the whole point: a missing line is not a zero edge.
@@ -3023,6 +3048,11 @@
             filter.dir = (key === 'rank' || key === 'age' || key === 'pos' || key === 'name'
               || key === 'weekly-ecr' || key === 'weekly-gibbs'
               || key === 'weekly-ros' || key === 'weekly-gibbs-ros'
+              // Both Gibbs X columns are RANKS. They were missing here, so the
+              // first click sorted them descending and put his worst-ranked
+              // player on top, which reads as a broken column rather than a
+              // direction choice.
+              || key === 'weekly-gibbs-x' || key === 'weekly-gibbs-wk'
               || (typeof key === 'string' && key.startsWith('weekly-x:'))
               || (typeof key === 'string' && key.startsWith('xr:'))) ? 'asc' : 'desc';
           }
@@ -3132,6 +3162,14 @@
       const hasGibbsRos = ((weeklyData.coverage || {}).gibbsRosPlayers || 0) > 0;
       // His X board is a separate, fresher source than his FantasyPros feed.
       const gibbsRosPosted = window.GIBBS_ROS ? window.GIBBS_ROS.postedAt : null;
+      const gibbsWeekPosted = window.GIBBS_WEEK ? window.GIBBS_WEEK.postedAt : null;
+      const gibbsWeekScoring = window.GIBBS_WEEK
+        ? (window.GIBBS_WEEK.format === 'mixed'
+            ? 'Scoring differs by position on his cards: '
+              + Object.entries(window.GIBBS_WEEK.formatByPosition || {})
+                  .map(([k, v]) => `${k} ${v.replace('_', '-').toUpperCase()}`).join(', ')
+            : gibbsScoringLabel(window.GIBBS_WEEK, 'RB'))
+        : '';
       // He publishes half-PPR and these leagues are full PPR, so the scoring of
       // his board is part of the number. The builder takes whichever scoring he
       // submitted last, which is not always the PPR one: measured 2026-09-19 his
@@ -3186,6 +3224,8 @@
               hasGibbsRos ? sortHdr('weekly-gibbs-ros', gibbsRosMeta.scoring === 'HALF' ? 'Gibbs ROS (half)' : 'Gibbs ROS', { right:true, title:gibbsRosTitle }) : null,
             gibbsRosPosted ? sortHdr('weekly-gibbs-x', 'Gibbs X', { right:true,
               title:`Jacob Gibbs rest-of-season positional rank from his own X posts, ${gibbsRosPosted}. His FantasyPros board is usually a day or more behind this and never carries the positional ROS lists at all. HALF-PPR, which is what he publishes, while this league is full PPR.` }) : null,
+            gibbsWeekPosted ? sortHdr('weekly-gibbs-wk', 'Gibbs Wk', { right:true,
+              title:`Jacob Gibbs's own top-12 board for this week, posted ${gibbsWeekPosted}. This is the start/sit list and it is normally the freshest thing he publishes; the ROS column beside it answers a different question. ${gibbsWeekScoring}, while this league is full PPR. Only the top 12 at each position are ranked, so a blank means unranked on that card, not unrostered.` }) : null,
               ...VEGAS_COMPONENTS.map(c => sortHdr(`wc:${c.k}`, c.label, { right:true,
                 title:`Expected ${c.label} behind the Vegas points column. Greyed when that stat had no market line and was filled from Sleeper.` })),
             ]))),
@@ -3241,6 +3281,24 @@
                   g.vsEcr ? h('span', { class: g.vsEcr > 0 ? 'delta-up' : 'delta-down',
                     style:{ marginLeft:'4px', fontSize:'11px' } },
                     `${g.vsEcr > 0 ? '+' : ''}${g.vsEcr}`) : null);
+              })() : null,
+              gibbsWeekPosted ? (() => {
+                const g = gibbsWeekRank(p._sleeperId);
+                // The card is a top 12. Absent means unranked on it, which is
+                // information, not a missing lookup, so it reads as a blank
+                // rather than as a zero or a made-up rank.
+                if (!g) return h('td', { class:'right tnum' }, emptyValue());
+                const ros = gibbsRosRank(p._sleeperId);
+                const moved = ros && ros.pos === g.pos ? ros.rank - g.rank : null;
+                return h('td', { class:'right tnum', title:
+                  `${g.pos}${g.rank} on his week board posted ${gibbsWeekPosted}, `
+                  + `${gibbsScoringLabel(window.GIBBS_WEEK, g.pos)}.`
+                  + (moved ? ` He has him ${Math.abs(moved)} spot${Math.abs(moved) === 1 ? '' : 's'} `
+                      + `${moved > 0 ? 'higher' : 'lower'} this week than on his rest-of-season board.` : '') },
+                  `${g.pos}${g.rank}`,
+                  moved ? h('span', { class: moved > 0 ? 'delta-up' : 'delta-down',
+                    style:{ marginLeft:'4px', fontSize:'11px' } },
+                    `${moved > 0 ? '+' : ''}${moved}`) : null);
               })() : null,
                 ...VEGAS_COMPONENTS.map(c => componentCell(weekly, c)),
               ]));

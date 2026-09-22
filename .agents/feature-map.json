@@ -973,6 +973,33 @@
       "notes": "His rest-of-season positional board, captured from his own X posts and transcribed by two independent readers before it was allowed into the repo (WR agreed 77 of 77, RB 69 of 70, the split being the spelling of Jeremiyah Love). Separate from the JACOB_GIBBS_RANKINGS overall draft board and from the FantasyPros-sourced 'Gibbs ROS' column beside it: FantasyPros lagged this by a day at capture and never carries his positional ROS lists at all. The assert checks the payload and the DOM together so a stale or empty gibbs-ros.js cannot pass as a rendered column. Only RB and WR are populated because those are the only boards he posted; QBs showing a dot rather than a number is correct, not a gap. HALF-PPR, which is what he publishes, while all three leagues are full PPR, so the cell shows HIS rank and never a rescored one."
     },
     {
+      "id": "gibbs-week-x-column",
+      "name": "Weekly table: Gibbs top-12 board for this week, and it sorts",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "location.hash='#league/1341184676601028608/players'"
+        },
+        {
+          "sleepMs": 2800
+        },
+        {
+          "eval": "[...document.querySelectorAll('.player-table-views button, .player-table-views a')].find(e=>e.textContent.trim()==='Weekly')?.click()"
+        },
+        {
+          "sleepMs": 2000
+        }
+      ],
+      "selector": "table.weekly-rankings-table",
+      "assert": "(() => { const g = window.GIBBS_WEEK; if (!g) return false; const clean = t => t.replace(/[↑↓]/g, '').trim().toUpperCase(); const heads = [...document.querySelectorAll('table.weekly-rankings-table thead th')].map(h => clean(h.textContent)); const i = heads.indexOf('GIBBS WK'); if (i < 0) return false; const ranked = new Set(); for (const rows of Object.values(g.positions)) for (const r of rows) if (r.sleeperId) ranked.add(String(r.sleeperId)); const cellsOf = () => [...document.querySelectorAll('table.weekly-rankings-table tbody tr')].map(tr => tr.children[i] ? tr.children[i].textContent.trim() : '').filter(t => /^(QB|RB|WR|TE)\\d+/.test(t)); const before = cellsOf(); if (ranked.size < 40 || before.length < 20) return false; if (g.format !== 'mixed' && !g.formatByPosition) return false; /* Clicking the header must REORDER: the sibling column rendered correctly for weeks while its click did nothing, so rendering alone is not proof. */ document.querySelectorAll('table.weekly-rankings-table thead th')[i].click(); const after = cellsOf(); if (after.length < 20) return false; const rank = t => parseInt(t.match(/^(?:QB|RB|WR|TE)(\\d+)/)[1], 10); const asc = after.map(rank); return asc.every((v, k) => k === 0 || asc[k - 1] <= v); })()",
+      "notes": "His top-12 cards for the upcoming slate, which is the start/sit list and is normally the freshest thing he publishes; the Gibbs X column beside it answers the rest-of-season question instead. Captured from his X posts and transcribed by two independent readers before being allowed in: week 3 agreed 48 of 48 rows on rank, name and team, with every row resolving to a Sleeper id. This assert CLICKS the header and requires the order to change, because the sibling column shipped rendering perfectly while its click did nothing: the comparator was never routed to its sort key, and the handler underneath referenced an undefined `p` instead of `player`, so it would have thrown and blanked the table. Two bugs that hid each other, and no render-only check could see either. Scoring is per POSITION and the payload has to carry that: his week 3 QB card is NON-PPR while RB, WR and TE are HALF-PPR, so a single label would be wrong for a quarter of the board. Only the top 12 at each position exist, so a dot means unranked on that card, not a missing lookup."
+    },
+    {
       "id": "field-logo-watermark",
       "name": "Field background: centered app logo watermark",
       "path": [],

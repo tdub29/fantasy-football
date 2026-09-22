@@ -84,16 +84,29 @@ def index_team(pid: str | None, index: dict) -> str | None:
 
 
 def build(src: dict, index: dict) -> dict:
+    # Scoring is per BOARD, not per artifact, and assuming otherwise silently
+    # mislabels a whole position. His week 3 cards prove it: the QB graphic is
+    # headed NON-PPR while RB, WR and TE are HALF-PPR. A single `format` field
+    # would have stamped all four half-PPR and nothing downstream could tell.
+    by_pos = src.get("scoringByPosition") or {}
+    formats = sorted({by_pos.get(p, src.get("format", "half_ppr"))
+                      for p in src["positions"]})
     out = {
         "source": src.get("source", "Jacob Gibbs (@jagibbs_23)"),
         "board": src.get("board", "rest-of-season"),
-        "format": "half_ppr",
+        "format": formats[0] if len(formats) == 1 else "mixed",
+        "formatByPosition": {p: by_pos.get(p, src.get("format", "half_ppr"))
+                             for p in src["positions"]},
         "postedAt": src["posted"],
         "capturedAt": src["captured"],
         "provenance": src.get("provenance", ""),
-        "scoringWarning": ("He publishes HALF-PPR. All three leagues here are full PPR, "
-                           "so this is his board and not a full-PPR board. A derived "
-                           "full-PPR version must never be presented as his."),
+        "scoringWarning": (
+            "He publishes "
+            + " and ".join(f.replace("_", "-").upper() for f in formats)
+            + (", position by position" if len(formats) > 1 else "")
+            + ". All leagues here are full PPR, so this is his board and not a "
+              "full-PPR board. A derived full-PPR version must never be "
+              "presented as his."),
         "positions": {},
     }
     mismatches: list[str] = []
@@ -154,6 +167,20 @@ def self_check() -> int:
     assert b["positions"]["RB"][0]["sleeperId"] == "1"
     assert b["positions"]["RB"][1]["sleeperId"] is None      # unmatched stays null, never guessed
     assert b["format"] == "half_ppr"
+    assert b["formatByPosition"] == {"RB": "half_ppr"}
+
+    # Mixed scoring must be labelled mixed AND kept per position, because the
+    # whole failure this guards against is one header being quietly applied to
+    # a board that printed a different one.
+    mixed = {"posted": "x", "captured": "y",
+             "scoringByPosition": {"QB": "non_ppr", "RB": "half_ppr"},
+             "positions": {"QB": [{"rank": 1, "player": "A", "team": "BUF"}],
+                           "RB": [{"rank": 1, "player": "B", "team": "DET"}]}}
+    m = build(mixed, idx)
+    assert m["format"] == "mixed", m["format"]
+    assert m["formatByPosition"]["QB"] == "non_ppr"
+    assert m["formatByPosition"]["RB"] == "half_ppr"
+    assert "NON-PPR" in m["scoringWarning"] and "HALF-PPR" in m["scoringWarning"]
 
     # A hole in the ranks must raise, not renumber. This is the capture-gap rule
     # in code: 1,2,4 means rank 3 was never read, and inventing it is the failure.
