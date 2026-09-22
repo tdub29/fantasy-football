@@ -10,7 +10,9 @@ Usage:
     python projections/build_weekly_rankings.py --self-check
 """
 import argparse
+import csv
 import datetime
+import io
 import json
 import os
 import pathlib
@@ -19,6 +21,7 @@ import time
 import unicodedata
 import urllib.parse
 import urllib.request
+from zoneinfo import ZoneInfo
 
 import devig
 from fetch_season_props import KEY as BETTINGPROS_KEY
@@ -75,6 +78,8 @@ TRACKED_EXPERTS = [
 # to the api.fantasypros.com client, so this is the same request the page itself
 # makes. The personal key stays as the fallback below, capped but real.
 FANTASYPROS_WEB_KEY = "zjxN52G3lP4fORpHRftGI2mTU8cTwxVNvkjByM3j"
+NFL_SCHEDULE_URL = "https://raw.githubusercontent.com/nflverse/nfldata/master/data/games.csv"
+NFL_TEAM_ALIASES = {"JAC": "JAX", "LA": "LAR", "WSH": "WAS"}
 
 
 def load_dotenv():
@@ -101,6 +106,34 @@ def get_json(url, headers=None, timeout=60):
             if attempt == 2:
                 raise
             time.sleep(1.5 * (attempt + 1))
+
+
+def weekly_games(season, week, source_text=None):
+    """Current-week opponent and kickoff by team, normalized to site abbreviations."""
+    if source_text is None:
+        req = urllib.request.Request(NFL_SCHEDULE_URL, headers={"User-Agent": "Mozilla/5.0 FantasyHub/1.0"})
+        with urllib.request.urlopen(req, timeout=60) as response:
+            source_text = response.read().decode("utf-8")
+    games = {}
+    eastern = ZoneInfo("America/New_York")
+    for row in csv.DictReader(io.StringIO(source_text)):
+        if row.get("season") != str(season) or row.get("game_type") != "REG" or row.get("week") != str(week):
+            continue
+        away = NFL_TEAM_ALIASES.get(row.get("away_team"), row.get("away_team"))
+        home = NFL_TEAM_ALIASES.get(row.get("home_team"), row.get("home_team"))
+        if not away or not home:
+            continue
+        kickoff = None
+        try:
+            local = datetime.datetime.strptime(
+                f'{row["gameday"]} {row["gametime"]}', "%Y-%m-%d %H:%M"
+            ).replace(tzinfo=eastern)
+            kickoff = local.astimezone(datetime.timezone.utc).isoformat().replace("+00:00", "Z")
+        except (KeyError, TypeError, ValueError):
+            pass
+        games[away] = {"opp": home, "home": False, "kickoff": kickoff}
+        games[home] = {"opp": away, "home": True, "kickoff": kickoff}
+    return games
 
 
 def norm(value):
@@ -496,6 +529,13 @@ def self_check():
         assert freshest_scoring(2026, 0, 1576, "ros")[0] == "PPR"
     finally:
         globals()["board_stamp"] = real
+    sample = (
+        "season,game_type,week,gameday,gametime,away_team,home_team\n"
+        "2026,REG,2,2026-09-20,13:00,WSH,LA\n"
+    )
+    games = weekly_games(2026, 2, sample)
+    assert games["WAS"] == {"opp": "LAR", "home": False, "kickoff": "2026-09-20T17:00:00Z"}
+    assert games["LAR"] == {"opp": "WAS", "home": True, "kickoff": "2026-09-20T17:00:00Z"}
     print("weekly rankings self-check ok")
 
 
@@ -512,6 +552,8 @@ def main():
     season, current_week = current_nfl_state()
     if args.week is not None:
         current_week = max(1, min(18, args.week))
+    games = weekly_games(season, current_week)
+    print(f"NFL schedule: week {current_week}, {len(games)} teams")
 
     print(f"Sleeper weekly projections: {season} weeks 1-18")
     players, stats = sleeper_projections(season)
@@ -611,7 +653,9 @@ def main():
         "currentWeek": current_week,
         "scoring": "PPR",
         "generated": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
+        "games": games,
         "sources": {
+            "schedule": "nflverse current NFL schedule, kickoff converted from Eastern to UTC",
             "vegas": "BettingPros consensus player props, price-adjusted; gaps filled from the PrizePicks weekly board (flat line, no vig to remove), then from Sleeper",
             "sleeper": "Sleeper weekly pts_ppr",
             "ecr": "FantasyPros weekly expert consensus rankings",

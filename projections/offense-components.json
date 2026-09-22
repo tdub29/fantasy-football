@@ -71,8 +71,19 @@
     "fum_lost": 3.0,
     "pass_2pt": 1.0
    },
-   "pp_stats": null,
-   "pp_borrowed": []
+   "pp_stats": {
+    "pass_yd": 2903.28,
+    "pass_td": 13.0,
+    "pass_int": 8.0,
+    "rush_yd": 94.0,
+    "rush_td": 1.0
+   },
+   "pp_borrowed": [
+    "pass_td",
+    "pass_int",
+    "rush_yd",
+    "rush_td"
+   ]
   },
   {
    "sleeper_id": "11560",
@@ -404,14 +415,13 @@
    "pp_stats": {
     "pass_yd": 1920.73,
     "pass_td": 12.27,
+    "rush_td": 4.25,
     "pass_int": 11.0,
-    "rush_yd": 234.0,
-    "rush_td": 2.0
+    "rush_yd": 234.0
    },
    "pp_borrowed": [
     "pass_int",
-    "rush_yd",
-    "rush_td"
+    "rush_yd"
    ]
   },
   {
@@ -988,8 +998,16 @@
     "fum_lost": 3.0,
     "pass_2pt": 1.0
    },
-   "pp_stats": null,
-   "pp_borrowed": []
+   "pp_stats": {
+    "pass_yd": 2980.11,
+    "rush_yd": 375.5,
+    "pass_td": 18.92,
+    "rush_td": 4.19,
+    "pass_int": 10.0
+   },
+   "pp_borrowed": [
+    "pass_int"
+   ]
   },
   {
    "sleeper_id": "5870",
@@ -2137,7 +2155,7 @@
    "pp_stats": {
     "rush_yd": 27.5,
     "rec_yd": 19.5,
-    "rush_td": 4.07,
+    "rush_td": 4.27,
     "rec": 37.0,
     "rec_td": 2.0
    },
@@ -4414,7 +4432,7 @@
     "rec_td": 3.0
    },
    "pp_stats": {
-    "rec_yd": 34.5,
+    "rec_yd": 727.13,
     "rush_yd": 10.0,
     "rec": 35.0,
     "rec_td": 3.0
@@ -6511,7 +6529,7 @@
   {
    "sleeper_id": "6149",
    "name": "Darius Slayton",
-   "team": null,
+   "team": "IND",
    "pos": "WR",
    "sleeper_stats": {
     "rec": 26.0,
@@ -7591,7 +7609,7 @@
     "rec_td": 4.0
    },
    "pp_stats": {
-    "rec_yd": 35.5,
+    "rec_yd": 618.66,
     "rec": 3,
     "rec_td": 4.0
    },
@@ -8346,7 +8364,7 @@
   {
    "sleeper_id": "1339",
    "name": "Zach Ertz",
-   "team": null,
+   "team": "PHI",
    "pos": "TE",
    "sleeper_stats": {
     "rec": 16.0,
@@ -8841,11 +8859,13 @@
     "rec_td": 4.0
    },
    "pp_stats": {
-    "rec_yd": 566.99,
+    "rec_yd": 37.5,
     "rec": 3.5,
-    "rec_td": 4.85
+    "rec_td": 4.0
    },
-   "pp_borrowed": []
+   "pp_borrowed": [
+    "rec_td"
+   ]
   },
   {
    "sleeper_id": "5133",

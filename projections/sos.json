@@ -329,8 +329,8 @@
    "games": 17,
    "off_sos": 22.96,
    "def_sos": 23.28,
-   "actual_pf": 25.92,
-   "actual_pa": 21.58,
+   "actual_pf": 25.5,
+   "actual_pa": 21.33,
    "posted_games": 3,
    "schedule": [
     {
@@ -346,16 +346,16 @@
      "opp": "NYG",
      "home": true,
      "posted": true,
-     "implied_pf": 27.75,
-     "implied_pa": 20.75
+     "implied_pf": 27.0,
+     "implied_pa": 20.5
     },
     {
      "week": 3,
      "opp": "DEN",
      "home": false,
      "posted": true,
-     "implied_pf": 24.5,
-     "implied_pa": 22.0
+     "implied_pf": 24.0,
+     "implied_pa": 21.5
     },
     {
      "week": 4,
@@ -929,8 +929,8 @@
    "games": 17,
    "off_sos": 23.12,
    "def_sos": 22.76,
-   "actual_pf": 26.33,
-   "actual_pa": 20.17,
+   "actual_pf": 26.17,
+   "actual_pa": 20.33,
    "posted_games": 3,
    "schedule": [
     {
@@ -946,8 +946,8 @@
      "opp": "MIA",
      "home": true,
      "posted": true,
-     "implied_pf": 29.0,
-     "implied_pa": 15.5
+     "implied_pf": 28.5,
+     "implied_pa": 16.0
     },
     {
      "week": 3,
@@ -1379,8 +1379,8 @@
    "games": 17,
    "off_sos": 23.15,
    "def_sos": 23.42,
-   "actual_pf": 23.27,
-   "actual_pa": 24.14,
+   "actual_pf": 23.09,
+   "actual_pa": 24.26,
    "posted_games": 15,
    "schedule": [
     {
@@ -1404,8 +1404,8 @@
      "opp": "SEA",
      "home": true,
      "posted": true,
-     "implied_pf": 19.5,
-     "implied_pa": 22.0
+     "implied_pf": 16.75,
+     "implied_pa": 23.75
     },
     {
      "week": 4,
@@ -1679,8 +1679,8 @@
    "games": 17,
    "off_sos": 23.07,
    "def_sos": 23.17,
-   "actual_pf": 22.58,
-   "actual_pa": 19.58,
+   "actual_pf": 23.17,
+   "actual_pa": 18.67,
    "posted_games": 3,
    "schedule": [
     {
@@ -1704,8 +1704,8 @@
      "opp": "WAS",
      "home": false,
      "posted": true,
-     "implied_pf": 22.0,
-     "implied_pa": 19.5
+     "implied_pf": 23.75,
+     "implied_pa": 16.75
     },
     {
      "week": 4,
@@ -1979,8 +1979,8 @@
    "games": 17,
    "off_sos": 22.82,
    "def_sos": 23.02,
-   "actual_pf": 23.44,
-   "actual_pa": 22.85,
+   "actual_pf": 23.46,
+   "actual_pa": 22.84,
    "posted_games": 17,
    "schedule": [
     {
@@ -2004,8 +2004,8 @@
      "opp": "NE",
      "home": true,
      "posted": true,
-     "implied_pf": 24.0,
-     "implied_pa": 21.5
+     "implied_pf": 24.25,
+     "implied_pa": 21.25
     },
     {
      "week": 4,
@@ -2129,8 +2129,8 @@
    "games": 17,
    "off_sos": 22.64,
    "def_sos": 22.6,
-   "actual_pf": 22.08,
-   "actual_pa": 22.42,
+   "actual_pf": 22.0,
+   "actual_pa": 22.5,
    "posted_games": 3,
    "schedule": [
     {
@@ -2154,8 +2154,8 @@
      "opp": "JAX",
      "home": false,
      "posted": true,
-     "implied_pf": 21.5,
-     "implied_pa": 24.0
+     "implied_pf": 21.25,
+     "implied_pa": 24.25
     },
     {
      "week": 4,
@@ -2729,8 +2729,8 @@
    "games": 17,
    "off_sos": 23.17,
    "def_sos": 23.39,
-   "actual_pf": 22.33,
-   "actual_pa": 23.73,
+   "actual_pf": 22.32,
+   "actual_pa": 23.68,
    "posted_games": 15,
    "schedule": [
     {
@@ -2746,8 +2746,8 @@
      "opp": "LAR",
      "home": false,
      "posted": true,
-     "implied_pf": 20.75,
-     "implied_pa": 27.75
+     "implied_pf": 20.5,
+     "implied_pa": 27.0
     },
     {
      "week": 3,
@@ -3629,8 +3629,8 @@
    "games": 17,
    "off_sos": 22.7,
    "def_sos": 22.45,
-   "actual_pf": 22.75,
-   "actual_pa": 20.18,
+   "actual_pf": 22.71,
+   "actual_pa": 20.14,
    "posted_games": 14,
    "schedule": [
     {
@@ -3654,8 +3654,8 @@
      "opp": "LAR",
      "home": true,
      "posted": true,
-     "implied_pf": 22.0,
-     "implied_pa": 24.5
+     "implied_pf": 21.5,
+     "implied_pa": 24.0
     },
     {
      "week": 4,
@@ -4229,8 +4229,8 @@
    "games": 17,
    "off_sos": 22.49,
    "def_sos": 23.45,
-   "actual_pf": 19.07,
-   "actual_pa": 25.9,
+   "actual_pf": 19.1,
+   "actual_pa": 25.87,
    "posted_games": 15,
    "schedule": [
     {
@@ -4246,8 +4246,8 @@
      "opp": "SF",
      "home": false,
      "posted": true,
-     "implied_pf": 15.5,
-     "implied_pa": 29.0
+     "implied_pf": 16.0,
+     "implied_pa": 28.5
     },
     {
      "week": 3,

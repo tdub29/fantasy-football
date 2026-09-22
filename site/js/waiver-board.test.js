@@ -71,6 +71,10 @@ assert(!board.includes("'Own'"), 'global ownership column must stay removed');
 assert(!board.includes('.owned'), 'waiver board must not use global Sleeper ownership');
 assert(board.includes('b.hi > left'), 'any range exceeding remaining budget must be flagged');
 assert(board.includes("'NT'"), 'IDP nose tackles must be startable');
+assert.match(board, /const startable = new Set\(Object\.entries\(targets\)/,
+  'waiver positions must come from this league\'s starter slots');
+assert.match(board, /'data-player-id': c\.pid/,
+  'rendered candidates must expose stable ids for league ownership verification');
 
 const ctx = { window: {} };
 vm.runInNewContext(fs.readFileSync(`${__dirname}/../data/faab.js`, 'utf8'), ctx);

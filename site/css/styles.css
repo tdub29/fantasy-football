@@ -667,6 +667,7 @@ table.data .expert-rank-col { width: 76px; white-space: nowrap; }
 table.data.leagues-table thead th { padding: 16px 18px; font-size: 0.85rem; }
 table.data.leagues-table tbody td { padding: 18px; font-size: 1rem; }
 table.data.leagues-table .name-cell .name { font-size: 1.1rem; }
+.league-table-meta { display: none; }
 
 .league-banner {
   padding: 10px 14px;
@@ -2682,7 +2683,12 @@ textarea { resize: vertical; min-height: 80px; }
   .sidebar-close { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; }
   .main { padding: max(64px, calc(env(safe-area-inset-top) + 52px)) max(16px, env(safe-area-inset-right)) 48px max(16px, env(safe-area-inset-left)); }
   .page-header { gap: 12px; }
-  .tab-bar { margin-left: -16px; margin-right: -16px; padding: 0 16px; }
+  /* Bleed the PAGE tab bar to the gutter, not every tab bar on the screen.
+     A card's own group tabs inherited the -16px and overhung its 14px padding
+     plus 2px border, which is exactly the 2px the IDP matchup plate overflowed
+     by. Scoped to a direct child of .main, with the nested case stated. */
+  .main > .tab-bar { margin-left: -16px; margin-right: -16px; padding: 0 16px; }
+  .card .tab-bar { margin-inline: 0; padding-inline: 0; }
 }
 
 @media (max-width: 720px) {
@@ -3192,6 +3198,8 @@ tr.dragging { opacity: 0.55; background: var(--bg-3) !important; }
   text-overflow: ellipsis;
 }
 .watch-meta { color: var(--fg-3); font-size: 0.72rem; }
+.watch-opp { color: var(--fg-2); font-weight: 700; }
+.watch-time { white-space: nowrap; }
 .watch-chips { grid-area: chips; display: flex; flex-wrap: wrap; gap: 4px; }
 .watch-chip {
   border: 1px solid var(--lg);
@@ -3678,9 +3686,10 @@ table.data thead th, .tab, .pill, .tier-chip, .badge, button {
 /* Image 1 confines the halftone mesh to the purple bands and the chalk lines to
    the turf. The first pass laid both over the whole page at once. */
 body::before {
-  /* A real field. The TILE carries only what belongs to a sideline, the yard
-     numerals and the two hash rows, drawn once at the top and once at the bottom
-     with repeat-x. The 5-YARD CHALK stays a full-height repeating gradient so the
+  /* A real field. The SVG carries only what belongs to a sideline, the yard
+     numerals and the two hash rows, drawn once at the top and once at the bottom.
+     Every layer scales to the viewport so browser zoom never adds another field.
+     The 5-YARD CHALK stays a full-height repeating gradient so the
      lines run the whole page; folding chalk into the tile shortened them to two
      180px bands, which is the regression this comment exists to prevent.
      Grid: 1 yard = 24px, chalk every 120px. Numerals every 240px offset by half a
@@ -3693,11 +3702,33 @@ body::before {
   background-image:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='2400' height='180'%3E%3Cg fill='white' fill-opacity='0.16'%3E%3Crect x='24' y='86' width='3' height='12'/%3E%3Crect x='48' y='86' width='3' height='12'/%3E%3Crect x='72' y='86' width='3' height='12'/%3E%3Crect x='96' y='86' width='3' height='12'/%3E%3Crect x='144' y='86' width='3' height='12'/%3E%3Crect x='168' y='86' width='3' height='12'/%3E%3Crect x='192' y='86' width='3' height='12'/%3E%3Crect x='216' y='86' width='3' height='12'/%3E%3Crect x='264' y='86' width='3' height='12'/%3E%3Crect x='288' y='86' width='3' height='12'/%3E%3Crect x='312' y='86' width='3' height='12'/%3E%3Crect x='336' y='86' width='3' height='12'/%3E%3Crect x='384' y='86' width='3' height='12'/%3E%3Crect x='408' y='86' width='3' height='12'/%3E%3Crect x='432' y='86' width='3' height='12'/%3E%3Crect x='456' y='86' width='3' height='12'/%3E%3Crect x='504' y='86' width='3' height='12'/%3E%3Crect x='528' y='86' width='3' height='12'/%3E%3Crect x='552' y='86' width='3' height='12'/%3E%3Crect x='576' y='86' width='3' height='12'/%3E%3Crect x='624' y='86' width='3' height='12'/%3E%3Crect x='648' y='86' width='3' height='12'/%3E%3Crect x='672' y='86' width='3' height='12'/%3E%3Crect x='696' y='86' width='3' height='12'/%3E%3Crect x='744' y='86' width='3' height='12'/%3E%3Crect x='768' y='86' width='3' height='12'/%3E%3Crect x='792' y='86' width='3' height='12'/%3E%3Crect x='816' y='86' width='3' height='12'/%3E%3Crect x='864' y='86' width='3' height='12'/%3E%3Crect x='888' y='86' width='3' height='12'/%3E%3Crect x='912' y='86' width='3' height='12'/%3E%3Crect x='936' y='86' width='3' height='12'/%3E%3Crect x='984' y='86' width='3' height='12'/%3E%3Crect x='1008' y='86' width='3' height='12'/%3E%3Crect x='1032' y='86' width='3' height='12'/%3E%3Crect x='1056' y='86' width='3' height='12'/%3E%3Crect x='1104' y='86' width='3' height='12'/%3E%3Crect x='1128' y='86' width='3' height='12'/%3E%3Crect x='1152' y='86' width='3' height='12'/%3E%3Crect x='1176' y='86' width='3' height='12'/%3E%3Crect x='1224' y='86' width='3' height='12'/%3E%3Crect x='1248' y='86' width='3' height='12'/%3E%3Crect x='1272' y='86' width='3' height='12'/%3E%3Crect x='1296' y='86' width='3' height='12'/%3E%3Crect x='1344' y='86' width='3' height='12'/%3E%3Crect x='1368' y='86' width='3' height='12'/%3E%3Crect x='1392' y='86' width='3' height='12'/%3E%3Crect x='1416' y='86' width='3' height='12'/%3E%3Crect x='1464' y='86' width='3' height='12'/%3E%3Crect x='1488' y='86' width='3' height='12'/%3E%3Crect x='1512' y='86' width='3' height='12'/%3E%3Crect x='1536' y='86' width='3' height='12'/%3E%3Crect x='1584' y='86' width='3' height='12'/%3E%3Crect x='1608' y='86' width='3' height='12'/%3E%3Crect x='1632' y='86' width='3' height='12'/%3E%3Crect x='1656' y='86' width='3' height='12'/%3E%3Crect x='1704' y='86' width='3' height='12'/%3E%3Crect x='1728' y='86' width='3' height='12'/%3E%3Crect x='1752' y='86' width='3' height='12'/%3E%3Crect x='1776' y='86' width='3' height='12'/%3E%3Crect x='1824' y='86' width='3' height='12'/%3E%3Crect x='1848' y='86' width='3' height='12'/%3E%3Crect x='1872' y='86' width='3' height='12'/%3E%3Crect x='1896' y='86' width='3' height='12'/%3E%3Crect x='1944' y='86' width='3' height='12'/%3E%3Crect x='1968' y='86' width='3' height='12'/%3E%3Crect x='1992' y='86' width='3' height='12'/%3E%3Crect x='2016' y='86' width='3' height='12'/%3E%3Crect x='2064' y='86' width='3' height='12'/%3E%3Crect x='2088' y='86' width='3' height='12'/%3E%3Crect x='2112' y='86' width='3' height='12'/%3E%3Crect x='2136' y='86' width='3' height='12'/%3E%3Crect x='2184' y='86' width='3' height='12'/%3E%3Crect x='2208' y='86' width='3' height='12'/%3E%3Crect x='2232' y='86' width='3' height='12'/%3E%3Crect x='2256' y='86' width='3' height='12'/%3E%3Crect x='2304' y='86' width='3' height='12'/%3E%3Crect x='2328' y='86' width='3' height='12'/%3E%3Crect x='2352' y='86' width='3' height='12'/%3E%3Crect x='2376' y='86' width='3' height='12'/%3E%3Crect x='24' y='142' width='3' height='12'/%3E%3Crect x='48' y='142' width='3' height='12'/%3E%3Crect x='72' y='142' width='3' height='12'/%3E%3Crect x='96' y='142' width='3' height='12'/%3E%3Crect x='144' y='142' width='3' height='12'/%3E%3Crect x='168' y='142' width='3' height='12'/%3E%3Crect x='192' y='142' width='3' height='12'/%3E%3Crect x='216' y='142' width='3' height='12'/%3E%3Crect x='264' y='142' width='3' height='12'/%3E%3Crect x='288' y='142' width='3' height='12'/%3E%3Crect x='312' y='142' width='3' height='12'/%3E%3Crect x='336' y='142' width='3' height='12'/%3E%3Crect x='384' y='142' width='3' height='12'/%3E%3Crect x='408' y='142' width='3' height='12'/%3E%3Crect x='432' y='142' width='3' height='12'/%3E%3Crect x='456' y='142' width='3' height='12'/%3E%3Crect x='504' y='142' width='3' height='12'/%3E%3Crect x='528' y='142' width='3' height='12'/%3E%3Crect x='552' y='142' width='3' height='12'/%3E%3Crect x='576' y='142' width='3' height='12'/%3E%3Crect x='624' y='142' width='3' height='12'/%3E%3Crect x='648' y='142' width='3' height='12'/%3E%3Crect x='672' y='142' width='3' height='12'/%3E%3Crect x='696' y='142' width='3' height='12'/%3E%3Crect x='744' y='142' width='3' height='12'/%3E%3Crect x='768' y='142' width='3' height='12'/%3E%3Crect x='792' y='142' width='3' height='12'/%3E%3Crect x='816' y='142' width='3' height='12'/%3E%3Crect x='864' y='142' width='3' height='12'/%3E%3Crect x='888' y='142' width='3' height='12'/%3E%3Crect x='912' y='142' width='3' height='12'/%3E%3Crect x='936' y='142' width='3' height='12'/%3E%3Crect x='984' y='142' width='3' height='12'/%3E%3Crect x='1008' y='142' width='3' height='12'/%3E%3Crect x='1032' y='142' width='3' height='12'/%3E%3Crect x='1056' y='142' width='3' height='12'/%3E%3Crect x='1104' y='142' width='3' height='12'/%3E%3Crect x='1128' y='142' width='3' height='12'/%3E%3Crect x='1152' y='142' width='3' height='12'/%3E%3Crect x='1176' y='142' width='3' height='12'/%3E%3Crect x='1224' y='142' width='3' height='12'/%3E%3Crect x='1248' y='142' width='3' height='12'/%3E%3Crect x='1272' y='142' width='3' height='12'/%3E%3Crect x='1296' y='142' width='3' height='12'/%3E%3Crect x='1344' y='142' width='3' height='12'/%3E%3Crect x='1368' y='142' width='3' height='12'/%3E%3Crect x='1392' y='142' width='3' height='12'/%3E%3Crect x='1416' y='142' width='3' height='12'/%3E%3Crect x='1464' y='142' width='3' height='12'/%3E%3Crect x='1488' y='142' width='3' height='12'/%3E%3Crect x='1512' y='142' width='3' height='12'/%3E%3Crect x='1536' y='142' width='3' height='12'/%3E%3Crect x='1584' y='142' width='3' height='12'/%3E%3Crect x='1608' y='142' width='3' height='12'/%3E%3Crect x='1632' y='142' width='3' height='12'/%3E%3Crect x='1656' y='142' width='3' height='12'/%3E%3Crect x='1704' y='142' width='3' height='12'/%3E%3Crect x='1728' y='142' width='3' height='12'/%3E%3Crect x='1752' y='142' width='3' height='12'/%3E%3Crect x='1776' y='142' width='3' height='12'/%3E%3Crect x='1824' y='142' width='3' height='12'/%3E%3Crect x='1848' y='142' width='3' height='12'/%3E%3Crect x='1872' y='142' width='3' height='12'/%3E%3Crect x='1896' y='142' width='3' height='12'/%3E%3Crect x='1944' y='142' width='3' height='12'/%3E%3Crect x='1968' y='142' width='3' height='12'/%3E%3Crect x='1992' y='142' width='3' height='12'/%3E%3Crect x='2016' y='142' width='3' height='12'/%3E%3Crect x='2064' y='142' width='3' height='12'/%3E%3Crect x='2088' y='142' width='3' height='12'/%3E%3Crect x='2112' y='142' width='3' height='12'/%3E%3Crect x='2136' y='142' width='3' height='12'/%3E%3Crect x='2184' y='142' width='3' height='12'/%3E%3Crect x='2208' y='142' width='3' height='12'/%3E%3Crect x='2232' y='142' width='3' height='12'/%3E%3Crect x='2256' y='142' width='3' height='12'/%3E%3Crect x='2304' y='142' width='3' height='12'/%3E%3Crect x='2328' y='142' width='3' height='12'/%3E%3Crect x='2352' y='142' width='3' height='12'/%3E%3Crect x='2376' y='142' width='3' height='12'/%3E%3C/g%3E%3Cg fill='white' fill-opacity='0.13' font-family='Arial Black, Arial, sans-serif' font-weight='900' font-size='44' text-anchor='middle'%3E%3Ctext x='300' y='52'%3E10%3C/text%3E%3Ctext x='540' y='52'%3E20%3C/text%3E%3Ctext x='780' y='52'%3E30%3C/text%3E%3Ctext x='1020' y='52'%3E40%3C/text%3E%3Ctext x='1260' y='52'%3E50%3C/text%3E%3Ctext x='1500' y='52'%3E40%3C/text%3E%3Ctext x='1740' y='52'%3E30%3C/text%3E%3Ctext x='1980' y='52'%3E20%3C/text%3E%3Ctext x='2220' y='52'%3E10%3C/text%3E%3C/g%3E%3C/svg%3E"),
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='2400' height='180'%3E%3Cg fill='white' fill-opacity='0.16'%3E%3Crect x='24' y='86' width='3' height='12'/%3E%3Crect x='48' y='86' width='3' height='12'/%3E%3Crect x='72' y='86' width='3' height='12'/%3E%3Crect x='96' y='86' width='3' height='12'/%3E%3Crect x='144' y='86' width='3' height='12'/%3E%3Crect x='168' y='86' width='3' height='12'/%3E%3Crect x='192' y='86' width='3' height='12'/%3E%3Crect x='216' y='86' width='3' height='12'/%3E%3Crect x='264' y='86' width='3' height='12'/%3E%3Crect x='288' y='86' width='3' height='12'/%3E%3Crect x='312' y='86' width='3' height='12'/%3E%3Crect x='336' y='86' width='3' height='12'/%3E%3Crect x='384' y='86' width='3' height='12'/%3E%3Crect x='408' y='86' width='3' height='12'/%3E%3Crect x='432' y='86' width='3' height='12'/%3E%3Crect x='456' y='86' width='3' height='12'/%3E%3Crect x='504' y='86' width='3' height='12'/%3E%3Crect x='528' y='86' width='3' height='12'/%3E%3Crect x='552' y='86' width='3' height='12'/%3E%3Crect x='576' y='86' width='3' height='12'/%3E%3Crect x='624' y='86' width='3' height='12'/%3E%3Crect x='648' y='86' width='3' height='12'/%3E%3Crect x='672' y='86' width='3' height='12'/%3E%3Crect x='696' y='86' width='3' height='12'/%3E%3Crect x='744' y='86' width='3' height='12'/%3E%3Crect x='768' y='86' width='3' height='12'/%3E%3Crect x='792' y='86' width='3' height='12'/%3E%3Crect x='816' y='86' width='3' height='12'/%3E%3Crect x='864' y='86' width='3' height='12'/%3E%3Crect x='888' y='86' width='3' height='12'/%3E%3Crect x='912' y='86' width='3' height='12'/%3E%3Crect x='936' y='86' width='3' height='12'/%3E%3Crect x='984' y='86' width='3' height='12'/%3E%3Crect x='1008' y='86' width='3' height='12'/%3E%3Crect x='1032' y='86' width='3' height='12'/%3E%3Crect x='1056' y='86' width='3' height='12'/%3E%3Crect x='1104' y='86' width='3' height='12'/%3E%3Crect x='1128' y='86' width='3' height='12'/%3E%3Crect x='1152' y='86' width='3' height='12'/%3E%3Crect x='1176' y='86' width='3' height='12'/%3E%3Crect x='1224' y='86' width='3' height='12'/%3E%3Crect x='1248' y='86' width='3' height='12'/%3E%3Crect x='1272' y='86' width='3' height='12'/%3E%3Crect x='1296' y='86' width='3' height='12'/%3E%3Crect x='1344' y='86' width='3' height='12'/%3E%3Crect x='1368' y='86' width='3' height='12'/%3E%3Crect x='1392' y='86' width='3' height='12'/%3E%3Crect x='1416' y='86' width='3' height='12'/%3E%3Crect x='1464' y='86' width='3' height='12'/%3E%3Crect x='1488' y='86' width='3' height='12'/%3E%3Crect x='1512' y='86' width='3' height='12'/%3E%3Crect x='1536' y='86' width='3' height='12'/%3E%3Crect x='1584' y='86' width='3' height='12'/%3E%3Crect x='1608' y='86' width='3' height='12'/%3E%3Crect x='1632' y='86' width='3' height='12'/%3E%3Crect x='1656' y='86' width='3' height='12'/%3E%3Crect x='1704' y='86' width='3' height='12'/%3E%3Crect x='1728' y='86' width='3' height='12'/%3E%3Crect x='1752' y='86' width='3' height='12'/%3E%3Crect x='1776' y='86' width='3' height='12'/%3E%3Crect x='1824' y='86' width='3' height='12'/%3E%3Crect x='1848' y='86' width='3' height='12'/%3E%3Crect x='1872' y='86' width='3' height='12'/%3E%3Crect x='1896' y='86' width='3' height='12'/%3E%3Crect x='1944' y='86' width='3' height='12'/%3E%3Crect x='1968' y='86' width='3' height='12'/%3E%3Crect x='1992' y='86' width='3' height='12'/%3E%3Crect x='2016' y='86' width='3' height='12'/%3E%3Crect x='2064' y='86' width='3' height='12'/%3E%3Crect x='2088' y='86' width='3' height='12'/%3E%3Crect x='2112' y='86' width='3' height='12'/%3E%3Crect x='2136' y='86' width='3' height='12'/%3E%3Crect x='2184' y='86' width='3' height='12'/%3E%3Crect x='2208' y='86' width='3' height='12'/%3E%3Crect x='2232' y='86' width='3' height='12'/%3E%3Crect x='2256' y='86' width='3' height='12'/%3E%3Crect x='2304' y='86' width='3' height='12'/%3E%3Crect x='2328' y='86' width='3' height='12'/%3E%3Crect x='2352' y='86' width='3' height='12'/%3E%3Crect x='2376' y='86' width='3' height='12'/%3E%3Crect x='24' y='142' width='3' height='12'/%3E%3Crect x='48' y='142' width='3' height='12'/%3E%3Crect x='72' y='142' width='3' height='12'/%3E%3Crect x='96' y='142' width='3' height='12'/%3E%3Crect x='144' y='142' width='3' height='12'/%3E%3Crect x='168' y='142' width='3' height='12'/%3E%3Crect x='192' y='142' width='3' height='12'/%3E%3Crect x='216' y='142' width='3' height='12'/%3E%3Crect x='264' y='142' width='3' height='12'/%3E%3Crect x='288' y='142' width='3' height='12'/%3E%3Crect x='312' y='142' width='3' height='12'/%3E%3Crect x='336' y='142' width='3' height='12'/%3E%3Crect x='384' y='142' width='3' height='12'/%3E%3Crect x='408' y='142' width='3' height='12'/%3E%3Crect x='432' y='142' width='3' height='12'/%3E%3Crect x='456' y='142' width='3' height='12'/%3E%3Crect x='504' y='142' width='3' height='12'/%3E%3Crect x='528' y='142' width='3' height='12'/%3E%3Crect x='552' y='142' width='3' height='12'/%3E%3Crect x='576' y='142' width='3' height='12'/%3E%3Crect x='624' y='142' width='3' height='12'/%3E%3Crect x='648' y='142' width='3' height='12'/%3E%3Crect x='672' y='142' width='3' height='12'/%3E%3Crect x='696' y='142' width='3' height='12'/%3E%3Crect x='744' y='142' width='3' height='12'/%3E%3Crect x='768' y='142' width='3' height='12'/%3E%3Crect x='792' y='142' width='3' height='12'/%3E%3Crect x='816' y='142' width='3' height='12'/%3E%3Crect x='864' y='142' width='3' height='12'/%3E%3Crect x='888' y='142' width='3' height='12'/%3E%3Crect x='912' y='142' width='3' height='12'/%3E%3Crect x='936' y='142' width='3' height='12'/%3E%3Crect x='984' y='142' width='3' height='12'/%3E%3Crect x='1008' y='142' width='3' height='12'/%3E%3Crect x='1032' y='142' width='3' height='12'/%3E%3Crect x='1056' y='142' width='3' height='12'/%3E%3Crect x='1104' y='142' width='3' height='12'/%3E%3Crect x='1128' y='142' width='3' height='12'/%3E%3Crect x='1152' y='142' width='3' height='12'/%3E%3Crect x='1176' y='142' width='3' height='12'/%3E%3Crect x='1224' y='142' width='3' height='12'/%3E%3Crect x='1248' y='142' width='3' height='12'/%3E%3Crect x='1272' y='142' width='3' height='12'/%3E%3Crect x='1296' y='142' width='3' height='12'/%3E%3Crect x='1344' y='142' width='3' height='12'/%3E%3Crect x='1368' y='142' width='3' height='12'/%3E%3Crect x='1392' y='142' width='3' height='12'/%3E%3Crect x='1416' y='142' width='3' height='12'/%3E%3Crect x='1464' y='142' width='3' height='12'/%3E%3Crect x='1488' y='142' width='3' height='12'/%3E%3Crect x='1512' y='142' width='3' height='12'/%3E%3Crect x='1536' y='142' width='3' height='12'/%3E%3Crect x='1584' y='142' width='3' height='12'/%3E%3Crect x='1608' y='142' width='3' height='12'/%3E%3Crect x='1632' y='142' width='3' height='12'/%3E%3Crect x='1656' y='142' width='3' height='12'/%3E%3Crect x='1704' y='142' width='3' height='12'/%3E%3Crect x='1728' y='142' width='3' height='12'/%3E%3Crect x='1752' y='142' width='3' height='12'/%3E%3Crect x='1776' y='142' width='3' height='12'/%3E%3Crect x='1824' y='142' width='3' height='12'/%3E%3Crect x='1848' y='142' width='3' height='12'/%3E%3Crect x='1872' y='142' width='3' height='12'/%3E%3Crect x='1896' y='142' width='3' height='12'/%3E%3Crect x='1944' y='142' width='3' height='12'/%3E%3Crect x='1968' y='142' width='3' height='12'/%3E%3Crect x='1992' y='142' width='3' height='12'/%3E%3Crect x='2016' y='142' width='3' height='12'/%3E%3Crect x='2064' y='142' width='3' height='12'/%3E%3Crect x='2088' y='142' width='3' height='12'/%3E%3Crect x='2112' y='142' width='3' height='12'/%3E%3Crect x='2136' y='142' width='3' height='12'/%3E%3Crect x='2184' y='142' width='3' height='12'/%3E%3Crect x='2208' y='142' width='3' height='12'/%3E%3Crect x='2232' y='142' width='3' height='12'/%3E%3Crect x='2256' y='142' width='3' height='12'/%3E%3Crect x='2304' y='142' width='3' height='12'/%3E%3Crect x='2328' y='142' width='3' height='12'/%3E%3Crect x='2352' y='142' width='3' height='12'/%3E%3Crect x='2376' y='142' width='3' height='12'/%3E%3C/g%3E%3Cg fill='white' fill-opacity='0.13' font-family='Arial Black, Arial, sans-serif' font-weight='900' font-size='44' text-anchor='middle'%3E%3Ctext x='300' y='52'%3E10%3C/text%3E%3Ctext x='540' y='52'%3E20%3C/text%3E%3Ctext x='780' y='52'%3E30%3C/text%3E%3Ctext x='1020' y='52'%3E40%3C/text%3E%3Ctext x='1260' y='52'%3E50%3C/text%3E%3Ctext x='1500' y='52'%3E40%3C/text%3E%3Ctext x='1740' y='52'%3E30%3C/text%3E%3Ctext x='1980' y='52'%3E20%3C/text%3E%3Ctext x='2220' y='52'%3E10%3C/text%3E%3C/g%3E%3C/svg%3E"),
-    repeating-linear-gradient(90deg, rgba(255,255,255,.20) 0 4px, transparent 4px 120px),
-    repeating-linear-gradient(90deg, rgba(255,255,255,.035) 0 120px, rgba(0,0,0,.05) 120px 240px);
-  background-size: 2400px 180px, 2400px 180px, auto, auto;
+    repeating-linear-gradient(90deg, rgba(255,255,255,.20) 0 4px, transparent 4px 5%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.035) 0 5%, rgba(0,0,0,.05) 5% 10%);
+  left: 240px;
+  background-size: 100% 180px, 100% 180px, 100% 100%, 100% 100%;
   background-position: 0 24px, 0 calc(100% - 24px), 0 0, 0 0;
-  background-repeat: repeat-x, repeat-x, repeat, repeat;
+  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
+}
+
+/* App mark at midfield. Keep it below every surface and out of hit testing. */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0 0 0 240px;
+  z-index: -1;
+  pointer-events: none;
+  background: url("../img/logo-512.png") center / clamp(220px, 34vw, 520px) auto no-repeat;
+  opacity: .09;
+  filter: saturate(.72) contrast(.9);
+}
+
+@media (max-width: 960px) {
+  body::before { left: 0; }
+  body::after {
+    inset: 0;
+    background-size: min(62vw, 280px) auto;
+    opacity: .075;
+  }
 }
 
 
@@ -4300,7 +4331,58 @@ body::before {
   .standings-list .strength-row .strength-detail {
     grid-column: 2;
     grid-row: 2;
-    gap: 4px 10px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 12px;
+  }
+  /* space-between pushed each value hard left and its caption hard right, so
+     two side-by-side cells read as one four-item run: "2-0  REC  188  PF", and
+     nothing said REC belonged to 2-0 rather than to 188. Value and caption now
+     touch, and the pair is separated from its neighbour by the column gap and
+     a rule, which is the only thing that made it legible at 390px. */
+  .standings-list .strength-row .strength-detail .seg {
+    min-width: 0;
+    min-height: 26px;
+    justify-content: flex-start;
+    gap: 5px;
+    padding-right: 6px;
+    white-space: nowrap;
+    border-bottom: 1px solid color-mix(in oklch, var(--fg-3) 28%, transparent);
+  }
+  /* The caption is the quiet half of the pair wherever it is written, inline
+     style included, so it is stated once here rather than per call site. */
+  .standings-list .strength-row .strength-detail .seg .ytd-lab,
+  .standings-list .strength-row .strength-detail .seg > span[style*="0.7rem"] {
+    margin-left: 0;
+    font-size: 0.62rem;
+    letter-spacing: 0.03em;
+    color: var(--fg-3);
+  }
+  /* Odd count leaves a hole in a 2-up grid. The last orphan spans both cells
+     instead of sitting beside an empty one. */
+  .standings-list .strength-row .strength-detail .seg:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+
+  /* 390px clears with room; 360px does not. "11.4% PV share" measured 103px in
+     a 100px cell, and because the pair is nowrap that overflowed rather than
+     wrapped. The longest caption sets the floor, so the step is keyed to it
+     instead of to a device. */
+  @media (max-width: 400px) {
+    .standings-list .strength-row .strength-detail { gap: 0 8px; }
+    .standings-list .strength-row .strength-detail .seg { gap: 3px; padding-right: 2px; }
+    .standings-list .strength-row .strength-detail .seg .ytd-lab,
+    .standings-list .strength-row .strength-detail .seg > span[style*="0.7rem"] {
+      font-size: 0.56rem;
+    }
+    .standings-list .strength-row .strength-detail { font-size: 0.8rem; }
+  }
+
+  /* A title plus its scope note is two things on one line, and at 360px the
+     pair is 2px wider than the plate. Let the note drop instead of pushing. */
+  .card > .card-title { flex-wrap: wrap; row-gap: 2px; }
+  .standings-list .strength-row .strength-detail .seg .dot {
+    flex: 0 0 auto;
   }
   .standings-list .strength-row .score-cell {
     grid-column: 1;
@@ -4318,6 +4400,23 @@ body::before {
   .standings-list .strength-row .str-spark { height: 54px; gap: 3px; }
   .standings-list .strength-row .str-spark .sp-bar { width: 60%; max-width: 20px; }
   .standings-list .strength-row .str-spark .sp-bar-val { font-size: 0.54rem; }
+
+  /* Redraft has no trajectory. Keep score beside team instead of leaving an
+     empty dynasty chart row that pushes score toward panel edge. */
+  .standings-list .strength-row:not(:has(.str-traj)) {
+    grid-template-columns: 34px minmax(0, 1fr) 64px;
+  }
+  .standings-list .strength-row:not(:has(.str-traj)) .rank { grid-column: 1; }
+  .standings-list .strength-row:not(:has(.str-traj)) .team { grid-column: 2; }
+  .standings-list .strength-row:not(:has(.str-traj)) .score-cell {
+    grid-column: 3;
+    grid-row: 1;
+    align-self: center;
+  }
+  .standings-list .strength-row:not(:has(.str-traj)) .strength-detail {
+    grid-column: 2 / 4;
+    grid-row: 2;
+  }
 }
 
 /* --- Multi-player slots stack instead of truncating -------------------- */
@@ -4506,9 +4605,20 @@ table.data.faab-history-table tbody td { padding-block: 7px; font-size: 0.8rem; 
 .sos-bar > i { display: block; height: 100%; background: var(--cat-vet); }
 @media (max-width: 720px) {
   /* Phone drops the bar, which is comparative, and keeps all three numbers. */
-  .sos-head, .sos-row { grid-template-columns: 2.2rem minmax(0, 1fr) 0 3.2rem 3.2rem 4rem; }
+  /* display:none removes a grid ITEM, it does not blank a column, so hiding the
+     bar shifted every later cell one column left: LEFT landed in the 0-width
+     comparison column and printed through PLAYED as "LEPLAYED". Phone gets a
+     five-column template that matches the five items that actually render. */
+  .sos-head, .sos-row {
+    grid-template-columns: 1.9rem minmax(0, 1fr) 3rem 3.4rem 3.6rem;
+    gap: 6px;
+  }
   .sos-row .sos-bar, .sos-head span:nth-child(3) { display: none; }
   .sos-bar { display: none; }
+  /* "PLAYED" is wider than its column at the body size and overflowed LEFT to
+     its left, printing "LEPLAYED". Captions shrink; the numbers do not. */
+  .sos-head .tip { font-size: 0.6rem; letter-spacing: 0; overflow: hidden; }
+  .sos-played { font-size: 0.72rem; }
 }
 
 /* ==========================================================================
@@ -5125,6 +5235,7 @@ table.data tbody td.tnum { font-weight: 600; }
   text-transform: uppercase;
   color: var(--fg-3);
 }
+.card-title .faab-scope { color: var(--chalk); opacity: 0.9; }
 .faab-kpis { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; margin: 8px 0 4px; }
 .faab-kpis::-webkit-scrollbar { display: none; }
 .faab-kpi {
@@ -5211,8 +5322,14 @@ table.data tbody td.tnum { font-weight: 600; }
   .waiver-table th:nth-child(3), .waiver-table td:nth-child(3) { width: 50px; }
   .waiver-table th:nth-child(6), .waiver-table td:nth-child(6) { width: 46px; }
   .waiver-table th:nth-child(8), .waiver-table td:nth-child(8) { width: 62px; }
-  .faab-head, .faab-row { grid-template-columns: minmax(0, 1fr) 0 3.2rem 3.2rem 3rem; }
-  .faab-row .faab-plot, .faab-head span:nth-child(2) { display: none; }
+  .faab-head, .faab-row {
+    grid-template-columns: minmax(0, 1fr) 3.6rem 3.3rem 2.7rem;
+    gap: 4px;
+  }
+  .faab-row .faab-plot, .faab-head span:nth-child(2),
+  .faab-row .faab-range, .faab-head span:nth-child(4) { display: none; }
+  .faab-head .tip { font-size: 0.55rem; text-align: right; }
+  .faab-med, .faab-pct, .faab-n { white-space: nowrap; }
 }
 
 /* ==========================================================================
@@ -5443,3 +5560,84 @@ button:disabled { cursor: wait; opacity: 0.7; }
 }
 *::-webkit-scrollbar-thumb:hover { background: var(--grad-gold); }
 *::-webkit-scrollbar-corner { background: var(--bg-2); }
+
+/* ==========================================================================
+   Phone: the three things that were unreadable at 390px
+   ==========================================================================
+   Measured on an iPhone-width viewport: the standings tab bar rendered 621px
+   of content in a 390px column, the dashboard heatmap 518px in 356px, and the
+   league comparison table 8 columns in the same space. Each is fixed by the
+   rule its own content needs, not by one blanket shrink.
+   ========================================================================== */
+@media (max-width: 720px) {
+  /* Tab bars scroll sideways rather than squeezing every label to unreadable.
+     The mask tells the eye there is more to the right, which a plain cut does
+     not, and momentum scrolling keeps it feeling native. */
+  .tab-bar,
+  .standings-tab-bar {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    flex-wrap: nowrap;
+    mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent);
+  }
+  .tab-bar::-webkit-scrollbar,
+  .standings-tab-bar::-webkit-scrollbar { display: none; }
+  .tab-bar .tab, .standings-tab-bar .tab, .standings-tab-bar a { flex: 0 0 auto; }
+
+  .heatmap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .heatmap-row { min-width: 500px; }
+  .heatmap-leaguecell {
+    position: sticky;
+    inset-inline-start: 0;
+    z-index: 2;
+    background: var(--bg-1);
+  }
+  .heatmap-head .heatmap-leaguecell { z-index: 3; background: var(--bg-2); }
+
+  /* Phone overview keeps four comparison columns. Format moves under team name;
+     dynasty-only detail remains available on desktop and each league page. */
+  .leagues-table th:nth-child(2), .leagues-table td:nth-child(2),
+  .leagues-table th:nth-child(6), .leagues-table td:nth-child(6),
+  .leagues-table th:nth-child(7), .leagues-table td:nth-child(7),
+  .leagues-table th:nth-child(8), .leagues-table td:nth-child(8) { display: none; }
+  table.data.leagues-table { width: 100%; min-width: 0; table-layout: fixed; }
+  .leagues-table th:first-child { width: 46%; }
+  .leagues-table th:nth-child(3) { width: 22%; }
+  .leagues-table th:nth-child(4) { width: 14%; }
+  .leagues-table th:nth-child(5) { width: 18%; }
+  table.data.leagues-table thead th,
+  table.data.leagues-table tbody td { padding: 9px 6px; font-size: 0.78rem; }
+  table.data.leagues-table .name-cell {
+    min-width: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+  table.data.leagues-table .name-cell .name {
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.88rem;
+  }
+  .league-table-meta {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.67rem;
+  }
+}
+
+/* --- Phone: stop squashing the field ------------------------------------ */
+/* Keep source aspect ratio. Narrow screens see one centered field slice, not a
+   compressed or repeated set of yard lines. Logo layer stays untouched. */
+@media (max-width: 720px) {
+  body::before {
+    background-size: 1600px 120px, 1600px 120px, 100% 100%, 100% 100%;
+    background-position: center 16px, center calc(100% - 16px), 0 0, 0 0;
+    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
+  }
+}

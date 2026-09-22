@@ -9,7 +9,7 @@ const vm = require('node:vm');
 
 const root = `${__dirname}/..`;
 const ctx = { window: {} };
-for (const f of ['rankings.js', 'ktc.js', 'players.js', 'leagues.js', 'projections.js', 'strategy.js'])
+for (const f of ['rankings.js', 'ktc.js', 'players.js', 'leagues.js', 'projections.js', 'weekly-rankings.js', 'strategy.js'])
   vm.runInNewContext(fs.readFileSync(`${root}/data/${f}`, 'utf8'), ctx);
 
 const app = fs.readFileSync(`${__dirname}/app.js`, 'utf8');
@@ -24,7 +24,7 @@ const helpers = new Function('window', [
   slice('function targetStartersByPos(league)', '  // Is this player startable league-wide'),
   slice('function isDynastyLeague(lg)', '  // The league whose format defines VOR replacement'),
   slice('const REDRAFT_VOR_SCALE', '  // League-aware starter slots'),
-].join('\n') + '\nreturn { tierValue, isDynastyLeague, vorByPid, REDRAFT_VOR_SCALE };')(ctx.window);
+].join('\n') + '\nreturn { tierValue, isDynastyLeague, vorByPid, redraftSlotGrade, REDRAFT_VOR_SCALE };')(ctx.window);
 
 const leagues = ctx.window.LEAGUES;
 const dyn = leagues.filter(l => helpers.isDynastyLeague(l));
@@ -73,6 +73,29 @@ assert.equal(helpers.tierValue(sample, {}), helpers.tierValue(sample, dynLg),
 
 // Redraft value is floored at 0: a deep-bench body cannot subtract from strength.
 for (const p of ranked.slice(0, 300)) assert(helpers.tierValue(p, redLg) >= 0);
+
+// Redraft slot grades compare the same currency on both sides: rest-of-season
+// points. Any projected starter keeps a nonzero grade instead of floored VOR.
+const redBoard = (() => {
+  const rostered = new Set(redLg.rosters.flatMap(r => r.players || []).map(String));
+  const byPos = {};
+  for (const p of ctx.window.WEEKLY_RANKINGS.players || []) {
+    let pts = 0, games = 0;
+    for (let w = Math.max(1, ctx.window.WEEKLY_RANKINGS.currentWeek || 1) - 1; w < (p.sleeper || []).length; w++) {
+      if (p.sleeper[w] != null) { pts += p.sleeper[w]; games++; }
+    }
+    if (games) (byPos[p.pos] ||= []).push({ id: String(p.id), pts, free: !rostered.has(String(p.id)) });
+  }
+  for (const pos in byPos) byPos[pos].sort((a, b) => b.pts - a.pts);
+  return byPos;
+})();
+const wr = redBoard.WR;
+const topWr = wr[0], starterWr = wr[Math.min(redLg.total_rosters * 2, wr.length - 1)];
+assert.equal(helpers.redraftSlotGrade(topWr.id, topWr.pts), 10);
+assert.equal(helpers.redraftSlotGrade(starterWr.id, topWr.pts),
+  Math.round(starterWr.pts / topWr.pts * 100) / 10);
+assert(helpers.redraftSlotGrade(starterWr.id, topWr.pts) > 0,
+  'a projected redraft starter must not collapse to zero');
 
 // Scale sanity: the best redraft asset lands in the same band as the best dynasty
 // one, so PV stays legible side by side even though the units differ.

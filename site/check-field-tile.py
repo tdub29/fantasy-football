@@ -63,6 +63,13 @@ def main() -> int:
         if n != layers:
             problems.append(f"{name} has {n} entries for {layers} image layers")
 
+    sizes = [x.strip() for x in decl("background-size").split(",")]
+    repeats = [x.strip() for x in decl("background-repeat").split(",")]
+    if sizes != ["100% 180px", "100% 180px", "100% 100%", "100% 100%"]:
+        problems.append("field layers must scale once across the viewport; fixed-width tiles repeat when zoomed out")
+    if repeats != ["no-repeat"] * layers:
+        problems.append("field layers must not repeat; browser zoom otherwise creates multiple fields")
+
     # The geometry that the two reported bugs were about.
     nums = [int(m) for m in re.findall(r"%3Ctext x='(\d+)'", img)]
     if nums:
@@ -77,6 +84,8 @@ def main() -> int:
     # once shortened the lines to two 180px bands instead of running the page.
     if "rgba(255,255,255,.20) 0 4px" not in img:
         problems.append("the 5-yard chalk gradient is gone; lines will not run full height")
+    if "transparent 4px 5%" not in img:
+        problems.append("5-yard chalk spacing must be viewport-relative so zoom keeps one field")
     hash_rows = sorted({int(m) for m in re.findall(r"y='(\d+)' width='3' height='12'", img)})
     if len(hash_rows) != 2:
         problems.append(f"expected 2 hash rows, found {len(hash_rows)}: {hash_rows}")

@@ -34,7 +34,7 @@ const window = {
 const state = { settings: { weeklyExpertIds: null } };
 let saves = 0;
 const helpers = new Function('window', 'state', 'saveSettings',
-  `${app.slice(start, end)}; return {
+  `${app.slice(start, end)}\nreturn {
     fpDefaultRotationIds, fpRotationIds, fpSetRotation, fpRotationExperts, fpWeeklyRank
   };`,
 )(window, state, () => { saves += 1; });

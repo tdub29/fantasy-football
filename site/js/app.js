@@ -624,6 +624,16 @@
     return b.freeLevel[posGroup] || 0;
   }
 
+  // Same ratio used by dynasty slot grades, but with rest-of-season points on
+  // both sides. Mixing VOR in the numerator with dynasty order in the reference
+  // made ordinary redraft starters look worthless.
+  function redraftSlotGrade(pid, referencePoints) {
+    const rec = rosPointsByPid().get(String(pid));
+    if (!rec || !(referencePoints > 0)) return 0;
+    const grade = rec.pts / referencePoints * 10;
+    return Math.round(Math.max(0, Math.min(10, grade)) * 10) / 10;
+  }
+
   // Tier of a player within his own roster at his position, 1-based.
   function rosTierOf(league, roster, pid) {
     const me = rosPointsByPid().get(String(pid));
@@ -949,11 +959,9 @@
   // ============================================================
   const ROUTES = [
     { hash:'#dashboard',    label:'Dashboard',        icon:'◆',  section:'Overview' },
-    { hash:'#watch',        label:'What to Look For', icon:'◉',  section:'Overview' },
-    { hash:'#leagues',      label:'My Leagues',       icon:'⚑',  section:'Dynasty' },
-    { hash:'#action',       label:'Action Center',    icon:'!',  section:'Dynasty' },
+    { hash:'#action',       label:'Action Center',    icon:'!',  section:'Overview' },
+    { hash:'#watch',        label:'What to Look For', icon:'◉',  section:'Tools' },
     { hash:'#trade',        label:'Trade Calculator', icon:'⇄',  section:'Tools' },
-    { hash:'#projections',  label:'Projections',      icon:'Σ',  section:'Tools' },
     { hash:'#sos',          label:'Strength of Sched', icon:'▦',  section:'Tools' },
     { hash:'#draft',        label:'Draft Room',       icon:'▣',  section:'Tools' },
     { hash:'#rankings',     label:'My Rankings',      icon:'#',  section:'Reference' },
@@ -1063,10 +1071,7 @@
     // Quick league shortcuts. The active league (if any) gets a "context"
     // sub-list under it with sub-tabs for the workspace.
     const allLeagues = window.LEAGUES || [];
-    const leagueGroups = [
-      { label: 'Dynasty', leagues: allLeagues.filter(l => isDynastyLeague(l)) },
-      { label: 'Redraft', leagues: allLeagues.filter(l => !isDynastyLeague(l)) },
-    ].filter(g => g.leagues.length);
+    const leagueGroups = [{ label: 'Leagues', leagues: allLeagues }].filter(g => g.leagues.length);
     for (const group of leagueGroups) {
     sidebar.appendChild(h('div', { class:'nav-section-title' }, group.label));
     const lnav = h('div', { class:'nav' });
@@ -1359,204 +1364,36 @@
   function viewDashboard(tabArg) {
     const main = $('#main');
     main.innerHTML = '';
-    const _validTabs = ['overview','leagues','trajectory','market','cornerstones'];
+    const _validTabs = ['overview','trajectory','market','cornerstones'];
+    if (tabArg === 'leagues') history.replaceState(null, '', '#dashboard');
     const tab = _validTabs.includes(tabArg) ? tabArg : 'overview';
 
     main.appendChild(h('div', { class:'page-header' },
       h('div', null,
         h('div', { class:'page-eyebrow' }, 'OVERVIEW'),
         h('h1', { class:'page-title' }, 'Dashboard'),
-        h('p', { class:'page-sub' }, "Your dynasty empire at a glance, leagues, market, and Cornerstones.")
-      ),
-      h('div', { class:'page-actions' },
-        h('button', { class:'ghost', onclick: openCmdK }, h('span', { class:'kbd' }, 'Ctrl'), ' ', h('span', { class:'kbd' }, 'K'), ' Quick jump')
+        h('p', { class:'page-sub' }, 'All leagues, roster strength, and weekly decisions in one place.')
       )
     ));
 
     main.appendChild(tabBar([
       { key:'overview',     label:'Overview',     icon:'◆' },
-      { key:'leagues',      label:'Leagues',      icon:'⚑', count: (window.LEAGUES || []).length },
       { key:'trajectory',   label:'Trajectory',   icon:'↗' },
       { key:'market',       label:'Market',       icon:'⇅' },
       { key:'cornerstones', label:'Cornerstones', icon:'★' },
     ], tab, (k) => k === 'overview' ? '#dashboard' : `#dashboard/${k}`));
 
-    const idx = rankIndex();
-    const allPlayers = idx.all;
-    const distinctRanked = new Set(idx.bySleeperId.keys()).size + idx.byName.size;
-
-    // KPIs
-    const enabledRankings = Object.values(state.settings.enabledRankings).filter(Boolean).length;
-    const totalLeagues = (window.LEAGUES || []).length;
-    let totalCornerstonesOwned = 0;
-    let myRosters = [];
+    const myRosters = [];
     for (const lg of window.LEAGUES || []) {
       const me = lg.rosters.find(r => r.is_me);
       if (!me) continue;
       myRosters.push({ league: lg, roster: me });
-      const s = computeRosterStrength(me, lg);
-      totalCornerstonesOwned += s.rankedPlayers.filter(rp => rp.ranked.category === 'cornerstone').length;
-    }
-
-    // ===== Empire Asset Visual =====
-    // Tier-sheet aesthetic: each owned asset is a small colored cell. Hovering
-    // reveals the player. Cornerstones row, Foundational row, Upside Premier row.
-    const assetsByCategory = { cornerstone:[], foundational:[], upside_premier:[] };
-    const seenPlayerKeys = new Set();
-    for (const { league, roster } of myRosters) {
-      const s = computeRosterStrength(roster, league);
-      for (const rp of s.rankedPlayers) {
-        if (!assetsByCategory[rp.ranked.category]) continue;
-        const key = `${rp.ranked.name}::${league.id}`;
-        if (seenPlayerKeys.has(key)) continue;
-        seenPlayerKeys.add(key);
-        assetsByCategory[rp.ranked.category].push({
-          name: rp.ranked.name, pos: rp.ranked.pos, league: league.short_name,
-          value: rp.value, ranked: rp.ranked,
-        });
-      }
-    }
-    // Sort each category by value desc so the "best" asset glyphs appear first.
-    for (const cat of Object.keys(assetsByCategory)) {
-      assetsByCategory[cat].sort((a, b) => b.value - a.value);
-    }
-
-    function assetRow(cat, label, color) {
-      const arr = assetsByCategory[cat] || [];
-      return h('div', { class:'empire-row' },
-        h('div', { class:'empire-row-label' },
-          h('span', { class:'empire-row-name', style:{ color } }, label),
-          h('span', { class:'empire-row-count tnum' }, arr.length),
-        ),
-        h('div', { class:'empire-row-cells' },
-          ...arr.map(a => h('span', {
-            class:`empire-cell cat-${cat}`,
-            title: `${a.name} (${a.pos}) in ${a.league}, value ${fmt.decimal(a.value, 1)}`,
-            onclick: () => openPlayerDetail(a.name),
-          }, a.pos.charAt(0))),
-          arr.length === 0 ? h('span', { class:'tip' }, 'none yet') : null,
-        )
-      );
     }
 
     if (tab === 'overview') {
-      // ===== Command cards: one per league, situation + next move at a glance =====
-      const STANCE_LABEL = { tank:'Tank', seller:'Seller', mid:'Mid', buyer:'Buyer', contender:'Contender' };
-      const cmdStat = (label, val, color) => h('div', { class:'cmd-stat' },
-        h('div', { class:'cmd-stat-val tnum', style: color ? { color } : {} }, val),
-        h('div', { class:'cmd-stat-lbl' }, label));
-      let totalHoles = 0, contenderCount = 0;
-      const cmdGrid = h('div', { class:'cmd-grid' });
-      for (const { league: lg, roster: me } of myRosters) {
-        const ss = rosterSurplusShortage(getRosterPlayers(me), lg);
-        const stance = rosterStance(me, lg);
-        if (stance === 'contender') contenderCount++;
-        const ranking = lg.rosters.map(r => ({ id: r.roster_id, s: startingStrength(r, lg) })).sort((a, b) => b.s - a.s);
-        const myRank = ranking.findIndex(x => x.id === me.roster_id) + 1;
-        const pv = startingStrength(me, lg);
-        const needs = ['QB','RB','WR','TE'].map(p => ({ p, s: ss[p]?.surplus ?? 0 })).filter(x => x.s <= -1).sort((a, b) => a.s - b.s);
-        totalHoles += needs.length;
-        const need = needs[0];
-        const rostered = new Set(lg.rosters.flatMap(r => r.players || []).map(String));
-        const needSet = new Set(needs.map(n => n.p));
-        const byVorVal = (a, b) => ((b.vor ?? -9999) - (a.vor ?? -9999)) || (b.val - a.val);
-        const availAll = rankIndex().all
-          .map(p => { const sp = p._sleeperId && window.PLAYERS[p._sleeperId]; return sp ? { sp, vor: vorByPid(sp.id, lg, 'blend'), val: tierValue(p, lg) } : null; })
-          .filter(x => x && !rostered.has(String(x.sp.id)) && ['QB','RB','WR','TE'].includes(x.sp.pos));
-        const bestNeed = needSet.size ? availAll.filter(x => needSet.has(x.sp.pos)).sort(byVorVal)[0] : null;
-        const bestAny = [...availAll].sort(byVorVal)[0];
-        // Prefer a useful FA at your NEED position; if that pool is below startable,
-        // show a genuinely good FA anywhere; else fall back to the best need-fill
-        // (thin) and say so, deep dynasty waiver wires are barren, don't oversell.
-        let waiver, thinFa;
-        if (bestNeed && (bestNeed.vor ?? -9999) >= -8) { waiver = bestNeed; thinFa = false; }
-        else if (bestAny && (bestAny.vor ?? -9999) >= 0) { waiver = bestAny; thinFa = false; }
-        else { waiver = bestNeed || bestAny; thinFa = true; }
-        const faFillsNeed = waiver && needSet.has(waiver.sp.pos);
-        const faLabel = thinFa ? 'Thin FA' : (needSet.size && !faFillsNeed ? 'Best FA' : 'Top FA');
-        const rankColor = myRank <= Math.ceil(lg.total_rosters * 0.3) ? 'var(--green)' : myRank > Math.ceil(lg.total_rosters * 0.6) ? 'var(--red)' : 'var(--fg-1)';
-        cmdGrid.appendChild(h('div', { class:'cmd-card', onclick: () => navigate(`#league/${lg.id}`) },
-          h('div', { class:'cmd-head' },
-            h('span', { class:'cmd-name' }, me.team_name),
-            h('span', { class:`badge stance-${stance}` }, STANCE_LABEL[stance] || stance),
-          ),
-          h('div', { class:'cmd-sub' }, `${lg.short_name} · ${lg.is_superflex ? 'Superflex' : lg.is_idp ? 'IDP' : '1QB'} · ${lg.total_rosters}-team`),
-          h('div', { class:'cmd-stats' },
-            cmdStat('Rank', `#${myRank}`, rankColor),
-            cmdStat('PV', fmt.decimal(pv, 0)),
-            cmdStat('Biggest need', need ? `${need.p}` : '·', need ? 'var(--red)' : 'var(--green)'),
-          ),
-          waiver ? h('div', { class:'cmd-waiver', title: thinFa ? 'Best available at your need position, but below a startable level, the waiver pool is thin, upgrade via trade.' : faFillsNeed ? 'Best available free agent at your biggest need' : 'Best available add anywhere, your need position has nothing worth grabbing off waivers' },
-            h('span', { class:'cmd-waiver-lbl', style: thinFa ? { color:'var(--amber)' } : {} }, faLabel),
-            `${waiver.sp.name} · ${waiver.sp.pos}${waiver.vor != null ? ` · VOR ${waiver.vor > 0 ? '+' : ''}${Math.round(waiver.vor)}` : ''}`) : null,
-          h('div', { class:'cmd-links' },
-            h('a', { href:`#roster/${lg.id}/${me.roster_id}`, onclick:(e)=>e.stopPropagation() }, 'My roster →'),
-            h('a', { href:`#trade/${lg.id}`, onclick:(e)=>e.stopPropagation() }, 'Trade lab →'),
-          ),
-        ));
-      }
-      main.appendChild(h('h2', { class:'section-title', style:{ marginTop:'4px' } }, 'Your Leagues'));
-      main.appendChild(cmdGrid);
-
-      // Actionable KPIs (cut the vanity Sources/Players-Ranked counts).
-      main.appendChild(h('div', { class:'card-grid cols-4', style:{ marginTop:'14px' } },
-        kpiCard('Leagues', String(totalLeagues), 'Active dynasty rosters'),
-        kpiCard('Contender rosters', String(contenderCount), 'Top-tier starting strength now'),
-        kpiCard('Positional holes', String(totalHoles), 'Startable shortages to fix'),
-        kpiCard('Cornerstones', String(totalCornerstonesOwned), 'Elite anchors across rosters'),
-      ));
-
-      main.appendChild(h('div', { style:{ marginTop:'18px' } }));
-      main.appendChild(insightsStrip(myRosters));
-
-      // Empire asset visual, demoted below the actionable content.
-      main.appendChild(h('section', { class:'empire', style:{ marginTop:'18px' } },
-        h('div', { class:'empire-head' },
-          h('div', { class:'empire-title' }, 'Dynasty Empire'),
-          h('div', { class:'empire-meta' },
-            `${totalLeagues} ${totalLeagues === 1 ? 'league' : 'leagues'}`,
-            h('span', { class:'sep' }, '·'),
-            `${totalCornerstonesOwned} cornerstones across rosters`,
-          ),
-        ),
-        assetRow('cornerstone',    'Cornerstones',    'var(--cat-cornerstone)'),
-        assetRow('foundational',   'Foundational',    'var(--cat-foundational)'),
-        assetRow('upside_premier', 'Upside Premier',  'var(--cat-upside)'),
-      ));
+      main.appendChild(h('h2', { class:'page-title', style:{ fontSize:'1.2rem', marginTop:'8px' } }, 'My Leagues'));
+      leaguesComparison(main);
     }
-
-    if (tab === 'leagues') {
-    // My leagues at a glance
-    main.appendChild(h('h2', { class:'page-title', style:{ fontSize:'1.2rem', marginTop:'8px' } }, 'My Leagues'));
-    const grid = h('div', { class:'card-grid cols-3' });
-    for (const lg of window.LEAGUES || []) {
-      const me = lg.rosters.find(r => r.is_me);
-      const teamName = me ? me.team_name : ',';
-      const strength = me ? computeRosterStrength(me, lg) : null;
-      const myRank = me ? rankInLeague(lg, me.roster_id) : null;
-
-      grid.appendChild(h('div', { class:'league-card', onclick:()=>navigate(`#league/${lg.id}`) },
-        h('div', { class:'name' }, lg.name),
-        h('div', { class:'meta' }, `${teamName} · ${lg.total_rosters}-team`),
-        h('div', { class:'badges' },
-          lg.is_superflex ? h('span', { class:'badge', style:{ background:'rgba(251,191,36,.15)', color:'var(--amber)', borderColor:'rgba(251,191,36,.4)' } }, 'SUPERFLEX') : null,
-          lg.is_idp ? h('span', { class:'badge', style:{ background:'rgba(96,165,250,.15)', color:'var(--blue)', borderColor:'rgba(96,165,250,.4)' } }, 'IDP') : null,
-          lg.status === 'pre_draft' ? h('span', { class:'badge' }, 'Pre-Draft') : null,
-        ),
-        strength ? h('div', { style:{ marginTop:'12px', display:'flex', alignItems:'center', justifyContent:'space-between' } },
-          h('div', null,
-            h('div', { class:'stat-num' }, fmt.decimal(strength.total, 1)),
-            h('div', { class:'stat-label' }, `Strength · #${myRank} of ${lg.total_rosters}`)
-          ),
-          h('div', { class:'tip', style:{ textAlign:'right' } },
-            h('div', null, `${strength.rankedPlayers.filter(p=>p.ranked.category==='cornerstone').length} Cornerstones`),
-            h('div', null, `${strength.rankedPlayers.filter(p=>p.ranked.category==='foundational').length} Foundational`),
-          ),
-        ) : null
-      ));
-    }
-    main.appendChild(grid);
-    } // end leagues tab (My Leagues grid)
 
     const cornerstones = [];
     for (const { league, roster } of myRosters) {
@@ -1601,7 +1438,7 @@
       ));
     } // end market tab (sleeper market)
 
-    if (tab === 'leagues') {
+    if (tab === 'overview') {
     // ===== Positional Grade Heatmap =====
     // Replaces the plain table with a visual heatmap. Each cell is a horizontal
     // bar sized to the grade and tinted by category color; the number sits on
@@ -1626,29 +1463,41 @@
         TE: gradePositionFromSlots(slotResult, 'TE') || gradePosition(players, 'TE', league),
         FLEX: gradePositionFromSlots(slotResult, 'FLEX') || gradePositionFromSlots(slotResult, 'SF') || 0,
         Bench: gradeBench(players, league),
-        Draft: gradeDraftCapital(roster, league.id),
+        Draft: isDynastyLeague(league) ? gradeDraftCapital(roster, league.id) : null,
       };
-      const overall = slotResult.overall || ((g.QB + g.RB*1.1 + g.WR*1.2 + g.TE*0.8 + g.Bench*0.5 + g.Draft*0.4) / 5);
-      const heatCell = (val) => {
+      const overall = slotResult.overall || ((g.QB + g.RB*1.1 + g.WR*1.2 + g.TE*0.8 + g.Bench*0.5 + (g.Draft || 0)*0.4) / 5);
+      const heatCell = (key, val) => {
+        if (val == null) return h('div', {
+          class:'heatmap-cell heatmap-grade',
+          dataset:{ gradeKey:key, grade:'na' },
+          title:'Not used in redraft',
+        }, h('span', { class:'heatmap-num tip' }, 'N/A'));
         const color = val >= 7.5 ? 'var(--green)' : val >= 5.5 ? 'var(--amber)' : val >= 3.5 ? 'var(--cat-vet)' : 'var(--red)';
         const pct = Math.max(4, Math.min(100, val*10));
-        return h('div', { class:'heatmap-cell heatmap-grade' },
+        const title = !isDynastyLeague(league)
+          ? `${key}: ${val.toFixed(1)}/10. Redraft grade compares rest-of-season points with the matching lineup reference.`
+          : `${key}: ${val.toFixed(1)}/10.`;
+        return h('div', { class:'heatmap-cell heatmap-grade', dataset:{ gradeKey:key, grade:String(val) }, title },
           h('div', { class:'heatmap-bar', style:{ width: `${pct}%`, background: color } }),
           h('span', { class:'heatmap-num tnum', style:{ color } }, val.toFixed(1)),
         );
       };
       const overallColor = overall >= 7.5 ? 'var(--green)' : overall >= 5.5 ? 'var(--amber)' : 'var(--red)';
-      heatmap.appendChild(h('div', { class:'heatmap-row', onclick: () => navigate(`#roster/${league.id}/${roster.roster_id}`) },
+      heatmap.appendChild(h('div', {
+        class:'heatmap-row',
+        dataset:{ leagueId:String(league.id), format:isDynastyLeague(league) ? 'dynasty' : 'redraft' },
+        onclick: () => navigate(`#roster/${league.id}/${roster.roster_id}`),
+      },
         h('div', { class:'heatmap-cell heatmap-leaguecell' },
           h('div', { class:'heatmap-leaguename' }, league.short_name),
           h('div', { class:'heatmap-team tip' }, roster.team_name + (league.is_superflex ? ' · SF' : league.is_idp ? ' · IDP' : '')),
         ),
-        heatCell(g.QB), heatCell(g.RB), heatCell(g.WR), heatCell(g.TE), heatCell(g.FLEX), heatCell(g.Bench), heatCell(g.Draft),
-        h('div', { class:'heatmap-cell heatmap-overallcell tnum', style:{ color: overallColor } }, overall.toFixed(1)),
+        heatCell('QB', g.QB), heatCell('RB', g.RB), heatCell('WR', g.WR), heatCell('TE', g.TE), heatCell('FLEX', g.FLEX), heatCell('Bench', g.Bench), heatCell('Draft', g.Draft),
+        h('div', { class:'heatmap-cell heatmap-overallcell tnum', dataset:{ gradeKey:'Overall', grade:String(overall) }, style:{ color: overallColor } }, overall.toFixed(1)),
       ));
     }
     main.appendChild(heatmap);
-    } // end leagues tab (heatmap)
+    } // end overview tab (heatmap)
 
     if (tab === 'trajectory') {
       main.appendChild(h('h2', { class:'page-title', style:{ fontSize:'1.2rem', marginTop:'8px' } },
@@ -2265,9 +2114,9 @@
   // ============================================================
   // ROUTE: Leagues list
   // ============================================================
-  function viewLeagues() {
-    const main = $('#main');
-    main.innerHTML = '';
+  // The cross-league comparison, as a component so the dashboard's Leagues
+  // tab can host it. It used to be its own route and its own page.
+  function leaguesComparison(main) {
     const STANCE_LABEL = { tank:'Tank', seller:'Seller', mid:'Mid', buyer:'Buyer', contender:'Contender' };
     const stanceTone = { contender:'var(--green)', buyer:'var(--blue)', mid:'var(--fg-2)', seller:'var(--amber)', tank:'var(--red)' };
     // ===== Cross-league comparison table (the reason this page exists) =====
@@ -2285,7 +2134,8 @@
         const ss = rosterSurplusShortage(getRosterPlayers(me), lg);
         const needs = ['QB','RB','WR','TE'].map(p => ({ p, s: ss[p]?.surplus ?? 0 })).filter(x => x.s <= -1).sort((a, b) => a.s - b.s);
         const rec = `${me.wins || 0}-${me.losses || 0}${me.ties ? '-' + me.ties : ''}`;
-        return { lg, me, rank, pv, fv, dyn, stance: dyn ? rosterStance(me, lg) : null, need: needs.map(n => n.p).join('/') || '·', rec };
+        const format = lg.platform === 'espn' ? 'ESPN redraft' : lg.type === 0 ? 'Redraft' : lg.is_superflex ? 'Superflex' : lg.is_idp ? 'IDP' : '1QB';
+        return { lg, me, rank, pv, fv, dyn, format, stance: dyn ? rosterStance(me, lg) : null, need: needs.map(n => n.p).join('/') || '·', rec };
       });
       main.appendChild(h('div', { class:'card leagues-table-card' },
         h('table', { class:'data leagues-table' },
@@ -2296,8 +2146,11 @@
             h('th', { class:'right', title:'Future Value: the same lineup 4 years out, each player aged by his position curve, with owned picks folded in once they convert. A converted pick is discounted in its rookie year (0.75x, ramping to parity) because dynasty value prices a whole career, not one season.' }, 'FV'),
             h('th', null, 'Stance'), h('th', null, 'Biggest Need'))),
           h('tbody', null, ...rowsData.map(d => h('tr', { style:{ cursor:'pointer' }, onclick:()=>navigate(`#league/${d.lg.id}`) },
-            h('td', null, h('div', { class:'name-cell' }, h('span', { class:'name' }, d.me.team_name))),
-            h('td', { class:'tip' }, `${d.lg.platform === 'espn' ? 'ESPN redraft' : d.lg.type === 0 ? 'Redraft' : d.lg.is_superflex ? 'Superflex' : d.lg.is_idp ? 'IDP' : '1QB'} · ${d.lg.total_rosters}tm`),
+            h('td', null, h('div', { class:'name-cell' },
+              h('span', { class:'name' }, d.me.team_name),
+              h('span', { class:'league-table-meta tip' }, `${d.lg.short_name} · ${d.format}`),
+            )),
+            h('td', { class:'tip' }, `${d.format} · ${d.lg.total_rosters}tm`),
             h('td', { class:'right tnum' }, d.rec),
             h('td', { class:'right tnum', style:{ fontWeight:700, color: d.rank <= Math.ceil(d.lg.total_rosters*0.3) ? 'var(--green)' : d.rank > Math.ceil(d.lg.total_rosters*0.6) ? 'var(--red)' : 'var(--fg-1)' } }, `#${d.rank}`),
             h('td', { class:'right tnum', title: d.dyn
@@ -2572,7 +2425,7 @@
     main.innerHTML = '';
 
     main.appendChild(breadcrumbs([
-      { label:'My Leagues', hash:'#leagues' },
+      { label:'My Leagues', hash:'#dashboard' },
       { label: lg.short_name || lg.name },
     ]));
 
@@ -2759,7 +2612,8 @@
             // strength; this is what HAS happened beside what the lineup projects.
             (r.wins != null || r.losses != null) ? h('span', { class:'seg ytd', title:'Record, season to date' },
               h('span', { class:'tnum ytd-rec' },
-                `${r.wins ?? 0}-${r.losses ?? 0}${r.ties ? `-${r.ties}` : ''}`)) : null,
+                `${r.wins ?? 0}-${r.losses ?? 0}${r.ties ? `-${r.ties}` : ''}`),
+              h('span', { class:'ytd-lab' }, 'REC')) : null,
             r.fpts != null ? h('span', { class:'seg ytd', title:'Points scored, season to date' },
               h('span', { class:'tnum ytd-val' }, fmt.decimal(r.fpts, 0)),
               h('span', { class:'ytd-lab' }, 'PF')) : null,
@@ -2845,6 +2699,14 @@
     return (Number(av) - Number(bv)) * dir || aName.localeCompare(bName);
   }
 
+  function playerMatchesScopes(scopes, ownerRoster) {
+    const selected = new Set(Array.isArray(scopes) && scopes.length ? scopes : ['all']);
+    if (selected.has('all')) return true;
+    return (selected.has('rostered') && !!ownerRoster)
+      || (selected.has('free') && !ownerRoster)
+      || (selected.has('mine') && !!ownerRoster?.is_me);
+  }
+
   function renderLeaguePlayers(main, lg) {
     const leagueDynasty = isDynastyLeague(lg);
     const idx = rankIndex();
@@ -2875,11 +2737,13 @@
     // survive nav between leagues.
     const lsKey = `tier-sheet-league-players::${lg.id}`;
     const filter = Object.assign(
-      { pos:'ALL', cat:'ALL', team:'ALL', scope:'all', q:'',
+      { pos:'ALL', cat:'ALL', team:'ALL', scopes:null, q:'',
         sort:lg.type === 0 ? 'weekly-sleeper' : 'rank', dir:lg.type === 0 ? 'desc' : 'asc',
         proj:'blend', view:lg.type === 0 ? 'weekly' : 'stats' },
       JSON.parse(localStorage.getItem(lsKey) || '{}')
     );
+    if (!Array.isArray(filter.scopes)) filter.scopes = [filter.scope || 'all'];
+    delete filter.scope;
     // A redraft filter persisted from before the gate could still name a column
     // that no longer renders. Fall back to the view's natural sort.
     if (!leagueDynasty && filter.sort === 'value') {
@@ -2961,12 +2825,26 @@
     }
     filterBar.appendChild(h('div', { class:'group' }, h('label', null, 'Team'), teamSel));
 
-    const scopeBtns = h('div', { class:'toggle-group' });
+    const scopeBtns = h('div', { class:'toggle-group', role:'group', 'aria-label':'Player ownership scope' });
     for (const [k, lbl] of [['all','All'],['rostered','Rostered'],['free','Free Agent'],['mine',"You"]]) {
       scopeBtns.appendChild(h('button', {
-        class:`toggle ${filter.scope===k?'active':''}`,
-        onclick:(e) => { filter.scope = k; persist();
-          scopeBtns.querySelectorAll('.toggle').forEach(b => b.classList.toggle('active', b===e.target));
+        class:`toggle ${filter.scopes.includes(k)?'active':''}`,
+        'data-scope':k,
+        'aria-pressed':filter.scopes.includes(k) ? 'true' : 'false',
+        onclick:() => {
+          const next = new Set(filter.scopes);
+          if (k === 'all') { next.clear(); next.add('all'); }
+          else {
+            next.delete('all');
+            if (next.has(k)) next.delete(k); else next.add(k);
+            if (!next.size) next.add('all');
+          }
+          filter.scopes = [...next]; persist();
+          scopeBtns.querySelectorAll('.toggle').forEach(button => {
+            const active = filter.scopes.includes(button.dataset.scope);
+            button.classList.toggle('active', active);
+            button.setAttribute('aria-pressed', active ? 'true' : 'false');
+          });
           render(); }
       }, lbl));
     }
@@ -3023,9 +2901,7 @@
         if (filter.team !== 'ALL' && teamOfP(p) !== filter.team) return false;
         if (filter.q && !norm(p.name).includes(norm(filter.q))) return false;
         const ownerRoster = p._sleeperId ? ownerByPid.get(p._sleeperId) : null;
-        if (filter.scope === 'rostered' && !ownerRoster) return false;
-        if (filter.scope === 'free' && ownerRoster) return false;
-        if (filter.scope === 'mine' && !(ownerRoster && ownerRoster.is_me)) return false;
+        if (!playerMatchesScopes(filter.scopes, ownerRoster)) return false;
         return true;
       });
       if (!filtered.length) {
@@ -3501,10 +3377,6 @@
   // Cached in localStorage keyed by leagueId for 30 min.
   // ============================================================
   function renderLeagueTimeline(main, lg) {
-    // The going rate sits above the transaction feed, because the feed is where
-    // a waiver claim is actually being read.
-    const fp = faabPanel(lg);
-    if (fp) main.appendChild(fp);
     // Filter state per league.
     const fkey = `tier-sheet-timeline-filter::${lg.id}`;
     const filter = Object.assign(
@@ -4037,6 +3909,9 @@
   // 1QB+4FLEX) doesn't dilute a TE1's grade by treating it as a 2-slot need.
   // TE flex usage is rare; the +0.4 partial slot is captured by the backup bonus.
   function gradePosition(rosterPlayers, pos, league) {
+    if (!isDynastyLeague(league)) {
+      return gradePositionFromSlots(gradeLineupSlots(rosterPlayers, league), pos);
+    }
     const targets = targetStartersByPos(league);
     const slotCount = Math.max(1, Math.round(targets[pos] || 0));
     const top = rosterPlayers.filter(p => p.ranked && p.ranked.pos === pos)
@@ -4060,14 +3935,21 @@
   // grade. The OVERALL grade is the slot-weighted average.
   function gradeLineupSlots(rosterPlayers, league) {
     const idx = rankIndex();
+    const dynasty = isDynastyLeague(league);
+    const lineupOrder = (p) => {
+      if (dynasty) return orderValue(p.ranked, league);
+      const pid = p.sleeper?.id ?? p.ranked?._sleeperId ?? p.ranked?.sleeperId;
+      return rosPointsByPid().get(String(pid))?.pts ?? -1;
+    };
     // Pre-sort owned players by tierValue desc per position
     const byPos = { QB:[], RB:[], WR:[], TE:[], LB:[], DB:[], DL:[] };
     for (const p of rosterPlayers) {
-      if (!p.ranked) continue;
-      if (byPos[p.ranked.pos]) byPos[p.ranked.pos].push(p);
+      const pos = p.ranked?.pos || (!dynasty ? projPosGroup(p.sleeper?.pos) : null);
+      if (!pos || !byPos[pos]) continue;
+      if (p.ranked || rosPointsByPid().has(String(p.sleeper?.id))) byPos[pos].push(p);
     }
     for (const k of Object.keys(byPos)) {
-      byPos[k].sort((a, b) => orderValue(b.ranked, league) - orderValue(a.ranked, league));
+      byPos[k].sort((a, b) => lineupOrder(b) - lineupOrder(a));
     }
     // For IDP positions, fall back to all rostered (no rank discrimination)
     if (league.is_idp) {
@@ -4090,6 +3972,10 @@
         .sort((a, b) => tierValue(b, league) - tierValue(a, league));
       return all[n] ? tierValue(all[n], league) : 0;
     };
+    const redraftBoard = dynasty ? null : rosBoard(league);
+    const redraftFlex = dynasty ? [] : ['RB','WR','TE']
+      .flatMap(pos => redraftBoard.byPos[pos] || [])
+      .sort((a, b) => b.pts - a.pts);
 
     const usage = { QB:0, RB:0, WR:0, TE:0, LB:0, DB:0, DL:0 };
     let flexCount = 0, sfCount = 0, idpFlexCount = 0;
@@ -4098,7 +3984,7 @@
     for (const slot of (league.roster_positions || [])) {
       if (['BN','TAXI','IR'].includes(slot)) continue;
 
-      let pick = null, refVal = 0, label = slot;
+      let pick = null, refVal = 0, label = slot, valueTier = 1;
       if (['QB','RB','WR','TE'].includes(slot)) {
         const i = usage[slot];
         pick = byPos[slot][i];
@@ -4106,21 +3992,26 @@
         // (e.g., RB2 vs the 2nd-best RB available across rankings)
         const refPos = slot;
         const refIdx = league.rosters && league.rosters.length ? Math.min(i, league.rosters.length - 1) : i;
-        refVal = nthByPos(refPos, refIdx);
+        refVal = dynasty
+          ? nthByPos(refPos, refIdx)
+          : (redraftBoard.byPos[refPos]?.[refIdx]?.pts || 0);
         label = `${slot}${i + 1}`;
+        valueTier = i + 1;
         usage[slot]++;
       } else if (slot === 'FLEX') {
         const remainingFlex = ['RB','WR','TE'].flatMap(p => byPos[p].slice(usage[p]));
-        remainingFlex.sort((a, b) => orderValue(b.ranked, league) - orderValue(a.ranked, league));
+        remainingFlex.sort((a, b) => lineupOrder(b) - lineupOrder(a));
         pick = remainingFlex[0];
         if (pick) {
-          const pos = pick.ranked.pos;
+          const pos = pick.ranked?.pos || projPosGroup(pick.sleeper?.pos);
+          valueTier = usage[pos] + 1;
           if (byPos[pos][usage[pos]] === pick) usage[pos]++;
         }
         // FLEX reference: next-best FLEX-eligible after the league fills its
         // dedicated RB/WR/TE slots. Approximate as 30 + flexCount in the
         // FLEX-eligible pool (top-40-ish across leagues).
-        refVal = nthFlex((league.total_rosters || 10) * 3 + flexCount);
+        const flexRefIdx = (league.total_rosters || 10) * 3 + flexCount;
+        refVal = dynasty ? nthFlex(flexRefIdx) : (redraftFlex[flexRefIdx]?.pts || 0);
         label = `FLEX${flexCount + 1}`;
         flexCount++;
       } else if (slot === 'SUPER_FLEX') {
@@ -4128,14 +4019,16 @@
         const remainingQB = byPos.QB.slice(usage.QB);
         const remainingFlex = ['RB','WR','TE'].flatMap(p => byPos[p].slice(usage[p]));
         const candidates = [...remainingQB, ...remainingFlex]
-          .sort((a, b) => orderValue(b.ranked, league) - orderValue(a.ranked, league));
+          .sort((a, b) => lineupOrder(b) - lineupOrder(a));
         pick = candidates[0];
         if (pick) {
-          const pos = pick.ranked.pos;
+          const pos = pick.ranked?.pos || projPosGroup(pick.sleeper?.pos);
+          valueTier = usage[pos] + 1;
           if (byPos[pos][usage[pos]] === pick) usage[pos]++;
         }
         // SF reference: 2nd-best QB available after each league's QB1 is taken
-        refVal = nthByPos('QB', league.total_rosters || 10);
+        const sfRefIdx = league.total_rosters || 10;
+        refVal = dynasty ? nthByPos('QB', sfRefIdx) : (redraftBoard.byPos.QB?.[sfRefIdx]?.pts || 0);
         label = 'SF';
         sfCount++;
       } else if (['LB','DB','DL'].includes(slot)) {
@@ -4144,12 +4037,14 @@
         // No IDP rank reference; use any non-zero baseline
         refVal = pick ? tierValue(pick.ranked || { ktcValue: 1500 }, league) : 1;
         label = `${slot}${i + 1}`;
+        valueTier = i + 1;
         usage[slot]++;
       } else if (slot === 'IDP_FLEX' || slot === 'IDP') {
         const remaining = ['LB','DB','DL'].flatMap(p => byPos[p].slice(usage[p]));
         pick = remaining[0];
         if (pick) {
           const pos = pick.ranked?.pos || pick.sleeper.pos;
+          valueTier = usage[pos] + 1;
           if (byPos[pos][usage[pos]] === pick) usage[pos]++;
         }
         refVal = pick ? (tierValue(pick.ranked, league) || 15) : 15;
@@ -4157,20 +4052,25 @@
         idpFlexCount++;
       } else continue;
 
-      const myVal = pick ? tierValue(pick.ranked, league) : 0;
-      // The 5 is "no reference to grade against", never "average player". A redraft
-      // league floors VOR at 0 in tierValue, so a below-replacement body arrives here
-      // with myVal 0, and the FLEX reference that deep in the board is 0 too. That
-      // combination handed Tyler Allgeier, RB44 and about 22 points BELOW replacement,
-      // a 5.0 in FLEX2 as though he were a median starter, and it pulled the roster's
-      // overall grade up with it. A player worth nothing grades nothing.
-      const grade = refVal > 0 ? Math.min(10, (myVal / refVal) * 10) : (pick && myVal > 0 ? 5 : 0);
+      const pickPid = pick?.sleeper?.id ?? pick?.ranked?._sleeperId ?? pick?.ranked?.sleeperId;
+      let myVal = pick ? tierValue(pick.ranked, league, null, valueTier) : 0;
+      if (!dynasty && pickPid != null) {
+        const rec = rosPointsByPid().get(String(pickPid));
+        myVal = rec ? Math.round(rec.pts * 10) / 10 : 0;
+      }
+      const grade = !dynasty
+        ? (pickPid != null ? redraftSlotGrade(pickPid, refVal) : 0)
+        : (refVal > 0 ? Math.min(10, (myVal / refVal) * 10) : (pick && myVal > 0 ? 5 : 0));
       // Future grade: age this player's value 3 seasons, re-grade against the same
       // slot reference. Drives the FV tick on the slot bar (present grade is the fill).
       const myValFv = pick ? myVal * ageRetention(pick.sleeper?.age ?? pick.ranked?.age, pick.ranked?.pos || pick.sleeper?.pos, 3) : 0;
-      const fvGrade = refVal > 0 ? Math.min(10, (myValFv / refVal) * 10) : (pick && myValFv > 0 ? 5 : 0);
-      const pickPid = pick?.sleeper?.id ?? pick?.ranked?._sleeperId ?? pick?.ranked?.sleeperId;
-      const signed = pick ? signedVor(pick.ranked, league) : null;
+      const fvGrade = dynasty
+        ? (refVal > 0 ? Math.min(10, (myValFv / refVal) * 10) : (pick && myValFv > 0 ? 5 : 0))
+        : grade;
+      const signedRaw = !dynasty && pickPid != null ? rosVorByPid(pickPid, league, null, valueTier) : null;
+      const signed = !dynasty && signedRaw != null
+        ? Math.round(signedRaw * REDRAFT_VOR_SCALE * 10) / 10
+        : (pick ? signedVor(pick.ranked, league, valueTier) : null);
       const pickAge = pick ? (pick.sleeper?.age ?? pick.ranked?.age ?? null) : null;
       // Rest-of-season projected points, the number the grade is derived FROM.
       const pickPts = pickPid != null ? (rosPointsByPid().get(String(pickPid))?.pts ?? null) : null;
@@ -4178,6 +4078,7 @@
         vor: signed,
         age: pickAge,
         pts: pickPts,
+        pid: pickPid != null ? String(pickPid) : null,
         slot: label,
         player: pick?.sleeper?.name || '(empty)',
         injury: pick ? (window.PLAYERS?.[pickPid]?.injury_status || null) : null,
@@ -4201,7 +4102,28 @@
     if (!matching.length) return 0;
     return Math.round((matching.reduce((s, x) => s + x.grade, 0) / matching.length) * 10) / 10;
   }
+  function redraftBenchRaw(rosterPlayers, lg) {
+    const starters = new Set(gradeLineupSlots(rosterPlayers, lg).slots.map(s => s.pid).filter(Boolean));
+    const board = rosBoard(lg);
+    return rosterPlayers
+      .filter(p => p.sleeper?.id != null && !starters.has(String(p.sleeper.id)))
+      .map(p => {
+        const rec = rosPointsByPid().get(String(p.sleeper.id));
+        if (!rec) return 0;
+        const pos = projPosGroup(rec.pos);
+        if (!['QB','RB','WR','TE'].includes(pos)) return 0;
+        return Math.max(0, rec.pts - (board.freeLevel[pos] || 0));
+      })
+      .sort((a, b) => b - a)
+      .slice(0, 5)
+      .reduce((sum, value) => sum + value, 0);
+  }
   function gradeBench(rosterPlayers, lg) {
+    if (!isDynastyLeague(lg)) {
+      const mine = redraftBenchRaw(rosterPlayers, lg);
+      const best = Math.max(0, ...(lg.rosters || []).map(r => redraftBenchRaw(getRosterPlayers(r), lg)));
+      return best > 0 ? Math.round(Math.min(10, mine / best * 10) * 10) / 10 : 0;
+    }
     // Bench depth score from 4th-onward ranked-player tier values
     const sorted = rosterPlayers.filter(p=>p.ranked).map(p => tierValue(p.ranked, lg)).sort((a,b)=>b-a);
     const fromFourth = sorted.slice(3, 12);
@@ -4471,7 +4393,7 @@
     main.innerHTML = '';
 
     main.appendChild(breadcrumbs([
-      { label:'My Leagues', hash:'#leagues' },
+      { label:'My Leagues', hash:'#dashboard' },
       { label: lg.short_name || lg.name, hash:`#league/${lg.id}` },
       { label: r.team_name },
     ]));
@@ -4519,14 +4441,14 @@
     const dcSummary = getDraftCapitalSummary(r, leagueId);
     const draftPicksCount = 8 + dcSummary.totalAcquired - dcSummary.totalLost;
     const outlook = classifyTwoYearOutlook(valueTier, valueArchetype, draftPicksCount);
-    const grades = {
-      QB: gradePosition(rp, 'QB', lg), RB: gradePosition(rp, 'RB', lg),
-      WR: gradePosition(rp, 'WR', lg), TE: gradePosition(rp, 'TE', lg),
-      Bench: gradeBench(rp, lg), Draft: gradeDraftCapital(r, leagueId),
-    };
-    // Compute slot result early so Overall Grade weights starting slots by
-    // their PPG impact (a great QB1 should outweigh a mediocre FLEX4).
     const slotResult = gradeLineupSlots(rp, lg);
+    const grades = {
+      QB: rosterDynasty ? gradePosition(rp, 'QB', lg) : gradePositionFromSlots(slotResult, 'QB'),
+      RB: rosterDynasty ? gradePosition(rp, 'RB', lg) : gradePositionFromSlots(slotResult, 'RB'),
+      WR: rosterDynasty ? gradePosition(rp, 'WR', lg) : gradePositionFromSlots(slotResult, 'WR'),
+      TE: rosterDynasty ? gradePosition(rp, 'TE', lg) : gradePositionFromSlots(slotResult, 'TE'),
+      Bench: gradeBench(rp, lg), Draft: rosterDynasty ? gradeDraftCapital(r, leagueId) : null,
+    };
     const slotWeighted = (() => {
       let num = 0, den = 0;
       for (const s of slotResult.slots) {
@@ -4535,10 +4457,6 @@
       }
       return den ? num / den : 0;
     })();
-    // Overall = 75% PPG-weighted lineup + 15% bench + 10% draft capital.
-    // Lineup is what wins, bench is depth insurance, picks are future equity.
-    // Redraft has no future equity, so that 10% is redistributed rather than
-    // scored as zero, which would drag every redraft roster down a full point.
     const overall = rosterDynasty
       ? slotWeighted * 0.75 + grades.Bench * 0.15 + grades.Draft * 0.10
       : slotWeighted * (0.75 / 0.90) + grades.Bench * (0.15 / 0.90);
@@ -6004,6 +5922,18 @@
          + `to your rotation and their ranks appear as separate columns in Weekly Rankings.`,
     }));
 
+    // FantasyPros does not publish the week's boards all at once. On a Monday
+    // ten analysts have filed and by Thursday it is about a hundred and
+    // seventy, so a small number here is the week being young, not the feed
+    // being broken. Saying so is the difference between a caveat and a bug
+    // report: week 3 opened with 10 boards where week 2 had closed with 175.
+    if (d.experts.length < 40) {
+      main.appendChild(h('p', { class: 'tip faab-note' },
+        `${d.experts.length} analyst${d.experts.length === 1 ? ' has' : 's have'} filed a `
+        + `week ${d.week} board so far. Most file Wednesday and Thursday, and a full `
+        + `week runs to roughly 170, so this list grows as the week does.`));
+    }
+
     if (arg && fpExpertById().has(String(arg))) return fpExpertPage(main, String(arg));
 
     main.appendChild(fpExpertTable());
@@ -6229,7 +6159,7 @@
           + `judgement on a deep board and just a cutoff on a shallow one, so raise the `
           + `depth floor before reading much into it.`));
       }
-      host.appendChild(h('table', { class: 'data slot-table' },
+      appendTable(host, h('table', { class: 'data slot-table' },
         h('thead', null, h('tr', null,
           h('th', null, 'Expert'), h('th', null, 'Outlet'),
           h('th', { class: 'right' }, 'Rank'),
@@ -6328,7 +6258,7 @@
           h('td', { class: 'sr-num tnum', title: 'Expected extra point attempts. This is the half of the target the model can actually predict.' },
             fmt.decimal(k.expPatAtt, 1)));
       }));
-      host.appendChild(h('table', { class: 'data slot-table' },
+      appendTable(host, h('table', { class: 'data slot-table' },
         h('thead', null, h('tr', null,
           h('th', null, '#'), h('th', null, 'Kicker'), h('th', null, 'Team'),
           h('th', null, 'Opp'),
@@ -6435,7 +6365,7 @@
         `Points a ${grp} scores against each offence, per game, in this league's `
         + `scoring. Rank 1 is the offence you most want your ${grp} facing. `
         + `Prior season pooled with completed ${D.season} games.`));
-      host.appendChild(h('table', { class: 'data slot-table' },
+      appendTable(host, h('table', { class: 'data slot-table' },
         h('thead', null, h('tr', null,
           h('th', null, '#'), h('th', null, 'Offense faced'),
           h('th', { class: 'right', title: `Fantasy points allowed to ${grp} per game` }, 'PPG'),
@@ -7379,7 +7309,8 @@
       const b = waiverBidRange(claims, c, budget);
       const overBudget = b && left != null && b.hi > left;
       const comparison = dynasty ? c.market : c.vor;
-      return h('tr', { class: 'clickable', onclick: () => openPlayerDetail(c.name, c.pid) },
+      return h('tr', { class: 'clickable', 'data-player-id': c.pid, 'data-position': c.pos,
+        onclick: () => openPlayerDetail(c.name, c.pid) },
         h('td', { class: 'sr-slot' }, `${i + 1}`),
         h('td', { class: 'sr-name' },
           h('span', { class:'wb-player-line' },
@@ -8938,17 +8869,52 @@
   // number and wins when it exists; the Sleeper model column is the fallback so
   // a player with no prop market still carries weight instead of dropping to
   // zero and silently vanishing off the board.
+  // Expected points for a kicker, from the two-stage model in kickers.js. Only
+  // covers the current week's slate, and returns null for anyone not on it, so
+  // a bye-week or just-signed kicker still falls through to `unpriced` instead
+  // of being priced off a stale board.
+  let _kickerProj = null;
+  function kickerProjFor(pid) {
+    if (!window.KICKER_MODEL) return null;
+    if (!_kickerProj) {
+      _kickerProj = new Map((window.KICKER_MODEL.kickers || [])
+        .map(k => [String(k.id), Number(k.exp)]));
+    }
+    const v = _kickerProj.get(String(pid));
+    return Number.isFinite(v) ? v : null;
+  }
+
   function weeklyProjFor(pid, week) {
     if (!weeklyProjFor._map) {
       const rows = (window.WEEKLY_RANKINGS || {}).players || [];
       weeklyProjFor._map = new Map(rows.map(r => [String(r.id), r]));
     }
     const row = weeklyProjFor._map.get(String(pid));
-    if (!row) return { pts: 0, source: null };
-    if (row.vegas != null) return { pts: Number(row.vegas) || 0, source: 'vegas' };
-    const model = (row.sleeper || [])[(week || 1) - 1];
-    if (model != null) return { pts: Number(model) || 0, source: 'sleeper' };
+    if (row) {
+      if (row.vegas != null) return { pts: Number(row.vegas) || 0, source: 'vegas' };
+      const model = (row.sleeper || [])[(week || 1) - 1];
+      if (model != null) return { pts: Number(model) || 0, source: 'sleeper' };
+    }
+    // Kickers are absent from the weekly feed entirely, so every one of them
+    // used to price at exactly 0.0 and fall into the board's `unpriced` bucket.
+    // In a league that starts a kicker that is a real slot scored as nothing.
+    // The kicker model covers them, so use it rather than dropping the row.
+    const k = kickerProjFor(pid);
+    if (k != null) return { pts: k, source: 'kicker-model' };
     return { pts: 0, source: null };
+  }
+
+  function weeklyGameFor(team) {
+    return (window.WEEKLY_RANKINGS?.games || {})[String(team || '').toUpperCase()] || null;
+  }
+
+  function kickoffLabel(value) {
+    if (!value) return 'TBD';
+    const date = new Date(value);
+    if (!Number.isFinite(date.getTime())) return 'TBD';
+    return new Intl.DateTimeFormat(undefined, {
+      weekday:'short', hour:'numeric', minute:'2-digit',
+    }).format(date).replace(',', '').replace(/\s+/g, ' ').trim();
   }
 
   // The board itself. Pure over window.LEAGUES + window.WEEKLY_RANKINGS so the
@@ -9057,13 +9023,19 @@
       const p = (window.PLAYERS || {})[row.pid] || {};
       const name = p.name || p.full_name || `[${row.pid}]`;
       const meta = [p.position || p.pos, p.team].filter(Boolean).join(' · ');
+      const game = weeklyGameFor(p.team);
+      const opponent = game ? `${game.home ? 'vs' : '@'} ${game.opp}` : 'BYE';
+      const gameTime = game ? kickoffLabel(game.kickoff) : 'No game';
       const value = scaleBy === 'gross' ? row.gross : row.index;
       const tone = row.index > 0 ? 'up' : (row.index < 0 ? 'down' : '');
       return h('div', { class:'watch-row' },
         h('span', { class:'watch-rank tnum' }, String(rank)),
         h('span', { class:'watch-name' },
           h('span', { class:'watch-player' }, name),
-          h('span', { class:'watch-meta' }, meta || ' '),
+          h('span', { class:'watch-meta' },
+            h('span', { class:'watch-pos-team' }, meta || ' '),
+            ' · ', h('span', { class:'watch-opp' }, opponent),
+            ' · ', h('span', { class:'watch-time' }, gameTime)),
         ),
         h('span', { class:'watch-chips' },
           ...row.entries
@@ -9294,7 +9266,7 @@
     main.innerHTML = '';
     main.appendChild(h('div', { class:'page-header' },
       h('div', null,
-        h('div', { class:'page-eyebrow' }, 'DYNASTY'),
+        h('div', { class:'page-eyebrow' }, 'OVERVIEW'),
         h('h1', { class:'page-title' }, 'Action Center'),
         h('p', { class:'page-sub' }, 'Your own to-do list for the week. Add anything; pull from the suggestions below.')
       )
@@ -10511,7 +10483,7 @@
             ) : null,
           ] },
           { key:'production', label:'Production', nodes: [
-            projectionBlock(sleeper, close),
+            projectionBlock(sleeper),
             historyBlock(sleeper),
           ] },
           { key:'context', label:'Context', nodes: [
@@ -10533,7 +10505,7 @@
 
   // Season fantasy projection for the modal: pts from every source + the
   // projected stat line. Reuses window.OFFENSE_PROJ (offense + defense).
-  function projectionBlock(sleeper, close) {
+  function projectionBlock(sleeper) {
     if (!sleeper || !window.OFFENSE_PROJ) return null;
     const O = window.OFFENSE_PROJ;
     let unit = null, rec = null, cfg = null;
@@ -10548,8 +10520,7 @@
       .map(k => `${STAT_LABEL[k] || k} ${fmt.decimal(line[k], yd(k) ? 0 : 1)}`).join('  ·  ');
     return h('div', { class: 'card', style: { background: 'var(--bg-2)', marginBottom: '12px' } },
       h('div', { class: 'row', style: { justifyContent: 'space-between', alignItems: 'baseline' } },
-        h('div', { class: 'card-title' }, `Season projection · ${unit === 'defense' ? 'IDP' : 'Offense'}`),
-        h('a', { href: '#projections', onclick: () => { if (close) close(); }, class: 'tip', style: { textDecoration: 'none' } }, 'view all →')),
+        h('div', { class: 'card-title' }, `Season projection · ${unit === 'defense' ? 'IDP' : 'Offense'}`)),
       h('div', { class: 'row gap-4 wrap', style: { margin: '6px 0' } },
         ...(cfg.sources || []).map(s => h('span', {
           class: 'badge' + (s === cfg.default ? ' you' : ''),
@@ -13040,6 +13011,18 @@
   // than the viewport scrolls inside itself instead of being clipped by the page
   // (mobile). Desktop CSS keeps the wrapper transparent so the sticky thead still
   // pins to the page scroll. Idempotent + additive; runs after each view mounts.
+  // wrapDataTables() runs once per navigation. A panel that re-renders itself
+  // on a tab click wipes its host and appends a fresh table AFTER that pass has
+  // run, so the table is never wrapped and simply overhangs the card: the IDP
+  // matchup grid sat 109px outside its plate on a phone with no way to reach
+  // the right-hand columns. Anything appended to a live host goes through here
+  // instead, which wraps at construction rather than relying on a later sweep.
+  function appendTable(host, node) {
+    host.appendChild(node && node.tagName === 'TABLE'
+      ? h('div', { class: 'tbl-scroll' }, node)
+      : node);
+  }
+
   function wrapDataTables() {
     document.querySelectorAll('table.data').forEach(t => {
       const p = t.parentElement;
@@ -13120,11 +13103,16 @@
         case 'rankings':   return viewRankings();
         // All Players removed because the per-league Players tab covers it.
         case 'players':    navigate('#dashboard'); return viewDashboard();
-        case 'leagues':    return viewLeagues();
+        // One leagues surface, not two. #leagues used to render its own
+        // Keep old bookmarks working without retaining a second leagues page.
+        case 'leagues':
+          history.replaceState(null, '', '#dashboard');
+          setActiveNav();
+          return viewDashboard();
         case 'league':     return viewLeague(rest[0], rest[1]);
         case 'roster':     return viewRoster(rest[0], rest[1], rest[2]);
         case 'trade':      return viewTrade(rest[0], rest[1]);
-        case 'projections': return viewProjections(rest[0]);
+        case 'projections': navigate('#dashboard'); return viewDashboard();
         case 'sos':        return viewSosGrid(rest[0]);
         case 'draft':      return viewDraft(rest[0]);
         case 'strategy':   return viewStrategy();

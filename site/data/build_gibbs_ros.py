@@ -33,6 +33,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 PLAYERS_PATH = ROOT / "players-nfl.json"
 OUTPUT_PATH = ROOT / "site" / "data" / "gibbs-ros.js"
+WEEKLY_PATH = ROOT / "site" / "data" / "gibbs-week.js"
 OFFENSE = {"QB", "RB", "WR", "TE"}
 NAME_ALIASES = {"Hollywood Brown": "Marquise Brown"}
 # Sleeper's codes, for the match only. The board keeps whatever he printed.
@@ -71,10 +72,21 @@ def sleeper_id(name: str, pos: str, team: str, index: dict) -> str | None:
     return None
 
 
+def index_team(pid: str | None, index: dict) -> str | None:
+    """Sleeper's current team for a player id, for the board-vs-roster check."""
+    if not pid:
+        return None
+    for cands in index.values():
+        for cid, p in cands:
+            if cid == pid:
+                return p.get("team")
+    return None
+
+
 def build(src: dict, index: dict) -> dict:
     out = {
         "source": src.get("source", "Jacob Gibbs (@jagibbs_23)"),
-        "board": "rest-of-season",
+        "board": src.get("board", "rest-of-season"),
         "format": "half_ppr",
         "postedAt": src["posted"],
         "capturedAt": src["captured"],
@@ -84,6 +96,7 @@ def build(src: dict, index: dict) -> dict:
                            "full-PPR version must never be presented as his."),
         "positions": {},
     }
+    mismatches: list[str] = []
     for pos, rows in src["positions"].items():
         if pos not in OFFENSE:
             raise ValueError(f"unexpected position {pos}")
@@ -91,11 +104,41 @@ def build(src: dict, index: dict) -> dict:
         if ranks != list(range(1, len(rows) + 1)):
             missing = sorted(set(range(1, max(ranks) + 1)) - set(ranks))
             raise ValueError(f"{pos} ranks are not 1..{len(rows)}; missing {missing}")
-        out["positions"][pos] = [{
-            "rank": r["rank"], "name": r["player"], "team": r["team"],
-            "bye": r.get("bye"), "ecr": r.get("ecr"), "vsEcr": r.get("vsEcr"),
-            "sleeperId": sleeper_id(r["player"], pos, r["team"], index),
-        } for r in rows]
+        # Arithmetic check the two-reader diff cannot give you. VS. ECR is
+        # printed as (consensus rank - his rank), so the three columns are not
+        # independent: if they disagree, at least one digit was misread, and
+        # BOTH readers can misread the same digit the same way. Verified against
+        # the 2026-09-18 capture, 147 of 147 rows, and against his week 2 boards,
+        # 68 of 68.
+        for r in rows:
+            e, v = r.get("ecr"), r.get("vsEcr")
+            if e is not None and v is not None and e - r["rank"] != v:
+                raise ValueError(
+                    f"{pos}{r['rank']} {r['player']}: vsEcr {v} but ecr {e} minus "
+                    f"rank {r['rank']} is {e - r['rank']}; a column was misread")
+        built = []
+        for r in rows:
+            pid = sleeper_id(r["player"], pos, r["team"], index)
+            # Fourth check, and free: the printed team must match Sleeper's. A
+            # transcription slip usually shows up here as a plausible-looking
+            # wrong team. It is a WARNING and not an error, because the board can
+            # legitimately be ahead of or behind a transaction, and because it
+            # has already caught a real move rather than a typo: his week 2 board
+            # printed Isaiah Likely as NYG, which looked like a misread of BAL
+            # and turned out to be correct.
+            printed = TEAM_ALIASES.get(r["team"], r["team"])
+            actual = (index_team(pid, index) or "")
+            if pid and actual and printed != actual:
+                mismatches.append(f"{pos}{r['rank']} {r['player']}: board says "
+                                  f"{r['team']}, Sleeper says {actual}")
+            built.append({
+                "rank": r["rank"], "name": r["player"], "team": r["team"],
+                "bye": r.get("bye"), "opp": r.get("opp"),
+                "ecr": r.get("ecr"), "vsEcr": r.get("vsEcr"),
+                "sleeperId": pid,
+            })
+        out["positions"][pos] = built
+    out["teamMismatches"] = mismatches
     return out
 
 
@@ -124,6 +167,25 @@ def self_check() -> int:
     else:
         raise AssertionError("a rank gap was accepted")
 
+    # A misread digit must be caught by the arithmetic even when both readers
+    # agree, which is the failure mode a two-reader diff cannot see.
+    skew = {"posted": "x", "captured": "y", "positions": {"RB": [
+        {"rank": 1, "player": "A", "team": "DET", "ecr": 9, "vsEcr": 3}]}}
+    try:
+        build(skew, idx)
+    except ValueError as e:
+        assert "was misread" in str(e), str(e)
+    else:
+        raise AssertionError("an inconsistent ecr/vsEcr row was accepted")
+    # And the consistent version of the same row passes.
+    ok = {"posted": "x", "captured": "y", "positions": {"RB": [
+        {"rank": 1, "player": "A", "team": "DET", "ecr": 9, "vsEcr": 8}]}}
+    assert build(ok, idx)["positions"]["RB"][0]["vsEcr"] == 8
+    # A row with no ecr column at all is allowed through untouched.
+    bare = {"posted": "x", "captured": "y", "positions": {"RB": [
+        {"rank": 1, "player": "A", "team": "DET"}]}}
+    assert build(bare, idx)["positions"]["RB"][0]["ecr"] is None
+
     # Positions are per-position lists, so RB1 and WR1 coexist. An overall board
     # would reject that as a duplicate rank; this one must not.
     two = {"posted": "x", "captured": "y", "positions": {
@@ -147,17 +209,31 @@ def main() -> int:
         ap.error("input json required")
     src = json.loads(a.input.read_text(encoding="utf-8"))
     data = build(src, sleeper_index())
-    a.output.write_text(
-        "// Generated by build_gibbs_ros.py from his X posts. Half-PPR. Do not edit.\n"
-        "window.GIBBS_ROS=" + json.dumps(data, ensure_ascii=False, separators=(",", ":")) + ";\n",
-        encoding="utf-8")
+    # A weekly board and the rest-of-season board are the same shape but answer
+    # different questions, so they get different globals and can both be loaded.
+    var = "GIBBS_WEEK" if str(data["board"]).startswith("week") else "GIBBS_ROS"
+    header = "// Generated by build_gibbs_ros.py from his X posts. Half-PPR. Do not edit.\n"
+    body = json.dumps(data, ensure_ascii=False, separators=(",", ":"))
+    a.output.write_text(f"{header}window.{var}={body};\n", encoding="utf-8")
     for pos, rows in data["positions"].items():
         matched = sum(bool(r["sleeperId"]) for r in rows)
         print(f"  {pos}: {len(rows)} ranked, {matched} matched to Sleeper")
         miss = [r["name"] for r in rows if not r["sleeperId"]]
         if miss:
             print(f"     unmatched: {', '.join(miss[:8])}")
-    print(f"wrote {a.output.relative_to(ROOT)} ({a.output.stat().st_size/1024:.0f} KB), "
+    if data.get("teamMismatches"):
+        print(f"  {len(data['teamMismatches'])} team code(s) differ from Sleeper "
+              f"(a trade, or a misread; check before trusting):")
+        for m in data["teamMismatches"][:8]:
+            print(f"     {m}")
+    # relative_to raises when --output is given as a relative path, which is the
+    # normal way to call this. Show the repo-relative form when possible, the
+    # given path otherwise, and never let a cosmetic print fail a good build.
+    try:
+        shown = a.output.resolve().relative_to(ROOT)
+    except ValueError:
+        shown = a.output
+    print(f"wrote {shown} ({a.output.stat().st_size/1024:.0f} KB), "
           f"posted {data['postedAt']}")
     return 0
 

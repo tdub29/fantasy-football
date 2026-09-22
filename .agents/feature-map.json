@@ -14,33 +14,81 @@
     {
       "id": "shell-sidebar",
       "name": "App shell and sidebar nav",
-      "path": [],
+      "path": [
+        {
+          "eval": "location.hash='#projections'"
+        },
+        {
+          "sleepMs": 300
+        }
+      ],
       "selector": "#sidebar",
-      "assert": "document.querySelectorAll('#sidebar a[href^=\"#\"]').length >= 11",
-      "notes": "Eleven routes in four sections, re-rendered by renderSidebar() on every route change. Fewer than eleven links means a ROUTES entry was dropped or renderSidebar threw before finishing, which also leaves the previous view on screen."
+      "assert": "(() => { const watch=document.querySelector('#sidebar a[href=\"#watch\"]'); const action=document.querySelector('#sidebar a[href=\"#action\"]'); const titles=[...document.querySelectorAll('#sidebar .nav-section-title')].map(x=>x.textContent.trim()); return location.hash==='#dashboard' && document.querySelectorAll('#sidebar a[href^=\"#\"]').length>=9 && action?.parentElement?.previousElementSibling?.textContent.trim()==='Overview' && watch?.parentElement?.previousElementSibling?.textContent.trim()==='Tools' && !document.querySelector('#sidebar a[href=\"#leagues\"]') && !titles.includes('Dynasty') && titles.includes('Leagues') && !document.querySelector('#sidebar a[href^=\"#projections\"]') && ![...document.querySelectorAll('#main button')].some(b=>/quick jump/i.test(b.textContent)); })()",
+      "notes": "Dashboard and Action Center share Overview. My Leagues is Dashboard Overview content, not a duplicate route. League shortcuts share one Leagues group, with format carried by each labeled shape instead of Dynasty and Redraft sidebar sections."
     },
     {
       "id": "dashboard",
       "name": "Dashboard: Overview tab",
       "path": [],
-      "selector": ".page-title",
-      "expect": {
-        "textMatches": "(?i)dashboard"
-      },
-      "assert": "document.querySelectorAll('#main .cmd-card').length >= 1 && document.querySelectorAll('#main .tab').length === 5",
-      "notes": "The default route when the hash is empty. Five tabs (Overview, Leagues, Trajectory, Market, Cornerstones) plus the command cards. An empty cmd-grid means the leagues data failed to load, and every other view will be thin too."
+      "selector": "#main .leagues-table",
+      "assert": "document.querySelectorAll('#main .leagues-table tbody tr').length===5 && document.querySelectorAll('#main .tab').length===4 && document.querySelector('#main .tab[aria-selected=\"true\"] .tab-label')?.textContent.trim()==='Overview' && [...document.querySelectorAll('#main .page-title')].some(x=>x.textContent.trim()==='My Leagues') && document.querySelectorAll('#main .heatmap-row:not(.heatmap-head)').length===5 && !document.querySelector('#main .league-card, #main .cmd-grid, #main .card-grid.cols-4, #main .empire')",
+      "notes": "Default route. Overview is the only cross-league surface: compact comparison table plus positional heatmap. Duplicate league cards and the Leagues tab are gone."
+    },
+    {
+      "id": "dashboard-overview-mobile",
+      "name": "Dashboard Overview: readable league table on phone",
+      "path": [
+        {
+          "eval": "location.hash='#dashboard'"
+        }
+      ],
+      "selector": "#main .leagues-table",
+      "assert": "(() => { const table=document.querySelector('#main .leagues-table'); const headers=[...table.querySelectorAll('thead th')].filter(x=>getComputedStyle(x).display!=='none').map(x=>x.textContent.trim()); const rows=[...table.querySelectorAll('tbody tr')]; return document.documentElement.scrollWidth<=innerWidth+1 && headers.join('|')==='League|Record|Rank|PV' && rows.length===5 && rows.every(row=>getComputedStyle(row.querySelector('.league-table-meta')).display!=='none'); })()",
+      "notes": "Phone view keeps comparison readable without page or table overflow. Format moves below team name while dynasty-only detail stays on desktop.",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      }
     },
     {
       "id": "dashboard-leagues",
-      "name": "Dashboard: Leagues tab and positional heatmap",
+      "name": "Dashboard Overview: positional grade heatmap",
       "path": [
         {
-          "eval": "location.hash='#dashboard/leagues'"
+          "eval": "location.hash='#dashboard'"
         }
       ],
       "selector": "#main .heatmap",
-      "assert": "document.querySelectorAll('#main .league-card').length >= 3 && document.querySelectorAll('#main .heatmap-row').length >= 3",
-      "notes": "One card and one heatmap row per league (3 leagues for 2026). A missing row is a league whose roster failed to resolve, not a styling problem."
+      "assert": "(() => { const rows=[...document.querySelectorAll('#main .heatmap-row:not(.heatmap-head)')]; const red=rows.filter(r=>r.dataset.format==='redraft'); return document.querySelectorAll('#main .leagues-table tbody tr').length===5 && !document.querySelector('#main .league-card') && rows.length===5 && red.length===2 && red.every(r=>r.querySelector('[data-grade-key=\"Draft\"]')?.textContent.trim()==='N/A' && ['QB','RB','WR','TE','FLEX'].every(k=>Number(r.querySelector(`[data-grade-key=\"${k}\"]`)?.dataset.grade)>0)); })()",
+      "notes": "Overview owns the one cross-league heatmap. Redraft rows use rest-of-season points for player and reference, keep populated starting groups above zero, and show Draft as N/A."
+    },
+    {
+      "id": "dashboard-leagues-mobile",
+      "name": "Dashboard Overview: heatmap scrolls inside phone viewport",
+      "path": [
+        {
+          "eval": "location.hash='#dashboard'"
+        }
+      ],
+      "selector": "#main .heatmap",
+      "assert": "(() => { const heatmap=document.querySelector('#main .heatmap'); const first=heatmap.querySelector('.heatmap-leaguecell'); return document.documentElement.scrollWidth<=innerWidth+1 && heatmap.scrollWidth>heatmap.clientWidth && getComputedStyle(heatmap).overflowX==='auto' && getComputedStyle(first).position==='sticky' && document.querySelectorAll('#main .leagues-table tbody tr').length===5; })()",
+      "notes": "One merged Overview keeps its compact table in view while wide grades scroll inside their panel. League identity stays pinned and the page never pans sideways.",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      }
+    },
+    {
+      "id": "watch-board-kickoffs",
+      "name": "What to Look For: opponent and kickoff",
+      "path": [
+        {
+          "eval": "location.hash='#watch'"
+        }
+      ],
+      "selector": "#main .watch-panel .watch-row:not(.watch-row-head)",
+      "assert": "(() => { const rows=[...document.querySelectorAll('#main .watch-panel .watch-row:not(.watch-row-head)')]; const games=window.WEEKLY_RANKINGS?.games||{}; return Object.keys(games).length>=24 && rows.length>10 && rows.every(row => /^((@|vs) [A-Z]{2,3}|BYE)$/.test(row.querySelector('.watch-opp')?.textContent.trim()||'') && (/^(Thu|Fri|Sat|Sun|Mon|Tue|Wed) [0-9]{1,2}:[0-9]{2} (AM|PM)$/.test(row.querySelector('.watch-time')?.textContent.trim()||'') || ['TBD','No game'].includes(row.querySelector('.watch-time')?.textContent.trim()))); })()",
+      "notes": "Every ranked starter shows NFL opponent and local kickoff time. Schedule comes from current-week nflverse data embedded in weekly-rankings.js, so refresh pipeline updates flexed games without client API calls."
     },
     {
       "id": "dashboard-trajectory",
@@ -80,22 +128,25 @@
     },
     {
       "id": "leagues",
-      "name": "My Leagues table",
+      "name": "Legacy My Leagues route redirects to Dashboard Overview",
       "path": [
         {
           "eval": "location.hash='#leagues'"
+        },
+        {
+          "sleepMs": 300
         }
       ],
       "selector": "#main table.data",
-      "assert": "document.querySelectorAll('#main table.data tbody tr').length === 5",
-      "notes": "One row per tracked league (4 Sleeper plus 1 ESPN for 2026). A different count means generated league data drifted and downstream views are stale."
+      "assert": "location.hash==='#dashboard' && document.querySelectorAll('#main table.data tbody tr').length===5",
+      "notes": "Old bookmarks land on Dashboard Overview, which owns the only cross-league comparison table."
     },
     {
       "id": "league-detail",
       "name": "League detail: standings",
       "path": [
         {
-          "eval": "location.hash='#leagues'"
+          "eval": "location.hash='#dashboard'"
         },
         {
           "click": "#main table.data tbody tr"
@@ -104,6 +155,38 @@
       "selector": "#main .strength-row",
       "assert": "location.hash.startsWith('#league/') && document.querySelectorAll('#main .strength-row').length >= 8 && !!document.querySelector('#main .standings-sort select') && !!document.querySelector('#main .standings-dir') && document.querySelector('#main .sos-head')?.textContent.includes('OPP BYE')",
       "notes": "Reached by clicking a league row, which is the path a person actually uses. Strength ranks stay fixed while rows sort. Schedule difficulty exposes gross starter-bye production missing from the opponents this team will face."
+    },
+    {
+      "id": "league-standings-mobile",
+      "name": "League standings: phone rows stay inside panel",
+      "path": [
+        {
+          "eval": "location.hash='#league/1341184676601028608'"
+        }
+      ],
+      "selector": "#main .standings-list .strength-row",
+      "assert": "(() => { const rows=[...document.querySelectorAll('#main .standings-list .strength-row')]; const tabs=document.querySelector('#main .standings-tab-bar'); return document.documentElement.scrollWidth<=innerWidth+1 && rows.length>=8 && tabs && getComputedStyle(tabs).overflowX==='auto' && tabs.scrollWidth>tabs.clientWidth && rows.every(row=>{ const box=row.getBoundingClientRect(); return [...row.querySelectorAll('.score-cell,.str-traj')].every(el=>{ const child=el.getBoundingClientRect(); return child.left>=box.left-1 && child.right<=box.right+1; }); }); })()",
+      "notes": "At 390px, score and trajectory stay inside each standings row. This pins the phone grid that previously pushed large strength scores through the card's left edge.",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      }
+    },
+    {
+      "id": "league-standings-redraft-mobile",
+      "name": "Redraft standings: phone scores stay inside rows",
+      "path": [
+        {
+          "eval": "location.hash='#league/1389722402430136320'"
+        }
+      ],
+      "selector": "#main .standings-list .strength-row",
+      "assert": "(() => { const rows=[...document.querySelectorAll('#main .standings-list .strength-row')]; return document.documentElement.scrollWidth <= innerWidth + 1 && rows.length === 12 && rows.every(row => { const box=row.getBoundingClientRect(); const cell=row.querySelector('.score-cell')?.getBoundingClientRect(); const score=row.querySelector('.score')?.getBoundingClientRect(); const team=row.querySelector('.team')?.getBoundingClientRect(); return cell && score && team && box.height < 170 && score.left > team.left && [cell,score].every(part => part.left >= box.left - 1 && part.right <= box.right + 1 && part.top >= box.top - 1 && part.bottom <= box.bottom + 1); }); })()",
+      "notes": "Phi Kap Fantasy is redraft and has no trajectory column. At 390px, every strength score must remain fully inside its row instead of falling through the unused dynasty trajectory track and past the panel edge.\n\nThe height ceiling is a blow-up guard, not a design target. 120 was measured in the preseason when a row had no record, points for, points against or differential to show; once those four stats exist the same correct layout is 147px at 390px wide. The clauses that actually matter are the containment ones: the score cell and the score stay inside the row box, and the page does not scroll sideways.",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      }
     },
     {
       "id": "standings-sort",
@@ -128,7 +211,7 @@
       "name": "League detail: Players tab",
       "path": [
         {
-          "eval": "location.hash='#leagues'"
+          "eval": "location.hash='#dashboard'"
         },
         {
           "click": "#main table.data tbody tr"
@@ -140,6 +223,28 @@
       "selector": "#main table.data",
       "assert": "document.querySelectorAll('#main table.data tbody tr').length >= 100",
       "notes": "Every rostered player in the league, with filters. This replaced the old All Players route, so it is the only full list left; a short table means the Sleeper roster payload truncated."
+    },
+    {
+      "id": "league-player-multi-scope",
+      "name": "League Players: ownership scope supports multiple selections",
+      "path": [
+        {
+          "eval": "location.hash='#league/1389722402430136320/players'"
+        },
+        {
+          "eval": "document.querySelector('[data-scope=\"all\"]')?.click(); document.querySelector('[data-scope=\"free\"]')?.click(); document.querySelector('[data-scope=\"mine\"]')?.click()"
+        },
+        {
+          "eval": "window.__multiScopeProof=(()=>{const rows=[...document.querySelectorAll('#main table.weekly-rankings-table tbody tr')];const ownerCells=rows.map(row=>row.children[5]);return document.documentElement.scrollWidth<=innerWidth+1&&document.querySelector('[data-scope=\"all\"]')?.getAttribute('aria-pressed')==='false'&&document.querySelector('[data-scope=\"free\"]')?.getAttribute('aria-pressed')==='true'&&document.querySelector('[data-scope=\"mine\"]')?.getAttribute('aria-pressed')==='true'&&rows.length>20&&ownerCells.every(cell=>cell?.textContent.trim()==='FA'||cell?.querySelector('.you'));})();document.querySelector('[data-scope=\"all\"]')?.click()"
+        }
+      ],
+      "selector": "#main table.weekly-rankings-table",
+      "assert": "window.__multiScopeProof === true && document.querySelector('[data-scope=\"all\"]')?.getAttribute('aria-pressed') === 'true'",
+      "notes": "Ownership scope buttons are a multi-select union. This phone-width case selects Free Agent plus You, proves players rostered by league-mates stay out, then resets All so later feature checks inherit neutral state. Clearing the last specific scope also falls back to All.",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      }
     },
     {
       "id": "league-weekly-rankings",
@@ -206,7 +311,7 @@
       "name": "League detail: Transactions tab",
       "path": [
         {
-          "eval": "location.hash='#leagues'"
+          "eval": "location.hash='#dashboard'"
         },
         {
           "click": "#main table.data tbody tr"
@@ -216,6 +321,7 @@
         }
       ],
       "selector": "#main .timeline-controls",
+      "assert": "!document.querySelector('#main .faab-panel')",
       "notes": "Trade and waiver timeline with its own controls. The timeline is legitimately empty in the preseason, so this asserts the controls render, never a row count."
     },
     {
@@ -223,7 +329,7 @@
       "name": "Roster view: team blueprint",
       "path": [
         {
-          "eval": "location.hash='#leagues'"
+          "eval": "location.hash='#dashboard'"
         },
         {
           "click": "#main table.data tbody tr"
@@ -285,18 +391,6 @@
       "notes": "Counts completed trades per partner across every season in the previous_league_id chain. Generated Sleeper data makes the panel instant; the live API remains a fallback. Partner rows include the Sleeper username when available. Historical picks join season, round and stable original-owner user ID to the completed rookie draft, then show the exact slot and player selected."
     },
     {
-      "id": "projections",
-      "name": "Player Projections tables",
-      "path": [
-        {
-          "eval": "location.hash='#projections'"
-        }
-      ],
-      "selector": "#main table.data",
-      "assert": "document.querySelectorAll('#main table.data tbody tr').length >= 100 && document.querySelectorAll('#main .seg-control-row').length === 2",
-      "notes": "Blended PrizePicks / Sleeper projections, offense and defense in separate tables (~180 rows). A sharp drop means one source file failed to parse and the blend silently fell back to a single source."
-    },
-    {
       "id": "sos-grid",
       "name": "Strength of Schedule grid",
       "path": [
@@ -305,8 +399,8 @@
         }
       ],
       "selector": "#main table.data",
-      "assert": "document.querySelectorAll('#main table.data tbody tr').length === 32 && document.querySelectorAll('#main .team-chip').length >= 32 && document.querySelectorAll('#main .sos-position-tabs button[aria-pressed]').length === 4 && document.querySelector('#main .page-sub').textContent.includes('Week 1')",
-      "notes": "All 32 NFL teams, one row each, using pooled 2025 and completed 2026 games through Week 1. Under 32 means sos-grid.js lost a team, which shifts every bye week after it."
+      "assert": "document.querySelectorAll('#main table.data tbody tr').length === 32 && document.querySelectorAll('#main .team-chip').length >= 32 && document.querySelectorAll('#main .sos-position-tabs button[aria-pressed]').length === 4 && document.querySelector('#main .page-sub').textContent.includes(window.SOS_GRID.note)",
+      "notes": "The grid is 32 rows, one per team, with four position tabs and a subtitle that names the sample behind the colours. That subtitle used to be pinned to the literal 'Week 1', which passed for exactly one week of the season and then failed on healthy data every week after. It now has to carry whatever sample string the build wrote, which is the thing worth checking."
     },
     {
       "id": "draft-room",
@@ -414,10 +508,10 @@
     },
     {
       "id": "faab-archetypes",
-      "name": "League Transactions: FAAB archetype cost panel",
+      "name": "League FAAB: archetype cost panel",
       "path": [
         {
-          "eval": "location.hash='#league/1341184676601028608/transactions'"
+          "eval": "location.hash='#league/1341184676601028608/faab'"
         }
       ],
       "selector": ".faab-panel",
@@ -429,7 +523,7 @@
       "name": "League FAAB: drill into archetype claim history",
       "path": [
         {
-          "eval": "location.hash='#league/1341184676601028608/transactions'"
+          "eval": "location.hash='#league/1341184676601028608/faab'"
         },
         {
           "sleepMs": 600
@@ -450,7 +544,7 @@
       "name": "League: FAAB tab beside Standings / Players / Transactions",
       "path": [
         {
-          "eval": "location.hash='#leagues'"
+          "eval": "location.hash='#dashboard'"
         },
         {
           "sleepMs": 600
@@ -469,8 +563,40 @@
         }
       ],
       "selector": "#main .faab-panel",
-      "assert": "document.querySelectorAll('#main .faab-panel .faab-row').length >= 5 && document.querySelectorAll('#main .waiver-table tbody tr').length >= 3",
-      "notes": "FAAB is a league view like the others. It previously existed only at the top of the Transactions feed and inside a collapsed panel on the Action Center, which read as unimplemented three separate times. Trade Lab moved into this same bar and links out to its own #trade route rather than being re-implemented as a tab body. Note validTabs in viewLeague gates the sub-route: a tab present in the bar but absent from that list silently falls back to standings. Also asserts the week's waiver board, which carries the recommended bid range per candidate. Note the tab guard reads formats[fmt].situation.length: formats[fmt] is an object keyed by dimension, and an array .length check there silently removes the tab."
+      "assert": "(() => { const leagueId=location.hash.split('/')[1]; const league=window.LEAGUES.find(l=>String(l.id)===leagueId); const rostered=new Set((league?.rosters||[]).flatMap(r=>[...(r.players||[]),...(r.taxi||[]),...(r.reserve||[]),...(r.starters||[])]).map(String)); const slots=league?.roster_positions||[]; const rows=[...document.querySelectorAll('#main .waiver-table tbody tr')]; return document.querySelectorAll('#main .faab-panel .faab-row').length >= 5 && rows.length >= 3 && rows.every(row => !rostered.has(row.dataset.playerId) && row.querySelector('.wb-profile')?.textContent.trim() && /^\\$\\d+-\\d+$/.test(row.querySelector('.wb-bid')?.textContent.trim()||'') && (slots.includes('K') || row.dataset.position!=='K') && (slots.includes('DEF') || slots.includes('DST') || !['DEF','DST'].includes(row.dataset.position))); })()",
+      "notes": "FAAB is a league view like the others. It previously existed only at the top of the Transactions feed and inside a collapsed panel on the Action Center, which read as unimplemented three separate times. Trade Lab moved into this same bar and links out to its own #trade route rather than being re-implemented as a tab body. Note validTabs in viewLeague gates the sub-route: a tab present in the bar but absent from that list silently falls back to standings. Browser proof now checks every candidate against this league's players, taxi, reserve and starters; requires profile and bid range on each row; and rejects K or DEF where those slots are absent. Note the tab guard reads formats[fmt].situation.length: formats[fmt] is an object keyed by dimension, and an array .length check there silently removes the tab."
+    },
+    {
+      "id": "faab-waiver-mobile",
+      "name": "League FAAB: phone waiver columns align",
+      "path": [
+        {
+          "eval": "location.hash='#league/1341184676601028608/faab'"
+        }
+      ],
+      "selector": "#main .waiver-table",
+      "assert": "(() => { const visible=el=>getComputedStyle(el).display!=='none'; const heads=[...document.querySelectorAll('#main .waiver-table thead th')].filter(visible).map(el=>el.textContent.trim().toUpperCase()); const rows=[...document.querySelectorAll('#main .waiver-table tbody tr')]; return document.documentElement.scrollWidth <= innerWidth + 1 && JSON.stringify(heads)===JSON.stringify(['#','PLAYER','POS','WK','BID']) && rows.length >= 3 && rows.every(row => { const cells=[...row.children].filter(visible); return cells.length===5 && /^\\$\\d+-\\d+$/.test(cells.at(-1).textContent.trim()) && visible(row.querySelector('.wb-profile-mobile')); }); })()",
+      "notes": "At 390px, profile moves under player name while ROS and VOR disappear. Visible headers and cells remain #, Player, Pos, Wk and Bid, so weekly projection cannot slide under Bid and bid range cannot spill offscreen.",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      }
+    },
+    {
+      "id": "faab-archetypes-mobile",
+      "name": "League FAAB: phone archetype columns do not collide",
+      "path": [
+        {
+          "eval": "location.hash='#league/1341184676601028608/faab'"
+        }
+      ],
+      "selector": "#main .faab-panel .faab-row",
+      "assert": "(() => { const visible=el=>getComputedStyle(el).display!=='none'; const rows=[...document.querySelectorAll('#main .faab-panel .faab-row')]; return rows.length >= 5 && rows.every(row => { const outer=row.getBoundingClientRect(); const cells=[...row.children].filter(visible).map(el=>el.getBoundingClientRect()); return cells.length===4 && cells.every(cell=>cell.left >= outer.left - 1 && cell.right <= outer.right + 1) && cells.slice(1).every((cell,i)=>cell.left >= cells[i].right - 1); }); })()",
+      "notes": "Phone layout keeps Situation, Median, Of Budget and Claims as four non-overlapping columns. Dollar range stays available in each row's title and drilldown without crushing median into the label.",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      }
     },
     {
       "id": "player-card-team-context",
@@ -702,8 +828,8 @@
         }
       ],
       "selector": "#main button[data-expert-id]",
-      "assert": "(() => { const n=window.FP_EXPERTS.experts.length; return n > 100 && document.querySelectorAll('#main button[data-expert-id]').length === n && document.querySelectorAll('#main a[href^=\"#experts/\"]').length === n && !document.querySelector('#main .fp-controls'); })()",
-      "notes": "Experts is a directory, not a player comparison tool. Every FantasyPros board gets one native Add or Added button and one detail link. Rotation is stored with site settings and controls analyst columns in Weekly Rankings."
+      "assert": "(() => { const n=window.FP_EXPERTS.experts.length; return n > 0 && document.querySelectorAll('#main button[data-expert-id]').length === n && document.querySelectorAll('#main a[href^=\"#experts/\"]').length === n && !document.querySelector('#main .fp-controls') && (n >= 40 || !!document.querySelector('#main .faab-note')); })()",
+      "notes": "Experts is a directory, not a player comparison tool. Every FantasyPros board in the feed gets one native Add or Added button and one detail link, and the count is whatever has been published: FantasyPros fills a week in over Monday to Thursday, so week 3 opened at 10 boards where week 2 closed at 175. Asserting a fixed floor of 100 failed every Monday on healthy data, so the check is now one control per board plus, on a thin week, the note that says why it is thin. Rotation is stored with site settings and drives the analyst columns in Weekly Rankings."
     },
     {
       "id": "experts-rotation-weekly",
@@ -845,6 +971,38 @@
       "selector": "table.weekly-rankings-table",
       "assert": "(() => { const g = window.GIBBS_ROS; if (!g) return false; const heads=[...document.querySelectorAll('table.weekly-rankings-table thead th')].map(h=>h.textContent.replace(/[↑↓]/g,'').trim().toUpperCase()); const i=heads.indexOf('GIBBS X'); if(i<0) return false; const ranked=new Set(); for(const rows of Object.values(g.positions)) for(const r of rows) if(r.sleeperId) ranked.add(String(r.sleeperId)); const cells=[...document.querySelectorAll('table.weekly-rankings-table tbody tr')].map(tr=>tr.children[i]?.textContent.trim()).filter(t=>t && t!=='·'); return ranked.size >= 140 && cells.length >= 100 && /^(RB|WR|QB|TE)\\d+/.test(cells[0]); })()",
       "notes": "His rest-of-season positional board, captured from his own X posts and transcribed by two independent readers before it was allowed into the repo (WR agreed 77 of 77, RB 69 of 70, the split being the spelling of Jeremiyah Love). Separate from the JACOB_GIBBS_RANKINGS overall draft board and from the FantasyPros-sourced 'Gibbs ROS' column beside it: FantasyPros lagged this by a day at capture and never carries his positional ROS lists at all. The assert checks the payload and the DOM together so a stale or empty gibbs-ros.js cannot pass as a rendered column. Only RB and WR are populated because those are the only boards he posted; QBs showing a dot rather than a number is correct, not a gap. HALF-PPR, which is what he publishes, while all three leagues are full PPR, so the cell shows HIS rank and never a rescored one."
+    },
+    {
+      "id": "field-logo-watermark",
+      "name": "Field background: centered app logo watermark",
+      "path": [],
+      "selector": "body",
+      "assert": "(() => { const s=getComputedStyle(document.body,'::after'); const left=parseFloat(s.left); return s.backgroundImage.includes('logo-512.png') && s.position==='fixed' && s.pointerEvents==='none' && Number(s.opacity)>0 && Number(s.opacity)<=0.12 && left>=239 && left<=241; })()",
+      "notes": "The app logo sits in the center of the desktop playing field, excluding the 240px sidebar, at watermark opacity and cannot intercept clicks."
+    },
+    {
+      "id": "field-single-span",
+      "name": "Field background: one field at extreme width",
+      "path": [],
+      "selector": "body",
+      "assert": "(() => { const s=getComputedStyle(document.body,'::before'); return s.backgroundRepeat==='no-repeat, no-repeat, no-repeat, no-repeat' && s.backgroundSize==='100% 180px, 100% 180px, 100% 100%, 100% 100%' && parseFloat(s.left)===240; })()",
+      "notes": "A zoomed-out browser exposes a very wide CSS viewport. Yard numerals, hashes, stripes and chalk scale across that viewport once instead of repeating another full field every 2,400px.",
+      "viewport": {
+        "width": 6000,
+        "height": 1000
+      }
+    },
+    {
+      "id": "field-logo-watermark-mobile",
+      "name": "Field background: centered app logo watermark on phone",
+      "path": [],
+      "selector": "body",
+      "assert": "(() => { const logo=getComputedStyle(document.body,'::after'); const field=getComputedStyle(document.body,'::before'); return logo.backgroundImage.includes('logo-512.png') && logo.position==='fixed' && logo.pointerEvents==='none' && logo.backgroundRepeat==='no-repeat' && parseFloat(logo.left)===0 && parseFloat(field.left)===0 && field.backgroundSize.startsWith('1600px 120px, 1600px 120px') && field.backgroundRepeat==='no-repeat, no-repeat, no-repeat, no-repeat' && Number(logo.opacity)>0 && Number(logo.opacity)<=0.12 && document.documentElement.scrollWidth<=innerWidth+1; })()",
+      "notes": "On phone both field and centered watermark use the whole viewport, remain behind content, and introduce no horizontal overflow.",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      }
     }
   ],
   "ignore": [

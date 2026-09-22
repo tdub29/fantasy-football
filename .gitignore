@@ -32,6 +32,9 @@ test-*.cjs
 site/_shot.py
 site/_shots/
 _shot_modal.py
+site/_mobile_shot.py
+# Ad-hoc capture, not a fixture.
+current-desktop.png
 
 # scratch: ad-hoc ranking scrapes + recovery backups
 _beyond_box_score_*.tsv
