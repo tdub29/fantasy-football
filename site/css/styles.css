@@ -5632,11 +5632,21 @@ button:disabled { cursor: wait; opacity: 0.7; }
 }
 
 /* --- Phone: stop squashing the field ------------------------------------ */
-/* Keep source aspect ratio. Narrow screens see one centered field slice, not a
-   compressed or repeated set of yard lines. Logo layer stays untouched. */
+/* Keep the source aspect ratio, which is why this is a fixed px size and not
+   100%: stretching a 2400-wide tile into a 390px screen turns the numerals
+   into slivers. The scale is an exact 0.4 of the 2400x180 source, so glyphs
+   stay in proportion.
+   The size is also what decides HOW MUCH FIELD IS ON SCREEN, and that is the
+   part that bit. At 1600x120 the numerals sit 160px apart and a 390px phone
+   saw exactly two of them, the 40 and the 50, which reads as a broken
+   background rather than a field. At 960x72 they sit 96px apart and a phone
+   sees 30/40/50/40, centred on midfield.
+   960 centred also still covers the whole viewport at this breakpoint (720px),
+   so no-repeat leaves no bare edge. Raising the breakpoint past 960 without
+   raising this width would expose one. Logo layer stays untouched. */
 @media (max-width: 720px) {
   body::before {
-    background-size: 1600px 120px, 1600px 120px, 100% 100%, 100% 100%;
+    background-size: 960px 72px, 960px 72px, 100% 100%, 100% 100%;
     background-position: center 16px, center calc(100% - 16px), 0 0, 0 0;
     background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
   }

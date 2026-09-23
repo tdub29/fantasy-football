@@ -947,7 +947,7 @@
     },
     {
       "id": "gibbs-ros-x-column",
-      "name": "Weekly table: Gibbs rest-of-season rank from his X posts",
+      "name": "Weekly table: Gibbs rest-of-season rank, and only one of them",
       "path": [
         {
           "press": "Escape"
@@ -969,8 +969,8 @@
         }
       ],
       "selector": "table.weekly-rankings-table",
-      "assert": "(() => { const g = window.GIBBS_ROS; if (!g) return false; const heads=[...document.querySelectorAll('table.weekly-rankings-table thead th')].map(h=>h.textContent.replace(/[↑↓]/g,'').trim().toUpperCase()); const i=heads.indexOf('GIBBS X'); if(i<0) return false; const ranked=new Set(); for(const rows of Object.values(g.positions)) for(const r of rows) if(r.sleeperId) ranked.add(String(r.sleeperId)); const cells=[...document.querySelectorAll('table.weekly-rankings-table tbody tr')].map(tr=>tr.children[i]?.textContent.trim()).filter(t=>t && t!=='·'); return ranked.size >= 140 && cells.length >= 100 && /^(RB|WR|QB|TE)\\d+/.test(cells[0]); })()",
-      "notes": "His rest-of-season positional board, captured from his own X posts and transcribed by two independent readers before it was allowed into the repo (WR agreed 77 of 77, RB 69 of 70, the split being the spelling of Jeremiyah Love). Separate from the JACOB_GIBBS_RANKINGS overall draft board and from the FantasyPros-sourced 'Gibbs ROS' column beside it: FantasyPros lagged this by a day at capture and never carries his positional ROS lists at all. The assert checks the payload and the DOM together so a stale or empty gibbs-ros.js cannot pass as a rendered column. Only RB and WR are populated because those are the only boards he posted; QBs showing a dot rather than a number is correct, not a gap. HALF-PPR, which is what he publishes, while all three leagues are full PPR, so the cell shows HIS rank and never a rescored one."
+      "assert": "(() => { const g = window.GIBBS_ROS; if (!g) return false; const heads=[...document.querySelectorAll('table.weekly-rankings-table thead th')].map(h=>h.textContent.replace(/[↑↓]/g,'').trim().toUpperCase()); const i=heads.indexOf('GIBBS ROS'); if(i<0) return false; const ranked=new Set(); for(const rows of Object.values(g.positions)) for(const r of rows) if(r.sleeperId) ranked.add(String(r.sleeperId)); const cells=[...document.querySelectorAll('table.weekly-rankings-table tbody tr')].map(tr=>tr.children[i]?.textContent.trim()).filter(t=>t && t!=='·'); /* There must be exactly ONE Gibbs rest-of-season column. There were two, reading the same FantasyPros board at different vintages, disagreeing on 76 of 278 players with nothing on screen saying which was which. */ if (heads.filter(h => h.startsWith('GIBBS ROS')).length !== 1) return false; return ranked.size >= 140 && cells.length >= 100 && /^(RB|WR|QB|TE)\\d+/.test(cells[0]); })()",
+      "notes": "His rest-of-season positional board. Sourced from his own FantasyPros page (expert 1576, half-PPR) with his newer per-player restatements layered over it, so it leads the published board rather than trailing it. It was called 'Gibbs X' while it came from his X posts and sat beside a second column, also called Gibbs ROS, that read the same FantasyPros board WITHOUT those updates. The two disagreed on 76 of 278 players and neither label said so, so the stale one is gone and this assert now fails if a second one ever comes back. The cell shows HIS rank; a derived full-PPR version must never be presented as his."
     },
     {
       "id": "gibbs-week-x-column",
@@ -1024,8 +1024,8 @@
       "name": "Field background: centered app logo watermark on phone",
       "path": [],
       "selector": "body",
-      "assert": "(() => { const logo=getComputedStyle(document.body,'::after'); const field=getComputedStyle(document.body,'::before'); return logo.backgroundImage.includes('logo-512.png') && logo.position==='fixed' && logo.pointerEvents==='none' && logo.backgroundRepeat==='no-repeat' && parseFloat(logo.left)===0 && parseFloat(field.left)===0 && field.backgroundSize.startsWith('1600px 120px, 1600px 120px') && field.backgroundRepeat==='no-repeat, no-repeat, no-repeat, no-repeat' && Number(logo.opacity)>0 && Number(logo.opacity)<=0.12 && document.documentElement.scrollWidth<=innerWidth+1; })()",
-      "notes": "On phone both field and centered watermark use the whole viewport, remain behind content, and introduce no horizontal overflow.",
+      "assert": "(() => { const logo=getComputedStyle(document.body,'::after'); const field=getComputedStyle(document.body,'::before'); return logo.backgroundImage.includes('logo-512.png') && logo.position==='fixed' && logo.pointerEvents==='none' && logo.backgroundRepeat==='no-repeat' && parseFloat(logo.left)===0 && parseFloat(field.left)===0 && /* 960x72, not 1600x120. Both are proportional to the 2400x180 source, but at 1600 the numerals sit 160px apart and a 390px phone saw exactly two of them, the 40 and the 50, which reads as a broken background. */ field.backgroundSize.startsWith('960px 72px, 960px 72px') && field.backgroundRepeat==='no-repeat, no-repeat, no-repeat, no-repeat' && Number(logo.opacity)>0 && Number(logo.opacity)<=0.12 && document.documentElement.scrollWidth<=innerWidth+1; })()",
+      "notes": "On phone both field and centered watermark use the whole viewport, remain behind content, and introduce no horizontal overflow. The tile SIZE is load-bearing and is pinned here: it decides how much field a phone sees, not just how big the glyphs are. site/check-field-tile.py carries the same rule with a self-check that fails on the 1600px value.",
       "viewport": {
         "width": 390,
         "height": 844

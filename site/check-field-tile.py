@@ -92,6 +92,8 @@ def main() -> int:
     elif min(hash_rows) <= 52:
         problems.append(f"hash row at y={min(hash_rows)} overlaps the numeral band, which ends at y=52")
 
+    problems += phone_problems(s, nums)
+
     if problems:
         print("FAIL: the turf field is broken")
         for p in problems:
@@ -102,5 +104,82 @@ def main() -> int:
     return 0
 
 
+SRC_W = 2400          # the SVG's own width
+PHONE_W = 390         # the narrow phone this site is checked at
+MIN_NUMERALS = 3      # fewer than this and it stops reading as a field
+
+
+def phone_problems(css: str, nums: list[int]) -> list[str]:
+    """How much of the field a phone actually SEES.
+
+    The source can be perfect and the phone still get two numerals, which is
+    what shipped: the tile was sized 1600x120 and centred, so a 390px screen
+    showed a 390px window with the numerals 160px apart. Every existing check
+    passed, because they all read the SVG rather than the rendering.
+    """
+    out = []
+    m = re.search(r"@media \(max-width: 720px\)\s*\{\s*body::before \{(.*?)\}", css, re.S)
+    if not m:
+        return ["the phone field override is gone; the tile will stretch to "
+                "viewport width and the numerals become slivers"]
+    size = re.search(r"background-size:\s*([0-9.]+)px\s+([0-9.]+)px", m.group(1))
+    if not size:
+        return ["the phone override no longer sets a px background-size, so the "
+                "tile is stretched and the numerals lose their aspect"]
+    w, h = float(size.group(1)), float(size.group(2))
+
+    # Aspect. A tile scaled unevenly renders squashed or stretched glyphs.
+    if abs((w / SRC_W) - (h / 180)) > 0.01:
+        out.append(f"phone tile {w:.0f}x{h:.0f} is not proportional to the "
+                   f"{SRC_W}x180 source, so the numerals render distorted")
+
+    # Coverage. Centred and no-repeat means a tile narrower than the screen
+    # leaves bare turf at both edges.
+    if w < 720:
+        out.append(f"phone tile is {w:.0f}px wide but the breakpoint is 720px, "
+                   f"so a centred no-repeat tile leaves bare edges")
+
+    # The actual bug: how many numerals land inside the visible window.
+    scale = w / SRC_W
+    left = (SRC_W * scale - PHONE_W) / 2          # centred, in rendered px
+    visible = [n for n in nums if left <= n * scale <= left + PHONE_W]
+    if len(visible) < MIN_NUMERALS:
+        out.append(f"only {len(visible)} yard numeral(s) fall inside a "
+                   f"{PHONE_W}px screen at this tile size; a phone sees "
+                   f"{visible or 'none'} and that reads as a broken background, "
+                   f"not a field. Shrink the tile so more of the field fits.")
+    return out
+
+
+def self_check() -> None:
+    """The phone check has to FAIL on the size that shipped, or it is decoration.
+
+    1600x120 is aspect-correct and covers the viewport, so every other rule
+    here passes it. The only thing wrong with it is that a 390px screen sees
+    two numerals, and that is the whole reason this function exists.
+    """
+    css = CSS.read_text(encoding="utf-8")
+    nums = [300, 540, 780, 1020, 1260, 1500, 1740, 1980, 2220]
+
+    broken = phone_problems(css.replace("960px 72px", "1600px 120px"), nums)
+    assert any("yard numeral" in p for p in broken), broken
+
+    # A tile narrower than the breakpoint leaves bare turf at the edges.
+    narrow = phone_problems(css.replace("960px 72px", "400px 30px"), nums)
+    assert any("bare edges" in p for p in narrow), narrow
+
+    # An unevenly scaled tile distorts the glyphs.
+    squashed = phone_problems(css.replace("960px 72px", "960px 140px"), nums)
+    assert any("distorted" in p for p in squashed), squashed
+
+    # And deleting the override entirely must be caught, not read as fine.
+    gone = phone_problems(css.replace("@media (max-width: 720px)", "@media (min-width: 99999px)"), nums)
+    assert gone, "a missing phone override was reported as healthy"
+
+
 if __name__ == "__main__":
+    if "--self-check" in sys.argv:
+        self_check()
+        print("check-field-tile self-check ok")
+        sys.exit(0)
     sys.exit(main())

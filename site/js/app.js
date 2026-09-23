@@ -2963,7 +2963,7 @@
         let av, bv;
         if (filter.sort === 'weekly-vegas' || filter.sort === 'weekly-sleeper'
             || filter.sort === 'weekly-ecr' || filter.sort === 'weekly-gibbs'
-            || filter.sort === 'weekly-ros' || filter.sort === 'weekly-gibbs-ros'
+            || filter.sort === 'weekly-ros'
             || filter.sort === 'weekly-vsdelta'
             // Both Gibbs X columns were handled INSIDE weeklyValue but never
             // listed here, so the comparator never routed to them and clicking
@@ -2992,7 +2992,6 @@
               return kicker?.[String(filter.sort).slice(7)];
             }
             if (filter.sort === 'weekly-ros') return row.ros;
-            if (filter.sort === 'weekly-gibbs-ros') return row.gibbsRos;
             // `player`, not `p`. weeklyValue's parameter is named `player`, and
             // `p` resolves to nothing here, so this threw ReferenceError and
             // took the whole table render down with it. It never surfaced
@@ -3047,7 +3046,7 @@
             filter.sort = key;
             filter.dir = (key === 'rank' || key === 'age' || key === 'pos' || key === 'name'
               || key === 'weekly-ecr' || key === 'weekly-gibbs'
-              || key === 'weekly-ros' || key === 'weekly-gibbs-ros'
+              || key === 'weekly-ros'
               // Both Gibbs X columns are RANKS. They were missing here, so the
               // first click sorted them descending and put his worst-ranked
               // player on top, which reads as a broken column rather than a
@@ -3163,6 +3162,11 @@
       // His X board is a separate, fresher source than his FantasyPros feed.
       const gibbsRosPosted = window.GIBBS_ROS ? window.GIBBS_ROS.postedAt : null;
       const gibbsWeekPosted = window.GIBBS_WEEK ? window.GIBBS_WEEK.postedAt : null;
+      const gibbsRosThrough = window.GIBBS_ROS ? window.GIBBS_ROS.rosUpdatedThrough : null;
+      const gibbsRosScoringNote = window.GIBBS_ROS
+        ? (window.GIBBS_ROS.scoringWarning
+            || `${gibbsScoringLabel(window.GIBBS_ROS, 'RB')}, while these leagues are full PPR.`)
+        : '';
       // The builder writes a position-accurate sentence, because most of this
       // board is now his PPR ranks (the scoring these leagues actually play)
       // and only the positions still coming off an X card are not. A blanket
@@ -3184,14 +3188,6 @@
       // his board is part of the number. The builder takes whichever scoring he
       // submitted last, which is not always the PPR one: measured 2026-09-19 his
       // PPR mirror sat three days behind with a different RB1.
-      const gibbsRosMeta = (weeklyData.coverage || {}).gibbsRos || {};
-      const gibbsRosScoring = gibbsRosMeta.scoring === 'HALF' ? 'half-PPR'
-        : gibbsRosMeta.scoring === 'STD' ? 'standard' : 'PPR';
-      const gibbsRosTitle = `Jacob Gibbs rest-of-season ${gibbsRosScoring} positional rank,`
-        + ` isolated with FantasyPros expert ID 1576.`
-        + `${gibbsRosMeta.updated ? ` Board as of ${gibbsRosMeta.updated}.` : ''}`
-        + `${gibbsRosMeta.scoring === 'HALF' ? ' Half-PPR is the board he keeps current;'
-          + ' these leagues are full PPR, so read it as his ordering, not as your scoring.' : ''}`;
       const weeklyOpponentCell = (p) => {
         const team = teamOfP(p);
         const pos = String(p.pos || '').toUpperCase();
@@ -3231,9 +3227,14 @@
               sortHdr('weekly-ros', 'FP ROS', { right:true, title:rosTitle }),
               ...trackedExperts.map(t => sortHdr(`weekly-x:${t.key}`, t.label, { right:true,
                 title:`${t.name} weekly PPR positional rank, isolated FantasyPros board ${t.id}. ${t.players} players ranked. Manage columns in Expert Rotation.` })),
-              hasGibbsRos ? sortHdr('weekly-gibbs-ros', gibbsRosMeta.scoring === 'HALF' ? 'Gibbs ROS (half)' : 'Gibbs ROS', { right:true, title:gibbsRosTitle }) : null,
-            gibbsRosPosted ? sortHdr('weekly-gibbs-x', 'Gibbs X', { right:true,
-              title:`Jacob Gibbs rest-of-season positional rank from his own X posts, ${gibbsRosPosted}. His FantasyPros board is usually a day or more behind this and never carries the positional ROS lists at all. HALF-PPR, which is what he publishes, while this league is full PPR.` }) : null,
+
+            gibbsRosPosted ? sortHdr('weekly-gibbs-x', 'Gibbs ROS', { right:true,
+              title:`Jacob Gibbs's rest-of-season positional rank, his own FantasyPros board `
+                + `(expert 1576), with his newer per-player restatements layered on top. `
+                + `${gibbsRosScoringNote} `
+                + `Board ${gibbsRosPosted}${gibbsRosThrough ? `, updates through ${gibbsRosThrough}` : ''}. `
+                + `There used to be a second Gibbs ROS column beside this one reading the same `
+                + `board without those updates; it disagreed on 76 of 278 players and has been removed.` }) : null,
             gibbsWeekPosted ? sortHdr('weekly-gibbs-wk', 'Gibbs Wk', { right:true,
               title:`Jacob Gibbs's own board for this week, the start/sit list; `
                 + `the ROS column beside it answers a different question. `
@@ -3283,7 +3284,7 @@
               rankCell(p, weekly.ecr),
               rankCell(p, weekly.ros, { dim:rosStale, title:rosAsOf }),
               ...trackedExperts.map(t => rankCell(p, fpWeeklyRank(t.id, p.pos, p._sleeperId))),
-                hasGibbsRos ? rankCell(p, weekly.gibbsRos) : null,
+
               gibbsRosPosted ? (() => {
                 const g = gibbsRosRank(p._sleeperId);
                 if (!g) return h('td', { class:'right tnum' }, emptyValue());
