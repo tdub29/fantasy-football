@@ -57,8 +57,13 @@ assert.deepEqual(helpers.fpRotationExperts({ season: 2026, currentWeek: 3 }), []
   'stale expert boards must not enter current weekly ranks');
 
 assert.match(app, /Available FantasyPros experts/);
-assert.match(app, /const trackedExperts = fpRotationExperts\(weeklyData\)/,
-  'Weekly columns must use saved expert rotation');
+// Weekly expert columns still come from the saved rotation, but never on the
+// ROS view (a weekly rank under a rest-of-season heading), and never Gibbs's
+// FantasyPros board, which his dedicated Gibbs Wk column supersedes.
+assert.match(app, /const trackedExperts = \(filter\.view === 'ros' \? \[\] : fpRotationExperts\(weeklyData\)\)/,
+  'Weekly columns must use saved expert rotation, and not on the ROS view');
+assert.match(app, /\.filter\(expert => String\(expert\.id\) !== '1576'\)/,
+  "Gibbs's FantasyPros weekly board must not appear as a tracked expert column");
 assert.match(app, /fpWeeklyRank\(t\.id, p\.pos, p\._sleeperId\)/,
   'Weekly cells must read arbitrary selected expert boards');
 assert.doesNotMatch(app.slice(app.indexOf('function viewExperts'), app.indexOf('function fpExpertTable')),

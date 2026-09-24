@@ -3,9 +3,9 @@
 This replaces a screenshot ritual with a fetch, and it is a better board on
 every axis that matters here:
 
-  * PPR. All the leagues on this site are full PPR. The cards he posts to X are
-    HALF-PPR for RB/WR/TE and NON-PPR for QB, so those were his ranks in a
-    scoring system nobody here plays. This page is the PPR board.
+  * Scoring: CBS files it under PPR, but the order is his HALF-PPR board
+    (checked 2026-09-24 against his FantasyPros half and PPR boards). It is
+    labelled half-PPR; a PPR version must be derived, never presented as his.
   * 150 players deep instead of the top 12 a graphic fits.
   * Carries the positional rank AND the overall flex rank, so "start the better
     of these two" works across positions, which a per-position card cannot do.
@@ -136,7 +136,12 @@ def to_source(rows: list[dict], updated: str | None, qb: dict | None) -> dict:
         positions.setdefault(r["pos"], []).append(r)
     for pos in positions:
         positions[pos].sort(key=lambda r: r["rank"])
-    scoring = {p: "ppr" for p in positions}
+    # CBS files this under its PPR URL, but the ORDER is his half-PPR board:
+    # on 2026-09-24 it sat 0.4-2 spots from his FantasyPros half-PPR board and
+    # 4+ from his FantasyPros PPR one, and matched his half-PPR X cards 36/36.
+    # Labelling it PPR told the user a half-PPR opinion was a PPR one. A PPR
+    # version has to be DERIVED (see _sources/build_gibbs_fullppr.py).
+    scoring = {p: "half_ppr" for p in positions}
     sources = {p: "CBS Sports weekly PPR flex board" for p in positions}
 
     # His QB ranks exist only on the X card and only in NON-PPR. Folding them
@@ -156,12 +161,14 @@ def to_source(rows: list[dict], updated: str | None, qb: dict | None) -> dict:
         "sourceByPosition": sources,
         "updatedLabel": updated,
         "provenance": (
-            f"RB, WR and TE scraped from his CBS Sports weekly PPR flex board "
+            f"RB, WR and TE scraped from his CBS Sports weekly flex board "
             f"({URL}), {len(rows)} players, page stamped "
-            f"\"{updated or 'no timestamp'}\". PPR, which is what every league "
-            f"here plays, unlike the HALF-PPR cards he posts to X. The board "
-            f"was validated against a two-reader transcription of those cards: "
-            f"the top 12 of each position matched 36 of 36 on player and order."
+            f"\"{updated or 'no timestamp'}\". CBS files it under PPR, but the "
+            f"ordering is his HALF-PPR board: it matches his half-PPR X cards "
+            f"36 of 36 and his FantasyPros half-PPR board within 2 spots, and "
+            f"not his FantasyPros PPR board, which is internally inconsistent "
+            f"(Brock Bowers TE4 in half, TE21 in PPR). These leagues are full "
+            f"PPR, so treat it as his half-PPR order."
             + (" QB comes from the X card instead, because the per-position CBS "
                "URLs 404 for him and the flex list is RB/WR/TE only; it is "
                "NON-PPR and is labelled that way." if qb else
@@ -249,7 +256,7 @@ def self_check() -> int:
     src = to_source(many, "Updated 5h ago",
                     {"rows": [{"rank": 1, "player": "A", "team": "BUF"}],
                      "scoring": "non_ppr"})
-    assert src["scoringByPosition"]["RB"] == "ppr"
+    assert src["scoringByPosition"]["RB"] == "half_ppr"
     assert src["scoringByPosition"]["QB"] == "non_ppr", src["scoringByPosition"]
     assert "NON-PPR" in src["provenance"]
     print("build_gibbs_cbs self-check ok")

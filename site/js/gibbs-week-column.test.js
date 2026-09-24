@@ -17,7 +17,7 @@ const gateStart = app.indexOf("if (filter.sort === 'weekly-vegas'");
 assert(gateStart >= 0, 'weekly sort gate missing');
 const gate = app.slice(gateStart, app.indexOf('const weeklyValue', gateStart));
 
-for (const key of ['weekly-gibbs-x', 'weekly-gibbs-wk']) {
+for (const key of ['weekly-gibbs-x', 'weekly-gibbs-wk', 'weekly-gibbs-wk-ppr', 'weekly-gibbs-ros-ppr']) {
   assert.match(gate, new RegExp(`filter\\.sort === '${key}'`),
     `${key} must be routed into the weekly comparator, or its handler is dead code`);
   assert.match(app, new RegExp(`if \\(filter\\.sort === '${key}'\\) return gibbs\\w+Rank`),
@@ -32,6 +32,10 @@ const dirBlock = app.slice(dirStart, app.indexOf("? 'asc' : 'desc'", dirStart));
 assert(dirBlock.length > 0, 'default sort direction block is empty');
 assert.match(dirBlock, /key === 'weekly-gibbs-x'/, 'Gibbs ROS rank must default ascending');
 assert.match(dirBlock, /key === 'weekly-gibbs-wk'/, 'Gibbs week rank must default ascending');
+assert.match(dirBlock, /key === 'weekly-gibbs-wk-ppr'/, 'derived PPR week rank must default ascending');
+assert.match(dirBlock, /key === 'weekly-gibbs-ros-ppr'/, 'derived PPR ROS rank must default ascending');
+// The derived columns must say they are derived, in the header a user hovers.
+assert.match(app, /sortHdr\('weekly-gibbs-wk-ppr', 'Gibbs Wk PPR\*'[\s\S]{0,200}DERIVED by this site, not published by him/);
 
 // One lookup, two boards. Two copies of this drifted apart is the thing the
 // shared helper exists to prevent.
@@ -58,11 +62,12 @@ const wk = fs.readFileSync(path.join(__dirname, '..', 'data', 'gibbs-week.js'), 
 const data = JSON.parse(wk.slice(wk.indexOf('{'), wk.lastIndexOf('}') + 1));
 assert.equal(data.board, 'week');
 
-// RB, WR and TE come from his CBS board, which is PPR: the scoring these
-// leagues actually play. Asserting that explicitly is the point, because the
-// value of moving off the X cards was getting out of half-PPR.
+// RB, WR and TE come from his CBS board. CBS files it under PPR but its order
+// is his HALF-PPR board (checked 2026-09-24 against his FantasyPros half and
+// PPR boards), so it must be labelled half-PPR. Calling it PPR is exactly the
+// mislabel that made a half-PPR opinion read as a full-PPR one.
 for (const pos of ['RB', 'WR', 'TE']) {
-  assert.equal(data.formatByPosition[pos], 'ppr', `${pos} must be his PPR ranks`);
+  assert.equal(data.formatByPosition[pos], 'half_ppr', `${pos} is his half-PPR order`);
   assert.match(data.sourceByPosition[pos], /CBS/, `${pos} must come from CBS`);
 }
 // QB is the exception and has to stay labelled as one: CBS has no per-position
@@ -73,7 +78,7 @@ assert.equal(data.format, 'mixed', 'PPR skill positions beside a non-PPR QB card
 // The caveat must be position-accurate. A blanket "not a full-PPR board" is
 // now false for three quarters of the rows, and a caveat that is usually
 // wrong gets ignored on the one position where it matters.
-assert.match(data.scoringWarning, /FULL PPR ranks/);
+assert.match(data.scoringWarning, /HALF-PPR/);
 assert.match(data.scoringWarning, /QB is NON-PPR/);
 assert.doesNotMatch(data.scoringWarning, /not a full-PPR board/);
 

@@ -57,6 +57,8 @@ STEPS = [
     # that silently resolves to another analyst produces a perfectly healthy
     # looking board, and nothing else in this pipeline would notice.
     ("Gibbs CBS vs his X cards",   SITE_DATA / "check_gibbs_sources.py",  True),
+    # DERIVED full-PPR re-rank of his two half-PPR boards. Runs after both.
+    ("Gibbs PPR adjustment",       SITE_DATA / "build_gibbs_ppr.py",      True),
     # Advanced stats for every skill player and team, all from nflverse:
     # play-by-play, snap counts, Next Gen Stats, PFR advanced, QBR, injuries,
     # depth charts. The one builder that owns site/data/advanced.js.
@@ -88,7 +90,7 @@ TRACKED = [
     "ktc.js", "players.js", "leagues.js", "projections.js", "categories.js",
     "environment.js", "sos.js", "sos-grid.js", "sleeper-idp.js", "player-info.js",
     "jacob-gibbs.js", "expert-rankings.js", "fantasypros-experts.js",
-    "idp-dvp.js", "kickers.js", "gibbs-week.js", "gibbs-ros.js", "advanced.js", "prospect.js", "weather.js", "defense.js", "usage-weekly.js", "idp-advanced.js", "weekly-rankings.js", "sleeper-market.js", "faab.js", "trade-history.js", "context.js", "history.js",
+    "idp-dvp.js", "kickers.js", "gibbs-week.js", "gibbs-ros.js", "gibbs-ppr.js", "advanced.js", "prospect.js", "weather.js", "defense.js", "usage-weekly.js", "idp-advanced.js", "weekly-rankings.js", "sleeper-market.js", "faab.js", "trade-history.js", "context.js", "history.js",
 ]
 
 def run(label, script, timeout=600, args=()):

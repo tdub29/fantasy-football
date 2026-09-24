@@ -1255,6 +1255,9 @@
   }
   const gibbsRosRank = (id) => gibbsBoardRank('GIBBS_ROS', id);
   const gibbsWeekRank = (id) => gibbsBoardRank('GIBBS_WEEK', id);
+  // DERIVED full-PPR re-ranks of those two boards (site/data/build_gibbs_ppr.py).
+  const gibbsWeekPprRank = (id) => gibbsBoardRank('GIBBS_PPR_WEEK', id);
+  const gibbsRosPprRank = (id) => gibbsBoardRank('GIBBS_PPR_ROS', id);
 
   // His scoring is per POSITION, not per board: the week 3 QB card is NON-PPR
   // while RB, WR and TE are HALF-PPR. Saying "half-PPR" over all four would be
@@ -2939,7 +2942,16 @@
       const BORROWED_HEAVY = 0.40;
       const builtExpertMeta = new Map((weeklyData.trackedExperts || [])
         .map(expert => [String(expert.id), expert]));
-      const trackedExperts = fpRotationExperts(weeklyData).map(expert => {
+      // Gibbs (FantasyPros 1576) is excluded: his dedicated Gibbs Wk column
+      // (CBS, matched to his X cards 48/48) is his real weekly board, while
+      // his FantasyPros PPR weekly board is one he does not maintain. On
+      // 2026-09-24 it had Rashee Rice WR16 against WR29 on his own half-PPR
+      // board, WR27 on CBS and WR28 on X, and the column was labelled only
+      // "J. Gibbs", so it read as his opinion. It was not.
+      // Weekly expert columns are also kept off the ROS view: a weekly rank
+      // under a rest-of-season heading is the same misread.
+      const trackedExperts = (filter.view === 'ros' ? [] : fpRotationExperts(weeklyData))
+        .filter(expert => String(expert.id) !== '1576').map(expert => {
         const built = builtExpertMeta.get(String(expert.id));
         return {
           id: String(expert.id),
@@ -2949,10 +2961,19 @@
           players: expert.total || 0,
         };
       });
-      if (filter.sort === 'weekly-gibbs') {
-        const gibbs = trackedExperts.find(expert => expert.id === '1576');
-        filter.sort = gibbs ? `weekly-x:${gibbs.key}` : 'weekly-sleeper';
-        filter.dir = gibbs ? 'asc' : 'desc'; persist();
+      // An old saved sort on his FantasyPros column now lands on his real one.
+      if (filter.sort === 'weekly-gibbs' || filter.sort === 'weekly-x:gibbs' || filter.sort === 'weekly-x:fp-1576') {
+        filter.sort = 'weekly-gibbs-wk'; filter.dir = 'asc'; persist();
+      }
+      // A saved sort can name a column the other view hides; fall back to
+      // that view's default rather than sorting by something off screen.
+      const rosOnlySort = ['weekly-ros', 'weekly-gibbs-x', 'weekly-gibbs-ros-ppr'].includes(filter.sort);
+      const weekOnlySort = ['weekly-vegas', 'weekly-sleeper', 'weekly-vsdelta', 'weekly-ecr',
+        'weekly-gibbs-wk', 'weekly-gibbs-wk-ppr'].includes(filter.sort)
+        || /^(weekly-x:|wc:)/.test(filter.sort || '');
+      if (filter.view === 'ros' ? weekOnlySort : rosOnlySort) {
+        [filter.sort, filter.dir] = filter.view === 'ros' ? ['weekly-ros', 'asc'] : ['weekly-sleeper', 'desc'];
+        persist();
       }
       if (String(filter.sort).startsWith('weekly-x:')
           && !trackedExperts.some(expert => expert.key === String(filter.sort).slice(9))) {
@@ -2970,6 +2991,7 @@
             // listed here, so the comparator never routed to them and clicking
             // either header sorted nothing. The handler below was dead code.
             || filter.sort === 'weekly-gibbs-x' || filter.sort === 'weekly-gibbs-wk'
+            || filter.sort === 'weekly-gibbs-wk-ppr' || filter.sort === 'weekly-gibbs-ros-ppr'
             || (typeof filter.sort === 'string' && filter.sort.startsWith('weekly-x:'))
             || (typeof filter.sort === 'string' && filter.sort.startsWith('kicker-'))
             || (typeof filter.sort === 'string' && filter.sort.startsWith('sw:'))
@@ -3000,6 +3022,8 @@
             // bugs that hid each other, and the column just looked inert.
             if (filter.sort === 'weekly-gibbs-x') return gibbsRosRank(player._sleeperId)?.rank ?? null;
             if (filter.sort === 'weekly-gibbs-wk') return gibbsWeekRank(player._sleeperId)?.rank ?? null;
+            if (filter.sort === 'weekly-gibbs-wk-ppr') return gibbsWeekPprRank(player._sleeperId)?.rank ?? null;
+            if (filter.sort === 'weekly-gibbs-ros-ppr') return gibbsRosPprRank(player._sleeperId)?.rank ?? null;
             // Null either side means no comparison exists, so the row stays
             // blank. The null branch below pushes it last in BOTH directions,
             // which is the whole point: a missing line is not a zero edge.
@@ -3053,6 +3077,7 @@
               // player on top, which reads as a broken column rather than a
               // direction choice.
               || key === 'weekly-gibbs-x' || key === 'weekly-gibbs-wk'
+              || key === 'weekly-gibbs-wk-ppr' || key === 'weekly-gibbs-ros-ppr'
               || (typeof key === 'string' && key.startsWith('weekly-x:'))
               || (typeof key === 'string' && key.startsWith('xr:'))) ? 'asc' : 'desc';
           }
@@ -3212,6 +3237,10 @@
       };
 
       const kickerOnly = filter.view === 'weekly' && filter.pos === 'K' && leagueHasKicker;
+      // Weekly columns belong on the Weekly view and rest-of-season columns on
+      // the ROS view, never both: a weekly rank beside a ROS rank under the
+      // same heading is how a WR16 for this week read as his ROS opinion.
+      const isRosView = filter.view === 'ros';
       let tbl;
       if (weeklyTable) {
         tbl = h('table', { class:'data weekly-rankings-table' },
@@ -3227,28 +3256,32 @@
               sortHdr('kicker-ceil', 'Ceil', { right:true, title:'90th-percentile kicker outcome.' }),
               sortHdr('kicker-pGe15', '15+', { right:true, title:'Modelled chance of scoring 15 or more points.' }),
             ] : [
-              sortHdr('weekly-vegas', 'Vegas pts', { right:true, title:'Week PPR projection from price-adjusted BettingPros player props. Missing scoring components are filled from Sleeper.' }),
-              sortHdr('weekly-sleeper', 'Sleeper pts', { right:true, title:'Sleeper weekly PPR projection.' }),
-              sortHdr('weekly-vsdelta', 'V−S', { right:true, title:`Vegas minus Sleeper for week ${currentWeek}. Green = the market projects him above the model, red = below. Blank when either side has no number; blanks sort last both ways. An asterisk means most of the Vegas projection was filled in from Sleeper, so that delta is the model against itself, not market signal.` }),
-              sortHdr('weekly-ecr', 'FP ECR', { right:true, title:'FantasyPros weekly PPR expert consensus positional rank.' }),
-              sortHdr('weekly-ros', 'FP ROS', { right:true, title:rosTitle }),
+              isRosView ? null : sortHdr('weekly-vegas', 'Vegas pts', { right:true, title:'Week PPR projection from price-adjusted BettingPros player props. Missing scoring components are filled from Sleeper.' }),
+              isRosView ? null : sortHdr('weekly-sleeper', 'Sleeper pts', { right:true, title:'Sleeper weekly PPR projection.' }),
+              isRosView ? null : sortHdr('weekly-vsdelta', 'V−S', { right:true, title:`Vegas minus Sleeper for week ${currentWeek}. Green = the market projects him above the model, red = below. Blank when either side has no number; blanks sort last both ways. An asterisk means most of the Vegas projection was filled in from Sleeper, so that delta is the model against itself, not market signal.` }),
+              isRosView ? null : sortHdr('weekly-ecr', 'FP ECR', { right:true, title:'FantasyPros weekly PPR expert consensus positional rank.' }),
+              isRosView ? sortHdr('weekly-ros', 'FP ROS', { right:true, title:rosTitle }) : null,
               ...trackedExperts.map(t => sortHdr(`weekly-x:${t.key}`, t.label, { right:true,
                 title:`${t.name} weekly PPR positional rank, isolated FantasyPros board ${t.id}. ${t.players} players ranked. Manage columns in Expert Rotation.` })),
 
-            gibbsRosPosted ? sortHdr('weekly-gibbs-x', 'Gibbs ROS', { right:true,
+            gibbsRosPosted && isRosView ? sortHdr('weekly-gibbs-x', 'Gibbs ROS (half)', { right:true,
               title:`Jacob Gibbs's rest-of-season positional rank, his own FantasyPros board `
                 + `(expert 1576), with his newer per-player restatements layered on top. `
                 + `${gibbsRosScoringNote} `
                 + `Board ${gibbsRosPosted}${gibbsRosThrough ? `, updates through ${gibbsRosThrough}` : ''}. `
                 + `There used to be a second Gibbs ROS column beside this one reading the same `
                 + `board without those updates; it disagreed on 76 of 278 players and has been removed.` }) : null,
-            gibbsWeekPosted ? sortHdr('weekly-gibbs-wk', 'Gibbs Wk', { right:true,
+            gibbsWeekPosted && !isRosView ? sortHdr('weekly-gibbs-wk', 'Gibbs Wk (half)', { right:true,
               title:`Jacob Gibbs's own board for this week, the start/sit list; `
                 + `the ROS column beside it answers a different question. `
                 + `${gibbsWeekScoring} `
                 + `Scraped ${gibbsWeekPosted}${gibbsWeekUpdated ? `, page said "${gibbsWeekUpdated}"` : ''}, `
                 + `${gibbsWeekDepth} players ranked. A blank means he has not ranked that player, not that nobody rosters him.` }) : null,
-              ...VEGAS_COMPONENTS.map(c => sortHdr(`wc:${c.k}`, c.label, { right:true,
+            window.GIBBS_PPR_WEEK && !isRosView ? sortHdr('weekly-gibbs-wk-ppr', 'Gibbs Wk PPR*', { right:true,
+              title:`DERIVED by this site, not published by him. His half-PPR weekly order sets the value slots, then each player gets +0.5 per projected catch and the board is re-sorted within position. A player who catches nothing never rises on his own. Use this one for full-PPR lineups; the half column beside it is his actual opinion.` }) : null,
+            window.GIBBS_PPR_ROS && isRosView ? sortHdr('weekly-gibbs-ros-ppr', 'Gibbs ROS PPR*', { right:true,
+              title:`DERIVED by this site, not published by him. His half-PPR rest-of-season order sets the value slots, then each player gets +0.5 per projected catch and the board is re-sorted within position. A player who catches nothing never rises on his own. Use this one for full-PPR lineups; the half column beside it is his actual opinion.` }) : null,
+              ...(isRosView ? [] : VEGAS_COMPONENTS).map(c => sortHdr(`wc:${c.k}`, c.label, { right:true,
                 title:`Expected ${c.label} behind the Vegas points column. Greyed when that stat had no market line and was filled from Sleeper.` })),
             ]))),
           h('tbody', null, ...rows.map((p, i) => {
@@ -3268,10 +3301,10 @@
                     kicker?.pGe15 == null ? emptyValue() : `${Math.round(kicker.pGe15 * 100)}%`),
                 ];
               })() : [
-                pointCell(weekly.vegas, weekly.vegasBorrowed?.length
+                isRosView ? null : pointCell(weekly.vegas, weekly.vegasBorrowed?.length
                   ? `Market stats plus Sleeper fills: ${weekly.vegasBorrowed.join(', ')}` : 'BettingPros market projection'),
-                pointCell(weekly.sleeper?.[currentWeek - 1], `Sleeper week ${currentWeek} PPR projection`),
-                (() => {
+                isRosView ? null : pointCell(weekly.sleeper?.[currentWeek - 1], `Sleeper week ${currentWeek} PPR projection`),
+                isRosView ? null : (() => {
                   const d = vsDelta(weekly);
                   if (d == null) {
                     return h('td', { class:'right tnum', title: weekly.vegas == null
@@ -3288,11 +3321,11 @@
                     `${d > 0 ? '+' : ''}${fmt.decimal(d, 1)}`,
                     heavy ? h('span', { class:'vs-borrowed', title }, '*') : null);
                 })(),
-              rankCell(p, weekly.ecr),
-              rankCell(p, weekly.ros, { dim:rosStale, title:rosAsOf }),
+              isRosView ? null : rankCell(p, weekly.ecr),
+              isRosView ? rankCell(p, weekly.ros, { dim:rosStale, title:rosAsOf }) : null,
               ...trackedExperts.map(t => rankCell(p, fpWeeklyRank(t.id, p.pos, p._sleeperId))),
 
-              gibbsRosPosted ? (() => {
+              gibbsRosPosted && isRosView ? (() => {
                 const g = gibbsRosRank(p._sleeperId);
                 if (!g) return h('td', { class:'right tnum' }, emptyValue());
                 // His own rank, and how far it sits from the consensus he was
@@ -3304,7 +3337,7 @@
                     style:{ marginLeft:'4px', fontSize:'11px' } },
                     `${g.vsEcr > 0 ? '+' : ''}${g.vsEcr}`) : null);
               })() : null,
-              gibbsWeekPosted ? (() => {
+              gibbsWeekPosted && !isRosView ? (() => {
                 const g = gibbsWeekRank(p._sleeperId);
                 // The card is a top 12. Absent means unranked on it, which is
                 // information, not a missing lookup, so it reads as a blank
@@ -3313,9 +3346,8 @@
                 const ros = gibbsRosRank(p._sleeperId);
                 const moved = ros && ros.pos === g.pos ? ros.rank - g.rank : null;
                 // Scoring has to match before a cross-board delta means
-                // anything. The week board is PPR and the ROS board is
-                // half-PPR, so a "moved N spots" on mismatched scoring is
-                // partly just the scoring, not his opinion changing.
+                // anything; both are his half-PPR order today, but the QB card
+                // is non-PPR, so the check stays.
                 const sameScoring = ros
                   && gibbsScoringLabel(window.GIBBS_WEEK, g.pos)
                      === gibbsScoringLabel(window.GIBBS_ROS, ros.pos);
@@ -3335,7 +3367,20 @@
                     style:{ marginLeft:'4px', fontSize:'11px' } },
                     `${moved > 0 ? '+' : ''}${moved}`) : null);
               })() : null,
-                ...VEGAS_COMPONENTS.map(c => componentCell(weekly, c)),
+              ...[['GIBBS_PPR_WEEK', gibbsWeekPprRank, 'weekly'], ['GIBBS_PPR_ROS', gibbsRosPprRank, 'rest-of-season']]
+                .filter(([key]) => (key === 'GIBBS_PPR_ROS') === isRosView && window[key]).map(([key, look, which]) => {
+                const g = look(p._sleeperId);
+                if (!g) return h('td', { class:'right tnum' }, emptyValue());
+                // move = his half-PPR rank minus the derived rank: + means PPR lifts him.
+                return h('td', { class:'right tnum', title:
+                  `${g.pos}${g.rank} after the full-PPR adjustment (derived, not his). `
+                  + `${g.pos}${g.halfRank} on his half-PPR ${which} board, ${g.rec} projected catches.`
+                  + (g.noProjection ? ' No projection, so he holds the slot Gibbs gave him.' : '') },
+                  `${g.pos}${g.rank}`,
+                  g.move ? h('span', { class: g.move > 0 ? 'delta-up' : 'delta-down',
+                    style:{ marginLeft:'4px', fontSize:'11px' } }, `${g.move > 0 ? '+' : ''}${g.move}`) : null);
+              }),
+                ...(isRosView ? [] : VEGAS_COMPONENTS).map(c => componentCell(weekly, c)),
               ]));
           })));
       } else if (filter.view === 'sleeper-weeks') {
