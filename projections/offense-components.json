@@ -72,7 +72,7 @@
     "pass_2pt": 1.0
    },
    "pp_stats": {
-    "pass_yd": 2903.28,
+    "pass_yd": 2876.18,
     "pass_td": 13.0,
     "pass_int": 8.0,
     "rush_yd": 94.0,
@@ -293,14 +293,15 @@
     "pass_2pt": 1.0
    },
    "pp_stats": {
-    "pass_yd": 3088.52,
-    "rush_yd": 450.5,
-    "pass_td": 19.6,
-    "rush_td": 5.85,
-    "pass_int": 12.0
+    "pass_yd": 214.5,
+    "rush_yd": 29.5,
+    "pass_td": 1,
+    "pass_int": 12.0,
+    "rush_td": 6.0
    },
    "pp_borrowed": [
-    "pass_int"
+    "pass_int",
+    "rush_td"
    ]
   },
   {
@@ -415,7 +416,7 @@
    "pp_stats": {
     "pass_yd": 1920.73,
     "pass_td": 12.27,
-    "rush_td": 4.25,
+    "rush_td": 4.29,
     "pass_int": 11.0,
     "rush_yd": 234.0
    },
@@ -1002,7 +1003,7 @@
     "pass_yd": 2980.11,
     "rush_yd": 375.5,
     "pass_td": 18.92,
-    "rush_td": 4.19,
+    "rush_td": 4.3,
     "pass_int": 10.0
    },
    "pp_borrowed": [
@@ -1460,7 +1461,7 @@
   {
    "sleeper_id": "9999",
    "name": "Will Levis",
-   "team": null,
+   "team": "NYJ",
    "pos": "QB",
    "sleeper_stats": {
     "pass_yd": 205.0,
@@ -1808,11 +1809,12 @@
    "pp_stats": {
     "rush_yd": 21.5,
     "rec_yd": 7.5,
-    "rush_td": 3.88,
+    "rush_td": 4.0,
     "rec": 34.0,
     "rec_td": 1.0
    },
    "pp_borrowed": [
+    "rush_td",
     "rec",
     "rec_td"
    ]
@@ -2155,7 +2157,7 @@
    "pp_stats": {
     "rush_yd": 27.5,
     "rec_yd": 19.5,
-    "rush_td": 4.27,
+    "rush_td": 4.49,
     "rec": 37.0,
     "rec_td": 2.0
    },
@@ -2365,7 +2367,7 @@
    "pp_stats": {
     "rush_yd": 606.7,
     "rec_yd": 2.5,
-    "rush_td": 9.45,
+    "rush_td": 7.85,
     "rec": 19.0,
     "rec_td": 1.0
    },
@@ -2573,7 +2575,7 @@
    },
    "pp_stats": {
     "rush_yd": 18.5,
-    "rush_td": 3.94,
+    "rush_td": 3.82,
     "rec": 16.0,
     "rec_yd": 117.0,
     "rec_td": 1.0
@@ -2736,7 +2738,7 @@
    "pp_stats": {
     "rush_yd": 39.5,
     "rec_yd": 2.5,
-    "rush_td": 4.0,
+    "rush_td": 4.17,
     "rec": 11.0
    },
    "pp_borrowed": [
@@ -2898,7 +2900,7 @@
    "pp_stats": {
     "rush_yd": 16.5,
     "rec_yd": 12.5,
-    "rush_td": 4.23,
+    "rush_td": 4.13,
     "rec": 20.0,
     "rec_td": 1.0
    },
@@ -2979,7 +2981,7 @@
     "rush_yd": 479.89,
     "rec_yd": 15.5,
     "rec": 2.5,
-    "rush_td": 4.11,
+    "rush_td": 6.15,
     "rec_td": 1.0
    },
    "pp_borrowed": [
@@ -3401,7 +3403,7 @@
    "pp_stats": {
     "rush_yd": 26.5,
     "rec_yd": 12.5,
-    "rush_td": 4.55,
+    "rush_td": 4.51,
     "rec": 47.0,
     "rec_td": 2.0
    },
@@ -3535,7 +3537,7 @@
    "pp_stats": {
     "rush_yd": 34.5,
     "rec_yd": 7.5,
-    "rush_td": 4.08,
+    "rush_td": 4.05,
     "rec": 9.0
    },
    "pp_borrowed": [
@@ -4432,7 +4434,7 @@
     "rec_td": 3.0
    },
    "pp_stats": {
-    "rec_yd": 727.13,
+    "rec_yd": 802.31,
     "rush_yd": 10.0,
     "rec": 35.0,
     "rec_td": 3.0
@@ -5905,7 +5907,7 @@
    },
    "pp_stats": {
     "rec_yd": 5.5,
-    "rec_td": 1.25,
+    "rec_td": 0.95,
     "rec": 10.0
    },
    "pp_borrowed": [
@@ -5935,7 +5937,7 @@
   {
    "sleeper_id": "2197",
    "name": "Brandin Cooks",
-   "team": null,
+   "team": "SF",
    "pos": "WR",
    "sleeper_stats": {
     "rec": 10.0,
@@ -6739,7 +6741,7 @@
   {
    "sleeper_id": "6920",
    "name": "Isaiah Hodgins",
-   "team": null,
+   "team": "PIT",
    "pos": "WR",
    "sleeper_stats": {
     "rec": 4.0,
@@ -6919,8 +6921,8 @@
    "pp_stats": {
     "rec_yd": 1331.58,
     "rec": 6.5,
-    "rec_td": 9.83,
-    "rush_yd": 11.5
+    "rush_yd": 11.5,
+    "rec_td": 9.83
    },
    "pp_borrowed": []
   },
@@ -7609,7 +7611,7 @@
     "rec_td": 4.0
    },
    "pp_stats": {
-    "rec_yd": 618.66,
+    "rec_yd": 35.5,
     "rec": 3,
     "rec_td": 4.0
    },
