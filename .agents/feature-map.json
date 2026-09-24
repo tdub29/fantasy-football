@@ -363,8 +363,8 @@
         }
       ],
       "selector": "#main .trade-calc",
-      "assert": "document.querySelectorAll('#main .trade-side-card').length === 2 && !!document.querySelector('#main .trade-search-input') && !!document.querySelector('#main .trade-title-run')",
-      "notes": "Two side cards, player search and an on-demand championship odds simulation. The fairness verdict only appears once both piles have something, so the empty state is correct."
+      "assert": "document.querySelectorAll('#main .trade-side-card').length === 2 && !!document.querySelector('#main .trade-search-input') && !!document.querySelector('#main .trade-title-run') && document.querySelectorAll('#main .trade-title-odds .t3y-row').length === 3",
+      "notes": "Two side cards, player search and an on-demand championship odds simulation. The fairness verdict only appears once both piles have something, so the empty state is correct. Championship odds are per season (this year plus two), for both sides, like the value-by-year block beside them; a single this-season number hid everything a pick does to a trade."
     },
     {
       "id": "trade-partners",

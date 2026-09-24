@@ -7894,6 +7894,11 @@
       delete m.node.dataset.oddsKey;
       m.titleA.textContent = '·'; m.titleB.textContent = '·';
       m.titleA.style.color = ''; m.titleB.style.color = '';
+      for (const r of m.titleRows || []) {
+        r.aCell.textContent = '·'; r.bCell.textContent = '·';
+        r.aCell.style.color = ''; r.bCell.style.color = '';
+        r.aSub.textContent = ''; r.bSub.textContent = '';
+      }
       m.titleMeta.textContent = 'Run again for the changed trade.';
     }
     m.aVal.textContent = fmt.decimal(aVal, 1);
@@ -8658,6 +8663,8 @@
     const titleB = h('span', { class:'tnum trade-title-value' }, '·');
     const titleMeta = h('div', { class:'tip trade-title-meta' }, 'Run after both sides have assets.');
     let baselineOdds = null;
+    const TITLE_YEARS = 3, TITLE_SIMS = 2500;
+    let titleRows = [];
     const runTitleOdds = h('button', { type:'button', class:'trade-title-run', onclick: () => {
       const aSet = TRADE_STATE.sideA.picks, bSet = TRADE_STATE.sideB.picks;
       if (!aSet.size || !bSet.size) { titleMeta.textContent = 'Add assets to both sides first.'; return; }
@@ -8666,22 +8673,34 @@
       const key = `${aRosterId}:${[...aSet].sort()}|${bRosterId}:${[...bSet].sort()}`;
       runTitleOdds.disabled = true;
       runTitleOdds.textContent = 'Running...';
-      titleMeta.textContent = 'Simulating 8,000 seasons across two seeds.';
+      titleMeta.textContent = `Simulating ${TITLE_YEARS} seasons, ${TITLE_SIMS.toLocaleString()} times each, before and after.`;
       setTimeout(() => {
         try {
-          const seeds = [20260807, 20260918];
-          if (!baselineOdds) baselineOdds = seeds.map(seed => championshipOdds(lg, { sims:4000, src:'blend', seed }));
-          const after = seeds.map(seed => championshipOdds(lg, { sims:4000, src:'blend', seed, whatIf }));
-          const mean = (runs, rid) => runs.reduce((sum, rows) => sum + (rows.find(o => o.rosterId === rid)?.title || 0), 0) / runs.length;
-          const show = (el, before, next) => {
+          // Same seeds before and after (common random numbers): the draws
+          // match, so the change in a cell is the trade, not simulation noise.
+          if (!baselineOdds) baselineOdds = titleOddsByYear(lg, { years:TITLE_YEARS, sims:TITLE_SIMS });
+          const after = titleOddsByYear(lg, { years:TITLE_YEARS, sims:TITLE_SIMS, whatIf });
+          const paint = (cell, sub, before, next) => {
             const delta = (next - before) * 100;
-            el.textContent = `${(before * 100).toFixed(1)}% → ${(next * 100).toFixed(1)}% (${delta >= 0 ? '+' : ''}${delta.toFixed(1)} pts)`;
-            el.style.color = Math.abs(delta) < 0.1 ? 'var(--fg-2)' : delta > 0 ? 'var(--green)' : 'var(--red)';
+            cell.textContent = `${delta >= 0 ? '+' : ''}${delta.toFixed(1)}`;
+            cell.style.color = Math.abs(delta) < 0.1 ? 'var(--fg-2)' : delta > 0 ? 'var(--green)' : 'var(--red)';
+            sub.textContent = `${(before * 100).toFixed(1)}% \u2192 ${(next * 100).toFixed(1)}%`;
+            return delta;
           };
-          show(titleA, mean(baselineOdds, aRosterId), mean(after, aRosterId));
-          show(titleB, mean(baselineOdds, bRosterId), mean(after, bRosterId));
+          let totA = 0, totB = 0;
+          after.forEach((yr, k) => {
+            const row = titleRows[k], base = baselineOdds[k].byRoster;
+            totA += paint(row.aCell, row.aSub, base.get(aRosterId) || 0, yr.byRoster.get(aRosterId) || 0);
+            totB += paint(row.bCell, row.bSub, base.get(bRosterId) || 0, yr.byRoster.get(bRosterId) || 0);
+          });
+          const sum = (el, d) => {
+            el.textContent = `${d >= 0 ? '+' : ''}${d.toFixed(1)} pts over ${TITLE_YEARS} seasons`;
+            el.style.color = Math.abs(d) < 0.1 ? 'var(--fg-2)' : d > 0 ? 'var(--green)' : 'var(--red)';
+          };
+          sum(titleA, totA); sum(titleB, totB);
           node.dataset.oddsKey = key;
-          titleMeta.textContent = 'Current season, 8,000 simulations. Picks change future value, not this season.';
+          titleMeta.textContent = `Change in title odds, percentage points, per season. ${TITLE_SIMS.toLocaleString()} simulations each. `
+            + 'Later seasons age every roster forward and slot draft picks by the simulated finish, so this is where picks show up.';
         } catch (err) {
           console.error('Trade title odds failed', err);
           titleMeta.textContent = 'Could not run title odds. Try again.';
@@ -8709,6 +8728,7 @@
       );
       return { row, aCell, bCell, aSub, bSub };
     };
+    titleRows = Array.from({ length: TITLE_YEARS }, (_, k) => makeYearRow(String(CURRENT_SEASON + k)));
     const y0 = makeYearRow('Today');
     const y1 = makeYearRow('+1 yr');
     const y2 = makeYearRow('+2 yr');
@@ -8742,8 +8762,15 @@
             h('div', { class:'trade-lineup-side' },
               h('span', { class:'trade-lineup-side-label' }, 'Side B'), lineupB))
         ),
-        h('div', { class:'trade-title-odds' },
-          h('div', { class:'tip', style:{ marginBottom:'4px' } }, 'Championship odds · now → after'),
+        h('div', { class:'trade-title-odds t3y' },
+          h('div', { class:'tip', style:{ marginBottom:'4px' } }, 'Championship odds by season, change in pts'),
+          h('div', { class:'t3y-head' },
+            h('span', { class:'t3y-label' }, ''),
+            h('span', { class:'t3y-cell tip' }, 'Side A'),
+            h('span', { class:'t3y-sep' }, ''),
+            h('span', { class:'t3y-cell tip' }, 'Side B'),
+          ),
+          ...titleRows.map(r => r.row),
           h('div', { class:'trade-title-values' },
             h('div', { class:'trade-title-side' },
               h('span', { class:'trade-title-side-label' }, 'Side A'), titleA),
@@ -8772,7 +8799,7 @@
       ),
     );
     return { node, aVal, bVal, verdict, fair, premiumNote, deltaA, deltaB, lineupA, lineupB,
-      titleA, titleB, titleMeta, runTitleOdds, y0, y1, y2, y3, y4, y5 };
+      titleA, titleB, titleMeta, runTitleOdds, titleRows, y0, y1, y2, y3, y4, y5 };
   }
   // ============================================================
   // Dynasty aging model, used by trade-calc 3-year outlook
@@ -11202,6 +11229,21 @@
   // Returns per-year title odds plus discounted equity. `discount` is per year:
   // a fantasy league is not forever (managers quit, leagues fold, you lose
   // interest), so a title five years out is worth less than one today.
+  // Every roster's title odds for each of the next `years` seasons. Same
+  // forward model as titleEquity (age the league, slot next year's picks by
+  // this year's simulated finish), but it keeps all teams, because a trade has
+  // two sides and titleEquity only tracks mine.
+  function titleOddsByYear(lg, { years = 3, sims = 2500, whatIf = null, seed = 20260807 } = {}) {
+    const out = [];
+    let ranks = null;
+    for (let y = 0; y < years; y++) {
+      const res = championshipOdds(lg, { sims, src:'blend', whatIf, seed: seed + y * 101, yearsOut: y, strengthRanks: ranks });
+      ranks = new Map(res.slice().sort((a, b) => b.expPts - a.expPts).map((o, i) => [o.rosterId, i + 1]));
+      out.push({ season: CURRENT_SEASON + y, byRoster: new Map(res.map(o => [o.rosterId, o.title || 0])) });
+    }
+    return out;
+  }
+
   function titleEquity(lg, { years = 7, sims = 2500, src = 'blend', whatIf = null, discount = 0.88, seed = 20260807 } = {}) {
     const byYear = [];
     let ranks = null;
