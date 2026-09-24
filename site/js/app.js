@@ -10602,9 +10602,11 @@
             historyBlock(sleeper),
           ] },
           { key:'context', label:'Context', nodes: [
+            weatherLine(sleeper),
             envInfoLine(sleeper),
             scheduleStrip(sleeper),
             contextBlock(sleeper),
+            prospectBlock(sleeper),
             playerInfoBlock(name, sleeper),
           ] },
         ]),
@@ -10715,6 +10717,68 @@
       statStr ? h('div', { class: 'tip' }, `Blended line: ${statStr}`) : null,
       unit === 'defense' ? h('div', { class: 'tip', style: { marginTop: '4px', opacity: .8 } }, 'PD/QB-hit best-estimated; no Vegas market for IDP.') : null,
     );
+  }
+
+  // Draft capital and athletic profile (window.PROSPECT) plus this week's
+  // forecast for his game (window.WEATHER). Both are small, key-free and
+  // rebuilt by the pipeline.
+  function prospectBlock(sleeper) {
+    const P = window.PROSPECT;
+    const me = sleeper && P && P.players[String(sleeper.id)];
+    if (!me) return null;
+    const inches = (n) => n ? `${Math.floor(n / 12)}'${Math.round(n % 12)}"` : null;
+    const drills = [['forty', '40', 2], ['vertical', 'Vert', 1], ['broad_jump', 'Broad', 0],
+                    ['cone', '3-cone', 2], ['shuttle', 'Shuttle', 2], ['bench', 'Bench', 0]]
+      .filter(([k]) => me[k] != null)
+      .map(([k, label, dp]) => {
+        const pct = me[`${k}_pct`];
+        return h('div', { class:'adv-stat', title:`${label}: ${me[k]}, ${pct != null ? Math.round(pct) + 'th percentile among combine ' + me.pos + 's' : 'no percentile'}` },
+          h('div', { class:'adv-stat-label' }, label),
+          h('div', { class:`adv-stat-value tnum${pct >= 80 ? ' delta-up' : pct != null && pct <= 20 ? ' delta-down' : ''}` },
+            Number(me[k]).toFixed(dp)),
+          pct != null ? h('div', { class:'adv-stat-rank tnum' }, `${Math.round(pct)}th pct`) : null);
+      });
+    const draft = me.draft_capital === 'UDFA' || !me.draft_pick
+      ? `Undrafted${me.draft_year ? `, ${me.draft_year}` : ''}`
+      : `${me.draft_capital}, pick ${me.draft_pick} (round ${me.draft_round}), ${me.draft_year} ${me.drafted_by || ''}`.trim();
+    const facts = [draft, me.college, [inches(me.height_in), me.weight_lb ? `${me.weight_lb} lb` : null].filter(Boolean).join(', '),
+      me.age_at_draft ? `${Number(me.age_at_draft).toFixed(1)} at the draft` : null].filter(Boolean);
+    const scores = [
+      me.speed_score != null ? h('div', { class:'adv-stat', title:'Speed score: weight x 200 / forty^4 (Barnwell). 100 is average for an NFL back.' },
+        h('div', { class:'adv-stat-label' }, 'Speed score'),
+        h('div', { class:'adv-stat-value tnum' }, Number(me.speed_score).toFixed(1))) : null,
+      me.athl_pct != null ? h('div', { class:'adv-stat', title:'Our composite: mean of his drill percentiles vs every combine participant at his position, 3+ drills required. Not Relative Athletic Score.' },
+        h('div', { class:'adv-stat-label' }, 'Athletic %ile'),
+        h('div', { class:`adv-stat-value tnum${me.athl_pct >= 80 ? ' delta-up' : me.athl_pct <= 20 ? ' delta-down' : ''}` }, String(Math.round(me.athl_pct)))) : null,
+    ].filter(Boolean);
+    return h('div', { class:'card adv-card' },
+      h('div', { class:'card-title' }, 'Draft and athletic profile'),
+      h('div', { class:'tip', style:{ marginBottom:'8px' } }, facts.join('  \u00b7  ')),
+      (scores.length || drills.length) ? h('div', { class:'adv-grid' }, ...scores, ...drills)
+        : h('div', { class:'tip' }, 'No combine results on file.'));
+  }
+
+  function weatherLine(sleeper) {
+    const W = window.WEATHER;
+    const team = sleeper && (sleeper.team === 'LAR' ? 'LA' : sleeper.team);
+    const gid = W && team && W.byTeam && W.byTeam[team];
+    const g = gid && W.games.find(x => x.game_id === gid);
+    if (!g) return null;
+    const opp = g.home === team ? `vs ${g.away}` : `@ ${g.home}`;
+    const when = g.kickoff ? new Date(g.kickoff).toLocaleString([], { weekday:'short', hour:'numeric', minute:'2-digit' }) : '';
+    const body = g.temp_f == null
+      ? (g.reason === 'indoors' ? 'Indoors' : (g.reason || 'No forecast'))
+      : `${Math.round(g.temp_f)}\u00b0F, wind ${Math.round(g.wind_mph)} mph (gusts ${Math.round(g.gust_mph)}), ${Math.round(g.precip_prob || 0)}% precip`;
+    return h('div', { class:`card weather-line${g.flag ? ' weather-flag' : ''}` },
+      h('div', { class:'card-title' }, `Week ${W.week} weather`),
+      h('div', null, `${opp}, ${when}, ${g.stadium}. ${body}.`,
+        g.flag ? h('strong', { style:{ marginLeft:'6px' } }, `Watch: ${g.flag}.`) : null,
+        g.note ? h('span', { class:'tip', style:{ marginLeft:'6px' } }, g.note) : null),
+      (g.total_line != null || g.spread_line != null) ? h('div', { class:'tip' },
+        // nflverse spread_line is positive when the HOME team is favored.
+        [g.total_line != null ? `Vegas total ${g.total_line}` : null,
+         g.spread_line == null ? null : g.spread_line === 0 ? 'pick em'
+           : `${g.spread_line > 0 ? g.home : g.away} by ${Math.abs(g.spread_line)}`].filter(Boolean).join(', ') + '.') : null);
   }
 
   function playerInfoBlock(name, sleeper) {

@@ -187,6 +187,11 @@ Full pipeline detail, and the evidence behind every trap below, is in
 - **The site is hosted, so a local rebuild is not done.** `site/` ships inside the `trevor-apps`
   Cloudflare Pages bundle as `ff/`:
   `powershell -NoProfile -ExecutionPolicy Bypass -File ..\.agents\scripts\deploy-phone-apps.ps1 -Deploy`
+- **Advanced stats come from nflverse, never from memory.** `projections/build_nflverse_suite.py --all`
+  writes Stats Lab (`#stats`) and the player card's advanced panel; `build_prospect_profile.py` and
+  `build_game_weather.py` add draft/combine and forecast. Routes run, TPRR, YPRR and FP/RR are
+  estimates (public route data ends in 2025) and stay labelled "(est)". What the analysts cite, and
+  what is not public: `notes/beyond-the-box-score-metrics.md`.
 - **Before any lineup question**, `python site/data/fetch_sleeper.py && python site/data/build_site_data.py`.
   `injury_status` goes stale fast and a stale dump silently starts an IR player.
 - **Never devig `best_over` against `best_under`.** They are the best price on each side from

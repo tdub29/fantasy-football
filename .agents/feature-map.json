@@ -1051,6 +1051,27 @@
       "selector": "table.stats-lab-table",
       "assert": "(() => { const A = window.ADVANCED; if (!A || !A.players) return false; if (Object.keys(A.players).length < 300) return false; const heads = [...document.querySelectorAll('table.stats-lab-table thead th')]; const rows = [...document.querySelectorAll('table.stats-lab-table tbody tr')]; if (heads.length < 20 || rows.length < 40) return false; const nameCell = () => document.querySelector('table.stats-lab-table tbody tr td:nth-child(2)').textContent; const before = nameCell(); heads[5].click(); const after = nameCell(); /* sorting must reorder, not just render */ return before !== after && A.teams && Object.keys(A.teams).length === 32; })()",
       "notes": "Every public advanced stat nflverse publishes for 2026, joined per player on the Sleeper id: play-by-play EPA and air yards, snap counts, Next Gen Stats, PFR advanced, FTN charting (play action, motion, first-read targets), ESPN QBR, injuries and depth charts. Built by projections/build_nflverse_suite.py into site/data/advanced.js; the column list and definitions ship in that payload so a new metric needs no UI change. Route%, TPRR and YPRR are estimates (public route data stops after 2025) and say so. The assert clicks a header and requires the top row to change, because a table that renders but does not sort has already shipped once on this site."
+    },
+    {
+      "id": "prospect-weather-data",
+      "name": "Draft profile and game-day weather payloads are loaded and shaped",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "location.hash='#stats/RB'"
+        },
+        {
+          "sleepMs": 800
+        }
+      ],
+      "selector": "body",
+      "assert": "(() => { const P = window.PROSPECT, W = window.WEATHER; if (!P || !W) return false; const ps = Object.values(P.players); if (ps.length < 500) return false; if (!ps.some(v => v.athl_pct != null && v.speed_score != null)) return false; if (ps.some(v => /^(GNB|KAN|TAM|NWE|NOR|SFO|LVR)$/.test(v.drafted_by || ''))) return false; if (!Array.isArray(W.games) || W.games.length < 12) return false; return W.games.every(g => W.byTeam[g.home] === g.game_id && W.byTeam[g.away] === g.game_id); })()",
+      "notes": "prospect.js (projections/build_prospect_profile.py): draft capital from nflverse draft_picks and combine drills with per-position percentiles, a speed score, and our own athletic composite, which is deliberately not called RAS. PFR team codes are normalized, and the assert fails if one leaks back in. weather.js (projections/build_game_weather.py): kickoff-hour Open-Meteo forecast for every game of the upcoming week, skipped for domes, flagged for wind, precipitation and cold; byTeam must cover both teams of every game or a player's card silently shows no weather."
     }
   ],
   "ignore": [

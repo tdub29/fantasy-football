@@ -442,11 +442,21 @@ def player_table(season: int) -> tuple[pd.DataFrame, dict, pd.DataFrame]:
     g = df["games"]
     df["xfp_pg"] = df["xfp"] / g
     df["fpoe_pg"] = df["fpoe"] / g
+    # Calibrated against 2025, the last season with public participation data:
+    # on-field dropbacks divided by this estimate, median by position and snap
+    # share. WRs need nothing (1.01x, r=0.99). TEs and RBs are overcounted
+    # because the estimate cannot tell a route from a block, worst for
+    # part-time tight ends. These are upper bounds, so the true correction for
+    # blocking-heavy players is a little larger still.
+    snap = df["snap_pct"].fillna(0)
+    te_mult = np.where(snap >= 0.75, 0.98, np.where(snap >= 0.5, 0.89, 0.81))
+    mult = np.where(df["position"] == "TE", te_mult, np.where(df["position"] == "RB", 0.94, 1.0))
+    df["routes_est"] = df["routes_est"] * mult
+    df["route_rate_est"] = df["routes_est"] / df["team"].map(teams["dropbacks"])
     df["tprr_est"] = df["targets"] / df["routes_est"].where(df["routes_est"] >= 5)
     df["yprr_est"] = df["rec_yds"] / df["routes_est"].where(df["routes_est"] >= 5)
     df["fprr_est"] = df["pts_rec"] / df["routes_est"].where(df["routes_est"] >= 5)
     df["explosive_run_rate"] = df["explosive_runs"] / df["carries"].where(df["carries"] >= 5)
-    df["route_rate_est"] = df["routes_est"] / df["team"].map(teams["dropbacks"])
     df["drop_rate"] = df["drops"] / df["targets"]
     df["ybc_per_att"] = df["ybc"] / df["pfr_carries"]
     df["yac_per_att"] = df["yac_rush"] / df["pfr_carries"]
@@ -495,7 +505,7 @@ RUSH = ["RB", "QB"]
 COLUMNS = [
     C("games", "G", "Usage", SKILL, "int", "Games with an offensive snap."),
     C("snap_pct", "Snap%", "Usage", SKILL, "pct", "Average share of offensive snaps. Beyond the Box Score benchmark: 80%+ is a bell-cow back."),
-    C("route_rate_est", "Route% (est)", "Usage", REC, "pct", "Estimated routes over team dropbacks. Snaps x the team's dropback share of plays each game, because public route data ends in 2025. Benchmark cited on the show: 65-70%+ is an every-down receiver."),
+    C("route_rate_est", "Route% (est)", "Usage", REC, "pct", "Estimated routes over team dropbacks. Snaps x the team's dropback share of plays each game, because public route data ends in 2025, then calibrated on 2025 participation (TEs 0.81-0.98x by snap share, RBs 0.94x, WRs unchanged). Benchmark cited on the show: 65-70%+ is an every-down receiver."),
     C("targets", "Tgt", "Usage", REC, "int", "Targets."),
     C("target_share", "Tgt%", "Usage", REC, "pct", "Share of the team's targets. Benchmark cited on the show: 28%+ is elite."),
     C("touch_share", "Touch%", "Usage", ["RB"], "pct", "Targets plus carries over the team's targets plus carries."),
