@@ -60,7 +60,7 @@ STEPS = [
     # Advanced stats for every skill player and team, all from nflverse:
     # play-by-play, snap counts, Next Gen Stats, PFR advanced, QBR, injuries,
     # depth charts. The one builder that owns site/data/advanced.js.
-    ("nflverse advanced stats",    PROJ / "build_nflverse_suite.py",      True),
+    ("nflverse advanced stats",    PROJ / "build_nflverse_suite.py",      True, ["--all"]),
     ("IDP defense-vs-position",    PROJ / "build_idp_dvp.py",             True),
     # The kicker board is modelled in a SEPARATE repo and written back into
     # site/data/kickers.js. It belongs in this list anyway: leaving it out is
@@ -86,14 +86,14 @@ TRACKED = [
     "idp-dvp.js", "kickers.js", "gibbs-week.js", "gibbs-ros.js", "advanced.js", "weekly-rankings.js", "sleeper-market.js", "faab.js", "trade-history.js", "context.js", "history.js",
 ]
 
-def run(label, script, timeout=600):
+def run(label, script, timeout=600, args=()):
     if not script.exists():
         print(f"SKIP  {label}: {script.name} not found")
         return {"label": label, "script": script.name, "ok": False, "note": "missing"}
     print(f"\n=== {label}  ({script.name}) ===")
     t0 = time.time()
     try:
-        r = subprocess.run([sys.executable, str(script)], cwd=str(ROOT),
+        r = subprocess.run([sys.executable, str(script), *args], cwd=str(ROOT),
                            capture_output=True, text=True, timeout=timeout)
         dt = round(time.time() - t0, 1)
         out = (r.stdout or "").strip().splitlines()
@@ -130,11 +130,13 @@ def main():
         stamp(); return
     core_only = "--core" in args
     results = []
-    for label, script, is_core in STEPS:
+    for step in STEPS:
+        label, script, is_core = step[:3]
+        args = step[3] if len(step) > 3 else ()
         if core_only and not is_core:
             print(f"\n--- skip (non-core): {label}")
             continue
-        results.append(run(label, script))
+        results.append(run(label, script, args=args))
     info = stamp()
     ok = sum(1 for r in results if r.get("ok"))
     print(f"\n{'='*48}\npipeline done: {ok}/{len(results)} steps ok")

@@ -11752,12 +11752,44 @@
     return String(Math.round(v));
   }
 
+  // Past seasons live in their own files and load only when picked, so the
+  // current season is the only one on the page at first paint.
+  const _seasonLoads = {};
+  function loadAdvancedSeason(year) {
+    if ((window.ADVANCED_BY_SEASON || {})[year]) return Promise.resolve();
+    if (_seasonLoads[year]) return _seasonLoads[year];
+    _seasonLoads[year] = new Promise((resolve, reject) => {
+      const tag = document.createElement('script');
+      tag.src = `data/advanced-${year}.js`;
+      tag.onload = () => resolve();
+      tag.onerror = () => { delete _seasonLoads[year]; reject(new Error(`advanced-${year}.js failed to load`)); };
+      document.head.appendChild(tag);
+    });
+    return _seasonLoads[year];
+  }
+
   function viewStats(posArg) {
     const main = $('#main'); main.innerHTML = '';
-    const A = window.ADVANCED;
-    if (!A) { main.appendChild(h('div', { class:'empty' }, 'advanced.js not loaded. Run projections/build_nflverse_suite.py.')); return; }
+    const CUR = window.ADVANCED;
+    if (!CUR) { main.appendChild(h('div', { class:'empty' }, 'advanced.js not loaded. Run projections/build_nflverse_suite.py.')); return; }
     const POS = ['QB', 'RB', 'WR', 'TE', 'Teams'];
     const prefs = statsLabPrefs();
+    const SEASONS = [CUR.season, CUR.season - 1, CUR.season - 2];
+    const season = SEASONS.includes(prefs.season) ? prefs.season : CUR.season;
+    let A = CUR;
+    if (season !== CUR.season) {
+      A = (window.ADVANCED_BY_SEASON || {})[season];
+      if (!A) {
+        main.appendChild(h('div', { class:'empty' }, `Loading ${season}...`));
+        loadAdvancedSeason(season).then(() => viewStats(posArg)).catch(() => {
+          prefs.season = CUR.season; saveStatsLabPrefs(prefs);
+          main.innerHTML = '';
+          main.appendChild(h('div', { class:'empty' }, `Could not load ${season}. Showing ${CUR.season}.`));
+          setTimeout(() => viewStats(posArg), 1200);
+        });
+        return;
+      }
+    }
     const pos = POS.includes(posArg) ? posArg : (prefs.pos && POS.includes(prefs.pos) ? prefs.pos : 'WR');
     prefs.pos = pos;
     const isTeams = pos === 'Teams';
@@ -11773,6 +11805,10 @@
       title:'Advanced stats',
       sub:`${A.season} regular season through week ${A.throughWeek}. ${A.source}. `
         + `Columns marked (est) are estimates; hover any header for its definition.`,
+      actions:[h('label', { class:'stats-lab-toggle stats-lab-season' }, 'Season ',
+        h('select', { 'aria-label':'Season', onchange:(e) => {
+          prefs.season = Number(e.target.value); saveStatsLabPrefs(prefs); viewStats(posArg);
+        } }, ...SEASONS.map(y => h('option', { value:String(y), selected:y === season }, String(y)))))],
     }));
     main.appendChild(tabBar(POS.map(k => ({ key:k, label:k })), pos, k => `#stats/${k}`));
 

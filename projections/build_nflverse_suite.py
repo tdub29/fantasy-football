@@ -46,6 +46,7 @@ import pandas as pd
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 CACHE = ROOT / "projections" / "nflverse-cache"
 OUT = ROOT / "site" / "data" / "advanced.js"
+OUT_WRITTEN = OUT
 BASE = "https://github.com/nflverse/nflverse-data/releases/download"
 MAX_AGE_H = 6.0
 SKILL = ("QB", "RB", "WR", "TE")
@@ -77,8 +78,23 @@ def fetch(tag: str, name: str, max_age_h: float = MAX_AGE_H) -> pathlib.Path:
     return p
 
 
+FINISHED_SEASON_AGE_H = 24 * 365
+
+
 def read(tag: str, name: str) -> pd.DataFrame:
-    return pd.read_parquet(fetch(tag, name))
+    past = any(str(y) in name for y in range(1999, season_now()))
+    return pd.read_parquet(fetch(tag, name, FINISHED_SEASON_AGE_H if past else MAX_AGE_H))
+
+
+def optional(label: str, fn):
+    """A join that is nice to have. nflverse changed the depth-chart and
+    injury schemas between seasons, so a past season must not fail the whole
+    build over a status column; it gets skipped and named instead."""
+    try:
+        return fn()
+    except Exception as e:
+        print(f"  {label}: skipped ({type(e).__name__}: {e})")
+        return pd.DataFrame()
 
 
 def num(x):
@@ -201,7 +217,12 @@ def player_table(season: int) -> tuple[pd.DataFrame, dict, pd.DataFrame]:
     # Play action, motion, under center and first-read targets are what the
     # Beyond the Box Score shows lean on hardest, and FTN is the only public
     # source for them. Joined per play onto pbp, so they share its filters.
-    ftn = read("ftn_charting", f"ftn_charting_{season}.parquet")
+    ftn = optional("FTN charting", lambda: read("ftn_charting", f"ftn_charting_{season}.parquet"))
+    if ftn.empty:
+        ftn = pd.DataFrame(columns=["nflverse_game_id", "nflverse_play_id", "is_play_action", "is_motion",
+                                    "is_no_huddle", "is_screen_pass", "is_rpo", "qb_location", "read_thrown",
+                                    "is_catchable_ball", "is_contested_ball", "is_qb_out_of_pocket",
+                                    "n_defense_box"])
     ftn = ftn.rename(columns={"nflverse_game_id": "game_id", "nflverse_play_id": "play_id"})
     ftn["play_id"] = ftn["play_id"].astype(float)
     fcols = ["is_play_action", "is_motion", "is_no_huddle", "is_screen_pass", "is_rpo",
@@ -369,30 +390,38 @@ def player_table(season: int) -> tuple[pd.DataFrame, dict, pd.DataFrame]:
         bad_throws=("passing_bad_throws", "sum"), pass_drops=("passing_drops", "sum")))
 
     # ---- QBR ----
-    qbr = read("espn_data", "qbr_week_level.parquet")
-    qbr = qbr[(qbr["season"] == season) & (qbr["season_type"] == "Regular")]
-    espn_to_gsis = roster.dropna(subset=["espn_id"]).assign(espn_id=lambda d: d["espn_id"].astype(str)) \
-        .set_index("espn_id")["gsis_id"].to_dict()
-    qbr["gsis_id"] = qbr["player_id"].astype(str).map(espn_to_gsis)
-    qbr_s = qbr.dropna(subset=["gsis_id"]).groupby("gsis_id").apply(
-        lambda d: np.average(d["qbr_total"], weights=d["qb_plays"].clip(lower=1)), include_groups=False
-    ).rename("qbr")
+    def _qbr():
+        q = read("espn_data", "qbr_week_level.parquet")
+        q = q[(q["season"] == season) & (q["season_type"] == "Regular")].copy()
+        espn_to_gsis = roster.dropna(subset=["espn_id"]).assign(espn_id=lambda d: d["espn_id"].astype(str)) \
+            .set_index("espn_id")["gsis_id"].to_dict()
+        q["gsis_id"] = q["player_id"].astype(str).map(espn_to_gsis)
+        return q.dropna(subset=["gsis_id"]).groupby("gsis_id").apply(
+            lambda d: np.average(d["qbr_total"], weights=d["qb_plays"].clip(lower=1)), include_groups=False
+        ).rename("qbr").to_frame()
+    qbr_s = optional("ESPN QBR", _qbr)
 
     # ---- injuries and depth ----
-    inj = read("injuries", f"injuries_{season}.parquet")
-    inj = inj[inj["season_type"] == "REG"].sort_values("week").drop_duplicates("gsis_id", keep="last")
-    inj = inj.set_index("gsis_id")[["week", "report_status", "report_primary_injury", "practice_status"]] \
-        .rename(columns={"week": "inj_week"})
-    depth = read("depth_charts", f"depth_charts_{season}.parquet")
-    depth = depth[depth["pos_abb"].isin(SKILL)]
-    last_dt = depth.groupby("team")["dt"].transform("max")
-    depth = depth[depth["dt"] == last_dt].sort_values("pos_rank").drop_duplicates("gsis_id")
-    depth = depth.set_index("gsis_id")[["pos_rank"]].rename(columns={"pos_rank": "depth"})
+    def _inj():
+        d = read("injuries", f"injuries_{season}.parquet")
+        d = d[d["season_type"] == "REG"].sort_values("week").drop_duplicates("gsis_id", keep="last")
+        return d.set_index("gsis_id")[["week", "report_status", "report_primary_injury", "practice_status"]] \
+            .rename(columns={"week": "inj_week"})
+
+    def _depth():
+        d = read("depth_charts", f"depth_charts_{season}.parquet")
+        d = d[d["pos_abb"].isin(SKILL)]
+        last_dt = d.groupby("team")["dt"].transform("max")
+        d = d[d["dt"] == last_dt].sort_values("pos_rank").drop_duplicates("gsis_id")
+        return d.set_index("gsis_id")[["pos_rank"]].rename(columns={"pos_rank": "depth"})
+
+    inj = optional("injuries", _inj)
+    depth = optional("depth charts", _depth)
 
     # ---- assemble ----
     df = roster.set_index("gsis_id")[["sleeper_id", "full_name", "position", "team", "years_exp"]]
     for part in (sn, rec, rush, pas, ngs_rec, ngs_rush, ngs_pass, pfr_rec, pfr_rush, pfr_pass,
-                 qbr_s.to_frame(), inj, depth):
+                 qbr_s, inj, depth):
         df = df.join(part, how="left")
     df = df.copy()  # dozens of joins leave pandas fragmented
 
@@ -623,20 +652,39 @@ def self_check() -> int:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--season", type=int, default=season_now())
+    ap.add_argument("--all", action="store_true", help="current season plus the two before it")
     ap.add_argument("--self-check", action="store_true")
     a = ap.parse_args()
     if a.self_check:
         return self_check()
+    if a.all:
+        for y in (season_now() - 2, season_now() - 1, season_now()):
+            a.season = y
+            run_one(a)
+        return 0
+    return run_one(a)
+
+
+def run_one(a) -> int:
     data = build(a.season)
     body = json.dumps(data, ensure_ascii=False, separators=(",", ":"), allow_nan=False)
-    OUT.write_text("// Generated by projections/build_nflverse_suite.py from nflverse. Do not edit.\n"
-                   f"window.ADVANCED={body};\n", encoding="utf-8")
+    current = a.season == season_now()
+    out = OUT if current else OUT.with_name(f"advanced-{a.season}.js")
+    # The current season is the page's default and loads with it. A finished
+    # season is loaded only when someone picks it in Stats Lab, into a
+    # registry keyed by year, so past years add nothing to first paint.
+    target = "window.ADVANCED" if current else \
+        f"(window.ADVANCED_BY_SEASON=window.ADVANCED_BY_SEASON||{{}})[{a.season}]"
+    out.write_text("// Generated by projections/build_nflverse_suite.py from nflverse. Do not edit.\n"
+                   f"{target}={body};\n", encoding="utf-8")
+    global OUT_WRITTEN
+    OUT_WRITTEN = out
     by_pos = {}
     for r in data["players"].values():
         by_pos[r["p"]] = by_pos.get(r["p"], 0) + 1
-    print(f"wrote {OUT.name}: {len(data['players'])} players {by_pos}, {len(data['teams'])} teams, "
+    print(f"wrote {OUT_WRITTEN.name}: {len(data['players'])} players {by_pos}, {len(data['teams'])} teams, "
           f"{len(COLUMNS)} player columns, through {a.season} week {data['throughWeek']} "
-          f"({OUT.stat().st_size // 1024} KB)")
+          f"({OUT_WRITTEN.stat().st_size // 1024} KB)")
     return 0
 
 
