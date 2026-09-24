@@ -1030,6 +1030,27 @@
         "width": 390,
         "height": 844
       }
+    },
+    {
+      "id": "stats-lab",
+      "name": "Stats Lab: nflverse advanced stats, sortable by position",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "location.hash='#stats/WR'"
+        },
+        {
+          "sleepMs": 1500
+        }
+      ],
+      "selector": "table.stats-lab-table",
+      "assert": "(() => { const A = window.ADVANCED; if (!A || !A.players) return false; if (Object.keys(A.players).length < 300) return false; const heads = [...document.querySelectorAll('table.stats-lab-table thead th')]; const rows = [...document.querySelectorAll('table.stats-lab-table tbody tr')]; if (heads.length < 20 || rows.length < 40) return false; const nameCell = () => document.querySelector('table.stats-lab-table tbody tr td:nth-child(2)').textContent; const before = nameCell(); heads[5].click(); const after = nameCell(); /* sorting must reorder, not just render */ return before !== after && A.teams && Object.keys(A.teams).length === 32; })()",
+      "notes": "Every public advanced stat nflverse publishes for 2026, joined per player on the Sleeper id: play-by-play EPA and air yards, snap counts, Next Gen Stats, PFR advanced, FTN charting (play action, motion, first-read targets), ESPN QBR, injuries and depth charts. Built by projections/build_nflverse_suite.py into site/data/advanced.js; the column list and definitions ship in that payload so a new metric needs no UI change. Route%, TPRR and YPRR are estimates (public route data stops after 2025) and say so. The assert clicks a header and requires the top row to change, because a table that renders but does not sort has already shipped once on this site."
     }
   ],
   "ignore": [

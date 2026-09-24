@@ -57,6 +57,10 @@ STEPS = [
     # that silently resolves to another analyst produces a perfectly healthy
     # looking board, and nothing else in this pipeline would notice.
     ("Gibbs CBS vs his X cards",   SITE_DATA / "check_gibbs_sources.py",  True),
+    # Advanced stats for every skill player and team, all from nflverse:
+    # play-by-play, snap counts, Next Gen Stats, PFR advanced, QBR, injuries,
+    # depth charts. The one builder that owns site/data/advanced.js.
+    ("nflverse advanced stats",    PROJ / "build_nflverse_suite.py",      True),
     ("IDP defense-vs-position",    PROJ / "build_idp_dvp.py",             True),
     # The kicker board is modelled in a SEPARATE repo and written back into
     # site/data/kickers.js. It belongs in this list anyway: leaving it out is
@@ -79,7 +83,7 @@ TRACKED = [
     "ktc.js", "players.js", "leagues.js", "projections.js", "categories.js",
     "environment.js", "sos.js", "sos-grid.js", "sleeper-idp.js", "player-info.js",
     "jacob-gibbs.js", "expert-rankings.js", "fantasypros-experts.js",
-    "idp-dvp.js", "kickers.js", "gibbs-week.js", "gibbs-ros.js", "weekly-rankings.js", "sleeper-market.js", "faab.js", "trade-history.js", "context.js", "history.js",
+    "idp-dvp.js", "kickers.js", "gibbs-week.js", "gibbs-ros.js", "advanced.js", "weekly-rankings.js", "sleeper-market.js", "faab.js", "trade-history.js", "context.js", "history.js",
 ]
 
 def run(label, script, timeout=600):

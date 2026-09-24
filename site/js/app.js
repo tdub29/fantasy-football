@@ -963,6 +963,7 @@
     { hash:'#watch',        label:'What to Look For', icon:'◉',  section:'Tools' },
     { hash:'#trade',        label:'Trade Calculator', icon:'⇄',  section:'Tools' },
     { hash:'#sos',          label:'Strength of Sched', icon:'▦',  section:'Tools' },
+    { hash:'#stats',        label:'Stats Lab',        icon:'∑',  section:'Tools' },
     { hash:'#draft',        label:'Draft Room',       icon:'▣',  section:'Tools' },
     { hash:'#rankings',     label:'My Rankings',      icon:'#',  section:'Reference' },
     { hash:'#experts',      label:'Experts',          icon:'◎',  section:'Reference' },
@@ -10569,6 +10570,7 @@
             ) : null,
           ] },
           { key:'production', label:'Production', nodes: [
+            advancedBlock(sleeper),
             projectionBlock(sleeper),
             historyBlock(sleeper),
           ] },
@@ -10587,6 +10589,69 @@
     document.addEventListener('keydown', onKeydown);
     requestAnimationFrame(() => { modal.querySelector('.close-btn')?.focus(); wrapDataTables(); });
     return backdrop;
+  }
+
+  // Advanced stats + game log on the player card, from window.ADVANCED. The
+  // position rank is against the same pool Stats Lab shows (20%+ snaps, or 15+
+  // dropbacks for a QB), so a number here and a number there always agree.
+  const CARD_STAT_KEYS = {
+    QB: ['db_epa', 'cpoe', 'pass_adot', 'ypa', 'pressure_rate', 'sack_rate', 'qb_play_action_rate',
+         'scramble_rate', 'designed_runs', 'rush_share', 'avg_time_to_throw', 'qbr'],
+    RB: ['snap_pct', 'rush_share', 'target_share', 'gl_share', 'hv_touches', 'xfp_pg', 'fpoe_pg',
+         'epa_per_rush', 'rush_success', 'rush_yards_over_expected_per_att', 'yac_per_att', 'tprr_est'],
+    WR: ['snap_pct', 'route_rate_est', 'target_share', 'first_read_share', 'air_share', 'wopr', 'adot',
+         'tprr_est', 'yprr_est', 'rz_target_share', 'xfp_pg', 'fpoe_pg', 'avg_separation'],
+    TE: ['snap_pct', 'route_rate_est', 'target_share', 'first_read_share', 'tprr_est', 'yprr_est', 'adot',
+         'rz_target_share', 'ez_targets', 'xfp_pg', 'fpoe_pg', 'avg_separation'],
+  };
+  function advancedBlock(sleeper) {
+    const A = window.ADVANCED;
+    const me = sleeper && A && A.players[String(sleeper.id)];
+    if (!me) return null;
+    const pos = me.p, keys = CARD_STAT_KEYS[pos] || [];
+    const byKey = Object.fromEntries(A.columns.map(c => [c.key, c]));
+    const pool = Object.values(A.players).filter(v => v.p === pos
+      && (pos === 'QB' ? (v.dropbacks || 0) >= 15 : (v.snap_pct || 0) >= 0.2));
+    const rankOf = (c) => {
+      const v = me[c.key];
+      if (v == null || typeof v !== 'number') return null;
+      const vals = pool.map(x => x[c.key]).filter(x => typeof x === 'number');
+      const better = vals.filter(x => (c.lowerBetter ? x < v : x > v)).length;
+      return { rank: better + 1, of: vals.length };
+    };
+    const cells = keys.map(k => byKey[k]).filter(c => c && me[c.key] != null).map(c => {
+      const r = rankOf(c);
+      const tone = r && r.of >= 10 ? (r.rank <= Math.ceil(r.of * 0.2) ? 'delta-up'
+        : r.rank > Math.floor(r.of * 0.8) ? 'delta-down' : '') : '';
+      return h('div', { class:'adv-stat', title:c.desc },
+        h('div', { class:'adv-stat-label' }, c.label),
+        h('div', { class:`adv-stat-value tnum ${tone}` }, statFmt(me[c.key], c.fmt)),
+        r ? h('div', { class:'adv-stat-rank tnum' }, `${pos}${r.rank} of ${r.of}`) : null);
+    });
+    const F = A.logFields || [];
+    const idx = (k) => F.indexOf(k);
+    const logCols = pos === 'QB'
+      ? [['att', 'Att'], ['pass_yds', 'Yds'], ['pass_td', 'TD'], ['int', 'INT'], ['car', 'Car'], ['rush_yds', 'Ru yds'], ['ppr', 'PPR']]
+      : [['snap_pct', 'Snap%'], ['tgt', 'Tgt'], ['rec', 'Rec'], ['rec_yds', 'Yds'], ['rec_td', 'TD'],
+         ['car', 'Car'], ['rush_yds', 'Ru yds'], ['rush_td', 'Ru TD'], ['ppr', 'PPR']];
+    const log = (me.wk || []).length ? h('table', { class:'data adv-log' },
+      h('thead', null, h('tr', null, h('th', null, 'Wk'), h('th', null, 'Opp'),
+        ...logCols.map(([, l]) => h('th', { class:'right' }, l)))),
+      h('tbody', null, ...me.wk.map(row => h('tr', null,
+        h('td', { class:'tnum' }, String(row[idx('week')])),
+        h('td', null, row[idx('opp')] || ''),
+        ...logCols.map(([k]) => {
+          const v = row[idx(k)];
+          return h('td', { class:'right tnum' }, v == null ? '' : k === 'snap_pct' ? `${Math.round(v * 100)}%` : String(v));
+        }))))) : null;
+    return h('div', { class:'card adv-card' },
+      h('div', { class:'card-title' }, `Advanced, ${A.season} through week ${A.throughWeek}`),
+      cells.length ? h('div', { class:'adv-grid' }, ...cells) : null,
+      log ? h('div', { class:'card-title', style:{ marginTop:'10px' } }, 'Game log') : null,
+      log,
+      h('div', { class:'tip', style:{ marginTop:'6px' } },
+        `Ranks are among ${pos}s with a real share of the work. (est) columns are estimates. `,
+        h('a', { href:`#stats/${pos}` }, 'Open Stats Lab')));
   }
 
   // Season fantasy projection for the modal: pts from every source + the
@@ -11622,6 +11687,165 @@
     const f = rank / n;   // low rank = allows fewest = tough = red; high = easy = green
     return f <= 0.25 ? 'var(--red)' : f <= 0.5 ? 'var(--amber)' : f <= 0.75 ? 'var(--accent)' : 'var(--green)';
   }
+  // ============================================================
+  // Stats Lab - every public advanced stat, one sortable table
+  // ============================================================
+  // Built from window.ADVANCED (projections/build_nflverse_suite.py). The column
+  // list, labels and definitions live in that payload, not here, so adding a
+  // metric is a builder change and this view picks it up untouched.
+  const STATS_LAB_KEY = 'ff-stats-lab-v1';
+  function statsLabPrefs() {
+    try { return JSON.parse(localStorage.getItem(STATS_LAB_KEY) || '{}') || {}; } catch (_) { return {}; }
+  }
+  function saveStatsLabPrefs(prefs) {
+    try { localStorage.setItem(STATS_LAB_KEY, JSON.stringify(prefs)); } catch (_) { /* private mode */ }
+  }
+  function statFmt(v, f) {
+    if (v == null || v === '') return '';
+    if (f === 'text') return String(v);
+    if (f === 'pct') return `${(v * 100).toFixed(1)}%`;
+    if (f === 'pct100') return `${Number(v).toFixed(1)}%`;
+    if (f === 'dec2') return Number(v).toFixed(2);
+    if (f === 'dec1') return Number(v).toFixed(1);
+    return String(Math.round(v));
+  }
+
+  function viewStats(posArg) {
+    const main = $('#main'); main.innerHTML = '';
+    const A = window.ADVANCED;
+    if (!A) { main.appendChild(h('div', { class:'empty' }, 'advanced.js not loaded. Run projections/build_nflverse_suite.py.')); return; }
+    const POS = ['QB', 'RB', 'WR', 'TE', 'Teams'];
+    const prefs = statsLabPrefs();
+    const pos = POS.includes(posArg) ? posArg : (prefs.pos && POS.includes(prefs.pos) ? prefs.pos : 'WR');
+    prefs.pos = pos;
+    const isTeams = pos === 'Teams';
+    const cols = isTeams ? A.teamColumns : A.columns.filter(c => c.pos.includes(pos));
+    const groups = [...new Set(cols.map(c => c.group))];
+    const onGroups = (prefs.groups && prefs.groups[pos]) || groups;
+    const shown = cols.filter(c => onGroups.includes(c.group));
+    const estimates = new Set(A.estimates || []);
+
+    main.appendChild(breadcrumbs([{ label:'Tools' }, { label:'Stats Lab' }]));
+    main.appendChild(pageHeader({
+      eyebrow:'STATS LAB',
+      title:'Advanced stats',
+      sub:`${A.season} regular season through week ${A.throughWeek}. ${A.source}. `
+        + `Columns marked (est) are estimates; hover any header for its definition.`,
+    }));
+    main.appendChild(tabBar(POS.map(k => ({ key:k, label:k })), pos, k => `#stats/${k}`));
+
+    main.appendChild(h('div', { class:'sos-position-tabs stats-lab-groups', role:'group', 'aria-label':'Stat groups' },
+      ...groups.map(g => {
+        const on = onGroups.includes(g);
+        return h('button', { class:`ghost${on ? ' active' : ''}`, 'aria-pressed':String(on), onclick:() => {
+          const next = on ? onGroups.filter(x => x !== g) : [...onGroups, g];
+          prefs.groups = Object.assign({}, prefs.groups, { [pos]: next.length ? next : groups });
+          saveStatsLabPrefs(prefs); viewStats(pos);
+        } }, g);
+      })));
+
+    let rows;
+    if (isTeams) {
+      rows = Object.entries(A.teams).map(([t, v]) => Object.assign({ _key:t, _name:t, _team:t }, v));
+    } else {
+      const mine = new Set();
+      for (const lg of window.LEAGUES || []) {
+        const me = (lg.rosters || []).find(r => r.is_me);
+        for (const pid of (me && me.players) || []) mine.add(String(pid));
+      }
+      rows = Object.entries(A.players).filter(([, v]) => v.p === pos)
+        .map(([sid, v]) => Object.assign({ _key:sid, _name:v.n, _team:v.t, _mine:mine.has(sid) }, v));
+      const q = (prefs.q || '').trim().toLowerCase();
+      if (q) rows = rows.filter(r => r._name.toLowerCase().includes(q));
+      if (prefs.mine) rows = rows.filter(r => r._mine);
+      // A 2-snap cameo with a 100% catch rate is noise at the top of every
+      // efficiency sort, so hold players to a real share of the work.
+      const minSnap = prefs.minSnap ?? 0.2;
+      rows = rows.filter(pos === 'QB' ? (r => (r.dropbacks || 0) >= 15) : (r => (r.snap_pct || 0) >= minSnap));
+    }
+
+    const defaultSort = isTeams ? 'epa_play' : pos === 'QB' ? 'db_epa' : 'xfp_pg';
+    const sort = (prefs.sort && prefs.sort[pos]) || { key: defaultSort, dir: 'desc' };
+    rows.sort((a, b) => {
+      const av = a[sort.key], bv = b[sort.key];
+      if (av == null && bv == null) return 0;
+      if (av == null) return 1;
+      if (bv == null) return -1;
+      if (typeof av === 'string') return av.localeCompare(bv) * (sort.dir === 'asc' ? 1 : -1);
+      return sort.dir === 'asc' ? av - bv : bv - av;
+    });
+
+    // Percentile tint within the visible pool, flipped for lower-is-better.
+    const rank = {};
+    for (const c of shown) {
+      if (c.fmt === 'text') continue;
+      const vals = rows.map(r => r[c.key]).filter(v => v != null).sort((x, y) => x - y);
+      rank[c.key] = (v) => {
+        if (v == null || vals.length < 5) return null;
+        let lo = 0, hi = vals.length;
+        while (lo < hi) { const m = (lo + hi) >> 1; if (vals[m] < v) lo = m + 1; else hi = m; }
+        const pct = lo / (vals.length - 1 || 1);
+        return c.lowerBetter ? 1 - pct : pct;
+      };
+    }
+
+    if (!isTeams) {
+      const search = h('input', { type:'search', placeholder:'Search player', value:prefs.q || '',
+        'aria-label':'Search player', class:'stats-lab-search',
+        onchange:(e) => { prefs.q = e.target.value; saveStatsLabPrefs(prefs); viewStats(pos); } });
+      const mineBox = h('label', { class:'stats-lab-toggle' },
+        h('input', { type:'checkbox', checked:!!prefs.mine, onchange:(e) => {
+          prefs.mine = e.target.checked; saveStatsLabPrefs(prefs); viewStats(pos); } }),
+        ' My players');
+      const snapSel = pos === 'QB' ? null : h('label', { class:'stats-lab-toggle' }, 'Min snap% ',
+        h('select', { 'aria-label':'Minimum snap share', onchange:(e) => {
+          prefs.minSnap = Number(e.target.value); saveStatsLabPrefs(prefs); viewStats(pos); } },
+          ...[0, 0.2, 0.4, 0.6].map(v => h('option', { value:String(v), selected:(prefs.minSnap ?? 0.2) === v }, `${v * 100}%`))));
+      main.appendChild(h('div', { class:'card stats-lab-filters' }, search, mineBox, snapSel,
+        h('span', { class:'muted tnum' }, `${rows.length} players`)));
+    }
+
+    const headCell = (c) => {
+      const active = sort.key === c.key;
+      const arrow = active ? (sort.dir === 'desc' ? ' \u2193' : ' \u2191') : '';
+      return h('th', {
+        class:`right clickable${active ? ' sort-active' : ''}`,
+        title:c.desc + (estimates.has(c.key) ? ' This is an estimate, not a charted count.' : ''),
+        tabindex:'0', 'aria-sort':active ? (sort.dir === 'desc' ? 'descending' : 'ascending') : 'none',
+        onclick:() => {
+          const dir = active ? (sort.dir === 'desc' ? 'asc' : 'desc') : (c.lowerBetter ? 'asc' : 'desc');
+          prefs.sort = Object.assign({}, prefs.sort, { [pos]: { key:c.key, dir } });
+          saveStatsLabPrefs(prefs); viewStats(pos);
+        },
+      }, c.label + arrow);
+    };
+
+    const tbl = h('table', { class:'data data-sticky stats-lab-table' },
+      h('thead', null, h('tr', null,
+        h('th', { class:'right' }, '#'),
+        h('th', null, isTeams ? 'Team' : 'Player'),
+        isTeams ? null : h('th', null, 'Tm'),
+        ...shown.map(headCell))),
+      h('tbody', null, ...rows.map((r, i) => h('tr', {
+        class:r._mine ? 'you' : '',
+        onclick:isTeams ? null : () => openPlayerDetail(r._name, r._key),
+      },
+        h('td', { class:'right tnum muted' }, String(i + 1)),
+        h('td', { class:'stats-lab-name' }, isTeams ? teamChip(r._team) : r._name),
+        isTeams ? null : h('td', null, teamChip(r._team)),
+        ...shown.map(c => {
+          const v = r[c.key], pr = rank[c.key] ? rank[c.key](v) : null;
+          return h('td', { class:`right tnum${pr == null ? '' : pr >= 0.8 ? ' delta-up' : pr <= 0.2 ? ' delta-down' : ''}` },
+            statFmt(v, c.fmt));
+        })))));
+    appendTable(main, tbl);
+    main.appendChild(h('div', { class:'tip', style:{ marginTop:'10px' } },
+      'Green is the top fifth of the players shown and red the bottom fifth, flipped where lower is better. '
+      + 'Route% and TPRR/YPRR are estimates because public route data stops after 2025. '
+      + 'xFP prices each target and carry at the league average for plays like it; FPOE is what he did beyond that.'));
+    saveStatsLabPrefs(prefs);
+  }
+
   function viewSosGrid(posArg) {
     const main = $('#main'); main.innerHTML = '';
     const G = window.SOS_GRID;
@@ -13200,6 +13424,7 @@
         case 'trade':      return viewTrade(rest[0], rest[1]);
         case 'projections': navigate('#dashboard'); return viewDashboard();
         case 'sos':        return viewSosGrid(rest[0]);
+        case 'stats':      return viewStats(rest[0]);
         case 'draft':      return viewDraft(rest[0]);
         case 'strategy':   return viewStrategy();
         case 'action':     return viewActionCenter();

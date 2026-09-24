@@ -5651,3 +5651,22 @@ button:disabled { cursor: wait; opacity: 0.7; }
     background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
   }
 }
+
+/* --- Stats Lab ----------------------------------------------------------- */
+.stats-lab-groups, .stats-lab-filters { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 10px 0; }
+.stats-lab-filters { gap: 12px; font-size: 0.8rem; padding: 10px 12px; }
+.stats-lab-search { min-width: 0; width: 180px; max-width: 100%; }
+.stats-lab-toggle { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+.stats-lab-table { font-size: 12px; }
+.stats-lab-table th { white-space: nowrap; }
+.stats-lab-table tbody tr { cursor: pointer; }
+.stats-lab-name { white-space: nowrap; font-weight: 600; }
+
+/* --- Player card: advanced stats ----------------------------------------- */
+.adv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
+.adv-stat { background: var(--bg-2); border-radius: 8px; padding: 6px 8px; min-width: 0; }
+.adv-stat-label { font-size: 0.62rem; color: var(--fg-3); text-transform: uppercase; letter-spacing: .04em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.adv-stat-value { font-size: 1rem; font-weight: 700; }
+.adv-stat-rank { font-size: 0.62rem; color: var(--fg-3); }
+.adv-log { font-size: 12px; }

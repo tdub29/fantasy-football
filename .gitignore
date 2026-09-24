@@ -71,3 +71,6 @@ site/data/_pp_profile/
 # Editor and script backups. Git is the backup.
 *.bak-*
 *.before-*
+
+# nflverse raw downloads for build_nflverse_suite.py, refetched every run (6h TTL)
+projections/nflverse-cache/
