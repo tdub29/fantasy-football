@@ -70,3 +70,32 @@ Bell-cow back, split backfield, dead-zone back, sacrificial X, field stretcher,
 catch-and-run, chain mover, concentrated passing game, the "worryometer". The
 archetype labels come from Gibbs's per-player X posts and are already stored on
 the rest-of-season board (`archetype` on restated players in `gibbs-ros.js`).
+
+## How good the route estimate is
+
+Checked 2026-09-24 against the only charted 2026 routes-run numbers visible for
+free (the top five rows of statrankings.com's paywalled Routes Run table,
+through week 2):
+
+| Player | Charted routes | Our estimate | Ratio |
+|---|---:|---:|---:|
+| Devaughn Vele | 91 | 99.7 | 1.10 |
+| Chris Olave | 90 | 91.1 | 1.01 |
+| DK Metcalf | 86 | 91.8 | 1.07 |
+| Amon-Ra St. Brown | 81 | 82.8 | 1.02 |
+| Xavier Hutchinson | 80 | 77.5 | 0.97 |
+
+Mean 1.03, worst 10%. Separately, against 2025 participation data (on-field
+dropbacks, an upper bound on routes) the WR estimate correlates at 0.99, which
+is why WRs get no correction and TEs and RBs do.
+
+## Could we chart it ourselves from film?
+
+Costed 2026-09-24 (full report: `notes/cv-game-film-cost.md`).
+Footage is the blocker, not compute: NFL+ Premium ($99.99/season) is the only
+individual source of full-season All-22 and its terms ban downloading,
+recording and automated processing. Compute would be $15-120 a season on
+cloud GPUs, but the pipeline is 80-150 hours of work with no open-source
+starting point for American football. Not worth it: the per-play route data
+comes back free in nflverse after each season (FTN still charts it), and FTN
+Data ($69.99/yr) or PFF+ ($119.99/yr) sell it in season.

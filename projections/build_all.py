@@ -63,6 +63,9 @@ STEPS = [
     ("nflverse advanced stats",    PROJ / "build_nflverse_suite.py",      True, ["--all"]),
     ("draft + combine profile",    PROJ / "build_prospect_profile.py",    True),
     ("game-day weather",           PROJ / "build_game_weather.py",        True),
+    ("defense vs position",        PROJ / "build_defense_matchups.py",    True),
+    ("weekly usage splits",        PROJ / "build_weekly_splits.py",       True),
+    ("IDP advanced",               PROJ / "build_idp_advanced.py",        True),
     ("IDP defense-vs-position",    PROJ / "build_idp_dvp.py",             True),
     # The kicker board is modelled in a SEPARATE repo and written back into
     # site/data/kickers.js. It belongs in this list anyway: leaving it out is
@@ -85,7 +88,7 @@ TRACKED = [
     "ktc.js", "players.js", "leagues.js", "projections.js", "categories.js",
     "environment.js", "sos.js", "sos-grid.js", "sleeper-idp.js", "player-info.js",
     "jacob-gibbs.js", "expert-rankings.js", "fantasypros-experts.js",
-    "idp-dvp.js", "kickers.js", "gibbs-week.js", "gibbs-ros.js", "advanced.js", "prospect.js", "weather.js", "weekly-rankings.js", "sleeper-market.js", "faab.js", "trade-history.js", "context.js", "history.js",
+    "idp-dvp.js", "kickers.js", "gibbs-week.js", "gibbs-ros.js", "advanced.js", "prospect.js", "weather.js", "defense.js", "usage-weekly.js", "idp-advanced.js", "weekly-rankings.js", "sleeper-market.js", "faab.js", "trade-history.js", "context.js", "history.js",
 ]
 
 def run(label, script, timeout=600, args=()):

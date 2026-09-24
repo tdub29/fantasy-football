@@ -3200,9 +3200,15 @@
         const title = rank != null
           ? `Week ${currentWeek} ${game.home ? 'vs ' : '@ '}${game.opp}: D vs ${pos} #${rank}/${n} (${game.fpa ?? '?'} PPR/g allowed)`
           : `Week ${currentWeek} ${game.home ? 'vs ' : '@ '}${game.opp}; no defense-vs-position rank for ${pos || 'this position'}`;
-        return h('td', { class:'center weekly-opp', title, style:{ color:defRankColor(rank, n) } },
+        // Weather only for the week the forecast is for, and only when it
+        // matters: a flag, never a temperature on every row.
+        const wx = window.WEATHER && window.WEATHER.week === currentWeek ? gameWeatherFor(team) : null;
+        const wxFlag = wx && wx.flag;
+        const wxTitle = wxFlag ? ` Weather: ${Math.round(wx.temp_f)}°F, wind ${Math.round(wx.wind_mph)} mph (gusts ${Math.round(wx.gust_mph)}), ${Math.round(wx.precip_prob || 0)}% precip.` : '';
+        return h('td', { class:'center weekly-opp', title: title + wxTitle, style:{ color:defRankColor(rank, n) } },
           h('div', { class:'weekly-opp-team' }, game.opp),
-          h('div', { class:'weekly-opp-rank' }, rank != null ? `#${rank}` : '·'));
+          h('div', { class:'weekly-opp-rank' }, rank != null ? `#${rank}` : '·'),
+          wxFlag ? h('div', { class:'weekly-opp-wx' }, wxFlag.toUpperCase()) : null);
       };
 
       const kickerOnly = filter.view === 'weekly' && filter.pos === 'K' && leagueHasKicker;
@@ -10598,10 +10604,12 @@
           ] },
           { key:'production', label:'Production', nodes: [
             advancedBlock(sleeper),
+            usageWeeksBlock(sleeper),
             projectionBlock(sleeper),
             historyBlock(sleeper),
           ] },
           { key:'context', label:'Context', nodes: [
+            matchupLine(sleeper),
             weatherLine(sleeper),
             envInfoLine(sleeper),
             scheduleStrip(sleeper),
@@ -10758,11 +10766,17 @@
         : h('div', { class:'tip' }, 'No combine results on file.'));
   }
 
+  // weather.js keys teams by nflverse code, which writes the Rams as LA.
+  function gameWeatherFor(team) {
+    const W = window.WEATHER;
+    const code = team === 'LAR' ? 'LA' : team;
+    const gid = W && code && W.byTeam && W.byTeam[code];
+    return (gid && W.games.find(x => x.game_id === gid)) || null;
+  }
   function weatherLine(sleeper) {
     const W = window.WEATHER;
     const team = sleeper && (sleeper.team === 'LAR' ? 'LA' : sleeper.team);
-    const gid = W && team && W.byTeam && W.byTeam[team];
-    const g = gid && W.games.find(x => x.game_id === gid);
+    const g = sleeper ? gameWeatherFor(sleeper.team) : null;
     if (!g) return null;
     const opp = g.home === team ? `vs ${g.away}` : `@ ${g.home}`;
     const when = g.kickoff ? new Date(g.kickoff).toLocaleString([], { weekday:'short', hour:'numeric', minute:'2-digit' }) : '';
@@ -11832,11 +11846,210 @@
     return _seasonLoads[year];
   }
 
+  // Shared sortable table for the Defense and Trends tabs: columns are
+  // {key, label, get(row), fmt, desc, lowerBetter, tone(row)}.
+  function statsTable(main, prefs, tabKey, rows, cols, defaultSort, rowName, onRow) {
+    const sort = (prefs.sort && prefs.sort[tabKey]) || defaultSort;
+    const col = cols.find(c => c.key === sort.key) || cols[0];
+    rows.sort((a, b) => {
+      const av = col.get(a), bv = col.get(b);
+      if (av == null && bv == null) return 0;
+      if (av == null) return 1;
+      if (bv == null) return -1;
+      if (typeof av === 'string') return av.localeCompare(bv) * (sort.dir === 'asc' ? 1 : -1);
+      return sort.dir === 'asc' ? av - bv : bv - av;
+    });
+    const head = (c) => {
+      const active = sort.key === c.key;
+      return h('th', { class:`right clickable${active ? ' sort-active' : ''}`, title:c.desc || '', tabindex:'0',
+        'aria-sort':active ? (sort.dir === 'desc' ? 'descending' : 'ascending') : 'none',
+        onclick:() => {
+          const dir = active ? (sort.dir === 'desc' ? 'asc' : 'desc') : (c.lowerBetter ? 'asc' : 'desc');
+          prefs.sort = Object.assign({}, prefs.sort, { [tabKey]: { key:c.key, dir } });
+          saveStatsLabPrefs(prefs); viewStats(tabKey);
+        } }, c.label + (active ? (sort.dir === 'desc' ? ' \u2193' : ' \u2191') : ''));
+    };
+    const tbl = h('table', { class:'data data-sticky stats-lab-table' },
+      h('thead', null, h('tr', null, h('th', { class:'right' }, '#'), h('th', null, rowName), ...cols.map(head))),
+      h('tbody', null, ...rows.map((r, i) => h('tr', { class:r._mine ? 'you' : '', onclick:onRow ? () => onRow(r) : null },
+        h('td', { class:'right tnum muted' }, String(i + 1)),
+        h('td', { class:'stats-lab-name' }, r._label),
+        ...cols.map(c => h('td', { class:`right tnum ${c.tone ? c.tone(r) || '' : ''}` },
+          c.show ? c.show(r) : statFmt(c.get(r), c.fmt)))))));
+    appendTable(main, tbl);
+  }
+
+  function statsDefense(main, prefs) {
+    const D = window.DEFENSE;
+    if (!D) { main.appendChild(h('div', { class:'empty' }, 'defense.js not loaded. Run projections/build_defense_matchups.py.')); return; }
+    const slice = prefs.defSlice === 'prior' ? 'prior' : 'cur';
+    main.appendChild(h('div', { class:'card stats-lab-filters' },
+      h('label', { class:'stats-lab-toggle' }, 'Sample ',
+        h('select', { 'aria-label':'Defense sample', onchange:(e) => { prefs.defSlice = e.target.value; saveStatsLabPrefs(prefs); viewStats('Defense'); } },
+          h('option', { value:'cur', selected:slice === 'cur' }, `${D.season} through week ${D.throughWeek}`),
+          h('option', { value:'prior', selected:slice === 'prior' }, `${D.prior} full season`))),
+      h('span', { class:'muted' }, 'Rank 1 = softest (most PPR allowed). Green is a good matchup for your player.')));
+    const rows = Object.entries(D.teams).map(([t, v]) => Object.assign({ _label: teamChip(t), _team: t }, v[slice] || {}));
+    // A soft defense is green because it is good news for the player facing it.
+    const rankTone = (r) => r == null ? '' : r <= 8 ? 'delta-up' : r >= 25 ? 'delta-down' : '';
+    const pos = (P, k) => (r) => r.byPos && r.byPos[P] ? r.byPos[P][k] : null;
+    const cols = [];
+    for (const P of ['WR', 'TE', 'RB']) {
+      cols.push({ key:`${P}ppr`, label:`vs ${P} PPR/G`, get:pos(P, 'ppr_pg'), fmt:'dec1',
+        desc:`PPR points per game allowed to ${P}s ${P === 'RB' ? 'as receivers ' : ''}(${D.fields && D.fields.ppr_pg ? D.fields.ppr_pg : ''})`.trim(),
+        show:(r) => { const v = pos(P, 'ppr_pg')(r), k = pos(P, 'rank')(r); return v == null ? '' : `${Number(v).toFixed(1)} #${k}`; },
+        tone:(r) => rankTone(pos(P, 'rank')(r)) });
+    }
+    cols.push(
+      { key:'rbrush', label:'RB rush PPR/G', get:(r) => r.rushRB && r.rushRB.ppr_pg, fmt:'dec1', desc:'Rushing PPR allowed to running backs per game.' },
+      { key:'ypc', label:'YPC', get:(r) => r.rushRB && r.rushRB.ypc, fmt:'dec1', desc:'Yards per carry allowed to running backs.' },
+      { key:'epadb', label:'EPA/DB', get:(r) => r.pass && r.pass.epa_per_dropback, fmt:'dec2', desc:'EPA allowed per dropback. Higher is a softer pass defense.' },
+      { key:'press', label:'Pressure%', get:(r) => r.pass && r.pass.pressure_rate, fmt:'pct', lowerBetter:true, desc:'PFR hurries + QB hits + sacks per dropback. High pressure is a bad matchup for a QB.' },
+      { key:'blitz', label:'Blitz%', get:(r) => r.pass && r.pass.blitz_rate, fmt:'pct', desc:'PFR blitzes per dropback.' },
+      { key:'funnel', label:'Funnel', get:(r) => r.funnel || '', fmt:'text', desc:'Which position takes the largest share of targets against this defense, relative to league average.' });
+    statsTable(main, prefs, 'Defense', rows, cols, { key:'WRppr', dir:'desc' }, 'Defense');
+    main.appendChild(h('div', { class:'tip', style:{ marginTop:'10px' } },
+      `Early-season samples are two or three games; the ${D.prior} view is the prior to lean on until they grow. ${D.source}.`));
+  }
+
+  function statsTrends(main, prefs) {
+    const U = window.USAGE_WEEKLY;
+    if (!U) { main.appendChild(h('div', { class:'empty' }, 'usage-weekly.js not loaded. Run projections/build_weekly_splits.py.')); return; }
+    const F = U.fields, ix = (k) => F.indexOf(k);
+    const mine = new Set();
+    for (const lg of window.LEAGUES || []) {
+      const me = (lg.rosters || []).find(r => r.is_me);
+      for (const pid of (me && me.players) || []) mine.add(String(pid));
+    }
+    const posSel = ['All', 'QB', 'RB', 'WR', 'TE'].includes(prefs.trendPos) ? prefs.trendPos : 'All';
+    main.appendChild(h('div', { class:'card stats-lab-filters' },
+      h('label', { class:'stats-lab-toggle' }, 'Position ',
+        h('select', { 'aria-label':'Position', onchange:(e) => { prefs.trendPos = e.target.value; saveStatsLabPrefs(prefs); viewStats('Trends'); } },
+          ...['All', 'QB', 'RB', 'WR', 'TE'].map(v => h('option', { value:v, selected:v === posSel }, v)))),
+      h('label', { class:'stats-lab-toggle' },
+        h('input', { type:'checkbox', checked:!!prefs.trendMine, onchange:(e) => { prefs.trendMine = e.target.checked; saveStatsLabPrefs(prefs); viewStats('Trends'); } }),
+        ' My players'),
+      h('label', { class:'stats-lab-toggle' },
+        h('input', { type:'checkbox', checked:prefs.trendFlagged !== false, onchange:(e) => { prefs.trendFlagged = e.target.checked; saveStatsLabPrefs(prefs); viewStats('Trends'); } }),
+        ' Role changes only')));
+    let rows = Object.entries(U.players)
+      .filter(([sid, v]) => (v.w || []).length >= 2)
+      .filter(([, v]) => posSel === 'All' || v.p === posSel)
+      .filter(([sid]) => !prefs.trendMine || mine.has(sid))
+      .filter(([, v]) => prefs.trendFlagged === false || (v.flags || []).length)
+      .map(([sid, v]) => {
+        const last = v.w[v.w.length - 1], prev = v.w[v.w.length - 2];
+        return { _sid:sid, _mine:mine.has(sid), _name:v.n, _label:`${v.n} ${v.p} ${v.t}`, last, prev, flags:v.flags || [], p:v.p };
+      });
+    const delta = (k) => (r) => (r.last[ix(k)] ?? 0) - (r.prev[ix(k)] ?? 0);
+    const shift = (k) => (r) => {
+      const a = r.prev[ix(k)], b = r.last[ix(k)];
+      if (a == null && b == null) return '';
+      const d = (b ?? 0) - (a ?? 0);
+      return `${statFmt(a ?? 0, 'pct')} \u2192 ${statFmt(b ?? 0, 'pct')} (${d >= 0 ? '+' : ''}${(d * 100).toFixed(0)})`;
+    };
+    const tone = (k, big) => (r) => { const d = delta(k)(r); return d >= big ? 'delta-up' : d <= -big ? 'delta-down' : ''; };
+    const cols = [
+      { key:'snap', label:'Snap%', get:delta('snap_pct'), show:shift('snap_pct'), tone:tone('snap_pct', 0.15), desc:U.fieldDesc.snap_pct },
+      { key:'route', label:'Route% (est)', get:delta('route_rate_est'), show:shift('route_rate_est'), tone:tone('route_rate_est', 0.15), desc:U.fieldDesc.route_rate_est },
+      { key:'tgt', label:'Tgt%', get:delta('target_share'), show:shift('target_share'), tone:tone('target_share', 0.08), desc:U.fieldDesc.target_share },
+      { key:'fr', label:'1st-read%', get:(r) => r.last[ix('first_read_share')], fmt:'pct', desc:U.fieldDesc.first_read_share },
+      { key:'rush', label:'Rush%', get:delta('rush_share'), show:shift('rush_share'), tone:tone('rush_share', 0.15), desc:U.fieldDesc.rush_share },
+      { key:'rz', label:'RZ opp%', get:(r) => r.last[ix('rz_opp_share')], fmt:'pct', desc:U.fieldDesc.rz_opp_share },
+      { key:'ppr', label:'PPR', get:(r) => r.last[ix('ppr_pts')], fmt:'dec1', desc:U.fieldDesc.ppr_pts },
+      { key:'flag', label:'Role', get:(r) => r.flags.join(' '), fmt:'text', show:(r) => r.flags.map(f => f === 'role_up' ? 'UP' : f === 'role_down' ? 'DOWN' : f).join(' '),
+        tone:(r) => r.flags.includes('role_up') ? 'delta-up' : r.flags.includes('role_down') ? 'delta-down' : '', desc:'Snap share moved 15+ points or target share 8+ points week over week.' },
+    ];
+    // Default: biggest target-share move either way, which is the signal the
+    // Beyond the Box Score hosts lead with every week.
+    cols[2].get = (r) => Math.abs(delta('target_share')(r));
+    statsTable(main, prefs, 'Trends', rows, cols, { key:'tgt', dir:'desc' }, `Player, week ${U.throughWeek - 1} \u2192 ${U.throughWeek}`,
+      (r) => openPlayerDetail(r._name, r._sid));
+    main.appendChild(h('div', { class:'tip', style:{ marginTop:'10px' } },
+      `${rows.length} players. Each cell is last week versus the week before; the Tgt% column sorts by the size of the move either way. `
+      + 'Route% is estimated from snaps (public route data ends in 2025) and calibrated on 2025.'));
+  }
+
+  function statsIdp(main, prefs) {
+    const I = window.IDP_ADVANCED;
+    if (!I) { main.appendChild(h('div', { class:'empty' }, 'idp-advanced.js not loaded. Run projections/build_idp_advanced.py.')); return; }
+    const grp = ['DL', 'LB', 'DB'].includes(prefs.idpPos) ? prefs.idpPos : 'LB';
+    const minSnap = prefs.idpMinSnap ?? 0.3;
+    const mine = new Set();
+    for (const lg of window.LEAGUES || []) {
+      const me = (lg.rosters || []).find(r => r.is_me);
+      for (const pid of (me && me.players) || []) mine.add(String(pid));
+    }
+    main.appendChild(h('div', { class:'card stats-lab-filters' },
+      h('span', { class:'sos-position-tabs', role:'group', 'aria-label':'IDP position' },
+        ...['DL', 'LB', 'DB'].map(g => h('button', { class:`ghost${g === grp ? ' active' : ''}`, 'aria-pressed':String(g === grp),
+          onclick:() => { prefs.idpPos = g; saveStatsLabPrefs(prefs); viewStats('IDP'); } }, g))),
+      h('label', { class:'stats-lab-toggle' }, 'Min snap% ',
+        h('select', { 'aria-label':'Minimum snap share', onchange:(e) => { prefs.idpMinSnap = Number(e.target.value); saveStatsLabPrefs(prefs); viewStats('IDP'); } },
+          ...[0, 0.3, 0.5, 0.7].map(v => h('option', { value:String(v), selected:minSnap === v }, `${v * 100}%`)))),
+      h('span', { class:'muted' }, `Scored with ${I.league && I.league.name ? I.league.name : 'your IDP league'}'s own settings.`)));
+    const rows = Object.entries(I.players).filter(([, v]) => v.p === grp && (v.snp_pct || 0) >= minSnap)
+      .map(([sid, v]) => Object.assign({ _sid:sid, _mine:mine.has(sid), _label:`${v.n} ${v.t || ''}`, _name:v.n }, v));
+    const cols = I.columns.filter(c => c.key !== 'rank').map(c => ({ key:c.key, label:c.label, fmt:c.fmt, desc:c.desc,
+      get:(r) => r[c.key], lowerBetter:/allow|mtkl/.test(c.key) }));
+    statsTable(main, prefs, 'IDP', rows, cols, { key:'ppg', dir:'desc' }, `${grp}, ${I.season} through week ${I.throughWeek}`,
+      (r) => openPlayerDetail(r._name, r._sid));
+    main.appendChild(h('div', { class:'tip', style:{ marginTop:'10px' } }, `${rows.length} players. ${I.source}.`));
+  }
+
+  // This week's opponent, as a defense-vs-position line for the player card.
+  function matchupLine(sleeper) {
+    const D = window.DEFENSE;
+    if (!D || !sleeper || !['WR', 'TE', 'RB', 'QB'].includes(sleeper.pos)) return null;
+    const g = gameWeatherFor(sleeper.team);
+    if (!g) return null;
+    const mine = sleeper.team === 'LAR' ? 'LA' : sleeper.team;
+    let opp = g.home === mine ? g.away : g.home;
+    if (opp === 'LA') opp = 'LAR';
+    const t = D.teams[opp];
+    if (!t) return null;
+    const bits = [];
+    for (const slice of ['cur', 'prior']) {
+      const v = t[slice];
+      if (!v) continue;
+      const tag = slice === 'cur' ? `${D.season} wk 1-${D.throughWeek}` : `${D.prior}`;
+      if (sleeper.pos === 'QB') bits.push(`${tag}: ${statFmt(v.pass.epa_per_dropback, 'dec2')} EPA/dropback allowed, ${statFmt(v.pass.pressure_rate, 'pct')} pressure`);
+      else {
+        const b = v.byPos && v.byPos[sleeper.pos];
+        if (b) bits.push(`${tag}: ${Number(b.ppr_pg).toFixed(1)} PPR/G to ${sleeper.pos}s (#${b.rank} of 32 softest)`
+          + (sleeper.pos === 'RB' && v.rushRB ? `, ${Number(v.rushRB.ppr_pg).toFixed(1)} rushing` : ''));
+      }
+    }
+    if (!bits.length) return null;
+    return h('div', { class:'card weather-line' },
+      h('div', { class:'card-title' }, `Matchup: ${opp} defense`),
+      h('div', null, bits.join('. ') + '.'),
+      t.cur && t.cur.funnel ? h('div', { class:'tip' }, `${D.season}: ${t.cur.funnel}.`) : null);
+  }
+
+  // Usage by week on the player card, from window.USAGE_WEEKLY.
+  function usageWeeksBlock(sleeper) {
+    const U = window.USAGE_WEEKLY;
+    const me = sleeper && U && U.players[String(sleeper.id)];
+    if (!me || !(me.w || []).length) return null;
+    const F = U.fields, ix = (k) => F.indexOf(k);
+    const cols = [['snap_pct', 'Snap%'], ['route_rate_est', 'Route% (est)'], ['target_share', 'Tgt%'],
+                  ['first_read_share', '1st-read%'], ['rush_share', 'Rush%'], ['rz_opp_share', 'RZ opp%']];
+    return h('div', { class:'card adv-card' },
+      h('div', { class:'card-title' }, 'Usage by week'),
+      h('table', { class:'data adv-log' },
+        h('thead', null, h('tr', null, h('th', null, 'Wk'), ...cols.map(([k, l]) => h('th', { class:'right', title:U.fieldDesc[k] || '' }, l)))),
+        h('tbody', null, ...me.w.map(row => h('tr', null, h('td', { class:'tnum' }, String(row[ix('week')])),
+          ...cols.map(([k]) => h('td', { class:'right tnum' }, row[ix(k)] == null ? '' : statFmt(row[ix(k)], 'pct'))))))),
+      (me.flags || []).length ? h('div', { class:`tip ${me.flags.includes('role_up') ? 'delta-up' : 'delta-down'}` },
+        me.flags.includes('role_up') ? 'Role growing week over week.' : 'Role shrinking week over week.') : null);
+  }
+
   function viewStats(posArg) {
     const main = $('#main'); main.innerHTML = '';
     const CUR = window.ADVANCED;
     if (!CUR) { main.appendChild(h('div', { class:'empty' }, 'advanced.js not loaded. Run projections/build_nflverse_suite.py.')); return; }
-    const POS = ['QB', 'RB', 'WR', 'TE', 'Teams'];
+    const POS = ['QB', 'RB', 'WR', 'TE', 'Teams', 'Defense', 'Trends', 'IDP'];
     const prefs = statsLabPrefs();
     const SEASONS = [CUR.season, CUR.season - 1, CUR.season - 2];
     const season = SEASONS.includes(prefs.season) ? prefs.season : CUR.season;
@@ -11875,6 +12088,9 @@
         } }, ...SEASONS.map(y => h('option', { value:String(y), selected:y === season }, String(y)))))],
     }));
     main.appendChild(tabBar(POS.map(k => ({ key:k, label:k })), pos, k => `#stats/${k}`));
+    if (pos === 'Defense') { statsDefense(main, prefs); saveStatsLabPrefs(prefs); return; }
+    if (pos === 'Trends') { statsTrends(main, prefs); saveStatsLabPrefs(prefs); return; }
+    if (pos === 'IDP') { statsIdp(main, prefs); saveStatsLabPrefs(prefs); return; }
 
     main.appendChild(h('div', { class:'sos-position-tabs stats-lab-groups', role:'group', 'aria-label':'Stat groups' },
       ...groups.map(g => {
