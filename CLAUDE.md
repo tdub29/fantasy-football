@@ -128,6 +128,10 @@ build step.
   than buying the same player from a bottom feeder, and a one-sided model misses it.
 - **The site is `site/`**, served as static files (`python -m http.server`).
   No npm, no build step. Don't introduce one.
+- **Every ranking column is PPR; `*` marks one converted from half-PPR data.** No
+  "(PPR)" or "(half)" tags in headers. A half-PPR source is converted before it shows
+  (positional: `"scoring": "half"` in `_expert_sources.json`), with the unconverted rank in
+  the tooltip. An expert's own PPR board shows with no mark (Trevor, 2026-09-24).
 
 ## Dynasty strategy skills
 
