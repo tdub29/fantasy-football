@@ -500,6 +500,32 @@ table.data .expert-rank-col { width: 76px; white-space: nowrap; }
     overscroll-behavior: contain;
   }
 }
+/* Stats Lab boards run 23 to 58 columns (1900-4000px), so the desktop "inert
+   wrapper" above left every column past ~20 unreachable under body's
+   overflow:clip. They scroll in their own box at every width, with the same
+   max-height scrollport the phone rule uses so the sticky thead still pins. */
+.tbl-scroll:has(> table.stats-lab-table) {
+  overflow: auto;
+  max-height: calc(100dvh - 84px);
+}
+
+/* A table cut off at the right edge gives no hint that more columns exist.
+   Fade the right edge while more than 4px is left to scroll. The scroll
+   timeline is inactive unless the box really scrolls sideways, and the range
+   ends 4px early, so a table that fits (or overflows by a rounding pixel) is
+   never masked, and a browser without scroll timelines gets no fade at all.
+   Cards are left out: a mask clips the plate's box-shadow. padding-box origin
+   keeps the scrollbar unfaded. */
+@keyframes tbl-more-right {
+  from, to { mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent); }
+}
+.tbl-scroll,
+:not(.card):has(> .tbl-scroll > table.data) {
+  mask-origin: padding-box;
+  animation: tbl-more-right linear;
+  animation-timeline: scroll(self inline);
+  animation-range: 0 calc(100% - 4px);
+}
 
 /* Tier blocks (rankings page) */
 .tier-block { margin-bottom: 24px; }
@@ -5665,6 +5691,15 @@ button:disabled { cursor: wait; opacity: 0.7; }
 .stats-lab-table th { white-space: nowrap; }
 .stats-lab-table tbody tr { cursor: pointer; }
 .stats-lab-name { white-space: nowrap; font-weight: 600; }
+/* Pin # and Player so a row stays readable 30 columns to the right. # gets a
+   fixed width because the Player column's `left` has to equal it. Pinned body
+   cells inherit the row fill (zebra, hover, gold "you") so nothing shows
+   through; odd rows get an explicit --bg-1, the table's own face, to inherit. */
+.stats-lab-table :is(th, td):nth-child(-n+2) { position: sticky; z-index: 1; }
+.stats-lab-table :is(th, td):first-child { left: 0; width: 48px; min-width: 48px; max-width: 48px; }
+.stats-lab-table :is(th, td):nth-child(2) { left: 48px; box-shadow: 2px 0 0 var(--chalk); }
+.stats-lab-table tbody tr { background-color: var(--bg-1); }
+.stats-lab-table tbody td:nth-child(-n+2) { background: inherit; }
 
 /* --- Player card: advanced stats ----------------------------------------- */
 .adv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }

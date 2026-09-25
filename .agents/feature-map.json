@@ -1053,6 +1053,31 @@
       "notes": "Every public advanced stat nflverse publishes for 2026, joined per player on the Sleeper id: play-by-play EPA and air yards, snap counts, Next Gen Stats, PFR advanced, FTN charting (play action, motion, first-read targets), ESPN QBR, injuries and depth charts. Built by projections/build_nflverse_suite.py into site/data/advanced.js; the column list and definitions ship in that payload so a new metric needs no UI change. Route%, TPRR and YPRR are estimates (public route data stops after 2025) and say so. The assert clicks a header and requires the top row to change, because a table that renders but does not sort has already shipped once on this site."
     },
     {
+      "id": "stats-lab-wide-scroll",
+      "name": "Stats Lab: wide boards scroll sideways at desktop width, # and Player pinned",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "location.hash='#stats/QB'"
+        },
+        {
+          "sleepMs": 1500
+        }
+      ],
+      "selector": "table.stats-lab-table",
+      "assert": "(() => ['QB', 'WR', 'Teams', 'IDP'].every(tab => { location.hash = '#stats/' + tab; window.dispatchEvent(new HashChangeEvent('hashchange')); const t = document.querySelector('table.stats-lab-table'); if (!t) return false; const w = t.parentElement, heads = t.querySelectorAll('thead th'), last = heads[heads.length - 1]; if (!w.classList.contains('tbl-scroll') || getComputedStyle(w).overflowX !== 'auto' || w.scrollWidth <= w.clientWidth) return false; w.scrollLeft = w.scrollWidth; const wr = w.getBoundingClientRect(), lr = last.getBoundingClientRect(), nr = heads[1].getBoundingClientRect(); /* last header reachable, Player column still pinned beside # */ return lr.right <= wr.right + 1 && lr.left >= wr.left && Math.abs(nr.left - wr.left - 48) <= 1; }))()",
+      "notes": "At 1700px #stats/WR is 40 columns and 2823px wide inside a 1336px main column (QB 35 cols 2517px, IDP 27 cols 2099px, Teams 23 cols 1906px). The desktop .tbl-scroll wrapper used to be overflow:visible under body overflow:clip, so every column past about CATCHABLE% could neither be seen nor scrolled to. The Stats Lab wrapper now scrolls at every width with a max-height scrollport so the sticky thead still pins, and # plus Player are sticky-left. The assert renders each tab synchronously (manual hashchange), scrolls the wrapper to its end, and requires the last header cell inside the wrapper and the Player header still 48px from its left edge. Reverting the CSS makes overflowX visible and fails it.",
+      "viewport": {
+        "width": 1700,
+        "height": 1000
+      }
+    },
+    {
       "id": "prospect-weather-data",
       "name": "Draft profile and game-day weather payloads are loaded and shaped",
       "path": [
