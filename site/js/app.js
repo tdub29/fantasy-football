@@ -6975,6 +6975,16 @@
     // starts only the active list.
     return { pts, ids: (r) => startableIds(r, { includeStashed: !dyn }) };
   }
+  // A rebuilder's core: his most valuable player plus his SIM.finderCoreYoung best
+  // by value SIM.finderFvYears out, aged on the site's curve (ageRetention).
+  function finderCore(assets) {
+    const players = assets.filter(a => a.pos !== 'PICK');
+    const aged = (a) => a.v * ageRetention(window.PLAYERS[a.k]?.age, a.pos, SIM.finderFvYears);
+    const core = new Set(players.slice().sort((a, b) => aged(b) - aged(a)).slice(0, SIM.finderCoreYoung).map(a => a.k));
+    const best = players.reduce((b, a) => (!b || a.v > b.v ? a : b), null);
+    if (best) core.add(best.k);
+    return core;
+  }
   // One partner: prune on value, the headliner rule and lineup holes, then score
   // my starting lineup exactly and the partner's objective on the best of those.
   // A rebuilder is scored on FV instead of his lineup, off the site's own phase
@@ -7003,12 +7013,25 @@
     const gets = tag(finderPackages(theirs), a => !isPick(a) && meIn.get(a.k) > 0, false);
     const sends = tag(finderPackages(mine), a => (rebuilder || !isPick(a)) && themIn.get(a.k) > 0, rebuilder);
     const floor = SIM.finderFairPct / 100 / 1.15;   // the most a headliner premium can lift
+    const core = rebuilder ? finderCore(theirs) : null;
+    const age = (a) => window.PLAYERS[a.k]?.age || 99;
+    // A core piece leaves a rebuilder only for ONE piece younger than every core
+    // piece he sends, or a pick. Never for older or multiple pieces.
+    const keepsCore = (s, g) => {
+      const out = g.items.filter(a => core.has(a.k));
+      if (!out.length) return true;
+      if (s.items.length !== 1) return false;
+      return isPick(s.items[0]) || age(s.items[0]) < Math.min(...out.map(age));
+    };
     let pool = [], checked = 0;
     for (const g of gets) for (const s of sends) {
       if (s.keys.length === 2 && g.keys.length === 2 && !(s.all && g.all)) continue;
       checked++;
-      // Headliner rule: a pile of lesser pieces never buys the stud.
+      // Headliner rule: a pile of lesser pieces never buys the stud, and the
+      // partner holds his side to a stricter bar.
       if (Math.min(s.head, g.head) < SIM.finderAnchorRatio * Math.max(s.head, g.head)) continue;
+      if (g.head > s.head && s.head < SIM.finderPartnerAnchorRatio * g.head) continue;
+      if (core && !keepsCore(s, g)) continue;
       if (Math.min(s.v, g.v) < floor * Math.max(s.v, g.v)) continue;
       if (KT.computeFairness(s.v, g.v, s.keys.length, g.keys.length, s.head, g.head).pct < SIM.finderFairPct) continue;
       const d = meD(s.keys, g.keys);
@@ -7027,8 +7050,8 @@
     for (const { s, g, meD: d } of pool) {
       const tD = themD(g.keys, s.keys);
       const tFv = rebuilder ? fv(g.keys, s.keys) : null;
-      // A contender's lineup may dip a little: depth is what the simulator adds.
-      if (rebuilder ? tFv < SIM.finderMinFvGain : tD <= -SIM.finderMinGainPts) continue;
+      // A contender never takes a deal that lowers his own starting lineup.
+      if (rebuilder ? tFv < SIM.finderMinFvGain : tD < -1e-6) continue;
       const fills = s.items.reduce((b, a) => (themIn.get(a.k) > (b ? themIn.get(b.k) : 0) ? a : b), null);
       const c = { them, rebuilder, stance: rebuilder ? rosterStance(them, lg) : null, send: s, get: g, meD: d, themD: tD, themFv: tFv, fvNow,
         fills: fills?.pos, gain: rebuilder ? tFv : tD };
@@ -7061,9 +7084,9 @@
     await pause();
     // Same seed before and after (common random numbers), so a change is the
     // trade, not the dice. This season only: FV prices the years after it.
-    const base = championshipOdds(lg, { sims });
+    const baseChamps = [];
+    const base = championshipOdds(lg, { sims, champions: baseChamps });
     const oddsOf = (res, rid) => res.find(o => o.rosterId === rid)?.title || 0;
-    const band = (p0, p1) => SIM.titleBandZ * Math.sqrt((p0 * (1 - p0) + p1 * (1 - p1)) / sims) * 100;
     const myFvNow = dyn ? projectedTradeStrength(lg, me.roster_id, none, none, Y) : 0;
     const proposals = [];
     for (const [i, c] of pool.entries()) {
@@ -7073,10 +7096,15 @@
       const whatIf = tradeTitleWhatIf(me.roster_id, c.them.roster_id, send, get);
       whatIf[me.roster_id].add.push(...finderWaiverAdds(lg, me, send, get));
       whatIf[c.them.roster_id].add.push(...finderWaiverAdds(lg, c.them, get, send));
-      const after = championshipOdds(lg, { sims, whatIf });
+      const champs = [];
+      const after = championshipOdds(lg, { sims, whatIf, champions: champs });
+      // Paired: season i of both runs saw the same draws, so the standard error
+      // is the spread of the per-season difference in who won, in pts.
       const odds = (rid) => {
-        const before = oddsOf(base, rid), next = oddsOf(after, rid);
-        return { before, after: next, delta: (next - before) * 100, band: band(before, next) };
+        let sum = 0, sq = 0;
+        for (let k = 0; k < sims; k++) { const d = (champs[k] === rid) - (baseChamps[k] === rid); sum += d; sq += d * d; }
+        const m = sum / sims;
+        return { before: oddsOf(base, rid), after: oddsOf(after, rid), delta: m * 100, se: Math.sqrt(Math.max(0, sq / sims - m * m) / sims) * 100 };
       };
       const my = odds(me.roster_id), their = odds(c.them.roster_id);
       let sendItems = c.send.items, getItems = c.get.items, myFv = 0, themFv = c.themFv;
@@ -7093,11 +7121,11 @@
       const fair = KT.computeFairness(sendV, getV, send.size, get.size, top(sendItems), top(getItems)).pct;
       const score = my.delta + (dyn ? SIM.finderFvWeight * myFv : 0);
       const wants = c.rebuilder ? themFv >= SIM.finderMinFvGain : their.delta > 0;
-      if (!(score > 0 && wants && fair >= SIM.finderFairPct)) continue;
+      if (!(my.delta > SIM.finderSeMult * my.se && score > 0 && wants && fair >= SIM.finderFairPct)) continue;
       const pct = (x) => `${(x * 100).toFixed(1)}%`;
       const why = c.rebuilder
-        ? `They are rebuilding (${c.stance}), so they buy the future: their ${Y}-year lineup value ${Math.round(c.fvNow)} to ${Math.round(c.fvNow + themFv)}.`
-        : `${c.fills ? `Fills their ${c.fills}. ` : ''}Their lineup ${c.themD >= 0 ? '+' : ''}${Math.round(c.themD)} pts, title odds ${pct(their.before)} to ${pct(their.after)}.`;
+        ? `They are rebuilding (${c.stance}), so they buy the future: their ${Y}-year lineup value ${Math.round(c.fvNow)} to ${Math.round(c.fvNow + themFv)} (+${Math.round(themFv)}).`
+        : `${c.fills ? `Fills their ${c.fills}. ` : ''}Their lineup +${Math.round(c.themD)} pts, title odds ${pct(their.before)} to ${pct(their.after)}.`;
       proposals.push({ them: c.them, rebuilder: c.rebuilder, send: { keys: c.send.keys, items: sendItems }, get: { keys: c.get.keys, items: getItems },
         sendV, getV, fair, my, their, myFv, themFv, meD: c.meD, themD: c.themD, score, why });
     }
@@ -7140,13 +7168,14 @@
       h('div', { class: 'tf-deal' }, side('out', p.send.items), h('span', { class: 'tf-arrow' }, '⇄'), side('in', p.get.items)),
       h('div', { class: 'tf-fair', style: { color: p.fair >= 90 ? 'var(--green)' : 'var(--amber)' } }, `${Math.round(p.fair)}%`),
       h('div', { class: 'tf-odds tnum' },
-        `${CURRENT_SEASON} title: you ${pct(p.my.before)} to ${pct(p.my.after)} (${signed(p.my.delta)} ±${p.my.band.toFixed(1)})`
-        + ` · them ${pct(p.their.before)} to ${pct(p.their.after)} (${signed(p.their.delta)})`
+        `${CURRENT_SEASON} title: you ${pct(p.my.before)} to ${pct(p.my.after)} (${signed(p.my.delta)} pts ±${p.my.se.toFixed(1)})`
+        + ` · them ${pct(p.their.before)} to ${pct(p.their.after)} (${signed(p.their.delta)} ±${p.their.se.toFixed(1)})`
         + (dyn ? ` · your FV ${signed(p.myFv, 0)}` : '')),
       h('div', { class: 'tf-why' }, `Value ${fmt.decimal(p.sendV, 1)} out, ${fmt.decimal(p.getV, 1)} in (${signed(p.getV - p.sendV)}). ${p.why}`),
     );
     const show = (res) => {
       list.innerHTML = '';
+      status.dataset.tfDone = '1';   // a finished run, for anything waiting on it
       status.textContent = `${res.proposals.length} trade${res.proposals.length === 1 ? '' : 's'} from ${res.checked.toLocaleString()} packages, `
         + `${res.simulated} simulated, ${(res.ms / 1000).toFixed(1)} s.`;
       if (!res.proposals.length) list.appendChild(h('div', { class: 'trade-finder-empty' }, 'No deal helps you and the partner right now. Build one by hand above.'));
@@ -7155,6 +7184,7 @@
     const run = h('button', { type: 'button', class: 'tf-run', disabled: me ? null : '', onclick: async () => {
       run.disabled = true;
       list.innerHTML = '';
+      delete status.dataset.tfDone;
       const t0 = performance.now();
       try {
         const res = await findTrades(lg, { onProgress: (m) => { status.textContent = `${m}...`; } });
@@ -11423,6 +11453,13 @@
     finderMinAsset: 3,
     finderFairPct: 75,
     finderAnchorRatio: 0.75,
+    // The partner's side of the headliner rule, stricter: when he gives up the
+    // bigger single asset, the best piece coming back must be finderPartnerAnchorRatio
+    // of it. A rebuilder also keeps his core, his most valuable player and his
+    // finderCoreYoung best by value finderFvYears out, unless ONE younger piece or a
+    // pick comes back.
+    finderPartnerAnchorRatio: 0.9,
+    finderCoreYoung: 3,
     // A rebuilder's FV has to rise by at least this much (about a tenth of a mid
     // first): a smaller change is inside the aging curves' rounding.
     finderMinFvGain: 5,
@@ -11432,14 +11469,16 @@
     finderMinGainPts: 10,
     // Search width: packages scored exactly per partner, and how many reach the
     // title simulation, per partner and per league. Each simulated deal costs one
-    // championshipOdds run of finderSims seasons (~1 s headless on a laptop). The
-    // same seed does NOT pair the draws once a what-if changes a pool: measured
-    // 2026-09-25, one Phi Kap deal read -4.0 to +1.9 pts for the partner across
-    // five seeds at 800 sims. So every delta carries the full band shown beside it.
+    // championshipOdds run of finderSims seasons (~0.5 s headless on a laptop).
+    // Before and after share every draw, so the title-odds change has a paired
+    // standard error, and a deal shows only when my gain beats finderSeMult of it.
+    // Measured 2026-09-25 on a small Phi Kap deal: SE 0.9 pts at 800 sims, and five
+    // seeds landed inside it.
     finderCandidateCap: 400,
     finderSimPerPartner: 3,
     finderSimTop: 20,
     finderSims: 800,
+    finderSeMult: 2,
     finderShow: 8,
     finderShowPerPartner: 2,
     // Dynasty ranking: percentage points of this season's title odds per unit of
@@ -11474,6 +11513,31 @@
     };
   }
 
+  // The season simulator's draws are counter-based: each one is a pure function of
+  // (stream key, simulated season, slot), so a player's week comes out the same in
+  // every run that shares the seed, whatever else a what-if changed. That is what
+  // makes before and after a paired comparison (common random numbers). One shared
+  // sequential stream shifted every later draw the moment a pool changed length:
+  // measured 2026-09-25, one Phi Kap deal read -4.0 to +1.9 pts for the partner
+  // across five seeds at 800 sims.
+  function mix32(x) {
+    x = Math.imul(x ^ (x >>> 16), 0x7feb352d);
+    x = Math.imul(x ^ (x >>> 15), 0x846ca68b);
+    return (x ^ (x >>> 16)) >>> 0;
+  }
+  function simDraw(key, sim, slot) {
+    return mix32(mix32(key ^ Math.imul(sim + 1, 0x9E3779B1)) + slot) / 4294967296;
+  }
+  // Box-Muller on two draws; 1 - u keeps the log finite.
+  function simNormal(key, sim, slot) {
+    return Math.sqrt(-2 * Math.log(1 - simDraw(key, sim, slot))) * Math.cos(2 * Math.PI * simDraw(key, sim, slot + 1));
+  }
+  function simKey(seed, str) {
+    let x = (seed ^ 0x811c9dc5) >>> 0;
+    for (let i = 0; i < str.length; i++) x = Math.imul(x ^ str.charCodeAt(i), 16777619);
+    return mix32(x);
+  }
+
   // Per-week probability a healthy player goes down, solved from the expected
   // games-missed target: with mean absence D, the long-run fraction of weeks
   // missed is hD/(1+hD), so h = (m/W) / (D * (1 - m/W)).
@@ -11502,9 +11566,9 @@
       const mean = season / SIM.gamesPlayed;
       const st = sp.injury_status;
       // Every field the simulator will ever touch is declared here, including the
-      // per-season scratch (mult/bye/outUntil/v). Adding them later would retag
-      // the object's shape on the first hot iteration and cost more than the
-      // simulation itself.
+      // per-season scratch (mult/bye/outUntil/v), his draw stream (key) and his
+      // week's noise (e). Adding them later would retag the object's shape on the
+      // first hot iteration and cost more than the simulation itself.
       pool.push({
         pid, name: p.name, pos: p.pos, mean, nflTeam: p.team || '',
         sd: mean * (SIM.cv[p.pos] != null ? SIM.cv[p.pos] : 0.55),
@@ -11512,7 +11576,7 @@
         // A live designation is this season's news; it says nothing about 2028.
         startOut: yearsOut ? 0 : (SIM.designationWeeksOut[st] || 0),
         questionable: yearsOut ? false : st === 'Questionable',
-        mult: 1, bye: 0, outUntil: 0, v: mean,
+        mult: 1, bye: 0, outUntil: 0, v: mean, key: 0, e: 0,
       });
     }
     for (const r of (rookies || [])) {
@@ -11523,7 +11587,7 @@
         sd: mean * (SIM.cv[r.pos] != null ? SIM.cv[r.pos] : 0.55),
         hazard: injuryHazard(r.pos, 22 + Math.max(0, yearsOut - 1)),
         startOut: 0, questionable: false,
-        mult: 1, bye: 0, outUntil: 0, v: mean,
+        mult: 1, bye: 0, outUntil: 0, v: mean, key: 0, e: 0,
       });
     }
     pool.sort((a, b) => b.mean - a.mean);
@@ -11533,11 +11597,12 @@
   // Start-of-season draw: how each player's year actually breaks, and when his
   // bye falls. Re-rolled once per simulated season, never per week.
   // `played` weeks are already in the books, so a designation counts from now.
-  function rollSeason(pool, rnd, normal, played = 0) {
+  // `sim` is the simulated season's index, the counter every draw is keyed on.
+  function rollSeason(pool, sim, played = 0) {
     const [b0, b1] = SIM.byeWeeks;
     for (const a of pool) {
-      a.mult = Math.exp(normal() * SIM.projectionSigma - SIM.projectionSigma * SIM.projectionSigma / 2);
-      a.bye = b0 + Math.floor(rnd() * (b1 - b0 + 1));
+      a.mult = Math.exp(simNormal(a.key, sim, 0) * SIM.projectionSigma - SIM.projectionSigma * SIM.projectionSigma / 2);
+      a.bye = b0 + Math.floor(simDraw(a.key, sim, 2) * (b1 - b0 + 1));
       a.outUntil = a.startOut && a.startOut + played;
       a.v = a.mean * a.mult;
     }
@@ -11549,17 +11614,18 @@
   // One team's week: decide availability, set the lineup on EXPECTED points
   // (a manager can't see the outcome), then sample what those starters actually
   // did. Getting that order right is the whole reason depth shows up as value.
-  function simWeek(pool, slots, week, rnd, normal, firstWeek = 1) {
-    const avail = [];
+  // `teamKey` keys the fantasy team's own week shock.
+  function simWeek(pool, slots, week, sim, teamKey, firstWeek = 1) {
+    const avail = [], at = 8 * week + 8;   // this week's draw slots
     for (const a of pool) {
       if (week === a.bye) continue;
       if (week <= a.outUntil) continue;
-      if (rnd() < a.hazard) {
+      if (simDraw(a.key, sim, at) < a.hazard) {
         // Geometric-ish absence: mean SIM.injuryDurationWeeks, minimum 1.
-        a.outUntil = week + Math.max(1, Math.round(-Math.log(1 - rnd()) * SIM.injuryDurationWeeks));
+        a.outUntil = week + Math.max(1, Math.round(-Math.log(1 - simDraw(a.key, sim, at + 1)) * SIM.injuryDurationWeeks));
         continue;
       }
-      if (a.questionable && week === firstWeek && rnd() < SIM.questionableOutChance) continue;
+      if (a.questionable && week === firstWeek && simDraw(a.key, sim, at + 2) < SIM.questionableOutChance) continue;
       // The manager sets his lineup on the season-long read of the player (`v`,
       // set in rollSeason), he can see a breakout by midseason, he can't see
       // Sunday. `avail` inherits the pool's descending order, hence presorted.
@@ -11567,14 +11633,15 @@
     }
     const lineup = slots.length ? fillLineup(avail, slots, true) : avail.slice(0, 9);
 
-    // Stack links. For each NFL team with a QB in this lineup, draw ONE passing-game
-    // factor and share it with that team's best same-team receiver, at the measured
-    // correlation. Deliberately one receiver per QB: loading a second would invent a
-    // WR-WR correlation that measures at +0.004 in the real data.
-    // `share` is the variance fraction taken from the shared factor, so total player
-    // variance is unchanged and only the covariance is added.
-    let z = null, linked = null;
+    // Stack links. Each QB in this lineup shares his passing game with his team's
+    // best same-team receiver, at the measured correlation. Deliberately one
+    // receiver per QB: loading a second would invent a WR-WR correlation that
+    // measures at +0.004 in the real data. The QB's own week is the shared factor:
+    // the receiver takes `c` of his noise from it and sqrt(1 - c^2) from his own, so
+    // the pair correlates at exactly `c` and neither variance moves.
+    let linked = null;
     for (const s of lineup) {
+      s.e = simNormal(s.key, sim, at + 3);
       if (s.pos !== 'QB' || !s.nflTeam) continue;
       let best = null;
       for (const r of lineup) {
@@ -11582,25 +11649,18 @@
         if (SIM.stackCorr[r.pos] == null) continue;
         if (!best || r.v > best.v) best = r;
       }
-      if (!best) continue;
-      (z = z || new Map()).set(s.nflTeam, normal());
-      (linked = linked || new Map()).set(s, SIM.stackCorr[best.pos]).set(best, SIM.stackCorr[best.pos]);
+      if (best) (linked = linked || new Map()).set(best, s);
     }
 
     let total = 0;
     for (const s of lineup) {
-      const share = linked && linked.get(s);
-      let noise;
-      if (share) {
-        // sqrt(share) on the shared factor, sqrt(1-share) on his own week.
-        noise = Math.sqrt(share) * z.get(s.nflTeam) + Math.sqrt(1 - share) * normal();
-      } else {
-        noise = normal();
-      }
+      const qb = linked && linked.get(s);
+      const c = qb ? SIM.stackCorr[s.pos] : 0;
+      const noise = qb ? c * qb.e + Math.sqrt(1 - c * c) * s.e : s.e;
       total += Math.max(0, s.v + noise * s.sd * s.mult);
     }
     // Correlated fantasy-team week shock: game scripts, weather, blowouts.
-    return Math.max(0, total * (1 + normal() * SIM.teamShockCv));
+    return Math.max(0, total * (1 + simNormal(teamKey, sim, at + 5) * SIM.teamShockCv));
   }
 
   // Fallback schedule: each week pair the teams up at random. championshipOdds
@@ -11762,8 +11822,10 @@
 
   // Simulate the league `sims` times and return each roster's playoff/bye/final/
   // title rate. `whatIf` maps rosterId -> {add:[ids], drop:[ids]} so a trade can
-  // be priced in titles instead of in points.
-  function championshipOdds(lg, { sims = 4000, src = 'blend', whatIf = null, seed = 20260807, yearsOut = 0, strengthRanks = null } = {}) {
+  // be priced in titles instead of in points. `champions`, when passed an array,
+  // gets each simulated season's champion roster id, so two runs on one seed can
+  // be differenced season by season (a paired standard error).
+  function championshipOdds(lg, { sims = 4000, src = 'blend', whatIf = null, seed = 20260807, yearsOut = 0, strengthRanks = null, champions = null } = {}) {
     const rosters = lg.rosters || [];
     const n = rosters.length;
     if (!n) return [];
@@ -11778,8 +11840,10 @@
       return simPool(base, lg, src, wi?.add, yearsOut, extraPoints.get(r.roster_id));
     });
     const stat = rosters.map(() => ({ playoff: 0, bye: 0, final: 0, title: 0, wins: 0, pts: 0 }));
-    const rnd = mulberry32(seed);
-    const normal = makeNormal(rnd);
+    const rnd = mulberry32(seed);   // the fallback random schedule only
+    // A converted pick is named by its label, which two rosters can share.
+    pools.forEach((pool, i) => { for (const a of pool) a.key = simKey(seed, a.pid.startsWith('pick:') ? `${rosters[i].roster_id}:${a.pid}` : a.pid); });
+    const teamKeys = rosters.map(r => simKey(seed, `team:${r.roster_id}`));
 
     // The season in progress starts from the real standings. Replaying all 14
     // weeks from 0-0 gave Phi Kap's 2-0 team the league's lowest title odds.
@@ -11808,9 +11872,9 @@
     for (let s = 0; s < sims; s++) {
       const wins = rosters.map(r => played ? (r.wins || 0) + (r.ties || 0) / 2 : 0);
       const pts = rosters.map(r => played ? (r.fpts || 0) : 0);
-      for (const pool of pools) rollSeason(pool, rnd, normal, played);
+      for (const pool of pools) rollSeason(pool, s, played);
       for (let w = first; w <= cfg.regularWeeks; w++) {
-        const scores = pools.map(p => simWeek(p, slots, w, rnd, normal, first));
+        const scores = pools.map((p, i) => simWeek(p, slots, w, s, teamKeys[i], first));
         for (let i = 0; i < n; i++) pts[i] += scores[i];
         for (const [a, b] of (pairsByWeek[w] || randomPairing(n, rnd))) {
           if (scores[a] > scores[b]) wins[a]++; else if (scores[b] > scores[a]) wins[b]++;
@@ -11842,7 +11906,7 @@
         const winners = [];
         for (let i = 0; i < playIn.length / 2; i++) {
           const a = playIn[i], b = playIn[playIn.length - 1 - i];
-          winners.push(simWeek(pools[a], slots, week, rnd, normal) >= simWeek(pools[b], slots, week, rnd, normal) ? a : b);
+          winners.push(simWeek(pools[a], slots, week, s, teamKeys[a]) >= simWeek(pools[b], slots, week, s, teamKeys[b]) ? a : b);
         }
         alive = alive.slice(0, byes).concat(winners);
         week++;
@@ -11852,12 +11916,13 @@
         const next = [];
         for (let i = 0; i < alive.length / 2; i++) {
           const a = alive[i], b = alive[alive.length - 1 - i];
-          next.push(simWeek(pools[a], slots, week, rnd, normal) >= simWeek(pools[b], slots, week, rnd, normal) ? a : b);
+          next.push(simWeek(pools[a], slots, week, s, teamKeys[a]) >= simWeek(pools[b], slots, week, s, teamKeys[b]) ? a : b);
         }
         if (alive.length === 2) for (const t of alive) stat[t].final++;
         alive = next; week++;
       }
       stat[alive[0]].title++;
+      if (champions) champions.push(rosters[alive[0]].roster_id);
     }
 
     return rosters.map((r, i) => ({

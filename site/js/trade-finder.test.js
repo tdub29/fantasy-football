@@ -4,6 +4,10 @@
 //   (b) it rejects a trade that raises my odds but lowers the partner's
 //   (c) it rejects a pile of fillers for a stud, and still finds the stud
 //   (d) a redraft league gets no picks, and both sides' 2026 odds
+//   (e) a rebuilder is never offered a deal that sells his best young asset
+//       for less than one younger piece or pick near its value
+// Title-odds changes carry a paired standard error; a deal shows only when my
+// gain clears SIM.finderSeMult of it.
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 
@@ -37,7 +41,7 @@ const SRC = [
   slice('  // Trade Finder. Iterates reasonable packages', '  // Last run per league'),
 ].join('\n');
 const load = (window, RANKED, PICKS) => new Function('window', 'RANKED', 'PICKS', SRC + `
-  return { findTrades, tradeLineupImpact, projectedTradeStrength, championshipOdds, tradeTitleWhatIf, rosterStance,
+  return { findTrades, finderScan, tradeLineupImpact, projectedTradeStrength, championshipOdds, tradeTitleWhatIf, rosterStance,
     KT, SIM, rosterOwnedPicks };`)(window, RANKED, PICKS);
 
 const roster = (id, players, wins = 0, losses = 0) => ({ roster_id: id, team_name: `T${id}`, is_me: id === 1,
@@ -48,11 +52,11 @@ const shows = (p, send, get) => keysOf(p.send).slice().sort().join() === send.sl
 
 (async () => {
   // ==== Redraft toy: QB RB WR TE FLEX, 4 teams, week 4, 6 weeks left =========
-  // Weekly points. I have 19- and 17-point WRs, RB depth and a 5-point TE; T2 has two good TEs
-  // and a 10-point WR, with no second RB. Free agents set replacement level.
+  // Weekly points. I have two good WRs, a thin FLEX and a 4-point TE. T2 has two
+  // TEs and three RBs but a 7-point WR. Free agents set replacement level.
   const R = {
-    q1: ['QB', 20], r1: ['RB', 18], r2: ['RB', 13], r8: ['RB', 12], w1: ['WR', 19], w2: ['WR', 17], w3: ['WR', 13], t1: ['TE', 5],
-    q2: ['QB', 19], r3: ['RB', 17], w4: ['WR', 10], w5: ['WR', 6], t2: ['TE', 18], t3: ['TE', 14],
+    q1: ['QB', 20], r1: ['RB', 18], r2: ['RB', 7], w1: ['WR', 19], w2: ['WR', 16], w3: ['WR', 8], t1: ['TE', 4],
+    q2: ['QB', 19], r3: ['RB', 17], r9: ['RB', 15], r10: ['RB', 11], w4: ['WR', 7], t2: ['TE', 16], t3: ['TE', 13],
     q3: ['QB', 18], r4: ['RB', 16], r5: ['RB', 12], w6: ['WR', 15], w7: ['WR', 12], t4: ['TE', 12],
     q4: ['QB', 17], r6: ['RB', 15], r7: ['RB', 11], w8: ['WR', 14], w9: ['WR', 11], t5: ['TE', 11],
     qFA: ['QB', 15], rFA: ['RB', 6], wFA: ['WR', 6], tFA: ['TE', 4],
@@ -64,8 +68,8 @@ const shows = (p, send, get) => keysOf(p.send).slice().sort().join() === send.sl
     // Pick data present on purpose: only the redraft gate keeps it out of a trade.
     drafts: [], traded_picks: [],
     rosters: [
-      roster(1, ['q1', 'r1', 'r2', 'r8', 'w1', 'w2', 'w3', 't1'], 1, 2),
-      roster(2, ['q2', 'r3', 'w4', 'w5', 't2', 't3'], 2, 1),
+      roster(1, ['q1', 'r1', 'r2', 'w1', 'w2', 'w3', 't1'], 1, 2),
+      roster(2, ['q2', 'r3', 'r9', 'r10', 'w4', 't2', 't3'], 2, 1),
       roster(3, ['q3', 'r4', 'r5', 'w6', 'w7', 't4'], 2, 1),
       roster(4, ['q4', 'r6', 'r7', 'w8', 'w9', 't5'], 1, 2),
     ],
@@ -88,40 +92,44 @@ const shows = (p, send, get) => keysOf(p.send).slice().sort().join() === send.sl
   const outR = await HR.findTrades(redraft, { sims: 3000 });
   if (process.env.DEBUG) for (const p of outR.proposals) console.log('R', keysOf(p.send), '->', keysOf(p.get), p.my, p.their);
 
-  // (a) A 2-for-1 that fixes my TE hole: w2 + r2 for T2's TE1. The 1-for-1 (w2
-  // alone) costs T2 its FLEX and reads as a loss for him; r2 fills that FLEX.
-  const two = outR.proposals.find(p => shows(p, ['w2', 'r2'], ['t2']));
-  assert(two, `the finder must offer w2 + r2 for t2, got ${outR.proposals.map(p => `${keysOf(p.send)}>${keysOf(p.get)}`).join(' | ') || 'nothing'}`);
+  // (a) A 2-for-1 that fixes my TE hole: w1 for T2's TE1 and his third RB. The
+  // 1-for-1 leaves my FLEX to an 8-point body and gains me under SIM.finderMinGainPts;
+  // r10 fills that FLEX, and T2's WR hole takes w1 either way.
+  const two = outR.proposals.find(p => shows(p, ['w1'], ['t2', 'r10']));
+  assert(two, `the finder must offer w1 for t2 + r10, got ${outR.proposals.map(p => `${keysOf(p.send)}>${keysOf(p.get)}`).join(' | ') || 'nothing'}`);
   assert.equal(two.them.roster_id, 2);
   assert(HR.tradeLineupImpact(redraft, 1, new Set(), new Set(['t2'])).delta > 0, 't2 must start for me: that is the hole');
-  assert(two.my.after > two.my.before && two.their.after > two.their.before, 'both sides must gain 2026 title odds');
-  assert(!outR.proposals.some(p => shows(p, ['w2'], ['t2'])), 'the 1-for-1 that T2 loses on must not show');
+  assert(HR.tradeLineupImpact(redraft, 1, new Set(['w1']), new Set(['t2'])).delta < HR.SIM.finderMinGainPts, 'the 1-for-1 must not be worth proposing');
+  assert(two.my.delta > HR.SIM.finderSeMult * two.my.se && two.their.after > two.their.before, 'my gain must clear the noise, and his odds rise');
 
   // ==== Dynasty toy: 1QB, same slots, preseason =================================
   // [pos, season points, age, KTC value /100]. On KTC T2 contends, T4 buys, I
   // sell and T3 tanks. I have RB depth and holes at WR and TE.
   const D = {
-    mQB: ['QB', 300, 27, 25], r1: ['RB', 280, 25, 47], rB: ['RB', 240, 26, 30], oR: ['RB', 250, 30, 28],
-    yR: ['RB', 120, 22, 32], wWk: ['WR', 120, 28, 12], w2: ['WR', 150, 25, 14], mTE: ['TE', 100, 29, 10],
+    mQB: ['QB', 300, 27, 25], r1: ['RB', 280, 25, 55], rB: ['RB', 240, 26, 30], oR: ['RB', 250, 30, 28],
+    yR: ['RB', 120, 22, 22], wWk: ['WR', 120, 28, 12], w2: ['WR', 150, 25, 14], mTE: ['TE', 100, 29, 10],
     // T2: a stud TE, a 180-point TE2, a 150-point RB hole.
     p2QB: ['QB', 320, 28, 45], p2RB: ['RB', 150, 27, 25], p2W1: ['WR', 270, 26, 65], p2W2: ['WR', 230, 27, 50],
     S: ['TE', 260, 26, 60], p2TE: ['TE', 180, 27, 30],
     // T4: an old 280-point WR1 priced at 30, and no second RB.
     p4QB: ['QB', 280, 29, 35], p4R1: ['RB', 200, 25, 35], p4R2: ['RB', 110, 26, 10], oWx: ['WR', 280, 31, 30],
     p4W2: ['WR', 200, 26, 30], p4W3: ['WR', 180, 27, 31], p4TE: ['TE', 140, 27, 20],
-    p3QB: ['QB', 260, 34, 20], p3R: ['RB', 130, 29, 12], yW: ['WR', 200, 23, 44], oW: ['WR', 210, 31, 29],
-    p3TE: ['TE', 150, 25, 15],
+    p3QB: ['QB', 260, 34, 20], p3R: ['RB', 130, 29, 12], yW: ['WR', 200, 23, 42], yW2: ['WR', 170, 22, 40], yW3: ['WR', 160, 22, 38],
+    oW: ['WR', 210, 31, 29], oTE: ['TE', 150, 31, 6],
     fQB: ['QB', 200, 30, 0], fRB: ['RB', 100, 27, 0], fWR: ['WR', 100, 27, 0], fTE: ['TE', 80, 27, 0],
   };
   const dynasty = {
     id: 'toy-d', name: 'Toy D', is_dynasty: true, type: 2, status: 'pre_season', week: 1, total_rosters: 4,
     playoff_teams: 2, settings: { playoff_week_start: 7 },
     roster_positions: ['QB', 'RB', 'WR', 'TE', 'FLEX', 'BN', 'BN', 'BN', 'BN', 'BN'],
-    drafts: [], traded_picks: [],
+    // T3 traded every first and second through 2030 to T2, so his future
+    // lineup has holes a pick can fill: that is what makes a sale raise his FV.
+    drafts: [], traded_picks: [2026, 2027, 2028, 2029, 2030].flatMap(y => [1, 2].map(round =>
+      ({ season: String(y), round, roster_id: 3, owner_id: 2, previous_owner_id: 3 }))),
     rosters: [
       roster(1, ['mQB', 'r1', 'rB', 'oR', 'yR', 'wWk', 'w2', 'mTE']),
       roster(2, ['p2QB', 'p2RB', 'p2W1', 'p2W2', 'S', 'p2TE']),
-      roster(3, ['p3QB', 'p3R', 'yW', 'oW', 'p3TE']),
+      roster(3, ['p3QB', 'p3R', 'yW', 'yW2', 'yW3', 'oW', 'oTE']),
       roster(4, ['p4QB', 'p4R1', 'p4R2', 'oWx', 'p4W2', 'p4W3', 'p4TE']),
     ],
   };
@@ -167,6 +175,30 @@ const shows = (p, send, get) => keysOf(p.send).slice().sort().join() === send.sl
     assert(head >= HD.SIM.finderAnchorRatio * 60, `a pile bought the stud: ${keysOf(p.send)}`);
   }
 
+  // (e) The rebuilder's core is yW, yW2, yW3 (his best by value four years out).
+  // My 2027 first for yW raises his FV (the pick fills a hole in his future
+  // lineup) and reads CLOSE on KTC, about 32 for 42: only the partner's side of the
+  // headliner rule stops it. Checked on the scan too, which has no dice in it.
+  const r1Pick = 'pick:2027:1:1';
+  const fvT3 = (send, recv) => HD.projectedTradeStrength(dynasty, 3, new Set(send), new Set(recv), 4)
+    - HD.projectedTradeStrength(dynasty, 3, new Set(), new Set(), 4);
+  assert(['seller', 'tank'].includes(stance(3)), `T3 must read as a rebuilder, got ${stance(3)}`);
+  assert(fvT3(['yW'], [r1Pick]) >= HD.SIM.finderMinFvGain, `selling yW must raise T3's FV, or this proves nothing: ${fvT3(['yW'], [r1Pick])}`);
+  const r1v = HD.rosterOwnedPicks(1, dynasty).find(p => p.season === '2027' && p.round === 1 && p.originRosterId === 1).value;
+  assert(HD.KT.computeFairness(r1v, 42, 1, 1, r1v, 42).pct >= HD.SIM.finderFairPct, `the sale must pass the value band: ${r1v} for 42`);
+  assert(r1v >= HD.SIM.finderAnchorRatio * 42, 'and my side of the headliner rule, so only his side can stop it');
+  const core = ['yW', 'yW2', 'yW3'];
+  const sellsCore = (p) => {
+    const out = p.get.items.filter(a => core.includes(a.k));
+    if (!out.length) return false;
+    const back = p.send.items;
+    return !(back.length === 1 && back[0].v >= HD.SIM.finderPartnerAnchorRatio * Math.max(...out.map(a => a.v))
+      && (back[0].pos === 'PICK' || D[back[0].k][2] < Math.min(...out.map(a => D[a.k][2]))));
+  };
+  const scanT3 = HD.finderScan(dynasty, dynasty.rosters[0], dynasty.rosters.find(r => r.roster_id === 3)).cands;
+  const sold = scanT3.concat(outD.proposals.filter(p => p.them.roster_id === 3)).filter(sellsCore);
+  assert(!sold.length, `a rebuilder was offered a sale of his young core: ${sold.map(p => `${keysOf(p.send)}>${keysOf(p.get)}`).join(' | ')}`);
+
   // (d) No picks in redraft, although the same payload flagged dynasty owns picks;
   // and every redraft proposal prices 2026 odds for both sides.
   assert(HR.rosterOwnedPicks(1, { ...redraft, is_dynasty: true }).length > 0, 'the toy must carry picks, or (d) proves nothing');
@@ -177,5 +209,5 @@ const shows = (p, send, get) => keysOf(p.send).slice().sort().join() === send.sl
   }
 
   console.log(`trade-finder.test.js: all assertions passed (redraft ${outR.proposals.length} proposals, dynasty ${outD.proposals.length}; `
-    + `w2+r2>t2 you ${(two.my.before * 100).toFixed(1)}->${(two.my.after * 100).toFixed(1)}%, them ${(two.their.before * 100).toFixed(1)}->${(two.their.after * 100).toFixed(1)}%)`);
+    + `w1>t2+r10 you ${two.my.delta >= 0 ? '+' : ''}${two.my.delta.toFixed(1)} pts +-${two.my.se.toFixed(1)}, them ${(two.their.before * 100).toFixed(1)}->${(two.their.after * 100).toFixed(1)}%)`);
 })().catch((err) => { console.error(err); process.exit(1); });
