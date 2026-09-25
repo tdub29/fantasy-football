@@ -244,7 +244,8 @@ def main_week(output: pathlib.Path) -> int:
     # order under half-PPR, and FantasyPros' own PPR board for him is a
     # different, staler list (TE untouched since 9/22), so it is not used. His
     # label wins for RB/WR/TE; QB is not on the flex post and stays as filed.
-    scoring = {p: ("ppr" if p in ("RB", "WR", "TE") else "half_ppr") for p in positions}
+    # QBs catch nothing, so the half/PPR distinction does not touch them.
+    scoring = {p: "ppr" for p in positions}
     src = {
         "source": "Jacob Gibbs (@jagibbs_23)",
         "board": "week",

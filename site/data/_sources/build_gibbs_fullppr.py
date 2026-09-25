@@ -165,7 +165,7 @@ def main() -> None:
     sources = json.loads(SOURCES.read_text(encoding="utf-8"))
     entry = {
         "id": SOURCE_ID,
-        "label": "Gibbs PPR",
+        "label": "Gibbs*",
         "expert": "Jacob Gibbs, full-PPR adaptation",
         "title": f"{board['title'].replace(' (Half-PPR)', '')} re-scored for 1.0 PPR"
                  " (derived, not his published board)",

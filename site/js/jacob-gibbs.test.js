@@ -67,8 +67,9 @@ const app = fs.readFileSync('site/js/app.js', 'utf8');
 assert(app.includes('function expertHeaders('), 'expertHeaders() renderer missing');
 assert(app.includes('function expertCells('), 'expertCells() renderer missing');
 assert(app.includes('function activeExpertSources('), 'activeExpertSources() missing');
-// Gibbs is adapted into the registry (generated file stays the source of truth)
-assert(app.includes("id:'gibbs'") && app.includes('window.JACOB_GIBBS_RANKINGS'), 'Gibbs adapter missing');
+// Every rank column is PPR, so his unconverted half-PPR board is no longer
+// offered as a column; the converted source (label "Gibbs*") replaces it.
+assert(!app.includes("label:'Gibbs half'"), 'the half-PPR Gibbs board must not be offered as a column');
 assert(app.includes('window.EXPERT_RANKINGS'), 'registry not read');
 // every table that showed the Gibbs column now spreads the expert columns
 assert.equal((app.match(/^\s+\.\.\.expertHeaders\(\),$/gm) || []).length, 5, 'expected 5 expert-header sites');

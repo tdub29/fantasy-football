@@ -17,7 +17,7 @@ const gateStart = app.indexOf("if (filter.sort === 'weekly-vegas'");
 assert(gateStart >= 0, 'weekly sort gate missing');
 const gate = app.slice(gateStart, app.indexOf('const weeklyValue', gateStart));
 
-for (const key of ['weekly-gibbs-x', 'weekly-gibbs-wk', 'weekly-gibbs-ros-ppr']) {
+for (const key of ['weekly-gibbs-x', 'weekly-gibbs-wk']) {
   assert.match(gate, new RegExp(`filter\\.sort === '${key}'`),
     `${key} must be routed into the weekly comparator, or its handler is dead code`);
   assert.match(app, new RegExp(`if \\(filter\\.sort === '${key}'\\) return gibbs\\w+Rank`),
@@ -32,33 +32,25 @@ const dirBlock = app.slice(dirStart, app.indexOf("? 'asc' : 'desc'", dirStart));
 assert(dirBlock.length > 0, 'default sort direction block is empty');
 assert.match(dirBlock, /key === 'weekly-gibbs-x'/, 'Gibbs ROS rank must default ascending');
 assert.match(dirBlock, /key === 'weekly-gibbs-wk'/, 'Gibbs week rank must default ascending');
-assert.match(dirBlock, /key === 'weekly-gibbs-ros-ppr'/, 'derived PPR ROS rank must default ascending');
-// The derived column must say it is derived, in the header a user hovers.
-assert.match(app, /sortHdr\('weekly-gibbs-ros-ppr', 'Gibbs ROS PPR\*'[\s\S]{0,200}DERIVED by this site, not published by him/);
-// And there is no derived WEEK column: he posts his week board titled PPR
-// himself (X, 2026-09-24), so re-ranking it for PPR would add PPR twice.
-assert.doesNotMatch(app, /sortHdr\('weekly-gibbs-wk-ppr'|GIBBS_PPR_WEEK/, 'no derived week column');
+// Every rank is PPR. The only header mark is the asterisk on a column this
+// site converted from half-PPR data, and it has to say so where a user hovers.
+assert.match(app, /sortHdr\('weekly-gibbs-x', 'Gibbs ROS\*'[\s\S]{0,120}converted by this site from Jacob Gibbs's half-PPR/);
+assert.match(app, /if \(filter\.sort === 'weekly-gibbs-x'\) return gibbsRosPprRank/,
+  'ROS* must sort on the converted ranks it shows');
+assert.match(app, /sortHdr\('weekly-gibbs-wk', 'Gibbs Wk',/, 'week header carries no scoring tag');
+assert.doesNotMatch(app, /\(half\)|Gibbs ROS PPR\*|Gibbs Wk PPR\*|GIBBS_PPR_WEEK/,
+  'no half column, no second PPR column');
 
 // One lookup, two boards. Two copies of this drifted apart is the thing the
 // shared helper exists to prevent.
 assert.match(app, /function gibbsBoardRank\(board, sleeperId\)/,
   'both boards must share one lookup');
-assert.match(app, /const gibbsRosRank = \(id\) => gibbsBoardRank\('GIBBS_ROS', id\)/);
+assert.match(app, /const gibbsRosPprRank = \(id\) => gibbsBoardRank\('GIBBS_PPR_ROS', id\)/);
 assert.match(app, /const gibbsWeekRank = \(id\) => gibbsBoardRank\('GIBBS_WEEK', id\)/);
 
 // The board has to be loaded before any of the above can see it.
 const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
 assert.match(html, /data\/gibbs-week\.js/, 'gibbs-week.js must be loaded by the page');
-
-// Scoring is per position and per source. The header tag is read off the
-// board, so it cannot keep saying "half" after the source changes.
-assert.match(app, /function gibbsScoringLabel\(data, pos\)/,
-  'the scoring label must be read off the data, not hardcoded');
-assert.doesNotMatch(
-  app.slice(app.indexOf("sortHdr('weekly-gibbs-wk'"), app.indexOf("sortHdr('weekly-gibbs-wk'") + 700),
-  /HALF-PPR|\(half\)/,
-  'the week column header must not hardcode a scoring');
-assert.match(app, /sortHdr\('weekly-gibbs-wk', `Gibbs Wk \(\$\{gibbsShortScoring\(window\.GIBBS_WEEK, filter\.pos\)\}\)`/);
 
 // And the built board must actually carry that distinction.
 const wk = fs.readFileSync(path.join(__dirname, '..', 'data', 'gibbs-week.js'), 'utf8');
@@ -73,16 +65,13 @@ assert.match(app, /window\.GIBBS_WEEK\.week === currentWeek/, 'stale week board 
 // titled PPR ("Week 3 - FLEX Top-100 ... (PPR)", 2026-09-24, 94/100 exact).
 // His title is the label. The CBS page it replaced sat a mean 11 flex spots
 // off that post, which is why it went.
-for (const pos of ['RB', 'WR', 'TE']) {
+for (const pos of ['QB', 'RB', 'WR', 'TE']) {
   assert.equal(data.formatByPosition[pos], 'ppr', `${pos} is the board he titles PPR`);
 }
 assert.match(data.provenance, /FantasyPros/);
 assert.match(data.provenance, /filters=1576:1576/);
 assert.match(data.provenance, /total_experts=1/, 'must say it refused consensus');
-// QB is not on the flex post, so it keeps the scoring FantasyPros files it under.
-assert.equal(data.formatByPosition.QB, 'half_ppr');
-assert.match(data.scoringWarning, /RB, TE, WR are his FULL PPR ranks/);
-assert.match(data.scoringWarning, /QB is HALF-PPR/);
+assert.match(data.scoringWarning, /QB, RB, TE, WR are his FULL PPR ranks/);
 assert.doesNotMatch(data.scoringWarning, /not a full-PPR board/);
 
 const depth = Object.values(data.positions).reduce((n, r) => n + r.length, 0);

@@ -591,7 +591,8 @@
         "tier": "F",
         "note": "Rookie; not the #1 target, safe at 36"
       }
-    ]
+    ],
+    "scoring": "half"
   },
   {
     "id": "gibbs-fp-2026-07",
@@ -4381,7 +4382,7 @@
   },
   {
     "id": "gibbs-ppr-2026-08",
-    "label": "Gibbs PPR",
+    "label": "Gibbs*",
     "expert": "Jacob Gibbs, full-PPR adaptation",
     "title": "2026 Top-200 Overall re-scored for 1.0 PPR (derived, not his published board)",
     "url": "https://www.cbssports.com/fantasy/football/news/jacob-gibbs-rankings-fantasy-football-2026-half-ppr/",
