@@ -336,3 +336,191 @@ is Doubtful; current-season title odds now start from real records on the real s
 median games (taco top-for-top: 2026 A 8.7% → 10.3% baseline became 9.9% → 12.8%); a 0 vs 0 trade
 reads FAIR instead of WIN FOR B. Total Value, fairness %, and the lineup row are unchanged in
 dynasty.
+
+---
+
+## Verification (2026-09-25, independent adversarial pass)
+
+**Bottom line: redraft verdicts still cannot be trusted.** Every number the fixer reported
+reproduces, and 13 of the 16 audit defects now behave as specified. But the redraft verdict has no
+waiver wire, so shipping a kicker or defense that is WORSE than the best free one reads as an
+automatic loss (verdict inverted), and once "Run title odds" is clicked the verdict follows a second
+projection the page never shows, which flips even swaps and prices an injured star at about half his
+rest-of-season line. Findings: **2 high, 3 medium, 5 low.**
+
+### Method and provenance
+
+- Main checkout `site/` served on `127.0.0.1:8853` (8851 was already bound by another
+  `http.server` serving byte-identical files; a separate port kept a mid-run swap from changing what
+  was tested). Python Playwright, Chromium headless, clicks on real pool rows. `app.js` was patched
+  IN MEMORY only (Playwright route) to expose internals on `window.__app`. No repo file other than
+  this section was touched; no commit.
+- **Two code versions.** First pass on `913c093` (the fix merge, app.js md5 `fa42644d...`). Main then
+  moved to `8a88109` (Trade Finder merge, `1745490` pairs the simulator's draws; app.js md5
+  `59d2a71d...`). Everything below was re-run on `8a88109`, and **every number in this section is
+  from `8a88109` unless marked "old code"**. On both versions each case ran in two separate
+  browser sessions with identical output (21 Phi Kap cases, 18 dynasty cases, all SAME).
+- `node --check` and every `site/js/*.test.js` pass on both versions.
+
+### Audit repros (high and medium), re-run
+
+| Defect | Result on 8a88109 |
+|---|---|
+| H1 | PASS. 62 of 210 read 0 (every rostered K, sub-waiver bodies). Black for Hall: 0.0 ⇄ 68.0, WIN FOR A, lineup +69 / -72. Rice for E. Wilson: WIN FOR B |
+| H2 A | PASS. Goff + Shough for Warren: WIN FOR B, A 5.2% → 0.9% |
+| H2 B | PASS as specified (WIN FOR A, "Side B is left with an empty starting slot"), but see V1: the best free QB is 256.0 pts |
+| H2 C | PASS. Kraft + Downs for Lamb: CLOSE (lineup edge 24), WIN FOR A after odds. **FAIL with NYG in place of Downs**: see V1 |
+| H3 | PASS in redraft (-145.0 / -88.2). Dynasty still lets an emptied slot gain: V5 |
+| H4 | PASS. One 2026 row, no Year-by-Year block. CMC for E. Wilson: WIN FOR B, A 5.2% → 1.9% ±0.6 |
+| M1 | PASS. `rosterOwnedPicks(7, Phi Kap)` = 0 |
+| M2 | PASS. Mr immortals (2-0) 5.5% title / 47.1% playoff; UncWill (0-2) lowest at 4.2% / 25.5% |
+| M3 | Value, lineup, search PASS ("Seahawks", "Aubrey", "McPherson" match). **Verdict FAIL**: V1 |
+| M4 | PASS. E. Johnson for E. Wilson: +0.0 ±0.7 / -0.1 ±0.8, grey, FAIR |
+| M5 | PASS. Jeanty RB13, Kyren Williams RB19, Drake London WR24 top their cells; redraft ranks |
+| M6 | Not verifiable: the rebuilt finder (8a88109) returns "0 trades from 12,178 packages" in Phi Kap by its own gates |
+| M7 | PASS. Kraft VOR +56 beside 30.7 (56 x 0.55) |
+
+Lows L1, L2, L4, L5 also pass (0 vs 0 reads FAIR; ROS lineup basis; "players" copy, no tier letters,
+pools sorted on ROS; "DJ Moore" found). L3 is the fixer's own open item.
+
+### HIGH
+
+**V1. An emptied slot loses outright even when the waiver wire has a better player; K and DEF
+trades invert.**
+- Repro: `#trade/1389722402430136320/1`, Side A Evan McPherson + Kaelon Black, Side B Breece Hall,
+  Run title odds. Same with New York Giants in place of McPherson, and on `/8` Tucker Kraft + New
+  York Giants for CeeDee Lamb (the fixer's own "with NYG: WIN FOR B" row).
+- Shows: **WIN FOR B, "Side A is left with an empty starting slot."** Same panel: 2026 title odds
+  A **+3.3** (5.2% → 8.4% ±0.8, green), B **-2.5** (6.6% → 4.1% ±0.7, red); lineup A -51, B -72
+  (lineup edge also favors A). Kraft + NYG for Lamb: WIN FOR B while title odds read A +2.5, B -4.1.
+  McPherson + NYG for E. Wilson: WIN FOR B, lineup 1858 → 1642 (-217), title +0.0 / +0.0 (the
+  simulator has no K or DEF: `simPool` gets no projection for either).
+- Should: the best free K in Phi Kap scores 137.7 rest of season, more than McPherson (119.5) or any
+  rostered kicker; best free DEF 106.8 beats NYG (97.0). The page's own value column prices every
+  rostered K at 0 for exactly that reason. A manager who ships his kicker adds a better one, so the
+  cost of an emptied slot is (player pts minus best free pts), floored at 0, never "loses outright".
+  Every fantasy player calls Hall for Kaelon Black plus a kicker a win for A. The same waiver
+  blindness overstates QB holes (best free QB 256.0 vs Goff 274.1) and TE holes (122.6).
+- Likely: `KT.redraftVerdict` (the `holeA !== holeB` early return), `redraftLineup` (an empty slot
+  scores 0 points instead of the free level it already reads as `base`), redraft branch of
+  `tradeLineupImpact`. The new finder's `finderWaiverAdds` exists but the Lab does not use it, and
+  it skips K/DEF.
+
+**V2. After "Run title odds" the redraft verdict follows a projection the page never shows; even
+swaps flip and an injured star is priced at about half his line.**
+- Repro A, `#trade/1389722402430136320/8`: Luther Burden for Matthew Golden. Before odds: FAIR,
+  "Lineup edge 13 pts, even" (189.5 vs 176.7 ROS). After: **WIN FOR B**, A -1.6 (5.2% → 3.6%),
+  B +2.7 (9.6% → 12.3%).
+- Repro B, `/2`: A.J. Brown (IR) for DK Metcalf. Before: FAIR, lineup +3 / -3 (ROS 149.8 vs 152.4).
+  After: **WIN FOR A**, A +1.0 (5.2% → 6.1%), B -1.1 (11.6% → 10.5%).
+- Not noise: over five seeds (20260807, 11, 777001, 424242, 90210) the title edge is -1.85 to -2.3
+  for Burden/Golden and +0.9 to +1.1 for Brown/Metcalf, every seed on the same side.
+- Cause: lineup and value use Sleeper weekly ROS (`rosPointsByPid`); `championshipOdds` pools use
+  `projections.js` blend season / 17 (`simPool`). They disagree by up to 45% per player: Golden
+  11.78 vs 8.01 per game, Kraft 11.89 vs 8.29, Rice 14.61 vs 11.29. For an injured player the
+  simulator double-counts: A.J. Brown's blend 167 already excludes his missed games, `simPool`
+  spreads it over 17 weeks (9.82 a week vs his 14.98 per game when active) and then holds him out 6
+  more weeks (`designationWeeksOut.IR`). Once a change clears its band, `redraftVerdict` lets title
+  odds set direction and grade. The audit's injured-star test ("season points must drive it")
+  fails.
+- Should: put the simulator on the same rest-of-season basis (weekly lines, no second injury
+  discount) before the verdict leans on it, or keep the verdict on the lineup and show title odds
+  beside it.
+- Old code only: Rice for Tee Higgins (identical ROS) flipped FAIR → CLOSE and Kraft for Kelce
+  FAIR → WIN FOR B on one seed's outlier (B +1.7 and +2.0; the other four seeds -0.1 to +0.8). The paired
+  draws in `1745490` fixed both: now FAIR and FAIR.
+
+### MEDIUM
+
+**V3. `node site/js/trade-sim.js` now prices 2026 differently from the Trade Lab in both dynasty
+leagues.** The CLI loads leagues, projections, players and ktc but not `data/schedule.js`, so
+`medianScoring` is unknown, the record check (40 results vs 20 expected at week 3) fails, and it
+replays 2026 from 0-0 on random pairings with no median games. Same slice of app.js, 2500 sims,
+seed 20260807 (title% / playoff%): taco Boutte Hunter 4-0 CLI 9.2 / 79 vs Lab 10.2 / 89; Karl Havoc
+0-4 23.1 / 95 vs 19.7 / 94; The League CeeDeez 4-0 11.7 / 70 vs 13.8 / 84; World of Tanks 0-4 11.5 /
+76 vs 8.8 / 63. The CLI's own run: Stand pat 80.6% playoff. CLAUDE.md sends "should I make this
+trade" to the CLI. Likely: the data-file list at the top of `trade-sim.js`.
+
+**V4. The Trade Finder can surface a deal the partner loses (coordinator's added check).** Lab title
+deltas are stable: three loads of each of six finder deals (finder-row click plus two reloads)
+gave identical numbers. The finder's number is exactly the first 800 draws of the Lab's run
+(checked: the 800-sim champions list is a prefix of the 7500 / 2500 run), so the two agree within
+the finder's ±1 SE on 6 of 12 numbers and within ±2 SE on 12 of 12. But Washington (redraft),
+Jaylen Warren for Jameson Williams with Seirin High School: finder "them +0.1 ±0.9", Lab at 7500
+sims **-1.2** (7.2% → 6.0%; paired SE 0.29). The partner gate is `their.delta > 0` on an 800-sim
+point estimate with no SE bar (my side needs 2 SE, his needs none). The League, JoeysYIDS: finder
++0.0 ±0.3, Lab -0.3. Likely: `findTrades` (`wants`).
+
+**V5. Dynasty Post-Trade Strength Δ rises for a side left with no QB.** Taco `#trade/.../6`: Josh
+Allen + Caleb Williams + Jordan Love for Ja'Marr Chase + Brock Bowers. Shows strength **A +15.9**,
+beside lineup 2067 → 1926 (-140) and 2026 title A 10.2% → 5.6%. The dynasty branch of
+`startingStrength` charges nothing for an empty slot, so the fixer's "no roster with no QB can gain"
+holds in redraft only. Verdict FAIR 97% (KTC), defensible since both sides lose title odds.
+
+### LOW
+
+- **V6. Doubtful tag drives dynasty strength.** The League `/2`, Caleb Williams (Doubtful) for Drake
+  Maye: FAIR 100% (85.5 vs 85.1) beside strength +34.8 / -30.4 and lineup +87 / -100. Consistent
+  with CLAUDE.md (`isSidelined` benches Doubtful at PV), but a one-week tag is the loudest number on a
+  dynasty swap.
+- **V7. IR-slot asymmetry in the simulator.** `championshipOdds` drops an IR-slot player from his
+  owner's baseline, while a what-if hands him to the receiver with a 6-week designation. Taco,
+  Christian Watson for A.J. Brown (Karl Havoc's IR slot): Karl Havoc 2026 +1.8 for giving him up.
+  The new finder excludes IR-slot players for this reason (comment in `finderAssets`); the Lab does
+  not. Redraft counts IR-slot players in the lineup, so the two bases disagree there too.
+- **V8. Search "+ For" routes any non-mine player to Side B.** `/1`, Kaelon Black, search "Jahmyr
+  Gibbs" (The Infirmary): he lands on Runnin A-Love-chane's pile; WIN FOR A, lineup +179 / +0 for a
+  trade B cannot make. Free agents too ("Baker Mayfield · free agent · + For"). Pre-existing;
+  `buildTradeSearch`.
+- **V9. Two ± conventions for one number.** The Lab still prints 2 x the unpaired SE (±0.8 at 7500
+  sims where the paired SE is 0.27; dynasty ±1.9 where the paired SE at the same 2500 sims is 0.67),
+  the finder prints 1 paired SE.
+  The Lab is now conservative (real changes can paint grey).
+- **V10. Console.** Zero errors, NaN, undefined or blanks in the three target leagues on 8a88109.
+  Washington (ESPN) logs a 404 to `api.sleeper.app/v1/league/1532688686` on every load. One
+  transient `ERR_CONNECTION_REFUSED` on an external resource (taco, old code, not reproduced).
+
+### Sanity trades (8a88109; 2026 title odds before → after, A = Trevor)
+
+| League | Trade | Verdict | A | B | Agree? |
+|---|---|---|---|---|---|
+| Phi Kap | CMC for Malachi Fields (/1) | WIN FOR B | 5.2 → 2.0 | 6.6 → 11.6 | Yes |
+| Phi Kap | Rashee Rice for Tee Higgins (/8) | FAIR | 5.2 → 5.1 | 9.6 → 9.9 | Yes (old code: CLOSE) |
+| Phi Kap | Burden for M. Golden (/8) | WIN FOR B | 5.2 → 3.6 | 9.6 → 12.3 | No, a 13-pt gap (V2) |
+| Phi Kap | Burden + Corum for Lamb (/8) | WIN FOR A | 5.2 → 6.3 | 9.6 → 8.1 | Yes |
+| Phi Kap | McPherson + Black for Hall (/1) | WIN FOR B | 5.2 → 8.4 | 6.6 → 4.1 | No, inverted (V1) |
+| Phi Kap | Kraft + T. Ferguson for Golden, no TE left (/8) | WIN FOR B | 5.2 → 2.5 | 9.6 → 10.3 | Yes |
+| Phi Kap | A.J. Brown (IR) for DK Metcalf (/2) | WIN FOR A | 5.2 → 6.1 | 11.6 → 10.5 | No, even on ROS (V2) |
+| Phi Kap | Goff for Caleb Williams, Doubtful (/5) | FAIR | 5.2 → 5.0 | 8.3 → 8.0 | Yes |
+| Phi Kap | Goff for Davante Adams, both lineups +5 / +6 (/12) | FAIR | 5.2 → 4.6 | 15.0 → 13.5 | Partly, both odds fall |
+| taco | Josh Allen for Tutu Atwell (/3) | WIN FOR B 22% | 10.2 → 7.8 | 0.0 → 0.0 | Yes |
+| taco | Waddle for Tee Higgins (/1) | FAIR 99% | 10.2 → 8.6 | 25.7 → 28.5 | Yes |
+| taco | Waddle + Downs for Ja'Marr Chase (/6) | FAIR 98% | 10.2 → 10.6 | 19.7 → 19.0 | Yes |
+| taco | Allen + Caleb + J. Love for Chase + Bowers, no QB left (/6) | FAIR 97% | 10.2 → 5.6 | 19.7 → 15.4 | Partly (V5) |
+| taco | Watson for A.J. Brown, IR slot (/6) | FAIR 97% | 10.2 → 9.0 | 19.7 → 21.5 | Yes (B gain part phantom, V7) |
+| taco | Jeremiyah Love (21) for Derrick Henry (32) (/1) | CLOSE 79% | 10.2 → 10.7 | 25.7 → 25.6 | Yes |
+| taco | Jordan Love for Davante Adams (/9) | FAIR 96% | 10.2 → 11.8 | 2.8 → 1.8 | Yes |
+| The League | Achane for Ja'Tavion Sanders (/1) | WIN FOR B 29% | 8.8 → 5.3 | 13.8 → 18.3 | Yes |
+| The League | DeVonta Smith for Garrett Wilson (/9) | FAIR 99% | 8.8 → 7.8 | 15.5 → 17.6 | Yes |
+| The League | Kyler Murray + Waddle for Drake Maye (/2) | CLOSE 81% | 8.8 → 7.2 | 30.3 → 33.6 | Yes |
+| The League | Kyler + Bryce Young for Jefferson, only Doubtful/Out QBs left (/2) | CLOSE 77% | 8.8 → 5.2 | 30.3 → 32.6 | Partly, should favor B |
+| The League | Caleb (Doubtful) for Drake Maye (/2) | FAIR 100% | 8.8 → 10.4 | 30.3 → 30.0 | Yes (strength row V6) |
+| The League | Nabers (23) for Davante Adams (33) (/2) | WIN FOR B 63% | 8.8 → 9.9 | 30.3 → 30.6 | Yes |
+| The League | Josh Downs for Baker Mayfield, lineups +26 / +44 (/10) | CLOSE 79% | 8.8 → 9.7 | 6.4 → 6.2 | Yes |
+
+### Dynasty regressions
+
+- 2026 odds start from real records on the real schedule in both median leagues (4 results per
+  team at week 3 passes the check); two-sided `whatIf`, 6-team bracket: consistent with CLAUDE.md.
+  The CLI does not follow (V3).
+- Strength deltas bench Doubtful/Out at year 0: consistent with CLAUDE.md's `isSidelined` rule
+  (V6 is presentation, not a rule break). An emptied slot is free in dynasty strength (V5).
+- Long-horizon trades still weigh future value: Love for Henry reads CLOSE 79% with 3-season title
+  A -4.0 / B +5.1 and Year-by-Year A -15.6 today to -76.5 at +5; Nabers for Adams WIN FOR B 63%,
+  A -4.5 / B +6.7 over 3 seasons, -26.6 to -70.9.
+
+### Determinism
+
+Kaelon Black for Breece Hall (Phi Kap) and Jeremiyah Love for Derrick Henry (taco): three fresh
+sessions, a second "Run title odds" on the same page, and reversed click order all identical, on
+both code versions. All six finder deals identical across three loads.
