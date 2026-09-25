@@ -20,6 +20,7 @@ opted into ellipsis or its own scroller.
 """
 from __future__ import annotations
 
+import socket
 import subprocess
 import sys
 import threading
@@ -28,7 +29,11 @@ import urllib.request
 from pathlib import Path
 
 SITE = Path(__file__).resolve().parent
-PORT = 8766
+# A free port, not a fixed one, so two checkouts (git worktrees) can run this
+# at the same time without one silently testing the other's server.
+with socket.socket() as _s:
+    _s.bind(("127.0.0.1", 0))
+    PORT = _s.getsockname()[1]
 BASE = f"http://127.0.0.1:{PORT}/index.html"
 
 # One page per layout that has its own phone rules. Adding a page here is the
