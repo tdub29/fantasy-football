@@ -12178,7 +12178,9 @@
     main.appendChild(h('div', { class:'tip', style:{ marginTop:'10px' } },
       'Green is the top fifth of the players shown and red the bottom fifth, flipped where lower is better. '
       + 'Route% and TPRR/YPRR are estimates because public route data stops after 2025. '
-      + 'xFP prices each target and carry at the league average for plays like it; FPOE is what he did beyond that.'));
+      + (A.xfpSource === 'lookup' ? 'xFP prices each target and carry at the league average for plays like it'
+        : 'xFP is what ffopportunity\'s play-by-play model expects his targets and carries to score')
+      + '; FPOE is what he did beyond that.'));
     saveStatsLabPrefs(prefs);
   }
 

@@ -21,11 +21,13 @@ Two numbers are ESTIMATES and are labelled that way everywhere they surface:
     ends with 2025, so routes = offensive snaps x the team's dropback share of
     plays that game. It over-counts players who block on passing downs, mostly
     TEs and pass-protecting backs, which is why TPRR / YPRR carry "(est)".
-  * Expected fantasy points. For every target and carry, the league-average
-    PPR points of plays like it (air-yard band x field-position band for
-    targets, field-position band x down for carries), from 2025 plus the
-    current season. FPOE = actual PPR minus that. It is a transparent baseline,
-    not a vendor model.
+  * Expected fantasy points. ffopportunity's (ffverse) per-play XGBoost
+    expected points, receiving plus rushing, full PPR, joined on gsis id.
+    FPOE = his actual PPR minus that. If ffopportunity is unreachable the
+    fallback is our lookup: the league-average PPR of plays like each target
+    (air-yard band x field-position band) or carry (field-position band x
+    down), from last season plus this one. ffopportunity won the 2024-25
+    backtest in notes/xfp-methodology.md.
 
     python projections/build_nflverse_suite.py
     python projections/build_nflverse_suite.py --self-check
@@ -58,14 +60,14 @@ def season_now() -> int:
     return t.year if t.month >= 8 else t.year - 1
 
 
-def fetch(tag: str, name: str, max_age_h: float = MAX_AGE_H) -> pathlib.Path:
+def fetch(tag: str, name: str, max_age_h: float = MAX_AGE_H, base: str = BASE) -> pathlib.Path:
     """Cached download. A failed refresh keeps the copy on disk and says so."""
     CACHE.mkdir(parents=True, exist_ok=True)
     p = CACHE / name
     fresh = p.exists() and (time.time() - p.stat().st_mtime) / 3600 < max_age_h
     if not fresh:
         try:
-            req = urllib.request.Request(f"{BASE}/{tag}/{name}", headers={"User-Agent": "Mozilla/5.0"})
+            req = urllib.request.Request(f"{base}/{tag}/{name}", headers={"User-Agent": "Mozilla/5.0"})
             with urllib.request.urlopen(req, timeout=120) as r:
                 tmp = p.with_suffix(".part")
                 tmp.write_bytes(r.read())
@@ -156,6 +158,27 @@ def apply_xfp(plays: pd.DataFrame, tgt_tab: pd.Series, rush_tab: pd.Series) -> p
     return p
 
 
+FFO_BASE = "https://github.com/ffverse/ffopportunity/releases/download"
+
+
+def ffo_weekly(season: int, reg_games: set) -> pd.DataFrame:
+    """ffopportunity (ffverse): per-play XGBoost expected points on nflfastR,
+    summed to player-games. Expected receiving points pay 1.0 per expected
+    catch, so it is full PPR as published. Passing is left out, as in ours."""
+    past = season < season_now()
+    return ffo_points(pd.read_parquet(fetch("latest-data", f"ep_weekly_{season}.parquet",
+                                            FINISHED_SEASON_AGE_H if past else MAX_AGE_H, FFO_BASE)), reg_games)
+
+
+def ffo_points(e: pd.DataFrame, reg_games: set) -> pd.DataFrame:
+    e = e[e["game_id"].isin(reg_games)].copy()
+    e["week"] = e["week"].astype(int)
+    f = lambda k: e[k].fillna(0)
+    e["xfp_ffo"] = f("rec_fantasy_points_exp") + f("rush_fantasy_points_exp")
+    e["pts_ffo"] = f("rec_fantasy_points") + f("rush_fantasy_points")
+    return e[["player_id", "week", "xfp_ffo", "pts_ffo"]]
+
+
 # --------------------------------------------------------------------------
 # Builders
 # --------------------------------------------------------------------------
@@ -211,6 +234,9 @@ def player_table(season: int) -> tuple[pd.DataFrame, dict, pd.DataFrame]:
     p = pbp_now[(pbp_now["season_type"] == "REG") & pbp_now["play_type"].isin(["pass", "run"])].copy()
     p = apply_xfp(p, tgt_tab, rush_tab)
     through = int(p["week"].max()) if len(p) else 0
+    # ffopportunity is the shipped xFP: it beat the lookup above on the 2024-25
+    # backtest (notes/xfp-methodology.md). The lookup is the fallback.
+    ffo = optional("ffopportunity", lambda: ffo_weekly(season, set(p["game_id"])))
     teams = team_table(pbp_now)
 
     # ---- FTN charting: the scheme metrics analysts cite most ----
@@ -440,8 +466,19 @@ def player_table(season: int) -> tuple[pd.DataFrame, dict, pd.DataFrame]:
     df["ppr_pts_opp"] = df[["pts_rec", "pts_rush"]].sum(axis=1, min_count=1)
     df["fpoe"] = df["ppr_pts_opp"] - df["xfp"]
     g = df["games"]
-    df["xfp_pg"] = df["xfp"] / g
-    df["fpoe_pg"] = df["fpoe"] / g
+    xfp_source = "lookup"
+    if not ffo.empty:
+        # Per game over the weeks ffopportunity has published, which can trail pbp.
+        f_wk = int(ffo["week"].max())
+        g_ffo = snaps[snaps["week"] <= f_wk].dropna(subset=["gsis_id"]).groupby("gsis_id")["game_id"].nunique()
+        fs = ffo.groupby("player_id")[["xfp_ffo", "pts_ffo"]].sum()
+        df = df.join(fs).join(g_ffo.rename("games_ffo"))
+        df["xfp_pg"] = df["xfp_ffo"] / df["games_ffo"]
+        df["fpoe_pg"] = (df["pts_ffo"] - df["xfp_ffo"]) / df["games_ffo"]
+        xfp_source = "ffopportunity"
+    else:
+        df["xfp_pg"] = df["xfp"] / g
+        df["fpoe_pg"] = df["fpoe"] / g
     # Calibrated against 2025, the last season with public participation data:
     # on-field dropbacks divided by this estimate, median by position and snap
     # share. WRs need nothing (1.01x, r=0.99). TEs and RBs are overcounted
@@ -492,7 +529,7 @@ def player_table(season: int) -> tuple[pd.DataFrame, dict, pd.DataFrame]:
 
     keep = df[(df["opportunities"] > 0) | (df["dropbacks"].fillna(0) > 0) | (df["off_snaps"].fillna(0) > 0)]
     keep = keep[keep["sleeper_id"].notna()]
-    return keep, {"through_week": through}, teams
+    return keep, {"through_week": through, "xfp_source": xfp_source}, teams
 
 
 # --------------------------------------------------------------------------
@@ -545,7 +582,7 @@ COLUMNS = [
     C("rz_carries", "RZ car", "Red zone", RUSH, "int", "Carries inside the 20."),
     C("gl_carries", "GL car", "Red zone", RUSH, "int", "Carries inside the 5."),
     C("gl_share", "GL%", "Red zone", ["RB"], "pct", "Share of the team's carries inside the 5."),
-    C("xfp_pg", "xFP/G", "Expected", ["RB", "WR", "TE"], "dec1", "Expected PPR points per game from the targets and carries he got, priced at league average for plays like them."),
+    C("xfp_pg", "xFP/G", "Expected", ["RB", "WR", "TE"], "dec1", "Expected PPR points per game from the targets and carries he got. ffopportunity's model (XGBoost on nflfastR play-by-play) prices each target by air yards, field position, down, distance and game state, and each carry by field position, down, distance, run direction and game state."),
     C("fpoe_pg", "FPOE/G", "Expected", ["RB", "WR", "TE"], "dec1", "PPR points over expected per game. Positive means he did more with his opportunity than an average player would."),
     C("avg_separation", "Sep", "NGS", REC, "dec1", "Next Gen Stats average separation at the catch point, yards."),
     C("avg_cushion", "Cushion", "NGS", REC, "dec1", "Next Gen Stats average cushion at the snap, yards."),
@@ -603,9 +640,15 @@ TEAM_COLUMNS = [
 ]
 
 
+XFP_LOOKUP_DESC = ("Expected PPR points per game from the targets and carries he got, priced at league average "
+                   "for plays like them. ffopportunity was unavailable for this build, so this is the fallback.")
+
+
 def build(season: int) -> dict:
     players, meta, teams = player_table(season)
     keys = [c["key"] for c in COLUMNS]
+    cols = COLUMNS if meta["xfp_source"] == "ffopportunity" else \
+        [dict(c, desc=XFP_LOOKUP_DESC) if c["key"] == "xfp_pg" else c for c in COLUMNS]
     out_p = {}
     for gsis, row in players.iterrows():
         # nflverse writes the Rams as LA; every other file on the site says LAR.
@@ -626,11 +669,13 @@ def build(season: int) -> dict:
         "season": season,
         "throughWeek": meta["through_week"],
         "generated": dt.datetime.now().isoformat(timespec="seconds"),
-        "source": "nflverse-data (play-by-play, stats, snap counts, Next Gen Stats, PFR advanced, ESPN QBR, injuries, depth charts)",
+        "source": "nflverse-data (play-by-play, stats, snap counts, Next Gen Stats, PFR advanced, ESPN QBR, injuries, depth charts)"
+                  + (", ffopportunity expected points" if meta["xfp_source"] == "ffopportunity" else ""),
+        "xfpSource": meta["xfp_source"],
         "estimates": ["route_rate_est", "tprr_est", "yprr_est", "fprr_est", "xfp_pg", "fpoe_pg"],
         "logFields": ["week", "opp", "snap_pct", "tgt", "rec", "rec_yds", "rec_td", "car", "rush_yds",
                       "rush_td", "att", "pass_yds", "pass_td", "int", "ppr"],
-        "columns": COLUMNS,
+        "columns": cols,
         "teamColumns": TEAM_COLUMNS,
         "players": out_p,
         "teams": out_t,
@@ -655,6 +700,20 @@ def self_check() -> int:
     for c in COLUMNS:
         if c["key"].endswith("_est"):
             assert "(est)" in c["label"], c
+    # ffopportunity: postseason dropped, receiving plus rushing only (passing is not ours to price).
+    e = pd.DataFrame({"game_id": ["g1", "g1", "post"], "week": [1.0, 1.0, 19.0], "player_id": ["a", "b", "a"],
+                      "rec_fantasy_points_exp": [5.0, None, 9.0], "rush_fantasy_points_exp": [1.5, 2.0, 9.0],
+                      "rec_fantasy_points": [4.0, 0.0, 9.0], "rush_fantasy_points": [0.0, 6.0, 9.0],
+                      "pass_fantasy_points_exp": [0.0, 20.0, 0.0]})
+    f = ffo_points(e, {"g1"})
+    assert f["xfp_ffo"].tolist() == [6.5, 2.0] and f["pts_ffo"].tolist() == [4.0, 6.0], f
+    # The published model must still pay 1.0 per expected catch, or xFP stops being full PPR.
+    cached = CACHE / f"ep_weekly_{season_now() - 1}.parquet"
+    if cached.exists():
+        w = pd.read_parquet(cached).fillna(0)
+        X = w[["receptions_exp", "rec_yards_gained_exp", "rec_touchdown_exp", "rec_two_point_conv_exp"]].to_numpy()
+        per_catch = np.linalg.lstsq(X, w["rec_fantasy_points_exp"].to_numpy(), rcond=None)[0][0]
+        assert abs(per_catch - 1.0) < 0.02, f"ffopportunity pays {per_catch:.2f} per expected catch, not 1.0"
     print("build_nflverse_suite self-check ok")
     return 0
 
