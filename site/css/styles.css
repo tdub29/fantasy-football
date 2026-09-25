@@ -818,7 +818,9 @@ table.data.leagues-table .name-cell .name { font-size: 1.1rem; }
 }
 
 /* ========== Context block (coach / turnover / new-team) ========== */
-.ctx-section { margin-top: 18px; display: grid; gap: 12px; }
+/* minmax(0, 1fr), not the implicit auto column: an auto track grows to the
+   widest block's min-content (the efficiency table), 486px in a 374px card. */
+.ctx-section { margin-top: 18px; display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); }
 .ctx-block, .ctx-row {
   padding: 12px 14px;
   background: var(--bg-2);
@@ -827,6 +829,9 @@ table.data.leagues-table .name-cell .name { font-size: 1.1rem; }
 }
 .ctx-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
 .ctx-col { flex: 1; min-width: 0; }
+/* The band's -4px side bleed is meant for a padded plate; this column has no
+   padding, so the bleed ran 4px out of it. */
+.ctx-col > .card-title { margin-left: 0; margin-right: 0; }
 .ctx-flags { display: flex; flex-wrap: wrap; gap: 6px; max-width: 50%; justify-content: flex-end; }
 .flag-pill {
   font-size: 0.62rem; font-weight: 700; letter-spacing: 0.06em;
@@ -1136,7 +1141,7 @@ textarea { resize: vertical; min-height: 80px; }
   border-bottom: 1px solid var(--border);
 }
 .timeline-row:last-child { border-bottom: none; }
-.timeline-row.is-me { background: rgba(var(--accent-rgb),0.04); margin: 0 -14px; padding: 10px 14px; }
+.timeline-row.is-me { background: rgba(var(--accent-rgb),0.04); margin: 0 0 0 -14px; padding: 10px 14px; }
 .timeline-row.is-failed { opacity: 0.55; }
 .timeline-icon {
   width: 24px; height: 24px;
@@ -2893,7 +2898,14 @@ textarea { resize: vertical; min-height: 80px; }
 .traj-arrowcell { align-items: flex-end; font-size: 1rem; }
 
 @media (max-width: 900px) {
-  .traj-row { grid-template-columns: 120px 1fr 90px; }
+  /* minmax(0, 1fr) so the five year columns cannot push the row past the card.
+     Narrower side columns, 6px padding, an untracked header, and the arrow
+     header at header size (it inherited the 1rem of the numbers under it) are
+     what fit "2026" over each bar and "2026→2030" in its column at 360px. */
+  .traj-row { grid-template-columns: 96px minmax(0, 1fr) 74px; }
+  .traj-cell, .traj-sparkcell { padding: 12px 6px; }
+  .traj-row.traj-head { letter-spacing: 0; }
+  .traj-row.traj-head .traj-arrowcell { font-size: inherit; }
   .traj-pvcell { display: none; }
   .traj-row.traj-head .traj-pvcell { display: none; }
 }
@@ -3864,6 +3876,9 @@ body::after {
   .filters .group { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
   .filters .group::-webkit-scrollbar { display: none; }
   .filters .group > * { flex: 0 0 auto; }
+  /* Except a button row, which wraps: with the scrollbar hidden, a button past
+     the edge (SOS, and DB/DL in an IDP league) was cut off with no sign of it. */
+  .filters .group > .toggle-group { flex-shrink: 1; flex-wrap: wrap; }
 }
 
 /* Desktop keeps the card open, so the button never renders there. */
@@ -3973,7 +3988,9 @@ body::after {
   row-gap: 2px;
 }
 .page-header > div:first-child > .page-eyebrow { flex: 0 0 auto; margin-bottom: 0; }
-.page-header > div:first-child > .page-title { flex: 0 0 auto; }
+/* Shrinks and wraps rather than running off a phone: "Washington Football
+   League" is wider than the row. */
+.page-header > div:first-child > .page-title { flex: 0 1 auto; min-width: 0; }
 .page-header > div:first-child > .page-sub { flex: 1 1 auto; min-width: 0; margin-top: 0; }
 
 /* --- Controls that sit on the turf need their own plate ----------------- */
