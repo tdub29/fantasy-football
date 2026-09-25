@@ -501,14 +501,18 @@
   }
   // Colored VOR chip. Positive green (a startable edge), ~0 grey (replacement),
   // negative red (below a freely-available player). Null when no projection.
+  // src 'ros' is the redraft value's basis: rest-of-season points over the best
+  // free body at the position in this league.
   function vorChip(pid, league, src) {
     const lg = league || primaryLeague();
     if (!lg) return null;
-    const v = vorByPid(pid, lg, src || 'blend');
+    const ros = src === 'ros';
+    const v = ros ? rosVorByPid(pid, lg, null, DEPTH_TIER) : vorByPid(pid, lg, src || 'blend');
     if (v == null) return null;
     const color = v >= 30 ? 'var(--green)' : v >= 0 ? 'var(--fg-1)' : 'var(--red)';
+    const pos = ros ? rosPointsByPid().get(String(pid))?.pos : projByPid().get(String(pid))?.p?.pos;
     return h('span', { class: 'tnum', style: { color, fontWeight: 600 },
-      title: `Value over replacement: ${v > 0 ? '+' : ''}${v} projected pts vs the last startable ${projByPid().get(String(pid))?.p?.pos || ''} in ${lg.short_name || lg.name}. Cross-position comparable, higher = more lineup value.` },
+      title: `Value over replacement: ${v > 0 ? '+' : ''}${v} ${ros ? 'rest-of-season' : 'projected'} pts vs the ${ros ? 'best free' : 'last startable'} ${pos || ''} in ${lg.short_name || lg.name}. Cross-position comparable, higher = more lineup value.` },
       `${v > 0 ? '+' : ''}${fmt.decimal(v, 0)}`);
   }
   // Small colored chip for the mispricing gap. +N green (produces above price),
@@ -575,7 +579,7 @@
   }
 
   // A redraft league's top asset should land near the same ceiling KTC's top
-  // dynasty asset does (max ktcValue 9997 / 100 ~= 100, max league VOR ~= 180),
+  // dynasty asset does (max ktcValue 9997 / 100 ~= 100, max league VOR ~= 200),
   // so PV stays comparable across leagues on the My Leagues page.
   const REDRAFT_VOR_SCALE = 0.55;
 
@@ -769,8 +773,8 @@
   function tierValue(p, format, roster = null, tierOverride = null) {
     if (!p) return 0;
     // Redraft prices a season, not a career. VOR is the redraft currency: it is
-    // projected points over the last startable player at that position in THIS
-    // league, so it is cross-position comparable and already knows the slots.
+    // rest-of-season points over replacement in THIS league, so it is
+    // cross-position comparable, continuous, and already knows the slots.
     // Floored at 0 because a deep-bench body should not subtract from roster
     // strength. No projection means no season value, which is the honest answer
     // in a format where next year never arrives. Cross-league callers pass {},
@@ -779,7 +783,12 @@
       const pid = p._sleeperId != null ? p._sleeperId : p.sleeperId;
       // Rest-of-season first. Full-season VOR is the fallback for a player with
       // no weekly line, and it overstates him by the weeks already played.
-      let vor = pid != null ? rosVorByPid(pid, format, roster, tierOverride) : null;
+      // With no roster there is no tier, so the baseline is replacement: the best
+      // body free in THIS league (DEPTH_TIER). Defaulting to tier 1 measured every
+      // player against rank n+1 and floored 162 of Phi Kap's 210 rostered players
+      // to 0, depth and flex bodies included.
+      const tier = roster || tierOverride != null ? tierOverride : DEPTH_TIER;
+      let vor = pid != null ? rosVorByPid(pid, format, roster, tier) : null;
       if (vor == null && pid != null) vor = vorByPid(pid, format, 'blend');
       return vor == null ? 0 : Math.round(Math.max(0, vor) * REDRAFT_VOR_SCALE * 10) / 10;
     }
@@ -2377,23 +2386,23 @@
   // yearsOut=0 -> Present Value (starters now). yearsOut>0 -> Future Value: each
   // player's value aged by the position age-curve, then the lineup re-filled (so a
   // young riser can crack the future lineup over an aging vet).
-  function startingStrength(roster, league, yearsOut = 0, includePicks = false) {
+  // `picks` overrides the roster's owned picks, for a trade that moves some.
+  function startingStrength(roster, league, yearsOut = 0, includePicks = false, picks = null) {
+    // Redraft has no Future Value column to hold an injured player's worth, and
+    // his rest-of-season points already price the weeks he misses, so he stays
+    // on the books. It has no future lineup and no picks either.
+    if (!isDynastyLeague(league)) return redraftLineup(startableIds(roster, { includeStashed: true }), league).strength;
     const idx = rankIndex();
     const vals = [];
     // Present Value is what you can start TODAY, so taxi and IR are out. Future
     // Value includes them: taxi eligibility expires and injuries heal, so a
     // stashed rookie is a real future starter, not a phantom.
-    // Redraft has no Future Value column to hold an injured player's worth, and
-    // his rest-of-season points already price the weeks he misses, so he stays
-    // on the books here. Dynasty keeps the old split: PV is startable-today and
-    // FV is where the heal shows up.
-    const rosBasis = !isDynastyLeague(league);
-    for (const pid of startableIds(roster, { includeStashed: yearsOut > 0 || rosBasis })) {
+    for (const pid of startableIds(roster, { includeStashed: yearsOut > 0 })) {
       const sp = window.PLAYERS[pid]; if (!sp) continue;
-      if (!yearsOut && !rosBasis && isSidelined(pid)) continue;
+      if (!yearsOut && isSidelined(pid)) continue;
       const r = idx.bySleeperId.get(pid) || idx.byName.get(norm(sp.name));
       if (r) {
-        let v = tierValue(r, league, roster);
+        let v = tierValue(r, league);
         if (yearsOut) v *= ageRetention(sp.age, r.pos || sp.pos, yearsOut);
         vals.push({ v, pos: r.pos || sp.pos });
       }
@@ -2410,7 +2419,7 @@
       // Fold in owned picks across every future draft class up to the projected
       // season, the extended horizon means each team's own 2029/2030 firsts are
       // assumed too (default slate), so the out-years reload instead of only aging.
-      for (const p of rosterOwnedPicks(roster.roster_id, league, Math.max(2, yearsOut + 1))) {
+      for (const p of (picks || rosterOwnedPicks(roster.roster_id, league, Math.max(2, yearsOut + 1)))) {
         const ps = parseInt(p.season, 10);
         if (ps <= projSeason) {
           const held = Math.max(0, projSeason - ps);
@@ -2424,6 +2433,31 @@
     const lineup = slots.length ? fillLineup(vals, slots)
       : vals.slice().sort((a, b) => b.v - a.v).slice(0, offenseStarterCount(league));
     return Math.round(lineup.reduce((a, b) => a + b.v, 0) * 10) / 10;
+  }
+
+  // The redraft lineup: rest-of-season points, K and DEF included, filled by the
+  // one filler and ordered on points (floored VOR ties every sub-replacement body
+  // at 0). Strength is the lineup's points over replacement, replacement being the
+  // best FREE body each slot takes, and an EMPTY slot scores 0: trading away both
+  // QBs costs the whole QB, not the sliver of VOR a flat 1QB board gives him, so
+  // no roster gains strength by leaving a slot empty. `empty` counts those holes.
+  function redraftLineup(ids, league) {
+    const ros = rosPointsByPid(), free = rosBoard(league).freeLevel;
+    const assets = [];
+    for (const pid of new Set([...ids].map(String))) {
+      const rec = ros.get(pid);
+      if (rec) assets.push({ pid, pos: projPosGroup(rec.pos), v: rec.pts });
+    }
+    const slots = offenseStartingSlots(league);
+    const filled = fillLineup(assets, slots, false, true);
+    let points = 0, over = 0, empty = 0;
+    slots.forEach((s, i) => {
+      const base = Math.max(0, ...SLOT_TAKES[s.pos].map(p => free[projPosGroup(p)] || 0));
+      const pts = filled[i] ? filled[i].v : 0;
+      if (!filled[i]) empty++;
+      points += pts; over += pts - base;
+    });
+    return { points: Math.round(points * 10) / 10, strength: Math.round(over * REDRAFT_VOR_SCALE * 10) / 10, empty };
   }
 
   // 5-level buy/sell stance for a fantasy roster, league-relative. Quintile of
@@ -6835,6 +6869,7 @@
   // SURPLUS into the other side's positional NEED, within a value band. Returns
   // the single best proposal per partner, ranked by fit + fairness.
   function suggestTrades(lg, me) {
+    if (!isDynastyLeague(lg)) return suggestRedraftTrades(lg, me);
     const posList = ['QB', 'RB', 'WR', 'TE'];
     const myRP = getRosterPlayers(me);
     const mySS = rosterSurplusShortage(myRP, lg);
@@ -6865,12 +6900,48 @@
     for (const o of out) { if (seen.has(o.them.roster_id)) continue; seen.add(o.them.roster_id); uniq.push(o); }
     return uniq.slice(0, 6);
   }
+  // Redraft Trade Finder: KTC-rank "startables" and a 15-value floor found
+  // nothing in Phi Kap (0 startable QBs while rostering two). Here a 1-for-1 at
+  // different positions is proposed only when BOTH starting lineups gain on
+  // rest-of-season points, checked with the same lineup the verdict reads.
+  // ponytail: O(my roster x their roster) lineup fills per partner, ~4k in a
+  // 12-team league; prune by position need if a bigger league makes it slow.
+  function suggestRedraftTrades(lg, me) {
+    const ros = rosPointsByPid();
+    const idsOf = (r) => startableIds(r, { includeStashed: true }).filter(pid => ros.has(pid) && window.PLAYERS[pid]);
+    const gain = (ids, now, out, inn) => redraftLineup(ids.filter(x => x !== out).concat(inn), lg).points - now;
+    const mine = idsOf(me), myNow = redraftLineup(mine, lg).points;
+    const best = [];
+    for (const them of lg.rosters) {
+      if (them.is_me) continue;
+      const theirs = idsOf(them), theirNow = redraftLineup(theirs, lg).points;
+      let top = null;
+      for (const s of mine) for (const g of theirs) {
+        const sp = window.PLAYERS[s], gp = window.PLAYERS[g];
+        if (projPosGroup(ros.get(s).pos) === projPosGroup(ros.get(g).pos)) continue;
+        const dA = gain(mine, myNow, s, g);
+        if (dA <= 0) continue;
+        const dB = gain(theirs, theirNow, g, s);
+        if (dB <= 0) continue;
+        const score = Math.min(dA, dB);
+        if (!top || score > top.score) {
+          top = { them, score, dA, dB, diff: 1 - score / Math.max(dA, dB),
+            send: { pid: s, sleeper: sp, ranked: { pos: sp.pos } }, get: { pid: g, sleeper: gp, ranked: { pos: gp.pos } },
+            sv: playerValue(s, lg), gv: playerValue(g, lg),
+            why: `Both starting lineups gain: you +${Math.round(dA)}, they +${Math.round(dB)} rest-of-season pts.` };
+        }
+      }
+      if (top) best.push(top);
+    }
+    return best.sort((a, b) => b.score - a.score).slice(0, 6);
+  }
   function buildTradeFinder(lg) {
     const me = lg.rosters.find(r => r.is_me);
     const wrap = h('div', { class: 'trade-finder' },
       h('h2', { class: 'section-title' }, 'Trade Finder'),
-      h('p', { class: 'trade-finder-note' },
-        'Balanced 1-for-1 swaps that improve both starting lineups within 18% value. Choose one to load it.'));
+      h('p', { class: 'trade-finder-note' }, isDynastyLeague(lg)
+        ? 'Balanced 1-for-1 swaps that improve both starting lineups within 18% value. Choose one to load it.'
+        : 'One-for-one swaps that raise both starting lineups on rest-of-season points. Choose one to load it.'));
     if (!me) { wrap.appendChild(h('div', { class: 'empty' }, 'No team in this league.')); return wrap; }
     const props = suggestTrades(lg, me);
     if (!props.length) {
@@ -6895,7 +6966,7 @@
           h('span', { class: 'tf-side' }, h('span', { class: 'tf-tag in' }, 'IN'), posChip(p.get.sleeper.pos), h('span', { class: 'name' }, p.get.sleeper.name), h('span', { class: 'tnum tf-val' }, fmt.decimal(p.gv, 0))),
         ),
         h('div', { class: 'tf-fair', style: { color: fairPct >= 90 ? 'var(--green)' : 'var(--amber)' } }, `${fairPct}%`),
-        h('div', { class: 'tf-why' }, `Adds needed ${p.get.ranked.pos} depth from their surplus; you send ${p.send.ranked.pos} depth. ${fairPct}% value-fair.`),
+        h('div', { class: 'tf-why' }, p.why || `Adds needed ${p.get.ranked.pos} depth from their surplus; you send ${p.send.ranked.pos} depth. ${fairPct}% value-fair.`),
       ));
     }
     wrap.appendChild(grid);
@@ -7709,7 +7780,9 @@
       h('div', null,
         h('div', { class:'page-eyebrow' }, 'TRADE LAB'),
         h('h1', { class:'page-title' }, 'Trade Calculator'),
-        h('p', { class:'page-sub' }, 'Click players or picks to add to the pile. Fairness verdict updates live as you build the offer.')
+        h('p', { class:'page-sub' }, isDynastyLeague(lg)
+          ? 'Click players or picks to add to the pile. Fairness verdict updates live as you build the offer.'
+          : 'Click players to add to the pile. The verdict follows both starting lineups and updates live as you build the offer.')
       ),
       h('div', { class:'page-actions' },
         leagueSelector(lg.id, (newId) => { TRADE_STATE.leagueId = newId; TRADE_STATE.sideA = {rosterId:null, picks:new Set()}; TRADE_STATE.sideB = {rosterId:null, picks:new Set()}; viewTrade(newId); navigate(`#trade/${newId}`); })
@@ -7754,6 +7827,9 @@
     const POS = ['QB', 'RB', 'WR', 'TE'];
     const starterN = {};
     for (const p of POS) starterN[p] = Math.max(1, Math.round(targets[p] || 1));
+    // Redraft: value and rank on rest-of-season points, ties (every body below
+    // the best free one is 0) broken on points, not roster order.
+    const dyn = isDynastyLeague(lg);
 
     const teams = lg.rosters.map(r => {
       const byPos = { QB: [], RB: [], WR: [], TE: [] };
@@ -7763,22 +7839,25 @@
         if (!ranked) continue;
         const pos = ranked.pos || sp.pos;
         if (!byPos[pos]) continue;
-        byPos[pos].push({ name: sp.name, pid, age: sp.age, value: tierValue(ranked, lg), posRank: ranked.ktcPosRank || ranked._posRank || null });
+        byPos[pos].push({ name: sp.name, pid, age: sp.age, value: playerValue(pid, lg),
+          pts: dyn ? 0 : (rosPointsByPid().get(String(pid))?.pts || 0),
+          posRank: dyn ? (ranked.ktcPosRank || ranked._posRank || null) : rosPosRank(pid, lg) });
       }
-      const posVal = {}, posTop = {};
+      const posVal = {}, posTop = {}, posPts = {};
       for (const p of POS) {
-        byPos[p].sort((a, b) => b.value - a.value);
+        byPos[p].sort((a, b) => b.value - a.value || b.pts - a.pts);
         posVal[p] = byPos[p].slice(0, starterN[p]).reduce((s, x) => s + x.value, 0);
+        posPts[p] = byPos[p].slice(0, starterN[p]).reduce((s, x) => s + x.pts, 0);
         posTop[p] = byPos[p][0] || null;
       }
-      return { r, posVal, posTop };
+      return { r, posVal, posTop, posPts };
     });
 
     // Rank each position across teams (ascending value = neediest first).
     const n = teams.length;
     const label = {};
     for (const p of POS) {
-      const order = teams.map((t, i) => ({ i, v: t.posVal[p] })).sort((a, b) => a.v - b.v);
+      const order = teams.map((t, i) => ({ i, v: t.posVal[p], pts: t.posPts[p] })).sort((a, b) => a.v - b.v || a.pts - b.pts);
       order.forEach((o, rank) => {
         const frac = n > 1 ? rank / (n - 1) : 1;
         let cls = 'ok', txt = 'OK';
@@ -7797,7 +7876,8 @@
     });
 
     // Biggest TE need = lowest best-TE value; also drives row order.
-    const teByBest = teams.map((t, i) => ({ i, best: t.posTop.TE })).sort((a, b) => (a.best?.value || 0) - (b.best?.value || 0));
+    const teByBest = teams.map((t, i) => ({ i, best: t.posTop.TE }))
+      .sort((a, b) => (a.best?.value || 0) - (b.best?.value || 0) || (a.best?.pts || 0) - (b.best?.pts || 0));
     const neediest = teByBest[0];
 
     const posCell = (i, p) => {
@@ -7847,15 +7927,23 @@
     return wrap;
   }
 
+  // Trade value of one player. Redraft prices the pid's own rest-of-season line,
+  // so a kicker, a defense, or a ranking entry that lost its Sleeper id (DJ
+  // Moore) still prices instead of reading 0. Dynasty goes through the ranking.
+  function playerValue(pid, lg) {
+    if (!isDynastyLeague(lg)) return tierValue({ _sleeperId: String(pid) }, lg);
+    const sleeper = window.PLAYERS[pid]; if (!sleeper) return 0;
+    const r = rankIndex().bySleeperId.get(pid) || rankIndex().byName.get(norm(sleeper.name));
+    return r ? tierValue(r, lg) : 0;
+  }
+
   // Value of a single asset (player or pick) on a trade side.
   KT.assetValue = function(k, lg) {
     if (isPickKey(k)) {
       const { season, round, originRosterId } = parsePickKey(k);
       return pickValue(season, round, originRosterId, lg);
     }
-    const sleeper = window.PLAYERS[k]; if (!sleeper) return 0;
-    const r = rankIndex().bySleeperId.get(k) || rankIndex().byName.get(norm(sleeper.name));
-    return r ? tierValue(r, lg) : 0;
+    return playerValue(k, lg);
   };
 
   // Compute total value for a side (used by both committed math and preview).
@@ -7900,12 +7988,42 @@
     let adjA = aVal, adjB = bVal;
     if (prem.side === 'A') adjA = aVal * (1 + prem.pct);
     else if (prem.side === 'B') adjB = bVal * (1 + prem.pct);
-    const fairness = (Math.min(adjA, adjB) / Math.max(adjA, adjB, 1)) * 100;
+    // Two worthless sides are even, not a 0% win for B.
+    const hi = Math.max(adjA, adjB);
+    const fairness = hi > 0 ? (Math.min(adjA, adjB) / Math.max(hi, 1)) * 100 : 100;
     const delta = adjB - adjA;
     const verdict = fairness >= 90 ? { label:'FAIR', color:'var(--green)' }
                   : fairness >= 75 ? { label:'CLOSE', color:'var(--amber)' }
                   : { label: delta > 0 ? 'WIN FOR A' : 'WIN FOR B', color:'var(--red)' };
     return { ...verdict, pct: fairness, premium: prem.side ? prem : null };
+  };
+
+  // Redraft verdict. Summed value cannot see a lineup: it called a trade that
+  // left Side A with no QB a win for A. This reads each side's starting-lineup
+  // change (tradeLineupImpact) and, once run, the 2026 title odds, which say who
+  // WINS. A side left with a starting slot it cannot fill loses outright. Title
+  // odds count only when a change clears its noise band; then they set the
+  // direction, and the lineup can only sharpen a verdict it agrees with, because
+  // a weak team's title odds compress (5% has little left to lose).
+  // `title` = { a, b, sigA, sigB }, percentage points.
+  KT.redraftVerdict = function(aSize, bSize, impA, impB, title) {
+    if (!aSize || !bSize || !impA || !impB) return { label:'INCOMPLETE', color:'var(--fg-3)', pct: 0, premium: null, note: '' };
+    const holeA = impA.emptied > 0, holeB = impB.emptied > 0;
+    if (holeA !== holeB) {
+      return { label: holeA ? 'WIN FOR B' : 'WIN FOR A', color:'var(--red)', pct: 0, premium: null,
+        note: `Side ${holeA ? 'A' : 'B'} is left with an empty starting slot.` };
+    }
+    const read = (edge, [fair, close], what) => ({ edge, what, grade: Math.abs(edge) <= fair ? 0 : Math.abs(edge) <= close ? 1 : 2 });
+    const line = read((impA.delta - impB.delta) / 2, SIM.verdictLineupPts, (m) => `Lineup edge ${Math.round(m)} pts`);
+    let pick = line;
+    if (title && (title.sigA || title.sigB)) {
+      const odds = read((title.a - title.b) / 2, SIM.verdictTitlePp, (m) => `${CURRENT_SEASON} title odds edge ${m.toFixed(1)} pts`);
+      if (Math.sign(odds.edge) !== Math.sign(line.edge) || odds.grade >= line.grade) pick = odds;
+    }
+    const side = pick.edge > 0 ? 'A' : 'B', what = pick.what(Math.abs(pick.edge));
+    const verdict = [{ label:'FAIR', color:'var(--green)' }, { label:'CLOSE', color:'var(--amber)' },
+      { label:`WIN FOR ${side}`, color:'var(--red)' }][pick.grade];
+    return { ...verdict, pct: 0, premium: null, note: pick.grade ? `${what} to Side ${side}` : `${what}, even` };
   };
 
   KT.refreshMiddle = function(lg, previewSide, previewKey, previewMode) {
@@ -7923,11 +8041,20 @@
     const bVal = KT.valOf({ picks: bSet }, lg);
     const aHead = KT.headlinerOf({ picks: aSet }, lg);
     const bHead = KT.headlinerOf({ picks: bSet }, lg);
-    const v = KT.computeFairness(aVal, bVal, aSet.size, bSet.size, aHead, bHead);
+    // Starting-lineup projected points now → after (re-optimized, so a sent
+    // starter is backfilled by the next-best, the true "what replaces this").
+    const impA = tradeLineupImpact(lg, TRADE_STATE.sideA.rosterId, aSet, bSet);
+    const impB = tradeLineupImpact(lg, TRADE_STATE.sideB.rosterId, bSet, aSet);
     const m = refs.middle;
     const oddsKey = `${TRADE_STATE.sideA.rosterId}:${[...TRADE_STATE.sideA.picks].sort()}|${TRADE_STATE.sideB.rosterId}:${[...TRADE_STATE.sideB.picks].sort()}`;
+    // Title odds belong to the committed trade they were run on, never a preview.
+    const title = !previewKey && m.title && m.title.key === oddsKey ? m.title : null;
+    const v = isDynastyLeague(lg)
+      ? KT.computeFairness(aVal, bVal, aSet.size, bSet.size, aHead, bHead)
+      : KT.redraftVerdict(aSet.size, bSet.size, impA, impB, title);
     if (m.node.dataset.oddsKey && m.node.dataset.oddsKey !== oddsKey) {
       delete m.node.dataset.oddsKey;
+      m.title = null;
       m.titleA.textContent = '·'; m.titleB.textContent = '·';
       m.titleA.style.color = ''; m.titleB.style.color = '';
       for (const r of m.titleRows || []) {
@@ -7941,7 +8068,7 @@
     m.bVal.textContent = fmt.decimal(bVal, 1);
     m.verdict.textContent = v.label;
     m.verdict.style.color = v.color;
-    m.fair.textContent = v.pct.toFixed(0) + '% fairness';
+    m.fair.textContent = v.note != null ? v.note : v.pct.toFixed(0) + '% fairness';
     if (m.premiumNote) {
       if (v.premium) {
         const nm = v.premium.side === 'A' ? 'Side A' : 'Side B';
@@ -7960,10 +8087,6 @@
     m.deltaB.textContent = (postB.delta >= 0 ? '+' : '') + fmt.decimal(postB.delta, 1);
     m.deltaB.style.color = postB.delta >= 0 ? 'var(--green)' : 'var(--red)';
 
-    // Starting-lineup projected points now → after (re-optimized, so a sent
-    // starter is backfilled by the next-best, the true "what replaces this").
-    const impA = tradeLineupImpact(lg, TRADE_STATE.sideA.rosterId, aSet, bSet);
-    const impB = tradeLineupImpact(lg, TRADE_STATE.sideB.rosterId, bSet, aSet);
     const setImp = (el, imp) => {
       if (!imp) { el.textContent = '·'; el.style.color = 'var(--fg-3)'; return; }
       el.textContent = `${fmt.decimal(imp.now, 0)} → ${fmt.decimal(imp.after, 0)} (${imp.delta >= 0 ? '+' : ''}${fmt.decimal(imp.delta, 0)})`;
@@ -7974,11 +8097,9 @@
     // 3-year outlook. For each year horizon, net Δ for each side =
     // value of pieces RECEIVED (projected forward) − value SENT (projected
     // forward). Side A receives bSet, sends aSet (and vice versa).
+    // Redraft renders no year rows: there is no next season to age into.
     const aIsValid = aSet.size > 0 && bSet.size > 0;
-    const cells = [
-      [m.y0, 0], [m.y1, 1], [m.y2, 2], [m.y3, 3], [m.y4, 4], [m.y5, 5],
-    ];
-    for (const [yr, n] of cells) {
+    for (const [yr, n] of m.yearRows) {
       if (!aIsValid) {
         yr.aCell.textContent = '·'; yr.bCell.textContent = '·';
         yr.aSub.textContent  = '';  yr.bSub.textContent  = '';
@@ -8298,6 +8419,10 @@
   // Compute which picks a given roster currently owns, accounting for traded_picks.
   // Returns array of { season, round, originRosterId, label, value }
   function rosterOwnedPicks(rosterId, league, horizon = 2) {
+    // Redraft has no rookie draft, so it owns no picks. Gated here, not per
+    // caller: the future-strength rows and the title simulator used to price 8
+    // phantom KTC picks into a redraft roster through this function.
+    if (!isDynastyLeague(league)) return [];
     const result = [];
     const traded = league.traded_picks || [];
     // A season's rookie picks stop being current assets once that draft
@@ -8374,7 +8499,13 @@
       const q = norm(input.value.trim());
       results.innerHTML = '';
       if (!q) { results.hidden = true; return; }
-      const matches = idx.all.filter(p => p._sleeperId && norm(p.name).includes(q)).slice(0, 8);
+      // Redraft searches the rest-of-season board, not the dynasty rankings:
+      // those have no K or DEF and drop anyone whose entry lost its Sleeper id.
+      const matches = isDynastyLeague(lg)
+        ? idx.all.filter(p => p._sleeperId && norm(p.name).includes(q)).slice(0, 8)
+        : (window.WEEKLY_RANKINGS?.players || []).filter(p => window.PLAYERS[p.id] && norm(p.name).includes(q))
+            .map(p => ({ name: p.name, pos: p.pos, _sleeperId: String(p.id), pts: rosPointsByPid().get(String(p.id))?.pts || 0 }))
+            .sort((a, b) => b.pts - a.pts).slice(0, 8);
       results.hidden = false;
       if (!matches.length) { results.appendChild(h('div', { class:'trade-search-empty' }, 'No players match.')); return; }
       for (const p of matches) {
@@ -8426,7 +8557,8 @@
 
     // Redraft picks do not exist as tradeable assets, so the pick pool is empty
     // there and the Picks card never renders.
-    const ownedPicks = (roster && isDynastyLeague(lg)) ? rosterOwnedPicks(roster.roster_id, lg) : [];
+    const dyn = isDynastyLeague(lg);
+    const ownedPicks = (roster && dyn) ? rosterOwnedPicks(roster.roster_id, lg) : [];
     const pickByKey = new Map(ownedPicks.map(p => [pickKey(p.season, p.round, p.originRosterId), p]));
 
     // Cached row factory for the pile (called when adding a row to pile).
@@ -8458,14 +8590,15 @@
         val = meta.value;
       } else {
         const sleeper = window.PLAYERS[k];
-        const ranked = sleeper ? (rankIndex().bySleeperId.get(k) || rankIndex().byName.get(norm(sleeper.name))) : null;
         nameNode = h('div', { class:'name-cell' },
           sleeper ? posChip(sleeper.pos) : null,
           sleeper ? teamChip(sleeper.team) : null,
           h('span', { class:'name' }, sleeper ? sleeper.name : `[${k}]`),
-          (() => { const vc = vorChip(k, lg, 'blend'); return vc ? h('span', { class:'pile-vor', title:'VOR: projected points over a replacement starter at this position, the starting-lineup value you gain/lose' }, 'VOR ', vc) : null; })(),
+          // Redraft: the chip is the value's own basis (rest-of-season points over
+          // the best free body), so chip and value always agree in order.
+          (() => { const vc = vorChip(k, lg, dyn ? 'blend' : 'ros'); return vc ? h('span', { class:'pile-vor', title:'VOR: projected points over a replacement starter at this position, the starting-lineup value you gain/lose' }, 'VOR ', vc) : null; })(),
         );
-        val = ranked ? tierValue(ranked, lg) : 0;
+        val = playerValue(k, lg);
       }
       const row = h('div', {
         class:'trade-pile-row',
@@ -8490,7 +8623,7 @@
     };
 
     const totalSpan = h('span', { class:'tnum trade-pile-total' }, '0.0');
-    const pileEmpty = h('div', { class:'tip trade-pile-empty' }, 'Drag players or picks here, or click below to add.');
+    const pileEmpty = h('div', { class:'tip trade-pile-empty' }, `Drag players${dyn ? ' or picks' : ''} here, or click below to add.`);
     const pile = h('div', { class:'trade-pile-rows' });
     const pileWrap = h('div', { class:'trade-pile' },
       h('div', { class:'card-title' }, h('span', null, 'In Trade'), h('span', { style:{ float:'right' } }, totalSpan)),
@@ -8504,11 +8637,14 @@
     // Player pool
     let pool;
     if (roster) {
+      // Redraft breaks value ties (every sub-replacement body is 0) on
+      // rest-of-season points, so a starting QB never sorts below a scrub.
+      const ros = (pid) => dyn ? 0 : (rosPointsByPid().get(String(pid))?.pts || 0);
       const arr = (roster.players || []).map(pid => {
         const sleeper = window.PLAYERS[pid];
         const ranked = sleeper ? (rankIndex().bySleeperId.get(pid) || rankIndex().byName.get(norm(sleeper.name))) : null;
-        return { pid, sleeper, ranked, value: ranked ? tierValue(ranked, lg) : 0 };
-      }).sort((a,b) => b.value - a.value);
+        return { pid, sleeper, ranked, value: playerValue(pid, lg) };
+      }).sort((a,b) => b.value - a.value || ros(b.pid) - ros(a.pid));
       pool = h('div', { class:'trade-pool' },
         h('div', { class:'card-title' }, `${roster.team_name} Roster`),
       );
@@ -8531,7 +8667,8 @@
             p.sleeper ? posChip(p.sleeper.pos) : null,
             p.sleeper ? teamChip(p.sleeper.team) : null,
             h('span', { class:'name' }, p.sleeper ? p.sleeper.name : `[${p.pid}]`),
-            p.ranked ? tierChip(p.ranked.tier, p.ranked.category) : null
+            // Tier letters are dynasty categories (cornerstone, mainstay...).
+            p.ranked && dyn ? tierChip(p.ranked.tier, p.ranked.category) : null
           ),
           p.value ? h('span', { class:'tnum' }, fmt.decimal(p.value,1)) : h('span', { class:'muted' }, '.')
         );
@@ -8699,7 +8836,9 @@
     const titleB = h('span', { class:'tnum trade-title-value' }, '·');
     const titleMeta = h('div', { class:'tip trade-title-meta' }, 'Run after both sides have assets.');
     let baselineOdds = null;
-    const TITLE_YEARS = 3, TITLE_SIMS = 2500;
+    // Redraft prices one season: rosters do not carry over, so no 2027 row.
+    const dyn = isDynastyLeague(lg);
+    const TITLE_YEARS = dyn ? 3 : 1, TITLE_SIMS = SIM.tradeSimBudget / TITLE_YEARS;
     let titleRows = [];
     const runTitleOdds = h('button', { type:'button', class:'trade-title-run', onclick: () => {
       const aSet = TRADE_STATE.sideA.picks, bSet = TRADE_STATE.sideB.picks;
@@ -8709,34 +8848,47 @@
       const key = `${aRosterId}:${[...aSet].sort()}|${bRosterId}:${[...bSet].sort()}`;
       runTitleOdds.disabled = true;
       runTitleOdds.textContent = 'Running...';
-      titleMeta.textContent = `Simulating ${TITLE_YEARS} seasons, ${TITLE_SIMS.toLocaleString()} times each, before and after.`;
+      titleMeta.textContent = `Simulating ${dyn ? `${TITLE_YEARS} seasons` : `the rest of ${CURRENT_SEASON}`}, ${TITLE_SIMS.toLocaleString()} times each, before and after.`;
       setTimeout(() => {
         try {
           // Same seeds before and after (common random numbers): the draws
           // match, so the change in a cell is the trade, not simulation noise.
           if (!baselineOdds) baselineOdds = titleOddsByYear(lg, { years:TITLE_YEARS, sims:TITLE_SIMS });
           const after = titleOddsByYear(lg, { years:TITLE_YEARS, sims:TITLE_SIMS, whatIf });
+          // Noise band: z standard errors of the difference of two simulated
+          // rates (an upper bound, common random numbers only shrink it). A
+          // change inside it paints grey and never decides the verdict.
+          const bandOf = (p0, p1) => SIM.titleBandZ * Math.sqrt((p0 * (1 - p0) + p1 * (1 - p1)) / TITLE_SIMS) * 100;
+          // Compared at printed precision, so "+0.8 ±0.8" never paints as signal.
+          const inside = (d, band) => Math.round(Math.abs(d) * 10) <= Math.round(Math.max(0.1, band) * 10);
+          const tone = (d, band) => inside(d, band) ? 'var(--fg-2)' : d > 0 ? 'var(--green)' : 'var(--red)';
           const paint = (cell, sub, before, next) => {
-            const delta = (next - before) * 100;
+            const delta = (next - before) * 100, band = bandOf(before, next);
             cell.textContent = `${delta >= 0 ? '+' : ''}${delta.toFixed(1)}`;
-            cell.style.color = Math.abs(delta) < 0.1 ? 'var(--fg-2)' : delta > 0 ? 'var(--green)' : 'var(--red)';
-            sub.textContent = `${(before * 100).toFixed(1)}% \u2192 ${(next * 100).toFixed(1)}%`;
-            return delta;
+            cell.style.color = tone(delta, band);
+            sub.textContent = `${(before * 100).toFixed(1)}% \u2192 ${(next * 100).toFixed(1)}% \u00b1${band.toFixed(1)}`;
+            return { delta, band };
           };
-          let totA = 0, totB = 0;
+          let totA = 0, totB = 0, varA = 0, varB = 0;
           after.forEach((yr, k) => {
             const row = titleRows[k], base = baselineOdds[k].byRoster;
-            totA += paint(row.aCell, row.aSub, base.get(aRosterId) || 0, yr.byRoster.get(aRosterId) || 0);
-            totB += paint(row.bCell, row.bSub, base.get(bRosterId) || 0, yr.byRoster.get(bRosterId) || 0);
+            const pa = paint(row.aCell, row.aSub, base.get(aRosterId) || 0, yr.byRoster.get(aRosterId) || 0);
+            const pb = paint(row.bCell, row.bSub, base.get(bRosterId) || 0, yr.byRoster.get(bRosterId) || 0);
+            totA += pa.delta; varA += pa.band ** 2; totB += pb.delta; varB += pb.band ** 2;
           });
-          const sum = (el, d) => {
-            el.textContent = `${d >= 0 ? '+' : ''}${d.toFixed(1)} pts over ${TITLE_YEARS} seasons`;
-            el.style.color = Math.abs(d) < 0.1 ? 'var(--fg-2)' : d > 0 ? 'var(--green)' : 'var(--red)';
+          const sum = (el, d, band) => {
+            el.textContent = `${d >= 0 ? '+' : ''}${d.toFixed(1)} pts ${dyn ? `over ${TITLE_YEARS} seasons` : `in ${CURRENT_SEASON}`}`;
+            el.style.color = tone(d, band);
           };
-          sum(titleA, totA); sum(titleB, totB);
+          const bandA = Math.sqrt(varA), bandB = Math.sqrt(varB);
+          sum(titleA, totA, bandA); sum(titleB, totB, bandB);
           node.dataset.oddsKey = key;
-          titleMeta.textContent = `Change in title odds, percentage points, per season. ${TITLE_SIMS.toLocaleString()} simulations each. `
-            + 'Later seasons age every roster forward and slot draft picks by the simulated finish, so this is where picks show up.';
+          out.title = { key, a: totA, b: totB, sigA: !inside(totA, bandA), sigB: !inside(totB, bandB) };
+          titleMeta.textContent = dyn
+            ? `Change in title odds, percentage points, per season. ${TITLE_SIMS.toLocaleString()} simulations each. `
+              + 'Later seasons age every roster forward and slot draft picks by the simulated finish, so this is where picks show up. Grey is inside the \u00b1 noise band.'
+            : `Change in ${CURRENT_SEASON} title odds, percentage points. ${TITLE_SIMS.toLocaleString()} simulations of the remaining schedule from the current records. Grey is inside the \u00b1 noise band.`;
+          KT.refreshMiddle(lg);
         } catch (err) {
           console.error('Trade title odds failed', err);
           titleMeta.textContent = 'Could not run title odds. Try again.';
@@ -8765,12 +8917,7 @@
       return { row, aCell, bCell, aSub, bSub };
     };
     titleRows = Array.from({ length: TITLE_YEARS }, (_, k) => makeYearRow(String(CURRENT_SEASON + k)));
-    const y0 = makeYearRow('Today');
-    const y1 = makeYearRow('+1 yr');
-    const y2 = makeYearRow('+2 yr');
-    const y3 = makeYearRow('+3 yr');
-    const y4 = makeYearRow('+4 yr');
-    const y5 = makeYearRow('+5 yr');
+    const yearRows = dyn ? ['Today', '+1 yr', '+2 yr', '+3 yr', '+4 yr', '+5 yr'].map((l, n) => [makeYearRow(l), n]) : [];
 
     const node = h('div', { class:'trade-middle' },
       h('div', { class:'trade-middle-card' },
@@ -8791,7 +8938,7 @@
           h('div', { style:{ display:'flex', justifyContent:'space-between' } }, deltaA, deltaB)
         ),
         h('div', { style:{ marginTop:'14px' } },
-          h('div', { class:'tip', style:{ marginBottom:'4px' }, title:'Your best starting lineup’s projected season points, now vs after the trade. The lineup is re-optimized, so a starter you send is automatically replaced by your next-best at that position, the change is the real lineup impact of what you’re giving up vs getting.' }, 'Starting Lineup (proj pts) · now → after'),
+          h('div', { class:'tip', style:{ marginBottom:'4px' }, title:`Your best starting lineup’s projected ${dyn ? 'season' : 'rest-of-season'} points, now vs after the trade. The lineup is re-optimized, so a starter you send is automatically replaced by your next-best at that position, the change is the real lineup impact of what you’re giving up vs getting.${dyn ? '' : ' A slot nobody can fill scores 0.'}` }, `Starting Lineup (${dyn ? 'proj' : 'rest-of-season'} pts) · now → after`),
           h('div', { class:'trade-lineup-values' },
             h('div', { class:'trade-lineup-side' },
               h('span', { class:'trade-lineup-side-label' }, 'Side A'), lineupA),
@@ -8799,7 +8946,7 @@
               h('span', { class:'trade-lineup-side-label' }, 'Side B'), lineupB))
         ),
         h('div', { class:'trade-title-odds t3y' },
-          h('div', { class:'tip', style:{ marginBottom:'4px' } }, 'Championship odds by season, change in pts'),
+          h('div', { class:'tip', style:{ marginBottom:'4px' } }, dyn ? 'Championship odds by season, change in pts' : `${CURRENT_SEASON} championship odds, change in pts`),
           h('div', { class:'t3y-head' },
             h('span', { class:'t3y-label' }, ''),
             h('span', { class:'t3y-cell tip' }, 'Side A'),
@@ -8815,7 +8962,7 @@
           runTitleOdds,
           titleMeta,
         ),
-        h('div', { class:'t3y' },
+        dyn ? h('div', { class:'t3y' },
           h('div', { class:'tip', style:{ marginBottom:'4px' } }, 'Year-by-Year Team Strength Δ'),
           h('div', { class:'t3y-head' },
             h('span', { class:'t3y-label' }, ''),
@@ -8823,9 +8970,9 @@
             h('span', { class:'t3y-sep' }, ''),
             h('span', { class:'t3y-cell tip' }, 'Side B'),
           ),
-          y0.row, y1.row, y2.row, y3.row, y4.row, y5.row,
+          ...yearRows.map(([r]) => r.row),
           h('div', { class:'tip t3y-note' }, 'On-field strength change in each season. Players age via position curve; picks count 0 until their draft year, then convert as age-22 WR and age forward.')
-        ),
+        ) : null,
         h('div', { style:{ marginTop:'14px' } },
           h('button', { class:'ghost', style:{ width:'100%' }, onclick: () => {
             TRADE_STATE.sideA.picks = new Set(); TRADE_STATE.sideB.picks = new Set();
@@ -8834,8 +8981,9 @@
         )
       ),
     );
-    return { node, aVal, bVal, verdict, fair, premiumNote, deltaA, deltaB, lineupA, lineupB,
-      titleA, titleB, titleMeta, runTitleOdds, titleRows, y0, y1, y2, y3, y4, y5 };
+    const out = { node, aVal, bVal, verdict, fair, premiumNote, deltaA, deltaB, lineupA, lineupB,
+      titleA, titleB, titleMeta, runTitleOdds, titleRows, yearRows, title: null };
+    return out;
   }
   // ============================================================
   // Dynasty aging model, used by trade-calc 3-year outlook
@@ -8898,39 +9046,22 @@
     return total;
   }
 
-  // Project a roster's on-field team strength at horizon N.
-  // Same model as the trade-pile projection: current players age forward by
-  // position curve; picks contribute 0 until their draft year, then convert
-  // to age-22 WR rookies that age forward through the remaining horizon.
-  // Starting-lineup strength (best-K) for an explicit player-id list + owned-pick
-  // list, projected yearsOut. This is the SAME basis as startingStrength / PV-FV,
-  // so trade projections read on the same ~0-700 scale as the standings, not the
-  // old full-roster sum (~1500). Picks fold in only for future years (converted to
-  // aged rookies), matching PV (year 0 = players only) / FV.
-  function lineupStrengthFrom(playerIds, picks, lg, yearsOut) {
-    const idx = rankIndex();
-    const vals = [];
-    for (const pid of playerIds) {
-      const sp = window.PLAYERS[pid]; if (!sp) continue;
-      const r = idx.bySleeperId.get(pid) || idx.byName.get(norm(sp.name));
-      if (!r) continue;
-      let v = tierValue(r, lg);
-      if (yearsOut) v *= ageRetention(sp.age, r.pos || sp.pos, yearsOut);
-      vals.push(v);
-    }
-    if (yearsOut && picks) {
-      const projSeason = CURRENT_SEASON + yearsOut;
-      for (const p of picks) {
-        const ps = parseInt(p.season, 10);
-        if (ps <= projSeason) vals.push((p.value || 0) * ageRetention(22, 'WR', Math.max(0, projSeason - ps)));
-      }
-    }
-    vals.sort((a, b) => b - a);
-    return Math.round(vals.slice(0, offenseStarterCount(lg)).reduce((a, b) => a + b, 0) * 10) / 10;
-  }
+  // Project a roster's on-field team strength at horizon N. This IS
+  // startingStrength (PV at year 0, FV after, picks folded in as aged rookies),
+  // so the trade rows read on the standings' scale and fill a legal lineup. A
+  // hand-rolled top-K used to live here and started two QBs in a 1QB league.
   function projectedRosterStrength(roster, lg, yearsOut) {
-    if (!roster) return 0;
-    return lineupStrengthFrom(roster.players || [], rosterOwnedPicks(roster.roster_id, lg, Math.max(2, yearsOut + 1)), lg, yearsOut);
+    return roster ? startingStrength(roster, lg, yearsOut, true) : 0;
+  }
+
+  // The roster as it looks after a trade: sent players leave the active list and
+  // the taxi/IR lists, received players join the active list. Picks are not
+  // players, so they are ignored here.
+  function tradedRoster(roster, sendKeys, receiveKeys) {
+    const out = new Set([...sendKeys].map(String));
+    const keep = (ids) => (ids || []).map(String).filter(id => !out.has(id));
+    const recv = [...receiveKeys].filter(k => !isPickKey(k)).map(String);
+    return { ...roster, players: [...keep(roster.players), ...recv], taxi: keep(roster.taxi), reserve: keep(roster.reserve) };
   }
 
   // Same as projectedRosterStrength but with a trade swap applied: remove
@@ -8940,17 +9071,11 @@
   function projectedTradeStrength(lg, rosterId, sendKeys, receiveKeys, yearsOut) {
     const roster = lg.rosters.find(r => r.roster_id === rosterId);
     if (!roster) return 0;
-    const sendPlayers = new Set(), sendPicks = new Set(), recvPlayers = new Set(), recvPicks = new Set();
-    for (const k of sendKeys) (isPickKey(k) ? sendPicks : sendPlayers).add(String(k));
-    for (const k of receiveKeys) (isPickKey(k) ? recvPicks : recvPlayers).add(String(k));
-    const players = new Set((roster.players || []).map(String));
-    for (const id of sendPlayers) players.delete(id);
-    for (const id of recvPlayers) players.add(id);
     // Post-trade owned picks (send removed, receive added).
     const byKey = new Map(rosterOwnedPicks(rosterId, lg, Math.max(2, yearsOut + 1)).map(p => [pickKey(p.season, p.round, p.originRosterId), p]));
-    for (const k of sendPicks) byKey.delete(k);
-    for (const k of recvPicks) if (!byKey.has(k)) { const { season, round, originRosterId } = parsePickKey(k); byKey.set(k, { season, round, originRosterId, value: pickValue(season, round, originRosterId, lg) }); }
-    return lineupStrengthFrom(players, [...byKey.values()], lg, yearsOut);
+    for (const k of sendKeys) if (isPickKey(k)) byKey.delete(k);
+    for (const k of receiveKeys) if (isPickKey(k) && !byKey.has(k)) { const { season, round, originRosterId } = parsePickKey(k); byKey.set(k, { season, round, originRosterId, value: pickValue(season, round, originRosterId, lg) }); }
+    return startingStrength(tradedRoster(roster, sendKeys, receiveKeys), lg, yearsOut, true, [...byKey.values()]);
   }
 
   // For each year of the outlook, compute both sides' projected total + rank
@@ -8982,11 +9107,8 @@
     // Present starting-lineup value (PV basis), same scale as the standings. Picks
     // don't count at year 0, so this Δ is the immediate lineup change from the
     // player swap; pick impact shows in the year-by-year outlook below.
-    const before = lineupStrengthFrom(roster.players || [], null, lg, 0);
-    const players = new Set((roster.players || []).map(String));
-    for (const id of removeIds) players.delete(String(id));
-    for (const id of addIds) players.add(String(id));
-    const after = lineupStrengthFrom(players, null, lg, 0);
+    const before = startingStrength(roster, lg);
+    const after = startingStrength(tradedRoster(roster, removeIds, addIds), lg);
     return { before, after, delta: Math.round((after - before) * 10) / 10 };
   }
 
@@ -11076,6 +11198,20 @@
     // WR-WR correlation the data says does not exist.
     stackCorr: { WR: 0.303, TE: 0.242, RB: 0.072 },
     byeWeeks: [5, 14],         // inclusive range a player's bye can land in
+    // Trade Lab title odds: total simulated seasons per run, split across the
+    // horizon (dynasty 3 x 2500, redraft 1 x 7500, same runtime).
+    tradeSimBudget: 7500,
+    // A title-odds change inside z standard errors of the difference is painted
+    // as noise, not signal. One run at 2500 sims moved a bench-for-bench swap by
+    // -0.5 to +1.1 across six seeds, so an unbanded delta flips sign on a reseed.
+    titleBandZ: 2,
+    // Redraft verdict bands on the edge (half the gap between the two sides'
+    // changes): FAIR inside the first, CLOSE inside the second, else a WIN.
+    // Lineup edge in rest-of-season points (15 pts is ~1 pt a week over the 15
+    // weeks left); title edge in percentage points of 2026 title odds.
+    // A 1.0 pt title edge is 12% of a 12-team fair share (8.3%).
+    verdictLineupPts: [15, 40],
+    verdictTitlePp: [0.5, 1.0],
   };
 
   // Deterministic RNG so the same roster always returns the same odds. A title
@@ -11160,12 +11296,13 @@
 
   // Start-of-season draw: how each player's year actually breaks, and when his
   // bye falls. Re-rolled once per simulated season, never per week.
-  function rollSeason(pool, rnd, normal) {
+  // `played` weeks are already in the books, so a designation counts from now.
+  function rollSeason(pool, rnd, normal, played = 0) {
     const [b0, b1] = SIM.byeWeeks;
     for (const a of pool) {
       a.mult = Math.exp(normal() * SIM.projectionSigma - SIM.projectionSigma * SIM.projectionSigma / 2);
       a.bye = b0 + Math.floor(rnd() * (b1 - b0 + 1));
-      a.outUntil = a.startOut;
+      a.outUntil = a.startOut && a.startOut + played;
       a.v = a.mean * a.mult;
     }
     // Sort ONCE here, not once per week: `v` is fixed for the season, so the
@@ -11176,7 +11313,7 @@
   // One team's week: decide availability, set the lineup on EXPECTED points
   // (a manager can't see the outcome), then sample what those starters actually
   // did. Getting that order right is the whole reason depth shows up as value.
-  function simWeek(pool, slots, week, rnd, normal) {
+  function simWeek(pool, slots, week, rnd, normal, firstWeek = 1) {
     const avail = [];
     for (const a of pool) {
       if (week === a.bye) continue;
@@ -11186,7 +11323,7 @@
         a.outUntil = week + Math.max(1, Math.round(-Math.log(1 - rnd()) * SIM.injuryDurationWeeks));
         continue;
       }
-      if (a.questionable && week === 1 && rnd() < SIM.questionableOutChance) continue;
+      if (a.questionable && week === firstWeek && rnd() < SIM.questionableOutChance) continue;
       // The manager sets his lineup on the season-long read of the player (`v`,
       // set in rollSeason), he can see a breakout by midseason, he can't see
       // Sunday. `avail` inherits the pool's descending order, hence presorted.
@@ -11230,9 +11367,9 @@
     return Math.max(0, total * (1 + normal() * SIM.teamShockCv));
   }
 
-  // Round-robin-ish schedule: each week pair the teams up at random. The real
-  // Sleeper schedule isn't in the local data, and over 14 weeks a random pairing
-  // and a fixed one converge for playoff-odds purposes.
+  // Fallback schedule: each week pair the teams up at random. championshipOdds
+  // uses the real Sleeper schedule (FANTASY_SCHEDULE) whenever a week has one,
+  // which matters once weeks are played: who you still face is not random.
   function randomPairing(n, rnd) {
     const idx = Array.from({ length: n }, (_, i) => i);
     for (let i = n - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [idx[i], idx[j]] = [idx[j], idx[i]]; }
@@ -11355,6 +11492,8 @@
   // this year's simulated finish), but it keeps all teams, because a trade has
   // two sides and titleEquity only tracks mine.
   function titleOddsByYear(lg, { years = 3, sims = 2500, whatIf = null, seed = 20260807 } = {}) {
+    // Redraft rosters do not carry over, so there is no second season to price.
+    if (!isDynastyLeague(lg)) years = 1;
     const out = [];
     let ranks = null;
     for (let y = 0; y < years; y++) {
@@ -11406,15 +11545,46 @@
     const rnd = mulberry32(seed);
     const normal = makeNormal(rnd);
 
+    // The season in progress starts from the real standings. Replaying all 14
+    // weeks from 0-0 gave Phi Kap's 2-0 team the league's lowest title odds.
+    // Seeded only when the records add up to the weeks played (one result per
+    // team-week, two in a median league), so a stale dump or a league with no
+    // schedule on file falls back to the full replay instead of double counting.
+    const sched = window.FANTASY_SCHEDULE?.leagues?.[String(lg.id)];
+    const median = !!sched?.medianScoring;
+    const weeksIn = yearsOut || lg.status !== 'in_season' ? 0 : Math.min(cfg.regularWeeks, Math.max(0, (lg.week || 1) - 1));
+    const games = rosters.reduce((s, r) => s + (r.wins || 0) + (r.losses || 0) + (r.ties || 0), 0);
+    const played = weeksIn && games === n * weeksIn * (median ? 2 : 1) ? weeksIn : 0;
+    const first = played + 1;
+    const idxOf = new Map(rosters.map((r, i) => [r.roster_id, i]));
+    const pairsByWeek = [];
+    for (let w = first; w <= cfg.regularWeeks && !yearsOut; w++) {
+      const wk = sched?.weeks?.[w];
+      if (!wk) continue;
+      const pairs = [];
+      for (const [a, b] of Object.entries(wk)) {
+        const i = idxOf.get(Number(a)), j = idxOf.get(Number(b));
+        if (i != null && j != null && i < j) pairs.push([i, j]);
+      }
+      if (pairs.length * 2 === n) pairsByWeek[w] = pairs;
+    }
+
     for (let s = 0; s < sims; s++) {
-      const wins = new Array(n).fill(0), pts = new Array(n).fill(0);
-      for (const pool of pools) rollSeason(pool, rnd, normal);
-      for (let w = 1; w <= cfg.regularWeeks; w++) {
-        const scores = pools.map(p => simWeek(p, slots, w, rnd, normal));
+      const wins = rosters.map(r => played ? (r.wins || 0) + (r.ties || 0) / 2 : 0);
+      const pts = rosters.map(r => played ? (r.fpts || 0) : 0);
+      for (const pool of pools) rollSeason(pool, rnd, normal, played);
+      for (let w = first; w <= cfg.regularWeeks; w++) {
+        const scores = pools.map(p => simWeek(p, slots, w, rnd, normal, first));
         for (let i = 0; i < n; i++) pts[i] += scores[i];
-        for (const [a, b] of randomPairing(n, rnd)) {
+        for (const [a, b] of (pairsByWeek[w] || randomPairing(n, rnd))) {
           if (scores[a] > scores[b]) wins[a]++; else if (scores[b] > scores[a]) wins[b]++;
           else { wins[a] += 0.5; wins[b] += 0.5; }
+        }
+        // Median leagues also play the field: top half of the week scores a win.
+        if (median) {
+          const sorted = scores.slice().sort((x, y) => x - y);
+          const mid = (sorted[(n - 1) >> 1] + sorted[n >> 1]) / 2;
+          for (let i = 0; i < n; i++) wins[i] += scores[i] > mid ? 1 : scores[i] === mid ? 0.5 : 0;
         }
       }
       // Seed by record, points-for as the tiebreak (Sleeper's default).
@@ -11525,6 +11695,15 @@
     if (!roster) return null;
     const sent = new Set([...sendSet].filter(k => !isPickKey(k)).map(String));
     const recv = [...recvSet].filter(k => !isPickKey(k)).map(String);
+    // Redraft scores the lineup on the value's own basis: rest-of-season points,
+    // K and DEF included, IR kept (his line already prices the missed weeks).
+    // `emptied` counts starting slots the trade leaves with nobody to fill them.
+    if (!isDynastyLeague(lg)) {
+      const ids = startableIds(roster, { includeStashed: true });
+      const now = redraftLineup(ids, lg), after = redraftLineup(ids.filter(p => !sent.has(p)).concat(recv), lg);
+      return { now: now.points, after: after.points, delta: Math.round((after.points - now.points) * 10) / 10,
+        emptied: after.empty - now.empty };
+    }
     // Startable only: a taxi stash can't fill the hole a traded starter leaves.
     const base = startableIds(roster);
     const now = lineupPoints(lg, base);

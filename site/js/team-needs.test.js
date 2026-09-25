@@ -46,10 +46,16 @@ const h = (tag, props, ...kids) => ({
   appendChild(c) { this.children.push(c); return c; },
 });
 
+// Dynasty lens (yuH): playerValue resolves the ranking entry exactly as the app does.
+const isDynastyLeague = (lg) => lg.is_dynasty !== false;
+const playerValue = (pid) => {
+  const sp = PLAYERS[pid]; const r = sp && byName.get(norm(sp.name));
+  return r ? tierValue(r) : 0;
+};
 const buildTeamNeeds = new Function(
-  'rankIndex', 'targetStartersByPos', 'norm', 'tierValue', 'fmt', 'h', 'window',
+  'rankIndex', 'targetStartersByPos', 'norm', 'tierValue', 'fmt', 'h', 'window', 'isDynastyLeague', 'playerValue',
   `${src}; return buildTeamNeeds;`,
-)(rankIndex, targetStartersByPos, norm, tierValue, fmt, h, { PLAYERS });
+)(rankIndex, targetStartersByPos, norm, tierValue, fmt, h, { PLAYERS }, isDynastyLeague, playerValue);
 
 // --- run against yuH ---
 const yuH = LEAGUES.find(l => l.short_name === 'yuH' || /yuh/i.test(l.name));

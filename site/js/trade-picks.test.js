@@ -20,10 +20,13 @@ assert.match(app, /onclick:\s*\(\)\s*=>\s*KT\.toggle\(label,\s*k,\s*'add'\)/, 'p
 assert.match(app, /row\.setAttribute\('aria-pressed'/, 'pick selection state must sync');
 assert(app.includes("draftPickLabel(yr, round, originRosterId, lg).replace"), 'draft-capital chips must use exact labels');
 
+// rosterOwnedPicks gates redraft leagues itself, so it needs the real lens check.
+const isDyn = app.slice(app.indexOf('function isDynastyLeague(lg)'), app.indexOf('  // The league whose format defines VOR replacement'));
 const rosterOwnedPicks = new Function(
   'pickValue',
   'draftPickLabel',
-  `${app.slice(start, end)}; return rosterOwnedPicks;`,
+  `${isDyn}
+${app.slice(start, end)}; return rosterOwnedPicks;`,
 )(() => 1, draftPickLabel);
 
 const league = dataContext.window.LEAGUES.find(item => item.short_name === 'yuH');

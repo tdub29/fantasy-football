@@ -391,6 +391,33 @@
       "notes": "Counts completed trades per partner across every season in the previous_league_id chain. Generated Sleeper data makes the panel instant; the live API remains a fallback. Partner rows include the Sleeper username when available. Historical picks join season, round and stable original-owner user ID to the completed rookie draft, then show the exact slot and player selected."
     },
     {
+      "id": "trade-lab-redraft-verdict",
+      "name": "Trade Lab (redraft): lopsided trade reads as a loss and 2026 odds drop",
+      "path": [
+        {
+          "eval": "location.hash='#trade/1389722402430136320/1'"
+        },
+        {
+          "waitFor": "#main .trade-side-card .trade-pool-row"
+        },
+        {
+          "eval": "(()=>{const c=[...document.querySelectorAll('#main .trade-side-card')];const row=(card,n)=>[...card.querySelectorAll('.trade-pool-row')].find(r=>r.querySelector('.name')?.textContent.trim()===n);row(c[0],'Christian McCaffrey').click();row(c[1],'Emanuel Wilson').click();return true})()"
+        },
+        {
+          "click": "#main .trade-title-run"
+        },
+        {
+          "sleepMs": 8000
+        },
+        {
+          "waitFor": "#main .trade-middle[data-odds-key]"
+        }
+      ],
+      "selector": "#main .trade-middle[data-odds-key]",
+      "assert": "(()=>{const m=document.querySelector('#main .trade-middle');const rows=[...m.querySelectorAll('.trade-title-odds .t3y-row')];const season=String(window.LEAGUES.find(l=>l.id==='1389722402430136320').season);const sub=rows[0]?.querySelector('.t3y-sub')?.textContent||'';const pcts=(sub.match(/[0-9.]+(?=%)/g)||[]).map(Number);const aVal=parseFloat(m.querySelector('.tnum').textContent);return m.querySelector('.verdict').textContent.trim()==='WIN FOR B'&&rows.length===1&&rows[0].querySelector('.t3y-label').textContent===season&&parseFloat(rows[0].querySelector('.t3y-delta').textContent)<0&&pcts.length===2&&pcts[1]<pcts[0]&&aVal>0&&!m.querySelector('.t3y:not(.trade-title-odds)')})()",
+      "notes": "Phi Kap Fantasy is redraft. The audit's lopsided trade: the user's best RB (Christian McCaffrey) for the partner's 30-point bench RB (Emanuel Wilson). The verdict follows both starting lineups and the 2026 title odds, so it must read WIN FOR B (the partner), with one title-odds row for the current season whose Side A change is negative and whose before-to-after odds fall. Redraft renders no Year-by-Year block and no pick-derived rows, and a depth-or-better player carries nonzero value (McCaffrey's pile total is above 0). The sleep covers the 7,500-simulation run, about 10 seconds on this machine, which blocks the page."
+    },
+    {
       "id": "sos-grid",
       "name": "Strength of Schedule grid",
       "path": [

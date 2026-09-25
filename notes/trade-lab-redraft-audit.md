@@ -278,3 +278,61 @@ the future numbers.
 4. M2, then the rest.
 
 Re-test with the same routes and clicks listed above; each repro is deterministic.
+
+---
+
+## Fixed (2026-09-25, branch fix-tradelab-redraft)
+
+Re-run of the 8 scenarios on `python -m http.server 8841` serving this worktree's `site/`, same
+routes and clicks, Playwright Chromium. Before = the audit commit, after = this branch. Zero console
+errors, NaN or undefined in either run.
+
+| Defect | Repro | Before | After |
+|---|---|---|---|
+| H1 value floor | pool rows reading 0.0, all 12 rosters | 162 of 210 | 62 of 210 |
+| H1 | Kaelon Black for Breece Hall | 0.0 ⇄ 0.0, WIN FOR B, strength +0.0 / +0.0 | 0.0 ⇄ 68.0, WIN FOR A (lineup edge 70), strength +37.8 / -39.6 |
+| H1 | Rashee Rice for Emanuel Wilson | 0.0 ⇄ 0.0, WIN FOR B | 53.5 ⇄ 0.0, WIN FOR B (lineup edge 71) |
+| H2 repro A | Goff + Shough for Tyler Warren | WIN FOR A, 53% | WIN FOR B, 2026 odds A 5.3% → 0.9% |
+| H2 repro B | Kraft for Warren + Mahomes | FAIR 96% | WIN FOR A, "Side B is left with an empty starting slot" |
+| H2 repro C | Kraft + Downs for CeeDee Lamb | FAIR 92%, identical with NYG DEF in place of Downs | WIN FOR A (title edge 2.1); with NYG: WIN FOR B, empty DEF slot |
+| H3 | Goff + Shough for Warren, strength Δ | +2.9 / -2.9 | -145.0 / -88.2 |
+| H4 | title rows / Year-by-Year rows | 3 seasons / 6 rows | 1 season (2026) / none |
+| H4 | McCaffrey for Emanuel Wilson | -3.8 pts over 3 seasons (2028 +1.3) | WIN FOR B, -2.7 pts in 2026 (5.3% → 2.6% ±0.6) |
+| H4 / M1 | `rosterOwnedPicks(7, Phi Kap)` | 8 KTC picks | 0 |
+| M2 | 2-0 Mr immortals vs 0-2 UncWill, title / playoff | 3.8% / 31.9% (lowest) vs 5.6% / 42.2% | 5.4% / 44.9% vs 3.7% / 26.7% (lowest) |
+
+What changed, at the shared source:
+
+- **H1.** `tierValue` with no roster now measures against replacement, the best FREE body at the
+  position in this league (`DEPTH_TIER`, from `rosBoard`), not rank n+1. Same currency
+  (`REDRAFT_VOR_SCALE` 0.55), continuous in rest-of-season points, floored at 0. The 62 zeros left
+  are below the waiver wire: every rostered kicker (the best K in Phi Kap, 137.7, is unrostered)
+  and bench bodies such as Kaelon Black (79.3 vs the best free RB at 95.0).
+- **H2.** Redraft verdict is `KT.redraftVerdict`: each side's starting-lineup change from
+  `tradeLineupImpact`, plus 2026 title odds once run. A side left with an empty starting slot
+  loses outright. Title odds count only outside their noise band; bands live in `SIM`.
+- **H3.** `startingStrength` is the one strength path (Post-Trade Δ and the dynasty year rows);
+  `lineupStrengthFrom` and its top-K are deleted. Redraft strength is `redraftLineup`: fillLineup
+  on rest-of-season points, K and DEF included, points over replacement, and an empty slot scores
+  0, so a roster with no QB cannot gain.
+- **H4 / M1 / M2.** `titleOddsByYear` prices one season in redraft; `rosterOwnedPicks` returns no
+  picks in redraft; `championshipOdds` seeds the season in progress from real records and
+  points-for, simulates only the remaining weeks on the real `FANTASY_SCHEDULE`, and plays the
+  weekly median in median leagues. Records seed only when they add up to the weeks played.
+
+Mediums and lows: M3 fixed for value, lineup and search (K/DEF count, "McPherson" and "Seahawks"
+now match), not inside the title simulator, whose projection feed has no K or DEF. M4 fixed: every
+title cell prints a ±2 SE band and paints grey inside it (the bench swap is now +0.8 ±0.8, grey,
+FAIR). M5 fixed (Jeanty RB13 and Kyren Williams RB19 now top their rows; King Henry is the TE need
+at value 9). M6 fixed (a redraft finder proposes 1-for-1s that raise both rest-of-season lineups;
+Phi Kap gets Goff for Davante Adams, +5 / +6). M7 fixed (pile chip uses the value's basis: Kraft
+VOR +56 = 30.7 value). L1, L2, L4 and L5 fixed. L3 left: rest-of-season still sums through NFL week
+18, about one week of inflation spread over every player, because `rosPointsByPid` is league-agnostic.
+
+Dynasty numbers that moved, all genuine shared bugs: Post-Trade Strength Δ and the Year-by-Year
+sub-lines now go through `startingStrength` (legal lineup, taxi/IR and Out/Doubtful benched at
+year 0), e.g. The League top-for-top swap +2.0 / -2.0 became +37.2 / -43.2 because Caleb Williams
+is Doubtful; current-season title odds now start from real records on the real schedule with
+median games (taco top-for-top: 2026 A 8.7% → 10.3% baseline became 9.9% → 12.8%); a 0 vs 0 trade
+reads FAIR instead of WIN FOR B. Total Value, fairness %, and the lineup row are unchanged in
+dynasty.
