@@ -433,6 +433,10 @@ table.data tbody tr.you { background: rgba(var(--accent-rgb),.06); }
 table.data tbody tr.you:hover { background: rgba(var(--accent-rgb),.10); }
 
 table.data .name-cell { display: flex; align-items: center; gap: 8px; min-width: 200px; }
+/* Sleeper CDN headshots: round, never squashed, a neutral disc while loading. */
+.headshot { flex: none; border-radius: 50%; object-fit: cover; background: var(--bg-3); }
+.pm-head { display: flex; align-items: center; gap: 14px; padding-right: 32px; }
+.pm-head-text { min-width: 0; }
 /* The name is the row's SUBJECT and everything else in the row is an attribute of
    it, so it is the largest and heaviest thing in the row, not the lightest. It was
    weight 500 here, and this selector (0-0-3-1) outranked the .player-name-button
@@ -1561,7 +1565,7 @@ textarea { resize: vertical; min-height: 80px; }
 .pos-col-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px; /* 6 not 8: the headshot took the name's room */
   padding: 5px 8px;
   border-radius: 6px;
   cursor: pointer;
@@ -1604,7 +1608,7 @@ textarea { resize: vertical; min-height: 80px; }
   text-align: right;
 }
 .pos-col-bar-wrap {
-  flex: 0 0 36px;
+  flex: 0 0 26px;
   background: var(--bg-3);
   height: 3px;
   border-radius: 2px;

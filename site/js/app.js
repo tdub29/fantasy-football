@@ -28,6 +28,19 @@
     }
     return el;
   };
+  // Player headshot from Sleeper's public CDN, keyed by the same Sleeper id the
+  // site uses everywhere. A DEF "player" id is its team code, which gets the team
+  // logo instead. Decorative (the name sits beside it), so alt is empty, and a
+  // player Sleeper has no photo for hides the image rather than showing a broken one.
+  const headshot = (pid, size = 28) => {
+    if (!pid) return null;
+    const id = String(pid);
+    const isDef = /^[A-Z]{2,3}$/.test(id);
+    const src = isDef ? `https://sleepercdn.com/images/team_logos/nfl/${id.toLowerCase()}.png`
+      : `https://sleepercdn.com/content/nfl/players/${size > 40 ? '' : 'thumb/'}${id}.jpg`;
+    return h('img', { class:'headshot', src, alt:'', width:size, height:size,
+      loading:'lazy', decoding:'async', onerror:(e) => { e.target.style.visibility = 'hidden'; } });
+  };
   const fmt = {
     pct: (n) => `${(n*100).toFixed(0)}%`,
     num: (n) => Number(n||0).toLocaleString(),
@@ -5194,6 +5207,7 @@
               });
               return h('tr', { onclick:()=>openPlayerDetail(sp.name, pid) },
                 h('td', null, h('div', { class:'name-cell' },
+                  headshot(pid),
                   h('span', { class:'name' }, sp.name),
                   markButton(lg.id, pid, sp.name))),
                 ...expertCells(sp.name, pid),
@@ -5345,7 +5359,12 @@
       const titleAttr = `${sleeper.name} (${sleeper.pos}, ${sleeper.team || 'FA'}${sleeper.age ? ', age ' + sleeper.age : ''})${p.ranked ? ', value ' + fmt.decimal(val, 1) : ''}${isDepth ? ', DEPTH (owned ' + owned + '% / started ' + started + '%)' : ''}`;
       rows.push(h('div', { class:'pos-col-row' + (p.ranked && i < startableCount ? ' starter' : '') + (isDepth ? ' is-depth' : '') , onclick:()=>openPlayerDetail(sleeper.name, p.pid), title: titleAttr },
         h('span', { class:'pos-col-rank tnum' }, realPos ? `${pos}${posIdx}` : `#${posIdx}`),
-        h('span', { class:'pos-col-pname' }, sleeper.name, injuryChip(p.pid)),
+        headshot(p.pid, 22),
+        // Initial + surname: the headshot costs the column its width, and
+        // "Caleb ..." identifies nobody. The full name is in the row's title.
+        h('span', { class:'pos-col-pname' },
+          sleeper.name.includes(' ') ? `${sleeper.name[0]}. ${sleeper.name.split(' ').slice(1).join(' ')}` : sleeper.name,
+          injuryChip(p.pid)),
         h('span', { class:'pos-col-age tnum' }, sleeper.age ? sleeper.age : ''),
         h('span', { class:'pos-col-bar-wrap' },
           h('span', { class:'pos-col-bar', style:{ width: `${(ratio*100).toFixed(0)}%`, background: barColor } }),
@@ -10516,16 +10535,19 @@
         class:'modal', style:{ position:'relative' }, role:'dialog', 'aria-modal':'true', 'aria-labelledby':titleId, tabindex:'-1'
       },
         h('button', { class:'close-btn', onclick: close, 'aria-label':'Close' }, '×'),
-        h('h2', { id:titleId, style:{ marginTop:0, marginBottom:'4px' } }, name,
-          sleeper ? injuryChip(sleeper.id) : null),
-        h('div', { class:'row gap-4 wrap', style:{ marginBottom:'12px' } },
-          ranked ? posChip(ranked.pos) : sleeper ? posChip(sleeper.pos) : null,
-          ranked ? teamChip(ranked.team) : sleeper ? teamChip(sleeper.team) : null,
-          rookieBadge(ranked || {}),
-          uncertainBadge(ranked || {}),
-          depBadge(ranked || {}),
-          ...expertBadges,
-        ),
+        h('div', { class:'pm-head' },
+          sleeper ? headshot(sleeper.id, 64) : null,
+          h('div', { class:'pm-head-text' },
+            h('h2', { id:titleId, style:{ marginTop:0, marginBottom:'4px' } }, name,
+              sleeper ? injuryChip(sleeper.id) : null),
+            h('div', { class:'row gap-4 wrap', style:{ marginBottom:'12px' } },
+              ranked ? posChip(ranked.pos) : sleeper ? posChip(sleeper.pos) : null,
+              ranked ? teamChip(ranked.team) : sleeper ? teamChip(sleeper.team) : null,
+              rookieBadge(ranked || {}),
+              uncertainBadge(ranked || {}),
+              depBadge(ranked || {}),
+              ...expertBadges,
+            ))),
         // Buy/sell/hold verdict, the synthesized "so what" for this player.
         (() => { const v = playerVerdict(ranked, sleeper); if (!v) return null;
           const c = v.tone === 'buy' ? 'var(--green)' : v.tone === 'sell' ? 'var(--red)' : 'var(--fg-2)';
