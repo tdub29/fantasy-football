@@ -10613,7 +10613,8 @@
         })() : null,
         thisWeekBlock(sleeper),
         ownerRows.length ? h('div', null,
-          h('div', { class:'card-title', style:{ marginBottom:'6px' } }, 'Owned in your leagues'),
+          // No plate around this band, so no -4px side bleed: it ran out of the box.
+          h('div', { class:'card-title', style:{ margin:'-4px 0 6px' } }, 'Owned in your leagues'),
           h('table', { class:'data' },
             h('thead', null, h('tr', null,
               h('th', null, 'League'), h('th', null, 'Team'), h('th', null, 'Owner'), h('th', null, 'Slot'), h('th', null, 'Trade')

@@ -43,9 +43,18 @@ PAGES = {
     "standings-dynasty": "#league/1314860638501076992",
     "standings-redraft": "#league/1389722402430136320",
     "standings-idp": "#league/1312276370583220224",
+    "standings-espn": "#league/1532688686",
+    "players-dynasty": "#league/1314860638501076992/players",
+    "players-idp": "#league/1312276370583220224/players",
+    "transactions": "#league/1314860638501076992/transactions",
+    "trajectory": "#dashboard/trajectory",
     "rankings": "#rankings",
     "kickers": "#dashboard/market",
 }
+
+# The player card is a modal on <body>, outside #main, so it gets its own probe:
+# (page it opens from, player, tab to show).
+CARD = ("#league/1314860638501076992/players", "Jahmyr Gibbs", "Context")
 
 # Deliberate truncation. A name column that ellipsises is doing its job; a
 # caption that overruns its cell is not.
@@ -55,16 +64,38 @@ ALLOWED_CLIP = (
 )
 
 PROBE = """
-(allowed) => {
+([allowed, rootSel]) => {
   const out = [];
+  const root = document.querySelector(rootSel);
+  if (!root) return ['MISSING ROOT :: ' + rootSel];
+  // Stops at the root: a modal is overflow-y:auto, which makes overflow-x auto
+  // too, and counting it would excuse everything inside the card.
   const scrolls = e => {
-    for (let n = e; n && n !== document.body; n = n.parentElement) {
+    for (let n = e; n && n !== root && n !== document.body; n = n.parentElement) {
       const ox = getComputedStyle(n).overflowX;
       if (ox === 'auto' || ox === 'scroll') return true;
     }
     return false;
   };
-  for (const e of document.querySelectorAll('#main *')) {
+  // A filter button is only usable if you can see all of it. The filter groups
+  // scroll sideways with the scrollbar hidden, so a button past a clipping
+  // ancestor's edge is cut off with nothing saying there is more.
+  for (const b of root.querySelectorAll('.filters button')) {
+    const r = b.getBoundingClientRect();
+    if (!r.width) continue;
+    let lo = 0, hi = window.innerWidth;
+    for (let n = b.parentElement; n && n !== document.body; n = n.parentElement) {
+      if (getComputedStyle(n).overflowX === 'visible') continue;
+      const c = n.getBoundingClientRect();
+      lo = Math.max(lo, c.left + n.clientLeft);
+      hi = Math.min(hi, c.left + n.clientLeft + n.clientWidth);
+    }
+    if (r.left < lo - 1 || r.right > hi + 1)
+      out.push('CUT-OFF BUTTON :: ' + b.textContent.trim().slice(0, 24) + ' :: '
+               + Math.round(r.left) + '-' + Math.round(r.right) + ' outside '
+               + Math.round(lo) + '-' + Math.round(hi));
+  }
+  for (const e of root.querySelectorAll('*')) {
     const cs = getComputedStyle(e);
     if (cs.display === 'none' || cs.visibility === 'hidden') continue;
     if (e.scrollWidth <= e.clientWidth + 1) continue;
@@ -78,7 +109,7 @@ PROBE = """
              + e.scrollWidth + '>' + e.clientWidth);
   }
   // A grid child collapsed to zero width is the column-shift signature.
-  for (const e of document.querySelectorAll('.sos-head > *, .strength-detail > *')) {
+  for (const e of root.querySelectorAll('.sos-head > *, .strength-detail > *')) {
     if (getComputedStyle(e).display === 'none') continue;
     if (e.clientWidth === 0 && e.textContent.trim())
       out.push('ZERO-WIDTH CELL :: ' + e.textContent.trim().slice(0, 24));
@@ -114,20 +145,37 @@ def check(widths: list[int]) -> int:
                                           device_scale_factor=2,
                                           is_mobile=True, has_touch=True)
                 page = ctx.new_page()
-                for label, hsh in PAGES.items():
-                    page.goto(BASE + hsh, wait_until="networkidle")
-                    page.wait_for_timeout(1200)
+
+                def measure(label: str, root: str) -> int:
                     doc = page.evaluate("document.documentElement.scrollWidth")
-                    clips = page.evaluate(PROBE, list(ALLOWED_CLIP))
+                    clips = page.evaluate(PROBE, [list(ALLOWED_CLIP), root])
                     if doc > w + 1:
                         print(f"  [FAIL] {w}px {label}: page is {doc}px wide, "
                               f"{doc - w}px of sideways scroll")
-                        bad += 1
                     for c in clips:
                         print(f"  [FAIL] {w}px {label}: {c}")
-                    bad += len(clips)
                     if doc <= w + 1 and not clips:
                         print(f"  [ok]   {w}px {label}")
+                    return (doc > w + 1) + len(clips)
+
+                for label, hsh in PAGES.items():
+                    page.goto(BASE + hsh, wait_until="networkidle")
+                    page.wait_for_timeout(1200)
+                    # A phone collapses each filter card behind a toggle, and a
+                    # collapsed card measures nothing. Open them all.
+                    page.evaluate("document.querySelectorAll("
+                                  "'#main .filters-toggle[aria-expanded=\"false\"]')"
+                                  ".forEach(b => b.click())")
+                    page.wait_for_timeout(200)
+                    bad += measure(label, "#main")
+
+                hsh, player, tab = CARD
+                page.goto(BASE + hsh, wait_until="networkidle")
+                page.wait_for_timeout(1200)
+                page.evaluate("name => openPlayerDetail(name)", player)
+                page.click(f".modal .pm-tab-bar button:has-text('{tab}')")
+                page.wait_for_timeout(400)
+                bad += measure(f"card {player} {tab}", ".modal")
                 ctx.close()
             browser.close()
     finally:
@@ -140,6 +188,8 @@ def self_check() -> int:
     """The probe's own logic, without a browser: what counts as a real clip."""
     assert "textOverflow" in PROBE, "ellipsis must be exempt or every name fails"
     assert "ZERO-WIDTH CELL" in PROBE, "the grid column-shift signature is the point"
+    assert "CUT-OFF BUTTON" in PROBE, "a filter button behind a hidden scrollbar is a clip"
+    assert "n !== root" in PROBE, "the modal's own scroller must not excuse the card"
     assert "sos-team" in ALLOWED_CLIP
     assert "sos-head" not in " ".join(ALLOWED_CLIP), "captions must never be exempt"
     print("check-mobile-layout self-check ok")
