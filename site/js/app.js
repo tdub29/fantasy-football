@@ -469,6 +469,19 @@
   function primaryLeague() {
     return (window.LEAGUES || []).find(l => l.rosters.some(r => r.is_me)) || (window.LEAGUES || [])[0] || null;
   }
+  // IDP positions, Sleeper's aliases included. A defender only exists in a league
+  // whose is_idp flag is set; anywhere else he cannot start, so he is no buy, no
+  // target, and no number priced in that league.
+  const IDP_POSITIONS = new Set(['LB','DB','DL','CB','S','DT','DE','NT']);
+  function isIdpPos(pos) { return IDP_POSITIONS.has(String(pos || '').toUpperCase()); }
+  function leagueFitsPos(lg, pos) { return !isIdpPos(pos) || !!(lg && lg.is_idp); }
+  // The league a cross-league figure (VOR, week projection, card value) is scored
+  // in: a defender in the IDP league he can start in, everyone else in primaryLeague.
+  function contextLeagueFor(pos) {
+    if (!isIdpPos(pos)) return primaryLeague();
+    const L = window.LEAGUES || [];
+    return L.find(l => l.is_idp && l.rosters.some(r => r.is_me)) || L.find(l => l.is_idp) || primaryLeague();
+  }
   // Colored VOR chip. Positive green (a startable edge), ~0 grey (replacement),
   // negative red (below a freely-available player). Null when no projection.
   function vorChip(pid, league, src) {
@@ -4303,7 +4316,7 @@
     // SELLS: position-aware age curves + depreciating pillars.
     // Cornerstones are exempt because their value is insulated by definition.
     for (const p of rosterPlayers) {
-      if (!p.ranked) continue;
+      if (!p.ranked || !leagueFitsPos(lg, p.ranked.pos)) continue;
       const age = p.sleeper.age;
       const curve = curves[p.ranked.pos];
       if (!isDynastyLeague(lg)) continue;
@@ -4333,13 +4346,13 @@
     const owned = (p) => (p._sleeperId && myIds.has(p._sleeperId)) || myNames.has(norm(p.name));
     const idx = rankIndex();
     const topUnowned = idx.all.filter(p => p.category === 'cornerstone' && p.tier === 'A')
-      .filter(p => !owned(p))
+      .filter(p => !owned(p) && leagueFitsPos(lg, p.pos))
       .slice(0,4);
     for (const p of topUnowned) {
       buys.push({ player: p, sleeper: window.PLAYERS[p._sleeperId] || null, intensity: 'SOFT BUY', reason: 'Cornerstone-A talent. Buy on any dip.' });
     }
     const rookieBuys = idx.all.filter(p => p.rookie && p.category === 'upside_premier' && p.tier === 'S')
-      .filter(p => !owned(p))
+      .filter(p => !owned(p) && leagueFitsPos(lg, p.pos))
       .slice(0,3);
     for (const p of rookieBuys) {
       buys.push({ player: p, sleeper: window.PLAYERS[p._sleeperId] || null, intensity: 'BUY', reason: 'High-pedigree rookie with breakout path.' });
@@ -9275,7 +9288,7 @@
   // Deciding that here keeps every call site from re-deriving it.
   function markKindFor(leagueId, pid) {
     const lg = (window.LEAGUES || []).find(l => String(l.id) === String(leagueId));
-    if (!lg) return null;
+    if (!lg || !leagueFitsPos(lg, window.PLAYERS?.[pid]?.pos)) return null;
     const mine = lg.rosters.find(r => r.is_me);
     if (!mine) return null;
     return (mine.players || []).map(String).includes(String(pid)) ? 'block' : 'target';
@@ -9812,7 +9825,14 @@
     const row = (wr.players || []).find(p => String(p.id) === String(sleeper.id));
     if (!row) return null;
 
-    const model = (row.sleeper || [])[week - 1];
+    // The feed is Sleeper's offense PPR, which scores an LB1 at 0.5 a week. A
+    // defender's week is his season projection in the IDP league's own scoring,
+    // per game; a null in the feed still marks his bye or injury.
+    const feed = (row.sleeper || [])[week - 1];
+    const idpLg = isIdpPos(row.pos || sleeper.pos) ? contextLeagueFor(row.pos || sleeper.pos) : null;
+    const idpRec = idpLg && feed != null ? projByPid().get(String(sleeper.id)) : null;
+    const idpSeason = idpRec ? projPoints(idpRec.p, idpLg, 'blend') : null;
+    const model = !idpLg ? feed : idpSeason == null ? null : idpSeason / SIM.gamesPlayed;
     const market = row.vegas;
     const noProjection = model == null && market == null;
 
@@ -9837,7 +9857,8 @@
       h('div', { class:'tw-row' },
         noProjection ? cell('projected', '·') : cell('projected',
           fmt.decimal(market != null ? market : model, 1),
-          h('div', { class:'tw-sub' }, market != null ? 'market' : 'model')),
+          h('div', { class:'tw-sub' }, market != null ? 'market'
+            : idpLg ? `${idpLg.short_name || idpLg.name} per game` : 'model')),
         (market != null && model != null)
           ? cell('vs model', (market - model >= 0 ? '+' : '') + fmt.decimal(market - model, 1),
               h('div', { class:'tw-sub' }, market - model >= 0 ? 'market higher' : 'market lower'))
@@ -9852,6 +9873,7 @@
       ),
       h('p', { class:'tip tw-note' },
         `Projection is the price-adjusted market number when a line exists, otherwise Sleeper's model. `
+        + (idpLg ? `A defender has no weekly feed, so his is the season projection in ${idpLg.short_name || idpLg.name} scoring, per game. ` : '')
         + `Defense-vs-position is ${sos ? sos.season : 'last season'} PPR allowed to ${pos || 'the position'}, `
         + `1 = toughest, 32 = easiest.`));
   }
@@ -10231,7 +10253,7 @@
     for (const unit of ['offense', 'defense']) {
       const rec = (O[unit]?.players || []).find(pl => pl.id === sleeper.id);
       if (!rec) continue;
-      const lg = primaryLeague();
+      const lg = contextLeagueFor(rec.pos);
       if (!lg) return null;
       const v = vorForPlayer(rec, lg, unit, O[unit].default);
       return v == null ? null : { v, unit, league: lg };
@@ -10246,7 +10268,7 @@
   // rows are gone, so nothing is printed twice.
   function numberBand(ranked, sleeper) {
     const pid = String(sleeper?.id || ranked?._sleeperId || '');
-    const lg = primaryLeague() || {};
+    const lg = contextLeagueFor(ranked?.pos || sleeper?.pos) || {};
     const mp = pid ? mispricingIndex().get(pid) : null;
     const pos = String(ranked?.pos || sleeper?.pos || '').toUpperCase();
     const cells = [];
