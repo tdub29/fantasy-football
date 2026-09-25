@@ -1,0 +1,902 @@
+[
+ {
+  "rank": 1,
+  "name": "Jahmyr Gibbs",
+  "team": "DET",
+  "bye": 6,
+  "pos": "RB",
+  "opp": "vs NYJ",
+  "image": 1
+ },
+ {
+  "rank": 2,
+  "name": "Kenneth Walker III",
+  "team": "KC",
+  "bye": 5,
+  "pos": "RB",
+  "opp": "@ MIA",
+  "image": 1
+ },
+ {
+  "rank": 3,
+  "name": "Jaxon Smith-Njigba",
+  "team": "SEA",
+  "bye": 11,
+  "pos": "WR",
+  "opp": "@ WAS",
+  "image": 1
+ },
+ {
+  "rank": 4,
+  "name": "Christian McCaffrey",
+  "team": "SF",
+  "bye": 8,
+  "pos": "RB",
+  "opp": "vs ARI",
+  "image": 1
+ },
+ {
+  "rank": 5,
+  "name": "Bijan Robinson",
+  "team": "ATL",
+  "bye": 11,
+  "pos": "RB",
+  "opp": "@ GB",
+  "image": 1
+ },
+ {
+  "rank": 6,
+  "name": "Derrick Henry",
+  "team": "BAL",
+  "bye": 13,
+  "pos": "RB",
+  "opp": "@ DAL",
+  "image": 1
+ },
+ {
+  "rank": 7,
+  "name": "Amon-Ra St. Brown",
+  "team": "DET",
+  "bye": 6,
+  "pos": "WR",
+  "opp": "vs NYJ",
+  "image": 1
+ },
+ {
+  "rank": 8,
+  "name": "Chris Olave",
+  "team": "NO",
+  "bye": 8,
+  "pos": "WR",
+  "opp": "vs LV",
+  "image": 1
+ },
+ {
+  "rank": 9,
+  "name": "James Cook III",
+  "team": "BUF",
+  "bye": 7,
+  "pos": "RB",
+  "opp": "vs LAC",
+  "image": 1
+ },
+ {
+  "rank": 10,
+  "name": "Ashton Jeanty",
+  "team": "LV",
+  "bye": 13,
+  "pos": "RB",
+  "opp": "@ NO",
+  "image": 1
+ },
+ {
+  "rank": 11,
+  "name": "Jonathan Taylor",
+  "team": "IND",
+  "bye": 13,
+  "pos": "RB",
+  "opp": "vs HOU",
+  "image": 1
+ },
+ {
+  "rank": 12,
+  "name": "Ja'Marr Chase",
+  "team": "CIN",
+  "bye": 6,
+  "pos": "WR",
+  "opp": "@ PIT",
+  "image": 1
+ },
+ {
+  "rank": 13,
+  "name": "CeeDee Lamb",
+  "team": "DAL",
+  "bye": 14,
+  "pos": "WR",
+  "opp": "vs BAL",
+  "image": 1
+ },
+ {
+  "rank": 14,
+  "name": "DeVonta Smith",
+  "team": "PHI",
+  "bye": 10,
+  "pos": "WR",
+  "opp": "@ CHI",
+  "image": 1
+ },
+ {
+  "rank": 15,
+  "name": "Justin Jefferson",
+  "team": "MIN",
+  "bye": 6,
+  "pos": "WR",
+  "opp": "@ TB",
+  "image": 1
+ },
+ {
+  "rank": 16,
+  "name": "Javonte Williams",
+  "team": "DAL",
+  "bye": 14,
+  "pos": "RB",
+  "opp": "vs BAL",
+  "image": 1
+ },
+ {
+  "rank": 17,
+  "name": "Chase Brown",
+  "team": "CIN",
+  "bye": 6,
+  "pos": "RB",
+  "opp": "@ PIT",
+  "image": 1
+ },
+ {
+  "rank": 18,
+  "name": "Saquon Barkley",
+  "team": "PHI",
+  "bye": 10,
+  "pos": "RB",
+  "opp": "@ CHI",
+  "image": 1
+ },
+ {
+  "rank": 19,
+  "name": "Parker Washington",
+  "team": "JAC",
+  "bye": 7,
+  "pos": "WR",
+  "opp": "vs NE",
+  "image": 1
+ },
+ {
+  "rank": 20,
+  "name": "Christian Watson",
+  "team": "GB",
+  "bye": 11,
+  "pos": "WR",
+  "opp": "vs ATL",
+  "image": 1
+ },
+ {
+  "rank": 21,
+  "name": "Garrett Wilson",
+  "team": "NYJ",
+  "bye": 13,
+  "pos": "WR",
+  "opp": "@ DET",
+  "image": 1
+ },
+ {
+  "rank": 22,
+  "name": "Kyren Williams",
+  "team": "LAR",
+  "bye": 11,
+  "pos": "RB",
+  "opp": "@ DEN",
+  "image": 1
+ },
+ {
+  "rank": 23,
+  "name": "George Pickens",
+  "team": "DAL",
+  "bye": 14,
+  "pos": "WR",
+  "opp": "vs BAL",
+  "image": 1
+ },
+ {
+  "rank": 24,
+  "name": "Drake London",
+  "team": "ATL",
+  "bye": 11,
+  "pos": "WR",
+  "opp": "@ GB",
+  "image": 1
+ },
+ {
+  "rank": 25,
+  "name": "De'Von Achane",
+  "team": "MIA",
+  "bye": 6,
+  "pos": "RB",
+  "opp": "vs KC",
+  "image": 1
+ },
+ {
+  "rank": 26,
+  "name": "Chuba Hubbard",
+  "team": "CAR",
+  "bye": 5,
+  "pos": "RB",
+  "opp": "@ CLE",
+  "image": 2
+ },
+ {
+  "rank": 27,
+  "name": "Ladd McConkey",
+  "team": "LAC",
+  "bye": 7,
+  "pos": "WR",
+  "opp": "@ BUF",
+  "image": 2
+ },
+ {
+  "rank": 28,
+  "name": "Malik Nabers",
+  "team": "NYG",
+  "bye": 8,
+  "pos": "WR",
+  "opp": "vs TEN",
+  "image": 2
+ },
+ {
+  "rank": 29,
+  "name": "Davante Adams",
+  "team": "LAR",
+  "bye": 11,
+  "pos": "WR",
+  "opp": "@ DEN",
+  "image": 2
+ },
+ {
+  "rank": 30,
+  "name": "Mike Evans",
+  "team": "SF",
+  "bye": 8,
+  "pos": "WR",
+  "opp": "vs ARI",
+  "image": 2
+ },
+ {
+  "rank": 31,
+  "name": "Tetairoa McMillan",
+  "team": "CAR",
+  "bye": 5,
+  "pos": "WR",
+  "opp": "@ CLE",
+  "image": 2
+ },
+ {
+  "rank": 32,
+  "name": "Jalen Coker",
+  "team": "CAR",
+  "bye": 5,
+  "pos": "WR",
+  "opp": "@ CLE",
+  "image": 2
+ },
+ {
+  "rank": 33,
+  "name": "Tee Higgins",
+  "team": "CIN",
+  "bye": 6,
+  "pos": "WR",
+  "opp": "@ PIT",
+  "image": 2
+ },
+ {
+  "rank": 34,
+  "name": "Jaylen Warren",
+  "team": "PIT",
+  "bye": 9,
+  "pos": "RB",
+  "opp": "vs CIN",
+  "image": 2
+ },
+ {
+  "rank": 35,
+  "name": "Bucky Irving",
+  "team": "TB",
+  "bye": 10,
+  "pos": "RB",
+  "opp": "vs MIN",
+  "image": 2
+ },
+ {
+  "rank": 36,
+  "name": "Breece Hall",
+  "team": "NYJ",
+  "bye": 13,
+  "pos": "RB",
+  "opp": "@ DET",
+  "image": 2
+ },
+ {
+  "rank": 37,
+  "name": "Omarion Hampton",
+  "team": "LAC",
+  "bye": 7,
+  "pos": "RB",
+  "opp": "@ BUF",
+  "image": 2
+ },
+ {
+  "rank": 38,
+  "name": "David Montgomery",
+  "team": "HOU",
+  "bye": 8,
+  "pos": "RB",
+  "opp": "@ IND",
+  "image": 2
+ },
+ {
+  "rank": 39,
+  "name": "D'Andre Swift",
+  "team": "CHI",
+  "bye": 10,
+  "pos": "RB",
+  "opp": "vs PHI",
+  "image": 2
+ },
+ {
+  "rank": 40,
+  "name": "Bhayshul Tuten",
+  "team": "JAC",
+  "bye": 7,
+  "pos": "RB",
+  "opp": "vs NE",
+  "image": 2
+ },
+ {
+  "rank": 41,
+  "name": "Dalton Kincaid",
+  "team": "BUF",
+  "bye": 7,
+  "pos": "TE",
+  "opp": "vs LAC",
+  "image": 2
+ },
+ {
+  "rank": 42,
+  "name": "Trey McBride",
+  "team": "ARI",
+  "bye": 14,
+  "pos": "TE",
+  "opp": "@ SF",
+  "image": 2
+ },
+ {
+  "rank": 43,
+  "name": "Matthew Golden",
+  "team": "GB",
+  "bye": 11,
+  "pos": "WR",
+  "opp": "vs ATL",
+  "image": 2
+ },
+ {
+  "rank": 44,
+  "name": "DJ Moore",
+  "team": "BUF",
+  "bye": 7,
+  "pos": "WR",
+  "opp": "vs LAC",
+  "image": 2
+ },
+ {
+  "rank": 45,
+  "name": "Aaron Jones Sr.",
+  "team": "MIN",
+  "bye": 6,
+  "pos": "RB",
+  "opp": "@ TB",
+  "image": 2
+ },
+ {
+  "rank": 46,
+  "name": "Jaylen Waddle",
+  "team": "DEN",
+  "bye": 10,
+  "pos": "WR",
+  "opp": "vs LAR",
+  "image": 2
+ },
+ {
+  "rank": 47,
+  "name": "Rashod Bateman",
+  "team": "BAL",
+  "bye": 13,
+  "pos": "WR",
+  "opp": "@ DAL",
+  "image": 2
+ },
+ {
+  "rank": 48,
+  "name": "Travis Etienne Jr.",
+  "team": "NO",
+  "bye": 8,
+  "pos": "RB",
+  "opp": "vs LV",
+  "image": 2
+ },
+ {
+  "rank": 49,
+  "name": "Sam LaPorta",
+  "team": "DET",
+  "bye": 6,
+  "pos": "TE",
+  "opp": "vs NYJ",
+  "image": 2
+ },
+ {
+  "rank": 50,
+  "name": "Brock Bowers",
+  "team": "LV",
+  "bye": 13,
+  "pos": "TE",
+  "opp": "@ NO",
+  "image": 2
+ },
+ {
+  "rank": 51,
+  "name": "Emeka Egbuka",
+  "team": "TB",
+  "bye": 10,
+  "pos": "WR",
+  "opp": "vs MIN",
+  "image": 3
+ },
+ {
+  "rank": 52,
+  "name": "Josh Downs",
+  "team": "IND",
+  "bye": 13,
+  "pos": "WR",
+  "opp": "vs HOU",
+  "image": 3
+ },
+ {
+  "rank": 53,
+  "name": "Emanuel Wilson",
+  "team": "SEA",
+  "bye": 11,
+  "pos": "RB",
+  "opp": "@ WAS",
+  "image": 3
+ },
+ {
+  "rank": 54,
+  "name": "Quinshon Judkins",
+  "team": "CLE",
+  "bye": 11,
+  "pos": "RB",
+  "opp": "vs CAR",
+  "image": 3
+ },
+ {
+  "rank": 55,
+  "name": "TreVeyon Henderson",
+  "team": "NE",
+  "bye": 11,
+  "pos": "RB",
+  "opp": "@ JAC",
+  "image": 3
+ },
+ {
+  "rank": 56,
+  "name": "Jameson Williams",
+  "team": "DET",
+  "bye": 6,
+  "pos": "WR",
+  "opp": "vs NYJ",
+  "image": 3
+ },
+ {
+  "rank": 57,
+  "name": "Devaughn Vele",
+  "team": "NO",
+  "bye": 8,
+  "pos": "WR",
+  "opp": "vs LV",
+  "image": 3
+ },
+ {
+  "rank": 58,
+  "name": "Cam Skattebo",
+  "team": "NYG",
+  "bye": 8,
+  "pos": "RB",
+  "opp": "vs TEN",
+  "image": 3
+ },
+ {
+  "rank": 59,
+  "name": "Travis Kelce",
+  "team": "KC",
+  "bye": 5,
+  "pos": "TE",
+  "opp": "@ MIA",
+  "image": 3
+ },
+ {
+  "rank": 60,
+  "name": "Dalton Schultz",
+  "team": "HOU",
+  "bye": 8,
+  "pos": "TE",
+  "opp": "@ IND",
+  "image": 3
+ },
+ {
+  "rank": 61,
+  "name": "Romeo Doubs",
+  "team": "NE",
+  "bye": 11,
+  "pos": "WR",
+  "opp": "@ JAC",
+  "image": 3
+ },
+ {
+  "rank": 62,
+  "name": "Tucker Kraft",
+  "team": "GB",
+  "bye": 11,
+  "pos": "TE",
+  "opp": "vs ATL",
+  "image": 3
+ },
+ {
+  "rank": 63,
+  "name": "George Kittle",
+  "team": "SF",
+  "bye": 8,
+  "pos": "TE",
+  "opp": "vs ARI",
+  "image": 3
+ },
+ {
+  "rank": 64,
+  "name": "Jeremiyah Love",
+  "team": "ARI",
+  "bye": 14,
+  "pos": "RB",
+  "opp": "@ SF",
+  "image": 3
+ },
+ {
+  "rank": 65,
+  "name": "Rhamondre Stevenson",
+  "team": "NE",
+  "bye": 11,
+  "pos": "RB",
+  "opp": "@ JAC",
+  "image": 3
+ },
+ {
+  "rank": 66,
+  "name": "Isaiah Likely",
+  "team": "NYG",
+  "bye": 8,
+  "pos": "TE",
+  "opp": "vs TEN",
+  "image": 3
+ },
+ {
+  "rank": 67,
+  "name": "Mark Andrews",
+  "team": "BAL",
+  "bye": 13,
+  "pos": "TE",
+  "opp": "@ DAL",
+  "image": 3
+ },
+ {
+  "rank": 68,
+  "name": "Tony Pollard",
+  "team": "TEN",
+  "bye": 9,
+  "pos": "RB",
+  "opp": "@ NYG",
+  "image": 3
+ },
+ {
+  "rank": 69,
+  "name": "Juwan Johnson",
+  "team": "NO",
+  "bye": 8,
+  "pos": "TE",
+  "opp": "vs LV",
+  "image": 3
+ },
+ {
+  "rank": 70,
+  "name": "Rashee Rice",
+  "team": "KC",
+  "bye": 5,
+  "pos": "WR",
+  "opp": "@ MIA",
+  "image": 3
+ },
+ {
+  "rank": 71,
+  "name": "DK Metcalf",
+  "team": "PIT",
+  "bye": 9,
+  "pos": "WR",
+  "opp": "vs CIN",
+  "image": 3
+ },
+ {
+  "rank": 72,
+  "name": "Deebo Samuel Sr.",
+  "team": "SF",
+  "bye": 8,
+  "pos": "WR",
+  "opp": "vs ARI",
+  "image": 3
+ },
+ {
+  "rank": 73,
+  "name": "Emmett Johnson",
+  "team": "KC",
+  "bye": 5,
+  "pos": "RB",
+  "opp": "@ MIA",
+  "image": 3
+ },
+ {
+  "rank": 74,
+  "name": "Luther Burden III",
+  "team": "CHI",
+  "bye": 10,
+  "pos": "WR",
+  "opp": "vs PHI",
+  "image": 3
+ },
+ {
+  "rank": 75,
+  "name": "Dontayvion Wicks",
+  "team": "PHI",
+  "bye": 10,
+  "pos": "WR",
+  "opp": "@ CHI",
+  "image": 3
+ },
+ {
+  "rank": 76,
+  "name": "Adonai Mitchell",
+  "team": "NYJ",
+  "bye": 13,
+  "pos": "WR",
+  "opp": "@ DET",
+  "image": 4
+ },
+ {
+  "rank": 77,
+  "name": "Blake Corum",
+  "team": "LAR",
+  "bye": 11,
+  "pos": "RB",
+  "opp": "@ DEN",
+  "image": 4
+ },
+ {
+  "rank": 78,
+  "name": "Michael Wilson",
+  "team": "ARI",
+  "bye": 14,
+  "pos": "WR",
+  "opp": "@ SF",
+  "image": 4
+ },
+ {
+  "rank": 79,
+  "name": "Jordan Addison",
+  "team": "MIN",
+  "bye": 6,
+  "pos": "WR",
+  "opp": "@ TB",
+  "image": 4
+ },
+ {
+  "rank": 80,
+  "name": "Carnell Tate",
+  "team": "TEN",
+  "bye": 9,
+  "pos": "WR",
+  "opp": "@ NYG",
+  "image": 4
+ },
+ {
+  "rank": 81,
+  "name": "Quentin Johnston",
+  "team": "LAC",
+  "bye": 7,
+  "pos": "WR",
+  "opp": "@ BUF",
+  "image": 4
+ },
+ {
+  "rank": 82,
+  "name": "Courtland Sutton",
+  "team": "DEN",
+  "bye": 10,
+  "pos": "WR",
+  "opp": "vs LAR",
+  "image": 4
+ },
+ {
+  "rank": 83,
+  "name": "Terry McLaurin",
+  "team": "WAS",
+  "bye": 7,
+  "pos": "WR",
+  "opp": "vs SEA",
+  "image": 4
+ },
+ {
+  "rank": 84,
+  "name": "Stefon Diggs",
+  "team": "WAS",
+  "bye": 7,
+  "pos": "WR",
+  "opp": "vs SEA",
+  "image": 4
+ },
+ {
+  "rank": 85,
+  "name": "Tyler Warren",
+  "team": "IND",
+  "bye": 13,
+  "pos": "TE",
+  "opp": "vs HOU",
+  "image": 4
+ },
+ {
+  "rank": 86,
+  "name": "Kaelon Black",
+  "team": "SF",
+  "bye": 8,
+  "pos": "RB",
+  "opp": "vs ARI",
+  "image": 4
+ },
+ {
+  "rank": 87,
+  "name": "Terrance Ferguson",
+  "team": "LAR",
+  "bye": 11,
+  "pos": "TE",
+  "opp": "@ DEN",
+  "image": 4
+ },
+ {
+  "rank": 88,
+  "name": "Khalil Shakir",
+  "team": "BUF",
+  "bye": 7,
+  "pos": "WR",
+  "opp": "vs LAC",
+  "image": 4
+ },
+ {
+  "rank": 89,
+  "name": "Chris Godwin Jr.",
+  "team": "TB",
+  "bye": 10,
+  "pos": "WR",
+  "opp": "vs MIN",
+  "image": 4
+ },
+ {
+  "rank": 90,
+  "name": "Denzel Boston",
+  "team": "CLE",
+  "bye": 11,
+  "pos": "WR",
+  "opp": "vs CAR",
+  "image": 4
+ },
+ {
+  "rank": 91,
+  "name": "Oronde Gadsden II",
+  "team": "LAC",
+  "bye": 7,
+  "pos": "TE",
+  "opp": "@ BUF",
+  "image": 4
+ },
+ {
+  "rank": 92,
+  "name": "Kaleb Johnson",
+  "team": "GB",
+  "bye": 11,
+  "pos": "RB",
+  "opp": "vs ATL",
+  "image": 4
+ },
+ {
+  "rank": 93,
+  "name": "Rome Odunze",
+  "team": "CHI",
+  "bye": 10,
+  "pos": "WR",
+  "opp": "vs PHI",
+  "image": 4
+ },
+ {
+  "rank": 94,
+  "name": "Jakobi Meyers",
+  "team": "JAC",
+  "bye": 7,
+  "pos": "WR",
+  "opp": "vs NE",
+  "image": 4
+ },
+ {
+  "rank": 95,
+  "name": "Tre Tucker",
+  "team": "LV",
+  "bye": 13,
+  "pos": "WR",
+  "opp": "@ NO",
+  "image": 4
+ },
+ {
+  "rank": 96,
+  "name": "KC Concepcion Jr.",
+  "team": "CLE",
+  "bye": 11,
+  "pos": "WR",
+  "opp": "vs CAR",
+  "image": 4
+ },
+ {
+  "rank": 97,
+  "name": "Xavier Worthy",
+  "team": "KC",
+  "bye": 5,
+  "pos": "WR",
+  "opp": "@ MIA",
+  "image": 4
+ },
+ {
+  "rank": 98,
+  "name": "Rashid Shaheed",
+  "team": "SEA",
+  "bye": 11,
+  "pos": "WR",
+  "opp": "@ WAS",
+  "image": 4
+ },
+ {
+  "rank": 99,
+  "name": "Harold Fannin Jr.",
+  "team": "CLE",
+  "bye": 11,
+  "pos": "TE",
+  "opp": "vs CAR",
+  "image": 4
+ },
+ {
+  "rank": 100,
+  "name": "Kyle Pitts Sr.",
+  "team": "ATL",
+  "bye": 11,
+  "pos": "TE",
+  "opp": "@ GB",
+  "image": 4
+ }
+]

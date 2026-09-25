@@ -40,12 +40,10 @@ STEPS = [
     ("score defense",              PROJ / "score_defense.py",             True),
     ("weekly rankings",            PROJ / "build_weekly_rankings.py",     True),
     ("FantasyPros expert boards",  PROJ / "build_fantasypros_experts.py", True),
-    # Gibbs keeps his weekly board current on CBS, in PPR, 150 deep. That is
-    # the same scoring these leagues play and it beats the half-PPR top-12
-    # cards he posts to X, which only moved when someone screenshotted them.
-    # Registered here so the column ages with everything else instead of
-    # quietly sitting on whichever week it was last captured by hand.
-    ("Gibbs weekly board (CBS)",   SITE_DATA / "build_gibbs_cbs.py",      True),
+    # His weekly board, from FantasyPros (filters=1576:1576). It replaced the
+    # CBS scrape on 2026-09-24: his "Week 3 FLEX Top-100 (PPR)" post on X
+    # matched this board 94/100 exact while CBS sat a mean 11 flex spots off.
+    ("Gibbs weekly board (FantasyPros)", SITE_DATA / "build_gibbs_ros_fp.py", True, ["--board", "week"]),
     # He DOES have a rest-of-season board on FantasyPros, reachable only as
     # filters=1576:1576; the bare form is ignored and hands back consensus.
     # These two run in order: the deep board first, then his own newer
@@ -56,8 +54,9 @@ STEPS = [
     # what proves the scrape is still pointed at HIM and at THIS week; a slug
     # that silently resolves to another analyst produces a perfectly healthy
     # looking board, and nothing else in this pipeline would notice.
-    ("Gibbs CBS vs his X cards",   SITE_DATA / "check_gibbs_sources.py",  True),
-    # DERIVED full-PPR re-rank of his two half-PPR boards. Runs after both.
+    ("Gibbs week board vs his X posts", SITE_DATA / "check_gibbs_sources.py", True),
+    # DERIVED full-PPR re-rank of his half-PPR ROS board (his week board he
+    # titles PPR himself, so it is not re-ranked).
     ("Gibbs PPR adjustment",       SITE_DATA / "build_gibbs_ppr.py",      True),
     # Advanced stats for every skill player and team, all from nflverse:
     # play-by-play, snap counts, Next Gen Stats, PFR advanced, QBR, injuries,

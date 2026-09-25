@@ -17,7 +17,7 @@ const gateStart = app.indexOf("if (filter.sort === 'weekly-vegas'");
 assert(gateStart >= 0, 'weekly sort gate missing');
 const gate = app.slice(gateStart, app.indexOf('const weeklyValue', gateStart));
 
-for (const key of ['weekly-gibbs-x', 'weekly-gibbs-wk', 'weekly-gibbs-wk-ppr', 'weekly-gibbs-ros-ppr']) {
+for (const key of ['weekly-gibbs-x', 'weekly-gibbs-wk', 'weekly-gibbs-ros-ppr']) {
   assert.match(gate, new RegExp(`filter\\.sort === '${key}'`),
     `${key} must be routed into the weekly comparator, or its handler is dead code`);
   assert.match(app, new RegExp(`if \\(filter\\.sort === '${key}'\\) return gibbs\\w+Rank`),
@@ -32,10 +32,12 @@ const dirBlock = app.slice(dirStart, app.indexOf("? 'asc' : 'desc'", dirStart));
 assert(dirBlock.length > 0, 'default sort direction block is empty');
 assert.match(dirBlock, /key === 'weekly-gibbs-x'/, 'Gibbs ROS rank must default ascending');
 assert.match(dirBlock, /key === 'weekly-gibbs-wk'/, 'Gibbs week rank must default ascending');
-assert.match(dirBlock, /key === 'weekly-gibbs-wk-ppr'/, 'derived PPR week rank must default ascending');
 assert.match(dirBlock, /key === 'weekly-gibbs-ros-ppr'/, 'derived PPR ROS rank must default ascending');
-// The derived columns must say they are derived, in the header a user hovers.
-assert.match(app, /sortHdr\('weekly-gibbs-wk-ppr', 'Gibbs Wk PPR\*'[\s\S]{0,200}DERIVED by this site, not published by him/);
+// The derived column must say it is derived, in the header a user hovers.
+assert.match(app, /sortHdr\('weekly-gibbs-ros-ppr', 'Gibbs ROS PPR\*'[\s\S]{0,200}DERIVED by this site, not published by him/);
+// And there is no derived WEEK column: he posts his week board titled PPR
+// himself (X, 2026-09-24), so re-ranking it for PPR would add PPR twice.
+assert.doesNotMatch(app, /sortHdr\('weekly-gibbs-wk-ppr'|GIBBS_PPR_WEEK/, 'no derived week column');
 
 // One lookup, two boards. Two copies of this drifted apart is the thing the
 // shared helper exists to prevent.
@@ -48,38 +50,39 @@ assert.match(app, /const gibbsWeekRank = \(id\) => gibbsBoardRank\('GIBBS_WEEK',
 const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
 assert.match(html, /data\/gibbs-week\.js/, 'gibbs-week.js must be loaded by the page');
 
-// Scoring is per position on his cards. A single hardcoded "half-PPR" label
-// would be wrong for the QB board, which he publishes NON-PPR.
+// Scoring is per position and per source. The header tag is read off the
+// board, so it cannot keep saying "half" after the source changes.
 assert.match(app, /function gibbsScoringLabel\(data, pos\)/,
   'the scoring label must be read off the data, not hardcoded');
 assert.doesNotMatch(
   app.slice(app.indexOf("sortHdr('weekly-gibbs-wk'"), app.indexOf("sortHdr('weekly-gibbs-wk'") + 700),
-  /HALF-PPR/,
-  'the week column header must not hardcode half-PPR: his QB card is non-PPR');
+  /HALF-PPR|\(half\)/,
+  'the week column header must not hardcode a scoring');
+assert.match(app, /sortHdr\('weekly-gibbs-wk', `Gibbs Wk \(\$\{gibbsShortScoring\(window\.GIBBS_WEEK, filter\.pos\)\}\)`/);
 
 // And the built board must actually carry that distinction.
 const wk = fs.readFileSync(path.join(__dirname, '..', 'data', 'gibbs-week.js'), 'utf8');
 const data = JSON.parse(wk.slice(wk.indexOf('{'), wk.lastIndexOf('}') + 1));
 assert.equal(data.board, 'week');
+// Last week's board must never sit beside this week's numbers: the payload
+// names its week and the column hides when that is not the site's week.
+assert(Number.isInteger(data.week), 'week board must carry its week number');
+assert.match(app, /window\.GIBBS_WEEK\.week === currentWeek/, 'stale week board must hide');
 
-// RB, WR and TE come from his CBS board. CBS files it under PPR but its order
-// is his HALF-PPR board (checked 2026-09-24 against his FantasyPros half and
-// PPR boards), so it must be labelled half-PPR. Calling it PPR is exactly the
-// mislabel that made a half-PPR opinion read as a full-PPR one.
+// RB, WR and TE come from his FantasyPros week board, the board he posts to X
+// titled PPR ("Week 3 - FLEX Top-100 ... (PPR)", 2026-09-24, 94/100 exact).
+// His title is the label. The CBS page it replaced sat a mean 11 flex spots
+// off that post, which is why it went.
 for (const pos of ['RB', 'WR', 'TE']) {
-  assert.equal(data.formatByPosition[pos], 'half_ppr', `${pos} is his half-PPR order`);
-  assert.match(data.sourceByPosition[pos], /CBS/, `${pos} must come from CBS`);
+  assert.equal(data.formatByPosition[pos], 'ppr', `${pos} is the board he titles PPR`);
 }
-// QB is the exception and has to stay labelled as one: CBS has no per-position
-// page for him, so those ranks are still the NON-PPR X card.
-assert.equal(data.formatByPosition.QB, 'non_ppr');
-assert.equal(data.format, 'mixed', 'PPR skill positions beside a non-PPR QB card');
-
-// The caveat must be position-accurate. A blanket "not a full-PPR board" is
-// now false for three quarters of the rows, and a caveat that is usually
-// wrong gets ignored on the one position where it matters.
-assert.match(data.scoringWarning, /HALF-PPR/);
-assert.match(data.scoringWarning, /QB is NON-PPR/);
+assert.match(data.provenance, /FantasyPros/);
+assert.match(data.provenance, /filters=1576:1576/);
+assert.match(data.provenance, /total_experts=1/, 'must say it refused consensus');
+// QB is not on the flex post, so it keeps the scoring FantasyPros files it under.
+assert.equal(data.formatByPosition.QB, 'half_ppr');
+assert.match(data.scoringWarning, /RB, TE, WR are his FULL PPR ranks/);
+assert.match(data.scoringWarning, /QB is HALF-PPR/);
 assert.doesNotMatch(data.scoringWarning, /not a full-PPR board/);
 
 const depth = Object.values(data.positions).reduce((n, r) => n + r.length, 0);
@@ -91,10 +94,13 @@ for (const [pos, rows] of Object.entries(data.positions)) {
 }
 // The flex rank is what this source adds over a per-position card: it is the
 // only way to compare an RB against a WR for one flex slot.
-for (const pos of ['RB', 'WR', 'TE']) {
-  assert(data.positions[pos].every((r) => Number.isInteger(r.flexRank)),
-    `${pos} rows must carry the overall flex rank`);
-}
+// His flex list is shallower than the three positional lists together, so the
+// top of each carries it and nothing below the flex depth does.
+const flex = ['RB', 'WR', 'TE'].flatMap((pos) => data.positions[pos])
+  .map((r) => r.flexRank).filter(Number.isInteger).sort((a, b) => a - b);
+assert(flex.length >= 100, `flex rank should cover his top 100+, got ${flex.length}`);
+assert.deepEqual(flex.slice(0, 100), Array.from({ length: 100 }, (_, i) => i + 1),
+  'flex ranks 1..100 must each appear exactly once');
 assert.equal(data.teamMismatches.length, 0, 'every printed team should match Sleeper');
 
 console.log('gibbs-week-column tests ok');

@@ -1,4 +1,11 @@
-"""Build his rest-of-season board from FantasyPros, then layer his X updates.
+"""Build his rest-of-season (default) or weekly board from FantasyPros.
+
+`--board week` writes gibbs-week.js from his weekly board. That replaced the CBS
+scrape on 2026-09-24: his "Week 3 - FLEX Top-100 Fantasy Football Rankings
+(PPR)" post on X that afternoon matched this board 94 of 100 exact (the other
+six are edits he made after posting, per the FantasyPros stamp), while the CBS
+page, stamped "Updated 1m ago", sat a mean 11 flex spots off it (Saquon Barkley
+RB11 on his post, RB39 on CBS). CBS lags; this does not.
 
 FantasyPros DOES carry a rest-of-season board for him, which is easy to
 conclude it does not. Two traps:
@@ -48,6 +55,7 @@ SEASON = 2026
 SCORING = "HALF"
 POSITIONS = ("QB", "RB", "WR", "TE")
 OUTPUT = ROOT / "site" / "data" / "gibbs-ros.js"
+WEEK_OUTPUT = ROOT / "site" / "data" / "gibbs-week.js"
 HEADERS = {
     "x-api-key": "zjxN52G3lP4fORpHRftGI2mTU8cTwxVNvkjByM3j",
     "Origin": "https://www.fantasypros.com",
@@ -58,9 +66,10 @@ HEADERS = {
 MIN_ROWS = 20
 
 
-def api(position: str, scoring: str = SCORING) -> dict:
+def api(position: str, scoring: str = SCORING, week: int = 0) -> dict:
     query = {
-        "type": "ros", "scoring": scoring, "position": position, "week": 0,
+        "type": "weekly" if week else "ros", "scoring": scoring,
+        "position": position, "week": week,
         "sport": "NFL", "experts": "available",
         # id:id, not id. See the module docstring: the bare form is ignored.
         "filters": f"{EXPERT_ID}:{EXPERT_ID}",
@@ -89,13 +98,25 @@ def one_expert(payload: dict, position: str) -> list[dict]:
         "player": p["player_name"],
         "team": p.get("player_team_id") or "",
         "bye": int(p["player_bye_week"]) if str(p.get("player_bye_week") or "").isdigit() else None,
+        # "at WAS" / "vs. NYJ" -> "@WAS" / "NYJ", the form the week column shows.
+        "opp": opp_code(p.get("player_opponent")),
     } for p in rows]
 
 
-def collect() -> tuple[dict, dict]:
-    positions, stamps = {}, {}
+def opp_code(text: str | None) -> str | None:
+    if not text:
+        return None
+    team = text.split()[-1]
+    return f"@{team}" if text.lower().startswith("at") else team
+
+
+def collect(week: int = 0) -> tuple[dict, dict, str | None]:
+    """Rows and FantasyPros "M/DD" stamps per position, plus the newest stamp as
+    an ISO date from last_updated_ts (a text max() on "M/DD" puts 9/30 after
+    10/01)."""
+    positions, stamps, newest_ts = {}, {}, 0
     for pos in POSITIONS:
-        payload = api(pos)
+        payload = api(pos, week=week)
         rows = one_expert(payload, pos)
         rows.sort(key=lambda r: r["rank"])
         # The API's rank_ecr is his rank and should already be 1..n. Renumber
@@ -104,8 +125,11 @@ def collect() -> tuple[dict, dict]:
             r["rank"] = i
         positions[pos] = rows
         stamps[pos] = payload.get("last_updated")
+        newest_ts = max(newest_ts, int(payload.get("last_updated_ts") or 0))
         print(f"  {pos}: {len(rows)} ranked, FantasyPros stamp {stamps[pos]}")
-    return positions, stamps
+    newest = (dt.datetime.fromtimestamp(newest_ts, dt.timezone.utc).date().isoformat()
+              if newest_ts else None)
+    return positions, stamps, newest
 
 
 def self_check() -> int:
@@ -138,21 +162,26 @@ def self_check() -> int:
     odd = one_expert({"total_experts": 1, "players": [
         dict(p, player_bye_week="") for p in good["players"]]}, "RB")
     assert odd[0]["bye"] is None, odd[0]
+    assert opp_code("at WAS") == "@WAS" and opp_code("vs. NYJ") == "NYJ"
+    assert opp_code(None) is None
     print("build_gibbs_ros_fp self-check ok")
     return 0
 
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--output", type=pathlib.Path, default=OUTPUT)
+    ap.add_argument("--board", choices=("ros", "week"), default="ros")
+    ap.add_argument("--output", type=pathlib.Path)
     ap.add_argument("--self-check", action="store_true")
     a = ap.parse_args()
     if a.self_check:
         return self_check()
+    if a.board == "week":
+        return main_week(a.output or WEEK_OUTPUT)
+    a.output = a.output or OUTPUT
 
     print(f"Jacob Gibbs (expert {EXPERT_ID}) rest-of-season, {SCORING}-PPR")
-    positions, stamps = collect()
-    newest = max((s for s in stamps.values() if s), default=None)
+    positions, stamps, newest = collect()
 
     src = {
         "source": "Jacob Gibbs (@jagibbs_23)",
@@ -176,6 +205,7 @@ def main() -> int:
     }
     data = build(src, sleeper_index())
     data["fpStamps"] = stamps
+    data["fpScoring"] = SCORING
 
     body = json.dumps(data, ensure_ascii=False, separators=(",", ":"))
     a.output.write_text(
@@ -192,6 +222,65 @@ def main() -> int:
         for m in data["teamMismatches"][:6]:
             print(f"     {m}")
     print(f"wrote {a.output.name} ({a.output.stat().st_size / 1024:.0f} KB)")
+    return 0
+
+
+def current_week() -> int:
+    raw = (ROOT / "site" / "data" / "weekly-rankings.js").read_text(encoding="utf-8")
+    import re
+    return int(re.search(r'"currentWeek":\s*(\d+)', raw).group(1))
+
+
+def main_week(output: pathlib.Path) -> int:
+    week = current_week()
+    print(f"Jacob Gibbs (expert {EXPERT_ID}) week {week}, FantasyPros {SCORING} board")
+    positions, stamps, newest = collect(week)
+    # The flex board is the one he posts; it gives the cross-position order.
+    flex = one_expert(api("FLX", week=week), "FLX")
+    flex_rank = {(r["player"], r["team"]): i for i, r in
+                 enumerate(sorted(flex, key=lambda r: r["rank"]), 1)}
+    # Scoring: he titles this board PPR ("Week 3 - FLEX Top-100 ... (PPR)", X,
+    # 2026-09-24), and that post IS this board. FantasyPros files the same
+    # order under half-PPR, and FantasyPros' own PPR board for him is a
+    # different, staler list (TE untouched since 9/22), so it is not used. His
+    # label wins for RB/WR/TE; QB is not on the flex post and stays as filed.
+    scoring = {p: ("ppr" if p in ("RB", "WR", "TE") else "half_ppr") for p in positions}
+    src = {
+        "source": "Jacob Gibbs (@jagibbs_23)",
+        "board": "week",
+        "posted": dt.date.today().isoformat(),
+        "captured": dt.date.today().isoformat(),
+        "scoringByPosition": scoring,
+        "provenance": (
+            f"His own week {week} board on FantasyPros (expert {EXPERT_ID}), "
+            f"pulled per position with filters={EXPERT_ID}:{EXPERT_ID} and "
+            f"accepted only when total_experts=1. It is the board he posts: his "
+            f"2026-09-24 X post \"Week 3 - FLEX Top-100 Fantasy Football Rankings "
+            f"(PPR)\" matched it 94 of 100 exact, the rest being later edits. He "
+            f"titles it PPR, so RB, WR and TE are labelled PPR; FantasyPros "
+            f"files the same order under half-PPR, and his 9/22 early-look cards "
+            f"said half-PPR. Position stamps: "
+            + ", ".join(f"{p} {s}" for p, s in stamps.items() if s) + "."),
+        "positions": positions,
+    }
+    data = build(src, sleeper_index())
+    for pos, built in data["positions"].items():
+        for row in built:
+            row["flexRank"] = flex_rank.get((row["name"], row["team"]))
+    data["fpStamps"] = stamps
+    data["fpScoring"] = SCORING
+    # The site hides this column when this is not its current week, so a
+    # failed Tuesday refresh cannot show week 3 ranks beside week 4 numbers.
+    data["week"] = week
+    data["updatedLabel"] = f"FantasyPros stamp {newest}" if newest else None
+    body = json.dumps(data, ensure_ascii=False, separators=(",", ":"))
+    output.write_text(
+        "// Generated by build_gibbs_ros_fp.py --board week from his FantasyPros board. Do not edit.\n"
+        f"window.GIBBS_WEEK={body};\n", encoding="utf-8")
+    for pos, rows in data["positions"].items():
+        matched = sum(bool(r["sleeperId"]) for r in rows)
+        print(f"  {pos}: {len(rows)} ranked, {matched} matched to Sleeper ({scoring[pos]})")
+    print(f"wrote {output.name} ({output.stat().st_size / 1024:.0f} KB)")
     return 0
 
 

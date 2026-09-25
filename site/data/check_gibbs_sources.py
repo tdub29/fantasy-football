@@ -1,26 +1,25 @@
-"""Cross-reference the scraped CBS board against his own X cards.
+"""Cross-reference his week board (FantasyPros, was CBS until 2026-09-24) against his own X posts.
 
 Two independent publications of the same person's rankings. If they agree, the
 scrape is pointed at the right analyst and the right week. If they diverge, one
 of four things happened and all of them matter:
 
-  * the CBS URL slug now resolves to a different analyst;
+  * the source now resolves to a different analyst (CBS until 2026-09-24,
+    his FantasyPros board since);
   * the page is serving a stale or a future week;
   * the parser is mis-reading the positional-rank column;
-  * he genuinely revised between posting the card and updating CBS.
+  * he genuinely revised between posting the card and updating the board.
 
 Only the last is benign, and it shows up as a small number of adjacent-rank
 moves rather than as wholesale disagreement. That is why this reports the shape
 of the disagreement instead of a single pass/fail number.
 
-Scope note: it compares the overlap only. The cards are a top 12 per position
-and CBS runs 150 deep, so ranks past 12 have nothing to check against, and QB
-is card-only because CBS has no per-position page for him.
+Scope note: it compares the overlap only, and QB only when a capture has one.
 
-Scoring note: the cards are HALF-PPR and CBS is PPR. Perfect agreement is not
-required and its absence is not a bug. Half-PPR versus PPR legitimately moves
-pass-catching backs up and early-down backs down, so the tolerance below is
-about catching a WRONG BOARD, not about policing his opinion.
+Scoring note: his early-look cards say HALF-PPR and his flex post says PPR, yet
+both match the same FantasyPros board, so a move here is a revision or a wrong
+board, never scoring. The tolerance below is about catching a WRONG BOARD, not
+about policing his opinion.
 
     python site/data/check_gibbs_sources.py
     python site/data/check_gibbs_sources.py --self-check
@@ -56,7 +55,7 @@ def load_board(path: pathlib.Path) -> dict:
 
 def newest_capture(folder: pathlib.Path) -> pathlib.Path | None:
     files = sorted(p for p in folder.glob("*.json")
-                   if not re.search(r"\.reader\d+\.json$", p.name))
+                   if not re.search(r"\.(reader\d+|overlay)\.json$", p.name))
     return files[-1] if files else None
 
 
@@ -104,7 +103,7 @@ def report(result: dict) -> int:
               + (f", {len(r['missing'])} not on the scraped board" if r["missing"] else ""))
         for name, card, live, d in r["moves"][:6]:
             flag = "  <-- beyond tolerance" if abs(d) > MAX_MOVE else ""
-            print(f"       {name}: card {pos}{card} -> CBS {pos}{live} ({d:+d}){flag}")
+            print(f"       {name}: card {pos}{card} -> board {pos}{live} ({d:+d}){flag}")
         for name in r["missing"][:6]:
             print(f"       {name}: on his card, absent from the scrape")
         far = [m for m in r["moves"] if abs(m[3]) > MAX_MOVE]
@@ -178,7 +177,7 @@ def main() -> int:
         return 0
     board = load_board(a.board)
     capture = json.loads(cap_path.read_text(encoding="utf-8"))
-    print(f"CBS board ({board.get('board')}, {board.get('updatedLabel')}) "
+    print(f"Week board ({board.get('board')}, {board.get('updatedLabel')}) "
           f"vs his X cards ({cap_path.name}, {capture.get('posted')})")
     bad = report(compare(board, capture))
     print("\n" + ("SOURCES AGREE" if not bad else

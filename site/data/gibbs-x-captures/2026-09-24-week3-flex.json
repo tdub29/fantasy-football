@@ -1,0 +1,821 @@
+{
+ "source": "Jacob Gibbs (@jagibbs_23)",
+ "board": "week-3-flex",
+ "posted": "2026-09-24",
+ "captured": "2026-09-24",
+ "url": "https://x.com/jagibbs_23/status/2103242349480440015",
+ "scoringByPosition": {
+  "RB": "ppr",
+  "WR": "ppr",
+  "TE": "ppr"
+ },
+ "provenance": "Four screenshots of his FantasyPros rankings editor posted to X on 2026-09-24 21:57 UTC, titled \"Week 3 - FLEX Top-100 Fantasy Football Rankings (PPR)\". Transcribed by two independent readers and reconciled by code: 100 of 100 rows agreed on rank, name, team, bye, position and opponent. Positional ranks here are derived from the flex order. The positional ranks he wrote in the post text (Watson WR8, London WR12, Kraft TE7, Kaleb Johnson RB34) match his FantasyPros half-PPR positional board exactly and not its PPR one, which is how this post was tied to that board.",
+ "positions": {
+  "RB": [
+   {
+    "rank": 1,
+    "player": "Jahmyr Gibbs",
+    "team": "DET",
+    "flexRank": 1,
+    "bye": 6,
+    "opp": "vs NYJ"
+   },
+   {
+    "rank": 2,
+    "player": "Kenneth Walker III",
+    "team": "KC",
+    "flexRank": 2,
+    "bye": 5,
+    "opp": "@ MIA"
+   },
+   {
+    "rank": 3,
+    "player": "Christian McCaffrey",
+    "team": "SF",
+    "flexRank": 4,
+    "bye": 8,
+    "opp": "vs ARI"
+   },
+   {
+    "rank": 4,
+    "player": "Bijan Robinson",
+    "team": "ATL",
+    "flexRank": 5,
+    "bye": 11,
+    "opp": "@ GB"
+   },
+   {
+    "rank": 5,
+    "player": "Derrick Henry",
+    "team": "BAL",
+    "flexRank": 6,
+    "bye": 13,
+    "opp": "@ DAL"
+   },
+   {
+    "rank": 6,
+    "player": "James Cook III",
+    "team": "BUF",
+    "flexRank": 9,
+    "bye": 7,
+    "opp": "vs LAC"
+   },
+   {
+    "rank": 7,
+    "player": "Ashton Jeanty",
+    "team": "LV",
+    "flexRank": 10,
+    "bye": 13,
+    "opp": "@ NO"
+   },
+   {
+    "rank": 8,
+    "player": "Jonathan Taylor",
+    "team": "IND",
+    "flexRank": 11,
+    "bye": 13,
+    "opp": "vs HOU"
+   },
+   {
+    "rank": 9,
+    "player": "Javonte Williams",
+    "team": "DAL",
+    "flexRank": 16,
+    "bye": 14,
+    "opp": "vs BAL"
+   },
+   {
+    "rank": 10,
+    "player": "Chase Brown",
+    "team": "CIN",
+    "flexRank": 17,
+    "bye": 6,
+    "opp": "@ PIT"
+   },
+   {
+    "rank": 11,
+    "player": "Saquon Barkley",
+    "team": "PHI",
+    "flexRank": 18,
+    "bye": 10,
+    "opp": "@ CHI"
+   },
+   {
+    "rank": 12,
+    "player": "Kyren Williams",
+    "team": "LAR",
+    "flexRank": 22,
+    "bye": 11,
+    "opp": "@ DEN"
+   },
+   {
+    "rank": 13,
+    "player": "De'Von Achane",
+    "team": "MIA",
+    "flexRank": 25,
+    "bye": 6,
+    "opp": "vs KC"
+   },
+   {
+    "rank": 14,
+    "player": "Chuba Hubbard",
+    "team": "CAR",
+    "flexRank": 26,
+    "bye": 5,
+    "opp": "@ CLE"
+   },
+   {
+    "rank": 15,
+    "player": "Jaylen Warren",
+    "team": "PIT",
+    "flexRank": 34,
+    "bye": 9,
+    "opp": "vs CIN"
+   },
+   {
+    "rank": 16,
+    "player": "Bucky Irving",
+    "team": "TB",
+    "flexRank": 35,
+    "bye": 10,
+    "opp": "vs MIN"
+   },
+   {
+    "rank": 17,
+    "player": "Breece Hall",
+    "team": "NYJ",
+    "flexRank": 36,
+    "bye": 13,
+    "opp": "@ DET"
+   },
+   {
+    "rank": 18,
+    "player": "Omarion Hampton",
+    "team": "LAC",
+    "flexRank": 37,
+    "bye": 7,
+    "opp": "@ BUF"
+   },
+   {
+    "rank": 19,
+    "player": "David Montgomery",
+    "team": "HOU",
+    "flexRank": 38,
+    "bye": 8,
+    "opp": "@ IND"
+   },
+   {
+    "rank": 20,
+    "player": "D'Andre Swift",
+    "team": "CHI",
+    "flexRank": 39,
+    "bye": 10,
+    "opp": "vs PHI"
+   },
+   {
+    "rank": 21,
+    "player": "Bhayshul Tuten",
+    "team": "JAC",
+    "flexRank": 40,
+    "bye": 7,
+    "opp": "vs NE"
+   },
+   {
+    "rank": 22,
+    "player": "Aaron Jones Sr.",
+    "team": "MIN",
+    "flexRank": 45,
+    "bye": 6,
+    "opp": "@ TB"
+   },
+   {
+    "rank": 23,
+    "player": "Travis Etienne Jr.",
+    "team": "NO",
+    "flexRank": 48,
+    "bye": 8,
+    "opp": "vs LV"
+   },
+   {
+    "rank": 24,
+    "player": "Emanuel Wilson",
+    "team": "SEA",
+    "flexRank": 53,
+    "bye": 11,
+    "opp": "@ WAS"
+   },
+   {
+    "rank": 25,
+    "player": "Quinshon Judkins",
+    "team": "CLE",
+    "flexRank": 54,
+    "bye": 11,
+    "opp": "vs CAR"
+   },
+   {
+    "rank": 26,
+    "player": "TreVeyon Henderson",
+    "team": "NE",
+    "flexRank": 55,
+    "bye": 11,
+    "opp": "@ JAC"
+   },
+   {
+    "rank": 27,
+    "player": "Cam Skattebo",
+    "team": "NYG",
+    "flexRank": 58,
+    "bye": 8,
+    "opp": "vs TEN"
+   },
+   {
+    "rank": 28,
+    "player": "Jeremiyah Love",
+    "team": "ARI",
+    "flexRank": 64,
+    "bye": 14,
+    "opp": "@ SF"
+   },
+   {
+    "rank": 29,
+    "player": "Rhamondre Stevenson",
+    "team": "NE",
+    "flexRank": 65,
+    "bye": 11,
+    "opp": "@ JAC"
+   },
+   {
+    "rank": 30,
+    "player": "Tony Pollard",
+    "team": "TEN",
+    "flexRank": 68,
+    "bye": 9,
+    "opp": "@ NYG"
+   },
+   {
+    "rank": 31,
+    "player": "Emmett Johnson",
+    "team": "KC",
+    "flexRank": 73,
+    "bye": 5,
+    "opp": "@ MIA"
+   },
+   {
+    "rank": 32,
+    "player": "Blake Corum",
+    "team": "LAR",
+    "flexRank": 77,
+    "bye": 11,
+    "opp": "@ DEN"
+   },
+   {
+    "rank": 33,
+    "player": "Kaelon Black",
+    "team": "SF",
+    "flexRank": 86,
+    "bye": 8,
+    "opp": "vs ARI"
+   },
+   {
+    "rank": 34,
+    "player": "Kaleb Johnson",
+    "team": "GB",
+    "flexRank": 92,
+    "bye": 11,
+    "opp": "vs ATL"
+   }
+  ],
+  "WR": [
+   {
+    "rank": 1,
+    "player": "Jaxon Smith-Njigba",
+    "team": "SEA",
+    "flexRank": 3,
+    "bye": 11,
+    "opp": "@ WAS"
+   },
+   {
+    "rank": 2,
+    "player": "Amon-Ra St. Brown",
+    "team": "DET",
+    "flexRank": 7,
+    "bye": 6,
+    "opp": "vs NYJ"
+   },
+   {
+    "rank": 3,
+    "player": "Chris Olave",
+    "team": "NO",
+    "flexRank": 8,
+    "bye": 8,
+    "opp": "vs LV"
+   },
+   {
+    "rank": 4,
+    "player": "Ja'Marr Chase",
+    "team": "CIN",
+    "flexRank": 12,
+    "bye": 6,
+    "opp": "@ PIT"
+   },
+   {
+    "rank": 5,
+    "player": "CeeDee Lamb",
+    "team": "DAL",
+    "flexRank": 13,
+    "bye": 14,
+    "opp": "vs BAL"
+   },
+   {
+    "rank": 6,
+    "player": "DeVonta Smith",
+    "team": "PHI",
+    "flexRank": 14,
+    "bye": 10,
+    "opp": "@ CHI"
+   },
+   {
+    "rank": 7,
+    "player": "Justin Jefferson",
+    "team": "MIN",
+    "flexRank": 15,
+    "bye": 6,
+    "opp": "@ TB"
+   },
+   {
+    "rank": 8,
+    "player": "Parker Washington",
+    "team": "JAC",
+    "flexRank": 19,
+    "bye": 7,
+    "opp": "vs NE"
+   },
+   {
+    "rank": 9,
+    "player": "Christian Watson",
+    "team": "GB",
+    "flexRank": 20,
+    "bye": 11,
+    "opp": "vs ATL"
+   },
+   {
+    "rank": 10,
+    "player": "Garrett Wilson",
+    "team": "NYJ",
+    "flexRank": 21,
+    "bye": 13,
+    "opp": "@ DET"
+   },
+   {
+    "rank": 11,
+    "player": "George Pickens",
+    "team": "DAL",
+    "flexRank": 23,
+    "bye": 14,
+    "opp": "vs BAL"
+   },
+   {
+    "rank": 12,
+    "player": "Drake London",
+    "team": "ATL",
+    "flexRank": 24,
+    "bye": 11,
+    "opp": "@ GB"
+   },
+   {
+    "rank": 13,
+    "player": "Ladd McConkey",
+    "team": "LAC",
+    "flexRank": 27,
+    "bye": 7,
+    "opp": "@ BUF"
+   },
+   {
+    "rank": 14,
+    "player": "Malik Nabers",
+    "team": "NYG",
+    "flexRank": 28,
+    "bye": 8,
+    "opp": "vs TEN"
+   },
+   {
+    "rank": 15,
+    "player": "Davante Adams",
+    "team": "LAR",
+    "flexRank": 29,
+    "bye": 11,
+    "opp": "@ DEN"
+   },
+   {
+    "rank": 16,
+    "player": "Mike Evans",
+    "team": "SF",
+    "flexRank": 30,
+    "bye": 8,
+    "opp": "vs ARI"
+   },
+   {
+    "rank": 17,
+    "player": "Tetairoa McMillan",
+    "team": "CAR",
+    "flexRank": 31,
+    "bye": 5,
+    "opp": "@ CLE"
+   },
+   {
+    "rank": 18,
+    "player": "Jalen Coker",
+    "team": "CAR",
+    "flexRank": 32,
+    "bye": 5,
+    "opp": "@ CLE"
+   },
+   {
+    "rank": 19,
+    "player": "Tee Higgins",
+    "team": "CIN",
+    "flexRank": 33,
+    "bye": 6,
+    "opp": "@ PIT"
+   },
+   {
+    "rank": 20,
+    "player": "Matthew Golden",
+    "team": "GB",
+    "flexRank": 43,
+    "bye": 11,
+    "opp": "vs ATL"
+   },
+   {
+    "rank": 21,
+    "player": "DJ Moore",
+    "team": "BUF",
+    "flexRank": 44,
+    "bye": 7,
+    "opp": "vs LAC"
+   },
+   {
+    "rank": 22,
+    "player": "Jaylen Waddle",
+    "team": "DEN",
+    "flexRank": 46,
+    "bye": 10,
+    "opp": "vs LAR"
+   },
+   {
+    "rank": 23,
+    "player": "Rashod Bateman",
+    "team": "BAL",
+    "flexRank": 47,
+    "bye": 13,
+    "opp": "@ DAL"
+   },
+   {
+    "rank": 24,
+    "player": "Emeka Egbuka",
+    "team": "TB",
+    "flexRank": 51,
+    "bye": 10,
+    "opp": "vs MIN"
+   },
+   {
+    "rank": 25,
+    "player": "Josh Downs",
+    "team": "IND",
+    "flexRank": 52,
+    "bye": 13,
+    "opp": "vs HOU"
+   },
+   {
+    "rank": 26,
+    "player": "Jameson Williams",
+    "team": "DET",
+    "flexRank": 56,
+    "bye": 6,
+    "opp": "vs NYJ"
+   },
+   {
+    "rank": 27,
+    "player": "Devaughn Vele",
+    "team": "NO",
+    "flexRank": 57,
+    "bye": 8,
+    "opp": "vs LV"
+   },
+   {
+    "rank": 28,
+    "player": "Romeo Doubs",
+    "team": "NE",
+    "flexRank": 61,
+    "bye": 11,
+    "opp": "@ JAC"
+   },
+   {
+    "rank": 29,
+    "player": "Rashee Rice",
+    "team": "KC",
+    "flexRank": 70,
+    "bye": 5,
+    "opp": "@ MIA"
+   },
+   {
+    "rank": 30,
+    "player": "DK Metcalf",
+    "team": "PIT",
+    "flexRank": 71,
+    "bye": 9,
+    "opp": "vs CIN"
+   },
+   {
+    "rank": 31,
+    "player": "Deebo Samuel Sr.",
+    "team": "SF",
+    "flexRank": 72,
+    "bye": 8,
+    "opp": "vs ARI"
+   },
+   {
+    "rank": 32,
+    "player": "Luther Burden III",
+    "team": "CHI",
+    "flexRank": 74,
+    "bye": 10,
+    "opp": "vs PHI"
+   },
+   {
+    "rank": 33,
+    "player": "Dontayvion Wicks",
+    "team": "PHI",
+    "flexRank": 75,
+    "bye": 10,
+    "opp": "@ CHI"
+   },
+   {
+    "rank": 34,
+    "player": "Adonai Mitchell",
+    "team": "NYJ",
+    "flexRank": 76,
+    "bye": 13,
+    "opp": "@ DET"
+   },
+   {
+    "rank": 35,
+    "player": "Michael Wilson",
+    "team": "ARI",
+    "flexRank": 78,
+    "bye": 14,
+    "opp": "@ SF"
+   },
+   {
+    "rank": 36,
+    "player": "Jordan Addison",
+    "team": "MIN",
+    "flexRank": 79,
+    "bye": 6,
+    "opp": "@ TB"
+   },
+   {
+    "rank": 37,
+    "player": "Carnell Tate",
+    "team": "TEN",
+    "flexRank": 80,
+    "bye": 9,
+    "opp": "@ NYG"
+   },
+   {
+    "rank": 38,
+    "player": "Quentin Johnston",
+    "team": "LAC",
+    "flexRank": 81,
+    "bye": 7,
+    "opp": "@ BUF"
+   },
+   {
+    "rank": 39,
+    "player": "Courtland Sutton",
+    "team": "DEN",
+    "flexRank": 82,
+    "bye": 10,
+    "opp": "vs LAR"
+   },
+   {
+    "rank": 40,
+    "player": "Terry McLaurin",
+    "team": "WAS",
+    "flexRank": 83,
+    "bye": 7,
+    "opp": "vs SEA"
+   },
+   {
+    "rank": 41,
+    "player": "Stefon Diggs",
+    "team": "WAS",
+    "flexRank": 84,
+    "bye": 7,
+    "opp": "vs SEA"
+   },
+   {
+    "rank": 42,
+    "player": "Khalil Shakir",
+    "team": "BUF",
+    "flexRank": 88,
+    "bye": 7,
+    "opp": "vs LAC"
+   },
+   {
+    "rank": 43,
+    "player": "Chris Godwin Jr.",
+    "team": "TB",
+    "flexRank": 89,
+    "bye": 10,
+    "opp": "vs MIN"
+   },
+   {
+    "rank": 44,
+    "player": "Denzel Boston",
+    "team": "CLE",
+    "flexRank": 90,
+    "bye": 11,
+    "opp": "vs CAR"
+   },
+   {
+    "rank": 45,
+    "player": "Rome Odunze",
+    "team": "CHI",
+    "flexRank": 93,
+    "bye": 10,
+    "opp": "vs PHI"
+   },
+   {
+    "rank": 46,
+    "player": "Jakobi Meyers",
+    "team": "JAC",
+    "flexRank": 94,
+    "bye": 7,
+    "opp": "vs NE"
+   },
+   {
+    "rank": 47,
+    "player": "Tre Tucker",
+    "team": "LV",
+    "flexRank": 95,
+    "bye": 13,
+    "opp": "@ NO"
+   },
+   {
+    "rank": 48,
+    "player": "KC Concepcion Jr.",
+    "team": "CLE",
+    "flexRank": 96,
+    "bye": 11,
+    "opp": "vs CAR"
+   },
+   {
+    "rank": 49,
+    "player": "Xavier Worthy",
+    "team": "KC",
+    "flexRank": 97,
+    "bye": 5,
+    "opp": "@ MIA"
+   },
+   {
+    "rank": 50,
+    "player": "Rashid Shaheed",
+    "team": "SEA",
+    "flexRank": 98,
+    "bye": 11,
+    "opp": "@ WAS"
+   }
+  ],
+  "TE": [
+   {
+    "rank": 1,
+    "player": "Dalton Kincaid",
+    "team": "BUF",
+    "flexRank": 41,
+    "bye": 7,
+    "opp": "vs LAC"
+   },
+   {
+    "rank": 2,
+    "player": "Trey McBride",
+    "team": "ARI",
+    "flexRank": 42,
+    "bye": 14,
+    "opp": "@ SF"
+   },
+   {
+    "rank": 3,
+    "player": "Sam LaPorta",
+    "team": "DET",
+    "flexRank": 49,
+    "bye": 6,
+    "opp": "vs NYJ"
+   },
+   {
+    "rank": 4,
+    "player": "Brock Bowers",
+    "team": "LV",
+    "flexRank": 50,
+    "bye": 13,
+    "opp": "@ NO"
+   },
+   {
+    "rank": 5,
+    "player": "Travis Kelce",
+    "team": "KC",
+    "flexRank": 59,
+    "bye": 5,
+    "opp": "@ MIA"
+   },
+   {
+    "rank": 6,
+    "player": "Dalton Schultz",
+    "team": "HOU",
+    "flexRank": 60,
+    "bye": 8,
+    "opp": "@ IND"
+   },
+   {
+    "rank": 7,
+    "player": "Tucker Kraft",
+    "team": "GB",
+    "flexRank": 62,
+    "bye": 11,
+    "opp": "vs ATL"
+   },
+   {
+    "rank": 8,
+    "player": "George Kittle",
+    "team": "SF",
+    "flexRank": 63,
+    "bye": 8,
+    "opp": "vs ARI"
+   },
+   {
+    "rank": 9,
+    "player": "Isaiah Likely",
+    "team": "NYG",
+    "flexRank": 66,
+    "bye": 8,
+    "opp": "vs TEN"
+   },
+   {
+    "rank": 10,
+    "player": "Mark Andrews",
+    "team": "BAL",
+    "flexRank": 67,
+    "bye": 13,
+    "opp": "@ DAL"
+   },
+   {
+    "rank": 11,
+    "player": "Juwan Johnson",
+    "team": "NO",
+    "flexRank": 69,
+    "bye": 8,
+    "opp": "vs LV"
+   },
+   {
+    "rank": 12,
+    "player": "Tyler Warren",
+    "team": "IND",
+    "flexRank": 85,
+    "bye": 13,
+    "opp": "vs HOU"
+   },
+   {
+    "rank": 13,
+    "player": "Terrance Ferguson",
+    "team": "LAR",
+    "flexRank": 87,
+    "bye": 11,
+    "opp": "@ DEN"
+   },
+   {
+    "rank": 14,
+    "player": "Oronde Gadsden II",
+    "team": "LAC",
+    "flexRank": 91,
+    "bye": 7,
+    "opp": "@ BUF"
+   },
+   {
+    "rank": 15,
+    "player": "Harold Fannin Jr.",
+    "team": "CLE",
+    "flexRank": 99,
+    "bye": 11,
+    "opp": "vs CAR"
+   },
+   {
+    "rank": 16,
+    "player": "Kyle Pitts Sr.",
+    "team": "ATL",
+    "flexRank": 100,
+    "bye": 11,
+    "opp": "@ GB"
+   }
+  ]
+ }
+}

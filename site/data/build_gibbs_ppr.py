@@ -1,8 +1,12 @@
-"""Derived full-PPR versions of Jacob Gibbs's weekly and rest-of-season boards.
+"""Derived full-PPR version of Jacob Gibbs's rest-of-season board.
+
+ROS only since 2026-09-24: he posted his week board himself titled PPR
+("Week 3 - FLEX Top-100 ... (PPR)"), so re-ranking it would add PPR twice.
+His ROS cards say HALF-PPR outright, so that one still gets derived.
 
 DERIVED BY US, NOT PUBLISHED BY HIM. He maintains half-PPR boards; every league
-here is full PPR. Checked 2026-09-24: his CBS weekly board, his X cards and his
-FantasyPros HALF board agree, while his FantasyPros PPR board is internally
+here is full PPR. Checked 2026-09-24: his X cards and his FantasyPros HALF
+board agree, while his FantasyPros PPR board is internally
 inconsistent (WR shifts track catches, r = +0.51, but Brock Bowers goes TE4 in
 half to TE21 in PPR, r = -0.01 at TE), so it is not used.
 
@@ -19,11 +23,9 @@ A player who catches nothing never rises on his own; he only falls when pass
 catchers around him rise, which is the real full-PPR effect. A ranked player
 with no projection holds the slot Gibbs gave him and is flagged.
 
-Projections: ROS uses the season blend in projections.js (a common scale
-factor for remaining games cancels out of the ordering; bye weeks are not
-netted out, ponytail: do that if a bye ever flips an adjacent pair). The week
-uses Sleeper's weekly PPR projection for points and the Vegas stat line for
-receptions where one exists, else season receptions / 17.
+Projections: the season blend in projections.js (a common scale factor for
+remaining games cancels out of the ordering; bye weeks are not netted out,
+ponytail: do that if a bye ever flips an adjacent pair).
 
     python site/data/build_gibbs_ppr.py
     python site/data/build_gibbs_ppr.py --self-check
@@ -95,22 +97,6 @@ def season_proj() -> dict[str, tuple[float, float]]:
     return out
 
 
-def week_proj(season: dict[str, tuple[float, float]]) -> tuple[dict, int]:
-    W = load("weekly-rankings.js")
-    wk = int(W["currentWeek"])
-    out = {}
-    for p in W["players"]:
-        sl = p.get("sleeper") or []
-        pts = sl[wk - 1] if len(sl) >= wk else None
-        if pts is None:
-            continue
-        rec = (p.get("vegasStats") or {}).get("rec")
-        if rec is None:
-            rec = season.get(str(p["id"]), (0.0, 0.0))[1] / 17.0
-        out[str(p["id"])] = (float(pts), float(rec))
-    return out, wk
-
-
 def self_check() -> int:
     # Two WRs he ranks 1 and 2 on equal half value; the catcher must pass the
     # non-catcher only because of the reception bonus.
@@ -140,13 +126,11 @@ def main() -> int:
     if a.self_check:
         return self_check()
     season = season_proj()
-    week, wk = week_proj(season)
-    wk_board, ros_board = load("gibbs-week.js"), load("gibbs-ros.js")
+    ros_board = load("gibbs-ros.js")
     note = ("DERIVED by this site from Jacob Gibbs's half-PPR {which} board: his order sets "
             "the value slots, +0.5 per projected catch, re-sorted. Not published by him.")
     payload = {}
-    for key, board, proj, which in (("GIBBS_PPR_WEEK", wk_board, week, f"week {wk}"),
-                                    ("GIBBS_PPR_ROS", ros_board, season, "rest-of-season")):
+    for key, board, proj, which in (("GIBBS_PPR_ROS", ros_board, season, "rest-of-season"),):
         positions = {pos: rederive(board["positions"].get(pos, []), proj) for pos in POSITIONS}
         payload[key] = {"derived": True, "note": note.format(which=which),
                         "fromPostedAt": board.get("postedAt"), "positions": positions}

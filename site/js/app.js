@@ -1233,13 +1233,11 @@
   // FantasyPros board lagged this by a day when it was captured, and the
   // positional ROS boards never appear there at all.
   //
-  // Half-PPR, like everything he publishes, while all three leagues here are
-  // full PPR. Shown as HIS rank, never rescored into a full-PPR number and
-  // passed off as his.
+  // Shown as HIS rank in HIS label: the ROS cards say half-PPR, the week
+  // board is the one he posts titled PPR. Never rescored and passed off as his.
   // Two boards, same shape, different questions. GIBBS_ROS is the deep
-  // rest-of-season list (RB 1-70 and so on); GIBBS_WEEK is the top-12 card he
-  // posts for the upcoming slate, which is the start/sit answer and is usually
-  // days fresher. One lookup serves both rather than two copies drifting apart.
+  // rest-of-season list; GIBBS_WEEK is his FantasyPros board for this week,
+  // the start/sit answer. One lookup serves both rather than two copies drifting apart.
   const _gibbsIdx = new Map();
   function gibbsBoardRank(board, sleeperId) {
     const data = window[board];
@@ -1255,13 +1253,20 @@
   }
   const gibbsRosRank = (id) => gibbsBoardRank('GIBBS_ROS', id);
   const gibbsWeekRank = (id) => gibbsBoardRank('GIBBS_WEEK', id);
-  // DERIVED full-PPR re-ranks of those two boards (site/data/build_gibbs_ppr.py).
-  const gibbsWeekPprRank = (id) => gibbsBoardRank('GIBBS_PPR_WEEK', id);
+  // DERIVED full-PPR re-rank of his half-PPR ROS board (site/data/build_gibbs_ppr.py).
+  // The week board gets none: he titles it PPR himself.
   const gibbsRosPprRank = (id) => gibbsBoardRank('GIBBS_PPR_ROS', id);
 
   // His scoring is per POSITION, not per board: the week 3 QB card is NON-PPR
   // while RB, WR and TE are HALF-PPR. Saying "half-PPR" over all four would be
   // wrong for a quarter of it, so the label is read off the data.
+  // Header tag from the board's own RB/WR/TE scoring, so a label cannot say
+  // "half" after the source switches to one he titles PPR (2026-09-24).
+  function gibbsShortScoring(data, pos) {
+    const f = gibbsScoringLabel(data, ['QB', 'RB', 'WR', 'TE'].includes(pos) ? pos : 'WR');
+    return f === 'PPR' ? 'PPR' : f === 'HALF-PPR' ? 'half' : f.toLowerCase();
+  }
+
   function gibbsScoringLabel(data, pos) {
     const f = (data && data.formatByPosition && data.formatByPosition[pos])
       || (data && data.format) || 'half_ppr';
@@ -2943,8 +2948,9 @@
       const builtExpertMeta = new Map((weeklyData.trackedExperts || [])
         .map(expert => [String(expert.id), expert]));
       // Gibbs (FantasyPros 1576) is excluded: his dedicated Gibbs Wk column
-      // (CBS, matched to his X cards 48/48) is his real weekly board, while
-      // his FantasyPros PPR weekly board is one he does not maintain. On
+      // reads the FantasyPros board he actually posts (stored under half-PPR),
+      // while the one FantasyPros stores under PPR for him is not his posted
+      // board. On
       // 2026-09-24 it had Rashee Rice WR16 against WR29 on his own half-PPR
       // board, WR27 on CBS and WR28 on X, and the column was labelled only
       // "J. Gibbs", so it read as his opinion. It was not.
@@ -2962,14 +2968,15 @@
         };
       });
       // An old saved sort on his FantasyPros column now lands on his real one.
-      if (filter.sort === 'weekly-gibbs' || filter.sort === 'weekly-x:gibbs' || filter.sort === 'weekly-x:fp-1576') {
+      if (filter.sort === 'weekly-gibbs' || filter.sort === 'weekly-x:gibbs' || filter.sort === 'weekly-x:fp-1576'
+          || filter.sort === 'weekly-gibbs-wk-ppr') {
         filter.sort = 'weekly-gibbs-wk'; filter.dir = 'asc'; persist();
       }
       // A saved sort can name a column the other view hides; fall back to
       // that view's default rather than sorting by something off screen.
       const rosOnlySort = ['weekly-ros', 'weekly-gibbs-x', 'weekly-gibbs-ros-ppr'].includes(filter.sort);
       const weekOnlySort = ['weekly-vegas', 'weekly-sleeper', 'weekly-vsdelta', 'weekly-ecr',
-        'weekly-gibbs-wk', 'weekly-gibbs-wk-ppr'].includes(filter.sort)
+        'weekly-gibbs-wk'].includes(filter.sort)
         || /^(weekly-x:|wc:)/.test(filter.sort || '');
       if (filter.view === 'ros' ? weekOnlySort : rosOnlySort) {
         [filter.sort, filter.dir] = filter.view === 'ros' ? ['weekly-ros', 'asc'] : ['weekly-sleeper', 'desc'];
@@ -2991,7 +2998,7 @@
             // listed here, so the comparator never routed to them and clicking
             // either header sorted nothing. The handler below was dead code.
             || filter.sort === 'weekly-gibbs-x' || filter.sort === 'weekly-gibbs-wk'
-            || filter.sort === 'weekly-gibbs-wk-ppr' || filter.sort === 'weekly-gibbs-ros-ppr'
+            || filter.sort === 'weekly-gibbs-ros-ppr'
             || (typeof filter.sort === 'string' && filter.sort.startsWith('weekly-x:'))
             || (typeof filter.sort === 'string' && filter.sort.startsWith('kicker-'))
             || (typeof filter.sort === 'string' && filter.sort.startsWith('sw:'))
@@ -3022,7 +3029,6 @@
             // bugs that hid each other, and the column just looked inert.
             if (filter.sort === 'weekly-gibbs-x') return gibbsRosRank(player._sleeperId)?.rank ?? null;
             if (filter.sort === 'weekly-gibbs-wk') return gibbsWeekRank(player._sleeperId)?.rank ?? null;
-            if (filter.sort === 'weekly-gibbs-wk-ppr') return gibbsWeekPprRank(player._sleeperId)?.rank ?? null;
             if (filter.sort === 'weekly-gibbs-ros-ppr') return gibbsRosPprRank(player._sleeperId)?.rank ?? null;
             // Null either side means no comparison exists, so the row stays
             // blank. The null branch below pushes it last in BOTH directions,
@@ -3077,7 +3083,7 @@
               // player on top, which reads as a broken column rather than a
               // direction choice.
               || key === 'weekly-gibbs-x' || key === 'weekly-gibbs-wk'
-              || key === 'weekly-gibbs-wk-ppr' || key === 'weekly-gibbs-ros-ppr'
+              || key === 'weekly-gibbs-ros-ppr'
               || (typeof key === 'string' && key.startsWith('weekly-x:'))
               || (typeof key === 'string' && key.startsWith('xr:'))) ? 'asc' : 'desc';
           }
@@ -3187,7 +3193,11 @@
       const hasGibbsRos = ((weeklyData.coverage || {}).gibbsRosPlayers || 0) > 0;
       // His X board is a separate, fresher source than his FantasyPros feed.
       const gibbsRosPosted = window.GIBBS_ROS ? window.GIBBS_ROS.postedAt : null;
-      const gibbsWeekPosted = window.GIBBS_WEEK ? window.GIBBS_WEEK.postedAt : null;
+      // Hidden when it is another week's board: a refresh that failed on a
+      // Tuesday would otherwise show week 3 ranks beside week 4 projections.
+      const gibbsWeekPosted = window.GIBBS_WEEK
+        && (window.GIBBS_WEEK.week == null || window.GIBBS_WEEK.week === currentWeek)
+        ? window.GIBBS_WEEK.postedAt : null;
       const gibbsRosThrough = window.GIBBS_ROS ? window.GIBBS_ROS.rosUpdatedThrough : null;
       const gibbsRosScoringNote = window.GIBBS_ROS
         ? (window.GIBBS_ROS.scoringWarning
@@ -3264,21 +3274,19 @@
               ...trackedExperts.map(t => sortHdr(`weekly-x:${t.key}`, t.label, { right:true,
                 title:`${t.name} weekly PPR positional rank, isolated FantasyPros board ${t.id}. ${t.players} players ranked. Manage columns in Expert Rotation.` })),
 
-            gibbsRosPosted && isRosView ? sortHdr('weekly-gibbs-x', 'Gibbs ROS (half)', { right:true,
+            gibbsRosPosted && isRosView ? sortHdr('weekly-gibbs-x', `Gibbs ROS (${gibbsShortScoring(window.GIBBS_ROS, filter.pos)})`, { right:true,
               title:`Jacob Gibbs's rest-of-season positional rank, his own FantasyPros board `
                 + `(expert 1576), with his newer per-player restatements layered on top. `
                 + `${gibbsRosScoringNote} `
                 + `Board ${gibbsRosPosted}${gibbsRosThrough ? `, updates through ${gibbsRosThrough}` : ''}. `
                 + `There used to be a second Gibbs ROS column beside this one reading the same `
                 + `board without those updates; it disagreed on 76 of 278 players and has been removed.` }) : null,
-            gibbsWeekPosted && !isRosView ? sortHdr('weekly-gibbs-wk', 'Gibbs Wk (half)', { right:true,
+            gibbsWeekPosted && !isRosView ? sortHdr('weekly-gibbs-wk', `Gibbs Wk (${gibbsShortScoring(window.GIBBS_WEEK, filter.pos)})`, { right:true,
               title:`Jacob Gibbs's own board for this week, the start/sit list; `
                 + `the ROS column beside it answers a different question. `
                 + `${gibbsWeekScoring} `
-                + `Scraped ${gibbsWeekPosted}${gibbsWeekUpdated ? `, page said "${gibbsWeekUpdated}"` : ''}, `
+                + `Pulled ${gibbsWeekPosted}${gibbsWeekUpdated ? ` (${gibbsWeekUpdated})` : ''} from his FantasyPros board, the one he posts to X as his PPR flex ranks; `
                 + `${gibbsWeekDepth} players ranked. A blank means he has not ranked that player, not that nobody rosters him.` }) : null,
-            window.GIBBS_PPR_WEEK && !isRosView ? sortHdr('weekly-gibbs-wk-ppr', 'Gibbs Wk PPR*', { right:true,
-              title:`DERIVED by this site, not published by him. His half-PPR weekly order sets the value slots, then each player gets +0.5 per projected catch and the board is re-sorted within position. A player who catches nothing never rises on his own. Use this one for full-PPR lineups; the half column beside it is his actual opinion.` }) : null,
             window.GIBBS_PPR_ROS && isRosView ? sortHdr('weekly-gibbs-ros-ppr', 'Gibbs ROS PPR*', { right:true,
               title:`DERIVED by this site, not published by him. His half-PPR rest-of-season order sets the value slots, then each player gets +0.5 per projected catch and the board is re-sorted within position. A player who catches nothing never rises on his own. Use this one for full-PPR lineups; the half column beside it is his actual opinion.` }) : null,
               ...(isRosView ? [] : VEGAS_COMPONENTS).map(c => sortHdr(`wc:${c.k}`, c.label, { right:true,
@@ -3339,18 +3347,21 @@
               })() : null,
               gibbsWeekPosted && !isRosView ? (() => {
                 const g = gibbsWeekRank(p._sleeperId);
-                // The card is a top 12. Absent means unranked on it, which is
+                // Absent means he has not ranked him this week, which is
                 // information, not a missing lookup, so it reads as a blank
                 // rather than as a zero or a made-up rank.
                 if (!g) return h('td', { class:'right tnum' }, emptyValue());
                 const ros = gibbsRosRank(p._sleeperId);
                 const moved = ros && ros.pos === g.pos ? ros.rank - g.rank : null;
                 // Scoring has to match before a cross-board delta means
-                // anything; both are his half-PPR order today, but the QB card
-                // is non-PPR, so the check stays.
-                const sameScoring = ros
-                  && gibbsScoringLabel(window.GIBBS_WEEK, g.pos)
-                     === gibbsScoringLabel(window.GIBBS_ROS, ros.pos);
+                // anything: he titles the week board PPR and the ROS cards
+                // half-PPR, so the tooltip says when part of a move is scoring.
+                // Same stored FantasyPros scoring means the gap is all opinion,
+                // whatever each board is titled.
+                const sameScoring = ros && ((window.GIBBS_WEEK.fpScoring
+                    && window.GIBBS_WEEK.fpScoring === window.GIBBS_ROS.fpScoring)
+                  || gibbsScoringLabel(window.GIBBS_WEEK, g.pos)
+                     === gibbsScoringLabel(window.GIBBS_ROS, ros.pos));
                 return h('td', { class:'right tnum', title:
                   `${g.pos}${g.rank} on his week board`
                   + (g.flexRank ? `, #${g.flexRank} overall among flex starters` : '')
@@ -3367,8 +3378,8 @@
                     style:{ marginLeft:'4px', fontSize:'11px' } },
                     `${moved > 0 ? '+' : ''}${moved}`) : null);
               })() : null,
-              ...[['GIBBS_PPR_WEEK', gibbsWeekPprRank, 'weekly'], ['GIBBS_PPR_ROS', gibbsRosPprRank, 'rest-of-season']]
-                .filter(([key]) => (key === 'GIBBS_PPR_ROS') === isRosView && window[key]).map(([key, look, which]) => {
+              ...[['GIBBS_PPR_ROS', gibbsRosPprRank, 'rest-of-season']]
+                .filter(([key]) => isRosView && window[key]).map(([key, look, which]) => {
                 const g = look(p._sleeperId);
                 if (!g) return h('td', { class:'right tnum' }, emptyValue());
                 // move = his half-PPR rank minus the derived rank: + means PPR lifts him.
