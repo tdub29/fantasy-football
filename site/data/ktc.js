@@ -13,22 +13,10 @@
       "id": "ktc-superflex",
       "title": "KeepTradeCut Dynasty Superflex",
       "url": "https://keeptradecut.com/dynasty-rankings",
-      "publishedAt": "2026-09-23",
+      "publishedAt": "2026-09-25",
       "format": "dynasty_sf",
       "defaultEnabled": false,
       "players": [
-        {
-          "name": "Josh Allen",
-          "pos": "QB",
-          "team": "BUF",
-          "age": 30,
-          "category": "cornerstone",
-          "tier": "S",
-          "ktcValue": 9999,
-          "ktcAdp": 2.0,
-          "ktcPosRank": 1,
-          "note": "KTC Superflex rank #1, value 9999, ADP 2.0. Started% 96.8."
-        },
         {
           "name": "Jahmyr Gibbs",
           "pos": "RB",
@@ -36,10 +24,22 @@
           "age": 24,
           "category": "cornerstone",
           "tier": "S",
-          "ktcValue": 9998,
+          "ktcValue": 9997,
           "ktcAdp": 9.0,
           "ktcPosRank": 1,
-          "note": "KTC Superflex rank #2, value 9998, ADP 9.0. Started% 99.2."
+          "note": "KTC Superflex rank #1, value 9997, ADP 9.0. Started% 99.2."
+        },
+        {
+          "name": "Josh Allen",
+          "pos": "QB",
+          "team": "BUF",
+          "age": 30,
+          "category": "cornerstone",
+          "tier": "S",
+          "ktcValue": 9994,
+          "ktcAdp": 2.0,
+          "ktcPosRank": 1,
+          "note": "KTC Superflex rank #2, value 9994, ADP 2.0. Started% 96.8."
         },
         {
           "name": "Jaxon Smith-Njigba",
@@ -48,10 +48,10 @@
           "age": 24,
           "category": "cornerstone",
           "tier": "S",
-          "ktcValue": 9998,
+          "ktcValue": 9988,
           "ktcAdp": 24.0,
           "ktcPosRank": 1,
-          "note": "KTC Superflex rank #3, value 9998, ADP 24.0. Started% 97.8."
+          "note": "KTC Superflex rank #3, value 9988, ADP 24.0. Started% 97.8."
         },
         {
           "name": "Bijan Robinson",
@@ -60,10 +60,10 @@
           "age": 24,
           "category": "cornerstone",
           "tier": "S",
-          "ktcValue": 9769,
+          "ktcValue": 9800,
           "ktcAdp": 7.0,
           "ktcPosRank": 2,
-          "note": "KTC Superflex rank #4, value 9769, ADP 7.0. Started% 99.2."
+          "note": "KTC Superflex rank #4, value 9800, ADP 7.0. Started% 99.2."
         },
         {
           "name": "Ja'Marr Chase",
@@ -72,10 +72,10 @@
           "age": 26,
           "category": "cornerstone",
           "tier": "S",
-          "ktcValue": 9443,
+          "ktcValue": 9401,
           "ktcAdp": 5.0,
           "ktcPosRank": 2,
-          "note": "KTC Superflex rank #5, value 9443, ADP 5.0. Started% 99.1."
+          "note": "KTC Superflex rank #5, value 9401, ADP 5.0. Started% 99.1."
         },
         {
           "name": "Lamar Jackson",
@@ -84,10 +84,10 @@
           "age": 29,
           "category": "cornerstone",
           "tier": "S",
-          "ktcValue": 7731,
+          "ktcValue": 7794,
           "ktcAdp": 5.0,
           "ktcPosRank": 3,
-          "note": "KTC Superflex rank #9, value 7731, ADP 5.0. Started% 97.1. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC Superflex rank #9, value 7794, ADP 5.0. Started% 97.1. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Jayden Daniels",
@@ -96,10 +96,10 @@
           "age": 25,
           "category": "cornerstone",
           "tier": "S",
-          "ktcValue": 6193,
+          "ktcValue": 6036,
           "ktcAdp": 5.0,
           "ktcPosRank": 10,
-          "note": "KTC Superflex rank #30, value 6193, ADP 5.0. Started% 72.4. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC Superflex rank #31, value 6036, ADP 5.0. Started% 72.4. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Amon-Ra St. Brown",
@@ -108,10 +108,10 @@
           "age": 26,
           "category": "cornerstone",
           "tier": "S",
-          "ktcValue": 8370,
+          "ktcValue": 8316,
           "ktcAdp": 16.0,
           "ktcPosRank": 3,
-          "note": "KTC Superflex rank #6, value 8370, ADP 16.0. Started% 99.2."
+          "note": "KTC Superflex rank #6, value 8316, ADP 16.0. Started% 99.2."
         },
         {
           "name": "Puka Nacua",
@@ -120,10 +120,10 @@
           "age": 25,
           "category": "cornerstone",
           "tier": "S",
-          "ktcValue": 8075,
+          "ktcValue": 8012,
           "ktcAdp": 15.0,
           "ktcPosRank": 4,
-          "note": "KTC Superflex rank #7, value 8075, ADP 15.0. Started% 98.3."
+          "note": "KTC Superflex rank #7, value 8012, ADP 15.0. Started% 98.3."
         },
         {
           "name": "Caleb Williams",
@@ -132,10 +132,10 @@
           "age": 24,
           "category": "cornerstone",
           "tier": "A",
-          "ktcValue": 7964,
+          "ktcValue": 7933,
           "ktcAdp": 20.0,
           "ktcPosRank": 2,
-          "note": "KTC Superflex rank #8, value 7964, ADP 20.0. Started% 86.5."
+          "note": "KTC Superflex rank #8, value 7933, ADP 20.0. Started% 86.5."
         },
         {
           "name": "Joe Burrow",
@@ -144,34 +144,10 @@
           "age": 29,
           "category": "cornerstone",
           "tier": "A",
-          "ktcValue": 7112,
+          "ktcValue": 7050,
           "ktcAdp": 9.0,
           "ktcPosRank": 5,
-          "note": "KTC Superflex rank #17, value 7112, ADP 9.0. Started% 95.5. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Ashton Jeanty",
-          "pos": "RB",
-          "team": "LVR",
-          "age": 22,
-          "category": "cornerstone",
-          "tier": "A",
-          "ktcValue": 7627,
-          "ktcAdp": 19.0,
-          "ktcPosRank": 3,
-          "note": "KTC Superflex rank #10, value 7627, ADP 19.0. Started% 96.8."
-        },
-        {
-          "name": "Justin Jefferson",
-          "pos": "WR",
-          "team": "MIN",
-          "age": 27,
-          "category": "cornerstone",
-          "tier": "A",
-          "ktcValue": 7626,
-          "ktcAdp": 13.0,
-          "ktcPosRank": 5,
-          "note": "KTC Superflex rank #11, value 7626, ADP 13.0. Started% 99.1."
+          "note": "KTC Superflex rank #17, value 7050, ADP 9.0. Started% 95.5. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Trey McBride",
@@ -180,10 +156,34 @@
           "age": 26,
           "category": "cornerstone",
           "tier": "A",
-          "ktcValue": 7597,
+          "ktcValue": 7649,
           "ktcAdp": 17.0,
           "ktcPosRank": 1,
-          "note": "KTC Superflex rank #12, value 7597, ADP 17.0. Started% 99.0."
+          "note": "KTC Superflex rank #10, value 7649, ADP 17.0. Started% 99.0."
+        },
+        {
+          "name": "Justin Jefferson",
+          "pos": "WR",
+          "team": "MIN",
+          "age": 27,
+          "category": "cornerstone",
+          "tier": "A",
+          "ktcValue": 7633,
+          "ktcAdp": 13.0,
+          "ktcPosRank": 5,
+          "note": "KTC Superflex rank #11, value 7633, ADP 13.0. Started% 99.1."
+        },
+        {
+          "name": "Ashton Jeanty",
+          "pos": "RB",
+          "team": "LV",
+          "age": 22,
+          "category": "cornerstone",
+          "tier": "A",
+          "ktcValue": 7624,
+          "ktcAdp": 19.0,
+          "ktcPosRank": 3,
+          "note": "KTC Superflex rank #12, value 7624, ADP 19.0. Started% 96.8."
         },
         {
           "name": "Jalen Hurts",
@@ -192,34 +192,34 @@
           "age": 28,
           "category": "cornerstone",
           "tier": "A",
-          "ktcValue": 6284,
+          "ktcValue": 6300,
           "ktcAdp": 12.0,
           "ktcPosRank": 9,
-          "note": "KTC Superflex rank #29, value 6284, ADP 12.0. Started% 91.8. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC Superflex rank #29, value 6300, ADP 12.0. Started% 91.8. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Brock Bowers",
           "pos": "TE",
-          "team": "LVR",
+          "team": "LV",
           "age": 23,
           "category": "cornerstone",
           "tier": "A",
-          "ktcValue": 7580,
+          "ktcValue": 7530,
           "ktcAdp": 10.0,
           "ktcPosRank": 2,
-          "note": "KTC Superflex rank #13, value 7580, ADP 10.0. Started% 12.3."
+          "note": "KTC Superflex rank #13, value 7530, ADP 10.0. Started% 12.3."
         },
         {
           "name": "Drake Maye",
           "pos": "QB",
-          "team": "NEP",
+          "team": "NE",
           "age": 24,
           "category": "cornerstone",
           "tier": "A",
-          "ktcValue": 7508,
+          "ktcValue": 7400,
           "ktcAdp": 19.0,
           "ktcPosRank": 4,
-          "note": "KTC Superflex rank #14, value 7508, ADP 19.0. Started% 88.8."
+          "note": "KTC Superflex rank #14, value 7400, ADP 19.0. Started% 88.8."
         },
         {
           "name": "CeeDee Lamb",
@@ -228,10 +228,10 @@
           "age": 27,
           "category": "cornerstone",
           "tier": "B",
-          "ktcValue": 7345,
+          "ktcValue": 7349,
           "ktcAdp": 16.0,
           "ktcPosRank": 6,
-          "note": "KTC Superflex rank #15, value 7345, ADP 16.0. Started% 99.2."
+          "note": "KTC Superflex rank #15, value 7349, ADP 16.0. Started% 99.2."
         },
         {
           "name": "Malik Nabers",
@@ -240,10 +240,10 @@
           "age": 23,
           "category": "cornerstone",
           "tier": "B",
-          "ktcValue": 7078,
+          "ktcValue": 6978,
           "ktcAdp": 15.0,
           "ktcPosRank": 7,
-          "note": "KTC Superflex rank #18, value 7078, ADP 15.0. Started% 78.4. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC Superflex rank #19, value 6978, ADP 15.0. Started% 78.4. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Jeremiyah Love",
@@ -252,23 +252,23 @@
           "age": 21,
           "category": "cornerstone",
           "tier": "B",
-          "ktcValue": 7119,
+          "ktcValue": 7105,
           "ktcAdp": 19.0,
           "ktcPosRank": 4,
-          "note": "KTC Superflex rank #16, value 7119, ADP 19.0. Started% 79.0.",
+          "note": "KTC Superflex rank #16, value 7105, ADP 19.0. Started% 79.0.",
           "rookie": true
         },
         {
           "name": "Kenneth Walker III",
           "pos": "RB",
-          "team": "KCC",
+          "team": "KC",
           "age": 25,
           "category": "cornerstone",
           "tier": "B",
-          "ktcValue": 6895,
+          "ktcValue": 6988,
           "ktcAdp": 59.0,
           "ktcPosRank": 5,
-          "note": "KTC Superflex rank #19, value 6895, ADP 59.0."
+          "note": "KTC Superflex rank #18, value 6988, ADP 59.0."
         },
         {
           "name": "Jonathan Taylor",
@@ -277,22 +277,22 @@
           "age": 27,
           "category": "cornerstone",
           "tier": "B",
-          "ktcValue": 6872,
+          "ktcValue": 6849,
           "ktcAdp": 40.0,
           "ktcPosRank": 6,
-          "note": "KTC Superflex rank #20, value 6872, ADP 40.0. Started% 99.1."
+          "note": "KTC Superflex rank #20, value 6849, ADP 40.0. Started% 99.1."
         },
         {
           "name": "Trevor Lawrence",
           "pos": "QB",
-          "team": "JAC",
+          "team": "JAX",
           "age": 27,
           "category": "cornerstone",
           "tier": "B",
-          "ktcValue": 6710,
+          "ktcValue": 6702,
           "ktcAdp": 41.0,
           "ktcPosRank": 6,
-          "note": "KTC Superflex rank #21, value 6710, ADP 41.0. Started% 56.2."
+          "note": "KTC Superflex rank #21, value 6702, ADP 41.0. Started% 56.2."
         },
         {
           "name": "James Cook",
@@ -301,22 +301,22 @@
           "age": 27,
           "category": "cornerstone",
           "tier": "B",
-          "ktcValue": 6630,
+          "ktcValue": 6659,
           "ktcAdp": 51.0,
           "ktcPosRank": 7,
-          "note": "KTC Superflex rank #22, value 6630, ADP 51.0. Started% 99.0."
+          "note": "KTC Superflex rank #22, value 6659, ADP 51.0. Started% 99.0."
         },
         {
           "name": "De'Von Achane",
           "pos": "RB",
           "team": "MIA",
-          "age": 24,
+          "age": 25,
           "category": "cornerstone",
           "tier": "C",
-          "ktcValue": 6593,
+          "ktcValue": 6516,
           "ktcAdp": 28.0,
           "ktcPosRank": 8,
-          "note": "KTC Superflex rank #23, value 6593, ADP 28.0. Started% 99.0."
+          "note": "KTC Superflex rank #23, value 6516, ADP 28.0. Started% 99.0."
         },
         {
           "name": "Omarion Hampton",
@@ -325,22 +325,22 @@
           "age": 23,
           "category": "cornerstone",
           "tier": "C",
-          "ktcValue": 6495,
+          "ktcValue": 6445,
           "ktcAdp": 34.0,
           "ktcPosRank": 9,
-          "note": "KTC Superflex rank #24, value 6495, ADP 34.0. Started% 98.4."
+          "note": "KTC Superflex rank #24, value 6445, ADP 34.0. Started% 98.4."
         },
         {
-          "name": "Chris Olave",
-          "pos": "WR",
-          "team": "NOS",
+          "name": "Brock Purdy",
+          "pos": "QB",
+          "team": "SF",
           "age": 26,
           "category": "cornerstone",
           "tier": "C",
-          "ktcValue": 6416,
-          "ktcAdp": 71.0,
-          "ktcPosRank": 8,
-          "note": "KTC Superflex rank #25, value 6416, ADP 71.0. Started% 96.9."
+          "ktcValue": 6442,
+          "ktcAdp": 38.0,
+          "ktcPosRank": 7,
+          "note": "KTC Superflex rank #25, value 6442, ADP 38.0. Started% 32.5."
         },
         {
           "name": "Drake London",
@@ -349,10 +349,10 @@
           "age": 25,
           "category": "cornerstone",
           "tier": "C",
-          "ktcValue": 6329,
+          "ktcValue": 6330,
           "ktcAdp": 25.0,
           "ktcPosRank": 9,
-          "note": "KTC Superflex rank #28, value 6329, ADP 25.0. Started% 96.6. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC Superflex rank #28, value 6330, ADP 25.0. Started% 96.6. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Justin Herbert",
@@ -361,22 +361,22 @@
           "age": 28,
           "category": "cornerstone",
           "tier": "C",
-          "ktcValue": 5911,
+          "ktcValue": 5846,
           "ktcAdp": 25.0,
           "ktcPosRank": 11,
-          "note": "KTC Superflex rank #35, value 5911, ADP 25.0. Started% 76.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC Superflex rank #37, value 5846, ADP 25.0. Started% 76.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
-          "name": "Patrick Mahomes",
-          "pos": "QB",
-          "team": "KCC",
-          "age": 31,
+          "name": "Chris Olave",
+          "pos": "WR",
+          "team": "NO",
+          "age": 26,
           "category": "cornerstone",
           "tier": "C",
-          "ktcValue": 6373,
-          "ktcAdp": 17.0,
-          "ktcPosRank": 7,
-          "note": "KTC Superflex rank #26, value 6373, ADP 17.0. Started% 29.1."
+          "ktcValue": 6429,
+          "ktcAdp": 71.0,
+          "ktcPosRank": 8,
+          "note": "KTC Superflex rank #26, value 6429, ADP 71.0. Started% 96.9."
         },
         {
           "name": "Bo Nix",
@@ -385,22 +385,22 @@
           "age": 26,
           "category": "cornerstone",
           "tier": "C",
-          "ktcValue": 5566,
+          "ktcValue": 5549,
           "ktcAdp": 26.0,
-          "ktcPosRank": 12,
-          "note": "KTC Superflex rank #45, value 5566, ADP 26.0. Started% 38.7. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 13,
+          "note": "KTC Superflex rank #46, value 5549, ADP 26.0. Started% 38.7. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
-          "name": "Brock Purdy",
+          "name": "Patrick Mahomes",
           "pos": "QB",
-          "team": "SFO",
-          "age": 26,
+          "team": "KC",
+          "age": 31,
           "category": "cornerstone",
           "tier": "C",
-          "ktcValue": 6355,
-          "ktcAdp": 38.0,
+          "ktcValue": 6416,
+          "ktcAdp": 17.0,
           "ktcPosRank": 8,
-          "note": "KTC Superflex rank #27, value 6355, ADP 38.0. Started% 32.5."
+          "note": "KTC Superflex rank #27, value 6416, ADP 17.0. Started% 29.1."
         },
         {
           "name": "Nico Collins",
@@ -409,10 +409,10 @@
           "age": 27,
           "category": "cornerstone",
           "tier": "C",
-          "ktcValue": 5754,
+          "ktcValue": 5728,
           "ktcAdp": 29.0,
           "ktcPosRank": 16,
-          "note": "KTC Superflex rank #39, value 5754, ADP 29.0. Started% 98.1. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC Superflex rank #39, value 5728, ADP 29.0. Started% 98.1. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Tetairoa McMillan",
@@ -421,22 +421,22 @@
           "age": 23,
           "category": "cornerstone",
           "tier": "C",
-          "ktcValue": 6111,
+          "ktcValue": 6138,
           "ktcAdp": 44.0,
           "ktcPosRank": 10,
-          "note": "KTC Superflex rank #31, value 6111, ADP 44.0. Started% 92.7."
+          "note": "KTC Superflex rank #30, value 6138, ADP 44.0. Started% 92.7."
         },
         {
-          "name": "George Pickens",
+          "name": "Zay Flowers",
           "pos": "WR",
-          "team": "DAL",
-          "age": 25,
+          "team": "BAL",
+          "age": 26,
           "category": "cornerstone",
           "tier": "C",
-          "ktcValue": 5959,
-          "ktcAdp": 69.0,
+          "ktcValue": 6008,
+          "ktcAdp": 68.0,
           "ktcPosRank": 11,
-          "note": "KTC Superflex rank #32, value 5959, ADP 69.0. Started% 98.3."
+          "note": "KTC Superflex rank #32, value 6008, ADP 68.0. Started% 92.7."
         },
         {
           "name": "Chase Brown",
@@ -445,22 +445,22 @@
           "age": 26,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 5919,
+          "ktcValue": 5943,
           "ktcAdp": 54.0,
           "ktcPosRank": 10,
-          "note": "KTC Superflex rank #33, value 5919, ADP 54.0. Started% 98.2."
+          "note": "KTC Superflex rank #33, value 5943, ADP 54.0. Started% 98.2."
         },
         {
-          "name": "Zay Flowers",
+          "name": "George Pickens",
           "pos": "WR",
-          "team": "BAL",
-          "age": 26,
+          "team": "DAL",
+          "age": 25,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 5914,
-          "ktcAdp": 68.0,
+          "ktcValue": 5927,
+          "ktcAdp": 69.0,
           "ktcPosRank": 12,
-          "note": "KTC Superflex rank #34, value 5914, ADP 68.0. Started% 92.7."
+          "note": "KTC Superflex rank #34, value 5927, ADP 69.0. Started% 98.3."
         },
         {
           "name": "Garrett Wilson",
@@ -469,22 +469,10 @@
           "age": 26,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 5878,
+          "ktcValue": 5886,
           "ktcAdp": 41.0,
           "ktcPosRank": 13,
-          "note": "KTC Superflex rank #36, value 5878, ADP 41.0. Started% 89.8."
-        },
-        {
-          "name": "Saquon Barkley",
-          "pos": "RB",
-          "team": "PHI",
-          "age": 29,
-          "category": "foundational",
-          "tier": "S",
-          "ktcValue": 4991,
-          "ktcAdp": 36.0,
-          "ktcPosRank": 16,
-          "note": "KTC Superflex rank #58, value 4991, ADP 36.0. Started% 98.8. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC Superflex rank #35, value 5886, ADP 41.0. Started% 89.8."
         },
         {
           "name": "DeVonta Smith",
@@ -493,22 +481,34 @@
           "age": 27,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 5849,
+          "ktcValue": 5851,
           "ktcAdp": 65.0,
           "ktcPosRank": 14,
-          "note": "KTC Superflex rank #37, value 5849, ADP 65.0. Started% 95.9."
+          "note": "KTC Superflex rank #36, value 5851, ADP 65.0. Started% 95.9."
+        },
+        {
+          "name": "Saquon Barkley",
+          "pos": "RB",
+          "team": "PHI",
+          "age": 29,
+          "category": "foundational",
+          "tier": "S",
+          "ktcValue": 4984,
+          "ktcAdp": 36.0,
+          "ktcPosRank": 16,
+          "note": "KTC Superflex rank #58, value 4984, ADP 36.0. Started% 98.8. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Emeka Egbuka",
           "pos": "WR",
-          "team": "TBB",
-          "age": 23,
+          "team": "TB",
+          "age": 24,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 5825,
+          "ktcValue": 5792,
           "ktcAdp": 59.0,
           "ktcPosRank": 15,
-          "note": "KTC Superflex rank #38, value 5825, ADP 59.0. Started% 85.3."
+          "note": "KTC Superflex rank #38, value 5792, ADP 59.0. Started% 85.3."
         },
         {
           "name": "Ladd McConkey",
@@ -517,34 +517,34 @@
           "age": 24,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 5598,
+          "ktcValue": 5628,
           "ktcAdp": 38.0,
-          "ktcPosRank": 17,
-          "note": "KTC Superflex rank #43, value 5598, ADP 38.0. Started% 92.4. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 18,
+          "note": "KTC Superflex rank #42, value 5628, ADP 38.0. Started% 92.4. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Brian Thomas Jr.",
           "pos": "WR",
-          "team": "JAC",
+          "team": "JAX",
           "age": 24,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 3884,
+          "ktcValue": 3813,
           "ktcAdp": 38.0,
-          "ktcPosRank": 34,
-          "note": "KTC Superflex rank #90, value 3884, ADP 38.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 35,
+          "note": "KTC Superflex rank #90, value 3813, ADP 38.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
-          "name": "Tyler Warren",
-          "pos": "TE",
-          "team": "IND",
+          "name": "Parker Washington",
+          "pos": "WR",
+          "team": "JAX",
           "age": 24,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 5705,
-          "ktcAdp": 52.0,
-          "ktcPosRank": 3,
-          "note": "KTC Superflex rank #40, value 5705, ADP 52.0. Started% 96.4."
+          "ktcValue": 5728,
+          "ktcAdp": 197.0,
+          "ktcPosRank": 17,
+          "note": "KTC Superflex rank #40, value 5728, ADP 197.0. Started% 59.2."
         },
         {
           "name": "Carnell Tate",
@@ -553,11 +553,23 @@
           "age": 21,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 5027,
+          "ktcValue": 4956,
           "ktcAdp": 40.0,
-          "ktcPosRank": 20,
-          "note": "KTC Superflex rank #54, value 5027, ADP 40.0. Started% 49.6. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
+          "ktcPosRank": 21,
+          "note": "KTC Superflex rank #61, value 4956, ADP 40.0. Started% 49.6. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
           "rookie": true
+        },
+        {
+          "name": "Tyler Warren",
+          "pos": "TE",
+          "team": "IND",
+          "age": 24,
+          "category": "foundational",
+          "tier": "S",
+          "ktcValue": 5664,
+          "ktcAdp": 52.0,
+          "ktcPosRank": 3,
+          "note": "KTC Superflex rank #41, value 5664, ADP 52.0. Started% 96.4."
         },
         {
           "name": "Breece Hall",
@@ -566,22 +578,46 @@
           "age": 25,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 5620,
+          "ktcValue": 5608,
           "ktcAdp": 50.0,
           "ktcPosRank": 11,
-          "note": "KTC Superflex rank #41, value 5620, ADP 50.0. Started% 93.0."
+          "note": "KTC Superflex rank #43, value 5608, ADP 50.0. Started% 93.0."
+        },
+        {
+          "name": "Tyler Shough",
+          "pos": "QB",
+          "team": "NO",
+          "age": 27,
+          "category": "foundational",
+          "tier": "S",
+          "ktcValue": 5595,
+          "ktcAdp": 108.0,
+          "ktcPosRank": 12,
+          "note": "KTC Superflex rank #44, value 5595, ADP 108.0. Started% 12.6."
         },
         {
           "name": "Christian McCaffrey",
           "pos": "RB",
-          "team": "SFO",
+          "team": "SF",
           "age": 30,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 5606,
+          "ktcValue": 5568,
           "ktcAdp": 49.0,
           "ktcPosRank": 12,
-          "note": "KTC Superflex rank #42, value 5606, ADP 49.0. Started% 98.3."
+          "note": "KTC Superflex rank #45, value 5568, ADP 49.0. Started% 98.3."
+        },
+        {
+          "name": "A.J. Brown",
+          "pos": "WR",
+          "team": "NE",
+          "age": 29,
+          "category": "foundational",
+          "tier": "S",
+          "ktcValue": 4636,
+          "ktcAdp": 45.0,
+          "ktcPosRank": 27,
+          "note": "KTC Superflex rank #73, value 4636, ADP 45.0. Started% 96.9. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Colston Loveland",
@@ -590,46 +626,10 @@
           "age": 22,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 5590,
+          "ktcValue": 5499,
           "ktcAdp": 54.0,
           "ktcPosRank": 4,
-          "note": "KTC Superflex rank #44, value 5590, ADP 54.0. Started% 98.4."
-        },
-        {
-          "name": "A.J. Brown",
-          "pos": "WR",
-          "team": "NEP",
-          "age": 29,
-          "category": "foundational",
-          "tier": "S",
-          "ktcValue": 4658,
-          "ktcAdp": 45.0,
-          "ktcPosRank": 27,
-          "note": "KTC Superflex rank #72, value 4658, ADP 45.0. Started% 96.9. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Parker Washington",
-          "pos": "WR",
-          "team": "JAC",
-          "age": 24,
-          "category": "foundational",
-          "tier": "S",
-          "ktcValue": 5531,
-          "ktcAdp": 197.0,
-          "ktcPosRank": 18,
-          "note": "KTC Superflex rank #46, value 5531, ADP 197.0. Started% 59.2."
-        },
-        {
-          "name": "Tyler Shough",
-          "pos": "QB",
-          "team": "NOS",
-          "age": 27,
-          "category": "foundational",
-          "tier": "S",
-          "ktcValue": 5523,
-          "ktcAdp": 108.0,
-          "ktcPosRank": 13,
-          "note": "KTC Superflex rank #47, value 5523, ADP 108.0. Started% 12.6."
+          "note": "KTC Superflex rank #47, value 5499, ADP 54.0. Started% 98.4."
         },
         {
           "name": "Marvin Harrison Jr.",
@@ -638,10 +638,10 @@
           "age": 24,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 3630,
+          "ktcValue": 3554,
           "ktcAdp": 47.0,
-          "ktcPosRank": 37,
-          "note": "KTC Superflex rank #97, value 3630, ADP 47.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 39,
+          "note": "KTC Superflex rank #101, value 3554, ADP 47.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Jaxson Dart",
@@ -650,10 +650,10 @@
           "age": 23,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 5404,
+          "ktcValue": 5463,
           "ktcAdp": 65.0,
           "ktcPosRank": 14,
-          "note": "KTC Superflex rank #48, value 5404, ADP 65.0. Started% 59.1."
+          "note": "KTC Superflex rank #48, value 5463, ADP 65.0. Started% 59.1."
         },
         {
           "name": "Dak Prescott",
@@ -662,22 +662,23 @@
           "age": 33,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 5266,
+          "ktcValue": 5295,
           "ktcAdp": 48.0,
           "ktcPosRank": 15,
-          "note": "KTC Superflex rank #49, value 5266, ADP 48.0. Started% 75.3. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC Superflex rank #49, value 5295, ADP 48.0. Started% 75.3. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
-          "name": "Jordan Love",
+          "name": "Fernando Mendoza",
           "pos": "QB",
-          "team": "GBP",
-          "age": 27,
+          "team": "LV",
+          "age": 23,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 5179,
-          "ktcAdp": 42.0,
+          "ktcValue": 5246,
+          "ktcAdp": 49.0,
           "ktcPosRank": 16,
-          "note": "KTC Superflex rank #50, value 5179, ADP 42.0. Started% 17.2."
+          "note": "KTC Superflex rank #50, value 5246, ADP 49.0. Started% 1.3.",
+          "rookie": true
         },
         {
           "name": "Sam LaPorta",
@@ -686,156 +687,58 @@
           "age": 25,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 4524,
+          "ktcValue": 4485,
           "ktcAdp": 50.0,
           "ktcPosRank": 6,
-          "note": "KTC Superflex rank #74, value 4524, ADP 50.0. Started% 93.8. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC Superflex rank #76, value 4485, ADP 50.0. Started% 93.8. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
-          "name": "Fernando Mendoza",
+          "name": "Jordan Love",
           "pos": "QB",
-          "team": "LVR",
-          "age": 23,
+          "team": "GB",
+          "age": 27,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 5148,
-          "ktcAdp": 49.0,
+          "ktcValue": 5041,
+          "ktcAdp": 42.0,
           "ktcPosRank": 17,
-          "note": "KTC Superflex rank #51, value 5148, ADP 49.0. Started% 1.3.",
-          "rookie": true
+          "note": "KTC Superflex rank #51, value 5041, ADP 42.0. Started% 17.2."
         },
         {
           "name": "Bucky Irving",
           "pos": "RB",
-          "team": "TBB",
+          "team": "TB",
           "age": 24,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 5019,
+          "ktcValue": 5014,
           "ktcAdp": 51.0,
-          "ktcPosRank": 14,
-          "note": "KTC Superflex rank #55, value 5019, ADP 51.0. Started% 89.7. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 13,
+          "note": "KTC Superflex rank #54, value 5014, ADP 51.0. Started% 89.7. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Rashee Rice",
           "pos": "WR",
-          "team": "KCC",
+          "team": "KC",
           "age": 26,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 4782,
+          "ktcValue": 4667,
           "ktcAdp": 51.0,
-          "ktcPosRank": 23,
-          "note": "KTC Superflex rank #66, value 4782, ADP 51.0. Started% 93.2. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 26,
+          "note": "KTC Superflex rank #71, value 4667, ADP 51.0. Started% 93.2. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Jared Goff",
           "pos": "QB",
           "team": "DET",
-          "age": 31,
-          "category": "foundational",
-          "tier": "A",
-          "ktcValue": 4650,
-          "ktcAdp": 51.0,
-          "ktcPosRank": 19,
-          "note": "KTC Superflex rank #73, value 4650, ADP 51.0. Started% 35.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Jadarian Price",
-          "pos": "RB",
-          "team": "SEA",
-          "age": 23,
-          "category": "foundational",
-          "tier": "A",
-          "ktcValue": 5115,
-          "ktcAdp": 64.0,
-          "ktcPosRank": 13,
-          "note": "KTC Superflex rank #52, value 5115, ADP 64.0. Started% 56.0.",
-          "rookie": true
-        },
-        {
-          "name": "Luther Burden",
-          "pos": "WR",
-          "team": "CHI",
-          "age": 22,
-          "category": "foundational",
-          "tier": "A",
-          "ktcValue": 5107,
-          "ktcAdp": 87.0,
-          "ktcPosRank": 19,
-          "note": "KTC Superflex rank #53, value 5107, ADP 87.0. Started% 81.5."
-        },
-        {
-          "name": "Kyren Williams",
-          "pos": "RB",
-          "team": "LAR",
-          "age": 26,
-          "category": "foundational",
-          "tier": "A",
-          "ktcValue": 4976,
-          "ktcAdp": 55.0,
-          "ktcPosRank": 17,
-          "note": "KTC Superflex rank #59, value 4976, ADP 55.0. Started% 95.8. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "TreVeyon Henderson",
-          "pos": "RB",
-          "team": "NEP",
-          "age": 23,
-          "category": "foundational",
-          "tier": "A",
-          "ktcValue": 5010,
-          "ktcAdp": 51.0,
-          "ktcPosRank": 15,
-          "note": "KTC Superflex rank #56, value 5010, ADP 51.0. Started% 15.3."
-        },
-        {
-          "name": "Tee Higgins",
-          "pos": "WR",
-          "team": "CIN",
-          "age": 27,
-          "category": "foundational",
-          "tier": "A",
-          "ktcValue": 5002,
-          "ktcAdp": 57.0,
-          "ktcPosRank": 21,
-          "note": "KTC Superflex rank #57, value 5002, ADP 57.0. Started% 94.9."
-        },
-        {
-          "name": "Derrick Henry",
-          "pos": "RB",
-          "team": "BAL",
           "age": 32,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 4959,
-          "ktcAdp": 68.0,
-          "ktcPosRank": 18,
-          "note": "KTC Superflex rank #60, value 4959, ADP 68.0. Started% 98.6."
-        },
-        {
-          "name": "Jaylen Waddle",
-          "pos": "WR",
-          "team": "DEN",
-          "age": 27,
-          "category": "foundational",
-          "tier": "A",
-          "ktcValue": 4915,
-          "ktcAdp": 82.0,
-          "ktcPosRank": 22,
-          "note": "KTC Superflex rank #61, value 4915, ADP 82.0. Started% 91.6."
-        },
-        {
-          "name": "Tucker Kraft",
-          "pos": "TE",
-          "team": "GBP",
-          "age": 25,
-          "category": "foundational",
-          "tier": "A",
-          "ktcValue": 4909,
-          "ktcAdp": 79.0,
-          "ktcPosRank": 5,
-          "note": "KTC Superflex rank #62, value 4909, ADP 79.0. Started% 85.1."
+          "ktcValue": 4656,
+          "ktcAdp": 51.0,
+          "ktcPosRank": 19,
+          "note": "KTC Superflex rank #72, value 4656, ADP 51.0. Started% 35.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Bryce Young",
@@ -844,10 +747,107 @@
           "age": 25,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 4897,
+          "ktcValue": 5024,
           "ktcAdp": 75.0,
           "ktcPosRank": 18,
-          "note": "KTC Superflex rank #63, value 4897, ADP 75.0. Started% 3.7."
+          "note": "KTC Superflex rank #52, value 5024, ADP 75.0. Started% 3.7."
+        },
+        {
+          "name": "Luther Burden",
+          "pos": "WR",
+          "team": "CHI",
+          "age": 22,
+          "category": "foundational",
+          "tier": "A",
+          "ktcValue": 5024,
+          "ktcAdp": 87.0,
+          "ktcPosRank": 19,
+          "note": "KTC Superflex rank #53, value 5024, ADP 87.0. Started% 81.5."
+        },
+        {
+          "name": "Jadarian Price",
+          "pos": "RB",
+          "team": "SEA",
+          "age": 23,
+          "category": "foundational",
+          "tier": "A",
+          "ktcValue": 5001,
+          "ktcAdp": 64.0,
+          "ktcPosRank": 14,
+          "note": "KTC Superflex rank #55, value 5001, ADP 64.0. Started% 56.0.",
+          "rookie": true
+        },
+        {
+          "name": "Kyren Williams",
+          "pos": "RB",
+          "team": "LAR",
+          "age": 26,
+          "category": "foundational",
+          "tier": "A",
+          "ktcValue": 4980,
+          "ktcAdp": 55.0,
+          "ktcPosRank": 17,
+          "note": "KTC Superflex rank #59, value 4980, ADP 55.0. Started% 95.8. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "TreVeyon Henderson",
+          "pos": "RB",
+          "team": "NE",
+          "age": 23,
+          "category": "foundational",
+          "tier": "A",
+          "ktcValue": 4989,
+          "ktcAdp": 51.0,
+          "ktcPosRank": 15,
+          "note": "KTC Superflex rank #56, value 4989, ADP 51.0. Started% 15.3."
+        },
+        {
+          "name": "Tee Higgins",
+          "pos": "WR",
+          "team": "CIN",
+          "age": 27,
+          "category": "foundational",
+          "tier": "A",
+          "ktcValue": 4986,
+          "ktcAdp": 57.0,
+          "ktcPosRank": 20,
+          "note": "KTC Superflex rank #57, value 4986, ADP 57.0. Started% 94.9."
+        },
+        {
+          "name": "Derrick Henry",
+          "pos": "RB",
+          "team": "BAL",
+          "age": 32,
+          "category": "foundational",
+          "tier": "A",
+          "ktcValue": 4967,
+          "ktcAdp": 68.0,
+          "ktcPosRank": 18,
+          "note": "KTC Superflex rank #60, value 4967, ADP 68.0. Started% 98.6."
+        },
+        {
+          "name": "Jaylen Waddle",
+          "pos": "WR",
+          "team": "DEN",
+          "age": 27,
+          "category": "foundational",
+          "tier": "A",
+          "ktcValue": 4921,
+          "ktcAdp": 82.0,
+          "ktcPosRank": 22,
+          "note": "KTC Superflex rank #62, value 4921, ADP 82.0. Started% 91.6."
+        },
+        {
+          "name": "Tucker Kraft",
+          "pos": "TE",
+          "team": "GB",
+          "age": 25,
+          "category": "foundational",
+          "tier": "A",
+          "ktcValue": 4897,
+          "ktcAdp": 79.0,
+          "ktcPosRank": 5,
+          "note": "KTC Superflex rank #63, value 4897, ADP 79.0. Started% 85.1."
         },
         {
           "name": "Quinshon Judkins",
@@ -856,10 +856,10 @@
           "age": 22,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 4714,
+          "ktcValue": 4679,
           "ktcAdp": 63.0,
           "ktcPosRank": 22,
-          "note": "KTC Superflex rank #71, value 4714, ADP 63.0. Started% 74.9. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC Superflex rank #70, value 4679, ADP 63.0. Started% 74.9. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Javonte Williams",
@@ -868,10 +868,10 @@
           "age": 26,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 4833,
+          "ktcValue": 4875,
           "ktcAdp": 125.0,
           "ktcPosRank": 19,
-          "note": "KTC Superflex rank #64, value 4833, ADP 125.0. Started% 96.1."
+          "note": "KTC Superflex rank #64, value 4875, ADP 125.0. Started% 96.1."
         },
         {
           "name": "Rome Odunze",
@@ -880,10 +880,22 @@
           "age": 24,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 4734,
+          "ktcValue": 4688,
           "ktcAdp": 64.0,
-          "ktcPosRank": 26,
-          "note": "KTC Superflex rank #69, value 4734, ADP 64.0. Started% 52.4. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 25,
+          "note": "KTC Superflex rank #69, value 4688, ADP 64.0. Started% 52.4. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Christian Watson",
+          "pos": "WR",
+          "team": "GB",
+          "age": 27,
+          "category": "foundational",
+          "tier": "A",
+          "ktcValue": 4850,
+          "ktcAdp": 182.0,
+          "ktcPosRank": 23,
+          "note": "KTC Superflex rank #65, value 4850, ADP 182.0. Started% 69.0."
         },
         {
           "name": "Cam Skattebo",
@@ -892,15 +904,15 @@
           "age": 24,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 4829,
+          "ktcValue": 4785,
           "ktcAdp": 94.0,
           "ktcPosRank": 20,
-          "note": "KTC Superflex rank #65, value 4829, ADP 94.0. Started% 92.9."
+          "note": "KTC Superflex rank #66, value 4785, ADP 94.0. Started% 92.9."
         },
         {
           "name": "Jordyn Tyson",
           "pos": "WR",
-          "team": "NOS",
+          "team": "NO",
           "age": 22,
           "category": "foundational",
           "tier": "A",
@@ -911,40 +923,28 @@
           "rookie": true
         },
         {
-          "name": "Christian Watson",
-          "pos": "WR",
-          "team": "GBP",
-          "age": 27,
-          "category": "foundational",
-          "tier": "A",
-          "ktcValue": 4745,
-          "ktcAdp": 182.0,
-          "ktcPosRank": 25,
-          "note": "KTC Superflex rank #68, value 4745, ADP 182.0. Started% 69.0."
-        },
-        {
           "name": "D'Andre Swift",
           "pos": "RB",
           "team": "CHI",
           "age": 27,
           "category": "foundational",
-          "tier": "B",
-          "ktcValue": 4724,
+          "tier": "A",
+          "ktcValue": 4742,
           "ktcAdp": 104.0,
           "ktcPosRank": 21,
-          "note": "KTC Superflex rank #70, value 4724, ADP 104.0. Started% 86.1."
+          "note": "KTC Superflex rank #68, value 4742, ADP 104.0. Started% 86.1."
         },
         {
           "name": "George Kittle",
           "pos": "TE",
-          "team": "SFO",
+          "team": "SF",
           "age": 33,
           "category": "foundational",
           "tier": "B",
-          "ktcValue": 3459,
+          "ktcValue": 3491,
           "ktcAdp": 72.0,
           "ktcPosRank": 12,
-          "note": "KTC Superflex rank #109, value 3459, ADP 72.0. Started% 52.2. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC Superflex rank #106, value 3491, ADP 72.0. Started% 52.2. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "C.J. Stroud",
@@ -953,47 +953,10 @@
           "age": 25,
           "category": "foundational",
           "tier": "B",
-          "ktcValue": 4504,
+          "ktcValue": 4563,
           "ktcAdp": 45.0,
           "ktcPosRank": 20,
-          "note": "KTC Superflex rank #75, value 4504, ADP 45.0. Started% 6.4."
-        },
-        {
-          "name": "Bhayshul Tuten",
-          "pos": "RB",
-          "team": "JAC",
-          "age": 23,
-          "category": "foundational",
-          "tier": "B",
-          "ktcValue": 4437,
-          "ktcAdp": 111.0,
-          "ktcPosRank": 23,
-          "note": "KTC Superflex rank #76, value 4437, ADP 111.0. Started% 65.4."
-        },
-        {
-          "name": "KC Concepcion",
-          "pos": "WR",
-          "team": "CLE",
-          "age": 22,
-          "category": "foundational",
-          "tier": "B",
-          "ktcValue": 4400,
-          "ktcAdp": 86.0,
-          "ktcPosRank": 28,
-          "note": "KTC Superflex rank #77, value 4400, ADP 86.0. Started% 8.5.",
-          "rookie": true
-        },
-        {
-          "name": "Harold Fannin",
-          "pos": "TE",
-          "team": "CLE",
-          "age": 22,
-          "category": "foundational",
-          "tier": "B",
-          "ktcValue": 4387,
-          "ktcAdp": 115.0,
-          "ktcPosRank": 7,
-          "note": "KTC Superflex rank #78, value 4387, ADP 115.0. Started% 84.6."
+          "note": "KTC Superflex rank #74, value 4563, ADP 45.0. Started% 6.4."
         },
         {
           "name": "Jalen Coker",
@@ -1002,22 +965,22 @@
           "age": 24,
           "category": "foundational",
           "tier": "B",
-          "ktcValue": 4380,
+          "ktcValue": 4506,
           "ktcAdp": 193.0,
-          "ktcPosRank": 29,
-          "note": "KTC Superflex rank #79, value 4380, ADP 193.0. Started% 22.1."
+          "ktcPosRank": 28,
+          "note": "KTC Superflex rank #75, value 4506, ADP 193.0. Started% 22.1."
         },
         {
-          "name": "Jameson Williams",
-          "pos": "WR",
-          "team": "DET",
-          "age": 25,
+          "name": "Bhayshul Tuten",
+          "pos": "RB",
+          "team": "JAX",
+          "age": 23,
           "category": "foundational",
           "tier": "B",
-          "ktcValue": 4289,
-          "ktcAdp": 79.0,
-          "ktcPosRank": 30,
-          "note": "KTC Superflex rank #81, value 4289, ADP 79.0. Started% 82.2. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcValue": 4443,
+          "ktcAdp": 111.0,
+          "ktcPosRank": 23,
+          "note": "KTC Superflex rank #77, value 4443, ADP 111.0. Started% 65.4."
         },
         {
           "name": "Dalton Kincaid",
@@ -1026,22 +989,59 @@
           "age": 26,
           "category": "foundational",
           "tier": "B",
-          "ktcValue": 4302,
+          "ktcValue": 4429,
           "ktcAdp": 102.0,
-          "ktcPosRank": 8,
-          "note": "KTC Superflex rank #80, value 4302, ADP 102.0. Started% 53.2."
+          "ktcPosRank": 7,
+          "note": "KTC Superflex rank #78, value 4429, ADP 102.0. Started% 53.2."
         },
         {
-          "name": "Makai Lemon",
+          "name": "Denzel Boston",
           "pos": "WR",
-          "team": "PHI",
+          "team": "CLE",
           "age": 22,
           "category": "foundational",
           "tier": "B",
-          "ktcValue": 4255,
-          "ktcAdp": 71.0,
+          "ktcValue": 4366,
+          "ktcAdp": 115.0,
+          "ktcPosRank": 29,
+          "note": "KTC Superflex rank #79, value 4366, ADP 115.0. Started% 1.6.",
+          "rookie": true
+        },
+        {
+          "name": "Jameson Williams",
+          "pos": "WR",
+          "team": "DET",
+          "age": 25,
+          "category": "foundational",
+          "tier": "B",
+          "ktcValue": 4291,
+          "ktcAdp": 79.0,
           "ktcPosRank": 31,
-          "note": "KTC Superflex rank #82, value 4255, ADP 71.0. Started% 7.7.",
+          "note": "KTC Superflex rank #82, value 4291, ADP 79.0. Started% 82.2. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Harold Fannin",
+          "pos": "TE",
+          "team": "CLE",
+          "age": 22,
+          "category": "foundational",
+          "tier": "B",
+          "ktcValue": 4322,
+          "ktcAdp": 115.0,
+          "ktcPosRank": 8,
+          "note": "KTC Superflex rank #80, value 4322, ADP 115.0. Started% 84.6."
+        },
+        {
+          "name": "KC Concepcion",
+          "pos": "WR",
+          "team": "CLE",
+          "age": 22,
+          "category": "foundational",
+          "tier": "B",
+          "ktcValue": 4322,
+          "ktcAdp": 86.0,
+          "ktcPosRank": 30,
+          "note": "KTC Superflex rank #81, value 4322, ADP 86.0. Started% 8.5.",
           "rookie": true
         },
         {
@@ -1051,47 +1051,35 @@
           "age": 25,
           "category": "foundational",
           "tier": "B",
-          "ktcValue": 3225,
+          "ktcValue": 3202,
           "ktcAdp": 82.0,
-          "ktcPosRank": 33,
-          "note": "KTC Superflex rank #119, value 3225, ADP 82.0. Started% 38.6. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Denzel Boston",
-          "pos": "WR",
-          "team": "CLE",
-          "age": 22,
-          "category": "foundational",
-          "tier": "B",
-          "ktcValue": 4239,
-          "ktcAdp": 115.0,
-          "ktcPosRank": 32,
-          "note": "KTC Superflex rank #83, value 4239, ADP 115.0. Started% 1.6.",
-          "rookie": true
+          "ktcPosRank": 34,
+          "note": "KTC Superflex rank #122, value 3202, ADP 82.0. Started% 38.6. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Matthew Golden",
           "pos": "WR",
-          "team": "GBP",
+          "team": "GB",
           "age": 23,
           "category": "foundational",
           "tier": "B",
-          "ktcValue": 4162,
+          "ktcValue": 4242,
           "ktcAdp": 96.0,
-          "ktcPosRank": 33,
-          "note": "KTC Superflex rank #84, value 4162, ADP 96.0. Started% 9.5."
+          "ktcPosRank": 32,
+          "note": "KTC Superflex rank #83, value 4242, ADP 96.0. Started% 9.5."
         },
         {
-          "name": "Baker Mayfield",
-          "pos": "QB",
-          "team": "TBB",
-          "age": 31,
+          "name": "Makai Lemon",
+          "pos": "WR",
+          "team": "PHI",
+          "age": 22,
           "category": "foundational",
           "tier": "B",
-          "ktcValue": 4158,
-          "ktcAdp": 45.0,
-          "ktcPosRank": 21,
-          "note": "KTC Superflex rank #85, value 4158, ADP 45.0. Started% 25.9."
+          "ktcValue": 4204,
+          "ktcAdp": 71.0,
+          "ktcPosRank": 33,
+          "note": "KTC Superflex rank #84, value 4204, ADP 71.0. Started% 7.7.",
+          "rookie": true
         },
         {
           "name": "Sam Darnold",
@@ -1100,10 +1088,10 @@
           "age": 29,
           "category": "foundational",
           "tier": "B",
-          "ktcValue": 4120,
+          "ktcValue": 4163,
           "ktcAdp": 94.0,
-          "ktcPosRank": 22,
-          "note": "KTC Superflex rank #86, value 4120, ADP 94.0. Started% 10.9."
+          "ktcPosRank": 21,
+          "note": "KTC Superflex rank #85, value 4163, ADP 94.0. Started% 10.9."
         },
         {
           "name": "Isaiah Likely",
@@ -1111,11 +1099,23 @@
           "team": "NYG",
           "age": 26,
           "category": "foundational",
-          "tier": "C",
-          "ktcValue": 4069,
+          "tier": "B",
+          "ktcValue": 4117,
           "ktcAdp": 118.0,
           "ktcPosRank": 9,
-          "note": "KTC Superflex rank #87, value 4069, ADP 118.0. Started% 45.7."
+          "note": "KTC Superflex rank #86, value 4117, ADP 118.0. Started% 45.7."
+        },
+        {
+          "name": "Baker Mayfield",
+          "pos": "QB",
+          "team": "TB",
+          "age": 31,
+          "category": "foundational",
+          "tier": "C",
+          "ktcValue": 4044,
+          "ktcAdp": 45.0,
+          "ktcPosRank": 22,
+          "note": "KTC Superflex rank #87, value 4044, ADP 45.0. Started% 25.9."
         },
         {
           "name": "Cam Ward",
@@ -1124,10 +1124,10 @@
           "age": 24,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 4001,
+          "ktcValue": 4008,
           "ktcAdp": 55.0,
           "ktcPosRank": 23,
-          "note": "KTC Superflex rank #88, value 4001, ADP 55.0. Started% 4.2."
+          "note": "KTC Superflex rank #88, value 4008, ADP 55.0. Started% 4.2."
         },
         {
           "name": "D.J. Moore",
@@ -1136,10 +1136,10 @@
           "age": 29,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 3876,
+          "ktcValue": 3862,
           "ktcAdp": 88.0,
-          "ktcPosRank": 35,
-          "note": "KTC Superflex rank #91, value 3876, ADP 88.0. Started% 74.3. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 34,
+          "note": "KTC Superflex rank #89, value 3862, ADP 88.0. Started% 74.3. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Terry McLaurin",
@@ -1148,22 +1148,10 @@
           "age": 31,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 3219,
+          "ktcValue": 3216,
           "ktcAdp": 88.0,
-          "ktcPosRank": 47,
-          "note": "KTC Superflex rank #121, value 3219, ADP 88.0. Started% 75.3. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Travis Etienne",
-          "pos": "RB",
-          "team": "NOS",
-          "age": 27,
-          "category": "foundational",
-          "tier": "C",
-          "ktcValue": 3931,
-          "ktcAdp": 110.0,
-          "ktcPosRank": 24,
-          "note": "KTC Superflex rank #89, value 3931, ADP 110.0. Started% 93.0."
+          "ktcPosRank": 48,
+          "note": "KTC Superflex rank #120, value 3216, ADP 88.0. Started% 75.3. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Michael Penix Jr.",
@@ -1172,10 +1160,22 @@
           "age": 26,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 2868,
+          "ktcValue": 2985,
           "ktcAdp": 90.0,
           "ktcPosRank": 29,
-          "note": "KTC Superflex rank #147, value 2868, ADP 90.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC Superflex rank #136, value 2985, ADP 90.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Travis Etienne",
+          "pos": "RB",
+          "team": "NO",
+          "age": 27,
+          "category": "foundational",
+          "tier": "C",
+          "ktcValue": 3801,
+          "ktcAdp": 110.0,
+          "ktcPosRank": 24,
+          "note": "KTC Superflex rank #91, value 3801, ADP 110.0. Started% 93.0."
         },
         {
           "name": "Kyle Pitts",
@@ -1184,10 +1184,10 @@
           "age": 26,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 3701,
+          "ktcValue": 3631,
           "ktcAdp": 91.0,
           "ktcPosRank": 11,
-          "note": "KTC Superflex rank #94, value 3701, ADP 91.0. Started% 78.4. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC Superflex rank #99, value 3631, ADP 91.0. Started% 78.4. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "DK Metcalf",
@@ -1196,22 +1196,10 @@
           "age": 28,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 3149,
+          "ktcValue": 3113,
           "ktcAdp": 91.0,
-          "ktcPosRank": 50,
-          "note": "KTC Superflex rank #126, value 3149, ADP 91.0. Started% 53.6. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "David Montgomery",
-          "pos": "RB",
-          "team": "HOU",
-          "age": 29,
-          "category": "foundational",
-          "tier": "C",
-          "ktcValue": 3749,
-          "ktcAdp": 108.0,
-          "ktcPosRank": 25,
-          "note": "KTC Superflex rank #92, value 3749, ADP 108.0. Started% 89.8."
+          "ktcPosRank": 51,
+          "note": "KTC Superflex rank #129, value 3113, ADP 91.0. Started% 53.6. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Kenyon Sadiq",
@@ -1220,10 +1208,10 @@
           "age": 21,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 3744,
+          "ktcValue": 3768,
           "ktcAdp": 67.0,
           "ktcPosRank": 10,
-          "note": "KTC Superflex rank #93, value 3744, ADP 67.0. Started% 3.2.",
+          "note": "KTC Superflex rank #92, value 3768, ADP 67.0. Started% 3.2.",
           "rookie": true
         },
         {
@@ -1233,46 +1221,10 @@
           "age": 26,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 3689,
+          "ktcValue": 3714,
           "ktcAdp": 192.0,
           "ktcPosRank": 36,
-          "note": "KTC Superflex rank #95, value 3689, ADP 192.0. Started% 34.6."
-        },
-        {
-          "name": "Blake Corum",
-          "pos": "RB",
-          "team": "LAR",
-          "age": 25,
-          "category": "foundational",
-          "tier": "C",
-          "ktcValue": 3663,
-          "ktcAdp": 180.0,
-          "ktcPosRank": 26,
-          "note": "KTC Superflex rank #96, value 3663, ADP 180.0. Started% 16.0."
-        },
-        {
-          "name": "Matthew Stafford",
-          "pos": "QB",
-          "team": "LAR",
-          "age": 38,
-          "category": "foundational",
-          "tier": "C",
-          "ktcValue": 3616,
-          "ktcAdp": 98.0,
-          "ktcPosRank": 24,
-          "note": "KTC Superflex rank #98, value 3616, ADP 98.0. Started% 44.0."
-        },
-        {
-          "name": "Chuba Hubbard",
-          "pos": "RB",
-          "team": "CAR",
-          "age": 27,
-          "category": "foundational",
-          "tier": "C",
-          "ktcValue": 3608,
-          "ktcAdp": 98.0,
-          "ktcPosRank": 27,
-          "note": "KTC Superflex rank #99, value 3608, ADP 98.0. Started% 41.8. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC Superflex rank #93, value 3714, ADP 192.0. Started% 34.6."
         },
         {
           "name": "Davante Adams",
@@ -1281,10 +1233,58 @@
           "age": 33,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 3574,
+          "ktcValue": 3702,
           "ktcAdp": 103.0,
-          "ktcPosRank": 38,
-          "note": "KTC Superflex rank #100, value 3574, ADP 103.0. Started% 83.0."
+          "ktcPosRank": 37,
+          "note": "KTC Superflex rank #94, value 3702, ADP 103.0. Started% 83.0."
+        },
+        {
+          "name": "Blake Corum",
+          "pos": "RB",
+          "team": "LAR",
+          "age": 25,
+          "category": "foundational",
+          "tier": "C",
+          "ktcValue": 3679,
+          "ktcAdp": 180.0,
+          "ktcPosRank": 25,
+          "note": "KTC Superflex rank #95, value 3679, ADP 180.0. Started% 16.0."
+        },
+        {
+          "name": "David Montgomery",
+          "pos": "RB",
+          "team": "HOU",
+          "age": 29,
+          "category": "foundational",
+          "tier": "C",
+          "ktcValue": 3667,
+          "ktcAdp": 108.0,
+          "ktcPosRank": 26,
+          "note": "KTC Superflex rank #96, value 3667, ADP 108.0. Started% 89.8."
+        },
+        {
+          "name": "Chuba Hubbard",
+          "pos": "RB",
+          "team": "CAR",
+          "age": 27,
+          "category": "foundational",
+          "tier": "C",
+          "ktcValue": 3667,
+          "ktcAdp": 98.0,
+          "ktcPosRank": 27,
+          "note": "KTC Superflex rank #97, value 3667, ADP 98.0. Started% 41.8."
+        },
+        {
+          "name": "Matthew Stafford",
+          "pos": "QB",
+          "team": "LAR",
+          "age": 38,
+          "category": "foundational",
+          "tier": "C",
+          "ktcValue": 3634,
+          "ktcAdp": 98.0,
+          "ktcPosRank": 24,
+          "note": "KTC Superflex rank #98, value 3634, ADP 98.0. Started% 44.0."
         },
         {
           "name": "Josh Downs",
@@ -1293,10 +1293,23 @@
           "age": 25,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 3557,
+          "ktcValue": 3583,
           "ktcAdp": 116.0,
-          "ktcPosRank": 39,
-          "note": "KTC Superflex rank #101, value 3557, ADP 116.0. Started% 28.6."
+          "ktcPosRank": 38,
+          "note": "KTC Superflex rank #100, value 3583, ADP 116.0. Started% 28.6."
+        },
+        {
+          "name": "Jonah Coleman",
+          "pos": "RB",
+          "team": "DEN",
+          "age": 23,
+          "category": "foundational",
+          "tier": "C",
+          "ktcValue": 3513,
+          "ktcAdp": 125.0,
+          "ktcPosRank": 28,
+          "note": "KTC Superflex rank #102, value 3513, ADP 125.0. Started% 1.2.",
+          "rookie": true
         },
         {
           "name": "Kyle Monangai",
@@ -1305,27 +1318,15 @@
           "age": 24,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 3500,
+          "ktcValue": 3504,
           "ktcAdp": 183.0,
-          "ktcPosRank": 28,
-          "note": "KTC Superflex rank #102, value 3500, ADP 183.0. Started% 15.5."
-        },
-        {
-          "name": "Kyler Murray",
-          "pos": "QB",
-          "team": "MIN",
-          "age": 29,
-          "category": "foundational",
-          "tier": "C",
-          "ktcValue": 3498,
-          "ktcAdp": 46.0,
-          "ktcPosRank": 25,
-          "note": "KTC Superflex rank #103, value 3498, ADP 46.0. Started% 19.2."
+          "ktcPosRank": 29,
+          "note": "KTC Superflex rank #103, value 3504, ADP 183.0. Started% 15.5."
         },
         {
           "name": "De'Zhaun Stribling",
           "pos": "WR",
-          "team": "SFO",
+          "team": "SF",
           "age": 23,
           "category": "foundational",
           "tier": "C",
@@ -1338,14 +1339,14 @@
         {
           "name": "Mike Evans",
           "pos": "WR",
-          "team": "SFO",
+          "team": "SF",
           "age": 33,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 3423,
+          "ktcValue": 3436,
           "ktcAdp": 104.0,
-          "ktcPosRank": 43,
-          "note": "KTC Superflex rank #111, value 3423, ADP 104.0. Started% 68.8. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 42,
+          "note": "KTC Superflex rank #110, value 3436, ADP 104.0. Started% 68.8. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Ty Simpson",
@@ -1354,10 +1355,10 @@
           "age": 23,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 3491,
+          "ktcValue": 3492,
           "ktcAdp": 102.0,
-          "ktcPosRank": 26,
-          "note": "KTC Superflex rank #105, value 3491, ADP 102.0. Started% 0.1.",
+          "ktcPosRank": 25,
+          "note": "KTC Superflex rank #105, value 3492, ADP 102.0. Started% 0.1.",
           "rookie": true
         },
         {
@@ -1367,35 +1368,22 @@
           "age": 29,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 3490,
+          "ktcValue": 3479,
           "ktcAdp": 140.0,
-          "ktcPosRank": 27,
-          "note": "KTC Superflex rank #106, value 3490, ADP 140.0. Started% 4.1."
+          "ktcPosRank": 26,
+          "note": "KTC Superflex rank #107, value 3479, ADP 140.0. Started% 4.1."
         },
         {
-          "name": "Jonah Coleman",
-          "pos": "RB",
-          "team": "DEN",
-          "age": 23,
-          "category": "foundational",
-          "tier": "D",
-          "ktcValue": 3484,
-          "ktcAdp": 125.0,
-          "ktcPosRank": 29,
-          "note": "KTC Superflex rank #107, value 3484, ADP 125.0. Started% 1.2.",
-          "rookie": true
-        },
-        {
-          "name": "Jordan Addison",
-          "pos": "WR",
+          "name": "Kyler Murray",
+          "pos": "QB",
           "team": "MIN",
-          "age": 24,
+          "age": 29,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 3471,
-          "ktcAdp": 93.0,
-          "ktcPosRank": 41,
-          "note": "KTC Superflex rank #108, value 3471, ADP 93.0. Started% 28.6."
+          "ktcValue": 3475,
+          "ktcAdp": 46.0,
+          "ktcPosRank": 27,
+          "note": "KTC Superflex rank #108, value 3475, ADP 46.0. Started% 19.2."
         },
         {
           "name": "Alec Pierce",
@@ -1404,10 +1392,10 @@
           "age": 26,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 3439,
+          "ktcValue": 3443,
           "ktcAdp": 178.0,
-          "ktcPosRank": 42,
-          "note": "KTC Superflex rank #110, value 3439, ADP 178.0. Started% 13.2."
+          "ktcPosRank": 41,
+          "note": "KTC Superflex rank #109, value 3443, ADP 178.0. Started% 13.2."
         },
         {
           "name": "Mark Andrews",
@@ -1416,10 +1404,22 @@
           "age": 31,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 2686,
+          "ktcValue": 2643,
           "ktcAdp": 110.0,
           "ktcPosRank": 21,
-          "note": "KTC Superflex rank #164, value 2686, ADP 110.0. Started% 40.6. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC Superflex rank #168, value 2643, ADP 110.0. Started% 40.6. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Jordan Addison",
+          "pos": "WR",
+          "team": "MIN",
+          "age": 24,
+          "category": "foundational",
+          "tier": "D",
+          "ktcValue": 3422,
+          "ktcAdp": 93.0,
+          "ktcPosRank": 43,
+          "note": "KTC Superflex rank #111, value 3422, ADP 93.0. Started% 28.6."
         },
         {
           "name": "Omar Cooper Jr.",
@@ -1428,10 +1428,10 @@
           "age": 22,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 3264,
+          "ktcValue": 3235,
           "ktcAdp": 111.0,
           "ktcPosRank": 45,
-          "note": "KTC Superflex rank #115, value 3264, ADP 111.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
+          "note": "KTC Superflex rank #116, value 3235, ADP 111.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
           "rookie": true
         },
         {
@@ -1441,10 +1441,10 @@
           "age": 31,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 2783,
+          "ktcValue": 2736,
           "ktcAdp": 111.0,
-          "ktcPosRank": 66,
-          "note": "KTC Superflex rank #155, value 2783, ADP 111.0. Started% 37.6. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 68,
+          "note": "KTC Superflex rank #161, value 2736, ADP 111.0. Started% 37.6. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Malik Willis",
@@ -1453,23 +1453,10 @@
           "age": 27,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 3413,
+          "ktcValue": 3399,
           "ktcAdp": 197.0,
           "ktcPosRank": 28,
-          "note": "KTC Superflex rank #112, value 3413, ADP 197.0. Started% 6.0."
-        },
-        {
-          "name": "Kaelon Black",
-          "pos": "RB",
-          "team": "SFO",
-          "age": 24,
-          "category": "foundational",
-          "tier": "D",
-          "ktcValue": 3292,
-          "ktcAdp": 183.0,
-          "ktcPosRank": 30,
-          "note": "KTC Superflex rank #113, value 3292, ADP 183.0. Started% 0.3.",
-          "rookie": true
+          "note": "KTC Superflex rank #112, value 3399, ADP 197.0. Started% 6.0."
         },
         {
           "name": "Antonio Williams",
@@ -1478,10 +1465,10 @@
           "age": 22,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 3267,
+          "ktcValue": 3282,
           "ktcAdp": 141.0,
           "ktcPosRank": 44,
-          "note": "KTC Superflex rank #114, value 3267, ADP 141.0. Started% 0.2.",
+          "note": "KTC Superflex rank #113, value 3282, ADP 141.0. Started% 0.2.",
           "rookie": true
         },
         {
@@ -1491,10 +1478,23 @@
           "age": 25,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 3251,
+          "ktcValue": 3257,
           "ktcAdp": 130.0,
+          "ktcPosRank": 30,
+          "note": "KTC Superflex rank #114, value 3257, ADP 130.0. Started% 1.1."
+        },
+        {
+          "name": "Kaelon Black",
+          "pos": "RB",
+          "team": "SF",
+          "age": 24,
+          "category": "foundational",
+          "tier": "D",
+          "ktcValue": 3247,
+          "ktcAdp": 183.0,
           "ktcPosRank": 31,
-          "note": "KTC Superflex rank #116, value 3251, ADP 130.0. Started% 1.1."
+          "note": "KTC Superflex rank #115, value 3247, ADP 183.0. Started% 0.3.",
+          "rookie": true
         },
         {
           "name": "Caleb Douglas",
@@ -1503,10 +1503,83 @@
           "age": 23,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 3247,
+          "ktcValue": 3235,
           "ktcAdp": 221.0,
           "ktcPosRank": 46,
-          "note": "KTC Superflex rank #117, value 3247, ADP 221.0. Started% 0.8.",
+          "note": "KTC Superflex rank #117, value 3235, ADP 221.0. Started% 0.8.",
+          "rookie": true
+        },
+        {
+          "name": "Xavier Worthy",
+          "pos": "WR",
+          "team": "KC",
+          "age": 23,
+          "category": "foundational",
+          "tier": "D",
+          "ktcValue": 3218,
+          "ktcAdp": 90.0,
+          "ktcPosRank": 47,
+          "note": "KTC Superflex rank #118, value 3218, ADP 90.0. Started% 8.0."
+        },
+        {
+          "name": "Rhamondre Stevenson",
+          "pos": "RB",
+          "team": "NE",
+          "age": 28,
+          "category": "foundational",
+          "tier": "D",
+          "ktcValue": 3217,
+          "ktcAdp": 156.0,
+          "ktcPosRank": 32,
+          "note": "KTC Superflex rank #119, value 3217, ADP 156.0. Started% 73.6."
+        },
+        {
+          "name": "Jaylen Warren",
+          "pos": "RB",
+          "team": "PIT",
+          "age": 27,
+          "category": "foundational",
+          "tier": "D",
+          "ktcValue": 3213,
+          "ktcAdp": 135.0,
+          "ktcPosRank": 33,
+          "note": "KTC Superflex rank #121, value 3213, ADP 135.0. Started% 76.5."
+        },
+        {
+          "name": "Jake Ferguson",
+          "pos": "TE",
+          "team": "DAL",
+          "age": 27,
+          "category": "foundational",
+          "tier": "D",
+          "ktcValue": 3103,
+          "ktcAdp": 121.0,
+          "ktcPosRank": 14,
+          "note": "KTC Superflex rank #130, value 3103, ADP 121.0. Started% 37.3. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Travis Kelce",
+          "pos": "TE",
+          "team": "KC",
+          "age": 37,
+          "category": "foundational",
+          "tier": "D",
+          "ktcValue": 2782,
+          "ktcAdp": 121.0,
+          "ktcPosRank": 20,
+          "note": "KTC Superflex rank #155, value 2782, ADP 121.0. Started% 60.2. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Ja'Kobi Lane",
+          "pos": "WR",
+          "team": "BAL",
+          "age": 22,
+          "category": "foundational",
+          "tier": "D",
+          "ktcValue": 3195,
+          "ktcAdp": 200.0,
+          "ktcPosRank": 49,
+          "note": "KTC Superflex rank #123, value 3195, ADP 200.0. Started% 1.4.",
           "rookie": true
         },
         {
@@ -1516,143 +1589,35 @@
           "age": 25,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 3232,
+          "ktcValue": 3184,
           "ktcAdp": 177.0,
-          "ktcPosRank": 32,
-          "note": "KTC Superflex rank #118, value 3232, ADP 177.0. Started% 13.0."
-        },
-        {
-          "name": "Rhamondre Stevenson",
-          "pos": "RB",
-          "team": "NEP",
-          "age": 28,
-          "category": "foundational",
-          "tier": "D",
-          "ktcValue": 3220,
-          "ktcAdp": 156.0,
-          "ktcPosRank": 34,
-          "note": "KTC Superflex rank #120, value 3220, ADP 156.0. Started% 73.6."
-        },
-        {
-          "name": "Jake Ferguson",
-          "pos": "TE",
-          "team": "DAL",
-          "age": 27,
-          "category": "foundational",
-          "tier": "D",
-          "ktcValue": 3094,
-          "ktcAdp": 121.0,
-          "ktcPosRank": 13,
-          "note": "KTC Superflex rank #132, value 3094, ADP 121.0. Started% 37.3. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Travis Kelce",
-          "pos": "TE",
-          "team": "KCC",
-          "age": 37,
-          "category": "foundational",
-          "tier": "D",
-          "ktcValue": 2722,
-          "ktcAdp": 121.0,
-          "ktcPosRank": 20,
-          "note": "KTC Superflex rank #162, value 2722, ADP 121.0. Started% 60.2. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Jaylen Warren",
-          "pos": "RB",
-          "team": "PIT",
-          "age": 27,
-          "category": "foundational",
-          "tier": "D",
-          "ktcValue": 3207,
-          "ktcAdp": 135.0,
           "ktcPosRank": 35,
-          "note": "KTC Superflex rank #122, value 3207, ADP 135.0. Started% 76.5."
+          "note": "KTC Superflex rank #124, value 3184, ADP 177.0. Started% 13.0."
         },
         {
-          "name": "Xavier Worthy",
-          "pos": "WR",
-          "team": "KCC",
-          "age": 23,
-          "category": "foundational",
-          "tier": "D",
-          "ktcValue": 3190,
-          "ktcAdp": 90.0,
-          "ktcPosRank": 48,
-          "note": "KTC Superflex rank #123, value 3190, ADP 90.0. Started% 8.0."
-        },
-        {
-          "name": "Ja'Kobi Lane",
-          "pos": "WR",
-          "team": "BAL",
-          "age": 22,
-          "category": "foundational",
-          "tier": "D",
-          "ktcValue": 3187,
-          "ktcAdp": 200.0,
-          "ktcPosRank": 49,
-          "note": "KTC Superflex rank #124, value 3187, ADP 200.0. Started% 1.4.",
-          "rookie": true
-        },
-        {
-          "name": "Jonathon Brooks",
+          "name": "Emmett Johnson",
           "pos": "RB",
-          "team": "CAR",
+          "team": "KC",
           "age": 23,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 3158,
-          "ktcAdp": 180.0,
+          "ktcValue": 3139,
+          "ktcAdp": 161.0,
           "ktcPosRank": 36,
-          "note": "KTC Superflex rank #125, value 3158, ADP 180.0. Started% 12.4."
+          "note": "KTC Superflex rank #125, value 3139, ADP 161.0. Started% 1.1.",
+          "rookie": true
         },
         {
           "name": "Jayden Reed",
           "pos": "WR",
-          "team": "GBP",
+          "team": "GB",
           "age": 26,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 2935,
+          "ktcValue": 2856,
           "ktcAdp": 125.0,
-          "ktcPosRank": 58,
-          "note": "KTC Superflex rank #140, value 2935, ADP 125.0. Started% 40.2. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Josh Jacobs",
-          "pos": "RB",
-          "team": "GBP",
-          "age": 28,
-          "category": "upside_premier",
-          "tier": "S",
-          "ktcValue": 3146,
-          "ktcAdp": 71.0,
-          "ktcPosRank": 37,
-          "note": "KTC Superflex rank #127, value 3146, ADP 71.0. Started% 13.0."
-        },
-        {
-          "name": "Chris Godwin",
-          "pos": "WR",
-          "team": "TBB",
-          "age": 30,
-          "category": "upside_premier",
-          "tier": "S",
-          "ktcValue": 2928,
-          "ktcAdp": 127.0,
-          "ktcPosRank": 59,
-          "note": "KTC Superflex rank #141, value 2928, ADP 127.0. Started% 37.2. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Quentin Johnston",
-          "pos": "WR",
-          "team": "LAC",
-          "age": 25,
-          "category": "upside_premier",
-          "tier": "S",
-          "ktcValue": 3138,
-          "ktcAdp": 168.0,
-          "ktcPosRank": 51,
-          "note": "KTC Superflex rank #128, value 3138, ADP 168.0. Started% 29.5."
+          "ktcPosRank": 63,
+          "note": "KTC Superflex rank #147, value 2856, ADP 125.0. Started% 40.2. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Malachi Fields",
@@ -1661,73 +1626,35 @@
           "age": 23,
           "category": "upside_premier",
           "tier": "S",
-          "ktcValue": 3120,
+          "ktcValue": 3137,
           "ktcAdp": 175.0,
-          "ktcPosRank": 52,
-          "note": "KTC Superflex rank #129, value 3120, ADP 175.0. Started% 1.5.",
+          "ktcPosRank": 50,
+          "note": "KTC Superflex rank #126, value 3137, ADP 175.0. Started% 1.5.",
           "rookie": true
         },
         {
-          "name": "Emmett Johnson",
+          "name": "Josh Jacobs",
           "pos": "RB",
-          "team": "KCC",
-          "age": 23,
+          "team": "GB",
+          "age": 28,
           "category": "upside_premier",
           "tier": "S",
-          "ktcValue": 3101,
-          "ktcAdp": 161.0,
-          "ktcPosRank": 38,
-          "note": "KTC Superflex rank #130, value 3101, ADP 161.0. Started% 1.1.",
-          "rookie": true
+          "ktcValue": 3135,
+          "ktcAdp": 71.0,
+          "ktcPosRank": 37,
+          "note": "KTC Superflex rank #127, value 3135, ADP 71.0. Started% 13.0."
         },
         {
-          "name": "Chris Bell",
+          "name": "Chris Godwin",
           "pos": "WR",
-          "team": "MIA",
-          "age": 22,
+          "team": "TB",
+          "age": 30,
           "category": "upside_premier",
           "tier": "S",
-          "ktcValue": 3101,
-          "ktcAdp": 144.0,
-          "ktcPosRank": 53,
-          "note": "KTC Superflex rank #131, value 3101, ADP 144.0. Started% 0.4.",
-          "rookie": true
-        },
-        {
-          "name": "Tony Pollard",
-          "pos": "RB",
-          "team": "TEN",
-          "age": 29,
-          "category": "upside_premier",
-          "tier": "S",
-          "ktcValue": 2665,
-          "ktcAdp": 132.0,
-          "ktcPosRank": 47,
-          "note": "KTC Superflex rank #166, value 2665, ADP 132.0. Started% 42.5. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Jayden Higgins",
-          "pos": "WR",
-          "team": "HOU",
-          "age": 23,
-          "category": "upside_premier",
-          "tier": "S",
-          "ktcValue": 3081,
-          "ktcAdp": 111.0,
-          "ktcPosRank": 54,
-          "note": "KTC Superflex rank #133, value 3081, ADP 111.0. Started% 0.3."
-        },
-        {
-          "name": "Travis Hunter",
-          "pos": "WR",
-          "team": "JAC",
-          "age": 23,
-          "category": "upside_premier",
-          "tier": "S",
-          "ktcValue": 2440,
-          "ktcAdp": 82.0,
-          "ktcPosRank": 82,
-          "note": "KTC Superflex rank #193, value 2440, ADP 82.0. Started% 90.2. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcValue": 2909,
+          "ktcAdp": 127.0,
+          "ktcPosRank": 59,
+          "note": "KTC Superflex rank #142, value 2909, ADP 127.0. Started% 37.2. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Terrance Ferguson",
@@ -1736,22 +1663,131 @@
           "age": 23,
           "category": "upside_premier",
           "tier": "S",
-          "ktcValue": 3065,
+          "ktcValue": 3123,
           "ktcAdp": 139.0,
-          "ktcPosRank": 14,
-          "note": "KTC Superflex rank #134, value 3065, ADP 139.0. Started% 1.7."
+          "ktcPosRank": 13,
+          "note": "KTC Superflex rank #128, value 3123, ADP 139.0. Started% 1.7."
+        },
+        {
+          "name": "Jayden Higgins",
+          "pos": "WR",
+          "team": "HOU",
+          "age": 23,
+          "category": "upside_premier",
+          "tier": "S",
+          "ktcValue": 3095,
+          "ktcAdp": 111.0,
+          "ktcPosRank": 52,
+          "note": "KTC Superflex rank #131, value 3095, ADP 111.0. Started% 0.3."
+        },
+        {
+          "name": "Quentin Johnston",
+          "pos": "WR",
+          "team": "LAC",
+          "age": 25,
+          "category": "upside_premier",
+          "tier": "S",
+          "ktcValue": 3090,
+          "ktcAdp": 168.0,
+          "ktcPosRank": 53,
+          "note": "KTC Superflex rank #132, value 3090, ADP 168.0. Started% 29.5."
+        },
+        {
+          "name": "Tony Pollard",
+          "pos": "RB",
+          "team": "TEN",
+          "age": 29,
+          "category": "upside_premier",
+          "tier": "S",
+          "ktcValue": 2639,
+          "ktcAdp": 132.0,
+          "ktcPosRank": 48,
+          "note": "KTC Superflex rank #172, value 2639, ADP 132.0. Started% 42.5. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Chris Bell",
+          "pos": "WR",
+          "team": "MIA",
+          "age": 22,
+          "category": "upside_premier",
+          "tier": "S",
+          "ktcValue": 3073,
+          "ktcAdp": 144.0,
+          "ktcPosRank": 54,
+          "note": "KTC Superflex rank #133, value 3073, ADP 144.0. Started% 0.4.",
+          "rookie": true
+        },
+        {
+          "name": "Jonathon Brooks",
+          "pos": "RB",
+          "team": "CAR",
+          "age": 23,
+          "category": "upside_premier",
+          "tier": "S",
+          "ktcValue": 3040,
+          "ktcAdp": 180.0,
+          "ktcPosRank": 38,
+          "note": "KTC Superflex rank #134, value 3040, ADP 180.0. Started% 12.4."
+        },
+        {
+          "name": "Travis Hunter",
+          "pos": "WR",
+          "team": "JAX",
+          "age": 23,
+          "category": "upside_premier",
+          "tier": "S",
+          "ktcValue": 2441,
+          "ktcAdp": 82.0,
+          "ktcPosRank": 83,
+          "note": "KTC Superflex rank #194, value 2441, ADP 82.0. Started% 90.2. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Dontayvion Wicks",
+          "pos": "WR",
+          "team": "PHI",
+          "age": 25,
+          "category": "upside_premier",
+          "tier": "S",
+          "ktcValue": 3012,
+          "ktcAdp": 250.0,
+          "ktcPosRank": 55,
+          "note": "KTC Superflex rank #135, value 3012, ADP 250.0. Started% 1.4."
+        },
+        {
+          "name": "Oronde Gadsden",
+          "pos": "TE",
+          "team": "LAC",
+          "age": 23,
+          "category": "upside_premier",
+          "tier": "S",
+          "ktcValue": 2985,
+          "ktcAdp": 158.0,
+          "ktcPosRank": 15,
+          "note": "KTC Superflex rank #137, value 2985, ADP 158.0. Started% 9.1."
+        },
+        {
+          "name": "Adonai Mitchell",
+          "pos": "WR",
+          "team": "NYJ",
+          "age": 24,
+          "category": "upside_premier",
+          "tier": "S",
+          "ktcValue": 2981,
+          "ktcAdp": 209.0,
+          "ktcPosRank": 56,
+          "note": "KTC Superflex rank #138, value 2981, ADP 209.0. Started% 0.8."
         },
         {
           "name": "Mike Washington Jr.",
           "pos": "RB",
-          "team": "LVR",
+          "team": "LV",
           "age": 23,
           "category": "upside_premier",
           "tier": "S",
-          "ktcValue": 3026,
+          "ktcValue": 2971,
           "ktcAdp": 164.0,
           "ktcPosRank": 39,
-          "note": "KTC Superflex rank #135, value 3026, ADP 164.0.",
+          "note": "KTC Superflex rank #139, value 2971, ADP 164.0.",
           "rookie": true
         },
         {
@@ -1761,58 +1797,10 @@
           "age": 25,
           "category": "upside_premier",
           "tier": "S",
-          "ktcValue": 3001,
+          "ktcValue": 2935,
           "ktcAdp": 164.0,
-          "ktcPosRank": 55,
-          "note": "KTC Superflex rank #136, value 3001, ADP 164.0. Started% 13.9."
-        },
-        {
-          "name": "Oronde Gadsden",
-          "pos": "TE",
-          "team": "LAC",
-          "age": 23,
-          "category": "upside_premier",
-          "tier": "S",
-          "ktcValue": 2974,
-          "ktcAdp": 158.0,
-          "ktcPosRank": 15,
-          "note": "KTC Superflex rank #137, value 2974, ADP 158.0. Started% 9.1."
-        },
-        {
-          "name": "Dontayvion Wicks",
-          "pos": "WR",
-          "team": "PHI",
-          "age": 25,
-          "category": "upside_premier",
-          "tier": "S",
-          "ktcValue": 2937,
-          "ktcAdp": 250.0,
-          "ktcPosRank": 56,
-          "note": "KTC Superflex rank #138, value 2937, ADP 250.0. Started% 1.4."
-        },
-        {
-          "name": "Adonai Mitchell",
-          "pos": "WR",
-          "team": "NYJ",
-          "age": 24,
-          "category": "upside_premier",
-          "tier": "S",
-          "ktcValue": 2937,
-          "ktcAdp": 209.0,
           "ktcPosRank": 57,
-          "note": "KTC Superflex rank #139, value 2937, ADP 209.0. Started% 0.8."
-        },
-        {
-          "name": "Michael Pittman",
-          "pos": "WR",
-          "team": "PIT",
-          "age": 29,
-          "category": "upside_premier",
-          "tier": "S",
-          "ktcValue": 2918,
-          "ktcAdp": 133.0,
-          "ktcPosRank": 60,
-          "note": "KTC Superflex rank #142, value 2918, ADP 133.0. Started% 19.3."
+          "note": "KTC Superflex rank #140, value 2935, ADP 164.0. Started% 13.9."
         },
         {
           "name": "Khalil Shakir",
@@ -1821,46 +1809,10 @@
           "age": 26,
           "category": "upside_premier",
           "tier": "S",
-          "ktcValue": 2915,
+          "ktcValue": 2926,
           "ktcAdp": 135.0,
-          "ktcPosRank": 61,
-          "note": "KTC Superflex rank #143, value 2915, ADP 135.0. Started% 12.8."
-        },
-        {
-          "name": "Pat Bryant",
-          "pos": "WR",
-          "team": "DEN",
-          "age": 23,
-          "category": "upside_premier",
-          "tier": "S",
-          "ktcValue": 2896,
-          "ktcAdp": 189.0,
-          "ktcPosRank": 62,
-          "note": "KTC Superflex rank #144, value 2896, ADP 189.0. Started% 0.9."
-        },
-        {
-          "name": "Brenton Strange",
-          "pos": "TE",
-          "team": "JAC",
-          "age": 25,
-          "category": "upside_premier",
-          "tier": "S",
-          "ktcValue": 2870,
-          "ktcAdp": 143.0,
-          "ktcPosRank": 16,
-          "note": "KTC Superflex rank #145, value 2870, ADP 143.0. Started% 11.5."
-        },
-        {
-          "name": "Dallas Goedert",
-          "pos": "TE",
-          "team": "PHI",
-          "age": 31,
-          "category": "upside_premier",
-          "tier": "S",
-          "ktcValue": 2763,
-          "ktcAdp": 145.0,
-          "ktcPosRank": 18,
-          "note": "KTC Superflex rank #158, value 2763, ADP 145.0. Started% 41.1. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 58,
+          "note": "KTC Superflex rank #141, value 2926, ADP 135.0. Started% 12.8."
         },
         {
           "name": "Stefon Diggs",
@@ -1869,34 +1821,83 @@
           "age": 32,
           "category": "upside_premier",
           "tier": "S",
-          "ktcValue": 2868,
+          "ktcValue": 2889,
           "ktcAdp": 164.0,
-          "ktcPosRank": 63,
-          "note": "KTC Superflex rank #146, value 2868, ADP 164.0. Started% 22.6."
+          "ktcPosRank": 60,
+          "note": "KTC Superflex rank #143, value 2889, ADP 164.0. Started% 22.6."
         },
         {
-          "name": "J.K. Dobbins",
-          "pos": "RB",
-          "team": "DEN",
-          "age": 27,
+          "name": "Michael Pittman",
+          "pos": "WR",
+          "team": "PIT",
+          "age": 29,
           "category": "upside_premier",
           "tier": "S",
-          "ktcValue": 2854,
-          "ktcAdp": 162.0,
-          "ktcPosRank": 40,
-          "note": "KTC Superflex rank #148, value 2854, ADP 162.0. Started% 36.8."
+          "ktcValue": 2886,
+          "ktcAdp": 133.0,
+          "ktcPosRank": 61,
+          "note": "KTC Superflex rank #144, value 2886, ADP 133.0. Started% 19.3."
+        },
+        {
+          "name": "Pat Bryant",
+          "pos": "WR",
+          "team": "DEN",
+          "age": 23,
+          "category": "upside_premier",
+          "tier": "S",
+          "ktcValue": 2885,
+          "ktcAdp": 189.0,
+          "ktcPosRank": 62,
+          "note": "KTC Superflex rank #145, value 2885, ADP 189.0. Started% 0.9."
+        },
+        {
+          "name": "Dallas Goedert",
+          "pos": "TE",
+          "team": "PHI",
+          "age": 31,
+          "category": "upside_premier",
+          "tier": "S",
+          "ktcValue": 2792,
+          "ktcAdp": 145.0,
+          "ktcPosRank": 18,
+          "note": "KTC Superflex rank #153, value 2792, ADP 145.0. Started% 41.1. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Brenton Strange",
+          "pos": "TE",
+          "team": "JAX",
+          "age": 25,
+          "category": "upside_premier",
+          "tier": "S",
+          "ktcValue": 2870,
+          "ktcAdp": 143.0,
+          "ktcPosRank": 16,
+          "note": "KTC Superflex rank #146, value 2870, ADP 143.0. Started% 11.5."
+        },
+        {
+          "name": "Germie Bernard",
+          "pos": "WR",
+          "team": "PIT",
+          "age": 22,
+          "category": "upside_premier",
+          "tier": "S",
+          "ktcValue": 2853,
+          "ktcAdp": 154.0,
+          "ktcPosRank": 64,
+          "note": "KTC Superflex rank #148, value 2853, ADP 154.0. Started% 0.3.",
+          "rookie": true
         },
         {
           "name": "Romeo Doubs",
           "pos": "WR",
-          "team": "NEP",
+          "team": "NE",
           "age": 26,
           "category": "upside_premier",
           "tier": "S",
-          "ktcValue": 2833,
+          "ktcValue": 2846,
           "ktcAdp": 190.0,
-          "ktcPosRank": 64,
-          "note": "KTC Superflex rank #149, value 2833, ADP 190.0. Started% 11.5."
+          "ktcPosRank": 65,
+          "note": "KTC Superflex rank #149, value 2846, ADP 190.0. Started% 11.5."
         },
         {
           "name": "Jordan Mason",
@@ -1905,83 +1906,34 @@
           "age": 27,
           "category": "upside_premier",
           "tier": "S",
-          "ktcValue": 2833,
+          "ktcValue": 2838,
           "ktcAdp": 155.0,
+          "ktcPosRank": 40,
+          "note": "KTC Superflex rank #150, value 2838, ADP 155.0. Started% 14.2."
+        },
+        {
+          "name": "J.K. Dobbins",
+          "pos": "RB",
+          "team": "DEN",
+          "age": 27,
+          "category": "upside_premier",
+          "tier": "A",
+          "ktcValue": 2823,
+          "ktcAdp": 162.0,
           "ktcPosRank": 41,
-          "note": "KTC Superflex rank #150, value 2833, ADP 155.0. Started% 14.2."
-        },
-        {
-          "name": "Germie Bernard",
-          "pos": "WR",
-          "team": "PIT",
-          "age": 22,
-          "category": "upside_premier",
-          "tier": "A",
-          "ktcValue": 2816,
-          "ktcAdp": 154.0,
-          "ktcPosRank": 65,
-          "note": "KTC Superflex rank #151, value 2816, ADP 154.0. Started% 0.3.",
-          "rookie": true
-        },
-        {
-          "name": "Rico Dowdle",
-          "pos": "RB",
-          "team": "PIT",
-          "age": 28,
-          "category": "upside_premier",
-          "tier": "A",
-          "ktcValue": 2815,
-          "ktcAdp": 185.0,
-          "ktcPosRank": 42,
-          "note": "KTC Superflex rank #152, value 2815, ADP 185.0. Started% 54.4."
-        },
-        {
-          "name": "Woody Marks",
-          "pos": "RB",
-          "team": "HOU",
-          "age": 25,
-          "category": "upside_premier",
-          "tier": "A",
-          "ktcValue": 2809,
-          "ktcAdp": 184.0,
-          "ktcPosRank": 43,
-          "note": "KTC Superflex rank #153, value 2809, ADP 184.0. Started% 5.4."
+          "note": "KTC Superflex rank #151, value 2823, ADP 162.0. Started% 36.8."
         },
         {
           "name": "Juwan Johnson",
           "pos": "TE",
-          "team": "NOS",
+          "team": "NO",
           "age": 30,
           "category": "upside_premier",
           "tier": "A",
-          "ktcValue": 2798,
+          "ktcValue": 2814,
           "ktcAdp": 194.0,
           "ktcPosRank": 17,
-          "note": "KTC Superflex rank #154, value 2798, ADP 194.0. Started% 37.3."
-        },
-        {
-          "name": "Deebo Samuel",
-          "pos": "WR",
-          "team": "SFO",
-          "age": 30,
-          "category": "upside_premier",
-          "tier": "A",
-          "ktcValue": 2770,
-          "ktcAdp": 165.0,
-          "ktcPosRank": 67,
-          "note": "KTC Superflex rank #156, value 2770, ADP 165.0. Started% 12.1."
-        },
-        {
-          "name": "Braelon Allen",
-          "pos": "RB",
-          "team": "NYJ",
-          "age": 22,
-          "category": "upside_premier",
-          "tier": "A",
-          "ktcValue": 2764,
-          "ktcAdp": 179.0,
-          "ktcPosRank": 44,
-          "note": "KTC Superflex rank #157, value 2764, ADP 179.0. Started% 0.7."
+          "note": "KTC Superflex rank #152, value 2814, ADP 194.0. Started% 37.3."
         },
         {
           "name": "Eli Stowers",
@@ -1990,23 +1942,83 @@
           "age": 23,
           "category": "upside_premier",
           "tier": "A",
-          "ktcValue": 2746,
+          "ktcValue": 2783,
           "ktcAdp": 87.0,
           "ktcPosRank": 19,
-          "note": "KTC Superflex rank #159, value 2746, ADP 87.0. Started% 0.3.",
+          "note": "KTC Superflex rank #154, value 2783, ADP 87.0. Started% 0.3.",
           "rookie": true
+        },
+        {
+          "name": "Braelon Allen",
+          "pos": "RB",
+          "team": "NYJ",
+          "age": 22,
+          "category": "upside_premier",
+          "tier": "A",
+          "ktcValue": 2778,
+          "ktcAdp": 179.0,
+          "ktcPosRank": 42,
+          "note": "KTC Superflex rank #156, value 2778, ADP 179.0. Started% 0.7."
+        },
+        {
+          "name": "Woody Marks",
+          "pos": "RB",
+          "team": "HOU",
+          "age": 25,
+          "category": "upside_premier",
+          "tier": "A",
+          "ktcValue": 2774,
+          "ktcAdp": 184.0,
+          "ktcPosRank": 43,
+          "note": "KTC Superflex rank #157, value 2774, ADP 184.0. Started% 5.4."
+        },
+        {
+          "name": "Deebo Samuel",
+          "pos": "WR",
+          "team": "SF",
+          "age": 30,
+          "category": "upside_premier",
+          "tier": "A",
+          "ktcValue": 2762,
+          "ktcAdp": 165.0,
+          "ktcPosRank": 66,
+          "note": "KTC Superflex rank #158, value 2762, ADP 165.0. Started% 12.1."
+        },
+        {
+          "name": "Rico Dowdle",
+          "pos": "RB",
+          "team": "PIT",
+          "age": 28,
+          "category": "upside_premier",
+          "tier": "A",
+          "ktcValue": 2762,
+          "ktcAdp": 185.0,
+          "ktcPosRank": 44,
+          "note": "KTC Superflex rank #159, value 2762, ADP 185.0. Started% 54.4."
         },
         {
           "name": "Tre Tucker",
           "pos": "WR",
-          "team": "LVR",
+          "team": "LV",
           "age": 25,
           "category": "upside_premier",
           "tier": "A",
-          "ktcValue": 2740,
+          "ktcValue": 2746,
           "ktcAdp": 237.0,
-          "ktcPosRank": 68,
-          "note": "KTC Superflex rank #160, value 2740, ADP 237.0. Started% 7.8."
+          "ktcPosRank": 67,
+          "note": "KTC Superflex rank #160, value 2746, ADP 237.0. Started% 7.8."
+        },
+        {
+          "name": "Devaughn Vele",
+          "pos": "WR",
+          "team": "NO",
+          "age": 28,
+          "category": "upside_premier",
+          "tier": "A",
+          "ktcValue": 2716,
+          "ktcAdp": 287.0,
+          "ktcPosRank": 69,
+          "note": "KTC Superflex rank #162, value 2716, ADP 287.0. Started% 3.6."
         },
         {
           "name": "Tyler Allgeier",
@@ -2015,10 +2027,10 @@
           "age": 26,
           "category": "upside_premier",
           "tier": "A",
-          "ktcValue": 2738,
+          "ktcValue": 2685,
           "ktcAdp": 189.0,
           "ktcPosRank": 45,
-          "note": "KTC Superflex rank #161, value 2738, ADP 189.0. Started% 9.6."
+          "note": "KTC Superflex rank #163, value 2685, ADP 189.0. Started% 9.6."
         },
         {
           "name": "Tank Bigsby",
@@ -2027,83 +2039,10 @@
           "age": 25,
           "category": "upside_premier",
           "tier": "A",
-          "ktcValue": 2687,
+          "ktcValue": 2671,
           "ktcAdp": 172.0,
           "ktcPosRank": 46,
-          "note": "KTC Superflex rank #163, value 2687, ADP 172.0. Started% 1.1."
-        },
-        {
-          "name": "Jalen McMillan",
-          "pos": "WR",
-          "team": "TBB",
-          "age": 24,
-          "category": "upside_premier",
-          "tier": "A",
-          "ktcValue": 2684,
-          "ktcAdp": 179.0,
-          "ktcPosRank": 69,
-          "note": "KTC Superflex rank #165, value 2684, ADP 179.0. Started% 0.5."
-        },
-        {
-          "name": "MarShawn Lloyd",
-          "pos": "RB",
-          "team": "GBP",
-          "age": 25,
-          "category": "upside_premier",
-          "tier": "A",
-          "ktcValue": 2658,
-          "ktcAdp": 212.0,
-          "ktcPosRank": 48,
-          "note": "KTC Superflex rank #167, value 2658, ADP 212.0. Started% 23.3."
-        },
-        {
-          "name": "Jakobi Meyers",
-          "pos": "WR",
-          "team": "JAC",
-          "age": 29,
-          "category": "upside_premier",
-          "tier": "A",
-          "ktcValue": 2655,
-          "ktcAdp": 140.0,
-          "ktcPosRank": 70,
-          "note": "KTC Superflex rank #168, value 2655, ADP 140.0. Started% 15.6."
-        },
-        {
-          "name": "Devaughn Vele",
-          "pos": "WR",
-          "team": "NOS",
-          "age": 28,
-          "category": "upside_premier",
-          "tier": "A",
-          "ktcValue": 2652,
-          "ktcAdp": 287.0,
-          "ktcPosRank": 71,
-          "note": "KTC Superflex rank #169, value 2652, ADP 287.0. Started% 3.6."
-        },
-        {
-          "name": "Michael Mayer",
-          "pos": "TE",
-          "team": "LVR",
-          "age": 25,
-          "category": "upside_premier",
-          "tier": "A",
-          "ktcValue": 2651,
-          "ktcAdp": 222.0,
-          "ktcPosRank": 22,
-          "note": "KTC Superflex rank #170, value 2651, ADP 222.0. Started% 20.3."
-        },
-        {
-          "name": "Carson Beck",
-          "pos": "QB",
-          "team": "ARI",
-          "age": 24,
-          "category": "upside_premier",
-          "tier": "A",
-          "ktcValue": 2647,
-          "ktcAdp": 160.0,
-          "ktcPosRank": 30,
-          "note": "KTC Superflex rank #171, value 2647, ADP 160.0. Started% 0.0.",
-          "rookie": true
+          "note": "KTC Superflex rank #164, value 2671, ADP 172.0. Started% 1.1."
         },
         {
           "name": "Aaron Jones",
@@ -2112,83 +2051,35 @@
           "age": 31,
           "category": "upside_premier",
           "tier": "A",
-          "ktcValue": 2629,
+          "ktcValue": 2660,
           "ktcAdp": 152.0,
-          "ktcPosRank": 49,
-          "note": "KTC Superflex rank #172, value 2629, ADP 152.0. Started% 13.8."
-        },
-        {
-          "name": "T.J. Hockenson",
-          "pos": "TE",
-          "team": "MIN",
-          "age": 29,
-          "category": "upside_premier",
-          "tier": "A",
-          "ktcValue": 2627,
-          "ktcAdp": 98.0,
-          "ktcPosRank": 23,
-          "note": "KTC Superflex rank #173, value 2627, ADP 98.0. Started% 8.0."
-        },
-        {
-          "name": "Rachaad White",
-          "pos": "RB",
-          "team": "WAS",
-          "age": 27,
-          "category": "upside_premier",
-          "tier": "A",
-          "ktcValue": 2624,
-          "ktcAdp": 169.0,
-          "ktcPosRank": 50,
-          "note": "KTC Superflex rank #174, value 2624, ADP 169.0. Started% 7.4."
-        },
-        {
-          "name": "Kenneth Gainwell",
-          "pos": "RB",
-          "team": "TBB",
-          "age": 27,
-          "category": "upside_premier",
-          "tier": "A",
-          "ktcValue": 2623,
-          "ktcAdp": 224.0,
-          "ktcPosRank": 51,
-          "note": "KTC Superflex rank #175, value 2623, ADP 224.0. Started% 22.4."
-        },
-        {
-          "name": "Kayshon Boutte",
-          "pos": "WR",
-          "team": "HOU",
-          "age": 24,
-          "category": "upside_premier",
-          "tier": "A",
-          "ktcValue": 2618,
-          "ktcAdp": 249.0,
-          "ktcPosRank": 72,
-          "note": "KTC Superflex rank #176, value 2618, ADP 249.0. Started% 3.3."
+          "ktcPosRank": 47,
+          "note": "KTC Superflex rank #165, value 2660, ADP 152.0. Started% 13.8."
         },
         {
           "name": "Ted Hurst",
           "pos": "WR",
-          "team": "TBB",
+          "team": "TB",
           "age": 22,
           "category": "upside_premier",
           "tier": "A",
-          "ktcValue": 2617,
+          "ktcValue": 2654,
           "ktcAdp": 167.0,
-          "ktcPosRank": 73,
-          "note": "KTC Superflex rank #177, value 2617, ADP 167.0. Started% 0.2.",
+          "ktcPosRank": 70,
+          "note": "KTC Superflex rank #166, value 2654, ADP 167.0. Started% 0.2.",
           "rookie": true
         },
         {
-          "name": "Malik Washington",
+          "name": "Jalen McMillan",
           "pos": "WR",
-          "team": "MIA",
-          "age": 25,
+          "team": "TB",
+          "age": 24,
           "category": "upside_premier",
           "tier": "A",
-          "ktcValue": 2612,
-          "ktcAdp": 228.0,
-          "ktcPosRank": 74,
-          "note": "KTC Superflex rank #178, value 2612, ADP 228.0. Started% 2.4."
+          "ktcValue": 2652,
+          "ktcAdp": 179.0,
+          "ktcPosRank": 71,
+          "note": "KTC Superflex rank #167, value 2652, ADP 179.0. Started% 0.5."
         },
         {
           "name": "Dalton Schultz",
@@ -2197,22 +2088,107 @@
           "age": 30,
           "category": "upside_premier",
           "tier": "A",
-          "ktcValue": 2597,
+          "ktcValue": 2642,
           "ktcAdp": 195.0,
-          "ktcPosRank": 24,
-          "note": "KTC Superflex rank #179, value 2597, ADP 195.0. Started% 12.4."
+          "ktcPosRank": 22,
+          "note": "KTC Superflex rank #169, value 2642, ADP 195.0. Started% 12.4."
         },
         {
-          "name": "Jacoby Brissett",
+          "name": "Carson Beck",
           "pos": "QB",
           "team": "ARI",
-          "age": 33,
+          "age": 24,
           "category": "upside_premier",
           "tier": "A",
-          "ktcValue": 2589,
-          "ktcAdp": 217.0,
-          "ktcPosRank": 31,
-          "note": "KTC Superflex rank #180, value 2589, ADP 217.0. Started% 1.4."
+          "ktcValue": 2642,
+          "ktcAdp": 160.0,
+          "ktcPosRank": 30,
+          "note": "KTC Superflex rank #170, value 2642, ADP 160.0. Started% 0.0.",
+          "rookie": true
+        },
+        {
+          "name": "Jakobi Meyers",
+          "pos": "WR",
+          "team": "JAX",
+          "age": 29,
+          "category": "upside_premier",
+          "tier": "A",
+          "ktcValue": 2640,
+          "ktcAdp": 140.0,
+          "ktcPosRank": 72,
+          "note": "KTC Superflex rank #171, value 2640, ADP 140.0. Started% 15.6."
+        },
+        {
+          "name": "Kayshon Boutte",
+          "pos": "WR",
+          "team": "HOU",
+          "age": 24,
+          "category": "upside_premier",
+          "tier": "A",
+          "ktcValue": 2631,
+          "ktcAdp": 249.0,
+          "ktcPosRank": 73,
+          "note": "KTC Superflex rank #173, value 2631, ADP 249.0. Started% 3.3."
+        },
+        {
+          "name": "Malik Washington",
+          "pos": "WR",
+          "team": "MIA",
+          "age": 25,
+          "category": "upside_premier",
+          "tier": "A",
+          "ktcValue": 2629,
+          "ktcAdp": 228.0,
+          "ktcPosRank": 74,
+          "note": "KTC Superflex rank #174, value 2629, ADP 228.0. Started% 2.4."
+        },
+        {
+          "name": "Michael Mayer",
+          "pos": "TE",
+          "team": "LV",
+          "age": 25,
+          "category": "upside_premier",
+          "tier": "A",
+          "ktcValue": 2618,
+          "ktcAdp": 222.0,
+          "ktcPosRank": 23,
+          "note": "KTC Superflex rank #175, value 2618, ADP 222.0. Started% 20.3."
+        },
+        {
+          "name": "MarShawn Lloyd",
+          "pos": "RB",
+          "team": "GB",
+          "age": 25,
+          "category": "upside_premier",
+          "tier": "A",
+          "ktcValue": 2607,
+          "ktcAdp": 212.0,
+          "ktcPosRank": 49,
+          "note": "KTC Superflex rank #176, value 2607, ADP 212.0. Started% 23.3."
+        },
+        {
+          "name": "Rachaad White",
+          "pos": "RB",
+          "team": "WAS",
+          "age": 27,
+          "category": "upside_premier",
+          "tier": "A",
+          "ktcValue": 2606,
+          "ktcAdp": 169.0,
+          "ktcPosRank": 50,
+          "note": "KTC Superflex rank #177, value 2606, ADP 169.0. Started% 7.4."
+        },
+        {
+          "name": "T.J. Hockenson",
+          "pos": "TE",
+          "team": "MIN",
+          "age": 29,
+          "category": "upside_premier",
+          "tier": "A",
+          "ktcValue": 2604,
+          "ktcAdp": 98.0,
+          "ktcPosRank": 24,
+          "note": "KTC Superflex rank #178, value 2604, ADP 98.0. Started% 8.0."
         },
         {
           "name": "Keon Coleman",
@@ -2220,23 +2196,23 @@
           "team": "BUF",
           "age": 23,
           "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 2588,
+          "tier": "A",
+          "ktcValue": 2600,
           "ktcAdp": 158.0,
           "ktcPosRank": 75,
-          "note": "KTC Superflex rank #181, value 2588, ADP 158.0. Started% 0.3."
+          "note": "KTC Superflex rank #179, value 2600, ADP 158.0. Started% 0.3."
         },
         {
-          "name": "Tre Harris",
-          "pos": "WR",
-          "team": "LAC",
-          "age": 24,
+          "name": "Kenneth Gainwell",
+          "pos": "RB",
+          "team": "TB",
+          "age": 27,
           "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 2579,
-          "ktcAdp": 141.0,
-          "ktcPosRank": 76,
-          "note": "KTC Superflex rank #182, value 2579, ADP 141.0. Started% 0.4."
+          "tier": "A",
+          "ktcValue": 2597,
+          "ktcAdp": 224.0,
+          "ktcPosRank": 51,
+          "note": "KTC Superflex rank #180, value 2597, ADP 224.0. Started% 22.4."
         },
         {
           "name": "AJ Barner",
@@ -2245,10 +2221,34 @@
           "age": 24,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 2575,
+          "ktcValue": 2584,
           "ktcAdp": 214.0,
           "ktcPosRank": 25,
-          "note": "KTC Superflex rank #183, value 2575, ADP 214.0. Started% 9.8."
+          "note": "KTC Superflex rank #181, value 2584, ADP 214.0. Started% 9.8."
+        },
+        {
+          "name": "Jacoby Brissett",
+          "pos": "QB",
+          "team": "ARI",
+          "age": 33,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 2581,
+          "ktcAdp": 217.0,
+          "ktcPosRank": 31,
+          "note": "KTC Superflex rank #182, value 2581, ADP 217.0. Started% 1.4."
+        },
+        {
+          "name": "Tre Harris",
+          "pos": "WR",
+          "team": "LAC",
+          "age": 24,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 2570,
+          "ktcAdp": 141.0,
+          "ktcPosRank": 76,
+          "note": "KTC Superflex rank #183, value 2570, ADP 141.0. Started% 0.4."
         },
         {
           "name": "Drew Allar",
@@ -2257,10 +2257,23 @@
           "age": 22,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 2437,
+          "ktcValue": 2405,
           "ktcAdp": 183.0,
           "ktcPosRank": 32,
-          "note": "KTC Superflex rank #194, value 2437, ADP 183.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
+          "note": "KTC Superflex rank #195, value 2405, ADP 183.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
+          "rookie": true
+        },
+        {
+          "name": "Oscar Delp",
+          "pos": "TE",
+          "team": "NO",
+          "age": 23,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 1996,
+          "ktcAdp": 165.0,
+          "ktcPosRank": 37,
+          "note": "KTC Superflex rank #243, value 1996, ADP 165.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
           "rookie": true
         },
         {
@@ -2270,11 +2283,23 @@
           "age": 22,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 2540,
+          "ktcValue": 2552,
           "ktcAdp": 147.0,
           "ktcPosRank": 52,
-          "note": "KTC Superflex rank #184, value 2540, ADP 147.0. Started% 0.2.",
+          "note": "KTC Superflex rank #184, value 2552, ADP 147.0. Started% 0.2.",
           "rookie": true
+        },
+        {
+          "name": "Ricky Pearsall",
+          "pos": "WR",
+          "team": "SF",
+          "age": 26,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 2541,
+          "ktcAdp": 112.0,
+          "ktcPosRank": 77,
+          "note": "KTC Superflex rank #185, value 2541, ADP 112.0. Started% 0.8."
         },
         {
           "name": "Rashid Shaheed",
@@ -2283,34 +2308,34 @@
           "age": 28,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 2537,
+          "ktcValue": 2528,
           "ktcAdp": 173.0,
-          "ktcPosRank": 77,
-          "note": "KTC Superflex rank #185, value 2537, ADP 173.0. Started% 6.2."
+          "ktcPosRank": 78,
+          "note": "KTC Superflex rank #186, value 2528, ADP 173.0. Started% 6.2."
         },
         {
-          "name": "Ricky Pearsall",
-          "pos": "WR",
-          "team": "SFO",
-          "age": 26,
+          "name": "Tyjae Spears",
+          "pos": "RB",
+          "team": "TEN",
+          "age": 25,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 2534,
-          "ktcAdp": 112.0,
-          "ktcPosRank": 78,
-          "note": "KTC Superflex rank #186, value 2534, ADP 112.0. Started% 0.8."
+          "ktcValue": 2506,
+          "ktcAdp": 171.0,
+          "ktcPosRank": 53,
+          "note": "KTC Superflex rank #187, value 2506, ADP 171.0. Started% 3.7."
         },
         {
-          "name": "Eli Raridon",
-          "pos": "TE",
-          "team": "NEP",
+          "name": "Zachariah Branch",
+          "pos": "WR",
+          "team": "ATL",
           "age": 22,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 2513,
-          "ktcAdp": 161.0,
-          "ktcPosRank": 26,
-          "note": "KTC Superflex rank #187, value 2513, ADP 161.0. Started% 0.1.",
+          "ktcValue": 2503,
+          "ktcAdp": 173.0,
+          "ktcPosRank": 79,
+          "note": "KTC Superflex rank #188, value 2503, ADP 173.0. Started% 0.2.",
           "rookie": true
         },
         {
@@ -2320,73 +2345,36 @@
           "age": 24,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 2511,
+          "ktcValue": 2501,
           "ktcAdp": 226.0,
-          "ktcPosRank": 53,
-          "note": "KTC Superflex rank #188, value 2511, ADP 226.0. Started% 1.6."
+          "ktcPosRank": 54,
+          "note": "KTC Superflex rank #189, value 2501, ADP 226.0. Started% 1.6."
+        },
+        {
+          "name": "Eli Raridon",
+          "pos": "TE",
+          "team": "NE",
+          "age": 22,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 2496,
+          "ktcAdp": 161.0,
+          "ktcPosRank": 26,
+          "note": "KTC Superflex rank #190, value 2496, ADP 161.0. Started% 0.1.",
+          "rookie": true
         },
         {
           "name": "Cyrus Allen",
           "pos": "WR",
-          "team": "KCC",
+          "team": "KC",
           "age": 23,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 2511,
+          "ktcValue": 2492,
           "ktcAdp": 240.0,
-          "ktcPosRank": 79,
-          "note": "KTC Superflex rank #189, value 2511, ADP 240.0. Started% 0.3.",
-          "rookie": true
-        },
-        {
-          "name": "Oscar Delp",
-          "pos": "TE",
-          "team": "NOS",
-          "age": 23,
-          "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 1977,
-          "ktcAdp": 165.0,
-          "ktcPosRank": 37,
-          "note": "KTC Superflex rank #249, value 1977, ADP 165.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
-          "rookie": true
-        },
-        {
-          "name": "Zachariah Branch",
-          "pos": "WR",
-          "team": "ATL",
-          "age": 22,
-          "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 2495,
-          "ktcAdp": 173.0,
           "ktcPosRank": 80,
-          "note": "KTC Superflex rank #190, value 2495, ADP 173.0. Started% 0.2.",
+          "note": "KTC Superflex rank #191, value 2492, ADP 240.0. Started% 0.3.",
           "rookie": true
-        },
-        {
-          "name": "Tyjae Spears",
-          "pos": "RB",
-          "team": "TEN",
-          "age": 25,
-          "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 2485,
-          "ktcAdp": 171.0,
-          "ktcPosRank": 54,
-          "note": "KTC Superflex rank #191, value 2485, ADP 171.0. Started% 3.7."
-        },
-        {
-          "name": "Jalen Milroe",
-          "pos": "QB",
-          "team": "SEA",
-          "age": 23,
-          "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 1975,
-          "ktcAdp": 160.0,
-          "ktcPosRank": 43,
-          "note": "KTC Superflex rank #251, value 1975, ADP 160.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Jaylin Noel",
@@ -2395,47 +2383,10 @@
           "age": 24,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 2477,
+          "ktcValue": 2456,
           "ktcAdp": 172.0,
           "ktcPosRank": 81,
-          "note": "KTC Superflex rank #192, value 2477, ADP 172.0. Started% 0.3."
-        },
-        {
-          "name": "Chris Rodriguez",
-          "pos": "RB",
-          "team": "JAC",
-          "age": 26,
-          "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 2415,
-          "ktcAdp": 228.0,
-          "ktcPosRank": 55,
-          "note": "KTC Superflex rank #195, value 2415, ADP 228.0. Started% 4.8."
-        },
-        {
-          "name": "Jack Bech",
-          "pos": "WR",
-          "team": "LVR",
-          "age": 23,
-          "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 2398,
-          "ktcAdp": 164.0,
-          "ktcPosRank": 83,
-          "note": "KTC Superflex rank #196, value 2398, ADP 164.0. Started% 0.2."
-        },
-        {
-          "name": "Chris Brazzell II",
-          "pos": "WR",
-          "team": "CAR",
-          "age": 22,
-          "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 2163,
-          "ktcAdp": 196.0,
-          "ktcPosRank": 91,
-          "note": "KTC Superflex rank #222, value 2163, ADP 196.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
-          "rookie": true
+          "note": "KTC Superflex rank #192, value 2456, ADP 172.0. Started% 0.3."
         },
         {
           "name": "Rashod Bateman",
@@ -2444,10 +2395,10 @@
           "age": 26,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 2388,
+          "ktcValue": 2445,
           "ktcAdp": 199.0,
-          "ktcPosRank": 84,
-          "note": "KTC Superflex rank #197, value 2388, ADP 199.0. Started% 0.8."
+          "ktcPosRank": 82,
+          "note": "KTC Superflex rank #193, value 2445, ADP 199.0. Started% 0.8."
         },
         {
           "name": "Dylan Sampson",
@@ -2456,22 +2407,35 @@
           "age": 22,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 2378,
+          "ktcValue": 2387,
           "ktcAdp": 158.0,
-          "ktcPosRank": 56,
-          "note": "KTC Superflex rank #198, value 2378, ADP 158.0. Started% 1.6."
+          "ktcPosRank": 55,
+          "note": "KTC Superflex rank #196, value 2387, ADP 158.0. Started% 1.6."
         },
         {
-          "name": "Chigoziem Okonkwo",
-          "pos": "TE",
-          "team": "WAS",
-          "age": 27,
+          "name": "Chris Brazzell II",
+          "pos": "WR",
+          "team": "CAR",
+          "age": 22,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 2372,
-          "ktcAdp": 169.0,
-          "ktcPosRank": 27,
-          "note": "KTC Superflex rank #199, value 2372, ADP 169.0. Started% 6.1."
+          "ktcValue": 2135,
+          "ktcAdp": 196.0,
+          "ktcPosRank": 93,
+          "note": "KTC Superflex rank #223, value 2135, ADP 196.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
+          "rookie": true
+        },
+        {
+          "name": "Jalen Milroe",
+          "pos": "QB",
+          "team": "SEA",
+          "age": 23,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 1941,
+          "ktcAdp": 160.0,
+          "ktcPosRank": 43,
+          "note": "KTC Superflex rank #256, value 1941, ADP 160.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Kaytron Allen",
@@ -2480,23 +2444,11 @@
           "age": 23,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 2371,
+          "ktcValue": 2387,
           "ktcAdp": 177.0,
-          "ktcPosRank": 57,
-          "note": "KTC Superflex rank #200, value 2371, ADP 177.0. Started% 0.2.",
+          "ktcPosRank": 56,
+          "note": "KTC Superflex rank #197, value 2387, ADP 177.0. Started% 0.2.",
           "rookie": true
-        },
-        {
-          "name": "Hunter Henry",
-          "pos": "TE",
-          "team": "NEP",
-          "age": 31,
-          "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 2361,
-          "ktcAdp": 175.0,
-          "ktcPosRank": 28,
-          "note": "KTC Superflex rank #201, value 2361, ADP 175.0. Started% 20.9."
         },
         {
           "name": "Pat Freiermuth",
@@ -2505,22 +2457,58 @@
           "age": 27,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 2357,
+          "ktcValue": 2379,
           "ktcAdp": 173.0,
-          "ktcPosRank": 29,
-          "note": "KTC Superflex rank #202, value 2357, ADP 173.0. Started% 1.5."
+          "ktcPosRank": 27,
+          "note": "KTC Superflex rank #198, value 2379, ADP 173.0. Started% 1.5."
         },
         {
-          "name": "Tank Dell",
+          "name": "Hunter Henry",
+          "pos": "TE",
+          "team": "NE",
+          "age": 31,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 2372,
+          "ktcAdp": 175.0,
+          "ktcPosRank": 28,
+          "note": "KTC Superflex rank #199, value 2372, ADP 175.0. Started% 20.9."
+        },
+        {
+          "name": "Jack Bech",
           "pos": "WR",
-          "team": "HOU",
+          "team": "LV",
+          "age": 23,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 2366,
+          "ktcAdp": 164.0,
+          "ktcPosRank": 84,
+          "note": "KTC Superflex rank #200, value 2366, ADP 164.0. Started% 0.2."
+        },
+        {
+          "name": "Kirk Cousins",
+          "pos": "QB",
+          "team": "LV",
+          "age": 38,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 2363,
+          "ktcAdp": 225.0,
+          "ktcPosRank": 33,
+          "note": "KTC Superflex rank #201, value 2363, ADP 225.0. Started% 1.7."
+        },
+        {
+          "name": "Chris Rodriguez",
+          "pos": "RB",
+          "team": "JAX",
           "age": 26,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 2342,
-          "ktcAdp": 222.0,
-          "ktcPosRank": 85,
-          "note": "KTC Superflex rank #203, value 2342, ADP 222.0. Started% 0.1."
+          "ktcValue": 2362,
+          "ktcAdp": 228.0,
+          "ktcPosRank": 57,
+          "note": "KTC Superflex rank #202, value 2362, ADP 228.0. Started% 4.8."
         },
         {
           "name": "Elijah Sarratt",
@@ -2529,35 +2517,11 @@
           "age": 23,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 2338,
+          "ktcValue": 2358,
           "ktcAdp": 202.0,
-          "ktcPosRank": 86,
-          "note": "KTC Superflex rank #204, value 2338, ADP 202.0. Started% 0.1.",
+          "ktcPosRank": 85,
+          "note": "KTC Superflex rank #203, value 2358, ADP 202.0. Started% 0.1.",
           "rookie": true
-        },
-        {
-          "name": "Isaac TeSlaa",
-          "pos": "WR",
-          "team": "DET",
-          "age": 24,
-          "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 2336,
-          "ktcAdp": 195.0,
-          "ktcPosRank": 87,
-          "note": "KTC Superflex rank #205, value 2336, ADP 195.0. Started% 0.4."
-        },
-        {
-          "name": "Geno Smith",
-          "pos": "QB",
-          "team": "NYJ",
-          "age": 36,
-          "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 2325,
-          "ktcAdp": 134.0,
-          "ktcPosRank": 33,
-          "note": "KTC Superflex rank #206, value 2325, ADP 134.0. Started% 1.3."
         },
         {
           "name": "Drew Lock",
@@ -2566,58 +2530,10 @@
           "age": 29,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 2318,
+          "ktcValue": 2349,
           "ktcAdp": 391.0,
           "ktcPosRank": 34,
-          "note": "KTC Superflex rank #207, value 2318, ADP 391.0."
-        },
-        {
-          "name": "Kirk Cousins",
-          "pos": "QB",
-          "team": "LVR",
-          "age": 38,
-          "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 2308,
-          "ktcAdp": 225.0,
-          "ktcPosRank": 35,
-          "note": "KTC Superflex rank #208, value 2308, ADP 225.0. Started% 1.7."
-        },
-        {
-          "name": "Mac Jones",
-          "pos": "QB",
-          "team": "SFO",
-          "age": 28,
-          "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 2307,
-          "ktcAdp": 244.0,
-          "ktcPosRank": 36,
-          "note": "KTC Superflex rank #209, value 2307, ADP 244.0. Started% 0.0."
-        },
-        {
-          "name": "Kaleb Johnson",
-          "pos": "RB",
-          "team": "GBP",
-          "age": 23,
-          "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 2306,
-          "ktcAdp": 119.0,
-          "ktcPosRank": 58,
-          "note": "KTC Superflex rank #210, value 2306, ADP 119.0. Started% 0.4."
-        },
-        {
-          "name": "Elic Ayomanor",
-          "pos": "WR",
-          "team": "TEN",
-          "age": 23,
-          "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 2301,
-          "ktcAdp": 203.0,
-          "ktcPosRank": 88,
-          "note": "KTC Superflex rank #211, value 2301, ADP 203.0. Started% 0.1."
+          "note": "KTC Superflex rank #204, value 2349, ADP 391.0."
         },
         {
           "name": "Shedeur Sanders",
@@ -2626,10 +2542,94 @@
           "age": 24,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 2293,
+          "ktcValue": 2338,
           "ktcAdp": 158.0,
+          "ktcPosRank": 35,
+          "note": "KTC Superflex rank #205, value 2338, ADP 158.0. Started% 0.2."
+        },
+        {
+          "name": "Kaleb Johnson",
+          "pos": "RB",
+          "team": "GB",
+          "age": 23,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 2336,
+          "ktcAdp": 119.0,
+          "ktcPosRank": 58,
+          "note": "KTC Superflex rank #206, value 2336, ADP 119.0. Started% 0.4."
+        },
+        {
+          "name": "Geno Smith",
+          "pos": "QB",
+          "team": "NYJ",
+          "age": 36,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 2334,
+          "ktcAdp": 134.0,
+          "ktcPosRank": 36,
+          "note": "KTC Superflex rank #207, value 2334, ADP 134.0. Started% 1.3."
+        },
+        {
+          "name": "Mac Jones",
+          "pos": "QB",
+          "team": "SF",
+          "age": 28,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 2332,
+          "ktcAdp": 244.0,
           "ktcPosRank": 37,
-          "note": "KTC Superflex rank #212, value 2293, ADP 158.0. Started% 0.2."
+          "note": "KTC Superflex rank #208, value 2332, ADP 244.0. Started% 0.0."
+        },
+        {
+          "name": "Isaac TeSlaa",
+          "pos": "WR",
+          "team": "DET",
+          "age": 24,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 2329,
+          "ktcAdp": 195.0,
+          "ktcPosRank": 86,
+          "note": "KTC Superflex rank #209, value 2329, ADP 195.0. Started% 0.4."
+        },
+        {
+          "name": "Elic Ayomanor",
+          "pos": "WR",
+          "team": "TEN",
+          "age": 23,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 2318,
+          "ktcAdp": 203.0,
+          "ktcPosRank": 87,
+          "note": "KTC Superflex rank #210, value 2318, ADP 203.0. Started% 0.1."
+        },
+        {
+          "name": "Chigoziem Okonkwo",
+          "pos": "TE",
+          "team": "WAS",
+          "age": 27,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 2312,
+          "ktcAdp": 169.0,
+          "ktcPosRank": 29,
+          "note": "KTC Superflex rank #211, value 2312, ADP 169.0. Started% 6.1."
+        },
+        {
+          "name": "Tank Dell",
+          "pos": "WR",
+          "team": "HOU",
+          "age": 26,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 2293,
+          "ktcAdp": 222.0,
+          "ktcPosRank": 88,
+          "note": "KTC Superflex rank #212, value 2293, ADP 222.0. Started% 0.1."
         },
         {
           "name": "Brian Robinson",
@@ -2638,10 +2638,22 @@
           "age": 27,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 2245,
+          "ktcValue": 2291,
           "ktcAdp": 164.0,
           "ktcPosRank": 59,
-          "note": "KTC Superflex rank #213, value 2245, ADP 164.0. Started% 4.6."
+          "note": "KTC Superflex rank #213, value 2291, ADP 164.0. Started% 4.6."
+        },
+        {
+          "name": "Troy Franklin",
+          "pos": "WR",
+          "team": "DEN",
+          "age": 23,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 2265,
+          "ktcAdp": 233.0,
+          "ktcPosRank": 89,
+          "note": "KTC Superflex rank #214, value 2265, ADP 233.0. Started% 0.2."
         },
         {
           "name": "Gunnar Helm",
@@ -2653,19 +2665,7 @@
           "ktcValue": 2244,
           "ktcAdp": 190.0,
           "ktcPosRank": 30,
-          "note": "KTC Superflex rank #214, value 2244, ADP 190.0. Started% 1.4."
-        },
-        {
-          "name": "Troy Franklin",
-          "pos": "WR",
-          "team": "DEN",
-          "age": 23,
-          "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 2239,
-          "ktcAdp": 233.0,
-          "ktcPosRank": 89,
-          "note": "KTC Superflex rank #215, value 2239, ADP 233.0. Started% 0.2."
+          "note": "KTC Superflex rank #215, value 2244, ADP 190.0. Started% 1.4."
         },
         {
           "name": "Demond Claiborne",
@@ -2674,10 +2674,10 @@
           "age": 23,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 2222,
+          "ktcValue": 2232,
           "ktcAdp": 186.0,
           "ktcPosRank": 60,
-          "note": "KTC Superflex rank #216, value 2222, ADP 186.0. Started% 0.1.",
+          "note": "KTC Superflex rank #216, value 2232, ADP 186.0. Started% 0.1.",
           "rookie": true
         },
         {
@@ -2687,106 +2687,10 @@
           "age": 26,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 2212,
+          "ktcValue": 2202,
           "ktcAdp": 352.0,
           "ktcPosRank": 90,
-          "note": "KTC Superflex rank #217, value 2212, ADP 352.0. Started% 0.1."
-        },
-        {
-          "name": "Jaylen Wright",
-          "pos": "RB",
-          "team": "MIA",
-          "age": 23,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 2187,
-          "ktcAdp": 204.0,
-          "ktcPosRank": 61,
-          "note": "KTC Superflex rank #218, value 2187, ADP 204.0. Started% 0.2."
-        },
-        {
-          "name": "Jameis Winston",
-          "pos": "QB",
-          "team": "NYG",
-          "age": 32,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 2182,
-          "ktcAdp": 289.0,
-          "ktcPosRank": 38,
-          "note": "KTC Superflex rank #219, value 2182, ADP 289.0. Started% 0.0."
-        },
-        {
-          "name": "Cade Otton",
-          "pos": "TE",
-          "team": "TBB",
-          "age": 27,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 2169,
-          "ktcAdp": 170.0,
-          "ktcPosRank": 31,
-          "note": "KTC Superflex rank #220, value 2169, ADP 170.0. Started% 2.9."
-        },
-        {
-          "name": "Kendre Miller",
-          "pos": "RB",
-          "team": "NOS",
-          "age": 24,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 2165,
-          "ktcAdp": 242.0,
-          "ktcPosRank": 62,
-          "note": "KTC Superflex rank #221, value 2165, ADP 242.0. Started% 0.2."
-        },
-        {
-          "name": "Tory Horton",
-          "pos": "WR",
-          "team": "SEA",
-          "age": 23,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 2147,
-          "ktcAdp": 212.0,
-          "ktcPosRank": 92,
-          "note": "KTC Superflex rank #223, value 2147, ADP 212.0. Started% 0.1."
-        },
-        {
-          "name": "Kyle Williams",
-          "pos": "WR",
-          "team": "NEP",
-          "age": 23,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 2144,
-          "ktcAdp": 165.0,
-          "ktcPosRank": 93,
-          "note": "KTC Superflex rank #224, value 2144, ADP 165.0. Started% 0.1."
-        },
-        {
-          "name": "Jalen Royals",
-          "pos": "WR",
-          "team": "KCC",
-          "age": 23,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 1727,
-          "ktcAdp": 202.0,
-          "ktcPosRank": 114,
-          "note": "KTC Superflex rank #284, value 1727, ADP 202.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Demario Douglas",
-          "pos": "WR",
-          "team": "NEP",
-          "age": 25,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 2142,
-          "ktcAdp": 227.0,
-          "ktcPosRank": 94,
-          "note": "KTC Superflex rank #225, value 2142, ADP 227.0. Started% 0.3."
+          "note": "KTC Superflex rank #217, value 2202, ADP 352.0. Started% 0.1."
         },
         {
           "name": "Marcus Mariota",
@@ -2795,95 +2699,70 @@
           "age": 32,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 2141,
+          "ktcValue": 2176,
           "ktcAdp": 309.0,
-          "ktcPosRank": 39,
-          "note": "KTC Superflex rank #226, value 2141, ADP 309.0."
+          "ktcPosRank": 38,
+          "note": "KTC Superflex rank #218, value 2176, ADP 309.0."
         },
         {
-          "name": "Mason Taylor",
-          "pos": "TE",
-          "team": "NYJ",
-          "age": 22,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 2130,
-          "ktcAdp": 136.0,
-          "ktcPosRank": 32,
-          "note": "KTC Superflex rank #227, value 2130, ADP 136.0. Started% 1.0."
-        },
-        {
-          "name": "DJ Giddens",
-          "pos": "RB",
-          "team": "IND",
-          "age": 23,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 1715,
-          "ktcAdp": 203.0,
-          "ktcPosRank": 80,
-          "note": "KTC Superflex rank #287, value 1715, ADP 203.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Jalen Nailor",
+          "name": "Tory Horton",
           "pos": "WR",
-          "team": "LVR",
-          "age": 27,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 2123,
-          "ktcAdp": 265.0,
-          "ktcPosRank": 95,
-          "note": "KTC Superflex rank #228, value 2123, ADP 265.0. Started% 3.7."
-        },
-        {
-          "name": "Elijah Arroyo",
-          "pos": "TE",
           "team": "SEA",
           "age": 23,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 2119,
-          "ktcAdp": 153.0,
-          "ktcPosRank": 33,
-          "note": "KTC Superflex rank #229, value 2119, ADP 153.0. Started% 0.2."
+          "ktcValue": 2166,
+          "ktcAdp": 212.0,
+          "ktcPosRank": 91,
+          "note": "KTC Superflex rank #219, value 2166, ADP 212.0. Started% 0.1."
         },
         {
-          "name": "Tyson Bagent",
-          "pos": "QB",
-          "team": "CHI",
-          "age": 26,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 2112,
-          "ktcAdp": 311.0,
-          "ktcPosRank": 40,
-          "note": "KTC Superflex rank #230, value 2112, ADP 311.0."
-        },
-        {
-          "name": "Trevor Etienne",
-          "pos": "RB",
-          "team": "CAR",
-          "age": 22,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 1847,
-          "ktcAdp": 230.0,
-          "ktcPosRank": 76,
-          "note": "KTC Superflex rank #270, value 1847, ADP 230.0. Started% 93.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Kevin Coleman",
+          "name": "Jalen Royals",
           "pos": "WR",
-          "team": "MIA",
+          "team": "KC",
           "age": 23,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 2112,
+          "ktcValue": 1773,
+          "ktcAdp": 202.0,
+          "ktcPosRank": 111,
+          "note": "KTC Superflex rank #279, value 1773, ADP 202.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Cade Otton",
+          "pos": "TE",
+          "team": "TB",
+          "age": 27,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 2165,
+          "ktcAdp": 170.0,
+          "ktcPosRank": 31,
+          "note": "KTC Superflex rank #220, value 2165, ADP 170.0. Started% 2.9."
+        },
+        {
+          "name": "Jameis Winston",
+          "pos": "QB",
+          "team": "NYG",
+          "age": 32,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 2147,
           "ktcAdp": 289.0,
-          "ktcPosRank": 96,
-          "note": "KTC Superflex rank #231, value 2112, ADP 289.0. Started% 0.3.",
-          "rookie": true
+          "ktcPosRank": 39,
+          "note": "KTC Superflex rank #221, value 2147, ADP 289.0. Started% 0.0."
+        },
+        {
+          "name": "Kyle Williams",
+          "pos": "WR",
+          "team": "NE",
+          "age": 23,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 2145,
+          "ktcAdp": 165.0,
+          "ktcPosRank": 92,
+          "note": "KTC Superflex rank #222, value 2145, ADP 165.0. Started% 0.1."
         },
         {
           "name": "Roman Wilson",
@@ -2892,10 +2771,119 @@
           "age": 25,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 2111,
+          "ktcValue": 2131,
           "ktcAdp": 242.0,
+          "ktcPosRank": 94,
+          "note": "KTC Superflex rank #224, value 2131, ADP 242.0. Started% 89.8."
+        },
+        {
+          "name": "Kendre Miller",
+          "pos": "RB",
+          "team": "NO",
+          "age": 24,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 2124,
+          "ktcAdp": 242.0,
+          "ktcPosRank": 61,
+          "note": "KTC Superflex rank #225, value 2124, ADP 242.0. Started% 0.2."
+        },
+        {
+          "name": "DJ Giddens",
+          "pos": "RB",
+          "team": "IND",
+          "age": 23,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 1722,
+          "ktcAdp": 203.0,
+          "ktcPosRank": 79,
+          "note": "KTC Superflex rank #285, value 1722, ADP 203.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Demario Douglas",
+          "pos": "WR",
+          "team": "NE",
+          "age": 25,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 2122,
+          "ktcAdp": 227.0,
+          "ktcPosRank": 95,
+          "note": "KTC Superflex rank #226, value 2122, ADP 227.0. Started% 0.3."
+        },
+        {
+          "name": "Kevin Coleman",
+          "pos": "WR",
+          "team": "MIA",
+          "age": 23,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 2116,
+          "ktcAdp": 289.0,
+          "ktcPosRank": 96,
+          "note": "KTC Superflex rank #227, value 2116, ADP 289.0. Started% 0.3.",
+          "rookie": true
+        },
+        {
+          "name": "Elijah Arroyo",
+          "pos": "TE",
+          "team": "SEA",
+          "age": 23,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 2108,
+          "ktcAdp": 153.0,
+          "ktcPosRank": 32,
+          "note": "KTC Superflex rank #228, value 2108, ADP 153.0. Started% 0.2."
+        },
+        {
+          "name": "Mason Taylor",
+          "pos": "TE",
+          "team": "NYJ",
+          "age": 22,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 2106,
+          "ktcAdp": 136.0,
+          "ktcPosRank": 33,
+          "note": "KTC Superflex rank #229, value 2106, ADP 136.0. Started% 1.0."
+        },
+        {
+          "name": "Jalen Nailor",
+          "pos": "WR",
+          "team": "LV",
+          "age": 27,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 2104,
+          "ktcAdp": 265.0,
           "ktcPosRank": 97,
-          "note": "KTC Superflex rank #232, value 2111, ADP 242.0. Started% 89.8."
+          "note": "KTC Superflex rank #230, value 2104, ADP 265.0. Started% 3.7."
+        },
+        {
+          "name": "Trevor Etienne",
+          "pos": "RB",
+          "team": "CAR",
+          "age": 22,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 1851,
+          "ktcAdp": 230.0,
+          "ktcPosRank": 75,
+          "note": "KTC Superflex rank #268, value 1851, ADP 230.0. Started% 93.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Tyson Bagent",
+          "pos": "QB",
+          "team": "CHI",
+          "age": 26,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 2103,
+          "ktcAdp": 311.0,
+          "ktcPosRank": 40,
+          "note": "KTC Superflex rank #231, value 2103, ADP 311.0."
         },
         {
           "name": "Ryan Flournoy",
@@ -2904,22 +2892,22 @@
           "age": 26,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 2111,
+          "ktcValue": 2099,
           "ktcAdp": 240.0,
           "ktcPosRank": 98,
-          "note": "KTC Superflex rank #233, value 2111, ADP 240.0. Started% 0.6."
+          "note": "KTC Superflex rank #232, value 2099, ADP 240.0. Started% 0.6."
         },
         {
-          "name": "Will Howard",
-          "pos": "QB",
-          "team": "PIT",
-          "age": 25,
+          "name": "Jaylen Wright",
+          "pos": "RB",
+          "team": "MIA",
+          "age": 23,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 1655,
-          "ktcAdp": 231.0,
-          "ktcPosRank": 50,
-          "note": "KTC Superflex rank #293, value 1655, ADP 231.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcValue": 2092,
+          "ktcAdp": 204.0,
+          "ktcPosRank": 62,
+          "note": "KTC Superflex rank #233, value 2092, ADP 204.0. Started% 0.2."
         },
         {
           "name": "Skyler Bell",
@@ -2928,23 +2916,23 @@
           "age": 24,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 2110,
+          "ktcValue": 2075,
           "ktcAdp": 202.0,
           "ktcPosRank": 99,
-          "note": "KTC Superflex rank #234, value 2110, ADP 202.0. Started% 0.0.",
+          "note": "KTC Superflex rank #234, value 2075, ADP 202.0. Started% 0.0.",
           "rookie": true
         },
         {
-          "name": "Cole Kmet",
-          "pos": "TE",
-          "team": "CHI",
-          "age": 27,
+          "name": "Will Howard",
+          "pos": "QB",
+          "team": "PIT",
+          "age": 25,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 2064,
-          "ktcAdp": 216.0,
-          "ktcPosRank": 34,
-          "note": "KTC Superflex rank #235, value 2064, ADP 216.0. Started% 0.2."
+          "ktcValue": 1641,
+          "ktcAdp": 231.0,
+          "ktcPosRank": 50,
+          "note": "KTC Superflex rank #294, value 1641, ADP 231.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Max Klare",
@@ -2953,35 +2941,11 @@
           "age": 23,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 2053,
+          "ktcValue": 2061,
           "ktcAdp": 163.0,
-          "ktcPosRank": 35,
-          "note": "KTC Superflex rank #236, value 2053, ADP 163.0. Started% 0.1.",
+          "ktcPosRank": 34,
+          "note": "KTC Superflex rank #235, value 2061, ADP 163.0. Started% 0.1.",
           "rookie": true
-        },
-        {
-          "name": "Evan Engram",
-          "pos": "TE",
-          "team": "DEN",
-          "age": 32,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 2050,
-          "ktcAdp": 147.0,
-          "ktcPosRank": 36,
-          "note": "KTC Superflex rank #237, value 2050, ADP 147.0. Started% 0.4."
-        },
-        {
-          "name": "Will Shipley",
-          "pos": "RB",
-          "team": "PHI",
-          "age": 24,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 1611,
-          "ktcAdp": 236.0,
-          "ktcPosRank": 83,
-          "note": "KTC Superflex rank #297, value 1611, ADP 236.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Zavion Thomas",
@@ -2990,11 +2954,47 @@
           "age": 22,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 2047,
+          "ktcValue": 2051,
           "ktcAdp": 249.0,
           "ktcPosRank": 100,
-          "note": "KTC Superflex rank #238, value 2047, ADP 249.0. Started% 0.1.",
+          "note": "KTC Superflex rank #236, value 2051, ADP 249.0. Started% 0.1.",
           "rookie": true
+        },
+        {
+          "name": "Will Shipley",
+          "pos": "RB",
+          "team": "PHI",
+          "age": 24,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 1633,
+          "ktcAdp": 236.0,
+          "ktcPosRank": 83,
+          "note": "KTC Superflex rank #295, value 1633, ADP 236.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Evan Engram",
+          "pos": "TE",
+          "team": "DEN",
+          "age": 32,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 2040,
+          "ktcAdp": 147.0,
+          "ktcPosRank": 35,
+          "note": "KTC Superflex rank #237, value 2040, ADP 147.0. Started% 0.4."
+        },
+        {
+          "name": "Cole Kmet",
+          "pos": "TE",
+          "team": "CHI",
+          "age": 27,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 2039,
+          "ktcAdp": 216.0,
+          "ktcPosRank": 36,
+          "note": "KTC Superflex rank #238, value 2039, ADP 216.0. Started% 0.2."
         },
         {
           "name": "Joshua Palmer",
@@ -3003,10 +3003,10 @@
           "age": 27,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 1756,
+          "ktcValue": 1776,
           "ktcAdp": 238.0,
-          "ktcPosRank": 111,
-          "note": "KTC Superflex rank #280, value 1756, ADP 238.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 110,
+          "note": "KTC Superflex rank #278, value 1776, ADP 238.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Kimani Vidal",
@@ -3015,10 +3015,35 @@
           "age": 25,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 2035,
+          "ktcValue": 2039,
           "ktcAdp": 267.0,
           "ktcPosRank": 63,
-          "note": "KTC Superflex rank #239, value 2035, ADP 267.0. Started% 0.3."
+          "note": "KTC Superflex rank #239, value 2039, ADP 267.0. Started% 0.3."
+        },
+        {
+          "name": "Bryce Lance",
+          "pos": "WR",
+          "team": "NO",
+          "age": 24,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 2029,
+          "ktcAdp": 254.0,
+          "ktcPosRank": 101,
+          "note": "KTC Superflex rank #240, value 2029, ADP 254.0.",
+          "rookie": true
+        },
+        {
+          "name": "Tyquan Thornton",
+          "pos": "WR",
+          "team": "KC",
+          "age": 26,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 2021,
+          "ktcAdp": 298.0,
+          "ktcPosRank": 102,
+          "note": "KTC Superflex rank #241, value 2021, ADP 298.0. Started% 0.2."
         },
         {
           "name": "Cade Klubnik",
@@ -3027,10 +3052,35 @@
           "age": 23,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 2016,
+          "ktcValue": 2006,
           "ktcAdp": 216.0,
           "ktcPosRank": 41,
-          "note": "KTC Superflex rank #240, value 2016, ADP 216.0. Started% 0.0.",
+          "note": "KTC Superflex rank #242, value 2006, ADP 216.0. Started% 0.0.",
+          "rookie": true
+        },
+        {
+          "name": "Sean Tucker",
+          "pos": "RB",
+          "team": "TB",
+          "age": 24,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 1995,
+          "ktcAdp": 250.0,
+          "ktcPosRank": 64,
+          "note": "KTC Superflex rank #244, value 1995, ADP 250.0. Started% 0.1."
+        },
+        {
+          "name": "Adam Randall",
+          "pos": "RB",
+          "team": "BAL",
+          "age": 22,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 1994,
+          "ktcAdp": 211.0,
+          "ktcPosRank": 65,
+          "note": "KTC Superflex rank #245, value 1994, ADP 211.0. Started% 0.0.",
           "rookie": true
         },
         {
@@ -3040,96 +3090,10 @@
           "age": 24,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 2006,
+          "ktcValue": 1989,
           "ktcAdp": 255.0,
-          "ktcPosRank": 101,
-          "note": "KTC Superflex rank #241, value 2006, ADP 255.0. Started% 0.4."
-        },
-        {
-          "name": "Sean Tucker",
-          "pos": "RB",
-          "team": "TBB",
-          "age": 24,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 2003,
-          "ktcAdp": 250.0,
-          "ktcPosRank": 64,
-          "note": "KTC Superflex rank #242, value 2003, ADP 250.0. Started% 0.1."
-        },
-        {
-          "name": "Bryce Lance",
-          "pos": "WR",
-          "team": "NOS",
-          "age": 24,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 2003,
-          "ktcAdp": 254.0,
-          "ktcPosRank": 102,
-          "note": "KTC Superflex rank #243, value 2003, ADP 254.0.",
-          "rookie": true
-        },
-        {
-          "name": "George Holani",
-          "pos": "RB",
-          "team": "SEA",
-          "age": 26,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 2001,
-          "ktcAdp": 298.0,
-          "ktcPosRank": 65,
-          "note": "KTC Superflex rank #244, value 2001, ADP 298.0. Started% 0.9."
-        },
-        {
-          "name": "Adam Randall",
-          "pos": "RB",
-          "team": "BAL",
-          "age": 22,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 1998,
-          "ktcAdp": 211.0,
-          "ktcPosRank": 66,
-          "note": "KTC Superflex rank #245, value 1998, ADP 211.0. Started% 0.0.",
-          "rookie": true
-        },
-        {
-          "name": "Ja'Tavion Sanders",
-          "pos": "TE",
-          "team": "CAR",
-          "age": 23,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 1541,
-          "ktcAdp": 200.0,
-          "ktcPosRank": 46,
-          "note": "KTC Superflex rank #305, value 1541, ADP 200.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Tez Johnson",
-          "pos": "WR",
-          "team": "TBB",
-          "age": 24,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 1996,
-          "ktcAdp": 318.0,
           "ktcPosRank": 103,
-          "note": "KTC Superflex rank #246, value 1996, ADP 318.0."
-        },
-        {
-          "name": "Tyquan Thornton",
-          "pos": "WR",
-          "team": "KCC",
-          "age": 26,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 1984,
-          "ktcAdp": 298.0,
-          "ktcPosRank": 104,
-          "note": "KTC Superflex rank #247, value 1984, ADP 298.0. Started% 0.2."
+          "note": "KTC Superflex rank #246, value 1989, ADP 255.0. Started% 0.4."
         },
         {
           "name": "J.J. McCarthy",
@@ -3138,95 +3102,58 @@
           "age": 23,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 1980,
+          "ktcValue": 1988,
           "ktcAdp": 92.0,
           "ktcPosRank": 42,
-          "note": "KTC Superflex rank #248, value 1980, ADP 92.0. Started% 0.1."
+          "note": "KTC Superflex rank #247, value 1988, ADP 92.0. Started% 0.1."
         },
         {
-          "name": "Greg Dulcich",
-          "pos": "TE",
-          "team": "MIA",
-          "age": 26,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 1976,
-          "ktcAdp": 222.0,
-          "ktcPosRank": 38,
-          "note": "KTC Superflex rank #250, value 1976, ADP 222.0. Started% 1.6."
-        },
-        {
-          "name": "Ollie Gordon",
-          "pos": "RB",
-          "team": "MIA",
-          "age": 22,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 1969,
-          "ktcAdp": 223.0,
-          "ktcPosRank": 67,
-          "note": "KTC Superflex rank #252, value 1969, ADP 223.0. Started% 0.1."
-        },
-        {
-          "name": "Justin Joly",
-          "pos": "TE",
-          "team": "MIA",
-          "age": 22,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 1472,
-          "ktcAdp": 189.0,
-          "ktcPosRank": 48,
-          "note": "KTC Superflex rank #312, value 1472, ADP 189.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
-          "rookie": true
-        },
-        {
-          "name": "Ray Davis",
-          "pos": "RB",
-          "team": "BUF",
-          "age": 26,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 1964,
-          "ktcAdp": 193.0,
-          "ktcPosRank": 68,
-          "note": "KTC Superflex rank #253, value 1964, ADP 193.0. Started% 0.4."
-        },
-        {
-          "name": "Jordan James",
-          "pos": "RB",
-          "team": "SFO",
-          "age": 22,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 1958,
-          "ktcAdp": 223.0,
-          "ktcPosRank": 69,
-          "note": "KTC Superflex rank #254, value 1958, ADP 223.0. Started% 0.1."
-        },
-        {
-          "name": "Ben Sinnott",
-          "pos": "TE",
+          "name": "Jaylin Lane",
+          "pos": "WR",
           "team": "WAS",
           "age": 24,
           "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 1453,
-          "ktcAdp": 204.0,
-          "ktcPosRank": 49,
-          "note": "KTC Superflex rank #314, value 1453, ADP 204.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "tier": "S",
+          "ktcValue": 1979,
+          "ktcAdp": 263.0,
+          "ktcPosRank": 104,
+          "note": "KTC Superflex rank #248, value 1979, ADP 263.0. Started% 1.4."
         },
         {
-          "name": "Jauan Jennings",
-          "pos": "WR",
-          "team": "MIN",
-          "age": 29,
+          "name": "Ja'Tavion Sanders",
+          "pos": "TE",
+          "team": "CAR",
+          "age": 23,
           "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 1957,
-          "ktcAdp": 164.0,
+          "tier": "S",
+          "ktcValue": 1532,
+          "ktcAdp": 200.0,
+          "ktcPosRank": 47,
+          "note": "KTC Superflex rank #308, value 1532, ADP 200.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "George Holani",
+          "pos": "RB",
+          "team": "SEA",
+          "age": 26,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 1975,
+          "ktcAdp": 298.0,
+          "ktcPosRank": 66,
+          "note": "KTC Superflex rank #249, value 1975, ADP 298.0. Started% 0.9."
+        },
+        {
+          "name": "Tez Johnson",
+          "pos": "WR",
+          "team": "TB",
+          "age": 24,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 1975,
+          "ktcAdp": 318.0,
           "ktcPosRank": 105,
-          "note": "KTC Superflex rank #255, value 1957, ADP 164.0. Started% 2.2."
+          "note": "KTC Superflex rank #250, value 1975, ADP 318.0."
         },
         {
           "name": "Jerry Jeudy",
@@ -3235,118 +3162,119 @@
           "age": 27,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 1952,
+          "ktcValue": 1968,
           "ktcAdp": 132.0,
           "ktcPosRank": 106,
-          "note": "KTC Superflex rank #256, value 1952, ADP 132.0. Started% 1.3."
+          "note": "KTC Superflex rank #251, value 1968, ADP 132.0. Started% 1.3."
         },
         {
-          "name": "Savion Williams",
-          "pos": "WR",
-          "team": "GBP",
-          "age": 24,
+          "name": "Ollie Gordon",
+          "pos": "RB",
+          "team": "MIA",
+          "age": 22,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 1439,
-          "ktcAdp": 253.0,
-          "ktcPosRank": 125,
-          "note": "KTC Superflex rank #316, value 1439, ADP 253.0. Started% 82.2. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcValue": 1967,
+          "ktcAdp": 223.0,
+          "ktcPosRank": 67,
+          "note": "KTC Superflex rank #252, value 1967, ADP 223.0. Started% 0.1."
         },
         {
-          "name": "Jaylin Lane",
-          "pos": "WR",
+          "name": "Greg Dulcich",
+          "pos": "TE",
+          "team": "MIA",
+          "age": 26,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1955,
+          "ktcAdp": 222.0,
+          "ktcPosRank": 38,
+          "note": "KTC Superflex rank #253, value 1955, ADP 222.0. Started% 1.6."
+        },
+        {
+          "name": "Ben Sinnott",
+          "pos": "TE",
           "team": "WAS",
           "age": 24,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 1952,
-          "ktcAdp": 263.0,
-          "ktcPosRank": 107,
-          "note": "KTC Superflex rank #257, value 1952, ADP 263.0. Started% 1.4."
+          "ktcValue": 1468,
+          "ktcAdp": 204.0,
+          "ktcPosRank": 48,
+          "note": "KTC Superflex rank #313, value 1468, ADP 204.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
-          "name": "Marvin Mims",
-          "pos": "WR",
-          "team": "DEN",
-          "age": 24,
+          "name": "Ray Davis",
+          "pos": "RB",
+          "team": "BUF",
+          "age": 26,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 1949,
-          "ktcAdp": 194.0,
-          "ktcPosRank": 108,
-          "note": "KTC Superflex rank #258, value 1949, ADP 194.0. Started% 0.3."
+          "ktcValue": 1950,
+          "ktcAdp": 193.0,
+          "ktcPosRank": 68,
+          "note": "KTC Superflex rank #254, value 1950, ADP 193.0. Started% 0.4."
+        },
+        {
+          "name": "Jordan James",
+          "pos": "RB",
+          "team": "SF",
+          "age": 22,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1943,
+          "ktcAdp": 223.0,
+          "ktcPosRank": 69,
+          "note": "KTC Superflex rank #255, value 1943, ADP 223.0. Started% 0.1."
+        },
+        {
+          "name": "Justin Joly",
+          "pos": "TE",
+          "team": "MIA",
+          "age": 22,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1449,
+          "ktcAdp": 189.0,
+          "ktcPosRank": 49,
+          "note": "KTC Superflex rank #315, value 1449, ADP 189.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
+          "rookie": true
         },
         {
           "name": "Noah Fant",
           "pos": "TE",
-          "team": "NOS",
+          "team": "NO",
           "age": 28,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 1434,
+          "ktcValue": 1441,
           "ktcAdp": 245.0,
           "ktcPosRank": 50,
-          "note": "KTC Superflex rank #318, value 1434, ADP 245.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC Superflex rank #316, value 1441, ADP 245.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Jauan Jennings",
+          "pos": "WR",
+          "team": "MIN",
+          "age": 29,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1938,
+          "ktcAdp": 164.0,
+          "ktcPosRank": 107,
+          "note": "KTC Superflex rank #257, value 1938, ADP 164.0. Started% 2.2."
         },
         {
           "name": "LeQuint Allen",
           "pos": "RB",
-          "team": "JAC",
+          "team": "JAX",
           "age": 22,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 1931,
+          "ktcValue": 1930,
           "ktcAdp": 284.0,
           "ktcPosRank": 70,
-          "note": "KTC Superflex rank #259, value 1931, ADP 284.0. Started% 0.1."
-        },
-        {
-          "name": "Tua Tagovailoa",
-          "pos": "QB",
-          "team": "ATL",
-          "age": 28,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 1929,
-          "ktcAdp": 110.0,
-          "ktcPosRank": 44,
-          "note": "KTC Superflex rank #260, value 1929, ADP 110.0. Started% 0.3."
-        },
-        {
-          "name": "David Njoku",
-          "pos": "TE",
-          "team": "LAC",
-          "age": 30,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 1916,
-          "ktcAdp": 133.0,
-          "ktcPosRank": 39,
-          "note": "KTC Superflex rank #261, value 1916, ADP 133.0. Started% 1.1."
-        },
-        {
-          "name": "Colby Parkinson",
-          "pos": "TE",
-          "team": "LAR",
-          "age": 27,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 1915,
-          "ktcAdp": 251.0,
-          "ktcPosRank": 40,
-          "note": "KTC Superflex rank #262, value 1915, ADP 251.0. Started% 0.8."
-        },
-        {
-          "name": "Alvin Kamara",
-          "pos": "RB",
-          "team": "NOS",
-          "age": 31,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 1905,
-          "ktcAdp": 136.0,
-          "ktcPosRank": 71,
-          "note": "KTC Superflex rank #263, value 1905, ADP 136.0. Started% 1.1."
+          "note": "KTC Superflex rank #258, value 1930, ADP 284.0. Started% 0.1."
         },
         {
           "name": "Joe Milton",
@@ -3355,181 +3283,70 @@
           "age": 26,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 1391,
+          "ktcValue": 1453,
           "ktcAdp": 258.0,
-          "ktcPosRank": 55,
-          "note": "KTC Superflex rank #323, value 1391, ADP 258.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 53,
+          "note": "KTC Superflex rank #314, value 1453, ADP 258.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
-          "name": "Seth McGowan",
-          "pos": "RB",
-          "team": "IND",
-          "age": 24,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 1893,
-          "ktcAdp": 272.0,
-          "ktcPosRank": 72,
-          "note": "KTC Superflex rank #264, value 1893, ADP 272.0. Started% 0.1.",
-          "rookie": true
-        },
-        {
-          "name": "Luke Musgrave",
-          "pos": "TE",
-          "team": "GBP",
-          "age": 26,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 1416,
-          "ktcAdp": 264.0,
-          "ktcPosRank": 51,
-          "note": "KTC Superflex rank #321, value 1416, ADP 264.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Aaron Rodgers",
+          "name": "Tua Tagovailoa",
           "pos": "QB",
-          "team": "PIT",
-          "age": 42,
+          "team": "ATL",
+          "age": 28,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 1892,
-          "ktcAdp": 167.0,
-          "ktcPosRank": 45,
-          "note": "KTC Superflex rank #265, value 1892, ADP 167.0. Started% 2.0."
+          "ktcValue": 1926,
+          "ktcAdp": 110.0,
+          "ktcPosRank": 44,
+          "note": "KTC Superflex rank #259, value 1926, ADP 110.0. Started% 0.3."
         },
         {
-          "name": "Raheim Sanders",
-          "pos": "RB",
-          "team": "CLE",
-          "age": 24,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 1867,
-          "ktcAdp": 335.0,
-          "ktcPosRank": 73,
-          "note": "KTC Superflex rank #266, value 1867, ADP 335.0."
-        },
-        {
-          "name": "Chris Brooks",
-          "pos": "RB",
-          "team": "GBP",
-          "age": 26,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 1857,
-          "ktcAdp": 305.0,
-          "ktcPosRank": 74,
-          "note": "KTC Superflex rank #267, value 1857, ADP 305.0. Started% 0.6."
-        },
-        {
-          "name": "Brenen Thompson",
+          "name": "Marvin Mims",
           "pos": "WR",
-          "team": "LAC",
-          "age": 23,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 1650,
-          "ktcAdp": 267.0,
-          "ktcPosRank": 118,
-          "note": "KTC Superflex rank #295, value 1650, ADP 267.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
-          "rookie": true
-        },
-        {
-          "name": "Quinn Ewers",
-          "pos": "QB",
-          "team": "JAC",
-          "age": 23,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 1380,
-          "ktcAdp": 267.0,
-          "ktcPosRank": 56,
-          "note": "KTC Superflex rank #327, value 1380, ADP 267.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Anthony Richardson",
-          "pos": "QB",
-          "team": "IND",
+          "team": "DEN",
           "age": 24,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 1854,
-          "ktcAdp": 151.0,
-          "ktcPosRank": 46,
-          "note": "KTC Superflex rank #268, value 1854, ADP 151.0. Started% 0.0."
+          "ktcValue": 1924,
+          "ktcAdp": 194.0,
+          "ktcPosRank": 108,
+          "note": "KTC Superflex rank #260, value 1924, ADP 194.0. Started% 0.3."
         },
         {
-          "name": "Tyrone Tracy",
+          "name": "Colby Parkinson",
+          "pos": "TE",
+          "team": "LAR",
+          "age": 27,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1918,
+          "ktcAdp": 251.0,
+          "ktcPosRank": 39,
+          "note": "KTC Superflex rank #261, value 1918, ADP 251.0. Started% 0.8."
+        },
+        {
+          "name": "Alvin Kamara",
           "pos": "RB",
-          "team": "NYG",
-          "age": 26,
+          "team": "NO",
+          "age": 31,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 1849,
-          "ktcAdp": 142.0,
-          "ktcPosRank": 75,
-          "note": "KTC Superflex rank #269, value 1849, ADP 142.0. Started% 1.8."
+          "ktcValue": 1911,
+          "ktcAdp": 136.0,
+          "ktcPosRank": 71,
+          "note": "KTC Superflex rank #262, value 1911, ADP 136.0. Started% 1.1."
         },
         {
-          "name": "Theo Johnson",
-          "pos": "TE",
-          "team": "NYG",
-          "age": 25,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 1838,
-          "ktcAdp": 195.0,
-          "ktcPosRank": 41,
-          "note": "KTC Superflex rank #271, value 1838, ADP 195.0. Started% 0.5."
-        },
-        {
-          "name": "Darnell Washington",
-          "pos": "TE",
-          "team": "PIT",
-          "age": 25,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 1823,
-          "ktcAdp": 280.0,
-          "ktcPosRank": 42,
-          "note": "KTC Superflex rank #272, value 1823, ADP 280.0. Started% 0.3."
-        },
-        {
-          "name": "Carson Wentz",
-          "pos": "QB",
-          "team": "MIN",
-          "age": 33,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 1814,
-          "ktcAdp": 346.0,
-          "ktcPosRank": 47,
-          "note": "KTC Superflex rank #273, value 1814, ADP 346.0."
-        },
-        {
-          "name": "Xavier Legette",
+          "name": "Savion Williams",
           "pos": "WR",
-          "team": "CAR",
-          "age": 25,
+          "team": "GB",
+          "age": 24,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 1804,
-          "ktcAdp": 202.0,
-          "ktcPosRank": 109,
-          "note": "KTC Superflex rank #274, value 1804, ADP 202.0. Started% 0.1."
-        },
-        {
-          "name": "Jalon Daniels",
-          "pos": "QB",
-          "team": "TBB",
-          "age": 23,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 1799,
-          "ktcAdp": 355.0,
-          "ktcPosRank": 48,
-          "note": "KTC Superflex rank #275, value 1799, ADP 355.0. Started% 72.4.",
-          "rookie": true
+          "ktcValue": 1394,
+          "ktcAdp": 253.0,
+          "ktcPosRank": 127,
+          "note": "KTC Superflex rank #322, value 1394, ADP 253.0. Started% 82.2. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Emanuel Wilson",
@@ -3538,22 +3355,217 @@
           "age": 27,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 1790,
+          "ktcValue": 1899,
           "ktcAdp": 288.0,
-          "ktcPosRank": 77,
-          "note": "KTC Superflex rank #276, value 1790, ADP 288.0. Started% 0.2."
+          "ktcPosRank": 72,
+          "note": "KTC Superflex rank #263, value 1899, ADP 288.0. Started% 0.2."
         },
         {
-          "name": "Isaiah Bond",
-          "pos": "WR",
-          "team": "CLE",
-          "age": 22,
+          "name": "Aaron Rodgers",
+          "pos": "QB",
+          "team": "PIT",
+          "age": 42,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 1776,
-          "ktcAdp": 278.0,
-          "ktcPosRank": 110,
-          "note": "KTC Superflex rank #277, value 1776, ADP 278.0."
+          "ktcValue": 1898,
+          "ktcAdp": 167.0,
+          "ktcPosRank": 45,
+          "note": "KTC Superflex rank #264, value 1898, ADP 167.0. Started% 2.0."
+        },
+        {
+          "name": "Luke Musgrave",
+          "pos": "TE",
+          "team": "GB",
+          "age": 26,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1387,
+          "ktcAdp": 264.0,
+          "ktcPosRank": 51,
+          "note": "KTC Superflex rank #324, value 1387, ADP 264.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "David Njoku",
+          "pos": "TE",
+          "team": "LAC",
+          "age": 30,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1898,
+          "ktcAdp": 133.0,
+          "ktcPosRank": 40,
+          "note": "KTC Superflex rank #265, value 1898, ADP 133.0. Started% 1.1."
+        },
+        {
+          "name": "Seth McGowan",
+          "pos": "RB",
+          "team": "IND",
+          "age": 24,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1881,
+          "ktcAdp": 272.0,
+          "ktcPosRank": 73,
+          "note": "KTC Superflex rank #266, value 1881, ADP 272.0. Started% 0.1.",
+          "rookie": true
+        },
+        {
+          "name": "Zach Ertz",
+          "pos": "TE",
+          "team": "PHI",
+          "age": 35,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1381,
+          "ktcAdp": 212.0,
+          "ktcPosRank": 52,
+          "note": "KTC Superflex rank #326, value 1381, ADP 212.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Raheim Sanders",
+          "pos": "RB",
+          "team": "CLE",
+          "age": 24,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1855,
+          "ktcAdp": 335.0,
+          "ktcPosRank": 74,
+          "note": "KTC Superflex rank #267, value 1855, ADP 335.0."
+        },
+        {
+          "name": "Brenen Thompson",
+          "pos": "WR",
+          "team": "LAC",
+          "age": 23,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1605,
+          "ktcAdp": 267.0,
+          "ktcPosRank": 119,
+          "note": "KTC Superflex rank #298, value 1605, ADP 267.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
+          "rookie": true
+        },
+        {
+          "name": "Quinn Ewers",
+          "pos": "QB",
+          "team": "JAX",
+          "age": 23,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1393,
+          "ktcAdp": 267.0,
+          "ktcPosRank": 55,
+          "note": "KTC Superflex rank #323, value 1393, ADP 267.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Chris Brooks",
+          "pos": "RB",
+          "team": "GB",
+          "age": 26,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1843,
+          "ktcAdp": 305.0,
+          "ktcPosRank": 76,
+          "note": "KTC Superflex rank #269, value 1843, ADP 305.0. Started% 0.6."
+        },
+        {
+          "name": "Theo Johnson",
+          "pos": "TE",
+          "team": "NYG",
+          "age": 25,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1842,
+          "ktcAdp": 195.0,
+          "ktcPosRank": 41,
+          "note": "KTC Superflex rank #270, value 1842, ADP 195.0. Started% 0.5."
+        },
+        {
+          "name": "Anthony Richardson",
+          "pos": "QB",
+          "team": "IND",
+          "age": 24,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1839,
+          "ktcAdp": 151.0,
+          "ktcPosRank": 46,
+          "note": "KTC Superflex rank #271, value 1839, ADP 151.0. Started% 0.0."
+        },
+        {
+          "name": "Tyrone Tracy",
+          "pos": "RB",
+          "team": "NYG",
+          "age": 26,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1826,
+          "ktcAdp": 142.0,
+          "ktcPosRank": 77,
+          "note": "KTC Superflex rank #272, value 1826, ADP 142.0. Started% 1.8."
+        },
+        {
+          "name": "Deshaun Watson",
+          "pos": "QB",
+          "team": "CLE",
+          "age": 31,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1809,
+          "ktcAdp": 245.0,
+          "ktcPosRank": 47,
+          "note": "KTC Superflex rank #273, value 1809, ADP 245.0. Started% 0.6."
+        },
+        {
+          "name": "Darnell Washington",
+          "pos": "TE",
+          "team": "PIT",
+          "age": 25,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1809,
+          "ktcAdp": 280.0,
+          "ktcPosRank": 42,
+          "note": "KTC Superflex rank #274, value 1809, ADP 280.0. Started% 0.3."
+        },
+        {
+          "name": "Jalon Daniels",
+          "pos": "QB",
+          "team": "TB",
+          "age": 23,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1804,
+          "ktcAdp": 355.0,
+          "ktcPosRank": 48,
+          "note": "KTC Superflex rank #275, value 1804, ADP 355.0. Started% 72.4.",
+          "rookie": true
+        },
+        {
+          "name": "Xavier Legette",
+          "pos": "WR",
+          "team": "CAR",
+          "age": 25,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1798,
+          "ktcAdp": 202.0,
+          "ktcPosRank": 109,
+          "note": "KTC Superflex rank #276, value 1798, ADP 202.0. Started% 0.1."
+        },
+        {
+          "name": "Carson Wentz",
+          "pos": "QB",
+          "team": "MIN",
+          "age": 33,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1787,
+          "ktcAdp": 346.0,
+          "ktcPosRank": 49,
+          "note": "KTC Superflex rank #277, value 1787, ADP 346.0."
         },
         {
           "name": "Eli Heidenreich",
@@ -3562,10 +3574,10 @@
           "age": 23,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 1591,
+          "ktcValue": 1615,
           "ktcAdp": 277.0,
           "ktcPosRank": 84,
-          "note": "KTC Superflex rank #299, value 1591, ADP 277.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
+          "note": "KTC Superflex rank #296, value 1615, ADP 277.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
           "rookie": true
         },
         {
@@ -3575,10 +3587,22 @@
           "age": 27,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 1447,
+          "ktcValue": 1424,
           "ktcAdp": 277.0,
-          "ktcPosRank": 124,
-          "note": "KTC Superflex rank #315, value 1447, ADP 277.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 125,
+          "note": "KTC Superflex rank #317, value 1424, ADP 277.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Isaiah Bond",
+          "pos": "WR",
+          "team": "CLE",
+          "age": 22,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1759,
+          "ktcAdp": 278.0,
+          "ktcPosRank": 112,
+          "note": "KTC Superflex rank #281, value 1759, ADP 278.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Dawson Knox",
@@ -3587,35 +3611,10 @@
           "age": 29,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 1769,
+          "ktcValue": 1767,
           "ktcAdp": 282.0,
           "ktcPosRank": 43,
-          "note": "KTC Superflex rank #278, value 1769, ADP 282.0. Started% 0.3."
-        },
-        {
-          "name": "Isaiah Davis",
-          "pos": "RB",
-          "team": "NYJ",
-          "age": 24,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 1767,
-          "ktcAdp": 287.0,
-          "ktcPosRank": 78,
-          "note": "KTC Superflex rank #279, value 1767, ADP 287.0. Started% 0.2."
-        },
-        {
-          "name": "Marlin Klein",
-          "pos": "TE",
-          "team": "HOU",
-          "age": 24,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 1309,
-          "ktcAdp": 235.0,
-          "ktcPosRank": 55,
-          "note": "KTC Superflex rank #339, value 1309, ADP 235.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
-          "rookie": true
+          "note": "KTC Superflex rank #280, value 1767, ADP 282.0. Started% 0.3."
         },
         {
           "name": "Luke McCaffrey",
@@ -3624,47 +3623,60 @@
           "age": 25,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 1344,
+          "ktcValue": 1318,
           "ktcAdp": 280.0,
-          "ktcPosRank": 130,
-          "note": "KTC Superflex rank #332, value 1344, ADP 280.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 135,
+          "note": "KTC Superflex rank #340, value 1318, ADP 280.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Marlin Klein",
+          "pos": "TE",
+          "team": "HOU",
+          "age": 24,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1307,
+          "ktcAdp": 235.0,
+          "ktcPosRank": 56,
+          "note": "KTC Superflex rank #341, value 1307, ADP 235.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
+          "rookie": true
+        },
+        {
+          "name": "Isaiah Davis",
+          "pos": "RB",
+          "team": "NYJ",
+          "age": 24,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1755,
+          "ktcAdp": 287.0,
+          "ktcPosRank": 78,
+          "note": "KTC Superflex rank #282, value 1755, ADP 287.0. Started% 0.2."
+        },
+        {
+          "name": "Matthew Hibner",
+          "pos": "TE",
+          "team": "BAL",
+          "age": 24,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1300,
+          "ktcAdp": 248.0,
+          "ktcPosRank": 57,
+          "note": "KTC Superflex rank #342, value 1300, ADP 248.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
+          "rookie": true
         },
         {
           "name": "Dont'e Thornton",
           "pos": "WR",
-          "team": "LVR",
+          "team": "LV",
           "age": 23,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 1738,
+          "ktcValue": 1732,
           "ktcAdp": 218.0,
-          "ktcPosRank": 112,
-          "note": "KTC Superflex rank #281, value 1738, ADP 218.0. Started% 0.2."
-        },
-        {
-          "name": "Barion Brown",
-          "pos": "WR",
-          "team": "NOS",
-          "age": 22,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 1738,
-          "ktcAdp": 333.0,
           "ktcPosRank": 113,
-          "note": "KTC Superflex rank #282, value 1738, ADP 333.0. Started% 0.1.",
-          "rookie": true
-        },
-        {
-          "name": "Deshaun Watson",
-          "pos": "QB",
-          "team": "CLE",
-          "age": 31,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 1735,
-          "ktcAdp": 245.0,
-          "ktcPosRank": 49,
-          "note": "KTC Superflex rank #283, value 1735, ADP 245.0. Started% 0.6."
+          "note": "KTC Superflex rank #283, value 1732, ADP 218.0. Started% 0.2."
         },
         {
           "name": "Taylen Green",
@@ -3673,10 +3685,10 @@
           "age": 23,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 1605,
+          "ktcValue": 1585,
           "ktcAdp": 283.0,
           "ktcPosRank": 51,
-          "note": "KTC Superflex rank #298, value 1605, ADP 283.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
+          "note": "KTC Superflex rank #301, value 1585, ADP 283.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
           "rookie": true
         },
         {
@@ -3686,59 +3698,47 @@
           "age": 28,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 1725,
+          "ktcValue": 1731,
           "ktcAdp": 200.0,
+          "ktcPosRank": 114,
+          "note": "KTC Superflex rank #284, value 1731, ADP 200.0. Started% 0.5."
+        },
+        {
+          "name": "Barion Brown",
+          "pos": "WR",
+          "team": "NO",
+          "age": 22,
+          "category": "mainstay",
+          "tier": "B",
+          "ktcValue": 1714,
+          "ktcAdp": 333.0,
           "ktcPosRank": 115,
-          "note": "KTC Superflex rank #285, value 1725, ADP 200.0. Started% 0.5."
-        },
-        {
-          "name": "Malik Davis",
-          "pos": "RB",
-          "team": "DAL",
-          "age": 27,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1719,
-          "ktcAdp": 284.0,
-          "ktcPosRank": 79,
-          "note": "KTC Superflex rank #286, value 1719, ADP 284.0. Started% 0.2."
-        },
-        {
-          "name": "Zach Ertz",
-          "pos": "TE",
-          "team": "FA",
-          "age": 35,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1286,
-          "ktcAdp": 212.0,
-          "ktcPosRank": 56,
-          "note": "KTC Superflex rank #346, value 1286, ADP 212.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Matthew Hibner",
-          "pos": "TE",
-          "team": "BAL",
-          "age": 24,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1281,
-          "ktcAdp": 248.0,
-          "ktcPosRank": 57,
-          "note": "KTC Superflex rank #347, value 1281, ADP 248.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
+          "note": "KTC Superflex rank #286, value 1714, ADP 333.0. Started% 0.1.",
           "rookie": true
         },
         {
           "name": "Jake Tonges",
           "pos": "TE",
-          "team": "SFO",
+          "team": "SF",
           "age": 27,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1711,
+          "ktcValue": 1705,
           "ktcAdp": 210.0,
           "ktcPosRank": 44,
-          "note": "KTC Superflex rank #288, value 1711, ADP 210.0. Started% 0.2."
+          "note": "KTC Superflex rank #287, value 1705, ADP 210.0. Started% 0.2."
+        },
+        {
+          "name": "Mike Gesicki",
+          "pos": "TE",
+          "team": "CIN",
+          "age": 31,
+          "category": "mainstay",
+          "tier": "B",
+          "ktcValue": 1702,
+          "ktcAdp": 215.0,
+          "ktcPosRank": 45,
+          "note": "KTC Superflex rank #288, value 1702, ADP 215.0. Started% 0.7."
         },
         {
           "name": "Isiah Pacheco",
@@ -3747,10 +3747,10 @@
           "age": 27,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1702,
+          "ktcValue": 1690,
           "ktcAdp": 149.0,
-          "ktcPosRank": 81,
-          "note": "KTC Superflex rank #289, value 1702, ADP 149.0. Started% 0.2."
+          "ktcPosRank": 80,
+          "note": "KTC Superflex rank #289, value 1690, ADP 149.0. Started% 0.2."
         },
         {
           "name": "Cooper Kupp",
@@ -3759,10 +3759,10 @@
           "age": 33,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1683,
+          "ktcValue": 1689,
           "ktcAdp": 186.0,
           "ktcPosRank": 116,
-          "note": "KTC Superflex rank #290, value 1683, ADP 186.0. Started% 2.0."
+          "note": "KTC Superflex rank #290, value 1689, ADP 186.0. Started% 2.0."
         },
         {
           "name": "Devin Singletary",
@@ -3771,10 +3771,22 @@
           "age": 29,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1505,
+          "ktcValue": 1540,
           "ktcAdp": 290.0,
-          "ktcPosRank": 89,
-          "note": "KTC Superflex rank #309, value 1505, ADP 290.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 86,
+          "note": "KTC Superflex rank #306, value 1540, ADP 290.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Malik Davis",
+          "pos": "RB",
+          "team": "DAL",
+          "age": 27,
+          "category": "mainstay",
+          "tier": "B",
+          "ktcValue": 1687,
+          "ktcAdp": 284.0,
+          "ktcPosRank": 81,
+          "note": "KTC Superflex rank #291, value 1687, ADP 284.0. Started% 0.2."
         },
         {
           "name": "KeAndre Lambert-Smith",
@@ -3783,40 +3795,15 @@
           "age": 24,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1233,
+          "ktcValue": 1231,
           "ktcAdp": 280.0,
           "ktcPosRank": 139,
-          "note": "KTC Superflex rank #350, value 1233, ADP 280.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Malik Benson",
-          "pos": "WR",
-          "team": "LVR",
-          "age": 23,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1679,
-          "ktcAdp": 320.0,
-          "ktcPosRank": 117,
-          "note": "KTC Superflex rank #291, value 1679, ADP 320.0.",
-          "rookie": true
-        },
-        {
-          "name": "Spencer Rattler",
-          "pos": "QB",
-          "team": "NOS",
-          "age": 26,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1228,
-          "ktcAdp": 242.0,
-          "ktcPosRank": 58,
-          "note": "KTC Superflex rank #351, value 1228, ADP 242.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC Superflex rank #351, value 1231, ADP 280.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Brashard Smith",
           "pos": "RB",
-          "team": "KCC",
+          "team": "KC",
           "age": 23,
           "category": "mainstay",
           "tier": "B",
@@ -3832,10 +3819,23 @@
           "age": 26,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1383,
+          "ktcValue": 1330,
           "ktcAdp": 292.0,
-          "ktcPosRank": 52,
-          "note": "KTC Superflex rank #325, value 1383, ADP 292.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 55,
+          "note": "KTC Superflex rank #337, value 1330, ADP 292.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Malik Benson",
+          "pos": "WR",
+          "team": "LV",
+          "age": 23,
+          "category": "mainstay",
+          "tier": "B",
+          "ktcValue": 1646,
+          "ktcAdp": 320.0,
+          "ktcPosRank": 117,
+          "note": "KTC Superflex rank #293, value 1646, ADP 320.0.",
+          "rookie": true
         },
         {
           "name": "Dyami Brown",
@@ -3844,22 +3844,10 @@
           "age": 26,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1227,
+          "ktcValue": 1225,
           "ktcAdp": 285.0,
-          "ktcPosRank": 140,
-          "note": "KTC Superflex rank #352, value 1227, ADP 285.0. Started% 96.9. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Mike Gesicki",
-          "pos": "TE",
-          "team": "CIN",
-          "age": 31,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1652,
-          "ktcAdp": 215.0,
-          "ktcPosRank": 45,
-          "note": "KTC Superflex rank #294, value 1652, ADP 215.0. Started% 0.7."
+          "ktcPosRank": 141,
+          "note": "KTC Superflex rank #353, value 1225, ADP 285.0. Started% 96.9. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Jordan Whittington",
@@ -3868,35 +3856,10 @@
           "age": 26,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1333,
+          "ktcValue": 1346,
           "ktcAdp": 294.0,
-          "ktcPosRank": 134,
-          "note": "KTC Superflex rank #337, value 1333, ADP 294.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Jack Strand",
-          "pos": "QB",
-          "team": "ATL",
-          "age": 22,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1438,
-          "ktcAdp": 295.0,
-          "ktcPosRank": 54,
-          "note": "KTC Superflex rank #317, value 1438, ADP 295.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
-          "rookie": true
-        },
-        {
-          "name": "Keenan Allen",
-          "pos": "WR",
-          "team": "IND",
-          "age": 34,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1615,
-          "ktcAdp": 238.0,
-          "ktcPosRank": 119,
-          "note": "KTC Superflex rank #296, value 1615, ADP 238.0. Started% 1.7."
+          "ktcPosRank": 132,
+          "note": "KTC Superflex rank #333, value 1346, ADP 294.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Tai Felton",
@@ -3905,22 +3868,71 @@
           "age": 23,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1221,
+          "ktcValue": 1225,
           "ktcAdp": 265.0,
-          "ktcPosRank": 143,
-          "note": "KTC Superflex rank #356, value 1221, ADP 265.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 142,
+          "note": "KTC Superflex rank #354, value 1225, ADP 265.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Jack Strand",
+          "pos": "QB",
+          "team": "ATL",
+          "age": 22,
+          "category": "mainstay",
+          "tier": "B",
+          "ktcValue": 1352,
+          "ktcAdp": 295.0,
+          "ktcPosRank": 56,
+          "note": "KTC Superflex rank #331, value 1352, ADP 295.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
+          "rookie": true
         },
         {
           "name": "Cedric Tillman",
           "pos": "WR",
-          "team": "NOS",
+          "team": "NO",
           "age": 26,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1217,
+          "ktcValue": 1224,
           "ktcAdp": 206.0,
-          "ktcPosRank": 144,
-          "note": "KTC Superflex rank #357, value 1217, ADP 206.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 143,
+          "note": "KTC Superflex rank #355, value 1224, ADP 206.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Keenan Allen",
+          "pos": "WR",
+          "team": "IND",
+          "age": 34,
+          "category": "mainstay",
+          "tier": "B",
+          "ktcValue": 1612,
+          "ktcAdp": 238.0,
+          "ktcPosRank": 118,
+          "note": "KTC Superflex rank #297, value 1612, ADP 238.0. Started% 1.7."
+        },
+        {
+          "name": "Spencer Rattler",
+          "pos": "QB",
+          "team": "NO",
+          "age": 26,
+          "category": "mainstay",
+          "tier": "B",
+          "ktcValue": 1219,
+          "ktcAdp": 242.0,
+          "ktcPosRank": 58,
+          "note": "KTC Superflex rank #358, value 1219, ADP 242.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Christian Kirk",
+          "pos": "WR",
+          "team": "SF",
+          "age": 29,
+          "category": "mainstay",
+          "tier": "B",
+          "ktcValue": 1592,
+          "ktcAdp": 215.0,
+          "ktcPosRank": 120,
+          "note": "KTC Superflex rank #299, value 1592, ADP 215.0. Started% 0.0."
         },
         {
           "name": "Trey Benson",
@@ -3929,155 +3941,10 @@
           "age": 24,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1590,
+          "ktcValue": 1586,
           "ktcAdp": 162.0,
           "ktcPosRank": 85,
-          "note": "KTC Superflex rank #300, value 1590, ADP 162.0. Started% 0.2."
-        },
-        {
-          "name": "Roschon Johnson",
-          "pos": "RB",
-          "team": "CHI",
-          "age": 25,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1578,
-          "ktcAdp": 225.0,
-          "ktcPosRank": 86,
-          "note": "KTC Superflex rank #301, value 1578, ADP 225.0. Started% 0.3."
-        },
-        {
-          "name": "Justin Fields",
-          "pos": "QB",
-          "team": "KCC",
-          "age": 27,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1572,
-          "ktcAdp": 121.0,
-          "ktcPosRank": 52,
-          "note": "KTC Superflex rank #302, value 1572, ADP 121.0. Started% 0.0."
-        },
-        {
-          "name": "Jahan Dotson",
-          "pos": "WR",
-          "team": "ATL",
-          "age": 26,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1563,
-          "ktcAdp": 316.0,
-          "ktcPosRank": 120,
-          "note": "KTC Superflex rank #303, value 1563, ADP 316.0. Started% 0.1."
-        },
-        {
-          "name": "Christian Kirk",
-          "pos": "WR",
-          "team": "SFO",
-          "age": 29,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1557,
-          "ktcAdp": 215.0,
-          "ktcPosRank": 121,
-          "note": "KTC Superflex rank #304, value 1557, ADP 215.0. Started% 0.0."
-        },
-        {
-          "name": "Cade Stover",
-          "pos": "TE",
-          "team": "HOU",
-          "age": 26,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1200,
-          "ktcAdp": 294.0,
-          "ktcPosRank": 60,
-          "note": "KTC Superflex rank #364, value 1200, ADP 294.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Jimmy Horn",
-          "pos": "WR",
-          "team": "CLE",
-          "age": 24,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1211,
-          "ktcAdp": 305.0,
-          "ktcPosRank": 148,
-          "note": "KTC Superflex rank #361, value 1211, ADP 305.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Najee Harris",
-          "pos": "RB",
-          "team": "NYG",
-          "age": 28,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1535,
-          "ktcAdp": 189.0,
-          "ktcPosRank": 87,
-          "note": "KTC Superflex rank #306, value 1535, ADP 189.0. Started% 0.4."
-        },
-        {
-          "name": "Justice Hill",
-          "pos": "RB",
-          "team": "BAL",
-          "age": 28,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1509,
-          "ktcAdp": 262.0,
-          "ktcPosRank": 88,
-          "note": "KTC Superflex rank #307, value 1509, ADP 262.0. Started% 0.6."
-        },
-        {
-          "name": "Kendrick Bourne",
-          "pos": "WR",
-          "team": "ARI",
-          "age": 31,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1506,
-          "ktcAdp": 368.0,
-          "ktcPosRank": 122,
-          "note": "KTC Superflex rank #308, value 1506, ADP 368.0."
-        },
-        {
-          "name": "Jack Endries",
-          "pos": "TE",
-          "team": "CIN",
-          "age": 22,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1179,
-          "ktcAdp": 286.0,
-          "ktcPosRank": 61,
-          "note": "KTC Superflex rank #368, value 1179, ADP 286.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
-          "rookie": true
-        },
-        {
-          "name": "Tyler Higbee",
-          "pos": "TE",
-          "team": "LAR",
-          "age": 33,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1172,
-          "ktcAdp": 266.0,
-          "ktcPosRank": 62,
-          "note": "KTC Superflex rank #369, value 1172, ADP 266.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Andrei Iosivas",
-          "pos": "WR",
-          "team": "CIN",
-          "age": 26,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1492,
-          "ktcAdp": 281.0,
-          "ktcPosRank": 123,
-          "note": "KTC Superflex rank #310, value 1492, ADP 281.0. Started% 0.3."
+          "note": "KTC Superflex rank #300, value 1586, ADP 162.0. Started% 0.2."
         },
         {
           "name": "Darren Waller",
@@ -4086,95 +3953,83 @@
           "age": 34,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1488,
+          "ktcValue": 1558,
           "ktcAdp": 244.0,
-          "ktcPosRank": 47,
-          "note": "KTC Superflex rank #311, value 1488, ADP 244.0. Started% 3.6."
+          "ktcPosRank": 46,
+          "note": "KTC Superflex rank #302, value 1558, ADP 244.0. Started% 3.6."
         },
         {
-          "name": "Tutu Atwell",
+          "name": "Cade Stover",
+          "pos": "TE",
+          "team": "HOU",
+          "age": 26,
+          "category": "mainstay",
+          "tier": "B",
+          "ktcValue": 1195,
+          "ktcAdp": 294.0,
+          "ktcPosRank": 59,
+          "note": "KTC Superflex rank #362, value 1195, ADP 294.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Jahan Dotson",
           "pos": "WR",
-          "team": "LAR",
-          "age": 27,
+          "team": "ATL",
+          "age": 26,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1361,
-          "ktcAdp": 311.0,
-          "ktcPosRank": 128,
-          "note": "KTC Superflex rank #329, value 1361, ADP 311.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcValue": 1554,
+          "ktcAdp": 316.0,
+          "ktcPosRank": 121,
+          "note": "KTC Superflex rank #303, value 1554, ADP 316.0. Started% 0.1."
         },
         {
-          "name": "Jordan Watkins",
-          "pos": "WR",
-          "team": "SFO",
-          "age": 24,
+          "name": "Jack Endries",
+          "pos": "TE",
+          "team": "CIN",
+          "age": 22,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1215,
-          "ktcAdp": 311.0,
-          "ktcPosRank": 145,
-          "note": "KTC Superflex rank #358, value 1215, ADP 311.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Riley Leonard",
-          "pos": "QB",
-          "team": "IND",
-          "age": 24,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1329,
-          "ktcAdp": 312.0,
-          "ktcPosRank": 57,
-          "note": "KTC Superflex rank #338, value 1329, ADP 312.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Garrett Nussmeier",
-          "pos": "QB",
-          "team": "KCC",
-          "age": 24,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1469,
-          "ktcAdp": 321.0,
-          "ktcPosRank": 53,
-          "note": "KTC Superflex rank #313, value 1469, ADP 321.0.",
+          "ktcValue": 1195,
+          "ktcAdp": 286.0,
+          "ktcPosRank": 60,
+          "note": "KTC Superflex rank #363, value 1195, ADP 286.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
           "rookie": true
         },
         {
-          "name": "Tommy Tremble",
-          "pos": "TE",
-          "team": "CAR",
-          "age": 26,
+          "name": "Justin Fields",
+          "pos": "QB",
+          "team": "KC",
+          "age": 27,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1221,
-          "ktcAdp": 313.0,
-          "ktcPosRank": 58,
-          "note": "KTC Superflex rank #355, value 1221, ADP 313.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcValue": 1550,
+          "ktcAdp": 121.0,
+          "ktcPosRank": 52,
+          "note": "KTC Superflex rank #304, value 1550, ADP 121.0. Started% 0.0."
         },
         {
-          "name": "Mitchell Evans",
-          "pos": "TE",
-          "team": "CAR",
-          "age": 23,
+          "name": "Kendrick Bourne",
+          "pos": "WR",
+          "team": "ARI",
+          "age": 31,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1150,
-          "ktcAdp": 313.0,
-          "ktcPosRank": 63,
-          "note": "KTC Superflex rank #371, value 1150, ADP 313.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcValue": 1541,
+          "ktcAdp": 368.0,
+          "ktcPosRank": 122,
+          "note": "KTC Superflex rank #305, value 1541, ADP 368.0."
         },
         {
-          "name": "Isaac Guerendo",
-          "pos": "RB",
-          "team": "SFO",
-          "age": 26,
+          "name": "Jimmy Horn",
+          "pos": "WR",
+          "team": "CLE",
+          "age": 24,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1143,
-          "ktcAdp": 204.0,
-          "ktcPosRank": 101,
-          "note": "KTC Superflex rank #373, value 1143, ADP 204.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcValue": 1187,
+          "ktcAdp": 305.0,
+          "ktcPosRank": 150,
+          "note": "KTC Superflex rank #365, value 1187, ADP 305.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Dillon Gabriel",
@@ -4183,10 +4038,142 @@
           "age": 25,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1138,
+          "ktcValue": 1183,
           "ktcAdp": 237.0,
           "ktcPosRank": 59,
-          "note": "KTC Superflex rank #374, value 1138, ADP 237.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC Superflex rank #366, value 1183, ADP 237.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Justice Hill",
+          "pos": "RB",
+          "team": "BAL",
+          "age": 28,
+          "category": "mainstay",
+          "tier": "B",
+          "ktcValue": 1532,
+          "ktcAdp": 262.0,
+          "ktcPosRank": 87,
+          "note": "KTC Superflex rank #307, value 1532, ADP 262.0. Started% 0.6."
+        },
+        {
+          "name": "Roschon Johnson",
+          "pos": "RB",
+          "team": "CHI",
+          "age": 25,
+          "category": "mainstay",
+          "tier": "B",
+          "ktcValue": 1525,
+          "ktcAdp": 225.0,
+          "ktcPosRank": 88,
+          "note": "KTC Superflex rank #309, value 1525, ADP 225.0. Started% 0.3."
+        },
+        {
+          "name": "Tyler Higbee",
+          "pos": "TE",
+          "team": "LAR",
+          "age": 33,
+          "category": "mainstay",
+          "tier": "B",
+          "ktcValue": 1178,
+          "ktcAdp": 266.0,
+          "ktcPosRank": 62,
+          "note": "KTC Superflex rank #369, value 1178, ADP 266.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Najee Harris",
+          "pos": "RB",
+          "team": "NYG",
+          "age": 28,
+          "category": "mainstay",
+          "tier": "B",
+          "ktcValue": 1521,
+          "ktcAdp": 189.0,
+          "ktcPosRank": 89,
+          "note": "KTC Superflex rank #310, value 1521, ADP 189.0. Started% 0.4."
+        },
+        {
+          "name": "Andrei Iosivas",
+          "pos": "WR",
+          "team": "CIN",
+          "age": 26,
+          "category": "mainstay",
+          "tier": "B",
+          "ktcValue": 1507,
+          "ktcAdp": 281.0,
+          "ktcPosRank": 123,
+          "note": "KTC Superflex rank #311, value 1507, ADP 281.0. Started% 0.3."
+        },
+        {
+          "name": "Tutu Atwell",
+          "pos": "WR",
+          "team": "LAR",
+          "age": 27,
+          "category": "mainstay",
+          "tier": "B",
+          "ktcValue": 1332,
+          "ktcAdp": 311.0,
+          "ktcPosRank": 134,
+          "note": "KTC Superflex rank #336, value 1332, ADP 311.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Jordan Watkins",
+          "pos": "WR",
+          "team": "SF",
+          "age": 24,
+          "category": "mainstay",
+          "tier": "B",
+          "ktcValue": 1221,
+          "ktcAdp": 311.0,
+          "ktcPosRank": 145,
+          "note": "KTC Superflex rank #357, value 1221, ADP 311.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Devontez Walker",
+          "pos": "WR",
+          "team": "BAL",
+          "age": 25,
+          "category": "mainstay",
+          "tier": "B",
+          "ktcValue": 1473,
+          "ktcAdp": 356.0,
+          "ktcPosRank": 124,
+          "note": "KTC Superflex rank #312, value 1473, ADP 356.0."
+        },
+        {
+          "name": "Riley Leonard",
+          "pos": "QB",
+          "team": "IND",
+          "age": 24,
+          "category": "mainstay",
+          "tier": "B",
+          "ktcValue": 1321,
+          "ktcAdp": 312.0,
+          "ktcPosRank": 57,
+          "note": "KTC Superflex rank #339, value 1321, ADP 312.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Isaac Guerendo",
+          "pos": "RB",
+          "team": "SF",
+          "age": 26,
+          "category": "mainstay",
+          "tier": "B",
+          "ktcValue": 1152,
+          "ktcAdp": 204.0,
+          "ktcPosRank": 100,
+          "note": "KTC Superflex rank #372, value 1152, ADP 204.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Tommy Tremble",
+          "pos": "TE",
+          "team": "CAR",
+          "age": 26,
+          "category": "mainstay",
+          "tier": "B",
+          "ktcValue": 1232,
+          "ktcAdp": 313.0,
+          "ktcPosRank": 58,
+          "note": "KTC Superflex rank #350, value 1232, ADP 313.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Deion Burks",
@@ -4195,10 +4182,10 @@
           "age": 23,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1339,
+          "ktcValue": 1357,
           "ktcAdp": 316.0,
-          "ktcPosRank": 132,
-          "note": "KTC Superflex rank #334, value 1339, ADP 316.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
+          "ktcPosRank": 130,
+          "note": "KTC Superflex rank #328, value 1357, ADP 316.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
           "rookie": true
         },
         {
@@ -4208,11 +4195,23 @@
           "age": 24,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1224,
+          "ktcValue": 1201,
           "ktcAdp": 316.0,
-          "ktcPosRank": 141,
-          "note": "KTC Superflex rank #353, value 1224, ADP 316.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
+          "ktcPosRank": 147,
+          "note": "KTC Superflex rank #360, value 1201, ADP 316.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
           "rookie": true
+        },
+        {
+          "name": "Mitchell Evans",
+          "pos": "TE",
+          "team": "CAR",
+          "age": 23,
+          "category": "mainstay",
+          "tier": "B",
+          "ktcValue": 1123,
+          "ktcAdp": 313.0,
+          "ktcPosRank": 63,
+          "note": "KTC Superflex rank #376, value 1123, ADP 313.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Daniel Bellinger",
@@ -4221,10 +4220,35 @@
           "age": 26,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1205,
+          "ktcValue": 1181,
           "ktcAdp": 317.0,
-          "ktcPosRank": 59,
-          "note": "KTC Superflex rank #363, value 1205, ADP 317.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 61,
+          "note": "KTC Superflex rank #367, value 1181, ADP 317.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Tahj Brooks",
+          "pos": "RB",
+          "team": "CIN",
+          "age": 24,
+          "category": "mainstay",
+          "tier": "B",
+          "ktcValue": 1414,
+          "ktcAdp": 235.0,
+          "ktcPosRank": 90,
+          "note": "KTC Superflex rank #318, value 1414, ADP 235.0. Started% 12.4."
+        },
+        {
+          "name": "Garrett Nussmeier",
+          "pos": "QB",
+          "team": "KC",
+          "age": 24,
+          "category": "mainstay",
+          "tier": "B",
+          "ktcValue": 1412,
+          "ktcAdp": 321.0,
+          "ktcPosRank": 54,
+          "note": "KTC Superflex rank #319, value 1412, ADP 321.0.",
+          "rookie": true
         },
         {
           "name": "Elijah Moore",
@@ -4233,46 +4257,22 @@
           "age": 26,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1125,
+          "ktcValue": 1110,
           "ktcAdp": 267.0,
-          "ktcPosRank": 153,
-          "note": "KTC Superflex rank #377, value 1125, ADP 267.0. Started% 74.3. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 155,
+          "note": "KTC Superflex rank #379, value 1110, ADP 267.0. Started% 74.3. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
-          "name": "Audric Estime",
+          "name": "Emari Demercado",
           "pos": "RB",
-          "team": "NOS",
-          "age": 23,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1427,
-          "ktcAdp": 283.0,
-          "ktcPosRank": 90,
-          "note": "KTC Superflex rank #319, value 1427, ADP 283.0. Started% 0.1."
-        },
-        {
-          "name": "Devontez Walker",
-          "pos": "WR",
-          "team": "BAL",
-          "age": 25,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1423,
-          "ktcAdp": 356.0,
-          "ktcPosRank": 126,
-          "note": "KTC Superflex rank #320, value 1423, ADP 356.0."
-        },
-        {
-          "name": "Calvin Austin III",
-          "pos": "WR",
-          "team": "NYG",
+          "team": "DAL",
           "age": 27,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1095,
-          "ktcAdp": 260.0,
-          "ktcPosRank": 155,
-          "note": "KTC Superflex rank #380, value 1095, ADP 260.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcValue": 1405,
+          "ktcAdp": 345.0,
+          "ktcPosRank": 91,
+          "note": "KTC Superflex rank #320, value 1405, ADP 345.0. Started% 0.4."
         }
       ],
       "picks": [
@@ -4282,9 +4282,9 @@
           "season": 2027,
           "round": 1,
           "slot": "early",
-          "ktcValue": 6977,
-          "ktcRank": 19,
-          "note": "KTC Superflex pick value 6977 (rank #19)."
+          "ktcValue": 7030,
+          "ktcRank": 18,
+          "note": "KTC Superflex pick value 7030 (rank #18)."
         },
         {
           "name": "2027 Mid 1st",
@@ -4292,9 +4292,9 @@
           "season": 2027,
           "round": 1,
           "slot": "mid",
-          "ktcValue": 5706,
-          "ktcRank": 41,
-          "note": "KTC Superflex pick value 5706 (rank #41)."
+          "ktcValue": 5747,
+          "ktcRank": 40,
+          "note": "KTC Superflex pick value 5747 (rank #40)."
         },
         {
           "name": "2027 Late 1st",
@@ -4302,9 +4302,9 @@
           "season": 2027,
           "round": 1,
           "slot": "late",
-          "ktcValue": 5128,
-          "ktcRank": 55,
-          "note": "KTC Superflex pick value 5128 (rank #55)."
+          "ktcValue": 5097,
+          "ktcRank": 54,
+          "note": "KTC Superflex pick value 5097 (rank #54)."
         },
         {
           "name": "2027 Early 2nd",
@@ -4312,9 +4312,9 @@
           "season": 2027,
           "round": 2,
           "slot": "early",
-          "ktcValue": 3851,
-          "ktcRank": 100,
-          "note": "KTC Superflex pick value 3851 (rank #100)."
+          "ktcValue": 3892,
+          "ktcRank": 97,
+          "note": "KTC Superflex pick value 3892 (rank #97)."
         },
         {
           "name": "2027 Mid 2nd",
@@ -4322,9 +4322,9 @@
           "season": 2027,
           "round": 2,
           "slot": "mid",
-          "ktcValue": 3531,
-          "ktcRank": 112,
-          "note": "KTC Superflex pick value 3531 (rank #112)."
+          "ktcValue": 3558,
+          "ktcRank": 111,
+          "note": "KTC Superflex pick value 3558 (rank #111)."
         },
         {
           "name": "2027 Late 2nd",
@@ -4332,9 +4332,9 @@
           "season": 2027,
           "round": 2,
           "slot": "late",
-          "ktcValue": 3264,
+          "ktcValue": 3255,
           "ktcRank": 127,
-          "note": "KTC Superflex pick value 3264 (rank #127)."
+          "note": "KTC Superflex pick value 3255 (rank #127)."
         },
         {
           "name": "2027 Early 3rd",
@@ -4342,9 +4342,9 @@
           "season": 2027,
           "round": 3,
           "slot": "early",
-          "ktcValue": 2604,
-          "ktcRank": 196,
-          "note": "KTC Superflex pick value 2604 (rank #196)."
+          "ktcValue": 2625,
+          "ktcRank": 192,
+          "note": "KTC Superflex pick value 2625 (rank #192)."
         },
         {
           "name": "2027 Mid 3rd",
@@ -4352,9 +4352,9 @@
           "season": 2027,
           "round": 3,
           "slot": "mid",
-          "ktcValue": 2464,
-          "ktcRank": 212,
-          "note": "KTC Superflex pick value 2464 (rank #212)."
+          "ktcValue": 2492,
+          "ktcRank": 210,
+          "note": "KTC Superflex pick value 2492 (rank #210)."
         },
         {
           "name": "2027 Late 3rd",
@@ -4362,9 +4362,9 @@
           "season": 2027,
           "round": 3,
           "slot": "late",
-          "ktcValue": 2353,
-          "ktcRank": 223,
-          "note": "KTC Superflex pick value 2353 (rank #223)."
+          "ktcValue": 2355,
+          "ktcRank": 224,
+          "note": "KTC Superflex pick value 2355 (rank #224)."
         },
         {
           "name": "2027 Early 4th",
@@ -4372,9 +4372,9 @@
           "season": 2027,
           "round": 4,
           "slot": "early",
-          "ktcValue": 1959,
-          "ktcRank": 280,
-          "note": "KTC Superflex pick value 1959 (rank #280)."
+          "ktcValue": 1974,
+          "ktcRank": 277,
+          "note": "KTC Superflex pick value 1974 (rank #277)."
         },
         {
           "name": "2027 Mid 4th",
@@ -4382,9 +4382,9 @@
           "season": 2027,
           "round": 4,
           "slot": "mid",
-          "ktcValue": 1855,
-          "ktcRank": 295,
-          "note": "KTC Superflex pick value 1855 (rank #295)."
+          "ktcValue": 1835,
+          "ktcRank": 300,
+          "note": "KTC Superflex pick value 1835 (rank #300)."
         },
         {
           "name": "2027 Late 4th",
@@ -4392,9 +4392,9 @@
           "season": 2027,
           "round": 4,
           "slot": "late",
-          "ktcValue": 1741,
-          "ktcRank": 310,
-          "note": "KTC Superflex pick value 1741 (rank #310)."
+          "ktcValue": 1734,
+          "ktcRank": 312,
+          "note": "KTC Superflex pick value 1734 (rank #312)."
         },
         {
           "name": "2028 Early 1st",
@@ -4402,9 +4402,9 @@
           "season": 2028,
           "round": 1,
           "slot": "early",
-          "ktcValue": 5440,
+          "ktcValue": 5490,
           "ktcRank": 50,
-          "note": "KTC Superflex pick value 5440 (rank #50)."
+          "note": "KTC Superflex pick value 5490 (rank #50)."
         },
         {
           "name": "2028 Mid 1st",
@@ -4412,9 +4412,9 @@
           "season": 2028,
           "round": 1,
           "slot": "mid",
-          "ktcValue": 4680,
-          "ktcRank": 76,
-          "note": "KTC Superflex pick value 4680 (rank #76)."
+          "ktcValue": 4687,
+          "ktcRank": 74,
+          "note": "KTC Superflex pick value 4687 (rank #74)."
         },
         {
           "name": "2028 Late 1st",
@@ -4422,9 +4422,9 @@
           "season": 2028,
           "round": 1,
           "slot": "late",
-          "ktcValue": 4222,
+          "ktcValue": 4210,
           "ktcRank": 90,
-          "note": "KTC Superflex pick value 4222 (rank #90)."
+          "note": "KTC Superflex pick value 4210 (rank #90)."
         },
         {
           "name": "2028 Early 2nd",
@@ -4432,9 +4432,9 @@
           "season": 2028,
           "round": 2,
           "slot": "early",
-          "ktcValue": 3291,
-          "ktcRank": 125,
-          "note": "KTC Superflex pick value 3291 (rank #125)."
+          "ktcValue": 3288,
+          "ktcRank": 124,
+          "note": "KTC Superflex pick value 3288 (rank #124)."
         },
         {
           "name": "2028 Mid 2nd",
@@ -4442,9 +4442,9 @@
           "season": 2028,
           "round": 2,
           "slot": "mid",
-          "ktcValue": 3119,
-          "ktcRank": 143,
-          "note": "KTC Superflex pick value 3119 (rank #143)."
+          "ktcValue": 3167,
+          "ktcRank": 138,
+          "note": "KTC Superflex pick value 3167 (rank #138)."
         },
         {
           "name": "2028 Late 2nd",
@@ -4452,9 +4452,9 @@
           "season": 2028,
           "round": 2,
           "slot": "late",
-          "ktcValue": 2892,
-          "ktcRank": 159,
-          "note": "KTC Superflex pick value 2892 (rank #159)."
+          "ktcValue": 2897,
+          "ktcRank": 158,
+          "note": "KTC Superflex pick value 2897 (rank #158)."
         },
         {
           "name": "2028 Early 3rd",
@@ -4462,9 +4462,9 @@
           "season": 2028,
           "round": 3,
           "slot": "early",
-          "ktcValue": 2338,
-          "ktcRank": 225,
-          "note": "KTC Superflex pick value 2338 (rank #225)."
+          "ktcValue": 2347,
+          "ktcRank": 226,
+          "note": "KTC Superflex pick value 2347 (rank #226)."
         },
         {
           "name": "2028 Mid 3rd",
@@ -4472,9 +4472,9 @@
           "season": 2028,
           "round": 3,
           "slot": "mid",
-          "ktcValue": 2265,
-          "ktcRank": 235,
-          "note": "KTC Superflex pick value 2265 (rank #235)."
+          "ktcValue": 2272,
+          "ktcRank": 236,
+          "note": "KTC Superflex pick value 2272 (rank #236)."
         },
         {
           "name": "2028 Late 3rd",
@@ -4482,9 +4482,9 @@
           "season": 2028,
           "round": 3,
           "slot": "late",
-          "ktcValue": 2227,
-          "ktcRank": 239,
-          "note": "KTC Superflex pick value 2227 (rank #239)."
+          "ktcValue": 2213,
+          "ktcRank": 241,
+          "note": "KTC Superflex pick value 2213 (rank #241)."
         },
         {
           "name": "2028 Early 4th",
@@ -4492,9 +4492,9 @@
           "season": 2028,
           "round": 4,
           "slot": "early",
-          "ktcValue": 1711,
-          "ktcRank": 319,
-          "note": "KTC Superflex pick value 1711 (rank #319)."
+          "ktcValue": 1722,
+          "ktcRank": 316,
+          "note": "KTC Superflex pick value 1722 (rank #316)."
         },
         {
           "name": "2028 Mid 4th",
@@ -4502,9 +4502,9 @@
           "season": 2028,
           "round": 4,
           "slot": "mid",
-          "ktcValue": 1593,
-          "ktcRank": 330,
-          "note": "KTC Superflex pick value 1593 (rank #330)."
+          "ktcValue": 1626,
+          "ktcRank": 327,
+          "note": "KTC Superflex pick value 1626 (rank #327)."
         },
         {
           "name": "2028 Late 4th",
@@ -4512,9 +4512,9 @@
           "season": 2028,
           "round": 4,
           "slot": "late",
-          "ktcValue": 1375,
-          "ktcRank": 362,
-          "note": "KTC Superflex pick value 1375 (rank #362)."
+          "ktcValue": 1405,
+          "ktcRank": 354,
+          "note": "KTC Superflex pick value 1405 (rank #354)."
         },
         {
           "name": "2029 Early 1st",
@@ -4522,9 +4522,9 @@
           "season": 2029,
           "round": 1,
           "slot": "early",
-          "ktcValue": 4586,
+          "ktcValue": 4564,
           "ktcRank": 79,
-          "note": "KTC Superflex pick value 4586 (rank #79)."
+          "note": "KTC Superflex pick value 4564 (rank #79)."
         },
         {
           "name": "2029 Mid 1st",
@@ -4532,9 +4532,9 @@
           "season": 2029,
           "round": 1,
           "slot": "mid",
-          "ktcValue": 4002,
+          "ktcValue": 4034,
           "ktcRank": 95,
-          "note": "KTC Superflex pick value 4002 (rank #95)."
+          "note": "KTC Superflex pick value 4034 (rank #95)."
         },
         {
           "name": "2029 Late 1st",
@@ -4542,9 +4542,9 @@
           "season": 2029,
           "round": 1,
           "slot": "late",
-          "ktcValue": 3657,
-          "ktcRank": 106,
-          "note": "KTC Superflex pick value 3657 (rank #106)."
+          "ktcValue": 3679,
+          "ktcRank": 105,
+          "note": "KTC Superflex pick value 3679 (rank #105)."
         },
         {
           "name": "2029 Early 2nd",
@@ -4552,9 +4552,9 @@
           "season": 2029,
           "round": 2,
           "slot": "early",
-          "ktcValue": 2882,
-          "ktcRank": 160,
-          "note": "KTC Superflex pick value 2882 (rank #160)."
+          "ktcValue": 2942,
+          "ktcRank": 154,
+          "note": "KTC Superflex pick value 2942 (rank #154)."
         },
         {
           "name": "2029 Mid 2nd",
@@ -4562,9 +4562,9 @@
           "season": 2029,
           "round": 2,
           "slot": "mid",
-          "ktcValue": 2657,
-          "ktcRank": 184,
-          "note": "KTC Superflex pick value 2657 (rank #184)."
+          "ktcValue": 2715,
+          "ktcRank": 179,
+          "note": "KTC Superflex pick value 2715 (rank #179)."
         },
         {
           "name": "2029 Late 2nd",
@@ -4572,9 +4572,9 @@
           "season": 2029,
           "round": 2,
           "slot": "late",
-          "ktcValue": 2494,
-          "ktcRank": 209,
-          "note": "KTC Superflex pick value 2494 (rank #209)."
+          "ktcValue": 2547,
+          "ktcRank": 203,
+          "note": "KTC Superflex pick value 2547 (rank #203)."
         },
         {
           "name": "2029 Early 3rd",
@@ -4582,9 +4582,9 @@
           "season": 2029,
           "round": 3,
           "slot": "early",
-          "ktcValue": 2220,
-          "ktcRank": 241,
-          "note": "KTC Superflex pick value 2220 (rank #241)."
+          "ktcValue": 2259,
+          "ktcRank": 238,
+          "note": "KTC Superflex pick value 2259 (rank #238)."
         },
         {
           "name": "2029 Mid 3rd",
@@ -4592,9 +4592,9 @@
           "season": 2029,
           "round": 3,
           "slot": "mid",
-          "ktcValue": 2002,
-          "ktcRank": 269,
-          "note": "KTC Superflex pick value 2002 (rank #269)."
+          "ktcValue": 2036,
+          "ktcRank": 265,
+          "note": "KTC Superflex pick value 2036 (rank #265)."
         },
         {
           "name": "2029 Late 3rd",
@@ -4602,9 +4602,9 @@
           "season": 2029,
           "round": 3,
           "slot": "late",
-          "ktcValue": 1855,
-          "ktcRank": 296,
-          "note": "KTC Superflex pick value 1855 (rank #296)."
+          "ktcValue": 1884,
+          "ktcRank": 293,
+          "note": "KTC Superflex pick value 1884 (rank #293)."
         },
         {
           "name": "2029 Early 4th",
@@ -4612,9 +4612,9 @@
           "season": 2029,
           "round": 4,
           "slot": "early",
-          "ktcValue": 1512,
-          "ktcRank": 339,
-          "note": "KTC Superflex pick value 1512 (rank #339)."
+          "ktcValue": 1532,
+          "ktcRank": 341,
+          "note": "KTC Superflex pick value 1532 (rank #341)."
         },
         {
           "name": "2029 Mid 4th",
@@ -4622,9 +4622,9 @@
           "season": 2029,
           "round": 4,
           "slot": "mid",
-          "ktcValue": 1335,
-          "ktcRank": 370,
-          "note": "KTC Superflex pick value 1335 (rank #370)."
+          "ktcValue": 1365,
+          "ktcRank": 361,
+          "note": "KTC Superflex pick value 1365 (rank #361)."
         },
         {
           "name": "2029 Late 4th",
@@ -4632,9 +4632,9 @@
           "season": 2029,
           "round": 4,
           "slot": "late",
-          "ktcValue": 1172,
-          "ktcRank": 405,
-          "note": "KTC Superflex pick value 1172 (rank #405)."
+          "ktcValue": 1197,
+          "ktcRank": 397,
+          "note": "KTC Superflex pick value 1197 (rank #397)."
         }
       ]
     },
@@ -4642,7 +4642,7 @@
       "id": "ktc-oneqb",
       "title": "KeepTradeCut Dynasty 1QB",
       "url": "https://keeptradecut.com/dynasty-rankings",
-      "publishedAt": "2026-09-23",
+      "publishedAt": "2026-09-25",
       "format": "dynasty_1qb",
       "defaultEnabled": true,
       "players": [
@@ -4665,10 +4665,10 @@
           "age": 24,
           "category": "cornerstone",
           "tier": "S",
-          "ktcValue": 9999,
+          "ktcValue": 9986,
           "ktcAdp": 16.0,
           "ktcPosRank": 1,
-          "note": "KTC 1QB rank #2, value 9999, ADP 16.0. Started% 97.8."
+          "note": "KTC 1QB rank #2, value 9986, ADP 16.0. Started% 97.8."
         },
         {
           "name": "Ja'Marr Chase",
@@ -4677,10 +4677,10 @@
           "age": 26,
           "category": "cornerstone",
           "tier": "S",
-          "ktcValue": 9638,
+          "ktcValue": 9646,
           "ktcAdp": 2.0,
           "ktcPosRank": 2,
-          "note": "KTC 1QB rank #4, value 9638, ADP 2.0. Started% 99.1. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC 1QB rank #4, value 9646, ADP 2.0. Started% 99.1. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Bijan Robinson",
@@ -4689,10 +4689,10 @@
           "age": 24,
           "category": "cornerstone",
           "tier": "S",
-          "ktcValue": 9843,
+          "ktcValue": 9884,
           "ktcAdp": 3.0,
           "ktcPosRank": 2,
-          "note": "KTC 1QB rank #3, value 9843, ADP 3.0. Started% 99.2."
+          "note": "KTC 1QB rank #3, value 9884, ADP 3.0. Started% 99.2."
         },
         {
           "name": "Amon-Ra St. Brown",
@@ -4701,10 +4701,10 @@
           "age": 26,
           "category": "cornerstone",
           "tier": "S",
-          "ktcValue": 8425,
+          "ktcValue": 8395,
           "ktcAdp": 9.0,
           "ktcPosRank": 3,
-          "note": "KTC 1QB rank #5, value 8425, ADP 9.0. Started% 99.2."
+          "note": "KTC 1QB rank #5, value 8395, ADP 9.0. Started% 99.2."
         },
         {
           "name": "Puka Nacua",
@@ -4713,22 +4713,10 @@
           "age": 25,
           "category": "cornerstone",
           "tier": "S",
-          "ktcValue": 8115,
+          "ktcValue": 8042,
           "ktcAdp": 8.0,
           "ktcPosRank": 4,
-          "note": "KTC 1QB rank #6, value 8115, ADP 8.0. Started% 98.3."
-        },
-        {
-          "name": "Ashton Jeanty",
-          "pos": "RB",
-          "team": "LVR",
-          "age": 22,
-          "category": "cornerstone",
-          "tier": "S",
-          "ktcValue": 7785,
-          "ktcAdp": 12.0,
-          "ktcPosRank": 3,
-          "note": "KTC 1QB rank #7, value 7785, ADP 12.0. Started% 96.8."
+          "note": "KTC 1QB rank #6, value 8042, ADP 8.0. Started% 98.3."
         },
         {
           "name": "Justin Jefferson",
@@ -4737,34 +4725,22 @@
           "age": 27,
           "category": "cornerstone",
           "tier": "S",
-          "ktcValue": 7622,
+          "ktcValue": 7645,
           "ktcAdp": 7.0,
           "ktcPosRank": 5,
-          "note": "KTC 1QB rank #11, value 7622, ADP 7.0. Started% 99.1. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC 1QB rank #11, value 7645, ADP 7.0. Started% 99.1. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
-          "name": "Brock Bowers",
-          "pos": "TE",
-          "team": "LVR",
-          "age": 23,
+          "name": "Ashton Jeanty",
+          "pos": "RB",
+          "team": "LV",
+          "age": 22,
           "category": "cornerstone",
-          "tier": "A",
-          "ktcValue": 7763,
-          "ktcAdp": 18.0,
-          "ktcPosRank": 1,
-          "note": "KTC 1QB rank #8, value 7763, ADP 18.0. Started% 12.3."
-        },
-        {
-          "name": "CeeDee Lamb",
-          "pos": "WR",
-          "team": "DAL",
-          "age": 27,
-          "category": "cornerstone",
-          "tier": "A",
-          "ktcValue": 7436,
-          "ktcAdp": 8.0,
-          "ktcPosRank": 6,
-          "note": "KTC 1QB rank #12, value 7436, ADP 8.0. Started% 99.2. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "tier": "S",
+          "ktcValue": 7781,
+          "ktcAdp": 12.0,
+          "ktcPosRank": 3,
+          "note": "KTC 1QB rank #7, value 7781, ADP 12.0. Started% 96.8."
         },
         {
           "name": "Josh Allen",
@@ -4773,10 +4749,34 @@
           "age": 30,
           "category": "cornerstone",
           "tier": "A",
-          "ktcValue": 7684,
+          "ktcValue": 7758,
           "ktcAdp": 22.0,
           "ktcPosRank": 1,
-          "note": "KTC 1QB rank #9, value 7684, ADP 22.0. Started% 96.8."
+          "note": "KTC 1QB rank #8, value 7758, ADP 22.0. Started% 96.8."
+        },
+        {
+          "name": "CeeDee Lamb",
+          "pos": "WR",
+          "team": "DAL",
+          "age": 27,
+          "category": "cornerstone",
+          "tier": "A",
+          "ktcValue": 7388,
+          "ktcAdp": 8.0,
+          "ktcPosRank": 6,
+          "note": "KTC 1QB rank #12, value 7388, ADP 8.0. Started% 99.2. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Brock Bowers",
+          "pos": "TE",
+          "team": "LV",
+          "age": 23,
+          "category": "cornerstone",
+          "tier": "A",
+          "ktcValue": 7757,
+          "ktcAdp": 18.0,
+          "ktcPosRank": 1,
+          "note": "KTC 1QB rank #9, value 7757, ADP 18.0. Started% 12.3."
         },
         {
           "name": "Trey McBride",
@@ -4785,10 +4785,22 @@
           "age": 26,
           "category": "cornerstone",
           "tier": "A",
-          "ktcValue": 7658,
+          "ktcValue": 7694,
           "ktcAdp": 23.0,
           "ktcPosRank": 2,
-          "note": "KTC 1QB rank #10, value 7658, ADP 23.0. Started% 99.0."
+          "note": "KTC 1QB rank #10, value 7694, ADP 23.0. Started% 99.0."
+        },
+        {
+          "name": "Kenneth Walker III",
+          "pos": "RB",
+          "team": "KC",
+          "age": 25,
+          "category": "cornerstone",
+          "tier": "A",
+          "ktcValue": 7331,
+          "ktcAdp": 37.0,
+          "ktcPosRank": 4,
+          "note": "KTC 1QB rank #13, value 7331, ADP 37.0."
         },
         {
           "name": "Malik Nabers",
@@ -4797,10 +4809,10 @@
           "age": 23,
           "category": "cornerstone",
           "tier": "A",
-          "ktcValue": 7260,
+          "ktcValue": 7152,
           "ktcAdp": 13.0,
           "ktcPosRank": 7,
-          "note": "KTC 1QB rank #13, value 7260, ADP 13.0. Started% 78.4."
+          "note": "KTC 1QB rank #16, value 7152, ADP 13.0. Started% 78.4. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Jeremiyah Love",
@@ -4809,35 +4821,11 @@
           "age": 21,
           "category": "cornerstone",
           "tier": "A",
-          "ktcValue": 7248,
+          "ktcValue": 7266,
           "ktcAdp": 21.0,
-          "ktcPosRank": 4,
-          "note": "KTC 1QB rank #14, value 7248, ADP 21.0. Started% 79.0.",
-          "rookie": true
-        },
-        {
-          "name": "Kenneth Walker III",
-          "pos": "RB",
-          "team": "KCC",
-          "age": 25,
-          "category": "cornerstone",
-          "tier": "B",
-          "ktcValue": 7245,
-          "ktcAdp": 37.0,
           "ktcPosRank": 5,
-          "note": "KTC 1QB rank #15, value 7245, ADP 37.0."
-        },
-        {
-          "name": "De'Von Achane",
-          "pos": "RB",
-          "team": "MIA",
-          "age": 24,
-          "category": "cornerstone",
-          "tier": "B",
-          "ktcValue": 6897,
-          "ktcAdp": 15.0,
-          "ktcPosRank": 8,
-          "note": "KTC 1QB rank #18, value 6897, ADP 15.0. Started% 99.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC 1QB rank #14, value 7266, ADP 21.0. Started% 79.0.",
+          "rookie": true
         },
         {
           "name": "Jonathan Taylor",
@@ -4846,10 +4834,22 @@
           "age": 27,
           "category": "cornerstone",
           "tier": "B",
-          "ktcValue": 7184,
+          "ktcValue": 7165,
           "ktcAdp": 20.0,
           "ktcPosRank": 6,
-          "note": "KTC 1QB rank #16, value 7184, ADP 20.0. Started% 99.1."
+          "note": "KTC 1QB rank #15, value 7165, ADP 20.0. Started% 99.1."
+        },
+        {
+          "name": "De'Von Achane",
+          "pos": "RB",
+          "team": "MIA",
+          "age": 25,
+          "category": "cornerstone",
+          "tier": "B",
+          "ktcValue": 6869,
+          "ktcAdp": 15.0,
+          "ktcPosRank": 8,
+          "note": "KTC 1QB rank #18, value 6869, ADP 15.0. Started% 99.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "James Cook",
@@ -4858,10 +4858,10 @@
           "age": 27,
           "category": "cornerstone",
           "tier": "B",
-          "ktcValue": 6912,
+          "ktcValue": 6872,
           "ktcAdp": 29.0,
           "ktcPosRank": 7,
-          "note": "KTC 1QB rank #17, value 6912, ADP 29.0. Started% 99.0."
+          "note": "KTC 1QB rank #17, value 6872, ADP 29.0. Started% 99.0."
         },
         {
           "name": "Drake London",
@@ -4870,10 +4870,10 @@
           "age": 25,
           "category": "cornerstone",
           "tier": "B",
-          "ktcValue": 6680,
+          "ktcValue": 6677,
           "ktcAdp": 17.0,
           "ktcPosRank": 9,
-          "note": "KTC 1QB rank #21, value 6680, ADP 17.0. Started% 96.6. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC 1QB rank #21, value 6677, ADP 17.0. Started% 96.6. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Nico Collins",
@@ -4882,10 +4882,10 @@
           "age": 27,
           "category": "cornerstone",
           "tier": "B",
-          "ktcValue": 6178,
+          "ktcValue": 6180,
           "ktcAdp": 17.0,
-          "ktcPosRank": 16,
-          "note": "KTC 1QB rank #31, value 6178, ADP 17.0. Started% 98.1. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 17,
+          "note": "KTC 1QB rank #31, value 6180, ADP 17.0. Started% 98.1. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Omarion Hampton",
@@ -4894,22 +4894,22 @@
           "age": 23,
           "category": "cornerstone",
           "tier": "B",
-          "ktcValue": 6861,
+          "ktcValue": 6812,
           "ktcAdp": 26.0,
           "ktcPosRank": 9,
-          "note": "KTC 1QB rank #19, value 6861, ADP 26.0. Started% 98.4."
+          "note": "KTC 1QB rank #19, value 6812, ADP 26.0. Started% 98.4."
         },
         {
           "name": "Chris Olave",
           "pos": "WR",
-          "team": "NOS",
+          "team": "NO",
           "age": 26,
           "category": "cornerstone",
           "tier": "B",
-          "ktcValue": 6758,
+          "ktcValue": 6809,
           "ktcAdp": 51.0,
           "ktcPosRank": 8,
-          "note": "KTC 1QB rank #20, value 6758, ADP 51.0. Started% 96.9."
+          "note": "KTC 1QB rank #20, value 6809, ADP 51.0. Started% 96.9."
         },
         {
           "name": "Saquon Barkley",
@@ -4918,22 +4918,22 @@
           "age": 29,
           "category": "cornerstone",
           "tier": "B",
-          "ktcValue": 5690,
+          "ktcValue": 5698,
           "ktcAdp": 20.0,
           "ktcPosRank": 18,
-          "note": "KTC 1QB rank #48, value 5690, ADP 20.0. Started% 98.8. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC 1QB rank #48, value 5698, ADP 20.0. Started% 98.8. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Christian McCaffrey",
           "pos": "RB",
-          "team": "SFO",
+          "team": "SF",
           "age": 30,
           "category": "cornerstone",
           "tier": "B",
-          "ktcValue": 6188,
+          "ktcValue": 6178,
           "ktcAdp": 21.0,
           "ktcPosRank": 11,
-          "note": "KTC 1QB rank #30, value 6188, ADP 21.0. Started% 98.3. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC 1QB rank #32, value 6178, ADP 21.0. Started% 98.3. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Tetairoa McMillan",
@@ -4942,22 +4942,10 @@
           "age": 23,
           "category": "cornerstone",
           "tier": "B",
-          "ktcValue": 6489,
+          "ktcValue": 6526,
           "ktcAdp": 36.0,
           "ktcPosRank": 10,
-          "note": "KTC 1QB rank #22, value 6489, ADP 36.0. Started% 92.7."
-        },
-        {
-          "name": "George Pickens",
-          "pos": "WR",
-          "team": "DAL",
-          "age": 25,
-          "category": "cornerstone",
-          "tier": "C",
-          "ktcValue": 6414,
-          "ktcAdp": 46.0,
-          "ktcPosRank": 11,
-          "note": "KTC 1QB rank #23, value 6414, ADP 46.0. Started% 98.3."
+          "note": "KTC 1QB rank #22, value 6526, ADP 36.0. Started% 92.7."
         },
         {
           "name": "Chase Brown",
@@ -4966,10 +4954,10 @@
           "age": 26,
           "category": "cornerstone",
           "tier": "C",
-          "ktcValue": 6406,
+          "ktcValue": 6395,
           "ktcAdp": 29.0,
           "ktcPosRank": 10,
-          "note": "KTC 1QB rank #24, value 6406, ADP 29.0. Started% 98.2."
+          "note": "KTC 1QB rank #23, value 6395, ADP 29.0. Started% 98.2."
         },
         {
           "name": "Zay Flowers",
@@ -4978,22 +4966,34 @@
           "age": 26,
           "category": "cornerstone",
           "tier": "C",
-          "ktcValue": 6354,
+          "ktcValue": 6394,
           "ktcAdp": 49.0,
+          "ktcPosRank": 11,
+          "note": "KTC 1QB rank #24, value 6394, ADP 49.0. Started% 92.7."
+        },
+        {
+          "name": "George Pickens",
+          "pos": "WR",
+          "team": "DAL",
+          "age": 25,
+          "category": "cornerstone",
+          "tier": "C",
+          "ktcValue": 6378,
+          "ktcAdp": 46.0,
           "ktcPosRank": 12,
-          "note": "KTC 1QB rank #25, value 6354, ADP 49.0. Started% 92.7."
+          "note": "KTC 1QB rank #25, value 6378, ADP 46.0. Started% 98.3."
         },
         {
           "name": "Emeka Egbuka",
           "pos": "WR",
-          "team": "TBB",
-          "age": 23,
+          "team": "TB",
+          "age": 24,
           "category": "cornerstone",
           "tier": "C",
-          "ktcValue": 6314,
+          "ktcValue": 6283,
           "ktcAdp": 51.0,
           "ktcPosRank": 13,
-          "note": "KTC 1QB rank #26, value 6314, ADP 51.0. Started% 85.3."
+          "note": "KTC 1QB rank #26, value 6283, ADP 51.0. Started% 85.3."
         },
         {
           "name": "DeVonta Smith",
@@ -5002,22 +5002,22 @@
           "age": 27,
           "category": "cornerstone",
           "tier": "C",
-          "ktcValue": 6285,
+          "ktcValue": 6271,
           "ktcAdp": 47.0,
           "ktcPosRank": 14,
-          "note": "KTC 1QB rank #27, value 6285, ADP 47.0. Started% 95.9."
+          "note": "KTC 1QB rank #27, value 6271, ADP 47.0. Started% 95.9."
         },
         {
           "name": "A.J. Brown",
           "pos": "WR",
-          "team": "NEP",
+          "team": "NE",
           "age": 29,
           "category": "cornerstone",
           "tier": "C",
-          "ktcValue": 5390,
+          "ktcValue": 5385,
           "ktcAdp": 27.0,
-          "ktcPosRank": 27,
-          "note": "KTC 1QB rank #60, value 5390, ADP 27.0. Started% 96.9. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 26,
+          "note": "KTC 1QB rank #59, value 5385, ADP 27.0. Started% 96.9. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Lamar Jackson",
@@ -5026,10 +5026,10 @@
           "age": 29,
           "category": "cornerstone",
           "tier": "C",
-          "ktcValue": 6259,
+          "ktcValue": 6249,
           "ktcAdp": 34.0,
           "ktcPosRank": 2,
-          "note": "KTC 1QB rank #28, value 6259, ADP 34.0. Started% 97.1."
+          "note": "KTC 1QB rank #28, value 6249, ADP 34.0. Started% 97.1."
         },
         {
           "name": "Garrett Wilson",
@@ -5038,10 +5038,10 @@
           "age": 26,
           "category": "cornerstone",
           "tier": "C",
-          "ktcValue": 6242,
+          "ktcValue": 6224,
           "ktcAdp": 33.0,
           "ktcPosRank": 15,
-          "note": "KTC 1QB rank #29, value 6242, ADP 33.0. Started% 89.8."
+          "note": "KTC 1QB rank #29, value 6224, ADP 33.0. Started% 89.8."
         },
         {
           "name": "Ladd McConkey",
@@ -5050,10 +5050,10 @@
           "age": 24,
           "category": "cornerstone",
           "tier": "C",
-          "ktcValue": 6177,
+          "ktcValue": 6186,
           "ktcAdp": 30.0,
-          "ktcPosRank": 17,
-          "note": "KTC 1QB rank #32, value 6177, ADP 30.0. Started% 92.4. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 16,
+          "note": "KTC 1QB rank #30, value 6186, ADP 30.0. Started% 92.4."
         },
         {
           "name": "Kyren Williams",
@@ -5062,34 +5062,10 @@
           "age": 26,
           "category": "cornerstone",
           "tier": "C",
-          "ktcValue": 5764,
+          "ktcValue": 5802,
           "ktcAdp": 32.0,
           "ktcPosRank": 14,
-          "note": "KTC 1QB rank #43, value 5764, ADP 32.0. Started% 95.8. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Tyler Warren",
-          "pos": "TE",
-          "team": "IND",
-          "age": 24,
-          "category": "foundational",
-          "tier": "S",
-          "ktcValue": 6171,
-          "ktcAdp": 62.0,
-          "ktcPosRank": 3,
-          "note": "KTC 1QB rank #33, value 6171, ADP 62.0. Started% 96.4."
-        },
-        {
-          "name": "Brian Thomas Jr.",
-          "pos": "WR",
-          "team": "JAC",
-          "age": 24,
-          "category": "foundational",
-          "tier": "S",
-          "ktcValue": 4700,
-          "ktcAdp": 33.0,
-          "ktcPosRank": 34,
-          "note": "KTC 1QB rank #79, value 4700, ADP 33.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC 1QB rank #41, value 5802, ADP 32.0. Started% 95.8. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Breece Hall",
@@ -5098,10 +5074,22 @@
           "age": 25,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 6164,
+          "ktcValue": 6168,
           "ktcAdp": 35.0,
           "ktcPosRank": 12,
-          "note": "KTC 1QB rank #34, value 6164, ADP 35.0. Started% 93.0."
+          "note": "KTC 1QB rank #33, value 6168, ADP 35.0. Started% 93.0."
+        },
+        {
+          "name": "Tyler Warren",
+          "pos": "TE",
+          "team": "IND",
+          "age": 24,
+          "category": "foundational",
+          "tier": "S",
+          "ktcValue": 6128,
+          "ktcAdp": 62.0,
+          "ktcPosRank": 3,
+          "note": "KTC 1QB rank #34, value 6128, ADP 62.0. Started% 96.4."
         },
         {
           "name": "Derrick Henry",
@@ -5110,34 +5098,22 @@
           "age": 32,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 5691,
+          "ktcValue": 5708,
           "ktcAdp": 34.0,
           "ktcPosRank": 17,
-          "note": "KTC 1QB rank #47, value 5691, ADP 34.0. Started% 98.6. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC 1QB rank #47, value 5708, ADP 34.0. Started% 98.6. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
-          "name": "Colston Loveland",
-          "pos": "TE",
-          "team": "CHI",
-          "age": 22,
-          "category": "foundational",
-          "tier": "S",
-          "ktcValue": 6150,
-          "ktcAdp": 66.0,
-          "ktcPosRank": 4,
-          "note": "KTC 1QB rank #35, value 6150, ADP 66.0. Started% 98.4."
-        },
-        {
-          "name": "Bucky Irving",
-          "pos": "RB",
-          "team": "TBB",
+          "name": "Brian Thomas Jr.",
+          "pos": "WR",
+          "team": "JAX",
           "age": 24,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 5721,
-          "ktcAdp": 35.0,
-          "ktcPosRank": 16,
-          "note": "KTC 1QB rank #46, value 5721, ADP 35.0. Started% 89.7. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcValue": 4607,
+          "ktcAdp": 34.0,
+          "ktcPosRank": 34,
+          "note": "KTC 1QB rank #81, value 4607, ADP 34.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Caleb Williams",
@@ -5146,47 +5122,70 @@
           "age": 24,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 6111,
+          "ktcValue": 6108,
           "ktcAdp": 84.0,
           "ktcPosRank": 3,
-          "note": "KTC 1QB rank #36, value 6111, ADP 84.0. Started% 86.5."
+          "note": "KTC 1QB rank #35, value 6108, ADP 84.0. Started% 86.5."
         },
         {
-          "name": "Drake Maye",
-          "pos": "QB",
-          "team": "NEP",
+          "name": "Bucky Irving",
+          "pos": "RB",
+          "team": "TB",
           "age": 24,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 6107,
-          "ktcAdp": 78.0,
+          "ktcValue": 5718,
+          "ktcAdp": 35.0,
+          "ktcPosRank": 16,
+          "note": "KTC 1QB rank #46, value 5718, ADP 35.0. Started% 89.7. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Colston Loveland",
+          "pos": "TE",
+          "team": "CHI",
+          "age": 22,
+          "category": "foundational",
+          "tier": "S",
+          "ktcValue": 6093,
+          "ktcAdp": 66.0,
           "ktcPosRank": 4,
-          "note": "KTC 1QB rank #37, value 6107, ADP 78.0. Started% 88.8."
+          "note": "KTC 1QB rank #36, value 6093, ADP 66.0. Started% 98.4."
         },
         {
           "name": "Parker Washington",
           "pos": "WR",
-          "team": "JAC",
+          "team": "JAX",
           "age": 24,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 5976,
+          "ktcValue": 6083,
           "ktcAdp": 94.0,
           "ktcPosRank": 18,
-          "note": "KTC 1QB rank #38, value 5976, ADP 94.0. Started% 59.2."
+          "note": "KTC 1QB rank #37, value 6083, ADP 94.0. Started% 59.2."
         },
         {
-          "name": "Jadarian Price",
-          "pos": "RB",
-          "team": "SEA",
-          "age": 23,
+          "name": "Drake Maye",
+          "pos": "QB",
+          "team": "NE",
+          "age": 24,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 5909,
-          "ktcAdp": 58.0,
-          "ktcPosRank": 13,
-          "note": "KTC 1QB rank #39, value 5909, ADP 58.0. Started% 56.0.",
-          "rookie": true
+          "ktcValue": 6081,
+          "ktcAdp": 78.0,
+          "ktcPosRank": 4,
+          "note": "KTC 1QB rank #38, value 6081, ADP 78.0. Started% 88.8."
+        },
+        {
+          "name": "Joe Burrow",
+          "pos": "QB",
+          "team": "CIN",
+          "age": 29,
+          "category": "foundational",
+          "tier": "S",
+          "ktcValue": 5861,
+          "ktcAdp": 47.0,
+          "ktcPosRank": 5,
+          "note": "KTC 1QB rank #39, value 5861, ADP 47.0. Started% 95.5."
         },
         {
           "name": "Tee Higgins",
@@ -5197,20 +5196,45 @@
           "tier": "S",
           "ktcValue": 5721,
           "ktcAdp": 39.0,
-          "ktcPosRank": 21,
-          "note": "KTC 1QB rank #45, value 5721, ADP 39.0. Started% 94.9. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 20,
+          "note": "KTC 1QB rank #44, value 5721, ADP 39.0. Started% 94.9. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
-          "name": "Joe Burrow",
-          "pos": "QB",
-          "team": "CIN",
-          "age": 29,
+          "name": "Jadarian Price",
+          "pos": "RB",
+          "team": "SEA",
+          "age": 23,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 5860,
-          "ktcAdp": 47.0,
-          "ktcPosRank": 5,
-          "note": "KTC 1QB rank #40, value 5860, ADP 47.0. Started% 95.5."
+          "ktcValue": 5853,
+          "ktcAdp": 58.0,
+          "ktcPosRank": 13,
+          "note": "KTC 1QB rank #40, value 5853, ADP 58.0. Started% 56.0.",
+          "rookie": true
+        },
+        {
+          "name": "Rashee Rice",
+          "pos": "WR",
+          "team": "KC",
+          "age": 26,
+          "category": "foundational",
+          "tier": "S",
+          "ktcValue": 5421,
+          "ktcAdp": 40.0,
+          "ktcPosRank": 25,
+          "note": "KTC 1QB rank #58, value 5421, ADP 40.0. Started% 93.2. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "TreVeyon Henderson",
+          "pos": "RB",
+          "team": "NE",
+          "age": 23,
+          "category": "foundational",
+          "tier": "S",
+          "ktcValue": 5772,
+          "ktcAdp": 45.0,
+          "ktcPosRank": 15,
+          "note": "KTC 1QB rank #42, value 5772, ADP 45.0. Started% 15.3."
         },
         {
           "name": "Luther Burden",
@@ -5219,35 +5243,10 @@
           "age": 22,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 5802,
+          "ktcValue": 5761,
           "ktcAdp": 81.0,
           "ktcPosRank": 19,
-          "note": "KTC 1QB rank #41, value 5802, ADP 81.0. Started% 81.5."
-        },
-        {
-          "name": "Rashee Rice",
-          "pos": "WR",
-          "team": "KCC",
-          "age": 26,
-          "category": "foundational",
-          "tier": "S",
-          "ktcValue": 5499,
-          "ktcAdp": 41.0,
-          "ktcPosRank": 24,
-          "note": "KTC 1QB rank #55, value 5499, ADP 41.0. Started% 93.2. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Carnell Tate",
-          "pos": "WR",
-          "team": "TEN",
-          "age": 21,
-          "category": "foundational",
-          "tier": "S",
-          "ktcValue": 5798,
-          "ktcAdp": 45.0,
-          "ktcPosRank": 20,
-          "note": "KTC 1QB rank #42, value 5798, ADP 45.0. Started% 49.6.",
-          "rookie": true
+          "note": "KTC 1QB rank #43, value 5761, ADP 81.0. Started% 81.5."
         },
         {
           "name": "Jayden Daniels",
@@ -5256,22 +5255,23 @@
           "age": 25,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 5660,
+          "ktcValue": 5609,
           "ktcAdp": 44.0,
           "ktcPosRank": 6,
-          "note": "KTC 1QB rank #50, value 5660, ADP 44.0. Started% 72.4. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC 1QB rank #51, value 5609, ADP 44.0. Started% 72.4. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
-          "name": "TreVeyon Henderson",
-          "pos": "RB",
-          "team": "NEP",
-          "age": 23,
+          "name": "Carnell Tate",
+          "pos": "WR",
+          "team": "TEN",
+          "age": 21,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 5729,
+          "ktcValue": 5721,
           "ktcAdp": 45.0,
-          "ktcPosRank": 15,
-          "note": "KTC 1QB rank #44, value 5729, ADP 45.0. Started% 15.3."
+          "ktcPosRank": 21,
+          "note": "KTC 1QB rank #45, value 5721, ADP 45.0. Started% 49.6.",
+          "rookie": true
         },
         {
           "name": "Marvin Harrison Jr.",
@@ -5280,10 +5280,10 @@
           "age": 24,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 4492,
+          "ktcValue": 4417,
           "ktcAdp": 45.0,
-          "ktcPosRank": 37,
-          "note": "KTC 1QB rank #86, value 4492, ADP 45.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 38,
+          "note": "KTC 1QB rank #91, value 4417, ADP 45.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Jaylen Waddle",
@@ -5292,10 +5292,10 @@
           "age": 27,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 5664,
+          "ktcValue": 5661,
           "ktcAdp": 59.0,
           "ktcPosRank": 22,
-          "note": "KTC 1QB rank #49, value 5664, ADP 59.0. Started% 91.6."
+          "note": "KTC 1QB rank #49, value 5661, ADP 59.0. Started% 91.6."
         },
         {
           "name": "Jalen Hurts",
@@ -5304,10 +5304,10 @@
           "age": 28,
           "category": "foundational",
           "tier": "S",
-          "ktcValue": 5339,
+          "ktcValue": 5349,
           "ktcAdp": 50.0,
           "ktcPosRank": 7,
-          "note": "KTC 1QB rank #61, value 5339, ADP 50.0. Started% 91.8. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC 1QB rank #61, value 5349, ADP 50.0. Started% 91.8. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Javonte Williams",
@@ -5315,23 +5315,23 @@
           "team": "DAL",
           "age": 26,
           "category": "foundational",
-          "tier": "A",
-          "ktcValue": 5626,
-          "ktcAdp": 86.0,
+          "tier": "S",
+          "ktcValue": 5656,
+          "ktcAdp": 85.0,
           "ktcPosRank": 19,
-          "note": "KTC 1QB rank #51, value 5626, ADP 86.0. Started% 96.1."
+          "note": "KTC 1QB rank #50, value 5656, ADP 85.0. Started% 96.1."
         },
         {
-          "name": "Cam Skattebo",
-          "pos": "RB",
-          "team": "NYG",
-          "age": 24,
+          "name": "Christian Watson",
+          "pos": "WR",
+          "team": "GB",
+          "age": 27,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 5581,
-          "ktcAdp": 76.0,
-          "ktcPosRank": 20,
-          "note": "KTC 1QB rank #52, value 5581, ADP 76.0. Started% 92.9."
+          "ktcValue": 5579,
+          "ktcAdp": 105.0,
+          "ktcPosRank": 23,
+          "note": "KTC 1QB rank #52, value 5579, ADP 105.0. Started% 69.0."
         },
         {
           "name": "D'Andre Swift",
@@ -5340,22 +5340,34 @@
           "age": 27,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 5533,
+          "ktcValue": 5547,
           "ktcAdp": 72.0,
+          "ktcPosRank": 20,
+          "note": "KTC 1QB rank #53, value 5547, ADP 72.0. Started% 86.1."
+        },
+        {
+          "name": "Cam Skattebo",
+          "pos": "RB",
+          "team": "NYG",
+          "age": 24,
+          "category": "foundational",
+          "tier": "A",
+          "ktcValue": 5529,
+          "ktcAdp": 75.0,
           "ktcPosRank": 21,
-          "note": "KTC 1QB rank #53, value 5533, ADP 72.0. Started% 86.1."
+          "note": "KTC 1QB rank #54, value 5529, ADP 75.0. Started% 92.9."
         },
         {
           "name": "Jordyn Tyson",
           "pos": "WR",
-          "team": "NOS",
+          "team": "NO",
           "age": 22,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 5528,
-          "ktcAdp": 65.0,
-          "ktcPosRank": 23,
-          "note": "KTC 1QB rank #54, value 5528, ADP 65.0. Started% 4.4.",
+          "ktcValue": 5517,
+          "ktcAdp": 67.0,
+          "ktcPosRank": 24,
+          "note": "KTC 1QB rank #55, value 5517, ADP 67.0. Started% 4.4.",
           "rookie": true
         },
         {
@@ -5365,22 +5377,22 @@
           "age": 22,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 5489,
+          "ktcValue": 5500,
           "ktcAdp": 65.0,
           "ktcPosRank": 22,
-          "note": "KTC 1QB rank #56, value 5489, ADP 65.0. Started% 74.9."
+          "note": "KTC 1QB rank #56, value 5500, ADP 65.0. Started% 74.9."
         },
         {
           "name": "Tucker Kraft",
           "pos": "TE",
-          "team": "GBP",
+          "team": "GB",
           "age": 25,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 5484,
-          "ktcAdp": 91.0,
+          "ktcValue": 5495,
+          "ktcAdp": 90.0,
           "ktcPosRank": 5,
-          "note": "KTC 1QB rank #57, value 5484, ADP 91.0. Started% 85.1."
+          "note": "KTC 1QB rank #57, value 5495, ADP 90.0. Started% 85.1."
         },
         {
           "name": "Rome Odunze",
@@ -5389,10 +5401,10 @@
           "age": 24,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 5431,
+          "ktcValue": 5357,
           "ktcAdp": 57.0,
-          "ktcPosRank": 26,
-          "note": "KTC 1QB rank #59, value 5431, ADP 57.0. Started% 52.4. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 27,
+          "note": "KTC 1QB rank #60, value 5357, ADP 57.0. Started% 52.4. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Terry McLaurin",
@@ -5401,22 +5413,10 @@
           "age": 31,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 4056,
+          "ktcValue": 4069,
           "ktcAdp": 57.0,
           "ktcPosRank": 45,
-          "note": "KTC 1QB rank #106, value 4056, ADP 57.0. Started% 75.3. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Christian Watson",
-          "pos": "WR",
-          "team": "GBP",
-          "age": 27,
-          "category": "foundational",
-          "tier": "A",
-          "ktcValue": 5472,
-          "ktcAdp": 106.0,
-          "ktcPosRank": 25,
-          "note": "KTC 1QB rank #58, value 5472, ADP 106.0. Started% 69.0."
+          "note": "KTC 1QB rank #103, value 4069, ADP 57.0. Started% 75.3. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "D.J. Moore",
@@ -5425,10 +5425,10 @@
           "age": 29,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 4596,
+          "ktcValue": 4549,
           "ktcAdp": 58.0,
-          "ktcPosRank": 35,
-          "note": "KTC 1QB rank #83, value 4596, ADP 58.0. Started% 74.3. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 36,
+          "note": "KTC 1QB rank #84, value 4549, ADP 58.0. Started% 74.3. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Jameson Williams",
@@ -5437,10 +5437,10 @@
           "age": 25,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 5073,
+          "ktcValue": 5045,
           "ktcAdp": 60.0,
           "ktcPosRank": 30,
-          "note": "KTC 1QB rank #69, value 5073, ADP 60.0. Started% 82.2. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC 1QB rank #69, value 5045, ADP 60.0. Started% 82.2. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Davante Adams",
@@ -5449,34 +5449,46 @@
           "age": 33,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 4422,
+          "ktcValue": 4494,
           "ktcAdp": 61.0,
-          "ktcPosRank": 38,
-          "note": "KTC 1QB rank #88, value 4422, ADP 61.0. Started% 83.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 37,
+          "note": "KTC 1QB rank #86, value 4494, ADP 61.0. Started% 83.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Trevor Lawrence",
           "pos": "QB",
-          "team": "JAC",
+          "team": "JAX",
           "age": 27,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 5291,
+          "ktcValue": 5271,
           "ktcAdp": 118.0,
           "ktcPosRank": 8,
-          "note": "KTC 1QB rank #62, value 5291, ADP 118.0. Started% 56.2."
+          "note": "KTC 1QB rank #62, value 5271, ADP 118.0. Started% 56.2."
         },
         {
           "name": "Bhayshul Tuten",
           "pos": "RB",
-          "team": "JAC",
+          "team": "JAX",
           "age": 23,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 5233,
+          "ktcValue": 5232,
           "ktcAdp": 99.0,
           "ktcPosRank": 23,
-          "note": "KTC 1QB rank #63, value 5233, ADP 99.0. Started% 65.4."
+          "note": "KTC 1QB rank #63, value 5232, ADP 99.0. Started% 65.4."
+        },
+        {
+          "name": "Patrick Mahomes",
+          "pos": "QB",
+          "team": "KC",
+          "age": 31,
+          "category": "foundational",
+          "tier": "A",
+          "ktcValue": 5205,
+          "ktcAdp": 73.0,
+          "ktcPosRank": 9,
+          "note": "KTC 1QB rank #64, value 5205, ADP 73.0. Started% 29.1."
         },
         {
           "name": "Sam LaPorta",
@@ -5485,71 +5497,10 @@
           "age": 25,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 5172,
+          "ktcValue": 5138,
           "ktcAdp": 64.0,
           "ktcPosRank": 6,
-          "note": "KTC 1QB rank #64, value 5172, ADP 64.0. Started% 93.8."
-        },
-        {
-          "name": "Patrick Mahomes",
-          "pos": "QB",
-          "team": "KCC",
-          "age": 31,
-          "category": "foundational",
-          "tier": "A",
-          "ktcValue": 5148,
-          "ktcAdp": 73.0,
-          "ktcPosRank": 9,
-          "note": "KTC 1QB rank #65, value 5148, ADP 73.0. Started% 29.1."
-        },
-        {
-          "name": "DK Metcalf",
-          "pos": "WR",
-          "team": "PIT",
-          "age": 28,
-          "category": "foundational",
-          "tier": "A",
-          "ktcValue": 3962,
-          "ktcAdp": 65.0,
-          "ktcPosRank": 49,
-          "note": "KTC 1QB rank #116, value 3962, ADP 65.0. Started% 53.6. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Justin Herbert",
-          "pos": "QB",
-          "team": "LAC",
-          "age": 28,
-          "category": "foundational",
-          "tier": "A",
-          "ktcValue": 5142,
-          "ktcAdp": 101.0,
-          "ktcPosRank": 10,
-          "note": "KTC 1QB rank #66, value 5142, ADP 101.0. Started% 76.0."
-        },
-        {
-          "name": "KC Concepcion",
-          "pos": "WR",
-          "team": "CLE",
-          "age": 22,
-          "category": "foundational",
-          "tier": "A",
-          "ktcValue": 5096,
-          "ktcAdp": 83.0,
-          "ktcPosRank": 28,
-          "note": "KTC 1QB rank #67, value 5096, ADP 83.0. Started% 8.5.",
-          "rookie": true
-        },
-        {
-          "name": "Mike Evans",
-          "pos": "WR",
-          "team": "SFO",
-          "age": 33,
-          "category": "foundational",
-          "tier": "A",
-          "ktcValue": 4166,
-          "ktcAdp": 67.0,
-          "ktcPosRank": 43,
-          "note": "KTC 1QB rank #100, value 4166, ADP 67.0. Started% 68.8. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC 1QB rank #67, value 5138, ADP 64.0. Started% 93.8. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Jalen Coker",
@@ -5558,10 +5509,59 @@
           "age": 24,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 5090,
-          "ktcAdp": 152.0,
+          "ktcValue": 5204,
+          "ktcAdp": 151.0,
+          "ktcPosRank": 28,
+          "note": "KTC 1QB rank #65, value 5204, ADP 151.0. Started% 22.1."
+        },
+        {
+          "name": "DK Metcalf",
+          "pos": "WR",
+          "team": "PIT",
+          "age": 28,
+          "category": "foundational",
+          "tier": "A",
+          "ktcValue": 3930,
+          "ktcAdp": 65.0,
+          "ktcPosRank": 50,
+          "note": "KTC 1QB rank #116, value 3930, ADP 65.0. Started% 53.6. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Denzel Boston",
+          "pos": "WR",
+          "team": "CLE",
+          "age": 22,
+          "category": "foundational",
+          "tier": "A",
+          "ktcValue": 5168,
+          "ktcAdp": 112.0,
           "ktcPosRank": 29,
-          "note": "KTC 1QB rank #68, value 5090, ADP 152.0. Started% 22.1."
+          "note": "KTC 1QB rank #66, value 5168, ADP 112.0. Started% 1.6.",
+          "rookie": true
+        },
+        {
+          "name": "Mike Evans",
+          "pos": "WR",
+          "team": "SF",
+          "age": 33,
+          "category": "foundational",
+          "tier": "A",
+          "ktcValue": 4161,
+          "ktcAdp": 67.0,
+          "ktcPosRank": 43,
+          "note": "KTC 1QB rank #101, value 4161, ADP 67.0. Started% 68.8. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Justin Herbert",
+          "pos": "QB",
+          "team": "LAC",
+          "age": 28,
+          "category": "foundational",
+          "tier": "A",
+          "ktcValue": 5087,
+          "ktcAdp": 101.0,
+          "ktcPosRank": 10,
+          "note": "KTC 1QB rank #68, value 5087, ADP 101.0. Started% 76.0."
         },
         {
           "name": "RJ Harvey",
@@ -5570,60 +5570,22 @@
           "age": 25,
           "category": "foundational",
           "tier": "A",
-          "ktcValue": 4047,
+          "ktcValue": 4046,
           "ktcAdp": 68.0,
-          "ktcPosRank": 33,
-          "note": "KTC 1QB rank #107, value 4047, ADP 68.0. Started% 38.6. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 31,
+          "note": "KTC 1QB rank #106, value 4046, ADP 68.0. Started% 38.6. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "George Kittle",
           "pos": "TE",
-          "team": "SFO",
+          "team": "SF",
           "age": 33,
           "category": "foundational",
           "tier": "B",
-          "ktcValue": 4142,
+          "ktcValue": 4206,
           "ktcAdp": 69.0,
           "ktcPosRank": 12,
-          "note": "KTC 1QB rank #101, value 4142, ADP 69.0. Started% 52.2. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Denzel Boston",
-          "pos": "WR",
-          "team": "CLE",
-          "age": 22,
-          "category": "foundational",
-          "tier": "B",
-          "ktcValue": 5040,
-          "ktcAdp": 112.0,
-          "ktcPosRank": 31,
-          "note": "KTC 1QB rank #70, value 5040, ADP 112.0. Started% 1.6.",
-          "rookie": true
-        },
-        {
-          "name": "Harold Fannin",
-          "pos": "TE",
-          "team": "CLE",
-          "age": 22,
-          "category": "foundational",
-          "tier": "B",
-          "ktcValue": 5032,
-          "ktcAdp": 90.0,
-          "ktcPosRank": 7,
-          "note": "KTC 1QB rank #71, value 5032, ADP 90.0. Started% 84.6."
-        },
-        {
-          "name": "Makai Lemon",
-          "pos": "WR",
-          "team": "PHI",
-          "age": 22,
-          "category": "foundational",
-          "tier": "B",
-          "ktcValue": 4961,
-          "ktcAdp": 72.0,
-          "ktcPosRank": 32,
-          "note": "KTC 1QB rank #72, value 4961, ADP 72.0. Started% 7.7.",
-          "rookie": true
+          "note": "KTC 1QB rank #100, value 4206, ADP 69.0. Started% 52.2. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Dalton Kincaid",
@@ -5632,22 +5594,84 @@
           "age": 26,
           "category": "foundational",
           "tier": "B",
-          "ktcValue": 4911,
+          "ktcValue": 5028,
           "ktcAdp": 120.0,
-          "ktcPosRank": 8,
-          "note": "KTC 1QB rank #73, value 4911, ADP 120.0. Started% 53.2."
+          "ktcPosRank": 7,
+          "note": "KTC 1QB rank #70, value 5028, ADP 120.0. Started% 53.2."
         },
         {
-          "name": "Jaxson Dart",
-          "pos": "QB",
-          "team": "NYG",
+          "name": "KC Concepcion",
+          "pos": "WR",
+          "team": "CLE",
+          "age": 22,
+          "category": "foundational",
+          "tier": "B",
+          "ktcValue": 5016,
+          "ktcAdp": 84.0,
+          "ktcPosRank": 31,
+          "note": "KTC 1QB rank #71, value 5016, ADP 84.0. Started% 8.5.",
+          "rookie": true
+        },
+        {
+          "name": "Matthew Golden",
+          "pos": "WR",
+          "team": "GB",
           "age": 23,
           "category": "foundational",
           "tier": "B",
-          "ktcValue": 4898,
-          "ktcAdp": 107.0,
+          "ktcValue": 4987,
+          "ktcAdp": 88.0,
+          "ktcPosRank": 32,
+          "note": "KTC 1QB rank #72, value 4987, ADP 88.0. Started% 9.5."
+        },
+        {
+          "name": "Brock Purdy",
+          "pos": "QB",
+          "team": "SF",
+          "age": 26,
+          "category": "foundational",
+          "tier": "B",
+          "ktcValue": 4968,
+          "ktcAdp": 109.0,
           "ktcPosRank": 11,
-          "note": "KTC 1QB rank #74, value 4898, ADP 107.0. Started% 59.1."
+          "note": "KTC 1QB rank #73, value 4968, ADP 109.0. Started% 32.5."
+        },
+        {
+          "name": "Harold Fannin",
+          "pos": "TE",
+          "team": "CLE",
+          "age": 22,
+          "category": "foundational",
+          "tier": "B",
+          "ktcValue": 4963,
+          "ktcAdp": 90.0,
+          "ktcPosRank": 8,
+          "note": "KTC 1QB rank #74, value 4963, ADP 90.0. Started% 84.6."
+        },
+        {
+          "name": "Makai Lemon",
+          "pos": "WR",
+          "team": "PHI",
+          "age": 22,
+          "category": "foundational",
+          "tier": "B",
+          "ktcValue": 4885,
+          "ktcAdp": 72.0,
+          "ktcPosRank": 33,
+          "note": "KTC 1QB rank #75, value 4885, ADP 72.0. Started% 7.7.",
+          "rookie": true
+        },
+        {
+          "name": "Travis Etienne",
+          "pos": "RB",
+          "team": "NO",
+          "age": 27,
+          "category": "foundational",
+          "tier": "B",
+          "ktcValue": 4709,
+          "ktcAdp": 75.0,
+          "ktcPosRank": 24,
+          "note": "KTC 1QB rank #79, value 4709, ADP 75.0. Started% 93.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Chuba Hubbard",
@@ -5656,46 +5680,22 @@
           "age": 27,
           "category": "foundational",
           "tier": "B",
-          "ktcValue": 4366,
-          "ktcAdp": 74.0,
-          "ktcPosRank": 27,
-          "note": "KTC 1QB rank #91, value 4366, ADP 74.0. Started% 41.8. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Brock Purdy",
-          "pos": "QB",
-          "team": "SFO",
-          "age": 26,
-          "category": "foundational",
-          "tier": "B",
-          "ktcValue": 4870,
-          "ktcAdp": 109.0,
-          "ktcPosRank": 12,
-          "note": "KTC 1QB rank #75, value 4870, ADP 109.0. Started% 32.5."
-        },
-        {
-          "name": "Travis Etienne",
-          "pos": "RB",
-          "team": "NOS",
-          "age": 27,
-          "category": "foundational",
-          "tier": "B",
-          "ktcValue": 4807,
+          "ktcValue": 4462,
           "ktcAdp": 75.0,
-          "ktcPosRank": 24,
-          "note": "KTC 1QB rank #77, value 4807, ADP 75.0. Started% 93.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 27,
+          "note": "KTC 1QB rank #87, value 4462, ADP 75.0. Started% 41.8. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
-          "name": "Matthew Golden",
-          "pos": "WR",
-          "team": "GBP",
+          "name": "Jaxson Dart",
+          "pos": "QB",
+          "team": "NYG",
           "age": 23,
           "category": "foundational",
           "tier": "B",
-          "ktcValue": 4859,
-          "ktcAdp": 88.0,
-          "ktcPosRank": 33,
-          "note": "KTC 1QB rank #76, value 4859, ADP 88.0. Started% 9.5."
+          "ktcValue": 4794,
+          "ktcAdp": 107.0,
+          "ktcPosRank": 12,
+          "note": "KTC 1QB rank #76, value 4794, ADP 107.0. Started% 59.1."
         },
         {
           "name": "David Montgomery",
@@ -5704,10 +5704,10 @@
           "age": 29,
           "category": "foundational",
           "tier": "B",
-          "ktcValue": 4634,
-          "ktcAdp": 77.0,
+          "ktcValue": 4577,
+          "ktcAdp": 76.0,
           "ktcPosRank": 25,
-          "note": "KTC 1QB rank #81, value 4634, ADP 77.0. Started% 89.8. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC 1QB rank #82, value 4577, ADP 76.0. Started% 89.8. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Bo Nix",
@@ -5716,10 +5716,10 @@
           "age": 26,
           "category": "foundational",
           "tier": "B",
-          "ktcValue": 4756,
+          "ktcValue": 4728,
           "ktcAdp": 86.0,
           "ktcPosRank": 13,
-          "note": "KTC 1QB rank #78, value 4756, ADP 86.0. Started% 38.7."
+          "note": "KTC 1QB rank #77, value 4728, ADP 86.0. Started% 38.7."
         },
         {
           "name": "Isaiah Likely",
@@ -5728,10 +5728,10 @@
           "age": 26,
           "category": "foundational",
           "tier": "B",
-          "ktcValue": 4697,
-          "ktcAdp": 138.0,
+          "ktcValue": 4720,
+          "ktcAdp": 137.0,
           "ktcPosRank": 9,
-          "note": "KTC 1QB rank #80, value 4697, ADP 138.0. Started% 45.7."
+          "note": "KTC 1QB rank #78, value 4720, ADP 137.0. Started% 45.7."
         },
         {
           "name": "Dak Prescott",
@@ -5740,10 +5740,10 @@
           "age": 33,
           "category": "foundational",
           "tier": "B",
-          "ktcValue": 4608,
-          "ktcAdp": 104.0,
+          "ktcValue": 4623,
+          "ktcAdp": 103.0,
           "ktcPosRank": 14,
-          "note": "KTC 1QB rank #82, value 4608, ADP 104.0. Started% 75.3."
+          "note": "KTC 1QB rank #80, value 4623, ADP 103.0. Started% 75.3."
         },
         {
           "name": "Michael Wilson",
@@ -5752,10 +5752,10 @@
           "age": 26,
           "category": "foundational",
           "tier": "B",
-          "ktcValue": 4536,
+          "ktcValue": 4569,
           "ktcAdp": 128.0,
-          "ktcPosRank": 36,
-          "note": "KTC 1QB rank #84, value 4536, ADP 128.0. Started% 34.6."
+          "ktcPosRank": 35,
+          "note": "KTC 1QB rank #83, value 4569, ADP 128.0. Started% 34.6."
         },
         {
           "name": "Blake Corum",
@@ -5764,10 +5764,10 @@
           "age": 25,
           "category": "foundational",
           "tier": "B",
-          "ktcValue": 4513,
+          "ktcValue": 4519,
           "ktcAdp": 137.0,
           "ktcPosRank": 26,
-          "note": "KTC 1QB rank #85, value 4513, ADP 137.0. Started% 16.0."
+          "note": "KTC 1QB rank #85, value 4519, ADP 137.0. Started% 16.0."
         },
         {
           "name": "Kyle Pitts",
@@ -5776,22 +5776,35 @@
           "age": 26,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 4478,
+          "ktcValue": 4453,
           "ktcAdp": 99.0,
           "ktcPosRank": 10,
-          "note": "KTC 1QB rank #87, value 4478, ADP 99.0. Started% 78.4."
+          "note": "KTC 1QB rank #88, value 4453, ADP 99.0. Started% 78.4."
         },
         {
           "name": "Fernando Mendoza",
           "pos": "QB",
-          "team": "LVR",
+          "team": "LV",
           "age": 23,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 4420,
+          "ktcValue": 4431,
           "ktcAdp": 100.0,
           "ktcPosRank": 15,
-          "note": "KTC 1QB rank #89, value 4420, ADP 100.0. Started% 1.3.",
+          "note": "KTC 1QB rank #89, value 4431, ADP 100.0. Started% 1.3.",
+          "rookie": true
+        },
+        {
+          "name": "Kenyon Sadiq",
+          "pos": "TE",
+          "team": "NYJ",
+          "age": 21,
+          "category": "foundational",
+          "tier": "C",
+          "ktcValue": 4430,
+          "ktcAdp": 101.0,
+          "ktcPosRank": 11,
+          "note": "KTC 1QB rank #90, value 4430, ADP 101.0. Started% 3.2.",
           "rookie": true
         },
         {
@@ -5801,23 +5814,10 @@
           "age": 31,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 3511,
+          "ktcValue": 3467,
           "ktcAdp": 75.0,
           "ktcPosRank": 66,
-          "note": "KTC 1QB rank #149, value 3511, ADP 75.0. Started% 37.6. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Kenyon Sadiq",
-          "pos": "TE",
-          "team": "NYJ",
-          "age": 21,
-          "category": "foundational",
-          "tier": "C",
-          "ktcValue": 4383,
-          "ktcAdp": 100.0,
-          "ktcPosRank": 11,
-          "note": "KTC 1QB rank #90, value 4383, ADP 100.0. Started% 3.2.",
-          "rookie": true
+          "note": "KTC 1QB rank #150, value 3467, ADP 75.0. Started% 37.6. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Jaylen Warren",
@@ -5826,35 +5826,10 @@
           "age": 27,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 4008,
+          "ktcValue": 4040,
           "ktcAdp": 91.0,
-          "ktcPosRank": 35,
-          "note": "KTC 1QB rank #112, value 4008, ADP 91.0. Started% 76.5. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "De'Zhaun Stribling",
-          "pos": "WR",
-          "team": "SFO",
-          "age": 23,
-          "category": "foundational",
-          "tier": "C",
-          "ktcValue": 4366,
-          "ktcAdp": 113.0,
-          "ktcPosRank": 39,
-          "note": "KTC 1QB rank #92, value 4366, ADP 113.0. Started% 3.9.",
-          "rookie": true
-        },
-        {
-          "name": "Chris Godwin",
-          "pos": "WR",
-          "team": "TBB",
-          "age": 30,
-          "category": "foundational",
-          "tier": "C",
-          "ktcValue": 3660,
-          "ktcAdp": 92.0,
-          "ktcPosRank": 58,
-          "note": "KTC 1QB rank #133, value 3660, ADP 92.0. Started% 37.2. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 33,
+          "note": "KTC 1QB rank #108, value 4040, ADP 91.0. Started% 76.5. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Josh Downs",
@@ -5863,22 +5838,34 @@
           "age": 25,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 4346,
+          "ktcValue": 4379,
           "ktcAdp": 103.0,
-          "ktcPosRank": 40,
-          "note": "KTC 1QB rank #93, value 4346, ADP 103.0. Started% 28.6."
+          "ktcPosRank": 39,
+          "note": "KTC 1QB rank #92, value 4379, ADP 103.0. Started% 28.6."
         },
         {
-          "name": "Jordan Love",
+          "name": "Chris Godwin",
+          "pos": "WR",
+          "team": "TB",
+          "age": 30,
+          "category": "foundational",
+          "tier": "C",
+          "ktcValue": 3638,
+          "ktcAdp": 92.0,
+          "ktcPosRank": 58,
+          "note": "KTC 1QB rank #133, value 3638, ADP 92.0. Started% 37.2. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Tyler Shough",
           "pos": "QB",
-          "team": "GBP",
+          "team": "NO",
           "age": 27,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 4337,
-          "ktcAdp": 129.0,
+          "ktcValue": 4342,
+          "ktcAdp": 138.0,
           "ktcPosRank": 16,
-          "note": "KTC 1QB rank #94, value 4337, ADP 129.0. Started% 17.2."
+          "note": "KTC 1QB rank #93, value 4342, ADP 138.0. Started% 12.6."
         },
         {
           "name": "Jonah Coleman",
@@ -5887,10 +5874,10 @@
           "age": 23,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 4321,
-          "ktcAdp": 112.0,
+          "ktcValue": 4339,
+          "ktcAdp": 113.0,
           "ktcPosRank": 28,
-          "note": "KTC 1QB rank #95, value 4321, ADP 112.0. Started% 1.2.",
+          "note": "KTC 1QB rank #94, value 4339, ADP 113.0. Started% 1.2.",
           "rookie": true
         },
         {
@@ -5900,34 +5887,35 @@
           "age": 24,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 4312,
+          "ktcValue": 4320,
           "ktcAdp": 130.0,
           "ktcPosRank": 29,
-          "note": "KTC 1QB rank #96, value 4312, ADP 130.0. Started% 15.5."
+          "note": "KTC 1QB rank #95, value 4320, ADP 130.0. Started% 15.5."
         },
         {
-          "name": "Tyler Shough",
+          "name": "Jordan Love",
           "pos": "QB",
-          "team": "NOS",
+          "team": "GB",
           "age": 27,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 4309,
-          "ktcAdp": 138.0,
+          "ktcValue": 4315,
+          "ktcAdp": 129.0,
           "ktcPosRank": 17,
-          "note": "KTC 1QB rank #97, value 4309, ADP 138.0. Started% 12.6."
+          "note": "KTC 1QB rank #96, value 4315, ADP 129.0. Started% 17.2."
         },
         {
-          "name": "Jordan Addison",
+          "name": "De'Zhaun Stribling",
           "pos": "WR",
-          "team": "MIN",
-          "age": 24,
+          "team": "SF",
+          "age": 23,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 4300,
-          "ktcAdp": 84.0,
-          "ktcPosRank": 41,
-          "note": "KTC 1QB rank #98, value 4300, ADP 84.0. Started% 28.6."
+          "ktcValue": 4307,
+          "ktcAdp": 112.0,
+          "ktcPosRank": 40,
+          "note": "KTC 1QB rank #97, value 4307, ADP 112.0. Started% 3.9.",
+          "rookie": true
         },
         {
           "name": "Alec Pierce",
@@ -5936,10 +5924,22 @@
           "age": 26,
           "category": "foundational",
           "tier": "C",
+          "ktcValue": 4297,
+          "ktcAdp": 127.0,
+          "ktcPosRank": 41,
+          "note": "KTC 1QB rank #98, value 4297, ADP 127.0. Started% 13.2."
+        },
+        {
+          "name": "Jordan Addison",
+          "pos": "WR",
+          "team": "MIN",
+          "age": 24,
+          "category": "foundational",
+          "tier": "C",
           "ktcValue": 4285,
-          "ktcAdp": 128.0,
+          "ktcAdp": 84.0,
           "ktcPosRank": 42,
-          "note": "KTC 1QB rank #99, value 4285, ADP 128.0. Started% 13.2."
+          "note": "KTC 1QB rank #99, value 4285, ADP 84.0. Started% 28.6."
         },
         {
           "name": "Antonio Williams",
@@ -5948,10 +5948,10 @@
           "age": 22,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 4100,
+          "ktcValue": 4077,
           "ktcAdp": 122.0,
           "ktcPosRank": 44,
-          "note": "KTC 1QB rank #102, value 4100, ADP 122.0. Started% 0.2.",
+          "note": "KTC 1QB rank #102, value 4077, ADP 122.0. Started% 0.2.",
           "rookie": true
         },
         {
@@ -5961,59 +5961,10 @@
           "age": 25,
           "category": "foundational",
           "tier": "C",
-          "ktcValue": 4080,
+          "ktcValue": 4069,
           "ktcAdp": 104.0,
           "ktcPosRank": 30,
-          "note": "KTC 1QB rank #103, value 4080, ADP 104.0. Started% 1.1."
-        },
-        {
-          "name": "Jacory Croskey-Merritt",
-          "pos": "RB",
-          "team": "WAS",
-          "age": 25,
-          "category": "foundational",
-          "tier": "C",
-          "ktcValue": 4071,
-          "ktcAdp": 122.0,
-          "ktcPosRank": 31,
-          "note": "KTC 1QB rank #104, value 4071, ADP 122.0. Started% 13.0."
-        },
-        {
-          "name": "Kaelon Black",
-          "pos": "RB",
-          "team": "SFO",
-          "age": 24,
-          "category": "foundational",
-          "tier": "D",
-          "ktcValue": 4065,
-          "ktcAdp": 155.0,
-          "ktcPosRank": 32,
-          "note": "KTC 1QB rank #105, value 4065, ADP 155.0. Started% 0.3.",
-          "rookie": true
-        },
-        {
-          "name": "Tony Pollard",
-          "pos": "RB",
-          "team": "TEN",
-          "age": 29,
-          "category": "foundational",
-          "tier": "D",
-          "ktcValue": 3258,
-          "ktcAdp": 93.0,
-          "ktcPosRank": 48,
-          "note": "KTC 1QB rank #165, value 3258, ADP 93.0. Started% 42.5. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Jayden Reed",
-          "pos": "WR",
-          "team": "GBP",
-          "age": 26,
-          "category": "foundational",
-          "tier": "D",
-          "ktcValue": 3709,
-          "ktcAdp": 106.0,
-          "ktcPosRank": 56,
-          "note": "KTC 1QB rank #130, value 3709, ADP 106.0. Started% 40.2. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC 1QB rank #104, value 4069, ADP 104.0. Started% 1.1."
         },
         {
           "name": "Omar Cooper Jr.",
@@ -6022,35 +5973,71 @@
           "age": 22,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 4045,
+          "ktcValue": 4051,
           "ktcAdp": 115.0,
           "ktcPosRank": 46,
-          "note": "KTC 1QB rank #108, value 4045, ADP 115.0.",
+          "note": "KTC 1QB rank #105, value 4051, ADP 115.0.",
           "rookie": true
         },
         {
-          "name": "Travis Kelce",
-          "pos": "TE",
-          "team": "KCC",
-          "age": 37,
+          "name": "Jayden Reed",
+          "pos": "WR",
+          "team": "GB",
+          "age": 26,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 3263,
-          "ktcAdp": 108.0,
-          "ktcPosRank": 20,
-          "note": "KTC 1QB rank #164, value 3263, ADP 108.0. Started% 60.2. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcValue": 3634,
+          "ktcAdp": 106.0,
+          "ktcPosRank": 59,
+          "note": "KTC 1QB rank #134, value 3634, ADP 106.0. Started% 40.2. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Rhamondre Stevenson",
           "pos": "RB",
-          "team": "NEP",
+          "team": "NE",
           "age": 28,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 4041,
+          "ktcValue": 4042,
           "ktcAdp": 109.0,
-          "ktcPosRank": 34,
-          "note": "KTC 1QB rank #109, value 4041, ADP 109.0. Started% 73.6."
+          "ktcPosRank": 32,
+          "note": "KTC 1QB rank #107, value 4042, ADP 109.0. Started% 73.6."
+        },
+        {
+          "name": "Travis Kelce",
+          "pos": "TE",
+          "team": "KC",
+          "age": 37,
+          "category": "foundational",
+          "tier": "D",
+          "ktcValue": 3343,
+          "ktcAdp": 108.0,
+          "ktcPosRank": 20,
+          "note": "KTC 1QB rank #157, value 3343, ADP 108.0. Started% 60.2. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Tony Pollard",
+          "pos": "RB",
+          "team": "TEN",
+          "age": 29,
+          "category": "foundational",
+          "tier": "D",
+          "ktcValue": 3246,
+          "ktcAdp": 93.0,
+          "ktcPosRank": 49,
+          "note": "KTC 1QB rank #168, value 3246, ADP 93.0. Started% 42.5. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Jared Goff",
+          "pos": "QB",
+          "team": "DET",
+          "age": 32,
+          "category": "foundational",
+          "tier": "D",
+          "ktcValue": 4029,
+          "ktcAdp": 124.0,
+          "ktcPosRank": 18,
+          "note": "KTC 1QB rank #109, value 4029, ADP 124.0. Started% 35.0."
         },
         {
           "name": "Caleb Douglas",
@@ -6059,35 +6046,24 @@
           "age": 23,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 4016,
+          "ktcValue": 4027,
           "ktcAdp": 180.0,
           "ktcPosRank": 47,
-          "note": "KTC 1QB rank #110, value 4016, ADP 180.0. Started% 0.8.",
+          "note": "KTC 1QB rank #110, value 4027, ADP 180.0. Started% 0.8.",
           "rookie": true
         },
         {
-          "name": "Jared Goff",
-          "pos": "QB",
-          "team": "DET",
-          "age": 31,
+          "name": "Kaelon Black",
+          "pos": "RB",
+          "team": "SF",
+          "age": 24,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 4013,
-          "ktcAdp": 123.0,
-          "ktcPosRank": 18,
-          "note": "KTC 1QB rank #111, value 4013, ADP 123.0. Started% 35.0."
-        },
-        {
-          "name": "Mark Andrews",
-          "pos": "TE",
-          "team": "BAL",
-          "age": 31,
-          "category": "foundational",
-          "tier": "D",
-          "ktcValue": 3218,
-          "ktcAdp": 110.0,
-          "ktcPosRank": 21,
-          "note": "KTC 1QB rank #171, value 3218, ADP 110.0. Started% 40.6. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcValue": 4007,
+          "ktcAdp": 157.0,
+          "ktcPosRank": 34,
+          "note": "KTC 1QB rank #111, value 4007, ADP 157.0. Started% 0.3.",
+          "rookie": true
         },
         {
           "name": "Ja'Kobi Lane",
@@ -6096,35 +6072,59 @@
           "age": 22,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 3998,
-          "ktcAdp": 149.0,
+          "ktcValue": 4005,
+          "ktcAdp": 150.0,
           "ktcPosRank": 48,
-          "note": "KTC 1QB rank #113, value 3998, ADP 149.0. Started% 1.4.",
+          "note": "KTC 1QB rank #112, value 4005, ADP 150.0. Started% 1.4.",
           "rookie": true
+        },
+        {
+          "name": "Jacory Croskey-Merritt",
+          "pos": "RB",
+          "team": "WAS",
+          "age": 25,
+          "category": "foundational",
+          "tier": "D",
+          "ktcValue": 4001,
+          "ktcAdp": 122.0,
+          "ktcPosRank": 35,
+          "note": "KTC 1QB rank #113, value 4001, ADP 122.0. Started% 13.0."
+        },
+        {
+          "name": "Xavier Worthy",
+          "pos": "WR",
+          "team": "KC",
+          "age": 23,
+          "category": "foundational",
+          "tier": "D",
+          "ktcValue": 3993,
+          "ktcAdp": 77.0,
+          "ktcPosRank": 49,
+          "note": "KTC 1QB rank #114, value 3993, ADP 77.0. Started% 8.0."
+        },
+        {
+          "name": "Mark Andrews",
+          "pos": "TE",
+          "team": "BAL",
+          "age": 31,
+          "category": "foundational",
+          "tier": "D",
+          "ktcValue": 3195,
+          "ktcAdp": 110.0,
+          "ktcPosRank": 21,
+          "note": "KTC 1QB rank #174, value 3195, ADP 110.0. Started% 40.6. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Baker Mayfield",
           "pos": "QB",
-          "team": "TBB",
+          "team": "TB",
           "age": 31,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 3969,
-          "ktcAdp": 107.0,
+          "ktcValue": 3952,
+          "ktcAdp": 108.0,
           "ktcPosRank": 19,
-          "note": "KTC 1QB rank #114, value 3969, ADP 107.0. Started% 25.9."
-        },
-        {
-          "name": "Jonathon Brooks",
-          "pos": "RB",
-          "team": "CAR",
-          "age": 23,
-          "category": "foundational",
-          "tier": "D",
-          "ktcValue": 3963,
-          "ktcAdp": 130.0,
-          "ktcPosRank": 36,
-          "note": "KTC 1QB rank #115, value 3963, ADP 130.0. Started% 12.4."
+          "note": "KTC 1QB rank #115, value 3952, ADP 108.0. Started% 25.9."
         },
         {
           "name": "J.K. Dobbins",
@@ -6133,46 +6133,22 @@
           "age": 27,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 3619,
+          "ktcValue": 3599,
           "ktcAdp": 116.0,
           "ktcPosRank": 40,
-          "note": "KTC 1QB rank #136, value 3619, ADP 116.0. Started% 36.8. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Xavier Worthy",
-          "pos": "WR",
-          "team": "KCC",
-          "age": 23,
-          "category": "foundational",
-          "tier": "D",
-          "ktcValue": 3952,
-          "ktcAdp": 77.0,
-          "ktcPosRank": 50,
-          "note": "KTC 1QB rank #117, value 3952, ADP 77.0. Started% 8.0."
-        },
-        {
-          "name": "Quentin Johnston",
-          "pos": "WR",
-          "team": "LAC",
-          "age": 25,
-          "category": "foundational",
-          "tier": "D",
-          "ktcValue": 3941,
-          "ktcAdp": 134.0,
-          "ktcPosRank": 51,
-          "note": "KTC 1QB rank #118, value 3941, ADP 134.0. Started% 29.5."
+          "note": "KTC 1QB rank #141, value 3599, ADP 116.0. Started% 36.8. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Josh Jacobs",
           "pos": "RB",
-          "team": "GBP",
+          "team": "GB",
           "age": 28,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 3932,
+          "ktcValue": 3920,
           "ktcAdp": 42.0,
-          "ktcPosRank": 37,
-          "note": "KTC 1QB rank #119, value 3932, ADP 42.0. Started% 13.0."
+          "ktcPosRank": 36,
+          "note": "KTC 1QB rank #117, value 3920, ADP 42.0. Started% 13.0."
         },
         {
           "name": "Malachi Fields",
@@ -6181,10 +6157,10 @@
           "age": 23,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 3919,
+          "ktcValue": 3917,
           "ktcAdp": 142.0,
-          "ktcPosRank": 52,
-          "note": "KTC 1QB rank #120, value 3919, ADP 142.0. Started% 1.5.",
+          "ktcPosRank": 51,
+          "note": "KTC 1QB rank #118, value 3917, ADP 142.0. Started% 1.5.",
           "rookie": true
         },
         {
@@ -6194,22 +6170,34 @@
           "age": 24,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 3908,
+          "ktcValue": 3910,
           "ktcAdp": 133.0,
           "ktcPosRank": 20,
-          "note": "KTC 1QB rank #121, value 3908, ADP 133.0. Started% 4.2."
+          "note": "KTC 1QB rank #119, value 3910, ADP 133.0. Started% 4.2."
         },
         {
-          "name": "Chris Bell",
+          "name": "Quentin Johnston",
           "pos": "WR",
-          "team": "MIA",
-          "age": 22,
+          "team": "LAC",
+          "age": 25,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 3884,
-          "ktcAdp": 124.0,
-          "ktcPosRank": 53,
-          "note": "KTC 1QB rank #122, value 3884, ADP 124.0. Started% 0.4.",
+          "ktcValue": 3895,
+          "ktcAdp": 134.0,
+          "ktcPosRank": 52,
+          "note": "KTC 1QB rank #120, value 3895, ADP 134.0. Started% 29.5."
+        },
+        {
+          "name": "Emmett Johnson",
+          "pos": "RB",
+          "team": "KC",
+          "age": 23,
+          "category": "foundational",
+          "tier": "D",
+          "ktcValue": 3873,
+          "ktcAdp": 137.0,
+          "ktcPosRank": 37,
+          "note": "KTC 1QB rank #121, value 3873, ADP 137.0. Started% 1.1.",
           "rookie": true
         },
         {
@@ -6219,23 +6207,47 @@
           "age": 23,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 3853,
+          "ktcValue": 3860,
           "ktcAdp": 111.0,
-          "ktcPosRank": 54,
-          "note": "KTC 1QB rank #123, value 3853, ADP 111.0. Started% 0.3."
+          "ktcPosRank": 53,
+          "note": "KTC 1QB rank #122, value 3860, ADP 111.0. Started% 0.3."
         },
         {
-          "name": "Emmett Johnson",
+          "name": "Chris Bell",
+          "pos": "WR",
+          "team": "MIA",
+          "age": 22,
+          "category": "foundational",
+          "tier": "D",
+          "ktcValue": 3853,
+          "ktcAdp": 124.0,
+          "ktcPosRank": 54,
+          "note": "KTC 1QB rank #123, value 3853, ADP 124.0. Started% 0.4.",
+          "rookie": true
+        },
+        {
+          "name": "Jonathon Brooks",
           "pos": "RB",
-          "team": "KCC",
+          "team": "CAR",
           "age": 23,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 3808,
-          "ktcAdp": 135.0,
+          "ktcValue": 3840,
+          "ktcAdp": 129.0,
           "ktcPosRank": 38,
-          "note": "KTC 1QB rank #124, value 3808, ADP 135.0. Started% 1.1.",
-          "rookie": true
+          "note": "KTC 1QB rank #124, value 3840, ADP 129.0. Started% 12.4."
+        },
+        {
+          "name": "Terrance Ferguson",
+          "pos": "TE",
+          "team": "LAR",
+          "age": 23,
+          "category": "foundational",
+          "tier": "D",
+          "ktcValue": 3813,
+          "ktcAdp": 152.0,
+          "ktcPosRank": 13,
+          "note": "KTC 1QB rank #125, value 3813, ADP 152.0. Started% 1.7."
         },
         {
           "name": "Jake Ferguson",
@@ -6244,22 +6256,10 @@
           "age": 27,
           "category": "foundational",
           "tier": "D",
-          "ktcValue": 3766,
+          "ktcValue": 3776,
           "ktcAdp": 125.0,
-          "ktcPosRank": 13,
-          "note": "KTC 1QB rank #128, value 3766, ADP 125.0. Started% 37.3. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Wan'Dale Robinson",
-          "pos": "WR",
-          "team": "TEN",
-          "age": 25,
-          "category": "foundational",
-          "tier": "D",
-          "ktcValue": 3794,
-          "ktcAdp": 133.0,
-          "ktcPosRank": 55,
-          "note": "KTC 1QB rank #125, value 3794, ADP 133.0. Started% 13.9."
+          "ktcPosRank": 14,
+          "note": "KTC 1QB rank #127, value 3776, ADP 125.0. Started% 37.3. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "C.J. Stroud",
@@ -6268,10 +6268,10 @@
           "age": 25,
           "category": "upside_premier",
           "tier": "S",
-          "ktcValue": 3791,
-          "ktcAdp": 129.0,
+          "ktcValue": 3810,
+          "ktcAdp": 130.0,
           "ktcPosRank": 21,
-          "note": "KTC 1QB rank #126, value 3791, ADP 129.0. Started% 6.4."
+          "note": "KTC 1QB rank #126, value 3810, ADP 130.0. Started% 6.4."
         },
         {
           "name": "Matthew Stafford",
@@ -6280,34 +6280,46 @@
           "age": 38,
           "category": "upside_premier",
           "tier": "S",
-          "ktcValue": 3771,
+          "ktcValue": 3775,
           "ktcAdp": 146.0,
           "ktcPosRank": 22,
-          "note": "KTC 1QB rank #127, value 3771, ADP 146.0. Started% 44.0."
+          "note": "KTC 1QB rank #128, value 3775, ADP 146.0. Started% 44.0."
         },
         {
-          "name": "Terrance Ferguson",
-          "pos": "TE",
-          "team": "LAR",
-          "age": 23,
+          "name": "Wan'Dale Robinson",
+          "pos": "WR",
+          "team": "TEN",
+          "age": 25,
           "category": "upside_premier",
           "tier": "S",
-          "ktcValue": 3756,
-          "ktcAdp": 151.0,
-          "ktcPosRank": 14,
-          "note": "KTC 1QB rank #129, value 3756, ADP 151.0. Started% 1.7."
+          "ktcValue": 3717,
+          "ktcAdp": 133.0,
+          "ktcPosRank": 55,
+          "note": "KTC 1QB rank #129, value 3717, ADP 133.0. Started% 13.9."
+        },
+        {
+          "name": "Adonai Mitchell",
+          "pos": "WR",
+          "team": "NYJ",
+          "age": 24,
+          "category": "upside_premier",
+          "tier": "S",
+          "ktcValue": 3686,
+          "ktcAdp": 182.0,
+          "ktcPosRank": 56,
+          "note": "KTC 1QB rank #130, value 3686, ADP 182.0. Started% 0.8."
         },
         {
           "name": "Mike Washington Jr.",
           "pos": "RB",
-          "team": "LVR",
+          "team": "LV",
           "age": 23,
           "category": "upside_premier",
           "tier": "S",
-          "ktcValue": 3675,
+          "ktcValue": 3642,
           "ktcAdp": 131.0,
           "ktcPosRank": 39,
-          "note": "KTC 1QB rank #131, value 3675, ADP 131.0.",
+          "note": "KTC 1QB rank #132, value 3642, ADP 131.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
           "rookie": true
         },
         {
@@ -6317,154 +6329,22 @@
           "age": 29,
           "category": "upside_premier",
           "tier": "S",
-          "ktcValue": 3671,
+          "ktcValue": 3656,
           "ktcAdp": 98.0,
           "ktcPosRank": 57,
-          "note": "KTC 1QB rank #132, value 3671, ADP 98.0. Started% 19.3."
+          "note": "KTC 1QB rank #131, value 3656, ADP 98.0. Started% 19.3."
         },
         {
           "name": "Travis Hunter",
           "pos": "WR",
-          "team": "JAC",
+          "team": "JAX",
           "age": 23,
           "category": "upside_premier",
           "tier": "S",
-          "ktcValue": 2952,
-          "ktcAdp": 79.0,
+          "ktcValue": 2957,
+          "ktcAdp": 80.0,
           "ktcPosRank": 82,
-          "note": "KTC 1QB rank #193, value 2952, ADP 79.0. Started% 90.2. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Romeo Doubs",
-          "pos": "WR",
-          "team": "NEP",
-          "age": 26,
-          "category": "upside_premier",
-          "tier": "S",
-          "ktcValue": 3627,
-          "ktcAdp": 162.0,
-          "ktcPosRank": 59,
-          "note": "KTC 1QB rank #134, value 3627, ADP 162.0. Started% 11.5."
-        },
-        {
-          "name": "Kyler Murray",
-          "pos": "QB",
-          "team": "MIN",
-          "age": 29,
-          "category": "upside_premier",
-          "tier": "S",
-          "ktcValue": 3621,
-          "ktcAdp": 108.0,
-          "ktcPosRank": 23,
-          "note": "KTC 1QB rank #135, value 3621, ADP 108.0. Started% 19.2."
-        },
-        {
-          "name": "Sam Darnold",
-          "pos": "QB",
-          "team": "SEA",
-          "age": 29,
-          "category": "upside_premier",
-          "tier": "S",
-          "ktcValue": 3613,
-          "ktcAdp": 158.0,
-          "ktcPosRank": 24,
-          "note": "KTC 1QB rank #137, value 3613, ADP 158.0. Started% 10.9."
-        },
-        {
-          "name": "Rico Dowdle",
-          "pos": "RB",
-          "team": "PIT",
-          "age": 28,
-          "category": "upside_premier",
-          "tier": "S",
-          "ktcValue": 3542,
-          "ktcAdp": 137.0,
-          "ktcPosRank": 43,
-          "note": "KTC 1QB rank #145, value 3542, ADP 137.0. Started% 54.4. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Dallas Goedert",
-          "pos": "TE",
-          "team": "PHI",
-          "age": 31,
-          "category": "upside_premier",
-          "tier": "S",
-          "ktcValue": 3368,
-          "ktcAdp": 137.0,
-          "ktcPosRank": 18,
-          "note": "KTC 1QB rank #154, value 3368, ADP 137.0. Started% 41.1. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Woody Marks",
-          "pos": "RB",
-          "team": "HOU",
-          "age": 25,
-          "category": "upside_premier",
-          "tier": "S",
-          "ktcValue": 3610,
-          "ktcAdp": 149.0,
-          "ktcPosRank": 41,
-          "note": "KTC 1QB rank #138, value 3610, ADP 149.0. Started% 5.4."
-        },
-        {
-          "name": "Adonai Mitchell",
-          "pos": "WR",
-          "team": "NYJ",
-          "age": 24,
-          "category": "upside_premier",
-          "tier": "S",
-          "ktcValue": 3606,
-          "ktcAdp": 182.0,
-          "ktcPosRank": 60,
-          "note": "KTC 1QB rank #139, value 3606, ADP 182.0. Started% 0.8."
-        },
-        {
-          "name": "Jordan Mason",
-          "pos": "RB",
-          "team": "MIN",
-          "age": 27,
-          "category": "upside_premier",
-          "tier": "S",
-          "ktcValue": 3602,
-          "ktcAdp": 120.0,
-          "ktcPosRank": 42,
-          "note": "KTC 1QB rank #140, value 3602, ADP 120.0. Started% 14.2."
-        },
-        {
-          "name": "Khalil Shakir",
-          "pos": "WR",
-          "team": "BUF",
-          "age": 26,
-          "category": "upside_premier",
-          "tier": "S",
-          "ktcValue": 3598,
-          "ktcAdp": 110.0,
-          "ktcPosRank": 61,
-          "note": "KTC 1QB rank #141, value 3598, ADP 110.0. Started% 12.8."
-        },
-        {
-          "name": "Oronde Gadsden",
-          "pos": "TE",
-          "team": "LAC",
-          "age": 23,
-          "category": "upside_premier",
-          "tier": "S",
-          "ktcValue": 3596,
-          "ktcAdp": 139.0,
-          "ktcPosRank": 15,
-          "note": "KTC 1QB rank #142, value 3596, ADP 139.0. Started% 9.1."
-        },
-        {
-          "name": "Bryce Young",
-          "pos": "QB",
-          "team": "CAR",
-          "age": 25,
-          "category": "upside_premier",
-          "tier": "S",
-          "ktcValue": 3563,
-          "ktcAdp": 160.0,
-          "ktcPosRank": 25,
-          "note": "KTC 1QB rank #143, value 3563, ADP 160.0. Started% 3.7."
+          "note": "KTC 1QB rank #193, value 2957, ADP 80.0. Started% 90.2. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Dontayvion Wicks",
@@ -6473,34 +6353,130 @@
           "age": 25,
           "category": "upside_premier",
           "tier": "S",
-          "ktcValue": 3561,
-          "ktcAdp": 198.0,
-          "ktcPosRank": 62,
-          "note": "KTC 1QB rank #144, value 3561, ADP 198.0. Started% 1.4."
+          "ktcValue": 3630,
+          "ktcAdp": 197.0,
+          "ktcPosRank": 60,
+          "note": "KTC 1QB rank #135, value 3630, ADP 197.0. Started% 1.4."
         },
         {
-          "name": "Stefon Diggs",
-          "pos": "WR",
-          "team": "WAS",
-          "age": 32,
-          "category": "upside_premier",
-          "tier": "S",
-          "ktcValue": 3523,
-          "ktcAdp": 116.0,
-          "ktcPosRank": 63,
-          "note": "KTC 1QB rank #146, value 3523, ADP 116.0. Started% 22.6."
-        },
-        {
-          "name": "Pat Bryant",
-          "pos": "WR",
-          "team": "DEN",
+          "name": "Oronde Gadsden",
+          "pos": "TE",
+          "team": "LAC",
           "age": 23,
           "category": "upside_premier",
           "tier": "S",
-          "ktcValue": 3517,
-          "ktcAdp": 166.0,
-          "ktcPosRank": 64,
-          "note": "KTC 1QB rank #147, value 3517, ADP 166.0. Started% 0.9."
+          "ktcValue": 3627,
+          "ktcAdp": 139.0,
+          "ktcPosRank": 15,
+          "note": "KTC 1QB rank #136, value 3627, ADP 139.0. Started% 9.1."
+        },
+        {
+          "name": "Rico Dowdle",
+          "pos": "RB",
+          "team": "PIT",
+          "age": 28,
+          "category": "upside_premier",
+          "tier": "S",
+          "ktcValue": 3493,
+          "ktcAdp": 136.0,
+          "ktcPosRank": 43,
+          "note": "KTC 1QB rank #149, value 3493, ADP 136.0. Started% 54.4. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Kyler Murray",
+          "pos": "QB",
+          "team": "MIN",
+          "age": 29,
+          "category": "upside_premier",
+          "tier": "S",
+          "ktcValue": 3626,
+          "ktcAdp": 109.0,
+          "ktcPosRank": 23,
+          "note": "KTC 1QB rank #137, value 3626, ADP 109.0. Started% 19.2."
+        },
+        {
+          "name": "Dallas Goedert",
+          "pos": "TE",
+          "team": "PHI",
+          "age": 31,
+          "category": "upside_premier",
+          "tier": "S",
+          "ktcValue": 3389,
+          "ktcAdp": 137.0,
+          "ktcPosRank": 18,
+          "note": "KTC 1QB rank #153, value 3389, ADP 137.0. Started% 41.1. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Khalil Shakir",
+          "pos": "WR",
+          "team": "BUF",
+          "age": 26,
+          "category": "upside_premier",
+          "tier": "S",
+          "ktcValue": 3622,
+          "ktcAdp": 110.0,
+          "ktcPosRank": 61,
+          "note": "KTC 1QB rank #138, value 3622, ADP 110.0. Started% 12.8."
+        },
+        {
+          "name": "Romeo Doubs",
+          "pos": "WR",
+          "team": "NE",
+          "age": 26,
+          "category": "upside_premier",
+          "tier": "S",
+          "ktcValue": 3621,
+          "ktcAdp": 161.0,
+          "ktcPosRank": 62,
+          "note": "KTC 1QB rank #139, value 3621, ADP 161.0. Started% 11.5."
+        },
+        {
+          "name": "Sam Darnold",
+          "pos": "QB",
+          "team": "SEA",
+          "age": 29,
+          "category": "upside_premier",
+          "tier": "S",
+          "ktcValue": 3605,
+          "ktcAdp": 158.0,
+          "ktcPosRank": 24,
+          "note": "KTC 1QB rank #140, value 3605, ADP 158.0. Started% 10.9."
+        },
+        {
+          "name": "Jordan Mason",
+          "pos": "RB",
+          "team": "MIN",
+          "age": 27,
+          "category": "upside_premier",
+          "tier": "S",
+          "ktcValue": 3598,
+          "ktcAdp": 120.0,
+          "ktcPosRank": 41,
+          "note": "KTC 1QB rank #142, value 3598, ADP 120.0. Started% 14.2."
+        },
+        {
+          "name": "Bryce Young",
+          "pos": "QB",
+          "team": "CAR",
+          "age": 25,
+          "category": "upside_premier",
+          "tier": "S",
+          "ktcValue": 3596,
+          "ktcAdp": 160.0,
+          "ktcPosRank": 25,
+          "note": "KTC 1QB rank #143, value 3596, ADP 160.0. Started% 3.7."
+        },
+        {
+          "name": "Woody Marks",
+          "pos": "RB",
+          "team": "HOU",
+          "age": 25,
+          "category": "upside_premier",
+          "tier": "S",
+          "ktcValue": 3559,
+          "ktcAdp": 149.0,
+          "ktcPosRank": 42,
+          "note": "KTC 1QB rank #144, value 3559, ADP 149.0. Started% 5.4."
         },
         {
           "name": "Germie Bernard",
@@ -6509,23 +6485,47 @@
           "age": 22,
           "category": "upside_premier",
           "tier": "S",
-          "ktcValue": 3517,
+          "ktcValue": 3556,
           "ktcAdp": 116.0,
-          "ktcPosRank": 65,
-          "note": "KTC 1QB rank #148, value 3517, ADP 116.0. Started% 0.3.",
+          "ktcPosRank": 63,
+          "note": "KTC 1QB rank #145, value 3556, ADP 116.0. Started% 0.3.",
           "rookie": true
+        },
+        {
+          "name": "Stefon Diggs",
+          "pos": "WR",
+          "team": "WAS",
+          "age": 32,
+          "category": "upside_premier",
+          "tier": "S",
+          "ktcValue": 3540,
+          "ktcAdp": 116.0,
+          "ktcPosRank": 64,
+          "note": "KTC 1QB rank #146, value 3540, ADP 116.0. Started% 22.6."
+        },
+        {
+          "name": "Pat Bryant",
+          "pos": "WR",
+          "team": "DEN",
+          "age": 23,
+          "category": "upside_premier",
+          "tier": "S",
+          "ktcValue": 3524,
+          "ktcAdp": 166.0,
+          "ktcPosRank": 65,
+          "note": "KTC 1QB rank #147, value 3524, ADP 166.0. Started% 0.9."
         },
         {
           "name": "Brenton Strange",
           "pos": "TE",
-          "team": "JAC",
+          "team": "JAX",
           "age": 25,
           "category": "upside_premier",
           "tier": "S",
-          "ktcValue": 3510,
+          "ktcValue": 3520,
           "ktcAdp": 165.0,
           "ktcPosRank": 16,
-          "note": "KTC 1QB rank #150, value 3510, ADP 165.0. Started% 11.5."
+          "note": "KTC 1QB rank #148, value 3520, ADP 165.0. Started% 11.5."
         },
         {
           "name": "Malik Willis",
@@ -6534,22 +6534,10 @@
           "age": 27,
           "category": "upside_premier",
           "tier": "A",
-          "ktcValue": 3458,
+          "ktcValue": 3461,
           "ktcAdp": 165.0,
           "ktcPosRank": 26,
-          "note": "KTC 1QB rank #151, value 3458, ADP 165.0. Started% 6.0."
-        },
-        {
-          "name": "Tyler Allgeier",
-          "pos": "RB",
-          "team": "ARI",
-          "age": 26,
-          "category": "upside_premier",
-          "tier": "A",
-          "ktcValue": 3431,
-          "ktcAdp": 149.0,
-          "ktcPosRank": 44,
-          "note": "KTC 1QB rank #152, value 3431, ADP 149.0. Started% 9.6."
+          "note": "KTC 1QB rank #151, value 3461, ADP 165.0. Started% 6.0."
         },
         {
           "name": "Eli Stowers",
@@ -6558,11 +6546,23 @@
           "age": 23,
           "category": "upside_premier",
           "tier": "A",
-          "ktcValue": 3385,
+          "ktcValue": 3407,
           "ktcAdp": 99.0,
           "ktcPosRank": 17,
-          "note": "KTC 1QB rank #153, value 3385, ADP 99.0. Started% 0.3.",
+          "note": "KTC 1QB rank #152, value 3407, ADP 99.0. Started% 0.3.",
           "rookie": true
+        },
+        {
+          "name": "Tyler Allgeier",
+          "pos": "RB",
+          "team": "ARI",
+          "age": 26,
+          "category": "upside_premier",
+          "tier": "A",
+          "ktcValue": 3385,
+          "ktcAdp": 149.0,
+          "ktcPosRank": 44,
+          "note": "KTC 1QB rank #154, value 3385, ADP 149.0. Started% 9.6."
         },
         {
           "name": "Chris Brazzell II",
@@ -6571,59 +6571,35 @@
           "age": 22,
           "category": "upside_premier",
           "tier": "A",
-          "ktcValue": 2684,
+          "ktcValue": 2674,
           "ktcAdp": 138.0,
-          "ktcPosRank": 92,
-          "note": "KTC 1QB rank #213, value 2684, ADP 138.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
+          "ktcPosRank": 93,
+          "note": "KTC 1QB rank #214, value 2674, ADP 138.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
           "rookie": true
-        },
-        {
-          "name": "MarShawn Lloyd",
-          "pos": "RB",
-          "team": "GBP",
-          "age": 25,
-          "category": "upside_premier",
-          "tier": "A",
-          "ktcValue": 3368,
-          "ktcAdp": 167.0,
-          "ktcPosRank": 45,
-          "note": "KTC 1QB rank #155, value 3368, ADP 167.0. Started% 23.3."
         },
         {
           "name": "Juwan Johnson",
           "pos": "TE",
-          "team": "NOS",
+          "team": "NO",
           "age": 30,
           "category": "upside_premier",
           "tier": "A",
-          "ktcValue": 3348,
-          "ktcAdp": 172.0,
+          "ktcValue": 3365,
+          "ktcAdp": 171.0,
           "ktcPosRank": 19,
-          "note": "KTC 1QB rank #156, value 3348, ADP 172.0. Started% 37.3."
+          "note": "KTC 1QB rank #155, value 3365, ADP 171.0. Started% 37.3."
         },
         {
           "name": "Tre Tucker",
           "pos": "WR",
-          "team": "LVR",
+          "team": "LV",
           "age": 25,
           "category": "upside_premier",
           "tier": "A",
-          "ktcValue": 3336,
+          "ktcValue": 3353,
           "ktcAdp": 178.0,
           "ktcPosRank": 67,
-          "note": "KTC 1QB rank #157, value 3336, ADP 178.0. Started% 7.8."
-        },
-        {
-          "name": "Jakobi Meyers",
-          "pos": "WR",
-          "team": "JAC",
-          "age": 29,
-          "category": "upside_premier",
-          "tier": "A",
-          "ktcValue": 3332,
-          "ktcAdp": 101.0,
-          "ktcPosRank": 68,
-          "note": "KTC 1QB rank #158, value 3332, ADP 101.0. Started% 15.6."
+          "note": "KTC 1QB rank #156, value 3353, ADP 178.0. Started% 7.8."
         },
         {
           "name": "Daniel Jones",
@@ -6632,10 +6608,10 @@
           "age": 29,
           "category": "upside_premier",
           "tier": "A",
-          "ktcValue": 3323,
+          "ktcValue": 3327,
           "ktcAdp": 170.0,
           "ktcPosRank": 27,
-          "note": "KTC 1QB rank #159, value 3323, ADP 170.0. Started% 4.1."
+          "note": "KTC 1QB rank #158, value 3327, ADP 170.0. Started% 4.1."
         },
         {
           "name": "Michael Penix Jr.",
@@ -6644,23 +6620,10 @@
           "age": 26,
           "category": "upside_premier",
           "tier": "A",
-          "ktcValue": 2739,
+          "ktcValue": 2759,
           "ktcAdp": 159.0,
           "ktcPosRank": 29,
-          "note": "KTC 1QB rank #209, value 2739, ADP 159.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Ty Simpson",
-          "pos": "QB",
-          "team": "LAR",
-          "age": 23,
-          "category": "upside_premier",
-          "tier": "A",
-          "ktcValue": 3319,
-          "ktcAdp": 126.0,
-          "ktcPosRank": 28,
-          "note": "KTC 1QB rank #160, value 3319, ADP 126.0. Started% 0.1.",
-          "rookie": true
+          "note": "KTC 1QB rank #208, value 2759, ADP 159.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Braelon Allen",
@@ -6669,82 +6632,59 @@
           "age": 22,
           "category": "upside_premier",
           "tier": "A",
-          "ktcValue": 3297,
+          "ktcValue": 3318,
           "ktcAdp": 155.0,
+          "ktcPosRank": 45,
+          "note": "KTC 1QB rank #159, value 3318, ADP 155.0. Started% 0.7."
+        },
+        {
+          "name": "Ty Simpson",
+          "pos": "QB",
+          "team": "LAR",
+          "age": 23,
+          "category": "upside_premier",
+          "tier": "A",
+          "ktcValue": 3317,
+          "ktcAdp": 126.0,
+          "ktcPosRank": 28,
+          "note": "KTC 1QB rank #160, value 3317, ADP 126.0. Started% 0.1.",
+          "rookie": true
+        },
+        {
+          "name": "MarShawn Lloyd",
+          "pos": "RB",
+          "team": "GB",
+          "age": 25,
+          "category": "upside_premier",
+          "tier": "A",
+          "ktcValue": 3307,
+          "ktcAdp": 166.0,
           "ktcPosRank": 46,
-          "note": "KTC 1QB rank #161, value 3297, ADP 155.0. Started% 0.7."
+          "note": "KTC 1QB rank #161, value 3307, ADP 166.0. Started% 23.3."
         },
         {
           "name": "Deebo Samuel",
           "pos": "WR",
-          "team": "SFO",
+          "team": "SF",
           "age": 30,
           "category": "upside_premier",
           "tier": "A",
-          "ktcValue": 3285,
-          "ktcAdp": 119.0,
+          "ktcValue": 3294,
+          "ktcAdp": 118.0,
+          "ktcPosRank": 68,
+          "note": "KTC 1QB rank #162, value 3294, ADP 118.0. Started% 12.1."
+        },
+        {
+          "name": "Jakobi Meyers",
+          "pos": "WR",
+          "team": "JAX",
+          "age": 29,
+          "category": "upside_premier",
+          "tier": "A",
+          "ktcValue": 3282,
+          "ktcAdp": 101.0,
           "ktcPosRank": 69,
-          "note": "KTC 1QB rank #162, value 3285, ADP 119.0. Started% 12.1."
-        },
-        {
-          "name": "Kenneth Gainwell",
-          "pos": "RB",
-          "team": "TBB",
-          "age": 27,
-          "category": "upside_premier",
-          "tier": "A",
-          "ktcValue": 3275,
-          "ktcAdp": 135.0,
-          "ktcPosRank": 47,
-          "note": "KTC 1QB rank #163, value 3275, ADP 135.0. Started% 22.4."
-        },
-        {
-          "name": "Kayshon Boutte",
-          "pos": "WR",
-          "team": "HOU",
-          "age": 24,
-          "category": "upside_premier",
-          "tier": "A",
-          "ktcValue": 3256,
-          "ktcAdp": 181.0,
-          "ktcPosRank": 70,
-          "note": "KTC 1QB rank #166, value 3256, ADP 181.0. Started% 3.3."
-        },
-        {
-          "name": "Tank Bigsby",
-          "pos": "RB",
-          "team": "PHI",
-          "age": 25,
-          "category": "upside_premier",
-          "tier": "A",
-          "ktcValue": 3239,
-          "ktcAdp": 148.0,
-          "ktcPosRank": 49,
-          "note": "KTC 1QB rank #167, value 3239, ADP 148.0. Started% 1.1."
-        },
-        {
-          "name": "Jalen McMillan",
-          "pos": "WR",
-          "team": "TBB",
-          "age": 24,
-          "category": "upside_premier",
-          "tier": "A",
-          "ktcValue": 3239,
-          "ktcAdp": 163.0,
-          "ktcPosRank": 71,
-          "note": "KTC 1QB rank #168, value 3239, ADP 163.0. Started% 0.5."
-        },
-        {
-          "name": "Rachaad White",
-          "pos": "RB",
-          "team": "WAS",
-          "age": 27,
-          "category": "upside_premier",
-          "tier": "A",
-          "ktcValue": 3233,
-          "ktcAdp": 131.0,
-          "ktcPosRank": 50,
-          "note": "KTC 1QB rank #169, value 3233, ADP 131.0. Started% 7.4."
+          "note": "KTC 1QB rank #163, value 3282, ADP 101.0. Started% 15.6."
         },
         {
           "name": "Nicholas Singleton",
@@ -6753,23 +6693,48 @@
           "age": 22,
           "category": "upside_premier",
           "tier": "A",
-          "ktcValue": 3232,
+          "ktcValue": 3254,
           "ktcAdp": 129.0,
-          "ktcPosRank": 51,
-          "note": "KTC 1QB rank #170, value 3232, ADP 129.0. Started% 0.2.",
+          "ktcPosRank": 47,
+          "note": "KTC 1QB rank #164, value 3254, ADP 129.0. Started% 0.2.",
           "rookie": true
         },
         {
-          "name": "Malik Washington",
+          "name": "Ted Hurst",
           "pos": "WR",
-          "team": "MIA",
-          "age": 25,
+          "team": "TB",
+          "age": 22,
           "category": "upside_premier",
           "tier": "A",
-          "ktcValue": 3218,
-          "ktcAdp": 161.0,
-          "ktcPosRank": 72,
-          "note": "KTC 1QB rank #172, value 3218, ADP 161.0. Started% 2.4."
+          "ktcValue": 3252,
+          "ktcAdp": 139.0,
+          "ktcPosRank": 70,
+          "note": "KTC 1QB rank #165, value 3252, ADP 139.0. Started% 0.2.",
+          "rookie": true
+        },
+        {
+          "name": "Kenneth Gainwell",
+          "pos": "RB",
+          "team": "TB",
+          "age": 27,
+          "category": "upside_premier",
+          "tier": "A",
+          "ktcValue": 3248,
+          "ktcAdp": 135.0,
+          "ktcPosRank": 48,
+          "note": "KTC 1QB rank #166, value 3248, ADP 135.0. Started% 22.4."
+        },
+        {
+          "name": "Kayshon Boutte",
+          "pos": "WR",
+          "team": "HOU",
+          "age": 24,
+          "category": "upside_premier",
+          "tier": "A",
+          "ktcValue": 3247,
+          "ktcAdp": 181.0,
+          "ktcPosRank": 71,
+          "note": "KTC 1QB rank #167, value 3247, ADP 181.0. Started% 3.3."
         },
         {
           "name": "Aaron Jones",
@@ -6778,62 +6743,71 @@
           "age": 31,
           "category": "upside_premier",
           "tier": "A",
-          "ktcValue": 3211,
+          "ktcValue": 3238,
           "ktcAdp": 108.0,
-          "ktcPosRank": 52,
-          "note": "KTC 1QB rank #173, value 3211, ADP 108.0. Started% 13.8."
+          "ktcPosRank": 50,
+          "note": "KTC 1QB rank #169, value 3238, ADP 108.0. Started% 13.8."
+        },
+        {
+          "name": "Tank Bigsby",
+          "pos": "RB",
+          "team": "PHI",
+          "age": 25,
+          "category": "upside_premier",
+          "tier": "A",
+          "ktcValue": 3231,
+          "ktcAdp": 148.0,
+          "ktcPosRank": 51,
+          "note": "KTC 1QB rank #170, value 3231, ADP 148.0. Started% 1.1."
+        },
+        {
+          "name": "Jalen McMillan",
+          "pos": "WR",
+          "team": "TB",
+          "age": 24,
+          "category": "upside_premier",
+          "tier": "A",
+          "ktcValue": 3226,
+          "ktcAdp": 164.0,
+          "ktcPosRank": 72,
+          "note": "KTC 1QB rank #171, value 3226, ADP 164.0. Started% 0.5."
+        },
+        {
+          "name": "Malik Washington",
+          "pos": "WR",
+          "team": "MIA",
+          "age": 25,
+          "category": "upside_premier",
+          "tier": "A",
+          "ktcValue": 3225,
+          "ktcAdp": 160.0,
+          "ktcPosRank": 73,
+          "note": "KTC 1QB rank #172, value 3225, ADP 160.0. Started% 2.4."
         },
         {
           "name": "Bryce Lance",
           "pos": "WR",
-          "team": "NOS",
+          "team": "NO",
           "age": 24,
           "category": "upside_premier",
           "tier": "A",
-          "ktcValue": 2508,
+          "ktcValue": 2502,
           "ktcAdp": 168.0,
           "ktcPosRank": 101,
-          "note": "KTC 1QB rank #233, value 2508, ADP 168.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
+          "note": "KTC 1QB rank #232, value 2502, ADP 168.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
           "rookie": true
         },
         {
-          "name": "Ted Hurst",
-          "pos": "WR",
-          "team": "TBB",
-          "age": 22,
+          "name": "Rachaad White",
+          "pos": "RB",
+          "team": "WAS",
+          "age": 27,
           "category": "upside_premier",
           "tier": "A",
-          "ktcValue": 3197,
-          "ktcAdp": 139.0,
-          "ktcPosRank": 73,
-          "note": "KTC 1QB rank #174, value 3197, ADP 139.0. Started% 0.2.",
-          "rookie": true
-        },
-        {
-          "name": "Cyrus Allen",
-          "pos": "WR",
-          "team": "KCC",
-          "age": 23,
-          "category": "upside_premier",
-          "tier": "A",
-          "ktcValue": 3191,
-          "ktcAdp": 183.0,
-          "ktcPosRank": 74,
-          "note": "KTC 1QB rank #175, value 3191, ADP 183.0. Started% 0.3.",
-          "rookie": true
-        },
-        {
-          "name": "Oscar Delp",
-          "pos": "TE",
-          "team": "NOS",
-          "age": 23,
-          "category": "upside_premier",
-          "tier": "A",
-          "ktcValue": 2591,
-          "ktcAdp": 175.0,
-          "ktcPosRank": 34,
-          "note": "KTC 1QB rank #224, value 2591, ADP 175.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
-          "rookie": true
+          "ktcValue": 3221,
+          "ktcAdp": 130.0,
+          "ktcPosRank": 52,
+          "note": "KTC 1QB rank #173, value 3221, ADP 130.0. Started% 7.4."
         },
         {
           "name": "Tre Harris",
@@ -6842,22 +6816,48 @@
           "age": 24,
           "category": "upside_premier",
           "tier": "A",
-          "ktcValue": 3164,
+          "ktcValue": 3171,
           "ktcAdp": 133.0,
-          "ktcPosRank": 75,
-          "note": "KTC 1QB rank #176, value 3164, ADP 133.0. Started% 0.4."
+          "ktcPosRank": 74,
+          "note": "KTC 1QB rank #175, value 3171, ADP 133.0. Started% 0.4."
         },
         {
-          "name": "T.J. Hockenson",
+          "name": "Oscar Delp",
           "pos": "TE",
-          "team": "MIN",
-          "age": 29,
+          "team": "NO",
+          "age": 23,
           "category": "upside_premier",
           "tier": "A",
-          "ktcValue": 3114,
-          "ktcAdp": 115.0,
-          "ktcPosRank": 22,
-          "note": "KTC 1QB rank #177, value 3114, ADP 115.0. Started% 8.0."
+          "ktcValue": 2588,
+          "ktcAdp": 175.0,
+          "ktcPosRank": 34,
+          "note": "KTC 1QB rank #220, value 2588, ADP 175.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
+          "rookie": true
+        },
+        {
+          "name": "Cyrus Allen",
+          "pos": "WR",
+          "team": "KC",
+          "age": 23,
+          "category": "upside_premier",
+          "tier": "A",
+          "ktcValue": 3164,
+          "ktcAdp": 181.0,
+          "ktcPosRank": 75,
+          "note": "KTC 1QB rank #176, value 3164, ADP 181.0. Started% 0.3.",
+          "rookie": true
+        },
+        {
+          "name": "Ricky Pearsall",
+          "pos": "WR",
+          "team": "SF",
+          "age": 26,
+          "category": "upside_premier",
+          "tier": "A",
+          "ktcValue": 3119,
+          "ktcAdp": 87.0,
+          "ktcPosRank": 76,
+          "note": "KTC 1QB rank #177, value 3119, ADP 87.0. Started% 0.8."
         },
         {
           "name": "Keon Coleman",
@@ -6866,95 +6866,34 @@
           "age": 23,
           "category": "upside_premier",
           "tier": "A",
-          "ktcValue": 3092,
+          "ktcValue": 3116,
           "ktcAdp": 132.0,
-          "ktcPosRank": 76,
-          "note": "KTC 1QB rank #178, value 3092, ADP 132.0. Started% 0.3."
-        },
-        {
-          "name": "Ricky Pearsall",
-          "pos": "WR",
-          "team": "SFO",
-          "age": 26,
-          "category": "upside_premier",
-          "tier": "A",
-          "ktcValue": 3092,
-          "ktcAdp": 87.0,
           "ktcPosRank": 77,
-          "note": "KTC 1QB rank #179, value 3092, ADP 87.0. Started% 0.8."
-        },
-        {
-          "name": "Rashid Shaheed",
-          "pos": "WR",
-          "team": "SEA",
-          "age": 28,
-          "category": "upside_premier",
-          "tier": "A",
-          "ktcValue": 3084,
-          "ktcAdp": 145.0,
-          "ktcPosRank": 78,
-          "note": "KTC 1QB rank #180, value 3084, ADP 145.0. Started% 6.2."
-        },
-        {
-          "name": "Michael Mayer",
-          "pos": "TE",
-          "team": "LVR",
-          "age": 25,
-          "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 3073,
-          "ktcAdp": 222.0,
-          "ktcPosRank": 23,
-          "note": "KTC 1QB rank #181, value 3073, ADP 222.0. Started% 20.3."
-        },
-        {
-          "name": "AJ Barner",
-          "pos": "TE",
-          "team": "SEA",
-          "age": 24,
-          "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 3072,
-          "ktcAdp": 179.0,
-          "ktcPosRank": 24,
-          "note": "KTC 1QB rank #182, value 3072, ADP 179.0. Started% 9.8."
-        },
-        {
-          "name": "Zachariah Branch",
-          "pos": "WR",
-          "team": "ATL",
-          "age": 22,
-          "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 3070,
-          "ktcAdp": 142.0,
-          "ktcPosRank": 79,
-          "note": "KTC 1QB rank #183, value 3070, ADP 142.0. Started% 0.2.",
-          "rookie": true
-        },
-        {
-          "name": "Chris Rodriguez",
-          "pos": "RB",
-          "team": "JAC",
-          "age": 26,
-          "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 3064,
-          "ktcAdp": 156.0,
-          "ktcPosRank": 53,
-          "note": "KTC 1QB rank #184, value 3064, ADP 156.0. Started% 4.8."
+          "note": "KTC 1QB rank #178, value 3116, ADP 132.0. Started% 0.3."
         },
         {
           "name": "Devaughn Vele",
           "pos": "WR",
-          "team": "NOS",
+          "team": "NO",
           "age": 28,
           "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 3034,
+          "tier": "A",
+          "ktcValue": 3107,
           "ktcAdp": 206.0,
-          "ktcPosRank": 80,
-          "note": "KTC 1QB rank #185, value 3034, ADP 206.0. Started% 3.6."
+          "ktcPosRank": 78,
+          "note": "KTC 1QB rank #179, value 3107, ADP 206.0. Started% 3.6."
+        },
+        {
+          "name": "T.J. Hockenson",
+          "pos": "TE",
+          "team": "MIN",
+          "age": 29,
+          "category": "upside_premier",
+          "tier": "A",
+          "ktcValue": 3103,
+          "ktcAdp": 116.0,
+          "ktcPosRank": 22,
+          "note": "KTC 1QB rank #180, value 3103, ADP 116.0. Started% 8.0."
         },
         {
           "name": "Dalton Schultz",
@@ -6963,23 +6902,47 @@
           "age": 30,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 3018,
-          "ktcAdp": 186.0,
-          "ktcPosRank": 25,
-          "note": "KTC 1QB rank #186, value 3018, ADP 186.0. Started% 12.4."
+          "ktcValue": 3084,
+          "ktcAdp": 185.0,
+          "ktcPosRank": 23,
+          "note": "KTC 1QB rank #181, value 3084, ADP 185.0. Started% 12.4."
         },
         {
-          "name": "Eli Raridon",
-          "pos": "TE",
-          "team": "NEP",
+          "name": "Zachariah Branch",
+          "pos": "WR",
+          "team": "ATL",
           "age": 22,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 3017,
-          "ktcAdp": 169.0,
-          "ktcPosRank": 26,
-          "note": "KTC 1QB rank #187, value 3017, ADP 169.0. Started% 0.1.",
+          "ktcValue": 3074,
+          "ktcAdp": 142.0,
+          "ktcPosRank": 79,
+          "note": "KTC 1QB rank #182, value 3074, ADP 142.0. Started% 0.2.",
           "rookie": true
+        },
+        {
+          "name": "AJ Barner",
+          "pos": "TE",
+          "team": "SEA",
+          "age": 24,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 3065,
+          "ktcAdp": 180.0,
+          "ktcPosRank": 24,
+          "note": "KTC 1QB rank #183, value 3065, ADP 180.0. Started% 9.8."
+        },
+        {
+          "name": "Rashid Shaheed",
+          "pos": "WR",
+          "team": "SEA",
+          "age": 28,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 3058,
+          "ktcAdp": 145.0,
+          "ktcPosRank": 80,
+          "note": "KTC 1QB rank #184, value 3058, ADP 145.0. Started% 6.2."
         },
         {
           "name": "Tyjae Spears",
@@ -6988,10 +6951,22 @@
           "age": 25,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 3015,
+          "ktcValue": 3034,
           "ktcAdp": 146.0,
-          "ktcPosRank": 54,
-          "note": "KTC 1QB rank #188, value 3015, ADP 146.0. Started% 3.7."
+          "ktcPosRank": 53,
+          "note": "KTC 1QB rank #185, value 3034, ADP 146.0. Started% 3.7."
+        },
+        {
+          "name": "Michael Mayer",
+          "pos": "TE",
+          "team": "LV",
+          "age": 25,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 3019,
+          "ktcAdp": 222.0,
+          "ktcPosRank": 25,
+          "note": "KTC 1QB rank #186, value 3019, ADP 222.0. Started% 20.3."
         },
         {
           "name": "Keaton Mitchell",
@@ -7000,10 +6975,22 @@
           "age": 24,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 3013,
-          "ktcAdp": 180.0,
+          "ktcValue": 3010,
+          "ktcAdp": 179.0,
+          "ktcPosRank": 54,
+          "note": "KTC 1QB rank #187, value 3010, ADP 179.0. Started% 1.6."
+        },
+        {
+          "name": "Chris Rodriguez",
+          "pos": "RB",
+          "team": "JAX",
+          "age": 26,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 3008,
+          "ktcAdp": 156.0,
           "ktcPosRank": 55,
-          "note": "KTC 1QB rank #189, value 3013, ADP 180.0. Started% 1.6."
+          "note": "KTC 1QB rank #188, value 3008, ADP 156.0. Started% 4.8."
         },
         {
           "name": "Jaylin Noel",
@@ -7012,34 +6999,10 @@
           "age": 24,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 2982,
+          "ktcValue": 2975,
           "ktcAdp": 145.0,
           "ktcPosRank": 81,
-          "note": "KTC 1QB rank #190, value 2982, ADP 145.0. Started% 0.3."
-        },
-        {
-          "name": "Trevor Etienne",
-          "pos": "RB",
-          "team": "CAR",
-          "age": 22,
-          "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 2323,
-          "ktcAdp": 160.0,
-          "ktcPosRank": 74,
-          "note": "KTC 1QB rank #250, value 2323, ADP 160.0. Started% 93.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Dylan Sampson",
-          "pos": "RB",
-          "team": "CLE",
-          "age": 22,
-          "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 2964,
-          "ktcAdp": 142.0,
-          "ktcPosRank": 56,
-          "note": "KTC 1QB rank #191, value 2964, ADP 142.0. Started% 1.6."
+          "note": "KTC 1QB rank #189, value 2975, ADP 145.0. Started% 0.3."
         },
         {
           "name": "Kaytron Allen",
@@ -7048,23 +7011,48 @@
           "age": 23,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 2963,
+          "ktcValue": 2975,
           "ktcAdp": 145.0,
-          "ktcPosRank": 57,
-          "note": "KTC 1QB rank #192, value 2963, ADP 145.0. Started% 0.2.",
+          "ktcPosRank": 56,
+          "note": "KTC 1QB rank #190, value 2975, ADP 145.0. Started% 0.2.",
           "rookie": true
         },
         {
-          "name": "Raheim Sanders",
-          "pos": "RB",
-          "team": "CLE",
-          "age": 24,
+          "name": "Eli Raridon",
+          "pos": "TE",
+          "team": "NE",
+          "age": 22,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 2299,
-          "ktcAdp": 156.0,
-          "ktcPosRank": 75,
-          "note": "KTC 1QB rank #252, value 2299, ADP 156.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcValue": 2975,
+          "ktcAdp": 169.0,
+          "ktcPosRank": 26,
+          "note": "KTC 1QB rank #191, value 2975, ADP 169.0. Started% 0.1.",
+          "rookie": true
+        },
+        {
+          "name": "Trevor Etienne",
+          "pos": "RB",
+          "team": "CAR",
+          "age": 22,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 2317,
+          "ktcAdp": 160.0,
+          "ktcPosRank": 74,
+          "note": "KTC 1QB rank #251, value 2317, ADP 160.0. Started% 93.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Dylan Sampson",
+          "pos": "RB",
+          "team": "CLE",
+          "age": 22,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 2973,
+          "ktcAdp": 142.0,
+          "ktcPosRank": 57,
+          "note": "KTC 1QB rank #192, value 2973, ADP 142.0. Started% 1.6."
         },
         {
           "name": "Isaac TeSlaa",
@@ -7073,71 +7061,34 @@
           "age": 24,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 2916,
+          "ktcValue": 2928,
           "ktcAdp": 181.0,
           "ktcPosRank": 83,
-          "note": "KTC 1QB rank #194, value 2916, ADP 181.0. Started% 0.4."
+          "note": "KTC 1QB rank #194, value 2928, ADP 181.0. Started% 0.4."
+        },
+        {
+          "name": "Raheim Sanders",
+          "pos": "RB",
+          "team": "CLE",
+          "age": 24,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 2288,
+          "ktcAdp": 156.0,
+          "ktcPosRank": 75,
+          "note": "KTC 1QB rank #254, value 2288, ADP 156.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Jack Bech",
           "pos": "WR",
-          "team": "LVR",
+          "team": "LV",
           "age": 23,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 2909,
+          "ktcValue": 2900,
           "ktcAdp": 157.0,
           "ktcPosRank": 84,
-          "note": "KTC 1QB rank #195, value 2909, ADP 157.0. Started% 0.2."
-        },
-        {
-          "name": "Chigoziem Okonkwo",
-          "pos": "TE",
-          "team": "WAS",
-          "age": 27,
-          "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 2843,
-          "ktcAdp": 180.0,
-          "ktcPosRank": 27,
-          "note": "KTC 1QB rank #196, value 2843, ADP 180.0. Started% 6.1."
-        },
-        {
-          "name": "Tez Johnson",
-          "pos": "WR",
-          "team": "TBB",
-          "age": 24,
-          "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 2441,
-          "ktcAdp": 196.0,
-          "ktcPosRank": 104,
-          "note": "KTC 1QB rank #239, value 2441, ADP 196.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Elijah Sarratt",
-          "pos": "WR",
-          "team": "BAL",
-          "age": 23,
-          "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 2832,
-          "ktcAdp": 146.0,
-          "ktcPosRank": 85,
-          "note": "KTC 1QB rank #197, value 2832, ADP 146.0. Started% 0.1.",
-          "rookie": true
-        },
-        {
-          "name": "Isaiah Bond",
-          "pos": "WR",
-          "team": "CLE",
-          "age": 22,
-          "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 2254,
-          "ktcAdp": 156.0,
-          "ktcPosRank": 109,
-          "note": "KTC 1QB rank #257, value 2254, ADP 156.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC 1QB rank #195, value 2900, ADP 157.0. Started% 0.2."
         },
         {
           "name": "Demond Claiborne",
@@ -7146,35 +7097,23 @@
           "age": 23,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 2826,
+          "ktcValue": 2848,
           "ktcAdp": 152.0,
           "ktcPosRank": 58,
-          "note": "KTC 1QB rank #198, value 2826, ADP 152.0. Started% 0.1.",
+          "note": "KTC 1QB rank #196, value 2848, ADP 152.0. Started% 0.1.",
           "rookie": true
         },
         {
-          "name": "DJ Giddens",
-          "pos": "RB",
-          "team": "IND",
-          "age": 23,
+          "name": "Tez Johnson",
+          "pos": "WR",
+          "team": "TB",
+          "age": 24,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 2248,
-          "ktcAdp": 163.0,
-          "ktcPosRank": 77,
-          "note": "KTC 1QB rank #258, value 2248, ADP 163.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Kaleb Johnson",
-          "pos": "RB",
-          "team": "GBP",
-          "age": 23,
-          "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 2814,
-          "ktcAdp": 96.0,
-          "ktcPosRank": 59,
-          "note": "KTC 1QB rank #199, value 2814, ADP 96.0. Started% 0.4."
+          "ktcValue": 2411,
+          "ktcAdp": 196.0,
+          "ktcPosRank": 105,
+          "note": "KTC 1QB rank #241, value 2411, ADP 196.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Brian Robinson",
@@ -7183,22 +7122,22 @@
           "age": 27,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 2812,
+          "ktcValue": 2837,
           "ktcAdp": 141.0,
-          "ktcPosRank": 60,
-          "note": "KTC 1QB rank #200, value 2812, ADP 141.0. Started% 4.6."
+          "ktcPosRank": 59,
+          "note": "KTC 1QB rank #197, value 2837, ADP 141.0. Started% 4.6."
         },
         {
-          "name": "Elic Ayomanor",
+          "name": "Isaiah Bond",
           "pos": "WR",
-          "team": "TEN",
-          "age": 23,
+          "team": "CLE",
+          "age": 22,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 2793,
-          "ktcAdp": 157.0,
-          "ktcPosRank": 86,
-          "note": "KTC 1QB rank #201, value 2793, ADP 157.0. Started% 0.1."
+          "ktcValue": 2262,
+          "ktcAdp": 156.0,
+          "ktcPosRank": 109,
+          "note": "KTC 1QB rank #257, value 2262, ADP 156.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Pat Freiermuth",
@@ -7207,22 +7146,71 @@
           "age": 27,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 2790,
+          "ktcValue": 2820,
           "ktcAdp": 183.0,
-          "ktcPosRank": 28,
-          "note": "KTC 1QB rank #202, value 2790, ADP 183.0. Started% 1.5."
+          "ktcPosRank": 27,
+          "note": "KTC 1QB rank #198, value 2820, ADP 183.0. Started% 1.5."
         },
         {
-          "name": "Gunnar Helm",
-          "pos": "TE",
-          "team": "TEN",
-          "age": 24,
+          "name": "DJ Giddens",
+          "pos": "RB",
+          "team": "IND",
+          "age": 23,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 2781,
-          "ktcAdp": 184.0,
-          "ktcPosRank": 29,
-          "note": "KTC 1QB rank #203, value 2781, ADP 184.0. Started% 1.4."
+          "ktcValue": 2229,
+          "ktcAdp": 163.0,
+          "ktcPosRank": 77,
+          "note": "KTC 1QB rank #258, value 2229, ADP 163.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Kaleb Johnson",
+          "pos": "RB",
+          "team": "GB",
+          "age": 23,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 2820,
+          "ktcAdp": 96.0,
+          "ktcPosRank": 60,
+          "note": "KTC 1QB rank #199, value 2820, ADP 96.0. Started% 0.4."
+        },
+        {
+          "name": "Elijah Sarratt",
+          "pos": "WR",
+          "team": "BAL",
+          "age": 23,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 2818,
+          "ktcAdp": 146.0,
+          "ktcPosRank": 85,
+          "note": "KTC 1QB rank #200, value 2818, ADP 146.0. Started% 0.1.",
+          "rookie": true
+        },
+        {
+          "name": "Chigoziem Okonkwo",
+          "pos": "TE",
+          "team": "WAS",
+          "age": 27,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 2809,
+          "ktcAdp": 180.0,
+          "ktcPosRank": 28,
+          "note": "KTC 1QB rank #201, value 2809, ADP 180.0. Started% 6.1."
+        },
+        {
+          "name": "Elic Ayomanor",
+          "pos": "WR",
+          "team": "TEN",
+          "age": 23,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 2808,
+          "ktcAdp": 157.0,
+          "ktcPosRank": 86,
+          "note": "KTC 1QB rank #202, value 2808, ADP 157.0. Started% 0.1."
         },
         {
           "name": "Tory Horton",
@@ -7231,10 +7219,34 @@
           "age": 23,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 2775,
+          "ktcValue": 2792,
           "ktcAdp": 183.0,
           "ktcPosRank": 87,
-          "note": "KTC 1QB rank #204, value 2775, ADP 183.0. Started% 0.1."
+          "note": "KTC 1QB rank #203, value 2792, ADP 183.0. Started% 0.1."
+        },
+        {
+          "name": "Gunnar Helm",
+          "pos": "TE",
+          "team": "TEN",
+          "age": 24,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 2780,
+          "ktcAdp": 184.0,
+          "ktcPosRank": 29,
+          "note": "KTC 1QB rank #204, value 2780, ADP 184.0. Started% 1.4."
+        },
+        {
+          "name": "Jalen Royals",
+          "pos": "WR",
+          "team": "KC",
+          "age": 23,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 2193,
+          "ktcAdp": 156.0,
+          "ktcPosRank": 113,
+          "note": "KTC 1QB rank #264, value 2193, ADP 156.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Troy Franklin",
@@ -7243,70 +7255,22 @@
           "age": 23,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 2771,
+          "ktcValue": 2775,
           "ktcAdp": 186.0,
           "ktcPosRank": 88,
-          "note": "KTC 1QB rank #205, value 2771, ADP 186.0. Started% 0.2."
+          "note": "KTC 1QB rank #205, value 2775, ADP 186.0. Started% 0.2."
         },
         {
           "name": "Hunter Henry",
           "pos": "TE",
-          "team": "NEP",
+          "team": "NE",
           "age": 31,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 2762,
+          "ktcValue": 2765,
           "ktcAdp": 161.0,
           "ktcPosRank": 30,
-          "note": "KTC 1QB rank #206, value 2762, ADP 161.0. Started% 20.9."
-        },
-        {
-          "name": "Jalen Royals",
-          "pos": "WR",
-          "team": "KCC",
-          "age": 23,
-          "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 2162,
-          "ktcAdp": 156.0,
-          "ktcPosRank": 113,
-          "note": "KTC 1QB rank #266, value 2162, ADP 156.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Tank Dell",
-          "pos": "WR",
-          "team": "HOU",
-          "age": 26,
-          "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 2759,
-          "ktcAdp": 188.0,
-          "ktcPosRank": 89,
-          "note": "KTC 1QB rank #207, value 2759, ADP 188.0. Started% 0.1."
-        },
-        {
-          "name": "Jaylen Wright",
-          "pos": "RB",
-          "team": "MIA",
-          "age": 23,
-          "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 2756,
-          "ktcAdp": 178.0,
-          "ktcPosRank": 61,
-          "note": "KTC 1QB rank #208, value 2756, ADP 178.0. Started% 0.2."
-        },
-        {
-          "name": "Roman Wilson",
-          "pos": "WR",
-          "team": "PIT",
-          "age": 25,
-          "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 2436,
-          "ktcAdp": 208.0,
-          "ktcPosRank": 105,
-          "note": "KTC 1QB rank #240, value 2436, ADP 208.0. Started% 89.8. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC 1QB rank #206, value 2765, ADP 161.0. Started% 20.9."
         },
         {
           "name": "Rashod Bateman",
@@ -7315,34 +7279,22 @@
           "age": 26,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 2701,
+          "ktcValue": 2763,
           "ktcAdp": 149.0,
-          "ktcPosRank": 90,
-          "note": "KTC 1QB rank #210, value 2701, ADP 149.0. Started% 0.8."
+          "ktcPosRank": 89,
+          "note": "KTC 1QB rank #207, value 2763, ADP 149.0. Started% 0.8."
         },
         {
-          "name": "Cade Otton",
-          "pos": "TE",
-          "team": "TBB",
-          "age": 27,
-          "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 2692,
-          "ktcAdp": 191.0,
-          "ktcPosRank": 31,
-          "note": "KTC 1QB rank #211, value 2692, ADP 191.0. Started% 2.9."
-        },
-        {
-          "name": "Jalen Nailor",
+          "name": "Roman Wilson",
           "pos": "WR",
-          "team": "LVR",
-          "age": 27,
+          "team": "PIT",
+          "age": 25,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 2690,
-          "ktcAdp": 199.0,
-          "ktcPosRank": 91,
-          "note": "KTC 1QB rank #212, value 2690, ADP 199.0. Started% 3.7."
+          "ktcValue": 2460,
+          "ktcAdp": 208.0,
+          "ktcPosRank": 103,
+          "note": "KTC 1QB rank #235, value 2460, ADP 208.0. Started% 89.8. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Joshua Palmer",
@@ -7351,10 +7303,70 @@
           "age": 27,
           "category": "upside_premier",
           "tier": "B",
-          "ktcValue": 2105,
+          "ktcValue": 2123,
           "ktcAdp": 189.0,
-          "ktcPosRank": 115,
-          "note": "KTC 1QB rank #272, value 2105, ADP 189.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 114,
+          "note": "KTC 1QB rank #268, value 2123, ADP 189.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Jaylen Wright",
+          "pos": "RB",
+          "team": "MIA",
+          "age": 23,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 2740,
+          "ktcAdp": 178.0,
+          "ktcPosRank": 61,
+          "note": "KTC 1QB rank #209, value 2740, ADP 178.0. Started% 0.2."
+        },
+        {
+          "name": "Tank Dell",
+          "pos": "WR",
+          "team": "HOU",
+          "age": 26,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 2727,
+          "ktcAdp": 188.0,
+          "ktcPosRank": 90,
+          "note": "KTC 1QB rank #210, value 2727, ADP 188.0. Started% 0.1."
+        },
+        {
+          "name": "Jalen Nailor",
+          "pos": "WR",
+          "team": "LV",
+          "age": 27,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 2684,
+          "ktcAdp": 199.0,
+          "ktcPosRank": 91,
+          "note": "KTC 1QB rank #211, value 2684, ADP 199.0. Started% 3.7."
+        },
+        {
+          "name": "Cade Otton",
+          "pos": "TE",
+          "team": "TB",
+          "age": 27,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 2676,
+          "ktcAdp": 191.0,
+          "ktcPosRank": 31,
+          "note": "KTC 1QB rank #212, value 2676, ADP 191.0. Started% 2.9."
+        },
+        {
+          "name": "Kyle Williams",
+          "pos": "WR",
+          "team": "NE",
+          "age": 23,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 2674,
+          "ktcAdp": 144.0,
+          "ktcPosRank": 92,
+          "note": "KTC 1QB rank #213, value 2674, ADP 144.0. Started% 0.1."
         },
         {
           "name": "Jalen Milroe",
@@ -7369,66 +7381,40 @@
           "note": "KTC 1QB rank #273, value 2085, ADP 156.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
-          "name": "Mason Taylor",
-          "pos": "TE",
-          "team": "NYJ",
-          "age": 22,
-          "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 2680,
-          "ktcAdp": 154.0,
-          "ktcPosRank": 32,
-          "note": "KTC 1QB rank #214, value 2680, ADP 154.0. Started% 1.0."
-        },
-        {
-          "name": "Kyle Williams",
-          "pos": "WR",
-          "team": "NEP",
-          "age": 23,
-          "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 2679,
-          "ktcAdp": 144.0,
-          "ktcPosRank": 93,
-          "note": "KTC 1QB rank #215, value 2679, ADP 144.0. Started% 0.1."
-        },
-        {
-          "name": "Malik Benson",
-          "pos": "WR",
-          "team": "LVR",
-          "age": 23,
-          "category": "upside_premier",
-          "tier": "B",
-          "ktcValue": 2063,
-          "ktcAdp": 215.0,
-          "ktcPosRank": 116,
-          "note": "KTC 1QB rank #275, value 2063, ADP 215.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
-          "rookie": true
-        },
-        {
           "name": "Elijah Arroyo",
           "pos": "TE",
           "team": "SEA",
           "age": 23,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 2672,
+          "ktcAdp": 154.0,
+          "ktcPosRank": 32,
+          "note": "KTC 1QB rank #215, value 2672, ADP 154.0. Started% 0.2."
+        },
+        {
+          "name": "Will Shipley",
+          "pos": "RB",
+          "team": "PHI",
+          "age": 24,
+          "category": "upside_premier",
+          "tier": "B",
+          "ktcValue": 2058,
+          "ktcAdp": 187.0,
+          "ktcPosRank": 84,
+          "note": "KTC 1QB rank #275, value 2058, ADP 187.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Mason Taylor",
+          "pos": "TE",
+          "team": "NYJ",
+          "age": 22,
           "category": "mainstay",
           "tier": "S",
           "ktcValue": 2669,
           "ktcAdp": 154.0,
           "ktcPosRank": 33,
-          "note": "KTC 1QB rank #216, value 2669, ADP 154.0. Started% 0.2."
-        },
-        {
-          "name": "Skyler Bell",
-          "pos": "WR",
-          "team": "BUF",
-          "age": 24,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 2656,
-          "ktcAdp": 157.0,
-          "ktcPosRank": 94,
-          "note": "KTC 1QB rank #217, value 2656, ADP 157.0. Started% 0.0.",
-          "rookie": true
+          "note": "KTC 1QB rank #216, value 2669, ADP 154.0. Started% 1.0."
         },
         {
           "name": "Eli Heidenreich",
@@ -7437,84 +7423,49 @@
           "age": 23,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 2027,
+          "ktcValue": 2045,
           "ktcAdp": 167.0,
-          "ktcPosRank": 84,
-          "note": "KTC 1QB rank #277, value 2027, ADP 167.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
+          "ktcPosRank": 85,
+          "note": "KTC 1QB rank #276, value 2045, ADP 167.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
+          "rookie": true
+        },
+        {
+          "name": "Skyler Bell",
+          "pos": "WR",
+          "team": "BUF",
+          "age": 24,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 2637,
+          "ktcAdp": 157.0,
+          "ktcPosRank": 94,
+          "note": "KTC 1QB rank #217, value 2637, ADP 157.0. Started% 0.0.",
           "rookie": true
         },
         {
           "name": "Demario Douglas",
           "pos": "WR",
-          "team": "NEP",
+          "team": "NE",
           "age": 25,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 2650,
+          "ktcValue": 2626,
           "ktcAdp": 180.0,
           "ktcPosRank": 95,
-          "note": "KTC 1QB rank #218, value 2650, ADP 180.0. Started% 0.3."
+          "note": "KTC 1QB rank #218, value 2626, ADP 180.0. Started% 0.3."
         },
         {
-          "name": "Brenen Thompson",
+          "name": "Malik Benson",
           "pos": "WR",
-          "team": "LAC",
+          "team": "LV",
           "age": 23,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 2025,
-          "ktcAdp": 157.0,
-          "ktcPosRank": 118,
-          "note": "KTC 1QB rank #278, value 2025, ADP 157.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
+          "ktcValue": 2031,
+          "ktcAdp": 215.0,
+          "ktcPosRank": 116,
+          "note": "KTC 1QB rank #278, value 2031, ADP 215.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
           "rookie": true
-        },
-        {
-          "name": "Jordan James",
-          "pos": "RB",
-          "team": "SFO",
-          "age": 22,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 2607,
-          "ktcAdp": 180.0,
-          "ktcPosRank": 62,
-          "note": "KTC 1QB rank #219, value 2607, ADP 180.0. Started% 0.1."
-        },
-        {
-          "name": "Will Shipley",
-          "pos": "RB",
-          "team": "PHI",
-          "age": 24,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 2016,
-          "ktcAdp": 187.0,
-          "ktcPosRank": 85,
-          "note": "KTC 1QB rank #279, value 2016, ADP 187.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Sean Tucker",
-          "pos": "RB",
-          "team": "TBB",
-          "age": 24,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 2602,
-          "ktcAdp": 207.0,
-          "ktcPosRank": 63,
-          "note": "KTC 1QB rank #220, value 2602, ADP 207.0. Started% 0.1."
-        },
-        {
-          "name": "Kimani Vidal",
-          "pos": "RB",
-          "team": "LAC",
-          "age": 25,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 2599,
-          "ktcAdp": 189.0,
-          "ktcPosRank": 64,
-          "note": "KTC 1QB rank #221, value 2599, ADP 189.0. Started% 0.3."
         },
         {
           "name": "Kevin Coleman",
@@ -7523,11 +7474,48 @@
           "age": 23,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 2597,
+          "ktcValue": 2615,
           "ktcAdp": 109.0,
           "ktcPosRank": 96,
-          "note": "KTC 1QB rank #222, value 2597, ADP 109.0. Started% 0.3.",
+          "note": "KTC 1QB rank #219, value 2615, ADP 109.0. Started% 0.3.",
           "rookie": true
+        },
+        {
+          "name": "Brenen Thompson",
+          "pos": "WR",
+          "team": "LAC",
+          "age": 23,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 2011,
+          "ktcAdp": 157.0,
+          "ktcPosRank": 118,
+          "note": "KTC 1QB rank #280, value 2011, ADP 157.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
+          "rookie": true
+        },
+        {
+          "name": "Sean Tucker",
+          "pos": "RB",
+          "team": "TB",
+          "age": 24,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 2585,
+          "ktcAdp": 207.0,
+          "ktcPosRank": 62,
+          "note": "KTC 1QB rank #221, value 2585, ADP 207.0. Started% 0.1."
+        },
+        {
+          "name": "Kimani Vidal",
+          "pos": "RB",
+          "team": "LAC",
+          "age": 25,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 2584,
+          "ktcAdp": 189.0,
+          "ktcPosRank": 63,
+          "note": "KTC 1QB rank #222, value 2584, ADP 189.0. Started% 0.3."
         },
         {
           "name": "Ryan Flournoy",
@@ -7536,35 +7524,10 @@
           "age": 26,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 2592,
+          "ktcValue": 2583,
           "ktcAdp": 188.0,
           "ktcPosRank": 97,
-          "note": "KTC 1QB rank #223, value 2592, ADP 188.0. Started% 0.6."
-        },
-        {
-          "name": "Ja'Tavion Sanders",
-          "pos": "TE",
-          "team": "CAR",
-          "age": 23,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 1998,
-          "ktcAdp": 200.0,
-          "ktcPosRank": 45,
-          "note": "KTC 1QB rank #283, value 1998, ADP 200.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Max Klare",
-          "pos": "TE",
-          "team": "LAR",
-          "age": 23,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 2579,
-          "ktcAdp": 144.0,
-          "ktcPosRank": 35,
-          "note": "KTC 1QB rank #225, value 2579, ADP 144.0. Started% 0.1.",
-          "rookie": true
+          "note": "KTC 1QB rank #223, value 2583, ADP 188.0. Started% 0.6."
         },
         {
           "name": "Ollie Gordon",
@@ -7573,10 +7536,47 @@
           "age": 22,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 2577,
+          "ktcValue": 2583,
           "ktcAdp": 153.0,
+          "ktcPosRank": 64,
+          "note": "KTC 1QB rank #224, value 2583, ADP 153.0. Started% 0.1."
+        },
+        {
+          "name": "Ja'Tavion Sanders",
+          "pos": "TE",
+          "team": "CAR",
+          "age": 23,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 1974,
+          "ktcAdp": 200.0,
+          "ktcPosRank": 46,
+          "note": "KTC 1QB rank #284, value 1974, ADP 200.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Max Klare",
+          "pos": "TE",
+          "team": "LAR",
+          "age": 23,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 2580,
+          "ktcAdp": 144.0,
+          "ktcPosRank": 35,
+          "note": "KTC 1QB rank #225, value 2580, ADP 144.0. Started% 0.1.",
+          "rookie": true
+        },
+        {
+          "name": "Jordan James",
+          "pos": "RB",
+          "team": "SF",
+          "age": 22,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 2575,
+          "ktcAdp": 180.0,
           "ktcPosRank": 65,
-          "note": "KTC 1QB rank #226, value 2577, ADP 153.0. Started% 0.1."
+          "note": "KTC 1QB rank #226, value 2575, ADP 180.0. Started% 0.1."
         },
         {
           "name": "Adam Randall",
@@ -7585,10 +7585,10 @@
           "age": 22,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 2557,
+          "ktcValue": 2540,
           "ktcAdp": 186.0,
           "ktcPosRank": 66,
-          "note": "KTC 1QB rank #227, value 2557, ADP 186.0. Started% 0.0.",
+          "note": "KTC 1QB rank #227, value 2540, ADP 186.0. Started% 0.0.",
           "rookie": true
         },
         {
@@ -7605,16 +7605,16 @@
           "rookie": true
         },
         {
-          "name": "Ray Davis",
-          "pos": "RB",
-          "team": "BUF",
-          "age": 26,
+          "name": "Jerry Jeudy",
+          "pos": "WR",
+          "team": "CLE",
+          "age": 27,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 2526,
-          "ktcAdp": 161.0,
-          "ktcPosRank": 67,
-          "note": "KTC 1QB rank #229, value 2526, ADP 161.0. Started% 0.4."
+          "ktcValue": 2518,
+          "ktcAdp": 107.0,
+          "ktcPosRank": 99,
+          "note": "KTC 1QB rank #229, value 2518, ADP 107.0. Started% 1.3."
         },
         {
           "name": "Justin Joly",
@@ -7623,10 +7623,10 @@
           "age": 22,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 1938,
+          "ktcValue": 1914,
           "ktcAdp": 151.0,
           "ktcPosRank": 47,
-          "note": "KTC 1QB rank #289, value 1938, ADP 151.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
+          "note": "KTC 1QB rank #289, value 1914, ADP 151.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
           "rookie": true
         },
         {
@@ -7636,82 +7636,22 @@
           "age": 29,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 2521,
-          "ktcAdp": 119.0,
-          "ktcPosRank": 99,
-          "note": "KTC 1QB rank #230, value 2521, ADP 119.0. Started% 2.2."
+          "ktcValue": 2515,
+          "ktcAdp": 120.0,
+          "ktcPosRank": 100,
+          "note": "KTC 1QB rank #230, value 2515, ADP 120.0. Started% 2.2."
         },
         {
           "name": "Kendre Miller",
           "pos": "RB",
-          "team": "NOS",
+          "team": "NO",
           "age": 24,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 2513,
+          "ktcValue": 2510,
           "ktcAdp": 195.0,
-          "ktcPosRank": 68,
-          "note": "KTC 1QB rank #231, value 2513, ADP 195.0. Started% 0.2."
-        },
-        {
-          "name": "Savion Williams",
-          "pos": "WR",
-          "team": "GBP",
-          "age": 24,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 1930,
-          "ktcAdp": 165.0,
-          "ktcPosRank": 123,
-          "note": "KTC 1QB rank #291, value 1930, ADP 165.0. Started% 82.2. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Jerry Jeudy",
-          "pos": "WR",
-          "team": "CLE",
-          "age": 27,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 2508,
-          "ktcAdp": 107.0,
-          "ktcPosRank": 100,
-          "note": "KTC 1QB rank #232, value 2508, ADP 107.0. Started% 1.3."
-        },
-        {
-          "name": "Greg Dulcich",
-          "pos": "TE",
-          "team": "MIA",
-          "age": 26,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 2479,
-          "ktcAdp": 204.0,
-          "ktcPosRank": 36,
-          "note": "KTC 1QB rank #234, value 2479, ADP 204.0. Started% 1.6."
-        },
-        {
-          "name": "Jalen Tolbert",
-          "pos": "WR",
-          "team": "MIA",
-          "age": 27,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 1894,
-          "ktcAdp": 219.0,
-          "ktcPosRank": 124,
-          "note": "KTC 1QB rank #294, value 1894, ADP 219.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Chimere Dike",
-          "pos": "WR",
-          "team": "TEN",
-          "age": 24,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 2470,
-          "ktcAdp": 171.0,
-          "ktcPosRank": 102,
-          "note": "KTC 1QB rank #235, value 2470, ADP 171.0. Started% 0.4."
+          "ktcPosRank": 67,
+          "note": "KTC 1QB rank #231, value 2510, ADP 195.0. Started% 0.2."
         },
         {
           "name": "Ben Sinnott",
@@ -7720,22 +7660,22 @@
           "age": 24,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 1867,
+          "ktcValue": 1889,
           "ktcAdp": 214.0,
           "ktcPosRank": 48,
-          "note": "KTC 1QB rank #295, value 1867, ADP 214.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC 1QB rank #292, value 1889, ADP 214.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
-          "name": "Cole Kmet",
-          "pos": "TE",
-          "team": "CHI",
-          "age": 27,
+          "name": "Ray Davis",
+          "pos": "RB",
+          "team": "BUF",
+          "age": 26,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 2458,
-          "ktcAdp": 189.0,
-          "ktcPosRank": 37,
-          "note": "KTC 1QB rank #236, value 2458, ADP 189.0. Started% 0.2."
+          "ktcValue": 2490,
+          "ktcAdp": 161.0,
+          "ktcPosRank": 68,
+          "note": "KTC 1QB rank #233, value 2490, ADP 161.0. Started% 0.4."
         },
         {
           "name": "Xavier Hutchinson",
@@ -7744,22 +7684,58 @@
           "age": 26,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 2450,
+          "ktcValue": 2486,
           "ktcAdp": 183.0,
-          "ktcPosRank": 103,
-          "note": "KTC 1QB rank #237, value 2450, ADP 183.0. Started% 0.1."
+          "ktcPosRank": 102,
+          "note": "KTC 1QB rank #234, value 2486, ADP 183.0. Started% 0.1."
         },
         {
-          "name": "LeQuint Allen",
-          "pos": "RB",
-          "team": "JAC",
-          "age": 22,
+          "name": "Jalen Tolbert",
+          "pos": "WR",
+          "team": "MIA",
+          "age": 27,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 2447,
-          "ktcAdp": 197.0,
-          "ktcPosRank": 69,
-          "note": "KTC 1QB rank #238, value 2447, ADP 197.0. Started% 0.1."
+          "ktcValue": 1870,
+          "ktcAdp": 219.0,
+          "ktcPosRank": 123,
+          "note": "KTC 1QB rank #294, value 1870, ADP 219.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Savion Williams",
+          "pos": "WR",
+          "team": "GB",
+          "age": 24,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 1867,
+          "ktcAdp": 165.0,
+          "ktcPosRank": 124,
+          "note": "KTC 1QB rank #295, value 1867, ADP 165.0. Started% 82.2. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Cole Kmet",
+          "pos": "TE",
+          "team": "CHI",
+          "age": 27,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 2459,
+          "ktcAdp": 189.0,
+          "ktcPosRank": 36,
+          "note": "KTC 1QB rank #236, value 2459, ADP 189.0. Started% 0.2."
+        },
+        {
+          "name": "Greg Dulcich",
+          "pos": "TE",
+          "team": "MIA",
+          "age": 26,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 2437,
+          "ktcAdp": 204.0,
+          "ktcPosRank": 37,
+          "note": "KTC 1QB rank #237, value 2437, ADP 204.0. Started% 1.6."
         },
         {
           "name": "Devin Singletary",
@@ -7768,22 +7744,10 @@
           "age": 29,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 1806,
+          "ktcValue": 1835,
           "ktcAdp": 215.0,
-          "ktcPosRank": 91,
-          "note": "KTC 1QB rank #298, value 1806, ADP 215.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Tyrone Tracy",
-          "pos": "RB",
-          "team": "NYG",
-          "age": 26,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 2415,
-          "ktcAdp": 112.0,
-          "ktcPosRank": 70,
-          "note": "KTC 1QB rank #241, value 2415, ADP 112.0. Started% 1.8."
+          "ktcPosRank": 90,
+          "note": "KTC 1QB rank #297, value 1835, ADP 215.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "George Holani",
@@ -7792,47 +7756,10 @@
           "age": 26,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 2407,
+          "ktcValue": 2425,
           "ktcAdp": 207.0,
-          "ktcPosRank": 71,
-          "note": "KTC 1QB rank #242, value 2407, ADP 207.0. Started% 0.9."
-        },
-        {
-          "name": "Marvin Mims",
-          "pos": "WR",
-          "team": "DEN",
-          "age": 24,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 2393,
-          "ktcAdp": 155.0,
-          "ktcPosRank": 106,
-          "note": "KTC 1QB rank #243, value 2393, ADP 155.0. Started% 0.3."
-        },
-        {
-          "name": "Colby Parkinson",
-          "pos": "TE",
-          "team": "LAR",
-          "age": 27,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 2388,
-          "ktcAdp": 200.0,
-          "ktcPosRank": 38,
-          "note": "KTC 1QB rank #244, value 2388, ADP 200.0. Started% 0.8."
-        },
-        {
-          "name": "Seth McGowan",
-          "pos": "RB",
-          "team": "IND",
-          "age": 24,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 2387,
-          "ktcAdp": 173.0,
-          "ktcPosRank": 72,
-          "note": "KTC 1QB rank #245, value 2387, ADP 173.0. Started% 0.1.",
-          "rookie": true
+          "ktcPosRank": 69,
+          "note": "KTC 1QB rank #238, value 2425, ADP 207.0. Started% 0.9."
         },
         {
           "name": "Kendrick Bourne",
@@ -7841,10 +7768,46 @@
           "age": 31,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 1749,
+          "ktcValue": 1799,
           "ktcAdp": 201.0,
-          "ktcPosRank": 126,
-          "note": "KTC 1QB rank #305, value 1749, ADP 201.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 125,
+          "note": "KTC 1QB rank #298, value 1799, ADP 201.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Chimere Dike",
+          "pos": "WR",
+          "team": "TEN",
+          "age": 24,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 2424,
+          "ktcAdp": 171.0,
+          "ktcPosRank": 104,
+          "note": "KTC 1QB rank #239, value 2424, ADP 171.0. Started% 0.4."
+        },
+        {
+          "name": "LeQuint Allen",
+          "pos": "RB",
+          "team": "JAX",
+          "age": 22,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 2420,
+          "ktcAdp": 197.0,
+          "ktcPosRank": 70,
+          "note": "KTC 1QB rank #240, value 2420, ADP 197.0. Started% 0.1."
+        },
+        {
+          "name": "Colby Parkinson",
+          "pos": "TE",
+          "team": "LAR",
+          "age": 27,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 2403,
+          "ktcAdp": 197.0,
+          "ktcPosRank": 38,
+          "note": "KTC 1QB rank #242, value 2403, ADP 197.0. Started% 0.8."
         },
         {
           "name": "Jaylin Lane",
@@ -7853,34 +7816,84 @@
           "age": 24,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 2377,
+          "ktcValue": 2398,
           "ktcAdp": 195.0,
+          "ktcPosRank": 106,
+          "note": "KTC 1QB rank #243, value 2398, ADP 195.0. Started% 1.4."
+        },
+        {
+          "name": "Tyrone Tracy",
+          "pos": "RB",
+          "team": "NYG",
+          "age": 26,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 2391,
+          "ktcAdp": 113.0,
+          "ktcPosRank": 71,
+          "note": "KTC 1QB rank #244, value 2391, ADP 113.0. Started% 1.8."
+        },
+        {
+          "name": "Seth McGowan",
+          "pos": "RB",
+          "team": "IND",
+          "age": 24,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 2375,
+          "ktcAdp": 173.0,
+          "ktcPosRank": 72,
+          "note": "KTC 1QB rank #245, value 2375, ADP 173.0. Started% 0.1.",
+          "rookie": true
+        },
+        {
+          "name": "Deion Burks",
+          "pos": "WR",
+          "team": "IND",
+          "age": 23,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 1744,
+          "ktcAdp": 87.0,
+          "ktcPosRank": 128,
+          "note": "KTC 1QB rank #305, value 1744, ADP 87.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
+          "rookie": true
+        },
+        {
+          "name": "Marvin Mims",
+          "pos": "WR",
+          "team": "DEN",
+          "age": 24,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 2370,
+          "ktcAdp": 155.0,
           "ktcPosRank": 107,
-          "note": "KTC 1QB rank #246, value 2377, ADP 195.0. Started% 1.4."
+          "note": "KTC 1QB rank #246, value 2370, ADP 155.0. Started% 0.3."
         },
         {
           "name": "Luke Musgrave",
           "pos": "TE",
-          "team": "GBP",
+          "team": "GB",
           "age": 26,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 1750,
+          "ktcValue": 1749,
           "ktcAdp": 246.0,
-          "ktcPosRank": 50,
-          "note": "KTC 1QB rank #304, value 1750, ADP 246.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 49,
+          "note": "KTC 1QB rank #303, value 1749, ADP 246.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
-          "name": "Luke McCaffrey",
-          "pos": "WR",
-          "team": "WAS",
-          "age": 25,
+          "name": "Alvin Kamara",
+          "pos": "RB",
+          "team": "NO",
+          "age": 31,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 1741,
-          "ktcAdp": 226.0,
-          "ktcPosRank": 127,
-          "note": "KTC 1QB rank #306, value 1741, ADP 226.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcValue": 2359,
+          "ktcAdp": 104.0,
+          "ktcPosRank": 73,
+          "note": "KTC 1QB rank #247, value 2359, ADP 104.0. Started% 1.1."
         },
         {
           "name": "David Njoku",
@@ -7889,34 +7902,10 @@
           "age": 30,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 2363,
+          "ktcValue": 2346,
           "ktcAdp": 119.0,
           "ktcPosRank": 39,
-          "note": "KTC 1QB rank #247, value 2363, ADP 119.0. Started% 1.1."
-        },
-        {
-          "name": "Alvin Kamara",
-          "pos": "RB",
-          "team": "NOS",
-          "age": 31,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 2343,
-          "ktcAdp": 103.0,
-          "ktcPosRank": 73,
-          "note": "KTC 1QB rank #248, value 2343, ADP 103.0. Started% 1.1."
-        },
-        {
-          "name": "Evan Engram",
-          "pos": "TE",
-          "team": "DEN",
-          "age": 32,
-          "category": "mainstay",
-          "tier": "S",
-          "ktcValue": 2333,
-          "ktcAdp": 121.0,
-          "ktcPosRank": 40,
-          "note": "KTC 1QB rank #249, value 2333, ADP 121.0. Started% 0.4."
+          "note": "KTC 1QB rank #248, value 2346, ADP 119.0. Started% 1.1."
         },
         {
           "name": "Jordan Whittington",
@@ -7925,10 +7914,34 @@
           "age": 26,
           "category": "mainstay",
           "tier": "S",
-          "ktcValue": 1718,
+          "ktcValue": 1729,
           "ktcAdp": 199.0,
-          "ktcPosRank": 128,
-          "note": "KTC 1QB rank #310, value 1718, ADP 199.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 129,
+          "note": "KTC 1QB rank #308, value 1729, ADP 199.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Tyquan Thornton",
+          "pos": "WR",
+          "team": "KC",
+          "age": 26,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 2340,
+          "ktcAdp": 223.0,
+          "ktcPosRank": 108,
+          "note": "KTC 1QB rank #249, value 2340, ADP 223.0. Started% 0.2."
+        },
+        {
+          "name": "Evan Engram",
+          "pos": "TE",
+          "team": "DEN",
+          "age": 32,
+          "category": "mainstay",
+          "tier": "S",
+          "ktcValue": 2330,
+          "ktcAdp": 122.0,
+          "ktcPosRank": 40,
+          "note": "KTC 1QB rank #250, value 2330, ADP 122.0. Started% 0.4."
         },
         {
           "name": "Theo Johnson",
@@ -7937,47 +7950,22 @@
           "age": 25,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 2300,
+          "ktcValue": 2304,
           "ktcAdp": 198.0,
           "ktcPosRank": 41,
-          "note": "KTC 1QB rank #251, value 2300, ADP 198.0. Started% 0.5."
+          "note": "KTC 1QB rank #252, value 2304, ADP 198.0. Started% 0.5."
         },
         {
-          "name": "Deion Burks",
-          "pos": "WR",
-          "team": "IND",
-          "age": 23,
+          "name": "Noah Fant",
+          "pos": "TE",
+          "team": "NO",
+          "age": 28,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 1718,
-          "ktcAdp": 87.0,
-          "ktcPosRank": 129,
-          "note": "KTC 1QB rank #311, value 1718, ADP 87.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
-          "rookie": true
-        },
-        {
-          "name": "Tutu Atwell",
-          "pos": "WR",
-          "team": "LAR",
-          "age": 27,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 1711,
-          "ktcAdp": 235.0,
-          "ktcPosRank": 130,
-          "note": "KTC 1QB rank #312, value 1711, ADP 235.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Chris Brooks",
-          "pos": "RB",
-          "team": "GBP",
-          "age": 26,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 2289,
-          "ktcAdp": 220.0,
-          "ktcPosRank": 76,
-          "note": "KTC 1QB rank #253, value 2289, ADP 220.0. Started% 0.6."
+          "ktcValue": 1700,
+          "ktcAdp": 244.0,
+          "ktcPosRank": 52,
+          "note": "KTC 1QB rank #312, value 1700, ADP 244.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Shedeur Sanders",
@@ -7986,22 +7974,34 @@
           "age": 24,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 2288,
+          "ktcValue": 2289,
           "ktcAdp": 154.0,
           "ktcPosRank": 30,
-          "note": "KTC 1QB rank #254, value 2288, ADP 154.0. Started% 0.2."
+          "note": "KTC 1QB rank #253, value 2289, ADP 154.0. Started% 0.2."
         },
         {
-          "name": "Tyquan Thornton",
+          "name": "Tutu Atwell",
           "pos": "WR",
-          "team": "KCC",
+          "team": "LAR",
+          "age": 27,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1700,
+          "ktcAdp": 235.0,
+          "ktcPosRank": 130,
+          "note": "KTC 1QB rank #313, value 1700, ADP 235.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Chris Brooks",
+          "pos": "RB",
+          "team": "GB",
           "age": 26,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 2277,
-          "ktcAdp": 223.0,
-          "ktcPosRank": 108,
-          "note": "KTC 1QB rank #255, value 2277, ADP 223.0. Started% 0.2."
+          "ktcValue": 2281,
+          "ktcAdp": 220.0,
+          "ktcPosRank": 76,
+          "note": "KTC 1QB rank #255, value 2281, ADP 220.0. Started% 0.6."
         },
         {
           "name": "Darnell Washington",
@@ -8010,46 +8010,46 @@
           "age": 25,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 2277,
+          "ktcValue": 2271,
           "ktcAdp": 206.0,
           "ktcPosRank": 42,
-          "note": "KTC 1QB rank #256, value 2277, ADP 206.0. Started% 0.3."
+          "note": "KTC 1QB rank #256, value 2271, ADP 206.0. Started% 0.3."
         },
         {
-          "name": "Noah Fant",
-          "pos": "TE",
-          "team": "NOS",
-          "age": 28,
+          "name": "Luke McCaffrey",
+          "pos": "WR",
+          "team": "WAS",
+          "age": 25,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 1674,
-          "ktcAdp": 244.0,
-          "ktcPosRank": 52,
-          "note": "KTC 1QB rank #317, value 1674, ADP 244.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcValue": 1663,
+          "ktcAdp": 226.0,
+          "ktcPosRank": 131,
+          "note": "KTC 1QB rank #318, value 1663, ADP 226.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Dont'e Thornton",
           "pos": "WR",
-          "team": "LVR",
+          "team": "LV",
           "age": 23,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 2230,
+          "ktcValue": 2226,
           "ktcAdp": 165.0,
           "ktcPosRank": 110,
-          "note": "KTC 1QB rank #259, value 2230, ADP 165.0. Started% 0.2."
+          "note": "KTC 1QB rank #259, value 2226, ADP 165.0. Started% 0.2."
         },
         {
-          "name": "Jimmy Horn",
-          "pos": "WR",
-          "team": "CLE",
-          "age": 24,
+          "name": "Zach Ertz",
+          "pos": "TE",
+          "team": "PHI",
+          "age": 35,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 1663,
-          "ktcAdp": 204.0,
-          "ktcPosRank": 133,
-          "note": "KTC 1QB rank #319, value 1663, ADP 204.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcValue": 1662,
+          "ktcAdp": 168.0,
+          "ktcPosRank": 54,
+          "note": "KTC 1QB rank #319, value 1662, ADP 168.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Isaiah Davis",
@@ -8058,71 +8058,10 @@
           "age": 24,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 2228,
+          "ktcValue": 2215,
           "ktcAdp": 219.0,
           "ktcPosRank": 78,
-          "note": "KTC 1QB rank #260, value 2228, ADP 219.0. Started% 0.2."
-        },
-        {
-          "name": "Xavier Legette",
-          "pos": "WR",
-          "team": "CAR",
-          "age": 25,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 2204,
-          "ktcAdp": 177.0,
-          "ktcPosRank": 111,
-          "note": "KTC 1QB rank #261, value 2204, ADP 177.0. Started% 0.1."
-        },
-        {
-          "name": "Marlin Klein",
-          "pos": "TE",
-          "team": "HOU",
-          "age": 24,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 1633,
-          "ktcAdp": 238.0,
-          "ktcPosRank": 54,
-          "note": "KTC 1QB rank #321, value 1633, ADP 238.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
-          "rookie": true
-        },
-        {
-          "name": "Darnell Mooney",
-          "pos": "WR",
-          "team": "NYG",
-          "age": 28,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 2178,
-          "ktcAdp": 148.0,
-          "ktcPosRank": 112,
-          "note": "KTC 1QB rank #262, value 2178, ADP 148.0. Started% 0.5."
-        },
-        {
-          "name": "John Metchie",
-          "pos": "WR",
-          "team": "CAR",
-          "age": 26,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 1632,
-          "ktcAdp": 206.0,
-          "ktcPosRank": 134,
-          "note": "KTC 1QB rank #322, value 1632, ADP 206.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Dawson Knox",
-          "pos": "TE",
-          "team": "BUF",
-          "age": 29,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 2173,
-          "ktcAdp": 252.0,
-          "ktcPosRank": 43,
-          "note": "KTC 1QB rank #263, value 2173, ADP 252.0. Started% 0.3."
+          "note": "KTC 1QB rank #260, value 2215, ADP 219.0. Started% 0.2."
         },
         {
           "name": "Konata Mumpfield",
@@ -8131,107 +8070,10 @@
           "age": 23,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 1610,
+          "ktcValue": 1658,
           "ktcAdp": 205.0,
-          "ktcPosRank": 135,
-          "note": "KTC 1QB rank #323, value 1610, ADP 205.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Jacoby Brissett",
-          "pos": "QB",
-          "team": "ARI",
-          "age": 33,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 2168,
-          "ktcAdp": 184.0,
-          "ktcPosRank": 31,
-          "note": "KTC 1QB rank #264, value 2168, ADP 184.0. Started% 1.4."
-        },
-        {
-          "name": "KeAndre Lambert-Smith",
-          "pos": "WR",
-          "team": "LAC",
-          "age": 24,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 1607,
-          "ktcAdp": 233.0,
-          "ktcPosRank": 136,
-          "note": "KTC 1QB rank #324, value 1607, ADP 233.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Isiah Pacheco",
-          "pos": "RB",
-          "team": "DET",
-          "age": 27,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 2164,
-          "ktcAdp": 117.0,
-          "ktcPosRank": 79,
-          "note": "KTC 1QB rank #265, value 2164, ADP 117.0. Started% 0.2."
-        },
-        {
-          "name": "Jahdae Walker",
-          "pos": "WR",
-          "team": "CHI",
-          "age": 24,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 1603,
-          "ktcAdp": 215.0,
-          "ktcPosRank": 137,
-          "note": "KTC 1QB rank #325, value 1603, ADP 215.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Malik Davis",
-          "pos": "RB",
-          "team": "DAL",
-          "age": 27,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 2142,
-          "ktcAdp": 206.0,
-          "ktcPosRank": 80,
-          "note": "KTC 1QB rank #267, value 2142, ADP 206.0. Started% 0.2."
-        },
-        {
-          "name": "Barion Brown",
-          "pos": "WR",
-          "team": "NOS",
-          "age": 22,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 2140,
-          "ktcAdp": 205.0,
-          "ktcPosRank": 114,
-          "note": "KTC 1QB rank #268, value 2140, ADP 205.0. Started% 0.1.",
-          "rookie": true
-        },
-        {
-          "name": "Will Howard",
-          "pos": "QB",
-          "team": "PIT",
-          "age": 25,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 1558,
-          "ktcAdp": 115.0,
-          "ktcPosRank": 41,
-          "note": "KTC 1QB rank #328, value 1558, ADP 115.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Erick All",
-          "pos": "TE",
-          "team": "CIN",
-          "age": 26,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 1761,
-          "ktcAdp": 268.0,
-          "ktcPosRank": 49,
-          "note": "KTC 1QB rank #302, value 1761, ADP 268.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 132,
+          "note": "KTC 1QB rank #320, value 1658, ADP 205.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Emanuel Wilson",
@@ -8240,34 +8082,180 @@
           "age": 27,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 2129,
+          "ktcValue": 2213,
           "ktcAdp": 206.0,
-          "ktcPosRank": 81,
-          "note": "KTC 1QB rank #269, value 2129, ADP 206.0. Started% 0.2."
+          "ktcPosRank": 79,
+          "note": "KTC 1QB rank #261, value 2213, ADP 206.0. Started% 0.2."
+        },
+        {
+          "name": "Darnell Mooney",
+          "pos": "WR",
+          "team": "NYG",
+          "age": 28,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 2198,
+          "ktcAdp": 148.0,
+          "ktcPosRank": 111,
+          "note": "KTC 1QB rank #262, value 2198, ADP 148.0. Started% 0.5."
+        },
+        {
+          "name": "Marlin Klein",
+          "pos": "TE",
+          "team": "HOU",
+          "age": 24,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1641,
+          "ktcAdp": 238.0,
+          "ktcPosRank": 55,
+          "note": "KTC 1QB rank #322, value 1641, ADP 238.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
+          "rookie": true
+        },
+        {
+          "name": "Xavier Legette",
+          "pos": "WR",
+          "team": "CAR",
+          "age": 25,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 2197,
+          "ktcAdp": 177.0,
+          "ktcPosRank": 112,
+          "note": "KTC 1QB rank #263, value 2197, ADP 177.0. Started% 0.1."
+        },
+        {
+          "name": "Mack Hollins",
+          "pos": "WR",
+          "team": "NE",
+          "age": 33,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1623,
+          "ktcAdp": 188.0,
+          "ktcPosRank": 134,
+          "note": "KTC 1QB rank #323, value 1623, ADP 188.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Jimmy Horn",
+          "pos": "WR",
+          "team": "CLE",
+          "age": 24,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1596,
+          "ktcAdp": 204.0,
+          "ktcPosRank": 135,
+          "note": "KTC 1QB rank #324, value 1596, ADP 204.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Dawson Knox",
+          "pos": "TE",
+          "team": "BUF",
+          "age": 29,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 2182,
+          "ktcAdp": 252.0,
+          "ktcPosRank": 43,
+          "note": "KTC 1QB rank #265, value 2182, ADP 252.0. Started% 0.3."
+        },
+        {
+          "name": "Jahdae Walker",
+          "pos": "WR",
+          "team": "CHI",
+          "age": 24,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1591,
+          "ktcAdp": 215.0,
+          "ktcPosRank": 136,
+          "note": "KTC 1QB rank #325, value 1591, ADP 215.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Jacoby Brissett",
+          "pos": "QB",
+          "team": "ARI",
+          "age": 33,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 2180,
+          "ktcAdp": 184.0,
+          "ktcPosRank": 31,
+          "note": "KTC 1QB rank #266, value 2180, ADP 184.0. Started% 1.4."
+        },
+        {
+          "name": "KeAndre Lambert-Smith",
+          "pos": "WR",
+          "team": "LAC",
+          "age": 24,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1586,
+          "ktcAdp": 233.0,
+          "ktcPosRank": 137,
+          "note": "KTC 1QB rank #326, value 1586, ADP 233.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Isiah Pacheco",
+          "pos": "RB",
+          "team": "DET",
+          "age": 27,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 2136,
+          "ktcAdp": 117.0,
+          "ktcPosRank": 80,
+          "note": "KTC 1QB rank #267, value 2136, ADP 117.0. Started% 0.2."
+        },
+        {
+          "name": "John Metchie",
+          "pos": "WR",
+          "team": "CAR",
+          "age": 26,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1578,
+          "ktcAdp": 206.0,
+          "ktcPosRank": 138,
+          "note": "KTC 1QB rank #327, value 1578, ADP 206.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Erick All",
+          "pos": "TE",
+          "team": "CIN",
+          "age": 26,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1697,
+          "ktcAdp": 268.0,
+          "ktcPosRank": 53,
+          "note": "KTC 1QB rank #314, value 1697, ADP 268.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Barion Brown",
+          "pos": "WR",
+          "team": "NO",
+          "age": 22,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 2122,
+          "ktcAdp": 205.0,
+          "ktcPosRank": 115,
+          "note": "KTC 1QB rank #269, value 2122, ADP 205.0. Started% 0.1.",
+          "rookie": true
         },
         {
           "name": "Brashard Smith",
           "pos": "RB",
-          "team": "KCC",
+          "team": "KC",
           "age": 23,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 2117,
+          "ktcValue": 2109,
           "ktcAdp": 155.0,
-          "ktcPosRank": 82,
-          "note": "KTC 1QB rank #270, value 2117, ADP 155.0. Started% 0.1."
-        },
-        {
-          "name": "Tai Felton",
-          "pos": "WR",
-          "team": "MIN",
-          "age": 23,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 1556,
-          "ktcAdp": 181.0,
-          "ktcPosRank": 138,
-          "note": "KTC 1QB rank #330, value 1556, ADP 181.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 81,
+          "note": "KTC 1QB rank #270, value 2109, ADP 155.0. Started% 0.1."
         },
         {
           "name": "Trey Benson",
@@ -8276,47 +8264,58 @@
           "age": 24,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 2113,
+          "ktcValue": 2107,
           "ktcAdp": 134.0,
-          "ktcPosRank": 83,
-          "note": "KTC 1QB rank #271, value 2113, ADP 134.0. Started% 0.2."
+          "ktcPosRank": 82,
+          "note": "KTC 1QB rank #271, value 2107, ADP 134.0. Started% 0.2."
         },
         {
-          "name": "Mack Hollins",
+          "name": "Malik Davis",
+          "pos": "RB",
+          "team": "DAL",
+          "age": 27,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 2103,
+          "ktcAdp": 206.0,
+          "ktcPosRank": 83,
+          "note": "KTC 1QB rank #272, value 2103, ADP 206.0. Started% 0.2."
+        },
+        {
+          "name": "Tai Felton",
           "pos": "WR",
-          "team": "NEP",
-          "age": 33,
+          "team": "MIN",
+          "age": 23,
           "category": "mainstay",
           "tier": "A",
           "ktcValue": 1552,
-          "ktcAdp": 188.0,
+          "ktcAdp": 181.0,
           "ktcPosRank": 139,
-          "note": "KTC 1QB rank #331, value 1552, ADP 188.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC 1QB rank #332, value 1552, ADP 181.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Jake Tonges",
           "pos": "TE",
-          "team": "SFO",
+          "team": "SF",
           "age": 27,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 2082,
+          "ktcValue": 2062,
           "ktcAdp": 205.0,
           "ktcPosRank": 44,
-          "note": "KTC 1QB rank #274, value 2082, ADP 205.0. Started% 0.2."
+          "note": "KTC 1QB rank #274, value 2062, ADP 205.0. Started% 0.2."
         },
         {
-          "name": "Colbie Young",
-          "pos": "WR",
-          "team": "CIN",
-          "age": 24,
+          "name": "Will Howard",
+          "pos": "QB",
+          "team": "PIT",
+          "age": 25,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 1532,
-          "ktcAdp": 273.0,
-          "ktcPosRank": 140,
-          "note": "KTC 1QB rank #334, value 1532, ADP 273.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
-          "rookie": true
+          "ktcValue": 1539,
+          "ktcAdp": 115.0,
+          "ktcPosRank": 43,
+          "note": "KTC 1QB rank #334, value 1539, ADP 115.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Dyami Brown",
@@ -8325,10 +8324,34 @@
           "age": 26,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 1528,
+          "ktcValue": 1534,
           "ktcAdp": 210.0,
-          "ktcPosRank": 141,
-          "note": "KTC 1QB rank #335, value 1528, ADP 210.0. Started% 96.9. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 140,
+          "note": "KTC 1QB rank #335, value 1534, ADP 210.0. Started% 96.9. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Mike Gesicki",
+          "pos": "TE",
+          "team": "CIN",
+          "age": 31,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 2036,
+          "ktcAdp": 198.0,
+          "ktcPosRank": 45,
+          "note": "KTC 1QB rank #277, value 2036, ADP 198.0. Started% 0.7."
+        },
+        {
+          "name": "Cedric Tillman",
+          "pos": "WR",
+          "team": "NO",
+          "age": 26,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1521,
+          "ktcAdp": 163.0,
+          "ktcPosRank": 142,
+          "note": "KTC 1QB rank #337, value 1521, ADP 163.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Cooper Kupp",
@@ -8337,34 +8360,22 @@
           "age": 33,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 2030,
-          "ktcAdp": 129.0,
+          "ktcValue": 2020,
+          "ktcAdp": 130.0,
           "ktcPosRank": 117,
-          "note": "KTC 1QB rank #276, value 2030, ADP 129.0. Started% 2.0."
+          "note": "KTC 1QB rank #279, value 2020, ADP 130.0. Started% 2.0."
         },
         {
-          "name": "Cedric Tillman",
-          "pos": "WR",
-          "team": "NOS",
-          "age": 26,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 1521,
-          "ktcAdp": 163.0,
-          "ktcPosRank": 142,
-          "note": "KTC 1QB rank #336, value 1521, ADP 163.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "CJ Daniels",
-          "pos": "WR",
-          "team": "LAR",
+          "name": "Matthew Hibner",
+          "pos": "TE",
+          "team": "BAL",
           "age": 24,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 1517,
-          "ktcAdp": 250.0,
-          "ktcPosRank": 143,
-          "note": "KTC 1QB rank #337, value 1517, ADP 250.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
+          "ktcValue": 1518,
+          "ktcAdp": 238.0,
+          "ktcPosRank": 57,
+          "note": "KTC 1QB rank #339, value 1518, ADP 238.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
           "rookie": true
         },
         {
@@ -8374,35 +8385,10 @@
           "age": 34,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 2015,
+          "ktcValue": 2004,
           "ktcAdp": 167.0,
           "ktcPosRank": 119,
-          "note": "KTC 1QB rank #280, value 2015, ADP 167.0. Started% 1.7."
-        },
-        {
-          "name": "Matthew Hibner",
-          "pos": "TE",
-          "team": "BAL",
-          "age": 24,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 1505,
-          "ktcAdp": 238.0,
-          "ktcPosRank": 56,
-          "note": "KTC 1QB rank #340, value 1505, ADP 238.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
-          "rookie": true
-        },
-        {
-          "name": "Jahan Dotson",
-          "pos": "WR",
-          "team": "ATL",
-          "age": 26,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 2004,
-          "ktcAdp": 235.0,
-          "ktcPosRank": 120,
-          "note": "KTC 1QB rank #281, value 2004, ADP 235.0. Started% 0.1."
+          "note": "KTC 1QB rank #281, value 2004, ADP 167.0. Started% 1.7."
         },
         {
           "name": "Devontez Walker",
@@ -8411,22 +8397,47 @@
           "age": 25,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 1710,
+          "ktcValue": 1775,
           "ktcAdp": 281.0,
-          "ktcPosRank": 131,
-          "note": "KTC 1QB rank #313, value 1710, ADP 281.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 126,
+          "note": "KTC 1QB rank #300, value 1775, ADP 281.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
-          "name": "Roschon Johnson",
-          "pos": "RB",
-          "team": "CHI",
-          "age": 25,
+          "name": "Jahan Dotson",
+          "pos": "WR",
+          "team": "ATL",
+          "age": 26,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 2004,
-          "ktcAdp": 179.0,
-          "ktcPosRank": 86,
-          "note": "KTC 1QB rank #282, value 2004, ADP 179.0. Started% 0.3."
+          "ktcValue": 2003,
+          "ktcAdp": 235.0,
+          "ktcPosRank": 120,
+          "note": "KTC 1QB rank #282, value 2003, ADP 235.0. Started% 0.1."
+        },
+        {
+          "name": "Colbie Young",
+          "pos": "WR",
+          "team": "CIN",
+          "age": 24,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1504,
+          "ktcAdp": 273.0,
+          "ktcPosRank": 144,
+          "note": "KTC 1QB rank #342, value 1504, ADP 273.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
+          "rookie": true
+        },
+        {
+          "name": "Christian Kirk",
+          "pos": "WR",
+          "team": "SF",
+          "age": 29,
+          "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1979,
+          "ktcAdp": 161.0,
+          "ktcPosRank": 121,
+          "note": "KTC 1QB rank #283, value 1979, ADP 161.0. Started% 0.0."
         },
         {
           "name": "Najee Harris",
@@ -8435,58 +8446,35 @@
           "age": 28,
           "category": "mainstay",
           "tier": "A",
-          "ktcValue": 1995,
+          "ktcValue": 1969,
           "ktcAdp": 143.0,
-          "ktcPosRank": 87,
-          "note": "KTC 1QB rank #284, value 1995, ADP 143.0. Started% 0.4."
+          "ktcPosRank": 86,
+          "note": "KTC 1QB rank #285, value 1969, ADP 143.0. Started% 0.4."
         },
         {
-          "name": "Mike Gesicki",
-          "pos": "TE",
-          "team": "CIN",
-          "age": 31,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 1979,
-          "ktcAdp": 198.0,
-          "ktcPosRank": 46,
-          "note": "KTC 1QB rank #285, value 1979, ADP 198.0. Started% 0.7."
-        },
-        {
-          "name": "Zach Ertz",
-          "pos": "TE",
-          "team": "FA",
-          "age": 35,
-          "category": "mainstay",
-          "tier": "A",
-          "ktcValue": 1485,
-          "ktcAdp": 168.0,
-          "ktcPosRank": 57,
-          "note": "KTC 1QB rank #345, value 1485, ADP 168.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Christian Kirk",
+          "name": "CJ Daniels",
           "pos": "WR",
-          "team": "SFO",
-          "age": 29,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1962,
-          "ktcAdp": 161.0,
-          "ktcPosRank": 121,
-          "note": "KTC 1QB rank #286, value 1962, ADP 161.0. Started% 0.0."
-        },
-        {
-          "name": "Jordan Watkins",
-          "pos": "WR",
-          "team": "SFO",
+          "team": "LAR",
           "age": 24,
           "category": "mainstay",
+          "tier": "A",
+          "ktcValue": 1479,
+          "ktcAdp": 250.0,
+          "ktcPosRank": 147,
+          "note": "KTC 1QB rank #345, value 1479, ADP 250.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
+          "rookie": true
+        },
+        {
+          "name": "Roschon Johnson",
+          "pos": "RB",
+          "team": "CHI",
+          "age": 25,
+          "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1481,
-          "ktcAdp": 202.0,
-          "ktcPosRank": 148,
-          "note": "KTC 1QB rank #346, value 1481, ADP 202.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcValue": 1967,
+          "ktcAdp": 179.0,
+          "ktcPosRank": 87,
+          "note": "KTC 1QB rank #286, value 1967, ADP 179.0. Started% 0.3."
         },
         {
           "name": "Justice Hill",
@@ -8495,10 +8483,10 @@
           "age": 28,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1960,
-          "ktcAdp": 194.0,
+          "ktcValue": 1961,
+          "ktcAdp": 193.0,
           "ktcPosRank": 88,
-          "note": "KTC 1QB rank #287, value 1960, ADP 194.0. Started% 0.6."
+          "note": "KTC 1QB rank #287, value 1961, ADP 193.0. Started% 0.6."
         },
         {
           "name": "Treylon Burks",
@@ -8507,22 +8495,34 @@
           "age": 26,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1685,
+          "ktcValue": 1656,
           "ktcAdp": 287.0,
-          "ktcPosRank": 132,
-          "note": "KTC 1QB rank #316, value 1685, ADP 287.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 133,
+          "note": "KTC 1QB rank #321, value 1656, ADP 287.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Mac Jones",
           "pos": "QB",
-          "team": "SFO",
+          "team": "SF",
           "age": 28,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1948,
+          "ktcValue": 1945,
           "ktcAdp": 198.0,
           "ktcPosRank": 33,
-          "note": "KTC 1QB rank #288, value 1948, ADP 198.0. Started% 0.0."
+          "note": "KTC 1QB rank #288, value 1945, ADP 198.0. Started% 0.0."
+        },
+        {
+          "name": "Jordan Watkins",
+          "pos": "WR",
+          "team": "SF",
+          "age": 24,
+          "category": "mainstay",
+          "tier": "B",
+          "ktcValue": 1468,
+          "ktcAdp": 202.0,
+          "ktcPosRank": 149,
+          "note": "KTC 1QB rank #349, value 1468, ADP 202.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Andrei Iosivas",
@@ -8531,22 +8531,10 @@
           "age": 26,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1935,
+          "ktcValue": 1913,
           "ktcAdp": 211.0,
           "ktcPosRank": 122,
-          "note": "KTC 1QB rank #290, value 1935, ADP 211.0. Started% 0.3."
-        },
-        {
-          "name": "Cade Stover",
-          "pos": "TE",
-          "team": "HOU",
-          "age": 26,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1462,
-          "ktcAdp": 265.0,
-          "ktcPosRank": 59,
-          "note": "KTC 1QB rank #350, value 1462, ADP 265.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC 1QB rank #290, value 1913, ADP 211.0. Started% 0.3."
         },
         {
           "name": "Malachi Corley",
@@ -8555,10 +8543,10 @@
           "age": 24,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1457,
+          "ktcValue": 1460,
           "ktcAdp": 250.0,
-          "ktcPosRank": 149,
-          "note": "KTC 1QB rank #351, value 1457, ADP 250.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 150,
+          "note": "KTC 1QB rank #350, value 1460, ADP 250.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Tahj Brooks",
@@ -8567,10 +8555,22 @@
           "age": 24,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1908,
+          "ktcValue": 1903,
           "ktcAdp": 178.0,
           "ktcPosRank": 89,
-          "note": "KTC 1QB rank #292, value 1908, ADP 178.0. Started% 12.4."
+          "note": "KTC 1QB rank #291, value 1903, ADP 178.0. Started% 12.4."
+        },
+        {
+          "name": "Cade Stover",
+          "pos": "TE",
+          "team": "HOU",
+          "age": 26,
+          "category": "mainstay",
+          "tier": "B",
+          "ktcValue": 1454,
+          "ktcAdp": 265.0,
+          "ktcPosRank": 59,
+          "note": "KTC 1QB rank #351, value 1454, ADP 265.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Tua Tagovailoa",
@@ -8579,10 +8579,10 @@
           "age": 28,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1897,
+          "ktcValue": 1879,
           "ktcAdp": 180.0,
           "ktcPosRank": 34,
-          "note": "KTC 1QB rank #293, value 1897, ADP 180.0. Started% 0.3."
+          "note": "KTC 1QB rank #293, value 1879, ADP 180.0. Started% 0.3."
         },
         {
           "name": "Tyler Higbee",
@@ -8591,22 +8591,22 @@
           "age": 33,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1428,
+          "ktcValue": 1434,
           "ktcAdp": 196.0,
-          "ktcPosRank": 61,
-          "note": "KTC 1QB rank #354, value 1428, ADP 196.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 60,
+          "note": "KTC 1QB rank #353, value 1434, ADP 196.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Isaac Guerendo",
           "pos": "RB",
-          "team": "SFO",
+          "team": "SF",
           "age": 26,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1411,
+          "ktcValue": 1432,
           "ktcAdp": 155.0,
           "ktcPosRank": 100,
-          "note": "KTC 1QB rank #355, value 1411, ADP 155.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "note": "KTC 1QB rank #354, value 1432, ADP 155.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Anthony Richardson",
@@ -8621,67 +8621,6 @@
           "note": "KTC 1QB rank #296, value 1840, ADP 177.0. Started% 0.0."
         },
         {
-          "name": "Audric Estime",
-          "pos": "RB",
-          "team": "NOS",
-          "age": 23,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1819,
-          "ktcAdp": 217.0,
-          "ktcPosRank": 90,
-          "note": "KTC 1QB rank #297, value 1819, ADP 217.0. Started% 0.1."
-        },
-        {
-          "name": "Quinn Ewers",
-          "pos": "QB",
-          "team": "JAC",
-          "age": 23,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1391,
-          "ktcAdp": 135.0,
-          "ktcPosRank": 45,
-          "note": "KTC 1QB rank #357, value 1391, ADP 135.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "J'Mari Taylor",
-          "pos": "RB",
-          "team": "JAC",
-          "age": 24,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1386,
-          "ktcAdp": 39.0,
-          "ktcPosRank": 102,
-          "note": "KTC 1QB rank #358, value 1386, ADP 39.0. Started% 99.1. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
-          "rookie": true
-        },
-        {
-          "name": "J.J. McCarthy",
-          "pos": "QB",
-          "team": "MIN",
-          "age": 23,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1800,
-          "ktcAdp": 154.0,
-          "ktcPosRank": 36,
-          "note": "KTC 1QB rank #299, value 1800, ADP 154.0. Started% 0.1."
-        },
-        {
-          "name": "Elijah Moore",
-          "pos": "WR",
-          "team": "PHI",
-          "age": 26,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1385,
-          "ktcAdp": 225.0,
-          "ktcPosRank": 151,
-          "note": "KTC 1QB rank #359, value 1385, ADP 225.0. Started% 74.3. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
           "name": "Joe Milton",
           "pos": "QB",
           "team": "DAL",
@@ -8690,56 +8629,32 @@
           "tier": "B",
           "ktcValue": 1384,
           "ktcAdp": 251.0,
-          "ktcPosRank": 46,
-          "note": "KTC 1QB rank #360, value 1384, ADP 251.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 45,
+          "note": "KTC 1QB rank #358, value 1384, ADP 251.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
-          "name": "Calvin Ridley",
-          "pos": "WR",
-          "team": "TEN",
-          "age": 31,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1780,
-          "ktcAdp": 107.0,
-          "ktcPosRank": 125,
-          "note": "KTC 1QB rank #300, value 1780, ADP 107.0. Started% 0.7."
-        },
-        {
-          "name": "Jarquez Hunter",
-          "pos": "RB",
-          "team": "MIA",
-          "age": 23,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1776,
-          "ktcAdp": 167.0,
-          "ktcPosRank": 92,
-          "note": "KTC 1QB rank #301, value 1776, ADP 167.0. Started% 0.0."
-        },
-        {
-          "name": "Mitchell Evans",
-          "pos": "TE",
-          "team": "CAR",
-          "age": 23,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1371,
-          "ktcAdp": 239.0,
-          "ktcPosRank": 62,
-          "note": "KTC 1QB rank #362, value 1371, ADP 239.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "Justin Fields",
+          "name": "J.J. McCarthy",
           "pos": "QB",
-          "team": "KCC",
-          "age": 27,
+          "team": "MIN",
+          "age": 23,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1756,
-          "ktcAdp": 148.0,
-          "ktcPosRank": 37,
-          "note": "KTC 1QB rank #303, value 1756, ADP 148.0. Started% 0.0."
+          "ktcValue": 1794,
+          "ktcAdp": 154.0,
+          "ktcPosRank": 36,
+          "note": "KTC 1QB rank #299, value 1794, ADP 154.0. Started% 0.1."
+        },
+        {
+          "name": "Quinn Ewers",
+          "pos": "QB",
+          "team": "JAX",
+          "age": 23,
+          "category": "mainstay",
+          "tier": "B",
+          "ktcValue": 1381,
+          "ktcAdp": 135.0,
+          "ktcPosRank": 46,
+          "note": "KTC 1QB rank #359, value 1381, ADP 135.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Jack Endries",
@@ -8748,11 +8663,72 @@
           "age": 22,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1357,
+          "ktcValue": 1369,
           "ktcAdp": 38.0,
-          "ktcPosRank": 63,
-          "note": "KTC 1QB rank #363, value 1357, ADP 38.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
+          "ktcPosRank": 62,
+          "note": "KTC 1QB rank #360, value 1369, ADP 38.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
           "rookie": true
+        },
+        {
+          "name": "Calvin Ridley",
+          "pos": "WR",
+          "team": "TEN",
+          "age": 31,
+          "category": "mainstay",
+          "tier": "B",
+          "ktcValue": 1766,
+          "ktcAdp": 107.0,
+          "ktcPosRank": 127,
+          "note": "KTC 1QB rank #301, value 1766, ADP 107.0. Started% 0.7."
+        },
+        {
+          "name": "Elijah Moore",
+          "pos": "WR",
+          "team": "PHI",
+          "age": 26,
+          "category": "mainstay",
+          "tier": "B",
+          "ktcValue": 1364,
+          "ktcAdp": 225.0,
+          "ktcPosRank": 152,
+          "note": "KTC 1QB rank #361, value 1364, ADP 225.0. Started% 74.3. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Justin Fields",
+          "pos": "QB",
+          "team": "KC",
+          "age": 27,
+          "category": "mainstay",
+          "tier": "B",
+          "ktcValue": 1750,
+          "ktcAdp": 148.0,
+          "ktcPosRank": 37,
+          "note": "KTC 1QB rank #302, value 1750, ADP 148.0. Started% 0.0."
+        },
+        {
+          "name": "J'Mari Taylor",
+          "pos": "RB",
+          "team": "JAX",
+          "age": 24,
+          "category": "mainstay",
+          "tier": "B",
+          "ktcValue": 1364,
+          "ktcAdp": 39.0,
+          "ktcPosRank": 102,
+          "note": "KTC 1QB rank #362, value 1364, ADP 39.0. Started% 99.1. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
+          "rookie": true
+        },
+        {
+          "name": "Audric Estime",
+          "pos": "RB",
+          "team": "FA",
+          "age": 23,
+          "category": "mainstay",
+          "tier": "B",
+          "ktcValue": 1749,
+          "ktcAdp": 217.0,
+          "ktcPosRank": 91,
+          "note": "KTC 1QB rank #304, value 1749, ADP 217.0. Started% 0.1."
         },
         {
           "name": "Jalin Hyatt",
@@ -8761,22 +8737,71 @@
           "age": 25,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1341,
+          "ktcValue": 1345,
           "ktcAdp": 190.0,
-          "ktcPosRank": 153,
-          "note": "KTC 1QB rank #364, value 1341, ADP 190.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 154,
+          "note": "KTC 1QB rank #364, value 1345, ADP 190.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Jacob Cowing",
           "pos": "WR",
-          "team": "SFO",
+          "team": "SF",
           "age": 25,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1451,
+          "ktcValue": 1468,
           "ktcAdp": 305.0,
-          "ktcPosRank": 150,
-          "note": "KTC 1QB rank #352, value 1451, ADP 305.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 148,
+          "note": "KTC 1QB rank #348, value 1468, ADP 305.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Mitchell Evans",
+          "pos": "TE",
+          "team": "CAR",
+          "age": 23,
+          "category": "mainstay",
+          "tier": "B",
+          "ktcValue": 1345,
+          "ktcAdp": 239.0,
+          "ktcPosRank": 63,
+          "note": "KTC 1QB rank #365, value 1345, ADP 239.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Darren Waller",
+          "pos": "TE",
+          "team": "CAR",
+          "age": 34,
+          "category": "mainstay",
+          "tier": "B",
+          "ktcValue": 1738,
+          "ktcAdp": 182.0,
+          "ktcPosRank": 50,
+          "note": "KTC 1QB rank #306, value 1738, ADP 182.0. Started% 3.6."
+        },
+        {
+          "name": "Josh Cameron",
+          "pos": "WR",
+          "team": "JAX",
+          "age": 23,
+          "category": "mainstay",
+          "tier": "B",
+          "ktcValue": 1342,
+          "ktcAdp": 36.0,
+          "ktcPosRank": 155,
+          "note": "KTC 1QB rank #366, value 1342, ADP 36.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
+          "rookie": true
+        },
+        {
+          "name": "Jarquez Hunter",
+          "pos": "RB",
+          "team": "MIA",
+          "age": 23,
+          "category": "mainstay",
+          "tier": "B",
+          "ktcValue": 1735,
+          "ktcAdp": 167.0,
+          "ktcPosRank": 92,
+          "note": "KTC 1QB rank #307, value 1735, ADP 167.0. Started% 0.0."
         },
         {
           "name": "Jaleel McLaughlin",
@@ -8785,35 +8810,10 @@
           "age": 26,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1337,
+          "ktcValue": 1328,
           "ktcAdp": 205.0,
           "ktcPosRank": 103,
-          "note": "KTC 1QB rank #366, value 1337, ADP 205.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
-        },
-        {
-          "name": "James Conner",
-          "pos": "RB",
-          "team": "ARI",
-          "age": 31,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1723,
-          "ktcAdp": 104.0,
-          "ktcPosRank": 93,
-          "note": "KTC 1QB rank #307, value 1723, ADP 104.0. Started% 0.9."
-        },
-        {
-          "name": "Josh Cameron",
-          "pos": "WR",
-          "team": "JAC",
-          "age": 23,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1328,
-          "ktcAdp": 36.0,
-          "ktcPosRank": 155,
-          "note": "KTC 1QB rank #367, value 1328, ADP 36.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
-          "rookie": true
+          "note": "KTC 1QB rank #367, value 1328, ADP 205.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
           "name": "Geno Smith",
@@ -8822,35 +8822,35 @@
           "age": 36,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1720,
+          "ktcValue": 1721,
           "ktcAdp": 187.0,
           "ktcPosRank": 38,
-          "note": "KTC 1QB rank #308, value 1720, ADP 187.0. Started% 1.3."
+          "note": "KTC 1QB rank #309, value 1721, ADP 187.0. Started% 1.3."
         },
         {
           "name": "Garrett Nussmeier",
           "pos": "QB",
-          "team": "KCC",
+          "team": "KC",
           "age": 24,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1317,
+          "ktcValue": 1305,
           "ktcAdp": 132.0,
           "ktcPosRank": 47,
-          "note": "KTC 1QB rank #368, value 1317, ADP 132.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
+          "note": "KTC 1QB rank #369, value 1305, ADP 132.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
           "rookie": true
         },
         {
           "name": "Noah Gray",
           "pos": "TE",
-          "team": "KCC",
+          "team": "KC",
           "age": 27,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1718,
+          "ktcValue": 1713,
           "ktcAdp": 212.0,
           "ktcPosRank": 51,
-          "note": "KTC 1QB rank #309, value 1718, ADP 212.0. Started% 0.1."
+          "note": "KTC 1QB rank #310, value 1713, ADP 212.0. Started% 0.1."
         },
         {
           "name": "Calvin Austin III",
@@ -8859,48 +8859,47 @@
           "age": 27,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1310,
+          "ktcValue": 1304,
           "ktcAdp": 211.0,
-          "ktcPosRank": 156,
-          "note": "KTC 1QB rank #369, value 1310, ADP 211.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 157,
+          "note": "KTC 1QB rank #370, value 1304, ADP 211.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+        },
+        {
+          "name": "Carson Beck",
+          "pos": "QB",
+          "team": "ARI",
+          "age": 24,
+          "category": "mainstay",
+          "tier": "B",
+          "ktcValue": 1707,
+          "ktcAdp": 154.0,
+          "ktcPosRank": 39,
+          "note": "KTC 1QB rank #311, value 1707, ADP 154.0. Started% 0.0.",
+          "rookie": true
         },
         {
           "name": "Efton Chism",
           "pos": "WR",
-          "team": "NEP",
+          "team": "NE",
           "age": 24,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1310,
+          "ktcValue": 1293,
           "ktcAdp": 226.0,
-          "ktcPosRank": 157,
-          "note": "KTC 1QB rank #370, value 1310, ADP 226.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
+          "ktcPosRank": 158,
+          "note": "KTC 1QB rank #371, value 1293, ADP 226.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         },
         {
-          "name": "Michael Trigg",
-          "pos": "TE",
-          "team": "DAL",
+          "name": "Xavier Restrepo",
+          "pos": "WR",
+          "team": "TEN",
           "age": 24,
           "category": "mainstay",
           "tier": "B",
-          "ktcValue": 1248,
-          "ktcAdp": 114.0,
-          "ktcPosRank": 64,
-          "note": "KTC 1QB rank #372, value 1248, ADP 114.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
-          "rookie": true
-        },
-        {
-          "name": "Sam Roush",
-          "pos": "TE",
-          "team": "CHI",
-          "age": 23,
-          "category": "mainstay",
-          "tier": "B",
-          "ktcValue": 1248,
-          "ktcAdp": 57.0,
-          "ktcPosRank": 65,
-          "note": "KTC 1QB rank #373, value 1248, ADP 57.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus).",
-          "rookie": true
+          "ktcValue": 1247,
+          "ktcAdp": 145.0,
+          "ktcPosRank": 159,
+          "note": "KTC 1QB rank #373, value 1247, ADP 145.0. Tier driven by ADP (market runs ahead of KTC's algorithmic rank, started% confirms real consensus)."
         }
       ],
       "picks": [
@@ -8910,9 +8909,9 @@
           "season": 2027,
           "round": 1,
           "slot": "early",
-          "ktcValue": 7136,
-          "ktcRank": 17,
-          "note": "KTC 1QB pick value 7136 (rank #17)."
+          "ktcValue": 7167,
+          "ktcRank": 15,
+          "note": "KTC 1QB pick value 7167 (rank #15)."
         },
         {
           "name": "2027 Mid 1st",
@@ -8920,9 +8919,9 @@
           "season": 2027,
           "round": 1,
           "slot": "mid",
-          "ktcValue": 6173,
-          "ktcRank": 34,
-          "note": "KTC 1QB pick value 6173 (rank #34)."
+          "ktcValue": 6179,
+          "ktcRank": 33,
+          "note": "KTC 1QB pick value 6179 (rank #33)."
         },
         {
           "name": "2027 Late 1st",
@@ -8930,9 +8929,9 @@
           "season": 2027,
           "round": 1,
           "slot": "late",
-          "ktcValue": 5572,
+          "ktcValue": 5576,
           "ktcRank": 56,
-          "note": "KTC 1QB pick value 5572 (rank #56)."
+          "note": "KTC 1QB pick value 5576 (rank #56)."
         },
         {
           "name": "2027 Early 2nd",
@@ -8940,9 +8939,9 @@
           "season": 2027,
           "round": 2,
           "slot": "early",
-          "ktcValue": 4616,
-          "ktcRank": 89,
-          "note": "KTC 1QB pick value 4616 (rank #89)."
+          "ktcValue": 4612,
+          "ktcRank": 88,
+          "note": "KTC 1QB pick value 4612 (rank #88)."
         },
         {
           "name": "2027 Mid 2nd",
@@ -8950,9 +8949,9 @@
           "season": 2027,
           "round": 2,
           "slot": "mid",
-          "ktcValue": 4144,
-          "ktcRank": 111,
-          "note": "KTC 1QB pick value 4144 (rank #111)."
+          "ktcValue": 4143,
+          "ktcRank": 112,
+          "note": "KTC 1QB pick value 4143 (rank #112)."
         },
         {
           "name": "2027 Late 2nd",
@@ -8960,9 +8959,9 @@
           "season": 2027,
           "round": 2,
           "slot": "late",
-          "ktcValue": 3900,
-          "ktcRank": 134,
-          "note": "KTC 1QB pick value 3900 (rank #134)."
+          "ktcValue": 3887,
+          "ktcRank": 133,
+          "note": "KTC 1QB pick value 3887 (rank #133)."
         },
         {
           "name": "2027 Early 3rd",
@@ -8970,9 +8969,9 @@
           "season": 2027,
           "round": 3,
           "slot": "early",
-          "ktcValue": 3092,
-          "ktcRank": 197,
-          "note": "KTC 1QB pick value 3092 (rank #197)."
+          "ktcValue": 3099,
+          "ktcRank": 198,
+          "note": "KTC 1QB pick value 3099 (rank #198)."
         },
         {
           "name": "2027 Mid 3rd",
@@ -8980,9 +8979,9 @@
           "season": 2027,
           "round": 3,
           "slot": "mid",
-          "ktcValue": 2912,
+          "ktcValue": 2917,
           "ktcRank": 214,
-          "note": "KTC 1QB pick value 2912 (rank #214)."
+          "note": "KTC 1QB pick value 2917 (rank #214)."
         },
         {
           "name": "2027 Late 3rd",
@@ -8990,9 +8989,9 @@
           "season": 2027,
           "round": 3,
           "slot": "late",
-          "ktcValue": 2742,
+          "ktcValue": 2751,
           "ktcRank": 230,
-          "note": "KTC 1QB pick value 2742 (rank #230)."
+          "note": "KTC 1QB pick value 2751 (rank #230)."
         },
         {
           "name": "2027 Early 4th",
@@ -9000,9 +8999,9 @@
           "season": 2027,
           "round": 4,
           "slot": "early",
-          "ktcValue": 2274,
-          "ktcRank": 283,
-          "note": "KTC 1QB pick value 2274 (rank #283)."
+          "ktcValue": 2283,
+          "ktcRank": 281,
+          "note": "KTC 1QB pick value 2283 (rank #281)."
         },
         {
           "name": "2027 Mid 4th",
@@ -9010,9 +9009,9 @@
           "season": 2027,
           "round": 4,
           "slot": "mid",
-          "ktcValue": 2169,
-          "ktcRank": 291,
-          "note": "KTC 1QB pick value 2169 (rank #291)."
+          "ktcValue": 2190,
+          "ktcRank": 292,
+          "note": "KTC 1QB pick value 2190 (rank #292)."
         },
         {
           "name": "2027 Late 4th",
@@ -9020,9 +9019,9 @@
           "season": 2027,
           "round": 4,
           "slot": "late",
-          "ktcValue": 1955,
-          "ktcRank": 318,
-          "note": "KTC 1QB pick value 1955 (rank #318)."
+          "ktcValue": 1964,
+          "ktcRank": 317,
+          "note": "KTC 1QB pick value 1964 (rank #317)."
         },
         {
           "name": "2028 Early 1st",
@@ -9030,9 +9029,9 @@
           "season": 2028,
           "round": 1,
           "slot": "early",
-          "ktcValue": 5867,
-          "ktcRank": 42,
-          "note": "KTC 1QB pick value 5867 (rank #42)."
+          "ktcValue": 5865,
+          "ktcRank": 41,
+          "note": "KTC 1QB pick value 5865 (rank #41)."
         },
         {
           "name": "2028 Mid 1st",
@@ -9040,9 +9039,9 @@
           "season": 2028,
           "round": 1,
           "slot": "mid",
-          "ktcValue": 5181,
-          "ktcRank": 68,
-          "note": "KTC 1QB pick value 5181 (rank #68)."
+          "ktcValue": 5182,
+          "ktcRank": 70,
+          "note": "KTC 1QB pick value 5182 (rank #70)."
         },
         {
           "name": "2028 Late 1st",
@@ -9050,9 +9049,9 @@
           "season": 2028,
           "round": 1,
           "slot": "late",
-          "ktcValue": 4813,
-          "ktcRank": 83,
-          "note": "KTC 1QB pick value 4813 (rank #83)."
+          "ktcValue": 4869,
+          "ktcRank": 82,
+          "note": "KTC 1QB pick value 4869 (rank #82)."
         },
         {
           "name": "2028 Early 2nd",
@@ -9060,9 +9059,9 @@
           "season": 2028,
           "round": 2,
           "slot": "early",
-          "ktcValue": 3995,
+          "ktcValue": 3999,
           "ktcRank": 125,
-          "note": "KTC 1QB pick value 3995 (rank #125)."
+          "note": "KTC 1QB pick value 3999 (rank #125)."
         },
         {
           "name": "2028 Mid 2nd",
@@ -9070,9 +9069,9 @@
           "season": 2028,
           "round": 2,
           "slot": "mid",
-          "ktcValue": 3792,
-          "ktcRank": 139,
-          "note": "KTC 1QB pick value 3792 (rank #139)."
+          "ktcValue": 3793,
+          "ktcRank": 140,
+          "note": "KTC 1QB pick value 3793 (rank #140)."
         },
         {
           "name": "2028 Late 2nd",
@@ -9080,9 +9079,9 @@
           "season": 2028,
           "round": 2,
           "slot": "late",
-          "ktcValue": 3427,
+          "ktcValue": 3403,
           "ktcRank": 168,
-          "note": "KTC 1QB pick value 3427 (rank #168)."
+          "note": "KTC 1QB pick value 3403 (rank #168)."
         },
         {
           "name": "2028 Early 3rd",
@@ -9090,9 +9089,9 @@
           "season": 2028,
           "round": 3,
           "slot": "early",
-          "ktcValue": 2788,
+          "ktcValue": 2798,
           "ktcRank": 223,
-          "note": "KTC 1QB pick value 2788 (rank #223)."
+          "note": "KTC 1QB pick value 2798 (rank #223)."
         },
         {
           "name": "2028 Mid 3rd",
@@ -9100,9 +9099,9 @@
           "season": 2028,
           "round": 3,
           "slot": "mid",
-          "ktcValue": 2659,
+          "ktcValue": 2665,
           "ktcRank": 239,
-          "note": "KTC 1QB pick value 2659 (rank #239)."
+          "note": "KTC 1QB pick value 2665 (rank #239)."
         },
         {
           "name": "2028 Late 3rd",
@@ -9110,9 +9109,9 @@
           "season": 2028,
           "round": 3,
           "slot": "late",
-          "ktcValue": 2440,
-          "ktcRank": 263,
-          "note": "KTC 1QB pick value 2440 (rank #263)."
+          "ktcValue": 2455,
+          "ktcRank": 260,
+          "note": "KTC 1QB pick value 2455 (rank #260)."
         },
         {
           "name": "2028 Early 4th",
@@ -9120,9 +9119,9 @@
           "season": 2028,
           "round": 4,
           "slot": "early",
-          "ktcValue": 2065,
+          "ktcValue": 2062,
           "ktcRank": 304,
-          "note": "KTC 1QB pick value 2065 (rank #304)."
+          "note": "KTC 1QB pick value 2062 (rank #304)."
         },
         {
           "name": "2028 Mid 4th",
@@ -9130,9 +9129,9 @@
           "season": 2028,
           "round": 4,
           "slot": "mid",
-          "ktcValue": 1908,
-          "ktcRank": 324,
-          "note": "KTC 1QB pick value 1908 (rank #324)."
+          "ktcValue": 1916,
+          "ktcRank": 320,
+          "note": "KTC 1QB pick value 1916 (rank #320)."
         },
         {
           "name": "2028 Late 4th",
@@ -9140,9 +9139,9 @@
           "season": 2028,
           "round": 4,
           "slot": "late",
-          "ktcValue": 1602,
-          "ktcRank": 360,
-          "note": "KTC 1QB pick value 1602 (rank #360)."
+          "ktcValue": 1624,
+          "ktcRank": 357,
+          "note": "KTC 1QB pick value 1624 (rank #357)."
         },
         {
           "name": "2029 Early 1st",
@@ -9150,9 +9149,9 @@
           "season": 2029,
           "round": 1,
           "slot": "early",
-          "ktcValue": 5151,
-          "ktcRank": 70,
-          "note": "KTC 1QB pick value 5151 (rank #70)."
+          "ktcValue": 5167,
+          "ktcRank": 72,
+          "note": "KTC 1QB pick value 5167 (rank #72)."
         },
         {
           "name": "2029 Mid 1st",
@@ -9160,9 +9159,9 @@
           "season": 2029,
           "round": 1,
           "slot": "mid",
-          "ktcValue": 4526,
+          "ktcValue": 4533,
           "ktcRank": 93,
-          "note": "KTC 1QB pick value 4526 (rank #93)."
+          "note": "KTC 1QB pick value 4533 (rank #93)."
         },
         {
           "name": "2029 Late 1st",
@@ -9170,9 +9169,9 @@
           "season": 2029,
           "round": 1,
           "slot": "late",
-          "ktcValue": 4196,
-          "ktcRank": 109,
-          "note": "KTC 1QB pick value 4196 (rank #109)."
+          "ktcValue": 4194,
+          "ktcRank": 110,
+          "note": "KTC 1QB pick value 4194 (rank #110)."
         },
         {
           "name": "2029 Early 2nd",
@@ -9180,9 +9179,9 @@
           "season": 2029,
           "round": 2,
           "slot": "early",
-          "ktcValue": 3465,
-          "ktcRank": 165,
-          "note": "KTC 1QB pick value 3465 (rank #165)."
+          "ktcValue": 3493,
+          "ktcRank": 164,
+          "note": "KTC 1QB pick value 3493 (rank #164)."
         },
         {
           "name": "2029 Mid 2nd",
@@ -9190,9 +9189,9 @@
           "season": 2029,
           "round": 2,
           "slot": "mid",
-          "ktcValue": 3230,
-          "ktcRank": 187,
-          "note": "KTC 1QB pick value 3230 (rank #187)."
+          "ktcValue": 3243,
+          "ktcRank": 185,
+          "note": "KTC 1QB pick value 3243 (rank #185)."
         },
         {
           "name": "2029 Late 2nd",
@@ -9200,9 +9199,9 @@
           "season": 2029,
           "round": 2,
           "slot": "late",
-          "ktcValue": 2991,
-          "ktcRank": 208,
-          "note": "KTC 1QB pick value 2991 (rank #208)."
+          "ktcValue": 2994,
+          "ktcRank": 207,
+          "note": "KTC 1QB pick value 2994 (rank #207)."
         },
         {
           "name": "2029 Early 3rd",
@@ -9210,9 +9209,9 @@
           "season": 2029,
           "round": 3,
           "slot": "early",
-          "ktcValue": 2402,
-          "ktcRank": 267,
-          "note": "KTC 1QB pick value 2402 (rank #267)."
+          "ktcValue": 2430,
+          "ktcRank": 262,
+          "note": "KTC 1QB pick value 2430 (rank #262)."
         },
         {
           "name": "2029 Mid 3rd",
@@ -9220,9 +9219,9 @@
           "season": 2029,
           "round": 3,
           "slot": "mid",
-          "ktcValue": 2335,
-          "ktcRank": 274,
-          "note": "KTC 1QB pick value 2335 (rank #274)."
+          "ktcValue": 2338,
+          "ktcRank": 275,
+          "note": "KTC 1QB pick value 2338 (rank #275)."
         },
         {
           "name": "2029 Late 3rd",
@@ -9230,9 +9229,9 @@
           "season": 2029,
           "round": 3,
           "slot": "late",
-          "ktcValue": 2121,
-          "ktcRank": 298,
-          "note": "KTC 1QB pick value 2121 (rank #298)."
+          "ktcValue": 2143,
+          "ktcRank": 295,
+          "note": "KTC 1QB pick value 2143 (rank #295)."
         },
         {
           "name": "2029 Early 4th",
@@ -9240,9 +9239,9 @@
           "season": 2029,
           "round": 4,
           "slot": "early",
-          "ktcValue": 1828,
-          "ktcRank": 329,
-          "note": "KTC 1QB pick value 1828 (rank #329)."
+          "ktcValue": 1841,
+          "ktcRank": 328,
+          "note": "KTC 1QB pick value 1841 (rank #328)."
         },
         {
           "name": "2029 Mid 4th",
@@ -9250,9 +9249,9 @@
           "season": 2029,
           "round": 4,
           "slot": "mid",
-          "ktcValue": 1639,
+          "ktcValue": 1657,
           "ktcRank": 354,
-          "note": "KTC 1QB pick value 1639 (rank #354)."
+          "note": "KTC 1QB pick value 1657 (rank #354)."
         },
         {
           "name": "2029 Late 4th",
@@ -9260,9 +9259,9 @@
           "season": 2029,
           "round": 4,
           "slot": "late",
-          "ktcValue": 1443,
-          "ktcRank": 388,
-          "note": "KTC 1QB pick value 1443 (rank #388)."
+          "ktcValue": 1450,
+          "ktcRank": 387,
+          "note": "KTC 1QB pick value 1450 (rank #387)."
         }
       ]
     }

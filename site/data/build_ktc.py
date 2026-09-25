@@ -19,6 +19,11 @@ URL = "https://keeptradecut.com/dynasty-rankings"
 SITE_DATA = pathlib.Path(__file__).parent
 OUT = SITE_DATA / "ktc.js"
 ROOT = SITE_DATA.parent.parent
+# KTC abbreviates eight teams its own way. Every other file in site/data uses
+# Sleeper's codes, so a player the site could not match to a Sleeper id showed
+# "SFO" or "NEP" in his team chip.
+KTC_TO_SLEEPER_TEAM = {"SFO": "SF", "NOS": "NO", "KCC": "KC", "JAC": "JAX",
+                       "GBP": "GB", "TBB": "TB", "LVR": "LV", "NEP": "NE"}
 
 def fetch_json(url, timeout=15):
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 DynastyDomain/1.0"})
@@ -191,7 +196,7 @@ def build_ranking(players, key, label, format_str, default_enabled, max_n=350, s
         item = {
             "name": p["playerName"],
             "pos":  p["position"],
-            "team": p.get("team") or "FA",
+            "team": KTC_TO_SLEEPER_TEAM.get(p.get("team")) or p.get("team") or "FA",
             "age":  int(p["age"]) if p.get("age") else None,
             "category": cat,
             "tier": t,
