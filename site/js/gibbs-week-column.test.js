@@ -34,10 +34,12 @@ assert.match(dirBlock, /key === 'weekly-gibbs-x'/, 'Gibbs ROS rank must default 
 assert.match(dirBlock, /key === 'weekly-gibbs-wk'/, 'Gibbs week rank must default ascending');
 // Every rank is PPR. The only header mark is the asterisk on a column this
 // site converted from half-PPR data, and it has to say so where a user hovers.
-assert.match(app, /sortHdr\('weekly-gibbs-x', 'Gibbs ROS\*'[\s\S]{0,120}converted by this site from Jacob Gibbs's half-PPR/);
+assert.match(app, /sortHdr\('weekly-gibbs-x', 'Gibbs\*'[\s\S]{0,120}converted by this site from Jacob Gibbs's half-PPR/);
 assert.match(app, /if \(filter\.sort === 'weekly-gibbs-x'\) return gibbsRosPprRank/,
   'ROS* must sort on the converted ranks it shows');
-assert.match(app, /sortHdr\('weekly-gibbs-wk', 'Gibbs Wk',/, 'week header carries no scoring tag');
+// The view names the period, so the header does not: plain 'Gibbs'.
+assert.match(app, /sortHdr\('weekly-gibbs-wk', 'Gibbs',/, 'week header carries no scoring or period tag');
+assert.doesNotMatch(app, /'Gibbs Wk'|'Gibbs ROS\*'|'FP ROS'/, 'no header repeats the view name');
 assert.doesNotMatch(app, /\(half\)|Gibbs ROS PPR\*|Gibbs Wk PPR\*|GIBBS_PPR_WEEK/,
   'no half column, no second PPR column');
 

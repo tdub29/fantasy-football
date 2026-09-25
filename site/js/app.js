@@ -3224,18 +3224,20 @@
               isRosView ? null : sortHdr('weekly-sleeper', 'Sleeper pts', { right:true, title:'Sleeper weekly PPR projection.' }),
               isRosView ? null : sortHdr('weekly-vsdelta', 'V−S', { right:true, title:`Vegas minus Sleeper for week ${currentWeek}. Green = the market projects him above the model, red = below. Blank when either side has no number; blanks sort last both ways. An asterisk means most of the Vegas projection was filled in from Sleeper, so that delta is the model against itself, not market signal.` }),
               isRosView ? null : sortHdr('weekly-ecr', 'FP ECR', { right:true, title:'FantasyPros weekly PPR expert consensus positional rank.' }),
-              isRosView ? sortHdr('weekly-ros', 'FP ROS', { right:true, title:rosTitle }) : null,
+              // The view says Weekly or ROS, so no header repeats it: FP ECR
+              // is the week's consensus on Weekly and the ROS consensus on ROS.
+              isRosView ? sortHdr('weekly-ros', 'FP ECR', { right:true, title:rosTitle }) : null,
               ...trackedExperts.map(t => sortHdr(`weekly-x:${t.key}`, t.label, { right:true,
                 title:`${t.name} weekly PPR positional rank, isolated FantasyPros board ${t.id}. ${t.players} players ranked. Manage columns in Expert Rotation.` })),
 
             // Every rank on this table is PPR. An asterisk marks one this site
             // converted from half-PPR data, so the only thing a header has to
             // say is whether it was converted.
-            gibbsRosPosted && window.GIBBS_PPR_ROS && isRosView ? sortHdr('weekly-gibbs-x', 'Gibbs ROS*', { right:true,
+            gibbsRosPosted && window.GIBBS_PPR_ROS && isRosView ? sortHdr('weekly-gibbs-x', 'Gibbs*', { right:true,
               title:`* = PPR converted by this site from Jacob Gibbs's half-PPR rest-of-season board (his FantasyPros board, expert 1576, the one his ROS cards label half-PPR). His order sets the value slots, then each player gets +0.5 per projected catch and the list is re-sorted within position, so a player who catches nothing never rises on his own. His unconverted half-PPR rank is in each cell's tooltip. Board ${gibbsRosPosted}${gibbsRosThrough ? `, updates through ${gibbsRosThrough}` : ''}.` }) : null,
-            gibbsWeekPosted && !isRosView ? sortHdr('weekly-gibbs-wk', 'Gibbs Wk', { right:true,
+            gibbsWeekPosted && !isRosView ? sortHdr('weekly-gibbs-wk', 'Gibbs', { right:true,
               title:`Jacob Gibbs's own board for this week, the start/sit list; `
-                + `the ROS column beside it answers a different question. `
+                + `the ROS view answers a different question. `
                 + `Pulled ${gibbsWeekPosted}${gibbsWeekUpdated ? ` (${gibbsWeekUpdated})` : ''} from his FantasyPros board, the one he posts to X as his PPR flex ranks; `
                 + `${gibbsWeekDepth} players ranked. A blank means he has not ranked that player, not that nobody rosters him.` }) : null,
               ...(isRosView ? [] : VEGAS_COMPONENTS).map(c => sortHdr(`wc:${c.k}`, c.label, { right:true,
@@ -3305,7 +3307,7 @@
                   + (g.flexRank ? `, #${g.flexRank} overall among flex starters` : '') + '.'
                   + (g.opp ? ` Opponent ${g.opp}.` : '')
                   + (moved ? ` He has him ${Math.abs(moved)} spot${Math.abs(moved) === 1 ? '' : 's'} `
-                      + `${moved > 0 ? 'higher' : 'lower'} this week than on his rest-of-season board (ROS*).` : '') },
+                      + `${moved > 0 ? 'higher' : 'lower'} this week than on his rest-of-season board.` : '') },
                   `${g.pos}${g.rank}`,
                   moved ? h('span', { class: moved > 0 ? 'delta-up' : 'delta-down',
                     style:{ marginLeft:'4px', fontSize:'11px' } },
