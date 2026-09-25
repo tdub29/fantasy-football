@@ -6865,112 +6865,316 @@
     }
     navigate(`#trade/${leagueId}`);
   }
-  // Trade Finder: fair 1-for-1 swaps where each side sends from a positional
-  // SURPLUS into the other side's positional NEED, within a value band. Returns
-  // the single best proposal per partner, ranked by fit + fairness.
-  function suggestTrades(lg, me) {
-    if (!isDynastyLeague(lg)) return suggestRedraftTrades(lg, me);
-    const posList = ['QB', 'RB', 'WR', 'TE'];
-    const myRP = getRosterPlayers(me);
-    const mySS = rosterSurplusShortage(myRP, lg);
-    const myNeed = new Set(posList.filter(p => (mySS[p]?.surplus ?? 0) <= -1));
-    const mySurp = new Set(posList.filter(p => (mySS[p]?.surplus ?? 0) >= 1));
-    if (!myNeed.size || !mySurp.size) return [];
+  // Trade Finder. Iterates reasonable packages with every partner (1-for-1,
+  // 2-for-1 both ways, 2-for-2, dynasty picks too), prunes on the league currency
+  // and the headliner rule, scores both starting lineups, then prices the best in
+  // this season's title odds for BOTH rosters. A deal survives only when I gain,
+  // the partner gains on HIS objective (title odds if he contends, future value if
+  // he is a dynasty rebuilder), and the market reads it close to even.
+  const FINDER_REBUILD = new Set(['seller', 'tank']);
+  // Trade currency: a skill player worth SIM.finderMinAsset or more, plus owned
+  // picks in dynasty (rosterOwnedPicks is [] in redraft). No K or DEF, and no IDP:
+  // championshipOdds simulates the offense only, so it would price an LB at
+  // nothing on both sides of the deal.
+  // A player in an IR slot is out of his own team's season sim for good, but a
+  // what-if hands him to the receiver with a 6-week designation, so shipping him
+  // books a phantom gain for both sides.
+  // ponytail: IDP and IR-slot players stay out of candidates; add them once
+  // simPool draws the defense and returns a reserve player to his own lineup.
+  function finderAssets(lg, roster) {
+    const out = [], ir = new Set((roster.reserve || []).map(String));
+    for (const pid of (roster.players || []).map(String)) {
+      const sp = window.PLAYERS[pid];
+      if (!sp || ir.has(pid) || !SLOT_TAKES.SUPER_FLEX.includes(sp.pos)) continue;
+      const v = playerValue(pid, lg);
+      if (v >= SIM.finderMinAsset) out.push({ k: pid, v, pos: sp.pos, label: sp.name });
+    }
+    for (const p of rosterOwnedPicks(roster.roster_id, lg)) {
+      if (p.value >= SIM.finderMinAsset) out.push({ k: pickKey(p.season, p.round, p.originRosterId), v: p.value, pos: 'PICK', label: p.label });
+    }
+    return out;
+  }
+  // Every one- and two-piece package from a side's assets, headliner first.
+  function finderPackages(assets) {
+    const out = assets.map(a => ({ keys: [a.k], items: [a], v: a.v, head: a.v }));
+    for (let i = 0; i < assets.length; i++) for (let j = i + 1; j < assets.length; j++) {
+      const [a, b] = assets[i].v >= assets[j].v ? [assets[i], assets[j]] : [assets[j], assets[i]];
+      out.push({ keys: [a.k, b.k], items: [a, b], v: a.v + b.v, head: a.v });
+    }
+    return out;
+  }
+  // A pick's price is endogenous to the trade that moves it: slot it off both
+  // rosters as they look AFTER the deal. A known Sleeper slot stands.
+  function postTradePickValue(lg, k, traded) {
+    const { season, round, originRosterId } = parsePickKey(k);
+    if (knownDraftSlot(season, round, originRosterId, lg) != null) return pickValue(season, round, originRosterId, lg);
+    const yo = pickYearsOut(season);
+    const order = lg.rosters.map(r => ({ id: r.roster_id, s: startingStrength(traded.get(r.roster_id) || r, lg, yo) }))
+      .sort((a, b) => a.s - b.s);
+    const slot = order.findIndex(o => o.id === originRosterId) + 1;
+    const idx = pickIndex();
+    return interpPickValue(lg.is_superflex ? idx.sf : idx.oneqb, season, round, slot, lg.total_rosters)
+      ?? pickValue(season, round, originRosterId, lg);
+  }
+  // simPool has no waiver pool, so a what-if that ships a position's last backup
+  // is charged an EMPTY slot on every bye and injury. Claim the best free agent
+  // there instead, up to one body over the position's starting slots.
+  const _faByLeague = new Map();
+  function finderWaiverAdds(lg, roster, drop, add) {
+    const map = projMap('offense');
+    const need = { QB: 0, RB: 0, WR: 0, TE: 0 };
+    for (const s of offenseStartingSlots(lg)) {
+      if (need[s.pos] != null) need[s.pos]++;
+      else if (s.pos === 'SUPER_FLEX') need.QB++;
+    }
+    const count = (ids) => {
+      const c = { QB: 0, RB: 0, WR: 0, TE: 0 };
+      for (const pid of ids) { const pos = map.get(pid)?.pos; if (c[pos] != null) c[pos]++; }
+      return c;
+    };
+    const now = startableIds(roster);
+    const before = count(now), after = count(now.filter(p => !drop.has(p)).concat([...add].filter(k => !isPickKey(k))));
+    if (!_faByLeague.has(lg.id)) {
+      const owned = new Set(lg.rosters.flatMap(r => (r.players || []).map(String)));
+      _faByLeague.set(lg.id, [...map.values()].filter(p => !owned.has(String(p.id)) && !isSidelined(String(p.id)))
+        .map(p => ({ pid: String(p.id), pos: p.pos, pts: projPoints(p, lg, 'blend') || 0 })).sort((a, b) => b.pts - a.pts));
+    }
     const out = [];
-    for (const them of lg.rosters) {
-      if (them.is_me) continue;
-      const theirRP = getRosterPlayers(them);
-      const tSS = rosterSurplusShortage(theirRP, lg);
-      const theirNeed = new Set(posList.filter(p => (tSS[p]?.surplus ?? 0) <= -1));
-      const theirSurp = new Set(posList.filter(p => (tSS[p]?.surplus ?? 0) >= 1));
-      const sendables = myRP.filter(p => p.ranked && mySurp.has(p.ranked.pos) && theirNeed.has(p.ranked.pos));
-      const getables = theirRP.filter(p => p.ranked && theirSurp.has(p.ranked.pos) && myNeed.has(p.ranked.pos));
-      for (const s of sendables) for (const g of getables) {
-        if (s.ranked.pos === g.ranked.pos) continue; // must fix DIFFERENT holes
-        const sv = tierValue(s.ranked, lg), gv = tierValue(g.ranked, lg);
-        const hi = Math.max(sv, gv, 1);
-        const diff = Math.abs(sv - gv) / hi;
-        if (diff > 0.18 || hi < 15) continue; // fair, and both pieces matter
-        out.push({ them, send: s, get: g, sv, gv, diff,
-          score: (1 - diff) * 2 + (myNeed.has(g.ranked.pos) ? 1 : 0) + (theirNeed.has(s.ranked.pos) ? 1 : 0) });
+    for (const pos in need) {
+      let short = Math.min(before[pos], need[pos] + 1) - after[pos];
+      for (const fa of _faByLeague.get(lg.id)) {
+        if (short <= 0) break;
+        if (fa.pos === pos) { out.push(fa.pid); short--; }
       }
     }
-    out.sort((a, b) => b.score - a.score || a.diff - b.diff);
-    const seen = new Set(), uniq = [];
-    for (const o of out) { if (seen.has(o.them.roster_id)) continue; seen.add(o.them.roster_id); uniq.push(o); }
-    return uniq.slice(0, 6);
+    return out;
   }
-  // Redraft Trade Finder: KTC-rank "startables" and a 15-value floor found
-  // nothing in Phi Kap (0 startable QBs while rostering two). Here a 1-for-1 at
-  // different positions is proposed only when BOTH starting lineups gain on
-  // rest-of-season points, checked with the same lineup the verdict reads.
-  // ponytail: O(my roster x their roster) lineup fills per partner, ~4k in a
-  // 12-team league; prune by position need if a bigger league makes it slow.
-  function suggestRedraftTrades(lg, me) {
-    const ros = rosPointsByPid();
-    const idsOf = (r) => startableIds(r, { includeStashed: true }).filter(pid => ros.has(pid) && window.PLAYERS[pid]);
-    const gain = (ids, now, out, inn) => redraftLineup(ids.filter(x => x !== out).concat(inn), lg).points - now;
-    const mine = idsOf(me), myNow = redraftLineup(mine, lg).points;
-    const best = [];
-    for (const them of lg.rosters) {
-      if (them.is_me) continue;
-      const theirs = idsOf(them), theirNow = redraftLineup(theirs, lg).points;
-      let top = null;
-      for (const s of mine) for (const g of theirs) {
-        const sp = window.PLAYERS[s], gp = window.PLAYERS[g];
-        if (projPosGroup(ros.get(s).pos) === projPosGroup(ros.get(g).pos)) continue;
-        const dA = gain(mine, myNow, s, g);
-        if (dA <= 0) continue;
-        const dB = gain(theirs, theirNow, g, s);
-        if (dB <= 0) continue;
-        const score = Math.min(dA, dB);
-        if (!top || score > top.score) {
-          top = { them, score, dA, dB, diff: 1 - score / Math.max(dA, dB),
-            send: { pid: s, sleeper: sp, ranked: { pos: sp.pos } }, get: { pid: g, sleeper: gp, ranked: { pos: gp.pos } },
-            sv: playerValue(s, lg), gv: playerValue(g, lg),
-            why: `Both starting lineups gain: you +${Math.round(dA)}, they +${Math.round(dB)} rest-of-season pts.` };
+  // Starting-lineup points for a list of ids, the numbers tradeLineupImpact reads
+  // (redraftLineup's rest-of-season points in redraft, optimalOffense's season
+  // projection in dynasty) through the same fillLineup + offenseStartingSlots, with
+  // each player's points cached so a search can afford thousands of fills. IDP
+  // never moves in a finder trade, so the defense half cancels out of every delta.
+  function finderLineup(lg) {
+    const dyn = isDynastyLeague(lg), slots = offenseStartingSlots(lg), map = projMap('offense'), ros = rosPointsByPid();
+    const cache = new Map();
+    const asset = (pid) => {
+      if (!cache.has(pid)) {
+        let a = null;
+        if (!dyn) { const r = ros.get(pid); if (r) a = { pos: projPosGroup(r.pos), v: r.pts }; }
+        else {
+          const p = map.get(pid);
+          const pts = p && !isSidelined(pid) && SLOT_TAKES.SUPER_FLEX.includes(p.pos) ? projPoints(p, lg, 'blend') : null;
+          if (pts != null) a = { pos: p.pos, v: pts };
         }
+        cache.set(pid, a);
       }
-      if (top) best.push(top);
-    }
-    return best.sort((a, b) => b.score - a.score).slice(0, 6);
+      return cache.get(pid);
+    };
+    const pts = (ids) => fillLineup([...new Set(ids)].map(asset).filter(Boolean), slots).reduce((s, a) => s + a.v, 0);
+    // Redraft keeps IR on the books (his line prices the missed weeks); dynasty
+    // starts only the active list.
+    return { pts, ids: (r) => startableIds(r, { includeStashed: !dyn }) };
   }
+  // One partner: prune on value, the headliner rule and lineup holes, then score
+  // my starting lineup exactly and the partner's objective on the best of those.
+  // A rebuilder is scored on FV instead of his lineup, off the site's own phase
+  // call (rosterStance).
+  function finderScan(lg, me, them, fast = finderLineup(lg)) {
+    const rebuilder = isDynastyLeague(lg) && FINDER_REBUILD.has(rosterStance(them, lg));
+    const Y = SIM.finderFvYears;
+    const delta = (r) => {
+      const ids = fast.ids(r), now = fast.pts(ids);
+      return (send, recv) => fast.pts(ids.filter(p => !send.includes(p)).concat(recv.filter(k => !isPickKey(k)))) - now;
+    };
+    const meD = delta(me), themD = delta(them);
+    const fvNow = rebuilder ? projectedTradeStrength(lg, them.roster_id, new Set(), new Set(), Y) : 0;
+    const fv = (send, recv) => projectedTradeStrength(lg, them.roster_id, new Set(send), new Set(recv), Y) - fvNow;
+    const mine = finderAssets(lg, me), theirs = finderAssets(lg, them);
+    const meIn = new Map(theirs.map(a => [a.k, meD([], [a.k])]));
+    const themIn = new Map(mine.map(a => [a.k, rebuilder ? fv([], [a.k]) : themD([], [a.k])]));
+    // A piece "helps" when he fills a starting-lineup hole for whoever receives him
+    // (a rebuilder: raises his FV). Each side needs a player who does, or it has no
+    // reason to deal; the other piece of a 2-for-1 can be depth or a pick, which
+    // the simulator prices. A 2-for-2 is two swaps glued together, so every piece
+    // in one has to help or be a pick, which is also what keeps the search small.
+    const isPick = (a) => a.pos === 'PICK';
+    const tag = (pkgs, helps, pickOnlyOk) => pkgs.filter(x => x.items.some(helps) || (pickOnlyOk && x.items.every(isPick)))
+      .map(x => ({ ...x, all: x.items.every(a => isPick(a) || helps(a)) }));
+    const gets = tag(finderPackages(theirs), a => !isPick(a) && meIn.get(a.k) > 0, false);
+    const sends = tag(finderPackages(mine), a => (rebuilder || !isPick(a)) && themIn.get(a.k) > 0, rebuilder);
+    const floor = SIM.finderFairPct / 100 / 1.15;   // the most a headliner premium can lift
+    let pool = [], checked = 0;
+    for (const g of gets) for (const s of sends) {
+      if (s.keys.length === 2 && g.keys.length === 2 && !(s.all && g.all)) continue;
+      checked++;
+      // Headliner rule: a pile of lesser pieces never buys the stud.
+      if (Math.min(s.head, g.head) < SIM.finderAnchorRatio * Math.max(s.head, g.head)) continue;
+      if (Math.min(s.v, g.v) < floor * Math.max(s.v, g.v)) continue;
+      if (KT.computeFairness(s.v, g.v, s.keys.length, g.keys.length, s.head, g.head).pct < SIM.finderFairPct) continue;
+      const d = meD(s.keys, g.keys);
+      if (d >= SIM.finderMinGainPts) pool.push({ s, g, meD: d });
+    }
+    // ponytail: the partner's side is scored on only the SIM.finderCandidateCap
+    // packages that help my lineup most. The cap drops the smaller upgrades, so a
+    // partner who would take only a modest deal is missed. Raise it if a league
+    // keeps coming back empty.
+    pool.sort((a, b) => b.meD - a.meD);
+    pool = pool.slice(0, SIM.finderCandidateCap);
+    // Per player I would headline-receive, two packages go on: the best for me
+    // and the best for him, so a stud's sweetener permutations cannot take every
+    // simulation slot and the one the partner would sign is not deduped away.
+    const byHead = new Map();
+    for (const { s, g, meD: d } of pool) {
+      const tD = themD(g.keys, s.keys);
+      const tFv = rebuilder ? fv(g.keys, s.keys) : null;
+      // A contender's lineup may dip a little: depth is what the simulator adds.
+      if (rebuilder ? tFv < SIM.finderMinFvGain : tD <= -SIM.finderMinGainPts) continue;
+      const fills = s.items.reduce((b, a) => (themIn.get(a.k) > (b ? themIn.get(b.k) : 0) ? a : b), null);
+      const c = { them, rebuilder, stance: rebuilder ? rosterStance(them, lg) : null, send: s, get: g, meD: d, themD: tD, themFv: tFv, fvNow,
+        fills: fills?.pos, gain: rebuilder ? tFv : tD };
+      const h = byHead.get(g.keys[0]) || {};
+      if (!h.me) h.me = c;   // the pool is sorted, so the first one is best for me
+      if (!h.them || c.gain > h.them.gain) h.them = c;
+      byHead.set(g.keys[0], h);
+    }
+    const cands = [...new Set([...byHead.values()].flatMap(h => [h.me, h.them]))].sort((a, b) => b.meD - a.meD);
+    return { checked, cands: cands.slice(0, SIM.finderSimPerPartner) };
+  }
+  // The whole search, in slices: it yields to the UI between partners and
+  // between simulations, so a phone keeps painting the progress line.
+  async function findTrades(lg, { sims = SIM.finderSims, onProgress = () => {} } = {}) {
+    const me = (lg.rosters || []).find(r => r.is_me);
+    if (!me) return { proposals: [], checked: 0, simulated: 0 };
+    const dyn = isDynastyLeague(lg), Y = SIM.finderFvYears, none = new Set();
+    const pause = () => new Promise(r => setTimeout(r, 0));
+    const partners = lg.rosters.filter(r => r !== me), fast = finderLineup(lg);
+    let pool = [], checked = 0;
+    for (const [i, them] of partners.entries()) {
+      onProgress(`Scanning ${them.team_name} (${i + 1} of ${partners.length})`);
+      await pause();
+      const res = finderScan(lg, me, them, fast);
+      checked += res.checked;
+      pool.push(...res.cands);
+    }
+    pool = pool.sort((a, b) => b.meD - a.meD).slice(0, SIM.finderSimTop);
+    onProgress(`Simulating ${CURRENT_SEASON} title odds, no trade`);
+    await pause();
+    // Same seed before and after (common random numbers), so a change is the
+    // trade, not the dice. This season only: FV prices the years after it.
+    const base = championshipOdds(lg, { sims });
+    const oddsOf = (res, rid) => res.find(o => o.rosterId === rid)?.title || 0;
+    const band = (p0, p1) => SIM.titleBandZ * Math.sqrt((p0 * (1 - p0) + p1 * (1 - p1)) / sims) * 100;
+    const myFvNow = dyn ? projectedTradeStrength(lg, me.roster_id, none, none, Y) : 0;
+    const proposals = [];
+    for (const [i, c] of pool.entries()) {
+      onProgress(`Simulating ${i + 1} of ${pool.length}: ${c.them.team_name}`);
+      await pause();
+      const send = new Set(c.send.keys), get = new Set(c.get.keys);
+      const whatIf = tradeTitleWhatIf(me.roster_id, c.them.roster_id, send, get);
+      whatIf[me.roster_id].add.push(...finderWaiverAdds(lg, me, send, get));
+      whatIf[c.them.roster_id].add.push(...finderWaiverAdds(lg, c.them, get, send));
+      const after = championshipOdds(lg, { sims, whatIf });
+      const odds = (rid) => {
+        const before = oddsOf(base, rid), next = oddsOf(after, rid);
+        return { before, after: next, delta: (next - before) * 100, band: band(before, next) };
+      };
+      const my = odds(me.roster_id), their = odds(c.them.roster_id);
+      let sendItems = c.send.items, getItems = c.get.items, myFv = 0, themFv = c.themFv;
+      if (dyn) {
+        const traded = new Map([[me.roster_id, tradedRoster(me, send, get)], [c.them.roster_id, tradedRoster(c.them, get, send)]]);
+        const price = (k) => postTradePickValue(lg, k, traded);
+        const reprice = (items) => items.map(a => a.pos === 'PICK' ? { ...a, v: price(a.k) } : a);
+        sendItems = reprice(sendItems); getItems = reprice(getItems);
+        myFv = projectedTradeStrength(lg, me.roster_id, send, get, Y, price) - myFvNow;
+        if (c.rebuilder) themFv = projectedTradeStrength(lg, c.them.roster_id, get, send, Y, price) - c.fvNow;
+      }
+      const tot = (items) => items.reduce((s, a) => s + a.v, 0), top = (items) => Math.max(...items.map(a => a.v));
+      const sendV = tot(sendItems), getV = tot(getItems);
+      const fair = KT.computeFairness(sendV, getV, send.size, get.size, top(sendItems), top(getItems)).pct;
+      const score = my.delta + (dyn ? SIM.finderFvWeight * myFv : 0);
+      const wants = c.rebuilder ? themFv >= SIM.finderMinFvGain : their.delta > 0;
+      if (!(score > 0 && wants && fair >= SIM.finderFairPct)) continue;
+      const pct = (x) => `${(x * 100).toFixed(1)}%`;
+      const why = c.rebuilder
+        ? `They are rebuilding (${c.stance}), so they buy the future: their ${Y}-year lineup value ${Math.round(c.fvNow)} to ${Math.round(c.fvNow + themFv)}.`
+        : `${c.fills ? `Fills their ${c.fills}. ` : ''}Their lineup ${c.themD >= 0 ? '+' : ''}${Math.round(c.themD)} pts, title odds ${pct(their.before)} to ${pct(their.after)}.`;
+      proposals.push({ them: c.them, rebuilder: c.rebuilder, send: { keys: c.send.keys, items: sendItems }, get: { keys: c.get.keys, items: getItems },
+        sendV, getV, fair, my, their, myFv, themFv, meD: c.meD, themD: c.themD, score, why });
+    }
+    proposals.sort((a, b) => b.score - a.score);
+    const per = new Map(), shown = [];
+    for (const p of proposals) {
+      const n = per.get(p.them.roster_id) || 0;
+      if (n >= SIM.finderShowPerPartner || shown.length >= SIM.finderShow) continue;
+      per.set(p.them.roster_id, n + 1);
+      shown.push(p);
+    }
+    return { proposals: shown, checked, simulated: pool.length };
+  }
+  // Last run per league, so loading one proposal into the Trade Lab (which
+  // re-renders the page) keeps the list for the next one.
+  const FINDER_RESULTS = new Map();
   function buildTradeFinder(lg) {
     const me = lg.rosters.find(r => r.is_me);
-    const wrap = h('div', { class: 'trade-finder' },
+    const dyn = isDynastyLeague(lg);
+    const list = h('div', { class: 'tf-list' });
+    const status = h('div', { class: 'trade-finder-note tf-progress', role: 'status', 'aria-live': 'polite' }, me ? '' : 'No team in this league.');
+    const pct = (x) => `${(x * 100).toFixed(1)}%`;
+    const signed = (x, d = 1) => `${x >= 0 ? '+' : ''}${x.toFixed(d)}`;
+    const side = (tag, items) => h('span', { class: 'tf-side' },
+      h('span', { class: `tf-tag ${tag}` }, tag.toUpperCase()),
+      ...items.map(a => h('span', { class: 'tf-piece' },
+        a.pos === 'PICK' ? h('span', { class: 'badge' }, 'PICK') : posChip(a.pos),
+        h('span', { class: 'name' }, a.label), h('span', { class: 'tnum tf-val' }, fmt.decimal(a.v, 0)))));
+    const row = (p) => h('button', { type: 'button', class: 'trade-find-row',
+      title: 'Load into the Trade Lab', 'aria-label': `Load trade with ${p.them.team_name} into the Trade Lab`,
+      dataset: { tfSend: p.send.keys.join(','), tfGet: p.get.keys.join(',') },
+      onclick: () => {
+        TRADE_STATE.leagueId = lg.id;
+        TRADE_STATE.sideA = { rosterId: me.roster_id, picks: new Set(p.send.keys) };
+        TRADE_STATE.sideB = { rosterId: p.them.roster_id, picks: new Set(p.get.keys) };
+        viewTrade(lg.id);
+        $('#main .trade-calc')?.scrollIntoView({ block: 'start' });
+      } },
+      h('div', { class: 'tf-partner' }, p.them.team_name),
+      h('div', { class: 'tf-deal' }, side('out', p.send.items), h('span', { class: 'tf-arrow' }, '⇄'), side('in', p.get.items)),
+      h('div', { class: 'tf-fair', style: { color: p.fair >= 90 ? 'var(--green)' : 'var(--amber)' } }, `${Math.round(p.fair)}%`),
+      h('div', { class: 'tf-odds tnum' },
+        `${CURRENT_SEASON} title: you ${pct(p.my.before)} to ${pct(p.my.after)} (${signed(p.my.delta)} ±${p.my.band.toFixed(1)})`
+        + ` · them ${pct(p.their.before)} to ${pct(p.their.after)} (${signed(p.their.delta)})`
+        + (dyn ? ` · your FV ${signed(p.myFv, 0)}` : '')),
+      h('div', { class: 'tf-why' }, `Value ${fmt.decimal(p.sendV, 1)} out, ${fmt.decimal(p.getV, 1)} in (${signed(p.getV - p.sendV)}). ${p.why}`),
+    );
+    const show = (res) => {
+      list.innerHTML = '';
+      status.textContent = `${res.proposals.length} trade${res.proposals.length === 1 ? '' : 's'} from ${res.checked.toLocaleString()} packages, `
+        + `${res.simulated} simulated, ${(res.ms / 1000).toFixed(1)} s.`;
+      if (!res.proposals.length) list.appendChild(h('div', { class: 'trade-finder-empty' }, 'No deal helps you and the partner right now. Build one by hand above.'));
+      for (const p of res.proposals) list.appendChild(row(p));
+    };
+    const run = h('button', { type: 'button', class: 'tf-run', disabled: me ? null : '', onclick: async () => {
+      run.disabled = true;
+      list.innerHTML = '';
+      const t0 = performance.now();
+      try {
+        const res = await findTrades(lg, { onProgress: (m) => { status.textContent = `${m}...`; } });
+        res.ms = performance.now() - t0;
+        FINDER_RESULTS.set(lg.id, res);
+        show(res);
+      } catch (err) {
+        console.error('Trade Finder failed', err);
+        status.textContent = 'Could not finish the search. Try again.';
+      } finally {
+        run.disabled = false;
+      }
+    } }, 'Find trades');
+    if (me && FINDER_RESULTS.has(lg.id)) show(FINDER_RESULTS.get(lg.id));
+    return h('div', { class: 'trade-finder' },
       h('h2', { class: 'section-title' }, 'Trade Finder'),
-      h('p', { class: 'trade-finder-note' }, isDynastyLeague(lg)
-        ? 'Balanced 1-for-1 swaps that improve both starting lineups within 18% value. Choose one to load it.'
-        : 'One-for-one swaps that raise both starting lineups on rest-of-season points. Choose one to load it.'));
-    if (!me) { wrap.appendChild(h('div', { class: 'empty' }, 'No team in this league.')); return wrap; }
-    const props = suggestTrades(lg, me);
-    if (!props.length) {
-      wrap.appendChild(h('div', { class: 'trade-finder-empty' }, 'No balanced 1-for-1 fits right now. Build a multi-player or pick deal above.'));
-      return wrap;
-    }
-    const grid = h('div', { style: { display: 'grid', gap: '8px' } });
-    for (const p of props) {
-      const fairPct = Math.round((1 - p.diff) * 100);
-      grid.appendChild(h('button', { type: 'button', class: 'trade-find-row', title: 'Load into calculator',
-        'aria-label': `Load trade with ${p.them.team_name}`,
-        onclick: () => {
-          TRADE_STATE.leagueId = lg.id;
-          TRADE_STATE.sideA = { rosterId: me.roster_id, picks: new Set([String(p.send.pid)]) };
-          TRADE_STATE.sideB = { rosterId: p.them.roster_id, picks: new Set([String(p.get.pid)]) };
-          viewTrade(lg.id);
-        } },
-        h('div', { class: 'tf-partner' }, p.them.team_name),
-        h('div', { class: 'tf-deal' },
-          h('span', { class: 'tf-side' }, h('span', { class: 'tf-tag out' }, 'OUT'), posChip(p.send.sleeper.pos), h('span', { class: 'name' }, p.send.sleeper.name), h('span', { class: 'tnum tf-val' }, fmt.decimal(p.sv, 0))),
-          h('span', { class: 'tf-arrow' }, '⇄'),
-          h('span', { class: 'tf-side' }, h('span', { class: 'tf-tag in' }, 'IN'), posChip(p.get.sleeper.pos), h('span', { class: 'name' }, p.get.sleeper.name), h('span', { class: 'tnum tf-val' }, fmt.decimal(p.gv, 0))),
-        ),
-        h('div', { class: 'tf-fair', style: { color: fairPct >= 90 ? 'var(--green)' : 'var(--amber)' } }, `${fairPct}%`),
-        h('div', { class: 'tf-why' }, p.why || `Adds needed ${p.get.ranked.pos} depth from their surplus; you send ${p.send.ranked.pos} depth. ${fairPct}% value-fair.`),
-      ));
-    }
-    wrap.appendChild(grid);
-    return wrap;
+      h('p', { class: 'trade-finder-note' }, `Searches 1-for-1, 2-for-1 and 2-for-2 deals with every team${dyn ? ', picks included' : ''}, `
+        + `then simulates the best in ${CURRENT_SEASON} title odds for both sides. A deal shows only if it helps you and the partner gains on what he plays for: `
+        + (dyn ? 'title odds if he contends, future value if he is rebuilding.' : 'his title odds.') + ' Choose one to load it.'),
+      run, status, list);
   }
   // ============================================================
   // Trade partners, across every season this league has existed
@@ -9068,13 +9272,13 @@
   // sendKeys (players + picks the side is sending), add receiveKeys (players +
   // picks coming in). Used to compute each side's post-trade strength + rank
   // at each year of the outlook.
-  function projectedTradeStrength(lg, rosterId, sendKeys, receiveKeys, yearsOut) {
+  function projectedTradeStrength(lg, rosterId, sendKeys, receiveKeys, yearsOut, price = null) {
     const roster = lg.rosters.find(r => r.roster_id === rosterId);
     if (!roster) return 0;
     // Post-trade owned picks (send removed, receive added).
     const byKey = new Map(rosterOwnedPicks(rosterId, lg, Math.max(2, yearsOut + 1)).map(p => [pickKey(p.season, p.round, p.originRosterId), p]));
     for (const k of sendKeys) if (isPickKey(k)) byKey.delete(k);
-    for (const k of receiveKeys) if (isPickKey(k) && !byKey.has(k)) { const { season, round, originRosterId } = parsePickKey(k); byKey.set(k, { season, round, originRosterId, value: pickValue(season, round, originRosterId, lg) }); }
+    for (const k of receiveKeys) if (isPickKey(k) && !byKey.has(k)) { const { season, round, originRosterId } = parsePickKey(k); byKey.set(k, { season, round, originRosterId, value: price ? price(k) : pickValue(season, round, originRosterId, lg) }); }
     return startingStrength(tradedRoster(roster, sendKeys, receiveKeys), lg, yearsOut, true, [...byKey.values()]);
   }
 
@@ -11212,6 +11416,38 @@
     // A 1.0 pt title edge is 12% of a 12-team fair share (8.3%).
     verdictLineupPts: [15, 40],
     verdictTitlePp: [0.5, 1.0],
+    // Trade Finder. Pieces below finderMinAsset are roster filler, not currency.
+    // A package is scored exactly only if it reads CLOSE or better on the market
+    // (KT.computeFairness pct) and the smaller side's biggest asset is at least
+    // finderAnchorRatio of the bigger side's: a pile of fillers never buys a stud.
+    finderMinAsset: 3,
+    finderFairPct: 75,
+    finderAnchorRatio: 0.75,
+    // A rebuilder's FV has to rise by at least this much (about a tenth of a mid
+    // first): a smaller change is inside the aging curves' rounding.
+    finderMinFvGain: 5,
+    // The least starting-lineup gain worth proposing to me, in season points:
+    // under ~10 (about a point a week of what is left) a deal is a wash, and its
+    // title-odds change sits far inside the simulator's noise.
+    finderMinGainPts: 10,
+    // Search width: packages scored exactly per partner, and how many reach the
+    // title simulation, per partner and per league. Each simulated deal costs one
+    // championshipOdds run of finderSims seasons (~1 s headless on a laptop). The
+    // same seed does NOT pair the draws once a what-if changes a pool: measured
+    // 2026-09-25, one Phi Kap deal read -4.0 to +1.9 pts for the partner across
+    // five seeds at 800 sims. So every delta carries the full band shown beside it.
+    finderCandidateCap: 400,
+    finderSimPerPartner: 3,
+    finderSimTop: 20,
+    finderSims: 800,
+    finderShow: 8,
+    finderShowPerPartner: 2,
+    // Dynasty ranking: percentage points of this season's title odds per unit of
+    // FV (starting-lineup value finderFvYears out, the dashboard's FV). 0.05 prices
+    // 20 FV, about 5% of a good future lineup, like 1 pt of title odds, 10% of a
+    // 10-team fair share. A calibration bet, not a measurement.
+    finderFvWeight: 0.05,
+    finderFvYears: 4,
   };
 
   // Deterministic RNG so the same roster always returns the same odds. A title

@@ -1852,7 +1852,8 @@ textarea { resize: vertical; min-height: 80px; }
 .trade-find-row:hover { border-color: var(--border-hot); background: var(--bg-2); }
 .trade-find-row .tf-partner { font-weight: 600; color: var(--fg-1); font-size: 0.86rem; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .trade-find-row .tf-deal { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; min-width: 0; }
-.trade-find-row .tf-side { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }
+.trade-find-row .tf-side { display: inline-flex; align-items: center; gap: 6px; min-width: 0; flex-wrap: wrap; }
+.trade-find-row .tf-piece { display: inline-flex; align-items: center; gap: 4px; min-width: 0; }
 .trade-find-row .tf-side .name { font-size: 0.86rem; color: var(--fg-0); }
 .trade-find-row .tf-val { color: var(--fg-3); font-size: 0.78rem; }
 .trade-find-row .tf-tag { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.06em; padding: 1px 4px; border-radius: 3px; }
@@ -1860,7 +1861,11 @@ textarea { resize: vertical; min-height: 80px; }
 .trade-find-row .tf-tag.in { color: var(--green); background: color-mix(in oklab, var(--green) 14%, transparent); }
 .trade-find-row .tf-arrow { color: var(--fg-3); }
 .trade-find-row .tf-fair { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; font-size: 0.82rem; }
+.trade-find-row .tf-odds { grid-column: 1 / -1; font-size: 0.76rem; color: var(--fg-1); line-height: 1.4; }
 .trade-find-row .tf-why { grid-column: 1 / -1; font-size: 0.72rem; color: var(--fg-3); }
+.tf-list { display: grid; gap: 8px; }
+.tf-progress { margin: 10px 0; }
+.tf-progress:empty { display: none; }
 .pile-vor { margin-left: 6px; font-size: 0.66rem; color: var(--fg-3); letter-spacing: 0.04em; }
 /* Overview command cards */
 .cmd-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin-top: 8px; }
@@ -1906,6 +1911,8 @@ textarea { resize: vertical; min-height: 80px; }
 @media (max-width: 620px) {
   .trade-find-row { grid-template-columns: 1fr auto; }
   .trade-find-row .tf-deal { grid-column: 1 / -1; order: 3; }
+  .trade-find-row .tf-odds { order: 4; }
+  .trade-find-row .tf-why { order: 5; }
 }
 
 .trade-calc {
@@ -1949,7 +1956,7 @@ textarea { resize: vertical; min-height: 80px; }
   text-align: right;
   white-space: normal;
 }
-.trade-title-run { width: 100%; min-height: 44px; margin-top: 12px; }
+.trade-title-run, .tf-run { width: 100%; min-height: 44px; margin-top: 12px; }
 .trade-title-meta { margin-top: 8px; line-height: 1.45; }
 /* Grid tracks default to min-width:auto, so a long "Team (Owner) ★" option in the
    roster select forces its track wider than 1fr and blows the whole grid out (the
