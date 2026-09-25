@@ -34,6 +34,8 @@ const H = new Function('window',
    function rosterOwnedPicks(rosterId, league, horizon = 2) {
      return (window.__TEST_PICKS && window.__TEST_PICKS[rosterId]) || [];
    }
+   ${cut('function isDynastyLeague(lg)', '  // The league whose format defines VOR replacement')}
+   ${cut('  let _rosPts = null;', '  // Replacement level on the SAME rest-of-season basis')}
    ${cut('function offenseStarterCount', '  // Starting-lineup strength')}
    ${cut('function projUnitData()', 'function buildWhatIfTray')}
    return { championshipOdds, titleEquity, simPool, injuryHazard, mulberry32, makeNormal, playoffSettings,

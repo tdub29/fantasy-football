@@ -37,7 +37,10 @@ const SIMS = Number(process.env.SIMS || 2500);
 const SEED = Number(process.env.SEED || 20260912);
 
 const ctx = { window: {}, console };
-for (const f of ['leagues.js', 'projections.js', 'players.js', 'ktc.js']) {
+// The simulator's inputs, the same files index.html gives the Trade Lab: without
+// schedule.js the season in progress replayed from 0-0 on random pairings, and
+// without weekly-rankings.js a redraft league had no rest-of-season lines.
+for (const f of ['leagues.js', 'projections.js', 'players.js', 'ktc.js', 'weekly-rankings.js', 'schedule.js']) {
   vm.runInNewContext(fs.readFileSync(`${SITE}/data/${f}`, 'utf8'), ctx);
 }
 
@@ -55,6 +58,8 @@ const H = new Function('window',
    function rosterOwnedPicks(rosterId, league, horizon = 2) {
      return (window.__TEST_PICKS && window.__TEST_PICKS[rosterId]) || [];
    }
+   ${cut('function isDynastyLeague(lg)', '  // The league whose format defines VOR replacement')}
+   ${cut('  let _rosPts = null;', '  // Replacement level on the SAME rest-of-season basis')}
    ${cut('function offenseStarterCount', '  // Starting-lineup strength')}
    ${cut('function projUnitData()', 'function buildWhatIfTray')}
    return { championshipOdds, titleEquity, CURRENT_SEASON, offenseStartingSlots };`

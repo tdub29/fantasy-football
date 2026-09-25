@@ -1,7 +1,9 @@
 // Redraft Trade Lab, the four high defects from notes/trade-lab-redraft-audit.md,
 // pinned on a toy 4-team league so each one fails on the old code by assertion:
 //   H1 a depth player priced at 0 (tier-1 baseline, rank n+1, floored)
-//   H2 a trade that leaves Side A with no QB read as a win for A (summed value)
+//   H2 a trade that leaves Side A with no QB read as a win for A (summed value).
+//      No QB is free in this toy, so the slot stays empty even with the waiver
+//      wire in the lineup; trade-lab-r2.test.js prices the case where one is.
 //   H3 strength rose for a roster that can no longer field a QB (top-K by value)
 //   H4 three seasons of title odds, phantom picks, and standings ignored
 const assert = require('node:assert/strict');
@@ -17,7 +19,7 @@ const slice = (a, b) => {
 // ---- toy league: QB RB WR TE FLEX K DEF, 4 teams, week 4 of a 6-week season --
 // Weekly points, flat across weeks 1-9, so rest-of-season = 6 x weekly.
 const W = {
-  q1: ['QB', 20], q2: ['QB', 19.5], q3: ['QB', 19], q4: ['QB', 18.8], q5: ['QB', 18.6], q6: ['QB', 18.4], qFA: ['QB', 17],
+  q1: ['QB', 20], q2: ['QB', 19.5], q3: ['QB', 19], q4: ['QB', 18.8], q5: ['QB', 18.6], q6: ['QB', 18.4],
   r1: ['RB', 22], r2: ['RB', 20], r3: ['RB', 18], r4: ['RB', 16], r5: ['RB', 14], r6: ['RB', 12], r7: ['RB', 11], r8: ['RB', 10], rFA: ['RB', 6],
   w1: ['WR', 21], w2: ['WR', 19], w3: ['WR', 17], w4: ['WR', 15], w5: ['WR', 13], w6: ['WR', 11], w7: ['WR', 10], w8: ['WR', 9], wFA: ['WR', 5],
   t1: ['TE', 15], t2: ['TE', 13], t3: ['TE', 11], t4: ['TE', 9], t5: ['TE', 8], tFA: ['TE', 4],

@@ -418,6 +418,33 @@
       "notes": "Phi Kap Fantasy is redraft. The audit's lopsided trade: the user's best RB (Christian McCaffrey) for the partner's 30-point bench RB (Emanuel Wilson). The verdict follows both starting lineups and the 2026 title odds, so it must read WIN FOR B (the partner), with one title-odds row for the current season whose Side A change is negative and whose before-to-after odds fall. Redraft renders no Year-by-Year block and no pick-derived rows, and a depth-or-better player carries nonzero value (McCaffrey's pile total is above 0). The sleep covers the 7,500-simulation run, about 10 seconds on this machine, which blocks the page. The button is clicked from an eval, not a harness click: the simulation holds the page as soon as the handler returns, and a harness click waits on the page for its own acknowledgement, so on a loaded machine (16 seconds, 2026-09-25) the click itself timed out at 15 seconds before the sleep could cover the run."
     },
     {
+      "id": "trade-lab-redraft-waiver-fill",
+      "name": "Trade Lab (redraft): shipping a kicker the waiver wire beats costs nothing, and the title odds agree",
+      "path": [
+        {
+          "eval": "location.hash='#trade/1389722402430136320/1'"
+        },
+        {
+          "waitFor": "#main .trade-side-card .trade-pool-row"
+        },
+        {
+          "eval": "(()=>{const c=[...document.querySelectorAll('#main .trade-side-card')];const row=(card,n)=>[...card.querySelectorAll('.trade-pool-row')].find(r=>r.querySelector('.name')?.textContent.trim()===n);row(c[0],'Evan McPherson').click();row(c[0],'Kaelon Black').click();row(c[1],'Breece Hall').click();window.__wf=document.querySelector('#main .trade-middle .verdict').textContent.trim();return true})()"
+        },
+        {
+          "eval": "document.querySelector('#main .trade-title-run').click()"
+        },
+        {
+          "sleepMs": 8000
+        },
+        {
+          "waitFor": "#main .trade-middle[data-odds-key]"
+        }
+      ],
+      "selector": "#main .trade-middle[data-odds-key]",
+      "assert": "(()=>{const m=document.querySelector('#main .trade-middle');const v=m.querySelector('.verdict').textContent.trim();const note=m.querySelector('.verdict').nextElementSibling.textContent;const a=parseFloat(m.querySelector('.trade-title-odds .t3y-row .t3y-delta').textContent);const lineA=m.querySelector('.trade-lineup-value').textContent;return window.__wf==='WIN FOR A'&&v==='WIN FOR A'&&!/empty starting slot/.test(note)&&a>0&&/\\(\\+\\d+\\)$/.test(lineA)})()",
+      "notes": "Phi Kap Fantasy is redraft. Evan McPherson (119.5 rest-of-season) and Kaelon Black (79.3, below the best free RB) for Breece Hall. The best free kicker scores 137.7, so the manager who ships McPherson claims him: the K slot costs nothing and Side A's lineup rises. The verdict must read WIN FOR A before and after the title-odds run, with no empty-slot note and a positive 2026 change for Side A. Before round 2 it read WIN FOR B, 'Side A is left with an empty starting slot', beside title odds of A +3.3, B -2.5. The sleep covers the 7,500-simulation run."
+    },
+    {
       "id": "trade-finder-redraft",
       "name": "Trade Finder (redraft, Phi Kap): Find trades finishes and shows only pick-free, fully priced deals",
       "path": [

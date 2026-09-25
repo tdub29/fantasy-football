@@ -524,3 +524,112 @@ holds in redraft only. Verdict FAIR 97% (KTC), defensible since both sides lose 
 Kaelon Black for Breece Hall (Phi Kap) and Jeremiyah Love for Derrick Henry (taco): three fresh
 sessions, a second "Run title odds" on the same page, and reversed click order all identical, on
 both code versions. All six finder deals identical across three loads.
+
+---
+
+## Fixed, round 2 (2026-09-25, branch fix-tradelab-r2)
+
+**Bottom line: the redraft verdict now reads the waiver wire and one projection, the simulator
+agrees with it, and the Trade Finder shows only what the Trade Lab will show.** Both highs and all
+three mediums are fixed at the shared source, and the five lows are fixed. Two results are not the
+"no change" a reader might expect, and both are the simulator being right on one basis: Burden for
+Golden sharpens FAIR to CLOSE after the odds run (same side as the lineup), and A.J. Brown for DK
+Metcalf now flips to WIN FOR B, because Brown's ten games include all three playoff weeks.
+
+Re-run on `python -m http.server 8871` serving this worktree's `site/`, Python Playwright,
+Chromium headless, clicks on real pool rows, `app.js` patched in memory only to expose internals.
+Before = `aec3928`, after = this branch. Zero console errors in every run, Washington included.
+
+| Defect | Repro | Before | After |
+|---|---|---|---|
+| V1 (H) | Phi Kap `/1`, McPherson + Kaelon Black for Breece Hall | WIN FOR B, "Side A is left with an empty starting slot"; lineup -51 / -72; odds A +3.3, B -2.5 | WIN FOR A, lineup edge 70; lineup 1886 → 1955 (+69) / -72; odds A +2.6 (5.4% → 8.0% ±0.5), B -1.8; still WIN FOR A after the odds run |
+| V1 (H) | same, New York Giants in place of McPherson | WIN FOR B, empty slot | WIN FOR A, identical numbers (NYG 97.0 < best free DEF 106.8) |
+| V1 (H) | `/8`, Tucker Kraft + NYG for CeeDee Lamb | WIN FOR B, empty slot; odds A +2.5, B -4.1 | WIN FOR A, lineup edge 59; odds A +1.8, B -2.3 |
+| V1 (H) | `/1`, McPherson + NYG for Emanuel Wilson | WIN FOR B, lineup -217 | FAIR, lineup +0 / +0, odds +0.0 / +0.0 |
+| V2 (H) | `/8`, Luther Burden for Matthew Golden | FAIR, then WIN FOR B after odds (A -1.6, B +2.7) | FAIR, then CLOSE after odds (A -0.2 ±0.5 grey, B +0.8 ±0.6): edge 0.5 to B, the lineup's side |
+| V2 (H) | `/2`, A.J. Brown (IR) for DK Metcalf | FAIR, then WIN FOR A (A +1.0, B -1.1) | FAIR, then WIN FOR B (A -1.2 ±0.5, B +1.1 ±0.5) |
+| V2 (H) | simulator's A.J. Brown | 9.82 a week (167 / 17), then 6 more weeks out | 14.98 a game, out weeks 3 to 7 (his own null lines) |
+| V3 (M) | `node site/js/trade-sim.js` 2026, 2500 sims, seed 20260807 (title / playoff) | taco Boutte Hunter 9.2 / 79, Karl Havoc 23.1 / 95; The League CeeDeez 11.7 / 70, World of Tanks 11.5 / 76 | 10.2 / 89, 19.7 / 94; 13.8 / 84, 8.8 / 63: the Lab's numbers exactly |
+| V3 (M) | CLI "Stand pat", seed 20260912, 1 season | 8.96% title, 80.1% playoff | 9.92%, 89.2% |
+| V4 (M) | Washington, Jaylen Warren for Jameson Williams (Seirin) | finder them +0.1 ±0.9, Lab -1.2 | not shown: at the Lab's 7,500 sims my side reads -0.7 ±0.5 (6.7% → 5.9%) |
+| V4 (M) | Washington's shown row, Kenneth Walker for Trey McBride + Brock Purdy | (not offered) | finder +3.5 ±0.8 / +0.6 ±0.7, Lab +3.5 ±0.8 / +0.6 ±0.7, exact |
+| V4 (M) | The League, JoeysYIDS | finder +0.0 ±0.3, Lab -0.3 | finder -0.3 ±0.3 = Lab -0.3 ±0.3 (a rebuilder, shown on FV +45) |
+| V5 (M) | taco `/6`, Allen + Caleb Williams + Jordan Love for Ja'Marr Chase + Brock Bowers | strength A +15.9; lineup 2067 → 1926 (-140); odds A -4.6, B -4.3 | strength A +0.0; lineup 2067 → 2070 (+4, Jacoby Brissett claimed); odds A +0.1 ±1.4 (grey), B -6.2 |
+
+What changed, at the shared source:
+
+- **V1.** One free-agent pool per league (`freeAgents`, `waiverIds`): rest-of-season lines in
+  redraft (K and DEF included), the league-scored blend in dynasty. `redraftLineup`, the dynasty
+  branch of `tradeLineupImpact`, `finderLineup` and the dynasty Present Value strength put the best
+  free bodies in the pool before AND after the trade, so an emptied slot costs the player's points
+  minus the free agent's, floored at 0. The simulator's what-if (`tradeTitleWhatIf(..., lg)`, used
+  by both the Lab and the Finder) claims the free agents a manager would (`waiverAdds`, the old
+  `finderWaiverAdds`), for both sides, one free agent per team. "Loses outright" is left only for a
+  slot not even the waiver wire can fill.
+- **V2.** `championshipOdds` defaults to the league's own basis: redraft simulates the same weekly
+  rest-of-season lines the lineup and verdict read (`src: 'ros'`), with each player's absence taken
+  from his null weeks, not a season total over 17 plus a designation. The verdict logic is unchanged;
+  it now reads one projection before and after. The two repros still move after the odds run on
+  that one basis: Burden's +13 for the partner, a 9.1% contender, clears his band; Brown's lines
+  are 14.6 / 15.9 / 13.3 in weeks 15 to 17 against Metcalf's 10.0 / 10.1 / 11.4, so the side that
+  keeps Brown wins the playoffs more often although the season totals tie. Dynasty keeps its
+  league-scored season blend (7 of the 9 IR players checked have preseason season totals that never priced the
+  absence, so the designation counts once there).
+- **V3.** `trade-sim.js` loads `schedule.js` and `weekly-rankings.js` and slices `isDynastyLeague`
+  and `rosPointsByPid`, so the CLI replays the season in progress from the real records on the real
+  schedule, like the Lab.
+- **V4.** `findTrades` keeps its 800-sim screen, then re-runs every row it would show at the Lab's
+  count (`SIM.tradeSimBudget` over the horizon: 7,500 redraft, 2,500 dynasty), same seed and same
+  what-if, and drops any where the partner's objective is not positive or my gain is under 2 SE.
+  The row prints those numbers, so it reads what the Lab reads.
+- **V5.** `simulateRosterStrength` builds both lineups with the waiver wire, and in dynasty a trade
+  that hands a starting slot a rostered player held to a free agent cannot read as a gain: KTC calls
+  a 1QB quarterback replaceable (Allen 77.6), and his lineup says otherwise (354.6 pts against the
+  best free QB's 158.8).
+
+Lows: **V6** the dynasty strength row names a moved player whom `isSidelined` benches ("Benched this
+week: Caleb Williams (Doubtful)"); the rule itself stands per CLAUDE.md. **V7** in dynasty an IR-slot
+player sits out of the receiver's simulated season as he sits out of his owner's (taco, Watson for
+A.J. Brown: A -1.2 → -1.8, Karl Havoc +1.8 → +1.7, now matching the lineup row's -27 / +0); redraft
+keeps him on both books because his lines price the weeks out. **V8** search "+ For" on a third
+team's player makes that team the partner (Kaelon Black, then "Jahmyr Gibbs": Side B becomes The
+Infirmary, `#trade/.../5`); a free agent gets a disabled "Free agent" button. **V9** the Lab and the
+Finder both print ±2 paired standard errors (E. Johnson for E. Wilson: ±0.7 / ±0.8 → ±0.1).
+**V10** the ESPN 404 came from the Trade Lab's partners strip; it no longer asks Sleeper for an ESPN
+league id. L3 (week 18) stays open.
+
+Sanity re-runs (after odds): CMC for Emanuel Wilson WIN FOR B (A 5.4% → 2.2%, B 4.6% → 8.5%); Rice
+for Tee Higgins FAIR; Kraft + Downs for Lamb WIN FOR A (lineup edge 54, odds A +0.6, B -0.9); Goff +
+Shough for Tyler Warren, before WIN FOR B (A 5.2% → 0.9%), now CLOSE by lineup (-8 / -38, the best
+free QB scores 256.0) and FAIR after odds (A +0.9, B +1.2: Mahomes is Side B's only QB, so two
+backups cover his bye); taco Jeremiyah Love for Derrick Henry unchanged, CLOSE 79%.
+
+Trade Finder for tdub1329, new top 3 (2026 title odds, mine then theirs, ±2 SE; each loaded row
+checked in the Lab and identical):
+
+- **Password is taco** (2 rows, 10.9 s): Caleb Williams + 2027 R2 (Wood Grain Grippers) for Chase
+  Brown + Jameson Williams, Captain Insano, +5.8 ±1.3 / -2.6 (rebuilder, FV +14), 89%; same for
+  Rashee Rice + Jameson Williams, +4.6 ±1.2 / -2.1, 98%.
+- **Phi Kap Fantasy**: none (12,178 packages, 2 simulated, none clears the gates).
+- **The League** (8 rows, 22.8 s): Jadarian Price + Michael Mayer for Jameson Williams + Mike
+  Evans, 6am Tarp Pull, +5.9 ±1.3, 96%; 2027 R1 (Mother Shough'ers) + Bryce Young for Javonte
+  Williams + Jared Goff, JoeysYIDS, +5.2 ±1.2, 99%; that 2027 R1 + my 2027 R1 for Sam Darnold + Kyle
+  Pitts, My Chubb is Limp, +4.8 ±1.1, 84%.
+- **yuH** (8 rows, 16.2 s): 2027 R1 (MT EVEREST) + 2027 R1 (Wake N Baker) for Chase Brown + Derrick
+  Henry, mUrK yUh aHa, +9.6 ±1.6, 93%; the same two firsts for Christian McCaffrey + Davante Adams,
+  MT EVEREST, +9.2 ±1.6, 80%; Parker Washington + KC Concepcion for McCaffrey + Adams, MT EVEREST,
+  +7.3 ±1.6, 96%.
+
+Dynasty numbers that moved: Post-Trade Strength Δ (both lineups claim from waivers, and the V5 cap:
++15.9 → +0.0); the dynasty lineup row (V5 A -140 → +4); Lab title odds, whose what-ifs now claim
+free agents and drop IR-slot adds (V5 A -4.6 → +0.1, V7 A -1.2 → -1.8) and whose bands are 2 paired
+SE (V7 ±1.7 → ±0.8); the Finder's dynasty rows, now priced at 2,500 sims; and the CLI, now equal to
+the Lab. Dynasty baselines (taco 10.2%), Total Value, fairness %, the Year-by-Year rows and the
+standings are unchanged. In redraft the lineup and strength numbers now include the waiver wire
+(Phi Kap, mine: 1858 → 1886, the free K and DEF), which moves standings strength by the same rule.
+
+Gates: `verify-app.py` 64/64 (63 plus `trade-lab-redraft-waiver-fill`); `check-mobile-layout.py`
+390 and 360 MOBILE LAYOUT OK; `node --check site/js/app.js`; 33/33 `site/js/*.test.js` pass. New
+`site/js/trade-lab-r2.test.js`: each of its five blocks fails on `aec3928` (kicker costs 45 instead
+of 0; even swap FAIR → WIN FOR B, A -7.6, B +8.9; a Finder row the partner loses, +0.50 shown, -0.65
+at the Lab's count; no-QB strength 120 → 150; CLI and Lab disagree on every roster) and passes here.
