@@ -119,9 +119,11 @@
 
   // Build a Sleeper-ID-by-name map once
   let _sleeperByName = null;
+  let _sleeperNamesakes = null;      // norm name -> every pid carrying it
   function sleeperByName() {
     if (_sleeperByName) return _sleeperByName;
     const m = new Map();
+    const same = new Map();
     const PLAYERS = window.PLAYERS || {};
     for (const pid in PLAYERS) {
       const p = PLAYERS[pid];
@@ -129,6 +131,7 @@
       const k2 = norm(`${p.first} ${p.last}`);
       if (k1 && !m.has(k1)) m.set(k1, pid);
       if (k2 && !m.has(k2)) m.set(k2, pid);
+      for (const k of new Set([k1, k2])) if (k) (same.get(k) || same.set(k, []).get(k)).push(pid);
       // common nicknames
       if (p.first && p.last) {
         const initialed = norm(`${p.first[0]} ${p.last}`); // e.g., "j allen"
@@ -148,6 +151,7 @@
       if (pid) m.set(norm(alias), pid);
     }
     _sleeperByName = m;
+    _sleeperNamesakes = same;
     return m;
   }
   function sleeperIdFor(name) {
@@ -159,6 +163,17 @@
   // common name), or "T.J. Hockenson" vs "TJ Hockenson". Only used as a
   // fallback when the primary name match returns null. Returns null if the
   // last name + position combo is ambiguous in the Sleeper dictionary.
+  // Sleeper files IDPs under sub-positions (DE, DT, CB, S) while rankings and
+  // lineup slots say DL and DB, so positions compare on the slot. Comparing raw
+  // strings left Myles Garrett (DE) unresolved and the last-name fallback then
+  // handed his row to a free-agent "DL" Garrett. fantasy_positions is carried in
+  // players.js only for multi-slot players (Travis Hunter: DB and WR).
+  const POS_SLOT = { DE:'DL', DT:'DL', NT:'DL', CB:'DB', S:'DB' };
+  const posSlot = (pos) => POS_SLOT[pos] || pos;
+  function fitsPos(pid, pos) {
+    const p = window.PLAYERS?.[pid];
+    return !!p && [p.pos, ...(p.fantasy_positions || [])].some(x => posSlot(x) === posSlot(pos));
+  }
   let _sleeperByLastPos = null;
   function sleeperByLastNamePos() {
     if (_sleeperByLastPos) return _sleeperByLastPos;
@@ -166,7 +181,7 @@
     for (const pid in (window.PLAYERS || {})) {
       const p = window.PLAYERS[pid];
       if (!p.last || !p.pos) continue;
-      const key = `${norm(p.last)}|${p.pos}`;
+      const key = `${norm(p.last)}|${posSlot(p.pos)}`;
       if (!m.has(key)) m.set(key, pid);
       else if (m.get(key) !== 'AMBIGUOUS') m.set(key, 'AMBIGUOUS');
     }
@@ -175,15 +190,17 @@
   }
   function sleeperIdForFuzzy(name, pos) {
     const direct = sleeperIdFor(name);
-    if (direct) {
-      const player = window.PLAYERS?.[direct];
-      const positions = new Set([player?.pos, ...(player?.fantasy_positions || [])]);
-      if (!pos || positions.has(pos)) return direct;
-    }
-    if (!pos) return null;
+    if (!pos) return direct;
+    // The name map keeps the first player of a name, so the WR DJ Moore behind a
+    // retired CB DJ Moore is only reachable by filtering namesakes on position,
+    // and the KC Chris Jones behind a retired DT Chris Jones by his NFL team.
+    let namesakes = (_sleeperNamesakes.get(norm(name)) || []).filter(pid => fitsPos(pid, pos));
+    if (namesakes.length > 1) namesakes = namesakes.filter(pid => window.PLAYERS[pid].team !== 'FA');
+    if (namesakes.length === 1) return namesakes[0];
+    if (direct && fitsPos(direct, pos)) return direct;
     const last = norm(name).split(' ').filter(Boolean).slice(-1)[0];
     if (!last || last.length < 3) return null;
-    const found = sleeperByLastNamePos().get(`${last}|${pos}`);
+    const found = sleeperByLastNamePos().get(`${last}|${posSlot(pos)}`);
     return (found && found !== 'AMBIGUOUS') ? found : null;
   }
 
@@ -1224,8 +1241,11 @@
   function posChip(pos) {
     return h('span', { class:`pos-chip ${pos}` }, pos);
   }
+  // KeepTradeCut's own codes. build_ktc.py maps them now; this covers an older
+  // ktc.js and any row whose team falls back to the ranked entry.
+  const KTC_TEAM = { SFO:'SF', NOS:'NO', KCC:'KC', JAC:'JAX', GBP:'GB', TBB:'TB', LVR:'LV', NEP:'NE' };
   function teamChip(team) {
-    return h('span', { class:'team-chip' }, team || 'FA');
+    return h('span', { class:'team-chip' }, KTC_TEAM[team] || team || 'FA');
   }
   function rookieBadge(p) {
     return p.rookie ? h('span', { class:'badge rookie' }, 'Rookie') : null;

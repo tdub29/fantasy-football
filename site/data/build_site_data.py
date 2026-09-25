@@ -254,6 +254,12 @@ for pid, p in PLAYERS.items():
         "owned":   r.get("owned"),
         "started": r.get("started"),
     }
+    # Only multi-slot players (Travis Hunter: DB and WR) need this; the site maps
+    # single sub-positions (DE, CB) to their slot itself. KTC ranks Hunter as a
+    # WR, and without it his row never matched his DB Sleeper id and read FA.
+    fp = p.get("fantasy_positions") or []
+    if len(fp) > 1:
+        slim_players[pid]["fantasy_positions"] = fp
 
 # ---- Sleeper market data file: risers/fallers ----
 def name_for(pid):
