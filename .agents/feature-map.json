@@ -404,7 +404,7 @@
           "eval": "(()=>{const c=[...document.querySelectorAll('#main .trade-side-card')];const row=(card,n)=>[...card.querySelectorAll('.trade-pool-row')].find(r=>r.querySelector('.name')?.textContent.trim()===n);row(c[0],'Christian McCaffrey').click();row(c[1],'Emanuel Wilson').click();return true})()"
         },
         {
-          "click": "#main .trade-title-run"
+          "eval": "document.querySelector('#main .trade-title-run').click()"
         },
         {
           "sleepMs": 8000
@@ -415,7 +415,91 @@
       ],
       "selector": "#main .trade-middle[data-odds-key]",
       "assert": "(()=>{const m=document.querySelector('#main .trade-middle');const rows=[...m.querySelectorAll('.trade-title-odds .t3y-row')];const season=String(window.LEAGUES.find(l=>l.id==='1389722402430136320').season);const sub=rows[0]?.querySelector('.t3y-sub')?.textContent||'';const pcts=(sub.match(/[0-9.]+(?=%)/g)||[]).map(Number);const aVal=parseFloat(m.querySelector('.tnum').textContent);return m.querySelector('.verdict').textContent.trim()==='WIN FOR B'&&rows.length===1&&rows[0].querySelector('.t3y-label').textContent===season&&parseFloat(rows[0].querySelector('.t3y-delta').textContent)<0&&pcts.length===2&&pcts[1]<pcts[0]&&aVal>0&&!m.querySelector('.t3y:not(.trade-title-odds)')})()",
-      "notes": "Phi Kap Fantasy is redraft. The audit's lopsided trade: the user's best RB (Christian McCaffrey) for the partner's 30-point bench RB (Emanuel Wilson). The verdict follows both starting lineups and the 2026 title odds, so it must read WIN FOR B (the partner), with one title-odds row for the current season whose Side A change is negative and whose before-to-after odds fall. Redraft renders no Year-by-Year block and no pick-derived rows, and a depth-or-better player carries nonzero value (McCaffrey's pile total is above 0). The sleep covers the 7,500-simulation run, about 10 seconds on this machine, which blocks the page."
+      "notes": "Phi Kap Fantasy is redraft. The audit's lopsided trade: the user's best RB (Christian McCaffrey) for the partner's 30-point bench RB (Emanuel Wilson). The verdict follows both starting lineups and the 2026 title odds, so it must read WIN FOR B (the partner), with one title-odds row for the current season whose Side A change is negative and whose before-to-after odds fall. Redraft renders no Year-by-Year block and no pick-derived rows, and a depth-or-better player carries nonzero value (McCaffrey's pile total is above 0). The sleep covers the 7,500-simulation run, about 10 seconds on this machine, which blocks the page. The button is clicked from an eval, not a harness click: the simulation holds the page as soon as the handler returns, and a harness click waits on the page for its own acknowledgement, so on a loaded machine (16 seconds, 2026-09-25) the click itself timed out at 15 seconds before the sleep could cover the run."
+    },
+    {
+      "id": "trade-finder-redraft",
+      "name": "Trade Finder (redraft, Phi Kap): Find trades finishes and shows only pick-free, fully priced deals",
+      "path": [
+        {
+          "eval": "location.hash='#trade/1389722402430136320'"
+        },
+        {
+          "waitFor": "#main .tf-run"
+        },
+        {
+          "click": "#main .tf-run"
+        },
+        {
+          "sleepMs": 6000
+        },
+        {
+          "waitFor": "#main .tf-progress[data-tf-done]"
+        }
+      ],
+      "selector": "#main .tf-progress[data-tf-done]",
+      "assert": "(()=>{const s=document.querySelector('#main .tf-progress').textContent;const rows=[...document.querySelectorAll('#main .trade-find-row')];const ok=r=>!(r.dataset.tfSend+','+r.dataset.tfGet).includes('pick:')&&(r.querySelector('.tf-odds').textContent.match(/\\d+\\.\\d% to \\d+\\.\\d%/g)||[]).length===2;return /^\\d+ trades? from [\\d,]+ packages, \\d+ simulated, [\\d.]+ s\\.$/.test(s)&&(rows.length?rows.every(ok):!!document.querySelector('#main .trade-finder-empty'))})()",
+      "notes": "Phi Kap Fantasy is redraft. The finder runs only behind the Find trades button, never on page load, scans every partner in slices and simulates the best packages in 2026 title odds for both rosters. The run must finish with the summary line; any row must carry no pick and both sides' odds, and no row must mean the empty state. On 2026-09-25 data it simulates a few deals and none clears the gates: every one lowers the partner's title odds or gains me less than twice its standard error."
+    },
+    {
+      "id": "trade-finder-redraft-load",
+      "name": "Trade Finder (redraft): a proposal shows both sides' 2026 odds with its error and loads into the Trade Lab",
+      "path": [
+        {
+          "eval": "location.hash='#trade/1532688686'"
+        },
+        {
+          "waitFor": "#main .tf-run"
+        },
+        {
+          "click": "#main .tf-run"
+        },
+        {
+          "sleepMs": 6000
+        },
+        {
+          "waitFor": "#main .trade-find-row"
+        },
+        {
+          "eval": "(()=>{const r=document.querySelector('#main .trade-find-row');if(!r)return false;window.__tf={send:r.dataset.tfSend,get:r.dataset.tfGet,odds:r.querySelector('.tf-odds').textContent};r.click();return true})()"
+        },
+        {
+          "waitFor": "#main .trade-side-card .trade-pile-row"
+        }
+      ],
+      "selector": "#main .trade-side-card .trade-pile-row",
+      "assert": "(()=>{const t=window.__tf;if(!t)return false;const c=[...document.querySelectorAll('#main .trade-side-card')];const keys=card=>[...card.querySelectorAll('.trade-pile-row')].map(r=>r.dataset.tradeKey).sort().join(',');const same=(a,b)=>a.split(',').sort().join(',')===b;const pairs=(t.odds.match(/\\d+\\.\\d% to \\d+\\.\\d%/g)||[]).length;const row=document.querySelector('#main .trade-find-row');return c.length===2&&same(t.send,keys(c[0]))&&same(t.get,keys(c[1]))&&pairs===2&&/ you /.test(t.odds)&&/ them /.test(t.odds)&&!!row&&row.dataset.tfSend===t.send&&!(t.send+','+t.get).includes('pick:')&&/you [0-9.]+% to [0-9.]+% \\(\\+[0-9.]+ pts ±[0-9.]+\\)/.test(t.odds)})()",
+      "notes": "Washington Football League is redraft. Same contract as the dynasty entry: the first proposal shows my odds and the partner's, each before to after, my gain with its paired standard error, no pick, and one click loads its exact send and get sets into the two Trade Lab piles. Phi Kap is the other redraft league; on 2026-09-25 data it has no deal that clears the gates, which the trade-finder-redraft entry checks instead."
+    },
+    {
+      "id": "trade-finder-dynasty",
+      "name": "Trade Finder (dynasty): Find trades, both sides' 2026 odds, loads into the Trade Lab",
+      "path": [
+        {
+          "eval": "location.hash='#trade/1341184676601028608'"
+        },
+        {
+          "waitFor": "#main .tf-run"
+        },
+        {
+          "click": "#main .tf-run"
+        },
+        {
+          "sleepMs": 10000
+        },
+        {
+          "waitFor": "#main .trade-find-row"
+        },
+        {
+          "eval": "(()=>{const r=document.querySelector('#main .trade-find-row');if(!r)return false;window.__tf={send:r.dataset.tfSend,get:r.dataset.tfGet,odds:r.querySelector('.tf-odds').textContent};r.click();return true})()"
+        },
+        {
+          "waitFor": "#main .trade-side-card .trade-pile-row"
+        }
+      ],
+      "selector": "#main .trade-side-card .trade-pile-row",
+      "assert": "(()=>{const t=window.__tf;if(!t)return false;const c=[...document.querySelectorAll('#main .trade-side-card')];const keys=card=>[...card.querySelectorAll('.trade-pile-row')].map(r=>r.dataset.tradeKey).sort().join(',');const same=(a,b)=>a.split(',').sort().join(',')===b;const pairs=(t.odds.match(/\\d+\\.\\d% to \\d+\\.\\d%/g)||[]).length;const row=document.querySelector('#main .trade-find-row');return c.length===2&&same(t.send,keys(c[0]))&&same(t.get,keys(c[1]))&&pairs===2&&/ you /.test(t.odds)&&/ them /.test(t.odds)&&!!row&&row.dataset.tfSend===t.send&&/you [0-9.]+% to [0-9.]+% \\(\\+[0-9.]+ pts ±[0-9.]+\\)/.test(t.odds)})()",
+      "notes": "Password is taco is dynasty, so packages include rookie picks and a rebuilding partner is judged on future value, a contender on his title odds. Same contract as the redraft entry: both sides' 2026 odds before to after on the first proposal, and one click loads its exact assets, picks included, into the Trade Lab piles. The sleep covers the search, about 7 to 14 seconds headless on this machine. My gain shows with its paired standard error, and only clears when it beats SIM.finderSeMult of it."
     },
     {
       "id": "sos-grid",
