@@ -1223,6 +1223,31 @@
       }
     },
     {
+      "id": "stats-lab-export",
+      "name": "Stats Lab: Export CSV is exactly the visible rows and columns, Player pinned on a phone",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "location.hash='#stats/WR'"
+        },
+        {
+          "sleepMs": 1500
+        }
+      ],
+      "selector": "table.stats-lab-table",
+      "assert": "(() => { const t = document.querySelector('table.stats-lab-table'), btn = document.querySelector('.stats-lab-export'); if (!t || !btn) return false; let csv = null; const B = window.Blob, click = HTMLAnchorElement.prototype.click; window.Blob = function (parts, o) { csv = parts.join(''); return new B(parts, o); }; HTMLAnchorElement.prototype.click = function () {}; try { btn.click(); } finally { window.Blob = B; HTMLAnchorElement.prototype.click = click; } if (!csv) return false; const lines = csv.replace(/^\\ufeff/, '').split('\\r\\n'); const rows = t.querySelectorAll('tbody tr').length, cols = t.querySelectorAll('thead th').length; if (rows < 20 || lines.length - 1 !== rows || lines[0].split(',').length !== cols) return false; const w = t.parentElement, name = t.querySelector('tbody tr td:nth-child(2)'); w.scrollLeft = w.scrollWidth; /* export is exactly the visible table; the name cell computes sticky and stays 48px in after a full sideways scroll at phone width */ return getComputedStyle(name).position === 'sticky' && w.scrollLeft > 0 && Math.abs(name.getBoundingClientRect().left - w.getBoundingClientRect().left - 48) <= 1; })()",
+      "notes": "Stats Lab research tools (Data Suite gap cluster A): Export CSV, a minimum on any numeric column, column finder, per-column hide and reorder, named saved views (localStorage ff-stats-lab-views-v1), column snapshots, calculated columns from a hand-written tokenizer (site/js/stats-expr.test.js, no eval), user highlights and bio filters, all behind one Tools disclosure. The assert swaps window.Blob for a recorder, clicks Export, and requires one CSV line per rendered row plus the header and one field per rendered header cell, so an export that re-reads the unfiltered payload fails. At 390px it then scrolls the wrapper to its end and requires the Player cell to compute position sticky and sit 48px from the wrapper edge.",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      }
+    },
+    {
       "id": "prospect-weather-data",
       "name": "Draft profile and game-day weather payloads are loaded and shaped",
       "path": [

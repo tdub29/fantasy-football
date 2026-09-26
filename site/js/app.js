@@ -12639,6 +12639,99 @@
       ])));
   }
 
+  // Calculated columns: numbers, column keys, + - * / and parentheses. A hand
+  // tokenizer and recursive-descent parser build plain closures, so nothing a
+  // user types ever reaches eval or Function. Unknown names, calls and any other
+  // character are rejected. Returns { fn(row) } or { error }.
+  function statsExprCompile(src, keys) {
+    const s = String(src == null ? '' : src), known = new Set(keys), toks = [];
+    for (let i = 0; i < s.length;) {
+      const ch = s[i], rest = s.slice(i);
+      let m;
+      if (ch === ' ' || ch === '\t') { i++; continue; }
+      if ((m = /^(?:\d+\.?\d*|\.\d+)/.exec(rest))) toks.push({ t:'num', v:Number(m[0]) });
+      else if ((m = /^[A-Za-z_][A-Za-z0-9_]*/.exec(rest))) {
+        if (!known.has(m[0])) return { error:`"${m[0]}" is not a column key` };
+        toks.push({ t:'key', v:m[0] });
+      } else if ('+-*/()'.includes(ch)) { m = [ch]; toks.push({ t:ch }); }
+      else return { error:`"${ch}" is not allowed` };
+      i += m[0].length;
+    }
+    if (!toks.length) return { error:'Type an expression' };
+    let p = 0;
+    const peek = () => toks[p] && toks[p].t;
+    const num = (v) => typeof v === 'number' && isFinite(v);
+    const bin = (op, a, b) => {
+      if (!num(a) || !num(b)) return null;
+      const v = op === '+' ? a + b : op === '-' ? a - b : op === '*' ? a * b : b === 0 ? null : a / b;
+      return num(v) ? v : null;
+    };
+    const chain = (next, ops) => () => {
+      let f = next();
+      while (ops.includes(peek())) {
+        const op = toks[p++].t, l = f, r = next();
+        f = (row) => bin(op, l(row), r(row));
+      }
+      return f;
+    };
+    const unary = () => {
+      if (peek() === '-') { p++; const f = unary(); return (row) => bin('-', 0, f(row)); }
+      if (peek() === '+') { p++; return unary(); }
+      const tk = toks[p++];
+      if (!tk) throw new Error('Expression ends early');
+      if (tk.t === 'num') return () => tk.v;
+      if (tk.t === 'key') {
+        if (peek() === '(') throw new Error('Function calls are not allowed');
+        return (row) => row[tk.v];
+      }
+      if (tk.t === '(') {
+        const f = sum();
+        if (peek() !== ')') throw new Error('Missing )');
+        p++;
+        return f;
+      }
+      throw new Error(`Unexpected "${tk.t}"`);
+    };
+    const sum = chain(chain(unary, ['*', '/']), ['+', '-']);
+    try {
+      const fn = sum();
+      if (p < toks.length) throw new Error(`Unexpected "${toks[p].t === 'num' || toks[p].t === 'key' ? toks[p].v : toks[p].t}"`);
+      return { fn };
+    } catch (e) { return { error:e.message }; }
+  }
+  // ---- end statsExprCompile
+
+  // Export reads the rendered table, so the file is exactly the rows and
+  // columns on screen, in screen order, with screen formatting.
+  function statsCsv(table) {
+    const q = (s) => /[",\r\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+    const line = (cells) => [...cells].map(c => q(c.textContent.replace(/\s*[↑↓]$/, '').trim())).join(',');
+    return [line(table.tHead.rows[0].cells), ...[...table.tBodies[0].rows].map(r => line(r.cells))].join('\r\n');
+  }
+
+  // Named views are their own key so a bad write there cannot cost the live prefs.
+  const STATS_VIEWS_KEY = 'ff-stats-lab-views-v1';
+  function statsViews() {
+    try { const v = JSON.parse(localStorage.getItem(STATS_VIEWS_KEY) || '[]'); return Array.isArray(v) ? v : []; } catch (_) { return []; }
+  }
+  function saveStatsViews(views) {
+    try { localStorage.setItem(STATS_VIEWS_KEY, JSON.stringify(views)); } catch (_) { /* private mode */ }
+  }
+  // Bio filters read players.js and prospect.js by Sleeper id. An undrafted
+  // player counts as round 8, so one min/max pair covers "Day 3 and UDFA".
+  const STATS_BIO = [
+    ['age', 'Age', (id) => window.PLAYERS?.[id]?.age],
+    ['exp', 'Years exp', (id) => window.PLAYERS?.[id]?.exp],
+    ['round', 'Round (8 = UDFA)', (id) => { const p = window.PROSPECT?.players?.[id]; return p ? (p.draft_round ?? 8) : null; }],
+    ['year', 'Draft year', (id) => window.PROSPECT?.players?.[id]?.draft_year],
+    ['ht', 'Height (in)', (id) => window.PROSPECT?.players?.[id]?.height_in],
+    ['wt', 'Weight (lb)', (id) => window.PROSPECT?.players?.[id]?.weight_lb],
+    ['athl', 'Athletic pct', (id) => window.PROSPECT?.players?.[id]?.athl_pct],
+  ];
+  // Thresholds are typed in the units on screen, so a pct column compares x100.
+  const statsDisp = (c, v) => c.fmt === 'pct' ? v * 100 : v;
+  let STATS_TOOLS_OPEN = false, STATS_COL_FIND = '';
+
   // Shared sortable table for the Defense and Trends tabs: columns are
   // {key, label, get(row), fmt, desc, lowerBetter, tone(row)}.
   function statsTable(main, prefs, tabKey, rows, cols, defaultSort, rowName, onRow) {
@@ -12839,6 +12932,157 @@
         me.flags.includes('role_up') ? 'Role growing week over week.' : 'Role shrinking week over week.') : null);
   }
 
+  // The research tools for one Stats Lab tab, behind one disclosure so a phone
+  // sees a single line until it asks for more. Every action writes the tab's
+  // state and re-renders through save().
+  function statsToolsPanel({ prefs, tab, pos, isTeams, ordered, isVis, pool, A, exprKeys, save }) {
+    const numeric = ordered.filter(c => c.fmt !== 'text');
+    const labelOf = (k) => (ordered.find(c => c.key === k) || { label:k }).label;
+    const colSel = (label) => h('select', { 'aria-label':label }, ...numeric.map(c => h('option', { value:c.key }, c.label)));
+    const numIn = (label, value, extra) => h('input', { type:'number', step:'any', inputmode:'decimal', 'aria-label':label,
+      value:value == null ? '' : String(value), ...extra });
+    const readNum = (el) => el.value.trim() === '' || !isFinite(Number(el.value)) ? null : Number(el.value);
+    const btn = (text, onclick, extra) => h('button', { type:'button', onclick, ...extra }, text);
+    const chip = (text, onRemove) => h('span', { class:'stats-lab-chip' }, text,
+      btn('×', onRemove, { class:'ghost', 'aria-label':`Remove ${text}` }));
+    const section = (title, ...kids) => h('div', { class:'stats-lab-tool' }, h('div', { class:'stats-lab-tool-title' }, title), ...kids);
+
+    // Columns: finder, show or hide, reorder, snapshot, remove a custom one.
+    const move = (key, dir) => {
+      const keys = ordered.map(c => c.key), i = keys.indexOf(key);
+      let j = i + dir;
+      while (j >= 0 && j < keys.length && !isVis(ordered[j])) j += dir;   // step past hidden neighbours
+      if (j < 0 || j >= keys.length) return;
+      keys.splice(i, 1); keys.splice(j, 0, key);
+      tab.order = keys; save();
+    };
+    const snap = (c) => {
+      const vals = {};
+      for (const r of pool) if (typeof r[c.key] === 'number') vals[r._key] = Math.round(r[c.key] * 1e4) / 1e4;
+      tab.seq = (tab.seq || 0) + 1;
+      tab.snaps = [...(tab.snaps || []), { id:tab.seq, label:`${c.label} ${A.season}`, fmt:c.fmt, lowerBetter:!!c.lowerBetter, vals,
+        desc:`${c.label} frozen from ${A.season} through week ${A.throughWeek}. It stays put when filters or the season change.` }];
+      save();
+    };
+    const drop = (c) => {
+      if (c.custom === 'snap') tab.snaps = (tab.snaps || []).filter(s => s.id !== c.id);
+      else tab.calcs = (tab.calcs || []).filter(x => x.id !== c.id);
+      for (const o of [tab.min, tab.cond, tab.vis]) if (o) delete o[c.key];
+      save();
+    };
+    const list = h('div', { class:'stats-lab-cols' }, ...ordered.map(c => h('div', { class:'stats-lab-col', dataset:{ find:`${c.label} ${c.key}`.toLowerCase() } },
+      h('label', null,
+        h('input', { type:'checkbox', checked:isVis(c), onchange:(e) => { tab.vis = Object.assign({}, tab.vis, { [c.key]:e.target.checked }); save(); } }),
+        h('span', { class:'stats-lab-col-name' }, c.label), h('code', null, c.key)),
+      btn('↑', () => move(c.key, -1), { class:'ghost', title:'Move left in the table', 'aria-label':`Move ${c.label} left` }),
+      btn('↓', () => move(c.key, 1), { class:'ghost', title:'Move right in the table', 'aria-label':`Move ${c.label} right` }),
+      c.fmt === 'text' ? null : btn('Snap', () => snap(c), { class:'ghost', title:'Freeze the current values as a new column', 'aria-label':`Snapshot ${c.label}` }),
+      c.custom ? btn('Remove', () => drop(c), { class:'ghost', 'aria-label':`Remove ${c.label}` }) : null)));
+    const filterList = () => {
+      const q = STATS_COL_FIND.trim().toLowerCase();
+      for (const row of list.children) row.hidden = !!q && !row.dataset.find.includes(q);
+    };
+    filterList();
+    const find = h('input', { type:'search', class:'stats-lab-find', placeholder:'Find a column', 'aria-label':'Find a column', value:STATS_COL_FIND,
+      oninput:(e) => { STATS_COL_FIND = e.target.value; filterList(); },
+      // Enter toggles the first match, so "find it, flip it" needs no mouse.
+      onkeydown:(e) => { if (e.key !== 'Enter') return; e.preventDefault(); const first = [...list.children].find(r => !r.hidden); if (first) first.querySelector('input').click(); } });
+
+    // Minimum qualifier on any numeric column.
+    const minCol = colSel('Column for the minimum'), minVal = numIn('Minimum value');
+    // User highlight rules.
+    const cfCol = colSel('Column to highlight'), cfVal = numIn('Highlight value');
+    const cfOp = h('select', { 'aria-label':'Highlight rule' },
+      ...[['gt', 'above'], ['lt', 'below'], ['top', 'highest N%'], ['bot', 'lowest N%']].map(([v, l]) => h('option', { value:v }, l)));
+    const ruleText = (r) => r.op === 'gt' ? `> ${r.v}` : r.op === 'lt' ? `< ${r.v}` : `${r.op === 'top' ? 'top' : 'bottom'} ${r.v}%`;
+    // Calculated columns.
+    const calcName = h('input', { type:'text', placeholder:'Name', 'aria-label':'Calculated column name', maxlength:'24' });
+    const example = { QB:'ypa - pass_adot', RB:'targets / carries', WR:'air_yds / targets', TE:'air_yds / targets', Teams:'epa_pass - epa_rush' }[pos];
+    const calcExpr = h('input', { type:'text', class:'stats-lab-expr', 'aria-label':'Calculated column expression', spellcheck:'false', autocapitalize:'off', autocomplete:'off',
+      placeholder:`e.g. ${example && statsExprCompile(example, exprKeys).fn ? example : 'key / key'}` });
+    const calcErr = h('div', { class:'stats-lab-err', 'aria-live':'polite' });
+    const addCalc = () => {
+      const expr = calcExpr.value.trim(), cx = statsExprCompile(expr, exprKeys);
+      if (cx.error) { calcErr.textContent = cx.error; return; }
+      tab.seq = (tab.seq || 0) + 1;
+      tab.calcs = [...(tab.calcs || []), { id:tab.seq, label:(calcName.value.trim() || expr).slice(0, 24), expr }];
+      save();
+    };
+    // Saved views: everything this tab remembers, under a name.
+    const views = statsViews();
+    const viewName = h('input', { type:'text', placeholder:'View name', 'aria-label':'View name', maxlength:'40' });
+    const viewState = () => JSON.parse(JSON.stringify({ groups:(prefs.groups || {})[pos], sort:(prefs.sort || {})[pos], minSnap:prefs.minSnap, tab }));
+    const loadView = (v) => {
+      const s = v.state || {};
+      prefs.groups = Object.assign({}, prefs.groups, { [pos]:s.groups });
+      prefs.sort = Object.assign({}, prefs.sort, { [pos]:s.sort });
+      if (typeof s.minSnap === 'number') prefs.minSnap = s.minSnap;
+      prefs.tab[pos] = JSON.parse(JSON.stringify(s.tab || {}));
+      save();
+    };
+
+    const bio = tab.bio || {};
+    const setBio = (k, i) => (e) => {
+      const next = [...((tab.bio && tab.bio[k]) || [null, null])];
+      next[i] = readNum(e.target);
+      tab.bio = Object.assign({}, tab.bio, { [k]:next });
+      save();
+    };
+    const active = Object.keys(tab.min || {}).length + Object.keys(tab.cond || {}).length
+      + (tab.snaps || []).length + (tab.calcs || []).length
+      + (isTeams ? 0 : STATS_BIO.filter(([k]) => (bio[k] || []).some(v => v != null)).length);
+
+    return h('details', { class:'card stats-lab-tools', open:STATS_TOOLS_OPEN ? '' : null, ontoggle:(e) => { STATS_TOOLS_OPEN = e.target.open; } },
+      h('summary', null, 'Tools', active ? h('span', { class:'stats-lab-tools-count' }, `${active} on`) : null,
+        h('span', { class:'stats-lab-sub-more muted' }, ` Columns, minimums, highlights, calculated columns${isTeams ? '' : ', bio filters'}, saved views.`)),
+      h('div', { class:'stats-lab-tools-grid' },
+        section('Columns',
+          h('div', { class:'stats-lab-row' }, find,
+            btn('Reset layout', () => { delete tab.order; delete tab.vis; save(); }, { class:'ghost', title:'Back to the default column order and groups' })),
+          list,
+          h('div', { class:'muted' }, 'Tick to show, arrows to move, Snap freezes a column so it survives filter and season changes.')),
+        section('Minimum qualifier',
+          h('div', { class:'stats-lab-row' }, minCol, minVal, btn('Add', () => {
+            const v = readNum(minVal);
+            if (v == null) return;
+            tab.min = Object.assign({}, tab.min, { [minCol.value]:v }); save();
+          })),
+          h('div', { class:'stats-lab-row' }, ...Object.entries(tab.min || {}).map(([k, v]) => chip(`${labelOf(k)} ≥ ${v}`, () => { delete tab.min[k]; save(); }))),
+          h('div', { class:'muted' }, 'Type the value as the table shows it: 20 on a % column means 20%.')),
+        section('Highlight',
+          h('div', { class:'stats-lab-row' }, cfCol, cfOp, cfVal, btn('Add', () => {
+            const v = readNum(cfVal);
+            if (v == null || ((cfOp.value === 'top' || cfOp.value === 'bot') && !(v > 0 && v <= 100))) return;
+            tab.cond = Object.assign({}, tab.cond, { [cfCol.value]:{ op:cfOp.value, v } }); save();
+          })),
+          h('div', { class:'stats-lab-row' }, ...Object.entries(tab.cond || {}).map(([k, r]) => chip(`${labelOf(k)} ${ruleText(r)}`, () => { delete tab.cond[k]; save(); }))),
+          h('div', { class:'muted' }, 'A highlight boxes the cell. The green and red text is still the top and bottom fifth.')),
+        section('Calculated column',
+          h('div', { class:'stats-lab-row' }, calcName, calcExpr, btn('Add', addCalc)),
+          calcErr,
+          h('div', { class:'muted' }, 'Column keys from the list, numbers, + - * / and parentheses. Dividing by zero leaves the cell blank.')),
+        isTeams ? null : section('Bio filters',
+          h('div', { class:'stats-lab-bio' }, h('span'), h('span', { class:'muted' }, 'Min'), h('span', { class:'muted' }, 'Max'),
+            ...STATS_BIO.flatMap(([k, label]) => {
+              const [lo, hi] = bio[k] || [];
+              return [h('span', null, label), numIn(`${label} minimum`, lo, { onchange:setBio(k, 0) }), numIn(`${label} maximum`, hi, { onchange:setBio(k, 1) })];
+            })),
+          h('div', { class:'stats-lab-row' }, btn('Clear bio filters', () => { delete tab.bio; save(); }, { class:'ghost' })),
+          h('div', { class:'muted' }, 'From players.js and prospect.js. A player with no value for a filter you set drops out.')),
+        section('Saved views',
+          h('div', { class:'stats-lab-row' }, viewName, btn('Save', () => {
+            const name = viewName.value.trim();
+            if (!name) return;
+            saveStatsViews([...views.filter(v => !(v.pos === pos && v.name === name)), { name, pos, state:viewState() }]);
+            save();
+          })),
+          ...views.filter(v => v.pos === pos).map(v => h('div', { class:'stats-lab-view' },
+            h('span', { class:'stats-lab-col-name' }, v.name),
+            btn('Load', () => loadView(v)),
+            btn('Delete', () => { saveStatsViews(statsViews().filter(x => !(x.pos === pos && x.name === v.name))); save(); }, { class:'ghost', 'aria-label':`Delete view ${v.name}` }))),
+          h('div', { class:'muted' }, `Saved in this browser, one list per tab. A view keeps columns, sort, minimums, highlights, custom columns${isTeams ? '' : ' and bio filters'}.`))));
+  }
+
   function viewStats(posArg) {
     const main = $('#main'); main.innerHTML = '';
     const CUR = window.ADVANCED;
@@ -12867,7 +13111,6 @@
     const cols = isTeams ? A.teamColumns : A.columns.filter(c => c.pos.includes(pos));
     const groups = [...new Set(cols.map(c => c.group))];
     const onGroups = (prefs.groups && prefs.groups[pos]) || groups;
-    const shown = cols.filter(c => onGroups.includes(c.group));
     const estimates = new Set(A.estimates || []);
 
     main.appendChild(breadcrumbs([{ label:'Tools' }, { label:'Stats Lab' }]));
@@ -12885,6 +13128,13 @@
     if (pos === 'Defense') { statsDefense(main, prefs); saveStatsLabPrefs(prefs); return; }
     if (pos === 'Trends') { statsTrends(main, prefs); saveStatsLabPrefs(prefs); return; }
     if (pos === 'IDP') { statsIdp(main, prefs); saveStatsLabPrefs(prefs); return; }
+
+    // Per-tab research state: minimums, column layout, snapshots, calculated
+    // columns, highlights and bio filters. Every field is optional, so prefs
+    // saved before these tools existed load untouched.
+    prefs.tab = prefs.tab || {};
+    const tab = prefs.tab[pos] = prefs.tab[pos] || {};
+    const save = () => { saveStatsLabPrefs(prefs); viewStats(pos); };
 
     main.appendChild(h('div', { class:'sos-position-tabs stats-lab-groups', role:'group', 'aria-label':'Stat groups' },
       ...groups.map(g => {
@@ -12907,6 +13157,28 @@
       }
       rows = Object.entries(A.players).filter(([, v]) => v.p === pos)
         .map(([sid, v]) => Object.assign({ _key:sid, _name:v.n, _team:v.t, _mine:mine.has(sid) }, v));
+    }
+
+    // Snapshots and calculated columns ride on the rows as plain fields, so
+    // sort, tint, minimums, highlights and export treat them like any column.
+    const custom = [], exprKeys = cols.filter(c => c.fmt !== 'text').map(c => c.key);
+    for (const s of tab.snaps || []) {
+      const key = `snap${s.id}`;
+      custom.push({ key, label:s.label, group:'Custom', custom:'snap', id:s.id, fmt:s.fmt, lowerBetter:!!s.lowerBetter, desc:s.desc || '' });
+      for (const r of rows) r[key] = (s.vals || {})[r._key] ?? null;
+      exprKeys.push(key);
+    }
+    for (const x of tab.calcs || []) {
+      const key = `calc${x.id}`, cx = statsExprCompile(x.expr, exprKeys);
+      custom.push({ key, label:x.label, group:'Custom', custom:'calc', id:x.id, fmt:'dec2',
+        desc:`Calculated: ${x.expr}.${cx.error ? ` Broken: ${cx.error}.` : ''}` });
+      for (const r of rows) r[key] = cx.fn ? cx.fn(r) : null;
+      exprKeys.push(key);
+    }
+    const allCols = cols.concat(custom);
+    const pool = rows;   // every row at this position, before any filter: what a snapshot freezes
+
+    if (!isTeams) {
       const q = (prefs.q || '').trim().toLowerCase();
       if (q) rows = rows.filter(r => r._name.toLowerCase().includes(q));
       if (prefs.mine) rows = rows.filter(r => r._mine);
@@ -12914,7 +13186,23 @@
       // efficiency sort, so hold players to a real share of the work.
       const minSnap = prefs.minSnap ?? 0.2;
       rows = rows.filter(pos === 'QB' ? (r => (r.dropbacks || 0) >= 15) : (r => (r.snap_pct || 0) >= minSnap));
+      for (const [k, , get] of STATS_BIO) {
+        const [lo, hi] = (tab.bio && tab.bio[k]) || [];
+        if (lo == null && hi == null) continue;
+        rows = rows.filter(r => { const v = get(r._key); return v != null && (lo == null || v >= lo) && (hi == null || v <= hi); });
+      }
     }
+    for (const [k, v] of Object.entries(tab.min || {})) {
+      const c = allCols.find(x => x.key === k);
+      if (c && typeof v === 'number') rows = rows.filter(r => typeof r[k] === 'number' && statsDisp(c, r[k]) >= v);
+    }
+
+    // Column layout: an explicit tick wins, otherwise the stat group decides.
+    const vis = tab.vis || {};
+    const isVis = (c) => typeof vis[c.key] === 'boolean' ? vis[c.key] : (!!c.custom || onGroups.includes(c.group));
+    const at = new Map((tab.order || []).map((k, i) => [k, i]));
+    const ordered = allCols.map((c, i) => ({ c, i:at.has(c.key) ? at.get(c.key) : 1e4 + i })).sort((a, b) => a.i - b.i).map(x => x.c);
+    const shown = ordered.filter(isVis);
 
     const defaultSort = isTeams ? 'epa_play' : pos === 'QB' ? 'db_epa' : 'xfp_pg';
     const sort = (prefs.sort && prefs.sort[pos]) || { key: defaultSort, dir: 'desc' };
@@ -12940,7 +13228,33 @@
         return c.lowerBetter ? 1 - pct : pct;
       };
     }
+    // User highlights sit beside the tint: the tint colors the text, a
+    // highlight boxes the cell, so both read at once.
+    const hit = {};
+    for (const c of shown) {
+      const rule = (tab.cond || {})[c.key];
+      if (!rule || typeof rule.v !== 'number' || c.fmt === 'text') continue;
+      if (rule.op === 'gt' || rule.op === 'lt') {
+        hit[c.key] = (v) => typeof v === 'number' && (rule.op === 'gt' ? statsDisp(c, v) > rule.v : statsDisp(c, v) < rule.v);
+        continue;
+      }
+      const vals = rows.map(r => r[c.key]).filter(v => typeof v === 'number').sort((x, y) => y - x);
+      if (!vals.length) continue;
+      const n = Math.min(vals.length, Math.max(1, Math.ceil(vals.length * rule.v / 100)));
+      const cut = rule.op === 'top' ? vals[n - 1] : vals[vals.length - n];
+      hit[c.key] = (v) => typeof v === 'number' && (rule.op === 'top' ? v >= cut : v <= cut);
+    }
 
+    const exportBtn = h('button', { type:'button', class:'stats-lab-export', title:'Download the rows and columns on screen as a CSV file',
+      onclick:() => {
+        const t = main.querySelector('table.stats-lab-table');
+        if (!t) return;
+        const a = h('a', { href:URL.createObjectURL(new Blob(['﻿' + statsCsv(t)], { type:'text/csv;charset=utf-8' })),
+          download:`stats-lab-${pos.toLowerCase()}-${A.season}.csv` });
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+      } }, 'Export CSV');
+    const count = h('span', { class:'muted tnum' }, `${rows.length} ${isTeams ? 'teams' : 'players'}`);
     if (!isTeams) {
       const search = h('input', { type:'search', placeholder:'Search player', value:prefs.q || '',
         'aria-label':'Search player', class:'stats-lab-search',
@@ -12953,13 +13267,15 @@
         h('select', { 'aria-label':'Minimum snap share', onchange:(e) => {
           prefs.minSnap = Number(e.target.value); saveStatsLabPrefs(prefs); viewStats(pos); } },
           ...[0, 0.2, 0.4, 0.6].map(v => h('option', { value:String(v), selected:(prefs.minSnap ?? 0.2) === v }, `${v * 100}%`))));
-      main.appendChild(h('div', { class:'card stats-lab-filters' }, search, mineBox, snapSel,
-        h('span', { class:'muted tnum' }, `${rows.length} players`)));
+      main.appendChild(h('div', { class:'card stats-lab-filters' }, search, mineBox, snapSel, count, exportBtn));
+    } else {
+      main.appendChild(h('div', { class:'card stats-lab-filters' }, count, exportBtn));
     }
+    main.appendChild(statsToolsPanel({ prefs, tab, pos, isTeams, ordered, isVis, pool, A, exprKeys, save }));
 
     const headCell = (c) => {
       const active = sort.key === c.key;
-      const arrow = active ? (sort.dir === 'desc' ? ' \u2193' : ' \u2191') : '';
+      const arrow = active ? (sort.dir === 'desc' ? ' ↓' : ' ↑') : '';
       return h('th', {
         class:`right clickable${active ? ' sort-active' : ''}`,
         title:c.desc + (estimates.has(c.key) ? ' This is an estimate, not a charted count.' : ''),
@@ -12987,7 +13303,7 @@
         isTeams ? null : h('td', null, teamChip(r._team)),
         ...shown.map(c => {
           const v = r[c.key], pr = rank[c.key] ? rank[c.key](v) : null;
-          return h('td', { class:`right tnum${pr == null ? '' : pr >= 0.8 ? ' delta-up' : pr <= 0.2 ? ' delta-down' : ''}` },
+          return h('td', { class:`right tnum${pr == null ? '' : pr >= 0.8 ? ' delta-up' : pr <= 0.2 ? ' delta-down' : ''}${hit[c.key] && hit[c.key](v) ? ' cf-hit' : ''}` },
             statFmt(v, c.fmt));
         })))));
     main.appendChild(statsColumnKey(shown, estimates));

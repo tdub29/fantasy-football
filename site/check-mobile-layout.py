@@ -50,6 +50,7 @@ PAGES = {
     "trajectory": "#dashboard/trajectory",
     "rankings": "#rankings",
     "kickers": "#dashboard/market",
+    "stats-lab-tools": "#stats/WR",
 }
 
 # The player card is a modal on <body>, outside #main, so it gets its own probe:
@@ -166,6 +167,10 @@ def check(widths: list[int]) -> int:
                     page.evaluate("document.querySelectorAll("
                                   "'#main .filters-toggle[aria-expanded=\"false\"]')"
                                   ".forEach(b => b.click())")
+                    # Stats Lab keeps its power tools behind one disclosure; measure it open.
+                    page.evaluate("document.querySelectorAll("
+                                  "'#main details.stats-lab-tools:not([open]) > summary')"
+                                  ".forEach(s => s.click())")
                     page.wait_for_timeout(200)
                     bad += measure(label, "#main")
 
