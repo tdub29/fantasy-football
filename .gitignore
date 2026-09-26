@@ -74,3 +74,6 @@ site/data/_pp_profile/
 
 # nflverse raw downloads for build_nflverse_suite.py, refetched every run (6h TTL)
 projections/nflverse-cache/
+
+# One-day OCR crops from the 2026-08-22 Gibbs ingest. Kept on disk, not in git.
+site/data/_shots/_crop/

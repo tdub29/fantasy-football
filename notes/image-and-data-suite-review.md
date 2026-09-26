@@ -38,13 +38,27 @@ On disk under the three folders: 227 files, 112 MB.
 
 | # | Problem | Severity | Fix |
 |---|---|---|---|
-| I1 | `site/data/_shots/_crop/` (92 PNGs, 59.2 MB, largest `p1-full.png` 7.1 MB) is committed to git, referenced by nothing, and is scratch from one OCR session | Medium | `git rm -r --cached site/data/_shots/_crop`, add it to `.gitignore`, leave the change uncommitted for Trevor |
+| I1 | `site/data/_shots/_crop/` (92 PNGs, 59.2 MB, largest `p1-full.png` 7.1 MB) is committed to git, referenced by nothing, and is scratch from one OCR session | Medium | `git rm -r --cached site/data/_shots/_crop`, add it to `.gitignore`, leave the change uncommitted for Trevor **Fixed 2026-09-26.** |
 | I2 | `site/_shots/` (126 files, 51.5 MB) lives inside the deploy root; only the deploy allowlist keeps it off the public host, and 33 of the top-level 37 show the pre-Backyard UI, so they mislead anyone who opens them as reference | Low | move the folder out of `site/` (for example `Fantasy Football/notes/_shots/`) or delete the pre-2026-09-15 ones; update the comment in `deploy-phone-apps.ps1` that cites it |
-| I3 | 4 of 6 Gibbs source captures in `site/data/_shots` (08-16 and 08-30) are named nowhere in the repo | Low | record which capture fed which board in `site/data/_sources/` or the Gibbs checkpoint, or drop the superseded 08-16 pair |
-| I4 | Manifest reuses `logo-512.png` for `purpose: maskable`; its art reaches 26px from the top edge (opaque bbox 40..472 x 26..486) and 35% of the canvas is transparent, so Android launchers crop the uprights and fill the corners | Low | add `img/logo-maskable-512.png` with the mark at about 72% on a solid `#3a2a7a` slab, point the maskable entry at it |
-| I5 | `apple-touch-icon.png` (180x180) has transparent corners (34.5% transparent); iOS renders them black on the home screen | Low | flatten onto the same solid slab |
-| I6 | `manifest.webmanifest` name is "The Fantasy Hub", the JSON escape for an em dash (backslash u2014), then "tdub1329", so the install dialog and app switcher show an em dash | Low | "The Fantasy Hub, tdub1329", matching `<title>` |
-| I7 | The midfield watermark (`body::after`) draws the 512px logo at up to 520 CSS px, which is a 2x upscale on a retina screen | Low | ship a 1024px copy for the watermark, or cap the size at 512px |
+| I3 | 4 of 6 Gibbs source captures in `site/data/_shots` (08-16 and 08-30) are named nowhere in the repo | Low | record which capture fed which board in `site/data/_sources/` or the Gibbs checkpoint, or drop the superseded 08-16 pair **Fixed 2026-09-26.** |
+| I4 | Manifest reuses `logo-512.png` for `purpose: maskable`; its art reaches 26px from the top edge (opaque bbox 40..472 x 26..486) and 35% of the canvas is transparent, so Android launchers crop the uprights and fill the corners | Low | add `img/logo-maskable-512.png` with the mark at about 72% on a solid `#3a2a7a` slab, point the maskable entry at it **Fixed 2026-09-26.** The mark is 61.5%, not 72%: at 72% the plate corners cross the 80% safe circle. |
+| I5 | `apple-touch-icon.png` (180x180) has transparent corners (34.5% transparent); iOS renders them black on the home screen | Low | flatten onto the same solid slab **Fixed 2026-09-26.** |
+| I6 | `manifest.webmanifest` name is "The Fantasy Hub", the JSON escape for an em dash (backslash u2014), then "tdub1329", so the install dialog and app switcher show an em dash | Low | "The Fantasy Hub, tdub1329", matching `<title>` **Fixed 2026-09-26.** |
+| I7 | The midfield watermark (`body::after`) draws the 512px logo at up to 520 CSS px, which is a 2x upscale on a retina screen | Low | ship a 1024px copy for the watermark, or cap the size at 512px **Fixed 2026-09-26.** |
+
+### Gibbs source captures in `site/data/_shots`
+
+All six are Trevor's photos of a board that exists only as images. Each pair was typed into a CSV
+(the build input) and again into an independent TSV that the tests pin the board to.
+
+| Capture | Board | Typed into | Used by now |
+|---|---|---|---|
+| `gibbs-tiers-2026-08-16-p1/p2.jpg` | CBS top 175, published 2026-08-14, 16 tiers (photographed 08-16) | `_sources/jacob-gibbs-2026-08-14.csv` and `..._independent-transcription.tsv` | superseded; the 08-14 CSV is still the "old" side of `gibbs-update-2026-08-22.html` (`build_gibbs_update_brief.py`) |
+| `gibbs-tiers-2026-08-22-p1/p2.jpg` | top 200 republish, 17 tiers; p1 ranks 1-84, p2 ranks 85-200 | `_sources/jacob-gibbs-2026-08-22.csv` and TSV (`CHECKPOINT-gibbs-2026-08-22.md`) | superseded; its rank 85-200 slice feeds the Aug 22 update page |
+| `gibbs-tiers-2026-08-30-p1/p2.jpg` | top 200 republish; p1 ranks 1-93, p2 ranks 95-200 | `_sources/jacob-gibbs-2026-08-30.csv` and TSV | live: `site/data/jacob-gibbs.js` (updatedAt 2026-08-30), pinned by `site/js/gibbs-tiers-source.test.js` |
+
+`_shots/_crop/` holds the 2026-08-22 session's row and tier-label crops (the label-bitmap match in
+the checkpoint); it is gitignored now and stays on disk only.
 
 ## Pass 2: screens
 

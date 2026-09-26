@@ -1,5 +1,5 @@
 {
-  "name": "The Fantasy Hub \u2014 tdub1329",
+  "name": "The Fantasy Hub, tdub1329",
   "short_name": "Fantasy Hub",
   "description": "Dynasty fantasy football rankings, tiers, projections, and Sleeper league view.",
   "start_url": "index.html",
@@ -22,7 +22,7 @@
       "purpose": "any"
     },
     {
-      "src": "img/logo-512.png",
+      "src": "img/logo-maskable-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
