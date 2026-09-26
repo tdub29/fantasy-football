@@ -140,6 +140,9 @@ column; a filter/column finder; per-column hide and reorder; named saved views i
 snapshot column; calculated columns from a small safe expression parser (no `eval`); user
 conditional formatting; age, experience, draft round, draft year, height, weight and athletic
 percentile filters from `players.js` and `prospect.js`. Frontend only.
+**Shipped 2026-09-26** (branch `feat-ds-export`, task t-1790319841450): all ten on the QB, RB, WR, TE
+and Teams tabs, behind the Stats Lab `Tools` disclosure; rows 3-11 and 40 are now "have". Guarded by
+`stats-lab-export` in `.agents/feature-map.json` and `site/js/stats-expr.test.js`.
 
 ### Cluster B. Split engine: multi-season, week range, situational filters (rows 1, 2, 27, 30, 35, 37, 50): high
 

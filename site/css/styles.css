@@ -5790,6 +5790,44 @@ button:disabled { cursor: wait; opacity: 0.7; }
   .stats-lab-key dl { grid-template-columns: minmax(0, 1fr); gap: 0; }
   .stats-lab-key dd { margin-bottom: 6px; }
 }
+/* Tools: the research controls behind one disclosure, so a phone shows one
+   line until asked. Sections flow into as many columns as fit. */
+.stats-lab-tools { margin: 10px 0; padding: 8px 12px; font-size: 0.8rem; }
+.stats-lab-tools > summary { cursor: pointer; font-weight: 800; color: var(--fg-0); }
+.stats-lab-tools[open] > summary { margin-bottom: 10px; }
+.stats-lab-tools-count { margin-left: 8px; padding: 1px 8px; border: 2px solid var(--ink); border-radius: 999px;
+  background: var(--grad-gold); color: var(--ink); font-size: 0.68rem; font-weight: 800; }
+.stats-lab-tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 14px 18px; }
+.stats-lab-tool { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.stats-lab-tool-title { font-size: 0.68rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: var(--fg-2); }
+.stats-lab-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; min-width: 0; }
+.stats-lab-row > :is(input, select) { flex: 1 1 96px; min-width: 0; max-width: 100%; }
+.stats-lab-row > .stats-lab-expr { flex-basis: 160px; font-family: ui-monospace, Consolas, monospace; }
+.stats-lab-cols { max-height: 264px; overflow: auto; display: flex; flex-direction: column; gap: 2px;
+  padding: 4px; border: 2px solid var(--ink); border-radius: var(--radius-sm); background: var(--bg-1); box-shadow: var(--bevel-in); }
+.stats-lab-col, .stats-lab-view { display: flex; align-items: center; gap: 4px; min-width: 0; }
+.stats-lab-col[hidden] { display: none; }
+.stats-lab-col label { flex: 1 1 auto; min-width: 0; display: flex; align-items: center; gap: 6px; cursor: pointer; }
+/* The whole label is the tap target, so the phone 44px input floor would only
+   stretch the box and smear its bevel into a stray dash. */
+.stats-lab-col input[type=checkbox], .stats-lab-toggle input[type=checkbox] { flex: none; min-height: 0; box-shadow: none; }
+.stats-lab-tools :is(input:not([type=checkbox]), select) { padding: 4px 8px; }
+.stats-lab-col-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; }
+.stats-lab-view .stats-lab-col-name { flex: 1 1 auto; }
+.stats-lab-col code { flex: none; font-size: 0.68rem; color: var(--fg-3); }
+.stats-lab-tools button { padding: 3px 8px; }
+.stats-lab-chip { display: inline-flex; align-items: center; gap: 2px; padding: 1px 2px 1px 8px; border: 2px solid var(--ink);
+  border-radius: 999px; background: var(--bg-3); font-weight: 700; }
+.stats-lab-chip button { padding: 0 6px; }
+.stats-lab-err { color: var(--red); font-weight: 700; }
+.stats-lab-err:empty { display: none; }
+.stats-lab-bio { display: grid; grid-template-columns: max-content minmax(0, 1fr) minmax(0, 1fr); gap: 4px 6px; align-items: center; }
+.stats-lab-bio input { width: 100%; min-width: 0; }
+/* A user highlight boxes the cell, so it reads beside the green/red text tint. */
+.stats-lab-table td.cf-hit { background: var(--bg-3); box-shadow: inset 0 0 0 2px var(--ink); color: var(--fg-0); font-weight: 800; }
+@media (pointer: coarse) {
+  .stats-lab-tools button { min-height: 40px; min-width: 40px; }
+}
 
 /* --- Player card: advanced stats ----------------------------------------- */
 .adv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
