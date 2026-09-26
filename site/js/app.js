@@ -13297,6 +13297,161 @@
     if (location.hash === '#stats/Routes') viewStats('Routes');   // opened from Cmd+K on this page: no hashchange
   }
 
+  // ---- on/off math
+  // One side of a split from its T counts (see build_onoff.py): rates per play, null when empty.
+  const ooDiv = (a, b) => b > 0 ? a / b : null;
+  function ooSide(v, T) {
+    const at = (k) => v[T.indexOf(k)], n = at('plays');
+    return { plays:n, epa:ooDiv(at('epa'), n), pass:ooDiv(at('pass'), n), succ:ooDiv(at('succ'), n), db:at('db'), tgt:at('tgt') };
+  }
+  // Off is the team total minus on, so the two sides always add back to the team.
+  function ooSplit(team, v, T) {
+    return { on:ooSide(v.v, T), off:ooSide(team.tot.map((x, k) => x - v.v[k]), T) };
+  }
+  // Each teammate with a target: share of the team's targets on each side, and targets
+  // per dropback over the dropbacks he was on the field for (team dropbacks in games he
+  // played, at game level).
+  function ooMates(team, v, T) {
+    const ti = T.indexOf('tgt'), tOn = v.v[ti], tOff = team.tot[ti] - tOn;
+    return Object.entries(v.m).map(([pid, [tg, db]]) => {
+      const [TG, DB] = team.r[pid] || [tg, db], tgOff = TG - tg, dbOff = DB - db;
+      return { pid, tgtOn:tg, tgtOff:tgOff, dbOn:db, dbOff, shareOn:ooDiv(tg, tOn), shareOff:ooDiv(tgOff, tOff),
+        tpdbOn:ooDiv(tg, db), tpdbOff:ooDiv(tgOff, dbOff) };
+    });
+  }
+  // Game splits: one row per player across the groups, most PPR first; a cell is
+  // { g, ppg, share } for the games he played in that group, or null.
+  function ooGroupRows(groups) {
+    const ids = [...new Set(groups.flatMap(g => Object.keys(g.P)))];
+    return ids.map(pid => {
+      const cells = groups.map(g => { const a = g.P[pid]; return a ? { g:a[0], ppg:ooDiv(a[1], a[0]), share:ooDiv(a[2], g.tgt), pts:a[1] } : null; });
+      return { pid, cells, pts:cells.reduce((s, c) => s + (c ? c.pts : 0), 0) };
+    }).filter(r => r.cells.some(c => c && (c.pts || c.share))).sort((a, b) => b.pts - a.pts);
+  }
+  // ---- end on/off math
+
+  const loadOnOffSeason = (year) => loadSeasonScript(`onoff-${year}.js`, () => (window.ONOFF_BY_SEASON || {})[year]);
+  const ooSigned = (v, f) => v == null ? '' : `${v > 0 ? '+' : ''}${statFmt(v, f)}`;
+
+  // On/Off tab. sub 'games' is the Game splits view (#stats/OnOff/games).
+  function statsOnOff(main, prefs, cur, sub) {
+    const SEASONS = [cur - 3, cur - 2, cur - 1, cur], got = (y) => (window.ONOFF_BY_SEASON || {})[y];
+    const O = prefs.onoff = Object.assign({}, prefs.onoff), games = sub === 'games';
+    // No season picked: the last full season, which has true play-level on/off.
+    const season = SEASONS.includes(O.season) ? O.season : cur - 1;
+    const rerender = () => viewStats('OnOff', games ? 'games' : undefined);
+    const set = (patch) => { Object.assign(O, patch); saveStatsLabPrefs(prefs); rerender(); };
+    const seg = (label, items) => h('span', { class:'sos-position-tabs', role:'group', 'aria-label':label },
+      ...items.map(([on, text, onclick, data]) => h('button', { type:'button', class:`ghost${on ? ' active' : ''}`, 'aria-pressed':String(on), onclick, dataset:data }, text)));
+    const ctl = h('div', { class:'card stats-lab-filters oo-ctl' },
+      seg('On/Off view', [[!games, 'Player on/off', () => { location.hash = '#stats/OnOff'; }, { view:'onoff' }],
+        [games, 'Game splits', () => { location.hash = '#stats/OnOff/games'; }, { view:'games' }]]),
+      seg('Season', SEASONS.map(y => [y === season, String(y), () => set({ season:y }), { season:String(y) }])));
+    main.appendChild(ctl);
+    const F = got(season);
+    if (!F) {
+      const msg = h('div', { class:'empty' }, `Loading ${season} on/off...`);
+      main.appendChild(msg);
+      loadOnOffSeason(season).then(() => { if (msg.isConnected) rerender(); })
+        .catch(() => { msg.textContent = `onoff-${season}.js did not load. Run projections/build_onoff.py.`; });
+      return;
+    }
+    const N = F.names, nm = (pid) => (N[pid] || [pid])[0], ps = (pid) => (N[pid] || [])[1] || '';
+    const small = F.smallSample, isGame = F.level === 'game';
+    const opts = Object.entries(F.teams).flatMap(([tm, t]) => Object.entries(t.on).map(([pid, v]) => ({ tm, pid, v, n:(t.r[pid] || [0])[0], label:`${nm(pid)} ${tm} ${ps(pid)}` })))
+      .sort((a, b) => b.n - a.n || b.v.s - a.v.s);
+    const pick = opts.find(o => o.pid === O.sid && o.tm === O.team) || opts.find(o => o.pid === O.sid) || opts[0];
+
+    if (games) {
+      const teams = Object.keys(F.teams).sort(), tm = teams.includes(O.team) ? O.team : pick ? pick.tm : teams[0];
+      ctl.appendChild(h('label', { class:'stats-lab-toggle' }, 'Team ', h('select', { 'aria-label':'Team', onchange:(e) => set({ team:e.target.value }) },
+        ...teams.map(t => h('option', { value:t, selected:t === tm }, t)))));
+      const t = F.teams[tm], td = (text, cls) => h('td', { class:`right tnum${cls ? ` ${cls}` : ''}` }, text);
+      for (const [key, title, lab] of [['qb', 'By starting QB', (g) => nm(g.id)], ['pc', 'By playcaller', (g) => g.id]]) {
+        const gs = t[key] || [], rows = ooGroupRows(gs), sm = (g) => g.pl < small ? ' oo-small' : '';
+        const sums = [['Games', (g) => String(g.g)], ['Plays', (g) => String(g.pl)], ['EPA/play', (g) => statFmt(ooDiv(g.epa, g.pl), 'dec2')],
+          ['PROE', (g) => ooSigned(g.proe, 'pct')]];
+        const tbl = h('table', { class:'data oo-gs', dataset:{ kind:key } },
+          h('thead', null,
+            h('tr', null, h('th', { rowspan:'2' }, 'Player'), ...gs.map(g => h('th', { colspan:'3', scope:'colgroup', class:`oo-grp${sm(g)}` },
+              lab(g), key === 'pc' && gs.length > 1 ? h('span', { class:'oo-flag' }, ` wk ${g.w[0]}-${g.w[1]}`) : null,
+              g.pl < small ? h('span', { class:'oo-flag' }, ` under ${small} plays`) : null))),
+            h('tr', null, ...gs.flatMap(() => [h('th', { class:'right' }, 'G'), h('th', { class:'right' }, 'PPR/G'), h('th', { class:'right' }, 'Tgt%')]))),
+          h('tbody', null,
+            ...sums.map(([l, f]) => h('tr', { class:'oo-sum' }, h('th', { scope:'row' }, l), ...gs.map(g => h('td', { colspan:'3', class:`right tnum${sm(g)}` }, f(g))))),
+            ...rows.map(r => h('tr', { class:'clickable', dataset:{ pid:r.pid }, onclick:() => openPlayerDetail(nm(r.pid), r.pid) },
+              h('th', { scope:'row' }, `${nm(r.pid)} `, h('span', { class:'muted' }, ps(r.pid))),
+              ...r.cells.flatMap((c, i) => c ? [td(String(c.g), sm(gs[i]).trim()), td(statFmt(c.ppg, 'dec1'), sm(gs[i]).trim()), td(statFmt(c.share, 'pct'), sm(gs[i]).trim())]
+                : [td('', 'muted'), td('', 'muted'), td('', 'muted')])))));
+        main.appendChild(h('div', { class:'card oo-card', dataset:{ kind:key } }, h('div', { class:'card-title' }, `${title}, ${tm} ${season}`), h('div', { class:'tbl-scroll' }, tbl)));
+      }
+      main.appendChild(h('div', { class:'tip oo-foot' },
+        `Starting QB is the passer with the most dropbacks that game. Playcaller comes from the play-caller table, switched mid-season only where its notes name the week he was fired. `
+        + `PPR/G is full PPR over the games he played in that group; Tgt% is his share of the team's targets in those games. PROE is pass rate over expected in neutral situations (win probability 20-80%, outside the last two minutes of a half). `
+        + `Grey italic is a group under ${small} plays. Regular season through week ${F.splitsThroughWeek}, from nflverse play-by-play.`));
+      saveStatsLabPrefs(prefs);
+      return;
+    }
+
+    if (!pick) { main.appendChild(h('div', { class:'empty' }, `No player has ${F.minSnaps}+ offensive snaps in ${season} yet.`)); return; }
+    const find = (text, exact) => {
+      const q = String(text || '').trim().toLowerCase(), has = (fn) => opts.find(o => fn(o.label.toLowerCase()));
+      const o = q && (has(l => l === q) || (!exact && (has(l => l.startsWith(q)) || has(l => l.includes(q)))));
+      if (o && !(o.pid === pick.pid && o.tm === pick.tm)) set({ sid:o.pid, team:o.tm });
+    };
+    ctl.appendChild(h('input', { type:'search', class:'oo-find', list:'oo-players', 'aria-label':'Player', placeholder:'Find a player',
+      oninput:(e) => find(e.target.value, true), onchange:(e) => find(e.target.value, false) }));
+    ctl.appendChild(h('datalist', { id:'oo-players' }, ...opts.map(o => h('option', { value:o.label }))));
+    const t = F.teams[pick.tm], v = pick.v, sp = ooSplit(t, v, F.T), offG = isGame ? t.games - v.g : null;
+    if (O.sid && O.sid !== pick.pid) ctl.appendChild(h('span', { class:'muted' }, `Your pick has under ${F.minSnaps} snaps for any team in ${season}, so this is ${nm(pick.pid)}.`));
+    main.appendChild(h('div', { class:'card oo-head', dataset:{ sid:pick.pid, team:pick.tm, season:String(season), level:F.level } },
+      h('div', { class:'rt-head' }, h('span', { class:'rt-player' }, nm(pick.pid)), teamChip(pick.tm), h('span', { class:'muted' }, `${ps(pick.pid)}, ${season}`),
+        isGame ? h('span', { class:'badge oo-level' }, 'Game level') : null),
+      h('div', null, isGame ? `${v.g} of ${t.games} games with him (${Math.round(F.gamePct * 100)}%+ of the offensive snaps), ${offG} without. ${v.s} offensive snaps.`
+        : `${v.s} team plays with him on the field, ${sp.off.plays} with him off, over ${t.games} games.`),
+      isGame ? h('div', { class:'tip' }, F.note, offG ? '' : ' No game without him yet, so the off side is empty until he misses one.') : null));
+
+    const side = (label, s) => h('tr', { class:s.plays < small ? 'oo-small' : '' },
+      h('th', { scope:'row' }, label, s.plays < small ? h('span', { class:'oo-flag' }, ` under ${small} plays`) : null),
+      h('td', { class:'right tnum' }, String(s.plays)), h('td', { class:'right tnum' }, statFmt(s.epa, 'dec2')),
+      h('td', { class:'right tnum' }, statFmt(s.pass, 'pct')), h('td', { class:'right tnum' }, statFmt(s.succ, 'pct')));
+    const d = (k) => sp.on[k] != null && sp.off[k] != null ? sp.on[k] - sp.off[k] : null;
+    const tone = (x, big) => x == null ? '' : x >= big ? ' oo-up' : x <= -big ? ' oo-down' : '';
+    main.appendChild(h('div', { class:'card oo-card' }, h('div', { class:'card-title' }, `${pick.tm} offense with ${nm(pick.pid)} on and off`),
+      h('div', { class:'tbl-scroll' }, h('table', { class:'data oo-team' },
+        h('thead', null, h('tr', null, h('th', null, isGame ? 'Games' : 'Field'), ...[['Plays', 'Team plays on this side.'], ['EPA/play', 'Expected points added per play.'],
+          ['Pass rate', 'Pass attempts per play, sacks in and scrambles out, as the Teams tab.'], ['Success%', 'Share of plays with positive EPA.']]
+          .map(([l, desc]) => h('th', { class:'right', title:desc }, l)))),
+        h('tbody', null, side(isGame ? `With him (${v.g} g)` : 'On the field', sp.on), side(isGame ? `Without him (${offG} g)` : 'Off the field', sp.off),
+          h('tr', { class:'oo-diff' }, h('th', { scope:'row' }, 'On minus off'), h('td', { class:'right tnum muted' }, ''),
+            h('td', { class:`right tnum${tone(d('epa'), 0.05)}` }, ooSigned(d('epa'), 'dec2')), h('td', { class:'right tnum' }, ooSigned(d('pass'), 'pct')),
+            h('td', { class:`right tnum${tone(d('succ'), 0.02)}` }, ooSigned(d('succ'), 'pct'))))))));
+
+    const flag = (x) => x < small ? ' oo-small' : '';
+    const gap = (x, big) => x == null ? '' : x >= big ? 'oo-up' : x <= -big ? 'oo-down' : '';
+    const who = nm(pick.pid), dbWord = isGame ? 'team dropbacks in the games both played' : 'dropbacks both were on the field for';
+    const rows = ooMates(t, v, F.T).map(r => ({ ...r, _label:`${nm(r.pid)} ${ps(r.pid)}`, _sid:r.pid,
+      dShare:r.shareOn != null && r.shareOff != null ? r.shareOn - r.shareOff : null, dTpdb:r.tpdbOn != null && r.tpdbOff != null ? r.tpdbOn - r.tpdbOff : null }));
+    const C = (key, label, fmt, desc, tone) => ({ key, label, get:(r) => r[key], fmt, desc, tone });
+    const cols = [
+      C('shareOn', 'Tgt% on', 'pct', `His share of the team's targets with ${who} ${isGame ? 'playing' : 'on the field'}.`, () => flag(sp.on.plays).trim()),
+      C('shareOff', 'Tgt% off', 'pct', `His share of the team's targets with ${who} ${isGame ? 'out' : 'off the field'}.`, () => flag(sp.off.plays).trim()),
+      C('dShare', 'Tgt% +/-', 'pct', `Target share on minus off. Green means he draws more of the looks with ${who} on.`, (r) => `${gap(r.dShare, 0.02)}${flag(Math.min(sp.on.plays, sp.off.plays))}`),
+      C('tpdbOn', 'Tgt/DB on', 'pct', `Targets per ${dbWord.replace('both', `he and ${who}`)}: the charted stand-in for targets per route run.`, (r) => flag(r.dbOn).trim()),
+      C('tpdbOff', 'Tgt/DB off', 'pct', `Targets per dropback he played with ${who} ${isGame ? 'out' : 'off the field'}.`, (r) => flag(r.dbOff).trim()),
+      C('dTpdb', 'Tgt/DB +/-', 'pct', 'Targets per dropback on minus off.', (r) => `${gap(r.dTpdb, 0.02)}${flag(Math.min(r.dbOn, r.dbOff))}`),
+      C('tgtOn', 'Tgt on', 'int', `Targets with ${who} on.`), C('tgtOff', 'Tgt off', 'int', `Targets with ${who} off.`),
+      C('dbOn', 'DB on', 'int', `Sample: ${dbWord} with ${who} on.`), C('dbOff', 'DB off', 'int', `Sample: ${isGame ? 'team dropbacks in games he played' : 'dropbacks he was on the field for'} with ${who} off.`)];
+    const kept = prefs.sort && prefs.sort.OnOff;
+    if (kept && !cols.some(c => c.key === kept.key)) delete prefs.sort.OnOff;
+    statsTable(main, prefs, 'OnOff', rows, cols, { key:'tgtOn', dir:'desc' }, `Teammates, ${pick.tm} ${season}`, (r) => openPlayerDetail(nm(r.pid), r.pid));
+    main.appendChild(h('div', { class:'tip oo-foot' },
+      `${rows.length} teammates with a target. Grey italic is a small sample: a side under ${small} plays (team rows and target share) or ${small} dropbacks (Tgt/DB). `
+      + (isGame ? `${F.note} ` : 'Every charted regular-season pass or run play is on one side or the other, so on plus off is the team total. ')
+      + `Players need ${F.minSnaps}+ offensive snaps for the team. Source: ${F.source}.`));
+    saveStatsLabPrefs(prefs);
+  }
+
   // This week's opponent, as a defense-vs-position line for the player card.
   function matchupLine(sleeper) {
     const D = window.DEFENSE;
@@ -14265,11 +14420,11 @@
       STATS_CHARTS_OPEN ? (fill(), body) : body);
   }
 
-  function viewStats(posArg) {
+  function viewStats(posArg, sub) {
     const main = $('#main'); main.innerHTML = '';
     const CUR = window.ADVANCED;
     if (!CUR) { main.appendChild(h('div', { class:'empty' }, 'advanced.js not loaded. Run projections/build_nflverse_suite.py.')); return; }
-    const POS = ['QB', 'RB', 'WR', 'TE', 'Teams', 'Coverage', 'Routes', 'Defense', 'Trends', 'IDP'];
+    const POS = ['QB', 'RB', 'WR', 'TE', 'Teams', 'Coverage', 'Routes', 'OnOff', 'Defense', 'Trends', 'IDP'];
     const prefs = statsLabPrefs();
     const SEASONS = [CUR.season, CUR.season - 1, CUR.season - 2];
     const pos = POS.includes(posArg) ? posArg : (prefs.pos && POS.includes(prefs.pos) ? prefs.pos : 'WR');
@@ -14327,20 +14482,22 @@
       sub:[splitOn ? `${split.label}. Counts summed over the split, rates recomputed from them. (est) marks an estimate.`
         : pos === 'Coverage' ? 'Man vs zone, coverage shells, pressure, personnel and formation from nflverse participation charting.'
         : pos === 'Routes' ? 'Route trees from nflverse participation charting: the route each pass was thrown on, by receiver.'
+        : pos === 'OnOff' ? 'Team and teammate splits with a player on and off the field, and game splits by starting QB and playcaller.'
         : `${A.season} regular season through week ${A.throughWeek}. (est) marks an estimate.`,
         h('span', { class:'stats-lab-sub-more' }, ' Open the Column key above a table for what each header means.')],
       // Player tabs pick seasons in the split card instead.
-      actions:split || pos === 'Coverage' || pos === 'Routes' ? [] : [h('label', { class:'stats-lab-toggle stats-lab-season' }, 'Season ',
+      actions:split || pos === 'Coverage' || pos === 'Routes' || pos === 'OnOff' ? [] : [h('label', { class:'stats-lab-toggle stats-lab-season' }, 'Season ',
         h('select', { 'aria-label':'Season', onchange:(e) => {
           prefs.season = Number(e.target.value); saveStatsLabPrefs(prefs); viewStats(posArg);
         } }, ...SEASONS.map(y => h('option', { value:String(y), selected:y === season }, String(y)))))],
     }));
-    main.appendChild(tabBar(POS.map(k => ({ key:k, label:k })), pos, k => `#stats/${k}`));
+    main.appendChild(tabBar(POS.map(k => ({ key:k, label:k === 'OnOff' ? 'On/Off' : k })), pos, k => `#stats/${k}`));
     if (pos === 'Defense') { statsDefense(main, prefs); saveStatsLabPrefs(prefs); return; }
     if (pos === 'Trends') { statsTrends(main, prefs); saveStatsLabPrefs(prefs); return; }
     if (pos === 'IDP') { statsIdp(main, prefs); saveStatsLabPrefs(prefs); return; }
     if (pos === 'Coverage') { statsCoverage(main, prefs, CUR.season); saveStatsLabPrefs(prefs); return; }
     if (pos === 'Routes') { statsRoutes(main, prefs, CUR.season); saveStatsLabPrefs(prefs); return; }
+    if (pos === 'OnOff') { statsOnOff(main, prefs, CUR.season, sub); saveStatsLabPrefs(prefs); return; }
 
     // Per-tab research state: minimums, column layout, snapshots, calculated
     // columns, highlights and bio filters. Every field is optional, so prefs
@@ -16135,7 +16292,7 @@
         case 'trade':      return viewTrade(rest[0], rest[1]);
         case 'projections': navigate('#dashboard'); return viewDashboard();
         case 'sos':        return viewSosGrid(rest[0]);
-        case 'stats':      return viewStats(rest[0]);
+        case 'stats':      return viewStats(rest[0], rest[1]);
         case 'draft':      return viewDraft(rest[0]);
         case 'strategy':   return viewStrategy();
         case 'action':     return viewActionCenter();

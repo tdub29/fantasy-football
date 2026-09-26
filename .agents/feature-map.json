@@ -1777,6 +1777,80 @@
         "width": 390,
         "height": 844
       }
+    },
+    {
+      "id": "stats-lab-onoff",
+      "name": "Stats Lab On/Off tab: Eagles 2025 A.J. Brown on vs off with teammate rows that match onoff-2025.js; 2026 shows the game-level version",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "localStorage.removeItem('ff-stats-lab-v1'); location.hash='#stats/OnOff'"
+        },
+        {
+          "waitFor": ".oo-head[data-season='2025']"
+        },
+        {
+          "fill": ".oo-find",
+          "value": "A.J. Brown PHI WR"
+        },
+        {
+          "waitFor": ".oo-head[data-team='PHI'][data-season='2025'] ~ .tbl-scroll table.stats-lab-table"
+        },
+        {
+          "eval": "window.__oo = {}; const F = window.ONOFF_BY_SEASON[2025], hd = document.querySelector('.oo-head'), t = F.teams[hd.dataset.team], v = t.on[hd.dataset.sid]; const pct = (x) => (x * 100).toFixed(1) + '%'; const smith = Object.keys(F.names).find(k => F.names[k][0] === 'DeVonta Smith'), m = v.m[smith], r = t.r[smith]; const row = [...document.querySelectorAll('table.stats-lab-table tbody tr')].find(tr => tr.children[1].textContent === 'DeVonta Smith WR'); const c = row ? [...row.children].map(x => x.textContent) : []; window.__oo.a = { name: hd.querySelector('.rt-player').textContent, team: hd.dataset.team, level: hd.dataset.level, plays: [v.v[0], t.tot[0] - v.v[0]], rows: [...document.querySelectorAll('.oo-team tbody tr')].map(tr => [...tr.querySelectorAll('td')].map(td => td.textContent)), mates: document.querySelectorAll('table.stats-lab-table tbody tr').length, smithOk: !!row && c[2] === pct(m[0] / v.v[5]) && c[3] === pct((r[0] - m[0]) / (t.tot[5] - v.v[5])) && c[5] === pct(m[0] / m[1]) && c[6] === pct((r[0] - m[0]) / (r[1] - m[1])) && c[8] === String(m[0]) && c[11] === String(r[1] - m[1]) }; true;"
+        },
+        {
+          "click": ".oo-ctl button[data-season='2026']"
+        },
+        {
+          "waitFor": ".oo-head[data-level='game']"
+        },
+        {
+          "eval": "const hd = document.querySelector('.oo-head'); window.__oo.b = { level: hd.dataset.level, fileLevel: window.ONOFF_BY_SEASON[Number(hd.dataset.season)].level, season: hd.dataset.season, badge: (hd.querySelector('.oo-level') || {}).textContent || '', line: hd.textContent, first: document.querySelector('.oo-team tbody tr th').textContent, mates: document.querySelectorAll('table.stats-lab-table tbody tr').length }; true;"
+        }
+      ],
+      "selector": ".oo-head[data-level='game']",
+      "assert": "(() => { try { const o = window.__oo; if (!o || !o.a || !o.b) return false; const a = o.a, b = o.b; return a.name === 'A.J. Brown' && a.team === 'PHI' && a.level === 'play' && a.rows.length === 3 && a.rows[0][0] === String(a.plays[0]) && a.rows[1][0] === String(a.plays[1]) && a.plays[1] > 0 && a.mates >= 5 && a.smithOk && b.season === '2026' && b.level === 'game' && b.fileLevel === 'game' && b.badge === 'Game level' && /^With him \\(\\d+ g\\)/.test(b.first) && /games with him/.test(b.line) && b.mates > 0; } finally { localStorage.removeItem('ff-stats-lab-v1'); } })()",
+      "notes": "Data Suite EPA On/Off (their example: DeVonta Smith TPRR with A.J. Brown on vs off). projections/build_onoff.py writes site/data/onoff-YYYY.js (lazy, counts only): for every skill player with 100+ offensive snaps, the team's plays, pass attempts, dropbacks, EPA, successes and targets with him on the field, and each teammate's targets and dropbacks with him on; off is team total minus on, and --self-check recounts on + off == team total from the participation file for every player. 2023-2025 are play level from participation offense_players; 2026 (no participation yet) is game level from snap counts, a game counting as without him when he was inactive or under 10% of snaps. The path picks A.J. Brown from the finder, recomputes DeVonta Smith's Tgt% and Tgt/DB on and off from the payload and checks the team table's on/off play counts, then flips to 2026 (Brown has no 100-snap 2026 yet, so the tab falls back to the most-targeted player and says so) and asserts the game-level badge and the With him (N g) row. Unit test: site/js/onoff.test.js."
+    },
+    {
+      "id": "stats-lab-onoff-phone",
+      "name": "On/Off at 390px: the team split fits without a sideways scroll, and Game splits by starting QB and playcaller match the payload",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "localStorage.setItem('ff-stats-lab-v1', JSON.stringify({ onoff: { season: 2025, sid: '5859', team: 'PHI' } })); location.hash='#stats/OnOff'"
+        },
+        {
+          "waitFor": ".oo-head[data-team='PHI'] ~ .oo-card table.oo-team"
+        },
+        {
+          "eval": "const w = document.querySelector('.oo-team').parentElement; window.__op = { fit: document.querySelector('.oo-team').scrollWidth <= w.clientWidth + 1, scroll: document.documentElement.scrollWidth }; true;"
+        },
+        {
+          "click": ".oo-ctl button[data-view='games']"
+        },
+        {
+          "waitFor": ".oo-card[data-kind='pc'] table.oo-gs"
+        }
+      ],
+      "selector": ".oo-card[data-kind='qb'] table.oo-gs",
+      "assert": "(() => { try { const p = window.__op, F = (window.ONOFF_BY_SEASON || {})[2025]; if (!p || !F || location.hash !== '#stats/OnOff/games') return false; const t = F.teams.PHI; const aj = Object.keys(F.names).find(k => F.names[k][0] === 'A.J. Brown'); const card = (k) => document.querySelector(\".oo-card[data-kind='\" + k + \"']\"); const q = card('qb'), heads = q.querySelectorAll('th.oo-grp'); if (heads.length !== t.qb.length || t.qb.reduce((s, g) => s + g.g, 0) !== 17 || t.pc.reduce((s, g) => s + g.g, 0) !== 17) return false; const g = t.qb[0], a = g.P[aj], row = q.querySelector(\"tr[data-pid='\" + aj + \"']\"); if (!row || !a) return false; const td = [...row.querySelectorAll('td')].slice(0, 3).map(x => x.textContent); if (td[0] !== String(a[0]) || td[1] !== (a[1] / a[0]).toFixed(1) || td[2] !== (a[2] / g.tgt * 100).toFixed(1) + '%') return false; if (!card('pc').querySelector('th.oo-grp').textContent.startsWith(t.pc[0].id)) return false; const inView = (e) => { const r = e.getBoundingClientRect(); return r.width > 0 && r.left >= 0 && r.right <= innerWidth + 1; }; return p.fit && p.scroll <= innerWidth + 1 && [q, card('pc'), document.querySelector('.oo-ctl')].every(inView) && document.documentElement.scrollWidth <= innerWidth + 1; } finally { localStorage.removeItem('ff-stats-lab-v1'); } })()",
+      "notes": "Game splits (Data Suite: splits by coach, playcaller and starting QB). Each team-season's games grouped by starting QB (most dropbacks that game) and by playcaller (historical/play_callers.csv, split mid-season only where its notes name the week the play caller was fired), each with games, plays, EPA/play and neutral PROE, and every skill player's games, PPR/G (full PPR from play-by-play, return TDs included) and target share. --self-check proves every game and play lands in exactly one group of each kind and that season PPR ties to nflverse weekly stats. At 390px the five-column team table fits its card, and a game-splits table with a second group scrolls inside its own box with the player column pinned, so the page never scrolls sideways.",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      }
     }
   ],
   "ignore": [
