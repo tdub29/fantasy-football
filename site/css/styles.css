@@ -5840,6 +5840,10 @@ button:disabled { cursor: wait; opacity: 0.7; }
 .stats-lab-split-dims { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr)); gap: 6px 10px; }
 .stats-lab-split-dims label { display: flex; flex-direction: column; gap: 2px; min-width: 0; font-weight: 700; color: var(--fg-1); }
 .stats-lab-split-dims select { width: 100%; min-width: 0; padding: 4px 8px; }
+/* Coverage tab: a season nflverse has not posted yet. A card, not .empty, whose
+   #main rule paints chalk text for the turf onto its own light fill. */
+.stats-lab-cov-empty { margin: 10px 0; padding: 24px 16px; text-align: center; font-size: 0.9rem; color: var(--fg-1); }
+.stats-lab-cov-empty p { margin: 0 0 12px; }
 
 /* --- Player card: advanced stats ----------------------------------------- */
 .adv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }

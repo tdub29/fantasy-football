@@ -66,6 +66,11 @@ STEPS = [
     # files the suite just refreshed, then proven against the advanced.js it wrote.
     ("Stats Lab split cube",       PROJ / "build_split_cube.py",          True),
     ("split cube vs advanced.js",  PROJ / "build_split_cube.py",          True, ["--self-check"]),
+    # Stats Lab Coverage tab: man/zone, shells, personnel, formation, pressure and
+    # targeted routes from nflverse participation. A season nflverse has not
+    # posted yet is written as "not published" and lights up once it appears.
+    ("Stats Lab coverage splits",  PROJ / "build_coverage_splits.py",     True),
+    ("coverage vs participation",  PROJ / "build_coverage_splits.py",     True, ["--self-check"]),
     ("draft + combine profile",    PROJ / "build_prospect_profile.py",    True),
     ("game-day weather",           PROJ / "build_game_weather.py",        True),
     ("defense vs position",        PROJ / "build_defense_matchups.py",    True),
