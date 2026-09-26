@@ -52,6 +52,7 @@ PAGES = {
     "kickers": "#dashboard/market",
     "stats-lab-tools": "#stats/WR",
     "stats-lab-coverage": "#stats/Coverage",
+    "stats-lab-routes": "#stats/Routes",
 }
 
 # The player card is a modal on <body>, outside #main, so it gets its own probe:

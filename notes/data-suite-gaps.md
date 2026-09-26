@@ -177,6 +177,13 @@ at the top of the builder) is the input for t-1790417636140. Rows 20, 25 and 28 
 2024-2025; 14, 22 and 49 stay partial (Tgt/DB is per dropback, not per route; formation is a team mix;
 shells are keyed by team, not playcaller). Guarded by
 `stats-lab-coverage` and `stats-lab-coverage-phone` in `.agents/feature-map.json`.
+**Route tree shipped 2026-09-26** (branch `feat-ds-routes`, task t-1790417636140): a Stats Lab Routes tab draws the
+Data Suite route tree from `targetedRoutes` (now `[tgt, rec, yds, td, epa, air]`) in two independent tiles, player vs
+player or season vs season, plus a route-by-route compare against the position average. Metrics are target share,
+targets, catch rate, Y/Tgt, air yards/tgt, EPA/tgt and TD; separation, win rate and routes run by route are disabled
+options with a reason. `coverage-2023.js` was built once with `--season 2023`, so it covers 2023 to 2025 (build_all's
+window stays the current season plus two). Guarded by `stats-lab-routes`, `stats-lab-routes-phone` and
+`site/js/route-tree.test.js`.
 
 ### Cluster D. Charts and field-location splits (rows 41-44, 31): medium
 

@@ -1703,6 +1703,80 @@
       "selector": ".modal .loc-card",
       "assert": "(() => { const m = window.__lm; if (!m || !m.qb || !m.rb || !m.wr || !m.wr2) return false; const ok = (x, role, unit) => x.role === role && x.n > 0 && x.line.startsWith(`${x.n} ${unit}`) && x.title.includes(x.season); /* 12 zones + 4 depth totals + 3 side totals + the grand total; seven gap arrows */ return ok(m.qb, 'Q', 'att') && m.qb.cells === 20 && ok(m.rb, 'U', 'car') && m.rb.arrows === 7 && ok(m.wr, 'R', 'tgt') && m.wr.cells === 20 && ok(m.wr2, 'R', 'tgt') && m.wr2.season === m.want && m.wr2.season !== m.wr.season; })()",
       "notes": "projections/build_location_splits.py writes site/data/location-YYYY.js (counts only, lazy-loaded): per QB his dropbacks and per receiver his targets by pass_location x depth band (behind the line, 0-9, 10-19, 20+ air yards) with completions, yards, EPA and FTN catchable counts; per RB his carries by run_location x run_gap. Extra cells (no charted spot, sacks, no charted gap) make every grid add back to advanced.js, which --self-check proves for every player. The card opens the map on the newest season he has one for; season buttons switch it in place. The assert requires each map's charted total to equal the payload's cells for the season and player the card names, 20 grid cells, 7 gap arrows, and a season switch that redraws from the other season's file."
+    },
+    {
+      "id": "stats-lab-routes",
+      "name": "Stats Lab Routes tab: two WR route trees side by side, numbers match the payload, paid metrics labeled unavailable",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "localStorage.removeItem('ff-stats-lab-v1'); location.hash='#stats/Routes'"
+        },
+        {
+          "waitFor": ".rt-tile[data-tile='B'] svg.rt-svg"
+        },
+        {
+          "eval": "window.__rt = [...document.querySelectorAll('.rt-tile')].map(t => ({ sid: t.dataset.sid, season: Number(t.dataset.season) })); [...document.querySelectorAll(\".rt-tile[data-tile='B'] .rt-seasons button\")].find(b => b.textContent === String(window.ADVANCED.season - 2)).click(); true;"
+        },
+        {
+          "waitFor": ".rt-cmp-table"
+        }
+      ],
+      "selector": ".rt-tile[data-tile='B'] svg.rt-svg",
+      "assert": "(() => { const C = window.COVERAGE_BY_SEASON || {}, cur = window.ADVANCED.season, first = window.__rt; const tileOk = (t) => { const P = C[Number(t.dataset.season)], v = P && P.published && P.players[t.dataset.sid]; if (!v || v.p !== 'WR' || t.dataset.metric !== 'share') return false; const sp = [...t.querySelectorAll('g.rt-spoke')]; if (sp.length !== 8 || !sp.every(g => /\\d/.test(g.querySelector('.rt-val').textContent))) return false; const tr = P.targetedRoutes[t.dataset.sid], tot = v.R[0][P.fields.R.indexOf('tgt')], n = (k) => (tr[k] || [0])[0]; const val = (k) => t.querySelector(\"g.rt-spoke[data-route='\" + k + \"'] .rt-val\").textContent; if (val('GO') !== (n('GO') / tot * 100).toFixed(1) + '%' || val('OUT') !== ((n('QUICK OUT') + n('DEEP OUT')) / tot * 100).toFixed(1) + '%') return false; const sel = t.querySelector(\"select[aria-label$='metric']\"), dis = [...sel.options].filter(o => o.disabled).map(o => o.textContent); return dis.length === 3 && /^Separation: unavailable, \\w/.test(dis[0]) && /^Win rate: unavailable, \\w/.test(dis[1]) && /^Routes run: unavailable, \\w/.test(dis[2]) && [...sel.options].filter(o => !o.disabled).length === 7; }; const pub = [cur - 3, cur - 2, cur - 1, cur].filter(y => C[y] && C[y].published), span = document.querySelector('.rt-span').textContent; if (pub[0] !== cur - 3 || !span.includes('Targeted routes, ' + pub[0] + ' to ' + pub[pub.length - 1] + ' regular seasons.')) return false; if (C[cur] && C[cur].published === false && !span.includes(cur + ' appears')) return false; const newest = [cur, cur - 1, cur - 2, cur - 3].find(y => C[y] && C[y].published); if (!first || first.length !== 2 || first[0].sid === first[1].sid || first.some(x => x.season !== newest)) return false; const tiles = [...document.querySelectorAll('.rt-tile')]; if (tiles.length !== 2 || !tiles.every(tileOk)) return false; if (tiles[1].dataset.sid !== first[1].sid || Number(tiles[1].dataset.season) !== cur - 2 || tiles[0].dataset.season !== String(newest)) return false; const a = tiles[0].getBoundingClientRect(), b = tiles[1].getBoundingClientRect(); if (b.left < a.right || Math.abs(b.top - a.top) > 1) return false; if (document.querySelectorAll('.rt-cmp-table tbody tr').length !== 8 || document.querySelectorAll('.rt-cmp-table thead th').length !== 5) return false; return /Not here: separation, route win rate and routes run/.test(document.querySelector('.rt-foot').textContent) && document.documentElement.scrollWidth <= innerWidth + 1; })()",
+      "notes": "Data Suite route tree (Ryan Heath, Beyond the Box Score 2026-09-25, 23:31 to 30:05; spec in notes/data-suite-video-walkthrough.md). The Routes tab draws a vanilla inline-SVG route tree per tile from coverage-YYYY.js targetedRoutes: a stem from the line of scrimmage, eight spokes (Out is quick out plus deep out; screen, swing, wheel and Texas/angle list under the tree), arrow width = targets, color = percentile among the position with 20+ targets. Each tile picks its own player, season and metric (target share, targets, catch rate, Y/Tgt, air yards/tgt, EPA/tgt, TD). With no prefs it opens on the two most-targeted WRs of the newest published season; the path then flips tile B to two seasons back, so the assert covers player vs player and season vs season, with Go and Out shares recomputed from the payload over ALL his targets. Separation, win rate and routes run by route are disabled options with a reason, never faked. Participation is targets only, so everything says targeted routes, and the span line reads 2023 to 2025 (coverage-2023.js built once with --season 2023) until nflverse posts 2026. Unit test: site/js/route-tree.test.js."
+    },
+    {
+      "id": "stats-lab-routes-phone",
+      "name": "Routes tab from the player card link fits a phone: tiles stack, tile A is the card's player",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "localStorage.removeItem('ff-stats-lab-v1'); location.hash='#rankings'"
+        },
+        {
+          "sleepMs": 2500
+        },
+        {
+          "press": "Control+k"
+        },
+        {
+          "fill": ".cmdk-input-wrap input",
+          "value": "Puka Nacua"
+        },
+        {
+          "sleepMs": 800
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "sleepMs": 1200
+        },
+        {
+          "eval": "document.querySelector('.modal-backdrop .rt-card-link').click(); true;"
+        },
+        {
+          "waitFor": ".rt-tile[data-tile='B'] svg.rt-svg"
+        }
+      ],
+      "selector": ".rt-tile[data-tile='A'] svg.rt-svg",
+      "assert": "(() => { const C = window.COVERAGE_BY_SEASON || {}, cur = window.ADVANCED.season; const sid = Object.keys(window.ADVANCED.players).find(s => window.ADVANCED.players[s].n === 'Puka Nacua'); const newest = [cur, cur - 1, cur - 2, cur - 3].find(y => C[y] && C[y].published && C[y].targetedRoutes[sid]); if (document.querySelector('.modal-backdrop') || location.hash !== '#stats/Routes') return false; const tiles = [...document.querySelectorAll('.rt-tile')], A = tiles[0]; if (tiles.length !== 2 || A.dataset.sid !== sid || Number(A.dataset.season) !== newest || A.querySelectorAll('g.rt-spoke').length !== 8) return false; const a = A.getBoundingClientRect(), b = tiles[1].getBoundingClientRect(); if (b.top < a.bottom) return false; const inView = (e) => { const r = e.getBoundingClientRect(); return r.width > 0 && r.left >= 0 && r.right <= innerWidth; }; return [...document.querySelectorAll('.rt-tile select, .rt-tile input, .rt-tile svg, .rt-cmp')].every(inView) && document.documentElement.scrollWidth <= innerWidth + 1; })()",
+      "notes": "The player card's advanced panel links WRs, TEs and RBs to the Routes tab ('Targeted route tree'). The link writes tile A = that player with no season, so the tab opens on the newest season he has a tree in, and it presses the card's own close button so the modal and its key handlers go before the page changes. At 390px the two tiles stack (auto-fit grid, 380px minimum), every picker and both SVGs stay inside the viewport, and nothing scrolls sideways. The metric select would otherwise be as wide as its longest option, the unavailable ones with their reasons, so it is capped at the tile width.",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      }
     }
   ],
   "ignore": [
