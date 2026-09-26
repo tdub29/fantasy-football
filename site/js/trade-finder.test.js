@@ -92,11 +92,14 @@ const shows = (p, send, get) => keysOf(p.send).slice().sort().join() === send.sl
   const outR = await HR.findTrades(redraft, { sims: 3000 });
   if (process.env.DEBUG) for (const p of outR.proposals) console.log('R', keysOf(p.send), '->', keysOf(p.get), p.my, p.their);
 
-  // (a) A 2-for-1 that fixes my TE hole: w1 for T2's TE1 and his third RB. The
-  // 1-for-1 leaves my FLEX to an 8-point body and gains me under SIM.finderMinGainPts;
-  // r10 fills that FLEX, and T2's WR hole takes w1 either way.
-  const two = outR.proposals.find(p => shows(p, ['w1'], ['t2', 'r10']));
-  assert(two, `the finder must offer w1 for t2 + r10, got ${outR.proposals.map(p => `${keysOf(p.send)}>${keysOf(p.get)}`).join(' | ') || 'nothing'}`);
+  // (a) A multi-piece package that fixes my TE hole with T2. The 1-for-1, w1 for
+  // t2, leaves my FLEX to an 8-point body and gains me under SIM.finderMinGainPts,
+  // so a second piece has to come with it. Until round 3 this was w1 for t2 + r10,
+  // but most of its title gain was r10's hindsight hedge from T2's bench (+3.9 then,
+  // +1.8 with lineups set on the projection), and two better packages outrank it.
+  const two = outR.proposals.find(p => p.them.roster_id === 2 && keysOf(p.get).some(k => R[k][0] === 'TE')
+    && keysOf(p.send).length + keysOf(p.get).length >= 3);
+  assert(two, `the finder must offer T2 a package for a TE, got ${outR.proposals.map(p => `${keysOf(p.send)}>${keysOf(p.get)}`).join(' | ') || 'nothing'}`);
   assert.equal(two.them.roster_id, 2);
   assert(HR.tradeLineupImpact(redraft, 1, new Set(), new Set(['t2'])).delta > 0, 't2 must start for me: that is the hole');
   assert(HR.tradeLineupImpact(redraft, 1, new Set(['w1']), new Set(['t2'])).delta < HR.SIM.finderMinGainPts, 'the 1-for-1 must not be worth proposing');
@@ -209,5 +212,5 @@ const shows = (p, send, get) => keysOf(p.send).slice().sort().join() === send.sl
   }
 
   console.log(`trade-finder.test.js: all assertions passed (redraft ${outR.proposals.length} proposals, dynasty ${outD.proposals.length}; `
-    + `w1>t2+r10 you ${two.my.delta >= 0 ? '+' : ''}${two.my.delta.toFixed(1)} pts +-${two.my.se.toFixed(1)}, them ${(two.their.before * 100).toFixed(1)}->${(two.their.after * 100).toFixed(1)}%)`);
+    + `${keysOf(two.send)}>${keysOf(two.get)} you ${two.my.delta >= 0 ? '+' : ''}${two.my.delta.toFixed(1)} pts +-${two.my.se.toFixed(1)}, them ${(two.their.before * 100).toFixed(1)}->${(two.their.after * 100).toFixed(1)}%)`);
 })().catch((err) => { console.error(err); process.exit(1); });

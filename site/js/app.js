@@ -2325,10 +2325,10 @@
   // QB ⊂ SUPER_FLEX, and RB/WR/TE ⊂ FLEX ⊂ SUPER_FLEX.
   // A pick is a rookie of unknown position, so it's eligible anywhere, but it
   // tries flex slots FIRST, so it can't evict a QB from the only QB slot.
-  // `presorted` lets a caller that already holds assets in descending `v` skip
-  // the sort. The championship simulator does: a player's season multiplier is
-  // fixed once the season is rolled, so the ordering can't change week to week,
-  // and re-sorting 27 assets on every team-week was most of the runtime.
+  // `presorted` lets a caller that already holds assets in the order it wants
+  // them started skip the sort. The championship simulator does: its pool is
+  // sorted once on the projection, and re-sorting 27 assets on every team-week
+  // was most of the runtime.
   // `bySlot` returns the slot-aligned array (length === slots.length, holes kept
   // as null) instead of just the filled assets. The Draft Room needs it to draw
   // an empty QB row in the QB slot rather than inferring which slots are missing
@@ -6915,11 +6915,11 @@
   // picks in dynasty (rosterOwnedPicks is [] in redraft). No K or DEF, and no IDP:
   // championshipOdds simulates the offense only, so it would price an LB at
   // nothing on both sides of the deal.
-  // A player in an IR slot is out of his own team's season sim for good, but a
-  // what-if hands him to the receiver with a 6-week designation, so shipping him
-  // books a phantom gain for both sides.
+  // A player in an IR slot: the simulator books him from his return week, but a
+  // dynasty lineup delta starts only the active list, so he would read as a free
+  // throw-in there.
   // ponytail: IDP and IR-slot players stay out of candidates; add them once
-  // simPool draws the defense and returns a reserve player to his own lineup.
+  // simPool draws the defense and finderLineup books a reserve player's return.
   function finderAssets(lg, roster) {
     const out = [], ir = new Set((roster.reserve || []).map(String));
     for (const pid of (roster.players || []).map(String)) {
@@ -7123,8 +7123,8 @@
       const sendV = tot(sendItems), getV = tot(getItems);
       const fair = KT.computeFairness(sendV, getV, send.size, get.size, top(sendItems), top(getItems)).pct;
       const scoreOf = (m) => m.delta + (dyn ? SIM.finderFvWeight * myFv : 0);
-      const passes = (m, t) => m.delta > SIM.finderSeMult * m.se && scoreOf(m) > 0 && (c.rebuilder ? themFv >= SIM.finderMinFvGain : t.delta > 0);
-      if (!(passes(my, their) && fair >= SIM.finderFairPct)) continue;
+      const passes = (m, t, z = SIM.finderSeMult) => m.delta > z * m.se && scoreOf(m) > 0 && (c.rebuilder ? themFv >= SIM.finderMinFvGain : t.delta > 0);
+      if (!(passes(my, their, SIM.finderScreenSeMult) && fair >= SIM.finderFairPct)) continue;
       proposals.push({ them: c.them, rebuilder: c.rebuilder, stance: c.stance, fvNow: c.fvNow, fills: c.fills, whatIf, passes, scoreOf,
         send: { keys: c.send.keys, items: sendItems }, get: { keys: c.get.keys, items: getItems },
         sendV, getV, fair, my, their, myFv, themFv, meD: c.meD, themD: c.themD, score: scoreOf(my) });
@@ -7145,7 +7145,7 @@
       if (!p.passes(my, their)) continue;
       per.set(p.them.roster_id, n + 1);
       p.why = p.rebuilder
-        ? `They are rebuilding (${p.stance}), so they buy the future: their ${Y}-year lineup value ${Math.round(p.fvNow)} to ${Math.round(p.fvNow + p.themFv)} (+${Math.round(p.themFv)}).`
+        ? `Their starting lineup ranks low (${p.stance}), so they are priced on the future: their ${Y}-year lineup value ${Math.round(p.fvNow)} to ${Math.round(p.fvNow + p.themFv)} (+${Math.round(p.themFv)}).`
         : `${p.fills ? `Fills their ${p.fills}. ` : ''}Their lineup +${Math.round(p.themD)} pts, title odds ${pct(their.before)} to ${pct(their.after)}.`;
       shown.push(Object.assign(p, { my, their, score: p.scoreOf(my) }));
     }
@@ -8263,6 +8263,8 @@
   // `title` = { a, b, sigA, sigB }, percentage points.
   KT.redraftVerdict = function(aSize, bSize, impA, impB, title) {
     if (!aSize || !bSize || !impA || !impB) return { label:'INCOMPLETE', color:'var(--fg-3)', pct: 0, premium: null, note: '' };
+    // Every lineup reads 0 without the weekly lines, which used to print FAIR.
+    if (!rosPointsByPid().size) return { label:'INCOMPLETE', color:'var(--fg-3)', pct: 0, premium: null, note: 'Weekly projections did not load. Reload the page.' };
     const holeA = impA.emptied > 0, holeB = impB.emptied > 0;
     if (holeA !== holeB) {
       return { label: holeA ? 'WIN FOR B' : 'WIN FOR A', color:'var(--red)', pct: 0, premium: null,
@@ -9281,7 +9283,7 @@
             h('span', { class:'t3y-cell tip' }, 'Side B'),
           ),
           ...yearRows.map(([r]) => r.row),
-          h('div', { class:'tip t3y-note' }, 'On-field strength change in each season. Players age via position curve; picks count 0 until their draft year, then convert as age-22 WR and age forward.')
+          h('div', { class:'tip t3y-note' }, 'Value received minus value sent in each season, not the lineup change (Post-Trade Strength Δ is that); the line under it is the post-trade lineup strength and league rank. Players age via position curve; picks count 0 until their draft year, then convert as age-22 WR and age forward.')
         ) : null,
         h('div', { style:{ marginTop:'14px' } },
           h('button', { class:'ghost', style:{ width:'100%' }, onclick: () => {
@@ -11573,6 +11575,10 @@
     finderSimTop: 20,
     finderSims: 800,
     finderSeMult: 2,
+    // The screen's own bar, looser: at 800 sims 2 SE is ~2 pts, so a real +2 deal
+    // died there although it cleared 2 SE at the Lab's count (Phi Kap, Zay Flowers
+    // for Parker Washington + Trevor Lawrence: +2.0 ±2.7 at 800, +2.3 ±0.9 at 7,500).
+    finderScreenSeMult: 1,
     finderShow: 8,
     finderShowPerPartner: 2,
     // Dynasty ranking: percentage points of this season's title odds per unit of
@@ -11651,15 +11657,19 @@
   // A season total spread over 17 weeks AND a designation hold-out counted A.J.
   // Brown's injury twice (167 already left out his missed games: 9.8 a week, then
   // 6 more weeks out, against 15.0 a game when he plays).
+  // A dynasty IR-slot player (any roster's: a what-if can hand him over) keeps
+  // the season rate and returns when his weekly lines resume; with no line left
+  // this season he is out for the year.
   function simPool(roster, lg, src, extraIds, yearsOut = 0, rookies = null) {
-    const map = projMap('offense'), ros = src === 'ros' && !yearsOut ? rosPointsByPid() : null;
+    const map = projMap('offense'), lines = yearsOut ? null : rosPointsByPid(), ros = src === 'ros' ? lines : null;
+    const irSlot = lines && !ros ? new Set((lg.rosters || []).flatMap(r => (r.reserve || []).map(String))) : null;
     const ids = new Set([...startableIds(roster, { includeStashed: yearsOut > 0 || !!ros }), ...(extraIds || []).map(String)]);
     const pool = [];
     for (const pid of ids) {
-      const p = map.get(pid), line = ros && ros.get(pid);
+      const p = map.get(pid), line = lines && lines.get(pid), ir = irSlot && irSlot.has(pid);
       const sp = window.PLAYERS?.[pid] || {};
       const pos = ros ? line && projPosGroup(line.pos) : p?.pos;
-      if (!(ros ? line : p) || !SLOT_TAKES.SUPER_FLEX.includes(pos)) continue;
+      if (!(ros ? line : p) || !SLOT_TAKES.SUPER_FLEX.includes(pos) || (ir && !line)) continue;
       let mean;
       if (ros) mean = line.pts / line.games;
       else {
@@ -11674,7 +11684,7 @@
       // players, 2026-09-25), so it counts once there. Move dynasty onto the lines
       // too if a dynasty verdict ever reads title odds.
       // A live designation is this season's news; it says nothing about 2028.
-      const startOut = yearsOut ? 0 : ros ? (SIM.designationWeeksOut[st] ? line.out : 0) : (SIM.designationWeeksOut[st] || 0);
+      const startOut = yearsOut ? 0 : ir || (ros && SIM.designationWeeksOut[st]) ? line.out : ros ? 0 : (SIM.designationWeeksOut[st] || 0);
       // Every field the simulator will ever touch is declared here, including the
       // per-season scratch (mult/bye/outUntil/v), his draw stream (key) and his
       // week's noise (e). Adding them later would retag the object's shape on the
@@ -11699,6 +11709,7 @@
         mult: 1, bye: 0, outUntil: 0, v: mean, key: 0, e: 0,
       });
     }
+    // The order every simulated week's lineup is set in.
     pool.sort((a, b) => b.mean - a.mean);
     return pool;
   }
@@ -11707,6 +11718,11 @@
   // bye falls. Re-rolled once per simulated season, never per week.
   // `played` weeks are already in the books, so a designation counts from now.
   // `sim` is the simulated season's index, the counter every draw is keyed on.
+  // `v` is the OUTCOME's mean, never the lineup order: the pool stays sorted on
+  // the projection (simPool). Sorting on `v` let every simulated manager start
+  // whichever of his two QBs would finish better, so a backup at a one-starter
+  // position priced as a free hedge (Phi Kap, Rice for Waddle + Purdy read WIN
+  // FOR A on two better lineups; a TE2 who never starts moved my odds +1.0).
   function rollSeason(pool, sim, played = 0) {
     const [b0, b1] = SIM.byeWeeks;
     for (const a of pool) {
@@ -11715,14 +11731,12 @@
       a.outUntil = a.startOut && a.startOut + played;
       a.v = a.mean * a.mult;
     }
-    // Sort ONCE here, not once per week: `v` is fixed for the season, so the
-    // manager's preference order can't change. simWeek then fills presorted.
-    pool.sort((a, b) => b.v - a.v);
   }
 
-  // One team's week: decide availability, set the lineup on EXPECTED points
-  // (a manager can't see the outcome), then sample what those starters actually
-  // did. Getting that order right is the whole reason depth shows up as value.
+  // One team's week: decide availability, set the lineup on the PROJECTION
+  // (`mean`, what a manager can know), then sample what those starters actually
+  // did. Bench outcomes are never drawn, so a body who does not start is worth
+  // only the weeks he fills in for someone out.
   // `teamKey` keys the fantasy team's own week shock.
   function simWeek(pool, slots, week, sim, teamKey, firstWeek = 1) {
     const avail = [], at = 8 * week + 8;   // this week's draw slots
@@ -11735,9 +11749,7 @@
         continue;
       }
       if (a.questionable && week === firstWeek && simDraw(a.key, sim, at + 2) < SIM.questionableOutChance) continue;
-      // The manager sets his lineup on the season-long read of the player (`v`,
-      // set in rollSeason), he can see a breakout by midseason, he can't see
-      // Sunday. `avail` inherits the pool's descending order, hence presorted.
+      // `avail` inherits the pool's descending projection order, hence presorted.
       avail.push(a);
     }
     const lineup = slots.length ? fillLineup(avail, slots, true) : avail.slice(0, 9);
@@ -11756,7 +11768,7 @@
       for (const r of lineup) {
         if (r === s || r.nflTeam !== s.nflTeam) continue;
         if (SIM.stackCorr[r.pos] == null) continue;
-        if (!best || r.v > best.v) best = r;
+        if (!best || r.mean > best.mean) best = r;
       }
       if (best) (linked = linked || new Map()).set(best, s);
     }
@@ -11959,18 +11971,17 @@
     const slots = offenseStartingSlots(lg);
     const cfg = playoffSettings(lg);
     const { extraPoints } = projectLeagueForward(lg, yearsOut, whatIf, strengthRanks);
-    // An IR-slot player sits out of his owner's season, so he sits out of the
-    // receiver's too: handing him over with only a 6-week designation booked a
-    // phantom gain for both sides. The rest-of-season lines keep him on both
-    // books instead, because they already price the weeks he misses.
+    // An IR-slot player is on both books, his owner's and a receiver's, from the
+    // week his lines resume (simPool), so a playoff rental reads as one. Leaving
+    // him off both counted A.J. Brown (back week 8) out for all of 2026. Taxi
+    // bodies do not play this season.
     const stashed = yearsOut > 0 || src === 'ros';
-    const reserve = stashed ? new Set() : new Set(rosters.flatMap(r => (r.reserve || []).map(String)));
     const pools = rosters.map(r => {
       const wi = whatIf && whatIf[r.roster_id];
       const drop = new Set((wi?.drop || []).map(String));
-      const keep = startableIds(r, { includeStashed: stashed }).filter(p => !drop.has(String(p)));
+      const keep = startableIds({ ...r, reserve: [] }, { includeStashed: stashed }).filter(p => !drop.has(String(p)));
       const base = { ...r, players: keep, taxi: [], reserve: [] };
-      return simPool(base, lg, src, (wi?.add || []).filter(p => !reserve.has(String(p))), yearsOut, extraPoints.get(r.roster_id));
+      return simPool(base, lg, src, wi?.add, yearsOut, extraPoints.get(r.roster_id));
     });
     const stat = rosters.map(() => ({ playoff: 0, bye: 0, final: 0, title: 0, wins: 0, pts: 0 }));
     const rnd = mulberry32(seed);   // the fallback random schedule only
