@@ -6012,3 +6012,47 @@ table.data tbody :is(td, th).oo-small, table.data tbody tr.oo-small :is(td, th),
   table.data.oo-team { min-width: 0; }
   .oo-team th[scope=row] { white-space: normal; }
 }
+/* Game pages (#game/:id) and the Games list (#games). */
+.gm-page > .card, .gm-page > .weather-line { margin-top: 16px; }
+.gm-pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 16px; margin-top: 16px; }
+.gm-pair > .card + .card, .gm-list > .card + .card { margin-top: 0; }
+.gm-card { padding: 10px 12px; font-size: 0.8rem; min-width: 0; }
+table.data:is(.gm-side, .gm-usage, .gm-drives, .gm-rec, .gm-top, .gm-pbp) { font-size: 12px; }
+table.data:is(.gm-side, .gm-usage, .gm-drives, .gm-rec, .gm-top, .gm-pbp) thead th { text-transform: none; letter-spacing: 0; vertical-align: bottom; }
+table.data:is(.gm-side, .gm-usage, .gm-drives, .gm-rec, .gm-top, .gm-pbp) tbody :is(th, td) { padding: 6px 8px; vertical-align: top; font-size: inherit; }
+:is(.gm-side, .gm-usage, .gm-rec) tbody th[scope=row] { text-align: left; font-weight: 700; white-space: nowrap; }
+:is(.gm-usage, .gm-rec) tbody tr.clickable { cursor: pointer; }
+.gm-rank { color: var(--fg-3); font-size: 0.7rem; font-weight: 400; }
+.gm-edge-list { margin: 0 0 8px; padding: 0; list-style: none; display: grid; gap: 8px; }
+.gm-edge { display: flex; gap: 10px; align-items: baseline; }
+.gm-gap { flex: none; min-width: 3.5ch; font-size: 1.1rem; font-weight: 800; text-align: right; }
+.gm-edge-text { min-width: 0; }
+.gm-when { white-space: nowrap; color: var(--fg-2); }
+td.gm-sit > span, td.gm-sit > strong { display: block; white-space: nowrap; }
+td.gm-desc { white-space: normal; min-width: 200px; line-height: 1.35; }
+.gm-drive-row td { background: var(--bg-2); font-weight: 800; color: var(--fg-0); }
+.gm-field { display: block; position: relative; height: 6px; margin-top: 4px; min-width: 80px; background: var(--bg-3); border-radius: 3px; }
+.gm-field > span { position: absolute; top: 0; bottom: 0; border-radius: 3px; background: var(--fg-3); }
+.gm-td > span { background: var(--green); }
+.gm-fg > span { background: var(--amber); }
+.gm-to > span { background: var(--red); }
+.gm-foot { margin-top: 12px; }
+.gm-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 12px; }
+a.gm-tile { display: flex; flex-direction: column; gap: 4px; color: var(--fg-1); }
+a.gm-tile:hover { text-decoration: none; background: var(--grad-gold); color: var(--ink); }
+.gm-tile-teams { font-weight: 800; font-size: 1.05rem; color: var(--fg-0); }
+.gm-week { margin-top: 16px; }
+.gm-finals { display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.gm-final { white-space: nowrap; font-weight: 700; }
+.gm-card-link { display: inline-block; margin-top: 6px; font-weight: 700; }
+a.sos-game { display: block; color: inherit; }
+a.sos-game:hover { text-decoration: none; }
+td.gm-swing { white-space: nowrap; }
+/* A full game is 150-200 plays, so the list scrolls in its own box, sticky head and all. */
+.tbl-scroll.gm-pbp-wrap { overflow: auto; max-height: calc(100dvh - 84px); }
+@media (max-width: 480px) {
+  table.data:is(.gm-drives, .gm-rec, .gm-top, .gm-pbp, .gm-usage) :is(thead th, tbody th, tbody td) { padding: 6px 4px; }
+  table.data:is(.gm-pbp, .gm-usage) { font-size: 11px; }
+  td.gm-desc { min-width: 120px; }
+  :is(.gm-rec, .gm-usage) tbody th[scope=row] { white-space: normal; }
+}

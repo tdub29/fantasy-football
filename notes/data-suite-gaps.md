@@ -111,10 +111,10 @@ Downloaded public data this relies on:
 
 | # | Capability | Status | Evidence on our site | Public source to fill | Downloaded |
 |---|---|---|---|---|---|
-| 48 | Pregame matchup edges between two teams | partial | Player card `matchupLine` (opponent PPR allowed by position, EPA/DB allowed, pressure), `#sos` grid, Defense tab, `weatherLine`, `environment.js` implied totals; no per-game page | pbp, schedule | yes |
+| 48 | Pregame matchup edges between two teams | shipped 2026-09-26 | `#game/:game_id` pregame: both offenses (PROE, early-down pass%, PA%, motion%, under center%, EPA by unit) and defenses (EPA/DB allowed, pressure%, blitz%, PPR allowed by position, funnel) side by side with ranks, the five biggest edges by percentile gap, implied points, weather, each team's skill players with season usage; `#games` lists the week, and the player card matchup line and every `#sos` cell link in | pbp, schedule | yes |
 | 49 | Playcaller tendencies (blitz rate, coverage shells, motion, PA, early-down pass rate, PROE) | partial | Stats Lab Teams tab has PROE, early-down pass%, PA%, motion%, under ctr%, screen%, RPO%, no huddle%; Defense tab has blitz%; coverage shells missing; keyed by team, not playcaller | participation coverage 2023-2025, `play_callers.csv` | yes |
 | 50 | Unit efficiency by situation (down/distance, personnel, script, rush concept) | partial | Team `epa_play`, `epa_pass`, `epa_rush`, `success_rate` as season totals only | pbp plus participation | yes |
-| 51 | Postgame: drive chart, full play-by-play with EPA and win probability, key plays, receiver matchups | missing | nothing | pbp `drive`, `epa`, `wp`, `wpa`, `desc` | yes |
+| 51 | Postgame: drive chart, full play-by-play with EPA and win probability, key plays, receiver matchups | shipped 2026-09-26 | `#game/:game_id` postgame from `games-YYYY.js` + `games-YYYY-wNN.js` (`build_game_pages.py`): drive chart, every play with down, distance, EPA, WP and WPA, top 10 by absolute WPA, each receiver's targets, catches, yards, air yards and EPA; `--self-check` ties drive yards to nflverse team box scores. Receiver vs defender matchups are not public | pbp `drive`, `epa`, `wp`, `wpa`, `desc` | yes |
 
 ### Player pages
 
