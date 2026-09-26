@@ -510,7 +510,7 @@
     const v = ros ? rosVorByPid(pid, lg, null, DEPTH_TIER) : vorByPid(pid, lg, src || 'blend');
     if (v == null) return null;
     const color = v >= 30 ? 'var(--green)' : v >= 0 ? 'var(--fg-1)' : 'var(--red)';
-    const pos = ros ? rosPointsByPid().get(String(pid))?.pos : projByPid().get(String(pid))?.p?.pos;
+    const pos = ros ? rosPointsByPid(lg).get(String(pid))?.pos : projByPid().get(String(pid))?.p?.pos;
     return h('span', { class: 'tnum', style: { color, fontWeight: 600 },
       title: `Value over replacement: ${v > 0 ? '+' : ''}${v} ${ros ? 'rest-of-season' : 'projected'} pts vs the ${ros ? 'best free' : 'last startable'} ${pos || ''} in ${lg.short_name || lg.name}. Cross-position comparable, higher = more lineup value.` },
       `${v > 0 ? '+' : ''}${fmt.decimal(v, 0)}`);
@@ -595,24 +595,31 @@
   // through 7 and returns at about 16 a week, so summing from the current week
   // prices the games he will miss without erasing the ten he will play. That
   // makes this self-maintaining as the injury news moves.
+  // The sum stops at the league's last fantasy week (its title game), because
+  // NFL week 18 is played after every fantasy season here is over: it put 19.9
+  // phantom points on McCaffrey. With no league (a data-presence check) it runs
+  // to the end of the feed. One map per last week, `_rosPts` holds them.
   let _rosPts = null;
-  function rosPointsByPid() {
-    if (_rosPts) return _rosPts;
-    _rosPts = new Map();
+  function rosPointsByPid(lg = null) {
+    const last = lg ? playoffSettings(lg).lastWeek : Infinity;
+    _rosPts = _rosPts || new Map();
+    if (_rosPts.has(last)) return _rosPts.get(last);
+    const out = new Map();
+    _rosPts.set(last, out);
     const wr = window.WEEKLY_RANKINGS;
-    if (!wr || !wr.players) return _rosPts;
+    if (!wr || !wr.players) return out;
     const from = Math.max(1, wr.currentWeek || 1);
     for (const p of wr.players) {
       const wk = p.sleeper || [];
-      // `out`: weeks from now before his first line, his known absence.
-      let sum = 0, games = 0, out = 0;
-      for (let w = from; w <= wk.length; w++) {
+      // `away`: weeks from now before his first line, his known absence.
+      let sum = 0, games = 0, away = 0;
+      for (let w = from; w <= Math.min(wk.length, last); w++) {
         const v = wk[w - 1];
-        if (v != null) { sum += v; games++; } else if (!games) out++;
+        if (v != null) { sum += v; games++; } else if (!games) away++;
       }
-      if (games) _rosPts.set(String(p.id), { pts: Math.round(sum * 10) / 10, games, pos: p.pos, out });
+      if (games) out.set(String(p.id), { pts: Math.round(sum * 10) / 10, games, pos: p.pos, out: away });
     }
-    return _rosPts;
+    return out;
   }
 
   // Replacement level on the SAME rest-of-season basis, or the comparison is
@@ -643,7 +650,7 @@
       for (const pid of (r.players || [])) rostered.add(String(pid));
     }
     const byPos = {};
-    for (const [pid, v] of rosPointsByPid()) {
+    for (const [pid, v] of rosPointsByPid(league)) {
       const g = projPosGroup(v.pos);
       (byPos[g] = byPos[g] || []).push({ pid, pts: v.pts, free: !rostered.has(pid) });
     }
@@ -675,8 +682,8 @@
   // Same ratio used by dynasty slot grades, but with rest-of-season points on
   // both sides. Mixing VOR in the numerator with dynasty order in the reference
   // made ordinary redraft starters look worthless.
-  function redraftSlotGrade(pid, referencePoints) {
-    const rec = rosPointsByPid().get(String(pid));
+  function redraftSlotGrade(pid, referencePoints, league) {
+    const rec = rosPointsByPid(league).get(String(pid));
     if (!rec || !(referencePoints > 0)) return 0;
     const grade = rec.pts / referencePoints * 10;
     return Math.round(Math.max(0, Math.min(10, grade)) * 10) / 10;
@@ -684,13 +691,13 @@
 
   // Tier of a player within his own roster at his position, 1-based.
   function rosTierOf(league, roster, pid) {
-    const me = rosPointsByPid().get(String(pid));
+    const me = rosPointsByPid(league).get(String(pid));
     if (!me) return null;
     const g = projPosGroup(me.pos);
     let better = 0;
     for (const other of (roster.players || [])) {
       if (String(other) === String(pid)) continue;
-      const o = rosPointsByPid().get(String(other));
+      const o = rosPointsByPid(league).get(String(other));
       if (o && projPosGroup(o.pos) === g && o.pts > me.pts) better++;
     }
     return better + 1;
@@ -704,7 +711,7 @@
     const key = String(league.id);
     if (!_rosRankCache.has(key)) {
       const byPos = {};
-      for (const [id, v] of rosPointsByPid()) {
+      for (const [id, v] of rosPointsByPid(league)) {
         const g = projPosGroup(v.pos);
         (byPos[g] = byPos[g] || []).push({ id, pts: v.pts });
       }
@@ -734,7 +741,7 @@
   // actually available for free. So one sentinel prices every bench row.
   const DEPTH_TIER = 99;
   function rosVorByPid(pid, league, roster = null, tierOverride = null) {
-    const rec = rosPointsByPid().get(String(pid));
+    const rec = rosPointsByPid(league).get(String(pid));
     if (!rec) return null;
     const g = projPosGroup(rec.pos);
     const tier = tierOverride != null ? tierOverride
@@ -752,7 +759,7 @@
   function orderValue(p, league) {
     if (league && league.id && !isDynastyLeague(league)) {
       const pid = p._sleeperId != null ? p._sleeperId : p.sleeperId;
-      const rec = pid != null ? rosPointsByPid().get(String(pid)) : null;
+      const rec = pid != null ? rosPointsByPid(league).get(String(pid)) : null;
       if (rec) return rec.pts;
     }
     return tierValue(p, league);
@@ -2450,7 +2457,7 @@
   // best free K, 137.7, beats every rostered kicker). `empty` counts the slots
   // even the waiver wire cannot fill; one scores 0.
   function redraftLineup(ids, league) {
-    const ros = rosPointsByPid(), free = rosBoard(league).freeLevel;
+    const ros = rosPointsByPid(league), free = rosBoard(league).freeLevel;
     const assets = [];
     for (const pid of new Set([...ids].map(String).concat(waiverIds(league)))) {
       const rec = ros.get(pid);
@@ -4129,14 +4136,14 @@
     const lineupOrder = (p) => {
       if (dynasty) return orderValue(p.ranked, league);
       const pid = p.sleeper?.id ?? p.ranked?._sleeperId ?? p.ranked?.sleeperId;
-      return rosPointsByPid().get(String(pid))?.pts ?? -1;
+      return rosPointsByPid(league).get(String(pid))?.pts ?? -1;
     };
     // Pre-sort owned players by tierValue desc per position
     const byPos = { QB:[], RB:[], WR:[], TE:[], LB:[], DB:[], DL:[] };
     for (const p of rosterPlayers) {
       const pos = p.ranked?.pos || (!dynasty ? projPosGroup(p.sleeper?.pos) : null);
       if (!pos || !byPos[pos]) continue;
-      if (p.ranked || rosPointsByPid().has(String(p.sleeper?.id))) byPos[pos].push(p);
+      if (p.ranked || rosPointsByPid(league).has(String(p.sleeper?.id))) byPos[pos].push(p);
     }
     for (const k of Object.keys(byPos)) {
       byPos[k].sort((a, b) => lineupOrder(b) - lineupOrder(a));
@@ -4245,11 +4252,11 @@
       const pickPid = pick?.sleeper?.id ?? pick?.ranked?._sleeperId ?? pick?.ranked?.sleeperId;
       let myVal = pick ? tierValue(pick.ranked, league, null, valueTier) : 0;
       if (!dynasty && pickPid != null) {
-        const rec = rosPointsByPid().get(String(pickPid));
+        const rec = rosPointsByPid(league).get(String(pickPid));
         myVal = rec ? Math.round(rec.pts * 10) / 10 : 0;
       }
       const grade = !dynasty
-        ? (pickPid != null ? redraftSlotGrade(pickPid, refVal) : 0)
+        ? (pickPid != null ? redraftSlotGrade(pickPid, refVal, league) : 0)
         : (refVal > 0 ? Math.min(10, (myVal / refVal) * 10) : (pick && myVal > 0 ? 5 : 0));
       // Future grade: age this player's value 3 seasons, re-grade against the same
       // slot reference. Drives the FV tick on the slot bar (present grade is the fill).
@@ -4263,7 +4270,7 @@
         : (pick ? signedVor(pick.ranked, league, valueTier) : null);
       const pickAge = pick ? (pick.sleeper?.age ?? pick.ranked?.age ?? null) : null;
       // Rest-of-season projected points, the number the grade is derived FROM.
-      const pickPts = pickPid != null ? (rosPointsByPid().get(String(pickPid))?.pts ?? null) : null;
+      const pickPts = pickPid != null ? (rosPointsByPid(league).get(String(pickPid))?.pts ?? null) : null;
       slots.push({
         vor: signed,
         age: pickAge,
@@ -4298,7 +4305,7 @@
     return rosterPlayers
       .filter(p => p.sleeper?.id != null && !starters.has(String(p.sleeper.id)))
       .map(p => {
-        const rec = rosPointsByPid().get(String(p.sleeper.id));
+        const rec = rosPointsByPid(lg).get(String(p.sleeper.id));
         if (!rec) return 0;
         const pos = projPosGroup(rec.pos);
         if (!['QB','RB','WR','TE'].includes(pos)) return 0;
@@ -4836,7 +4843,7 @@
           player: p.sleeper.name,
           vor: signedVor(p.ranked, lg, DEPTH_TIER),
           age: p.sleeper?.age ?? p.ranked?.age ?? null,
-          pts: rosPointsByPid().get(String(p.sleeper.id))?.pts ?? null,
+          pts: rosPointsByPid(lg).get(String(p.sleeper.id))?.pts ?? null,
           myVal: v,
           refVal: refV,
           grade: refV > 0 ? Math.min(10, Math.round(v / refV * 10 * 10) / 10) : 0,
@@ -6962,7 +6969,7 @@
   // thousands of fills. IDP never moves in a finder trade, so the defense half
   // cancels out of every delta.
   function finderLineup(lg) {
-    const dyn = isDynastyLeague(lg), slots = offenseStartingSlots(lg), map = projMap('offense'), ros = rosPointsByPid();
+    const dyn = isDynastyLeague(lg), slots = offenseStartingSlots(lg), map = projMap('offense'), ros = rosPointsByPid(lg);
     const free = waiverIds(lg);
     const cache = new Map();
     const asset = (pid) => {
@@ -7690,7 +7697,7 @@
       const sp = window.PLAYERS?.[pid];
       if (!sp) continue;
       if (!startable.has(row.pos)) continue;
-      const ros = rosPointsByPid().get(pid)?.pts;
+      const ros = rosPointsByPid(lg).get(pid)?.pts;
       if (ros == null) continue;
       const wkProj = (row.vegas != null) ? row.vegas : (row.sleeper || [])[week - 1];
       const experience = waiverExperienceProfile(sp, row.pos);
@@ -8093,7 +8100,7 @@
         const pos = ranked.pos || sp.pos;
         if (!byPos[pos]) continue;
         byPos[pos].push({ name: sp.name, pid, age: sp.age, value: playerValue(pid, lg),
-          pts: dyn ? 0 : (rosPointsByPid().get(String(pid))?.pts || 0),
+          pts: dyn ? 0 : (rosPointsByPid(lg).get(String(pid))?.pts || 0),
           posRank: dyn ? (ranked.ktcPosRank || ranked._posRank || null) : rosPosRank(pid, lg) });
       }
       const posVal = {}, posTop = {}, posPts = {};
@@ -8769,7 +8776,7 @@
       const matches = isDynastyLeague(lg)
         ? idx.all.filter(p => p._sleeperId && norm(p.name).includes(q)).slice(0, 8)
         : (window.WEEKLY_RANKINGS?.players || []).filter(p => window.PLAYERS[p.id] && norm(p.name).includes(q))
-            .map(p => ({ name: p.name, pos: p.pos, _sleeperId: String(p.id), pts: rosPointsByPid().get(String(p.id))?.pts || 0 }))
+            .map(p => ({ name: p.name, pos: p.pos, _sleeperId: String(p.id), pts: rosPointsByPid(lg).get(String(p.id))?.pts || 0 }))
             .sort((a, b) => b.pts - a.pts).slice(0, 8);
       results.hidden = false;
       if (!matches.length) { results.appendChild(h('div', { class:'trade-search-empty' }, 'No players match.')); return; }
@@ -8909,7 +8916,7 @@
     if (roster) {
       // Redraft breaks value ties (every sub-replacement body is 0) on
       // rest-of-season points, so a starting QB never sorts below a scrub.
-      const ros = (pid) => dyn ? 0 : (rosPointsByPid().get(String(pid))?.pts || 0);
+      const ros = (pid) => dyn ? 0 : (rosPointsByPid(lg).get(String(pid))?.pts || 0);
       const arr = (roster.players || []).map(pid => {
         const sleeper = window.PLAYERS[pid];
         const ranked = sleeper ? (rankIndex().bySleeperId.get(pid) || rankIndex().byName.get(norm(sleeper.name))) : null;
@@ -9824,7 +9831,7 @@
       for (const r of group) {
         const ranked = rankIndex().byName.get(norm(r.name));
         const val = ranked ? tierValue(ranked, r.lg) : null;
-        const ros = rosPointsByPid().get(String(r.pid))?.pts;
+        const ros = rosPointsByPid(r.lg).get(String(r.pid))?.pts;
         body.appendChild(h('tr', { class: 'clickable', onclick: () => openPlayerDetail(r.name, r.pid) },
           h('td', { class: 'sr-name' }, r.name, r.pid ? injuryChip(r.pid) : null),
           h('td', { class: 'sr-pos' }, r.pos ? posChip(r.pos) : null),
@@ -11795,11 +11802,17 @@
     return pairs;
   }
 
+  // Sleeper's playoff_week_start: on the league record once build_site_data.py
+  // writes it, and on the fantasy schedule (build_fantasy_schedule.py) until then.
+  // `lastWeek` is the title game: one week per round (playoff_round_type 0, every
+  // league here).
   function playoffSettings(lg) {
     const s = lg.settings || {};
     const teams = lg.playoff_teams || s.playoff_teams || 6;
-    const startWeek = s.playoff_week_start || 15;
-    return { teams, startWeek, regularWeeks: startWeek - 1, rounds: Math.ceil(Math.log2(teams)) };
+    const startWeek = lg.playoff_week_start || s.playoff_week_start
+      || window.FANTASY_SCHEDULE?.leagues?.[String(lg.id)]?.playoffStart || 15;
+    const rounds = Math.ceil(Math.log2(teams));
+    return { teams, startWeek, regularWeeks: startWeek - 1, rounds, lastWeek: startWeek + rounds - 1 };
   }
 
   // ---- Multi-year title equity -------------------------------------------

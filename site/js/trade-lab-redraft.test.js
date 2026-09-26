@@ -17,7 +17,8 @@ const slice = (a, b) => {
 };
 
 // ---- toy league: QB RB WR TE FLEX K DEF, 4 teams, week 4 of a 6-week season --
-// Weekly points, flat across weeks 1-9, so rest-of-season = 6 x weekly.
+// Weekly points, flat across weeks 1-9. The title game is week 7 (one round from
+// week 7), so rest-of-season = 4 x weekly: weeks 8 and 9 are past the season.
 const W = {
   q1: ['QB', 20], q2: ['QB', 19.5], q3: ['QB', 19], q4: ['QB', 18.8], q5: ['QB', 18.6], q6: ['QB', 18.4],
   r1: ['RB', 22], r2: ['RB', 20], r3: ['RB', 18], r4: ['RB', 16], r5: ['RB', 14], r6: ['RB', 12], r7: ['RB', 11], r8: ['RB', 10], rFA: ['RB', 6],
@@ -80,14 +81,14 @@ const H = new Function('window', 'RANKED', [
 const send = new Set(['q2', 'q6']), recv = new Set(['t1']);
 
 // ---- H1: depth and flex bodies price above 0, continuously ------------------
-// r7 is RB7 in a 4-team league: 66 rest-of-season points against RB5's 84, so
-// the tier-1 baseline floored him to 0. The best FREE RB is 36.
+// r7 is RB7 in a 4-team league: 44 rest-of-season points against RB5's 56, so
+// the tier-1 baseline floored him to 0. The best FREE RB is 24.
 const val = (id) => H.tierValue({ _sleeperId: id }, toy);
 assert(val('r7') > 0, `depth RB r7 must carry redraft value, got ${val('r7')}`);
 assert(val('w6') > 0, `flex WR w6 must carry redraft value, got ${val('w6')}`);
 assert(val('r7') > val('r8') && val('r8') > 0, 'value must stay continuous and ordered below the starters');
 assert.equal(val('rFA'), 0, 'the best free body is replacement, worth exactly 0');
-assert.equal(val('r7'), Math.round((66 - 36) * H.REDRAFT_VOR_SCALE * 10) / 10,
+assert.equal(val('r7'), Math.round((44 - 24) * H.REDRAFT_VOR_SCALE * 10) / 10,
   'value is rest-of-season points over the best free body, times REDRAFT_VOR_SCALE');
 
 // ---- H2: both QBs for a TE reads as a loss for the side left without a QB ---

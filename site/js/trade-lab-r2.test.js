@@ -51,7 +51,7 @@ const weeks = (w, nulls = 0) => Array.from({ length: 9 }, (_, i) => (i >= 3 && i
   // [pos, weekly points, season blend (default 17 x weekly), leading null weeks]
   const R = {
     qA: ['QB', 20], rA1: ['RB', 15], rA2: ['RB', 5], wA: ['WR', 16], xH: ['WR', 14], tA: ['TE', 10], kA: ['K', 7], dA: ['DEF', 8],
-    qB: ['QB', 19], rB1: ['RB', 22], rB2: ['RB', 12], wB: ['WR', 15], xL: ['WR', 14, 7 * 17], tB: ['TE', 11], kB: ['K', 9], dB: ['DEF', 9],
+    qB: ['QB', 19], rB1: ['RB', 26], rB2: ['RB', 12], wB: ['WR', 15], xL: ['WR', 14, 7 * 17], tB: ['TE', 11], kB: ['K', 9], dB: ['DEF', 9],
     qC: ['QB', 18], rC1: ['RB', 16], rC2: ['RB', 11], wC: ['WR', 13], wC2: ['WR', 12], tC: ['TE', 9], kC: ['K', 8.5], dC: ['DEF', 7.5],
     qD: ['QB', 17], rD1: ['RB', 14], rD2: ['RB', 10], wD: ['WR', 17], wD2: ['WR', 11], tD: ['TE', 8], kD: ['K', 7.8], dD: ['DEF', 8.2],
     // Free agents set replacement. The best free K (8) beats kA (7).
@@ -85,7 +85,8 @@ const weeks = (w, nulls = 0) => Array.from({ length: 9 }, (_, i) => (i >= 3 && i
 
   // ---- H1: waiver fill flips the kicker case ---------------------------------
   // Side A ships kA and a sub-waiver RB for Side B's RB1. A manager who ships his
-  // kicker claims kFA, who is better, so the K slot costs A nothing.
+  // kicker claims kFA, who is better, so the K slot costs A nothing. Over the four
+  // weeks left (the title game is week 7) A gains 12 a week and B loses 14.
   const kSend = new Set(['kA', 'rA2']), kGet = new Set(['rB1']);
   const kImpA = H.tradeLineupImpact(lg, 1, kSend, kGet), kImpB = H.tradeLineupImpact(lg, 2, kGet, kSend);
   assert.equal(H.tradeLineupImpact(lg, 1, new Set(['kA']), new Set()).delta, 0,
