@@ -6919,9 +6919,9 @@
   // he is a dynasty rebuilder), and the market reads it close to even.
   const FINDER_REBUILD = new Set(['seller', 'tank']);
   // Trade currency: a skill player worth SIM.finderMinAsset or more, plus owned
-  // picks in dynasty (rosterOwnedPicks is [] in redraft). No K or DEF, and no IDP:
-  // championshipOdds simulates the offense only, so it would price an LB at
-  // nothing on both sides of the deal.
+  // picks in dynasty (rosterOwnedPicks is [] in redraft). No IDP: championshipOdds
+  // does not simulate the defense, so it would price an LB at nothing on both
+  // sides of the deal. No K or DEF either: they are streamed, not traded for.
   // A player in an IR slot: the simulator books him from his return week, but a
   // dynasty lineup delta starts only the active list, so he would read as a free
   // throw-in there.
@@ -9108,19 +9108,22 @@
     return out;
   }
   // simPool has no waiver pool, so a what-if that ships a position's last backup
-  // is charged an EMPTY slot on every bye and injury. Claim the best free agent
+  // is charged an EMPTY slot on every bye and injury. Claim a free agent
   // there instead, up to one body over the position's starting slots. `taken`
   // are claims the other side already made: one free agent, one team.
   function waiverAdds(lg, roster, drop, add, taken = new Set()) {
-    const map = projMap('offense'), ros = isDynastyLeague(lg) ? null : rosPointsByPid();
+    const map = projMap('offense'), ros = isDynastyLeague(lg) ? null : rosPointsByPid(lg);
     const posOf = (pid) => (ros && ros.get(pid) ? projPosGroup(ros.get(pid).pos) : map.get(pid)?.pos);
+    const ptsOf = (pid) => (ros ? ros.get(pid)?.pts : map.get(pid) ? projPoints(map.get(pid), lg, 'blend') : null);
+    // K and DEF count only where the league starts them (simPool drops them elsewhere).
     const need = { QB: 0, RB: 0, WR: 0, TE: 0 };
     for (const s of offenseStartingSlots(lg)) {
-      if (need[s.pos] != null) need[s.pos]++;
+      if (s.pos === 'K' || s.pos === 'DEF') need[s.pos] = (need[s.pos] || 0) + 1;
+      else if (need[s.pos] != null) need[s.pos]++;
       else if (s.pos === 'SUPER_FLEX') need.QB++;
     }
     const count = (ids) => {
-      const c = { QB: 0, RB: 0, WR: 0, TE: 0 };
+      const c = { QB: 0, RB: 0, WR: 0, TE: 0, K: 0, DEF: 0 };
       for (const pid of ids) { const pos = posOf(pid); if (c[pos] != null) c[pos]++; }
       return c;
     };
@@ -9129,10 +9132,19 @@
     const before = count(now), after = count(now.filter(p => !drop.has(p)).concat([...add].filter(k => !isPickKey(k))));
     const out = [];
     for (const pos in need) {
-      let short = Math.min(before[pos], need[pos] + 1) - after[pos];
-      for (const fa of freeAgents(lg)) {
-        if (short <= 0) break;
-        if (fa.pos === pos && !taken.has(fa.pid)) { out.push(fa.pid); short--; }
+      const short = Math.min(before[pos], need[pos] + 1) - after[pos];
+      if (short <= 0) continue;
+      // Each claim replaces one of the `short` weakest bodies who left, and is no
+      // better than him: the baseline never swaps a bench body for a better free
+      // agent, so a trade may not either. Claiming the best one let a TE2 thrown
+      // in buy his side a better free TE, and shipping a sub-waiver kicker gain
+      // title odds. When every free agent beats him, the weakest one comes back.
+      const caps = now.filter(p => drop.has(p) && posOf(p) === pos).map(p => ptsOf(p) ?? Infinity)
+        .sort((a, b) => b - a).slice(-short);
+      for (const cap of caps) {
+        const open = freeAgents(lg).filter(fa => fa.pos === pos && !taken.has(fa.pid) && !out.includes(fa.pid));
+        const fa = open.find(f => f.pts <= cap) || open[open.length - 1];
+        if (fa) out.push(fa.pid);
       }
     }
     return out;
@@ -11484,10 +11496,13 @@
     // Weekly scoring noise as a fraction of a player's per-game mean. Fantasy
     // weekly scores are wildly overdispersed; QBs are the steadiest, RB/WR the
     // least (a WR's week is one long TD away from tripling).
-    cv: { QB: 0.34, RB: 0.55, WR: 0.62, TE: 0.60, DEF: 0.5 },
+    // K measured: median 0.51 over 98 kicker-seasons, 2021-2024 regular season
+    // (historical/kicking_stats, 8+ games, FG 3/4/5 by distance plus PAT).
+    cv: { QB: 0.34, RB: 0.55, WR: 0.62, TE: 0.60, K: 0.51, DEF: 0.5 },
     // Expected games missed per 17-game season for a prime-age player, by
-    // position. RBs take the most contact; QBs are protected.
-    missedGames: { QB: 1.5, RB: 3.0, WR: 2.3, TE: 2.6 },
+    // position. RBs take the most contact; QBs are protected. A team defense
+    // never misses a game; a kicker rarely does (assumed, not measured).
+    missedGames: { QB: 1.5, RB: 3.0, WR: 2.3, TE: 2.6, K: 0.5, DEF: 0 },
     // Injuries have duration, so depth matters. Mean absence in weeks once hurt.
     injuryDurationWeeks: 3,
     // Older bodies miss more. Multiplier on expected missed games per year past
@@ -11585,7 +11600,10 @@
     // The screen's own bar, looser: at 800 sims 2 SE is ~2 pts, so a real +2 deal
     // died there although it cleared 2 SE at the Lab's count (Phi Kap, Zay Flowers
     // for Parker Washington + Trevor Lawrence: +2.0 ±2.7 at 800, +2.3 ±0.9 at 7,500).
-    finderScreenSeMult: 1,
+    // At 1 SE it still killed one: Washington, Kenneth Walker for Trey McBride +
+    // Brock Purdy, +1.8 ±0.7 at 7,500 but +0.9 ±2.3 on its first 800 seasons once
+    // K and DEF entered the pool. The Lab-count re-run keeps the 2 SE bar.
+    finderScreenSeMult: 0.5,
     finderShow: 8,
     finderShowPerPartner: 2,
     // Dynasty ranking: percentage points of this season's title odds per unit of
@@ -11667,18 +11685,25 @@
   // A dynasty IR-slot player (any roster's: a what-if can hand him over) keeps
   // the season rate and returns when his weekly lines resume; with no line left
   // this season he is out for the year.
+  // K and DEF join the pool in a league that starts them. projections.js is
+  // offense only, so on every basis they read their weekly lines' per-game rate,
+  // with no age curve. Without them every K and DEF slot sat empty for every
+  // team, and trading a kicker never moved anyone's title odds.
   function simPool(roster, lg, src, extraIds, yearsOut = 0, rookies = null) {
-    const map = projMap('offense'), lines = yearsOut ? null : rosPointsByPid(), ros = src === 'ros' ? lines : null;
+    const map = projMap('offense'), wk = rosPointsByPid(lg), lines = yearsOut ? null : wk, ros = src === 'ros' ? lines : null;
+    const takes = new Set([...SLOT_TAKES.SUPER_FLEX, ...offenseStartingSlots(lg).flatMap(s => SLOT_TAKES[s.pos])]);
     const irSlot = lines && !ros ? new Set((lg.rosters || []).flatMap(r => (r.reserve || []).map(String))) : null;
     const ids = new Set([...startableIds(roster, { includeStashed: yearsOut > 0 || !!ros }), ...(extraIds || []).map(String)]);
     const pool = [];
     for (const pid of ids) {
-      const p = map.get(pid), line = lines && lines.get(pid), ir = irSlot && irSlot.has(pid);
+      const p = map.get(pid), ir = irSlot && irSlot.has(pid);
+      const kd = !p && wk.get(pid) && ['K', 'DEF'].includes(projPosGroup(wk.get(pid).pos)) ? wk.get(pid) : null;
+      const line = kd || (lines && lines.get(pid)), perGame = !!(ros || kd);
       const sp = window.PLAYERS?.[pid] || {};
-      const pos = ros ? line && projPosGroup(line.pos) : p?.pos;
-      if (!(ros ? line : p) || !SLOT_TAKES.SUPER_FLEX.includes(pos) || (ir && !line)) continue;
+      const pos = perGame ? line && projPosGroup(line.pos) : p?.pos;
+      if (!(perGame ? line : p) || !takes.has(pos) || (ir && !line)) continue;
       let mean;
-      if (ros) mean = line.pts / line.games;
+      if (perGame) mean = line.pts / line.games;
       else {
         const season0 = projPoints(p, lg, src); if (season0 == null) continue;
         const season = season0 * productionRetention(p.pos, sp.age, yearsOut);
@@ -11691,7 +11716,7 @@
       // players, 2026-09-25), so it counts once there. Move dynasty onto the lines
       // too if a dynasty verdict ever reads title odds.
       // A live designation is this season's news; it says nothing about 2028.
-      const startOut = yearsOut ? 0 : ir || (ros && SIM.designationWeeksOut[st]) ? line.out : ros ? 0 : (SIM.designationWeeksOut[st] || 0);
+      const startOut = yearsOut ? 0 : ir || (perGame && SIM.designationWeeksOut[st]) ? line.out : perGame ? 0 : (SIM.designationWeeksOut[st] || 0);
       // Every field the simulator will ever touch is declared here, including the
       // per-season scratch (mult/bye/outUntil/v), his draw stream (key) and his
       // week's noise (e). Adding them later would retag the object's shape on the
