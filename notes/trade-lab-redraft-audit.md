@@ -633,3 +633,183 @@ Gates: `verify-app.py` 64/64 (63 plus `trade-lab-redraft-waiver-fill`); `check-m
 `site/js/trade-lab-r2.test.js`: each of its five blocks fails on `aec3928` (kicker costs 45 instead
 of 0; even swap FAIR → WIN FOR B, A -7.6, B +8.9; a Finder row the partner loses, +0.50 shown, -0.65
 at the Lab's count; no-QB strength 120 → 150; CLI and Lab disagree on every roster) and passes here.
+
+---
+
+## Verification round 2 (2026-09-26, independent adversarial pass on ba619d3)
+
+**Bottom line: dynasty verdicts and the dynasty Trade Finder can be trusted; redraft verdicts still
+cannot.** Every round-2 repro behaves as specified, the CLI now equals the Lab, and the Finder prints
+exactly what the Lab computes. But the title simulator lets every manager set each week's lineup
+knowing how each player's rest of season will turn out, so a second starter at a one-slot position
+is priced like a weekly hedge. The side that receives more bodies gains 1 to 3 title points its
+lineup does not show, and the redraft verdict follows those odds once they clear the band. A
+win-win 2-for-1 reads WIN FOR A, a worthless throw-in flips my own title change from -0.3 to +0.7,
+and the redraft Finder returns nothing for any Phi Kap roster tried. Findings: **1 high, 1 medium,
+6 low.**
+
+### Method and provenance
+
+- Main checkout at `ba619d3`, `site/js/app.js` md5 `fbf3d400...`. `site/` served on `127.0.0.1:8881`,
+  Python Playwright, Chromium headless, clicks on real pool rows. `app.js` patched IN MEMORY only to
+  expose internals; one diagnostic variant (below) also re-sorts the simulator's lineup order in
+  memory. No repo file other than this section was touched; no commit.
+- Every case ran in two separate browser sessions with identical output: 21 audit and sanity cases
+  in Phi Kap, 7 new Phi Kap cases, 18 dynasty cases, both Finder lists, and each finding below.
+- Four browsers in parallel overloaded `http.server` (connection refused on data files). Those
+  runs were discarded and re-run one or two at a time; see L6.
+- Scripts and raw outputs: session scratchpad `tl3/`.
+
+### Round-2 and audit repros, re-run
+
+| Defect | Result on ba619d3 |
+|---|---|
+| V1 (H) | PASS. McPherson + Kaelon Black for Breece Hall: WIN FOR A, lineup +69 / -72, odds A 5.4% → 8.0% ±0.5, B 4.6% → 2.8%. NYG in place of McPherson identical. Kraft + NYG for Lamb (/8): WIN FOR A, A +1.8, B -2.3. McPherson + NYG for E. Wilson: FAIR, +0 / +0 |
+| V2 (H) | Basis PASS: the simulator reads the rest-of-season lines, A.J. Brown at 14.98 a game from week 8. Burden for Golden FAIR, then CLOSE 0.5 to B (the lineup's side). Brown for Metcalf WIN FOR B (A -1.2, B +1.1). **The flip class survives by another route: R2-1** |
+| V3 (M) | PASS. trade-sim.js's own data list and slices vs the page, 2,500 sims, seed 20260807: 32 of 32 rosters identical (title and playoff) across the three leagues. CMC for E. Wilson at 7,500: CLI -3.17 / +3.89, Lab -3.2 / +3.9 |
+| V4 (M) | PASS. Four Finder rows re-run in the Lab (row click plus two reloads): identical numbers and bands. Each partner's objective rises on the site's measure: FV 461 → 475 (twice), 478 → 496, 489 → 534, and the Lab's +4 yr sub-line equals the Finder's "to" value |
+| V5 (M) | PASS. taco /6, Allen + Caleb + Jordan Love for Chase + Bowers: strength A +0.0, lineup 2067 → 2070 (+4, Brissett claimed), A +0.1 ±1.4 grey, B -6.2 |
+| H1 | PASS. Black for Hall 0.0 ⇄ 68.0, WIN FOR A. Rice for E. Wilson, WIN FOR B |
+| H2 A | Goff + Shough for Warren: CLOSE by lineup (-8 / -38, Baker 256.0 is free), FAIR after odds (A +0.9, B +1.2). B's +1.2 is R2-1 |
+| H2 B / C | Kraft for Warren + Mahomes: CLOSE 0.6 to A. Kraft + Downs for Lamb: WIN FOR A, lineup edge 54. PASS |
+| H3 / H4 / M1 | PASS. One 2026 row, no Year-by-Year block, `rosterOwnedPicks` = 0 in Phi Kap. CMC for E. Wilson WIN FOR B (A 5.4% → 2.2%, B 4.6% → 8.5%) |
+| M2 | PASS. Season in progress seeded from records on the real schedule (CLI parity above) |
+| M3 | Value, lineup, search PASS. McPherson for Fairbairn FAIR (both below the free 137.7); NYG for Seattle CLOSE, lineup edge 16 to A. K and DEF still absent from the simulator (queued) |
+| M4 | PASS. E. Johnson for E. Wilson: +0.1 ±0.1 / +0.0 ±0.1, grey, FAIR |
+| M5 / M7 | PASS. King Henry TE need, value 9. Kraft VOR +56 beside 30.7 |
+| M6 | Redraft Finder: 0 trades. See R2-1 |
+
+### HIGH
+
+**R2-1. Title odds price depth with hindsight, the redraft verdict follows them, and the redraft
+Finder finds nothing.**
+- Repro A, `#trade/1389722402430136320/9`: Rashee Rice for Jaylen Waddle + Brock Purdy. Lineups
+  **+14 / +17**, both sides better. After Run title odds: **WIN FOR A, "2026 title odds edge 1.4 pts
+  to Side A"**, A 5.4% → 6.9% ±0.6, B 14.8% → 13.6% ±0.8 (red). Brown Boys keep Trevor Lawrence (314
+  rest of season) and Baker Mayfield (256.0) is free, so losing QB2 Purdy costs them almost nothing
+  on the field. Every fantasy player calls this a win-win, FAIR.
+- Repro B, `/8`: Tucker Kraft for Matthew Golden reads CLOSE 15 to B (lineup -29 / +2, odds A -0.3,
+  grey). Add Terrance Ferguson (TE2, 61.7, never starts) to Side A: lineup identical, but A becomes
+  **+0.7 ±0.5 (green)** and the verdict **FAIR**. A worthless throw-in improves my side.
+- Repro C, `/1`: Goff + Shough for Tyler Warren, lineup -8 / -38, reads FAIR after odds because Side
+  B gains +1.2 from two backup QBs it has no slot for.
+- Cause: `rollSeason` draws each player's season multiplier (`projectionSigma` 0.35) and sorts the
+  pool on `v = mean * mult`; `simWeek` fills the lineup in that order. From week 3 on, every
+  simulated manager knows which of his two QBs will finish better, so QB2 is worth a full hedge:
+  swapping Brown Boys' Purdy for the free Baker, no trade, costs them 1.07 title pts. The lineup,
+  the value and the verdict's first half never see this. The trade what-if also claims free agents
+  the baseline never gets (`waiverAdds` on the after side only), which is how the throw-in in
+  Repro B buys A a second waiver TE (L1).
+- Isolated: the same code with the lineup set on the projection (`b.mean - a.mean` in
+  `rollSeason`'s sort, patched in memory) reads Repro A **FAIR** (A +0.6, B -0.1, both grey), Repro
+  C **CLOSE 15 to A** (B -0.7) and Repro B's throw-in version **CLOSE 15 to B** (A -0.6). Every one
+  is what a knowledgeable player says. It also moves baselines: mine 5.4% → 5.8%, Brown Boys 14.8%
+  → 13.2%.
+- Finder: "0 trades from 12,178 packages, 2 simulated" for tdub1329 (three runs), and 0 for R2,
+  R9, R12 and R4 with `is_me` flipped in memory (2, 5, 12 and 1 simulated). Of the 19 candidates
+  simulated as R7, R12 and R9, all with my lineup +12 or better and the partner's +0 or better, the
+  partner's title odds fall in 10 at the Lab's 7,500 sims (Rice for Waddle + Purdy: them -1.23 ±0.83
+  on a +17 lineup), and none passes. With the hindsight removed, two pass at 7,500 but still die at
+  the 800-sim screen, whose 2 SE bar was 2.3 and 2.7 pts on those two (Zay Flowers for Parker
+  Washington + Trevor Lawrence, as R12: +2.00 ±2.71 at 800, +2.31 ±0.93 at 7,500), so the screen
+  needs the same look once the simulator is fixed.
+- Should: set simulated lineups on what the manager can know (the projection, or a multiplier
+  revealed over the weeks), claim free agents in the baseline as the lineup already does, then
+  re-check that win-win swaps read FAIR.
+
+### MEDIUM
+
+**R2-2. Dynasty title odds count an IR-slot star as out for all of 2026.** taco `/6`, Christian
+Watson for A.J. Brown (Karl Havoc's IR slot): 2026 A 10.2% → 8.4% (-1.8), B +1.7, lineup -27 / +0.
+Brown's own Sleeper lines (the ones redraft uses) have him back in week 8 at about 15 a game,
+through the fantasy playoffs, which is exactly why a 4-0 contender buys him. The V7 fix removes him
+from both books (`reserve` filter in `championshipOdds`, `startableIds` without stash). Verdict is
+KTC FAIR 97% and unaffected, and the Finder excludes IR-slot players, but the title row, the number
+CLAUDE.md sends "should I make this trade" to, reads a playoff rental as a loss.
+
+### LOW
+
+- **L1. The simulator's baseline never claims free agents; a trade's what-if does.** Ferguson for E.
+  Wilson (`/1`, two players who never start, lineup +0 / +0): A +0.5 ±0.3 green. Dropping Ferguson
+  for Darren Waller with no trade at all: A +0.53. Mostly an amplifier of R2-1: with lineups set on
+  the projection the same swap reads +0.1, grey.
+- **L2. Two "strength Δ" readings disagree on the dynasty page.** taco `/3`, Allen for Tutu Atwell:
+  Post-Trade Strength Δ -34.4, Year-by-Year "Today" -60.6. The League `/2`, Kyler + Waddle for Drake
+  Maye: Post-Trade +18.2, "Today" -22.3 (lineup -36). The Today cell is the summed value of the
+  pieces (`projectSideValue`), while its note says "On-field strength change in each season".
+- **L3. The Finder calls a 4-0 team "rebuilding (tank)".** The League, JoeysYIDS (4-0): stance comes
+  from lineup-strength quintile only. The deal itself is defensible (their simulated title odds are
+  0.4%), the label reads wrong.
+- **L4. Dynasty verdict is value only when a trade empties QB in superflex.** The League `/2`, Kyler +
+  Bryce Young for Justin Jefferson (Caleb Doubtful, Dart on IR): CLOSE 77%, the value gap alone,
+  beside lineup -247 this week and -12.0 title pts over 3 seasons. By design (KTC is the verdict);
+  the title rows carry the cost.
+- **L5. The CLI does not claim free agents; the Lab does.** `trade-sim.js` slices no
+  `tradeTitleWhatIf` / `waiverAdds`, and its header and CLAUDE.md still say to `add` the free agent
+  by hand, so a CLI scenario that empties a position prices differently from the Lab unless it does.
+- **L6. A failed data file reads as a clean FAIR.** With `weekly-rankings.js` refused by the
+  overloaded server, Phi Kap McPherson for Fairbairn showed lineup 0 → 0, 0.0% → 0.0% title odds and
+  FAIR, no warning. A flaky phone connection can do the same.
+- Note: the round-2 explanation of A.J. Brown for Metcalf cites his week 15 to 17 lines, but
+  `simPool` uses a flat per-game rate (`pts / games`); his 14.98 a game against Metcalf's ~10.2 in
+  the playoff weeks is the real reason. The verdict stands.
+
+### Sanity trades (2026 title odds before → after, A = Trevor)
+
+| League | Trade | Verdict | A | B | Agree? |
+|---|---|---|---|---|---|
+| Phi Kap | CMC for Malachi Fields (/1) | WIN FOR B | 5.4 → 2.3 | 4.6 → 8.4 | Yes |
+| Phi Kap | Rice for Tee Higgins (/8) | FAIR | 5.4 → 5.7 | 9.1 → 9.0 | Yes |
+| Phi Kap | Burden for M. Golden (/8) | CLOSE 0.5 to B | 5.4 → 5.2 | 9.1 → 9.9 | Yes |
+| Phi Kap | Burden + Corum for Lamb (/8) | WIN FOR A | 5.4 → 6.5 | 9.1 → 8.0 | Yes |
+| Phi Kap | Rice for Waddle + Purdy (/9), lineups +14 / +17 | WIN FOR A | 5.4 → 6.9 | 14.8 → 13.6 | No, FAIR (R2-1) |
+| Phi Kap | Kraft + Ferguson for Golden, TE emptied (/8) | FAIR | 5.4 → 6.1 | 9.1 → 9.1 | No, CLOSE to B (R2-1) |
+| Phi Kap | McPherson + Black for Hall, K emptied (/1) | WIN FOR A | 5.4 → 8.0 | 4.6 → 2.8 | Yes |
+| Phi Kap | Goff + Shough for Warren, QB emptied (/1) | FAIR | 5.4 → 6.3 | 4.6 → 5.7 | Partly, lean A (R2-1) |
+| Phi Kap | A.J. Brown (IR) for DK Metcalf (/2) | WIN FOR B | 5.4 → 4.2 | 6.6 → 7.7 | Yes |
+| Phi Kap | Shough + Downs for Jayden Daniels (Out, IR slot) (/6) | WIN FOR B | 5.4 → 4.4 | 7.2 → 8.3 | Yes |
+| Phi Kap | McPherson for Fairbairn, K swap (/4) | FAIR | 5.4 → 5.4 | 7.4 → 7.4 | Yes |
+| Phi Kap | NYG for Seattle, DEF swap (/4) | CLOSE 16 to A | 5.4 → 5.4 | 7.4 → 7.4 | Yes |
+| taco | Josh Allen for Tutu Atwell (/3) | WIN FOR B 22% | 10.2 → 7.8 | 0.0 → 0.0 | Yes |
+| taco | Waddle for Tee Higgins (/1) | FAIR 99% | 10.2 → 8.6 | 25.7 → 28.5 | Yes |
+| taco | Waddle + Downs for Ja'Marr Chase (/6) | FAIR 98% | 10.2 → 10.6 | 19.7 → 19.0 | Yes |
+| taco | Allen + Caleb + J. Love for Chase + Bowers, QB emptied (/6) | FAIR 97% | 10.2 → 10.3 | 19.7 → 13.5 | Yes (Brissett fills a 1QB slot) |
+| taco | Watson for A.J. Brown, IR slot (/6) | FAIR 97% | 10.2 → 8.4 | 19.7 → 21.4 | Verdict yes, title row no (R2-2) |
+| taco | Caleb (Doubtful) for Drake Maye (/6) | FAIR 100% | 10.2 → 10.5 | 19.7 → 19.0 | Yes |
+| taco | Jeremiyah Love for Derrick Henry (/1) | CLOSE 79% | 10.2 → 10.7 | 25.7 → 25.6 | Yes |
+| The League | Achane for Ja'Tavion Sanders (/1) | WIN FOR B 29% | 8.8 → 5.3 | 13.8 → 18.3 | Yes |
+| The League | DeVonta Smith for Garrett Wilson (/9) | FAIR 99% | 8.8 → 7.8 | 15.5 → 17.6 | Yes |
+| The League | Kyler + Waddle for Drake Maye (/2) | CLOSE 81% | 8.8 → 7.2 | 30.3 → 33.6 | Yes |
+| The League | Kyler + Bryce Young for Jefferson, no healthy QB (/2) | CLOSE 77% | 8.8 → 5.3 | 30.3 → 32.6 | Partly (L4) |
+| The League | Jaxson Dart (Out, IR slot) for Cam Ward (/2) | CLOSE 82% | 8.8 → 10.7 | 30.3 → 28.8 | Yes |
+| The League | Caleb (Doubtful) for Drake Maye (/2) | FAIR 100% | 8.8 → 10.4 | 30.3 → 30.0 | Yes |
+| The League | Nabers for Davante Adams (/2) | WIN FOR B 63% | 8.8 → 9.9 | 30.3 → 30.6 | Yes |
+
+taco and The League start no K or DEF, and none appears in their pools, so the K/DEF case applies
+to Phi Kap only.
+
+### Trade Finder vs Trade Lab
+
+- **Phi Kap**: 0 trades (R2-1), three runs.
+- **Password is taco** (2 rows, 90,002 packages, 12 simulated, ~19 s): Caleb Williams + 2027 R2 (Wood
+  Grain Grippers) for Chase Brown + Jameson Williams, Captain Insano, finder +5.8 ±1.3 / -2.6 ±0.7,
+  their FV 461 → 475; Lab identical on row click and two reloads, CLOSE 89%, lineup +138 / -161.
+  Same pieces for Rashee Rice + Jameson Williams: +4.6 ±1.2 / -2.1 ±0.7, Lab identical, FAIR 98%.
+- **The League** (8 rows, 184,063 packages, 20 simulated, ~40 s): Jadarian Price + Michael Mayer for
+  Jameson Williams + Mike Evans, 6am Tarp Pull, +5.9 ±1.3 / -3.2 ±0.9, FV 478 → 496, Lab identical,
+  FAIR 96%. 2027 R1 (Mother Shough'ers) + Bryce Young for Javonte Williams + Jared Goff, JoeysYIDS,
+  +5.2 ±1.2 / -0.3 ±0.3, FV 489 → 534, Lab identical, FAIR 99% (L3).
+- Both lists identical across two Finder runs. Every partner shown is a rebuilder, so each is gated
+  on FV, and FV rises by the site's own measure in all four.
+
+### Determinism
+
+Kaelon Black for Breece Hall (Phi Kap) and Jeremiyah Love for Derrick Henry (taco): three fresh
+sessions, a second Run title odds on the same page, and reversed click order, all identical. Rice
+for Waddle + Purdy identical in two sessions and in the direct simulator call.
+
+### Console, NaN, blanks
+
+Single-browser runs in all three leagues (trade, odds, Finder): zero console errors, no NaN,
+undefined, Infinity or null in the page text, no blank title, lineup or year cells. The only errors
+all session were `ERR_CONNECTION_REFUSED` from the overloaded local server (L6).
