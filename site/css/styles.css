@@ -3655,6 +3655,20 @@ table.data tbody tr.you td { color: var(--ink); font-weight: 700; }
 /* Section titles keep the gold display treatment; they only needed the shadow
    for the ink stroke to sit on turf without haloing. */
 .section-title { color: var(--gold); -webkit-text-stroke: 2px var(--ink); paint-order: stroke fill; }
+/* The same chalk and hard shadow as a shared class, for anything else that lands on the
+   field outside a plate: a link in a page-sub line, a caption over a table, a ghost button
+   in a filter row. Chalk measures 5.2:1 on #2c7a31 and 6.0:1 on #207029, the turf greens
+   text sits on, before the shadow. Put new on-turf text on this class, never a one-off color. */
+.on-turf,
+button.ghost.on-turf,
+a.on-turf { color: var(--chalk); text-shadow: 0 2px 0 rgba(0,0,0,.45); -webkit-text-stroke: 0; }
+a.on-turf { font-weight: 700; text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+a.on-turf:hover, a.on-turf:focus-visible { color: var(--gold); }
+button.ghost.on-turf:hover { background: rgba(0,0,0,.18); border-color: var(--chalk); }
+/* A caption inside a title plaque sits on the periwinkle band, and it inherited the plaque's
+   2px ink stroke: at 12px the stroke fills every counter and the words print as a dark
+   smear. Chalk with a soft shadow instead: 5.5:1 at the band's middle, where the text sits. */
+.page-title .tip { -webkit-text-stroke: 0; color: var(--chalk); text-shadow: 0 1px 0 rgba(20,16,60,.55); letter-spacing: 0; }
 
 /* ==========================================================================
    Backyard, second pass

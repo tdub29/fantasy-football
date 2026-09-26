@@ -99,3 +99,5 @@ Images: 7 problems (1 medium, 6 low). Screens: 24 problems (4 high, 7 medium, 13
 | t-1790321842708 | Fix contradictory rank labels, 128% blitz rate and stale copy | S9, S10, S17, S18, S20, S21, S22 |
 | t-1790321863222 | Table polish (SOS default sort, FAAB, roster badges, rankings gold) | S11, S13, S15, S19, S24 |
 | t-1790321883716 | Image asset cleanup and PWA icon fixes | I1 to I7 |
+
+**Fixed 2026-09-25: t-1790321822999 (S6, S7).** A caption inside a title plaque now drops the ink stroke (`.page-title .tip`, chalk with a soft shadow, 5.5:1 mid-band), and everything else on the field shares one `.on-turf` class (chalk plus the hard shadow: 5.2:1 on #2c7a31, 6.0:1 on #207029). Applied to the two Gibbs links on #sources, the transactions Refresh button and the Slot Grades Starters / Depth captions. Before and after at 1700 and 390 px: `notes/_shots-onturf-2026-09-25/`. Verifier 63/63; the Trade Lab redraft check times out about one run in four with or without this change.
