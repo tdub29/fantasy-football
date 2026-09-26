@@ -3819,7 +3819,7 @@ body::after {
   inset: 0 0 0 240px;
   z-index: -1;
   pointer-events: none;
-  background: url("../img/logo-512.png") center / clamp(220px, 34vw, 520px) auto no-repeat;
+  background: url("../img/logo-512.png") center / clamp(220px, 34vw, 512px) auto no-repeat; /* 512 = the file, no upscale */
   opacity: .09;
   filter: saturate(.72) contrast(.9);
 }

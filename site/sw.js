@@ -8,7 +8,7 @@
    baked rankings; live Sleeper data returns when back online.
 
    Bump the -vN suffix after a real change to force-refresh installed clients. */
-const CACHE = "fantasyhub-shell-v14";
+const CACHE = "fantasyhub-shell-v15";
 
 self.addEventListener("install", () => self.skipWaiting());
 
