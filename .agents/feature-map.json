@@ -43,8 +43,8 @@
         }
       ],
       "selector": "#main .leagues-table",
-      "assert": "(() => { const table=document.querySelector('#main .leagues-table'); const headers=[...table.querySelectorAll('thead th')].filter(x=>getComputedStyle(x).display!=='none').map(x=>x.textContent.trim()); const rows=[...table.querySelectorAll('tbody tr')]; return document.documentElement.scrollWidth<=innerWidth+1 && headers.join('|')==='League|Record|Rank|PV' && rows.length===5 && rows.every(row=>getComputedStyle(row.querySelector('.league-table-meta')).display!=='none'); })()",
-      "notes": "Phone view keeps comparison readable without page or table overflow. Format moves below team name while dynasty-only detail stays on desktop.",
+      "assert": "(() => { const table=document.querySelector('#main .leagues-table'); const headers=[...table.querySelectorAll('thead th')].filter(x=>getComputedStyle(x).display!=='none').map(x=>x.textContent.trim()); const rows=[...table.querySelectorAll('tbody tr')]; return document.documentElement.scrollWidth<=innerWidth+1 && headers.join('|')==='League|Record|Rank|PV / VOR' && rows.length===5 && rows.every(row=>getComputedStyle(row.querySelector('.league-table-meta')).display!=='none') && rows.filter(row=>row.querySelector('.unit-vor')).length===2 && rows.every(row=>{ const u=row.querySelector('.unit-vor'); if(!u) return true; const r=u.getBoundingClientRect(), c=u.closest('td').getBoundingClientRect(); return r.left>=c.left-1 && r.right<=c.right+1; }); })()",
+      "notes": "Phone view keeps comparison readable without page or table overflow. Format moves below team name while dynasty-only detail stays on desktop. The value column holds two units, dynasty PV and redraft VOR, so its header names both and each of the two redraft rows carries a VOR stamp that fits inside its cell.",
       "viewport": {
         "width": 390,
         "height": 844

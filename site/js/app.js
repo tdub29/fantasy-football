@@ -1464,7 +1464,8 @@
     // Sleeper Market: Risers / Fallers panel
     if (tab === 'market' && window.SLEEPER_MARKET) {
       const market = window.SLEEPER_MARKET;
-      const top = (arr, n=8) => arr.slice(0, n);
+      // DSTs and kickers are not dynasty assets (CLAUDE.md), so they never list here.
+      const top = (arr, n=8) => arr.filter(m => !['DEF', 'K'].includes((window.PLAYERS[m.player_id] || {}).pos)).slice(0, n);
       const renderMover = (m, sign) => {
         const sp = window.PLAYERS[m.player_id];
         const ranked = sp ? (rankIndex().bySleeperId.get(m.player_id) || rankIndex().byName.get(norm(sp.name))) : null;
@@ -2181,8 +2182,7 @@
     const mine = (window.LEAGUES || []).map(lg => { const me = lg.rosters.find(r => r.is_me); return me ? { lg, me } : null; }).filter(Boolean);
     if (mine.length) {
       const rowsData = mine.map(({ lg, me }) => {
-        const ranking = lg.rosters.map(r => ({ id: r.roster_id, s: startingStrength(r, lg) })).sort((a, b) => b.s - a.s);
-        const rank = ranking.findIndex(x => x.id === me.roster_id) + 1;
+        const rank = lineupRankInLeague(lg, me.roster_id);
         const pv = startingStrength(me, lg);
         // Redraft has no year-4 lineup to project, so FV and stance stay blank
         // rather than rendering a number that prices a career the manager
@@ -2199,8 +2199,8 @@
         h('table', { class:'data leagues-table' },
           h('thead', null, h('tr', null,
             h('th', null, 'League'), h('th', null, 'Format'), h('th', { class:'right' }, 'Record'),
-            h('th', { class:'right' }, 'Rank'),
-            h('th', { class:'right', title:'Present Value: your best LEGAL starting lineup today (positions respected, taxi/IR/Out benched).' }, 'PV'),
+            h('th', { class:'right', title:'Lineup rank: your best legal starting lineup against the league, picks excluded. The roster Snapshot also shows roster value rank, picks included.' }, 'Rank'),
+            h('th', { class:'right', title:'Present Value: your best LEGAL starting lineup today (positions respected, taxi/IR/Out benched). Dynasty rows are KTC asset value (PV); redraft rows are season value over replacement (VOR), a different unit, so compare the rank, not the number.' }, 'PV / VOR'),
             h('th', { class:'right', title:'Future Value: the same lineup 4 years out, each player aged by his position curve, with owned picks folded in once they convert. A converted pick is discounted in its rookie year (0.75x, ramping to parity) because dynasty value prices a whole career, not one season.' }, 'FV'),
             h('th', null, 'Stance'), h('th', null, 'Biggest Need'))),
           h('tbody', null, ...rowsData.map(d => h('tr', { style:{ cursor:'pointer' }, onclick:()=>navigate(`#league/${d.lg.id}`) },
@@ -2215,7 +2215,7 @@
               ? 'Dynasty PV: KTC asset value of your best legal starting lineup.'
               : 'Redraft PV: season value over replacement of your best legal starting lineup. A different unit from the dynasty rows, so compare the rank, not the number.' },
               fmt.decimal(d.pv, 0),
-              d.dyn ? null : h('span', { class:'muted', style:{ fontSize:'0.7rem', marginLeft:'4px' } }, 'vor')),
+              d.dyn ? null : h('span', { class:'badge unit-vor' }, 'VOR')),
             h('td', { class:'right tnum', style:{ color:'var(--fg-3)' }, title: d.dyn ? null : 'Redraft league, no future value.' }, d.dyn ? fmt.decimal(d.fv, 0) : '·'),
             h('td', null, d.dyn
               ? h('span', { class:`badge stance-${d.stance}`, style:{ color: stanceTone[d.stance] } }, STANCE_LABEL[d.stance] || d.stance)
@@ -2234,6 +2234,14 @@
   function rankInLeague(league, rosterId) {
     const all = league.rosters.map(r => ({ id:r.roster_id, score: computeRosterStrength(r, league).total }));
     all.sort((a,b)=>b.score-a.score);
+    return all.findIndex(x => x.id === rosterId) + 1;
+  }
+  // Best legal starting lineup, picks excluded: the rank Dashboard and Standings show.
+  // rankInLeague above is total roster value WITH picks, a different model, so a
+  // screen that prints one should say which.
+  function lineupRankInLeague(league, rosterId) {
+    const all = league.rosters.map(r => ({ id:r.roster_id, s: startingStrength(r, league) }));
+    all.sort((a,b)=>b.s-a.s);
     return all.findIndex(x => x.id === rosterId) + 1;
   }
 
@@ -3949,8 +3957,12 @@
     return { tag:'BALANCED', desc:'No position dominates.' };
   }
   function classifyTwoYearOutlook(valueTier, valueArchetype, draftPicksCount) {
+    const youngAndPickRich = valueArchetype.tag === 'FUTURE VALUE' && draftPicksCount >= 4;
     if (['ELITE','CHAMPIONSHIP'].includes(valueTier.tier) && valueArchetype.tag === 'WIN-NOW') return { tag:'CONTEND', desc:'Window is open, go for it.' };
-    if (valueTier.tier === 'REBUILD' || (valueArchetype.tag === 'FUTURE VALUE' && draftPicksCount >= 4)) return { tag:'REBUILD', desc:'Long-term runway; accumulate young talent + picks.' };
+    // Young and pick-rich at the top of the league is rising, not rebuilding. Printing
+    // REBUILD beside an ELITE tier read as the page contradicting itself.
+    if (youngAndPickRich && ['ELITE','CHAMPIONSHIP','CONTENDING'].includes(valueTier.tier)) return { tag:'RISING', desc:'Young core plus 4+ picks: competitive now and still gaining value.' };
+    if (valueTier.tier === 'REBUILD' || youngAndPickRich) return { tag:'REBUILD', desc:'Long-term runway; accumulate young talent + picks.' };
     if (valueTier.tier === 'CONTENDING' && valueArchetype.tag !== 'WIN-NOW') return { tag:'RELOAD', desc:'Pivot ready, could swing either direction.' };
     return { tag:'CONTEND', desc:'In position to compete.' };
   }
@@ -4629,6 +4641,7 @@
     const rosterDynasty = isDynastyLeague(lg);
     const s = computeRosterStrength(r, lg);
     const myRank = rankInLeague(lg, r.roster_id);
+    const lineupRank = lineupRankInLeague(lg, r.roster_id);
     const rp = getRosterPlayers(r);
     const cs = s.rankedPlayers.filter(p=>p.ranked.category==='cornerstone').length;
     const fnd = s.rankedPlayers.filter(p=>p.ranked.category==='foundational').length;
@@ -4675,7 +4688,7 @@
         h('div', { class:'br-tier-value' }, valueTier.tier),
         h('div', { class:'br-tier-desc' }, valueTier.desc),
         h('div', { class:'br-arch-line' },
-          h('span', { class:'br-arch', title: valueArchetype.desc }, h('span', { class:'br-arch-tag' }, valueArchetype.tag), ' value'),
+          h('span', { class:'br-arch', title: valueArchetype.desc }, h('span', { class:'br-arch-tag' }, valueArchetype.tag), ' core'),
           h('span', { class:'br-arch-sep' }, '·'),
           h('span', { class:'br-arch', title: rosterArchetype.desc }, h('span', { class:'br-arch-tag' }, rosterArchetype.tag), ' roster'),
           rosterDynasty ? h('span', { class:'br-arch-sep' }, '·') : null,
@@ -4684,9 +4697,9 @@
       ),
       h('div', { class:'br-stat' },
         h('div', { class:'br-stat-num tnum' }, fmt.decimal(s.total,1)),
-        h('div', { class:'br-eyebrow' }, 'Strength'),
-        h('div', { class:'br-stat-sub' },
-          `Rank #${myRank} of ${lg.total_rosters}`,
+        h('div', { class:'br-eyebrow' }, rosterDynasty ? 'Roster value, picks included' : 'Roster value'),
+        h('div', { class:'br-stat-sub', title:'Every rostered asset summed, future picks included.' },
+          `Value rank #${myRank} of ${lg.total_rosters}`,
           (() => {
             // Liquidity: % of dynasty value sitting in future picks. Per
             // Dynasty Domain, >35% means you can't move until next offseason.
@@ -4702,6 +4715,8 @@
             }, `${pct}% picks`);
           })()
         ),
+        h('div', { class:'br-stat-sub', title:'Best legal starting lineup, picks excluded: the rank Dashboard and Standings show.' },
+          `Lineup rank #${lineupRank} of ${lg.total_rosters}`),
       ),
       // ===== Value Share (Dynasty Domain framework) =====
       // % of total league dynasty value (player-only) you hold. Baseline =
@@ -12564,6 +12579,17 @@
     return _seasonLoads[year];
   }
 
+  // Header definitions live in `title`, which a phone cannot hover, so every Stats
+  // Lab table also carries them as a collapsed key a thumb can open.
+  function statsColumnKey(cols, estimates) {
+    return h('details', { class:'card stats-lab-key' },
+      h('summary', null, 'Column key'),
+      h('dl', null, ...cols.filter(c => c.desc).flatMap(c => [
+        h('dt', null, c.label),
+        h('dd', null, c.desc + (estimates && estimates.has(c.key) ? ' This is an estimate, not a charted count.' : '')),
+      ])));
+  }
+
   // Shared sortable table for the Defense and Trends tabs: columns are
   // {key, label, get(row), fmt, desc, lowerBetter, tone(row)}.
   function statsTable(main, prefs, tabKey, rows, cols, defaultSort, rowName, onRow) {
@@ -12594,6 +12620,7 @@
         h('td', { class:'stats-lab-name' }, r._label),
         ...cols.map(c => h('td', { class:`right tnum ${c.tone ? c.tone(r) || '' : ''}` },
           c.show ? c.show(r) : statFmt(c.get(r), c.fmt)))))));
+    main.appendChild(statsColumnKey(cols));
     appendTable(main, tbl);
   }
 
@@ -12622,8 +12649,8 @@
       { key:'rbrush', label:'RB rush PPR/G', get:(r) => r.rushRB && r.rushRB.ppr_pg, fmt:'dec1', desc:'Rushing PPR allowed to running backs per game.' },
       { key:'ypc', label:'YPC', get:(r) => r.rushRB && r.rushRB.ypc, fmt:'dec1', desc:'Yards per carry allowed to running backs.' },
       { key:'epadb', label:'EPA/DB', get:(r) => r.pass && r.pass.epa_per_dropback, fmt:'dec2', desc:'EPA allowed per dropback. Higher is a softer pass defense.' },
-      { key:'press', label:'Pressure%', get:(r) => r.pass && r.pass.pressure_rate, fmt:'pct', lowerBetter:true, desc:'PFR hurries + QB hits + sacks per dropback. High pressure is a bad matchup for a QB.' },
-      { key:'blitz', label:'Blitz%', get:(r) => r.pass && r.pass.blitz_rate, fmt:'pct', desc:'PFR blitzes per dropback.' },
+      { key:'press', label:'Pressure%', get:(r) => r.pass && r.pass.pressure_rate, fmt:'pct', lowerBetter:true, desc:'Share of dropbacks where PFR charted the passer as pressured (hurried, hit or sacked), once per play. High pressure is a bad matchup for a QB.' },
+      { key:'blitz', label:'Blitz%', get:(r) => r.pass && r.pass.blitz_rate, fmt:'pct', desc:'Share of dropbacks where PFR charted a blitz, once per play, not once per blitzer.' },
       { key:'funnel', label:'Funnel', get:(r) => r.funnel || '', fmt:'text', desc:'Which position takes the largest share of targets against this defense, relative to league average.' });
     statsTable(main, prefs, 'Defense', rows, cols, { key:'WRppr', dir:'desc' }, 'Defense');
     main.appendChild(h('div', { class:'tip', style:{ marginTop:'10px' } },
@@ -12798,8 +12825,8 @@
     main.appendChild(pageHeader({
       eyebrow:'STATS LAB',
       title:'Advanced stats',
-      sub:`${A.season} regular season through week ${A.throughWeek}. ${A.source}. `
-        + `Columns marked (est) are estimates; hover any header for its definition.`,
+      sub:[`${A.season} regular season through week ${A.throughWeek}. (est) marks an estimate.`,
+        h('span', { class:'stats-lab-sub-more' }, ' Open the Column key above a table for what each header means.')],
       actions:[h('label', { class:'stats-lab-toggle stats-lab-season' }, 'Season ',
         h('select', { 'aria-label':'Season', onchange:(e) => {
           prefs.season = Number(e.target.value); saveStatsLabPrefs(prefs); viewStats(posArg);
@@ -12914,9 +12941,11 @@
           return h('td', { class:`right tnum${pr == null ? '' : pr >= 0.8 ? ' delta-up' : pr <= 0.2 ? ' delta-down' : ''}` },
             statFmt(v, c.fmt));
         })))));
+    main.appendChild(statsColumnKey(shown, estimates));
     appendTable(main, tbl);
     main.appendChild(h('div', { class:'tip', style:{ marginTop:'10px' } },
-      'Green is the top fifth of the players shown and red the bottom fifth, flipped where lower is better. '
+      `Source: ${A.source}. `
+      + 'Green is the top fifth of the players shown and red the bottom fifth, flipped where lower is better. '
       + 'Route% and TPRR/YPRR are estimates because public route data stops after 2025. '
       + (A.xfpSource === 'lookup' ? 'xFP prices each target and carry at the league average for plays like it'
         : 'xFP is what ffopportunity\'s play-by-play model expects his targets and carries to score')
@@ -12992,6 +13021,9 @@
   // Fetched once per session and shared by the picker and the in-draft switcher,
   // so hopping between drafts never waits on a round trip.
   let _myDrafts = null, _myDraftsPromise = null;
+  // Sleeper's draft status enum in words; the raw value printed "pre_draft".
+  const DRAFT_STATUS = { pre_draft:'Pre-draft', drafting:'Drafting', paused:'Paused', complete:'Done' };
+  const draftStatusLabel = (st) => DRAFT_STATUS[st] || String(st || '').replace(/_/g, ' ');
   function myDrafts() {
     if (_myDrafts) return Promise.resolve(_myDrafts);
     if (_myDraftsPromise) return _myDraftsPromise;
@@ -13385,7 +13417,7 @@
         nav.appendChild(h('a', { href:`#draft/${d.draft_id}` },
           h('span', { class:'icon' }, d.status === 'complete' ? '○' : '◉'),
           h('span', { class:'nav-label' }, `${(d.metadata || {}).name || d.draft_id} · ${d._season}`),
-          h('span', { class:'nav-tag' }, `${s.teams || '?'}T ${d.status === 'complete' ? 'done' : d.status}`),
+          h('span', { class:'nav-tag' }, `${s.teams || '?'}T ${draftStatusLabel(d.status)}`),
         ));
       }
       mine.appendChild(nav);
@@ -13489,7 +13521,7 @@
         if (seen.has(o.draft_id)) continue;
         seen.add(o.draft_id);
         switcher.appendChild(h('option', { value:`#draft/${o.draft_id}` },
-          `${(o.metadata || {}).name || o.draft_id} · ${o._season} · ${o.status === 'complete' ? 'done' : o.status}`));
+          `${(o.metadata || {}).name || o.draft_id} · ${o._season} · ${draftStatusLabel(o.status)}`));
       }
       for (const r of draftRecent()) {
         if (seen.has(r.id)) continue;
