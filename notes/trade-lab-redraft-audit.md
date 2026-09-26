@@ -813,3 +813,124 @@ for Waddle + Purdy identical in two sessions and in the direct simulator call.
 Single-browser runs in all three leagues (trade, odds, Finder): zero console errors, no NaN,
 undefined, Infinity or null in the page text, no blank title, lineup or year cells. The only errors
 all session were `ERR_CONNECTION_REFUSED` from the overloaded local server (L6).
+
+---
+
+## Fixed, round 3 (2026-09-26, branch fix-tradelab-r3)
+
+**Bottom line: the title simulator now sets every simulated week's lineup on the projection, then
+draws that week's outcomes for the starters only, so a bench body is worth the weeks he fills in and
+nothing more.** Rice for Waddle + Purdy reads FAIR, the Kraft throw-in no longer moves the verdict,
+and Goff + Shough for Warren reads CLOSE to A. A dynasty IR-slot player now counts from the week his
+lines resume, on his owner's book and a receiver's. The redraft Finder still shows nothing for
+tdub1329, now for the right reason: both deals that reach the simulation lower the partner's odds.
+
+Re-run on `python -m http.server 8891` serving this worktree's `site/`, Python Playwright, Chromium
+headless, clicks on real pool rows, `app.js` patched in memory only to expose internals. Before =
+`0614484` (app.js md5 `fbf3d400...`, the file the round-2 verifier tested), served from a saved copy;
+after = this branch. Every before number below reproduces the verifier's. Zero console errors in
+every run.
+
+| Finding | Repro (A = Trevor, after Run title odds) | Before | After |
+|---|---|---|---|
+| R2-1 (H) | Phi Kap `/9`, Rashee Rice for Jaylen Waddle + Brock Purdy, lineups +14 / +17 | WIN FOR A, edge 1.4 to A; A 5.4% → 6.9% (+1.5 ±0.6), B 14.8% → 13.6% (-1.2 ±0.8) | **FAIR**, lineup edge 1, even; A 5.8% → 6.4% (+0.6 ±0.6, grey), B 13.2% → 13.1% (-0.1 ±0.8, grey) |
+| R2-1 (H) | `/8`, Tucker Kraft for Matthew Golden | CLOSE 15 to B; A -0.3 ±0.5, B +0.4 ±0.6 | CLOSE 0.6 to B; A -1.2 ±0.5 (5.8% → 4.6%), B +0.0 ±0.6 |
+| R2-1 (H) | same, plus Terrance Ferguson (never starts) on Side A | **FAIR**; A +0.7 ±0.5 (green), B +0.0 | **CLOSE 15 to B**; A -0.6 ±0.6 (grey), B +0.1 ±0.6 |
+| R2-1 (H) | `/1`, Jared Goff + Tyler Shough for Tyler Warren, lineups -8 / -38 | FAIR; A +0.9 ±0.6, B +1.2 ±0.5 (both green) | **CLOSE 15 to A**; A +0.1 ±0.6 (grey), B -0.7 ±0.5 (red) |
+| L1 | `/1`, Terrance Ferguson for Emanuel Wilson, lineups +0 / +0 | A +0.5 ±0.3 (green) | A +0.1 ±0.3, B +0.2 ±0.2 (both grey), FAIR |
+| R2-2 (M) | taco `/6`, Christian Watson for A.J. Brown (IR slot, back week 8) | 2026 A 10.2% → 8.4% (-1.8 ±0.8, red), B +1.7 ±1.1; 3 seasons -2.8 / +2.6 | 2026 A 10.8% → 10.8% (-0.0 ±1.0, grey), B +1.0 ±1.2 (grey); 3 seasons -2.0 / +2.3 |
+| R2-1 (H) | Redraft Finder, tdub1329 | 0 trades, 2 simulated | 0 trades, 2 simulated (below) |
+| R2-1 (H) | Redraft Finder as R2, R9, R12, R4 (`is_me` flipped in memory) | 0, 0, 0, 0 | 0, 0, **1**, 0: R12 gets Zay Flowers for Parker Washington + Trevor Lawrence, +2.3 ±0.9 / +0.0 ±0.9 |
+
+The throw-in still moves my own number by +0.6, inside its band, and the verdict with it no longer
+moves. What is left is L1, not hindsight: shipping Ferguson too lets Side A claim a second free TE who
+projects above him, a claim the baseline never makes.
+
+Why tdub1329 still gets no Phi Kap deal: both candidates that reach the simulation are with Brown
+Boys, and at the Lab's 7,500 sims the partner loses on each. Rice for Waddle + Purdy: me +0.64 (SE
+0.32), them -0.09 (0.38). Christian McCaffrey for James Cook + Trevor Lawrence (lineups +12 / +20):
+me +0.75 (0.35), them -0.80 (0.44). The partner gate is right to refuse both.
+
+Sanity re-runs (after odds): CMC for Emanuel Wilson WIN FOR B (A 5.8% → 2.1%, B 5.9% → 9.9%);
+McPherson + Kaelon Black for Breece Hall WIN FOR A (A +2.9, B -2.3, the waiver-fill case); Burden for
+Golden CLOSE 0.7 to B (A -0.6, B +0.7); A.J. Brown for DK Metcalf WIN FOR B (A -1.7, B +1.6); Rice for
+Tee Higgins FAIR (A -0.4, B -0.0, grey); taco Waddle for Tee Higgins FAIR 99% (2026 A -1.0 grey, B +1.8).
+
+### Baseline title odds moved (expected)
+
+The Lab's own baseline run for tdub1329, seed 20260807, 7,500 sims redraft, 2,500 a season dynasty:
+
+| League | 2026 before → after | Later seasons |
+|---|---|---|
+| Phi Kap | 5.40% → 5.79% (+0.4) | none (redraft) |
+| Password is taco | 10.20% → 10.80% (+0.6) | 2027 8.48 → 9.08, 2028 8.96 → 9.00 |
+| The League | 8.76% → 8.28% (-0.5) | 2027 19.16 → 18.80, 2028 22.60 → 22.28 |
+| yuH | 17.32% → 24.04% (+6.7) | 2027 31.60 → 29.00, 2028 32.36 → 32.68 |
+
+Two causes, split with a lineup-fix-only build. The hindsight lineup inflated deep benches: The
+League's 49ers 30.3% → 25.0%, taco's Scrote Squad 25.7% → 21.4%, Phi Kap's Brown Boys 14.8% → 13.2%,
+while others gain (NatePackard12 15.5% → 20.8%). That alone moves my four leagues +0.4, +1.3,
+-0.3 and +0.6. The IR-slot fix is the rest, and it is nearly all of yuH: my IR slots hold Puka Nacua
+(Questionable, lines every week from week 3), Jayden Reed and Alec Pierce (Out, back in weeks 5 and 4), all
+of whom the old code left out of 2026. Wake N Baker gains the same way, 7.9% → 13.3% (Nico Collins and
+Zay Flowers in IR slots).
+
+### Trade Finder, tdub1329, top 3 (2026 title odds, mine then theirs, ±2 SE)
+
+Row 1 of each league was loaded into the Lab and run: identical numbers and bands.
+
+- **Phi Kap Fantasy**: 0 trades from 12,178 packages, 2 simulated (above).
+- **Password is taco** (5 rows, 90,002 packages, 15 simulated, 22.1 s): Caleb Williams + 2027 R2 (Wood
+  Grain Grippers) for Chase Brown + Jameson Williams, Captain Insano, +7.6 ±1.4 / -2.5 ±0.7, 89%;
+  same for Rashee Rice + Jameson Williams, +5.0 ±1.3 / -2.0 ±0.8, 98%; Caleb Williams for Sam LaPorta,
+  Pre bobby Mud Dogs, +2.1 ±1.0 / +0.0, 84%.
+- **The League** (7 rows, 184,063 packages, 19 simulated, 31.7 s): Jadarian Price + Michael Mayer for
+  Jameson Williams + Mike Evans, 6am Tarp Pull, +6.2 ±1.3 / -2.2 ±0.9, 96%; 2027 R1 (Mother
+  Shough'ers) + Jadarian Price for Breece Hall + DK Metcalf, Mother Shough'ers, +4.9 ±1.2 / -1.6 ±0.7,
+  84%; 2027 R1 (Mother Shough'ers) + Bryce Young for Javonte Williams + Jared Goff, JoeysYIDS, +3.6
+  ±1.2 / -0.5 ±0.3, 99%.
+- **yuH** (7 rows, 124,060 packages, 21 simulated, 22.4 s): Parker Washington + KC Concepcion for
+  Chase Brown + Derrick Henry, mUrK yUh aHa, +5.9 ±1.7 / -1.8 ±0.7, 92%; same for Derrick Henry + Sam
+  LaPorta, +5.8 ±1.7 / -1.4 ±0.7, 98%; same for Christian McCaffrey + Davante Adams, MT EVEREST, +5.3
+  ±1.7 / -4.7 ±1.0, 96%. My yuH baseline is now 24.0%, so every gain reads smaller than round 2's.
+- Washington (redraft, the verify-app league): 2 rows, Kenneth Walker for Trey McBride + Brock Purdy
+  with Carter's Competitive Team, +2.0 ±0.7 / +1.6 ±0.7.
+
+### What changed, at the shared source
+
+- **R2-1.** `rollSeason` no longer sorts the pool on `v = mean x mult`; the pool stays in `simPool`'s
+  order, the projection, and `simWeek` fills each week's lineup from it through `fillLineup` after
+  byes, injuries and designations (absence from the weekly lines in redraft) take their players out.
+  Only the starters' outcomes are drawn and summed. The QB stack partner is also picked on the
+  projection. Common random numbers are untouched: every draw is still keyed on (player, season, slot),
+  so a bench body who never starts leaves every simulated season exactly as it was.
+- **Finder screen.** The 800-sim screen now asks my gain to clear 1 SE (`SIM.finderScreenSeMult`); the
+  re-run at the Lab's count still asks 2 SE, so a shown row reads what the Lab reads. At 2 SE the
+  screen was killing real +2 deals.
+- **R2-2.** In dynasty, `championshipOdds` keeps IR-slot players on both books and `simPool` starts
+  one when his weekly lines resume (`line.out`), or leaves him out when no line is left this season.
+  His rate stays the league-scored season blend / 17, per the dynasty ponytail. A.J. Brown is one of
+  the minority whose blend (167) already left out the missed games, so his dynasty rate reads 9.8 a
+  week against 15 on his lines. Moving dynasty onto the lines is the ponytail's upgrade path.
+
+Lows: **L2** the Year-by-Year note now says what the cells are (value received minus sent, not the
+lineup change). **L3** the Finder no longer calls a low-lineup partner "rebuilding"; it says his lineup
+ranks low and he is priced on the future. **L6** a redraft verdict reads INCOMPLETE, "Weekly
+projections did not load", when the weekly lines are missing, instead of a clean FAIR. **L4** is by
+design. **L1** (the baseline never claims free agents) and **L5** (the CLI claims none) are left: the
+fix is a waiver pool inside `championshipOdds` for every roster, which moves every baseline and needs
+new slices in `trade-sim.js` and three test harnesses. After R2-1 its effect sits inside the band (L1
+repro +0.1, the throw-in +0.6).
+
+Tests: new `site/js/trade-lab-r3.test.js`, each block fails on `0614484`: a TE2 who never starts moved
+his side's title odds +2.27 (now exactly 0, every simulated champion identical); a trade that gains
+both lineups read WIN FOR A (+4.2 / -2.2; now FAIR); an IR-slot WR back in week 6 added nothing
+(281.7 → 281.7 expected points; now counts from week 6, a week-9 returner adds nothing to the regular
+season but counts in the final, and a receiver books him too). `site/js/trade-finder.test.js` (a)
+pinned "w1 for t2 + r10", whose title gain was mostly r10's hindsight hedge from T2's bench (+3.9 at
+the Lab's count before, +1.8 now), and two better packages with T2 now outrank it under the per-partner
+cap; it now asserts a multi-piece package for a TE with T2 (the finder offers w1 + w3 for r3 + t3,
++5.2). No feature-map assertion encoded the old behavior and none changed.
+
+Gates: `verify-app.py` 64/64 VERIFIED; `check-mobile-layout.py` 390 and 360 MOBILE LAYOUT OK;
+`node --check site/js/app.js` clean; 34/34 `site/js/*.test.js` pass (33 plus `trade-lab-r3.test.js`).
