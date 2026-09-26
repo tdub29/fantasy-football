@@ -5935,6 +5935,48 @@ table.data.stats-compare tbody td.delta-up { color: var(--green); font-weight: 8
 .loc-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); gap: 14px 18px; }
 .loc-tile { min-width: 0; }
 .loc-tile-name { font-weight: 800; color: var(--fg-0); margin-bottom: 4px; }
+/* Routes tab: two route tree tiles, side by side on a desktop, stacked on a phone. */
+.rt-span { margin: 10px 0; }
+.rt-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 14px; }
+.rt-tile { min-width: 0; padding: 10px 12px; font-size: 0.8rem; display: flex; flex-direction: column; gap: 6px; }
+/* Grid cells, not a stack: the generic `.card + .card` margin would drop tile B. */
+.rt-tiles > .card + .card { margin-top: 0; }
+.rt-ctl { margin: 0; }
+.rt-ctl :is(input, select) { padding: 4px 8px; }
+.rt-ctl button { padding: 3px 8px; }
+.rt-ctl > .rt-find { flex: 1 1 180px; min-width: 0; max-width: 260px; }
+/* A native select is as wide as its longest option; the unavailable ones carry a reason. */
+.rt-ctl .stats-lab-toggle { min-width: 0; max-width: 100%; }
+.rt-ctl select { min-width: 0; max-width: 100%; text-overflow: ellipsis; }
+.rt-seasons { margin: 0; }
+.rt-head { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+.rt-player { font-size: 1.05rem; font-weight: 800; color: var(--fg-0); }
+.rt-title { font-weight: 800; color: var(--fg-1); font-size: 0.72rem; letter-spacing: .06em; text-transform: uppercase; }
+.rt-body .loc-line { margin: 0; }
+.rt-body .chart-wrap svg { max-width: 440px; margin: 0 auto; }
+.rt-svg .rt-yard { stroke: var(--bg-3); stroke-width: 1; }
+.rt-svg .rt-los { stroke: var(--fg-3); stroke-width: 1.5; stroke-dasharray: 6 4; }
+.rt-svg .rt-mark { font-size: 9.5px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; fill: var(--fg-3); }
+.rt-svg .rt-stem { stroke: var(--ink); stroke-width: 3; stroke-linecap: round; }
+.rt-svg .rt-spoke path { fill: none; stroke-linecap: butt; stroke-linejoin: round; }
+.rt-svg .rt-spoke { cursor: pointer; }
+.rt-svg .rt-ghost { opacity: .55; }
+/* A halo in the card face, so a label reads clean where it crosses a yard line. */
+.rt-svg :is(.rt-lbl, .rt-cap) { paint-order: stroke; stroke: var(--bg-1); stroke-width: 3px; stroke-linejoin: round; }
+.rt-svg .rt-lbl { font-size: 11.5px; font-weight: 700; fill: var(--fg-1); }
+.rt-svg .rt-val { font-size: 12.5px; font-weight: 800; }
+.rt-svg .rt-cap { font-size: 10px; fill: var(--fg-2); }
+.rt-svg .rt-wr { fill: var(--gold); stroke: var(--ink); stroke-width: 2; }
+.rt-other { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 0.75rem; color: var(--fg-1); }
+.rt-none { padding: 18px 4px; }
+.rt-cmp { margin-top: 14px; padding: 10px 12px; font-size: 0.8rem; }
+table.data.rt-cmp-table { font-size: 12px; width: auto; min-width: min(100%, 420px); }
+.rt-cmp-table th[scope=row] { text-align: left; font-weight: 700; white-space: nowrap; }
+table.data.rt-cmp-table thead th { white-space: normal; text-transform: none; letter-spacing: 0; vertical-align: bottom; }
+table.data.rt-cmp-table td.rt-above { font-weight: 800; color: var(--fg-0); }
+table.data.rt-cmp-table td.rt-dnq { font-style: italic; color: var(--fg-3); }
+.rt-cmp-table tbody :is(th, td) { padding: 6px 10px; }
+.rt-foot { margin-top: 10px; }
 @media (pointer: coarse) {
-  .stats-lab-charts button { min-height: 40px; min-width: 40px; }
+  .stats-lab-charts button, .rt-ctl button { min-height: 40px; min-width: 40px; }
 }

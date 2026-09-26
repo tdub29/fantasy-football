@@ -11271,7 +11271,8 @@
       log,
       h('div', { class:'tip', style:{ marginTop:'6px' } },
         `Ranks are among ${pos}s with a real share of the work. (est) columns are estimates. `,
-        h('a', { href:`#stats/${pos}` }, 'Open Stats Lab')));
+        h('a', { href:`#stats/${pos}` }, 'Open Stats Lab'),
+        RT_POS.includes(pos) ? [' · ', h('a', { href:'#stats/Routes', class:'rt-card-link', onclick:() => rtOpenFor(sleeper.id) }, 'Targeted route tree')] : null));
   }
 
   // Season fantasy projection for the modal: pts from every source + the
@@ -13061,6 +13062,241 @@
     return Object.fromEntries(COV_TEAM_KEYS.map(k => [`cov_${k}`, n ? v.dcov[ix(k)] / n : null]));
   }
 
+  // ---- Routes tab: the Data Suite route tree, two tiles side by side, each its
+  // own player, season and metric, over coverage-YYYY.js targetedRoutes
+  // ([tgt, rec, yds, td, epa, air] per nflverse route label). Participation
+  // charts a route only for the receiver the ball went to, so every tree here
+  // is TARGETED routes and every rate is per target, never per route run.
+  // ---- route tree math: pure helpers, unit-tested in site/js/route-tree.test.js
+  // The Data Suite's eight spokes over nflverse's labels. Backfield and gadget
+  // routes are listed under the tree instead of drawn.
+  const RT_SPOKES = [
+    { k:'GO', label:'Go', src:['GO'] }, { k:'POST', label:'Post', src:['POST'] }, { k:'CORNER', label:'Corner', src:['CORNER'] },
+    { k:'IN', label:'In/Dig', src:['IN/DIG'] }, { k:'OUT', label:'Out', src:['QUICK OUT', 'DEEP OUT'] },
+    { k:'HITCH', label:'Hitch', src:['HITCH/CURL'] }, { k:'CROSS', label:'Crosser', src:['SHALLOW CROSS/DRAG'] }, { k:'SLANT', label:'Slant', src:['SLANT'] },
+  ];
+  const RT_OTHER = [{ k:'SCREEN', label:'Screen', src:['SCREEN'] }, { k:'SWING', label:'Swing', src:['SWING'] },
+    { k:'WHEEL', label:'Wheel', src:['WHEEL'] }, { k:'ANGLE', label:'Texas/Angle', src:['TEXAS/ANGLE'] }];
+  const RT_METRICS = [['share', 'Target share'], ['tgt', 'Targets'], ['catch', 'Catch rate'], ['ypt', 'Yards per target'],
+    ['air', 'Air yards per target'], ['epa', 'EPA per target'], ['td', 'TDs']];
+  const RT_RATE = new Set(['catch', 'ypt', 'air', 'epa']);
+  const RT_POOL_MIN = 20, RT_ROUTE_MIN = 5;   // season targets to be in the pool; route targets for a rate to rank
+  function rtSum(tree, src) {
+    const o = [0, 0, 0, 0, 0, 0];
+    for (const r of src) { const a = (tree || {})[r]; if (a) for (let i = 0; i < 6; i++) o[i] += a[i] || 0; }
+    return o;
+  }
+  // share is over ALL his targets, charted route or not, as the Coverage tab's Share is.
+  function rtValue(a, metric, total) {
+    const d = (x, y) => y ? x / y : null;
+    if (metric === 'share') return d(a[0], total);
+    if (metric === 'tgt') return a[0];
+    if (metric === 'td') return a[3];
+    if (metric === 'catch') return d(a[1], a[0]);
+    if (metric === 'ypt') return d(a[2], a[0]);
+    if (metric === 'air') return d(a[5], a[0]);
+    return d(a[4], a[0]);
+  }
+  // Everyone at `pos` with RT_POOL_MIN+ targets that season: what a percentile and an average compare to.
+  function rtPool(C, pos) {
+    const it = C.fields.R.indexOf('tgt'), out = [];
+    for (const [sid, v] of Object.entries(C.players)) {
+      const total = v.p === pos && v.R && v.R[0] ? v.R[0][it] : 0;
+      if (total >= RT_POOL_MIN) out.push({ sid, tree:C.targetedRoutes[sid] || {}, total });
+    }
+    return out;
+  }
+  // One route for one player. A rate ranks only on RT_ROUTE_MIN+ targets, his and
+  // everyone's he is ranked against; a count ranks the whole pool, zeros included.
+  // The average is the pool's mean, or for a rate the pool's pooled targets.
+  function rtRate(pool, a, total, src, metric) {
+    const rate = RT_RATE.has(metric), v = rtValue(a, metric, total), ok = v != null && (!rate || a[0] >= RT_ROUTE_MIN);
+    const vals = [], sum = [0, 0, 0, 0, 0, 0];
+    for (const m of pool) {
+      const b = rtSum(m.tree, src);
+      for (let i = 0; i < 6; i++) sum[i] += b[i];
+      if (!rate || b[0] >= RT_ROUTE_MIN) vals.push(rtValue(b, metric, m.total));
+    }
+    const avg = rate ? rtValue(sum, metric, 0) : vals.length ? vals.reduce((x, y) => x + y, 0) / vals.length : null;
+    return { v, ok, pct:ok && vals.length >= 5 ? chartPct(vals, v) : null, avg };
+  }
+  // ---- end route tree math
+  // Not in any public data: they need every route charted, which only paid vendors do.
+  const RT_UNAVAILABLE = [['sep', 'Separation', 'no public per-route tracking'],
+    ['win', 'Win rate', 'paid hand-charting only'], ['rr', 'Routes run', 'only targeted routes are public']];
+  const RT_POS = ['WR', 'TE', 'RB'];
+  const rtFmt = (v, m) => v == null ? '·' : m === 'share' ? `${(v * 100).toFixed(1)}%` : m === 'catch' ? `${Math.round(v * 100)}%`
+    : m === 'epa' ? (v >= 0 ? '+' : '') + v.toFixed(2) : m === 'ypt' || m === 'air' ? v.toFixed(1) : String(v);
+  const rtTotal = (C, v) => (v && v.R && v.R[0] ? v.R[0][C.fields.R.indexOf('tgt')] : 0);
+
+  // The tree, drawn as the Data Suite draws it: receiver split left, ball to his
+  // right, so inside is +x. Arrow width is targets, color the metric's percentile.
+  function rtTree(C, sid, v, tree, metric, season) {
+    const F = C.fields.R, all = v.R[0], total = all[F.indexOf('tgt')], pool = rtPool(C, v.p), f = (x) => x.toFixed(1);
+    const mlabel = RT_METRICS.find(m => m[0] === metric)[1];
+    const rows = RT_SPOKES.concat(RT_OTHER).map(sp => { const a = rtSum(tree, sp.src); return { sp, a, ...rtRate(pool, a, total, sp.src, metric) }; });
+    const spokes = rows.slice(0, RT_SPOKES.length), other = rows.slice(RT_SPOKES.length);
+    const charted = rows.reduce((s, r) => s + r.a[0], 0), maxT = Math.max(1, ...spokes.map(r => r.a[0]));
+    const W = 340, H = 362, cx = 132, los = 334;
+    // [path, point the last segment leaves from, tip, label x, label y, anchor]
+    const geo = {
+      GO:     [`M${cx} 150 L${cx} 66`, [cx, 150], [cx, 66], cx, 30, 'middle'],
+      POST:   [`M${cx} 150 L${cx + 78} 78`, [cx, 150], [cx + 78, 78], cx + 88, 62, 'start'],
+      CORNER: [`M${cx} 150 L${cx - 70} 82`, [cx, 150], [cx - 70, 82], cx - 74, 46, 'middle'],
+      IN:     [`M${cx} 186 L${cx + 128} 186`, [cx, 186], [cx + 128, 186], cx + 137, 161, 'end'],
+      OUT:    [`M${cx} 214 L${cx - 98} 214`, [cx, 214], [cx - 98, 214], 6, 190, 'start'],
+      HITCH:  [`M${cx} 244 L${cx - 22} 266`, [cx, 244], [cx - 22, 266], cx - 34, 272, 'end'],
+      SLANT:  [`M${cx} 300 L${cx + 70} 248`, [cx, 300], [cx + 70, 248], cx + 82, 240, 'start'],
+      CROSS:  [`M${cx} 318 Q${cx + 44} 314 ${cx + 138} 300`, [cx + 44, 314], [cx + 138, 300], W - 6, 274, 'end'],
+    };
+    let s = `<svg class="chart-svg rt-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="${chartEsc(`${v.n}, ${mlabel.toLowerCase()} by targeted route, ${season}`)}">`;
+    for (let y = los - 46; y > 20; y -= 46) s += `<line class="rt-yard" x1="0" x2="${W}" y1="${y}" y2="${y}"/>`;
+    s += `<line class="rt-los" x1="0" x2="${W}" y1="${los}" y2="${los}"/><text class="rt-mark" x="6" y="${los + 16}">LOS</text>`
+      + `<text class="rt-mark" x="${W - 6}" y="${los + 16}" text-anchor="end">ball side →</text>`
+      + `<line class="rt-stem" x1="${cx}" y1="${los}" x2="${cx}" y2="150"/>`;
+    spokes.forEach((r, i) => {
+      const [d, from, [ex, ey], lx, ly, anchor] = geo[r.sp.k], n = r.a[0];
+      const col = !n || !r.ok ? 'var(--fg-3)' : r.pct != null ? locBand(r.pct) : 'var(--band-deep)';
+      const w = n ? 2.5 + 8 * n / maxT : 1.5, len = Math.hypot(ex - from[0], ey - from[1]), ux = (ex - from[0]) / len, uy = (ey - from[1]) / len, hw = w / 2 + 3.5;
+      const cap = !n ? 'no targets' : [r.pct != null ? chartOrd(r.pct) : r.ok ? null : 'DNQ', metric === 'tgt' ? null : `${n} tgt`].filter(Boolean).join(' · ');
+      s += `<g class="rt-spoke${!n ? ' rt-ghost' : r.ok ? '' : ' rt-dnq'}" data-i="${i}" data-route="${r.sp.k}">`
+        + `<path d="${d}" style="stroke:${col}" stroke-width="${f(w)}"${n && r.ok ? '' : ' stroke-dasharray="4 3"'}/>`
+        + `<polygon points="${f(ex + ux * 9)},${f(ey + uy * 9)} ${f(ex - uy * hw)},${f(ey + ux * hw)} ${f(ex + uy * hw)},${f(ey - ux * hw)}" style="fill:${col}"/>`
+        + `<text class="rt-lbl" x="${lx}" y="${ly}" text-anchor="${anchor}">${r.sp.label} <tspan class="rt-val" style="fill:${col}">${rtFmt(r.v, metric)}</tspan></text>`
+        + `<text class="rt-cap" x="${lx}" y="${ly + 13}" text-anchor="${anchor}">${cap}</text></g>`;
+    });
+    s += `<circle class="rt-wr" cx="${cx}" cy="${los}" r="8"/></svg>`;
+    const wrap = chartTipWrap(s, (i) => {
+      const r = spokes[i], [n, rec, yds, td, epa, air] = r.a;
+      return [`${r.sp.label}${r.sp.src.length > 1 ? ` (${r.sp.src.map(covTitle).join(' + ')})` : ''}`,
+        n ? `${n} tgt, ${rec} rec, ${yds} yds, ${td} TD` : 'No targets on this route',
+        n ? `${rtFmt(rec / n, 'catch')} catch, ${rtFmt(yds / n, 'ypt')} Y/Tgt, ${rtFmt(air / n, 'air')} air/tgt, ${rtFmt(epa / n, 'epa')} EPA/tgt` : null,
+        r.pct != null ? `${mlabel}: ${chartOrd(r.pct)} percentile` : n && !r.ok ? `Under ${RT_ROUTE_MIN} targets, so not ranked` : null].filter(Boolean);
+    });
+    const at = (k) => all[F.indexOf(k)], per = (k, m) => rtFmt(total ? at(k) / total : null, m);
+    return h('div', { class:'rt-body' },
+      h('div', { class:'rt-head' }, headshot(sid, 36), h('span', { class:'rt-player' }, v.n), ' ', teamChip(v.t), h('span', { class:'muted' }, ` ${v.p}`)),
+      h('div', { class:'rt-title' }, `${mlabel} by targeted route, ${season}`),
+      h('div', { class:'loc-line tnum' }, [`${total} tgt`, `${charted} on a charted route`, `${per('rec', 'catch')} catch`, `${per('yds', 'ypt')} Y/Tgt`,
+        `${per('air', 'air')} aDOT`, `${per('epa', 'epa')} EPA/tgt`, `${at('td')} TD`].join(' · ')),
+      wrap,
+      h('div', { class:'rt-other' }, h('span', { class:'muted' }, 'Off the tree: '),
+        ...other.map(r => h('span', { class:'rt-chip', dataset:{ route:r.sp.k } }, `${r.sp.label} `, h('strong', { class:'tnum' }, rtFmt(r.v, metric)),
+          r.a[0] ? h('span', { class:'muted tnum' }, ` ${[r.pct != null ? chartOrd(r.pct) : r.ok ? null : 'DNQ', metric === 'tgt' ? null : `${r.a[0]} tgt`].filter(Boolean).join(' · ')}`) : null))));
+  }
+
+  // One tile: its own player, season and metric. The picker lists every WR, TE
+  // and RB with a charted route that season, most targets first.
+  function rtTile(i, t, seasons, got, set) {
+    const C = got(t.season), v = C.players[t.sid], tree = C.targetedRoutes[t.sid], ab = 'AB'[i];
+    const opts = Object.entries(C.players).filter(([s, p]) => RT_POS.includes(p.p) && C.targetedRoutes[s])
+      .map(([s, p]) => ({ s, label:`${p.n} ${p.t} ${p.p}`, n:rtTotal(C, p) })).sort((a, b) => b.n - a.n);
+    const pick = (text, exact) => {
+      const q = String(text || '').trim().toLowerCase(), has = (fn) => opts.find(o => fn(o.label.toLowerCase()));
+      const o = q && (has(l => l === q) || (!exact && (has(l => l.startsWith(q)) || has(l => l.includes(q)))));
+      if (o && o.s !== t.sid) set({ sid:o.s });
+    };
+    const card = h('div', { class:'card rt-tile', dataset:{ tile:ab, sid:String(t.sid || ''), season:String(t.season), metric:t.metric } },
+      h('div', { class:'stats-lab-row rt-ctl' },
+        h('input', { type:'search', class:'rt-find', list:`rt-players-${i}`, 'aria-label':`Tile ${ab} player`, placeholder:'Find a receiver',
+          oninput:(e) => pick(e.target.value, true), onchange:(e) => pick(e.target.value, false) }),
+        h('datalist', { id:`rt-players-${i}` }, ...opts.map(o => h('option', { value:o.label }, `${o.n} tgt`))),
+        h('span', { class:'sos-position-tabs rt-seasons', role:'group', 'aria-label':`Tile ${ab} season` }, ...seasons.map(y => {
+          const on = got(y).published;
+          return h('button', { type:'button', class:`ghost${y === t.season ? ' active' : ''}`, 'aria-pressed':String(y === t.season), disabled:on ? null : '',
+            title:on ? null : `nflverse has not posted ${y} participation charting yet`, onclick:() => set({ season:y }) }, String(y));
+        })),
+        h('label', { class:'stats-lab-toggle' }, 'Metric ', h('select', { 'aria-label':`Tile ${ab} metric`, onchange:(e) => set({ metric:e.target.value }) },
+          ...RT_METRICS.map(([k, l]) => h('option', { value:k, selected:k === t.metric }, l)),
+          h('optgroup', { label:'Needs paid charting' }, ...RT_UNAVAILABLE.map(([k, l, why]) => h('option', { value:k, disabled:'' }, `${l}: unavailable, ${why}`)))))));
+    if (v && v.R && tree) card.appendChild(rtTree(C, t.sid, v, tree, t.metric, t.season));
+    else {
+      const known = seasons.map(got).find(c => c.players && c.players[t.sid]);
+      card.appendChild(h('div', { class:'muted rt-none' }, `${known ? known.players[t.sid].n : 'This player'} has no targeted route charted in ${t.season}. Pick another season or player.`));
+    }
+    return card;
+  }
+
+  // Route compare: both tiles' players on one metric, route by route, against
+  // the average of their position that season.
+  function rtCompare(res, metric, onMetric) {
+    const cols = res.map(x => ({ ...x, pool:rtPool(x.C, x.v.p), total:rtTotal(x.C, x.v) }));
+    const same = cols[0].t.season === cols[1].t.season && cols[0].v.p === cols[1].v.p, above = [0, 0];
+    const nm = (c) => `${chartShort(c.v.n)} ${c.t.season}`, avgs = same ? cols.slice(0, 1) : cols;
+    const body = RT_SPOKES.map(sp => {
+      const rs = cols.map(c => rtRate(c.pool, rtSum(c.tree, sp.src), c.total, sp.src, metric));
+      const up = (r) => r.ok && r.avg != null && r.v > r.avg;
+      rs.forEach((r, k) => { if (up(r)) above[k]++; });
+      return h('tr', { dataset:{ route:sp.k } }, h('th', { scope:'row' }, sp.label),
+        ...rs.map(r => h('td', { class:`right tnum${r.ok ? up(r) ? ' rt-above' : '' : r.v == null ? ' muted' : ' rt-dnq'}`, title:r.ok || r.v == null ? null : `Under ${RT_ROUTE_MIN} targets, so not ranked` },
+          rtFmt(r.v, metric), up(r) ? ' ▲' : '')),
+        ...(same ? rs.slice(0, 1) : rs).map(r => h('td', { class:'right tnum muted' }, rtFmt(r.avg, metric))));
+    });
+    return h('div', { class:'card rt-cmp' },
+      h('div', { class:'stats-lab-row' }, h('span', { class:'chart-title' }, 'Route compare'),
+        h('label', { class:'stats-lab-toggle' }, 'Metric ', h('select', { 'aria-label':'Compare metric', onchange:(e) => onMetric(e.target.value) },
+          ...RT_METRICS.map(([k, l]) => h('option', { value:k, selected:k === metric }, l))))),
+      h('div', { class:'tbl-scroll' }, h('table', { class:'data rt-cmp-table' },
+        h('thead', null, h('tr', null, h('th', null, 'Targeted route'), ...cols.map((c, k) => h('th', { class:'right' },
+          h('span', { class:'chart-swatch', style:{ borderTopColor:CHART_SERIES[k][0], borderTopStyle:CHART_SERIES[k][1] ? 'dashed' : 'solid' } }), nm(c))),
+          ...avgs.map(c => h('th', { class:'right' }, `${c.v.p} avg${same ? '' : ` ${c.t.season}`}`)))),
+        h('tbody', null, ...body))),
+      h('div', { class:'tip' }, `▲ above the average: ${nm(cols[0])} ${above[0]} of 8, ${nm(cols[1])} ${above[1]} of 8. `
+        + (RT_RATE.has(metric) ? `Grey italic is under ${RT_ROUTE_MIN} targets on the route, so not ranked. ` : '')
+        + `The average is over ${same ? `${cols[0].v.p}s` : "each player's position"} with ${RT_POOL_MIN}+ targets that season${RT_RATE.has(metric) ? ', pooled over their targets on the route' : ''}.`));
+  }
+
+  const RT_TRIED = new Set();
+  function statsRoutes(main, prefs, cur) {
+    const SEASONS = [cur - 3, cur - 2, cur - 1, cur], got = (y) => (window.COVERAGE_BY_SEASON || {})[y];
+    const need = SEASONS.filter(y => !got(y) && !RT_TRIED.has(y));
+    if (need.length) {
+      need.forEach(y => RT_TRIED.add(y));
+      const msg = h('div', { class:'empty' }, 'Loading targeted routes...');
+      main.appendChild(msg);
+      Promise.allSettled(need.map(loadCoverageSeason)).then(() => { if (msg.isConnected) viewStats('Routes'); });
+      return;
+    }
+    const have = SEASONS.filter(got), pub = have.filter(y => got(y).published), later = have.filter(y => !got(y).published);
+    if (!pub.length) { main.appendChild(h('div', { class:'empty' }, 'No targeted routes on the page. Run projections/build_coverage_splits.py.')); return; }
+    const span = pub.length > 1 ? `${pub[0]} to ${pub[pub.length - 1]}` : String(pub[0]), newest = pub[pub.length - 1], N = got(newest);
+    const topWr = Object.keys(N.targetedRoutes).filter(s => (N.players[s] || {}).p === 'WR').sort((a, b) => rtTotal(N, N.players[b]) - rtTotal(N, N.players[a]));
+    const R = prefs.routes = Object.assign({ cmp:'share' }, prefs.routes);
+    const save = () => { saveStatsLabPrefs(prefs); viewStats('Routes'); };
+    // Defaults: the two most-targeted WRs of the newest season. A tile with no
+    // season (the player card's link) opens on the newest one he has a tree in.
+    const tiles = [0, 1].map(i => {
+      const t = Object.assign({ metric:'share' }, (R.tiles || [])[i]);
+      if (!t.sid) { t.sid = topWr[i]; t.season = newest; }
+      if (!pub.includes(t.season)) t.season = pub.slice().reverse().find(y => got(y).targetedRoutes[t.sid]) ?? newest;
+      if (!RT_METRICS.some(m => m[0] === t.metric)) t.metric = 'share';
+      return t;
+    });
+    R.tiles = tiles;
+    main.appendChild(h('div', { class:'tip rt-span' }, h('strong', null, `Targeted routes, ${span} regular seasons. `),
+      later.length ? `${later.join(', ')} appears the first build after nflverse posts its participation charting. ` : '',
+      'Each tile picks its own player, season and metric: two players side by side, or one player in two seasons.'));
+    main.appendChild(h('div', { class:'rt-tiles' }, ...tiles.map((t, i) => rtTile(i, t, have, got, (patch) => { Object.assign(t, patch); save(); }))));
+    const res = tiles.map(t => { const C = got(t.season), v = C.players[t.sid], tree = C.targetedRoutes[t.sid]; return v && v.R && tree ? { t, C, v, tree } : null; });
+    if (res.every(Boolean)) main.appendChild(rtCompare(res, RT_METRICS.some(m => m[0] === R.cmp) ? R.cmp : 'share', (m) => { R.cmp = m; save(); }));
+    main.appendChild(h('div', { class:'tip rt-foot' },
+      `Targeted routes, not routes run: nflverse participation charts the route only for the receiver the ball went to. Target share is over all his targets, charted route or not. `
+      + `Arrow width is targets; color is the metric's percentile among players at his position with ${RT_POOL_MIN}+ targets that season (${LOC_LEGEND}). `
+      + `A rate needs ${RT_ROUTE_MIN}+ targets on the route or it reads DNQ. Out is quick out plus deep out. `
+      + `Not here: separation, route win rate and routes run by route (so route share, TPRR and YPRR by route), which need every route charted and only paid vendors chart that.`));
+  }
+
+  // The player card's link: tile A becomes this player, on his newest tree.
+  // The card's own close button, so its key handlers go with it.
+  function rtOpenFor(sid) {
+    const p = statsLabPrefs(), R = p.routes = p.routes || {};
+    R.tiles = [{ ...((R.tiles || [])[0] || {}), sid:String(sid), season:null }, (R.tiles || [])[1]].filter(Boolean);
+    saveStatsLabPrefs(p);
+    const x = document.querySelector('.modal-backdrop .close-btn');
+    if (x) x.click();
+    if (location.hash === '#stats/Routes') viewStats('Routes');   // opened from Cmd+K on this page: no hashchange
+  }
+
   // This week's opponent, as a defense-vs-position line for the player card.
   function matchupLine(sleeper) {
     const D = window.DEFENSE;
@@ -14033,7 +14269,7 @@
     const main = $('#main'); main.innerHTML = '';
     const CUR = window.ADVANCED;
     if (!CUR) { main.appendChild(h('div', { class:'empty' }, 'advanced.js not loaded. Run projections/build_nflverse_suite.py.')); return; }
-    const POS = ['QB', 'RB', 'WR', 'TE', 'Teams', 'Coverage', 'Defense', 'Trends', 'IDP'];
+    const POS = ['QB', 'RB', 'WR', 'TE', 'Teams', 'Coverage', 'Routes', 'Defense', 'Trends', 'IDP'];
     const prefs = statsLabPrefs();
     const SEASONS = [CUR.season, CUR.season - 1, CUR.season - 2];
     const pos = POS.includes(posArg) ? posArg : (prefs.pos && POS.includes(prefs.pos) ? prefs.pos : 'WR');
@@ -14090,10 +14326,11 @@
       title:'Advanced stats',
       sub:[splitOn ? `${split.label}. Counts summed over the split, rates recomputed from them. (est) marks an estimate.`
         : pos === 'Coverage' ? 'Man vs zone, coverage shells, pressure, personnel and formation from nflverse participation charting.'
+        : pos === 'Routes' ? 'Route trees from nflverse participation charting: the route each pass was thrown on, by receiver.'
         : `${A.season} regular season through week ${A.throughWeek}. (est) marks an estimate.`,
         h('span', { class:'stats-lab-sub-more' }, ' Open the Column key above a table for what each header means.')],
       // Player tabs pick seasons in the split card instead.
-      actions:split || pos === 'Coverage' ? [] : [h('label', { class:'stats-lab-toggle stats-lab-season' }, 'Season ',
+      actions:split || pos === 'Coverage' || pos === 'Routes' ? [] : [h('label', { class:'stats-lab-toggle stats-lab-season' }, 'Season ',
         h('select', { 'aria-label':'Season', onchange:(e) => {
           prefs.season = Number(e.target.value); saveStatsLabPrefs(prefs); viewStats(posArg);
         } }, ...SEASONS.map(y => h('option', { value:String(y), selected:y === season }, String(y)))))],
@@ -14103,6 +14340,7 @@
     if (pos === 'Trends') { statsTrends(main, prefs); saveStatsLabPrefs(prefs); return; }
     if (pos === 'IDP') { statsIdp(main, prefs); saveStatsLabPrefs(prefs); return; }
     if (pos === 'Coverage') { statsCoverage(main, prefs, CUR.season); saveStatsLabPrefs(prefs); return; }
+    if (pos === 'Routes') { statsRoutes(main, prefs, CUR.season); saveStatsLabPrefs(prefs); return; }
 
     // Per-tab research state: minimums, column layout, snapshots, calculated
     // columns, highlights and bio filters. Every field is optional, so prefs

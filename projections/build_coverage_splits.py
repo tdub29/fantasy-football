@@ -35,12 +35,13 @@ generated, source and note. A published one:
       aDOT = air / tgt; targets per on-field dropback = tgt / db.
       Q, as a passer: db = his dropbacks, att = pass attempts (sacks included, as
       nflverse counts them), sk = sacks, air = air yards thrown; aDOT = air / att.
-  targetedRoutes {sleeper_id: {route: [tgt, rec, yds, td, epa]}}
+  targetedRoutes {sleeper_id: {route: [tgt, rec, yds, td, epa, air]}}
       TARGETED routes, not routes run. Participation charts a route only for the
       receiver the ball went to, so this is the tree of routes each player was
       targeted on, never his full route tree. Route names are nflverse's labels:
       GO, POST, CORNER, IN/DIG, QUICK OUT, DEEP OUT, HITCH/CURL, SHALLOW CROSS/DRAG,
-      SLANT, SCREEN, SWING, WHEEL, TEXAS/ANGLE. epa is the EPA sum, 2 decimals.
+      SLANT, SCREEN, SWING, WHEEL, TEXAS/ANGLE. epa is the EPA sum, 2 decimals; air is the
+      air yards summed over those targets (the Stats Lab Route Tree's air yards per target).
   teamFields   {"pers": ["11", "12", "21", "other"], "form": ["SHOTGUN", "UNDER CENTER", "PISTOL"],
                 "cov": ["man", "zone", "c0", "c1", "c2", "c2m", "c3", "c4", "c6", "other"]}
   teams        {team: {"pers": counts, "form": counts, "dcov": counts, "ocov": counts}}
@@ -198,7 +199,7 @@ def build(season: int) -> dict:
         sk=("sack", "sum"), epa=("epa", "sum"), air=("air_yards", "sum")), Q_FIELDS)
     rt = t[t["route"].notna()].groupby(["receiver_player_id", "route"]).agg(
         tgt=("play_id", "size"), rec=("complete_pass", "sum"), yds=("receiving_yards", "sum"),
-        td=("pass_touchdown", "sum"), epa=("epa", "sum"))
+        td=("pass_touchdown", "sum"), epa=("epa", "sum"), air=("air_yards", "sum"))
 
     players, routes, mapped, has_routes = {}, {}, set(), set(rt.index.get_level_values(0))
     for row in roster.itertuples(index=False):
@@ -217,7 +218,7 @@ def build(season: int) -> dict:
             v["Q"] = pas[g]
         players[sid] = v
         if r and g in has_routes:
-            routes[sid] = {name: [int(x.tgt), int(x.rec), int(x.yds), int(x.td), round(float(x.epa), 2)]
+            routes[sid] = {name: [int(x.tgt), int(x.rec), int(x.yds), int(x.td), round(float(x.epa), 2), int(round(x.air))]
                            for name, x in rt.loc[g].sort_values("tgt", ascending=False).iterrows()}
 
     def count(frame, key, codes):
