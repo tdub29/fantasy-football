@@ -1279,6 +1279,31 @@ textarea { resize: vertical; min-height: 80px; }
   display: inline-block;
 }
 .owner-link:hover { border-color: var(--accent-hot); color: var(--accent-hot) !important; text-decoration: none; }
+/* SOS grid owner chip: one short column, so the name ellipsizes and the full
+   team sits in the title rather than being cut at six characters. */
+.sos-owner {
+  max-width: 12ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+/* My Rankings owners: one row of league tags, never stacked. The leagues where
+   he is yours share one stamped gold chip; a rival's tag is bare stance-coloured
+   text. That keeps five tags inside the table at 1700px, which five chips did not. */
+.owner-chips { display: flex; align-items: center; gap: 4px; flex-wrap: nowrap; }
+.owner-chips .badge { padding: 1px 3px; font-size: 0.6rem; white-space: nowrap; }
+.owner-chips .badge:not(.you) { border: 0; background: none; box-shadow: none; padding: 0; }
+/* Player card "Owned in your leagues": the Trade button never wraps its arrow.
+   Team already names the roster, so the phone drops Owner and tightens the
+   cells, which keeps Slot and Trade inside the modal instead of behind a scroll. */
+.owned-table .owned-trade { padding: 2px 10px; font-size: 12px; white-space: nowrap; }
+@media (max-width: 600px) {
+  .owned-table .owned-owner { display: none; }
+  table.data.owned-table thead th, table.data.owned-table tbody td { padding-left: 6px; padding-right: 6px; }
+  .owned-table .owned-trade { padding: 2px 8px; }
+  .owned-table .owned-trade-word { display: none; } /* the column head already says Trade */
+}
 .br-grade-bar {
   margin-top: 6px;
   height: 6px;
@@ -1594,7 +1619,19 @@ textarea { resize: vertical; min-height: 80px; }
   display: flex; justify-content: space-between;
   border-bottom: 1px solid var(--border);
 }
-.pos-col-body { padding: 6px; max-height: 400px; overflow-y: auto; }
+/* A long plate (WR runs 16 deep) cut a row in half at the scroller's edge with
+   nothing saying it scrolls. Same scroll-timeline fade as the wide tables: it
+   only runs while the plate really scrolls and stops 4px short of the end. */
+@keyframes pos-col-more-below {
+  from, to { mask-image: linear-gradient(to bottom, #000 calc(100% - 36px), transparent); }
+}
+.pos-col-body {
+  padding: 6px; max-height: 400px; overflow-y: auto;
+  animation: pos-col-more-below linear;
+  animation-timeline: scroll(self block);
+  animation-range: 0 calc(100% - 4px);
+}
+.pos-col-pname .badge.injury { margin-left: 5px; }
 .pos-col-row {
   display: flex;
   align-items: center;
@@ -4699,7 +4736,7 @@ table.data.faab-history-table tbody td { padding-block: 7px; font-size: 0.8rem; 
    lie in the other direction. So the lineup stays honest and the badge carries
    the risk. Amber for Questionable, red for anything worse.
    ========================================================================== */
-.slot-bar-chips { display: inline-flex; align-items: center; gap: 4px; min-width: 0; }
+.slot-bar-chips { display: inline-flex; align-items: center; gap: 4px; min-width: 0; margin-left: 6px; }
 .slot-bar-inj {
   flex: 0 0 auto;
   font-family: var(--font-display);
@@ -5363,7 +5400,7 @@ table.data tbody td.tnum { font-weight: 600; }
 .waiver-table .wb-player-line { display: flex; align-items: center; gap: 4px; min-width: 0; }
 .waiver-table .wb-player-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .waiver-table .wb-profile-mobile { display: none; }
-.waiver-table .wb-bid { font-weight: 800; color: var(--fg-0); }
+.waiver-table .wb-bid { font-weight: 800; color: var(--fg-0); white-space: nowrap; }
 .waiver-table .wb-bid.over { color: var(--red); }
 @media (max-width: 720px) {
   .waiver-table { table-layout: fixed; }
