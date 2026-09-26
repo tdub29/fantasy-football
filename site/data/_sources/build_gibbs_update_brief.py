@@ -1,8 +1,8 @@
 """Render the 2026-08-22 Gibbs board update as one self-contained page.
 
 Reads the verified partial source (ranks 85-200 of his new top-200), diffs it
-against the Aug-14 top-175 he published on CBS, and overlays Trevor's three
-Sleeper rosters. No network, no deps, no build step.
+against the Aug-14 top-175 he published on CBS, and overlays Trevor's league
+rosters. No network, no deps, no build step.
 
     python site/data/_sources/build_gibbs_update_brief.py
 
@@ -24,6 +24,9 @@ import json
 import re
 from pathlib import Path
 
+# One Backyard skin and one position palette for both Gibbs pages.
+from build_gibbs_brief import BACKYARD_CSS, POS_HUE, number_word
+
 ROOT = Path(__file__).resolve().parents[3]
 HERE = Path(__file__).resolve().parent
 NEW_CSV = HERE / "jacob-gibbs-2026-08-22-partial-85-200.csv"
@@ -37,7 +40,6 @@ PRIOR_DATE = "August 14"
 PRIOR_URL = ("https://www.cbssports.com/fantasy/football/news/"
              "jacob-gibbs-rankings-fantasy-football-2026-half-ppr/")
 
-POS_HUE = {"QB": "#fb923c", "RB": "#60a5fa", "WR": "#34d399", "TE": "#fbbf24"}
 TEAM_ALIASES = {"JAC": "JAX", "WSH": "WAS", "LA": "LAR"}
 # The bar above rank 178 is the 7th tier bar in view, so the block is stored as 17.
 # Its printed number does not survive the screenshot: the bar's digits are 6 pixels
@@ -162,8 +164,7 @@ def main() -> None:
     def pill(pos: str, small: bool = False) -> str:
         hue = POS_HUE[pos]
         cls = "pill sm" if small else "pill"
-        return (f'<span class="{cls}" style="color:{hue};border-color:{hue}59;'
-                f'background:{hue}14">{pos}</span>')
+        return f'<span class="{cls}" style="background:{hue}">{pos}</span>'
 
     def delta_cell(p: dict) -> str:
         if p["adj"] is None:
@@ -245,6 +246,7 @@ def main() -> None:
         n_fresh=len(fresh), n_gone=len(gone), n_mine=len(held),
         rb=counts["RB"], wr=counts["WR"], te=counts["TE"], qb=counts["QB"],
         leagues=", ".join(esc(m["name"]) for m in league_meta),
+        n_leagues=number_word(len(league_meta)), css=BACKYARD_CSS,
         risers=mover_list(risers), fallers=mover_list(fallers),
         fresh_rows=fresh_rows, gone_rows=gone_rows,
         reads="".join(reads), board="".join(board),
@@ -258,151 +260,23 @@ TEMPLATE = """<!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="color-scheme" content="dark">
+<meta name="color-scheme" content="light">
 <title>Gibbs board update, ranks {lo} to {hi}, {updated}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap">
 <style>
-  :root {{
-    --obsidian:#0b0d12; --graphite:#11141b; --slate:#161a23; --pewter:#1e2330;
-    --edge:#262d3d; --edge-hot:#3a4258;
-    --porcelain:#f3f4f6; --bone:#d4d8e0; --fog:#9ca3af; --ash:#6b7280;
-    --violet:#a78bfa; --mint:#34d399; --red:#f87171; --amber:#fbbf24;
-  }}
-  * {{ box-sizing:border-box; }}
-  html {{ -webkit-text-size-adjust:100%; }}
-  body {{
-    margin:0 auto; background:var(--obsidian); color:var(--bone);
-    font-family:ui-sans-serif,-apple-system,"SF Pro Text","Inter","Segoe UI",Roboto,sans-serif;
-    font-size:0.94rem; line-height:1.5; font-feature-settings:'ss01','cv11';
-    padding:0 16px 64px; max-width:860px;
-  }}
-  table, .num {{ font-variant-numeric:tabular-nums; }}
-  h1 {{ font-size:1.6rem; font-weight:700; letter-spacing:-0.015em; line-height:1.2;
-       margin:24px 0 4px; color:var(--porcelain); }}
-  h2 {{ font-size:0.95rem; font-weight:600; letter-spacing:0.05em; text-transform:uppercase;
-       color:var(--porcelain); margin:32px 0 10px; }}
-  .eyebrow {{ font-size:0.75rem; font-weight:600; letter-spacing:0.06em;
-              text-transform:uppercase; color:var(--ash); margin-top:20px; }}
-  .sub {{ color:var(--fog); margin:6px 0 0; max-width:72ch; }}
-  .sub a {{ color:var(--violet); text-decoration:none; border-bottom:1px solid #a78bfa40; }}
-  .sub b {{ color:var(--bone); font-weight:600; }}
-  .stats {{ display:flex; flex-wrap:wrap; gap:8px; margin:16px 0 0; }}
-  .stat {{ background:var(--graphite); border:1px solid var(--edge); border-radius:10px;
-           padding:8px 12px; }}
-  .stat b {{ display:block; font-size:1.05rem; font-weight:700; letter-spacing:-0.02em;
-             color:var(--porcelain); }}
-  .stat span {{ font-size:0.75rem; font-weight:600; letter-spacing:0.06em;
-                text-transform:uppercase; color:var(--ash); }}
+{css}</style></head><body>
 
-  .gap {{ margin:20px 0 0; padding:14px 16px; background:#fbbf240d;
-          border:1px solid #fbbf2440; border-left:3px solid var(--amber);
-          border-radius:0 10px 10px 0; }}
-  .gap h3 {{ margin:0 0 6px; font-size:0.75rem; font-weight:600; letter-spacing:0.06em;
-             text-transform:uppercase; color:var(--amber); }}
-  .gap p {{ margin:0; color:var(--fog); max-width:72ch; }}
-
-  .bar {{ position:sticky; top:0; z-index:5; background:var(--obsidian);
-          padding:12px 0 10px; margin-top:20px;
-          border-bottom:1px solid var(--edge); display:flex; flex-wrap:wrap;
-          gap:8px; align-items:center; }}
-  .bar button {{ font:inherit; font-size:0.8rem; font-weight:600; color:var(--bone);
-                 background:var(--slate); border:1px solid var(--edge); border-radius:6px;
-                 padding:6px 12px; cursor:pointer; transition:background 120ms,border-color 120ms; }}
-  .bar button:hover {{ background:#232938; border-color:var(--edge-hot); }}
-  .bar button:active {{ transform:translateY(1px); }}
-  .bar button[aria-pressed="true"] {{ color:var(--porcelain); border-color:var(--violet);
-                                      background:#a78bfa1f; }}
-  .bar input {{ font:inherit; font-size:0.85rem; color:var(--porcelain); background:var(--slate);
-                border:1px solid var(--edge); border-radius:6px; padding:6px 10px;
-                flex:1 1 180px; min-width:0; }}
-  .bar input:focus {{ outline:none; border-color:var(--violet); box-shadow:0 0 0 3px #a78bfa26; }}
-
-  .legend {{ margin:10px 0 0; color:var(--ash); font-size:0.78rem; max-width:72ch; }}
-  .tier {{ margin-top:18px; scroll-margin-top:64px; }}
-  .tb {{ display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;
-         padding:6px 0; border-bottom:1px solid var(--edge-hot); }}
-  .tno {{ font-size:0.75rem; font-weight:700; letter-spacing:0.06em; text-transform:uppercase;
-          color:var(--porcelain); }}
-  .trg {{ font-size:0.75rem; font-weight:600; color:var(--ash); }}
-  .slip {{ font-size:0.7rem; color:var(--amber); }}
-  .tmx {{ margin-left:auto; display:flex; gap:8px; }}
-  .mix {{ font-size:0.7rem; font-weight:600; letter-spacing:0.04em; }}
-
-  table.grid {{ width:100%; border-collapse:collapse; }}
-  .grid td {{ border-bottom:1px solid var(--edge); padding:7px 6px; vertical-align:middle; }}
-  .grid tr:hover td {{ background:var(--slate); }}
-  .grid tr.mine td {{ background:#a78bfa0f; }}
-  .grid tr.mine:hover td {{ background:#a78bfa1a; }}
-  td.rk {{ width:46px; text-align:right; font-weight:700; letter-spacing:-0.02em;
-           color:var(--porcelain); }}
-  td.nm {{ line-height:1.35; }}
-  td.tmc {{ width:52px; color:var(--fog); font-size:0.8rem; }}
-  td.byc {{ width:58px; color:var(--ash); font-size:0.75rem; }}
-  td.ps {{ width:56px; text-align:right; }}
-  td.dl {{ width:56px; text-align:right; }}
-  td.wc {{ width:44px; text-align:right; color:var(--ash); font-size:0.75rem; }}
-  td.fr {{ color:var(--fog); font-size:0.78rem; }}
-  .pn {{ color:var(--porcelain); }}
-  .lg {{ display:inline-block; margin-left:8px; padding:1px 7px; border-radius:999px;
-         font-size:0.68rem; font-weight:600; color:var(--violet);
-         border:1px solid #a78bfa66; background:#a78bfa14; }}
-  .pill {{ display:inline-block; padding:2px 8px; border-radius:999px; border:1px solid;
-           font-size:0.72rem; font-weight:600; }}
-  .pill.sm {{ padding:1px 7px; font-size:0.68rem; }}
-  .d {{ font-size:0.75rem; font-weight:700; }}
-  .d.up {{ color:var(--mint); }}
-  .d.down {{ color:var(--red); }}
-  .d.flat {{ color:var(--ash); }}
-  .d.new {{ color:var(--amber); font-size:0.68rem; letter-spacing:0.04em; }}
-
-  .cols {{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }}
-  .card {{ background:var(--graphite); border:1px solid var(--edge); border-radius:10px;
-           padding:16px; }}
-  .card h3 {{ margin:0 0 10px; font-size:0.75rem; font-weight:600; letter-spacing:0.06em;
-              text-transform:uppercase; color:var(--fog); }}
-  .card ul {{ list-style:none; margin:0; padding:0; }}
-  .card li {{ display:flex; align-items:center; gap:8px; padding:5px 0;
-              border-bottom:1px solid var(--edge); font-size:0.85rem; }}
-  .card li:last-child {{ border-bottom:0; }}
-  .mrk {{ width:34px; text-align:right; color:var(--porcelain); font-weight:700;
-          font-variant-numeric:tabular-nums; }}
-  .was {{ margin-left:auto; color:var(--ash); font-size:0.75rem; }}
-
-  .lg-read {{ background:var(--graphite); border:1px solid var(--edge); border-radius:10px;
-              padding:14px 16px; margin-bottom:10px; }}
-  .lg-h {{ display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;
-           padding-bottom:8px; margin-bottom:6px; border-bottom:1px solid var(--edge); }}
-  .lg-n {{ color:var(--porcelain); font-weight:600; }}
-  .at {{ color:var(--ash); font-size:0.75rem; }}
-  .ll {{ margin:5px 0; font-size:0.85rem; }}
-  .k {{ display:inline-block; min-width:150px; color:var(--fog); font-size:0.72rem;
-        font-weight:600; letter-spacing:0.05em; text-transform:uppercase; }}
-  footer {{ margin-top:40px; padding-top:14px; border-top:1px solid var(--edge);
-            color:var(--ash); font-size:0.78rem; }}
-  footer p {{ max-width:72ch; }}
-  .hide {{ display:none !important; }}
-  @media (max-width:720px) {{
-    body {{ padding:0 12px 56px; }}
-    .cols {{ grid-template-columns:1fr; }}
-    .tmx {{ width:100%; margin-left:0; }}
-    td.byc, td.wc {{ display:none; }}
-    td.tmc {{ width:38px; font-size:0.75rem; }}
-    td.ps {{ width:46px; }}
-    td.dl {{ width:44px; }}
-    .grid td {{ padding:7px 3px; }}
-    .pill {{ padding:2px 6px; font-size:0.68rem; }}
-    .card li {{ flex-wrap:wrap; }}
-    .k {{ display:block; min-width:0; }}
-  }}
-</style></head><body>
-
-<p class="eyebrow">Redraft, half PPR, his own scoring</p>
+<p class="eyebrow">Redraft, his half-PPR board as printed</p>
 <h1>Gibbs moved off his top 175</h1>
 <p class="sub">His new board is a <b>top 200</b>, and this is the half of it you photographed:
 <b>ranks {lo} to {hi}</b>, captured {updated}. Against the {prior} board
 (<a href="{prior_url}">CBS</a>) <b>{n_fresh} players are new</b> to the range and
 <b>{n_gone} are gone</b>. Movement below is re-ranked, meaning both boards are cut to the
 players on both before comparing, so the 25 extra slots do not read as everyone falling.
-Violet rows are players you already roster in {leagues}.</p>
+Every rank on this page is his own half-PPR rank, not converted, because the page compares
+two of his boards. Gold rows are players you already roster in {leagues}.</p>
 
 <div class="stats">
   <div class="stat"><b>{n}</b><span>rows read</span></div>
@@ -424,7 +298,7 @@ Violet rows are players you already roster in {leagues}.</p>
   top 200 builds in one command.</p>
 </div>
 
-<h2>Your three rosters</h2>
+<h2>Your {n_leagues} rosters</h2>
 {reads}
 
 <h2>Biggest opinion swings</h2>
@@ -436,7 +310,7 @@ Violet rows are players you already roster in {leagues}.</p>
 the new board and still show a gain, because 25 slots and {n_fresh} bodies were added around him.</p>
 
 <h2>New to the board</h2>
-<table class="grid"><tbody>{fresh_rows}</tbody></table>
+<div class="tier"><table class="grid"><tbody>{fresh_rows}</tbody></table></div>
 
 <h2>Off the board</h2>
 <div class="card"><ul>{gone_rows}</ul></div>
@@ -448,8 +322,9 @@ new {lo} to {hi} range. Each is either now inside the new top 84 or off the boar
   <button id="fmine" aria-pressed="false">Mine only</button>
   <button id="ffree" aria-pressed="false">Free only</button>
 </div>
-<p class="legend">The board as printed, {lo} to {hi}. Last column is his {prior} rank.
-Free means unrostered in at least one of your three leagues.</p>
+<p class="legend">The board as printed, {lo} to {hi}, in his half-PPR ranks. Last column is his
+{prior} rank. Free means unrostered in at least one of your {n_leagues} leagues. The full-PPR
+conversion of his newest board is on the <a href="gibbs-tiers.html">tier page</a>.</p>
 {board}
 
 <footer>

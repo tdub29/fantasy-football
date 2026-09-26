@@ -14,8 +14,9 @@ struggles. Three joins carry that:
                                           target and rusher gsis ids, EPA
   roster         roster_{season}         gsis_id -> position, so a target's
                                           receiver becomes a WR/TE/RB bucket
-  pfr advstats   advstats_week_def       pressure and blitz counts nflverse's
-                                          own pbp does not carry
+  pfr advstats   advstats_week_pass      pressured and blitzed dropbacks, read
+                                          off the passer's line; nflverse's own
+                                          pbp does not carry either
   ftn charting   ftn_charting            play-action, joined on
                                           (nflverse_game_id, nflverse_play_id)
 
@@ -25,11 +26,13 @@ drifts from what the plays actually did. No fumble adjustment here: this file
 is about what a defense ALLOWS a position to do, and a forced fumble is the
 defense's play, not a debit against the offense's production.
 
-Pressure rate is (def_times_hurried + def_times_hitqb + def_sacks) / dropbacks
-from PFR's advanced defense stats, summed to the team-week and divided by
-nflverse's own dropback count for that defense. Blitz rate is
-def_times_blitzed / dropbacks from the same table. Both are PFR's charting,
-not nflverse's, which is why they are named as PFR's in `fields` below.
+Pressure rate is times_pressured / dropbacks and blitz rate is times_blitzed /
+dropbacks, both from PFR's advanced PASSING stats: the opposing quarterbacks'
+lines, summed per defense and divided by nflverse's own dropback count. A passer
+is pressured or blitzed once per dropback however many defenders PFR credits, so
+these count plays. The defender table (advstats_week_def) credits every rusher,
+and summing it counted a two-man blitz twice: Minnesota printed a 128.7% blitz
+rate. Both stay PFR's charting, which is why `fields` below names them as PFR's.
 
 The funnel label is computed, not picked by hand: for each defense, each
 position's share of its own targets is divided by that position's LEAGUE
@@ -110,11 +113,25 @@ def load_ftn(season: int) -> pd.DataFrame:
 
 
 def load_pressure(season: int) -> pd.DataFrame:
-    """Team-season pressure and blitz counts from PFR's charted defense stats."""
-    a = read(f"advstats_week_def_{season}.parquet")
+    """Pressured and blitzed dropbacks each defense has produced, from PFR's charting.
+
+    Read off the passer's line, keyed by his opponent, because a quarterback is
+    pressured or blitzed once per dropback. The defender table counts one per
+    rusher, so its sum is blitzers, not blitzes.
+    """
+    a = read(f"advstats_week_pass_{season}.parquet")
     a = a[a["game_type"] == "REG"]
-    g = a.groupby("team")[["def_times_hurried", "def_times_hitqb", "def_sacks", "def_times_blitzed"]].sum()
-    return g
+    return a.groupby("opponent")[["times_pressured", "times_blitzed"]].sum()
+
+
+def check_rates(df: pd.DataFrame, where: str) -> None:
+    """Every share in the payload is a fraction of something, so it lands in 0..1."""
+    cols = [c for c in df.columns if c.endswith("_rate") or c in ("target_share", "catch_rate")]
+    vals = df[cols].to_numpy(dtype=float)
+    bad = {(df.index[i], cols[j]): round(float(vals[i, j]), 4)
+           for i, j in zip(*np.nonzero((vals < 0) | (vals > 1)))}
+    if len(bad):
+        raise ValueError(f"{where}: rate outside 0..1: {bad}")
 
 
 def ppr_receiving(df: pd.DataFrame) -> pd.Series:
@@ -196,12 +213,16 @@ def build_season(season: int) -> tuple[dict, int]:
     pass_stat["epa_per_dropback"] = dg["epa"].mean().reindex(teams)
     pass_stat["sack_rate"] = (dg["sack"].sum().reindex(teams).fillna(0) / dropbacks.replace(0, np.nan))
     pfr = pressure.reindex(teams)
-    pass_stat["pressure_rate"] = ((pfr["def_times_hurried"] + pfr["def_times_hitqb"] + pfr["def_sacks"])
-                                  / dropbacks.replace(0, np.nan))
-    pass_stat["blitz_rate"] = pfr["def_times_blitzed"] / dropbacks.replace(0, np.nan)
+    pass_stat["pressure_rate"] = pfr["times_pressured"] / dropbacks.replace(0, np.nan)
+    pass_stat["blitz_rate"] = pfr["times_blitzed"] / dropbacks.replace(0, np.nan)
     pass_stat["pa_rate_faced"] = dg["is_play_action"].mean().reindex(teams)
     pass_stat["epa_allowed_pa"] = db[db["is_play_action"] == 1].groupby("defteam")["epa"].mean().reindex(teams)
     pass_stat["epa_allowed_non_pa"] = db[db["is_play_action"] == 0].groupby("defteam")["epa"].mean().reindex(teams)
+
+    check_rates(pass_stat, f"{season} pass")
+    check_rates(rush_stat, f"{season} rushRB")
+    for p_code in POSITIONS:
+        check_rates(by_pos[p_code], f"{season} {p_code}")
 
     out = {}
     for team in teams:
@@ -228,9 +249,11 @@ FIELDS = {
     "pass_dropbacks_pg": "Dropbacks faced per game.",
     "pass_epa_per_dropback": "EPA allowed per dropback. Lower is a better pass defense.",
     "pass_sack_rate": "Sacks recorded per dropback faced (from play-by-play).",
-    "pass_pressure_rate": "PFR-charted (hurries + QB hits + sacks) per dropback faced. PFR's pressure "
-                           "definition, not nflverse's; it is charted separately from the pbp sack column.",
-    "pass_blitz_rate": "PFR-charted blitzes per dropback faced.",
+    "pass_pressure_rate": "Share of dropbacks faced where PFR charted the passer as pressured (hurried, "
+                           "hit or sacked), counted once per play from the passer's side. PFR's pressure "
+                           "definition, not nflverse's.",
+    "pass_blitz_rate": "Share of dropbacks faced where PFR charted a blitz, counted once per play from the "
+                        "passer's side, not once per blitzer.",
     "pass_pa_rate_faced": "Share of dropbacks faced that were play-action, from FTN's charting.",
     "pass_epa_allowed_pa": "EPA allowed per dropback on play-action passes specifically.",
     "pass_epa_allowed_non_pa": "EPA allowed per dropback on non-play-action passes.",
@@ -268,6 +291,13 @@ def self_check() -> int:
     assert abs(ppr_rushing(r)[0] - 0.7) < 1e-9
 
     assert num(float("nan")) is None and num(float("inf")) is None and num(3.0) == 3
+
+    # The 128.7% blitz rate that per-blitzer summing printed must not get through again.
+    try:
+        check_rates(pd.DataFrame({"blitz_rate": [0.3, 1.287]}), "demo")
+        raise AssertionError("check_rates passed a 128.7% blitz rate")
+    except ValueError:
+        pass
 
     cur, through_week = build_season(season_now())
     prior, _ = build_season(season_now() - 1)
@@ -310,7 +340,7 @@ def main() -> int:
         "throughWeek": through_week,
         "prior": prior_season,
         "source": "nflverse play-by-play (targets/rushes, EPA, roster position join), "
-                  "PFR advanced defense stats (pressure, blitz), FTN charting (play-action)",
+                  "PFR advanced passing stats (pressure, blitz faced), FTN charting (play-action)",
         "fields": FIELDS,
         "teams": teams,
     }
