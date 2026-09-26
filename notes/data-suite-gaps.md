@@ -167,6 +167,16 @@ per receiver targets, yards, TD and targets per on-field dropback vs man, vs zon
 vs pressure; per QB the same by dropback; per team personnel and formation mix, and man/zone and
 shell rates played and faced. A new Stats Lab Coverage tab, with an explicit "not public for 2026
 yet" state that lights up when nflverse posts `pbp_participation_2026`.
+**Shipped 2026-09-26** (branch `feat-ds-coverage`, task t-1790320021979): `projections/build_coverage_splits.py`
+writes `site/data/coverage-YYYY.js` (counts only, lazy-loaded) and runs in `build_all.py` after the split
+cube, with `--self-check` reconciling man plus zone targets against the participation file. The Stats Lab
+Coverage tab picks position, season and split (man, zone, seven shells, pressured, clean, or a targeted
+route); the Teams tab gains the defense's shell mix. 2026 renders a not-published card until nflverse
+posts it, then the next build fills it with no code change. The payload's `targetedRoutes` (documented
+at the top of the builder) is the input for t-1790417636140. Rows 20, 25 and 28 are now "have" for
+2024-2025; 14, 22 and 49 stay partial (Tgt/DB is per dropback, not per route; formation is a team mix;
+shells are keyed by team, not playcaller). Guarded by
+`stats-lab-coverage` and `stats-lab-coverage-phone` in `.agents/feature-map.json`.
 
 ### Cluster D. Charts and field-location splits (rows 41-44, 31): medium
 

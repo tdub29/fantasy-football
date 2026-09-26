@@ -12886,6 +12886,180 @@
     main.appendChild(h('div', { class:'tip', style:{ marginTop:'10px' } }, `${rows.length} players. ${I.source}.`));
   }
 
+  // ---- Coverage tab: man vs zone, shells, pressure, personnel and formation.
+  // coverage-YYYY.js (projections/build_coverage_splits.py) holds COUNTS from
+  // nflverse participation charting and the page divides. A season nflverse has
+  // not posted ships as { published:false }, so it renders a state, never a 404.
+  const loadCoverageSeason = (year) => loadSeasonScript(`coverage-${year}.js`, () => (window.COVERAGE_BY_SEASON || {})[year]);
+  const COV_POS = ['WR', 'TE', 'RB', 'QB', 'Team'];
+  const COV_TEAM_VIEWS = [['dcov', 'Coverage played (defense)'], ['ocov', 'Coverage faced (offense)'], ['pers', 'Personnel and formation']];
+  const COV_SHELL_LABELS = { man:'Man%', zone:'Zone%', c0:'Cov 0%', c1:'Cov 1%', c2:'Cov 2%', c2m:'2-Man%', c3:'Cov 3%', c4:'Cov 4%', c6:'Cov 6%', other:'Other%' };
+  const covTitle = (s) => s.toLowerCase().replace(/(^|[\s/])\w/g, (m) => m.toUpperCase());
+
+  function statsCoverage(main, prefs, cur) {
+    const SEASONS = [cur, cur - 1, cur - 2];
+    const got = (y) => (window.COVERAGE_BY_SEASON || {})[y];
+    // No season picked: the newest one nflverse has posted.
+    const picked = SEASONS.includes(prefs.covSeason) ? prefs.covSeason : null;
+    const season = picked ?? SEASONS.find(y => !got(y) || got(y).published) ?? cur;
+    const C = got(season);
+    if (!C) {
+      const msg = h('div', { class:'empty' }, `Loading ${season} coverage...`);
+      main.appendChild(msg);
+      loadCoverageSeason(season).then(() => { if (msg.isConnected) viewStats('Coverage'); })
+        .catch(() => { msg.textContent = `coverage-${season}.js did not load. Run projections/build_coverage_splits.py.`; });
+      return;
+    }
+    const pos = COV_POS.includes(prefs.covPos) ? prefs.covPos : 'WR';
+    const isTeam = pos === 'Team', isQB = pos === 'QB', role = isQB ? 'Q' : 'R';
+    const set = (k, v) => { prefs[k] = v; saveStatsLabPrefs(prefs); viewStats('Coverage'); };
+    const pick = (label, value, opts, onchange) => h('label', { class:'stats-lab-toggle' }, `${label} `,
+      h('select', { 'aria-label':label, onchange:(e) => onchange(e.target.value) },
+        ...opts.map(o => o.nodeType ? o : h('option', { value:String(o[0]), selected:String(o[0]) === String(value) }, o[1]))));
+    const filters = h('div', { class:'card stats-lab-filters' },
+      h('span', { class:'sos-position-tabs', role:'group', 'aria-label':'Coverage position' },
+        ...COV_POS.map(p => h('button', { class:`ghost${p === pos ? ' active' : ''}`, 'aria-pressed':String(p === pos),
+          onclick:() => set('covPos', p) }, p))),
+      pick('Season', season, SEASONS.map(y => [y, String(y)]), (v) => set('covSeason', Number(v))));
+    main.appendChild(filters);
+    if (!C.published) {
+      main.appendChild(h('div', { class:'card stats-lab-cov-empty' },
+        h('p', null, h('strong', null, `${season} coverage charting is not published yet.`)),
+        h('p', null, C.note),
+        h('button', { type:'button', onclick:() => set('covSeason', season - 1) }, `Show ${season - 1}`)));
+      return;
+    }
+    if (!picked && season !== cur) filters.appendChild(h('span', { class:'muted' }, `${cur} is not published yet, so this is ${season}.`));
+
+    let rows, cols, rowName, defaultSort, onRow = null, sample = null;
+    const div = (a, b) => b ? a / b : null;
+    if (isTeam) {
+      const view = COV_TEAM_VIEWS.some(v => v[0] === prefs.covTeamView) ? prefs.covTeamView : 'dcov';
+      filters.appendChild(pick('View', view, COV_TEAM_VIEWS, (v) => set('covTeamView', v)));
+      const TF = C.teamFields, share = (list, key, i) => (r) => div(r[list][i], r[key]);
+      rows = Object.entries(C.teams).map(([t, v]) => ({ _label:teamChip(t), ...v,
+        nCov:v[view === 'ocov' ? 'ocov' : 'dcov'][0] + v[view === 'ocov' ? 'ocov' : 'dcov'][1],
+        nPers:v.pers.reduce((a, b) => a + b, 0), nForm:v.form.reduce((a, b) => a + b, 0) }));
+      if (view === 'pers') {
+        cols = [{ key:'nPers', label:'Plays', get:(r) => r.nPers, fmt:'int', desc:'Offensive plays with charted personnel.' },
+          ...TF.pers.map((k, i) => ({ key:`p${k}`, label:k === 'other' ? 'Other%' : `${k}%`, get:share('pers', 'nPers', i), fmt:'pct',
+            desc:k === 'other' ? 'Share of plays in any other personnel: empty backfield, 13, 22, jumbo and the rest.'
+              : `Share of plays in ${k} personnel: ${k[0]} back${k[0] === '1' ? '' : 's'} and ${k[1]} tight end${k[1] === '1' ? '' : 's'}.` })),
+          ...TF.form.map((k, i) => ({ key:`f${i}`, label:`${covTitle(k)}%`, get:share('form', 'nForm', i), fmt:'pct',
+            desc:`Share of charted offensive plays from ${k.toLowerCase()}.` }))];
+        defaultSort = { key:'p11', dir:'desc' };
+      } else {
+        const side = view === 'ocov' ? 'faced on offense' : 'played on defense';
+        cols = [{ key:'nCov', label:'Charted DB', get:(r) => r.nCov, fmt:'int', desc:`Dropbacks with charted coverage ${side}.` },
+          ...TF.cov.map((k, i) => ({ key:k, label:COV_SHELL_LABELS[k], get:share(view, 'nCov', i), fmt:'pct',
+            desc:k === 'other' ? `Cover 9, combination and blown coverages ${side}.`
+              : `Share of charted dropbacks ${side} in ${C.splitLabels[k] ? C.splitLabels[k].replace(/^vs /, '') : k}.` }))];
+        defaultSort = { key:'man', dir:'desc' };
+      }
+      rowName = 'Team';
+    } else {
+      const F = C.fields[role], S = C.splits, at = (a, k) => a ? a[F.indexOf(k)] : 0;
+      const routeTot = {};
+      if (!isQB) for (const t of Object.values(C.targetedRoutes)) for (const [k, a] of Object.entries(t)) routeTot[k] = (routeTot[k] || 0) + a[0];
+      const routes = Object.keys(routeTot).sort((a, b) => routeTot[b] - routeTot[a]);
+      const want = String(prefs.covSplit || 'man');
+      const route = want.startsWith('route:') && routes.includes(want.slice(6)) ? want.slice(6) : null;
+      const sk = route ? want : S.includes(want) ? want : 'man', idx = S.indexOf(sk);
+      const MINS = [1, 5, 10, 25, 50, 100], min = MINS.includes(prefs.covMin) ? prefs.covMin : isQB ? 25 : 5;
+      filters.appendChild(pick('Split', sk, [...S.map(k => [k, C.splitLabels[k]]),
+        ...(routes.length ? [h('optgroup', { label:'Targeted route (targets, not routes run)' },
+          ...routes.map(r => h('option', { value:`route:${r}`, selected:sk === `route:${r}` }, `Targeted: ${covTitle(r)}`)))] : [])],
+        (v) => set('covSplit', v)));
+      filters.appendChild(pick(isQB ? 'Min DB' : 'Min tgt', min, MINS.map(v => [v, String(v)]), (v) => set('covMin', Number(v))));
+      const mine = new Set();
+      for (const lg of window.LEAGUES || []) {
+        const me = (lg.rosters || []).find(r => r.is_me);
+        for (const pid of (me && me.players) || []) mine.add(String(pid));
+      }
+      const splitName = route ? `targeted ${covTitle(route)} routes` : C.splitLabels[sk].replace(/^vs /, 'against ').toLowerCase();
+      rows = [];
+      for (const [sid, v] of Object.entries(C.players)) {
+        if (v.p !== pos || !v[role]) continue;
+        const base = { _sid:sid, _name:v.n, _mine:mine.has(sid), _label:`${v.n} ${v.t}` };
+        if (route) {
+          const a = (C.targetedRoutes[sid] || {})[route];
+          if (!a || a[0] < min) continue;
+          const [tgt, rec, yds, td, epa] = a;
+          rows.push({ ...base, tgt, rec, yds, td, epa, share:div(tgt, at(v.R[0], 'tgt')), catch:div(rec, tgt), ypt:div(yds, tgt), epat:div(epa, tgt) });
+          continue;
+        }
+        const a = v[role][idx], all = v[role][0];
+        if (!a) continue;
+        const r = { ...base };
+        for (const k of F) r[k] = at(a, k);
+        if (isQB) {
+          if (r.db < min) continue;
+          Object.assign(r, { cmpPct:div(r.cmp, r.att - r.sk), ypa:div(r.yds, r.att), epadb:div(r.epa, r.db), skPct:div(r.sk, r.db),
+            adot:div(r.air, r.att), vsAll:r.db ? r.epa / r.db - div(at(all, 'epa'), at(all, 'db')) : null });
+        } else {
+          if (r.tgt < min) continue;
+          Object.assign(r, { tpdb:div(r.tgt, r.db), catch:div(r.rec, r.tgt), ypt:div(r.yds, r.tgt), epat:div(r.epa, r.tgt), adot:div(r.air, r.tgt),
+            vsAll:r.db && at(all, 'db') ? r.tgt / r.db - at(all, 'tgt') / at(all, 'db') : null });
+        }
+        rows.push(r);
+      }
+      const C_ = (key, label, fmt, desc, lowerBetter = false) => ({ key, label, get:(r) => r[key], fmt, desc, lowerBetter });
+      // +/- all reads green or red once the gap is big enough to notice: 2 points of Tgt/DB, 0.05 EPA/DB.
+      const big = isQB ? 0.05 : 0.02, gap = (r) => r.vsAll == null ? '' : r.vsAll >= big ? 'delta-up' : r.vsAll <= -big ? 'delta-down' : '';
+      if (route) {
+        cols = [C_('tgt', 'Tgt', 'int', `Targets on ${splitName}.`),
+          C_('share', 'Share', 'pct', 'Share of his targets that came on this route. Targets only: participation charts no route for a receiver who was not thrown to.'),
+          C_('rec', 'Rec', 'int', 'Receptions.'), C_('catch', 'Catch%', 'pct', 'Receptions over targets.'),
+          C_('yds', 'Yds', 'int', 'Receiving yards.'), C_('ypt', 'Y/Tgt', 'dec1', 'Receiving yards per target.'),
+          C_('td', 'TD', 'int', 'Receiving touchdowns.'), C_('epa', 'EPA', 'dec1', 'Expected points added, summed over these targets.'),
+          C_('epat', 'EPA/Tgt', 'dec2', 'Expected points added per target.')];
+        defaultSort = { key:'tgt', dir:'desc' };
+      } else if (isQB) {
+        cols = [C_('db', 'DB', 'int', `His dropbacks ${splitName}: sacks in, scrambles out, as in the season table.`),
+          C_('cmpPct', 'Cmp%', 'pct', 'Completions over attempts, sacks left out.'), C_('yds', 'Yds', 'int', 'Passing yards.'),
+          C_('ypa', 'Y/A', 'dec1', 'Passing yards per attempt, sacks counted as attempts.'), C_('td', 'TD', 'int', 'Passing touchdowns.'),
+          C_('int', 'INT', 'int', 'Interceptions.', true), C_('skPct', 'Sack%', 'pct', 'Sacks per dropback.', true),
+          C_('epadb', 'EPA/DB', 'dec2', 'Expected points added per dropback.'),
+          { ...C_('vsAll', '+/- all', 'dec2', 'EPA per dropback in this split minus his EPA per dropback on every dropback. Positive means better here than overall.'), tone:gap },
+          C_('adot', 'aDOT', 'dec1', 'Average depth of throw: air yards over attempts.')];
+        defaultSort = { key:'epadb', dir:'desc' };
+      } else {
+        cols = [C_('db', 'DB on field', 'int', `Team dropbacks ${splitName} with him on the field.`),
+          C_('tgt', 'Tgt', 'int', 'Targets.'),
+          C_('tpdb', 'Tgt/DB', 'pct', 'Targets per team dropback with him on the field: a charted stand-in for targets per route run.'),
+          { ...C_('vsAll', '+/- all', 'pct', 'Tgt/DB in this split minus his Tgt/DB on every dropback. Positive means he draws more of the looks here.'), tone:gap },
+          C_('rec', 'Rec', 'int', 'Receptions.'), C_('catch', 'Catch%', 'pct', 'Receptions over targets.'),
+          C_('yds', 'Yds', 'int', 'Receiving yards.'), C_('ypt', 'Y/Tgt', 'dec1', 'Receiving yards per target.'),
+          C_('td', 'TD', 'int', 'Receiving touchdowns.'), C_('epa', 'EPA', 'dec1', 'Expected points added, summed over his targets.'),
+          C_('epat', 'EPA/Tgt', 'dec2', 'Expected points added per target.'), C_('adot', 'aDOT', 'dec1', 'Average depth of target.')];
+        defaultSort = { key:'tgt', dir:'desc' };
+      }
+      rowName = `${pos}, ${route ? `targeted ${covTitle(route)}` : C.splitLabels[sk]}, ${season}`;
+      onRow = (r) => openPlayerDetail(r._name, r._sid);
+      sample = route
+        ? 'Targeted routes, not routes run: participation charts the route only for the receiver the ball went to. Share is how many of his targets came on this route.'
+        : `${isQB ? 'Per dropback' : 'Tgt/DB counts only dropbacks with him on the field'}. Man, zone and shell come from participation charting; pressure is its was_pressure flag.`;
+    }
+    // Sort is kept per tab, so a key the new position lacks falls back to its default.
+    const kept = prefs.sort && prefs.sort.Coverage;
+    if (kept && !cols.some(c => c.key === kept.key)) delete prefs.sort.Coverage;
+    statsTable(main, prefs, 'Coverage', rows, cols, defaultSort, rowName, onRow);
+    main.appendChild(h('div', { class:'tip', style:{ marginTop:'10px' } },
+      `${rows.length} ${isTeam ? 'teams' : 'players'}. ${sample ? sample + ' ' : ''}Regular season through week ${C.throughWeek}. Source: ${C.source}.`));
+  }
+
+  // The Teams tab's shell columns: the man/zone and shell mix each defense
+  // played, from the same coverage-YYYY.js as the Coverage tab.
+  const COV_TEAM_KEYS = ['man', 'zone', 'c0', 'c1', 'c2', 'c2m', 'c3', 'c4', 'c6'];
+  const teamCoverageCols = (C) => COV_TEAM_KEYS.map(k => ({ key:`cov_${k}`, label:COV_SHELL_LABELS[k], group:'Coverage (D)', fmt:'pct',
+    desc:`Share of charted dropbacks this defense played in ${C.splitLabels[k].replace(/^vs /, '')} (nflverse participation charting).` }));
+  function teamCoverageRow(C, t) {
+    const v = C.teams[t], ix = (k) => C.teamFields.cov.indexOf(k);
+    if (!v) return {};
+    const n = v.dcov[ix('man')] + v.dcov[ix('zone')];
+    return Object.fromEntries(COV_TEAM_KEYS.map(k => [`cov_${k}`, n ? v.dcov[ix(k)] / n : null]));
+  }
+
   // This week's opponent, as a defense-vs-position line for the player card.
   function matchupLine(sleeper) {
     const D = window.DEFENSE;
@@ -13299,7 +13473,7 @@
     const main = $('#main'); main.innerHTML = '';
     const CUR = window.ADVANCED;
     if (!CUR) { main.appendChild(h('div', { class:'empty' }, 'advanced.js not loaded. Run projections/build_nflverse_suite.py.')); return; }
-    const POS = ['QB', 'RB', 'WR', 'TE', 'Teams', 'Defense', 'Trends', 'IDP'];
+    const POS = ['QB', 'RB', 'WR', 'TE', 'Teams', 'Coverage', 'Defense', 'Trends', 'IDP'];
     const prefs = statsLabPrefs();
     const SEASONS = [CUR.season, CUR.season - 1, CUR.season - 2];
     const pos = POS.includes(posArg) ? posArg : (prefs.pos && POS.includes(prefs.pos) ? prefs.pos : 'WR');
@@ -13339,7 +13513,11 @@
     }
     prefs.pos = pos;
     const isTeams = pos === 'Teams';
-    const cols = splitOn ? SPLIT_COLS.filter(c => c.pos.includes(pos)) : isTeams ? A.teamColumns : A.columns.filter(c => c.pos.includes(pos));
+    // Teams adds the defense's shell mix once that season's coverage file is on the page.
+    const cov = isTeams ? (window.COVERAGE_BY_SEASON || {})[season] : null;
+    const covOn = !!(cov && cov.published);
+    const cols = splitOn ? SPLIT_COLS.filter(c => c.pos.includes(pos))
+      : isTeams ? (covOn ? A.teamColumns.concat(teamCoverageCols(cov)) : A.teamColumns) : A.columns.filter(c => c.pos.includes(pos));
     // A split has its own columns, so it keeps its own groups and sort.
     const gkey = splitOn ? `${pos} split` : pos;
     const groups = [...new Set(cols.map(c => c.group))];
@@ -13351,10 +13529,11 @@
       eyebrow:'STATS LAB',
       title:'Advanced stats',
       sub:[splitOn ? `${split.label}. Counts summed over the split, rates recomputed from them. (est) marks an estimate.`
+        : pos === 'Coverage' ? 'Man vs zone, coverage shells, pressure, personnel and formation from nflverse participation charting.'
         : `${A.season} regular season through week ${A.throughWeek}. (est) marks an estimate.`,
         h('span', { class:'stats-lab-sub-more' }, ' Open the Column key above a table for what each header means.')],
       // Player tabs pick seasons in the split card instead.
-      actions:split ? [] : [h('label', { class:'stats-lab-toggle stats-lab-season' }, 'Season ',
+      actions:split || pos === 'Coverage' ? [] : [h('label', { class:'stats-lab-toggle stats-lab-season' }, 'Season ',
         h('select', { 'aria-label':'Season', onchange:(e) => {
           prefs.season = Number(e.target.value); saveStatsLabPrefs(prefs); viewStats(posArg);
         } }, ...SEASONS.map(y => h('option', { value:String(y), selected:y === season }, String(y)))))],
@@ -13363,6 +13542,7 @@
     if (pos === 'Defense') { statsDefense(main, prefs); saveStatsLabPrefs(prefs); return; }
     if (pos === 'Trends') { statsTrends(main, prefs); saveStatsLabPrefs(prefs); return; }
     if (pos === 'IDP') { statsIdp(main, prefs); saveStatsLabPrefs(prefs); return; }
+    if (pos === 'Coverage') { statsCoverage(main, prefs, CUR.season); saveStatsLabPrefs(prefs); return; }
 
     // Per-tab research state: minimums, column layout, snapshots, calculated
     // columns, highlights and bio filters. Every field is optional, so prefs
@@ -13385,7 +13565,7 @@
 
     let rows;
     if (isTeams) {
-      rows = Object.entries(A.teams).map(([t, v]) => Object.assign({ _key:t, _name:t, _team:t }, v));
+      rows = Object.entries(A.teams).map(([t, v]) => Object.assign({ _key:t, _name:t, _team:t }, v, covOn ? teamCoverageRow(cov, t) : null));
     } else {
       const mine = new Set();
       for (const lg of window.LEAGUES || []) {
@@ -13559,6 +13739,14 @@
       + (A.xfpSource === 'lookup' ? 'xFP prices each target and carry at the league average for plays like it'
         : 'xFP is what ffopportunity\'s play-by-play model expects his targets and carries to score')
       + '; FPOE is what he did beyond that.'));
+    if (isTeams && !covOn) {
+      const note = h('div', { class:'tip', style:{ marginTop:'10px' } }, cov
+        ? `The coverage shell columns (Man%, Cover 0-6) need nflverse participation charting, which is not published for ${season} yet. Pick ${season - 1} in Season to see them.`
+        : `Loading ${season} coverage shells...`);
+      main.appendChild(note);
+      if (!cov) loadCoverageSeason(season).then(() => { if (note.isConnected) viewStats('Teams'); })
+        .catch(() => { note.textContent = `coverage-${season}.js did not load. Run projections/build_coverage_splits.py.`; });
+    }
     saveStatsLabPrefs(prefs);
   }
 

@@ -1423,6 +1423,88 @@
         "width": 390,
         "height": 844
       }
+    },
+    {
+      "id": "stats-lab-coverage",
+      "name": "Stats Lab Coverage tab: man and zone splits match the payload, team shells render, 2026 says not published",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "localStorage.removeItem('ff-stats-lab-v1'); location.hash='#stats/Coverage'"
+        },
+        {
+          "waitFor": "table.stats-lab-table th:has-text('vs Man')"
+        },
+        {
+          "eval": "window.__covCap = () => { const t = document.querySelector('table.stats-lab-table'); const hs = [...t.tHead.rows[0].cells].map(c => c.textContent.replace(/[↑↓]/g, '').trim()); const i = hs.indexOf('Tgt'); return { rows: t.tBodies[0].rows.length, heads: hs, topTgt: i < 0 ? null : Number(t.tBodies[0].rows[0].cells[i].textContent) }; }; window.__covPick = (label, v) => { const s = document.querySelector(\"#main .stats-lab-filters select[aria-label='\" + label + \"']\"); s.value = v; s.dispatchEvent(new Event('change', { bubbles: true })); }; true;"
+        },
+        {
+          "eval": "window.__covMan = window.__covCap(); window.__covPick('Split', 'zone')"
+        },
+        {
+          "waitFor": "table.stats-lab-table th:has-text('vs Zone')"
+        },
+        {
+          "eval": "window.__covZone = window.__covCap(); window.__covPick('Split', 'route:GO')"
+        },
+        {
+          "waitFor": "table.stats-lab-table th:has-text('targeted Go')"
+        },
+        {
+          "eval": "window.__covGo = window.__covCap()"
+        },
+        {
+          "click": "#main .stats-lab-filters button:has-text('Team')"
+        },
+        {
+          "waitFor": "table.stats-lab-table th:has-text('Cov 3%')"
+        },
+        {
+          "eval": "window.__covTeams = document.querySelectorAll('table.stats-lab-table tbody tr').length; window.__covPick('Season', String(window.ADVANCED.season))"
+        },
+        {
+          "waitFor": ".stats-lab-cov-empty"
+        }
+      ],
+      "selector": ".stats-lab-cov-empty",
+      "assert": "(() => { const C = window.COVERAGE_BY_SEASON || {}, cur = window.ADVANCED.season, P = C[cur - 1]; if (!P || !P.published || !C[cur] || C[cur].published !== false) return false; const m = window.__covMan, z = window.__covZone, go = window.__covGo; if (!m || !z || !go || m.rows < 40 || z.rows < 40 || go.rows < 20 || !m.heads.includes('Tgt/DB') || !m.heads.includes('+/- all')) return false; /* default sort is targets, so the top row is the most-targeted WR in that split in the payload */ const wrs = Object.entries(P.players).filter(([, v]) => v.p === 'WR' && v.R); const top = (k) => Math.max(...wrs.map(([, v]) => v.R[k] ? v.R[k][1] : 0)); if (m.topTgt !== top(P.splits.indexOf('man')) || z.topTgt !== top(P.splits.indexOf('zone'))) return false; if (go.topTgt !== Math.max(...wrs.map(([s]) => ((P.targetedRoutes[s] || {}).GO || [0])[0]))) return false; if (P.league.tgt.man + P.league.tgt.zone > P.league.tgt.all || window.__covTeams !== 32) return false; const e = document.querySelector('.stats-lab-cov-empty'); return /not published yet/.test(e.textContent) && !!e.querySelector('button') && !document.querySelector('table.stats-lab-table') && document.documentElement.scrollWidth <= innerWidth + 1; })()",
+      "notes": "Data Suite gap cluster C. projections/build_coverage_splits.py joins nflverse pbp_participation to play-by-play and writes site/data/coverage-YYYY.js (counts only, lazy-loaded): per receiver and QB vs man, vs zone, by shell (Cover 0, 1, 2, 2-man, 3, 4, 6), pressured and clean; per team personnel, formation and shells played and faced; per receiver the TARGETED route tree. With no season picked the tab shows the newest season nflverse has posted, so it opens on the prior season while 2026 participation 404s. The assert requires the man and zone top rows to equal the largest per-WR count in the payload, the targeted Go split to do the same from targetedRoutes, all 32 teams in the shell view, and picking the current season to render the not-published card (no table, a Show button, no sideways scroll). --self-check on the builder reconciles man plus zone targets with the participation file."
+    },
+    {
+      "id": "stats-lab-coverage-phone",
+      "name": "Stats Lab Coverage tab fits a phone, and the Teams tab carries each defense's shell mix",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "localStorage.setItem('ff-stats-lab-v1', JSON.stringify({ season: window.ADVANCED.season - 1 })); location.hash='#stats/Teams'"
+        },
+        {
+          "waitFor": "table.stats-lab-table th:has-text('Man%')"
+        },
+        {
+          "eval": "window.__covTeamRow = (() => { const t = document.querySelector('table.stats-lab-table'); const hs = [...t.tHead.rows[0].cells].map(c => c.textContent.replace(/[↑↓]/g, '').trim()); const i = hs.indexOf('Man%'), r = [...t.tBodies[0].rows].find(x => x.dataset.key === 'DEN'); return r && { man: r.cells[i].textContent, zone: r.cells[hs.indexOf('Zone%')].textContent }; })(); location.hash='#stats/Coverage'"
+        },
+        {
+          "waitFor": "table.stats-lab-table th:has-text('vs Man')"
+        }
+      ],
+      "selector": "table.stats-lab-table",
+      "assert": "(() => { const P = window.COVERAGE_BY_SEASON[window.ADVANCED.season - 1], v = P.teams.DEN.dcov, n = v[0] + v[1], got = window.__covTeamRow; if (!got || got.man !== (v[0] / n * 100).toFixed(1) + '%' || got.zone !== (v[1] / n * 100).toFixed(1) + '%') return false; const f = document.querySelector('#main .stats-lab-filters'), sels = [...f.querySelectorAll('select')]; if (sels.length !== 3) return false; const t = document.querySelector('table.stats-lab-table'), w = t.parentElement, name = t.querySelector('tbody tr td:nth-child(2)'); w.scrollLeft = w.scrollWidth; return document.documentElement.scrollWidth <= innerWidth + 1 && sels.every(s => { const r = s.getBoundingClientRect(); return r.width > 0 && r.left >= 0 && r.right <= innerWidth; }) && getComputedStyle(name).position === 'sticky' && w.scrollLeft > 0; })()",
+      "notes": "At 390px the Coverage filters (position buttons, Season, Split, Min tgt) wrap inside the card with no sideways page scroll, and the table scrolls inside its own wrapper with the Player cell pinned, like every Stats Lab table. It first opens the Teams tab on the prior season: the Coverage (D) group adds Man%, Zone% and Cover 0-6 played from the same coverage-YYYY.js, fetched in the background the first time Teams asks, and Denver's Man% and Zone% must equal its dcov counts in the payload. On the current season Teams says the shell columns wait for nflverse participation instead of showing blanks.",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      }
     }
   ],
   "ignore": [
