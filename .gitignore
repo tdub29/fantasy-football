@@ -30,7 +30,7 @@ t2.cjs
 test-*.cjs
 
 site/_shot.py
-site/_shots/
+notes/_shots/
 _shot_modal.py
 site/_mobile_shot.py
 # Ad-hoc capture, not a fixture.
@@ -77,3 +77,4 @@ projections/nflverse-cache/
 
 # One-day OCR crops from the 2026-08-22 Gibbs ingest. Kept on disk, not in git.
 site/data/_shots/_crop/
+site/_shots/
