@@ -103,9 +103,9 @@ Downloaded public data this relies on:
 
 | # | Capability | Status | Evidence on our site | Public source to fill | Downloaded |
 |---|---|---|---|---|---|
-| 45 | Team EPA with a player on vs off the field | missing | nothing | participation `offense_players` 2020-2025; 2026 only at game level (snap_counts) | yes |
-| 46 | Teammate on/off (target rate with and without) | missing | nothing | same as 45 | yes |
-| 47 | Game splits by coach, playcaller, snaps played, starting QB | missing | nothing | pbp passer per game, snap_counts, `derived/qb_changes.csv`, `play_callers.csv` | yes |
+| 45 | Team EPA with a player on vs off the field | shipped 2026-09-26 | Stats Lab On/Off tab (`onoff-YYYY.js`): team plays, EPA/play, pass rate, success% on vs off, 2023-2025 play level, 2026 game level | participation `offense_players` 2020-2025; 2026 only at game level (snap_counts) | yes |
+| 46 | Teammate on/off (target rate with and without) | shipped 2026-09-26 | On/Off tab teammate table: target share and targets per dropback on vs off, with samples | same as 45 | yes |
+| 47 | Game splits by coach, playcaller, snaps played, starting QB | partial | On/Off tab Game splits: by starting QB and playcaller (games, EPA/play, PROE, each player's PPR/G and target share); coach and snaps-played splits not built | pbp passer per game, snap_counts, `derived/qb_changes.csv`, `play_callers.csv` | yes |
 
 ### Matchup pages
 
@@ -208,6 +208,14 @@ now "have" (42 stays partial: compare is player rows, not route trees). Guarded 
 EPA/play, pass rate, each teammate's target share and targets per dropback with the player on and
 off), game-level with/without for 2026 from snap_counts, and game splits by starting QB and
 playcaller. A new Stats Lab On/Off tab with a player picker.
+**Shipped 2026-09-26** (branch `feat-ds-onoff`, task t-1790320053414): `projections/build_onoff.py` writes lazy
+`site/data/onoff-YYYY.js` (2023-2026, about 180 KB a played season) and runs in `build_all.py` with `--self-check`, which
+recounts on + off == team total for every player straight from participation (snap counts for 2026), puts every game
+in exactly one QB and one playcaller group, and ties season PPR to nflverse weekly stats. The Stats Lab On/Off tab picks
+a player (100+ offensive snaps) and shows the team split and every teammate's Tgt% and Tgt/DB on vs off, grey italic
+under 50 plays or dropbacks; `#stats/OnOff/games` is the Game splits view. Playcaller changes mid-season only where
+`play_callers.csv` notes name a firing week. Guarded by `stats-lab-onoff`, `stats-lab-onoff-phone` and
+`site/js/onoff.test.js`.
 
 ### Cluster F. Game matchup pages (rows 48, 51, 56): medium
 

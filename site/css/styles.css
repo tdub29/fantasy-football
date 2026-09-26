@@ -5980,3 +5980,35 @@ table.data.rt-cmp-table td.rt-dnq { font-style: italic; color: var(--fg-3); }
 @media (pointer: coarse) {
   .stats-lab-charts button, .rt-ctl button { min-height: 40px; min-width: 40px; }
 }
+/* On/Off tab: a player's team and teammate splits on vs off, and game splits by QB and playcaller. */
+.oo-ctl .oo-find { flex: 1 1 200px; min-width: 0; max-width: 280px; padding: 4px 8px; }
+.oo-head { margin-top: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 4px; font-size: 0.8rem; }
+.oo-card { margin-top: 14px; padding: 10px 12px; font-size: 0.8rem; }
+table.data:is(.oo-team, .oo-gs) { font-size: 12px; width: auto; min-width: min(100%, 420px); }
+:is(.oo-team, .oo-gs) th[scope=row] { text-align: left; font-weight: 700; white-space: nowrap; }
+table.data.oo-gs thead th { text-transform: none; letter-spacing: 0; vertical-align: bottom; }
+.oo-gs th.oo-grp { text-align: center; white-space: nowrap; }
+.oo-gs tr.oo-sum td, .oo-team tr.oo-diff td { font-weight: 800; }
+.oo-gs tbody tr.clickable { cursor: pointer; }
+:is(.oo-team, .oo-gs) tbody :is(th, td) { padding: 6px 10px; }
+table.data tbody td.oo-up { color: var(--green); font-weight: 800; }
+table.data tbody td.oo-down { color: var(--red); font-weight: 800; }
+/* A side under the sample floor reads grey italic, even where its +/- would be green or red. */
+table.data tbody :is(td, th).oo-small, table.data tbody tr.oo-small :is(td, th), table.data thead th.oo-small { color: var(--fg-3); font-style: italic; }
+.oo-flag { font-weight: 400; font-style: italic; color: var(--fg-3); font-size: 0.72rem; }
+.oo-foot { margin-top: 10px; }
+@media (pointer: coarse) {
+  .oo-ctl button { min-height: 40px; }
+}
+/* Pin the player column of a game-splits table so a second QB or playcaller group
+   still reads by name when it scrolls in from the right. Same zebra trick as the
+   Stats Lab tables: rows get the table face, pinned cells inherit the row fill. */
+.oo-gs tbody tr { background-color: var(--bg-1); }
+.oo-gs :is(thead th[rowspan], tbody th[scope=row]) { position: sticky; left: 0; z-index: 1; box-shadow: 2px 0 0 var(--chalk); }
+.oo-gs tbody th[scope=row] { background: inherit; }
+@media (max-width: 480px) {
+  /* Five narrow columns fit a 390px card without a sideways scroll. */
+  :is(.oo-team, .oo-gs) :is(thead th, tbody th, tbody td) { padding: 6px 5px; }
+  table.data.oo-team { min-width: 0; }
+  .oo-team th[scope=row] { white-space: normal; }
+}

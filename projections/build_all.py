@@ -76,6 +76,12 @@ STEPS = [
     # proven to add back up to advanced.js.
     ("Stats Lab location maps",    PROJ / "build_location_splits.py",     True),
     ("location maps vs advanced.js", PROJ / "build_location_splits.py",   True, ["--self-check"]),
+    # Stats Lab On/Off tab: team and teammate splits with a player on vs off the
+    # field (participation, play level; snap counts, game level, for a season
+    # nflverse has not posted participation for) and game splits by starting QB
+    # and playcaller, then recounted from the source files: on + off == team.
+    ("Stats Lab on/off + game splits", PROJ / "build_onoff.py",          True),
+    ("on/off vs participation",    PROJ / "build_onoff.py",               True, ["--self-check"]),
     ("draft + combine profile",    PROJ / "build_prospect_profile.py",    True),
     ("game-day weather",           PROJ / "build_game_weather.py",        True),
     ("defense vs position",        PROJ / "build_defense_matchups.py",    True),

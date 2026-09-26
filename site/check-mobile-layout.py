@@ -53,6 +53,8 @@ PAGES = {
     "stats-lab-tools": "#stats/WR",
     "stats-lab-coverage": "#stats/Coverage",
     "stats-lab-routes": "#stats/Routes",
+    "stats-lab-onoff": "#stats/OnOff",
+    "stats-lab-game-splits": "#stats/OnOff/games",
 }
 
 # The player card is a modal on <body>, outside #main, so it gets its own probe:
