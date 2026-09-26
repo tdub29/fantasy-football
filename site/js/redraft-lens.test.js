@@ -24,6 +24,8 @@ const helpers = new Function('window', [
   slice('function targetStartersByPos(league)', '  // Is this player startable league-wide'),
   slice('function isDynastyLeague(lg)', '  // The league whose format defines VOR replacement'),
   slice('const REDRAFT_VOR_SCALE', '  // League-aware starter slots'),
+  // rosPointsByPid stops at the league's last fantasy week.
+  slice('function playoffSettings(lg)', '  // ---- Multi-year title equity'),
 ].join('\n') + '\nreturn { tierValue, isDynastyLeague, vorByPid, redraftSlotGrade, REDRAFT_VOR_SCALE };')(ctx.window);
 
 const leagues = ctx.window.LEAGUES;

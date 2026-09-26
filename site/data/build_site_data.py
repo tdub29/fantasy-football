@@ -367,6 +367,9 @@ for name, lid, buy_in in LEAGUES:
         # missing type reads as dynasty rather than silently stripping the UI.
         "is_dynasty": settings.get("type") != 0,
         "playoff_teams": settings.get("playoff_teams"),
+        # The title simulator's bracket and the rest-of-season sum both end at the
+        # title game: playoff_week_start plus one week per round.
+        "playoff_week_start": settings.get("playoff_week_start"),
         "trade_deadline": settings.get("trade_deadline"),
         # Taxi/IR slot counts and the waiver rule gate two dynasty questions the
         # roster arrays alone cannot answer: what a young-asset stash actually

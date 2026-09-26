@@ -510,7 +510,7 @@
     const v = ros ? rosVorByPid(pid, lg, null, DEPTH_TIER) : vorByPid(pid, lg, src || 'blend');
     if (v == null) return null;
     const color = v >= 30 ? 'var(--green)' : v >= 0 ? 'var(--fg-1)' : 'var(--red)';
-    const pos = ros ? rosPointsByPid().get(String(pid))?.pos : projByPid().get(String(pid))?.p?.pos;
+    const pos = ros ? rosPointsByPid(lg).get(String(pid))?.pos : projByPid().get(String(pid))?.p?.pos;
     return h('span', { class: 'tnum', style: { color, fontWeight: 600 },
       title: `Value over replacement: ${v > 0 ? '+' : ''}${v} ${ros ? 'rest-of-season' : 'projected'} pts vs the ${ros ? 'best free' : 'last startable'} ${pos || ''} in ${lg.short_name || lg.name}. Cross-position comparable, higher = more lineup value.` },
       `${v > 0 ? '+' : ''}${fmt.decimal(v, 0)}`);
@@ -595,24 +595,31 @@
   // through 7 and returns at about 16 a week, so summing from the current week
   // prices the games he will miss without erasing the ten he will play. That
   // makes this self-maintaining as the injury news moves.
+  // The sum stops at the league's last fantasy week (its title game), because
+  // NFL week 18 is played after every fantasy season here is over: it put 19.9
+  // phantom points on McCaffrey. With no league (a data-presence check) it runs
+  // to the end of the feed. One map per last week, `_rosPts` holds them.
   let _rosPts = null;
-  function rosPointsByPid() {
-    if (_rosPts) return _rosPts;
-    _rosPts = new Map();
+  function rosPointsByPid(lg = null) {
+    const last = lg ? playoffSettings(lg).lastWeek : Infinity;
+    _rosPts = _rosPts || new Map();
+    if (_rosPts.has(last)) return _rosPts.get(last);
+    const out = new Map();
+    _rosPts.set(last, out);
     const wr = window.WEEKLY_RANKINGS;
-    if (!wr || !wr.players) return _rosPts;
+    if (!wr || !wr.players) return out;
     const from = Math.max(1, wr.currentWeek || 1);
     for (const p of wr.players) {
       const wk = p.sleeper || [];
-      // `out`: weeks from now before his first line, his known absence.
-      let sum = 0, games = 0, out = 0;
-      for (let w = from; w <= wk.length; w++) {
+      // `away`: weeks from now before his first line, his known absence.
+      let sum = 0, games = 0, away = 0;
+      for (let w = from; w <= Math.min(wk.length, last); w++) {
         const v = wk[w - 1];
-        if (v != null) { sum += v; games++; } else if (!games) out++;
+        if (v != null) { sum += v; games++; } else if (!games) away++;
       }
-      if (games) _rosPts.set(String(p.id), { pts: Math.round(sum * 10) / 10, games, pos: p.pos, out });
+      if (games) out.set(String(p.id), { pts: Math.round(sum * 10) / 10, games, pos: p.pos, out: away });
     }
-    return _rosPts;
+    return out;
   }
 
   // Replacement level on the SAME rest-of-season basis, or the comparison is
@@ -643,7 +650,7 @@
       for (const pid of (r.players || [])) rostered.add(String(pid));
     }
     const byPos = {};
-    for (const [pid, v] of rosPointsByPid()) {
+    for (const [pid, v] of rosPointsByPid(league)) {
       const g = projPosGroup(v.pos);
       (byPos[g] = byPos[g] || []).push({ pid, pts: v.pts, free: !rostered.has(pid) });
     }
@@ -675,8 +682,8 @@
   // Same ratio used by dynasty slot grades, but with rest-of-season points on
   // both sides. Mixing VOR in the numerator with dynasty order in the reference
   // made ordinary redraft starters look worthless.
-  function redraftSlotGrade(pid, referencePoints) {
-    const rec = rosPointsByPid().get(String(pid));
+  function redraftSlotGrade(pid, referencePoints, league) {
+    const rec = rosPointsByPid(league).get(String(pid));
     if (!rec || !(referencePoints > 0)) return 0;
     const grade = rec.pts / referencePoints * 10;
     return Math.round(Math.max(0, Math.min(10, grade)) * 10) / 10;
@@ -684,13 +691,13 @@
 
   // Tier of a player within his own roster at his position, 1-based.
   function rosTierOf(league, roster, pid) {
-    const me = rosPointsByPid().get(String(pid));
+    const me = rosPointsByPid(league).get(String(pid));
     if (!me) return null;
     const g = projPosGroup(me.pos);
     let better = 0;
     for (const other of (roster.players || [])) {
       if (String(other) === String(pid)) continue;
-      const o = rosPointsByPid().get(String(other));
+      const o = rosPointsByPid(league).get(String(other));
       if (o && projPosGroup(o.pos) === g && o.pts > me.pts) better++;
     }
     return better + 1;
@@ -704,7 +711,7 @@
     const key = String(league.id);
     if (!_rosRankCache.has(key)) {
       const byPos = {};
-      for (const [id, v] of rosPointsByPid()) {
+      for (const [id, v] of rosPointsByPid(league)) {
         const g = projPosGroup(v.pos);
         (byPos[g] = byPos[g] || []).push({ id, pts: v.pts });
       }
@@ -734,7 +741,7 @@
   // actually available for free. So one sentinel prices every bench row.
   const DEPTH_TIER = 99;
   function rosVorByPid(pid, league, roster = null, tierOverride = null) {
-    const rec = rosPointsByPid().get(String(pid));
+    const rec = rosPointsByPid(league).get(String(pid));
     if (!rec) return null;
     const g = projPosGroup(rec.pos);
     const tier = tierOverride != null ? tierOverride
@@ -752,7 +759,7 @@
   function orderValue(p, league) {
     if (league && league.id && !isDynastyLeague(league)) {
       const pid = p._sleeperId != null ? p._sleeperId : p.sleeperId;
-      const rec = pid != null ? rosPointsByPid().get(String(pid)) : null;
+      const rec = pid != null ? rosPointsByPid(league).get(String(pid)) : null;
       if (rec) return rec.pts;
     }
     return tierValue(p, league);
@@ -2450,7 +2457,7 @@
   // best free K, 137.7, beats every rostered kicker). `empty` counts the slots
   // even the waiver wire cannot fill; one scores 0.
   function redraftLineup(ids, league) {
-    const ros = rosPointsByPid(), free = rosBoard(league).freeLevel;
+    const ros = rosPointsByPid(league), free = rosBoard(league).freeLevel;
     const assets = [];
     for (const pid of new Set([...ids].map(String).concat(waiverIds(league)))) {
       const rec = ros.get(pid);
@@ -4129,14 +4136,14 @@
     const lineupOrder = (p) => {
       if (dynasty) return orderValue(p.ranked, league);
       const pid = p.sleeper?.id ?? p.ranked?._sleeperId ?? p.ranked?.sleeperId;
-      return rosPointsByPid().get(String(pid))?.pts ?? -1;
+      return rosPointsByPid(league).get(String(pid))?.pts ?? -1;
     };
     // Pre-sort owned players by tierValue desc per position
     const byPos = { QB:[], RB:[], WR:[], TE:[], LB:[], DB:[], DL:[] };
     for (const p of rosterPlayers) {
       const pos = p.ranked?.pos || (!dynasty ? projPosGroup(p.sleeper?.pos) : null);
       if (!pos || !byPos[pos]) continue;
-      if (p.ranked || rosPointsByPid().has(String(p.sleeper?.id))) byPos[pos].push(p);
+      if (p.ranked || rosPointsByPid(league).has(String(p.sleeper?.id))) byPos[pos].push(p);
     }
     for (const k of Object.keys(byPos)) {
       byPos[k].sort((a, b) => lineupOrder(b) - lineupOrder(a));
@@ -4245,11 +4252,11 @@
       const pickPid = pick?.sleeper?.id ?? pick?.ranked?._sleeperId ?? pick?.ranked?.sleeperId;
       let myVal = pick ? tierValue(pick.ranked, league, null, valueTier) : 0;
       if (!dynasty && pickPid != null) {
-        const rec = rosPointsByPid().get(String(pickPid));
+        const rec = rosPointsByPid(league).get(String(pickPid));
         myVal = rec ? Math.round(rec.pts * 10) / 10 : 0;
       }
       const grade = !dynasty
-        ? (pickPid != null ? redraftSlotGrade(pickPid, refVal) : 0)
+        ? (pickPid != null ? redraftSlotGrade(pickPid, refVal, league) : 0)
         : (refVal > 0 ? Math.min(10, (myVal / refVal) * 10) : (pick && myVal > 0 ? 5 : 0));
       // Future grade: age this player's value 3 seasons, re-grade against the same
       // slot reference. Drives the FV tick on the slot bar (present grade is the fill).
@@ -4263,7 +4270,7 @@
         : (pick ? signedVor(pick.ranked, league, valueTier) : null);
       const pickAge = pick ? (pick.sleeper?.age ?? pick.ranked?.age ?? null) : null;
       // Rest-of-season projected points, the number the grade is derived FROM.
-      const pickPts = pickPid != null ? (rosPointsByPid().get(String(pickPid))?.pts ?? null) : null;
+      const pickPts = pickPid != null ? (rosPointsByPid(league).get(String(pickPid))?.pts ?? null) : null;
       slots.push({
         vor: signed,
         age: pickAge,
@@ -4298,7 +4305,7 @@
     return rosterPlayers
       .filter(p => p.sleeper?.id != null && !starters.has(String(p.sleeper.id)))
       .map(p => {
-        const rec = rosPointsByPid().get(String(p.sleeper.id));
+        const rec = rosPointsByPid(lg).get(String(p.sleeper.id));
         if (!rec) return 0;
         const pos = projPosGroup(rec.pos);
         if (!['QB','RB','WR','TE'].includes(pos)) return 0;
@@ -4836,7 +4843,7 @@
           player: p.sleeper.name,
           vor: signedVor(p.ranked, lg, DEPTH_TIER),
           age: p.sleeper?.age ?? p.ranked?.age ?? null,
-          pts: rosPointsByPid().get(String(p.sleeper.id))?.pts ?? null,
+          pts: rosPointsByPid(lg).get(String(p.sleeper.id))?.pts ?? null,
           myVal: v,
           refVal: refV,
           grade: refV > 0 ? Math.min(10, Math.round(v / refV * 10 * 10) / 10) : 0,
@@ -6912,9 +6919,9 @@
   // he is a dynasty rebuilder), and the market reads it close to even.
   const FINDER_REBUILD = new Set(['seller', 'tank']);
   // Trade currency: a skill player worth SIM.finderMinAsset or more, plus owned
-  // picks in dynasty (rosterOwnedPicks is [] in redraft). No K or DEF, and no IDP:
-  // championshipOdds simulates the offense only, so it would price an LB at
-  // nothing on both sides of the deal.
+  // picks in dynasty (rosterOwnedPicks is [] in redraft). No IDP: championshipOdds
+  // does not simulate the defense, so it would price an LB at nothing on both
+  // sides of the deal. No K or DEF either: they are streamed, not traded for.
   // A player in an IR slot: the simulator books him from his return week, but a
   // dynasty lineup delta starts only the active list, so he would read as a free
   // throw-in there.
@@ -6962,7 +6969,7 @@
   // thousands of fills. IDP never moves in a finder trade, so the defense half
   // cancels out of every delta.
   function finderLineup(lg) {
-    const dyn = isDynastyLeague(lg), slots = offenseStartingSlots(lg), map = projMap('offense'), ros = rosPointsByPid();
+    const dyn = isDynastyLeague(lg), slots = offenseStartingSlots(lg), map = projMap('offense'), ros = rosPointsByPid(lg);
     const free = waiverIds(lg);
     const cache = new Map();
     const asset = (pid) => {
@@ -7071,6 +7078,12 @@
     const cands = [...new Set([...byHead.values()].flatMap(h => [h.me, h.them]))].sort((a, b) => b.meD - a.meD);
     return { checked, cands: cands.slice(0, SIM.finderSimPerPartner) };
   }
+  // A deal's rank: my change in this season's title odds; in dynasty plus my FV
+  // change at its weight, less what I overpay on KTC (value out minus value in)
+  // at its weight, so a deal that bleeds market value sinks unless the odds pay.
+  function finderScore(dyn, my, myFv, sendV, getV) {
+    return my.delta + (dyn ? SIM.finderFvWeight * myFv - SIM.finderOverpayWeight * Math.max(0, sendV - getV) : 0);
+  }
   // The whole search, in slices: it yields to the UI between partners and
   // between simulations, so a phone keeps painting the progress line.
   async function findTrades(lg, { sims = SIM.finderSims, onProgress = () => {} } = {}) {
@@ -7122,7 +7135,7 @@
       const tot = (items) => items.reduce((s, a) => s + a.v, 0), top = (items) => Math.max(...items.map(a => a.v));
       const sendV = tot(sendItems), getV = tot(getItems);
       const fair = KT.computeFairness(sendV, getV, send.size, get.size, top(sendItems), top(getItems)).pct;
-      const scoreOf = (m) => m.delta + (dyn ? SIM.finderFvWeight * myFv : 0);
+      const scoreOf = (m) => finderScore(dyn, m, myFv, sendV, getV);
       const passes = (m, t, z = SIM.finderSeMult) => m.delta > z * m.se && scoreOf(m) > 0 && (c.rebuilder ? themFv >= SIM.finderMinFvGain : t.delta > 0);
       if (!(passes(my, their, SIM.finderScreenSeMult) && fair >= SIM.finderFairPct)) continue;
       proposals.push({ them: c.them, rebuilder: c.rebuilder, stance: c.stance, fvNow: c.fvNow, fills: c.fills, whatIf, passes, scoreOf,
@@ -7185,7 +7198,7 @@
         `${CURRENT_SEASON} title: you ${pct(p.my.before)} to ${pct(p.my.after)} (${signed(p.my.delta)} pts ±${(SIM.titleBandZ * p.my.se).toFixed(1)})`
         + ` · them ${pct(p.their.before)} to ${pct(p.their.after)} (${signed(p.their.delta)} ±${(SIM.titleBandZ * p.their.se).toFixed(1)})`
         + (dyn ? ` · your FV ${signed(p.myFv, 0)}` : '')),
-      h('div', { class: 'tf-why' }, `Value ${fmt.decimal(p.sendV, 1)} out, ${fmt.decimal(p.getV, 1)} in (${signed(p.getV - p.sendV)}). ${p.why}`),
+      h('div', { class: 'tf-why' }, `${dyn ? 'KTC' : 'Value'} ${fmt.decimal(p.sendV, 1)} out, ${fmt.decimal(p.getV, 1)} in (${signed(p.getV - p.sendV)}). ${p.why}`),
     );
     const show = (res) => {
       list.innerHTML = '';
@@ -7690,7 +7703,7 @@
       const sp = window.PLAYERS?.[pid];
       if (!sp) continue;
       if (!startable.has(row.pos)) continue;
-      const ros = rosPointsByPid().get(pid)?.pts;
+      const ros = rosPointsByPid(lg).get(pid)?.pts;
       if (ros == null) continue;
       const wkProj = (row.vegas != null) ? row.vegas : (row.sleeper || [])[week - 1];
       const experience = waiverExperienceProfile(sp, row.pos);
@@ -8093,7 +8106,7 @@
         const pos = ranked.pos || sp.pos;
         if (!byPos[pos]) continue;
         byPos[pos].push({ name: sp.name, pid, age: sp.age, value: playerValue(pid, lg),
-          pts: dyn ? 0 : (rosPointsByPid().get(String(pid))?.pts || 0),
+          pts: dyn ? 0 : (rosPointsByPid(lg).get(String(pid))?.pts || 0),
           posRank: dyn ? (ranked.ktcPosRank || ranked._posRank || null) : rosPosRank(pid, lg) });
       }
       const posVal = {}, posTop = {}, posPts = {};
@@ -8769,7 +8782,7 @@
       const matches = isDynastyLeague(lg)
         ? idx.all.filter(p => p._sleeperId && norm(p.name).includes(q)).slice(0, 8)
         : (window.WEEKLY_RANKINGS?.players || []).filter(p => window.PLAYERS[p.id] && norm(p.name).includes(q))
-            .map(p => ({ name: p.name, pos: p.pos, _sleeperId: String(p.id), pts: rosPointsByPid().get(String(p.id))?.pts || 0 }))
+            .map(p => ({ name: p.name, pos: p.pos, _sleeperId: String(p.id), pts: rosPointsByPid(lg).get(String(p.id))?.pts || 0 }))
             .sort((a, b) => b.pts - a.pts).slice(0, 8);
       results.hidden = false;
       if (!matches.length) { results.appendChild(h('div', { class:'trade-search-empty' }, 'No players match.')); return; }
@@ -8909,7 +8922,7 @@
     if (roster) {
       // Redraft breaks value ties (every sub-replacement body is 0) on
       // rest-of-season points, so a starting QB never sorts below a scrub.
-      const ros = (pid) => dyn ? 0 : (rosPointsByPid().get(String(pid))?.pts || 0);
+      const ros = (pid) => dyn ? 0 : (rosPointsByPid(lg).get(String(pid))?.pts || 0);
       const arr = (roster.players || []).map(pid => {
         const sleeper = window.PLAYERS[pid];
         const ranked = sleeper ? (rankIndex().bySleeperId.get(pid) || rankIndex().byName.get(norm(sleeper.name))) : null;
@@ -9101,19 +9114,22 @@
     return out;
   }
   // simPool has no waiver pool, so a what-if that ships a position's last backup
-  // is charged an EMPTY slot on every bye and injury. Claim the best free agent
+  // is charged an EMPTY slot on every bye and injury. Claim a free agent
   // there instead, up to one body over the position's starting slots. `taken`
   // are claims the other side already made: one free agent, one team.
   function waiverAdds(lg, roster, drop, add, taken = new Set()) {
-    const map = projMap('offense'), ros = isDynastyLeague(lg) ? null : rosPointsByPid();
+    const map = projMap('offense'), ros = isDynastyLeague(lg) ? null : rosPointsByPid(lg);
     const posOf = (pid) => (ros && ros.get(pid) ? projPosGroup(ros.get(pid).pos) : map.get(pid)?.pos);
+    const ptsOf = (pid) => (ros ? ros.get(pid)?.pts : map.get(pid) ? projPoints(map.get(pid), lg, 'blend') : null);
+    // K and DEF count only where the league starts them (simPool drops them elsewhere).
     const need = { QB: 0, RB: 0, WR: 0, TE: 0 };
     for (const s of offenseStartingSlots(lg)) {
-      if (need[s.pos] != null) need[s.pos]++;
+      if (s.pos === 'K' || s.pos === 'DEF') need[s.pos] = (need[s.pos] || 0) + 1;
+      else if (need[s.pos] != null) need[s.pos]++;
       else if (s.pos === 'SUPER_FLEX') need.QB++;
     }
     const count = (ids) => {
-      const c = { QB: 0, RB: 0, WR: 0, TE: 0 };
+      const c = { QB: 0, RB: 0, WR: 0, TE: 0, K: 0, DEF: 0 };
       for (const pid of ids) { const pos = posOf(pid); if (c[pos] != null) c[pos]++; }
       return c;
     };
@@ -9122,10 +9138,19 @@
     const before = count(now), after = count(now.filter(p => !drop.has(p)).concat([...add].filter(k => !isPickKey(k))));
     const out = [];
     for (const pos in need) {
-      let short = Math.min(before[pos], need[pos] + 1) - after[pos];
-      for (const fa of freeAgents(lg)) {
-        if (short <= 0) break;
-        if (fa.pos === pos && !taken.has(fa.pid)) { out.push(fa.pid); short--; }
+      const short = Math.min(before[pos], need[pos] + 1) - after[pos];
+      if (short <= 0) continue;
+      // Each claim replaces one of the `short` weakest bodies who left, and is no
+      // better than him: the baseline never swaps a bench body for a better free
+      // agent, so a trade may not either. Claiming the best one let a TE2 thrown
+      // in buy his side a better free TE, and shipping a sub-waiver kicker gain
+      // title odds. When every free agent beats him, the weakest one comes back.
+      const caps = now.filter(p => drop.has(p) && posOf(p) === pos).map(p => ptsOf(p) ?? Infinity)
+        .sort((a, b) => b - a).slice(-short);
+      for (const cap of caps) {
+        const open = freeAgents(lg).filter(fa => fa.pos === pos && !taken.has(fa.pid) && !out.includes(fa.pid));
+        const fa = open.find(f => f.pts <= cap) || open[open.length - 1];
+        if (fa) out.push(fa.pid);
       }
     }
     return out;
@@ -9824,7 +9849,7 @@
       for (const r of group) {
         const ranked = rankIndex().byName.get(norm(r.name));
         const val = ranked ? tierValue(ranked, r.lg) : null;
-        const ros = rosPointsByPid().get(String(r.pid))?.pts;
+        const ros = rosPointsByPid(r.lg).get(String(r.pid))?.pts;
         body.appendChild(h('tr', { class: 'clickable', onclick: () => openPlayerDetail(r.name, r.pid) },
           h('td', { class: 'sr-name' }, r.name, r.pid ? injuryChip(r.pid) : null),
           h('td', { class: 'sr-pos' }, r.pos ? posChip(r.pos) : null),
@@ -11477,10 +11502,13 @@
     // Weekly scoring noise as a fraction of a player's per-game mean. Fantasy
     // weekly scores are wildly overdispersed; QBs are the steadiest, RB/WR the
     // least (a WR's week is one long TD away from tripling).
-    cv: { QB: 0.34, RB: 0.55, WR: 0.62, TE: 0.60, DEF: 0.5 },
+    // K measured: median 0.51 over 98 kicker-seasons, 2021-2024 regular season
+    // (historical/kicking_stats, 8+ games, FG 3/4/5 by distance plus PAT).
+    cv: { QB: 0.34, RB: 0.55, WR: 0.62, TE: 0.60, K: 0.51, DEF: 0.5 },
     // Expected games missed per 17-game season for a prime-age player, by
-    // position. RBs take the most contact; QBs are protected.
-    missedGames: { QB: 1.5, RB: 3.0, WR: 2.3, TE: 2.6 },
+    // position. RBs take the most contact; QBs are protected. A team defense
+    // never misses a game; a kicker rarely does (assumed, not measured).
+    missedGames: { QB: 1.5, RB: 3.0, WR: 2.3, TE: 2.6, K: 0.5, DEF: 0 },
     // Injuries have duration, so depth matters. Mean absence in weeks once hurt.
     injuryDurationWeeks: 3,
     // Older bodies miss more. Multiplier on expected missed games per year past
@@ -11578,7 +11606,10 @@
     // The screen's own bar, looser: at 800 sims 2 SE is ~2 pts, so a real +2 deal
     // died there although it cleared 2 SE at the Lab's count (Phi Kap, Zay Flowers
     // for Parker Washington + Trevor Lawrence: +2.0 ±2.7 at 800, +2.3 ±0.9 at 7,500).
-    finderScreenSeMult: 1,
+    // At 1 SE it still killed one: Washington, Kenneth Walker for Trey McBride +
+    // Brock Purdy, +1.8 ±0.7 at 7,500 but +0.9 ±2.3 on its first 800 seasons once
+    // K and DEF entered the pool. The Lab-count re-run keeps the 2 SE bar.
+    finderScreenSeMult: 0.5,
     finderShow: 8,
     finderShowPerPartner: 2,
     // Dynasty ranking: percentage points of this season's title odds per unit of
@@ -11587,6 +11618,11 @@
     // 10-team fair share. A calibration bet, not a measurement.
     finderFvWeight: 0.05,
     finderFvYears: 4,
+    // Dynasty ranking: title-odds points charged per unit of KTC I overpay (value
+    // sent minus value received, nothing when I do not). 0.1 charges a 25-point
+    // overpay, Willis + Metcalf's, 2.5 pts, so a deal that bleeds market value has
+    // to buy clearly more than that this season. A calibration bet, not a measurement.
+    finderOverpayWeight: 0.1,
   };
 
   // Deterministic RNG so the same roster always returns the same odds. A title
@@ -11660,18 +11696,25 @@
   // A dynasty IR-slot player (any roster's: a what-if can hand him over) keeps
   // the season rate and returns when his weekly lines resume; with no line left
   // this season he is out for the year.
+  // K and DEF join the pool in a league that starts them. projections.js is
+  // offense only, so on every basis they read their weekly lines' per-game rate,
+  // with no age curve. Without them every K and DEF slot sat empty for every
+  // team, and trading a kicker never moved anyone's title odds.
   function simPool(roster, lg, src, extraIds, yearsOut = 0, rookies = null) {
-    const map = projMap('offense'), lines = yearsOut ? null : rosPointsByPid(), ros = src === 'ros' ? lines : null;
+    const map = projMap('offense'), wk = rosPointsByPid(lg), lines = yearsOut ? null : wk, ros = src === 'ros' ? lines : null;
+    const takes = new Set([...SLOT_TAKES.SUPER_FLEX, ...offenseStartingSlots(lg).flatMap(s => SLOT_TAKES[s.pos])]);
     const irSlot = lines && !ros ? new Set((lg.rosters || []).flatMap(r => (r.reserve || []).map(String))) : null;
     const ids = new Set([...startableIds(roster, { includeStashed: yearsOut > 0 || !!ros }), ...(extraIds || []).map(String)]);
     const pool = [];
     for (const pid of ids) {
-      const p = map.get(pid), line = lines && lines.get(pid), ir = irSlot && irSlot.has(pid);
+      const p = map.get(pid), ir = irSlot && irSlot.has(pid);
+      const kd = !p && wk.get(pid) && ['K', 'DEF'].includes(projPosGroup(wk.get(pid).pos)) ? wk.get(pid) : null;
+      const line = kd || (lines && lines.get(pid)), perGame = !!(ros || kd);
       const sp = window.PLAYERS?.[pid] || {};
-      const pos = ros ? line && projPosGroup(line.pos) : p?.pos;
-      if (!(ros ? line : p) || !SLOT_TAKES.SUPER_FLEX.includes(pos) || (ir && !line)) continue;
+      const pos = perGame ? line && projPosGroup(line.pos) : p?.pos;
+      if (!(perGame ? line : p) || !takes.has(pos) || (ir && !line)) continue;
       let mean;
-      if (ros) mean = line.pts / line.games;
+      if (perGame) mean = line.pts / line.games;
       else {
         const season0 = projPoints(p, lg, src); if (season0 == null) continue;
         const season = season0 * productionRetention(p.pos, sp.age, yearsOut);
@@ -11684,7 +11727,7 @@
       // players, 2026-09-25), so it counts once there. Move dynasty onto the lines
       // too if a dynasty verdict ever reads title odds.
       // A live designation is this season's news; it says nothing about 2028.
-      const startOut = yearsOut ? 0 : ir || (ros && SIM.designationWeeksOut[st]) ? line.out : ros ? 0 : (SIM.designationWeeksOut[st] || 0);
+      const startOut = yearsOut ? 0 : ir || (perGame && SIM.designationWeeksOut[st]) ? line.out : perGame ? 0 : (SIM.designationWeeksOut[st] || 0);
       // Every field the simulator will ever touch is declared here, including the
       // per-season scratch (mult/bye/outUntil/v), his draw stream (key) and his
       // week's noise (e). Adding them later would retag the object's shape on the
@@ -11795,11 +11838,17 @@
     return pairs;
   }
 
+  // Sleeper's playoff_week_start: on the league record once build_site_data.py
+  // writes it, and on the fantasy schedule (build_fantasy_schedule.py) until then.
+  // `lastWeek` is the title game: one week per round (playoff_round_type 0, every
+  // league here).
   function playoffSettings(lg) {
     const s = lg.settings || {};
     const teams = lg.playoff_teams || s.playoff_teams || 6;
-    const startWeek = s.playoff_week_start || 15;
-    return { teams, startWeek, regularWeeks: startWeek - 1, rounds: Math.ceil(Math.log2(teams)) };
+    const startWeek = lg.playoff_week_start || s.playoff_week_start
+      || window.FANTASY_SCHEDULE?.leagues?.[String(lg.id)]?.playoffStart || 15;
+    const rounds = Math.ceil(Math.log2(teams));
+    return { teams, startWeek, regularWeeks: startWeek - 1, rounds, lastWeek: startWeek + rounds - 1 };
   }
 
   // ---- Multi-year title equity -------------------------------------------
