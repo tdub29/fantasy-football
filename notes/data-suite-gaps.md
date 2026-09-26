@@ -152,6 +152,12 @@ stats (numerators and denominators, never rates), lazy-loaded per season. The cl
 buckets the user picks and recomputes rates, so combined seasons and week ranges come free.
 Buckets: down, distance band, field zone, score state, play action, motion, shotgun or under
 center, blitz (FTN `n_blitzers`), box count. Source pbp plus FTN 2024-2026, all downloaded.
+**Shipped 2026-09-26** (branch `feat-ds-splits`, task t-1790319976652): `projections/build_split_cube.py`
+writes `site/data/splits-YYYY.js` (counts only, lazy-loaded) and runs in `build_all.py` after the
+suite, with `--self-check` proving the unfiltered sums equal advanced.js. The Stats Lab split card
+on the QB, RB, WR and TE tabs picks seasons, a week range and the nine situations; rows 1, 2, 27,
+30, 35 and 37 are now "have" for players (50 stays partial: team-level situational splits are not
+built). Guarded by `stats-lab-splits` and `stats-lab-splits-phone` in `.agents/feature-map.json`.
 
 ### Cluster C. Coverage, personnel, formation and pressure splits (rows 14, 20, 22, 25, 28, 49): high
 

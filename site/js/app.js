@@ -12615,18 +12615,20 @@
   // Past seasons live in their own files and load only when picked, so the
   // current season is the only one on the page at first paint.
   const _seasonLoads = {};
-  function loadAdvancedSeason(year) {
-    if ((window.ADVANCED_BY_SEASON || {})[year]) return Promise.resolve();
-    if (_seasonLoads[year]) return _seasonLoads[year];
-    _seasonLoads[year] = new Promise((resolve, reject) => {
+  function loadSeasonScript(file, ready) {
+    if (ready()) return Promise.resolve();
+    if (_seasonLoads[file]) return _seasonLoads[file];
+    _seasonLoads[file] = new Promise((resolve, reject) => {
       const tag = document.createElement('script');
-      tag.src = `data/advanced-${year}.js`;
+      tag.src = `data/${file}`;
       tag.onload = () => resolve();
-      tag.onerror = () => { delete _seasonLoads[year]; reject(new Error(`advanced-${year}.js failed to load`)); };
+      tag.onerror = () => { delete _seasonLoads[file]; tag.remove(); reject(new Error(`${file} failed to load`)); };
       document.head.appendChild(tag);
     });
-    return _seasonLoads[year];
+    return _seasonLoads[file];
   }
+  const loadAdvancedSeason = (year) => loadSeasonScript(`advanced-${year}.js`, () => (window.ADVANCED_BY_SEASON || {})[year]);
+  const loadSplitsSeason = (year) => loadSeasonScript(`splits-${year}.js`, () => (window.SPLITS_BY_SEASON || {})[year]);
 
   // Header definitions live in `title`, which a phone cannot hover, so every Stats
   // Lab table also carries them as a collapsed key a thumb can open.
@@ -12960,8 +12962,9 @@
       const vals = {};
       for (const r of pool) if (typeof r[c.key] === 'number') vals[r._key] = Math.round(r[c.key] * 1e4) / 1e4;
       tab.seq = (tab.seq || 0) + 1;
-      tab.snaps = [...(tab.snaps || []), { id:tab.seq, label:`${c.label} ${A.season}`, fmt:c.fmt, lowerBetter:!!c.lowerBetter, vals,
-        desc:`${c.label} frozen from ${A.season} through week ${A.throughWeek}. It stays put when filters or the season change.` }];
+      tab.snaps = [...(tab.snaps || []), { id:tab.seq, label:`${c.label} ${A.splitLabel || A.season}`, fmt:c.fmt, lowerBetter:!!c.lowerBetter, vals,
+        desc:A.splitLabel ? `${c.label} frozen from ${A.splitLabel}. It stays put when filters or the split change.`
+          : `${c.label} frozen from ${A.season} through week ${A.throughWeek}. It stays put when filters or the season change.` }];
       save();
     };
     const drop = (c) => {
@@ -13011,11 +13014,19 @@
     // Saved views: everything this tab remembers, under a name.
     const views = statsViews();
     const viewName = h('input', { type:'text', placeholder:'View name', 'aria-label':'View name', maxlength:'40' });
-    const viewState = () => JSON.parse(JSON.stringify({ groups:(prefs.groups || {})[pos], sort:(prefs.sort || {})[pos], minSnap:prefs.minSnap, tab }));
+    const sk = `${pos} split`;
+    const viewState = () => JSON.parse(JSON.stringify({ groups:(prefs.groups || {})[pos], sort:(prefs.sort || {})[pos], minSnap:prefs.minSnap, tab,
+      split:isTeams ? undefined : prefs.split, splitGroups:(prefs.groups || {})[sk], splitSort:(prefs.sort || {})[sk] }));
     const loadView = (v) => {
       const s = v.state || {};
       prefs.groups = Object.assign({}, prefs.groups, { [pos]:s.groups });
       prefs.sort = Object.assign({}, prefs.sort, { [pos]:s.sort });
+      // A view saved before splits existed leaves the current split alone.
+      if (s.split) {
+        prefs.split = s.split;
+        prefs.groups[sk] = s.splitGroups;
+        prefs.sort[sk] = s.splitSort;
+      }
       if (typeof s.minSnap === 'number') prefs.minSnap = s.minSnap;
       prefs.tab[pos] = JSON.parse(JSON.stringify(s.tab || {}));
       save();
@@ -13080,7 +13091,208 @@
             h('span', { class:'stats-lab-col-name' }, v.name),
             btn('Load', () => loadView(v)),
             btn('Delete', () => { saveStatsViews(statsViews().filter(x => !(x.pos === pos && x.name === v.name))); save(); }, { class:'ghost', 'aria-label':`Delete view ${v.name}` }))),
-          h('div', { class:'muted' }, `Saved in this browser, one list per tab. A view keeps columns, sort, minimums, highlights, custom columns${isTeams ? '' : ' and bio filters'}.`))));
+          h('div', { class:'muted' }, `Saved in this browser, one list per tab. A view keeps columns, sort, minimums, highlights, custom columns${isTeams ? '' : ', bio filters and the split'}.`))));
+  }
+
+  // ---- Split engine: seasons, week range and situation for the player tabs.
+  // splits-YYYY.js (projections/build_split_cube.py) holds COUNTS per player x
+  // week x situation bucket. The page sums the seasons, weeks and buckets picked
+  // here and divides afterwards, so combined seasons, week ranges and situations
+  // are one code path. Summing everything gives back advanced.js; the builder's
+  // --self-check proves it on the shipped files.
+  const SPLIT_POS = ['QB', 'RB', 'WR', 'TE'];
+  // The situation menus. Values and labels must match DIMS in the builder (its
+  // self-check reads them out of this file); the digits a value selects come
+  // from the payload, so decoding never depends on this copy.
+  const SPLIT_DIMS = [
+    { key:'down', label:'Down', opts:[['1', '1st down'], ['2', '2nd down'], ['3', '3rd down'], ['4', '4th down']] },
+    { key:'dist', label:'Distance', opts:[['s', '1-2 to go'], ['m', '3-6 to go'], ['l', '7+ to go']] },
+    { key:'zone', label:'Field', opts:[['own', 'Own side'], ['mid', 'Opp 21-50'], ['rz', 'Inside 20'], ['gl', 'Inside 5']] },
+    { key:'score', label:'Score', opts:[['trail', 'Trailing 9+'], ['close', 'Within 8'], ['lead', 'Leading 9+']] },
+    { key:'pa', label:'Play action', opts:[['y', 'Play action'], ['n', 'No play action']] },
+    { key:'motion', label:'Motion', opts:[['y', 'Motion'], ['n', 'No motion']] },
+    { key:'form', label:'QB spot', opts:[['gun', 'Shotgun or pistol'], ['uc', 'Under center']] },
+    { key:'blitz', label:'Blitz', opts:[['y', 'Blitzed'], ['n', 'Not blitzed']] },
+    { key:'box', label:'Box', opts:[['8', '8+ in box'], ['7', '7 or fewer in box']] },
+  ];
+  let STATS_SPLIT_OPEN = null;   // null until toggled: open on desktop, shut on a phone
+
+  function statsSplitState(prefs, SEASONS, cur) {
+    const s = prefs.split || {};
+    let seasons = (Array.isArray(s.seasons) ? s.seasons : [prefs.season]).filter(y => SEASONS.includes(y));
+    seasons = [...new Set(seasons.length ? seasons : [cur])].sort((a, b) => b - a);   // newest first
+    const wk = (v, d) => Math.min(18, Math.max(1, Math.round(Number(v)) || d));
+    const from = Math.min(wk(s.from, 1), wk(s.to, 18)), to = Math.max(wk(s.from, 1), wk(s.to, 18));
+    const sit = {};
+    for (const d of SPLIT_DIMS) if (s.sit && d.opts.some(o => o[0] === s.sit[d.key])) sit[d.key] = s.sit[d.key];
+    const picked = SPLIT_DIMS.filter(d => sit[d.key]);
+    const weeks = from > 1 || to < 18, asc = [...seasons].reverse();
+    return { seasons, from, to, sit, weeks,
+      on:seasons.length > 1 || weeks || picked.length > 0,
+      label:[asc.join('+') + (weeks ? `, weeks ${from}-${to}` : ''), ...picked.map(d => d.opts.find(o => o[0] === sit[d.key])[1])].join(', '),
+      slug:[...asc, ...(weeks ? [`wk${from}-${to}`] : []), ...picked.map(d => `${d.key}-${sit[d.key]}`)].join('-') };
+  }
+
+  // ok[code] = 1 when a bucket passes every picked situation. Built from the
+  // payload's own radixes, so it is right for whatever the builder wrote.
+  function splitMatcher(dims, sit) {
+    const want = dims.map(d => { const o = d.opts.find(x => x.v === sit[d.key]); return o ? new Set(o.d) : null; });
+    const ok = new Uint8Array(dims.reduce((n, d) => n * d.n, 1));
+    for (let code = 0; code < ok.length; code++) {
+      let c = code, pass = 1;
+      for (let i = dims.length - 1; i >= 0 && pass; i--) {
+        const dig = c % dims[i].n;
+        c = (c - dig) / dims[i].n;
+        if (want[i] && !want[i].has(dig)) pass = 0;
+      }
+      ok[code] = pass;
+    }
+    return ok;
+  }
+
+  // One row per player at `pos`, from the payloads in `list` (newest first).
+  // Mirrors totals() in build_split_cube.py.
+  function splitRows(list, pos, split, mine) {
+    const sitOn = Object.keys(split.sit).length > 0, acc = new Map();
+    const inWk = (w) => w >= split.from && w <= split.to;
+    for (const S of list) {
+      const ok = splitMatcher(S.dims, split.sit), F = S.fields, nT = F.T.length;
+      // His team's targets in the split, and its dropbacks per week in and out
+      // of it: each week's estimated routes scale by that week's share.
+      const team = {};
+      for (const [tm, a] of Object.entries(S.teams)) {
+        const t = team[tm] = { tgt:0, all:{}, sel:{} };
+        for (let i = 0; i < a.length; i += nT) {
+          const w = a[i];
+          if (!inWk(w)) continue;
+          t.all[w] = (t.all[w] || 0) + a[i + 2];
+          if (ok[a[i + 1]]) { t.sel[w] = (t.sel[w] || 0) + a[i + 2]; t.tgt += a[i + 3]; }
+        }
+      }
+      for (const [sid, v] of Object.entries(S.players)) {
+        let r = acc.get(sid);
+        if (!r) acc.set(sid, r = { sid, n:v.n, t:v.t, p:v.p, sum:{}, teamTgt:0, routes:0, games:0, snap:0, db:0 });
+        for (const role of ['R', 'U', 'P']) {
+          const a = v[role], f = F[role];
+          if (!a) continue;
+          const scale = f.map(k => (S.scale || {})[k] || 1), iDb = f.indexOf('db');
+          for (let i = 0; i < a.length; i += f.length) {
+            if (!inWk(a[i])) continue;
+            if (iDb > 0) r.db += a[i + iDb];   // the QB floor ignores the situation
+            if (!ok[a[i + 1]]) continue;
+            for (let j = 2; j < f.length; j++) r.sum[role + f[j]] = (r.sum[role + f[j]] || 0) + a[i + j] / scale[j];
+          }
+        }
+        r.teamTgt += (team[v.t] || {}).tgt || 0;
+        for (const s of v.S || []) {
+          if (!inWk(s[0])) continue;
+          const t = team[s[3] || v.t];
+          r.games++;
+          r.snap += s[1];
+          r.routes += s[2] * (!sitOn ? 1 : t && t.all[s[0]] ? (t.sel[s[0]] || 0) / t.all[s[0]] : 0);
+        }
+      }
+    }
+    const div = (a, b) => b ? a / b : null, rows = [];
+    for (const r of acc.values()) {
+      if (r.p !== pos) continue;
+      const g = (k) => r.sum[k] || 0;
+      const o = { _key:r.sid, _name:r.n, _team:r.t, _mine:mine.has(r.sid), _db:r.db,
+        games:r.games, snap_pct:r.games ? r.snap / 100 / r.games : null,
+        targets:g('Rtgt'), target_share:div(g('Rtgt'), r.teamTgt), rec:g('Rrec'), rec_yds:g('Ryds'), rec_td:g('Rtd'),
+        air_yds:g('Rair'), catch_rate:div(g('Rrec'), g('Rtgt')), yds_per_target:div(g('Ryds'), g('Rtgt')),
+        epa_per_target:div(g('Repa'), g('Rtgt')), yprr_est:r.routes >= 5 ? g('Ryds') / r.routes : null,
+        carries:g('Ucar'), rush_yds:g('Uyds'), rush_td:g('Utd'), ypc:div(g('Uyds'), g('Ucar')),
+        epa_per_rush:div(g('Uepa'), g('Ucar')), rush_success:div(g('Usucc'), g('Ucar')),
+        dropbacks:g('Pdb'), pass_att:g('Patt'), cmp:g('Pcmp'), pass_yds:g('Pyds'), pass_td:g('Ptd'), ints:g('Pint'),
+        ypa:div(g('Pyds'), g('Patt')), db_epa:div(g('Pepa'), g('Pdb')), pass_success:div(g('Psucc'), g('Pdb')),
+        ppr:g('Rppr') + g('Uppr') + g('Pppr') };
+      o.sample = pos === 'QB' ? o.dropbacks + o.carries : pos === 'RB' ? o.targets + o.carries : o.targets;
+      if (o.sample) rows.push(o);
+    }
+    return rows;
+  }
+
+  // What play-by-play can split. Keys match advanced.js where the stat is the
+  // same, so minimums, highlights and calculated columns carry across.
+  const SPLIT_COLS = (() => {
+    const REC = ['WR', 'TE', 'RB'], RUSH = ['RB', 'QB'], QB = ['QB'];
+    const C = (key, label, group, pos, fmt, desc, lowerBetter = false) => ({ key, label, group, pos, fmt, desc, lowerBetter });
+    return [
+      C('games', 'G', 'Split', SPLIT_POS, 'int', 'Games with an offensive snap in the chosen seasons and weeks.'),
+      C('sample', 'Sample', 'Split', SPLIT_POS, 'int', 'Plays in the split: dropbacks plus carries for a QB, targets plus carries for a RB, targets for a WR or TE. The smaller it is, the more every rate beside it is noise.'),
+      C('ppr', 'FP', 'Split', SPLIT_POS, 'dec1', 'Fantasy points from the plays in the split: full PPR, 4 per passing TD, -2 per interception and lost fumble. Return and defensive scores are not in it.'),
+      C('dropbacks', 'DB', 'Passing', QB, 'int', 'Dropbacks where he was the passer: sacks in, scrambles out, as in the season table.'),
+      C('pass_att', 'Att', 'Passing', QB, 'int', 'Pass attempts, sacks included (nflverse counts a sack as an attempt).'),
+      C('cmp', 'Cmp', 'Passing', QB, 'int', 'Completions.'),
+      C('pass_yds', 'Pass yds', 'Passing', QB, 'int', 'Passing yards.'),
+      C('pass_td', 'Pass TD', 'Passing', QB, 'int', 'Passing touchdowns.'),
+      C('ints', 'INT', 'Passing', QB, 'int', 'Interceptions.', true),
+      C('ypa', 'Y/A', 'Passing', QB, 'dec1', 'Passing yards per attempt, sacks counted as attempts.'),
+      C('db_epa', 'EPA/DB', 'Passing', QB, 'dec2', 'Expected points added per dropback.'),
+      C('pass_success', 'DB success%', 'Passing', QB, 'pct', 'Share of dropbacks with positive EPA.'),
+      C('targets', 'Tgt', 'Receiving', REC, 'int', 'Targets.'),
+      C('target_share', 'Tgt%', 'Receiving', REC, 'pct', "Share of his team's targets in the same seasons, weeks and situations."),
+      C('rec', 'Rec', 'Receiving', REC, 'int', 'Receptions.'),
+      C('rec_yds', 'Rec yds', 'Receiving', REC, 'int', 'Receiving yards.'),
+      C('rec_td', 'Rec TD', 'Receiving', REC, 'int', 'Receiving touchdowns.'),
+      C('air_yds', 'Air yds', 'Receiving', REC, 'int', 'Air yards on his targets.'),
+      C('catch_rate', 'Catch%', 'Receiving', REC, 'pct', 'Receptions over targets.'),
+      C('yds_per_target', 'Y/Tgt', 'Receiving', REC, 'dec1', 'Receiving yards per target.'),
+      C('epa_per_target', 'EPA/Tgt', 'Receiving', REC, 'dec2', 'Expected points added per target.'),
+      C('yprr_est', 'YPRR (est)', 'Receiving', REC, 'dec2', "Receiving yards per estimated route. Each week's estimated routes (snaps x the team's dropback share, calibrated on 2025 participation) are scaled by the share of that week's team dropbacks inside the split. Blank under 5 routes."),
+      C('carries', 'Car', 'Rushing', RUSH, 'int', 'Carries.'),
+      C('rush_yds', 'Rush yds', 'Rushing', RUSH, 'int', 'Rushing yards.'),
+      C('rush_td', 'Rush TD', 'Rushing', RUSH, 'int', 'Rushing touchdowns.'),
+      C('ypc', 'YPC', 'Rushing', RUSH, 'dec1', 'Yards per carry.'),
+      C('epa_per_rush', 'EPA/Rush', 'Rushing', RUSH, 'dec2', 'Expected points added per carry.'),
+      C('rush_success', 'Rush success%', 'Rushing', RUSH, 'pct', 'Share of carries with positive EPA.'),
+    ];
+  })();
+
+  // The split controls. Open on desktop; a phone starts it shut so the table
+  // stays one tap away, and remembers the choice for the visit.
+  function statsSplitCard(prefs, split, SEASONS, cur, list, rerender) {
+    const set = (patch) => {
+      prefs.split = Object.assign({ seasons:split.seasons, from:split.from, to:split.to, sit:split.sit }, patch);
+      saveStatsLabPrefs(prefs); rerender();
+    };
+    const seasonBtns = SEASONS.map(y => {
+      const on = split.seasons.includes(y), last = on && split.seasons.length === 1;
+      return h('button', { type:'button', class:`ghost${on ? ' active' : ''}`, 'aria-pressed':String(on), dataset:{ season:String(y) },
+        title:last ? 'At least one season stays picked' : on ? `Drop ${y}` : `Add ${y}`,
+        onclick:() => { if (!last) set({ seasons:on ? split.seasons.filter(x => x !== y) : [...split.seasons, y] }); } }, String(y));
+    });
+    const wkSel = (label, val, key) => h('select', { 'aria-label':label, onchange:(e) => {
+      const v = Number(e.target.value), a = key === 'from' ? v : split.from, b = key === 'to' ? v : split.to;
+      set({ from:Math.min(a, b), to:Math.max(a, b) });
+    } }, ...Array.from({ length:18 }, (_, i) => h('option', { value:String(i + 1), selected:i + 1 === val }, String(i + 1))));
+    const dims = SPLIT_DIMS.map(d => h('label', null, h('span', null, d.label),
+      h('select', { 'aria-label':d.label, onchange:(e) => {
+        const sit = Object.assign({}, split.sit);
+        if (e.target.value) sit[d.key] = e.target.value; else delete sit[d.key];
+        set({ sit });
+      } }, h('option', { value:'' }, 'Any'), ...d.opts.map(([v, l]) => h('option', { value:v, selected:split.sit[d.key] === v }, l)))));
+    // FTN charting can trail play-by-play by a week; say which plays a filter drops.
+    const ftnOn = list.length && Object.keys(split.sit).some(k => (list[0].ftnDims || []).includes(k));
+    const lag = ftnOn ? list.filter(S => S.ftnThroughWeek < Math.min(S.throughWeek, split.to)) : [];
+    const count = (split.seasons.length > 1) + split.weeks + Object.keys(split.sit).length;
+    return h('details', { class:'card stats-lab-splits', open:(STATS_SPLIT_OPEN ?? !window.matchMedia(PHONE_Q).matches) ? '' : null,
+      ontoggle:(e) => { STATS_SPLIT_OPEN = e.target.open; } },
+      h('summary', null, 'Split', count ? h('span', { class:'stats-lab-tools-count' }, `${count} on`) : null,
+        h('span', { class:'muted' }, ` ${split.label}`)),
+      h('div', { class:'stats-lab-split-body' },
+        h('div', { class:'stats-lab-row' }, h('span', { class:'stats-lab-tool-title' }, 'Seasons'),
+          h('span', { class:'sos-position-tabs stats-lab-split-seasons', role:'group', 'aria-label':'Seasons' }, ...seasonBtns)),
+        h('div', { class:'stats-lab-row' }, h('span', { class:'stats-lab-tool-title' }, 'Weeks'),
+          wkSel('First week', split.from, 'from'), h('span', null, 'to'), wkSel('Last week', split.to, 'to')),
+        h('div', { class:'stats-lab-tool-title' }, 'Situation'),
+        h('div', { class:'stats-lab-split-dims' }, ...dims),
+        lag.length ? h('div', { class:'muted' }, lag.map(S => `FTN charting covers ${S.season} through week ${S.ftnThroughWeek}`).join('; ')
+          + '. Later plays drop out of the play action, motion, QB spot, blitz and box filters.') : null,
+        split.on ? h('div', { class:'muted' }, 'A split recomputes from play-by-play, so season-only columns (xFP, Next Gen, PFR, FTN rates) step aside until it is off.') : null,
+        split.on ? h('div', { class:'stats-lab-row' }, h('button', { type:'button', class:'stats-lab-split-reset',
+          onclick:() => set({ seasons:[cur], from:1, to:18, sit:{} }) }, 'Reset split')) : null));
   }
 
   function viewStats(posArg) {
@@ -13090,14 +13302,34 @@
     const POS = ['QB', 'RB', 'WR', 'TE', 'Teams', 'Defense', 'Trends', 'IDP'];
     const prefs = statsLabPrefs();
     const SEASONS = [CUR.season, CUR.season - 1, CUR.season - 2];
-    const season = SEASONS.includes(prefs.season) ? prefs.season : CUR.season;
+    const pos = POS.includes(posArg) ? posArg : (prefs.pos && POS.includes(prefs.pos) ? prefs.pos : 'WR');
+    // Player tabs take seasons, weeks and situation from the split card. One
+    // season with nothing else picked is that season's advanced.js, untouched;
+    // anything more is summed from the split cube.
+    const split = SPLIT_POS.includes(pos) ? statsSplitState(prefs, SEASONS, CUR.season) : null;
+    const splitOn = !!(split && split.on);
+    const season = split ? split.seasons[0] : SEASONS.includes(prefs.season) ? prefs.season : CUR.season;
     let A = CUR;
-    if (season !== CUR.season) {
+    if (splitOn) {
+      const need = split.seasons.filter(y => !(window.SPLITS_BY_SEASON || {})[y]);
+      if (need.length) {
+        main.appendChild(h('div', { class:'empty' }, `Loading ${need.join(', ')} splits...`));
+        Promise.all(need.map(loadSplitsSeason)).then(() => viewStats(posArg)).catch(() => {
+          prefs.split = { seasons:[CUR.season] }; saveStatsLabPrefs(prefs);
+          main.innerHTML = '';
+          main.appendChild(h('div', { class:'empty' }, `Could not load the split data. Showing ${CUR.season}.`));
+          setTimeout(() => viewStats(posArg), 1200);
+        });
+        return;
+      }
+    } else if (season !== CUR.season) {
       A = (window.ADVANCED_BY_SEASON || {})[season];
       if (!A) {
         main.appendChild(h('div', { class:'empty' }, `Loading ${season}...`));
         loadAdvancedSeason(season).then(() => viewStats(posArg)).catch(() => {
-          prefs.season = CUR.season; saveStatsLabPrefs(prefs);
+          prefs.season = CUR.season;
+          if (split) prefs.split = { seasons:[CUR.season] };
+          saveStatsLabPrefs(prefs);
           main.innerHTML = '';
           main.appendChild(h('div', { class:'empty' }, `Could not load ${season}. Showing ${CUR.season}.`));
           setTimeout(() => viewStats(posArg), 1200);
@@ -13105,21 +13337,24 @@
         return;
       }
     }
-    const pos = POS.includes(posArg) ? posArg : (prefs.pos && POS.includes(prefs.pos) ? prefs.pos : 'WR');
     prefs.pos = pos;
     const isTeams = pos === 'Teams';
-    const cols = isTeams ? A.teamColumns : A.columns.filter(c => c.pos.includes(pos));
+    const cols = splitOn ? SPLIT_COLS.filter(c => c.pos.includes(pos)) : isTeams ? A.teamColumns : A.columns.filter(c => c.pos.includes(pos));
+    // A split has its own columns, so it keeps its own groups and sort.
+    const gkey = splitOn ? `${pos} split` : pos;
     const groups = [...new Set(cols.map(c => c.group))];
-    const onGroups = (prefs.groups && prefs.groups[pos]) || groups;
-    const estimates = new Set(A.estimates || []);
+    const onGroups = (prefs.groups && prefs.groups[gkey]) || groups;
+    const estimates = splitOn ? new Set(['yprr_est']) : new Set(A.estimates || []);
 
     main.appendChild(breadcrumbs([{ label:'Tools' }, { label:'Stats Lab' }]));
     main.appendChild(pageHeader({
       eyebrow:'STATS LAB',
       title:'Advanced stats',
-      sub:[`${A.season} regular season through week ${A.throughWeek}. (est) marks an estimate.`,
+      sub:[splitOn ? `${split.label}. Counts summed over the split, rates recomputed from them. (est) marks an estimate.`
+        : `${A.season} regular season through week ${A.throughWeek}. (est) marks an estimate.`,
         h('span', { class:'stats-lab-sub-more' }, ' Open the Column key above a table for what each header means.')],
-      actions:[h('label', { class:'stats-lab-toggle stats-lab-season' }, 'Season ',
+      // Player tabs pick seasons in the split card instead.
+      actions:split ? [] : [h('label', { class:'stats-lab-toggle stats-lab-season' }, 'Season ',
         h('select', { 'aria-label':'Season', onchange:(e) => {
           prefs.season = Number(e.target.value); saveStatsLabPrefs(prefs); viewStats(posArg);
         } }, ...SEASONS.map(y => h('option', { value:String(y), selected:y === season }, String(y)))))],
@@ -13135,13 +13370,15 @@
     prefs.tab = prefs.tab || {};
     const tab = prefs.tab[pos] = prefs.tab[pos] || {};
     const save = () => { saveStatsLabPrefs(prefs); viewStats(pos); };
+    const loaded = splitOn ? split.seasons.map(y => window.SPLITS_BY_SEASON[y]) : [];
+    if (split) main.appendChild(statsSplitCard(prefs, split, SEASONS, CUR.season, loaded, () => viewStats(pos)));
 
     main.appendChild(h('div', { class:'sos-position-tabs stats-lab-groups', role:'group', 'aria-label':'Stat groups' },
       ...groups.map(g => {
         const on = onGroups.includes(g);
         return h('button', { class:`ghost${on ? ' active' : ''}`, 'aria-pressed':String(on), onclick:() => {
           const next = on ? onGroups.filter(x => x !== g) : [...onGroups, g];
-          prefs.groups = Object.assign({}, prefs.groups, { [pos]: next.length ? next : groups });
+          prefs.groups = Object.assign({}, prefs.groups, { [gkey]: next.length ? next : groups });
           saveStatsLabPrefs(prefs); viewStats(pos);
         } }, g);
       })));
@@ -13155,7 +13392,7 @@
         const me = (lg.rosters || []).find(r => r.is_me);
         for (const pid of (me && me.players) || []) mine.add(String(pid));
       }
-      rows = Object.entries(A.players).filter(([, v]) => v.p === pos)
+      rows = splitOn ? splitRows(loaded, pos, split, mine) : Object.entries(A.players).filter(([, v]) => v.p === pos)
         .map(([sid, v]) => Object.assign({ _key:sid, _name:v.n, _team:v.t, _mine:mine.has(sid) }, v));
     }
 
@@ -13185,7 +13422,9 @@
       // A 2-snap cameo with a 100% catch rate is noise at the top of every
       // efficiency sort, so hold players to a real share of the work.
       const minSnap = prefs.minSnap ?? 0.2;
-      rows = rows.filter(pos === 'QB' ? (r => (r.dropbacks || 0) >= 15) : (r => (r.snap_pct || 0) >= minSnap));
+      // In a split the QB floor counts every dropback in the chosen weeks, not
+      // just the situation's, which the Sample column reports on its own.
+      rows = rows.filter(pos === 'QB' ? (r => ((splitOn ? r._db : r.dropbacks) || 0) >= 15) : (r => (r.snap_pct || 0) >= minSnap));
       for (const [k, , get] of STATS_BIO) {
         const [lo, hi] = (tab.bio && tab.bio[k]) || [];
         if (lo == null && hi == null) continue;
@@ -13204,8 +13443,8 @@
     const ordered = allCols.map((c, i) => ({ c, i:at.has(c.key) ? at.get(c.key) : 1e4 + i })).sort((a, b) => a.i - b.i).map(x => x.c);
     const shown = ordered.filter(isVis);
 
-    const defaultSort = isTeams ? 'epa_play' : pos === 'QB' ? 'db_epa' : 'xfp_pg';
-    const sort = (prefs.sort && prefs.sort[pos]) || { key: defaultSort, dir: 'desc' };
+    const defaultSort = splitOn ? 'ppr' : isTeams ? 'epa_play' : pos === 'QB' ? 'db_epa' : 'xfp_pg';
+    const sort = (prefs.sort && prefs.sort[gkey]) || { key: defaultSort, dir: 'desc' };
     rows.sort((a, b) => {
       const av = a[sort.key], bv = b[sort.key];
       if (av == null && bv == null) return 0;
@@ -13250,7 +13489,7 @@
         const t = main.querySelector('table.stats-lab-table');
         if (!t) return;
         const a = h('a', { href:URL.createObjectURL(new Blob(['﻿' + statsCsv(t)], { type:'text/csv;charset=utf-8' })),
-          download:`stats-lab-${pos.toLowerCase()}-${A.season}.csv` });
+          download:`stats-lab-${pos.toLowerCase()}-${splitOn ? split.slug : A.season}.csv` });
         document.body.appendChild(a); a.click(); a.remove();
         setTimeout(() => URL.revokeObjectURL(a.href), 1000);
       } }, 'Export CSV');
@@ -13271,7 +13510,8 @@
     } else {
       main.appendChild(h('div', { class:'card stats-lab-filters' }, count, exportBtn));
     }
-    main.appendChild(statsToolsPanel({ prefs, tab, pos, isTeams, ordered, isVis, pool, A, exprKeys, save }));
+    main.appendChild(statsToolsPanel({ prefs, tab, pos, isTeams, ordered, isVis, pool, exprKeys, save,
+      A:splitOn ? { season:split.label, splitLabel:split.label } : A }));
 
     const headCell = (c) => {
       const active = sort.key === c.key;
@@ -13282,13 +13522,13 @@
         tabindex:'0', 'aria-sort':active ? (sort.dir === 'desc' ? 'descending' : 'ascending') : 'none',
         onclick:() => {
           const dir = active ? (sort.dir === 'desc' ? 'asc' : 'desc') : (c.lowerBetter ? 'asc' : 'desc');
-          prefs.sort = Object.assign({}, prefs.sort, { [pos]: { key:c.key, dir } });
+          prefs.sort = Object.assign({}, prefs.sort, { [gkey]: { key:c.key, dir } });
           saveStatsLabPrefs(prefs); viewStats(pos);
         },
       }, c.label + arrow);
     };
 
-    const tbl = h('table', { class:'data data-sticky stats-lab-table' },
+    const tbl = h('table', { class:'data data-sticky stats-lab-table', 'data-split':splitOn ? split.label : null },
       h('thead', null, h('tr', null,
         h('th', { class:'right' }, '#'),
         h('th', null, isTeams ? 'Team' : 'Player'),
@@ -13296,6 +13536,7 @@
         ...shown.map(headCell))),
       h('tbody', null, ...rows.map((r, i) => h('tr', {
         class:r._mine ? 'you' : '',
+        dataset:{ key:r._key },
         onclick:isTeams ? null : () => openPlayerDetail(r._name, r._key),
       },
         h('td', { class:'right tnum muted' }, String(i + 1)),
@@ -13308,8 +13549,11 @@
         })))));
     main.appendChild(statsColumnKey(shown, estimates));
     appendTable(main, tbl);
-    main.appendChild(h('div', { class:'tip', style:{ marginTop:'10px' } },
-      `Source: ${A.source}. `
+    main.appendChild(h('div', { class:'tip', style:{ marginTop:'10px' } }, splitOn
+      ? `Source: ${loaded[0].source}. Every play in the split is counted and the rates are recomputed from those counts. `
+        + 'Green is the top fifth of the players shown and red the bottom fifth, flipped where lower is better. '
+        + "YPRR is an estimate: each week's estimated routes are scaled by the share of team dropbacks inside the split."
+      : `Source: ${A.source}. `
       + 'Green is the top fifth of the players shown and red the bottom fifth, flipped where lower is better. '
       + 'Route% and TPRR/YPRR are estimates because public route data stops after 2025. '
       + (A.xfpSource === 'lookup' ? 'xFP prices each target and carry at the league average for plays like it'

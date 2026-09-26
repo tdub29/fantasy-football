@@ -1302,6 +1302,127 @@
         }
       ],
       "assert": "(() => { const num = t => parseFloat(String(t).replace(/[^0-9.+-]/g, '')); const heads = () => [...document.querySelectorAll('#main table thead th')]; for (const label of ['Value', 'Proj', 'VOR']) { const i = heads().findIndex(t => t.textContent.replace(/[^A-Za-z]/g, '') === label); if (i < 0) return false; heads()[i].click(); const vals = [...document.querySelectorAll('#main table tbody tr')].slice(0, 6).map(r => num(r.children[i]?.textContent)).filter(v => !isNaN(v)); if (vals.length < 4) return false; if (!vals.every((v, k) => k === 0 || vals[k - 1] >= v)) return false; } return true; })()"
+    },
+    {
+      "id": "stats-lab-splits",
+      "name": "Stats Lab split engine: combined seasons, week range and a situation filter recompute the rows",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "localStorage.removeItem('ff-stats-lab-v1'); location.hash='#stats/WR'"
+        },
+        {
+          "sleepMs": 1500
+        },
+        {
+          "eval": "window.__cap = () => { const t = document.querySelector('table.stats-lab-table'); const hs = [...t.tHead.rows[0].cells].map(c => c.textContent.replace(/[\\u2191\\u2193]/g, '').trim()); const i = hs.indexOf('Tgt'), m = {}; for (const r of t.tBodies[0].rows) m[r.dataset.key] = Number(r.cells[i].textContent); return { split: t.dataset.split || '', m }; }; window.__pick = (sel, v) => { const s = document.querySelector(sel); s.value = v; s.dispatchEvent(new Event('change', { bubbles: true })); }; true;"
+        },
+        {
+          "click": ".stats-lab-split-seasons button:nth-child(2)"
+        },
+        {
+          "waitFor": "table.stats-lab-table[data-split]"
+        },
+        {
+          "click": ".stats-lab-split-seasons button:nth-child(1)"
+        },
+        {
+          "waitFor": "table.stats-lab-table:not([data-split])"
+        },
+        {
+          "click": ".stats-lab-split-seasons button:nth-child(3)"
+        },
+        {
+          "waitFor": "table.stats-lab-table[data-split]"
+        },
+        {
+          "click": ".stats-lab-split-seasons button:nth-child(2)"
+        },
+        {
+          "waitFor": "table.stats-lab-table:not([data-split])"
+        },
+        {
+          "click": ".stats-lab-split-seasons button:nth-child(2)"
+        },
+        {
+          "waitFor": "table.stats-lab-table[data-split]"
+        },
+        {
+          "click": ".stats-lab-split-seasons button:nth-child(1)"
+        },
+        {
+          "waitFor": "table.stats-lab-table[data-split]"
+        },
+        {
+          "eval": "window.__all = window.__cap()"
+        },
+        {
+          "click": ".stats-lab-split-reset"
+        },
+        {
+          "waitFor": "table.stats-lab-table:not([data-split])"
+        },
+        {
+          "eval": "window.__pick(\".stats-lab-splits select[aria-label='Last week']\", String(window.ADVANCED.throughWeek))"
+        },
+        {
+          "waitFor": "table.stats-lab-table"
+        },
+        {
+          "eval": "window.__std = window.__cap()"
+        },
+        {
+          "eval": "window.__pick(\".stats-lab-splits select[aria-label='Last week']\", '2')"
+        },
+        {
+          "waitFor": "table.stats-lab-table[data-split]"
+        },
+        {
+          "eval": "window.__wk12 = window.__cap()"
+        },
+        {
+          "eval": "window.__pick(\".stats-lab-splits select[aria-label='Down']\", '3')"
+        },
+        {
+          "waitFor": "table.stats-lab-table[data-split*='3rd down']"
+        },
+        {
+          "eval": "window.__d3 = window.__cap()"
+        }
+      ],
+      "selector": "table.stats-lab-table",
+      "assert": "(() => { try { const A = window.ADVANCED, B = window.ADVANCED_BY_SEASON || {}, cur = A && A.season; if (!A || !B[cur - 1] || !B[cur - 2]) return false; const tgt = (P) => Object.fromEntries(Object.entries(P.players).map(([k, v]) => [k, v.targets || 0])); const a0 = tgt(A), a1 = tgt(B[cur - 1]), a2 = tgt(B[cur - 2]); const all = window.__all, std = window.__std, wk = window.__wk12, d3 = window.__d3; if (!all || !std || !wk || !d3) return false; const ids = (x) => Object.keys(x.m); /* three seasons = the three advanced.js files added up, row for row */ if (all.split !== `${cur - 2}+${cur - 1}+${cur}` || ids(all).length < 30) return false; if (!ids(all).every(k => all.m[k] === (a0[k] || 0) + (a1[k] || 0) + (a2[k] || 0))) return false; /* weeks 1 to the latest is season to date exactly; weeks 1-2 is never more and, past week 2, less for somebody */ if (ids(std).length < 30 || !ids(std).every(k => std.m[k] === (a0[k] || 0))) return false; if (!/weeks 1-2/.test(wk.split) || !ids(wk).every(k => wk.m[k] <= (a0[k] || 0))) return false; if (A.throughWeek > 2 && !ids(wk).some(k => wk.m[k] < (a0[k] || 0))) return false; /* a situation filter changes row values: 3rd down is never more than all downs, and less for somebody */ if (!/3rd down/.test(d3.split) || ids(d3).length < 10) return false; return ids(d3).every(k => k in wk.m && d3.m[k] <= wk.m[k]) && ids(d3).some(k => d3.m[k] < wk.m[k]); } finally { localStorage.removeItem('ff-stats-lab-v1'); } })()",
+      "notes": "Data Suite gap cluster B. projections/build_split_cube.py writes site/data/splits-YYYY.js: counting stats per player x week x situation bucket (down, distance, field zone, score, play action, motion, QB spot, blitz, box), lazy-loaded like advanced-YYYY.js. The split card sums the picked seasons, weeks and buckets and recomputes the rates; one season with nothing else picked is still advanced.js. The path walks the season toggles (loading both past advanced files on the way), then weeks and a 3rd-down filter. The assert requires the three-season table to equal the three advanced.js files added per player, weeks 1 to the latest to equal season to date, weeks 1-2 to be smaller for someone, and 3rd down to be smaller still, so a split that re-reads the season totals or ignores a filter fails. Rows are keyed by Sleeper id (tr data-key) and the season buttons by position, so it survives a new season. It clears the Stats Lab prefs when done so later features start on the default view."
+    },
+    {
+      "id": "stats-lab-splits-phone",
+      "name": "Stats Lab split card starts shut on a phone and opens to all nine situation filters",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "localStorage.removeItem('ff-stats-lab-v1'); location.hash='#stats/WR'"
+        },
+        {
+          "sleepMs": 1500
+        }
+      ],
+      "selector": "details.stats-lab-splits",
+      "assert": "(() => { const d = document.querySelector('details.stats-lab-splits'); if (!d || d.open) return false; d.querySelector('summary').click(); const b = d.querySelector('.stats-lab-split-seasons button'); return d.open && !!b && b.getBoundingClientRect().width > 0 && d.querySelectorAll('.stats-lab-split-dims select').length === 9 && document.documentElement.scrollWidth <= innerWidth + 1; })()",
+      "notes": "On a phone the split controls are one collapsed row above the table (details.stats-lab-splits, shut by default under 720px) so the table stays one tap away; opened, it shows the season toggles, the week range and all nine situation selects without sideways scroll.",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      }
     }
   ],
   "ignore": [

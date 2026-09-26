@@ -167,9 +167,10 @@ def check(widths: list[int]) -> int:
                     page.evaluate("document.querySelectorAll("
                                   "'#main .filters-toggle[aria-expanded=\"false\"]')"
                                   ".forEach(b => b.click())")
-                    # Stats Lab keeps its power tools behind one disclosure; measure it open.
+                    # Stats Lab keeps its power tools and its split card (shut on a
+                    # phone) behind disclosures; measure them open.
                     page.evaluate("document.querySelectorAll("
-                                  "'#main details.stats-lab-tools:not([open]) > summary')"
+                                  "'#main details:is(.stats-lab-tools, .stats-lab-splits):not([open]) > summary')"
                                   ".forEach(s => s.click())")
                     page.wait_for_timeout(200)
                     bad += measure(label, "#main")
