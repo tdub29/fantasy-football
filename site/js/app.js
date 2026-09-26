@@ -604,12 +604,13 @@
     const from = Math.max(1, wr.currentWeek || 1);
     for (const p of wr.players) {
       const wk = p.sleeper || [];
-      let sum = 0, games = 0;
+      // `out`: weeks from now before his first line, his known absence.
+      let sum = 0, games = 0, out = 0;
       for (let w = from; w <= wk.length; w++) {
         const v = wk[w - 1];
-        if (v != null) { sum += v; games++; }
+        if (v != null) { sum += v; games++; } else if (!games) out++;
       }
-      if (games) _rosPts.set(String(p.id), { pts: Math.round(sum * 10) / 10, games, pos: p.pos });
+      if (games) _rosPts.set(String(p.id), { pts: Math.round(sum * 10) / 10, games, pos: p.pos, out });
     }
     return _rosPts;
   }
@@ -2387,7 +2388,11 @@
   // player's value aged by the position age-curve, then the lineup re-filled (so a
   // young riser can crack the future lineup over an aging vet).
   // `picks` overrides the roster's owned picks, for a trade that moves some.
-  function startingStrength(roster, league, yearsOut = 0, includePicks = false, picks = null) {
+  // `waiver` (Present Value only) lets the lineup claim the best free agents too,
+  // so a trade that empties a slot is charged the gap to the waiver body, and an
+  // "upgrade" over a starter the wire already beats is no upgrade. The trade
+  // delta passes it; the standings and draft-slot callers do not.
+  function startingStrength(roster, league, yearsOut = 0, includePicks = false, picks = null, waiver = false) {
     // Redraft has no Future Value column to hold an injured player's worth, and
     // his rest-of-season points already price the weeks he misses, so he stays
     // on the books. It has no future lineup and no picks either.
@@ -2397,7 +2402,8 @@
     // Present Value is what you can start TODAY, so taxi and IR are out. Future
     // Value includes them: taxi eligibility expires and injuries heal, so a
     // stashed rookie is a real future starter, not a phantom.
-    for (const pid of startableIds(roster, { includeStashed: yearsOut > 0 })) {
+    const ids = startableIds(roster, { includeStashed: yearsOut > 0 });
+    for (const pid of (waiver && !yearsOut ? ids.concat(waiverIds(league)) : ids)) {
       const sp = window.PLAYERS[pid]; if (!sp) continue;
       if (!yearsOut && isSidelined(pid)) continue;
       const r = idx.bySleeperId.get(pid) || idx.byName.get(norm(sp.name));
@@ -2438,13 +2444,15 @@
   // The redraft lineup: rest-of-season points, K and DEF included, filled by the
   // one filler and ordered on points (floored VOR ties every sub-replacement body
   // at 0). Strength is the lineup's points over replacement, replacement being the
-  // best FREE body each slot takes, and an EMPTY slot scores 0: trading away both
-  // QBs costs the whole QB, not the sliver of VOR a flat 1QB board gives him, so
-  // no roster gains strength by leaving a slot empty. `empty` counts those holes.
+  // best FREE body each slot takes. The waiver wire is in the pool, before and
+  // after alike: a manager who ships his kicker claims the best free one, so an
+  // emptied slot costs his points minus the free agent's, floored at 0 (Phi Kap's
+  // best free K, 137.7, beats every rostered kicker). `empty` counts the slots
+  // even the waiver wire cannot fill; one scores 0.
   function redraftLineup(ids, league) {
     const ros = rosPointsByPid(), free = rosBoard(league).freeLevel;
     const assets = [];
-    for (const pid of new Set([...ids].map(String))) {
+    for (const pid of new Set([...ids].map(String).concat(waiverIds(league)))) {
       const rec = ros.get(pid);
       if (rec) assets.push({ pid, pos: projPosGroup(rec.pos), v: rec.pts });
     }
@@ -2459,6 +2467,37 @@
     });
     return { points: Math.round(points * 10) / 10, strength: Math.round(over * REDRAFT_VOR_SCALE * 10) / 10, empty };
   }
+
+  // This league's free-agent pool on the current-season basis its lineups use:
+  // rest-of-season lines in redraft (K and DEF included), the league-scored season
+  // projection in dynasty (offense, nobody sidelined). Best first. Every lineup and
+  // every simulated what-if claims from this one list, so a slot a trade empties is
+  // filled the way it would be in the league, never left empty.
+  const _freeAgents = new Map();
+  function freeAgents(lg) {
+    const key = String(lg.id);
+    if (!_freeAgents.has(key)) {
+      let out;
+      if (!isDynastyLeague(lg)) {
+        out = Object.entries(rosBoard(lg).byPos).flatMap(([pos, lst]) => lst.filter(x => x.free).map(x => ({ pid: x.pid, pos, pts: x.pts })));
+      } else {
+        const owned = new Set((lg.rosters || []).flatMap(r => (r.players || []).map(String)));
+        out = [...projMap('offense').values()].filter(p => !owned.has(String(p.id)) && !isSidelined(String(p.id)))
+          .map(p => ({ pid: String(p.id), pos: p.pos, pts: projPoints(p, lg, 'blend') || 0 }));
+      }
+      out.sort((a, b) => b.pts - a.pts);
+      // The ones who could start: the best few at each position, as many as the
+      // league has starting slots that take it.
+      const slots = offenseStartingSlots(lg), taken = {};
+      const starters = out.filter(fa => {
+        const cap = slots.filter(s => SLOT_TAKES[s.pos].includes(fa.pos)).length;
+        return (taken[fa.pos] = (taken[fa.pos] || 0) + 1) <= cap;
+      }).map(fa => fa.pid);
+      _freeAgents.set(key, { all: out, starters });
+    }
+    return _freeAgents.get(key).all;
+  }
+  function waiverIds(lg) { freeAgents(lg); return _freeAgents.get(String(lg.id)).starters; }
 
   // 5-level buy/sell stance for a fantasy roster, league-relative. Quintile of
   // STARTING-lineup strength (best-K, picks excluded): a true contender fields
@@ -6916,46 +6955,15 @@
     return interpPickValue(lg.is_superflex ? idx.sf : idx.oneqb, season, round, slot, lg.total_rosters)
       ?? pickValue(season, round, originRosterId, lg);
   }
-  // simPool has no waiver pool, so a what-if that ships a position's last backup
-  // is charged an EMPTY slot on every bye and injury. Claim the best free agent
-  // there instead, up to one body over the position's starting slots.
-  const _faByLeague = new Map();
-  function finderWaiverAdds(lg, roster, drop, add) {
-    const map = projMap('offense');
-    const need = { QB: 0, RB: 0, WR: 0, TE: 0 };
-    for (const s of offenseStartingSlots(lg)) {
-      if (need[s.pos] != null) need[s.pos]++;
-      else if (s.pos === 'SUPER_FLEX') need.QB++;
-    }
-    const count = (ids) => {
-      const c = { QB: 0, RB: 0, WR: 0, TE: 0 };
-      for (const pid of ids) { const pos = map.get(pid)?.pos; if (c[pos] != null) c[pos]++; }
-      return c;
-    };
-    const now = startableIds(roster);
-    const before = count(now), after = count(now.filter(p => !drop.has(p)).concat([...add].filter(k => !isPickKey(k))));
-    if (!_faByLeague.has(lg.id)) {
-      const owned = new Set(lg.rosters.flatMap(r => (r.players || []).map(String)));
-      _faByLeague.set(lg.id, [...map.values()].filter(p => !owned.has(String(p.id)) && !isSidelined(String(p.id)))
-        .map(p => ({ pid: String(p.id), pos: p.pos, pts: projPoints(p, lg, 'blend') || 0 })).sort((a, b) => b.pts - a.pts));
-    }
-    const out = [];
-    for (const pos in need) {
-      let short = Math.min(before[pos], need[pos] + 1) - after[pos];
-      for (const fa of _faByLeague.get(lg.id)) {
-        if (short <= 0) break;
-        if (fa.pos === pos) { out.push(fa.pid); short--; }
-      }
-    }
-    return out;
-  }
   // Starting-lineup points for a list of ids, the numbers tradeLineupImpact reads
   // (redraftLineup's rest-of-season points in redraft, optimalOffense's season
-  // projection in dynasty) through the same fillLineup + offenseStartingSlots, with
-  // each player's points cached so a search can afford thousands of fills. IDP
-  // never moves in a finder trade, so the defense half cancels out of every delta.
+  // projection in dynasty) through the same fillLineup + offenseStartingSlots and
+  // the same waiver wire, with each player's points cached so a search can afford
+  // thousands of fills. IDP never moves in a finder trade, so the defense half
+  // cancels out of every delta.
   function finderLineup(lg) {
     const dyn = isDynastyLeague(lg), slots = offenseStartingSlots(lg), map = projMap('offense'), ros = rosPointsByPid();
+    const free = waiverIds(lg);
     const cache = new Map();
     const asset = (pid) => {
       if (!cache.has(pid)) {
@@ -6970,7 +6978,7 @@
       }
       return cache.get(pid);
     };
-    const pts = (ids) => fillLineup([...new Set(ids)].map(asset).filter(Boolean), slots).reduce((s, a) => s + a.v, 0);
+    const pts = (ids) => fillLineup([...new Set(ids.concat(free))].map(asset).filter(Boolean), slots).reduce((s, a) => s + a.v, 0);
     // Redraft keeps IR on the books (his line prices the missed weeks); dynasty
     // starts only the active list.
     return { pts, ids: (r) => startableIds(r, { includeStashed: !dyn }) };
@@ -7084,29 +7092,24 @@
     await pause();
     // Same seed before and after (common random numbers), so a change is the
     // trade, not the dice. This season only: FV prices the years after it.
-    const baseChamps = [];
-    const base = championshipOdds(lg, { sims, champions: baseChamps });
-    const oddsOf = (res, rid) => res.find(o => o.rosterId === rid)?.title || 0;
+    const run = (n, whatIf) => { const champions = []; return { res: championshipOdds(lg, { sims: n, whatIf, champions }), champions }; };
+    const title = (r, rid) => r.res.find(o => o.rosterId === rid)?.title || 0;
+    const oddsOf = (after, before, rid) => ({ before: title(before, rid), after: title(after, rid), ...pairedTitleDelta(before.champions, after.champions, rid) });
+    // A deal clears the gates twice: on this cheap screen, then on the Trade Lab's
+    // own first-season run (same seed, same what-if, SIM.tradeSimBudget split over
+    // its horizon), so the row shows exactly what the Lab will. The 800-sim screen
+    // alone showed a partner +0.1 that the Lab read -1.2.
+    const labSims = SIM.tradeSimBudget / (dyn ? 3 : 1);
+    const base = run(sims, null);
     const myFvNow = dyn ? projectedTradeStrength(lg, me.roster_id, none, none, Y) : 0;
     const proposals = [];
     for (const [i, c] of pool.entries()) {
       onProgress(`Simulating ${i + 1} of ${pool.length}: ${c.them.team_name}`);
       await pause();
       const send = new Set(c.send.keys), get = new Set(c.get.keys);
-      const whatIf = tradeTitleWhatIf(me.roster_id, c.them.roster_id, send, get);
-      whatIf[me.roster_id].add.push(...finderWaiverAdds(lg, me, send, get));
-      whatIf[c.them.roster_id].add.push(...finderWaiverAdds(lg, c.them, get, send));
-      const champs = [];
-      const after = championshipOdds(lg, { sims, whatIf, champions: champs });
-      // Paired: season i of both runs saw the same draws, so the standard error
-      // is the spread of the per-season difference in who won, in pts.
-      const odds = (rid) => {
-        let sum = 0, sq = 0;
-        for (let k = 0; k < sims; k++) { const d = (champs[k] === rid) - (baseChamps[k] === rid); sum += d; sq += d * d; }
-        const m = sum / sims;
-        return { before: oddsOf(base, rid), after: oddsOf(after, rid), delta: m * 100, se: Math.sqrt(Math.max(0, sq / sims - m * m) / sims) * 100 };
-      };
-      const my = odds(me.roster_id), their = odds(c.them.roster_id);
+      const whatIf = tradeTitleWhatIf(me.roster_id, c.them.roster_id, send, get, lg);
+      const after = run(sims, whatIf);
+      const my = oddsOf(after, base, me.roster_id), their = oddsOf(after, base, c.them.roster_id);
       let sendItems = c.send.items, getItems = c.get.items, myFv = 0, themFv = c.themFv;
       if (dyn) {
         const traded = new Map([[me.roster_id, tradedRoster(me, send, get)], [c.them.roster_id, tradedRoster(c.them, get, send)]]);
@@ -7119,25 +7122,35 @@
       const tot = (items) => items.reduce((s, a) => s + a.v, 0), top = (items) => Math.max(...items.map(a => a.v));
       const sendV = tot(sendItems), getV = tot(getItems);
       const fair = KT.computeFairness(sendV, getV, send.size, get.size, top(sendItems), top(getItems)).pct;
-      const score = my.delta + (dyn ? SIM.finderFvWeight * myFv : 0);
-      const wants = c.rebuilder ? themFv >= SIM.finderMinFvGain : their.delta > 0;
-      if (!(my.delta > SIM.finderSeMult * my.se && score > 0 && wants && fair >= SIM.finderFairPct)) continue;
-      const pct = (x) => `${(x * 100).toFixed(1)}%`;
-      const why = c.rebuilder
-        ? `They are rebuilding (${c.stance}), so they buy the future: their ${Y}-year lineup value ${Math.round(c.fvNow)} to ${Math.round(c.fvNow + themFv)} (+${Math.round(themFv)}).`
-        : `${c.fills ? `Fills their ${c.fills}. ` : ''}Their lineup +${Math.round(c.themD)} pts, title odds ${pct(their.before)} to ${pct(their.after)}.`;
-      proposals.push({ them: c.them, rebuilder: c.rebuilder, send: { keys: c.send.keys, items: sendItems }, get: { keys: c.get.keys, items: getItems },
-        sendV, getV, fair, my, their, myFv, themFv, meD: c.meD, themD: c.themD, score, why });
+      const scoreOf = (m) => m.delta + (dyn ? SIM.finderFvWeight * myFv : 0);
+      const passes = (m, t) => m.delta > SIM.finderSeMult * m.se && scoreOf(m) > 0 && (c.rebuilder ? themFv >= SIM.finderMinFvGain : t.delta > 0);
+      if (!(passes(my, their) && fair >= SIM.finderFairPct)) continue;
+      proposals.push({ them: c.them, rebuilder: c.rebuilder, stance: c.stance, fvNow: c.fvNow, fills: c.fills, whatIf, passes, scoreOf,
+        send: { keys: c.send.keys, items: sendItems }, get: { keys: c.get.keys, items: getItems },
+        sendV, getV, fair, my, their, myFv, themFv, meD: c.meD, themD: c.themD, score: scoreOf(my) });
     }
     proposals.sort((a, b) => b.score - a.score);
     const per = new Map(), shown = [];
+    let labBase = null, rechecked = 0;
+    const pct = (x) => `${(x * 100).toFixed(1)}%`;
     for (const p of proposals) {
       const n = per.get(p.them.roster_id) || 0;
       if (n >= SIM.finderShowPerPartner || shown.length >= SIM.finderShow) continue;
+      onProgress(`Checking ${p.them.team_name} at ${labSims.toLocaleString()} simulations`);
+      await pause();
+      if (!labBase) labBase = run(labSims, null);
+      const after = run(labSims, p.whatIf);
+      rechecked++;
+      const my = oddsOf(after, labBase, me.roster_id), their = oddsOf(after, labBase, p.them.roster_id);
+      if (!p.passes(my, their)) continue;
       per.set(p.them.roster_id, n + 1);
-      shown.push(p);
+      p.why = p.rebuilder
+        ? `They are rebuilding (${p.stance}), so they buy the future: their ${Y}-year lineup value ${Math.round(p.fvNow)} to ${Math.round(p.fvNow + p.themFv)} (+${Math.round(p.themFv)}).`
+        : `${p.fills ? `Fills their ${p.fills}. ` : ''}Their lineup +${Math.round(p.themD)} pts, title odds ${pct(their.before)} to ${pct(their.after)}.`;
+      shown.push(Object.assign(p, { my, their, score: p.scoreOf(my) }));
     }
-    return { proposals: shown, checked, simulated: pool.length };
+    shown.sort((a, b) => b.score - a.score);
+    return { proposals: shown, checked, simulated: pool.length + rechecked, labSims };
   }
   // Last run per league, so loading one proposal into the Trade Lab (which
   // re-renders the page) keeps the list for the next one.
@@ -7168,8 +7181,9 @@
       h('div', { class: 'tf-deal' }, side('out', p.send.items), h('span', { class: 'tf-arrow' }, '⇄'), side('in', p.get.items)),
       h('div', { class: 'tf-fair', style: { color: p.fair >= 90 ? 'var(--green)' : 'var(--amber)' } }, `${Math.round(p.fair)}%`),
       h('div', { class: 'tf-odds tnum' },
-        `${CURRENT_SEASON} title: you ${pct(p.my.before)} to ${pct(p.my.after)} (${signed(p.my.delta)} pts ±${p.my.se.toFixed(1)})`
-        + ` · them ${pct(p.their.before)} to ${pct(p.their.after)} (${signed(p.their.delta)} ±${p.their.se.toFixed(1)})`
+        // ± is SIM.titleBandZ paired standard errors, the Trade Lab's own band.
+        `${CURRENT_SEASON} title: you ${pct(p.my.before)} to ${pct(p.my.after)} (${signed(p.my.delta)} pts ±${(SIM.titleBandZ * p.my.se).toFixed(1)})`
+        + ` · them ${pct(p.their.before)} to ${pct(p.their.after)} (${signed(p.their.delta)} ±${(SIM.titleBandZ * p.their.se).toFixed(1)})`
         + (dyn ? ` · your FV ${signed(p.myFv, 0)}` : '')),
       h('div', { class: 'tf-why' }, `Value ${fmt.decimal(p.sendV, 1)} out, ${fmt.decimal(p.getV, 1)} in (${signed(p.getV - p.sendV)}). ${p.why}`),
     );
@@ -7928,6 +7942,11 @@
   }
 
   function tradePartnersStrip(lg) {
+    // Trade history is read from Sleeper; an ESPN league id is not a Sleeper one,
+    // and asking for it logged a 404 on every Washington load.
+    if (lg.platform === 'espn') return h('div', { class:'card trade-partners' },
+      h('div', { class:'card-title' }, 'Who you trade with'),
+      h('div', { class:'tip' }, 'Trade history comes from Sleeper, and this is an ESPN league.'));
     const wrap = h('div', { class:'card trade-partners' },
       h('div', { class:'card-title' }, 'Who you trade with'),
       h('div', { class:'tip' }, 'Reading every season of this league from Sleeper...'));
@@ -8235,7 +8254,9 @@
   // Redraft verdict. Summed value cannot see a lineup: it called a trade that
   // left Side A with no QB a win for A. This reads each side's starting-lineup
   // change (tradeLineupImpact) and, once run, the 2026 title odds, which say who
-  // WINS. A side left with a starting slot it cannot fill loses outright. Title
+  // WINS. Both read the same weekly rest-of-season lines and the same waiver
+  // wire, so running the odds adds the title math, never a second projection. A
+  // side left with a slot not even a free agent can fill loses outright. Title
   // odds count only when a change clears its noise band; then they set the
   // direction, and the lineup can only sharpen a verdict it agrees with, because
   // a weak team's title odds compress (5% has little left to lose).
@@ -8320,6 +8341,13 @@
     m.deltaA.style.color = postA.delta >= 0 ? 'var(--green)' : 'var(--red)';
     m.deltaB.textContent = (postB.delta >= 0 ? '+' : '') + fmt.decimal(postB.delta, 1);
     m.deltaB.style.color = postB.delta >= 0 ? 'var(--green)' : 'var(--red)';
+    // Dynasty strength is this week's lineup, and isSidelined benches Out,
+    // Doubtful, IR and PUP (Questionable starts). Say so when a moved player's
+    // tag is doing the work, or a one-week Doubtful reads as a verdict.
+    const benched = isDynastyLeague(lg) ? [...aSet, ...bSet].filter(k => !isPickKey(k) && isSidelined(String(k)))
+      .map(k => `${window.PLAYERS[k]?.name || k} (${window.PLAYERS[k]?.injury_status || 'IR'})`) : [];
+    m.strengthNote.textContent = benched.length ? `Benched this week: ${benched.join(', ')}. Strength counts only who starts now.` : '';
+    m.strengthNote.style.display = benched.length ? '' : 'none';
 
     const setImp = (el, imp) => {
       if (!imp) { el.textContent = '·'; el.style.color = 'var(--fg-3)'; return; }
@@ -8713,11 +8741,12 @@
 
   // Team-agnostic player search for the Trade Lab: find any ranked player by
   // name without knowing their team, then add to the correct side. Adds through
-  // the same KT.toggle path the pools use, so a searched player who isn't on
-  // either roster still lands in the pile as a what-if asset.
+  // the same KT.toggle path the pools use.
   // One button, not two: which side a player belongs on is never the user's
   // choice, it's determined by who owns him. On the send side's roster => Send.
-  // Anyone else (another team or a free agent) => For.
+  // On the receive side's => For. On a third team => For, and that team becomes
+  // the partner: a pile can only hold what its roster owns, or the lineup credits
+  // a trade nobody can make. A free agent is claimed, never traded for.
   function buildTradeSearch(lg) {
     const idx = rankIndex();
     const input = h('input', {
@@ -8748,8 +8777,12 @@
         const key = String(p._sleeperId);
         const ownerRoster = lg.rosters.find(r => (r.players || []).includes(key));
         const mine = !!ownerRoster && ownerRoster.roster_id === TRADE_STATE.sideA.rosterId;
-        const side = mine ? 'A' : 'B';
         const from = ownerRoster ? (ownerRoster.team_name || ownerRoster.owner_name) : 'free agent';
+        const add = () => {
+          if (mine || ownerRoster.roster_id === TRADE_STATE.sideB.rosterId) { KT.toggle(mine ? 'A' : 'B', key, 'add'); clear(); input.focus(); return; }
+          TRADE_STATE.sideB = { rosterId: ownerRoster.roster_id, picks: new Set([key]) };
+          navigate(`#trade/${lg.id}/${ownerRoster.roster_id}`);
+        };
         results.appendChild(h('div', { class:'trade-search-row' },
           h('div', { class:'name-cell' },
             posChip(p.pos || sp?.pos),
@@ -8759,11 +8792,12 @@
             h('span', { class:'trade-search-val tnum' }, fmt.decimal(val, 1)),
           ),
           h('div', { class:'trade-search-actions' },
-            h('button', {
+            ownerRoster ? h('button', {
               class:'trade-search-add' + (mine ? ' is-send' : ' is-for'),
               title: mine ? 'Add to You Send (left side)' : `Add to You Receive (right side) from ${from}`,
-              onclick: () => { KT.toggle(side, key, 'add'); clear(); input.focus(); },
-            }, mine ? '+ Send' : '+ For'),
+              onclick: add,
+            }, mine ? '+ Send' : '+ For')
+              : h('button', { class:'trade-search-add', disabled:'', title:'A free agent is claimed off waivers, not traded for.' }, 'Free agent'),
           ),
         ));
       }
@@ -9046,13 +9080,53 @@
     });
   };
 
-  function tradeTitleWhatIf(aRosterId, bRosterId, aSet, bSet) {
+  // The simulator's what-if for a trade. With `lg`, each side also claims the free
+  // agents a real manager would (waiverAdds), so the Trade Lab and the Trade
+  // Finder price the same deal on the same rosters.
+  function tradeTitleWhatIf(aRosterId, bRosterId, aSet, bSet, lg = null) {
     if (String(aRosterId) === String(bRosterId)) throw new Error('Trade sides must use different rosters');
     const players = set => [...set].filter(k => !isPickKey(k)).map(String);
-    return {
+    const out = {
       [aRosterId]: { drop: players(aSet), add: players(bSet) },
       [bRosterId]: { drop: players(bSet), add: players(aSet) },
     };
+    if (lg) {
+      const find = (id) => lg.rosters.find(r => String(r.roster_id) === String(id));
+      const a = waiverAdds(lg, find(aRosterId), new Set(players(aSet)), players(bSet));
+      out[aRosterId].add.push(...a);
+      out[bRosterId].add.push(...waiverAdds(lg, find(bRosterId), new Set(players(bSet)), players(aSet), new Set(a)));
+    }
+    return out;
+  }
+  // simPool has no waiver pool, so a what-if that ships a position's last backup
+  // is charged an EMPTY slot on every bye and injury. Claim the best free agent
+  // there instead, up to one body over the position's starting slots. `taken`
+  // are claims the other side already made: one free agent, one team.
+  function waiverAdds(lg, roster, drop, add, taken = new Set()) {
+    const map = projMap('offense'), ros = isDynastyLeague(lg) ? null : rosPointsByPid();
+    const posOf = (pid) => (ros && ros.get(pid) ? projPosGroup(ros.get(pid).pos) : map.get(pid)?.pos);
+    const need = { QB: 0, RB: 0, WR: 0, TE: 0 };
+    for (const s of offenseStartingSlots(lg)) {
+      if (need[s.pos] != null) need[s.pos]++;
+      else if (s.pos === 'SUPER_FLEX') need.QB++;
+    }
+    const count = (ids) => {
+      const c = { QB: 0, RB: 0, WR: 0, TE: 0 };
+      for (const pid of ids) { const pos = posOf(pid); if (c[pos] != null) c[pos]++; }
+      return c;
+    };
+    // The simulator's own pool: redraft keeps IR (its line prices the weeks out).
+    const now = startableIds(roster, { includeStashed: !!ros });
+    const before = count(now), after = count(now.filter(p => !drop.has(p)).concat([...add].filter(k => !isPickKey(k))));
+    const out = [];
+    for (const pos in need) {
+      let short = Math.min(before[pos], need[pos] + 1) - after[pos];
+      for (const fa of freeAgents(lg)) {
+        if (short <= 0) break;
+        if (fa.pos === pos && !taken.has(fa.pid)) { out.push(fa.pid); short--; }
+      }
+    }
+    return out;
   }
 
   // Middle summary builds DOM once and exposes setter refs.
@@ -9064,6 +9138,7 @@
     const premiumNote = h('div', { class:'tip', style:{ display:'none', marginTop:'4px', color:'var(--fg-2)', fontStyle:'italic', lineHeight:'1.3' } }, '');
     const deltaA = h('span', { class:'tnum' }, '0.0');
     const deltaB = h('span', { class:'tnum' }, '0.0');
+    const strengthNote = h('div', { class:'tip trade-strength-note', style:{ display:'none', marginTop:'4px' } }, '');
     const lineupA = h('span', { class:'tnum trade-lineup-value' }, '·');
     const lineupB = h('span', { class:'tnum trade-lineup-value' }, '·');
     const titleA = h('span', { class:'tnum trade-title-value' }, '·');
@@ -9078,7 +9153,7 @@
       const aSet = TRADE_STATE.sideA.picks, bSet = TRADE_STATE.sideB.picks;
       if (!aSet.size || !bSet.size) { titleMeta.textContent = 'Add assets to both sides first.'; return; }
       const aRosterId = TRADE_STATE.sideA.rosterId, bRosterId = TRADE_STATE.sideB.rosterId;
-      const whatIf = tradeTitleWhatIf(aRosterId, bRosterId, aSet, bSet);
+      const whatIf = tradeTitleWhatIf(aRosterId, bRosterId, aSet, bSet, lg);
       const key = `${aRosterId}:${[...aSet].sort()}|${bRosterId}:${[...bSet].sort()}`;
       runTitleOdds.disabled = true;
       runTitleOdds.textContent = 'Running...';
@@ -9089,15 +9164,15 @@
           // match, so the change in a cell is the trade, not simulation noise.
           if (!baselineOdds) baselineOdds = titleOddsByYear(lg, { years:TITLE_YEARS, sims:TITLE_SIMS });
           const after = titleOddsByYear(lg, { years:TITLE_YEARS, sims:TITLE_SIMS, whatIf });
-          // Noise band: z standard errors of the difference of two simulated
-          // rates (an upper bound, common random numbers only shrink it). A
-          // change inside it paints grey and never decides the verdict.
-          const bandOf = (p0, p1) => SIM.titleBandZ * Math.sqrt((p0 * (1 - p0) + p1 * (1 - p1)) / TITLE_SIMS) * 100;
+          // Noise band: SIM.titleBandZ paired standard errors, the same ± the
+          // Trade Finder prints. A change inside it paints grey and never
+          // decides the verdict.
           // Compared at printed precision, so "+0.8 ±0.8" never paints as signal.
           const inside = (d, band) => Math.round(Math.abs(d) * 10) <= Math.round(Math.max(0.1, band) * 10);
           const tone = (d, band) => inside(d, band) ? 'var(--fg-2)' : d > 0 ? 'var(--green)' : 'var(--red)';
-          const paint = (cell, sub, before, next) => {
-            const delta = (next - before) * 100, band = bandOf(before, next);
+          const paint = (cell, sub, k, rid) => {
+            const before = baselineOdds[k].byRoster.get(rid) || 0, next = after[k].byRoster.get(rid) || 0;
+            const { delta, se } = pairedTitleDelta(baselineOdds[k].champions, after[k].champions, rid), band = SIM.titleBandZ * se;
             cell.textContent = `${delta >= 0 ? '+' : ''}${delta.toFixed(1)}`;
             cell.style.color = tone(delta, band);
             sub.textContent = `${(before * 100).toFixed(1)}% \u2192 ${(next * 100).toFixed(1)}% \u00b1${band.toFixed(1)}`;
@@ -9105,9 +9180,9 @@
           };
           let totA = 0, totB = 0, varA = 0, varB = 0;
           after.forEach((yr, k) => {
-            const row = titleRows[k], base = baselineOdds[k].byRoster;
-            const pa = paint(row.aCell, row.aSub, base.get(aRosterId) || 0, yr.byRoster.get(aRosterId) || 0);
-            const pb = paint(row.bCell, row.bSub, base.get(bRosterId) || 0, yr.byRoster.get(bRosterId) || 0);
+            const row = titleRows[k];
+            const pa = paint(row.aCell, row.aSub, k, aRosterId);
+            const pb = paint(row.bCell, row.bSub, k, bRosterId);
             totA += pa.delta; varA += pa.band ** 2; totB += pb.delta; varB += pb.band ** 2;
           });
           const sum = (el, d, band) => {
@@ -9169,10 +9244,11 @@
         ),
         h('div', { style:{ marginTop:'14px' } },
           h('div', { class:'tip', style:{ marginBottom:'4px' } }, 'Post-Trade Strength Δ'),
-          h('div', { style:{ display:'flex', justifyContent:'space-between' } }, deltaA, deltaB)
+          h('div', { style:{ display:'flex', justifyContent:'space-between' } }, deltaA, deltaB),
+          strengthNote,
         ),
         h('div', { style:{ marginTop:'14px' } },
-          h('div', { class:'tip', style:{ marginBottom:'4px' }, title:`Your best starting lineup’s projected ${dyn ? 'season' : 'rest-of-season'} points, now vs after the trade. The lineup is re-optimized, so a starter you send is automatically replaced by your next-best at that position, the change is the real lineup impact of what you’re giving up vs getting.${dyn ? '' : ' A slot nobody can fill scores 0.'}` }, `Starting Lineup (${dyn ? 'proj' : 'rest-of-season'} pts) · now → after`),
+          h('div', { class:'tip', style:{ marginBottom:'4px' }, title:`Your best starting lineup’s projected ${dyn ? 'season' : 'rest-of-season'} points, now vs after the trade. The lineup is re-optimized, so a starter you send is automatically replaced by your next-best at that position, the change is the real lineup impact of what you’re giving up vs getting.${dyn ? ' A slot the trade empties takes the best free agent.' : ' A slot the trade empties takes the best free agent; one nobody can fill scores 0.'}` }, `Starting Lineup (${dyn ? 'proj' : 'rest-of-season'} pts) · now → after`),
           h('div', { class:'trade-lineup-values' },
             h('div', { class:'trade-lineup-side' },
               h('span', { class:'trade-lineup-side-label' }, 'Side A'), lineupA),
@@ -9215,7 +9291,7 @@
         )
       ),
     );
-    const out = { node, aVal, bVal, verdict, fair, premiumNote, deltaA, deltaB, lineupA, lineupB,
+    const out = { node, aVal, bVal, verdict, fair, premiumNote, deltaA, deltaB, strengthNote, lineupA, lineupB,
       titleA, titleB, titleMeta, runTitleOdds, titleRows, yearRows, title: null };
     return out;
   }
@@ -9340,9 +9416,25 @@
     if (!roster) return { before: 0, after: 0, delta: 0 };
     // Present starting-lineup value (PV basis), same scale as the standings. Picks
     // don't count at year 0, so this Δ is the immediate lineup change from the
-    // player swap; pick impact shows in the year-by-year outlook below.
-    const before = startingStrength(roster, lg);
-    const after = startingStrength(tradedRoster(roster, removeIds, addIds), lg);
+    // player swap; pick impact shows in the year-by-year outlook below. Both
+    // lineups claim from the waiver wire, so a slot the trade empties costs the
+    // gap to the best free body, never a free pass: an empty dynasty slot used to
+    // score 0 while the pieces coming back filled the others, and a taco roster
+    // with no QB left read +15.9.
+    const traded = tradedRoster(roster, removeIds, addIds);
+    const before = startingStrength(roster, lg, 0, false, null, true);
+    let after = startingStrength(traded, lg, 0, false, null, true);
+    // Dynasty prices a lineup in KTC, which calls a 1QB quarterback replaceable:
+    // true of his market value, false of his lineup (taco: Allen 77.6 KTC, 354.6
+    // pts; the best free QB 158.8). So a trade that hands a starting slot to the
+    // waiver wire, one a rostered player held before, cannot read as a gain.
+    if (isDynastyLeague(lg)) {
+      const free = new Set(waiverIds(lg)), slots = offenseStartingSlots(lg);
+      const bySlot = (r) => fillLineup(startableIds(r).concat([...free]).filter(pid => !isSidelined(pid))
+        .map(pid => ({ pid, pos: window.PLAYERS[pid]?.pos, v: playerValue(pid, lg) })).filter(a => a.v > 0), slots, false, true);
+      const was = bySlot(roster), now = bySlot(traded);
+      if (now.some((a, i) => a && free.has(a.pid) && was[i] && !free.has(was[i].pid))) after = Math.min(after, before);
+    }
     return { before, after, delta: Math.round((after - before) * 10) / 10 };
   }
 
@@ -11473,7 +11565,9 @@
     // Before and after share every draw, so the title-odds change has a paired
     // standard error, and a deal shows only when my gain beats finderSeMult of it.
     // Measured 2026-09-25 on a small Phi Kap deal: SE 0.9 pts at 800 sims, and five
-    // seeds landed inside it.
+    // seeds landed inside it. finderSims is only the screen: a deal that clears it
+    // is re-run at the Trade Lab's own count (tradeSimBudget over its horizon) and
+    // shown only if it clears the same gates there.
     finderCandidateCap: 400,
     finderSimPerPartner: 3,
     finderSimTop: 20,
@@ -11552,29 +11646,44 @@
 
   // Turn a roster into the pool the simulator draws from. `yearsOut` ages every
   // player's production and their injury risk; `rookies` are converted picks.
+  // `src` 'ros' (redraft) reads the weekly rest-of-season lines the lineup and the
+  // verdict read: a per-game rate, and an absence taken from the lines themselves.
+  // A season total spread over 17 weeks AND a designation hold-out counted A.J.
+  // Brown's injury twice (167 already left out his missed games: 9.8 a week, then
+  // 6 more weeks out, against 15.0 a game when he plays).
   function simPool(roster, lg, src, extraIds, yearsOut = 0, rookies = null) {
-    const map = projMap('offense');
-    const ids = new Set([...startableIds(roster, { includeStashed: yearsOut > 0 }), ...(extraIds || []).map(String)]);
+    const map = projMap('offense'), ros = src === 'ros' && !yearsOut ? rosPointsByPid() : null;
+    const ids = new Set([...startableIds(roster, { includeStashed: yearsOut > 0 || !!ros }), ...(extraIds || []).map(String)]);
     const pool = [];
     for (const pid of ids) {
-      const p = map.get(pid); if (!p) continue;
-      if (!SLOT_TAKES.SUPER_FLEX.includes(p.pos)) continue;
-      const season0 = projPoints(p, lg, src); if (season0 == null) continue;
+      const p = map.get(pid), line = ros && ros.get(pid);
       const sp = window.PLAYERS?.[pid] || {};
-      const season = season0 * productionRetention(p.pos, sp.age, yearsOut);
-      if (season <= 0) continue;   // aged out of the league entirely
-      const mean = season / SIM.gamesPlayed;
+      const pos = ros ? line && projPosGroup(line.pos) : p?.pos;
+      if (!(ros ? line : p) || !SLOT_TAKES.SUPER_FLEX.includes(pos)) continue;
+      let mean;
+      if (ros) mean = line.pts / line.games;
+      else {
+        const season0 = projPoints(p, lg, src); if (season0 == null) continue;
+        const season = season0 * productionRetention(p.pos, sp.age, yearsOut);
+        if (season <= 0) continue;   // aged out of the league entirely
+        mean = season / SIM.gamesPlayed;
+      }
       const st = sp.injury_status;
+      // ponytail: dynasty keeps the season projection and the designation table;
+      // most of its totals are preseason and never priced the absence (7 of 9 IR
+      // players, 2026-09-25), so it counts once there. Move dynasty onto the lines
+      // too if a dynasty verdict ever reads title odds.
+      // A live designation is this season's news; it says nothing about 2028.
+      const startOut = yearsOut ? 0 : ros ? (SIM.designationWeeksOut[st] ? line.out : 0) : (SIM.designationWeeksOut[st] || 0);
       // Every field the simulator will ever touch is declared here, including the
       // per-season scratch (mult/bye/outUntil/v), his draw stream (key) and his
       // week's noise (e). Adding them later would retag the object's shape on the
       // first hot iteration and cost more than the simulation itself.
       pool.push({
-        pid, name: p.name, pos: p.pos, mean, nflTeam: p.team || '',
-        sd: mean * (SIM.cv[p.pos] != null ? SIM.cv[p.pos] : 0.55),
-        hazard: injuryHazard(p.pos, (sp.age || 25) + yearsOut),
-        // A live designation is this season's news; it says nothing about 2028.
-        startOut: yearsOut ? 0 : (SIM.designationWeeksOut[st] || 0),
+        pid, name: p?.name || sp.name || pid, pos, mean, nflTeam: p?.team || sp.team || '',
+        sd: mean * (SIM.cv[pos] != null ? SIM.cv[pos] : 0.55),
+        hazard: injuryHazard(pos, (sp.age || 25) + yearsOut),
+        startOut,
         questionable: yearsOut ? false : st === 'Questionable',
         mult: 1, bye: 0, outUntil: 0, v: mean, key: 0, e: 0,
       });
@@ -11793,14 +11902,27 @@
     const out = [];
     let ranks = null;
     for (let y = 0; y < years; y++) {
-      const res = championshipOdds(lg, { sims, src:'blend', whatIf, seed: seed + y * 101, yearsOut: y, strengthRanks: ranks });
+      const champions = [];
+      const res = championshipOdds(lg, { sims, whatIf, seed: seed + y * 101, yearsOut: y, strengthRanks: ranks, champions });
       ranks = new Map(res.slice().sort((a, b) => b.expPts - a.expPts).map((o, i) => [o.rosterId, i + 1]));
-      out.push({ season: CURRENT_SEASON + y, byRoster: new Map(res.map(o => [o.rosterId, o.title || 0])) });
+      out.push({ season: CURRENT_SEASON + y, byRoster: new Map(res.map(o => [o.rosterId, o.title || 0])), champions });
     }
     return out;
   }
 
-  function titleEquity(lg, { years = 7, sims = 2500, src = 'blend', whatIf = null, discount = 0.88, seed = 20260807 } = {}) {
+  // Paired change in one roster's title odds between two runs on one seed: season
+  // k of both saw the same draws, so the standard error is the spread of the
+  // per-season difference in who won. Percentage points. The Trade Lab and the
+  // Trade Finder both print it as ±SIM.titleBandZ standard errors.
+  function pairedTitleDelta(baseChamps, afterChamps, rid) {
+    const n = baseChamps.length;
+    let sum = 0, sq = 0;
+    for (let k = 0; k < n; k++) { const d = (afterChamps[k] === rid) - (baseChamps[k] === rid); sum += d; sq += d * d; }
+    const m = n ? sum / n : 0;
+    return { delta: m * 100, se: n ? Math.sqrt(Math.max(0, sq / n - m * m) / n) * 100 : 0 };
+  }
+
+  function titleEquity(lg, { years = 7, sims = 2500, src = null, whatIf = null, discount = 0.88, seed = 20260807 } = {}) {
     const byYear = [];
     let ranks = null;
     let equity = 0, raw = 0;
@@ -11825,19 +11947,30 @@
   // be priced in titles instead of in points. `champions`, when passed an array,
   // gets each simulated season's champion roster id, so two runs on one seed can
   // be differenced season by season (a paired standard error).
-  function championshipOdds(lg, { sims = 4000, src = 'blend', whatIf = null, seed = 20260807, yearsOut = 0, strengthRanks = null, champions = null } = {}) {
+  // `src` defaults to the league's own current-season basis: the weekly
+  // rest-of-season lines in redraft (what its lineup and verdict read), the
+  // league-scored season blend in dynasty. The Trade Lab, the Trade Finder and
+  // trade-sim.js all take the default, so they price one trade the same way.
+  function championshipOdds(lg, { sims = 4000, src = null, whatIf = null, seed = 20260807, yearsOut = 0, strengthRanks = null, champions = null } = {}) {
     const rosters = lg.rosters || [];
     const n = rosters.length;
     if (!n) return [];
+    src = src || (isDynastyLeague(lg) ? 'blend' : 'ros');
     const slots = offenseStartingSlots(lg);
     const cfg = playoffSettings(lg);
     const { extraPoints } = projectLeagueForward(lg, yearsOut, whatIf, strengthRanks);
+    // An IR-slot player sits out of his owner's season, so he sits out of the
+    // receiver's too: handing him over with only a 6-week designation booked a
+    // phantom gain for both sides. The rest-of-season lines keep him on both
+    // books instead, because they already price the weeks he misses.
+    const stashed = yearsOut > 0 || src === 'ros';
+    const reserve = stashed ? new Set() : new Set(rosters.flatMap(r => (r.reserve || []).map(String)));
     const pools = rosters.map(r => {
       const wi = whatIf && whatIf[r.roster_id];
       const drop = new Set((wi?.drop || []).map(String));
-      const keep = startableIds(r, { includeStashed: yearsOut > 0 }).filter(p => !drop.has(String(p)));
+      const keep = startableIds(r, { includeStashed: stashed }).filter(p => !drop.has(String(p)));
       const base = { ...r, players: keep, taxi: [], reserve: [] };
-      return simPool(base, lg, src, wi?.add, yearsOut, extraPoints.get(r.roster_id));
+      return simPool(base, lg, src, (wi?.add || []).filter(p => !reserve.has(String(p))), yearsOut, extraPoints.get(r.roster_id));
     });
     const stat = rosters.map(() => ({ playoff: 0, bye: 0, final: 0, title: 0, wins: 0, pts: 0 }));
     const rnd = mulberry32(seed);   // the fallback random schedule only
@@ -11997,18 +12130,20 @@
     const sent = new Set([...sendSet].filter(k => !isPickKey(k)).map(String));
     const recv = [...recvSet].filter(k => !isPickKey(k)).map(String);
     // Redraft scores the lineup on the value's own basis: rest-of-season points,
-    // K and DEF included, IR kept (his line already prices the missed weeks).
-    // `emptied` counts starting slots the trade leaves with nobody to fill them.
+    // K and DEF included, IR kept (his line already prices the missed weeks), the
+    // waiver wire in the pool. `emptied` counts starting slots the trade leaves
+    // with nobody to fill them, not even a free agent.
     if (!isDynastyLeague(lg)) {
       const ids = startableIds(roster, { includeStashed: true });
       const now = redraftLineup(ids, lg), after = redraftLineup(ids.filter(p => !sent.has(p)).concat(recv), lg);
       return { now: now.points, after: after.points, delta: Math.round((after.points - now.points) * 10) / 10,
         emptied: after.empty - now.empty };
     }
-    // Startable only: a taxi stash can't fill the hole a traded starter leaves.
-    const base = startableIds(roster);
-    const now = lineupPoints(lg, base);
-    const post = base.filter(p => !sent.has(p)).concat(recv);
+    // Startable only: a taxi stash can't fill the hole a traded starter leaves,
+    // the waiver wire can (before and after alike).
+    const base = startableIds(roster), free = waiverIds(lg);
+    const now = lineupPoints(lg, base.concat(free));
+    const post = base.filter(p => !sent.has(p)).concat(recv, free);
     const after = lineupPoints(lg, post);
     return { now, after, delta: Math.round((after - now) * 10) / 10 };
   }
