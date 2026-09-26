@@ -62,6 +62,10 @@ STEPS = [
     # play-by-play, snap counts, Next Gen Stats, PFR advanced, QBR, injuries,
     # depth charts. The one builder that owns site/data/advanced.js.
     ("nflverse advanced stats",    PROJ / "build_nflverse_suite.py",      True, ["--all"]),
+    # Stats Lab split cube (seasons x weeks x situations), from the pbp and FTN
+    # files the suite just refreshed, then proven against the advanced.js it wrote.
+    ("Stats Lab split cube",       PROJ / "build_split_cube.py",          True),
+    ("split cube vs advanced.js",  PROJ / "build_split_cube.py",          True, ["--self-check"]),
     ("draft + combine profile",    PROJ / "build_prospect_profile.py",    True),
     ("game-day weather",           PROJ / "build_game_weather.py",        True),
     ("defense vs position",        PROJ / "build_defense_matchups.py",    True),
