@@ -1178,6 +1178,11 @@
             h('span', { class:'sub-bullet' }, '·'), 'Players'),
           lg.platform !== 'espn' ? h('a', { href: `#league/${lg.id}/transactions`, onclick: () => setMobileNav(false) },
             h('span', { class:'sub-bullet' }, '·'), 'Transactions') : null,
+          // Same gate as the league's FAAB tab. Without a link here, the longest
+          // match fell back to Standings and lit it while FAAB was open.
+          (faabLeagueRecord(window.FAAB_ARCHETYPES, lg)?.dims?.situation || []).length
+            ? h('a', { href: `#league/${lg.id}/faab`, onclick: () => setMobileNav(false) },
+              h('span', { class:'sub-bullet' }, '·'), 'FAAB') : null,
           h('a', { href: `#roster/${lg.id}/${me.roster_id}/snapshot`, onclick: () => setMobileNav(false) },
             h('span', { class:'sub-bullet' }, '·'), 'My Roster'),
           h('a', { href: `#trade/${lg.id}`,           onclick: () => setMobileNav(false) },
@@ -1845,6 +1850,15 @@
   // ROUTE: Rankings
   // ============================================================
   const RANKINGS_FILTER = { pos:'ALL', cat:'ALL', q:'', hideUncertain:false, order:'mine' };
+  // Short league tag for a one-line chip row: initials, skipping filler words
+  // after the first ("Password is taco" is PT, not PIT, which reads as a team).
+  // A one-word name keeps itself (yuH).
+  function leagueCode(name) {
+    const words = String(name || '').trim().split(/\s+/)
+      .filter((w, i) => i === 0 || !/^(is|of|the|a|an|and)$/i.test(w));
+    return words.length > 1 ? words.map(w => w[0]).join('').toUpperCase() : (words[0] || '');
+  }
+
   function viewRankings() {
     const main = $('#main');
     let focusPid = null;
@@ -1981,7 +1995,7 @@
           h('th', { class:'right', title:'Value vs projection: positional value rank minus season-projection rank. + = produces above price (buy lean), − = priced above production (sell lean). Read with Age.' }, 'Gap'),
           h('th', { class:'right' }, 'Own%'),
           h('th', { class:'right' }, 'Start%'),
-          h('th', null, 'Owners'),
+          h('th', { title:`Leagues where he is rostered. Gold = yours. ${(window.LEAGUES || []).map(l => `${leagueCode(l.short_name)} ${l.short_name}`).join(', ')}` }, 'Owners'),
         )),
         h('tbody', null, ...filtered.map((p, i) => {
           posCounters[p.pos] = (posCounters[p.pos] || 0) + 1;
@@ -1995,10 +2009,12 @@
           // "Depth trap": owned but rarely started, sell signal
           const isDepth = owned != null && started != null && owned > 30 && started < 25 && owned - started > 30;
           const owners = sleeperId ? (ownerMap.get(sleeperId) || []) : [];
-          const youOwn = owners.some(o => o.isMe);
           const ownColor = owned == null ? 'var(--fg-3)' : owned > 80 ? 'var(--green)' : owned > 40 ? 'var(--amber)' : 'var(--fg-2)';
           const startColor = started == null ? 'var(--fg-3)' : started > 60 ? 'var(--green)' : started > 25 ? 'var(--amber)' : 'var(--red)';
-          return h('tr', { dataset:{ pid:sleeperId || '' }, class:`${youOwn ? 'you ' : ''}${reorderable ? 'draft-reorder' : ''}`.trim(),
+          // No gold row here. With five leagues nearly every good player is yours
+          // somewhere, so a gold row stopped meaning anything; the gold now sits on
+          // the one league chip where he is yours.
+          return h('tr', { dataset:{ pid:sleeperId || '' }, class: reorderable ? 'draft-reorder' : '',
             onclick: (e) => { if (!e.target.closest('.my-rank')) openPlayerDetail(p.name, sleeperId); }, title: p.note || '' },
             myRankCell({ pid:sleeperId, name:p.name, mine:myRank }, reorderable, renderList, (pid) => { focusPid = pid; }),
             h('td', { class:'right tnum', style:{ color:'var(--fg-2)' } }, consensus.get(String(sleeperId)) || '·'),
@@ -2025,10 +2041,18 @@
             h('td', { class:'right tnum', style:{ color: startColor } }, started != null ? started.toFixed(0) + '%' : '.'),
             h('td', null,
               owners.length
-                ? h('div', { style:{ display:'flex', gap:'4px', flexWrap:'wrap' } }, ...owners.slice(0,3).map(o => h('span', {
-                    class:`badge stance-${o.stance}` + (o.isMe ? ' you' : ''),
-                    title: `${o.team} (${o.owner}), ${o.league} · ${stanceLabels[o.stance] || ''}`,
-                  }, o.league)))
+                ? (() => {
+                  // One gold chip for every league where he is yours, then the
+                  // rivals as bare stance-coloured tags, all on one line.
+                  const mine = owners.filter(o => o.isMe), rivals = owners.filter(o => !o.isMe);
+                  return h('div', { class:'owner-chips' },
+                    mine.length ? h('span', { class:'badge you',
+                      title: mine.map(o => `${o.league}: ${o.team}, yours`).join('\n') },
+                      mine.map(o => leagueCode(o.league)).join(' ')) : null,
+                    ...rivals.map(o => h('span', { class:`badge stance-${o.stance}`,
+                      title: `${o.league}: ${o.team} (${o.owner}) · ${stanceLabels[o.stance] || ''}` },
+                      leagueCode(o.league))));
+                })()
                 : h('span', { class:'muted' }, '.')
             ),
           );
@@ -2847,6 +2871,15 @@
       _sleeperId:String(player.id), _weekly:player,
       name:player.name, pos:player.pos, team:player.team,
     }));
+    const weeklyByPid = new Map(weeklyPlayers.map(p => [p._sleeperId, p._weekly]));
+    // Mean Sleeper projection over the weeks still to play. The SOS view drops a
+    // free agent under 5 a game: a matchup grid is a start/sit tool, and a
+    // third-string TE nobody rosters was padding every team block.
+    const SOS_FA_FLOOR = 5;
+    const restOfSeasonPpg = (pid) => {
+      const wk = (weeklyByPid.get(String(pid))?.sleeper || []).slice(currentWeek - 1).filter(v => v != null);
+      return wk.length ? wk.reduce((s, v) => s + v, 0) / wk.length : null;
+    };
     // Per-roster ownership lookup keyed by Sleeper player id.
     const ownerByPid = new Map();
     for (const r of lg.rosters) {
@@ -3031,6 +3064,7 @@
         if (filter.q && !norm(p.name).includes(norm(filter.q))) return false;
         const ownerRoster = p._sleeperId ? ownerByPid.get(p._sleeperId) : null;
         if (!playerMatchesScopes(filter.scopes, ownerRoster)) return false;
+        if (filter.view === 'sos' && !ownerRoster && !(restOfSeasonPpg(p._sleeperId) >= SOS_FA_FLOOR)) return false;
         return true;
       });
       if (!filtered.length) {
@@ -3149,9 +3183,14 @@
           const wnum = +filter.sort.slice(3);
           const oppPA = (p) => { const s = teamSos((window.PLAYERS[p._sleeperId] || {}).team || p.team); if (!s) return null; const g = s.schedule.find(x => x.week === wnum); if (!g) return null; const e = teamEnv(g.opp); return e ? e.implied_pa : null; };
           av = oppPA(a); bv = oppPA(b);
-          if (av == null && bv == null) return 0;
-          if (av == null) return 1; if (bv == null) return -1;
-          return (bv - av) * dir; // desc = weakest opponent D (easiest) first
+          if (av !== bv) {
+            if (av == null) return 1; if (bv == null) return -1;
+            return (av - bv) * dir; // desc = weakest opponent D (easiest) first
+          }
+          // A whole team shares one opponent, so the week column ties by the
+          // dozen. Break it on that week's projection, best first either way.
+          return compareNullableNumbers(weeklyByPid.get(String(a._sleeperId))?.sleeper?.[wnum - 1],
+            weeklyByPid.get(String(b._sleeperId))?.sleeper?.[wnum - 1], -1, a.name, b.name);
         }
         if (typeof filter.sort === 'string' && filter.sort.startsWith('xr:')) {
           const src = expertSources().find(s => s.id === filter.sort.slice(3));
@@ -3481,7 +3520,8 @@
               h('td', null, h('span', { class:'name' }, p.name)),
               h('td', null, posChip(p.pos)),
               h('td', null, teamChip(p.team)),
-              h('td', null, o.r ? h('span', { class:'badge' + (o.isMine ? ' you' : '') }, (o.r.team_name || '').slice(0, 6)) : h('span', { class:'muted' }, 'FA')),
+              h('td', null, o.r ? h('span', { class:'badge sos-owner' + (o.isMine ? ' you' : ''),
+                title:`${o.r.team_name} (${o.r.owner_name})` }, o.r.team_name || '') : h('span', { class:'muted' }, 'FA')),
               ...WEEKS.map(w => {
                 const g = sm[w];
                 if (!g) return h('td', { class:'center muted', style:{ fontSize:'9px' } }, 'BYE');
@@ -4959,7 +4999,8 @@
                         : 'Bar length = how much this slot matters (points per game). Fill = how good your man is at it, 0 to 10. The faint mark at 70% is the line between an adequate starter and a hole.' },
             h('span', { class:'slot-bar-fill', style:{ width: fillPct + '%', background: color } }),
             h('span', { class:'slot-bar-tick', style:{ left: '70%' } }),
-            (rosterDynasty && s.fvGrade != null) ? h('span', { class:`slot-bar-fv ${fvDir}`, style:{ left: fvPct + '%' }, title:`FV (3-yr): ${s.fvGrade.toFixed(1)} (${fvDir})` }) : null,
+            // Clamped so a 10.0 diamond sits inside the track instead of half past its end.
+            (rosterDynasty && s.fvGrade != null) ? h('span', { class:`slot-bar-fv ${fvDir}`, style:{ left: `clamp(7px, ${fvPct}%, calc(100% - 7px))` }, title:`FV (3-yr): ${s.fvGrade.toFixed(1)} (${fvDir})` }) : null,
           ),
         ),
         h('td', { class:'sr-grade tnum', style:{ color } }, s.grade.toFixed(1)),
@@ -5453,8 +5494,9 @@
       : surplus <= -1 ? 'var(--red)'
       : 'var(--fg-2)';
     const surplusLabel = surplus == null ? ''
-      : surplus > 0 ? `+${surplus}`
-      : `${surplus}`;
+      : surplus > 0 ? `+${surplus} spare`
+      : surplus < 0 ? `${surplus} short`
+      : 'even';
     // Use position-max for a normalized value bar.
     const maxPV = realPos ? maxPosValue(realPos, lg) : 100;
     // Sort: ranked first by tierValue desc, then unranked alphabetically.
@@ -5508,11 +5550,12 @@
       h('div', { class:'pos-col-head' },
         h('div', null,
           h('span', { class:'pos-col-pos' }, pos),
-          realPos ? h('span', { class:'pos-col-need' }, ` ${startableCount}/${need.toFixed(1)}`) : null,
+          realPos ? h('span', { class:'pos-col-need', title:'Startable players / league-wide starter need per team' }, ` ${startableCount}/${need.toFixed(1)}`) : null,
         ),
         h('div', { class:'pos-col-head-right' },
-          surplus != null ? h('span', { class:'pos-col-surplus tnum', style:{ color: surplusColor } }, surplusLabel) : null,
-          h('span', { class:'pos-col-total muted tnum' }, players.length),
+          surplus != null ? h('span', { class:'pos-col-surplus tnum', style:{ color: surplusColor },
+            title:'Startable players beyond the lineup need. Spare is trade stock, short is a hole.' }, surplusLabel) : null,
+          h('span', { class:'pos-col-total muted tnum', title:`${players.length} ${pos} on this roster` }, `${players.length} total`),
         )
       ),
       h('div', { class:'pos-col-body' }, ...rows)
@@ -7750,6 +7793,10 @@
     const left = (budget != null && used != null) ? budget - used : null;
     const claims = lgRec?.claims || [];
     const hasBidHistory = claims.length > 0 && budget != null;
+    // Free agents in a deep dynasty league are mostly unranked, so the Value
+    // column can be a stack of dots. Hide it rather than drop it: the phone
+    // rules address these columns by position.
+    const hideComparison = top.every(c => (dynasty ? c.market : c.vor) == null) ? { display: 'none' } : null;
 
     const card = h('div', { class: 'card waiver-card' },
       h('div', { class: 'card-title' }, `Week ${week} waiver board`),
@@ -7770,7 +7817,7 @@
       h('th', { class: 'wb-profile-head' }, 'Profile'),
       h('th', { class: 'right', title: 'Projected points, rest of season' }, 'ROS'),
       h('th', { class: 'right', title: `Projected points, week ${week}` }, 'Wk'),
-      h('th', { class: 'right', title: dynasty
+      h('th', { class: 'right', style: hideComparison, title: dynasty
         ? 'League-adjusted dynasty market value on the 0 to 110 scale'
         : 'Rest-of-season points above the last league-wide starter at the position' }, dynasty ? 'Value' : 'VOR'),
       hasBidHistory ? h('th', { class: 'right', title: 'Suggested bid range from this league\'s matching historical claims' }, 'Bid') : null));
@@ -7795,7 +7842,7 @@
             `${b.exact ? 'exact profile' : b.source}, n=${b.n}`) : null),
         h('td', { class: 'sr-num tnum' }, fmt.decimal(c.ros, 0)),
         h('td', { class: 'sr-num tnum' }, c.wk != null ? fmt.decimal(c.wk, 1) : '·'),
-        h('td', { class: 'sr-num sr-vor tnum' + (comparison != null && comparison < 0 ? ' neg' : '') },
+        h('td', { class: 'sr-num sr-vor tnum' + (comparison != null && comparison < 0 ? ' neg' : ''), style: hideComparison },
           comparison != null ? `${!dynasty && comparison > 0 ? '+' : ''}${fmt.decimal(comparison, 0)}` : '·'),
         hasBidHistory ? h('td', { class: 'sr-num wb-bid tnum' + (overBudget ? ' over' : ''),
                            title: b ? `${b.source}, n=${b.n}; middle half ${b.q1.toFixed(1)}% to ${b.q3.toFixed(1)}% of budget${overBudget ? '. Range exceeds what you have left.' : ''}` : '' },
@@ -11105,20 +11152,20 @@
         ownerRows.length ? h('div', null,
           // No plate around this band, so no -4px side bleed: it ran out of the box.
           h('div', { class:'card-title', style:{ margin:'-4px 0 6px' } }, 'Owned in your leagues'),
-          h('table', { class:'data' },
+          h('table', { class:'data owned-table' },
             h('thead', null, h('tr', null,
-              h('th', null, 'League'), h('th', null, 'Team'), h('th', null, 'Owner'), h('th', null, 'Slot'), h('th', null, 'Trade')
+              h('th', null, 'League'), h('th', null, 'Team'), h('th', { class:'owned-owner' }, 'Owner'), h('th', null, 'Slot'), h('th', null, 'Trade')
             )),
             h('tbody', null, ...ownerRows.map(o => h('tr', { class: o.roster.is_me ? 'you' : '', onclick:()=>{ close(); navigate(`#roster/${o.league.id}/${o.roster.roster_id}`); } },
               h('td', null, o.league.short_name),
               h('td', null, o.roster.team_name, o.roster.is_me ? h('span', { class:'badge you', style:{ marginLeft:'6px' } }, 'YOU') : null),
-              h('td', null, o.roster.owner_name),
+              h('td', { class:'owned-owner' }, o.roster.owner_name),
               h('td', null, o.isStarter ? h('span', { class:'badge' }, 'STARTER') : o.isTaxi ? h('span', { class:'badge' }, 'TAXI') : o.isReserve ? h('span', { class:'badge' }, 'IR') : h('span', { class:'badge' }, 'BENCH')),
               h('td', null, sleeper?.id ? h('button', {
-                class:'ghost', style:{ padding:'2px 10px', fontSize:'12px' },
+                class:'ghost owned-trade', 'aria-label':'Trade',
                 title: o.roster.is_me ? 'Add to YOU SEND in the Trade Lab' : 'Add to YOU RECEIVE in the Trade Lab',
                 onclick:(e) => { e.stopPropagation(); close(); openTradeFor(sleeper.id, o.league.id, o.roster.roster_id); },
-              }, 'Trade ⇄') : null),
+              }, h('span', { class:'owned-trade-word' }, 'Trade '), '⇄') : null),
             )))
           )
         ) : null,
