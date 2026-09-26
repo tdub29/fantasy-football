@@ -1023,6 +1023,7 @@
     { hash:'#watch',        label:'What to Look For', icon:'◉',  section:'Tools' },
     { hash:'#trade',        label:'Trade Calculator', icon:'⇄',  section:'Tools' },
     { hash:'#sos',          label:'Strength of Sched', icon:'▦',  section:'Tools' },
+    { hash:'#games',        label:'Games',            icon:'◐',  section:'Tools' },
     { hash:'#stats',        label:'Stats Lab',        icon:'∑',  section:'Tools' },
     { hash:'#draft',        label:'Draft Room',       icon:'▣',  section:'Tools' },
     { hash:'#rankings',     label:'My Rankings',      icon:'#',  section:'Reference' },
@@ -13479,7 +13480,10 @@
     return h('div', { class:'card weather-line' },
       h('div', { class:'card-title' }, `Matchup: ${opp} defense`),
       h('div', null, bits.join('. ') + '.'),
-      t.cur && t.cur.funnel ? h('div', { class:'tip' }, `${D.season}: ${t.cur.funnel}.`) : null);
+      t.cur && t.cur.funnel ? h('div', { class:'tip' }, `${D.season}: ${t.cur.funnel}.`) : null,
+      // The card's own close button, so its key handlers go before the page changes.
+      h('a', { href:`#game/${g.game_id}`, class:'gm-card-link', onclick:() => document.querySelector('.modal-backdrop .close-btn')?.click() },
+        `${gameTeam(g.away)} @ ${gameTeam(g.home)} game page`));
   }
 
   // Usage by week on the player card, from window.USAGE_WEEKLY.
@@ -14717,6 +14721,7 @@
     if (!G) { main.appendChild(h('div', { class: 'empty' }, 'sos-grid.js not loaded, run build_sos_grid.py.')); return; }
     if (posArg && G.positions.includes(posArg.toUpperCase())) SOS_GRID_POS = posArg.toUpperCase();
     const pos = SOS_GRID_POS, n = G.n_def, WEEKS = Array.from({ length: 18 }, (_, i) => i + 1);
+    const season = (G.basis || {}).current_season || (window.ADVANCED || {}).season;   // every cell opens its game page
 
     main.appendChild(breadcrumbs([{ label: 'Tools' }, { label: 'Strength of Schedule' }]));
     main.appendChild(h('div', { class: 'page-header' }, h('div', null,
@@ -14758,14 +14763,339 @@
           const g = rd.wk[w];
           if (!g) return h('td', { class: 'center muted', style: { fontSize: '9px' } }, 'BYE');
           return h('td', { class: 'center', title: `Wk${w} ${g.home ? 'vs ' : '@ '}${g.opp}: D vs ${pos} #${g.rank ?? '?'}/${n} (${g.fpa ?? '?'} PPR/g allowed)`, style: { color: defRankColor(g.rank, n), lineHeight: 1.05 } },
-            h('div', { style: { fontWeight: 700 } }, g.opp),
-            h('div', { style: { fontSize: '9px', opacity: .85 } }, g.rank != null ? '#' + g.rank : ''));
+            h('a', { class: 'sos-game', href: `#game/${gameIdFor(season, w, rd.team, g.opp, g.home)}` },
+              h('div', { style: { fontWeight: 700 } }, g.opp),
+              h('div', { style: { fontSize: '9px', opacity: .85 } }, g.rank != null ? '#' + g.rank : '')));
         }))
       ))
     );
     main.appendChild(h('div', { style: { overflowX: 'auto' } }, tbl));
     main.appendChild(h('div', { class: 'tip', style: { marginTop: '10px' } },
       `Defense-vs-position from ${G.season} actual PPR allowed. SOS column = average opponent DvP rank across the schedule (higher = easier season for ${pos}s).`));
+  }
+
+  // ============================================================
+  // Game pages - #game/:game_id, nflverse's id (2026_03_DAL_NYG)
+  // ============================================================
+  // Pregame reads only the season builds already on the page: ADVANCED teams and
+  // players, DEFENSE, TEAM_SOS and TEAM_ENV implied points, WEATHER. Postgame
+  // reads games-YYYY.js (finished games) and one games-YYYY-wNN.js (that week's
+  // drives, plays and targets), both from projections/build_game_pages.py and
+  // both loaded only when a game page or the Games list asks.
+  const GAME_ID_RE = /^(\d{4})_(\d{2})_([A-Z]{2,3})_([A-Z]{2,3})$/;
+  const gameTeam = (t) => t === 'LA' ? 'LAR' : t;     // nflverse ids write the Rams as LA
+  const gameCode = (t) => t === 'LAR' ? 'LA' : t;
+  const gameWk = (w) => String(w).padStart(2, '0');
+  const gameIdFor = (season, week, team, opp, home) =>
+    `${season}_${gameWk(week)}_${gameCode(home ? opp : team)}_${gameCode(home ? team : opp)}`;
+  const gameIndex = (y) => (window.GAME_INDEX_BY_SEASON || {})[y];
+  const gameWeek = (y, w) => (window.GAME_WEEKS || {})[`${y}_${gameWk(w)}`];
+  const gameNow = () => ({ season:(window.ADVANCED || window.WEATHER || {}).season, week:(window.WEATHER || {}).week });
+  const gameOrd = (n) => `${n}${[11, 12, 13].includes(n % 100) ? 'th' : ({ 1:'st', 2:'nd', 3:'rd' })[n % 10] || 'th'}`;
+  // A file nobody built (another season) is remembered, so the page renders
+  // without it instead of asking again on every paint. true = here, false =
+  // missing, null = on its way (again() repaints if the page is still showing).
+  const _gameMissing = new Set();
+  function gameLoad(file, ready, again) {
+    if (ready()) return true;
+    if (_gameMissing.has(file)) return false;
+    const hash = location.hash;
+    loadSeasonScript(file, ready).catch(() => { _gameMissing.add(file); })
+      .then(() => { if (location.hash === hash) again(); });
+    return null;
+  }
+
+  // Receiving (and for RBs rushing) PPR per game by position, and dropback-weighted
+  // pressure faced, summed from each team's players: the same slices DEFENSE
+  // reports as allowed, so an offense and a defense compare like for like.
+  // ponytail: a player's log follows him, so a mid-season trade counts his old
+  // team's games for his new one. Fine for a percentile; split by opp if it bites.
+  let _gameTeamStats = null;
+  function gameTeamStats() {
+    const A = window.ADVANCED, D = window.DEFENSE;
+    if (_gameTeamStats && _gameTeamStats.A === A) return _gameTeamStats.v;
+    const F = A.logFields, ix = (k) => F.indexOf(k), v = {};
+    for (const p of Object.values(A.players)) {
+      const T = v[p.t] = v[p.t] || { WR:0, TE:0, RB:0, db:0, prs:0 };
+      if (p.p === 'QB' && p.dropbacks) { T.db += p.dropbacks; T.prs += (p.pressure_rate || 0) * p.dropbacks; }
+      if (!(p.p in T)) continue;
+      for (const r of p.wk || []) {
+        T[p.p] += (r[ix('rec')] || 0) + 0.1 * (r[ix('rec_yds')] || 0) + 6 * (r[ix('rec_td')] || 0)
+          + (p.p === 'RB' ? 0.1 * (r[ix('rush_yds')] || 0) + 6 * (r[ix('rush_td')] || 0) : 0);
+      }
+    }
+    for (const [t, T] of Object.entries(v)) {
+      const g = ((D && D.teams[t] && D.teams[t].cur) || {}).games;
+      for (const k of ['WR', 'TE', 'RB']) T[k] = g ? T[k] / g : null;
+      T.prs = T.db ? T.prs / T.db : null;
+    }
+    _gameTeamStats = { A, v };
+    return v;
+  }
+  // Rank 1 is the highest of the 32 whatever the stat, so a style number (PROE,
+  // motion) and a good-or-bad one read the same way.
+  function gameRank(teams, get, t) {
+    const v = get(t);
+    return v == null ? null : 1 + teams.filter(x => { const o = get(x); return o != null && o > v; }).length;
+  }
+  // Percentile at the job, 100 = best of the 32.
+  function gamePct(teams, get, t, lowerBetter) {
+    const v = get(t), vals = teams.map(get).filter(x => x != null);
+    if (v == null || vals.length < 2) return null;
+    return Math.round(vals.filter(x => lowerBetter ? x > v : x < v).length / (vals.length - 1) * 100);
+  }
+  // Each edge pairs an offense number with the defense number it attacks. Both
+  // become percentiles at their own job, so the gap is offense minus defense:
+  // positive favors the offense, negative the defense.
+  function gameEdges(away, home) {
+    const A = window.ADVANCED, D = window.DEFENSE, S = gameTeamStats(), teams = Object.keys(A.teams);
+    const at = (t) => A.teams[t] || {}, dc = (t) => ((D.teams[t] || {}).cur) || {};
+    const pos = (t, k) => { const b = (dc(t).byPos || {})[k]; return b ? b.ppr_pg : null; };
+    const PAIRS = [
+      ['Passing', 'EPA/pass', (t) => at(t).epa_pass, false, 'EPA/dropback allowed', (t) => (dc(t).pass || {}).epa_per_dropback, true, 'dec2'],
+      ['Running', 'EPA/rush', (t) => at(t).epa_rush, false, 'EPA/RB carry allowed', (t) => (dc(t).rushRB || {}).epa_per_rush, true, 'dec2'],
+      ['Success rate', 'Success%', (t) => at(t).success_rate, false, 'Success% allowed', (t) => at(t).def_success_rate, true, 'pct'],
+      ['Play action', 'PA EPA', (t) => at(t).pa_epa, false, 'PA EPA allowed', (t) => (dc(t).pass || {}).epa_allowed_pa, true, 'dec2'],
+      ['Protection', 'Pressure% allowed', (t) => (S[t] || {}).prs, true, 'Pressure%', (t) => (dc(t).pass || {}).pressure_rate, false, 'pct'],
+      ['WRs', 'WR PPR/G', (t) => (S[t] || {}).WR, false, 'PPR/G allowed to WRs', (t) => pos(t, 'WR'), true, 'dec1'],
+      ['TEs', 'TE PPR/G', (t) => (S[t] || {}).TE, false, 'PPR/G allowed to TEs', (t) => pos(t, 'TE'), true, 'dec1'],
+      ['RBs', 'RB PPR/G', (t) => (S[t] || {}).RB, false, 'PPR/G allowed to RBs',
+        (t) => pos(t, 'RB') == null ? null : pos(t, 'RB') + ((dc(t).rushRB || {}).ppr_pg || 0), true, 'dec1'],
+    ];
+    const out = [];
+    for (const [o, d] of [[away, home], [home, away]]) {
+      for (const [name, ol, og, olow, dl, dg, dlow, f] of PAIRS) {
+        const op = gamePct(teams, og, o, olow), dp = gamePct(teams, dg, d, dlow);
+        if (op != null && dp != null) out.push({ name, off:o, def:d, ol, dl, ov:og(o), dv:dg(d), op, dp, gap:op - dp, f });
+      }
+    }
+    return out.sort((a, b) => Math.abs(b.gap) - Math.abs(a.gap)).slice(0, 5);
+  }
+
+  // Metric | away | home, each cell the value and its rank of 32 (#1 = highest).
+  function gameSideTable(kind, rows, away, home, teams) {
+    const cell = (r, t) => {
+      const v = r.get(t), k = r.rank === false ? null : gameRank(teams, r.get, t);
+      return h('td', { class:'right tnum' }, v == null ? '' : r.fmt === 'text' ? v : statFmt(v, r.fmt),
+        k ? h('span', { class:'gm-rank' }, ` #${k}`) : null);
+    };
+    return h('table', { class:'data gm-side', dataset:{ side:kind } },
+      h('thead', null, h('tr', null, h('th', null, kind === 'off' ? 'Offense' : 'Defense'),
+        h('th', { class:'right' }, away), h('th', { class:'right' }, home))),
+      h('tbody', null, ...rows.map(r => h('tr', { dataset:{ key:r.key } },
+        h('th', { scope:'row', title:r.desc || '' }, r.label), cell(r, away), cell(r, home)))));
+  }
+
+  function gamePregame(main, away, home, season, week) {
+    const A = window.ADVANCED, D = window.DEFENSE, teams = Object.keys(A.teams);
+    const at = (t) => A.teams[t] || {}, dc = (t) => ((D && D.teams[t] || {}).cur) || {};
+    // The line: Vegas, implied points and the season environment.
+    const sched = (t) => ((((window.TEAM_SOS || {}).teams || {})[t] || {}).schedule || []).find(g => g.week === week);
+    const env = (t) => teamEnv(t);
+    const implied = [away, home].map(t => { const s = sched(t); return s && s.implied_pf != null ? `${t} ${s.implied_pf}${s.posted ? '' : ' (projected)'}` : null; }).filter(Boolean);
+    const envs = [away, home].map(t => { const e = env(t); return e ? `${t} #${e.env_rank} of ${e.total} (${e.implied_pf} implied pts/G)` : null; }).filter(Boolean);
+    const wx = gameWeatherFor(home);
+    main.appendChild(h('div', { class:'card gm-line' },
+      h('div', { class:'card-title' }, 'The line'),
+      implied.length ? h('div', null, `Implied points this game: ${implied.join(', ')}.`) : null,
+      envs.length ? h('div', { class:'tip' }, `Season scoring environment: ${envs.join('; ')}.`) : null));
+    if (wx && wx.game_id === gameIdFor(season, week, home, away, true)) main.appendChild(weatherLine({ team:home }));
+
+    // The five biggest edges.
+    const edges = gameEdges(away, home);
+    main.appendChild(h('div', { class:'card gm-edges' },
+      h('div', { class:'card-title' }, 'Biggest edges'),
+      edges.length ? h('ol', { class:'gm-edge-list' }, ...edges.map(e => h('li', { class:'gm-edge', dataset:{ gap:String(e.gap) } },
+        h('span', { class:`gm-gap tnum ${e.gap >= 0 ? 'delta-up' : 'delta-down'}` }, `${e.gap > 0 ? '+' : ''}${e.gap}`),
+        h('span', { class:'gm-edge-text' },
+          h('strong', null, `${e.name}: ${e.gap >= 0 ? `${e.off} offense` : `${e.def} defense`}`),
+          h('span', { class:'tip' }, ` ${e.off} ${e.ol} ${statFmt(e.ov, e.f)} (${gameOrd(e.op)} pct) vs ${e.def} ${e.dl} ${statFmt(e.dv, e.f)} (${gameOrd(e.dp)} pct)`)))))
+        : h('div', { class:'tip' }, 'Not enough games yet to rank these teams.'),
+      h('div', { class:'tip' }, 'Each edge is the offense\'s percentile at its job minus the defense\'s at its own, among the 32 teams, this season. Plus favors the offense.')));
+
+    // Both units side by side.
+    const col = (k) => A.teamColumns.find(c => c.key === k) || { key:k, label:k, fmt:'dec2' };
+    const offRows = ['proe', 'early_down_pass_rate', 'play_action_rate', 'motion_rate', 'under_center_rate', 'epa_play', 'epa_pass', 'epa_rush',
+      'success_rate', 'plays_pg'].map(k => { const c = col(k); return { key:k, label:c.label, desc:c.desc, fmt:c.fmt, get:(t) => at(t)[k] }; });
+    const Df = (D && D.fields) || {}, byPos = (t, k) => ((dc(t).byPos || {})[k] || {}).ppr_pg;
+    const defRows = [
+      { key:'def_epa_play', label:'EPA/play allowed', desc:col('def_epa_play').desc, fmt:'dec2', get:(t) => at(t).def_epa_play },
+      { key:'epa_db', label:'EPA/dropback allowed', desc:Df.pass_epa_per_dropback, fmt:'dec2', get:(t) => (dc(t).pass || {}).epa_per_dropback },
+      { key:'pressure', label:'Pressure%', desc:Df.pass_pressure_rate, fmt:'pct', get:(t) => (dc(t).pass || {}).pressure_rate },
+      { key:'blitz', label:'Blitz%', desc:Df.pass_blitz_rate, fmt:'pct', get:(t) => (dc(t).pass || {}).blitz_rate },
+      { key:'epa_rb', label:'EPA/RB carry allowed', desc:Df.rb_rush_epa_per_rush, fmt:'dec2', get:(t) => (dc(t).rushRB || {}).epa_per_rush },
+      ...['WR', 'TE', 'RB'].map(p => ({ key:`ppr_${p}`, label:`PPR/G to ${p}s`, desc:`${Df.ppr_pg || ''} #1 allows the most.`, fmt:'dec1', get:(t) => byPos(t, p) })),
+      { key:'ppr_rbrush', label:'RB rushing PPR/G', desc:Df.rb_rush_ppr_pg, fmt:'dec1', get:(t) => (dc(t).rushRB || {}).ppr_pg },
+      { key:'funnel', label:'Funnel', desc:Df.funnel, fmt:'text', rank:false, get:(t) => dc(t).funnel || null },
+    ];
+    main.appendChild(h('div', { class:'gm-pair' },
+      h('div', { class:'card gm-card' }, h('div', { class:'card-title' }, `Offenses, ${A.season} through week ${A.throughWeek}`),
+        h('div', { class:'tbl-scroll gm-side-wrap' }, gameSideTable('off', offRows, away, home, teams))),
+      h('div', { class:'card gm-card' }, h('div', { class:'card-title' }, `Defenses, ${D ? `${D.season} through week ${D.throughWeek}` : ''}`),
+        h('div', { class:'tbl-scroll gm-side-wrap' }, gameSideTable('def', defRows, away, home, Object.keys((D && D.teams) || {}))))));
+
+    // Each team's skill players and their season usage.
+    const colOf = (k) => A.columns.find(c => c.key === k) || { label:k, pos:[] }, lab = (k) => colOf(k).label, dsc = (k) => colOf(k).desc || '';
+    const show = (k, p) => !(colOf(k).pos || []).length || colOf(k).pos.includes(p);   // no route rate or target share for a QB
+    const ORDER = { QB:0, RB:1, WR:2, TE:3 }, ppr = A.logFields.indexOf('ppr');
+    const pcols = [['games', 'int'], ['snap_pct', 'pct'], ['route_rate_est', 'pct'], ['target_share', 'pct'], ['targets', 'int'], ['carries', 'int']];
+    const cards = [away, home].map(t => {
+      const rows = Object.entries(A.players).filter(([, p]) => p.t === t && p.p in ORDER && p.games > 0
+          && ((p.snap_pct || 0) >= 0.2 || (p.targets || 0) + (p.carries || 0) >= 4))
+        .map(([sid, p]) => ({ sid, p, ppg:(p.wk || []).reduce((s, r) => s + (r[ppr] || 0), 0) / ((p.wk || []).length || p.games) }))
+        .sort((a, b) => ORDER[a.p.p] - ORDER[b.p.p] || b.ppg - a.ppg);
+      return h('div', { class:'card gm-card', dataset:{ team:t } }, h('div', { class:'card-title' }, `${t} skill players`),
+        h('div', { class:'tbl-scroll gm-usage-wrap' }, h('table', { class:'data gm-usage' },
+          h('thead', null, h('tr', null, h('th', null, 'Player'), ...pcols.map(([k]) => h('th', { class:'right', title:dsc(k) }, lab(k))),
+            h('th', { class:'right', title:'Full PPR points per game played.' }, 'PPR/G'))),
+          h('tbody', null, ...rows.map(r => h('tr', { class:'clickable', dataset:{ pid:r.sid }, onclick:() => openPlayerDetail(r.p.n, r.sid) },
+            h('th', { scope:'row' }, `${r.p.n} `, h('span', { class:'muted' }, r.p.p)),
+            ...pcols.map(([k, f]) => h('td', { class:'right tnum' }, show(k, r.p.p) ? statFmt(r.p[k], f) : '')),
+            h('td', { class:'right tnum' }, statFmt(r.ppg, 'dec1'))))))));
+    });
+    main.appendChild(h('div', { class:'gm-pair' }, ...cards));
+    main.appendChild(h('div', { class:'tip gm-foot' },
+      `Season to date from nflverse play-by-play, FTN charting and PFR pressure. #N ranks the 32 teams from highest (#1) to lowest. Route% is an estimate: public route data ends in 2025. Skill players are ${away} and ${home} players with 20%+ of the snaps or 4+ targets and carries.`));
+  }
+
+  function gamePostgame(main, G, W, id) {
+    const F = W.fields, fx = (k, t) => F[k].indexOf(t), side = (s) => s ? G.home : G.away;
+    const P = (r, k) => r[fx('play', k)], Dv = (r, k) => r[fx('drive', k)], Rv = (r, k) => r[fx('rec', k)];
+    const pctPts = (v) => v == null ? '' : `${v > 0 ? '+' : ''}${(v * 100).toFixed(1)}`;
+    const when = (r) => `Q${P(r, 'qtr')} ${P(r, 'clock')}`;
+    const tbl = (cls, head, rows) => h('div', { class:`tbl-scroll ${cls}-wrap` }, h('table', { class:`data ${cls}`, dataset:{ gid:id } },
+      h('thead', null, h('tr', null, ...head.map(([l, t, r]) => h('th', { class:r ? 'right' : null, title:t || null }, l)))), h('tbody', null, ...rows)));
+
+    // Top ten plays by win probability swing, credited to the side it helped.
+    main.appendChild(h('div', { class:'card gm-card' }, h('div', { class:'card-title' }, 'Top 10 plays by win probability added'),
+      tbl('gm-top', [['When'], ['Swing', 'Win probability points gained by the team the play helped.', true], ['Play']],
+        G.top.map(i => { const r = G.plays[i], w = P(r, 'wpa'), t = side(w >= 0 ? P(r, 'side') : 1 - P(r, 'side'));
+          return h('tr', null, h('td', { class:'tnum gm-when' }, when(r)), h('td', { class:'right tnum gm-swing' }, h('strong', null, `${t} ${pctPts(Math.abs(w))}%`)),
+            h('td', { class:'gm-desc' }, P(r, 'desc'))); }))));
+
+    // Drive chart. Yards are scrimmage yards, so each team's drives add to its offense.
+    const tot = [0, 1].map(s => G.drives.filter(d => Dv(d, 'side') === s).reduce((a, d) => a + Dv(d, 'yds'), 0));
+    const RES = { 'Touchdown':'td', 'Field goal':'fg', 'Turnover':'to', 'Turnover on downs':'to', 'Opp touchdown':'to', 'Safety':'to' };
+    main.appendChild(h('div', { class:'card gm-card' }, h('div', { class:'card-title' }, 'Drive chart'),
+      tbl('gm-drives', [['Team'], ['From, to'], ['Plays', '', true], ['Yds', 'Scrimmage yards: runs and passes, sacks in, penalties out.', true], ['Result']],
+        G.drives.map(d => {
+          const s = Dv(d, 'side'), yl = Dv(d, 'yl'), y = Dv(d, 'yds'), lo = Math.max(0, Math.min(yl, yl + y)), hi = Math.min(100, Math.max(yl, yl + y));
+          return h('tr', { dataset:{ side:String(s) } }, h('td', { class:'gm-sit' }, h('strong', null, side(s)), h('span', { class:'gm-when tnum' }, `Q${Dv(d, 'qtr')} ${Dv(d, 'clock')}`)),
+            h('td', { class:'gm-sit' }, h('span', null, Dv(d, 'start')), h('span', { class:'gm-when' }, Dv(d, 'end'))), h('td', { class:'right tnum' }, String(Dv(d, 'plays'))),
+            h('td', { class:'right tnum gm-yds' }, String(y)),
+            h('td', { class:'gm-result', title:`Time of possession ${Dv(d, 'top')}` }, Dv(d, 'result'),
+              h('span', { class:`gm-field gm-${RES[Dv(d, 'result')] || 'other'}`, 'aria-hidden':'true' },
+                h('span', { style:{ left:`${lo}%`, width:`${Math.max(1, hi - lo)}%` } }))));
+        })),
+      h('div', { class:'tip' }, `${G.away} ${tot[0]} yards on ${G.drives.filter(d => !Dv(d, 'side')).length} drives, ${G.home} ${tot[1]} on ${G.drives.filter(d => Dv(d, 'side')).length}. The bar runs from the offense's own goal line on the left.`)));
+
+    // Every receiver's target line.
+    const bySid = {};
+    for (const [sid, p] of Object.entries(window.ADVANCED.players)) if (p.g) bySid[p.g] = [sid, p.n];
+    main.appendChild(h('div', { class:'gm-pair' }, ...[0, 1].map(s => h('div', { class:'card gm-card', dataset:{ team:side(s) } },
+      h('div', { class:'card-title' }, `${side(s)} targets`),
+      tbl('gm-rec', [['Receiver'], ['Tgt', '', true], ['Rec', '', true], ['Yds', '', true], ['Air yds', 'Air yards on every target, caught or not.', true], ['EPA', 'EPA summed over his targets.', true]],
+        G.rec.filter(r => Rv(r, 'side') === s).map(r => {
+          const m = bySid[Rv(r, 'gsis')];
+          return h('tr', m ? { class:'clickable', onclick:() => openPlayerDetail(m[1], m[0]) } : null, h('th', { scope:'row' }, m ? m[1] : Rv(r, 'name')),
+            ...['tgt', 'rec', 'yds', 'air'].map(k => h('td', { class:'right tnum' }, String(Rv(r, k)))), h('td', { class:'right tnum' }, statFmt(Rv(r, 'epa'), 'dec2')));
+        }))))));
+
+    // The full play-by-play, a band per drive.
+    let last = null;
+    const rows = [];
+    G.plays.forEach(r => {
+      const d = P(r, 'drive');
+      if (d >= 0 && d !== last) {
+        const x = G.drives[d];
+        rows.push(h('tr', { class:'gm-drive-row' }, h('td', { colspan:'5' },
+          `${side(Dv(x, 'side'))} drive from ${Dv(x, 'start')}: ${Dv(x, 'plays')} plays, ${Dv(x, 'yds')} yds, ${Dv(x, 'result')}`)));
+        last = d;
+      }
+      const w = P(r, 'wpa');
+      rows.push(h('tr', { class:'gm-play' }, h('td', { class:'gm-sit' }, h('span', { class:'gm-when tnum' }, when(r)),
+        P(r, 'down') ? h('span', null, `${gameOrd(P(r, 'down'))} & ${P(r, 'togo')}`) : null, h('span', null, P(r, 'yrdln'))),
+        h('td', { class:'gm-desc' }, P(r, 'desc')), h('td', { class:'right tnum' }, statFmt(P(r, 'epa'), 'dec2')),
+        h('td', { class:'right tnum' }, P(r, 'wp') == null ? '' : `${Math.round(P(r, 'wp') * 100)}%`),
+        h('td', { class:`right tnum${w > 0.02 ? ' delta-up' : w < -0.02 ? ' delta-down' : ''}` }, pctPts(w))));
+    });
+    main.appendChild(h('div', { class:'card gm-card' }, h('div', { class:'card-title' }, 'Play-by-play'),
+      tbl('gm-pbp', [['Situation'], ['Play'], ['EPA', 'Expected points added by the offense.', true],
+        ['WP', 'The offense\'s win probability before the snap.', true], ['WPA', 'Win probability points the offense gained on the play.', true]], rows)));
+    main.appendChild(h('div', { class:'tip gm-foot' }, `nflverse play-by-play: EPA and win probability from nflfastR's models. WP and WPA are the offense's.`));
+  }
+
+  function viewGame(id, tab) {
+    const main = $('#main'); main.innerHTML = '';
+    const m = GAME_ID_RE.exec(id || '');
+    const again = () => viewGame(id, tab);
+    const crumbs = (label) => main.appendChild(breadcrumbs([{ label:'Tools' }, { label:'Games', hash:'#games' }, { label }]));
+    if (!m || !window.ADVANCED) {
+      crumbs('Game');
+      main.appendChild(h('div', { class:'empty' }, window.ADVANCED ? `"${id || ''}" is not a game id. They read like 2026_03_DAL_NYG.` : 'advanced.js not loaded.'));
+      return;
+    }
+    const season = Number(m[1]), week = Number(m[2]), away = gameTeam(m[3]), home = gameTeam(m[4]), now = gameNow();
+    crumbs(`${away} @ ${home}`);
+    const opp = (((((window.TEAM_SOS || {}).teams || {})[away] || {}).schedule || []).find(g => g.week === week) || {});
+    if (season === now.season && opp.opp && (opp.opp !== home || opp.home)) {
+      main.appendChild(h('div', { class:'empty' }, `${away} does not play at ${home} in week ${week}.`));
+      return;
+    }
+    const ix = gameLoad(`games-${season}.js`, () => gameIndex(season), again);
+    if (ix === null) { main.appendChild(h('div', { class:'empty' }, 'Loading games...')); return; }
+    const fin = ix ? gameIndex(season).games[id] : null;
+    // A past game's pregame would be today's numbers, not what anyone knew then.
+    const canPre = !fin || (season === now.season && week === now.week);
+    const view = fin && !(tab === 'pregame' && canPre) ? 'post' : 'pre';
+    const wx = gameWeatherFor(home);
+    const kick = wx && wx.game_id === id && wx.kickoff
+      ? new Date(wx.kickoff).toLocaleString([], { weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit' }) : null;
+    main.appendChild(pageHeader({ eyebrow:`WEEK ${week}, ${season}`, title:`${away} @ ${home}`,
+      sub:fin ? `Final: ${away} ${fin[3]}, ${home} ${fin[4]}.` : [kick, wx && wx.game_id === id ? wx.stadium : null].filter(Boolean).join(', ') || 'Not played yet.' }));
+    if (fin && canPre) {
+      main.appendChild(tabBar([{ key:'post', label:'Postgame' }, { key:'pre', label:'Pregame' }], view,
+        (k) => `#game/${id}/${k === 'pre' ? 'pregame' : 'postgame'}`));
+    }
+    const host = h('div', { class:'gm-page', dataset:{ gid:id, view } });
+    main.appendChild(host);
+    if (view === 'pre') return gamePregame(host, away, home, season, week);
+    const wk = gameLoad(`games-${season}-w${gameWk(week)}.js`, () => gameWeek(season, week), again);
+    if (wk === null) { host.appendChild(h('div', { class:'empty' }, 'Loading the play-by-play...')); return; }
+    const W = wk && gameWeek(season, week), G = W && W.games[id];
+    if (!G) { host.appendChild(h('div', { class:'empty' }, `games-${season}-w${gameWk(week)}.js has no ${id}. Run projections/build_game_pages.py.`)); return; }
+    gamePostgame(host, G, W, id);
+  }
+
+  // The Games list: this week's games, each to its game page, and every finished game before them.
+  function viewGames() {
+    const main = $('#main'); main.innerHTML = '';
+    const { season, week } = gameNow(), W = window.WEATHER;
+    const ix = gameLoad(`games-${season}.js`, () => gameIndex(season), viewGames), IX = ix ? gameIndex(season) : null;
+    main.appendChild(breadcrumbs([{ label:'Tools' }, { label:'Games' }]));
+    main.appendChild(pageHeader({ eyebrow:'GAMES', title:`Week ${week || ''} games`,
+      sub:'Pregame: both teams side by side and the biggest edges. Postgame: drive chart, play-by-play with EPA and win probability, and every target.' }));
+    const games = (W && W.games || []).slice().sort((a, b) => String(a.kickoff).localeCompare(String(b.kickoff)));
+    if (!games.length) main.appendChild(h('div', { class:'empty' }, 'weather.js has no games this week. Run projections/build_game_weather.py.'));
+    main.appendChild(h('div', { class:'gm-list' }, ...games.map(g => {
+      const fin = IX && IX.games[g.game_id], away = gameTeam(g.away), home = gameTeam(g.home);
+      const line = [g.spread_line == null ? null : g.spread_line === 0 ? 'Pick em' : `${g.spread_line > 0 ? home : away} by ${Math.abs(g.spread_line)}`,
+        g.total_line != null ? `total ${g.total_line}` : null].filter(Boolean).join(', ');
+      return h('a', { class:'card gm-tile', href:`#game/${g.game_id}`, dataset:{ gid:g.game_id } },
+        h('span', { class:'gm-tile-teams' }, `${away} @ ${home}`),
+        h('span', { class:'gm-tile-when tnum' }, fin ? `Final ${fin[3]}-${fin[4]}`
+          : g.kickoff ? new Date(g.kickoff).toLocaleString([], { weekday:'short', hour:'numeric', minute:'2-digit' }) : ''),
+        line ? h('span', { class:'tip' }, line) : null);
+    })));
+    if (ix === null) main.appendChild(h('div', { class:'tip' }, 'Loading finished games...'));
+    if (!IX) return;
+    for (const w of IX.weeks.slice().reverse()) {
+      const ids = Object.keys(IX.games).filter(g => IX.games[g][0] === w && !games.some(x => x.game_id === g));
+      if (!ids.length) continue;
+      main.appendChild(h('div', { class:'card gm-week', dataset:{ week:String(w) } }, h('div', { class:'card-title' }, `Week ${w} finals`),
+        h('div', { class:'gm-finals' }, ...ids.map(g => { const [, a, hm, as, hs] = IX.games[g];
+          return h('a', { href:`#game/${g}`, class:'gm-final tnum', dataset:{ gid:g } }, `${a} ${as} @ ${hm} ${hs}`); }))));
+    }
   }
 
   // ============================================================
@@ -16292,6 +16622,8 @@
         case 'trade':      return viewTrade(rest[0], rest[1]);
         case 'projections': navigate('#dashboard'); return viewDashboard();
         case 'sos':        return viewSosGrid(rest[0]);
+        case 'games':      return viewGames();
+        case 'game':       return viewGame(rest[0], rest[1]);
         case 'stats':      return viewStats(rest[0], rest[1]);
         case 'draft':      return viewDraft(rest[0]);
         case 'strategy':   return viewStrategy();

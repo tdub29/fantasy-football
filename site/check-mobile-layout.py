@@ -20,6 +20,7 @@ opted into ellipsis or its own scroller.
 """
 from __future__ import annotations
 
+import re
 import socket
 import subprocess
 import sys
@@ -55,7 +56,26 @@ PAGES = {
     "stats-lab-routes": "#stats/Routes",
     "stats-lab-onoff": "#stats/OnOff",
     "stats-lab-game-splits": "#stats/OnOff/games",
+    "games": "#games",
 }
+
+
+def _game_pages() -> dict:
+    """One game page per state, picked from the data on disk so neither goes stale
+    when the week turns: the week's last kickoff as a pregame, the newest final
+    as a postgame."""
+    d, out, gid = SITE / "data", {}, r'"(\d{4}_\d{2}_[A-Z]+_[A-Z]+)"'
+    week = re.findall(r'"game_id":' + gid, (d / "weather.js").read_text(encoding="utf-8"))
+    if week:
+        out["game-pregame"] = f"#game/{week[-1]}/pregame"
+    index = sorted(d.glob("games-[0-9][0-9][0-9][0-9].js"))
+    done = re.findall(gid + r':\[', index[-1].read_text(encoding="utf-8")) if index else []
+    if done:
+        out["game-postgame"] = f"#game/{done[-1]}"
+    return out
+
+
+PAGES.update(_game_pages())
 
 # The player card is a modal on <body>, outside #main, so it gets its own probe:
 # (page it opens from, player, tab to show).

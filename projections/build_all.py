@@ -82,6 +82,11 @@ STEPS = [
     # and playcaller, then recounted from the source files: on + off == team.
     ("Stats Lab on/off + game splits", PROJ / "build_onoff.py",          True),
     ("on/off vs participation",    PROJ / "build_onoff.py",               True, ["--self-check"]),
+    # Postgame game pages (#game/:id): drive chart, play-by-play with EPA and win
+    # probability, top WPA plays and receiver target lines for every finished
+    # game, then drive yards proven against nflverse's own team box scores.
+    ("postgame game pages",        PROJ / "build_game_pages.py",          True),
+    ("game pages vs team stats",   PROJ / "build_game_pages.py",          True, ["--self-check"]),
     ("draft + combine profile",    PROJ / "build_prospect_profile.py",    True),
     ("game-day weather",           PROJ / "build_game_weather.py",        True),
     ("defense vs position",        PROJ / "build_defense_matchups.py",    True),

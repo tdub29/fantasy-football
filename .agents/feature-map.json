@@ -1851,6 +1851,139 @@
         "width": 390,
         "height": 844
       }
+    },
+    {
+      "id": "games-list",
+      "name": "Games list: this week's games link to their game pages, finished games show the final",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "location.hash='#games'"
+        },
+        {
+          "waitFor": ".gm-week a.gm-final"
+        }
+      ],
+      "selector": ".gm-list a.gm-tile",
+      "assert": "(() => { const W = window.WEATHER, IX = (window.GAME_INDEX_BY_SEASON || {})[window.ADVANCED.season]; if (!W || !IX) return false; const tiles = [...document.querySelectorAll('.gm-list a.gm-tile')]; if (tiles.length !== W.games.length || !W.games.every(g => tiles.some(t => t.getAttribute('href') === '#game/' + g.game_id))) return false; if (!tiles.filter(t => IX.games[t.dataset.gid]).every(t => { const f = IX.games[t.dataset.gid]; return t.querySelector('.gm-tile-when').textContent === 'Final ' + f[3] + '-' + f[4]; })) return false; const past = Object.keys(IX.games).filter(g => !W.games.some(x => x.game_id === g)), links = [...document.querySelectorAll('.gm-week a.gm-final')]; return links.length === past.length && links.every(a => a.getAttribute('href') === '#game/' + a.dataset.gid && IX.games[a.dataset.gid]) && !!document.querySelector('#sidebar a[href=\"#games\"]'); })()",
+      "notes": "The entry point (Tools > Games, #games): one tile per game in weather.js's week, each linking #game/<nflverse game_id>, and a final score on any tile games-YYYY.js lists as finished. Every earlier finished game is linked below by week. games-YYYY.js is lazy: it loads only when this list or a game page asks."
+    },
+    {
+      "id": "game-pregame-every-game",
+      "name": "Pregame page renders for every game of the current week: both units side by side, five edges, both rosters",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "location.hash='#games'"
+        },
+        {
+          "waitFor": ".gm-list a.gm-tile"
+        },
+        {
+          "eval": "(async () => { const W = window.WEATHER, A = window.ADVANCED, bad = [], until = async (f) => { for (let i = 0; i < 240; i++) { if (f()) return true; await new Promise(r => setTimeout(r, 25)); } return false; }; for (const g of W.games) { location.hash = '#game/' + g.game_id + '/pregame'; if (!await until(() => document.querySelector('.gm-page[data-gid=\"' + g.game_id + '\"][data-view=\"pre\"] .gm-usage'))) { bad.push(g.game_id + ' no render'); continue; } const away = g.away === 'LA' ? 'LAR' : g.away, home = g.home === 'LA' ? 'LAR' : g.home, off = document.querySelector('.gm-side[data-side=\"off\"]'); const heads = [...off.querySelectorAll('thead th')].map(t => t.textContent); if (heads[1] !== away || heads[2] !== home || !document.querySelector('.gm-side[data-side=\"def\"] tr[data-key=\"ppr_WR\"]')) bad.push(g.game_id + ' heads'); const proe = off.querySelector('tr[data-key=\"proe\"]').children, want = (t) => (A.teams[t].proe * 100).toFixed(1) + '%'; if (!proe[1].textContent.startsWith(want(away)) || !proe[2].textContent.startsWith(want(home))) bad.push(g.game_id + ' proe'); const gaps = [...document.querySelectorAll('.gm-edge')].map(e => Math.abs(Number(e.dataset.gap))); if (gaps.length !== 5 || gaps.some((v, i) => i && v > gaps[i - 1])) bad.push(g.game_id + ' edges'); const cards = [...document.querySelectorAll('.gm-card[data-team]')]; if (cards.length !== 2 || cards[0].dataset.team !== away || cards.some(c => !c.querySelector('tbody tr'))) bad.push(g.game_id + ' players'); if (document.querySelector('#main .empty')) bad.push(g.game_id + ' empty'); } window.__gmPre = { n: W.games.length, bad }; })()"
+        }
+      ],
+      "selector": ".gm-page[data-view='pre'] .gm-edges",
+      "assert": "(() => { const r = window.__gmPre; return !!r && r.n >= 13 && r.bad.length === 0; })()",
+      "notes": "Data Suite pregame matchup page. Walks every game in weather.js (the current week) through #game/<id>/pregame: the offense table heads read away then home and PROE matches ADVANCED.teams, the defense table carries PPR allowed by position from DEFENSE, the five edges are sorted by absolute percentile gap (offense percentile at its job minus the defense's at its own, among 32 teams), and both teams list skill players with season usage. A finished game this week gets a Postgame/Pregame tab bar; a past week's game has no pregame, because today's numbers are not what anyone knew then."
+    },
+    {
+      "id": "game-postgame-every-game",
+      "name": "Postgame page renders for every finished game this season: drives add up, top 10 WPA, every play and target",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "location.hash='#games'"
+        },
+        {
+          "waitFor": ".gm-week a.gm-final"
+        },
+        {
+          "eval": "(async () => { const IX = window.GAME_INDEX_BY_SEASON[window.ADVANCED.season], bad = [], until = async (f) => { for (let i = 0; i < 240; i++) { if (f()) return true; await new Promise(r => setTimeout(r, 25)); } return false; }; for (const id of Object.keys(IX.games)) { location.hash = '#game/' + id; if (!await until(() => document.querySelector('.gm-page[data-gid=\"' + id + '\"][data-view=\"post\"] table.gm-pbp'))) { bad.push(id + ' no render'); continue; } const G = window.GAME_WEEKS[id.slice(0, 7)].games[id], f = IX.games[id], rows = [...document.querySelectorAll('table.gm-drives tbody tr')]; if (rows.length !== G.drives.length) bad.push(id + ' drives'); for (const s of [0, 1]) { const got = rows.filter(r => r.dataset.side === String(s)).reduce((a, r) => a + Number(r.querySelector('.gm-yds').textContent), 0), want = G.drives.filter(x => x[0] === s).reduce((a, x) => a + x[6], 0); if (got !== want) bad.push(id + ' yds ' + s); } if (document.querySelectorAll('table.gm-top tbody tr').length !== Math.min(10, G.plays.filter(p => p[10] != null).length)) bad.push(id + ' top'); if (document.querySelectorAll('table.gm-pbp tbody tr.gm-play').length !== G.plays.length) bad.push(id + ' plays'); if (document.querySelectorAll('table.gm-rec tbody tr').length !== G.rec.length) bad.push(id + ' rec'); if (document.querySelector('.page-sub').textContent !== 'Final: ' + f[1] + ' ' + f[3] + ', ' + f[2] + ' ' + f[4] + '.') bad.push(id + ' score'); if (document.querySelector('#main .empty')) bad.push(id + ' empty'); } window.__gmPost = { n: Object.keys(IX.games).length, bad }; })()"
+        }
+      ],
+      "selector": ".gm-page[data-view='post'] table.gm-drives",
+      "assert": "(() => { const r = window.__gmPost; return !!r && r.n >= 1 && r.bad.length === 0; })()",
+      "notes": "Data Suite postgame page. Walks every game in games-YYYY.js, loading each week's games-YYYY-wNN.js once: one drive-chart row per drive (start, end, plays, scrimmage yards, result, a field bar), rendered yards per team equal the payload's, the top 10 plays by absolute WPA, every play with down, distance, description, EPA, WP and WPA, and every receiver's targets, catches, yards, air yards and EPA. projections/build_game_pages.py --self-check proves the payload side: each team's drive yards equal nflverse's own team box score (passing yards net of sacks plus rushing), and its target lines add to the team's targets, catches and receiving yards."
+    },
+    {
+      "id": "game-page-links",
+      "name": "SOS grid cells and the player card matchup line open the game page",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "location.hash='#sos'"
+        },
+        {
+          "waitFor": "#main table.data a.sos-game"
+        },
+        {
+          "eval": "(() => { const G = window.SOS_GRID, pos = document.querySelector('.sos-position-tabs button[aria-pressed=\"true\"]').textContent, row = document.querySelector('#main table.data tbody tr'), team = row.querySelector('.team-chip').textContent, season = G.basis.current_season, code = (t) => t === 'LAR' ? 'LA' : t; const want = G.grid[pos][team].slice().sort((a, b) => a.week - b.week).map(g => '#game/' + season + '_' + String(g.week).padStart(2, '0') + '_' + code(g.home ? g.opp : team) + '_' + code(g.home ? team : g.opp)); const got = [...row.querySelectorAll('a.sos-game')].map(a => a.getAttribute('href')); window.__gmSos = got.length === want.length && got.every((h, i) => h === want[i]); const A = window.ADVANCED, sid = Object.keys(A.players).find(s => A.players[s].p === 'WR' && window.PLAYERS[s] && window.WEATHER.byTeam[code(A.players[s].t)]); window.__gmSid = sid; openPlayerDetail(A.players[sid].n, sid); return true; })()"
+        },
+        {
+          "waitFor": ".modal-backdrop .close-btn"
+        },
+        {
+          "eval": "(() => { const a = document.querySelector('.modal-backdrop .gm-card-link'); if (a) a.click(); return true; })()"
+        },
+        {
+          "waitFor": ".gm-page[data-view]"
+        }
+      ],
+      "selector": ".gm-page",
+      "assert": "(() => { const p = window.ADVANCED.players[window.__gmSid], t = p.t === 'LAR' ? 'LA' : p.t, gid = window.WEATHER.byTeam[t]; return window.__gmSos === true && !document.querySelector('.modal-backdrop') && location.hash === '#game/' + gid && document.querySelector('.gm-page').dataset.gid === gid; })()",
+      "notes": "Both links the gaps note asks for. Every SOS grid cell is an anchor to #game/<season>_<week>_<away>_<home> (nflverse writes the Rams as LA), and the player card's Context tab matchup line ends in '<away> @ <home> game page', which presses the card's own close button so the modal and its key handlers go before the page changes."
+    },
+    {
+      "id": "game-pages-phone",
+      "name": "Pregame and postgame pages at 390px: no sideways page scroll, tables fit their cards",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "location.hash = '#game/' + window.WEATHER.games[window.WEATHER.games.length - 1].game_id + '/pregame'"
+        },
+        {
+          "waitFor": ".gm-page[data-view='pre'] .gm-usage"
+        },
+        {
+          "eval": "(() => { const fit = (sel) => [...document.querySelectorAll(sel)].every(w => w.scrollWidth <= w.clientWidth + 1), inView = () => [...document.querySelectorAll('.gm-page .card')].every(c => { const r = c.getBoundingClientRect(); return r.left >= 0 && r.right <= innerWidth + 1; }); window.__gmPh = { pre: document.documentElement.scrollWidth <= innerWidth + 1 && inView() && fit('.gm-side-wrap'), fit, inView }; location.hash = '#game/' + Object.keys(window.GAME_INDEX_BY_SEASON[window.ADVANCED.season].games)[0]; return true; })()"
+        },
+        {
+          "waitFor": ".gm-page[data-view='post'] table.gm-pbp"
+        }
+      ],
+      "selector": ".gm-page[data-view='post'] table.gm-drives",
+      "assert": "(() => { const p = window.__gmPh; return !!p && p.pre && document.documentElement.scrollWidth <= innerWidth + 1 && p.inView() && p.fit('.gm-drives-wrap, .gm-pbp-wrap, .gm-top-wrap'); })()",
+      "notes": "At 390px the pregame side-by-side tables, and the postgame drive chart, top plays and play-by-play fit their cards with no sideways scroll: the situation cell stacks clock, down and yard line, the drive cell stacks start over end, and a play's description wraps. The play-by-play scrolls in its own box, sticky head and all, because a game is 150-200 plays.",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      }
     }
   ],
   "ignore": [
