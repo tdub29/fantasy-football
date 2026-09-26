@@ -3198,11 +3198,13 @@
           av = rk(a); bv = rk(b); return (av - bv) * dir; // asc = better rank first
         }
         switch (filter.sort) {
-          case 'value': av = tierValue(a, lg); bv = tierValue(b, lg); return (bv - av) * dir; // desc-natural
-          case 'proj':  av = projPointsFor(a._sleeperId, filter.proj) ?? -1; bv = projPointsFor(b._sleeperId, filter.proj) ?? -1; return (bv - av) * dir;
-          case 'gap':   av = mispricingIndex().get(String(a._sleeperId))?.gap ?? -999; bv = mispricingIndex().get(String(b._sleeperId))?.gap ?? -999; return (bv - av) * dir;
-          case 'vor':   av = vorByPid(a._sleeperId, lg, filter.proj) ?? -9999; bv = vorByPid(b._sleeperId, lg, filter.proj) ?? -9999; return (bv - av) * dir;
-          case 'ppslp': av = ppEdgeByPid(a._sleeperId) ?? -9999; bv = ppEdgeByPid(b._sleeperId) ?? -9999; return (bv - av) * dir;
+          // dir is -1 for desc, so (av - bv) * dir puts the highest first on the first
+          // click. These used (bv - av) * dir, flipping twice: Value ↓ listed 12.5 first.
+          case 'value': av = tierValue(a, lg); bv = tierValue(b, lg); return (av - bv) * dir;
+          case 'proj':  av = projPointsFor(a._sleeperId, filter.proj) ?? -1; bv = projPointsFor(b._sleeperId, filter.proj) ?? -1; return (av - bv) * dir;
+          case 'gap':   av = mispricingIndex().get(String(a._sleeperId))?.gap ?? -999; bv = mispricingIndex().get(String(b._sleeperId))?.gap ?? -999; return (av - bv) * dir;
+          case 'vor':   av = vorByPid(a._sleeperId, lg, filter.proj) ?? -9999; bv = vorByPid(b._sleeperId, lg, filter.proj) ?? -9999; return (av - bv) * dir;
+          case 'ppslp': av = ppEdgeByPid(a._sleeperId) ?? -9999; bv = ppEdgeByPid(b._sleeperId) ?? -9999; return (av - bv) * dir;
           case 'age':   av = a.age ?? 99; bv = b.age ?? 99; return (av - bv) * dir;
           case 'pos':   av = `${a.pos}|${a._posRank||999}`; bv = `${b.pos}|${b._posRank||999}`; return av.localeCompare(bv) * dir;
           case 'name':  return a.name.localeCompare(b.name) * dir;

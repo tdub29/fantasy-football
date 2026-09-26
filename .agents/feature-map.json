@@ -1263,6 +1263,20 @@
       "selector": "table.stats-lab-table",
       "assert": "(() => { if (!window.DEFENSE || !window.USAGE_WEEKLY || !window.IDP_ADVANCED) return false; if (Object.keys(window.DEFENSE.teams).length !== 32) return false; const rows = document.querySelectorAll('table.stats-lab-table tbody tr'); if (rows.length < 20) return false; const top = () => document.querySelector('table.stats-lab-table tbody tr td:nth-child(2)').textContent; const before = top(); document.querySelectorAll('table.stats-lab-table thead th')[2].click(); return top() !== before; })()",
       "notes": "Defense (build_defense_matchups.py, defense.js): all 32 defenses vs WR/TE/RB with 2025 as the prior, rank 1 = softest. Trends (build_weekly_splits.py, usage-weekly.js): last week versus the week before for snap share, estimated route rate, target share, first-read share and red-zone share, with role_up/role_down flags. IDP (build_idp_advanced.py, idp-advanced.js): defenders scored with the IDP league's own settings. The player card gets the matchup line and a usage-by-week table from the same payloads."
+    },
+    {
+      "id": "players-stats-sort-direction",
+      "name": "Players Stats: first click on Value, Proj or VOR lists the highest first",
+      "notes": "Value, Proj, Gap, VOR and PP-Slp flipped the direction twice ((bv - av) * dir with dir -1 for desc), so the down arrow listed the LOWEST first (Value 12.5, 12.9, 13.0). This clicks each header once and requires a non-increasing top 6.",
+      "path": [
+        {
+          "eval": "location.hash='#league/1314860638501076992/players'"
+        },
+        {
+          "waitFor": "#main table thead th"
+        }
+      ],
+      "assert": "(() => { const num = t => parseFloat(String(t).replace(/[^0-9.+-]/g, '')); const heads = () => [...document.querySelectorAll('#main table thead th')]; for (const label of ['Value', 'Proj', 'VOR']) { const i = heads().findIndex(t => t.textContent.replace(/[^A-Za-z]/g, '') === label); if (i < 0) return false; heads()[i].click(); const vals = [...document.querySelectorAll('#main table tbody tr')].slice(0, 6).map(r => num(r.children[i]?.textContent)).filter(v => !isNaN(v)); if (vals.length < 4) return false; if (!vals.every((v, k) => k === 0 || vals[k - 1] >= v)) return false; } return true; })()"
     }
   ],
   "ignore": [
