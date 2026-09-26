@@ -7078,6 +7078,12 @@
     const cands = [...new Set([...byHead.values()].flatMap(h => [h.me, h.them]))].sort((a, b) => b.meD - a.meD);
     return { checked, cands: cands.slice(0, SIM.finderSimPerPartner) };
   }
+  // A deal's rank: my change in this season's title odds; in dynasty plus my FV
+  // change at its weight, less what I overpay on KTC (value out minus value in)
+  // at its weight, so a deal that bleeds market value sinks unless the odds pay.
+  function finderScore(dyn, my, myFv, sendV, getV) {
+    return my.delta + (dyn ? SIM.finderFvWeight * myFv - SIM.finderOverpayWeight * Math.max(0, sendV - getV) : 0);
+  }
   // The whole search, in slices: it yields to the UI between partners and
   // between simulations, so a phone keeps painting the progress line.
   async function findTrades(lg, { sims = SIM.finderSims, onProgress = () => {} } = {}) {
@@ -7129,7 +7135,7 @@
       const tot = (items) => items.reduce((s, a) => s + a.v, 0), top = (items) => Math.max(...items.map(a => a.v));
       const sendV = tot(sendItems), getV = tot(getItems);
       const fair = KT.computeFairness(sendV, getV, send.size, get.size, top(sendItems), top(getItems)).pct;
-      const scoreOf = (m) => m.delta + (dyn ? SIM.finderFvWeight * myFv : 0);
+      const scoreOf = (m) => finderScore(dyn, m, myFv, sendV, getV);
       const passes = (m, t, z = SIM.finderSeMult) => m.delta > z * m.se && scoreOf(m) > 0 && (c.rebuilder ? themFv >= SIM.finderMinFvGain : t.delta > 0);
       if (!(passes(my, their, SIM.finderScreenSeMult) && fair >= SIM.finderFairPct)) continue;
       proposals.push({ them: c.them, rebuilder: c.rebuilder, stance: c.stance, fvNow: c.fvNow, fills: c.fills, whatIf, passes, scoreOf,
@@ -7192,7 +7198,7 @@
         `${CURRENT_SEASON} title: you ${pct(p.my.before)} to ${pct(p.my.after)} (${signed(p.my.delta)} pts ±${(SIM.titleBandZ * p.my.se).toFixed(1)})`
         + ` · them ${pct(p.their.before)} to ${pct(p.their.after)} (${signed(p.their.delta)} ±${(SIM.titleBandZ * p.their.se).toFixed(1)})`
         + (dyn ? ` · your FV ${signed(p.myFv, 0)}` : '')),
-      h('div', { class: 'tf-why' }, `Value ${fmt.decimal(p.sendV, 1)} out, ${fmt.decimal(p.getV, 1)} in (${signed(p.getV - p.sendV)}). ${p.why}`),
+      h('div', { class: 'tf-why' }, `${dyn ? 'KTC' : 'Value'} ${fmt.decimal(p.sendV, 1)} out, ${fmt.decimal(p.getV, 1)} in (${signed(p.getV - p.sendV)}). ${p.why}`),
     );
     const show = (res) => {
       list.innerHTML = '';
@@ -11612,6 +11618,11 @@
     // 10-team fair share. A calibration bet, not a measurement.
     finderFvWeight: 0.05,
     finderFvYears: 4,
+    // Dynasty ranking: title-odds points charged per unit of KTC I overpay (value
+    // sent minus value received, nothing when I do not). 0.1 charges a 25-point
+    // overpay, Willis + Metcalf's, 2.5 pts, so a deal that bleeds market value has
+    // to buy clearly more than that this season. A calibration bet, not a measurement.
+    finderOverpayWeight: 0.1,
   };
 
   // Deterministic RNG so the same roster always returns the same odds. A title
