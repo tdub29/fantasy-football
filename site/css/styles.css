@@ -5857,3 +5857,84 @@ button:disabled { cursor: wait; opacity: 0.7; }
 .weather-line { font-size: 0.85rem; }
 .weather-flag { border-color: var(--red); }
 .weekly-opp-wx { font-size: 0.55rem; font-weight: 800; letter-spacing: .04em; color: var(--red); }
+
+/* --- Stats Lab chart builder, compare and field maps --------------------- */
+/* One disclosure like Tools. The SVGs are drawn at the panel's own pixel
+   width (app.js reads it), so 11px text stays 11px on a phone. */
+.stats-lab-charts { margin: 10px 0; padding: 8px 12px; font-size: 0.8rem; }
+.stats-lab-charts > summary { cursor: pointer; font-weight: 800; color: var(--fg-0); }
+.stats-lab-charts[open] > summary { margin-bottom: 10px; }
+.stats-chart-body { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.stats-chart-types, .loc-metrics, .loc-seasons { margin: 0; }
+.stats-lab-charts :is(input:not([type=checkbox]), select) { padding: 4px 8px; }
+.stats-lab-charts button { padding: 3px 8px; }
+.stats-chart-add { flex: 1 1 160px; min-width: 0; max-width: 260px; }
+.chart-title { font-weight: 800; color: var(--fg-0); font-size: 0.9rem; }
+.chart-wrap { position: relative; min-width: 0; margin-top: 4px; }
+.chart-wrap svg { display: block; width: 100%; height: auto; }
+.chart-svg text { font-size: 11px; fill: var(--fg-2); font-variant-numeric: tabular-nums; }
+.chart-svg .ax-title { font-weight: 800; fill: var(--fg-1); }
+.chart-svg .grid { stroke: var(--bg-3); stroke-width: 1; }
+.chart-svg .avg { stroke: var(--fg-3); stroke-width: 1.5; stroke-dasharray: 5 4; fill: none; }
+.chart-svg .avg-t { font-size: 10px; font-weight: 700; fill: var(--fg-3); }
+.chart-svg .trend { stroke: var(--fg-1); stroke-width: 2; opacity: .7; }
+.chart-svg .pt { fill: var(--band); stroke: var(--ink); stroke-width: 1; cursor: pointer; }
+.chart-svg .pt.mine { fill: var(--gold-deep); }
+.chart-svg .pt.pick { fill: var(--gold); stroke-width: 2; }
+.chart-svg .lbl { font-weight: 700; fill: var(--fg-0); paint-order: stroke; stroke: var(--bg-1); stroke-width: 3px; stroke-linejoin: round; }
+.chart-svg .series { fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.chart-svg .bar { fill: var(--band); stroke: var(--ink); stroke-width: 1; }
+.chart-svg .bar.mine { fill: var(--gold-deep); }
+.chart-svg .bar.pick { fill: var(--gold); stroke-width: 2; }
+.chart-svg .bar-name { font-weight: 700; fill: var(--fg-1); }
+.chart-svg .bar-val { font-weight: 700; fill: var(--fg-0); }
+.chart-svg g[data-i] { cursor: pointer; }
+.chart-tip { position: absolute; z-index: 3; pointer-events: none; max-width: 220px; padding: 6px 8px; border: 2px solid var(--ink);
+  border-radius: var(--radius-sm); background: var(--bg-1); box-shadow: var(--shadow-1); font-size: 0.75rem; line-height: 1.35; color: var(--fg-1); }
+.chart-tip[hidden] { display: none; }
+.chart-tip strong { color: var(--fg-0); }
+.chart-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-weight: 700; color: var(--fg-1); }
+.chart-swatch { display: inline-block; width: 18px; height: 0; border-top: 3px solid var(--band-deep); vertical-align: middle; margin-right: 5px; }
+.chart-swatch-avg { border-top: 2px dashed var(--fg-3); }
+table.data.stats-compare { font-size: 12px; width: auto; min-width: min(100%, 420px); }
+.stats-compare th[scope=row] { text-align: left; font-weight: 700; white-space: nowrap; }
+table.data.stats-compare thead th { white-space: normal; text-transform: none; letter-spacing: 0; min-width: 72px; vertical-align: bottom; }
+.stats-compare .cmp-name { display: block; font-size: 0.78rem; line-height: 1.2; }
+/* The stat label stays put while four players scroll past it on a phone. */
+.stats-compare tbody tr { background-color: var(--bg-1); }
+.stats-compare :is(th, td):first-child { position: sticky; left: 0; z-index: 1; background: inherit; box-shadow: 2px 0 0 var(--chalk); }
+.stats-compare thead th:first-child { background: var(--grad-band); }
+.stats-compare tbody :is(th, td) { padding: 6px 10px 8px; font-size: 12px; }
+.stats-compare td { position: relative; }
+.stats-compare .cmp-bar { position: absolute; left: 8px; bottom: 2px; max-width: calc(100% - 16px); height: 3px; border-radius: 2px; background: var(--band); }
+table.data.stats-compare tbody td.delta-up { color: var(--green); font-weight: 800; }
+.stats-compare td.delta-up .cmp-bar { background: var(--green); }
+.stats-compare .cmp-tally td { font-weight: 800; }
+/* Field maps: the throw or target grid and the run-gap fan. */
+.loc-card-ctl { margin-bottom: 8px; }
+.loc-line { font-weight: 700; color: var(--fg-1); margin-bottom: 6px; }
+.loc-map { display: grid; grid-template-columns: 58px repeat(4, minmax(0, 1fr)); gap: 3px; max-width: 520px; }
+.loc-head { font-size: 0.62rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--fg-2); text-align: center; }
+.loc-depth { display: flex; align-items: center; font-size: 0.66rem; font-weight: 800; color: var(--fg-2); line-height: 1.1; }
+.loc-cell { display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 0; padding: 5px 1px 3px;
+  border-radius: 6px; background: var(--bg-2); border-bottom: 4px solid var(--bg-3); }
+.loc-cell.loc-tot { background: var(--bg-3); }
+.loc-cell.loc-thin .loc-val { color: var(--fg-3); }
+.loc-val { font-size: 0.95rem; font-weight: 800; line-height: 1.15; color: var(--fg-0); }
+.loc-sub { font-size: 0.6rem; color: var(--fg-3); white-space: nowrap; }
+.loc-los { grid-column: 1 / -1; border-top: 2px dashed var(--fg-3); font-size: 0.58rem; font-weight: 800; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--fg-3); text-align: center; padding-top: 1px; }
+.loc-foot { margin-top: 6px; }
+.loc-gap .chart-wrap svg { max-width: 440px; margin: 0 auto; }
+.loc-gap-svg .loc-ol { fill: var(--bg-2); stroke: var(--ink); stroke-width: 1.5; }
+.loc-gap-svg .loc-ol-t { font-size: 8px; font-weight: 800; fill: var(--fg-1); }
+.loc-gap-svg .loc-rb { fill: var(--gold); stroke: var(--ink); stroke-width: 2; }
+.loc-gap-svg .loc-gap-code { font-size: 10px; font-weight: 800; fill: var(--fg-3); letter-spacing: .04em; }
+.loc-gap-svg .loc-gap-val { font-size: 12.5px; font-weight: 800; }
+.loc-gap-svg .loc-gap-n { font-size: 10.5px; fill: var(--fg-2); }
+.loc-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); gap: 14px 18px; }
+.loc-tile { min-width: 0; }
+.loc-tile-name { font-weight: 800; color: var(--fg-0); margin-bottom: 4px; }
+@media (pointer: coarse) {
+  .stats-lab-charts button { min-height: 40px; min-width: 40px; }
+}

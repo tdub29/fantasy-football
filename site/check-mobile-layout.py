@@ -168,10 +168,10 @@ def check(widths: list[int]) -> int:
                     page.evaluate("document.querySelectorAll("
                                   "'#main .filters-toggle[aria-expanded=\"false\"]')"
                                   ".forEach(b => b.click())")
-                    # Stats Lab keeps its power tools and its split card (shut on a
-                    # phone) behind disclosures; measure them open.
+                    # Stats Lab keeps its power tools, its split card (shut on a
+                    # phone) and its chart builder behind disclosures; measure them open.
                     page.evaluate("document.querySelectorAll("
-                                  "'#main details:is(.stats-lab-tools, .stats-lab-splits):not([open]) > summary')"
+                                  "'#main details:is(.stats-lab-tools, .stats-lab-splits, .stats-lab-charts):not([open]) > summary')"
                                   ".forEach(s => s.click())")
                     page.wait_for_timeout(200)
                     bad += measure(label, "#main")
@@ -183,6 +183,11 @@ def check(widths: list[int]) -> int:
                 page.click(f".modal .pm-tab-bar button:has-text('{tab}')")
                 page.wait_for_timeout(400)
                 bad += measure(f"card {player} {tab}", ".modal")
+                # The Production tab carries his field map (run gaps for an RB),
+                # which loads after the card opens.
+                page.click(".modal .pm-tab-bar button:has-text('Production')")
+                page.wait_for_selector(".modal .loc-card .loc-gap", timeout=8000)
+                bad += measure(f"card {player} Production map", ".modal")
                 ctx.close()
             browser.close()
     finally:
