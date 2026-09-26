@@ -11186,6 +11186,7 @@
           ] },
           { key:'production', label:'Production', nodes: [
             advancedBlock(sleeper),
+            locationBlock(sleeper),
             usageWeeksBlock(sleeper),
             projectionBlock(sleeper),
             historyBlock(sleeper),
@@ -13469,6 +13470,565 @@
           onclick:() => set({ seasons:[cur], from:1, to:18, sit:{} }) }, 'Reset split')) : null));
   }
 
+  // ============================================================
+  // Chart builder, player compare and field location maps (Data Suite cluster D)
+  // ============================================================
+  // ---- chart math: pure helpers, unit-tested in site/js/chart-builder.test.js
+  // Round tick steps (1, 2, 2.5, 5 x 10^k) whose first and last ticks cover [lo, hi].
+  function chartTicks(lo, hi, n = 5) {
+    if (!isFinite(lo) || !isFinite(hi)) return [];
+    if (hi - lo < 1e-12) { const d = Math.abs(lo) * 0.1 || 1; lo -= d; hi += d; }
+    const raw = (hi - lo) / Math.max(1, n - 1), mag = Math.pow(10, Math.floor(Math.log10(raw)));
+    const step = [1, 2, 2.5, 5, 10].map(m => m * mag).find(s => s >= raw * (1 - 1e-9));
+    const a = Math.floor(lo / step + 1e-9), b = Math.ceil(hi / step - 1e-9), out = [];
+    for (let k = a; k <= b; k++) out.push(Number((k * step).toPrecision(12)));
+    return out;
+  }
+  // Least-squares line through {x, y} points, with Pearson r and the means.
+  function chartFit(pts) {
+    const n = pts.length;
+    if (n < 3) return null;
+    let mx = 0, my = 0;
+    for (const p of pts) { mx += p.x / n; my += p.y / n; }
+    let sxx = 0, sxy = 0, syy = 0;
+    for (const p of pts) { const dx = p.x - mx, dy = p.y - my; sxx += dx * dx; sxy += dx * dy; syy += dy * dy; }
+    if (!sxx) return null;
+    const m = sxy / sxx;
+    return { m, b: my - m * mx, r: syy ? sxy / Math.sqrt(sxx * syy) : 0, mx, my };
+  }
+  // Greedy labels: right of the point, else left. A label that would cross the
+  // plot edge or a label already placed is dropped, so none ever overlap.
+  // `measure` gives a label's width; boxes are padded for the text halo.
+  function chartLabels(cands, box, measure = (t) => t.length * 7.4, lineH = 18) {
+    const placed = [];
+    const hit = (a, b) => a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1;
+    for (const c of cands) {
+      const w = measure(c.text) + 4;
+      for (const side of [1, -1]) {
+        const x0 = side > 0 ? c.x + 7 : c.x - 7 - w;
+        const r = { x0, x1: x0 + w, y0: c.y - lineH / 2, y1: c.y + lineH / 2 };
+        if (r.x0 < box.x0 || r.x1 > box.x1 || r.y0 < box.y0 || r.y1 > box.y1 || placed.some(p => hit(p.r, r))) continue;
+        placed.push({ ...c, r, anchor: side > 0 ? 'start' : 'end', lx: side > 0 ? c.x + 7 : c.x - 7 });
+        break;
+      }
+    }
+    return placed;
+  }
+  // Percentile of v among vals, 0-100: the share below it plus half the ties.
+  function chartPct(vals, v) {
+    if (!vals.length || v == null) return null;
+    let below = 0, eq = 0;
+    for (const x of vals) { if (x < v) below++; else if (x === v) eq++; }
+    return Math.round(100 * (below + eq / 2) / vals.length);
+  }
+  // One player's location grid summed over several seasons' payloads.
+  function locSum(list, sid, role) {
+    let out = null;
+    for (const L of list) {
+      const a = (L.players[sid] || {})[role];
+      if (!a) continue;
+      if (!out) out = a.slice();
+      else for (let i = 0; i < a.length; i++) out[i] += a[i];
+    }
+    return out;
+  }
+  // Totals over a set of cells. Q and R cells are [n, cmp, yds, epa, ftn,
+  // catch], U cells [n, yds, epa, succ], EPA in hundredths.
+  function locCell(a, role, idx) {
+    const nf = role === 'U' ? 4 : 6, o = { n:0, cmp:0, yds:0, epa:0, ftn:0, catch:0, succ:0 };
+    if (!a) return o;
+    for (const i of idx) {
+      const b = i * nf;
+      o.n += a[b];
+      if (role === 'U') { o.yds += a[b + 1]; o.epa += a[b + 2]; o.succ += a[b + 3]; }
+      else { o.cmp += a[b + 1]; o.yds += a[b + 2]; o.epa += a[b + 3]; o.ftn += a[b + 4]; o.catch += a[b + 5]; }
+    }
+    return o;
+  }
+  function locValue(c, metric) {
+    const d = (x, y) => y ? x / y : null;
+    if (metric === 'att') return c.n;
+    if (metric === 'yds') return c.n ? c.yds : null;
+    if (metric === 'cmp') return d(c.cmp, c.n);
+    if (metric === 'ypa') return d(c.yds, c.n);
+    if (metric === 'epa') return d(c.epa / 100, c.n);
+    if (metric === 'catch') return d(c.catch, c.ftn);
+    return d(c.succ, c.n);
+  }
+  // ---- end chart math
+
+  // Real label widths in the page's own bold 11px face, from one shared canvas.
+  let _chartCtx = null;
+  function chartMeasure() {
+    if (!_chartCtx) _chartCtx = document.createElement('canvas').getContext('2d');
+    if (!_chartCtx) return undefined;
+    _chartCtx.font = `700 11px ${getComputedStyle(document.body).fontFamily}`;
+    return (t) => _chartCtx.measureText(t).width;
+  }
+  const chartEsc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+  const chartOrd = (n) => n + ((n % 100 >= 11 && n % 100 <= 13) ? 'th' : ['th', 'st', 'nd', 'rd'][n % 10] || 'th');
+  const chartShort = (n) => { const p = String(n || '').split(' '); return p.length > 1 ? `${p[0][0]}. ${p.slice(1).join(' ')}` : String(n || ''); };
+  // Axis ticks print only as many decimals as the step needs.
+  function chartTickFmt(v, fmt, step) {
+    const dec = (x) => { const t = String(Number(x.toPrecision(6))), i = t.indexOf('.'); return i < 0 ? 0 : Math.min(3, t.length - i - 1); };
+    if (fmt === 'pct') return `${(v * 100).toFixed(dec(step * 100))}%`;
+    if (fmt === 'pct100') return `${v.toFixed(dec(step))}%`;
+    return v.toFixed(dec(step));
+  }
+  // Up to four players share these, in the line legend, compare and chips.
+  // Chrome hues only (the six semantic hues mean a tier), told apart by dash too.
+  const CHART_SERIES = [['var(--band-deep)', ''], ['var(--gold-deep)', '7 4'], ['var(--ink)', '2 3'], ['var(--turf)', '10 3 2 3']];
+  const CHART_TYPES = [['scatter', 'Scatter'], ['bar', 'Bar'], ['line', 'Weekly line'], ['map', 'Field map'], ['compare', 'Compare']];
+  const CHART_DEFAULTS = {
+    QB: { x:['cpoe', 'ypa'], y:['db_epa'], line:'ppr_pts' },
+    RB: { x:['rush_share', 'carries'], y:['epa_per_rush', 'ypc'], line:'rush_share' },
+    WR: { x:['first_read_share', 'target_share'], y:['fprr_est', 'yprr_est'], line:'target_share' },
+    TE: { x:['first_read_share', 'target_share'], y:['fprr_est', 'yprr_est'], line:'target_share' },
+    Teams: { x:['epa_pass'], y:['epa_rush'], line:null },
+  };
+  // What window.USAGE_WEEKLY carries per week. Every point total is full PPR.
+  const CHART_LINE_STATS = [['target_share', 'Tgt%', 'pct'], ['snap_pct', 'Snap%', 'pct'], ['route_rate_est', 'Route% (est)', 'pct'],
+    ['first_read_share', '1st-read%', 'pct'], ['targets', 'Tgt', 'int'], ['air_yards', 'Air yds', 'int'], ['carries', 'Car', 'int'],
+    ['rush_share', 'Rush%', 'pct'], ['rz_opp_share', 'RZ opp%', 'pct'], ['ppr_pts', 'FP', 'dec1']];
+  let STATS_CHARTS_OPEN = false;
+
+  // The hover and tap readout for a chart: every mark carries data-i, and one
+  // absolutely placed box shows that mark's lines, clamped inside the chart so
+  // a phone never scrolls sideways to read it.
+  function chartTipWrap(svg, lines, onOpen) {
+    const tip = h('div', { class:'chart-tip', hidden:true, 'aria-live':'polite' });
+    const wrap = h('div', { class:'chart-wrap', html:svg });
+    wrap.appendChild(tip);
+    const show = (el) => {
+      const got = lines(Number(el.dataset.i));
+      if (!got) return;
+      tip.replaceChildren(...got.map((t, i) => i ? h('div', null, t) : h('strong', null, t)));
+      tip.hidden = false;
+      const wr = wrap.getBoundingClientRect(), er = el.getBoundingClientRect();
+      const left = Math.max(0, Math.min(wr.width - tip.offsetWidth, er.left - wr.left + er.width / 2 - tip.offsetWidth / 2));
+      let top = er.top - wr.top - tip.offsetHeight - 8;
+      if (top < 0) top = er.bottom - wr.top + 8;
+      tip.style.left = `${left}px`; tip.style.top = `${top}px`;
+    };
+    const mark = (e) => e.target.closest && e.target.closest('[data-i]');
+    wrap.addEventListener('pointerover', (e) => { const m = mark(e); if (m) show(m); });
+    wrap.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') tip.hidden = true; });
+    wrap.addEventListener('click', (e) => {
+      const m = mark(e);
+      if (!m) { tip.hidden = true; return; }
+      show(m);
+      if (onOpen && e.detail > 1) onOpen(Number(m.dataset.i));   // a double click opens the player
+    });
+    return wrap;
+  }
+
+  function chartScatter(rows, xc, yc, o) {
+    const pts = rows.filter(r => Number.isFinite(r[xc.key]) && Number.isFinite(r[yc.key])).map(r => ({ r, x:r[xc.key], y:r[yc.key] }));
+    if (pts.length < 3) return h('div', { class:'muted' }, 'Fewer than three rows have both stats. Loosen a filter or pick other columns.');
+    const W = o.W, H = Math.round(Math.max(290, Math.min(490, W * 0.62))), PL = 44, PR = 12, PT = 26, PB = 40;
+    const xt = chartTicks(Math.min(...pts.map(p => p.x)), Math.max(...pts.map(p => p.x)));
+    const yt = chartTicks(Math.min(...pts.map(p => p.y)), Math.max(...pts.map(p => p.y)));
+    const X = (v) => PL + (v - xt[0]) / (xt[xt.length - 1] - xt[0]) * (W - PL - PR);
+    const Y = (v) => PT + (1 - (v - yt[0]) / (yt[yt.length - 1] - yt[0])) * (H - PT - PB);
+    const fit = chartFit(pts);
+    let s = `<svg class="chart-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="${chartEsc(`${yc.label} against ${xc.label}, ${pts.length} points`)}">`;
+    for (const v of xt) s += `<line class="grid" x1="${X(v)}" x2="${X(v)}" y1="${PT}" y2="${H - PB}"/><text x="${X(v)}" y="${H - PB + 14}" text-anchor="middle">${chartTickFmt(v, xc.fmt, xt[1] - xt[0])}</text>`;
+    for (const v of yt) s += `<line class="grid" x1="${PL}" x2="${W - PR}" y1="${Y(v)}" y2="${Y(v)}"/><text x="${PL - 5}" y="${Y(v) + 4}" text-anchor="end">${chartTickFmt(v, yc.fmt, yt[1] - yt[0])}</text>`;
+    s += `<text class="ax-title" x="${(PL + W - PR) / 2}" y="${H - 6}" text-anchor="middle">${chartEsc(xc.label)}</text>`;
+    // The Y title reads flat above its axis: rotated text is hard on a phone.
+    s += `<text class="ax-title" x="4" y="13">${chartEsc(yc.label)} ↑</text>`;
+    if (fit) {
+      s += `<line class="avg" x1="${X(fit.mx)}" x2="${X(fit.mx)}" y1="${PT}" y2="${H - PB}"/><line class="avg" x1="${PL}" x2="${W - PR}" y1="${Y(fit.my)}" y2="${Y(fit.my)}"/>`;
+      s += `<text class="avg-t" x="${W - PR - 2}" y="${Y(fit.my) - 4}" text-anchor="end">avg</text>`;
+      // The trend line, clipped to the plot box.
+      const clipY = (v) => Math.max(yt[0], Math.min(yt[yt.length - 1], v));
+      const xs = [xt[0], xt[xt.length - 1]].map(x => ({ x, y:fit.m * x + fit.b }));
+      if (fit.m) for (const p of xs) if (p.y !== clipY(p.y)) { p.y = clipY(p.y); p.x = (p.y - fit.b) / fit.m; }
+      s += `<line class="trend" x1="${X(xs[0].x)}" y1="${Y(xs[0].y)}" x2="${X(xs[1].x)}" y2="${Y(xs[1].y)}"/>`;
+    }
+    // Picked players and the corners of the cloud get names; the rest on hover.
+    const sd = (k) => { const m = pts.reduce((a, p) => a + p[k], 0) / pts.length; return Math.sqrt(pts.reduce((a, p) => a + (p[k] - m) ** 2, 0) / pts.length) || 1; };
+    const sx = sd('x'), sy = sd('y'), mx = fit ? fit.mx : 0, my = fit ? fit.my : 0;
+    const order = pts.map((p, i) => ({ i, pick:o.picks.has(p.r._key), far:((p.x - mx) / sx) ** 2 + ((p.y - my) / sy) ** 2 }))
+      .sort((a, b) => (b.pick - a.pick) || (b.far - a.far)).slice(0, W < 480 ? 6 : 12);
+    const labels = chartLabels(order.map(({ i }) => ({ i, x:X(pts[i].x), y:Y(pts[i].y), text:o.label(pts[i].r, true) })),
+      { x0:PL, x1:W - PR, y0:PT, y1:H - PB }, chartMeasure());
+    pts.forEach((p, i) => {
+      const cls = o.picks.has(p.r._key) ? 'pt pick' : p.r._mine ? 'pt mine' : 'pt';
+      s += `<circle class="${cls}" data-i="${i}" cx="${X(p.x).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="${cls === 'pt' ? 4.5 : cls === 'pt mine' ? 5 : 6.5}"/>`;
+    });
+    for (const l of labels) s += `<text class="lbl" x="${l.lx.toFixed(1)}" y="${(l.y + 4).toFixed(1)}" text-anchor="${l.anchor}">${chartEsc(l.text)}</text>`;
+    s += '</svg>';
+    const wrap = chartTipWrap(s, (i) => [o.label(pts[i].r), `${yc.label}: ${statFmt(pts[i].y, yc.fmt)}`, `${xc.label}: ${statFmt(pts[i].x, xc.fmt)}`, o.sample(pts[i].r)].filter(Boolean),
+      o.open ? (i) => o.open(pts[i].r) : null);
+    wrap.dataset.points = String(pts.length);
+    return h('div', null,
+      h('div', { class:'chart-title' }, `${yc.label} vs ${xc.label}`),
+      h('div', { class:'muted' }, `${o.scope}. ${pts.length} ${o.unit}${fit ? `, r = ${fit.r.toFixed(2)}` : ''}. Dashed lines are the average, the solid line the trend.`),
+      wrap);
+  }
+
+  function chartBar(rows, c, o) {
+    const good = rows.filter(r => Number.isFinite(r[c.key])).sort((a, b) => c.lowerBetter ? a[c.key] - b[c.key] : b[c.key] - a[c.key]);
+    if (!good.length) return h('div', { class:'muted' }, `No row has ${c.label}.`);
+    const top = good.slice(0, o.top), extra = good.filter(r => o.picks.has(r._key) && !top.includes(r)), all = top.concat(extra);
+    const avg = good.reduce((a, r) => a + r[c.key], 0) / good.length;
+    const W = o.W, NW = W < 480 ? 104 : 150, VW = 50, PT = 18, PB = 26, RH = 22, gapH = extra.length ? 10 : 0;
+    const vals = all.map(r => r[c.key]).concat(avg);
+    const t = chartTicks(Math.min(0, ...vals), Math.max(0, ...vals), W < 480 ? 4 : 6);
+    const X = (v) => NW + (v - t[0]) / (t[t.length - 1] - t[0]) * (W - NW - VW), H = PT + all.length * RH + gapH + PB;
+    const maxC = Math.floor((NW - 8) / 6.3);
+    let s = `<svg class="chart-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="${chartEsc(`${c.label}, top ${top.length}`)}">`;
+    for (const v of t) s += `<line class="grid" x1="${X(v)}" x2="${X(v)}" y1="${PT}" y2="${H - PB}"/><text x="${X(v)}" y="${H - PB + 14}" text-anchor="middle">${chartTickFmt(v, c.fmt, t[1] - t[0])}</text>`;
+    all.forEach((r, i) => {
+      const y = PT + i * RH + (i >= top.length ? gapH : 0), v = r[c.key], x0 = X(0), x1 = X(v);
+      // Too long for the name column: drop the team first, then cut the name.
+      let name = o.label(r, true);
+      if (name.length > maxC && r._team) name = o.label({ ...r, _team:'' }, true);
+      const cls = o.picks.has(r._key) ? 'bar pick' : r._mine ? 'bar mine' : 'bar';
+      s += `<g data-i="${i}"><text class="bar-name" x="${NW - 6}" y="${y + 15}" text-anchor="end">${chartEsc(name.length > maxC ? name.slice(0, maxC - 1) + '.' : name)}</text>`
+        + `<rect class="${cls}" x="${Math.min(x0, x1).toFixed(1)}" y="${y + 3}" width="${Math.max(1, Math.abs(x1 - x0)).toFixed(1)}" height="${RH - 6}"/>`
+        + `<text class="bar-val" x="${(v >= 0 ? x1 : x0) + 4}" y="${y + 15}">${statFmt(v, c.fmt)}</text></g>`;
+    });
+    if (extra.length) s += `<line class="grid" x1="0" x2="${W}" y1="${PT + top.length * RH + gapH / 2}" y2="${PT + top.length * RH + gapH / 2}"/>`;
+    s += `<line class="avg" x1="${X(avg)}" x2="${X(avg)}" y1="${PT - 4}" y2="${H - PB}"/><text class="avg-t" x="${X(avg)}" y="${PT - 7}" text-anchor="middle">avg ${statFmt(avg, c.fmt)}</text></svg>`;
+    const wrap = chartTipWrap(s, (i) => [o.label(all[i]), `${c.label}: ${statFmt(all[i][c.key], c.fmt)}`, `Rank ${good.indexOf(all[i]) + 1} of ${good.length}`, o.sample(all[i])].filter(Boolean),
+      o.open ? (i) => o.open(all[i]) : null);
+    wrap.dataset.bars = String(all.length);
+    return h('div', null,
+      h('div', { class:'chart-title' }, `${c.label}, top ${top.length}${c.lowerBetter ? ' (lowest first)' : ''}`),
+      h('div', { class:'muted' }, `${o.scope}. Ranked among ${good.length} ${o.unit}${extra.length ? '; players you picked from further down sit under the line' : ''}.`),
+      wrap);
+  }
+
+  function chartLine(U, series, stat, o) {
+    const F = U.fields, ix = F.indexOf(stat[0]), iw = F.indexOf('week');
+    const from = Math.max(1, o.from), to = Math.min(U.throughWeek, o.to);
+    const inWk = (w) => w[iw] >= from && w[iw] <= to;
+    const lines = series.map(r => ({ r, pts:((U.players[r._key] || {}).w || []).filter(inWk).map(w => ({ x:w[iw], y:w[ix] ?? 0 })) }));
+    const avg = [];
+    for (let wk = from; wk <= to; wk++) {
+      const v = o.poolKeys.map(k => ((U.players[k] || {}).w || []).find(w => w[iw] === wk)).filter(Boolean).map(w => w[ix] ?? 0);
+      if (v.length) avg.push({ x:wk, y:v.reduce((a, b) => a + b, 0) / v.length });
+    }
+    const all = lines.flatMap(l => l.pts).concat(avg);
+    if (!lines.some(l => l.pts.length)) return h('div', { class:'muted' }, `No weekly usage for these players in weeks ${from}-${to}.`);
+    const W = o.W, H = Math.round(Math.max(240, Math.min(380, W * 0.5))), PL = 48, PR = 14, PT = 12, PB = 34;
+    const yt = chartTicks(Math.min(0, ...all.map(p => p.y)), Math.max(...all.map(p => p.y)));
+    const X = (v) => to === from ? (PL + W - PR) / 2 : PL + (v - from) / (to - from) * (W - PL - PR);
+    const Y = (v) => PT + (1 - (v - yt[0]) / (yt[yt.length - 1] - yt[0])) * (H - PT - PB);
+    const every = Math.ceil((to - from + 1) / (W < 480 ? 9 : 18));
+    let s = `<svg class="chart-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="${chartEsc(`${stat[1]} by week`)}">`;
+    for (const v of yt) s += `<line class="grid" x1="${PL}" x2="${W - PR}" y1="${Y(v)}" y2="${Y(v)}"/><text x="${PL - 5}" y="${Y(v) + 4}" text-anchor="end">${chartTickFmt(v, stat[2], yt[1] - yt[0])}</text>`;
+    for (let wk = from; wk <= to; wk += every) s += `<text x="${X(wk)}" y="${H - PB + 14}" text-anchor="middle">${wk}</text>`;
+    s += `<text class="ax-title" x="${(PL + W - PR) / 2}" y="${H - 4}" text-anchor="middle">Week</text>`;
+    const path = (pts) => pts.map((p, i) => `${i ? 'L' : 'M'}${X(p.x).toFixed(1)} ${Y(p.y).toFixed(1)}`).join(' ');
+    if (avg.length > 1) s += `<path class="avg" d="${path(avg)}"/>`;
+    const marks = [];
+    lines.forEach((l, k) => {
+      const [col, dash] = CHART_SERIES[k];
+      if (l.pts.length > 1) s += `<path class="series" d="${path(l.pts)}" style="stroke:${col}"${dash ? ` stroke-dasharray="${dash}"` : ''}/>`;
+      for (const p of l.pts) {
+        s += `<circle class="pt" data-i="${marks.length}" cx="${X(p.x).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="4.5" style="fill:${col}"/>`;
+        marks.push({ l, p });
+      }
+    });
+    s += '</svg>';
+    const wrap = chartTipWrap(s, (i) => [o.label(marks[i].l.r), `Week ${marks[i].p.x}: ${statFmt(marks[i].p.y, stat[2])} ${stat[1]}`]);
+    wrap.dataset.series = String(lines.length);
+    return h('div', null,
+      h('div', { class:'chart-title' }, `${stat[1]} by week, ${U.season}`),
+      h('div', { class:'chart-legend' }, ...lines.map((l, k) => h('span', null,
+        h('span', { class:'chart-swatch', style:{ borderTopColor:CHART_SERIES[k][0], borderTopStyle:CHART_SERIES[k][1] ? 'dashed' : 'solid' } }), o.label(l.r))),
+        avg.length > 1 ? h('span', { class:'muted' }, h('span', { class:'chart-swatch chart-swatch-avg' }), `Average of the ${o.poolKeys.length} in the table`) : null),
+      wrap);
+  }
+
+  // Up to four Stats Lab rows side by side on the columns the table shows.
+  // The leader of each row is green and each value carries a bar for its share
+  // of the best, the Player Comparison card's grammar.
+  function chartCompare(list, cols, o) {
+    const lead = new Array(list.length).fill(0);
+    const body = cols.map(c => {
+      const vals = list.map(r => r[c.key]);
+      const nums = vals.filter(Number.isFinite);
+      const best = nums.length > 1 ? (c.lowerBetter ? Math.min(...nums) : Math.max(...nums)) : null;
+      const bars = best != null && !c.lowerBetter && nums.every(v => v >= 0) && best > 0;
+      vals.forEach((v, i) => { if (best != null && v === best && nums.some(x => x !== best)) lead[i]++; });
+      return h('tr', null, h('th', { scope:'row', title:c.desc || '' }, c.label),
+        ...vals.map(v => h('td', { class:`right tnum${best != null && v === best && nums.some(x => x !== best) ? ' delta-up' : ''}` },
+          c.fmt === 'text' ? (v || '') : statFmt(v, c.fmt),
+          bars && Number.isFinite(v) ? h('span', { class:'cmp-bar', style:{ width:`${Math.round(100 * v / best)}%` } }) : null)));
+    });
+    return h('div', null,
+      h('div', { class:'chart-title' }, `Compare ${list.length}`),
+      h('div', { class:'muted' }, `${o.scope}. The table's visible columns; green leads the row, the bar is its share of the best.`),
+      h('div', { class:'tbl-scroll' }, h('table', { class:'data stats-compare' },
+        h('thead', null, h('tr', null, h('th', null, 'Stat'), ...list.map((r, k) => h('th', { class:'right' },
+          h('span', { class:'chart-swatch', style:{ borderTopColor:CHART_SERIES[k][0], borderTopStyle:CHART_SERIES[k][1] ? 'dashed' : 'solid' } }),
+          h('span', { class:'cmp-name' }, o.name(r)), o.team(r) ? teamChip(o.team(r)) : null)))),
+        h('tbody', null,
+          h('tr', { class:'cmp-tally' }, h('th', { scope:'row' }, 'Rows led'), ...lead.map(n => h('td', { class:'right tnum' }, String(n)))),
+          ...body))));
+  }
+
+  // ---- Field location maps. location-YYYY.js (projections/build_location_splits.py)
+  // holds COUNTS per player by pass_location x depth band (QB throws, receiver
+  // targets) and by run gap (RB carries); the page sums seasons and divides.
+  const loadLocationSeason = (year) => loadSeasonScript(`location-${year}.js`, () => (window.LOCATION_BY_SEASON || {})[year]);
+  const LOC_ROLE = { QB:'Q', WR:'R', TE:'R', RB:'U' };
+  const LOC_TITLE = { Q:'Throw map', R:'Target map', U:'Run gaps' };
+  const LOC_UNIT = { Q:'att', R:'tgt', U:'car' };
+  const LOC_MIN = { Q:4, R:3, U:3 };   // fewer than this to a zone and it is not colored
+  const LOC_METRICS = {
+    Q: [['att', 'Att'], ['cmp', 'Cmp%'], ['yds', 'Yds'], ['ypa', 'Y/A'], ['epa', 'EPA/att'], ['catch', 'Catchable%']],
+    R: [['att', 'Tgt'], ['cmp', 'Catch%'], ['yds', 'Yds'], ['ypa', 'Y/Tgt'], ['epa', 'EPA/tgt'], ['catch', 'Catchable%']],
+    U: [['att', 'Car'], ['ypa', 'YPC'], ['epa', 'EPA/rush'], ['succ', 'Success%']],
+  };
+  const LOC_METRIC = { Q:'epa', R:'att', U:'epa' };   // remembered per role for the visit
+  const locFmt = (v, m) => v == null ? '·' : m === 'att' || m === 'yds' ? String(Math.round(v))
+    : m === 'epa' ? (v >= 0 ? '+' : '') + v.toFixed(2) : m === 'ypa' ? v.toFixed(1) : `${Math.round(v * 100)}%`;
+  // Percentile bands, the same four steps defRankColor uses for matchups.
+  const locBand = (p) => p == null ? null : p < 25 ? 'var(--red)' : p < 50 ? 'var(--amber)' : p < 75 ? 'var(--accent)' : 'var(--green)';
+  const LOC_LEGEND = 'red under the 25th percentile, amber to the 50th, teal to the 75th, green above';
+
+  // Everyone at `pos` in the loaded seasons, summed: the pool a percentile compares to.
+  function locPool(list, role, pos) {
+    const ids = new Set();
+    for (const L of list) for (const [sid, v] of Object.entries(L.players)) if (v.p === pos && v[role]) ids.add(sid);
+    return [...ids].map(sid => locSum(list, sid, role));
+  }
+  function locRate(pool, a, role, idx, metric) {
+    const vol = (c) => metric === 'catch' ? c.ftn : c.n;
+    const c = locCell(a, role, idx), v = locValue(c, metric), ok = vol(c) >= LOC_MIN[role];
+    const vals = ok ? pool.map(p => locCell(p, role, idx)).filter(x => vol(x) >= LOC_MIN[role]).map(x => locValue(x, metric)).filter(x => x != null) : [];
+    return { c, v, ok, pct:vals.length >= 5 ? chartPct(vals, v) : null };
+  }
+
+  function locMetricButtons(role, onChange) {
+    return h('label', { class:'stats-lab-toggle loc-metrics' }, 'Show ',
+      h('select', { 'aria-label':'Map metric', onchange:(e) => { LOC_METRIC[role] = e.target.value; onChange(); } },
+        ...LOC_METRICS[role].map(([k, l]) => h('option', { value:k, selected:k === LOC_METRIC[role] }, l))));
+  }
+
+  // Throw map or target map: a 4 x 3 grid, deep at the top, with an All column
+  // and an All row. Each cell prints the metric, then volume and percentile.
+  function locFieldMap(list, sid, role, pos) {
+    const a = locSum(list, sid, role), L0 = list[0], metric = LOC_METRIC[role], unit = LOC_UNIT[role];
+    const mlabel = LOC_METRICS[role].find(x => x[0] === metric)[1];
+    const pool = locPool(list, role, pos);
+    const cell = (idx, cls, where) => {
+      const x = locRate(pool, a, role, idx, metric), col = x.ok ? locBand(x.pct) : null;
+      return h('div', { class:`loc-cell${cls}${x.ok ? '' : ' loc-thin'}`, style:col ? { borderBottomColor:col } : null,
+        title:`${where}: ${x.c.n} ${unit}, ${mlabel} ${locFmt(x.v, metric)}${x.pct != null ? `, ${chartOrd(x.pct)} percentile` : ''}` },
+        h('span', { class:'loc-val tnum', style:col ? { color:col } : null }, locFmt(x.v, metric)),
+        h('span', { class:'loc-sub tnum' }, [metric === 'att' ? null : metric === 'catch' ? x.c.ftn : x.c.n,
+          x.pct != null ? chartOrd(x.pct) : null].filter(v => v != null).join(' · ') || ' '));
+    };
+    const rowIdx = (d) => [0, 1, 2].map(c => d * 3 + c), colIdx = (c) => [0, 1, 2, 3].map(d => d * 3 + c), all = [...Array(12).keys()];
+    const grid = h('div', { class:'loc-map', role:'table', 'aria-label':`${LOC_TITLE[role]}, ${mlabel}` },
+      h('span'), ...L0.cols.concat('All').map(t => h('span', { class:'loc-head' }, t)));
+    for (const d of [3, 2, 1, 0]) {
+      if (d === 0) grid.appendChild(h('div', { class:'loc-los' }, 'Line of scrimmage'));
+      grid.appendChild(h('span', { class:'loc-depth' }, L0.depths[d]));
+      rowIdx(d).forEach((i, c) => grid.appendChild(cell([i], '', `${L0.depths[d]}, ${L0.cols[c]}`)));
+      grid.appendChild(cell(rowIdx(d), ' loc-tot', `${L0.depths[d]}, all`));
+    }
+    grid.appendChild(h('span', { class:'loc-depth' }, 'All'));
+    [0, 1, 2].forEach(c => grid.appendChild(cell(colIdx(c), ' loc-tot', `${L0.cols[c]}, all depths`)));
+    grid.appendChild(cell(all, ' loc-tot', 'Every charted spot'));
+    const t = locCell(a, role, all), unk = locCell(a, role, [12]).n, sk = role === 'Q' ? locCell(a, role, [13]).n : 0;
+    const lag = list.filter(L => L.ftnThroughWeek < L.throughWeek).map(L => `${L.season} through week ${L.ftnThroughWeek}`);
+    return h('div', { class:'loc-field' },
+      h('div', { class:'loc-line tnum' }, [`${t.n} ${unit}`, `${locFmt(locValue(t, 'cmp'), 'cmp')} ${role === 'Q' ? 'cmp' : 'catch'}`,
+        `${locFmt(locValue(t, 'ypa'), 'ypa')} ${role === 'Q' ? 'Y/A' : 'Y/Tgt'}`, `${locFmt(locValue(t, 'epa'), 'epa')} EPA/${unit}`].join(' · ')),
+      grid,
+      h('div', { class:'tip loc-foot' },
+        `Small print: ${metric === 'att' ? '' : `${metric === 'catch' ? `FTN-charted ${unit}` : unit}, then `}percentile among ${pos}s with ${LOC_MIN[role]}+ to that zone (${LOC_LEGEND}). `
+        + `Depth is air yards. ${unk || sk ? `${[unk ? `${unk} ${unit} with no charted spot` : null, sk ? `${sk} sacks` : null].filter(Boolean).join(' and ')} are left off. ` : ''}`
+        + `Catchable% counts only plays FTN charted: ${t.ftn} of these ${t.n}${lag.length ? ` (FTN covers ${lag.join(', ')})` : ''}.`));
+  }
+
+  // Run gaps: seven arrows fan out of the back through the line. Width is
+  // carries, color the percentile among RBs, the value and carries on top.
+  function locRunGap(list, sid, pos) {
+    const role = 'U', a = locSum(list, sid, role), L0 = list[0], metric = LOC_METRIC.U;
+    const mlabel = LOC_METRICS.U.find(x => x[0] === metric)[1], pool = locPool(list, role, pos);
+    const W = 340, H = 226, cx = 170, baseY = 198, tipY = 76, olY = 106, codes = ['LE', 'LT', 'LG', 'MID', 'RG', 'RT', 'RE'];
+    const gaps = codes.map((_, i) => ({ i, x:cx + (i - 3) * 44, ...locRate(pool, a, role, [i], metric) }));
+    const maxN = Math.max(1, ...gaps.map(g => g.c.n));
+    let s = `<svg class="chart-svg loc-gap-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="${chartEsc(`Run gaps, ${mlabel}`)}">`;
+    for (const g of gaps) {
+      const col = g.ok ? locBand(g.pct) || 'var(--band-deep)' : 'var(--fg-3)', w = g.c.n ? 3 + 9 * g.c.n / maxN : 1.5;
+      const x0 = cx, y0 = baseY - 12, dx = g.x - x0, dy = tipY - y0, len = Math.hypot(dx, dy), ux = dx / len, uy = dy / len;
+      const hx = g.x + ux * 10, hy = tipY + uy * 10, px = -uy * (w / 2 + 4), py = ux * (w / 2 + 4);
+      const tipText = `${L0.gaps[g.i]}: ${g.c.n} carries${g.c.n ? `, ${locFmt(locValue(g.c, 'ypa'), 'ypa')} YPC, ${locFmt(locValue(g.c, 'epa'), 'epa')} EPA/rush, ${locFmt(locValue(g.c, 'succ'), 'succ')} success` : ''}`;
+      s += `<g class="loc-arrow${g.ok ? '' : ' loc-thin'}" data-gap="${codes[g.i]}"><title>${chartEsc(tipText)}</title>`
+        + `<line x1="${x0}" y1="${y0}" x2="${g.x.toFixed(1)}" y2="${tipY}" style="stroke:${col}" stroke-width="${w.toFixed(1)}"${g.ok ? '' : ' stroke-dasharray="4 3"'}/>`
+        + `<polygon points="${hx.toFixed(1)},${hy.toFixed(1)} ${(g.x + px).toFixed(1)},${(tipY + py).toFixed(1)} ${(g.x - px).toFixed(1)},${(tipY - py).toFixed(1)}" style="fill:${col}"/>`
+        + `<text class="loc-gap-code" x="${g.x}" y="11" text-anchor="middle">${codes[g.i]}</text>`
+        + `<text class="loc-gap-val" x="${g.x}" y="29" text-anchor="middle" style="fill:${g.ok ? col : 'var(--fg-3)'}">${locFmt(g.v, metric)}</text>`
+        + `<text class="loc-gap-n" x="${g.x}" y="43" text-anchor="middle">${g.c.n} car</text>`
+        + (g.pct != null ? `<text class="loc-gap-n" x="${g.x}" y="56" text-anchor="middle">${chartOrd(g.pct)}</text>` : '') + '</g>';
+    }
+    // The line sits on top, so each arrow reads as going through it.
+    ['LT', 'LG', 'C', 'RG', 'RT'].forEach((l, k) => {
+      const x = cx + (k - 2) * 28;
+      s += `<rect class="loc-ol" x="${x - 10}" y="${olY - 7}" width="20" height="14" rx="3"/><text class="loc-ol-t" x="${x}" y="${olY + 3}" text-anchor="middle">${l}</text>`;
+    });
+    s += `<circle class="loc-rb" cx="${cx}" cy="${baseY}" r="9"/><text class="loc-ol-t" x="${cx}" y="${H - 4}" text-anchor="middle">RB</text></svg>`;
+    const t = locCell(a, role, [0, 1, 2, 3, 4, 5, 6]), unk = locCell(a, role, [7]).n;
+    return h('div', { class:'loc-gap' },
+      h('div', { class:'loc-line tnum' }, [`${t.n} car`, `${locFmt(locValue(t, 'ypa'), 'ypa')} YPC`, `${locFmt(locValue(t, 'epa'), 'epa')} EPA/rush`,
+        `${locFmt(locValue(t, 'succ'), 'succ')} success`].join(' · ')),
+      h('div', { class:'chart-wrap', html:s }),
+      h('div', { class:'tip loc-foot' }, `Arrow width is carries; color is the percentile among RBs with ${LOC_MIN.U}+ carries to that gap (${LOC_LEGEND}). `
+        + `Gaps are play-by-play run_location x run_gap: end runs go outside the tackle, MID is up the middle.${unk ? ` ${unk} carries with no charted gap are left off.` : ''}`));
+  }
+
+  const locGraphic = (list, sid, role, pos) => role === 'U' ? locRunGap(list, sid, pos) : locFieldMap(list, sid, role, pos);
+
+  // The player card's map, on the Production tab. Opens on the newest season
+  // he has one for; season buttons switch it without reloading the card.
+  function locationBlock(sleeper) {
+    const A = window.ADVANCED, role = sleeper && LOC_ROLE[sleeper.pos];
+    if (!A || !role) return null;
+    const sid = String(sleeper.id), SEASONS = [A.season, A.season - 1, A.season - 2];
+    const card = h('div', { class:'card adv-card loc-card', dataset:{ sid, role } }, h('div', { class:'card-title' }, LOC_TITLE[role]), h('div', { class:'muted' }, 'Loading...'));
+    const got = (y) => { const v = ((window.LOCATION_BY_SEASON || {})[y] || { players:{} }).players[sid]; return v && v[role] ? v : null; };
+    let season = null;
+    const draw = () => {
+      const L = window.LOCATION_BY_SEASON[season], v = got(season);
+      card.dataset.season = String(season);
+      card.replaceChildren(
+        h('div', { class:'card-title' }, `${LOC_TITLE[role]}, ${season}`),
+        h('div', { class:'stats-lab-row loc-card-ctl' },
+          h('span', { class:'sos-position-tabs loc-seasons', role:'group', 'aria-label':'Map season' },
+            ...SEASONS.map(y => h('button', { type:'button', class:`ghost${y === season ? ' active' : ''}`, 'aria-pressed':String(y === season),
+              onclick:() => loadLocationSeason(y).then(() => { season = y; draw(); }).catch(() => {}) }, String(y)))),
+          v ? locMetricButtons(role, draw) : null),
+        v ? locGraphic([L], sid, role, v.p) : h('div', { class:'muted' }, `No ${LOC_UNIT[role] === 'car' ? 'carries' : LOC_UNIT[role] === 'tgt' ? 'targets' : 'dropbacks'} in ${season}.`));
+    };
+    (async () => {
+      for (const y of SEASONS) {
+        try { await loadLocationSeason(y); } catch (_) { continue; }
+        if (got(y)) { season = y; draw(); return; }
+      }
+      card.remove();
+    })();
+    return card;
+  }
+
+  // The chart builder: scatter, bar, weekly line, field maps and compare over
+  // the rows the table shows, so tab, seasons, split, minimums and the Tools
+  // filters all carry in. State lives on the tab (tab.chart), which saved views
+  // already keep; changing a chart redraws the panel, never the table.
+  function statsChartsPanel({ main, prefs, tab, pos, isTeams, rows, pool, allCols, shown, sortKey, splitOn, split, A, season, filterNote }) {
+    const chart = tab.chart = Object.assign({ type:'scatter', picks:[] }, tab.chart);
+    const types = CHART_TYPES.filter(([k]) => !isTeams || (k !== 'line' && k !== 'map'));
+    if (!types.some(t => t[0] === chart.type)) chart.type = 'scatter';
+    const num = allCols.filter(c => c.fmt !== 'text'), colBy = (k) => num.find(c => c.key === k);
+    const D = CHART_DEFAULTS[pos] || CHART_DEFAULTS.WR;
+    const byKey = new Map(pool.map(r => [r._key, r]));
+    const unit = isTeams ? 'teams' : 'players';
+    const label = (r, short) => isTeams ? r._name : `${short ? chartShort(r._name) : r._name} ${r._team || ''}`.trim();
+    const sample = (r) => isTeams ? null : r.sample != null ? `Sample: ${r.sample}` : pos === 'QB' ? `${r.dropbacks || 0} dropbacks`
+      : pos === 'RB' ? `${r.carries || 0} car, ${r.targets || 0} tgt` : `${r.targets || 0} targets`;
+    const open = isTeams ? null : (r) => openPlayerDetail(r._name, r._key);
+    const scope = [splitOn ? split.label : `${A.season}${A.throughWeek ? ` through week ${A.throughWeek}` : ''}`, filterNote].filter(Boolean).join(', ');
+    const store = () => saveStatsLabPrefs(prefs);
+    const body = h('div', { class:'stats-chart-body' });
+
+    const fill = () => {
+      const W = Math.max(300, Math.min(960, (main.clientWidth || 360) - 44));
+      const picks = chart.picks.filter(k => byKey.has(k)).slice(0, 4);
+      const pickSet = new Set(picks);
+      const set = (patch) => { Object.assign(chart, patch); store(); fill(); };
+      const colSel = (label_, value, key) => h('label', { class:'stats-lab-toggle' }, `${label_} `,
+        h('select', { 'aria-label':label_, onchange:(e) => set({ [key]:e.target.value }) },
+          ...num.map(c => h('option', { value:c.key, selected:c.key === value }, c.label))));
+      // A picked player is a chip; the box offers every row at this position.
+      // Picking from the list adds on input; typed text adds on Enter or blur.
+      const tryAdd = (text, exact) => {
+        const q = String(text || '').trim().toLowerCase();
+        const r = q && (pool.find(x => label(x).toLowerCase() === q) || (!exact && pool.find(x => label(x).toLowerCase().startsWith(q))));
+        if (r && !picks.includes(r._key)) set({ picks:[...picks, r._key].slice(0, 4) });
+      };
+      const dl = h('datalist', { id:'stats-chart-players' }, ...pool.map(r => h('option', { value:label(r) })));
+      const add = h('input', { type:'search', class:'stats-chart-add', list:'stats-chart-players', 'aria-label':`Add a ${isTeams ? 'team' : 'player'}`,
+        placeholder:picks.length >= 4 ? 'Four is the most' : `Add a ${isTeams ? 'team' : 'player'}`, disabled:picks.length >= 4 ? '' : null,
+        oninput:(e) => tryAdd(e.target.value, true), onchange:(e) => tryAdd(e.target.value, false) });
+      const pickRow = h('div', { class:'stats-lab-row stats-chart-picks' }, add, dl,
+        ...picks.map((k, i) => h('span', { class:'stats-lab-chip' },
+          h('span', { class:'chart-swatch', style:{ borderTopColor:CHART_SERIES[i][0], borderTopStyle:CHART_SERIES[i][1] ? 'dashed' : 'solid' } }),
+          label(byKey.get(k), true),
+          h('button', { type:'button', class:'ghost', 'aria-label':`Remove ${label(byKey.get(k))}`, onclick:() => set({ picks:picks.filter(x => x !== k) }) }, '×'))));
+      // No picks yet: the top rows of the table's own sort stand in.
+      const chosen = (n) => picks.length ? picks.map(k => byKey.get(k)) : rows.slice(0, n);
+      const standIn = (n) => picks.length ? null : h('div', { class:'muted' },
+        `${n === 1 ? "Showing the table's top row" : `Showing the top ${Math.min(n, rows.length)} by the table's sort`}. Add ${isTeams ? 'teams' : 'players'} to choose.`);
+      const out = [h('span', { class:'sos-position-tabs stats-chart-types', role:'group', 'aria-label':'Chart type' },
+        ...types.map(([k, l]) => h('button', { type:'button', class:`ghost${k === chart.type ? ' active' : ''}`, 'aria-pressed':String(k === chart.type),
+          dataset:{ chart:k }, onclick:() => set({ type:k }) }, l))), pickRow];
+
+      if (chart.type === 'scatter') {
+        const xc = colBy(chart.x) || D.x.map(colBy).find(Boolean) || num[0], yc = colBy(chart.y) || D.y.map(colBy).find(Boolean) || num[1] || num[0];
+        out.push(h('div', { class:'stats-lab-row' }, colSel('Y', yc.key, 'y'), colSel('X', xc.key, 'x'),
+          h('button', { type:'button', onclick:() => set({ x:yc.key, y:xc.key }) }, 'Swap axes')));
+        out.push(chartScatter(rows, xc, yc, { W, picks:pickSet, label, sample, open, scope, unit }));
+      } else if (chart.type === 'bar') {
+        const c = colBy(chart.bar) || colBy(sortKey) || num[0], top = [10, 15, 25, 40].includes(chart.top) ? chart.top : 15;
+        out.push(h('div', { class:'stats-lab-row' }, colSel('Stat', c.key, 'bar'),
+          h('label', { class:'stats-lab-toggle' }, 'Top ', h('select', { 'aria-label':'How many bars', onchange:(e) => set({ top:Number(e.target.value) }) },
+            ...[10, 15, 25, 40].map(n => h('option', { value:String(n), selected:n === top }, String(n)))))));
+        out.push(chartBar(rows, c, { W, top, picks:pickSet, label, sample, open, scope, unit }));
+      } else if (chart.type === 'line') {
+        const U = window.USAGE_WEEKLY;
+        if (!U) out.push(h('div', { class:'muted' }, 'usage-weekly.js not loaded. Run projections/build_weekly_splits.py.'));
+        else {
+          const stat = CHART_LINE_STATS.find(s => s[0] === chart.line) || CHART_LINE_STATS.find(s => s[0] === D.line);
+          out.push(h('div', { class:'stats-lab-row' }, h('label', { class:'stats-lab-toggle' }, 'Stat ',
+            h('select', { 'aria-label':'Weekly stat', onchange:(e) => set({ line:e.target.value }) },
+              ...CHART_LINE_STATS.map(s => h('option', { value:s[0], selected:s[0] === stat[0] }, s[1]))))));
+          out.push(standIn(3));
+          const same = !splitOn || split.seasons.includes(U.season);
+          out.push(chartLine(U, chosen(3), stat, { W, label, from:splitOn && same ? split.from : 1, to:splitOn && same ? split.to : 18,
+            poolKeys:rows.map(r => r._key) }));
+          if (!same || season !== U.season || (splitOn && split.seasons.length > 1))
+            out.push(h('div', { class:'tip' }, `Weekly usage exists for ${U.season} only, so the lines are ${U.season} whatever seasons the table shows.`));
+        }
+      } else if (chart.type === 'map') {
+        const seasons = splitOn ? split.seasons : [season], role = LOC_ROLE[pos];
+        const need = seasons.filter(y => !(window.LOCATION_BY_SEASON || {})[y]);
+        if (need.length) {
+          const msg = h('div', { class:'muted' }, `Loading ${need.join(', ')} field maps...`);
+          out.push(msg);
+          Promise.all(need.map(loadLocationSeason)).then(() => { if (msg.isConnected) fill(); })
+            .catch(() => { msg.textContent = 'location-YYYY.js did not load. Run projections/build_location_splits.py.'; });
+        } else {
+          const list = seasons.map(y => window.LOCATION_BY_SEASON[y]);
+          out.push(h('div', { class:'stats-lab-row' }, locMetricButtons(role, fill)), standIn(1));
+          out.push(h('div', { class:'loc-tiles' }, ...chosen(1).map(r => h('div', { class:'loc-tile', dataset:{ sid:r._key } },
+            h('div', { class:'loc-tile-name' }, `${LOC_TITLE[role]}: ${r._name} `, teamChip(r._team), ` ${seasons.slice().reverse().join('+')}`),
+            locSum(list, r._key, role) ? locGraphic(list, r._key, role, pos) : h('div', { class:'muted' }, `No ${LOC_UNIT[role]} charted.`)))));
+          if (splitOn && (split.weeks || Object.keys(split.sit).length))
+            out.push(h('div', { class:'tip' }, 'Maps are whole seasons: the week range and situation filters do not narrow them.'));
+        }
+      } else {
+        out.push(standIn(2));
+        const list = chosen(2);
+        if (list.length) out.push(chartCompare(list, shown, { scope, name:(r) => isTeams ? r._name : chartShort(r._name), team:(r) => isTeams ? null : r._team }));
+      }
+      body.replaceChildren(...out.filter(Boolean));
+    };
+
+    return h('details', { class:'card stats-lab-charts', open:STATS_CHARTS_OPEN ? '' : null,
+      ontoggle:(e) => { STATS_CHARTS_OPEN = e.target.open; if (e.target.open && !body.childNodes.length) fill(); } },
+      h('summary', null, 'Charts', chart.picks.length ? h('span', { class:'stats-lab-tools-count' }, `${chart.picks.length} picked`) : null,
+        h('span', { class:'stats-lab-sub-more muted' }, ` Scatter, bar, ${isTeams ? '' : 'weekly line, field maps, '}compare up to four.`)),
+      STATS_CHARTS_OPEN ? (fill(), body) : body);
+  }
+
   function viewStats(posArg) {
     const main = $('#main'); main.innerHTML = '';
     const CUR = window.ADVANCED;
@@ -13692,6 +14252,12 @@
     }
     main.appendChild(statsToolsPanel({ prefs, tab, pos, isTeams, ordered, isVis, pool, exprKeys, save,
       A:splitOn ? { season:split.label, splitLabel:split.label } : A }));
+    // What the rows went through, printed under every chart.
+    const bioOn = !isTeams && STATS_BIO.some(([k]) => ((tab.bio || {})[k] || []).some(v => v != null));
+    main.appendChild(statsChartsPanel({ main, prefs, tab, pos, isTeams, rows, pool, allCols, shown, sortKey:sort.key, splitOn, split, A, season,
+      filterNote:[isTeams ? null : pos === 'QB' ? '15+ dropbacks' : `${Math.round((prefs.minSnap ?? 0.2) * 100)}%+ snaps`,
+        !isTeams && prefs.q ? `search "${prefs.q}"` : null, !isTeams && prefs.mine ? 'my players' : null,
+        Object.keys(tab.min || {}).length || bioOn ? 'Tools filters on' : null].filter(Boolean).join(', ') }));
 
     const headCell = (c) => {
       const active = sort.key === c.key;

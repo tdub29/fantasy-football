@@ -71,6 +71,11 @@ STEPS = [
     # posted yet is written as "not published" and lights up once it appears.
     ("Stats Lab coverage splits",  PROJ / "build_coverage_splits.py",     True),
     ("coverage vs participation",  PROJ / "build_coverage_splits.py",     True, ["--self-check"]),
+    # Field location maps: QB throws and receiver targets by pass_location x depth
+    # band, RB carries by run gap, read from the cache the suite just refreshed and
+    # proven to add back up to advanced.js.
+    ("Stats Lab location maps",    PROJ / "build_location_splits.py",     True),
+    ("location maps vs advanced.js", PROJ / "build_location_splits.py",   True, ["--self-check"]),
     ("draft + combine profile",    PROJ / "build_prospect_profile.py",    True),
     ("game-day weather",           PROJ / "build_game_weather.py",        True),
     ("defense vs position",        PROJ / "build_defense_matchups.py",    True),

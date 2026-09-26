@@ -184,6 +184,16 @@ shells are keyed by team, not playcaller). Guarded by
 with up to four players compared; a QB throw map and a receiver target map by `pass_location` x
 depth band (attempts, completion %, YPA, EPA, catchable %); an RB run-gap chart by `run_location`
 x `run_gap`. Vanilla SVG like `careerChartOne`, no library, no build step.
+**Shipped 2026-09-26** (branch `feat-ds-charts`, task t-1790320041505): a Charts disclosure in Stats Lab
+draws scatter (any two columns, average crosshair, trend line, tap readout), bar (any column, top N),
+weekly line (1 to 4 players from `usage-weekly.js`), field maps and a 4-player compare on the table's
+visible columns, all over the rows the table already filtered. `projections/build_location_splits.py`
+writes `site/data/location-YYYY.js` (counts only, lazy-loaded) and runs in `build_all.py` after the
+coverage splits, with `--self-check` proving every grid adds back to advanced.js. The player card
+Production tab shows the QB throw map, receiver target map or RB run-gap chart. Rows 31 and 41-44 are
+now "have" (42 stays partial: compare is player rows, not route trees). Guarded by
+`stats-lab-chart-builder`, `stats-lab-chart-builder-phone` and `player-card-location-maps` in
+`.agents/feature-map.json` and `site/js/chart-builder.test.js`.
 
 ### Cluster E. On/off and game splits (rows 45-47, 38): medium
 

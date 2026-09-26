@@ -1505,6 +1505,204 @@
         "width": 390,
         "height": 844
       }
+    },
+    {
+      "id": "stats-lab-chart-builder",
+      "name": "Stats Lab chart builder: scatter, bar, weekly line, field maps and 4-player compare over the table's own rows",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "localStorage.removeItem('ff-stats-lab-v1'); location.hash='#stats/QB'"
+        },
+        {
+          "waitFor": "table.stats-lab-table"
+        },
+        {
+          "click": "details.stats-lab-charts > summary"
+        },
+        {
+          "waitFor": ".stats-lab-charts .chart-wrap[data-points]"
+        },
+        {
+          "eval": "window.__cb = {}; const w = document.querySelector('.stats-lab-charts .chart-wrap'); window.__cb.pts = Number(w.dataset.points); const lb = [...w.querySelectorAll('text.lbl')].map(t => t.getBoundingClientRect()); window.__cb.labels = lb.length; window.__cb.overlap = lb.some((a, i) => lb.slice(i + 1).some(b => a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom)); w.querySelector('circle.pt').dispatchEvent(new MouseEvent('click', { bubbles: true })); const tip = w.querySelector('.chart-tip'); window.__cb.tip = !tip.hidden && /EPA\\/DB: /.test(tip.textContent) && /CPOE: /.test(tip.textContent) ? tip.querySelector('strong').textContent : null; true;"
+        },
+        {
+          "click": ".stats-chart-types button[data-chart='bar']"
+        },
+        {
+          "waitFor": ".stats-lab-charts .chart-wrap[data-bars]"
+        },
+        {
+          "eval": "window.__cb.bars = document.querySelectorAll('.stats-lab-charts rect.bar').length; window.__cb.barTitle = document.querySelector('.stats-lab-charts .chart-title').textContent; window.__cb.names = [...document.querySelectorAll('table.stats-lab-table tbody tr')].slice(0, 2).map(r => r.cells[1].textContent.trim() + ' ' + r.cells[2].textContent.trim()); const add = (v) => { const i = document.querySelector('.stats-chart-add'); i.value = v; i.dispatchEvent(new Event('input', { bubbles: true })); }; add(window.__cb.names[0]); add(window.__cb.names[1]); window.__cb.chips = document.querySelectorAll('.stats-lab-charts .stats-lab-chip').length; true;"
+        },
+        {
+          "click": ".stats-chart-types button[data-chart='line']"
+        },
+        {
+          "waitFor": ".stats-lab-charts .chart-wrap[data-series]"
+        },
+        {
+          "eval": "window.__cb.series = Number(document.querySelector('.stats-lab-charts .chart-wrap').dataset.series); window.__cb.legend = document.querySelector('.stats-lab-charts .chart-legend').textContent; true;"
+        },
+        {
+          "click": ".stats-chart-types button[data-chart='compare']"
+        },
+        {
+          "waitFor": "table.stats-compare"
+        },
+        {
+          "eval": "const c = document.querySelector('table.stats-compare'), t = document.querySelector('table.stats-lab-table'); const row = [...t.tBodies[0].rows].find(r => r.cells[1].textContent.trim() + ' ' + r.cells[2].textContent.trim() === window.__cb.names[0]); window.__cb.cmpHeads = c.tHead.rows[0].cells.length; window.__cb.cmpRows = c.tBodies[0].rows.length; window.__cb.tableCols = t.tHead.rows[0].cells.length - 3; window.__cb.cmpSame = !!row && [...c.tBodies[0].rows].slice(1).every((r, i) => r.cells[1].textContent.trim() === row.cells[i + 3].textContent.trim()); true;"
+        },
+        {
+          "click": ".stats-chart-types button[data-chart='map']"
+        },
+        {
+          "waitFor": ".stats-lab-charts .loc-tile .loc-map",
+          "timeoutMs": 20000
+        },
+        {
+          "eval": "const L = window.LOCATION_BY_SEASON[window.ADVANCED.season]; window.__cb.maps = [...document.querySelectorAll('.stats-lab-charts .loc-tile')].map(t => { const a = L.players[t.dataset.sid].Q; let n = 0; for (let i = 0; i < 12; i++) n += a[i * 6]; return { n, line: t.querySelector('.loc-line').textContent, cells: t.querySelectorAll('.loc-cell').length }; }); location.hash = '#stats/Teams'; true;"
+        },
+        {
+          "waitFor": ".stats-lab-charts .chart-wrap[data-points]"
+        },
+        {
+          "eval": "window.__cb.teamPts = Number(document.querySelector('.stats-lab-charts .chart-wrap').dataset.points); window.__cb.teamTypes = document.querySelectorAll('.stats-chart-types button').length; true;"
+        }
+      ],
+      "selector": "details.stats-lab-charts[open]",
+      "assert": "(() => { try { const A = window.ADVANCED, c = window.__cb; if (!A || !c) return false; const qbs = Object.values(A.players).filter(v => v.p === 'QB' && (v.dropbacks || 0) >= 15); const want = qbs.filter(v => Number.isFinite(v.db_epa) && Number.isFinite(v.cpoe)).length; /* one dot per table row that has both stats, labels never overlap, a tap shows that player's numbers */ if (c.pts !== want || want < 15 || c.labels < 3 || c.overlap || !c.tip || !Object.values(A.players).some(v => `${v.n} ${v.t}` === c.tip)) return false; /* bar defaults to the table's sort column, top 15 */ if (c.bars !== Math.min(15, qbs.filter(v => Number.isFinite(v.db_epa)).length) || !/^EPA\\/DB, top 15/.test(c.barTitle)) return false; /* two picks drive the line and the compare, which shows the table's visible columns with the table's own values */ if (c.chips !== 2 || c.series !== 2 || !c.names.every(n => c.legend.includes(n))) return false; if (c.cmpHeads !== 3 || c.cmpRows !== c.tableCols + 1 || !c.cmpSame) return false; /* each throw map's charted attempts equal the location payload's twelve cells */ if (c.maps.length !== 2 || !c.maps.every(m => m.cells === 20 && m.line.startsWith(`${m.n} att`))) return false; /* Teams: one dot per team, and no line or map type */ return c.teamPts === 32 && c.teamTypes === 3; } finally { localStorage.removeItem('ff-stats-lab-v1'); } })()",
+      "notes": "Data Suite gap cluster D (task t-1790320041505). The Charts disclosure in Stats Lab draws vanilla inline SVG over the rows the table already filtered (tab, seasons, split, min snap or 15+ dropbacks, Tools minimums and bio filters): scatter of any two numeric columns with average crosshair, least-squares trend and greedy non-overlapping labels (chartLabels, site/js/chart-builder.test.js); bar of any column top N with picked players appended under a rule; weekly line from window.USAGE_WEEKLY for one to four players; field maps (throw map, target map, run gaps) summed over the table's seasons; and compare, the picked players' Stats Lab rows side by side on the table's visible columns with the leader green and a share-of-best bar. State lives on prefs.tab[pos].chart so saved views keep it. The assert requires one dot per QB with both stats, no overlapping labels, a tap readout naming a real player, the bar defaulting to the sort column, two picks feeding the line and a compare whose cells equal the table's, map totals equal to location-YYYY.js, and 32 team dots with only three chart types on Teams.",
+      "viewport": {
+        "width": 1700,
+        "height": 1000
+      }
+    },
+    {
+      "id": "stats-lab-chart-builder-phone",
+      "name": "Stats Lab charts at 390px: drawn to the panel width, tap readout stays on screen, no sideways scroll",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "localStorage.removeItem('ff-stats-lab-v1'); location.hash='#stats/WR'"
+        },
+        {
+          "waitFor": "table.stats-lab-table"
+        },
+        {
+          "click": "details.stats-lab-charts > summary"
+        },
+        {
+          "waitFor": ".stats-lab-charts .chart-wrap[data-points]"
+        },
+        {
+          "eval": "window.__cp = {}; const w = document.querySelector('.stats-lab-charts .chart-wrap'), pts = w.querySelectorAll('circle.pt'); pts[pts.length - 1].dispatchEvent(new MouseEvent('click', { bubbles: true })); const t = w.querySelector('.chart-tip').getBoundingClientRect(), s = w.querySelector('svg').getBoundingClientRect(); window.__cp.tip = [t.left, t.right, t.width]; window.__cp.svg = [s.left, s.right]; window.__cp.scatterScroll = document.documentElement.scrollWidth; true;"
+        },
+        {
+          "click": ".stats-chart-types button[data-chart='compare']"
+        },
+        {
+          "waitFor": "table.stats-compare"
+        },
+        {
+          "eval": "window.__cp.cmpScroll = document.documentElement.scrollWidth; true;"
+        }
+      ],
+      "selector": "table.stats-compare",
+      "assert": "(() => { try { const c = window.__cp; if (!c) return false; const W = innerWidth + 1; return c.tip[2] > 0 && c.tip[0] >= 0 && c.tip[1] <= W && c.svg[0] >= 0 && c.svg[1] <= W && c.scatterScroll <= W && c.cmpScroll <= W && document.documentElement.scrollWidth <= W; } finally { localStorage.removeItem('ff-stats-lab-v1'); } })()",
+      "notes": "The chart SVGs are drawn at the panel's own pixel width, so 11px axis text stays 11px on a phone and nothing is scaled down to fit. A tap (a phone has no hover) opens the readout box, which is clamped inside the chart. The compare table scrolls inside its own wrapper with the stat column pinned, so four players never push the page sideways.",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      }
+    },
+    {
+      "id": "player-card-location-maps",
+      "name": "Player card Production tab: QB throw map, receiver target map and RB run-gap chart match location-YYYY.js",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "location.hash='#rankings'"
+        },
+        {
+          "sleepMs": 1500
+        },
+        {
+          "eval": "openPlayerDetail('Josh Allen')"
+        },
+        {
+          "click": ".modal .pm-tab-bar button:has-text('Production')"
+        },
+        {
+          "waitFor": ".modal .loc-card[data-season] .loc-map",
+          "timeoutMs": 20000
+        },
+        {
+          "eval": "window.__lm = {}; window.__lm = window.__lm || {}; window.__lmCap = (role) => { const k = document.querySelector('.modal .loc-card'), a = window.LOCATION_BY_SEASON[k.dataset.season].players[k.dataset.sid][role]; const nf = role === 'U' ? 4 : 6, cells = role === 'U' ? 7 : 12; let n = 0; for (let i = 0; i < cells; i++) n += a[i * nf]; return { role: k.dataset.role, season: k.dataset.season, n, line: k.querySelector('.loc-line').textContent, cells: k.querySelectorAll('.loc-cell').length, arrows: k.querySelectorAll('.loc-arrow').length, title: k.querySelector('.card-title').textContent }; }; window.__lm.qb = window.__lmCap('Q'); true;"
+        },
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 300
+        },
+        {
+          "eval": "openPlayerDetail('Jahmyr Gibbs')"
+        },
+        {
+          "click": ".modal .pm-tab-bar button:has-text('Production')"
+        },
+        {
+          "waitFor": ".modal .loc-card[data-season] .loc-gap",
+          "timeoutMs": 20000
+        },
+        {
+          "eval": "window.__lm.rb = window.__lmCap('U'); true;"
+        },
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 300
+        },
+        {
+          "eval": "openPlayerDetail(\"Ja'Marr Chase\")"
+        },
+        {
+          "click": ".modal .pm-tab-bar button:has-text('Production')"
+        },
+        {
+          "waitFor": ".modal .loc-card[data-season] .loc-map",
+          "timeoutMs": 20000
+        },
+        {
+          "eval": "window.__lm.wr = window.__lmCap('R'); const k = document.querySelector('.modal .loc-card'), other = [...k.querySelectorAll('.loc-seasons button')].find(b => b.getAttribute('aria-pressed') === 'false'); window.__lm.want = other.textContent; other.click(); true;"
+        },
+        {
+          "sleepMs": 1500
+        },
+        {
+          "eval": "window.__lm.wr2 = document.querySelector('.modal .loc-card').dataset.season === window.__lm.want && document.querySelector('.modal .loc-card .loc-map') ? window.__lmCap('R') : null; true;"
+        }
+      ],
+      "selector": ".modal .loc-card",
+      "assert": "(() => { const m = window.__lm; if (!m || !m.qb || !m.rb || !m.wr || !m.wr2) return false; const ok = (x, role, unit) => x.role === role && x.n > 0 && x.line.startsWith(`${x.n} ${unit}`) && x.title.includes(x.season); /* 12 zones + 4 depth totals + 3 side totals + the grand total; seven gap arrows */ return ok(m.qb, 'Q', 'att') && m.qb.cells === 20 && ok(m.rb, 'U', 'car') && m.rb.arrows === 7 && ok(m.wr, 'R', 'tgt') && m.wr.cells === 20 && ok(m.wr2, 'R', 'tgt') && m.wr2.season === m.want && m.wr2.season !== m.wr.season; })()",
+      "notes": "projections/build_location_splits.py writes site/data/location-YYYY.js (counts only, lazy-loaded): per QB his dropbacks and per receiver his targets by pass_location x depth band (behind the line, 0-9, 10-19, 20+ air yards) with completions, yards, EPA and FTN catchable counts; per RB his carries by run_location x run_gap. Extra cells (no charted spot, sacks, no charted gap) make every grid add back to advanced.js, which --self-check proves for every player. The card opens the map on the newest season he has one for; season buttons switch it in place. The assert requires each map's charted total to equal the payload's cells for the season and player the card names, 20 grid cells, 7 gap arrows, and a season switch that redraws from the other season's file."
     }
   ],
   "ignore": [
