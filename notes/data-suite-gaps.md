@@ -12,6 +12,14 @@ graded here: another agent is rebuilding it. Every stat on the site is full PPR 
 
 **Score: 10 have, 24 partial, 21 missing, out of 55 capabilities.**
 
+**Status 2026-09-27, main at 75346ae: 38 Fixed (28 shipped since grading plus the 10 we had), 17
+Open.** The last column of every table says which, with the commit and file:line. Of the 17 Open, 7
+are not in any public dataset (18, 21, 23, 24, 26, 29, 32) and 10 are buildable but each needs a
+new builder or view (14, 20, 22, 38, 39, 42, 47, 49, 50, 56). Row 14 also carries a real bug, Route%
+(est) over 100% for six non-QB player-seasons; its fix needs a recalibration, so it stays Open with
+the root cause written in the row. The Status column to the left of Evidence is the 2026-09-24
+grade and is kept as history.
+
 Downloaded public data this relies on:
 
 - `projections/nflverse-cache/`: pbp 2023-2026, ftn_charting 2024-2026, snap_counts, stats_player_week,
@@ -28,103 +36,103 @@ Downloaded public data this relies on:
 
 ### Table engine
 
-| # | Capability | Status | Evidence on our site | Public source to fill | Downloaded |
-|---|---|---|---|---|---|
-| 1 | Pick any combination of seasons, combined totals | partial | Stats Lab `Season` select loads one of 2024/2025/2026 at a time (`viewStats`, `loadAdvancedSeason`, `advanced-2024.js`, `advanced-2025.js`); no combined aggregation | nflverse pbp + stats_player_week | yes, 2023-2026 |
-| 2 | Pick any range of weeks | missing | `advanced.js` is season to date only; the `wk` log carries box-score counts, not rates | pbp week column | yes |
-| 3 | Minimum qualifier on any column | partial | Fixed `Min snap%` select (0/20/40/60%) and a hard-coded 15-dropback QB floor in `viewStats` | none needed (client side) | n/a |
-| 4 | Search for any filter | partial | `Search player` box only; no filter or column finder | none needed | n/a |
-| 5 | Named, saved custom views | partial | Last state persists to localStorage `ff-stats-lab-v1` (sort, groups, season, min snap); one unnamed view per browser | none needed | n/a |
-| 6 | Hide and rearrange columns | partial | Whole stat groups toggle (Usage, Efficiency, Air, Red zone, Expected, NGS, PFR, Status); no per-column hide or reorder | none needed | n/a |
-| 7 | Pin columns while scrolling | partial | Sticky header via `.data-sticky thead`; the player name cell is `position: static` (checked in Playwright), so it scrolls away on the 40-column WR table | none needed | n/a |
-| 8 | Snapshot a column across filter changes | missing | nothing | none needed | n/a |
-| 9 | Custom calculated columns | missing | nothing | none needed | n/a |
-| 10 | Conditional formatting | partial | Automatic top/bottom fifth green/red tint in `viewStats` ("Percentile tint within the visible pool"); not user-set | none needed | n/a |
-| 11 | Export tables | missing | No CSV or copy action in Stats Lab; the only Blob download is the settings JSON (`app.js` near line 6578) | none needed | n/a |
-| 12 | Mobile support | have | `site/check-mobile-layout.py`, `appendTable` scroll wrappers, `mobile-controls.test.js`, mobile entries in `.agents/feature-map.json` | n/a | n/a |
+| # | Capability | Status | Evidence on our site | Public source to fill | Downloaded | Status 2026-09-27 |
+|---|---|---|---|---|---|---|
+| 1 | Pick any combination of seasons, combined totals | partial | Stats Lab `Season` select loads one of 2024/2025/2026 at a time (`viewStats`, `loadAdvancedSeason`, `advanced-2024.js`, `advanced-2025.js`); no combined aggregation | nflverse pbp + stats_player_week | yes, 2023-2026 | Fixed, 4a253e2: `splits-2024..2026.js`, season picker in `statsSplitCard` (`app.js:13903`) |
+| 2 | Pick any range of weeks | missing | `advanced.js` is season to date only; the `wk` log carries box-score counts, not rates | pbp week column | yes | Fixed, 4a253e2: Weeks range `app.js:13935` |
+| 3 | Minimum qualifier on any column | partial | Fixed `Min snap%` select (0/20/40/60%) and a hard-coded 15-dropback QB floor in `viewStats` | none needed (client side) | n/a | Fixed, 71100e9: minimum on any column `app.js:13642` |
+| 4 | Search for any filter | partial | `Search player` box only; no filter or column finder | none needed | n/a | Fixed, 71100e9: Find a column `app.js:13637` |
+| 5 | Named, saved custom views | partial | Last state persists to localStorage `ff-stats-lab-v1` (sort, groups, season, min snap); one unnamed view per browser | none needed | n/a | Fixed, 71100e9: named Saved views `app.js:13662` |
+| 6 | Hide and rearrange columns | partial | Whole stat groups toggle (Usage, Efficiency, Air, Red zone, Expected, NGS, PFR, Status); no per-column hide or reorder | none needed | n/a | Fixed, 71100e9: per-column show, hide, reorder `app.js:13600` |
+| 7 | Pin columns while scrolling | partial | Sticky header via `.data-sticky thead`; the player name cell is `position: static` (checked in Playwright), so it scrolls away on the 40-column WR table | none needed | n/a | Fixed, 139d4c9: # and Player sticky `styles.css:5784` (Playwright: Player stays in view at full scroll) |
+| 8 | Snapshot a column across filter changes | missing | nothing | none needed | n/a | Fixed, 71100e9: Snap button `app.js:13630` |
+| 9 | Custom calculated columns | missing | nothing | none needed | n/a | Fixed, 71100e9: safe parser `app.js:12725`, `stats-expr.test.js` |
+| 10 | Conditional formatting | partial | Automatic top/bottom fifth green/red tint in `viewStats` ("Percentile tint within the visible pool"); not user-set | none needed | n/a | Fixed, 71100e9: user Highlight rules `app.js:13711` |
+| 11 | Export tables | missing | No CSV or copy action in Stats Lab; the only Blob download is the settings JSON (`app.js` near line 6578) | none needed | n/a | Fixed, 71100e9: Export CSV `app.js:14708` |
+| 12 | Mobile support | have | `site/check-mobile-layout.py`, `appendTable` scroll wrappers, `mobile-controls.test.js`, mobile entries in `.agents/feature-map.json` | n/a | n/a | Fixed (had it): `check-mobile-layout.py` OK at 360/390/536 |
 
 ### Data points
 
-| # | Capability | Status | Evidence on our site | Public source to fill | Downloaded |
-|---|---|---|---|---|---|
-| 13 | Production and snaps | have | `advanced.js` `games`, `snap_pct` (snap_counts), targets, carries; card game log | n/a | yes |
-| 14 | Routes run and route rates | partial | `route_rate_est`, `tprr_est`, `yprr_est`, `fprr_est` are estimates (snaps x team dropback share) in every season, including 2024/2025 | participation `offense_players` on dropbacks gives a better 2023-2025 proxy; charted routes are not public | yes, 2020-2025 |
-| 15 | Missed tackles and contact | have | PFR proxy: `bt_per_touch`, `rush_broken_tackles`, `rec_broken_tackles`, `ybc_per_att`, `yac_per_att` | n/a | yes |
-| 16 | EPA | have | `epa_per_target`, `epa_per_rush`, `db_epa`, team `epa_play`/`epa_pass`/`epa_rush` | n/a | yes |
-| 17 | Rush yards over expected | have | `rush_yards_over_expected_per_att` (NGS) | n/a | yes |
-| 18 | Hand-charted separation on every route | partial | NGS `avg_separation` and `avg_cushion`, season average at the catch point for targets only | per-route and non-target separation is not public | n/a |
+| # | Capability | Status | Evidence on our site | Public source to fill | Downloaded | Status 2026-09-27 |
+|---|---|---|---|---|---|---|
+| 13 | Production and snaps | have | `advanced.js` `games`, `snap_pct` (snap_counts), targets, carries; card game log | n/a | yes | Fixed (had it) |
+| 14 | Routes run and route rates | partial | `route_rate_est`, `tprr_est`, `yprr_est`, `fprr_est` are estimates (snaps x team dropback share) in every season, including 2024/2025 | participation `offense_players` on dropbacks gives a better 2023-2025 proxy; charted routes are not public | yes, 2020-2025 | Open: charted routes are not public, so Route% stays an estimate. Also a bug: Route% (est) tops 100% (DK Metcalf 103.2%, Justin Jefferson 101.8% in 2026; 6 non-QB player-seasons) because `build_nflverse_suite.py:382` multiplies snap_counts snaps (penalty plays included) by a pass/run-only dropback share, then `:492` divides by pass/run-only team dropbacks. The fix changes the numerator or the denominator, and the 2025 calibration multipliers (`:482-491`) were fitted to the current numerator, so it needs a recalibration, not a small edit |
+| 15 | Missed tackles and contact | have | PFR proxy: `bt_per_touch`, `rush_broken_tackles`, `rec_broken_tackles`, `ybc_per_att`, `yac_per_att` | n/a | yes | Fixed (had it) |
+| 16 | EPA | have | `epa_per_target`, `epa_per_rush`, `db_epa`, team `epa_play`/`epa_pass`/`epa_rush` | n/a | yes | Fixed (had it) |
+| 17 | Rush yards over expected | have | `rush_yards_over_expected_per_att` (NGS) | n/a | yes | Fixed (had it) |
+| 18 | Hand-charted separation on every route | partial | NGS `avg_separation` and `avg_cushion`, season average at the catch point for targets only | per-route and non-target separation is not public | n/a | Open: not in any public dataset, paid hand-charting only |
 
 ### Play-level filters
 
-| # | Capability | Status | Evidence on our site | Public source to fill | Downloaded |
-|---|---|---|---|---|---|
-| 20 | Personnel packages | missing | no personnel field anywhere in `site/data` | participation `offense_personnel`, `defense_personnel` | yes, 2020-2025; 2026 not published |
-| 21 | Rush concepts | missing | nothing | not public (FTN public file has no concept; pbp `run_gap` is a gap, not a concept) | n/a |
-| 22 | Formations | partial | Team `under_center_rate` and QB `qb_under_center_rate` from FTN `qb_location`; no formation filter | participation `offense_formation` 2020-2025; pbp `shotgun` 2026 | yes |
-| 23 | Player alignment (slot, wide, inline, backfield) | missing | nothing | not public (the 2025 participation header has no alignment column) | n/a |
-| 24 | Coverage defender position | missing | nothing | not public | n/a |
-| 25 | Coverage scheme (man/zone, Cover 0-6 shells) | missing | nothing | participation `defense_man_zone_type`, `defense_coverage_type`, about 22k charted dropbacks a season | yes, 2023-2025; 2026 not published |
-| 26 | Press coverage | missing | nothing | not public | n/a |
-| 27 | Blitzes | partial | Defense-level `pass_blitz_rate` (PFR) in `defense.js` and the Stats Lab Defense tab; no QB or receiver split against the blitz | FTN `n_blitzers` per play | yes, 2022-2026 |
-| 28 | Pressure | partial | QB `pressure_rate` (PFR), defense `pass_pressure_rate`; no production-under-pressure split | participation `was_pressure` 2020-2025; 2026 proxy from pbp `qb_hit`/`sack` plus FTN `is_qb_out_of_pocket` | yes |
-| 29 | Disguised coverage | missing | nothing | not public | n/a |
-| 30 | Pre-snap and at-snap motion | partial | Team `motion_rate` (FTN `is_motion`); no player split; FTN has one motion flag, so pre vs at-snap cannot be told apart | FTN `is_motion` | yes |
-| 31 | Target depth and location | partial | `adot`, `air_yds`, `deep_targets`, `ez_targets`; no left/middle/right or depth-band split | pbp `pass_location`, `air_yards` | yes, 2023-2026 |
-| 32 | Where the runner was first contacted | partial | PFR `ybc_per_att` season average only | PFR week rush `rushing_yards_before_contact` (per game, not per carry) | yes |
-| 33 | Play action | have | Team `play_action_rate`/`pa_epa`, QB `qb_play_action_rate`, defense `pass_pa_rate_faced`/`pass_epa_allowed_pa` | n/a | yes |
-| 34 | Stacked boxes | have | NGS `percent_attempts_gte_eight_defenders` (8+ box%) | FTN `n_defense_box` would make it a filter | yes |
+| # | Capability | Status | Evidence on our site | Public source to fill | Downloaded | Status 2026-09-27 |
+|---|---|---|---|---|---|---|
+| 20 | Personnel packages | missing | no personnel field anywhere in `site/data` | participation `offense_personnel`, `defense_personnel` | yes, 2020-2025; 2026 not published | Open: team personnel mix shipped (c923d64, `app.js:12976`); no player split by personnel. 2026 waits on nflverse |
+| 21 | Rush concepts | missing | nothing | not public (FTN public file has no concept; pbp `run_gap` is a gap, not a concept) | n/a | Open: not in any public dataset, paid hand-charting only |
+| 22 | Formations | partial | Team `under_center_rate` and QB `qb_under_center_rate` from FTN `qb_location`; no formation filter | participation `offense_formation` 2020-2025; pbp `shotgun` 2026 | yes | Open: player split by QB spot only (`build_split_cube.py:104`) plus the team formation mix; no full formation filter for players |
+| 23 | Player alignment (slot, wide, inline, backfield) | missing | nothing | not public (the 2025 participation header has no alignment column) | n/a | Open: not in any public dataset, paid hand-charting only |
+| 24 | Coverage defender position | missing | nothing | not public | n/a | Open: not in any public dataset, paid hand-charting only |
+| 25 | Coverage scheme (man/zone, Cover 0-6 shells) | missing | nothing | participation `defense_man_zone_type`, `defense_coverage_type`, about 22k charted dropbacks a season | yes, 2023-2025; 2026 not published | Fixed, c923d64: Coverage tab `app.js:12980`, man/zone and seven shells 2023-2025; 2026 fills when nflverse posts it |
+| 26 | Press coverage | missing | nothing | not public | n/a | Open: not in any public dataset, paid hand-charting only |
+| 27 | Blitzes | partial | Defense-level `pass_blitz_rate` (PFR) in `defense.js` and the Stats Lab Defense tab; no QB or receiver split against the blitz | FTN `n_blitzers` per play | yes, 2022-2026 | Fixed, 4a253e2: Blitzed / Not blitzed player split (`build_split_cube.py:105`) |
+| 28 | Pressure | partial | QB `pressure_rate` (PFR), defense `pass_pressure_rate`; no production-under-pressure split | participation `was_pressure` 2020-2025; 2026 proxy from pbp `qb_hit`/`sack` plus FTN `is_qb_out_of_pocket` | yes | Fixed, c923d64: pressured and clean splits on the Coverage tab, 2023-2025 |
+| 29 | Disguised coverage | missing | nothing | not public | n/a | Open: not in any public dataset, paid hand-charting only |
+| 30 | Pre-snap and at-snap motion | partial | Team `motion_rate` (FTN `is_motion`); no player split; FTN has one motion flag, so pre vs at-snap cannot be told apart | FTN `is_motion` | yes | Fixed, 4a253e2: motion player split (`build_split_cube.py:103`); pre vs at-snap stays Open, FTN has one flag |
+| 31 | Target depth and location | partial | `adot`, `air_yds`, `deep_targets`, `ez_targets`; no left/middle/right or depth-band split | pbp `pass_location`, `air_yards` | yes, 2023-2026 | Fixed, 2793379: `location-YYYY.js` grids, target map `app.js:14287` |
+| 32 | Where the runner was first contacted | partial | PFR `ybc_per_att` season average only | PFR week rush `rushing_yards_before_contact` (per game, not per carry) | yes | Open: season `ybc_per_att` only; contact point per carry is not public (PFR publishes per game) |
+| 33 | Play action | have | Team `play_action_rate`/`pa_epa`, QB `qb_play_action_rate`, defense `pass_pa_rate_faced`/`pass_epa_allowed_pa` | n/a | yes | Fixed (had it); also a player split (`build_split_cube.py:102`) |
+| 34 | Stacked boxes | have | NGS `percent_attempts_gte_eight_defenders` (8+ box%) | FTN `n_defense_box` would make it a filter | yes | Fixed (had it); also a player split (`build_split_cube.py:106`) |
 
 ### Situational filters
 
-| # | Capability | Status | Evidence on our site | Public source to fill | Downloaded |
-|---|---|---|---|---|---|
-| 35 | Down and distance | partial | Team `early_down_success`, `early_down_pass_rate`; no down/distance filter for players | pbp `down`, `ydstogo` | yes |
-| 36 | Red zone and field position | have | `rz_targets`, `rz_target_share`, `ez_targets`, `rz_opp_share`, `gl_carries`, `gl_share`, team `rz_td_rate` | n/a | yes |
-| 37 | Score and game script | partial | Team neutral `proe` and `neutral_pass_rate` (win probability 20-80%); no score-state split for players | pbp `score_differential`, `wp` | yes |
+| # | Capability | Status | Evidence on our site | Public source to fill | Downloaded | Status 2026-09-27 |
+|---|---|---|---|---|---|---|
+| 35 | Down and distance | partial | Team `early_down_success`, `early_down_pass_rate`; no down/distance filter for players | pbp `down`, `ydstogo` | yes | Fixed, 4a253e2: down and distance splits (`build_split_cube.py:97-98`) |
+| 36 | Red zone and field position | have | `rz_targets`, `rz_target_share`, `ez_targets`, `rz_opp_share`, `gl_carries`, `gl_share`, team `rz_td_rate` | n/a | yes | Fixed (had it); field zone split `build_split_cube.py:99` |
+| 37 | Score and game script | partial | Team neutral `proe` and `neutral_pass_rate` (win probability 20-80%); no score-state split for players | pbp `score_differential`, `wp` | yes | Fixed, 4a253e2: score state split (`build_split_cube.py:101`) |
 
 ### Splits
 
-| # | Capability | Status | Evidence on our site | Public source to fill | Downloaded |
-|---|---|---|---|---|---|
-| 38 | By head coach, playcaller, opposing HC or DC | partial | Staff card on the player card (`contextBlock`, `context.js` `teams.coach` with play caller and tenure); no stat split by coach | `historical/play_callers.csv`, `derived/team_coaches.csv` joined to pbp | yes |
-| 39 | By practice participation and injury type | missing | Current status only: `injuryChip`, `players.js` `injury_status`/`injury_body_part`, advanced `report_status` | nflverse injuries `practice_status`, `report_primary_injury` | yes, 2009-2026 |
-| 40 | Bio filters (age, experience, height, weight, draft class, round, pick, combine) | partial | All on the page already (`players.js` age/exp, `prospect.js` draft, height, weight, drills, `athl_pct`, shown by `prospectBlock`) but Stats Lab cannot filter on any of them | none needed | yes |
+| # | Capability | Status | Evidence on our site | Public source to fill | Downloaded | Status 2026-09-27 |
+|---|---|---|---|---|---|---|
+| 38 | By head coach, playcaller, opposing HC or DC | partial | Staff card on the player card (`contextBlock`, `context.js` `teams.coach` with play caller and tenure); no stat split by coach | `historical/play_callers.csv`, `derived/team_coaches.csv` joined to pbp | yes | Open: playcaller split shipped in On/Off Game splits (2dc09b7, `app.js:13401`); head coach and opposing HC/DC splits not built, a new builder |
+| 39 | By practice participation and injury type | missing | Current status only: `injuryChip`, `players.js` `injury_status`/`injury_body_part`, advanced `report_status` | nflverse injuries `practice_status`, `report_primary_injury` | yes, 2009-2026 | Open: history shipped (fb9919a, `app.js:11328`); stat splits by practice status or injury type not built |
+| 40 | Bio filters (age, experience, height, weight, draft class, round, pick, combine) | partial | All on the page already (`players.js` age/exp, `prospect.js` draft, height, weight, drills, `athl_pct`, shown by `prospectBlock`) but Stats Lab cannot filter on any of them | none needed | yes | Fixed, 71100e9: Bio filters `app.js:13723` |
 
 ### Visualizations
 
-| # | Capability | Status | Evidence on our site | Public source to fill | Downloaded |
-|---|---|---|---|---|---|
-| 41 | Build scatter, bar and line charts of any stat | missing | Fixed charts only (`careerChartOne` season line, `ktcValueChart`, `sparkline`); Stats Lab renders no svg or canvas (checked) | none needed for the builder | n/a |
-| 42 | Route charts comparing up to four players, by coverage or alignment | missing | No player-vs-player compare; the only compare route is Compare Rosters (`app.js` near line 6745) | participation `route` is the targeted receiver's route (about 18.9k a season); routes run on non-targets are not public | yes, 2023-2025 |
-| 43 | QB efficiency and throw accuracy by field location | missing | Accuracy exists as season aggregates (`cpoe`, `bad_throw_rate`, `catchable_throw_rate`) with no location split | pbp `pass_location` x `air_yards`, FTN `is_catchable_ball` | yes, 2024-2026 |
-| 44 | RB stats by run gap | missing | nothing | pbp `run_location`, `run_gap` | yes, 2023-2026 |
+| # | Capability | Status | Evidence on our site | Public source to fill | Downloaded | Status 2026-09-27 |
+|---|---|---|---|---|---|---|
+| 41 | Build scatter, bar and line charts of any stat | missing | Fixed charts only (`careerChartOne` season line, `ktcValueChart`, `sparkline`); Stats Lab renders no svg or canvas (checked) | none needed for the builder | n/a | Fixed, 2793379: chart builder `app.js:14399` |
+| 42 | Route charts comparing up to four players, by coverage or alignment | missing | No player-vs-player compare; the only compare route is Compare Rosters (`app.js` near line 6745) | participation `route` is the targeted receiver's route (about 18.9k a season); routes run on non-targets are not public | yes, 2023-2025 | Open: route tree shipped (9f556c0, `app.js:13329`) with two tiles and no coverage filter; four-player and by-coverage compare not built; alignment and non-target routes not public |
+| 43 | QB efficiency and throw accuracy by field location | missing | Accuracy exists as season aggregates (`cpoe`, `bad_throw_rate`, `catchable_throw_rate`) with no location split | pbp `pass_location` x `air_yards`, FTN `is_catchable_ball` | yes, 2024-2026 | Fixed, 2793379: QB throw map `app.js:14253` |
+| 44 | RB stats by run gap | missing | nothing | pbp `run_location`, `run_gap` | yes, 2023-2026 | Fixed, 2793379: run-gap chart `app.js:14325` |
 
 ### Tools
 
-| # | Capability | Status | Evidence on our site | Public source to fill | Downloaded |
-|---|---|---|---|---|---|
-| 45 | Team EPA with a player on vs off the field | shipped 2026-09-26 | Stats Lab On/Off tab (`onoff-YYYY.js`): team plays, EPA/play, pass rate, success% on vs off, 2023-2025 play level, 2026 game level | participation `offense_players` 2020-2025; 2026 only at game level (snap_counts) | yes |
-| 46 | Teammate on/off (target rate with and without) | shipped 2026-09-26 | On/Off tab teammate table: target share and targets per dropback on vs off, with samples | same as 45 | yes |
-| 47 | Game splits by coach, playcaller, snaps played, starting QB | partial | On/Off tab Game splits: by starting QB and playcaller (games, EPA/play, PROE, each player's PPR/G and target share); coach and snaps-played splits not built | pbp passer per game, snap_counts, `derived/qb_changes.csv`, `play_callers.csv` | yes |
+| # | Capability | Status | Evidence on our site | Public source to fill | Downloaded | Status 2026-09-27 |
+|---|---|---|---|---|---|---|
+| 45 | Team EPA with a player on vs off the field | shipped 2026-09-26 | Stats Lab On/Off tab (`onoff-YYYY.js`): team plays, EPA/play, pass rate, success% on vs off, 2023-2025 play level, 2026 game level | participation `offense_players` 2020-2025; 2026 only at game level (snap_counts) | yes | Fixed, 2dc09b7: On/Off tab `app.js:13416` |
+| 46 | Teammate on/off (target rate with and without) | shipped 2026-09-26 | On/Off tab teammate table: target share and targets per dropback on vs off, with samples | same as 45 | yes | Fixed, 2dc09b7: teammate table on the On/Off tab |
+| 47 | Game splits by coach, playcaller, snaps played, starting QB | partial | On/Off tab Game splits: by starting QB and playcaller (games, EPA/play, PROE, each player's PPR/G and target share); coach and snaps-played splits not built | pbp passer per game, snap_counts, `derived/qb_changes.csv`, `play_callers.csv` | yes | Open: starting QB and playcaller splits shipped (2dc09b7); coach and snaps-played splits not built |
 
 ### Matchup pages
 
-| # | Capability | Status | Evidence on our site | Public source to fill | Downloaded |
-|---|---|---|---|---|---|
-| 48 | Pregame matchup edges between two teams | shipped 2026-09-26 | `#game/:game_id` pregame: both offenses (PROE, early-down pass%, PA%, motion%, under center%, EPA by unit) and defenses (EPA/DB allowed, pressure%, blitz%, PPR allowed by position, funnel) side by side with ranks, the five biggest edges by percentile gap, implied points, weather, each team's skill players with season usage; `#games` lists the week, and the player card matchup line and every `#sos` cell link in | pbp, schedule | yes |
-| 49 | Playcaller tendencies (blitz rate, coverage shells, motion, PA, early-down pass rate, PROE) | partial | Stats Lab Teams tab has PROE, early-down pass%, PA%, motion%, under ctr%, screen%, RPO%, no huddle%; Defense tab has blitz%; coverage shells missing; keyed by team, not playcaller | participation coverage 2023-2025, `play_callers.csv` | yes |
-| 50 | Unit efficiency by situation (down/distance, personnel, script, rush concept) | partial | Team `epa_play`, `epa_pass`, `epa_rush`, `success_rate` as season totals only | pbp plus participation | yes |
-| 51 | Postgame: drive chart, full play-by-play with EPA and win probability, key plays, receiver matchups | shipped 2026-09-26 | `#game/:game_id` postgame from `games-YYYY.js` + `games-YYYY-wNN.js` (`build_game_pages.py`): drive chart, every play with down, distance, EPA, WP and WPA, top 10 by absolute WPA, each receiver's targets, catches, yards, air yards and EPA; `--self-check` ties drive yards to nflverse team box scores. Receiver vs defender matchups are not public | pbp `drive`, `epa`, `wp`, `wpa`, `desc` | yes |
+| # | Capability | Status | Evidence on our site | Public source to fill | Downloaded | Status 2026-09-27 |
+|---|---|---|---|---|---|---|
+| 48 | Pregame matchup edges between two teams | shipped 2026-09-26 | `#game/:game_id` pregame: both offenses (PROE, early-down pass%, PA%, motion%, under center%, EPA by unit) and defenses (EPA/DB allowed, pressure%, blitz%, PPR allowed by position, funnel) side by side with ranks, the five biggest edges by percentile gap, implied points, weather, each team's skill players with season usage; `#games` lists the week, and the player card matchup line and every `#sos` cell link in | pbp, schedule | yes | Fixed, 2a806d1: pregame `viewGame` `app.js:15106` |
+| 49 | Playcaller tendencies (blitz rate, coverage shells, motion, PA, early-down pass rate, PROE) | partial | Stats Lab Teams tab has PROE, early-down pass%, PA%, motion%, under ctr%, screen%, RPO%, no huddle%; Defense tab has blitz%; coverage shells missing; keyed by team, not playcaller | participation coverage 2023-2025, `play_callers.csv` | yes | Open: shell mix on the Teams tab (`app.js:13132`) is keyed by team, not playcaller |
+| 50 | Unit efficiency by situation (down/distance, personnel, script, rush concept) | partial | Team `epa_play`, `epa_pass`, `epa_rush`, `success_rate` as season totals only | pbp plus participation | yes | Open: team situational splits not built (the split cube is player level) |
+| 51 | Postgame: drive chart, full play-by-play with EPA and win probability, key plays, receiver matchups | shipped 2026-09-26 | `#game/:game_id` postgame from `games-YYYY.js` + `games-YYYY-wNN.js` (`build_game_pages.py`): drive chart, every play with down, distance, EPA, WP and WPA, top 10 by absolute WPA, each receiver's targets, catches, yards, air yards and EPA; `--self-check` ties drive yards to nflverse team box scores. Receiver vs defender matchups are not public | pbp `drive`, `epa`, `wp`, `wpa`, `desc` | yes | Fixed, 2a806d1: postgame drive chart, plays, WPA; receiver vs defender matchups are not public |
 
 ### Player pages
 
-| # | Capability | Status | Evidence on our site | Public source to fill | Downloaded |
-|---|---|---|---|---|---|
-| 52 | Usage and efficiency overview | have | Player card Production tab: `advancedBlock` (12-13 stats with position rank) and `usageWeeksBlock` | n/a | yes |
-| 53 | Game logs with advanced stats | shipped 2026-09-26 | Card game log Box score / Advanced toggle: per game Tgt, catchable, aDOT, air yds, TPRR (est), YPRR (est), rec EPA, rush EPA; QBs DB, EPA/DB, CPOE, aDOT (`usage-weekly.js`, `cardAdvLog`) | pbp, ftn, snap_counts per week | yes |
-| 54 | Complete injury history | shipped 2026-09-26 | Card Context tab Injury history: every listed week 2009-2026 with game status, practice status and injury, plus weeks listed, weeks Out and top body part per season (`injury-history.js`, lazy) | nflverse injuries 2009-2026 | yes |
-| 55 | Jump to the player's upcoming matchup | have | Context tab: `matchupLine`, `weatherLine`, `scheduleStrip` | n/a | yes |
-| 56 | Team and coaching pages | partial | Teams tab row per team; staff, turnover and tendencies cards live on the player card; no `#team` route | existing data | yes |
+| # | Capability | Status | Evidence on our site | Public source to fill | Downloaded | Status 2026-09-27 |
+|---|---|---|---|---|---|---|
+| 52 | Usage and efficiency overview | have | Player card Production tab: `advancedBlock` (12-13 stats with position rank) and `usageWeeksBlock` | n/a | yes | Fixed (had it) |
+| 53 | Game logs with advanced stats | shipped 2026-09-26 | Card game log Box score / Advanced toggle: per game Tgt, catchable, aDOT, air yds, TPRR (est), YPRR (est), rec EPA, rush EPA; QBs DB, EPA/DB, CPOE, aDOT (`usage-weekly.js`, `cardAdvLog`) | pbp, ftn, snap_counts per week | yes | Fixed, fb9919a: `cardAdvLog` `app.js:11242` |
+| 54 | Complete injury history | shipped 2026-09-26 | Card Context tab Injury history: every listed week 2009-2026 with game status, practice status and injury, plus weeks listed, weeks Out and top body part per season (`injury-history.js`, lazy) | nflverse injuries 2009-2026 | yes | Fixed, fb9919a: `injuryHistoryBlock` `app.js:11328` |
+| 55 | Jump to the player's upcoming matchup | have | Context tab: `matchupLine`, `weatherLine`, `scheduleStrip` | n/a | yes | Fixed (had it); the matchup line now opens the game page |
+| 56 | Team and coaching pages | partial | Teams tab row per team; staff, turnover and tendencies cards live on the player card; no `#team` route | existing data | yes | Open: no `#team` route; a new view |
 
 ## Gap list
 
@@ -223,6 +231,11 @@ under 50 plays or dropbacks; `#stats/OnOff/games` is the Game splits view. Playc
 PA, motion, blitz and pressure, EPA by unit, position PPR allowed) with the biggest edges ranked.
 Postgame: drive chart, play-by-play with EPA, WP and WPA, top WPA plays, each receiver's target
 line. Linked from the player card matchup line and the SOS grid.
+**Shipped 2026-09-26** (branch `feat-ds-games`, commit 2a806d1, task t-1790320115453): `#games` and
+`#game/:game_id` pregame and postgame from `projections/build_game_pages.py`, linked from the card
+matchup line and every SOS cell. Rows 48 and 51 are Fixed; 56 stays Open (no `#team` route).
+Guarded by `games-list`, `game-pregame-every-game`, `game-postgame-every-game`, `game-page-links`
+and `game-pages-phone`.
 
 ### Cluster G. Player card depth: advanced game logs and injury history (rows 39, 53, 54): medium
 
@@ -257,3 +270,7 @@ and Trevor does not set up keys or accounts for tooling. Revisit only if a free 
 
 All seven are owner `ops`, project `fantasy-football`. Tasks A to E all edit `viewStats` in
 `site/js/app.js`, so running them one after another is safer than running them in parallel.
+
+Status 2026-09-27: all seven are merged to main. A 71100e9, B 4a253e2, C c923d64 (route tree
+follow-up t-1790417636140 in 9f556c0), D 2793379, E 2dc09b7, F 2a806d1, G fb9919a. What each left
+Open is in the rows above; none of it is a small fix.
