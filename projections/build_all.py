@@ -91,6 +91,12 @@ STEPS = [
     ("game-day weather",           PROJ / "build_game_weather.py",        True),
     ("defense vs position",        PROJ / "build_defense_matchups.py",    True),
     ("weekly usage splits",        PROJ / "build_weekly_splits.py",       True),
+    # The card's Advanced game log is those weekly rows, so they must add back up to advanced.js.
+    ("weekly log vs advanced.js",  PROJ / "build_weekly_splits.py",       True, ["--self-check"]),
+    # Card injury history, 2009 to now, from the injury CSVs plus the parquet and
+    # rosters the suite just refreshed; the self-check decodes it back to the source.
+    ("injury history",             PROJ / "build_injury_history.py",      True),
+    ("injury history vs source",   PROJ / "build_injury_history.py",      True, ["--self-check"]),
     ("IDP advanced",               PROJ / "build_idp_advanced.py",        True),
     ("IDP defense-vs-position",    PROJ / "build_idp_dvp.py",             True),
     # The kicker board is modelled in a SEPARATE repo and written back into

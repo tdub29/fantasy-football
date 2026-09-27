@@ -11198,6 +11198,7 @@
             envInfoLine(sleeper),
             scheduleStrip(sleeper),
             contextBlock(sleeper),
+            injuryHistoryBlock(sleeper),
             prospectBlock(sleeper),
             playerInfoBlock(name, sleeper),
           ] },
@@ -11225,6 +11226,30 @@
     TE: ['snap_pct', 'route_rate_est', 'target_share', 'first_read_share', 'tprr_est', 'yprr_est', 'adot',
          'rz_target_share', 'ez_targets', 'xfp_pg', 'fpoe_pg', 'avg_separation'],
   };
+  // The card game log's Advanced view, one row per game from window.USAGE_WEEKLY
+  // (build_weekly_splits.py). [key, label, format, the count that must be > 0 to show it];
+  // a q. key reads his passing row for that week.
+  const CARD_ADV_COLS = {
+    QB: [['q.dropbacks', 'DB', 'int'], ['q.db_epa', 'EPA/DB', 'dec2'], ['q.cpoe', 'CPOE', 'dec1'], ['q.pass_adot', 'aDOT', 'dec1'],
+         ['carries', 'Car', 'int'], ['rush_epa', 'Rush EPA', 'dec2', 'carries']],
+    RB: [['targets', 'Tgt', 'int'], ['catchable', 'Catchable', 'int'], ['adot', 'aDOT', 'dec1'], ['air_yards', 'Air yds', 'int'],
+         ['tprr_est', 'TPRR (est)', 'dec2'], ['yprr_est', 'YPRR (est)', 'dec2'], ['rec_epa', 'Rec EPA', 'dec2', 'targets'],
+         ['carries', 'Car', 'int'], ['rush_epa', 'Rush EPA', 'dec2', 'carries']],
+  };
+  CARD_ADV_COLS.WR = CARD_ADV_COLS.TE = CARD_ADV_COLS.RB.slice(0, 7);
+  let CARD_LOG_VIEW = 'box';
+  function cardAdvLog(U, uw, pos, oppOf) {
+    const cols = CARD_ADV_COLS[pos] || CARD_ADV_COLS.RB, ix = (k) => U.fields.indexOf(k);
+    const qBy = new Map((uw.q || []).map(r => [r[0], r]));
+    const val = (row, [k, , , need]) => need && !row[ix(need)] ? null
+      : k.startsWith('q.') ? (qBy.get(row[0]) || [])[U.qFields.indexOf(k.slice(2))] : row[ix(k)];
+    return h('table', { class:'data adv-log adv-log-adv' },
+      h('thead', null, h('tr', null, h('th', null, 'Wk'), h('th', null, 'Opp'),
+        ...cols.map(([k, l]) => h('th', { class:'right', title:U.fieldDesc[k.replace('q.', '')] || '' }, l)))),
+      h('tbody', null, ...uw.w.map(row => h('tr', null,
+        h('td', { class:'tnum' }, String(row[0])), h('td', null, oppOf.get(row[0]) || ''),
+        ...cols.map(c => h('td', { class:'right tnum' }, statFmt(val(row, c), c[2])))))));
+  }
   function advancedBlock(sleeper) {
     const A = window.ADVANCED;
     const me = sleeper && A && A.players[String(sleeper.id)];
@@ -11265,15 +11290,67 @@
           const v = row[idx(k)];
           return h('td', { class:'right tnum' }, v == null ? '' : k === 'snap_pct' ? `${Math.round(v * 100)}%` : String(v));
         }))))) : null;
+    // Box score or Advanced. The advanced rows are usage-weekly.js, so only when it is this season.
+    const U = window.USAGE_WEEKLY, uw = U && U.season === A.season && U.players[String(sleeper.id)];
+    const oppOf = new Map((me.wk || []).map(row => [row[idx('week')], row[idx('opp')]]));
+    const views = { box:log, adv:uw && uw.w.length ? cardAdvLog(U, uw, pos, oppOf) : null };
+    const hold = h('div', { class:'tbl-scroll' });
+    const viewBtns = views.box && views.adv ? h('span', { class:'sos-position-tabs adv-log-views', role:'group', 'aria-label':'Game log view' },
+      ...[['box', 'Box score'], ['adv', 'Advanced']].map(([k, l]) => h('button', { type:'button', class:'ghost', dataset:{ view:k },
+        onclick:() => { CARD_LOG_VIEW = k; showLog(); } }, l))) : null;
+    const showLog = () => {
+      const k = views[CARD_LOG_VIEW] ? CARD_LOG_VIEW : views.box ? 'box' : 'adv';
+      hold.replaceChildren(views[k]);
+      for (const b of viewBtns ? viewBtns.children : []) {
+        b.classList.toggle('active', b.dataset.view === k);
+        b.setAttribute('aria-pressed', String(b.dataset.view === k));
+      }
+    };
+    if (views.box || views.adv) showLog();
     return h('div', { class:'card adv-card' },
       h('div', { class:'card-title' }, `Advanced, ${A.season} through week ${A.throughWeek}`),
       cells.length ? h('div', { class:'adv-grid' }, ...cells) : null,
-      log ? h('div', { class:'card-title', style:{ marginTop:'10px' } }, 'Game log') : null,
-      log,
+      views.box || views.adv ? h('div', { class:'card-title', style:{ marginTop:'10px' } }, 'Game log') : null,
+      viewBtns,
+      views.box || views.adv ? hold : null,
       h('div', { class:'tip', style:{ marginTop:'6px' } },
         `Ranks are among ${pos}s with a real share of the work. (est) columns are estimates. `,
         h('a', { href:`#stats/${pos}` }, 'Open Stats Lab'),
         RT_POS.includes(pos) ? [' · ', h('a', { href:'#stats/Routes', class:'rt-card-link', onclick:() => rtOpenFor(sleeper.id) }, 'Targeted route tree')] : null));
+  }
+
+  // Injury history on the Context tab, under career availability, from
+  // injury-history.js (build_injury_history.py). About 400 KB, so it loads when a
+  // card opens, never at first paint. Newest season first; older than two collapsed.
+  const INJ_PRACTICE = { 'Full Participation in Practice':'Full', 'Limited Participation in Practice':'Limited',
+    'Did Not Participate In Practice':'DNP', 'Out (Definitely Will Not Play)':'Out' };
+  function injuryHistoryBlock(sleeper) {
+    if (!sleeper) return null;
+    const title = () => h('div', { class:'card-title' }, 'Injury history');
+    const card = h('div', { class:'card adv-card inj-card', dataset:{ sid:String(sleeper.id) } }, title(), h('div', { class:'muted' }, 'Loading...'));
+    loadSeasonScript('injury-history.js', () => window.INJURY_HISTORY).then(() => {
+      const H = window.INJURY_HISTORY, seasons = H.players[String(sleeper.id)] || [];
+      // Q, D and P as on the injury chip, so the injury column keeps the width on a phone.
+      const status = (s) => s ? h('span', { class:`badge injury${OUT_INJURY.has(s) ? ' injury-out' : ''}`, title:s },
+        { Questionable:'Q', Doubtful:'D', Probable:'P' }[s] || s) : '';
+      const quads = (a) => Array.from({ length:a.length / 4 }, (_, j) => a.slice(j * 4, j * 4 + 4));
+      card.dataset.seasons = String(seasons.length);
+      card.replaceChildren(title(),   // replaceChildren prints a null, so the empty state is spread in
+        ...(seasons.length ? [] : [h('div', { class:'muted inj-empty' }, sleeper.exp === 0 ? 'No NFL injury report listings yet.'
+          : `No NFL injury report listings on record, ${H.seasons[0]} to ${H.seasons[1]}.`)]),
+        ...seasons.map(([yr, listed, out, part, rows], i) => h('details', { class:'inj-season', open:i < 2 ? '' : null, dataset:{ season:String(yr) } },
+          h('summary', null, h('strong', null, String(yr)), `  ${listed} week${listed === 1 ? '' : 's'} listed · ${out} Out`,
+            part ? ` · mostly ${H.injury[part]}` : ''),
+          h('div', { class:'tbl-scroll' }, h('table', { class:'data adv-log' },
+            h('thead', null, h('tr', null, h('th', null, 'Wk'), h('th', null, 'Status'), h('th', null, 'Practice'), h('th', null, 'Injury'))),
+            h('tbody', null, ...quads(rows).map(([w, s, p, inj]) => h('tr', null,
+              h('td', { class:'tnum' }, H.post[w] || String(w)),
+              h('td', null, status(H.status[s])),
+              h('td', { title:H.practice[p] }, INJ_PRACTICE[H.practice[p]] || H.practice[p]),
+              h('td', { class:'inj-name', title:H.injury[inj] }, H.injury[inj].replace(/^Not injury related\s*-+\s*/i, 'Not injury: '))))))))),
+        h('div', { class:'tip' }, 'Weekly NFL injury reports. A player on injured reserve is off the report, so IR weeks are not listed.'));
+    }).catch(() => card.replaceChildren(title(), h('div', { class:'muted' }, 'injury-history.js did not load. Run projections/build_injury_history.py.')));
+    return card;
   }
 
   // Season fantasy projection for the modal: pts from every source + the

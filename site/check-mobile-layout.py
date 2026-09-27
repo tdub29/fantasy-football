@@ -205,12 +205,18 @@ def check(widths: list[int]) -> int:
                 page.evaluate("name => openPlayerDetail(name)", player)
                 page.click(f".modal .pm-tab-bar button:has-text('{tab}')")
                 page.wait_for_timeout(400)
+                # Injury history loads its own file when the card opens.
+                page.wait_for_selector(".modal .inj-card[data-seasons]", timeout=8000)
                 bad += measure(f"card {player} {tab}", ".modal")
                 # The Production tab carries his field map (run gaps for an RB),
                 # which loads after the card opens.
                 page.click(".modal .pm-tab-bar button:has-text('Production')")
                 page.wait_for_selector(".modal .loc-card .loc-gap", timeout=8000)
                 bad += measure(f"card {player} Production map", ".modal")
+                page.click(".modal .adv-log-views button[data-view=adv]")
+                page.wait_for_selector(".modal .adv-log-adv", timeout=4000)
+                bad += measure(f"card {player} Production advanced log", ".modal")
+                page.click(".modal .adv-log-views button[data-view=box]")
                 ctx.close()
             browser.close()
     finally:

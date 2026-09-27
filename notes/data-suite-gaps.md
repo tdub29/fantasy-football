@@ -121,8 +121,8 @@ Downloaded public data this relies on:
 | # | Capability | Status | Evidence on our site | Public source to fill | Downloaded |
 |---|---|---|---|---|---|
 | 52 | Usage and efficiency overview | have | Player card Production tab: `advancedBlock` (12-13 stats with position rank) and `usageWeeksBlock` | n/a | yes |
-| 53 | Game logs with advanced stats | partial | Log has snap%, tgt, rec, yds, TD, car, rush yds, PPR (`logFields`); usage by week adds route% (est), tgt%, 1st-read%, rush%, RZ opp%; no per-game EPA, aDOT, air yards, YPRR | pbp, ftn, snap_counts per week | yes |
-| 54 | Complete injury history | missing | Current chip plus career availability % (`context.js` `availability`) | nflverse injuries 2009-2026 | yes |
+| 53 | Game logs with advanced stats | shipped 2026-09-26 | Card game log Box score / Advanced toggle: per game Tgt, catchable, aDOT, air yds, TPRR (est), YPRR (est), rec EPA, rush EPA; QBs DB, EPA/DB, CPOE, aDOT (`usage-weekly.js`, `cardAdvLog`) | pbp, ftn, snap_counts per week | yes |
+| 54 | Complete injury history | shipped 2026-09-26 | Card Context tab Injury history: every listed week 2009-2026 with game status, practice status and injury, plus weeks listed, weeks Out and top body part per season (`injury-history.js`, lazy) | nflverse injuries 2009-2026 | yes |
 | 55 | Jump to the player's upcoming matchup | have | Context tab: `matchupLine`, `weatherLine`, `scheduleStrip` | n/a | yes |
 | 56 | Team and coaching pages | partial | Teams tab row per team; staff, turnover and tendencies cards live on the player card; no `#team` route | existing data | yes |
 
@@ -229,6 +229,12 @@ line. Linked from the player card matchup line and the SOS grid.
 **Fix:** per-game EPA, aDOT, air yards, route% (est), TPRR (est), YPRR (est) and first-read share
 in the card log; an injury history section (season, week, report status, practice status, body
 part) from nflverse injuries 2009-2026, lazy-loaded.
+**Shipped 2026-09-26** (branch `feat-ds-gamelogs`, task t-1790320164582): `projections/build_weekly_splits.py` adds the
+per-game advanced fields to `usage-weekly.js` (a `q` row per game for passers) and its `--self-check` adds every player's
+weeks back up to advanced.js; `projections/build_injury_history.py` writes `site/data/injury-history.js` (about 400 KB, 94 KB
+gzipped, loaded when a card opens). Both run in `build_all.py` with their self-checks. Rows 53 and 54 are now "have"; 39
+stays partial (the history is there, stat splits by practice status are not built). IR weeks are not on injury reports, so
+they are not listed. Guarded by `player-card-advanced-log` and `player-card-injury-history` in `.agents/feature-map.json`.
 
 ### Not fixable key-free: low, no task
 
