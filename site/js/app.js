@@ -2218,7 +2218,7 @@
         const ss = rosterSurplusShortage(getRosterPlayers(me), lg);
         const needs = ['QB','RB','WR','TE'].map(p => ({ p, s: ss[p]?.surplus ?? 0 })).filter(x => x.s <= -1).sort((a, b) => a.s - b.s);
         const rec = `${me.wins || 0}-${me.losses || 0}${me.ties ? '-' + me.ties : ''}`;
-        const format = lg.platform === 'espn' ? 'ESPN redraft' : lg.type === 0 ? 'Redraft' : lg.is_superflex ? 'Superflex' : lg.is_idp ? 'IDP' : '1QB';
+        const format = lg.platform === 'espn' || lg.type === 0 ? 'Redraft' : lg.is_superflex ? 'Superflex' : lg.is_idp ? 'IDP' : '1QB';
         return { lg, me, rank, pv, fv, dyn, format, stance: dyn ? rosterStance(me, lg) : null, need: needs.map(n => n.p).join('/') || '·', rec };
       });
       main.appendChild(h('div', { class:'card leagues-table-card' },
