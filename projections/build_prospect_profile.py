@@ -49,14 +49,20 @@ ALL_DRILLS = ("forty", "bench", "vertical", "broad_jump", "cone", "shuttle")
 PFR_TEAM = {"GNB": "GB", "KAN": "KC", "LVR": "LV", "NOR": "NO", "NWE": "NE", "SFO": "SF",
             "TAM": "TB", "SDG": "SD", "RAM": "STL", "STL": "STL", "OAK": "OAK"}
 
-def fetch(tag: str, name: str) -> pathlib.Path:
-    """Cached download. A failed refresh keeps the copy on disk and says so."""
-    CACHE.mkdir(parents=True, exist_ok=True)
-    p = CACHE / name
-    fresh = p.exists() and (time.time() - p.stat().st_mtime) / 3600 < MAX_AGE_H
+def fetch(tag: str, name: str, base: str = BASE, cache: pathlib.Path | None = None,
+          max_age_h: float = MAX_AGE_H) -> pathlib.Path:
+    """Cached download. A failed refresh keeps the copy on disk and says so.
+
+    base/cache/max_age_h let build_prospect_model.py reuse this for the
+    sportsdataverse college releases, where a closed season never changes
+    (max_age_h=inf keeps it forever)."""
+    cache = cache or CACHE
+    cache.mkdir(parents=True, exist_ok=True)
+    p = cache / name
+    fresh = p.exists() and (time.time() - p.stat().st_mtime) / 3600 < max_age_h
     if not fresh:
         try:
-            req = urllib.request.Request(f"{BASE}/{tag}/{name}", headers={"User-Agent": "Mozilla/5.0"})
+            req = urllib.request.Request(f"{base}/{tag}/{name}", headers={"User-Agent": "Mozilla/5.0"})
             with urllib.request.urlopen(req, timeout=120) as r:
                 tmp = p.with_suffix(".part")
                 tmp.write_bytes(r.read())
