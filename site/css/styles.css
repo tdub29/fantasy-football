@@ -5861,6 +5861,14 @@ button:disabled { cursor: wait; opacity: 0.7; }
 .adv-stat-value { font-size: 1rem; font-weight: 700; }
 .adv-stat-rank { font-size: 0.62rem; color: var(--fg-3); }
 .adv-log { font-size: 12px; }
+.adv-log-views { margin: 0 0 8px; }
+/* Injury history: one disclosure per season, the two newest open. */
+.inj-season { margin-top: 6px; }
+.inj-season > summary { cursor: pointer; font-size: 0.85rem; color: var(--fg-1); padding: 4px 0; }
+.inj-season[open] > summary { margin-bottom: 4px; }
+/* Four columns that fit a 390px card with no sideways scroll. */
+.inj-card .adv-log :is(th, td) { padding: 5px 8px; }
+.inj-card td.inj-name { white-space: normal; min-width: 7em; }
 .stats-lab-season { background: var(--bg-1, #fff); padding: 4px 8px; border-radius: 8px; font-size: 0.8rem; }
 .weather-line { font-size: 0.85rem; }
 .weather-flag { border-color: var(--red); }

@@ -27,14 +27,22 @@ Two things are estimates, same caveat as the season builder:
     on the play, whichever offensive or defensive player the ball came off
     of that snap; only skill-position rows survive into the output.
 
+The player card's Advanced game log reads the same rows: per game receiving
+and rushing EPA, aDOT, rec yards, catchable targets (FTN), TPRR and YPRR
+(est, over routes_est), and for anyone who dropped back a separate "q" row
+per game: dropbacks, EPA/DB, CPOE and aDOT, each with the weight the season
+number uses, so --self-check can add the weeks back up to advanced.js.
+
     python projections/build_weekly_splits.py
     python projections/build_weekly_splits.py --self-check
+    python projections/build_weekly_splits.py --cache D:/nflverse-cache --offline
 """
 from __future__ import annotations
 
 import argparse
 import datetime as dt
 import json
+import os
 import pathlib
 import sys
 import time
@@ -44,7 +52,10 @@ import numpy as np
 import pandas as pd
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-CACHE = ROOT / "projections" / "nflverse-cache"
+# The cache can live outside this checkout (a git worktree reads the main
+# checkout's): --cache, then NFLVERSE_CACHE, then the repo-relative default.
+CACHE = pathlib.Path(os.environ.get("NFLVERSE_CACHE") or ROOT / "projections" / "nflverse-cache")
+OFFLINE = False
 OUT = ROOT / "site" / "data" / "usage-weekly.js"
 BASE = "https://github.com/nflverse/nflverse-data/releases/download"
 MAX_AGE_H = 6.0
@@ -53,7 +64,11 @@ TEAM_FIX = {"LA": "LAR"}
 
 FIELDS = ["week", "snap_pct", "routes_est", "route_rate_est", "targets", "target_share",
           "air_yards", "air_share", "first_read_share", "carries", "rush_share",
-          "rz_opps", "rz_opp_share", "gl_carries", "ppr_pts"]
+          "rz_opps", "rz_opp_share", "gl_carries", "ppr_pts",
+          "rec_yds", "rec_epa", "adot", "tprr_est", "yprr_est", "catchable", "rush_epa"]
+# Passer rows, only for a player who dropped back: most rows are not QBs, and a
+# null in every one of them would be most of the file.
+Q_FIELDS = ["week", "dropbacks", "db_epa", "cpoe", "cpoe_n", "pass_adot", "pass_att"]
 
 FIELD_DESC = {
     "week": "NFL week number.",
@@ -76,6 +91,19 @@ FIELD_DESC = {
     "gl_carries": "Carries inside the 5 that game.",
     "ppr_pts": "PPR fantasy points that game: 1/reception, 0.1/yd rec+rush, 6/TD rec+rush, "
                "0.04/pass yd, 4/pass TD, -2/INT, -2/fumble lost.",
+    "rec_yds": "Receiving yards that game (play-by-play).",
+    "rec_epa": "Expected points added on his targets that game (sum).",
+    "adot": "Average depth of target that game: air yards over targets.",
+    "tprr_est": "Targets per estimated route run that game; blank under 5 estimated routes.",
+    "yprr_est": "Receiving yards per estimated route run that game; blank under 5 estimated routes.",
+    "catchable": "Targets FTN charted as catchable that game; blank when FTN has not charted the game yet.",
+    "rush_epa": "Expected points added on his carries that game (sum).",
+    "dropbacks": "Dropbacks that game (passes, sacks and scrambles).",
+    "db_epa": "Expected points added per dropback that game.",
+    "cpoe": "Completion % over expected that game, over the throws nflverse's model priced.",
+    "cpoe_n": "Throws with a CPOE value that game: the weight for adding weeks together.",
+    "pass_adot": "Air yards per pass attempt that game; nflverse counts a sack as an attempt, as advanced.js does.",
+    "pass_att": "Pass attempts that game, sacks included: the weight for adding pass_adot weeks together.",
 }
 
 
@@ -89,9 +117,14 @@ def season_now() -> int:
 
 
 def fetch(tag: str, name: str, max_age_h: float = MAX_AGE_H) -> pathlib.Path:
-    """Cached download. A failed refresh keeps the copy on disk and says so."""
-    CACHE.mkdir(parents=True, exist_ok=True)
+    """Cached download. A failed refresh keeps the copy on disk and says so.
+    --offline reads the cache only and never writes to it."""
     p = CACHE / name
+    if OFFLINE:
+        if not p.exists():
+            raise SystemExit(f"{name}: not in {CACHE} and --offline is set")
+        return p
+    CACHE.mkdir(parents=True, exist_ok=True)
     fresh = p.exists() and (time.time() - p.stat().st_mtime) / 3600 < max_age_h
     if not fresh:
         try:
@@ -120,8 +153,8 @@ def optional(label: str, fn):
         return pd.DataFrame()
 
 
-def num(x):
-    """JSON-safe number, rounded to 3 decimals. NaN/inf become None."""
+def num(x, nd=3):
+    """JSON-safe number, rounded to nd decimals. NaN/inf become None."""
     if x is None:
         return None
     try:
@@ -130,7 +163,8 @@ def num(x):
         return None
     if not np.isfinite(f):
         return None
-    return int(f) if f.is_integer() and abs(f) < 1e9 else round(f, 3)
+    f = round(f, nd)
+    return int(f) if f.is_integer() and abs(f) < 1e9 else f
 
 
 def safe_div(a, b):
@@ -175,11 +209,12 @@ def player_week_table(season: int) -> tuple[pd.DataFrame, int]:
 
     ftn = optional("FTN charting", lambda: read("ftn_charting", f"ftn_charting_{season}.parquet"))
     if ftn.empty:
-        ftn = pd.DataFrame(columns=["nflverse_game_id", "nflverse_play_id", "read_thrown"])
+        ftn = pd.DataFrame(columns=["nflverse_game_id", "nflverse_play_id", "read_thrown", "is_catchable_ball"])
     ftn = ftn.rename(columns={"nflverse_game_id": "game_id", "nflverse_play_id": "play_id"})
     ftn["play_id"] = ftn["play_id"].astype(float)
     p["play_id"] = p["play_id"].astype(float)
-    p = p.merge(ftn[["game_id", "play_id", "read_thrown"]], on=["game_id", "play_id"], how="left")
+    p = p.merge(ftn[["game_id", "play_id", "read_thrown", "is_catchable_ball"]], on=["game_id", "play_id"], how="left")
+    p["is_catchable_ball"] = p["is_catchable_ball"].astype(float)
     has_read = p["read_thrown"].isin(["1", "2", "CHK", "SD", "DES"])
     p["first_read"] = np.where(has_read, (p["read_thrown"] == "1").astype(float), np.nan)
 
@@ -214,14 +249,26 @@ def player_week_table(season: int) -> tuple[pd.DataFrame, int]:
     rec_wk = t.groupby(["gsis_id", "game_id"]).agg(
         targets=("play_id", "size"), air_yards=("air_yards", "sum"),
         rz_targets=("rz", "sum"), first_read_targets=("fr", "sum"),
+        rec_yds=("receiving_yards", "sum"), rec_epa=("epa", "sum"),
+        # sum of an all-NaN group is NaN (min_count), so an uncharted game stays blank
+        catchable=("is_catchable_ball", lambda s: s.sum(min_count=1)),
         posteam=("posteam", "last"),
     )
     r = r.rename(columns={"rusher_player_id": "gsis_id"})
     rush_wk = r.groupby(["gsis_id", "game_id"]).agg(
         carries=("play_id", "size"), rz_carries=("rz", "sum"),
         gl_carries=("yardline_100", lambda s: int((s <= 5).sum())),
+        rush_epa=("epa", "sum"),
         posteam=("posteam", "last"),
     )
+    # Passing, with the same filter as the suite's season line (a dropback with a passer).
+    q = p[p["passer_player_id"].notna() & (p["qb_dropback"] == 1)].rename(columns={"passer_player_id": "gsis_id"})
+    q_wk = q.groupby(["gsis_id", "game_id"]).agg(
+        dropbacks=("play_id", "size"), db_epa=("epa", "mean"), cpoe=("cpoe", "mean"),
+        cpoe_n=("cpoe", "count"), pass_att=("pass_attempt", "sum"), pass_air=("air_yards", "sum"),
+        posteam=("posteam", "last"),
+    )
+    q_wk["pass_adot"] = safe_div(q_wk["pass_air"], q_wk["pass_att"])
 
     # ---- PPR points, scored per role then summed per (player, game) ----
     p["rec_pts"] = np.where(p["receiver_player_id"].notna() & (p["pass_attempt"] == 1),
@@ -264,9 +311,21 @@ def player_week_table(season: int) -> tuple[pd.DataFrame, int]:
     snaps["route_rate_est"] = safe_div(snaps["routes_est"], snaps["team_db"])
 
     df = snaps.set_index(["gsis_id", "game_id"])
-    df = df.join(rec_wk[["targets", "air_yards", "rz_targets", "first_read_targets"]], how="left")
-    df = df.join(rush_wk[["carries", "rz_carries", "gl_carries"]], how="left")
-    for c in ("targets", "air_yards", "rz_targets", "first_read_targets", "carries", "rz_carries", "gl_carries"):
+    # A game play-by-play has and snap_counts has not posted yet (Thursday night,
+    # the morning after) still gets its row, snaps blank, so the log adds up to
+    # advanced.js, whose counting stats come from play-by-play.
+    act = pd.concat([rec_wk[["posteam"]], rush_wk[["posteam"]], q_wk[["posteam"]]])
+    act = act[~act.index.duplicated() & act.index.get_level_values(0).isin(meta.index)]
+    extra = act.loc[act.index.difference(df.index)].rename(columns={"posteam": "team"})
+    if len(extra):
+        extra["week"] = extra.index.get_level_values(1).map(p.groupby("game_id")["week"].first())
+        extra["position"] = extra.index.get_level_values(0).map(meta["position"])
+        df = pd.concat([df, extra])
+    df = df.join(rec_wk[["targets", "air_yards", "rz_targets", "first_read_targets", "rec_yds", "rec_epa", "catchable"]], how="left")
+    df = df.join(rush_wk[["carries", "rz_carries", "gl_carries", "rush_epa"]], how="left")
+    df = df.join(q_wk[["dropbacks", "db_epa", "cpoe", "cpoe_n", "pass_adot", "pass_att"]], how="left")
+    for c in ("targets", "air_yards", "rz_targets", "first_read_targets", "carries", "rz_carries", "gl_carries",
+              "rec_yds", "rec_epa", "rush_epa"):
         df[c] = df[c].fillna(0)
     df["ppr_pts"] = ppr_wk.reindex(df.index).fillna(0)
     df = df.reset_index()
@@ -284,6 +343,11 @@ def player_week_table(season: int) -> tuple[pd.DataFrame, int]:
     df["rz_opp_share"] = safe_div(df["rz_opps"], df["team_rz_opps"])
     df["first_read_share"] = safe_div(df["first_read_targets"], df["team_fr_targets"])
     df["snap_pct"] = df["offense_pct"]
+    df["adot"] = safe_div(df["air_yards"], df["targets"])
+    # Same 5-route floor as the season number, per game.
+    routes = df["routes_est"].where(df["routes_est"] >= 5)
+    df["tprr_est"] = safe_div(df["targets"], routes)
+    df["yprr_est"] = safe_div(df["rec_yds"], routes)
 
     df = df.join(meta[["sleeper_id", "full_name", "team"]].rename(columns={"team": "cur_team"}), on="gsis_id")
     return df, through_week
@@ -298,14 +362,19 @@ def build(season: int) -> dict:
         if sid is None or (isinstance(sid, float) and np.isnan(sid)):
             continue
         sid = str(sid).split(".")[0]
-        weeks_rows = []
+        weeks_rows, q_rows = [], []
         for _, r in g.iterrows():
             weeks_rows.append([
                 int(r["week"]), num(r["snap_pct"]), num(r["routes_est"]), num(r["route_rate_est"]),
                 num(r["targets"]), num(r["target_share"]), num(r["air_yards"]), num(r["air_share"]),
                 num(r["first_read_share"]), num(r["carries"]), num(r["rush_share"]), num(r["rz_opps"]),
                 num(r["rz_opp_share"]), num(r["gl_carries"]), num(r["ppr_pts"]),
+                num(r["rec_yds"]), num(r["rec_epa"]), num(r["adot"], 1), num(r["tprr_est"], 2),
+                num(r["yprr_est"], 2), num(r["catchable"]), num(r["rush_epa"]),
             ])
+            if r["dropbacks"] > 0:
+                q_rows.append([int(r["week"]), num(r["dropbacks"]), num(r["db_epa"]), num(r["cpoe"], 2),
+                               num(r["cpoe_n"]), num(r["pass_adot"]), num(r["pass_att"])])
 
         def series(key: str):
             idx = FIELDS.index(key)
@@ -335,6 +404,8 @@ def build(season: int) -> dict:
             "t": TEAM_FIX.get(row0["cur_team"], row0["cur_team"]),
             "w": weeks_rows, "last3": last3, "trend": trend, "flags": flags,
         }
+        if q_rows:
+            players[sid]["q"] = q_rows
 
     return {
         "generated": dt.datetime.now().isoformat(timespec="seconds"),
@@ -342,13 +413,14 @@ def build(season: int) -> dict:
         "throughWeek": through_week,
         "source": "nflverse-data (play-by-play, snap counts, FTN charting, rosters)",
         "fields": FIELDS,
+        "qFields": Q_FIELDS,
         "fieldDesc": FIELD_DESC,
         "players": players,
     }
 
 
 # --------------------------------------------------------------------------
-# Self-check: synthetic, no network/cache required.
+# Self-check: synthetic asserts, then the written log added up against advanced.js.
 # --------------------------------------------------------------------------
 def self_check() -> int:
     # PPR: a QB throws a 12-yard TD (passer +4+0.48, receiver +1+1.2+6),
@@ -379,17 +451,101 @@ def self_check() -> int:
 
     # num() must never leak NaN/inf into JSON.
     assert num(float("nan")) is None and num(float("inf")) is None and num(3.0) == 3
-    assert num(0.123456) == 0.123
+    assert num(0.123456) == 0.123 and num(1.26, 1) == 1.3 and num(2.0004) == 2
 
+    bad = log_vs_advanced()
+    if bad:
+        return 1
     print("build_weekly_splits self-check ok")
     return 0
 
 
+def load_js(path: pathlib.Path) -> dict:
+    txt = path.read_text(encoding="utf-8")
+    return json.loads(txt[txt.index("={") + 1:].rstrip().rstrip(";"))
+
+
+# "Within rounding": half a unit of the precision each stat is shown at.
+TOL = {"games": 0, "targets": 0, "carries": 0, "dropbacks": 0, "air_yds": 0.5, "adot": 0.05,
+       "yds_per_target": 0.05, "epa_per_target": 0.005, "epa_per_rush": 0.005, "catchable_rate": 0.0005,
+       "tprr_est": 0.005, "yprr_est": 0.005, "db_epa": 0.005, "cpoe": 0.05, "pass_adot": 0.05}
+
+
+def log_totals(v: dict, fields: list, qfields: list) -> dict:
+    """The season line the written weekly log adds up to, with advanced.js's names."""
+    w = [dict(zip(fields, r)) for r in v["w"]]
+    q = [dict(zip(qfields, r)) for r in v.get("q", [])]
+    s = lambda rows, k: sum(r[k] or 0 for r in rows)
+    div = lambda a, b: a / b if b else None
+    wavg = lambda k, n: div(sum((r[k] or 0) * (r[n] or 0) for r in q if r[k] is not None), sum(r[n] or 0 for r in q if r[k] is not None))
+    tgt, car = s(w, "targets"), s(w, "carries")
+    charted = [r for r in w if r["catchable"] is not None]
+    # Routes: undo each week's calibration, then apply the season one, as the suite does.
+    snaps = [r["snap_pct"] for r in w if r["snap_pct"] is not None]
+    pos = np.array([v["p"]])
+    raw = sum(r["routes_est"] / calibration_mult(pos, np.array([r["snap_pct"]]))[0]
+              for r in w if r["routes_est"] is not None)
+    routes = raw * calibration_mult(pos, np.array([np.mean(snaps) if snaps else 0.0]))[0]
+    return {
+        "games": len(snaps), "targets": tgt, "carries": car, "air_yds": s(w, "air_yards"),
+        "adot": div(s(w, "air_yards"), tgt), "yds_per_target": div(s(w, "rec_yds"), tgt),
+        "epa_per_target": div(s(w, "rec_epa"), tgt), "epa_per_rush": div(s(w, "rush_epa"), car),
+        "catchable_rate": div(s(charted, "catchable"), s(charted, "targets")),
+        # advanced.js leaves both null for a player never targeted, not 0.
+        "tprr_est": div(tgt, routes) if routes >= 5 and tgt else None,
+        "yprr_est": div(s(w, "rec_yds"), routes) if routes >= 5 and tgt else None,
+        "dropbacks": s(q, "dropbacks"), "db_epa": wavg("db_epa", "dropbacks"),
+        "cpoe": wavg("cpoe", "cpoe_n"), "pass_adot": wavg("pass_adot", "pass_att"),
+    }
+
+
+def log_vs_advanced() -> int:
+    """Every player's written weekly log, added up, against advanced.js for the same season."""
+    if not OUT.exists():
+        print(f"  {OUT.name} missing, run the builder first")
+        return 1
+    U = load_js(OUT)
+    season = U["season"]
+    ap = OUT.parent / ("advanced.js" if season == season_now() else f"advanced-{season}.js")
+    if not ap.exists():
+        print(f"  {ap.name} missing, run build_nflverse_suite.py first")
+        return 1
+    A = load_js(ap)
+    counts = ("games", "targets", "carries", "dropbacks", "air_yds")
+    bad = checked = 0
+    for sid, a in A["players"].items():
+        v = U["players"].get(sid)
+        if v is None:
+            if (a.get("targets") or 0) + (a.get("carries") or 0) + (a.get("dropbacks") or 0) > 0:
+                bad += 1
+                print(f"  MISSING {a['n']} ({sid}): in {ap.name} with volume, not in {OUT.name}")
+            continue
+        checked += 1
+        mine = log_totals(v, U["fields"], U["qFields"])
+        for k, tol in TOL.items():
+            want, have = a.get(k), mine.get(k)
+            if k in counts:
+                want, have = want or 0, have or 0   # a count that never happened is null in advanced.js
+            if want is None and have is None:
+                continue
+            if want is None or have is None or abs(want - have) > tol + 1e-9:
+                bad += 1
+                print(f"  MISMATCH {season} {a['p']} {a['n']}: {k} advanced={want} log={have}")
+    print(f"build_weekly_splits self-check: {checked} players' logs vs {ap.name}, {bad} problem(s)")
+    return bad
+
+
 def main() -> int:
+    global CACHE, OFFLINE
     ap = argparse.ArgumentParser()
     ap.add_argument("--season", type=int, default=season_now())
+    ap.add_argument("--cache", help="nflverse cache directory (default: NFLVERSE_CACHE or projections/nflverse-cache)")
+    ap.add_argument("--offline", action="store_true", help="read the cache only; never download")
     ap.add_argument("--self-check", action="store_true")
     a = ap.parse_args()
+    if a.cache:
+        CACHE = pathlib.Path(a.cache)
+    OFFLINE = a.offline
     if a.self_check:
         return self_check()
     data = build(a.season)

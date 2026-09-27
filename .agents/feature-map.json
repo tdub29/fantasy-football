@@ -1705,6 +1705,127 @@
       "notes": "projections/build_location_splits.py writes site/data/location-YYYY.js (counts only, lazy-loaded): per QB his dropbacks and per receiver his targets by pass_location x depth band (behind the line, 0-9, 10-19, 20+ air yards) with completions, yards, EPA and FTN catchable counts; per RB his carries by run_location x run_gap. Extra cells (no charted spot, sacks, no charted gap) make every grid add back to advanced.js, which --self-check proves for every player. The card opens the map on the newest season he has one for; season buttons switch it in place. The assert requires each map's charted total to equal the payload's cells for the season and player the card names, 20 grid cells, 7 gap arrows, and a season switch that redraws from the other season's file."
     },
     {
+      "id": "player-card-injury-history",
+      "name": "Player card Context tab: injury history by season from injury-history.js, lazy-loaded, two newest seasons open, rookie empty state",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "location.hash='#rankings'"
+        },
+        {
+          "sleepMs": 1500
+        },
+        {
+          "eval": "openPlayerDetail('Christian McCaffrey')"
+        },
+        {
+          "click": ".modal .pm-tab-bar button:has-text('Context')"
+        },
+        {
+          "waitFor": ".modal .inj-card[data-seasons]",
+          "timeoutMs": 20000
+        },
+        {
+          "eval": "window.__ih = (() => { const c = document.querySelector('.modal .inj-card'), H = window.INJURY_HISTORY, want = H.players[c.dataset.sid] || []; const ds = [...c.querySelectorAll('details.inj-season')]; const tags = [...document.querySelectorAll('script[src$=\"injury-history.js\"]')]; return { n: ds.length, want: want.length, years: ds.map(d => +d.dataset.season), wantYears: want.map(s => s[0]), open: ds.map(d => d.open), rows: ds.map(d => d.querySelectorAll('tbody tr').length), wantRows: want.map(s => s[4].length / 4), sums: ds.map(d => d.querySelector('summary').textContent), wantSums: want.map(s => `${s[1]} week${s[1] === 1 ? '' : 's'} listed · ${s[2]} Out`), lazy: tags.length === 1 && tags[0].parentElement === document.head, stray: /\\b(null|undefined|NaN)\\b/.test(c.textContent) }; })(); true;"
+        },
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 300
+        },
+        {
+          "eval": "(() => { const H = window.INJURY_HISTORY, A = window.ADVANCED.players; const r = Object.values(window.PLAYERS).find(p => p && p.exp === 0 && A[p.id] && !H.players[p.id]); window.__ih.rookie = r ? r.id : null; if (r) openPlayerDetail(r.name, r.id); })(); true;"
+        },
+        {
+          "click": ".modal .pm-tab-bar button:has-text('Context')"
+        },
+        {
+          "waitFor": ".modal .inj-card[data-seasons]",
+          "timeoutMs": 20000
+        },
+        {
+          "eval": "window.__ih.rk = (() => { const c = document.querySelector('.modal .inj-card'); return { sid: c.dataset.sid, seasons: c.dataset.seasons, empty: !!c.querySelector('.inj-empty'), details: c.querySelectorAll('details').length, stray: /\\b(null|undefined|NaN)\\b/.test(c.textContent) }; })(); true;"
+        }
+      ],
+      "selector": ".modal .inj-card",
+      "assert": "(() => { const m = window.__ih; if (!m || !m.rk) return false; const eq = (a, b) => JSON.stringify(a) === JSON.stringify(b); return m.lazy && !m.stray && !m.rk.stray && m.n >= 5 && m.n === m.want && eq(m.years, m.wantYears) && m.years.every((y, i) => !i || y < m.years[i - 1]) && m.open.every((o, i) => o === (i < 2)) && eq(m.rows, m.wantRows) && m.sums.every((s, i) => s.includes(m.wantSums[i])) && !!m.rookie && m.rk.sid === m.rookie && m.rk.seasons === '0' && m.rk.empty && m.rk.details === 0; })()",
+      "notes": "Data Suite gap cluster G (task t-1790320164582). projections/build_injury_history.py reads historical/injuries/2009-2025.csv plus the nflverse injuries 2024-2026 parquet (the parquet wins for any season it has), keys each gsis_id to Sleeper through the 2024-2026 nflverse rosters, and writes site/data/injury-history.js: per player per season every listed week (game status, practice status, primary injury, playoff games as WC/DIV/CON/SB) and a season line (weeks listed, weeks Out, most frequent body part, rest and illness excluded). About 400 KB, so injuryHistoryBlock() loads it through loadSeasonScript when a card opens, never from index.html; the lazy clause checks its one script tag is the one loadSeasonScript appends to head (index.html loads its data in body), and --self-check fails if index.html ever names the file. The assert requires McCaffrey's seasons, order, open state (two newest open), row counts and summary counts to equal the payload, and a 2026 rookie with no listing to render the empty state with no season rows. --self-check decodes the file back to the source listings. IR weeks are not on injury reports, so a season on IR shows few listed weeks; the card says so."
+    },
+    {
+      "id": "player-card-advanced-log",
+      "name": "Player card Production tab: game log Box score / Advanced toggle, advanced rows match usage-weekly.js",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "location.hash='#rankings'"
+        },
+        {
+          "sleepMs": 1500
+        },
+        {
+          "eval": "openPlayerDetail('Christian McCaffrey')"
+        },
+        {
+          "click": ".modal .pm-tab-bar button:has-text('Production')"
+        },
+        {
+          "click": ".modal .adv-log-views button[data-view=adv]"
+        },
+        {
+          "waitFor": ".modal .adv-log-adv",
+          "timeoutMs": 10000
+        },
+        {
+          "eval": "window.__al = {}; window.__alCap = (a, b, kind) => { const t = document.querySelector('.modal .adv-log-adv'), U = window.USAGE_WEEKLY, sid = document.querySelector('.modal .inj-card').dataset.sid, v = U.players[sid], F = U.fields; const heads = [...t.querySelectorAll('thead th')].map(th => th.textContent), trs = [...t.querySelectorAll('tbody tr')]; const col = (l) => trs.map(tr => tr.children[heads.indexOf(l)].textContent), q = (w) => (v.q || []).find(x => x[0] === w); const W = { rb: [(r) => String(r[F.indexOf('targets')]), (r) => r[F.indexOf('targets')] ? r[F.indexOf('rec_epa')].toFixed(2) : ''], qb: [(r) => q(r[0]) ? String(q(r[0])[1]) : '', (r) => q(r[0]) ? q(r[0])[2].toFixed(2) : ''] }[kind]; return { heads, rows: trs.length, weeks: col('Wk').map(Number), wantWeeks: v.w.map(r => r[0]), a: col(a), wantA: v.w.map(W[0]), b: col(b), wantB: v.w.map(W[1]), pressed: [...document.querySelectorAll('.modal .adv-log-views button')].map(x => x.dataset.view + ':' + x.getAttribute('aria-pressed')).join(' ') }; }; window.__al.rb = window.__alCap('Tgt', 'Rec EPA', 'rb'); true;"
+        },
+        {
+          "click": ".modal .adv-log-views button[data-view=box]"
+        },
+        {
+          "eval": "window.__al.box = !document.querySelector('.modal .adv-log-adv') && [...document.querySelectorAll('.modal .adv-card thead th')].some(th => th.textContent === 'PPR'); true;"
+        },
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 300
+        },
+        {
+          "eval": "openPlayerDetail('Josh Allen')"
+        },
+        {
+          "click": ".modal .pm-tab-bar button:has-text('Production')"
+        },
+        {
+          "click": ".modal .adv-log-views button[data-view=adv]"
+        },
+        {
+          "waitFor": ".modal .adv-log-adv",
+          "timeoutMs": 10000
+        },
+        {
+          "eval": "window.__al.qb = window.__alCap('DB', 'EPA/DB', 'qb'); true;"
+        },
+        {
+          "click": ".modal .adv-log-views button[data-view=box]"
+        }
+      ],
+      "selector": ".modal .adv-card",
+      "assert": "(() => { const m = window.__al; if (!m || !m.rb || !m.qb) return false; const eq = (a, b) => JSON.stringify(a) === JSON.stringify(b); return m.rb.rows > 0 && eq(m.rb.weeks, m.rb.wantWeeks) && eq(m.rb.a, m.rb.wantA) && eq(m.rb.b, m.rb.wantB) && ['Catchable', 'aDOT', 'Air yds', 'TPRR (est)', 'YPRR (est)', 'Rec EPA', 'Rush EPA'].every(l => m.rb.heads.includes(l)) && m.rb.pressed === 'box:false adv:true' && m.box && m.qb.rows > 0 && eq(m.qb.weeks, m.qb.wantWeeks) && eq(m.qb.a, m.qb.wantA) && eq(m.qb.b, m.qb.wantB) && ['DB', 'EPA/DB', 'CPOE', 'aDOT'].every(l => m.qb.heads.includes(l)); })()",
+      "notes": "Data Suite gap cluster G (task t-1790320164582). projections/build_weekly_splits.py adds per-game rec_yds, rec_epa, adot, tprr_est, yprr_est (5-route floor), FTN catchable targets and rush_epa to usage-weekly.js rows, plus a q row per game for anyone who dropped back (dropbacks, EPA/DB, CPOE, aDOT and their weights); its --self-check adds every player's weeks back up to advanced.js within display rounding (428 players on 2026, 610 on 2025, 0 mismatches). The card's Game log gets Box score / Advanced buttons (advancedBlock, cardAdvLog); the Advanced view only shows when usage-weekly.js is the card's season. The assert requires McCaffrey's advanced rows (weeks, targets, Rec EPA) and Josh Allen's passing rows (DB, EPA/DB) to equal the payload, the (est) labels on TPRR and YPRR, and Box score to bring back the PPR log. It ends on Box score so later cards open the default view."
+    },
+    {
       "id": "stats-lab-routes",
       "name": "Stats Lab Routes tab: two WR route trees side by side, numbers match the payload, paid metrics labeled unavailable",
       "path": [
