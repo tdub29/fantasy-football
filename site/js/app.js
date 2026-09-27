@@ -2690,9 +2690,10 @@
     const standings = h('div', { class:'card standings-list' });
     const sortState = { key:'pv', dir:'desc' };
     const sortBar = h('div', { class:'standings-sort', role:'group', 'aria-label':'Sort standings' });
+    // Redraft has no future lineup, so "future" would sort by the same number.
     const sortOptions = [
-      ['pv', 'Strength now'], ['fv', 'Future strength'], ['record', 'Record'],
-      ['pf', 'Points for'], ['diff', 'Point differential'], ['pa', 'Points against'],
+      ...(lgDynasty ? [['pv', 'Strength now'], ['fv', 'Future strength']] : [['pv', 'Strength']]),
+      ['record', 'Record'], ['pf', 'Points for'], ['diff', 'Point differential'], ['pa', 'Points against'],
     ];
     const sortSelect = h('select', { 'aria-label':'Sort teams by' }, ...sortOptions.map(([key, label]) =>
       h('option', { value:key, selected:key === sortState.key ? '' : null }, label)));
