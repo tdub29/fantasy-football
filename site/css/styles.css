@@ -490,9 +490,11 @@ table.data .expert-rank-col { width: 76px; white-space: nowrap; }
    On a phone it becomes the scroll container so a table wider than the viewport
    scrolls inside itself instead of being clipped by the page's overflow:clip.
    overflow:auto coerces overflow-y to auto too, so max-height gives the sticky
-   thead an internal scrollport to pin against (preserves req #5). */
+   thead an internal scrollport to pin against (preserves req #5).
+   900, not 480: a 402px iPhone at 75% page zoom is 536px wide, and between
+   480 and 900 a wide table was clipped with no way to reach its columns. */
 .tbl-scroll { min-width: 0; }
-@media (max-width: 480px) {
+@media (max-width: 900px) {
   .tbl-scroll {
     overflow: auto;
     max-height: calc(100dvh - 84px);
@@ -4381,7 +4383,13 @@ body::after {
   /* Below this the metrics drop back under the team name rather than squeezing
      five columns into a phone. */
   .strength-row { grid-template-columns: 34px minmax(0, 1fr) 96px 150px; gap: 10px; }
-  .strength-row .strength-detail { grid-column: 2 / -1; gap: 3px 14px; }
+  .strength-row .strength-detail { grid-column: 2 / -1; grid-row: 2; gap: 3px 14px; }
+  /* Pinned, not auto-placed: with the detail spanning row 2, auto-placement put
+     the score in row 3 under the 34px rank column, and its flex-end number spilled
+     off the left edge (a 402px iPhone at 75% page zoom lands here). */
+  .strength-row .score-cell { grid-column: 3; grid-row: 1; }
+  .strength-row .str-traj { grid-column: 4; grid-row: 1; }
+  .strength-row:not(:has(.str-traj)) { grid-template-columns: 34px minmax(0, 1fr) 96px; }
 }
 
 /* --- Standings row type scale ------------------------------------------ */

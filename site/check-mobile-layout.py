@@ -15,7 +15,7 @@ catches them is measuring rendered boxes at phone width, which is what this
 does: any element whose content is wider than its own box is a clip, unless it
 opted into ellipsis or its own scroller.
 
-    python site/check-mobile-layout.py            # 390px, the iPhone baseline
+    python site/check-mobile-layout.py            # 390px baseline + 536px zoomed phone
     python site/check-mobile-layout.py 360 390    # several widths
 """
 from __future__ import annotations
@@ -125,6 +125,9 @@ PROBE = """
     if (cs.display === 'none' || cs.visibility === 'hidden') continue;
     if (e.scrollWidth <= e.clientWidth + 1) continue;
     if (!e.clientWidth) continue;              // zero-width cell: reported below
+    // SVG text reports scrollWidth past clientWidth while drawing whole (route
+    // tree labels at 536px+); that box model is not layout overflow.
+    if (e instanceof SVGElement && e.tagName !== 'svg') continue;
     if (cs.textOverflow === 'ellipsis') continue;
     const cls = (e.className || '').toString();
     if (allowed.some(a => cls.includes(a))) continue;
@@ -132,6 +135,21 @@ PROBE = """
     out.push(cls.split(' ').slice(0, 2).join('.') + ' :: '
              + e.textContent.trim().slice(0, 24) + ' :: '
              + e.scrollWidth + '>' + e.clientWidth);
+  }
+  // Overflow to the LEFT (a flex-end number wider than its column) never shows
+  // in scrollWidth, so the row's own box is the edge a cell must stay inside.
+  for (const row of root.querySelectorAll('.strength-row')) {
+    const b = row.getBoundingClientRect();
+    for (const e of row.querySelectorAll('*')) {
+      const r = e.getBoundingClientRect();
+      if (!r.width || getComputedStyle(e).display === 'none') continue;
+      if (r.left < b.left - 1 || r.right > b.right + 1) {
+        out.push('ROW SPILL :: ' + e.textContent.trim().slice(0, 24) + ' :: '
+                 + Math.round(r.left) + '-' + Math.round(r.right) + ' outside '
+                 + Math.round(b.left) + '-' + Math.round(b.right));
+        break;
+      }
+    }
   }
   // A grid child collapsed to zero width is the column-shift signature.
   for (const e of root.querySelectorAll('.sos-head > *, .strength-detail > *')) {
@@ -224,6 +242,7 @@ def self_check() -> int:
     assert "textOverflow" in PROBE, "ellipsis must be exempt or every name fails"
     assert "ZERO-WIDTH CELL" in PROBE, "the grid column-shift signature is the point"
     assert "CUT-OFF BUTTON" in PROBE, "a filter button behind a hidden scrollbar is a clip"
+    assert "ROW SPILL" in PROBE, "left-edge overflow is invisible to scrollWidth"
     assert "n !== root" in PROBE, "the modal's own scroller must not excuse the card"
     assert "sos-team" in ALLOWED_CLIP
     assert "sos-head" not in " ".join(ALLOWED_CLIP), "captions must never be exempt"
@@ -235,4 +254,6 @@ if __name__ == "__main__":
     args = sys.argv[1:]
     if "--self-check" in args:
         sys.exit(self_check())
-    sys.exit(check([int(a) for a in args] or [390]))
+    # 536 is a 402px iPhone at 75% Safari page zoom: past the 480 phone query,
+    # inside the tablet one, where the standings score once spilled off-screen.
+    sys.exit(check([int(a) for a in args] or [390, 536]))
