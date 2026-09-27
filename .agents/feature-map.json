@@ -562,6 +562,97 @@
       "notes": "Best-available board for a Sleeper draft URL. Without a draft id it shows the paste form, the only state reachable offline; the live board needs the Sleeper API and is deliberately not verified here."
     },
     {
+      "id": "prospects-view",
+      "name": "Prospects: college board by position with round-scenario hit chances",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "location.hash='#prospects/WR'"
+        },
+        {
+          "sleepMs": 600
+        }
+      ],
+      "selector": "#main table.prm-table",
+      "assert": "(() => { const M = window.PROSPECT_MODEL; if (!M || !M.pos.WR) return false; const heads = [...document.querySelectorAll('#main table.prm-table thead th')].map(t => t.textContent.trim().replace(/ [↑↓]$/, '')); const rows = [...document.querySelectorAll('#main table.prm-table tbody tr')]; const full = M.pos.WR.shipped !== 'draft'; if (rows.length < 30 || !['Player', 'Talent', 'Tier', 'Breakout', 'Career YPTPA'].every(x => heads.includes(x))) return false; if (full !== heads.includes('R1')) return false; const cell = (r, lab) => parseInt(r.children[heads.indexOf(lab)].textContent, 10); const ts = rows.map(r => cell(r, 'Talent')); const monotone = !full || rows.every(r => cell(r, 'R1') >= cell(r, 'R2') && cell(r, 'R2') >= cell(r, 'R3') && cell(r, 'R3') >= cell(r, 'Day 3')); return monotone && ts.every((v, i) => i === 0 || v <= ts[i - 1]) && !!rows[0].querySelector('.tier-chip.prm-tier') && document.querySelectorAll('#main .prm-modes button[aria-pressed]').length === 3 && !!document.querySelector('#sidebar a[href=\"#prospects\"]')?.classList.contains('active'); })()",
+      "notes": "#prospects (viewProspects in app.js) over site/data/prospect-model.js, built by projections/build_prospect_model.py. Default sort is the talent score, descending. Where the full model ships (WR today) every row carries Round 1 / 2 / 3 / Day 3 hit chances, and they must fall as the pick gets later: a column that rises with worse capital means the log-pick term flipped sign or the columns were shuffled. If a rebuild demotes WR to the draft-only model the R columns must disappear (the scenario is then the same number for every player and is printed once in the notes card), and this case checks that too rather than failing on it. The sidebar's Prospects link must exist and be lit on a #prospects/<pos> sub-route."
+    },
+    {
+      "id": "prospects-rookies-sort",
+      "name": "Prospects: rookie toggle and sortable hit column",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "location.hash='#prospects/RB/rookies'"
+        },
+        {
+          "sleepMs": 600
+        },
+        {
+          "eval": "[...document.querySelectorAll('#main table.prm-table thead th')].find(t => t.textContent.trim().startsWith('Hit %')).click()"
+        },
+        {
+          "sleepMs": 300
+        }
+      ],
+      "selector": "#main table.prm-table",
+      "assert": "(() => { const M = window.PROSPECT_MODEL; const want = Object.values(M.nfl).filter(r => r.p === 'RB' && r.y === M.season).length; const heads = [...document.querySelectorAll('#main table.prm-table thead th')].map(t => t.textContent.trim()); const i = heads.findIndex(x => x.startsWith('Hit %')); const rows = [...document.querySelectorAll('#main table.prm-table tbody tr')]; const hp = rows.map(r => parseInt(r.children[i].textContent, 10)); return want >= 5 && rows.length === want && heads[i].endsWith('↓') && hp.every((v, k) => k === 0 || v <= hp[k - 1]) && document.querySelector('#main .prm-modes button[aria-pressed=\"true\"]').textContent.includes('rookies') && rows.every(r => r.classList.contains('clickable')); })()",
+      "notes": "The rookie toggle lists every player of the newest draft class at the position from PROSPECT_MODEL.nfl (keyed by Sleeper id), so a row opens his player card. One click on Hit % sorts it descending, the default for a probability, and the arrow on the header is the sort signal. The row count is tied to the payload so a filter bug that drops players fails here."
+    },
+    {
+      "id": "player-card-prospect-profile",
+      "name": "Player card: Prospect profile block (tier, hit chance, breakout age, comps)",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 300
+        },
+        {
+          "eval": "location.hash='#rankings'"
+        },
+        {
+          "sleepMs": 2500
+        },
+        {
+          "press": "Control+k"
+        },
+        {
+          "fill": ".cmdk-input-wrap input",
+          "value": "Jahmyr Gibbs"
+        },
+        {
+          "sleepMs": 800
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "sleepMs": 1200
+        },
+        {
+          "eval": "[...document.querySelectorAll('.pm-tabs .tab')].find(t => /context/i.test(t.textContent)).click()"
+        },
+        {
+          "sleepMs": 400
+        }
+      ],
+      "selector": ".prm-card",
+      "assert": "(() => { const c = document.querySelector('.prm-card'); const labels = [...c.querySelectorAll('.adv-stat-label')].map(e => e.textContent.trim()); return ['Tier', 'Talent', 'Hit chance', 'Breakout age', 'Dominator', 'Final YPTPA'].every(l => labels.includes(l)) && !!c.querySelector('.tier-chip.prm-tier') && !!c.querySelector('.rating-track .pip.on') && /^Outcome: hit/.test(c.querySelector('.prm-out')?.textContent || '') && c.querySelectorAll('.prm-comp').length === 3 && /pick 12/.test(c.textContent); })()",
+      "notes": "prospectModelBlock() in the card's Context tab, right after the draft and athletic profile it extends. Gibbs is chosen because every part is reachable: a 2023 RB sits inside the RB training window (classes through 2023), so his numbers are leave-one-class-out and he has an observed outcome (a hit), and RB is a position where the full model ships, so the hit chance carries a 'talent only' sub-line. Three comps are required; the builder always writes three for a linked draftee."
+    },
+    {
       "id": "my-rankings",
       "name": "My Rankings editable board",
       "path": [
