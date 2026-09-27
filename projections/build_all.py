@@ -88,6 +88,12 @@ STEPS = [
     ("postgame game pages",        PROJ / "build_game_pages.py",          True),
     ("game pages vs team stats",   PROJ / "build_game_pages.py",          True, ["--self-check"]),
     ("draft + combine profile",    PROJ / "build_prospect_profile.py",    True),
+    # College prospect model: ESPN college seasons (sportsdataverse) joined to NFL
+    # outcomes, graded leave-one-class-out against draft capital alone, then scored for
+    # every draftee since 2014 and the current college classes. Self-check first: it is
+    # the guard that the talent model never sees draft capital.
+    ("prospect model self-check",  PROJ / "build_prospect_model.py",      True, ["--self-check"]),
+    ("college prospect model",     PROJ / "build_prospect_model.py",      True),
     ("game-day weather",           PROJ / "build_game_weather.py",        True),
     ("defense vs position",        PROJ / "build_defense_matchups.py",    True),
     ("weekly usage splits",        PROJ / "build_weekly_splits.py",       True),
@@ -120,7 +126,7 @@ TRACKED = [
     "ktc.js", "players.js", "leagues.js", "projections.js", "categories.js",
     "environment.js", "sos.js", "sos-grid.js", "sleeper-idp.js", "player-info.js",
     "jacob-gibbs.js", "expert-rankings.js", "fantasypros-experts.js",
-    "idp-dvp.js", "kickers.js", "gibbs-week.js", "gibbs-ros.js", "gibbs-ppr.js", "advanced.js", "prospect.js", "weather.js", "defense.js", "usage-weekly.js", "idp-advanced.js", "weekly-rankings.js", "sleeper-market.js", "faab.js", "trade-history.js", "context.js", "history.js",
+    "idp-dvp.js", "kickers.js", "gibbs-week.js", "gibbs-ros.js", "gibbs-ppr.js", "advanced.js", "prospect.js", "prospect-model.js", "weather.js", "defense.js", "usage-weekly.js", "idp-advanced.js", "weekly-rankings.js", "sleeper-market.js", "faab.js", "trade-history.js", "context.js", "history.js",
 ]
 
 def run(label, script, timeout=600, args=()):

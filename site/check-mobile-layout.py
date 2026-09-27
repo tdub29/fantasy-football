@@ -57,6 +57,8 @@ PAGES = {
     "stats-lab-onoff": "#stats/OnOff",
     "stats-lab-game-splits": "#stats/OnOff/games",
     "games": "#games",
+    "prospects": "#prospects/WR",
+    "prospects-rookies": "#prospects/RB/rookies",
 }
 
 
