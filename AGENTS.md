@@ -85,6 +85,11 @@ Two data sources `build_all.py` cannot run because they need a hand-fed input:
 `python site/data/_sources/build_gibbs_brief.py` for `site/gibbs-tiers.html`. Skip the last and
 the column moves while the tier board lies.
 
+His weekly and ROS boards are NOT hand-fed and need no browser: `python site/data/build_gibbs_ros_fp.py
+--board week`, `python site/data/build_gibbs_ros_fp.py`, then `python site/data/build_gibbs_ppr.py`
+read FantasyPros' public JSON API with a plain GET. If fantasypros.com looks unreachable, the
+sandbox has no network; ask for network access, not a browser.
+
 ## Working norms
 
 - Make narrow, evidence-based changes (see workspace `../AGENTS.md`), but treat requested improvements as action scope. If Trevor asks to add, apply, install, wire, improve, or make something work in this project, implement the durable project change after reading local context.

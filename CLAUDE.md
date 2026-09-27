@@ -188,6 +188,10 @@ Full pipeline detail, and the evidence behind every trap below, is in
 - **"Refresh the data" always means `python projections/build_all.py`, the full run, never `--core`.**
   A partial refresh leaves one fresh column beside stale ones and on a phone they look identical.
   The one source it cannot run is `site/data/build_jacob_gibbs.py`, which needs a hand-fed board.
+- **Gibbs's weekly and ROS boards need no browser.** `python site/data/build_gibbs_ros_fp.py --board week`,
+  then `python site/data/build_gibbs_ros_fp.py`, then `python site/data/build_gibbs_ppr.py` read
+  FantasyPros' public JSON API with a plain GET (`build_all.py` runs all three). A "needs browser
+  access to fantasypros.com" stop is a sandbox without network, not a login wall.
 - **The site is hosted, so a local rebuild is not done.** `site/` ships inside the `trevor-apps`
   Cloudflare Pages bundle as `ff/`:
   `powershell -NoProfile -ExecutionPolicy Bypass -File ..\.agents\scripts\deploy-phone-apps.ps1 -Deploy`

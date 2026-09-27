@@ -91,8 +91,12 @@ def compare(board: dict, capture: dict) -> dict:
     return out
 
 
-def report(result: dict) -> int:
+def report(result: dict, board_newer: bool = False) -> int:
+    """board_newer: the board was stamped after the card was posted, so moves are
+    his own later edits (news, injuries), not a mis-pointed scrape. Moves then
+    warn; a card player missing from the board still fails."""
     bad = 0
+    level = "WARN" if board_newer else "FAIL"
     for pos, r in sorted(result.items()):
         if "skipped" in r:
             print(f"  {pos}: skipped, {r['skipped']}")
@@ -108,14 +112,14 @@ def report(result: dict) -> int:
             print(f"       {name}: on his card, absent from the scrape")
         far = [m for m in r["moves"] if abs(m[3]) > MAX_MOVE]
         if far:
-            print(f"     FAIL {pos}: {len(far)} player(s) moved more than {MAX_MOVE} spots")
-            bad += 1
+            print(f"     {level} {pos}: {len(far)} player(s) moved more than {MAX_MOVE} spots")
+            bad += not board_newer
         # A share ceiling needs a sample. On three rows a single adjacent swap
         # is 67% "moved" and means nothing; the real overlap is a top 12.
         if n >= MIN_SHARE_SAMPLE and len(r["moves"]) / n > MAX_MOVED_SHARE:
-            print(f"     FAIL {pos}: {len(r['moves'])}/{n} of the overlap moved, "
+            print(f"     {level} {pos}: {len(r['moves'])}/{n} of the overlap moved, "
                   f"over the {MAX_MOVED_SHARE:.0%} ceiling")
-            bad += 1
+            bad += not board_newer
         if r["missing"]:
             print(f"     FAIL {pos}: a player he ranked top-{r['depth']} is not on "
                   f"the scraped board at all")
@@ -152,6 +156,9 @@ def self_check() -> int:
                                 {"rank": 2, "name": "Bijan Robinson"},
                                 {"rank": 30, "name": "Derrick Henry"}]}}
     assert report(compare(far, card)) > 0
+    # ...unless the board is newer than the card: then it is his own later edit.
+    assert report(compare(far, card), board_newer=True) == 0
+    assert report(compare(gone, card), board_newer=True) > 0
 
     # A position the scrape does not carry is skipped, never counted as a pass.
     qb = {"positions": {"QB": [{"rank": 1, "player": "Josh Allen", "team": "BUF"}]}}
@@ -179,7 +186,11 @@ def main() -> int:
     capture = json.loads(cap_path.read_text(encoding="utf-8"))
     print(f"Week board ({board.get('board')}, {board.get('updatedLabel')}) "
           f"vs his X cards ({cap_path.name}, {capture.get('posted')})")
-    bad = report(compare(board, capture))
+    stamp = re.search(r"\d{4}-\d{2}-\d{2}", str(board.get("updatedLabel") or ""))
+    board_newer = bool(stamp and capture.get("posted") and stamp.group(0) > capture["posted"])
+    if board_newer:
+        print(f"  board stamped {stamp.group(0)}, after the card; moves are his later edits")
+    bad = report(compare(board, capture), board_newer)
     print("\n" + ("SOURCES AGREE" if not bad else
                   f"{bad} position(s) disagree beyond tolerance; the scrape may "
                   f"be pointed at the wrong analyst, week, or column"))
