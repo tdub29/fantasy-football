@@ -504,6 +504,59 @@
       "notes": "Washington Football League is redraft. The first proposal shows a verdict stamp over two equal cells, you and the partner, each with the change in 2026 title odds as the number, before → after beneath and a confidence word from z = delta / SE (SOLID, LIKELY, INSIDE NOISE), no pick, and my gain positive; one click loads its exact send and get sets into the two Trade Lab piles. Phi Kap is the other redraft league; on 2026-09-25 data it has no deal that clears the gates, which the trade-finder-redraft entry checks instead."
     },
     {
+      "id": "trade-finder-lab-odds",
+      "name": "Trade Finder to Trade Lab (redraft): a loaded row shows its title odds at once, a re-run matches, an edit clears them, and Restore brings back the hand-built trade",
+      "path": [
+        {
+          "eval": "location.hash='#trade/1532688686'"
+        },
+        {
+          "waitFor": "#main .tf-run"
+        },
+        {
+          "eval": "(()=>{window.__labOf=()=>{const m=document.querySelector('#main .trade-middle'),row=m.querySelector('.trade-title-odds .t3y-row');return {from:m.dataset.oddsFrom||'',d:[...row.querySelectorAll('.t3y-delta')].map(e=>e.textContent),s:[...row.querySelectorAll('.t3y-sub')].map(e=>e.textContent),tot:[...m.querySelectorAll('.trade-title-value')].map(e=>e.textContent),meta:m.querySelector('.trade-title-meta').textContent,restore:!!m.querySelector('.trade-restore')}};window.__piles=()=>[...document.querySelectorAll('#main .trade-side-card')].map(c=>[...c.querySelectorAll('.trade-pile-row')].map(r=>r.dataset.tradeKey).sort().join(','));const c=[...document.querySelectorAll('#main .trade-side-card')];c[0].querySelector('.trade-pool-row').click();c[1].querySelector('.trade-pool-row').click();window.__lo={hand:window.__piles()};return true})()"
+        },
+        {
+          "click": "#main .tf-run"
+        },
+        {
+          "sleepMs": 6000
+        },
+        {
+          "waitFor": "#main .trade-find-row",
+          "timeoutMs": 45000
+        },
+        {
+          "eval": "(()=>{const r=document.querySelector('#main .trade-find-row');window.__lo.finder=[...r.querySelectorAll('.tf-verdict .tf-cell')].map(e=>[e.querySelector('.tf-num').textContent,e.querySelector('.tf-sub').textContent]);window.__lo.t={send:r.dataset.tfSend,get:r.dataset.tfGet};r.click();window.__lo.seeded=window.__labOf();return true})()"
+        },
+        {
+          "eval": "window.__lo.piles=window.__piles();true"
+        },
+        {
+          "eval": "document.querySelector('#main .trade-title-run').click();true"
+        },
+        {
+          "waitFor": "#main .trade-middle[data-odds-from='lab']",
+          "timeoutMs": 90000
+        },
+        {
+          "eval": "(()=>{window.__lo.rerun=window.__labOf();const t=window.__lo.t;[...document.querySelectorAll('#main .trade-find-row')].find(x=>x.dataset.tfSend===t.send&&x.dataset.tfGet===t.get).click();window.__lo.again=window.__labOf();return true})()"
+        },
+        {
+          "eval": "(()=>{document.querySelector('#main .trade-side-card .trade-pile-row').click();window.__lo.edited=window.__labOf();return true})()"
+        },
+        {
+          "click": "#main .trade-restore"
+        },
+        {
+          "eval": "window.__lo.restored={piles:window.__piles(),restore:!!document.querySelector('#main .trade-restore')};true"
+        }
+      ],
+      "selector": "#main .trade-side-card .trade-pile-row",
+      "assert": "(()=>{const o=window.__lo;if(!o||!o.seeded||!o.rerun||!o.again||!o.edited||!o.restored)return false;const same=(a,b)=>a.split(',').sort().join(',')===b,J=JSON.stringify,s=o.seeded,f=o.finder;const seeded=s.from==='finder'&&s.d[0]===f[0][0]&&s.d[1]===f[1][0]&&s.s[0].startsWith(f[0][1]+' \\u00b1')&&s.s[1].startsWith(f[1][1]+' \\u00b1')&&/^From the Trade Finder run on this trade/.test(s.meta)&&s.tot.length===2&&s.tot.every(x=>/^[+-]\\d+\\.\\d pts in \\d{4}$/.test(x))&&s.restore;const loaded=same(o.t.send,o.piles[0])&&same(o.t.get,o.piles[1]);const rerun=o.rerun.from==='lab'&&J([o.rerun.d,o.rerun.s,o.rerun.tot])===J([s.d,s.s,s.tot]);const again=o.again.from==='finder'&&J(o.again.d)===J(s.d)&&o.again.restore;const edited=o.edited.from===''&&o.edited.d.every(x=>x==='\\u00b7')&&/^Run again/.test(o.edited.meta);const restored=!!o.hand[0]&&!!o.hand[1]&&J(o.hand)!==J(o.piles)&&J(o.restored.piles)===J(o.hand)&&!o.restored.restore;return seeded&&loaded&&rerun&&again&&edited&&restored})()",
+      "notes": "Washington Football League is redraft, where the Trade Finder's recheck IS the Trade Lab's whole title-odds run (same what-if, same seed, SIM.tradeSimBudget sims). The path hand-builds a trade, runs the Finder and loads the first row: in the same tick, with no simulation, the Lab's title-odds row must carry the row's two deltas and before/after, tagged data-odds-from=finder and labelled From the Trade Finder run, and a Restore previous trade button shows. Run title odds then re-runs it and must print the identical numbers (data-odds-from=lab). Loading the row again re-seeds it; removing one piece clears the odds on that edit (placeholders, Run again). Restore puts the hand-built piles back and the button goes. Dynasty seeds only the first season, since the Finder prices only that one; unit test (g) in site/js/trade-finder.test.js pins both leagues."
+    },
+    {
       "id": "trade-finder-dynasty",
       "name": "Trade Finder (dynasty): a proposal shows its verdict, a rebuilder on future value, and loads into the Trade Lab",
       "path": [

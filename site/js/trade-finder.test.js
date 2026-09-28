@@ -42,6 +42,7 @@ const SRC = [
 ].join('\n');
 const load = (window, RANKED, PICKS) => new Function('window', 'RANKED', 'PICKS', SRC + `
   return { findTrades, finderScan, finderVerdict, tradeLineupImpact, projectedTradeStrength, championshipOdds, tradeTitleWhatIf, rosterStance,
+    titleOddsByYear, pairedTitleDelta,
     KT, SIM, rosterOwnedPicks };`)(window, RANKED, PICKS);
 
 const roster = (id, players, wins = 0, losses = 0) => ({ roster_id: id, team_name: `T${id}`, is_me: id === 1,
@@ -225,6 +226,24 @@ const shows = (p, send, get) => keysOf(p.send).slice().sort().join() === send.sl
   // Judged at printed precision, like the Lab: +0.81 against a 0.80 band is noise.
   assert.equal(V({ my: chg(0.81, 0.4), their: chg(2, 0.5) }).you.word, 'INSIDE NOISE');
   for (const p of outD.proposals) assert.equal(!!V(p).them.fv, !!p.rebuilder, 'a rebuilder, and only he, is shown on future value');
+
+  // (g) A loaded row seeds the Trade Lab's title odds with no re-run, so every
+  // shown proposal must carry exactly what the Lab's own run prints for its first
+  // season: the Lab's what-if, seed and SIM.tradeSimBudget over its horizon.
+  const labYears = Number(/TITLE_YEARS = dyn \? (\d+) : 1/.exec(app)[1]);
+  const labFirst = (H, lg, dyn, p) => {
+    const run = (whatIf) => H.titleOddsByYear(lg, { years: 1, sims: H.SIM.tradeSimBudget / (dyn ? labYears : 1), whatIf })[0];
+    const base = run(null), after = run(H.tradeTitleWhatIf(1, p.them.roster_id, new Set(p.send.keys), new Set(p.get.keys), lg));
+    const side = (rid) => ({ before: base.byRoster.get(rid) || 0, after: after.byRoster.get(rid) || 0,
+      ...H.pairedTitleDelta(base.champions, after.champions, rid) });
+    return { my: side(1), their: side(p.them.roster_id) };
+  };
+  for (const [H, lg, dyn, out] of [[HR, redraft, false, outR], [HD, dynasty, true, outD]]) {
+    for (const p of out.proposals) {
+      const lab = labFirst(H, lg, dyn, p);
+      assert.deepEqual({ my: p.my, their: p.their }, lab, `${lg.id} ${keysOf(p.send)}>${keysOf(p.get)}: the row must match the Lab's first season`);
+    }
+  }
 
   console.log(`trade-finder.test.js: all assertions passed (redraft ${outR.proposals.length} proposals, dynasty ${outD.proposals.length}; `
     + `${keysOf(two.send)}>${keysOf(two.get)} you ${two.my.delta >= 0 ? '+' : ''}${two.my.delta.toFixed(1)} pts +-${two.my.se.toFixed(1)}, them ${(two.their.before * 100).toFixed(1)}->${(two.their.after * 100).toFixed(1)}%)`);

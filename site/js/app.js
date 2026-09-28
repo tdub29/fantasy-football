@@ -6947,7 +6947,12 @@
     leagueId: null,
     sideA: { rosterId: null, picks: new Set() },   // pids and pick-keys (year-round-from)
     sideB: { rosterId: null, picks: new Set() },
+    finderSeed: null,   // { leagueId, key, a, b }: a loaded Finder row's own title odds
+    prev: null,         // the hand-built trade a Finder row overwrote, for one-click restore
   };
+  // The committed trade a title-odds result belongs to.
+  const tradeOddsKey = (a = TRADE_STATE.sideA, b = TRADE_STATE.sideB) =>
+    `${a.rosterId}:${[...a.picks].sort()}|${b.rosterId}:${[...b.picks].sort()}`;
   // ============================================================
   // ROUTE: Trade Calculator (kinetic)
   // - Drag any player or pick from a roster pool onto its side's pile.
@@ -7276,9 +7281,16 @@
           + `Your ${CURRENT_SEASON} title odds ${said(v.you)}. ${team} ${said(v.them)}. Load into the Trade Lab.`,
         dataset: { tfSend: p.send.keys.join(','), tfGet: p.get.keys.join(',') },
         onclick: () => {
+          // Keep a hand-built trade for Restore; an untouched Finder load is not one.
+          const { sideA: a, sideB: b } = TRADE_STATE;
+          if ((a.picks.size || b.picks.size) && tradeOddsKey() !== TRADE_STATE.finderSeed?.key) {
+            TRADE_STATE.prev = { leagueId: lg.id, sideA: { ...a, picks: new Set(a.picks) }, sideB: { ...b, picks: new Set(b.picks) } };
+          }
           TRADE_STATE.leagueId = lg.id;
           TRADE_STATE.sideA = { rosterId: me.roster_id, picks: new Set(p.send.keys) };
           TRADE_STATE.sideB = { rosterId: p.them.roster_id, picks: new Set(p.get.keys) };
+          // The recheck was the Lab's own first-season run on this trade, so it shows at once.
+          TRADE_STATE.finderSeed = { leagueId: lg.id, key: tradeOddsKey(), a: p.my, b: p.their };
           viewTrade(lg.id);
           $('#main .trade-calc')?.scrollIntoView({ block: 'start' });
         } },
@@ -8178,6 +8190,8 @@
     const grid = h('div', { class:'trade-calc' });
     grid.appendChild(buildTradeSide('A', lg, TRADE_STATE.sideA, sideARoster, refs));
     refs.middle = tradeMiddleSummary(lg);
+    const seed = TRADE_STATE.finderSeed;
+    if (seed && seed.leagueId === lg.id && seed.key === tradeOddsKey()) refs.middle.seed(seed);
     grid.appendChild(refs.middle.node);
     grid.appendChild(buildTradeSide('B', lg, TRADE_STATE.sideB, sideBRoster, refs));
     main.appendChild(tradePartnersStrip(lg));
@@ -8429,7 +8443,8 @@
     const impA = tradeLineupImpact(lg, TRADE_STATE.sideA.rosterId, aSet, bSet);
     const impB = tradeLineupImpact(lg, TRADE_STATE.sideB.rosterId, bSet, aSet);
     const m = refs.middle;
-    const oddsKey = `${TRADE_STATE.sideA.rosterId}:${[...TRADE_STATE.sideA.picks].sort()}|${TRADE_STATE.sideB.rosterId}:${[...TRADE_STATE.sideB.picks].sort()}`;
+    const oddsKey = tradeOddsKey();
+    if (TRADE_STATE.finderSeed && TRADE_STATE.finderSeed.key !== oddsKey) TRADE_STATE.finderSeed = null;
     // Title odds belong to the committed trade they were run on, never a preview.
     const title = !previewKey && m.title && m.title.key === oddsKey ? m.title : null;
     const v = isDynastyLeague(lg)
@@ -8437,6 +8452,7 @@
       : KT.redraftVerdict(aSet.size, bSet.size, impA, impB, title);
     if (m.node.dataset.oddsKey && m.node.dataset.oddsKey !== oddsKey) {
       delete m.node.dataset.oddsKey;
+      delete m.node.dataset.oddsFrom;
       m.title = null;
       m.titleA.textContent = '·'; m.titleB.textContent = '·';
       m.titleA.style.color = ''; m.titleB.style.color = '';
@@ -9289,12 +9305,41 @@
     const dyn = isDynastyLeague(lg);
     const TITLE_YEARS = dyn ? 3 : 1, TITLE_SIMS = SIM.tradeSimBudget / TITLE_YEARS;
     let titleRows = [];
+    // Paints one { a, b } per season, each side's { before, after, delta, se }
+    // (percentage points, paired SE), and tags the block with the trade it is for.
+    // Noise band: SIM.titleBandZ paired standard errors, the same band the Trade
+    // Finder judges by. A change inside it paints grey and never decides the verdict.
+    const showOdds = (key, seasons, from) => {
+      const inside = titleBandInside;
+      const tone = (d, band) => inside(d, band) ? 'var(--fg-2)' : d > 0 ? 'var(--green)' : 'var(--red)';
+      const paint = (cell, sub, d) => {
+        const band = SIM.titleBandZ * d.se;
+        cell.textContent = `${d.delta >= 0 ? '+' : ''}${d.delta.toFixed(1)}`;
+        cell.style.color = tone(d.delta, band);
+        sub.textContent = `${(d.before * 100).toFixed(1)}% \u2192 ${(d.after * 100).toFixed(1)}% \u00b1${band.toFixed(1)}`;
+        return band;
+      };
+      let totA = 0, totB = 0, varA = 0, varB = 0;
+      seasons.forEach((s, k) => {
+        varA += paint(titleRows[k].aCell, titleRows[k].aSub, s.a) ** 2; totA += s.a.delta;
+        varB += paint(titleRows[k].bCell, titleRows[k].bSub, s.b) ** 2; totB += s.b.delta;
+      });
+      const sum = (el, d, band) => {
+        el.textContent = `${d >= 0 ? '+' : ''}${d.toFixed(1)} pts ${seasons.length > 1 ? `over ${seasons.length} seasons` : `in ${CURRENT_SEASON}`}`;
+        el.style.color = tone(d, band);
+      };
+      const bandA = Math.sqrt(varA), bandB = Math.sqrt(varB);
+      sum(titleA, totA, bandA); sum(titleB, totB, bandB);
+      node.dataset.oddsKey = key;
+      node.dataset.oddsFrom = from;
+      out.title = { key, a: totA, b: totB, sigA: !inside(totA, bandA), sigB: !inside(totB, bandB) };
+    };
     const runTitleOdds = h('button', { type:'button', class:'trade-title-run', onclick: () => {
       const aSet = TRADE_STATE.sideA.picks, bSet = TRADE_STATE.sideB.picks;
       if (!aSet.size || !bSet.size) { titleMeta.textContent = 'Add assets to both sides first.'; return; }
       const aRosterId = TRADE_STATE.sideA.rosterId, bRosterId = TRADE_STATE.sideB.rosterId;
       const whatIf = tradeTitleWhatIf(aRosterId, bRosterId, aSet, bSet, lg);
-      const key = `${aRosterId}:${[...aSet].sort()}|${bRosterId}:${[...bSet].sort()}`;
+      const key = tradeOddsKey();
       runTitleOdds.disabled = true;
       runTitleOdds.textContent = 'Running...';
       titleMeta.textContent = `Simulating ${dyn ? `${TITLE_YEARS} seasons` : `the rest of ${CURRENT_SEASON}`}, ${TITLE_SIMS.toLocaleString()} times each, before and after.`;
@@ -9304,34 +9349,9 @@
           // match, so the change in a cell is the trade, not simulation noise.
           if (!baselineOdds) baselineOdds = titleOddsByYear(lg, { years:TITLE_YEARS, sims:TITLE_SIMS });
           const after = titleOddsByYear(lg, { years:TITLE_YEARS, sims:TITLE_SIMS, whatIf });
-          // Noise band: SIM.titleBandZ paired standard errors, the same band the
-          // Trade Finder judges by. A change inside it paints grey and never
-          // decides the verdict.
-          const inside = titleBandInside;
-          const tone = (d, band) => inside(d, band) ? 'var(--fg-2)' : d > 0 ? 'var(--green)' : 'var(--red)';
-          const paint = (cell, sub, k, rid) => {
-            const before = baselineOdds[k].byRoster.get(rid) || 0, next = after[k].byRoster.get(rid) || 0;
-            const { delta, se } = pairedTitleDelta(baselineOdds[k].champions, after[k].champions, rid), band = SIM.titleBandZ * se;
-            cell.textContent = `${delta >= 0 ? '+' : ''}${delta.toFixed(1)}`;
-            cell.style.color = tone(delta, band);
-            sub.textContent = `${(before * 100).toFixed(1)}% \u2192 ${(next * 100).toFixed(1)}% \u00b1${band.toFixed(1)}`;
-            return { delta, band };
-          };
-          let totA = 0, totB = 0, varA = 0, varB = 0;
-          after.forEach((yr, k) => {
-            const row = titleRows[k];
-            const pa = paint(row.aCell, row.aSub, k, aRosterId);
-            const pb = paint(row.bCell, row.bSub, k, bRosterId);
-            totA += pa.delta; varA += pa.band ** 2; totB += pb.delta; varB += pb.band ** 2;
-          });
-          const sum = (el, d, band) => {
-            el.textContent = `${d >= 0 ? '+' : ''}${d.toFixed(1)} pts ${dyn ? `over ${TITLE_YEARS} seasons` : `in ${CURRENT_SEASON}`}`;
-            el.style.color = tone(d, band);
-          };
-          const bandA = Math.sqrt(varA), bandB = Math.sqrt(varB);
-          sum(titleA, totA, bandA); sum(titleB, totB, bandB);
-          node.dataset.oddsKey = key;
-          out.title = { key, a: totA, b: totB, sigA: !inside(totA, bandA), sigB: !inside(totB, bandB) };
+          const side = (k, rid) => ({ before: baselineOdds[k].byRoster.get(rid) || 0, after: after[k].byRoster.get(rid) || 0,
+            ...pairedTitleDelta(baselineOdds[k].champions, after[k].champions, rid) });
+          showOdds(key, after.map((_, k) => ({ a: side(k, aRosterId), b: side(k, bRosterId) })), 'lab');
           titleMeta.textContent = dyn
             ? `Change in title odds, percentage points, per season. ${TITLE_SIMS.toLocaleString()} simulations each. `
               + 'Later seasons age every roster forward and slot draft picks by the simulated finish, so this is where picks show up. Grey is inside the \u00b1 noise band.'
@@ -9426,12 +9446,26 @@
           h('button', { class:'ghost', style:{ width:'100%' }, onclick: () => {
             TRADE_STATE.sideA.picks = new Set(); TRADE_STATE.sideB.picks = new Set();
             KT.syncSide('A'); KT.syncSide('B'); KT.refreshMiddle(lg);
-          }}, 'Reset Trade')
+          }}, 'Reset Trade'),
+          // A Finder row replaced a hand-built trade: one click puts it back.
+          TRADE_STATE.prev?.leagueId === lg.id ? h('button', { type:'button', class:'ghost trade-restore', style:{ width:'100%', marginTop:'8px' }, onclick: () => {
+            const { sideA, sideB } = TRADE_STATE.prev;
+            Object.assign(TRADE_STATE, { sideA, sideB, prev: null });
+            viewTrade(lg.id);
+          }}, 'Restore previous trade') : null
         )
       ),
     );
     const out = { node, aVal, bVal, verdict, fair, premiumNote, deltaA, deltaB, strengthNote, lineupA, lineupB,
-      titleA, titleB, titleMeta, runTitleOdds, titleRows, yearRows, title: null };
+      titleA, titleB, titleMeta, runTitleOdds, titleRows, yearRows, title: null,
+      // A Finder row's recheck, on this exact trade: the Lab's first season, same seed and sims.
+      seed: ({ key, a, b }) => {
+        showOdds(key, [{ a, b }], 'finder');
+        titleMeta.textContent = `From the Trade Finder run on this trade: ${dyn ? `${CURRENT_SEASON} only, ` : ''}`
+          + `the Lab's own ${TITLE_SIMS.toLocaleString()} simulations and seed. `
+          + (dyn ? 'Run title odds for the later seasons.' : 'Run title odds to re-run it.')
+          + ' Grey is inside the ± noise band.';
+      } };
     return out;
   }
   // ============================================================
