@@ -15,10 +15,10 @@ graded here: another agent is rebuilding it. Every stat on the site is full PPR 
 **Status 2026-09-27, main at 75346ae: 38 Fixed (28 shipped since grading plus the 10 we had), 17
 Open.** The last column of every table says which, with the commit and file:line. Of the 17 Open, 7
 are not in any public dataset (18, 21, 23, 24, 26, 29, 32) and 10 are buildable but each needs a
-new builder or view (14, 20, 22, 38, 39, 42, 47, 49, 50, 56). Row 14 also carries a real bug, Route%
-(est) over 100% for six non-QB player-seasons; its fix needs a recalibration, so it stays Open with
-the root cause written in the row. The Status column to the left of Evidence is the 2026-09-24
-grade and is kept as history.
+new builder or view (14, 20, 22, 38, 39, 42, 47, 49, 50, 56). Row 14's Route% (est) over 100% bug is
+fixed and recalibrated (2026-09-28, branch `feat-route-rate`); the row stays Open only because charted
+routes are not public. The Status column to the left of Evidence is the 2026-09-24 grade and is kept
+as history.
 
 Downloaded public data this relies on:
 
@@ -56,7 +56,7 @@ Downloaded public data this relies on:
 | # | Capability | Status | Evidence on our site | Public source to fill | Downloaded | Status 2026-09-27 |
 |---|---|---|---|---|---|---|
 | 13 | Production and snaps | have | `advanced.js` `games`, `snap_pct` (snap_counts), targets, carries; card game log | n/a | yes | Fixed (had it) |
-| 14 | Routes run and route rates | partial | `route_rate_est`, `tprr_est`, `yprr_est`, `fprr_est` are estimates (snaps x team dropback share) in every season, including 2024/2025 | participation `offense_players` on dropbacks gives a better 2023-2025 proxy; charted routes are not public | yes, 2020-2025 | Open: charted routes are not public, so Route% stays an estimate. Also a bug: Route% (est) tops 100% (DK Metcalf 103.2%, Justin Jefferson 101.8% in 2026; 6 non-QB player-seasons) because `build_nflverse_suite.py:382` multiplies snap_counts snaps (penalty plays included) by a pass/run-only dropback share, then `:492` divides by pass/run-only team dropbacks. The fix changes the numerator or the denominator, and the 2025 calibration multipliers (`:482-491`) were fitted to the current numerator, so it needs a recalibration, not a small edit |
+| 14 | Routes run and route rates | partial | `route_rate_est`, `tprr_est`, `yprr_est`, `fprr_est` are estimates (snaps x team dropback share) in every season, including 2024/2025 | participation `offense_players` on dropbacks gives a better 2023-2025 proxy; charted routes are not public | yes, 2020-2025 | Open: charted routes are not public, so Route% stays an estimate. The over-100% bug is Fixed 2026-09-28 (branch `feat-route-rate`). Root cause, checked on the data: snap_counts snaps also count post-snap penalty plays (about half of all no-play penalties), kneels and spikes, 6.5% more plays than the pbp pass/run plays the dropback share and the Route% denominator use, so a full-time QB came out at 103-106% of his own dropbacks. Routes are now offense_pct x the team's pbp dropbacks per game, capped at those dropbacks (`add_routes` in `build_nflverse_suite.py`), and recalibrated by the documented method (2025 participation, median on-field dropbacks over the estimate, players with 100+): WR 1.00 to 1.07, RB 0.94 to 0.99, TE 0.98/0.89/0.81 to 1.05/0.95/0.87; QBs fit 1.00. The old WR 1.01 was the two biases cancelling. Route stats also count only games whose snap counts are posted. Max non-QB Route% went 103.2%, 100.2%, 101.6% (2026, 2025, 2024) to 100.0% (DK Metcalf, capped), 98.9%, 99.0%; 2024 holdout error 3.88 to 3.79 points. `--self-check` refits the calibration and fails on drift over 0.01 or any Route% over 100% |
 | 15 | Missed tackles and contact | have | PFR proxy: `bt_per_touch`, `rush_broken_tackles`, `rec_broken_tackles`, `ybc_per_att`, `yac_per_att` | n/a | yes | Fixed (had it) |
 | 16 | EPA | have | `epa_per_target`, `epa_per_rush`, `db_epa`, team `epa_play`/`epa_pass`/`epa_rush` | n/a | yes | Fixed (had it) |
 | 17 | Rush yards over expected | have | `rush_yards_over_expected_per_att` (NGS) | n/a | yes | Fixed (had it) |

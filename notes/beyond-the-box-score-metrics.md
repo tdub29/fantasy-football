@@ -59,8 +59,8 @@ example "Snap rate" 24 + "Snap Rate" 13).
 nflverse's per-play participation file (who was on the field, route run,
 alignment, personnel) ends with 2025. That one missing source is the reason
 route-tree mix, slot rate, personnel, red-zone snap rate and on-field target
-share are absent, and why routes run is estimated from snaps times each
-team's dropback share. The estimate overcounts players who stay in to block,
+share are absent, and why routes run is estimated from snap share times each
+team's dropbacks. The estimate overcounts players who stay in to block,
 mostly tight ends and pass-protecting backs, and every column built on it
 carries "(est)".
 
