@@ -41,7 +41,7 @@ const SRC = [
   slice('  // Trade Finder. Iterates reasonable packages', '  // Last run per league'),
 ].join('\n');
 const load = (window, RANKED, PICKS) => new Function('window', 'RANKED', 'PICKS', SRC + `
-  return { findTrades, finderScan, tradeLineupImpact, projectedTradeStrength, championshipOdds, tradeTitleWhatIf, rosterStance,
+  return { findTrades, finderScan, finderVerdict, tradeLineupImpact, projectedTradeStrength, championshipOdds, tradeTitleWhatIf, rosterStance,
     KT, SIM, rosterOwnedPicks };`)(window, RANKED, PICKS);
 
 const roster = (id, players, wins = 0, losses = 0) => ({ roster_id: id, team_name: `T${id}`, is_me: id === 1,
@@ -210,6 +210,21 @@ const shows = (p, send, get) => keysOf(p.send).slice().sort().join() === send.sl
     assert(!keysOf(p.send).concat(keysOf(p.get)).some(k => k.startsWith('pick:')), `redraft offered a pick: ${keysOf(p.send)}`);
     assert(p.my.before > 0 && p.their.before > 0 && Number.isFinite(p.my.after) && Number.isFinite(p.their.after), 'both sides carry 2026 odds');
   }
+
+  // (f) The row's verdict says "both" only when both changes clear the Lab's
+  // noise band, labels a partner gain inside it as noise (the row still shows),
+  // and judges a rebuilder on future value against his own bar.
+  const V = HR.finderVerdict;
+  const chg = (delta, se) => ({ before: 0.1, after: 0.1 + delta / 100, delta, se });
+  let v = V({ my: chg(3.1, 1), their: chg(2.2, 1) });
+  assert.deepEqual([v.stamp, v.you.word, v.them.word], ['BOTH GAIN', 'SOLID', 'LIKELY']);
+  v = V({ my: chg(2.5, 1), their: chg(1.4, 1) });
+  assert.deepEqual([v.stamp, v.both, v.them.word], ['YOU GAIN, THEIRS IS NOISE', false, 'INSIDE NOISE']);
+  v = V({ my: chg(2.5, 1), their: chg(-1, 1), rebuilder: true, fvNow: 300, themFv: HR.SIM.finderMinFvGain });
+  assert.deepEqual([v.stamp, v.them.word, v.them.after], ['BOTH GAIN', 'REBUILDING', 300 + HR.SIM.finderMinFvGain]);
+  // Judged at printed precision, like the Lab: +0.81 against a 0.80 band is noise.
+  assert.equal(V({ my: chg(0.81, 0.4), their: chg(2, 0.5) }).you.word, 'INSIDE NOISE');
+  for (const p of outD.proposals) assert.equal(!!V(p).them.fv, !!p.rebuilder, 'a rebuilder, and only he, is shown on future value');
 
   console.log(`trade-finder.test.js: all assertions passed (redraft ${outR.proposals.length} proposals, dynasty ${outD.proposals.length}; `
     + `${keysOf(two.send)}>${keysOf(two.get)} you ${two.my.delta >= 0 ? '+' : ''}${two.my.delta.toFixed(1)} pts +-${two.my.se.toFixed(1)}, them ${(two.their.before * 100).toFixed(1)}->${(two.their.after * 100).toFixed(1)}%)`);

@@ -7197,18 +7197,17 @@
       }
       const tot = (items) => items.reduce((s, a) => s + a.v, 0), top = (items) => Math.max(...items.map(a => a.v));
       const sendV = tot(sendItems), getV = tot(getItems);
-      const fair = KT.computeFairness(sendV, getV, send.size, get.size, top(sendItems), top(getItems)).pct;
+      const { pct: fair, label: fairWord } = KT.computeFairness(sendV, getV, send.size, get.size, top(sendItems), top(getItems));
       const scoreOf = (m) => finderScore(dyn, m, myFv, sendV, getV);
       const passes = (m, t, z = SIM.finderSeMult) => m.delta > z * m.se && scoreOf(m) > 0 && (c.rebuilder ? themFv >= SIM.finderMinFvGain : t.delta > 0);
       if (!(passes(my, their, SIM.finderScreenSeMult) && fair >= SIM.finderFairPct)) continue;
       proposals.push({ them: c.them, rebuilder: c.rebuilder, stance: c.stance, fvNow: c.fvNow, fills: c.fills, whatIf, passes, scoreOf,
         send: { keys: c.send.keys, items: sendItems }, get: { keys: c.get.keys, items: getItems },
-        sendV, getV, fair, my, their, myFv, themFv, meD: c.meD, themD: c.themD, score: scoreOf(my) });
+        sendV, getV, fair, fairWord, my, their, myFv, themFv, meD: c.meD, themD: c.themD, score: scoreOf(my) });
     }
     proposals.sort((a, b) => b.score - a.score);
     const per = new Map(), shown = [];
     let labBase = null, rechecked = 0;
-    const pct = (x) => `${(x * 100).toFixed(1)}%`;
     for (const p of proposals) {
       const n = per.get(p.them.roster_id) || 0;
       if (n >= SIM.finderShowPerPartner || shown.length >= SIM.finderShow) continue;
@@ -7220,13 +7219,31 @@
       const my = oddsOf(after, labBase, me.roster_id), their = oddsOf(after, labBase, p.them.roster_id);
       if (!p.passes(my, their)) continue;
       per.set(p.them.roster_id, n + 1);
-      p.why = p.rebuilder
-        ? `Their starting lineup ranks low (${p.stance}), so they are priced on the future: their ${Y}-year lineup value ${Math.round(p.fvNow)} to ${Math.round(p.fvNow + p.themFv)} (+${Math.round(p.themFv)}).`
-        : `${p.fills ? `Fills their ${p.fills}. ` : ''}Their lineup +${Math.round(p.themD)} pts, title odds ${pct(their.before)} to ${pct(their.after)}.`;
       shown.push(Object.assign(p, { my, their, score: p.scoreOf(my) }));
     }
     shown.sort((a, b) => b.score - a.score);
     return { proposals: shown, checked, simulated: pool.length + rechecked, labSims };
+  }
+  // A found deal's verdict: each side's change with a confidence word from
+  // z = delta / SE (SOLID at 3, LIKELY outside the Lab's SIM.titleBandZ band,
+  // judged at printed precision like the Lab, else INSIDE NOISE), and a stamp
+  // that says "both" only when both clear. A rebuilder is scored on future value,
+  // which has no SE: his bar is SIM.finderMinFvGain, the gate he already passed.
+  function finderVerdict(p) {
+    const odds = (d) => {
+      const z = d.se > 0 ? d.delta / d.se : d.delta > 0 ? Infinity : 0;
+      const sig = !titleBandInside(d.delta, SIM.titleBandZ * d.se);
+      return { delta: d.delta, before: d.before, after: d.after, sig, word: !sig ? 'INSIDE NOISE' : z >= 3 ? 'SOLID' : 'LIKELY' };
+    };
+    const you = odds(p.my);
+    const them = p.rebuilder
+      ? { delta: p.themFv, before: p.fvNow, after: p.fvNow + p.themFv, sig: p.themFv >= SIM.finderMinFvGain, word: 'REBUILDING', fv: true }
+      : odds(p.their);
+    // The last two need my gain past 2 SE yet inside the band at printed precision,
+    // a rounding edge the gate lets through; they keep the stamp honest there.
+    const stamp = you.sig && them.sig ? 'BOTH GAIN' : you.sig ? 'YOU GAIN, THEIRS IS NOISE'
+      : them.sig ? 'THEY GAIN, YOURS IS NOISE' : 'BOTH INSIDE NOISE';
+    return { stamp, both: you.sig && them.sig, you, them };
   }
   // Last run per league, so loading one proposal into the Trade Lab (which
   // re-renders the page) keeps the list for the next one.
@@ -7236,43 +7253,70 @@
     const dyn = isDynastyLeague(lg);
     const list = h('div', { class: 'tf-list' });
     const status = h('div', { class: 'trade-finder-note tf-progress', role: 'status', 'aria-live': 'polite' }, me ? '' : 'No team in this league.');
+    const Y = SIM.finderFvYears;
     const pct = (x) => `${(x * 100).toFixed(1)}%`;
     const signed = (x, d = 1) => `${x >= 0 ? '+' : ''}${x.toFixed(d)}`;
-    const side = (tag, items) => h('span', { class: 'tf-side' },
-      h('span', { class: `tf-tag ${tag}` }, tag.toUpperCase()),
-      ...items.map(a => h('span', { class: 'tf-piece' },
-        a.pos === 'PICK' ? h('span', { class: 'badge' }, 'PICK') : posChip(a.pos),
-        h('span', { class: 'name' }, a.label), h('span', { class: 'tnum tf-val' }, fmt.decimal(a.v, 0)))));
-    const row = (p) => h('button', { type: 'button', class: 'trade-find-row',
-      title: 'Load into the Trade Lab', 'aria-label': `Load trade with ${p.them.team_name} into the Trade Lab`,
-      dataset: { tfSend: p.send.keys.join(','), tfGet: p.get.keys.join(',') },
-      onclick: () => {
-        TRADE_STATE.leagueId = lg.id;
-        TRADE_STATE.sideA = { rosterId: me.roster_id, picks: new Set(p.send.keys) };
-        TRADE_STATE.sideB = { rosterId: p.them.roster_id, picks: new Set(p.get.keys) };
-        viewTrade(lg.id);
-        $('#main .trade-calc')?.scrollIntoView({ block: 'start' });
-      } },
-      h('div', { class: 'tf-partner' }, p.them.team_name),
-      h('div', { class: 'tf-deal' }, side('out', p.send.items), h('span', { class: 'tf-arrow' }, '⇄'), side('in', p.get.items)),
-      h('div', { class: 'tf-fair', style: { color: p.fair >= 90 ? 'var(--green)' : 'var(--amber)' } }, `${Math.round(p.fair)}%`),
-      h('div', { class: 'tf-odds tnum' },
-        // ± is SIM.titleBandZ paired standard errors, the Trade Lab's own band.
-        `${CURRENT_SEASON} title: you ${pct(p.my.before)} to ${pct(p.my.after)} (${signed(p.my.delta)} pts ±${(SIM.titleBandZ * p.my.se).toFixed(1)})`
-        + ` · them ${pct(p.their.before)} to ${pct(p.their.after)} (${signed(p.their.delta)} ±${(SIM.titleBandZ * p.their.se).toFixed(1)})`
-        + (dyn ? ` · your FV ${signed(p.myFv, 0)}` : '')),
-      h('div', { class: 'tf-why' }, `${dyn ? 'KTC' : 'Value'} ${fmt.decimal(p.sendV, 1)} out, ${fmt.decimal(p.getV, 1)} in (${signed(p.getV - p.sendV)}). ${p.why}`),
-    );
+    const names = (items) => items.map(a => a.label).join(' and ');
+    // One side's change: the delta is the number, before and after beneath it,
+    // and the confidence word. Green only outside the noise band, never without the word.
+    const cell = (who, d) => h('div', { class: `tf-cell${d.sig ? ' sig' : ''}` },
+      h('div', { class: 'tf-who' }, who),
+      h('div', { class: 'tf-num tnum' }, d.fv ? signed(d.delta, 0) : signed(d.delta)),
+      h('div', { class: 'tf-sub tnum' }, d.fv ? `${Math.round(d.before)} → ${Math.round(d.after)}` : `${pct(d.before)} → ${pct(d.after)}`),
+      h('div', { class: 'tf-word' }, d.word));
+    const said = (d) => d.fv
+      ? `${signed(d.delta, 0)} in ${Y}-year lineup value, ${Math.round(d.before)} to ${Math.round(d.after)}, rebuilding`
+      : `${signed(d.delta)} points, ${pct(d.before)} to ${pct(d.after)}, ${d.word.toLowerCase()}`;
+    const row = (p) => {
+      const v = finderVerdict(p), team = p.them.team_name;
+      const reason = p.rebuilder ? `Their starting lineup ranks low (${p.stance}), so they are priced on the future. `
+        : p.fills ? `Fills their ${p.fills}. ` : '';
+      return h('button', { type: 'button', class: 'trade-find-row', title: 'Load into the Trade Lab',
+        'aria-label': `${v.stamp}. ${team}: you send ${names(p.send.items)}, you get ${names(p.get.items)}. `
+          + `Your ${CURRENT_SEASON} title odds ${said(v.you)}. ${team} ${said(v.them)}. Load into the Trade Lab.`,
+        dataset: { tfSend: p.send.keys.join(','), tfGet: p.get.keys.join(',') },
+        onclick: () => {
+          TRADE_STATE.leagueId = lg.id;
+          TRADE_STATE.sideA = { rosterId: me.roster_id, picks: new Set(p.send.keys) };
+          TRADE_STATE.sideB = { rosterId: p.them.roster_id, picks: new Set(p.get.keys) };
+          viewTrade(lg.id);
+          $('#main .trade-calc')?.scrollIntoView({ block: 'start' });
+        } },
+        h('div', { class: 'tf-verdict' },
+          h('div', { class: `tf-stamp${v.both ? ' both' : ''}` }, v.stamp),
+          // One quiet label; a rebuilder is priced on another metric, so each cell gets its own.
+          v.them.fv ? h('div', { class: 'tf-metric tf-cells' }, h('span', {}, `${CURRENT_SEASON} title odds`), h('span', {}, `${Y}-year value`))
+            : h('div', { class: 'tf-metric' }, `${CURRENT_SEASON} title odds`),
+          h('div', { class: 'tf-cells' }, cell('You', v.you), cell(team, v.them))),
+        h('div', { class: 'tf-dealzone' },
+          h('div', { class: 'tf-partner' }, team),
+          h('div', { class: 'tf-deal' }, ...[['Send', p.send.items], ['Get', p.get.items]].flatMap(([dir, items]) => [
+            h('span', { class: 'tf-dir' }, dir),
+            h('span', { class: 'tf-pieces' }, ...items.map(a => h('span', { class: 'tf-piece' },
+              a.pos === 'PICK' ? h('span', { class: 'badge' }, 'PICK') : posChip(a.pos),
+              // The value rides inside the name so a wrapped pick label keeps it at its end.
+              h('span', { class: 'name' }, a.label, ' ', h('span', { class: 'tnum tf-val' }, fmt.decimal(a.v, 0))))))])),
+          h('div', { class: 'tf-why' }, `${dyn ? 'KTC' : 'Value'} ${fmt.decimal(p.sendV, 1)} out, ${fmt.decimal(p.getV, 1)} in `
+            + `(${p.fairWord.toLowerCase()}, ${Math.round(p.fair)}%). ${reason}Lineups: yours ${signed(p.meD, 0)} pts, theirs ${signed(p.themD, 0)}.`
+            + (dyn ? ` Your ${Y}-year lineup value ${signed(p.myFv, 0)}.` : ''))));
+    };
     const show = (res) => {
       list.innerHTML = '';
       status.dataset.tfDone = '1';   // a finished run, for anything waiting on it
-      status.textContent = `${res.proposals.length} trade${res.proposals.length === 1 ? '' : 's'} from ${res.checked.toLocaleString()} packages, `
-        + `${res.simulated} simulated, ${(res.ms / 1000).toFixed(1)} s.`;
-      if (!res.proposals.length) list.appendChild(h('div', { class: 'trade-finder-empty' }, 'No deal helps you and the partner right now. Build one by hand above.'));
+      const n = res.proposals.length, both = res.proposals.filter(p => finderVerdict(p).both).length;
+      const s = (k, one, many) => (k === 1 ? one : many);
+      const claim = !n ? 'No trade found.'
+        : both === n ? `${n} ${s(n, 'trade helps', 'trades help')} both teams.`
+        : `${n} ${s(n, 'trade raises', 'trades raise')} your ${CURRENT_SEASON} title odds; `
+          + (both ? `${both} ${s(both, 'helps', 'help')} both teams.` : `the partner's gain is inside the noise.`);
+      status.replaceChildren(h('strong', { class: 'tf-claim' }, claim), ' ',
+        h('span', { class: 'tf-meta' }, `${res.checked.toLocaleString()} packages checked, ${res.simulated} simulated, ${(res.ms / 1000).toFixed(1)} s.`));
+      if (!n) list.appendChild(h('div', { class: 'trade-finder-empty' }, 'No deal helps you and the partner right now. Build one by hand above.'));
       for (const p of res.proposals) list.appendChild(row(p));
     };
     const run = h('button', { type: 'button', class: 'tf-run', disabled: me ? null : '', onclick: async () => {
       run.disabled = true;
+      run.textContent = 'Searching...';
       list.innerHTML = '';
       delete status.dataset.tfDone;
       const t0 = performance.now();
@@ -7286,6 +7330,7 @@
         status.textContent = 'Could not finish the search. Try again.';
       } finally {
         run.disabled = false;
+        run.textContent = 'Find trades';
       }
     } }, 'Find trades');
     if (me && FINDER_RESULTS.has(lg.id)) show(FINDER_RESULTS.get(lg.id));
@@ -7293,7 +7338,8 @@
       h('h2', { class: 'section-title' }, 'Trade Finder'),
       h('p', { class: 'trade-finder-note' }, `Searches 1-for-1, 2-for-1 and 2-for-2 deals with every team${dyn ? ', picks included' : ''}, `
         + `then simulates the best in ${CURRENT_SEASON} title odds for both sides. A deal shows only if it helps you and the partner gains on what he plays for: `
-        + (dyn ? 'title odds if he contends, future value if he is rebuilding.' : 'his title odds.') + ' Choose one to load it.'),
+        + (dyn ? 'title odds if he contends, future value if he is rebuilding.' : 'his title odds.')
+        + ' SOLID, LIKELY and INSIDE NOISE say how far each change clears the simulation noise: 3 standard errors, 2, or less. Choose one to load it.'),
       run, status, list);
   }
   // ============================================================
@@ -9258,11 +9304,10 @@
           // match, so the change in a cell is the trade, not simulation noise.
           if (!baselineOdds) baselineOdds = titleOddsByYear(lg, { years:TITLE_YEARS, sims:TITLE_SIMS });
           const after = titleOddsByYear(lg, { years:TITLE_YEARS, sims:TITLE_SIMS, whatIf });
-          // Noise band: SIM.titleBandZ paired standard errors, the same ± the
-          // Trade Finder prints. A change inside it paints grey and never
+          // Noise band: SIM.titleBandZ paired standard errors, the same band the
+          // Trade Finder judges by. A change inside it paints grey and never
           // decides the verdict.
-          // Compared at printed precision, so "+0.8 ±0.8" never paints as signal.
-          const inside = (d, band) => Math.round(Math.abs(d) * 10) <= Math.round(Math.max(0.1, band) * 10);
+          const inside = titleBandInside;
           const tone = (d, band) => inside(d, band) ? 'var(--fg-2)' : d > 0 ? 'var(--green)' : 'var(--red)';
           const paint = (cell, sub, k, rid) => {
             const before = baselineOdds[k].byRoster.get(rid) || 0, next = after[k].byRoster.get(rid) || 0;
@@ -12322,6 +12367,12 @@
     for (let k = 0; k < n; k++) { const d = (afterChamps[k] === rid) - (baseChamps[k] === rid); sum += d; sq += d * d; }
     const m = n ? sum / n : 0;
     return { delta: m * 100, se: n ? Math.sqrt(Math.max(0, sq / n - m * m) / n) * 100 : 0 };
+  }
+  // Is a title-odds change inside its noise band? Compared at printed precision,
+  // so "+0.8 ±0.8" never reads as signal. The Trade Lab greys on it and the Trade
+  // Finder's confidence word follows it, so the two never disagree on one trade.
+  function titleBandInside(d, band) {
+    return Math.round(Math.abs(d) * 10) <= Math.round(Math.max(0.1, band) * 10);
   }
 
   function titleEquity(lg, { years = 7, sims = 2500, src = null, whatIf = null, discount = 0.88, seed = 20260807 } = {}) {

@@ -1884,29 +1884,48 @@ textarea { resize: vertical; min-height: 80px; }
   line-height: 1.45;
 }
 .trade-finder-empty { font-weight: 700; }
+/* A found trade is a raised plate: the deal on the left, its verdict in a
+   recessed well on the right (first, on a phone). Hover swaps to the button face;
+   the ink edge never turns gold, because gold means selected. */
 .trade-find-row {
-  display: grid; grid-template-columns: 140px 1fr 48px; align-items: center; gap: 12px;
-  padding: 10px 12px; background: var(--bg-1); border: 1px solid var(--border);
-  border-radius: var(--radius-sm); cursor: pointer; transition: border-color 120ms, background 120ms;
-  width: 100%; color: var(--fg-0); text-align: left; box-shadow: var(--shadow-1);
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, 340px); grid-template-areas: "deal verdict";
+  align-items: stretch; gap: 14px;
+  width: 100%; padding: 12px; color: var(--fg-0); text-align: left; font-weight: 400; letter-spacing: normal;
+  background: var(--grad-panel); border: var(--plate-edge); border-radius: var(--radius);
+  box-shadow: var(--bevel), var(--shadow-1);
 }
-.trade-find-row:hover { border-color: var(--border-hot); background: var(--bg-2); }
-.trade-find-row .tf-partner { font-weight: 600; color: var(--fg-1); font-size: 0.86rem; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.trade-find-row .tf-deal { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; min-width: 0; }
-.trade-find-row .tf-side { display: inline-flex; align-items: center; gap: 6px; min-width: 0; flex-wrap: wrap; }
-.trade-find-row .tf-piece { display: inline-flex; align-items: center; gap: 4px; min-width: 0; }
-.trade-find-row .tf-side .name { font-size: 0.86rem; color: var(--fg-0); }
-.trade-find-row .tf-val { color: var(--fg-3); font-size: 0.78rem; }
-.trade-find-row .tf-tag { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.06em; padding: 1px 4px; border-radius: 3px; }
-.trade-find-row .tf-tag.out { color: var(--red); background: color-mix(in oklab, var(--red) 14%, transparent); }
-.trade-find-row .tf-tag.in { color: var(--green); background: color-mix(in oklab, var(--green) 14%, transparent); }
-.trade-find-row .tf-arrow { color: var(--fg-3); }
-.trade-find-row .tf-fair { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; font-size: 0.82rem; }
-.trade-find-row .tf-odds { grid-column: 1 / -1; font-size: 0.76rem; color: var(--fg-1); line-height: 1.4; }
-.trade-find-row .tf-why { grid-column: 1 / -1; font-size: 0.72rem; color: var(--fg-3); }
-.tf-list { display: grid; gap: 8px; }
+.trade-find-row:hover { background: var(--grad-btn); border-color: var(--ink); }
+.tf-verdict {
+  grid-area: verdict; display: flex; flex-direction: column; gap: 6px; min-width: 0;
+  padding: 10px 12px; background: var(--bg-1);
+  border: 2px solid var(--ink); border-radius: var(--radius-sm); box-shadow: var(--well);
+}
+.tf-stamp { font-family: var(--font-display); font-size: 1.15rem; font-weight: 800; letter-spacing: 0.04em; line-height: 1.2; color: var(--fg-0); }
+.tf-stamp.both { color: var(--green); }
+.tf-metric, .tf-dir, .tf-word {
+  font-family: var(--font-display); font-size: 0.68rem; font-weight: 800;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-2);
+}
+.tf-cells { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.tf-cell { min-width: 0; }
+.tf-who { font-size: 0.8rem; font-weight: 800; color: var(--fg-1); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tf-num { font-size: 1.4rem; font-weight: 900; line-height: 1.15; color: var(--fg-2); }
+.tf-sub { font-size: 0.82rem; font-weight: 700; color: var(--fg-1); }
+.tf-cell.sig .tf-num, .tf-cell.sig .tf-word { color: var(--green); }
+.tf-dealzone { grid-area: deal; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 8px; }
+.tf-partner { font-size: 1rem; font-weight: 800; color: var(--fg-0); overflow-wrap: anywhere; }
+.tf-deal { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: baseline; gap: 6px 10px; }
+.tf-pieces { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; min-width: 0; }
+.tf-piece { display: inline-flex; align-items: baseline; gap: 5px; min-width: 0; }
+.tf-piece .name { font-size: 0.9rem; font-weight: 700; color: var(--fg-0); }
+.tf-val { color: var(--fg-3); font-size: 0.8rem; font-weight: 700; }
+.tf-why { font-size: 0.82rem; font-weight: 600; color: var(--fg-2); line-height: 1.4; }
+.tf-list { display: grid; gap: 10px; }
 .tf-progress { margin: 10px 0; }
 .tf-progress:empty { display: none; }
+.tf-claim { font-weight: 800; color: var(--fg-0); }
+.tf-meta { font-size: 0.82rem; color: var(--fg-3); }
+@media (prefers-reduced-motion: reduce) { .trade-find-row { transition: none; } }
 .pile-vor { margin-left: 6px; font-size: 0.66rem; color: var(--fg-3); letter-spacing: 0.04em; }
 /* Overview command cards */
 .cmd-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin-top: 8px; }
@@ -1950,10 +1969,7 @@ textarea { resize: vertical; min-height: 80px; }
 .pick-chip-label { color: var(--fg-1); font-weight: 600; }
 .pick-chip-val { color: var(--fg-3); font-variant-numeric: tabular-nums; }
 @media (max-width: 620px) {
-  .trade-find-row { grid-template-columns: 1fr auto; }
-  .trade-find-row .tf-deal { grid-column: 1 / -1; order: 3; }
-  .trade-find-row .tf-odds { order: 4; }
-  .trade-find-row .tf-why { order: 5; }
+  .trade-find-row { grid-template-columns: minmax(0, 1fr); grid-template-areas: "verdict" "deal"; }
 }
 
 .trade-calc {

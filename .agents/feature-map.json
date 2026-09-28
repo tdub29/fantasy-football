@@ -448,7 +448,7 @@
     },
     {
       "id": "trade-finder-redraft",
-      "name": "Trade Finder (redraft, Phi Kap): Find trades finishes and shows only pick-free, fully priced deals",
+      "name": "Trade Finder (redraft, Phi Kap): Find trades finishes with its claim, and any row shows a verdict over both sides' odds",
       "path": [
         {
           "eval": "location.hash='#trade/1389722402430136320'"
@@ -468,12 +468,12 @@
         }
       ],
       "selector": "#main .tf-progress[data-tf-done]",
-      "assert": "(()=>{const s=document.querySelector('#main .tf-progress').textContent;const rows=[...document.querySelectorAll('#main .trade-find-row')];const ok=r=>!(r.dataset.tfSend+','+r.dataset.tfGet).includes('pick:')&&(r.querySelector('.tf-odds').textContent.match(/\\d+\\.\\d% to \\d+\\.\\d%/g)||[]).length===2;return /^\\d+ trades? from [\\d,]+ packages, \\d+ simulated, [\\d.]+ s\\.$/.test(s)&&(rows.length?rows.every(ok):!!document.querySelector('#main .trade-finder-empty'))})()",
-      "notes": "Phi Kap Fantasy is redraft. The finder runs only behind the Find trades button, never on page load, scans every partner in slices and simulates the best packages in 2026 title odds for both rosters. The run must finish with the summary line; any row must carry no pick and both sides' odds, and no row must mean the empty state. On 2026-09-25 data it simulates a few deals and none clears the gates: every one lowers the partner's title odds or gains me less than twice its standard error."
+      "assert": "(()=>{const W=['SOLID','LIKELY','INSIDE NOISE'],S=['BOTH GAIN','YOU GAIN, THEIRS IS NOISE','THEY GAIN, YOURS IS NOISE','BOTH INSIDE NOISE'];const okRow=(r,partnerFv)=>{const st=(r.querySelector('.tf-stamp')||{}).textContent;const c=[...r.querySelectorAll('.tf-verdict .tf-cell')].map(e=>({n:e.querySelector('.tf-num').textContent,s:e.querySelector('.tf-sub').textContent,w:e.querySelector('.tf-word').textContent,g:e.classList.contains('sig')}));const odds=x=>/^[+-]\\d+\\.\\d$/.test(x.n)&&/^\\d+\\.\\d% \\u2192 \\d+\\.\\d%$/.test(x.s)&&W.includes(x.w)&&x.g===(x.w!=='INSIDE NOISE');const fv=x=>/^[+-]\\d+$/.test(x.n)&&/^\\d+ \\u2192 \\d+$/.test(x.s)&&x.w==='REBUILDING';const a=r.getAttribute('aria-label')||'';return S.includes(st)&&c.length===2&&odds(c[0])&&(odds(c[1])||(partnerFv&&fv(c[1])))&&(st==='BOTH GAIN')===(c[0].g&&c[1].g)&&a.startsWith(st+'. ')&&a.includes(c[0].n+' ')&&a.includes(c[1].n+' ')&&a.includes(c[0].w.toLowerCase())&&!r.querySelector('.tf-tag,.tf-fair,.tf-odds')};const s=document.querySelector('#main .tf-progress').textContent;const rows=[...document.querySelectorAll('#main .trade-find-row')];const ok=r=>!(r.dataset.tfSend+','+r.dataset.tfGet).includes('pick:')&&okRow(r,false);return /^(No trade found|\\d+ trades? helps? both teams|\\d+ trades? raises? your \\d{4} title odds; (\\d+ helps? both teams|the partner's gain is inside the noise))\\. [\\d,]+ packages checked, \\d+ simulated, [\\d.]+ s\\.$/.test(s)&&(rows.length?rows.every(ok):!!document.querySelector('#main .trade-finder-empty'))})()",
+      "notes": "Phi Kap Fantasy is redraft. The finder runs only behind the Find trades button, never on page load, scans every partner in slices and simulates the best packages in 2026 title odds for both rosters. The status line leads with the claim (how many trades help both teams) and then the search telemetry. Any row carries no pick, a verdict stamp that says BOTH GAIN only when both cells are green, and two cells with a signed delta, before → after and a confidence word (green only when not INSIDE NOISE); its aria-label starts with the stamp and carries both deltas and words. No row must mean the empty state. On 2026-09-25 data it simulates a few deals and none clears the gates."
     },
     {
       "id": "trade-finder-redraft-load",
-      "name": "Trade Finder (redraft): a proposal shows both sides' 2026 odds with its error and loads into the Trade Lab",
+      "name": "Trade Finder (redraft): a proposal shows its verdict over both sides' 2026 odds and loads into the Trade Lab",
       "path": [
         {
           "eval": "location.hash='#trade/1532688686'"
@@ -492,7 +492,7 @@
           "timeoutMs": 45000
         },
         {
-          "eval": "(()=>{const r=document.querySelector('#main .trade-find-row');if(!r)return false;window.__tf={send:r.dataset.tfSend,get:r.dataset.tfGet,odds:r.querySelector('.tf-odds').textContent};r.click();return true})()"
+          "eval": "(()=>{const r=document.querySelector('#main .trade-find-row');if(!r)return false;window.__tf={send:r.dataset.tfSend,get:r.dataset.tfGet,html:r.outerHTML};r.click();return true})()"
         },
         {
           "waitFor": "#main .trade-side-card .trade-pile-row",
@@ -500,12 +500,12 @@
         }
       ],
       "selector": "#main .trade-side-card .trade-pile-row",
-      "assert": "(()=>{const t=window.__tf;if(!t)return false;const c=[...document.querySelectorAll('#main .trade-side-card')];const keys=card=>[...card.querySelectorAll('.trade-pile-row')].map(r=>r.dataset.tradeKey).sort().join(',');const same=(a,b)=>a.split(',').sort().join(',')===b;const pairs=(t.odds.match(/\\d+\\.\\d% to \\d+\\.\\d%/g)||[]).length;const row=document.querySelector('#main .trade-find-row');return c.length===2&&same(t.send,keys(c[0]))&&same(t.get,keys(c[1]))&&pairs===2&&/ you /.test(t.odds)&&/ them /.test(t.odds)&&!!row&&row.dataset.tfSend===t.send&&!(t.send+','+t.get).includes('pick:')&&/you [0-9.]+% to [0-9.]+% \\(\\+[0-9.]+ pts ±[0-9.]+\\)/.test(t.odds)})()",
-      "notes": "Washington Football League is redraft. Same contract as the dynasty entry: the first proposal shows my odds and the partner's, each before to after, my gain with its paired standard error, no pick, and one click loads its exact send and get sets into the two Trade Lab piles. Phi Kap is the other redraft league; on 2026-09-25 data it has no deal that clears the gates, which the trade-finder-redraft entry checks instead."
+      "assert": "(()=>{const W=['SOLID','LIKELY','INSIDE NOISE'],S=['BOTH GAIN','YOU GAIN, THEIRS IS NOISE','THEY GAIN, YOURS IS NOISE','BOTH INSIDE NOISE'];const okRow=(r,partnerFv)=>{const st=(r.querySelector('.tf-stamp')||{}).textContent;const c=[...r.querySelectorAll('.tf-verdict .tf-cell')].map(e=>({n:e.querySelector('.tf-num').textContent,s:e.querySelector('.tf-sub').textContent,w:e.querySelector('.tf-word').textContent,g:e.classList.contains('sig')}));const odds=x=>/^[+-]\\d+\\.\\d$/.test(x.n)&&/^\\d+\\.\\d% \\u2192 \\d+\\.\\d%$/.test(x.s)&&W.includes(x.w)&&x.g===(x.w!=='INSIDE NOISE');const fv=x=>/^[+-]\\d+$/.test(x.n)&&/^\\d+ \\u2192 \\d+$/.test(x.s)&&x.w==='REBUILDING';const a=r.getAttribute('aria-label')||'';return S.includes(st)&&c.length===2&&odds(c[0])&&(odds(c[1])||(partnerFv&&fv(c[1])))&&(st==='BOTH GAIN')===(c[0].g&&c[1].g)&&a.startsWith(st+'. ')&&a.includes(c[0].n+' ')&&a.includes(c[1].n+' ')&&a.includes(c[0].w.toLowerCase())&&!r.querySelector('.tf-tag,.tf-fair,.tf-odds')};const t=window.__tf;if(!t)return false;const c=[...document.querySelectorAll('#main .trade-side-card')];const keys=card=>[...card.querySelectorAll('.trade-pile-row')].map(r=>r.dataset.tradeKey).sort().join(',');const same=(a,b)=>a.split(',').sort().join(',')===b;const row=document.querySelector('#main .trade-find-row');const was=document.createElement('div');was.innerHTML=t.html;return c.length===2&&same(t.send,keys(c[0]))&&same(t.get,keys(c[1]))&&!!row&&row.dataset.tfSend===t.send&&!(t.send+','+t.get).includes('pick:')&&okRow(was.firstElementChild,false)&&/^[+]/.test(was.querySelector('.tf-cell .tf-num').textContent)})()",
+      "notes": "Washington Football League is redraft. The first proposal shows a verdict stamp over two equal cells, you and the partner, each with the change in 2026 title odds as the number, before → after beneath and a confidence word from z = delta / SE (SOLID, LIKELY, INSIDE NOISE), no pick, and my gain positive; one click loads its exact send and get sets into the two Trade Lab piles. Phi Kap is the other redraft league; on 2026-09-25 data it has no deal that clears the gates, which the trade-finder-redraft entry checks instead."
     },
     {
       "id": "trade-finder-dynasty",
-      "name": "Trade Finder (dynasty): Find trades, both sides' 2026 odds, loads into the Trade Lab",
+      "name": "Trade Finder (dynasty): a proposal shows its verdict, a rebuilder on future value, and loads into the Trade Lab",
       "path": [
         {
           "eval": "location.hash='#trade/1341184676601028608'"
@@ -524,7 +524,7 @@
           "timeoutMs": 45000
         },
         {
-          "eval": "(()=>{const r=document.querySelector('#main .trade-find-row');if(!r)return false;window.__tf={send:r.dataset.tfSend,get:r.dataset.tfGet,odds:r.querySelector('.tf-odds').textContent};r.click();return true})()"
+          "eval": "(()=>{const r=document.querySelector('#main .trade-find-row');if(!r)return false;window.__tf={send:r.dataset.tfSend,get:r.dataset.tfGet,html:r.outerHTML};r.click();return true})()"
         },
         {
           "waitFor": "#main .trade-side-card .trade-pile-row",
@@ -532,8 +532,8 @@
         }
       ],
       "selector": "#main .trade-side-card .trade-pile-row",
-      "assert": "(()=>{const t=window.__tf;if(!t)return false;const c=[...document.querySelectorAll('#main .trade-side-card')];const keys=card=>[...card.querySelectorAll('.trade-pile-row')].map(r=>r.dataset.tradeKey).sort().join(',');const same=(a,b)=>a.split(',').sort().join(',')===b;const pairs=(t.odds.match(/\\d+\\.\\d% to \\d+\\.\\d%/g)||[]).length;const row=document.querySelector('#main .trade-find-row');return c.length===2&&same(t.send,keys(c[0]))&&same(t.get,keys(c[1]))&&pairs===2&&/ you /.test(t.odds)&&/ them /.test(t.odds)&&!!row&&row.dataset.tfSend===t.send&&/you [0-9.]+% to [0-9.]+% \\(\\+[0-9.]+ pts ±[0-9.]+\\)/.test(t.odds)})()",
-      "notes": "Password is taco is dynasty, so packages include rookie picks and a rebuilding partner is judged on future value, a contender on his title odds. Same contract as the redraft entry: both sides' 2026 odds before to after on the first proposal, and one click loads its exact assets, picks included, into the Trade Lab piles. The sleep covers the search, about 7 to 14 seconds headless on this machine. My gain shows with its paired standard error, and only clears when it beats SIM.finderSeMult of it."
+      "assert": "(()=>{const W=['SOLID','LIKELY','INSIDE NOISE'],S=['BOTH GAIN','YOU GAIN, THEIRS IS NOISE','THEY GAIN, YOURS IS NOISE','BOTH INSIDE NOISE'];const okRow=(r,partnerFv)=>{const st=(r.querySelector('.tf-stamp')||{}).textContent;const c=[...r.querySelectorAll('.tf-verdict .tf-cell')].map(e=>({n:e.querySelector('.tf-num').textContent,s:e.querySelector('.tf-sub').textContent,w:e.querySelector('.tf-word').textContent,g:e.classList.contains('sig')}));const odds=x=>/^[+-]\\d+\\.\\d$/.test(x.n)&&/^\\d+\\.\\d% \\u2192 \\d+\\.\\d%$/.test(x.s)&&W.includes(x.w)&&x.g===(x.w!=='INSIDE NOISE');const fv=x=>/^[+-]\\d+$/.test(x.n)&&/^\\d+ \\u2192 \\d+$/.test(x.s)&&x.w==='REBUILDING';const a=r.getAttribute('aria-label')||'';return S.includes(st)&&c.length===2&&odds(c[0])&&(odds(c[1])||(partnerFv&&fv(c[1])))&&(st==='BOTH GAIN')===(c[0].g&&c[1].g)&&a.startsWith(st+'. ')&&a.includes(c[0].n+' ')&&a.includes(c[1].n+' ')&&a.includes(c[0].w.toLowerCase())&&!r.querySelector('.tf-tag,.tf-fair,.tf-odds')};const t=window.__tf;if(!t)return false;const c=[...document.querySelectorAll('#main .trade-side-card')];const keys=card=>[...card.querySelectorAll('.trade-pile-row')].map(r=>r.dataset.tradeKey).sort().join(',');const same=(a,b)=>a.split(',').sort().join(',')===b;const row=document.querySelector('#main .trade-find-row');const was=document.createElement('div');was.innerHTML=t.html;return c.length===2&&same(t.send,keys(c[0]))&&same(t.get,keys(c[1]))&&!!row&&row.dataset.tfSend===t.send&&okRow(was.firstElementChild,true)&&/^[+]/.test(was.querySelector('.tf-cell .tf-num').textContent)})()",
+      "notes": "Password is taco is dynasty, so packages include rookie picks and a rebuilding partner is judged on future value, a contender on his title odds. The first proposal shows the verdict stamp over two cells: mine in 2026 title odds with its confidence word, the partner's in title odds or, for a rebuilder, in 4-year lineup value (signed whole number, before → after, REBUILDING). One click loads its exact assets, picks included, into the Trade Lab piles. The sleep covers the search, about 7 to 14 seconds headless on this machine (30 s or more with the 7,500-sim recheck)."
     },
     {
       "id": "sos-grid",
