@@ -17,8 +17,8 @@ exactly (REG season, pass and run plays, a target is a pass attempt with a
 receiver, a dropback needs a passer), so the page summing every bucket gives
 back advanced.js. --self-check proves that on the written files.
 
-Routes are the same estimate the suite ships: snaps x the team's dropback
-share of plays that game, with its TE and RB calibration. Inside a situation
+Routes are the same estimate the suite ships: snap share x the team's
+dropbacks that game, with its calibration and per-game cap. Inside a situation
 the page scales each week's routes by the share of that week's team dropbacks
 the situation holds, so YPRR stays "(est)".
 
@@ -253,16 +253,17 @@ def build(season: int) -> dict:
     pfr_to_gsis = roster.dropna(subset=["pfr_id"]).set_index("pfr_id")["gsis_id"].to_dict()
     snaps["gsis_id"] = snaps["pfr_player_id"].map(pfr_to_gsis)
     game_db = p[p["qb_dropback"] == 1].groupby(["game_id", "posteam"]).size()
-    db_share = (game_db / p.groupby(["game_id", "posteam"]).size()).rename("db_share").reset_index()
-    snaps = snaps.merge(db_share.rename(columns={"posteam": "team"}), on=["game_id", "team"], how="left")
+    snaps = snaps.merge(game_db.rename("team_db").reset_index().rename(columns={"posteam": "team"}),
+                        on=["game_id", "team"], how="left")
     snaps = snaps.dropna(subset=["gsis_id"])
-    snaps["routes"] = (snaps["offense_snaps"] * snaps["db_share"]).fillna(0)
     pos = roster.set_index("gsis_id")["position"]
     season_snap = snaps.groupby("gsis_id")["offense_pct"].mean()
-    te_mult = np.select([season_snap >= 0.75, season_snap >= 0.5], [0.98, 0.89], 0.81)
-    mult = pd.Series(np.where(pos.reindex(season_snap.index) == "TE", te_mult,
-                              np.where(pos.reindex(season_snap.index) == "RB", 0.94, 1.0)), index=season_snap.index)
-    snaps["routes"] = snaps["routes"] * snaps["gsis_id"].map(mult)
+    ps = pos.reindex(season_snap.index)
+    te_mult = np.select([season_snap >= 0.75, season_snap >= 0.5], [1.05, 0.95], 0.87)
+    mult = pd.Series(np.where(ps == "TE", te_mult, np.where(ps == "RB", 0.99, np.where(ps == "WR", 1.07, 1.0))),
+                     index=season_snap.index)
+    snaps["routes"] = np.minimum(snaps["offense_pct"] * snaps["team_db"] * snaps["gsis_id"].map(mult),
+                                 snaps["team_db"]).fillna(0)
 
     players = {}
     by = lambda df, k: dict(tuple(df.groupby(k)))
@@ -282,8 +283,9 @@ def build(season: int) -> dict:
             rec_["P"] = flat(pas_g[g], P_FIELDS)
         if g in snap_g:
             # A week on another team carries that team as a fourth field, so
-            # the page scales his routes by the right team's dropbacks.
-            rec_["S"] = [[int(s.week), int(round(s.offense_pct * 100)), round(float(s.routes), 1)]
+            # the page scales his routes by the right team's dropbacks. Routes keep two
+            # decimals: at one, a two-week YPRR drifts past its own display rounding.
+            rec_["S"] = [[int(s.week), int(round(s.offense_pct * 100)), round(float(s.routes), 2)]
                          + ([TEAM_FIX.get(s.team, s.team)] if TEAM_FIX.get(s.team, s.team) != tm else [])
                          for s in snap_g[g].itertuples(index=False)]
         players[str(row.sleeper_id).split(".")[0]] = rec_
@@ -344,12 +346,15 @@ def totals(S: dict, sid: str) -> dict:
     g = lambda k: tot.get(k, 0)
     div = lambda a, b: a / b if b else None
     routes = sum(s[2] for s in snaps)   # no situation filter: every week's routes count in full
+    # YPRR counts yards only in weeks with routes (snap counts posted), as advanced.js does.
+    wk, fr, ra = {s[0] for s in snaps}, F["R"], v.get("R", [])
+    routed_yds = sum(ra[i + fr.index("yds")] for i in range(0, len(ra), len(fr)) if ra[i] in wk)
     return {
         "games": len(snaps), "snap_pct": div(sum(s[1] for s in snaps) / 100, len(snaps)),
         "targets": g("R.tgt"), "carries": g("U.car"), "dropbacks": g("P.db"), "air_yds": g("R.air"),
         "target_share": div(g("R.tgt"), team_tgt), "catch_rate": div(g("R.rec"), g("R.tgt")),
         "yds_per_target": div(g("R.yds"), g("R.tgt")), "epa_per_target": div(g("R.epa") / 100, g("R.tgt")),
-        "yprr_est": div(g("R.yds"), routes) if routes >= 5 else None,
+        "yprr_est": div(routed_yds, routes) if routes >= 5 else None,
         "ypc": div(g("U.yds"), g("U.car")), "epa_per_rush": div(g("U.epa") / 100, g("U.car")),
         "rush_success": div(g("U.succ"), g("U.car")),
         "db_epa": div(g("P.epa") / 100, g("P.db")), "ypa": div(g("P.yds"), g("P.att")),

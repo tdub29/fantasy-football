@@ -14101,16 +14101,19 @@
       }
       for (const [sid, v] of Object.entries(S.players)) {
         let r = acc.get(sid);
-        if (!r) acc.set(sid, r = { sid, n:v.n, t:v.t, p:v.p, sum:{}, teamTgt:0, routes:0, games:0, snap:0, db:0 });
+        if (!r) acc.set(sid, r = { sid, n:v.n, t:v.t, p:v.p, sum:{}, teamTgt:0, routes:0, routedYds:0, games:0, snap:0, db:0 });
+        // YPRR counts yards only in weeks with routes (snap counts posted), as advanced.js does.
+        const routed = new Set((v.S || []).map(s => s[0]));
         for (const role of ['R', 'U', 'P']) {
           const a = v[role], f = F[role];
           if (!a) continue;
-          const scale = f.map(k => (S.scale || {})[k] || 1), iDb = f.indexOf('db');
+          const scale = f.map(k => (S.scale || {})[k] || 1), iDb = f.indexOf('db'), iYds = role === 'R' ? f.indexOf('yds') : -1;
           for (let i = 0; i < a.length; i += f.length) {
             if (!inWk(a[i])) continue;
             if (iDb > 0) r.db += a[i + iDb];   // the QB floor ignores the situation
             if (!ok[a[i + 1]]) continue;
             for (let j = 2; j < f.length; j++) r.sum[role + f[j]] = (r.sum[role + f[j]] || 0) + a[i + j] / scale[j];
+            if (iYds > 0 && routed.has(a[i])) r.routedYds += a[i + iYds] / scale[iYds];
           }
         }
         r.teamTgt += (team[v.t] || {}).tgt || 0;
@@ -14131,7 +14134,7 @@
         games:r.games, snap_pct:r.games ? r.snap / 100 / r.games : null,
         targets:g('Rtgt'), target_share:div(g('Rtgt'), r.teamTgt), rec:g('Rrec'), rec_yds:g('Ryds'), rec_td:g('Rtd'),
         air_yds:g('Rair'), catch_rate:div(g('Rrec'), g('Rtgt')), yds_per_target:div(g('Ryds'), g('Rtgt')),
-        epa_per_target:div(g('Repa'), g('Rtgt')), yprr_est:r.routes >= 5 ? g('Ryds') / r.routes : null,
+        epa_per_target:div(g('Repa'), g('Rtgt')), yprr_est:r.routes >= 5 ? r.routedYds / r.routes : null,
         carries:g('Ucar'), rush_yds:g('Uyds'), rush_td:g('Utd'), ypc:div(g('Uyds'), g('Ucar')),
         epa_per_rush:div(g('Uepa'), g('Ucar')), rush_success:div(g('Usucc'), g('Ucar')),
         dropbacks:g('Pdb'), pass_att:g('Patt'), cmp:g('Pcmp'), pass_yds:g('Pyds'), pass_td:g('Ptd'), ints:g('Pint'),
@@ -14170,7 +14173,7 @@
       C('catch_rate', 'Catch%', 'Receiving', REC, 'pct', 'Receptions over targets.'),
       C('yds_per_target', 'Y/Tgt', 'Receiving', REC, 'dec1', 'Receiving yards per target.'),
       C('epa_per_target', 'EPA/Tgt', 'Receiving', REC, 'dec2', 'Expected points added per target.'),
-      C('yprr_est', 'YPRR (est)', 'Receiving', REC, 'dec2', "Receiving yards per estimated route. Each week's estimated routes (snaps x the team's dropback share, calibrated on 2025 participation) are scaled by the share of that week's team dropbacks inside the split. Blank under 5 routes."),
+      C('yprr_est', 'YPRR (est)', 'Receiving', REC, 'dec2', "Receiving yards per estimated route. Each week's estimated routes (snap share x the team's dropbacks, calibrated on 2025 participation) are scaled by the share of that week's team dropbacks inside the split. Blank under 5 routes."),
       C('carries', 'Car', 'Rushing', RUSH, 'int', 'Carries.'),
       C('rush_yds', 'Rush yds', 'Rushing', RUSH, 'int', 'Rushing yards.'),
       C('rush_td', 'Rush TD', 'Rushing', RUSH, 'int', 'Rushing touchdowns.'),
