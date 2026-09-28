@@ -11538,9 +11538,10 @@
       ['aya', 'AY/A', pmNum(1), 'Final-season adjusted yards per attempt: (yards + 20 x TD - 45 x INT) / attempts'],
       ['starts', 'Starts', pmNum(0), 'Seasons as the starter (a 150-attempt pace)'],
     ];
-    const yp = { WR:['Career YPTPA', 'Career receiving yards per team pass attempt'],
-                 TE:['Best YPTPA', 'Best-season receiving yards per team pass attempt'],
-                 RB:['Final YPTPA', 'Final-season receiving yards per team pass attempt'] }[pos];
+    const thin = '. The model skips seasons on teams that threw under 15 passes a game';
+    const yp = { WR:['Career YPTPA', `Career receiving yards per team pass attempt${thin}`],
+                 TE:['Best YPTPA', `Best-season receiving yards per team pass attempt${thin}`],
+                 RB:['Final YPTPA', `Final-season receiving yards per team pass attempt${thin}`] }[pos];
     return [
       ['dom', 'Dominator', pmPct, `Best-season dominator: mean of his share of team ${pos === 'RB' ? 'scrimmage' : 'receiving'} yards and TDs`],
       ['yptpa', yp[0], pmNum(2), yp[1]],

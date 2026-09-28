@@ -72,6 +72,16 @@ LAST_CLASS = {p: LAST_NFL - w + 1 for p, (_, w) in TARGET.items()}   # fully obs
 # Breakout = first qualifying college season at or above this dominator (PlayerProfiler:
 # WR 20%, TE 15%; RB uses the 15% share-of-team-offense line). QB has no breakout age.
 BREAKOUT = {"WR": 0.20, "TE": 0.15, "RB": 0.15}
+# Receiving shares need a passing offense to be a share of. A season on a team that threw fewer
+# than this many passes a game (half the FBS median of 30.4, 2004-2025; in practice the
+# triple-option teams, Army threw 9 in 2025) carries no YPTPA and cannot be a breakout: 13
+# catches there were 37% of Army's receiving yards. Chosen over empirical-Bayes shrinkage by
+# team pass attempts, which kept that profile near the top 10 and failed the low-volume guard
+# below at every weight tried (model card, "Low-volume shares").
+MIN_PASS_PG = 15.0
+# The talent model must never put a player in its top decile on receiving shares posted at this
+# passing volume, however extreme (build() asserts it on the shipped fit).
+LOW_VOLUME_PG = 12.0
 
 # Talent features. A first research-driven set of 6-7 per position lost to capital alone;
 # these are the research-backed subsets kept after one leave-one-class-out pruning pass
@@ -178,6 +188,7 @@ def season_metrics(ps: pd.DataFrame) -> pd.DataFrame:
     ps["qual"] = ps.games >= np.maximum(3, np.ceil(tg / 2))
     ps["passer"] = ps.pass_att >= 5 * ps.team_games          # a real passing role
     ps["started"] = ps.pass_att >= 12.5 * ps.team_games      # QBASE: a 150-attempt season
+    ps["thin"] = ps.t_pass_att < MIN_PASS_PG * ps.team_games   # too little passing for a share
     return ps
 
 
@@ -241,9 +252,13 @@ def career_features(subj: pd.DataFrame, ps: pd.DataFrame, age0: float) -> pd.Dat
 
     subj columns: sid (unique), player_id, pos, cutoff (last college season counted),
     draft_year (real or projected), dob (may be NaT), hs_class (for the age proxy).
+    Seasons under MIN_PASS_PG drop out of every YPTPA feature and the breakout test; the
+    unfiltered numbers stay on as ryptpa_raw_* for display.
     Uses nothing from the NFL side, which is what keeps the talent model pre-draft."""
     f = subj[["sid", "player_id", "pos", "cutoff", "dob", "hs_class"]].merge(ps, on="player_id")
     f = f[f.season <= f.cutoff].copy()
+    f["ryptpa_raw"] = f["ryptpa"]
+    f.loc[f.thin, "ryptpa"] = np.nan
     sept1 = pd.to_datetime(f.season.astype(int).astype(str) + "-09-01")
     f["age"] = np.where(f.dob.notna(), age_years(sept1, f.dob), age0 + f.season - f.hs_class)
     f["dom"] = np.where(f.pos == "RB", f.dom_scrim, f.dom_rec)
@@ -251,22 +266,25 @@ def career_features(subj: pd.DataFrame, ps: pd.DataFrame, age0: float) -> pd.Dat
     pool = f[f.qual | ~anyq].sort_values(["sid", "season"])
     g = pool.groupby("sid")
     out = pd.DataFrame(index=subj.sid)
-    for c in ("ryptpa", "dom", "rec_share", "target_share"):
+    for c in ("ryptpa", "ryptpa_raw", "dom", "rec_share", "target_share"):
         out[f"{c}_best"] = g[c].max()
     fin = pool.drop_duplicates("sid", keep="last").set_index("sid")
-    for c in ("ryptpa", "dom", "rec_share", "season", "age", "power", "pos_team", "name",
+    for c in ("ryptpa", "ryptpa_raw", "dom", "rec_share", "season", "age", "power", "pos_team", "name",
               "rec", "rec_yds", "rec_td", "rush_att", "rush_yds", "rush_td", "games"):
         out[f"{c}_final"] = fin[c]
     ga = f.groupby("sid")
     out["scrim_ypg"] = ga.scrim_yds.sum() / ga.games.sum().replace(0, np.nan)
-    out["ryptpa_career"] = ga.rec_yds.sum() / ga.t_pass_att.sum().replace(0, np.nan)
+    out["ryptpa_raw_career"] = ga.rec_yds.sum() / ga.t_pass_att.sum().replace(0, np.nan)
+    ok = f[~f.thin].groupby("sid")
+    out["ryptpa_career"] = ok.rec_yds.sum() / ok.t_pass_att.sum().replace(0, np.nan)
     out["n_seasons"] = ga.season.nunique()
     out["n_qual"] = ga.qual.sum()
     out["power"] = out.pop("power_final")
-    # Breakout age: first qualifying season at the position's dominator line; a player who
-    # never got there is scored one year past his final college age.
+    # Breakout age: first qualifying season at the position's dominator line, on a team that
+    # passed at least MIN_PASS_PG a game; a player who never got there is scored one year past
+    # his final college age.
     thr = pool.pos.map(BREAKOUT)
-    bo = pool[pool.dom >= thr].drop_duplicates("sid", keep="first").set_index("sid")
+    bo = pool[(pool.dom >= thr) & ~pool.thin].drop_duplicates("sid", keep="first").set_index("sid")
     out["breakout_age"] = bo["age"]
     out["broke_out"] = out.breakout_age.notna().astype(float)
     out["breakout_age"] = out.breakout_age.fillna(out.age_final + 1)
@@ -550,6 +568,38 @@ def prepare(say=print):
     return ps, bio, d, t, age0
 
 
+SHARE_FEATS = {"ryptpa_best", "ryptpa_career", "ryptpa_final", "breakout_age"}
+
+
+def low_volume_profile(pos, ypa, dom, age0):
+    """Feature row of a low-volume career with extreme shares: two closed 12-game seasons on a
+    team that threw LOW_VOLUME_PG passes a game, each at `ypa` YPTPA and `dom` dominator, the
+    first at age0."""
+    n = LOW_VOLUME_PG * 12
+    rows = []
+    for s in (SEASON - 2, SEASON - 1):
+        base = {"season": s, "team_id": 1, "pos_team": "X", "fbs_class": "G5", "team_games": 12,
+                "g_receiving": 12, "g_rushing": np.nan, "g_passing": np.nan, "targets": 0, "rush_att": 0,
+                "rush_yds": 0, "rush_td": 0, "pass_att": 0, "pass_comp": 0, "pass_yds": 0, "pass_td": 0, "pass_int": 0}
+        rows.append({**base, "player_id": 1, "name": "Low Volume", "rec": 20, "rec_yds": ypa * n, "rec_td": 10 * dom})
+        rows.append({**base, "player_id": 2, "name": "Teammate", "rec": 20, "rec_yds": ypa * n * (1 / dom - 1),
+                     "rec_td": 10 * (1 - dom), "pass_att": n, "g_passing": 12})
+    subj = pd.DataFrame({"sid": ["lv"], "player_id": pd.array([1], dtype="Int64"), "pos": [pos], "cutoff": [SEASON - 1],
+                         "draft_year": [SEASON], "dob": [pd.NaT], "hs_class": [SEASON - 2]})
+    return career_features(subj, season_metrics(pd.DataFrame(rows)), age0).set_index("sid").loc["lv"]
+
+
+def low_volume_ceiling(fin, pos, age0, ps):
+    """Talent percentile of low_volume_profile() at the highest YPTPA and dominator a drafted
+    player at the position posted on a normal-volume team (the raw maxima are thin seasons
+    themselves), with every non-share feature missing, so the model imputes its median."""
+    f = fin["train"][["player_id", "cutoff"]].merge(ps, on="player_id")
+    f = f[(f.season <= f.cutoff) & f.qual & ~f.thin]
+    x = low_volume_profile(pos, float(f.ryptpa.max()), float(min(f.dom_rec.max(), 0.95)), age0)
+    X = np.array([[float(x[c]) if c in SHARE_FEATS else np.nan for c in fin["cols"]]])
+    return pctile(fin["ref"], float(logit(fin["talent"].predict_proba(X)[0, 1])))
+
+
 def build(verbose=True):
     say = print if verbose else (lambda *a, **k: None)
     ps, bio, d, t, age0 = prepare(say)
@@ -601,6 +651,10 @@ def build(verbose=True):
         results[pos] = res
         final[pos] = {"cols": cols, "talent": m_t, "full": m_f, "draft": m_b, "gbm": m_g, "shipped": shipped,
                       "ref": ref, "train": tp, "oos": dict(zip(tp.sid, zip(pred["talent"], pred[shipped])))}
+        if set(cols) & SHARE_FEATS:
+            res["ceiling"] = low_volume_ceiling(final[pos], pos, age0, ps)
+            assert res["ceiling"] < TIERS[0][1], (
+                f"{pos}: shares at {LOW_VOLUME_PG:.0f} team passes a game alone reach talent {res['ceiling']:.0f}")
         say(f"{pos}: n={len(tp)} hits={int(y.sum())}  logloss draft {res['draft']['logloss']:.4f} "
             f"talent {res['talent']['logloss']:.4f} full {res['full']['logloss']:.4f} gbm {res['gbm']['logloss']:.4f} "
             f"| fwd draft {res['forward']['draft']['logloss']:.4f} full {res['forward']['full']['logloss']:.4f} "
@@ -653,7 +707,7 @@ def key_stats(r):
         if line:
             return st, f"{int(r['qb_season_final'])} {r.get('pos_team_final') or ''}: {line}"
     else:
-        yp = {"WR": "ryptpa_career", "TE": "ryptpa_best", "RB": "ryptpa_final"}[pos]
+        yp = {"WR": "ryptpa_raw_career", "TE": "ryptpa_raw_best", "RB": "ryptpa_raw_final"}[pos]
         st = {"dom": f(r.get("dom_best")), "yptpa": f(r.get(yp), 2), "share": f(r.get("rec_share_best")),
               "stars": f(r.get("stars"), 0)}
         if pos == "RB":
@@ -762,7 +816,8 @@ FIELDS = {
     "hp": "Hit probability with actual draft capital (shipped model, see pos[].shipped)",
     "tp": "Talent-only hit probability, as if drafted, with no draft capital",
     "ba": "Breakout age: age at the first college season at the dominator line (never broke out = final age + 1)",
-    "st": "Key college stats: dom = best dominator, yptpa = best rec yds per team pass att, share = best rec yds share, "
+    "st": "Key college stats, as posted: dom = best dominator, yptpa = rec yds per team pass att (WR career, TE best, "
+          "RB final; the model skips seasons on teams under 15 passes a game), share = best rec yds share, "
           "sypg = career scrimmage yds/game, aya/comp = final passing season, rypg = best QB rush yds/game, starts = 150-att seasons",
     "ln": "Final counted college season line",
     "cp": "Comps: [name, draft year, pick, best PPR PPG in window, hit 0/1]",
@@ -851,6 +906,13 @@ def write_card(res):
         L.append(head)
         L.append(f"  - LightGBM challenger: {r['gbm']['logloss']:.4f} leave-one-class-out, {fw['gbm']['logloss']:.4f} "
                  f"forward ({'promoted' if r['shipped'] == 'gbm' else 'not promoted'}).")
+    L.append("")
+    L.append("### Low-volume check (asserted on every build)")
+    L.append("")
+    L.append(f"Talent score of a two-season career on a team throwing {LOW_VOLUME_PG:.0f} passes a game, at the best YPTPA and "
+             "dominator a drafted player at the position posted on a normal passing team, every other feature at the median: "
+             + ", ".join(f"{pos} {r['ceiling']:.0f}" for pos, r in res["results"].items() if "ceiling" in r)
+             + f". The build fails at {TIERS[0][1]} (top decile).")
     L.append("")
     L.append("### Standardized coefficients (final fit on every training class)")
     L.append("")
@@ -960,6 +1022,27 @@ def self_check():
     o = attach_outcomes(t, s).set_index("sid")
     assert o.loc["a", "hit"] == 0.0 and o.loc["a", "best_ppg"] == 12.0, "2021 is year 4, outside a 3-year window"
     assert pd.isna(o.loc["b", "hit"])
+
+    # 6. low-volume shares: a season on a team under MIN_PASS_PG passes a game keeps its raw
+    #    numbers for display but carries no YPTPA and cannot be the breakout.
+    th = season_metrics(ps.assign(pass_att=[100, 0, 400, 0])).set_index(["player_id", "season"])
+    assert th.loc[(1, 2020), "thin"] and not th.loc[(1, 2021), "thin"]      # 100 / 12 games vs 400 / 12
+    ct = career_features(subj, th.reset_index(), 18.7).set_index("sid").loc["s1"]
+    assert abs(ct.ryptpa_best - 2.5) < 1e-9 and abs(ct.ryptpa_career - 2.5) < 1e-9, "the thin 2020 season drops out"
+    assert abs(ct.ryptpa_raw_best - 3.0) < 1e-9 and abs(ct.ryptpa_raw_career - 2.6) < 1e-9
+    assert abs(ct.breakout_age - 20.0) < 0.01, "2020 cleared the line on 100 team attempts; 2021 is the breakout"
+    # ...and a low-volume player cannot reach a top-decile talent score on shares alone, even
+    # against a model that runs on YPTPA and nothing else.
+    rng = np.random.default_rng(7)
+    ypa = rng.normal(1.6, 0.6, 400)
+    hit = (rng.random(400) < 1 / (1 + np.exp(-3 * (ypa - 2.2)))).astype(float)
+    Xy = np.column_stack([ypa, rng.normal(20.5, 1.0, 400)])                # ryptpa_career, breakout_age
+    toy = make_lr(C_FIXED).fit(Xy, hit)
+    lv = low_volume_profile("WR", 5.0, 0.6, 18.7)
+    assert np.isnan(lv.ryptpa_career) and np.isnan(lv.ryptpa_best) and lv.broke_out == 0
+    lv_pct = pctile(logit(toy.predict_proba(Xy)[:, 1]),
+                    float(logit(toy.predict_proba([[lv.ryptpa_career, lv.breakout_age]])[0, 1])))
+    assert lv_pct < TIERS[0][1], f"low-volume shares alone reach talent {lv_pct:.0f}"
     print("self-check OK")
 
 

@@ -15,9 +15,9 @@ real amount at **WR** and **RB** and nothing reliable at **QB** or **TE**:
 
 - **WR**: talent + capital lowers log loss by 0.011 leave-one-class-out and 0.004 forward-chained,
   winning in 85% of draft-class bootstrap resamples. Ships the full model.
-- **RB**: 0.007 and 0.008, winning in 91% of resamples. Ships the full model. The survivor is
+- **RB**: 0.006 and 0.008, winning in 89% of resamples. Ships the full model. The survivor is
   final-season receiving yards per team pass attempt, as Cole and Fantasy Life found.
-- **QB** and **TE**: the full model ties capital alone (50% and 51% of resamples). Both ship the
+- **QB** and **TE**: the full model ties capital alone (50% and 59% of resamples). Both ship the
   draft-only hit probability. Their talent score still shows, labelled as a profile, not a forecast.
 
 The talent score (no draft capital) is well short of capital alone everywhere (WR AUC 0.75 vs
@@ -55,6 +55,8 @@ mean of yards share and TD share (receiving for WR/TE, scrimmage for RB). A seas
 the team's games (min 3); the in-progress season must reach 6 games before it counts as a best or
 final season. Ages are on Sept 1 of the season from the nflverse birth date; draft age is on April 25.
 Speed score is (weight x 200) / forty^4 from the nflverse combine, the same helper `prospect.js` uses.
+A season on a team that threw fewer than 15 passes a game adds nothing to any YPTPA feature and
+cannot be a breakout season (see "Low-volume shares"); the card still shows the stat as posted.
 
 ## Method
 
@@ -103,6 +105,88 @@ Speed score is (weight x 200) / forty^4 from the nflverse combine, the same help
 7. **Historical players on the card show leave-one-class-out numbers**: the model that scored a
    2019 WR never saw the 2019 class. Classes after the training window use the final fit.
 
+## Low-volume shares (2026-09-28)
+
+**The problem.** Army WR Brady Anderson ranked #3 of all college WRs at talent 96 on 13 catches for
+336 yards. Army threw 107 passes in 2025 (9 a game), so his 336 yards came to 3.14 yards per team
+pass attempt and a 40% dominator, and one qualifying season at 19.7 counted as a young breakout.
+A small denominator was doing the work, not the player.
+
+**The fix: a minimum-volume floor.** A season on a team that threw fewer than 15 passes a game
+(half the FBS median of 30.4, 2004-2025) adds nothing to any YPTPA feature, best, final or career,
+and cannot be the breakout season. It is a volume rule, not a team list: in practice it catches the
+triple-option offenses (Army, Navy, Air Force, Georgia Southern, Paul Johnson's Georgia Tech) and
+seasons where ESPN's feed carries only part of a team's passes (San Diego State 2005-06, Illinois
+2007). A player with no season over the floor gets the training median for YPTPA, the model's answer
+for "no information". Among the training draftees it touches 20 players (12 WR, 6 RB, 2 TE), two of them hits (Demaryius Thomas,
+Rashard Mendenhall). The 15 was set from the league rate, not tuned: 18 gives the same result, and 12
+still catches Army but lets Navy and Air Force (13.5 a game in 2025) through.
+
+**Before and after** (log loss, lower is better; draft-only baselines do not move):
+
+| Pos | Talent, leave-one-class-out | Full, leave-one-class-out | Full, forward-chained | Beats capital in bootstrap | Ships |
+|---|---|---|---|---|---|
+| WR | 0.3842 to 0.3829 | 0.3439 to 0.3435 | 0.3730 to 0.3734 | 85% to 85% | talent + capital, both |
+| RB | 0.5326 to 0.5347 | 0.4578 to 0.4586 | 0.4546 to 0.4548 | 91% to 89% | talent + capital, both |
+| TE | 0.4699 to 0.4667 | 0.4240 to 0.4226 | 0.4177 to 0.4174 | 51% to 59% | draft only, both |
+
+TE improves everywhere. WR improves leave-one-class-out (it loses Demaryius Thomas, a hit on 11
+Georgia Tech passes a game, and gains more back on Stephen Hill and the thin-feed seasons) and gives
+back 0.0004 forward. RB is the cost: 0.0021 on the talent model, 0.0008 and 0.0002 on
+the shipped full model, most of it Mendenhall, whose final Illinois season the feed covers at 13
+passes a game, then Bernard Pierce and Jonathan Dwyer. Every change sits well inside the class
+bootstrap interval (about 0.008 either side at RB) and no ship decision moves. The WR Blue Chip
+tier's out-of-sample hit rate went from 53% to 56%. QB features use no shares and did not change.
+
+**College WRs, the old top 10:**
+
+| Old rank | Player | Talent | New rank | Talent |
+|---|---|---|---|---|
+| 1 | Jeremiah Smith, Ohio State | 100 | 1 | 100 |
+| 2 | Malachi Toney, Miami | 99 | 2 | 99 |
+| 3 | Brady Anderson, Army | 96 | 34 | 68 |
+| 4 | Ryan Coleman-Williams, Alabama | 95 | 3 | 95 |
+| 5 | Cam Coleman, Texas | 92 | 4 | 93 |
+| 6 | Andrew Marsh, Michigan | 91 | 5 | 92 |
+| 7 | KJ Duff, Rutgers | 89 | 6 | 91 |
+| 8 | Vernell Brown III, Florida | 89 | 7 | 90 |
+| 9 | Griffin Wilde, Northwestern | 88 | 8 | 89 |
+| 10 | Nick Marsh, Indiana | 84 | 9 | 86 |
+
+T.J. Moore (Clemson) moves up from 11 to 10. The college RB and TE top 10s are unchanged. What
+still holds Anderson at 68 is youth and the early-declare flag, which every underclassman carries
+by construction, not his shares.
+
+**Why not empirical-Bayes shrinkage.** Shrinking each YPTPA toward the drafted position mean,
+(N x raw + K x mean) / (N + K) with N the team's pass attempts, was the first thing tried. It
+preserved the metrics but never fixed the artifact:
+
+| Variant | WR full, LOCO / forward | RB full | TE full | Anderson | Extreme low-volume profile |
+|---|---|---|---|---|---|
+| none (old build) | 0.3439 / 0.3730 | 0.4578 / 0.4546 | 0.4240 / 0.4177 | #3, 96 | top decile |
+| shrink, K = 200 | 0.3439 / 0.3730 | 0.4576 / 0.4543 | 0.4256 / 0.4202 | #8, 87 | top decile |
+| shrink, K = 400 | 0.3440 / 0.3731 | 0.4575 / 0.4542 | 0.4262 / 0.4211 | #9, 84 | top decile |
+| shrink, K = 600 | 0.3442 / 0.3732 | 0.4574 / 0.4541 | 0.4266 / 0.4216 | #10, 81 | top decile |
+| shrink K = 400 + floor | 0.3437 / 0.3734 | 0.4580 / 0.4544 | 0.4256 / 0.4210 | #33, 69 | 42 to 58 |
+| **floor only (shipped)** | 0.3435 / 0.3734 | 0.4586 / 0.4548 | 0.4226 / 0.4174 | #34, 68 | 42 to 59 |
+
+Shrinkage treats the problem as sampling noise, and it is mostly structure: a team that passes 9
+times a game throws play-action shots, so its YPTPA stays inflated year after year (a label-free fit
+of K on season-to-season stability came out flat for that reason). Shrinking the dominator as well
+broke the breakout test, because a pull toward the drafted mean (22.6%, above the 20% line) makes a
+thin season clear the line more easily: Henry Ruggs's breakout age went from 21.6 to 18.6. Adding
+shrinkage on top of the floor bought RB 0.0006 and cost TE 0.0030, so it is not in the build.
+
+**The guard.** Every build scores a two-season career on a team throwing 12 passes a game, at the
+best YPTPA and dominator any drafted player at the position posted on a normal passing team, with
+every other feature at the training median, and fails if that lands in the top decile. Before the
+floor it scored 100 (WR), 97 (RB) and 100 (TE); the shipped numbers are in the block below. The
+`--self-check` holds the same property against a toy model that runs on YPTPA alone.
+
+**Selection.** About 30 variants were scored on the same cross-validation before this one was picked
+by a stated rule (stop the artifact and pass the guard at the smallest cost), so these numbers carry
+the same mild optimism as the feature pruning in item 1 above.
+
 ## Headline numbers
 
 These are rewritten by the builder on every run.
@@ -120,19 +204,19 @@ Linked 1382 of 1525 drafted QB/RB/WR/TE since 2008 to college data (86% of 2008-
 | QB | top-12, yrs 1-4 | 153 / 29 | monotone LightGBM (challenger) | 0.828 | 0.1239 | 0.3944 | 0.70 |
 | QB | | | base rate 19.0% (no model) | 0.500 | 0.1536 | 0.4856 | |
 | RB | top-24, yrs 1-3 | 309 / 92 | draft only (baseline) | 0.800 | 0.1493 | 0.4648 | 0.67 |
-| RB | top-24, yrs 1-3 | 309 / 92 | talent (no capital) | 0.719 | 0.1768 | 0.5326 | 0.50 |
-| RB | top-24, yrs 1-3 | 309 / 92 | talent + capital | 0.807 | 0.1461 | 0.4578 | 0.66 |
-| RB | top-24, yrs 1-3 | 309 / 92 | monotone LightGBM (challenger) | 0.803 | 0.1481 | 0.4680 | 0.66 |
+| RB | top-24, yrs 1-3 | 309 / 92 | talent (no capital) | 0.717 | 0.1776 | 0.5347 | 0.50 |
+| RB | top-24, yrs 1-3 | 309 / 92 | talent + capital | 0.807 | 0.1463 | 0.4586 | 0.66 |
+| RB | top-24, yrs 1-3 | 309 / 92 | monotone LightGBM (challenger) | 0.800 | 0.1489 | 0.4709 | 0.66 |
 | RB | | | base rate 29.8% (no model) | 0.500 | 0.2091 | 0.6089 | |
 | WR | top-24, yrs 1-3 | 446 / 72 | draft only (baseline) | 0.833 | 0.1112 | 0.3548 | 0.59 |
-| WR | top-24, yrs 1-3 | 446 / 72 | talent (no capital) | 0.746 | 0.1159 | 0.3842 | 0.45 |
-| WR | top-24, yrs 1-3 | 446 / 72 | talent + capital | 0.827 | 0.1062 | 0.3439 | 0.61 |
-| WR | top-24, yrs 1-3 | 446 / 72 | monotone LightGBM (challenger) | 0.837 | 0.1057 | 0.3401 | 0.61 |
+| WR | top-24, yrs 1-3 | 446 / 72 | talent (no capital) | 0.748 | 0.1154 | 0.3829 | 0.46 |
+| WR | top-24, yrs 1-3 | 446 / 72 | talent + capital | 0.827 | 0.1061 | 0.3435 | 0.62 |
+| WR | top-24, yrs 1-3 | 446 / 72 | monotone LightGBM (challenger) | 0.838 | 0.1051 | 0.3391 | 0.62 |
 | WR | | | base rate 16.1% (no model) | 0.500 | 0.1354 | 0.4420 | |
 | TE | top-12, yrs 1-4 | 200 / 41 | draft only (baseline) | 0.771 | 0.1310 | 0.4242 | 0.56 |
-| TE | top-12, yrs 1-4 | 200 / 41 | talent (no capital) | 0.708 | 0.1517 | 0.4699 | 0.36 |
-| TE | top-12, yrs 1-4 | 200 / 41 | talent + capital | 0.773 | 0.1305 | 0.4240 | 0.56 |
-| TE | top-12, yrs 1-4 | 200 / 41 | monotone LightGBM (challenger) | 0.756 | 0.1290 | 0.4314 | 0.56 |
+| TE | top-12, yrs 1-4 | 200 / 41 | talent (no capital) | 0.713 | 0.1505 | 0.4667 | 0.38 |
+| TE | top-12, yrs 1-4 | 200 / 41 | talent + capital | 0.775 | 0.1300 | 0.4226 | 0.57 |
+| TE | top-12, yrs 1-4 | 200 / 41 | monotone LightGBM (challenger) | 0.761 | 0.1277 | 0.4286 | 0.56 |
 | TE | | | base rate 20.5% (no model) | 0.500 | 0.1630 | 0.5073 | |
 
 ### Forward-chained check (train on earlier classes only, test 2013 on)
@@ -140,9 +224,9 @@ Linked 1382 of 1525 drafted QB/RB/WR/TE since 2008 to college data (86% of 2008-
 | Pos | n | draft only | talent + capital | LightGBM | draft AUC | full AUC | Shipped hit model |
 |---|---|---|---|---|---|---|---|
 | QB | 102 | 0.3810 | 0.3771 | 0.3220 | 0.817 | 0.829 | **draft only** |
-| RB | 218 | 0.4628 | 0.4546 | 0.4653 | 0.792 | 0.798 | **talent + capital** |
-| WR | 315 | 0.3771 | 0.3730 | 0.3935 | 0.817 | 0.798 | **talent + capital** |
-| TE | 128 | 0.4215 | 0.4177 | 0.4345 | 0.777 | 0.776 | **draft only** |
+| RB | 218 | 0.4628 | 0.4548 | 0.4649 | 0.792 | 0.797 | **talent + capital** |
+| WR | 315 | 0.3771 | 0.3734 | 0.4006 | 0.817 | 0.796 | **talent + capital** |
+| TE | 128 | 0.4215 | 0.4174 | 0.4366 | 0.777 | 0.779 | **draft only** |
 
 Log loss columns. Ship rule: a model replaces the draft-only baseline only if it has lower log loss in BOTH the leave-one-class-out and the forward-chained runs AND wins in at least 80% of draft-class bootstrap resamples of the leave-one-class-out predictions.
 
@@ -150,12 +234,16 @@ Log loss columns. Ship rule: a model replaces the draft-only baseline only if it
 
 - **QB**: talent + capital vs capital alone, log loss gain -0.0006 leave-one-class-out and +0.0039 forward-chained (AUC 0.808 to 0.819). Class bootstrap: the gain is positive in 50% of resamples (90% interval -0.0222 to +0.0193). That is not a reliable win over capital alone, so the hit probability ships from the draft-only model; the talent score still shows as the pre-draft profile.
   - LightGBM challenger: 0.3944 leave-one-class-out, 0.3220 forward (not promoted).
-- **RB**: talent + capital vs capital alone, log loss gain +0.0070 leave-one-class-out and +0.0082 forward-chained (AUC 0.800 to 0.807). Class bootstrap: the gain is positive in 91% of resamples (90% interval -0.0017 to +0.0153). Ships **talent + capital**.
-  - LightGBM challenger: 0.4680 leave-one-class-out, 0.4653 forward (not promoted).
-- **WR**: talent + capital vs capital alone, log loss gain +0.0108 leave-one-class-out and +0.0041 forward-chained (AUC 0.833 to 0.827). Class bootstrap: the gain is positive in 85% of resamples (90% interval -0.0071 to +0.0265). Ships **talent + capital**.
-  - LightGBM challenger: 0.3401 leave-one-class-out, 0.3935 forward (not promoted).
-- **TE**: talent + capital vs capital alone, log loss gain +0.0002 leave-one-class-out and +0.0038 forward-chained (AUC 0.771 to 0.773). Class bootstrap: the gain is positive in 51% of resamples (90% interval -0.0089 to +0.0096). That is not a reliable win over capital alone, so the hit probability ships from the draft-only model; the talent score still shows as the pre-draft profile.
-  - LightGBM challenger: 0.4314 leave-one-class-out, 0.4345 forward (not promoted).
+- **RB**: talent + capital vs capital alone, log loss gain +0.0062 leave-one-class-out and +0.0080 forward-chained (AUC 0.800 to 0.807). Class bootstrap: the gain is positive in 89% of resamples (90% interval -0.0023 to +0.0144). Ships **talent + capital**.
+  - LightGBM challenger: 0.4709 leave-one-class-out, 0.4649 forward (not promoted).
+- **WR**: talent + capital vs capital alone, log loss gain +0.0112 leave-one-class-out and +0.0037 forward-chained (AUC 0.833 to 0.827). Class bootstrap: the gain is positive in 85% of resamples (90% interval -0.0072 to +0.0273). Ships **talent + capital**.
+  - LightGBM challenger: 0.3391 leave-one-class-out, 0.4006 forward (not promoted).
+- **TE**: talent + capital vs capital alone, log loss gain +0.0016 leave-one-class-out and +0.0041 forward-chained (AUC 0.771 to 0.775). Class bootstrap: the gain is positive in 59% of resamples (90% interval -0.0078 to +0.0114). That is not a reliable win over capital alone, so the hit probability ships from the draft-only model; the talent score still shows as the pre-draft profile.
+  - LightGBM challenger: 0.4286 leave-one-class-out, 0.4366 forward (not promoted).
+
+### Low-volume check (asserted on every build)
+
+Talent score of a two-season career on a team throwing 12 passes a game, at the best YPTPA and dominator a drafted player at the position posted on a normal passing team, every other feature at the median: RB 42, WR 43, TE 59. The build fails at 90 (top decile).
 
 ### Standardized coefficients (final fit on every training class)
 
@@ -163,14 +251,14 @@ Log loss columns. Ship rule: a model replaces the draft-only baseline only if it
 - QB talent (C=0.1): `draft_age` -0.469, `comp_final` +0.400, `rush_ypg_best` +0.285, `power` +0.258
 - QB full (C=0.1): `log_pick` -1.020, `rush_ypg_best` +0.308, `power` +0.180, `comp_final` +0.177, `draft_age` -0.128
 - RB draft (unpenalized): `log_pick` -1.503
-- RB talent (C=0.1): `ryptpa_final` +0.451, `scrim_ypg` +0.355, `weight` +0.314, `stars` +0.314, `speed_score` +0.313
-- RB full (C=0.1): `log_pick` -1.413, `ryptpa_final` +0.346, `weight` +0.219, `stars` +0.057, `scrim_ypg` -0.048, `speed_score` +0.023
+- RB talent (C=0.1): `ryptpa_final` +0.430, `scrim_ypg` +0.354, `speed_score` +0.322, `stars` +0.321, `weight` +0.315
+- RB full (C=0.1): `log_pick` -1.421, `ryptpa_final` +0.332, `weight` +0.219, `stars` +0.060, `scrim_ypg` -0.050, `speed_score` +0.025
 - WR draft (unpenalized): `log_pick` -1.150
-- WR talent (C=0.1): `ryptpa_career` +0.532, `early` +0.365, `stars` +0.297, `breakout_age` -0.285
-- WR full (C=0.1): `log_pick` -0.932, `early` +0.305, `ryptpa_career` +0.281, `breakout_age` -0.164, `stars` +0.123
+- WR talent (C=0.1): `ryptpa_career` +0.532, `early` +0.364, `breakout_age` -0.307, `stars` +0.295
+- WR full (C=0.1): `log_pick` -0.930, `early` +0.309, `ryptpa_career` +0.269, `breakout_age` -0.197, `stars` +0.117
 - TE draft (unpenalized): `log_pick` -1.165
-- TE talent (C=0.1): `ryptpa_best` +0.547, `speed_score` +0.304, `power` +0.197
-- TE full (C=0.1): `log_pick` -1.020, `ryptpa_best` +0.276, `speed_score` +0.127, `power` +0.062
+- TE talent (C=0.1): `ryptpa_best` +0.566, `speed_score` +0.310, `power` +0.188
+- TE full (C=0.1): `log_pick` -1.009, `ryptpa_best` +0.295, `speed_score` +0.131, `power` +0.060
 
 ### Calibration by decile of the shipped hit model (out of sample)
 
@@ -178,10 +266,10 @@ Log loss columns. Ship rule: a model replaces the draft-only baseline only if it
 |---|---|---|---|---|---|---|---|---|---|---|
 | QB pred | 0.05 | 0.06 | 0.07 | 0.08 | 0.09 | 0.11 | 0.14 | 0.21 | 0.37 | 0.70 |
 | QB obs | 0.06 | 0.00 | 0.07 | 0.07 | 0.12 | 0.07 | 0.07 | 0.33 | 0.53 | 0.56 |
-| RB pred | 0.06 | 0.09 | 0.11 | 0.13 | 0.17 | 0.22 | 0.29 | 0.41 | 0.61 | 0.88 |
+| RB pred | 0.06 | 0.09 | 0.11 | 0.13 | 0.17 | 0.22 | 0.29 | 0.42 | 0.61 | 0.87 |
 | RB obs | 0.13 | 0.06 | 0.13 | 0.13 | 0.13 | 0.10 | 0.26 | 0.65 | 0.55 | 0.84 |
 | WR pred | 0.02 | 0.03 | 0.04 | 0.05 | 0.07 | 0.09 | 0.13 | 0.20 | 0.34 | 0.63 |
-| WR obs | 0.02 | 0.04 | 0.00 | 0.09 | 0.02 | 0.09 | 0.16 | 0.27 | 0.34 | 0.58 |
+| WR obs | 0.02 | 0.02 | 0.05 | 0.07 | 0.02 | 0.09 | 0.16 | 0.27 | 0.32 | 0.60 |
 | TE pred | 0.05 | 0.06 | 0.08 | 0.10 | 0.12 | 0.15 | 0.19 | 0.24 | 0.39 | 0.68 |
 | TE obs | 0.05 | 0.05 | 0.10 | 0.05 | 0.10 | 0.25 | 0.25 | 0.20 | 0.30 | 0.70 |
 
@@ -193,6 +281,6 @@ Each decile holds about a tenth of the position's sample (n per cell = n / 10).
 |---|---|---|---|---|---|
 | QB | 50% (n=16) | 33% (n=30) | 8% (n=39) | 13% (n=38) | 10% (n=30) |
 | RB | 71% (n=31) | 42% (n=62) | 26% (n=77) | 21% (n=78) | 13% (n=61) |
-| WR | 53% (n=45) | 22% (n=89) | 12% (n=112) | 8% (n=111) | 6% (n=89) |
+| WR | 56% (n=45) | 22% (n=89) | 12% (n=112) | 8% (n=111) | 6% (n=89) |
 | TE | 38% (n=21) | 38% (n=40) | 20% (n=50) | 8% (n=50) | 10% (n=39) |
 <!-- METRICS:END -->
