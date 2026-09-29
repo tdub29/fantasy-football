@@ -7,8 +7,9 @@ a "last 3 weeks" view on top of build_nflverse_suite.py's season totals,
 which flatten that signal away.
 
 Reuses build_nflverse_suite.py's download/caching convention and formulas
-(read, not imported: this file must not edit or import that one). Same
-nflverse-data release tags, same 6h cache TTL, same route-count calibration.
+(copied, same release tags and 6h cache TTL). Routes are the one thing it
+imports (add_routes, on_field_dropbacks): a copied calibration drifted once
+already, and the card's game log has to add up to the season line.
 
 What it joins, per week:
   snap_counts    offense_pct/offense_snaps, keyed by pfr_player_id -> roster.pfr_id
@@ -17,10 +18,10 @@ What it joins, per week:
   roster         sleeper_id/name/position/team, the site's player key
 
 Two things are estimates, same caveat as the season builder:
-  * routes_est: offense_pct x that game's team dropbacks, then the same
-    position/snap-bucket calibration (WR 1.07x, TE 0.87-1.05x by snap_pct
-    that week, RB 0.99x), never more than the team's dropbacks that game.
-    Public route participation data ends in 2025.
+  * routes_est: offense_pct x that game's team dropbacks, then the suite's
+    calibration (ROUTE_MULT, by position and SEASON snap share), never more
+    than the team's dropbacks that game. Public route participation data ends
+    in 2025; a season that has it gets the measured on-field count instead.
   * PPR points are recomputed from play-by-play, not read off a stats table:
     receptions 1, 0.1/yd rec+rush, 6/TD rec+rush, 0.04/pass yd, 4/pass TD,
     -2/INT, -2/fumble lost. Fumbles lost are charged to fumbled_1/2_player_id
@@ -51,6 +52,8 @@ import urllib.request
 import numpy as np
 import pandas as pd
 
+import build_nflverse_suite as suite
+
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 # The cache can live outside this checkout (a git worktree reads the main
 # checkout's): --cache, then NFLVERSE_CACHE, then the repo-relative default.
@@ -74,9 +77,10 @@ FIELD_DESC = {
     "week": "NFL week number.",
     "snap_pct": "Share of offensive snaps that week (snap_counts offense_pct).",
     "routes_est": "Estimated routes run that game: his share of the offensive snaps x the team's dropbacks "
-                  "that game, calibrated by position and that week's snap_pct (WR 1.07x; TE 1.05x at "
-                  "snap_pct>=0.75, 0.95x at >=0.5, else 0.87x; RB 0.99x; QB 1.0x) and capped at the team's "
-                  "dropbacks. Public per-play route data ends in 2025, so this is an estimate.",
+                  "that game, calibrated on pooled 2023-2025 participation by position and his season snap share "
+                  "(WR 1.06x; RB 0.99x; TE 0.81x at 37% snaps rising to 1.04x at 65%; QB 1.0x) and capped at the "
+                  "team's dropbacks. Public per-play route data ends in 2025, so this is an estimate; a season with "
+                  "participation (2023-2025) counts the measured on-field dropbacks instead.",
     "route_rate_est": "routes_est over the team's dropbacks that game.",
     "targets": "Targets that game.",
     "target_share": "Share of the team's targets that game.",
@@ -172,14 +176,6 @@ def safe_div(a, b):
     return np.where(b > 0, a / np.where(b > 0, b, 1), np.nan)
 
 
-def calibration_mult(position: np.ndarray, snap_pct: np.ndarray) -> np.ndarray:
-    """Same calibration as build_nflverse_suite.py (ROUTE_MULT, fitted on 2025
-    participation), applied to that week's snap_pct instead of the season average."""
-    sp = np.where(np.isnan(snap_pct), 0.0, snap_pct)
-    te_mult = np.where(sp >= 0.75, 1.05, np.where(sp >= 0.5, 0.95, 0.87))
-    return np.where(position == "TE", te_mult, np.where(position == "RB", 0.99, np.where(position == "WR", 1.07, 1.0)))
-
-
 def ppr_points_row(rec, rec_yds, pass_td_rec, rush_yds, rush_td, pass_yds, pass_td_pass, ints, fum_lost):
     """Per-play PPR points, vectorized. Split by the role the row is being
     scored for so passer TD and receiver TD on the same play both count."""
@@ -219,9 +215,6 @@ def player_week_table(season: int) -> tuple[pd.DataFrame, int]:
     p["first_read"] = np.where(has_read, (p["read_thrown"] == "1").astype(float), np.nan)
 
     # ---- team-game denominators ----
-    team_plays = p.groupby(["game_id", "posteam"]).size()
-    team_db = p[p["qb_dropback"] == 1].groupby(["game_id", "posteam"]).size()
-
     t = p[p["receiver_player_id"].notna() & (p["pass_attempt"] == 1)].copy()
     t["rz"] = t["yardline_100"] <= 20
     t["fr"] = (t["first_read"] == 1).astype(float)
@@ -300,17 +293,13 @@ def player_week_table(season: int) -> tuple[pd.DataFrame, int]:
     snaps = snaps.drop(columns=["position"]).dropna(subset=["gsis_id"]).merge(
         meta[["position"]], left_on="gsis_id", right_index=True, how="inner")
 
-    tp_map = team_plays.rename("team_plays")
-    db_map = team_db.rename("team_db")
-    snaps = snaps.merge(tp_map, left_on=["game_id", "team"], right_index=True, how="left")
-    snaps = snaps.merge(db_map, left_on=["game_id", "team"], right_index=True, how="left")
+    # Routes from the suite's own function, so a game here adds up to the season
+    # line there: measured where the season has participation, else snap share x
+    # dropbacks with the multiplier set by his SEASON snap share, not that week's
+    # (a TE at 74% one week and 76% the next used to jump about 9.5 Route% points
+    # on a bucket edge). No play-by-play for the game yet leaves routes unknown.
+    snaps = suite.add_routes(snaps, p, meta.reset_index(), measured=suite.on_field_dropbacks(season, p))
     snaps["team_db"] = snaps["team_db"].fillna(0)
-    # Snap share x dropbacks: offense_pct and the dropbacks each count their own
-    # source's plays (snap_counts includes penalty snaps, kneels and spikes; pbp
-    # dropbacks do not). No play-by-play for the game yet leaves routes unknown.
-    db = snaps["team_db"].where(snaps["team_plays"].notna())
-    mult = calibration_mult(snaps["position"].to_numpy(), snaps["offense_pct"].to_numpy())
-    snaps["routes_est"] = np.minimum(snaps["offense_pct"].fillna(0) * db * mult, db)
     snaps["route_rate_est"] = safe_div(snaps["routes_est"], snaps["team_db"])
 
     df = snaps.set_index(["gsis_id", "game_id"])
@@ -367,8 +356,9 @@ def build(season: int) -> dict:
         sid = str(sid).split(".")[0]
         weeks_rows, q_rows = [], []
         for _, r in g.iterrows():
+            # Route% at 4 decimals: at 3, --self-check cannot recover a low-rate week's dropbacks.
             weeks_rows.append([
-                int(r["week"]), num(r["snap_pct"]), num(r["routes_est"]), num(r["route_rate_est"]),
+                int(r["week"]), num(r["snap_pct"]), num(r["routes_est"]), num(r["route_rate_est"], 4),
                 num(r["targets"]), num(r["target_share"]), num(r["air_yards"]), num(r["air_share"]),
                 num(r["first_read_share"]), num(r["carries"]), num(r["rush_share"]), num(r["rz_opps"]),
                 num(r["rz_opp_share"]), num(r["gl_carries"]), num(r["ppr_pts"]),
@@ -437,11 +427,12 @@ def self_check() -> int:
     fum_pts = -2 * 1
     assert fum_pts == -2
 
-    # Calibration multiplier: TE snap-bucketed, RB flat, WR/QB untouched.
-    pos = np.array(["TE", "TE", "TE", "RB", "WR", "QB"])
-    snap = np.array([0.80, 0.60, 0.30, 0.90, 0.90, 0.90])
-    mult = calibration_mult(pos, snap)
-    assert np.allclose(mult, [1.05, 0.95, 0.87, 0.99, 1.07, 1.0]), mult
+    # A TE's weekly routes use his season multiplier: at 74% one week and 76% the
+    # next, same dropbacks, the routes differ by the snap share and nothing else.
+    snaps = pd.DataFrame({"game_id": ["g1", "g2"], "team": ["X", "X"], "gsis_id": ["t", "t"], "offense_pct": [0.74, 0.76]})
+    plays = pd.DataFrame({"game_id": ["g1"] * 40 + ["g2"] * 40, "posteam": ["X"] * 80, "qb_dropback": [1] * 80})
+    r = suite.add_routes(snaps, plays, pd.DataFrame({"gsis_id": ["t"], "position": ["TE"]}))["routes_est"].to_numpy()
+    assert np.isclose(r[1] / r[0], 0.76 / 0.74), r
 
     # Trend: last value minus the mean of prior weeks; null under 2 weeks.
     def trend_of(vals):
@@ -471,7 +462,7 @@ def load_js(path: pathlib.Path) -> dict:
 # "Within rounding": half a unit of the precision each stat is shown at.
 TOL = {"games": 0, "targets": 0, "carries": 0, "dropbacks": 0, "air_yds": 0.5, "adot": 0.05,
        "yds_per_target": 0.05, "epa_per_target": 0.005, "epa_per_rush": 0.005, "catchable_rate": 0.0005,
-       "tprr_est": 0.005, "yprr_est": 0.005, "db_epa": 0.005, "cpoe": 0.05, "pass_adot": 0.05}
+       "tprr_est": 0.005, "yprr_est": 0.005, "route_rate_est": 0.0005, "db_epa": 0.005, "cpoe": 0.05, "pass_adot": 0.05}
 
 
 def log_totals(v: dict, fields: list, qfields: list) -> dict:
@@ -483,16 +474,14 @@ def log_totals(v: dict, fields: list, qfields: list) -> dict:
     wavg = lambda k, n: div(sum((r[k] or 0) * (r[n] or 0) for r in q if r[k] is not None), sum(r[n] or 0 for r in q if r[k] is not None))
     tgt, car = s(w, "targets"), s(w, "carries")
     charted = [r for r in w if r["catchable"] is not None]
-    # Routes: undo each week's calibration, apply the season one, and cap at that
-    # week's team dropbacks (routes over route rate), as the suite does.
+    # Routes use the season multiplier every week, so they simply add up. Route%
+    # is out of the team's dropbacks in these same games (routes over route rate
+    # recovers each, to the nearest play); a 0-route week hides its dropbacks, so none is claimed then.
     snaps = [r["snap_pct"] for r in w if r["snap_pct"] is not None]
     routed = [r for r in w if r["routes_est"] is not None]
-    pos = np.array([v["p"]])
-    m_season = calibration_mult(pos, np.array([np.mean(snaps) if snaps else 0.0]))[0]
-    routes = sum(min(r["routes_est"] / calibration_mult(pos, np.array([r["snap_pct"]]))[0] * m_season,
-                     r["routes_est"] / r["route_rate_est"] if r["route_rate_est"] else float("inf"))
-                 for r in routed)
-    return {
+    routes = s(routed, "routes_est")
+    dbs = [round(r["routes_est"] / r["route_rate_est"]) for r in routed if r["route_rate_est"]]   # whole plays
+    out = {
         "games": len(snaps), "targets": tgt, "carries": car, "air_yds": s(w, "air_yards"),
         "adot": div(s(w, "air_yards"), tgt), "yds_per_target": div(s(w, "rec_yds"), tgt),
         "epa_per_target": div(s(w, "rec_epa"), tgt), "epa_per_rush": div(s(w, "rush_epa"), car),
@@ -504,6 +493,9 @@ def log_totals(v: dict, fields: list, qfields: list) -> dict:
         "dropbacks": s(q, "dropbacks"), "db_epa": wavg("db_epa", "dropbacks"),
         "cpoe": wavg("cpoe", "cpoe_n"), "pass_adot": wavg("pass_adot", "pass_att"),
     }
+    if routed and len(dbs) == len(routed):
+        out["route_rate_est"] = div(routes, sum(dbs))
+    return out
 
 
 def log_vs_advanced() -> int:
@@ -530,6 +522,8 @@ def log_vs_advanced() -> int:
         checked += 1
         mine = log_totals(v, U["fields"], U["qFields"])
         for k, tol in TOL.items():
+            if k not in mine:
+                continue
             want, have = a.get(k), mine.get(k)
             if k in counts:
                 want, have = want or 0, have or 0   # a count that never happened is null in advanced.js

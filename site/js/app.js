@@ -14173,7 +14173,7 @@
       C('catch_rate', 'Catch%', 'Receiving', REC, 'pct', 'Receptions over targets.'),
       C('yds_per_target', 'Y/Tgt', 'Receiving', REC, 'dec1', 'Receiving yards per target.'),
       C('epa_per_target', 'EPA/Tgt', 'Receiving', REC, 'dec2', 'Expected points added per target.'),
-      C('yprr_est', 'YPRR (est)', 'Receiving', REC, 'dec2', "Receiving yards per estimated route. Each week's estimated routes (snap share x the team's dropbacks, calibrated on 2025 participation) are scaled by the share of that week's team dropbacks inside the split. Blank under 5 routes."),
+      C('yprr_est', 'YPRR (est)', 'Receiving', REC, 'dec2', "Receiving yards per route. Each week's routes (measured on-field dropbacks for 2023-2025, snap share x the team's dropbacks for later seasons, calibrated on 2023-2025 participation) are scaled by the share of that week's team dropbacks inside the split. Blank under 5 routes."),
       C('carries', 'Car', 'Rushing', RUSH, 'int', 'Carries.'),
       C('rush_yds', 'Rush yds', 'Rushing', RUSH, 'int', 'Rushing yards.'),
       C('rush_td', 'Rush TD', 'Rushing', RUSH, 'int', 'Rushing touchdowns.'),
@@ -15063,7 +15063,9 @@
         + "YPRR is an estimate: each week's estimated routes are scaled by the share of team dropbacks inside the split."
       : `Source: ${A.source}. `
       + 'Green is the top fifth of the players shown and red the bottom fifth, flipped where lower is better. '
-      + 'Route% and TPRR/YPRR are estimates because public route data stops after 2025. '
+      + ((A.estimates || []).includes('route_rate_est')
+        ? 'Route% and TPRR/YPRR are estimates because public route data stops after 2025. '
+        : `Routes are measured for ${A.season}: the team dropbacks he was on the field for (nflverse participation), so a pass-block counts as a route. `)
       + (A.xfpSource === 'lookup' ? 'xFP prices each target and carry at the league average for plays like it'
         : 'xFP is what ffopportunity\'s play-by-play model expects his targets and carries to score')
       + '; FPOE is what he did beyond that.'));

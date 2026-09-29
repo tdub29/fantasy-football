@@ -17,7 +17,8 @@ exactly (REG season, pass and run plays, a target is a pass attempt with a
 receiver, a dropback needs a passer), so the page summing every bucket gives
 back advanced.js. --self-check proves that on the written files.
 
-Routes are the same estimate the suite ships: snap share x the team's
+Routes are the suite's own (build_nflverse_suite.add_routes): measured on-field
+dropbacks for a season with participation, else snap share x the team's
 dropbacks that game, with its calibration and per-game cap. Inside a situation
 the page scales each week's routes by the share of that week's team dropbacks
 the situation holds, so YPRR stays "(est)".
@@ -41,6 +42,8 @@ import urllib.request
 
 import numpy as np
 import pandas as pd
+
+import build_nflverse_suite as suite   # routes: one calibration for every builder
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 # The cache can live outside this checkout (a git worktree reads the main
@@ -247,23 +250,14 @@ def build(season: int) -> dict:
         .groupby(["posteam", "week", "code"]).agg(db=("is_db", "sum"), tgt=("is_t", "sum")).reset_index() \
         .rename(columns={"week": "wk"})
 
-    # Snaps and estimated routes per player-week, calibrated as the suite does.
+    # Snaps and routes per player-week, from the suite's own function: measured
+    # where the season has participation, estimated and calibrated where not.
     snaps = read("snap_counts", f"snap_counts_{season}.parquet")
     snaps = snaps[snaps["game_type"] == "REG"].copy()
     pfr_to_gsis = roster.dropna(subset=["pfr_id"]).set_index("pfr_id")["gsis_id"].to_dict()
     snaps["gsis_id"] = snaps["pfr_player_id"].map(pfr_to_gsis)
-    game_db = p[p["qb_dropback"] == 1].groupby(["game_id", "posteam"]).size()
-    snaps = snaps.merge(game_db.rename("team_db").reset_index().rename(columns={"posteam": "team"}),
-                        on=["game_id", "team"], how="left")
-    snaps = snaps.dropna(subset=["gsis_id"])
-    pos = roster.set_index("gsis_id")["position"]
-    season_snap = snaps.groupby("gsis_id")["offense_pct"].mean()
-    ps = pos.reindex(season_snap.index)
-    te_mult = np.select([season_snap >= 0.75, season_snap >= 0.5], [1.05, 0.95], 0.87)
-    mult = pd.Series(np.where(ps == "TE", te_mult, np.where(ps == "RB", 0.99, np.where(ps == "WR", 1.07, 1.0))),
-                     index=season_snap.index)
-    snaps["routes"] = np.minimum(snaps["offense_pct"] * snaps["team_db"] * snaps["gsis_id"].map(mult),
-                                 snaps["team_db"]).fillna(0)
+    snaps = suite.add_routes(snaps.dropna(subset=["gsis_id"]), p, roster, measured=suite.on_field_dropbacks(season, p))
+    snaps["routes"] = snaps["routes_est"].fillna(0)
 
     players = {}
     by = lambda df, k: dict(tuple(df.groupby(k)))
