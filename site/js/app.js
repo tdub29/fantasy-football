@@ -11515,8 +11515,9 @@
   // ============================================================
   // Built by projections/build_prospect_model.py; method and honest error bars in
   // notes/prospect-research/model-card.md. Draft capital is most of the signal, so
-  // where college stats did not beat it out of sample (QB, TE) the hit chance is
-  // the draft-only model and the talent score is shown as a profile, not a forecast.
+  // where college stats did not beat it on the held-out draft classes (every position
+  // since 2026-09-28) the hit chance is the draft-only model and the talent score is
+  // shown as a profile, not a forecast.
   const PM_TIER_CLS = ['S', 'A', 'B', 'C', 'D'];
   const pmPct = (p) => p == null ? '·' : `${Math.round(p * 100)}%`;
   const pmNum = (d) => (v) => v == null ? '·' : Number(v).toFixed(d);
@@ -11580,7 +11581,7 @@
       me.ts != null ? pmTile('Talent', h('span', null, `${me.ts} `, pmPips(me.ts)),
         `College profile with no draft capital: percentile against every drafted ${me.p} since 2008`) : null,
       pmTile('Hit chance', pmPct(me.hp),
-        capOnly ? `Draft capital alone. At ${me.p}, college stats did not beat draft slot out of sample.`
+        capOnly ? `Draft capital alone. At ${me.p}, college stats did not beat draft slot on the held-out ${meta.holdout || ''} draft classes.`
           : 'College profile plus draft capital', capOnly ? 'draft slot only' : `talent only ${pmPct(me.tp)}`),
       me.ba != null ? pmTile('Breakout age', Number(me.ba).toFixed(1),
         'Age at his first college season at the dominator line (never broke out: final age plus one)') : null,
@@ -11636,14 +11637,15 @@
     const hitLine = (meta.tier_hit || []).map(([n, hit], i) => hit == null ? null : `${M.tiers[i]} ${pmPct(hit)}`).filter(Boolean).join(', ');
     const notes = [
       capOnly
-        ? `At ${pos} the college stats did not beat draft slot out of sample, so the forecast is draft capital alone`
+        ? `At ${pos} the college stats did not beat draft slot on the held-out ${meta.holdout || ''} draft classes, so the forecast is draft capital alone`
           + (scen ? `: ${roundNames.map((r, i) => `${r} ${pmPct(scen[i])}`).join(', ')} for any ${pos}.` : '.')
           + ' Talent and tier describe the college profile only.'
         : rookies ? 'Hit chance uses his actual draft slot plus his college profile.'
           : `If drafted columns average the model over every pick in the range (Round 1 = 1-32, Round 2 = 33-64, `
             + `Round 3 = 65-100, Day 3 = 101-257).`,
       hitLine ? `Past hit rate by tier, out of sample: ${hitLine}.` : null,
-      rookies ? null : 'College ages are estimated from class year (no public birth dates), and a live season counts once it reaches 6 games.',
+      rookies ? null : 'College ages are estimated from class year (no public birth dates), and a live season counts once it reaches 6 games. '
+        + 'Each player is scored at the more conservative of leaving after his third or fourth college year.',
     ].filter(Boolean);
     main.appendChild(h('div', { class:'card prm-notes' }, ...notes.map(t => h('p', { class:'tip' }, t))));
 
@@ -11655,8 +11657,8 @@
       ['ts', 'Talent', { right:true, title:`College profile, no draft capital: percentile vs drafted ${pos}s since 2008` }],
       ['tr', 'Tier', { asc:true, title:'Our tier, cut on the talent score' }],
       rookies ? ['hp', 'Hit %', { right:true, title:capOnly ? 'Draft capital alone' : 'College profile plus his actual draft slot' }] : null,
-      pos === 'QB' ? null : ['ba', 'Breakout', { right:true, asc:true, title:'Age at his first college season at the dominator line' }],
-      rookies ? null : ['age', 'Draft age', { right:true, asc:true, title:'Estimated age at his first eligible draft' }],
+      pos === 'QB' ? null : ['ba', 'Breakout', { right:true, asc:true, title:'Age at his first college season at the dominator line (blank: not yet). Profile only, no model uses it' }],
+      rookies ? null : ['age', 'Draft age', { right:true, asc:true, title:'Estimated age at the draft he is scored for: the more conservative of leaving after his third or fourth college year' }],
       ...stat.map(([k, label, , t]) => [`st.${k}`, label, { right:true, title:t }]),
       ...(!rookies && !capOnly ? roundNames.map((r, i) => [`r${i}`, i < 3 ? `R${i + 1}` : 'Day 3',
         { right:true, title:`Hit chance if drafted in ${r}` }]) : []),
