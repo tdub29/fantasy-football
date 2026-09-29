@@ -706,6 +706,49 @@
       "notes": "prospectModelBlock() in the card's Context tab, right after the draft and athletic profile it extends. Gibbs is chosen because every part is reachable: a 2023 RB sits inside the RB training window (classes through 2023), so his numbers are leave-one-class-out and he has an observed outcome (a hit), and RB is a position where the full model ships, so the hit chance carries a 'talent only' sub-line. Three comps are required; the builder always writes three for a linked draftee."
     },
     {
+      "id": "player-card-contract",
+      "name": "Player card: Contract block (APY, total, guarantees, cap %, free-agent year)",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 300
+        },
+        {
+          "eval": "location.hash='#rankings'"
+        },
+        {
+          "sleepMs": 2500
+        },
+        {
+          "press": "Control+k"
+        },
+        {
+          "fill": ".cmdk-input-wrap input",
+          "value": "Joe Burrow"
+        },
+        {
+          "sleepMs": 800
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "sleepMs": 1200
+        },
+        {
+          "eval": "[...document.querySelectorAll('.pm-tabs .tab')].find(t => /context/i.test(t.textContent)).click()"
+        },
+        {
+          "sleepMs": 400
+        }
+      ],
+      "selector": ".modal .ctr-card",
+      "assert": "(() => { const C = window.CONTRACTS; const c = C && C.players['6770']; const card = document.querySelector('.modal .ctr-card'); if (!c || !card) return false; const tiles = Object.fromEntries([...card.querySelectorAll('.adv-stat')].map(t => [t.querySelector('.adv-stat-label').textContent.trim(), t.querySelector('.adv-stat-value').textContent.trim()])); const money = (v) => '$' + (v >= 100 ? Math.round(v) : v.toFixed(1)) + 'M'; return c.apy >= 40 && c.thru >= C.season && c.fa === c.thru + 1 && tiles['APY'] === money(c.apy) && tiles['Total'] === money(c.value) && tiles['Guaranteed'] === money(c.gtd) && tiles['Cap %'] === c.cap_pct.toFixed(1) + '%' && Object.values(tiles).every(v => /\\d/.test(v)) && card.querySelector('.ctr-term').textContent.startsWith(`Through ${c.thru}, free agent ${c.fa}`) && /OverTheCap via nflverse/.test(card.querySelector('.ctr-credit').textContent) && Object.keys(C.players).length > 1500; })()",
+      "notes": "contractBlock() in the card's Context tab over site/data/contracts.js (projections/build_contracts.py, OverTheCap via nflverse). Burrow is the known star because his deal is an extension: OTC counts 5 NEW years from 2023, and the card must say through 2029 (stacked on his rookie deal plus option), not 2027. Every tile is compared to the payload, so a formatting or key regression fails here; the builder's --self-check owns join rate, duplicates and the FA-year arithmetic."
+    },
+    {
       "id": "my-rankings",
       "name": "My Rankings editable board",
       "path": [

@@ -88,6 +88,10 @@ STEPS = [
     ("postgame game pages",        PROJ / "build_game_pages.py",          True),
     ("game pages vs team stats",   PROJ / "build_game_pages.py",          True, ["--self-check"]),
     ("draft + combine profile",    PROJ / "build_prospect_profile.py",    True),
+    # Card Contract block: OverTheCap contracts via nflverse, joined to Sleeper ids. Needs
+    # players-nfl.json from fetch_sleeper; the self-check re-proves join rate and end years.
+    ("NFL contracts (OTC)",        PROJ / "build_contracts.py",           True),
+    ("contracts self-check",       PROJ / "build_contracts.py",           True, ["--self-check"]),
     # College prospect model: ESPN college seasons (sportsdataverse) joined to NFL
     # outcomes, graded leave-one-class-out against draft capital alone, then scored for
     # every draftee since 2014 and the current college classes. Self-check first: it is
@@ -126,7 +130,7 @@ TRACKED = [
     "ktc.js", "players.js", "leagues.js", "projections.js", "categories.js",
     "environment.js", "sos.js", "sos-grid.js", "sleeper-idp.js", "player-info.js",
     "jacob-gibbs.js", "expert-rankings.js", "fantasypros-experts.js",
-    "idp-dvp.js", "kickers.js", "gibbs-week.js", "gibbs-ros.js", "gibbs-ppr.js", "advanced.js", "prospect.js", "prospect-model.js", "weather.js", "defense.js", "usage-weekly.js", "idp-advanced.js", "weekly-rankings.js", "sleeper-market.js", "faab.js", "trade-history.js", "context.js", "history.js",
+    "idp-dvp.js", "kickers.js", "gibbs-week.js", "gibbs-ros.js", "gibbs-ppr.js", "advanced.js", "prospect.js", "prospect-model.js", "contracts.js", "weather.js", "defense.js", "usage-weekly.js", "idp-advanced.js", "weekly-rankings.js", "sleeper-market.js", "faab.js", "trade-history.js", "context.js", "history.js",
 ]
 
 def run(label, script, timeout=600, args=()):

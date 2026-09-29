@@ -11280,6 +11280,7 @@
             scheduleStrip(sleeper),
             contextBlock(sleeper),
             injuryHistoryBlock(sleeper),
+            contractBlock(sleeper),
             prospectBlock(sleeper),
             prospectModelBlock(sleeper),
             playerInfoBlock(name, sleeper),
@@ -11508,6 +11509,50 @@
       h('div', { class:'tip', style:{ marginBottom:'8px' } }, facts.join('  \u00b7  ')),
       (scores.length || drills.length) ? h('div', { class:'adv-grid' }, ...scores, ...drills)
         : h('div', { class:'tip' }, 'No combine results on file.'));
+  }
+
+  // Current NFL contract (window.CONTRACTS, projections/build_contracts.py). Money is
+  // in $M. `thru` already stacks an extension on the deal it extended, so it is not
+  // signed + years for an extension; the builder's self-check pins both cases.
+  const CTR_TYPE = { Drafted:'rookie deal', UDFA:'undrafted rookie deal', Extension:'extension', UFA:'free-agent deal',
+    Franchise:'franchise tag', Transition:'transition tag', RFA:'restricted tender', ERFA:'exclusive-rights tender',
+    SFA:'street free-agent deal', Practice:'practice squad deal' };
+  function contractBlock(sleeper) {
+    const C = window.CONTRACTS;
+    if (!sleeper || !C) return null;
+    const c = C.players[String(sleeper.id)];
+    const title = h('div', { class:'card-title' }, 'Contract');
+    const credit = h('div', { class:'tip ctr-credit', style:{ marginTop:'6px', opacity:.8 } }, 'Source: OverTheCap via nflverse.');
+    if (!c) return h('div', { class:'card adv-card ctr-card' }, title,
+      h('div', { class:'tip ctr-empty' }, 'No active NFL contract on file for him in the OverTheCap data.'), credit);
+    const m = (v) => v == null ? '·' : `$${Number(v) >= 100 ? Math.round(v) : Number(v).toFixed(1)}M`;
+    const s = C.season, rookie = c.type === 'Drafted' || c.type === 'UDFA';
+    const left = c.gtd_after || 0;
+    const flag = c.thru === s
+      ? ['Contract year', `His deal ends after the ${s} season: free agent in ${c.fa}${c.option ? ' unless his fifth-year option is picked up' : ''}.`]
+      : !rookie && c.apy >= 2 && left < Math.max(1, c.apy * 0.25)
+        ? [left ? `Only ${m(left)} guaranteed after ${s}` : `No guarantees after ${s}`, 'Little or no guaranteed salary is left past this league year, so he is cheap to cut.']
+        : null;
+    const tile = (label, value, sub, tip) => h('div', { class:'adv-stat', title:tip },
+      h('div', { class:'adv-stat-label' }, label),
+      h('div', { class:'adv-stat-value tnum' }, value),
+      sub ? h('div', { class:'adv-stat-rank tnum' }, sub) : null);
+    const p = c.prior;
+    return h('div', { class:'card adv-card ctr-card' },
+      h('div', { class:'row gap-4 wrap', style:{ justifyContent:'space-between', alignItems:'baseline' } }, title,
+        flag ? h('span', { class:'badge ctr-flag', title:flag[1],
+          style:{ color:'var(--red)', borderColor:'currentColor', background:'transparent' } }, flag[0]) : null),
+      h('div', { class:'tip ctr-term', style:{ marginBottom:'8px' } },
+        `Through ${c.thru}, free agent ${c.fa}${c.option ? ' (fifth-year option could add a season)' : ''}. `
+        + `Signed ${c.signed} with ${c.team}, ${CTR_TYPE[c.type] || (c.type || 'contract').toLowerCase()}.`),
+      h('div', { class:'adv-grid' },
+        tile('APY', m(c.apy), null, 'Average per year'),
+        tile('Total', m(c.value), `${c.years} yr${c.years === 1 ? '' : 's'}`, c.type === 'Extension' ? 'Total value of the new years' : 'Total contract value'),
+        tile('Guaranteed', m(c.gtd), `${m(left)} after ${s}`, `Guaranteed at signing; ${m(left)} of guaranteed salary is still owed after the ${s} league year`),
+        tile('Cap %', c.cap_pct == null ? '·' : `${Number(c.cap_pct).toFixed(1)}%`, `in ${c.signed}`, 'APY as a share of the salary cap in the year he signed')),
+      p ? h('div', { class:'tip ctr-prior', style:{ marginTop:'6px' } },
+        `Before this: ${p[2]} ${CTR_TYPE[p[1]] || (p[1] || 'deal').toLowerCase()} with ${p[0]}, ${p[3]} yr${p[3] === 1 ? '' : 's'} at ${m(p[4])} a year.`) : null,
+      credit);
   }
 
   // ============================================================
