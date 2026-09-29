@@ -4,18 +4,20 @@ Writes site/data/prospect-model.js (window.PROSPECT_MODEL) and rewrites the numb
 in notes/prospect-research/model-card.md. Spec and evidence:
 notes/prospect-research/{wr-te-models,rb-qb-methodology,data-sources}.md.
 
-Three logistic models per position, all judged leave-one-draft-class-out:
-  draft   log(pick) only, unpenalized: the baseline everything has to beat
+Three logistic models per position:
+  draft   a restricted cubic spline in log(pick): the baseline everything has to beat
   talent  college production + age + size, ridge, NO draft capital (usable before the draft)
-  full    talent + log(pick), with log(pick) effectively unpenalized
-The hit probability ships from `full` only where it beats `draft` on log loss both
-leave-one-class-out and forward-chained, and in 80% of draft-class bootstrap resamples;
+  full    talent + the same spline in log(pick)
+Judged three ways: leave-one-draft-class-out on the development classes (before HOLD),
+forward-chained on them with an embargo of the outcome window, and walk-forward on the
+untouched holdout classes (HOLD on). The hit probability ships from `full` only where it
+beats `draft` on log loss in all three and in 80% of draft-class bootstrap resamples;
 otherwise the draft-only model ships. A monotone LightGBM is scored as a challenger.
 
 Sources, all key-free GitHub release downloads (cached; closed seasons kept forever):
   sportsdataverse-data  espn_cfb_{receiving,rushing,passing}  PBP-derived player seasons, 2004+
                         espn_cfb_rosters, cfb_recruits          position, size, class, stars
-  nflverse-data         draft_picks, players, combine, stats_player_reg_<yr>
+  nflverse-data         draft_picks, players, combine, stats_player_reg_<yr>, roster_<yr>
   players-nfl.json      Sleeper's own dump (fetch_sleeper.py): gsis/espn id -> Sleeper id
 
 Cache: $NFLVERSE_CACHE if set, else projections/nflverse-cache (college files in cfb/).
@@ -80,14 +82,27 @@ BREAKOUT = {"WR": 0.20, "TE": 0.15, "RB": 0.15}
 # below at every weight tried (model card, "Low-volume shares").
 MIN_PASS_PG = 15.0
 # The talent model must never put a player in its top decile on receiving shares posted at this
-# passing volume, however extreme (build() asserts it on the shipped fit).
-LOW_VOLUME_PG = 12.0
+# passing volume, however extreme (build() asserts it on the shipped fit). Just ABOVE the floor:
+# at 12 the floor itself zeroed the shares, so the check could not fail.
+LOW_VOLUME_PG = 16.0
+# Draft classes from here on are the holdout: scored walk-forward only, never used to choose a
+# feature, C, knot or floor. Everything tuned is tuned on the classes before it.
+HOLD = 2020
+# The model's YPTPA never divides by fewer than this many team passes a game: the FBS 25th
+# percentile, 2004-2025. Above the floor, shares still ran too hot: at 16 a game the guard above
+# scored 100 (WR), 95 (RB), 99 (TE). The 5th (19.8) and 10th (22.7) percentiles left WR at 97 and
+# 91; development log loss moved 0.0013 at most (model card, "Low-volume shares").
+PASS_DEN_PG = 26.5
+CURVE_PICKS = (1, 10, 32, 64, 100, 150, 250)   # picks the card prints the draft-only curve at
 
 # Talent features. A first research-driven set of 6-7 per position lost to capital alone;
 # these are the research-backed subsets kept after one leave-one-class-out pruning pass
-# (disclosed in the model card as selection optimism; the forward-chained check is the guard).
+# (disclosed in the model card as selection optimism; the untouched holdout is the check).
+# WR breakout age left on 2026-09-28: on class-year ages (the only ages a college player has)
+# dropping it improved the development talent and full models both, so it stays display-only.
+# QB draft age is mixed (talent worse without it) and stays.
 FEATS = {
-    "WR": ["ryptpa_career", "breakout_age", "early", "stars"],
+    "WR": ["ryptpa_career", "early", "stars"],
     "TE": ["ryptpa_best", "speed_score", "power"],
     "RB": ["ryptpa_final", "scrim_ypg", "weight", "speed_score", "stars"],
     "QB": ["rush_ypg_best", "comp_final", "draft_age", "power"],
@@ -109,6 +124,24 @@ BOOT_P = 0.8   # a model must beat draft-only in 80% of draft-class bootstrap re
 ROUNDS = {"R1": (1, 32), "R2": (33, 64), "R3": (65, 100), "D3": (101, 257)}
 # Our tier names, cut on the talent percentile vs every drafted player at the position.
 TIERS = [("Blue Chip", 90), ("Plus Starter", 70), ("Contributor", 45), ("Project", 20), ("Long Shot", 0)]
+# nflverse draft_picks school -> the name ESPN's college feed uses (both sides normalized).
+SCHOOL_ALIAS = {"mississippi": "ole miss", "central florida": "ucf", "ala birmingham": "uab", "texas el paso": "utep",
+                "texas san antonio": "utsa", "ut san antonio": "utsa", "miami fl": "miami",
+                "north carolina state": "nc state", "connecticut": "uconn", "southern mississippi": "southern miss",
+                "la monroe": "ul monroe", "louisiana monroe": "ul monroe", "middle tenn state": "middle tennessee",
+                "florida international": "florida intl", "louisiana lafayette": "louisiana"}
+# First-name forms joined as one (Cam/Cameron Newton, Matt/Matthew Slater, Will/William Franklin).
+NICK = {"cam": "cameron", "will": "william", "bill": "william", "billy": "william", "ken": "kenneth",
+        "kenny": "kenneth", "matt": "matthew", "mike": "michael", "chris": "christopher", "steve": "steven",
+        "stevie": "steven", "stephen": "steven", "jon": "jonathan", "josh": "joshua", "joe": "joseph",
+        "joey": "joseph", "tony": "anthony", "nick": "nicholas", "alex": "alexander", "zach": "zachary",
+        "zack": "zachary", "jake": "jacob", "ben": "benjamin", "dan": "daniel", "danny": "daniel",
+        "rob": "robert", "bob": "robert", "bobby": "robert", "tom": "thomas", "tommy": "thomas", "jim": "james",
+        "jimmy": "james", "dave": "david", "andy": "andrew", "drew": "andrew", "greg": "gregory",
+        "jeff": "jeffrey", "sam": "samuel", "pat": "patrick", "rick": "richard", "ricky": "richard",
+        "ed": "edward", "eddie": "edward", "ron": "ronald", "ronnie": "ronald", "don": "donald",
+        "charlie": "charles", "chuck": "charles", "tim": "timothy", "johnny": "john", "freddie": "frederick",
+        "fred": "frederick", "jerry": "gerald", "larry": "lawrence", "terry": "terrence"}
 
 
 # ----------------------------------------------------------------------------- data
@@ -173,7 +206,11 @@ def season_metrics(ps: pd.DataFrame) -> pd.DataFrame:
     ps["dom_rec"] = (ps.rec_share + ps.rec_td_share) / 2
     scrim, t_scrim = ps.rush_yds + ps.rec_yds, ps.t_rush_yds + ps.t_rec_yds
     ps["dom_scrim"] = (div(scrim, t_scrim) + div(ps.rush_td + ps.rec_td, ps.t_rush_td + ps.t_rec_td)) / 2
-    ps["ryptpa"] = div(ps.rec_yds, ps.t_pass_att)
+    # The model's YPTPA divides by at least PASS_DEN_PG a game, so a team passing just over the
+    # floor cannot hand its receivers a full-strength share of a tiny passing game.
+    ps["pass_den"] = np.maximum(ps.t_pass_att, PASS_DEN_PG * ps.team_games)
+    ps["ryptpa"] = div(ps.rec_yds, ps.pass_den)
+    ps["ryptpa_posted"] = div(ps.rec_yds, ps.t_pass_att)
     ps["target_share"] = div(ps.targets, ps.t_targets)
     ps["scrim_yds"] = scrim
     ps["rec_ypg"] = div(ps.rec_yds, ps.games)
@@ -257,7 +294,7 @@ def career_features(subj: pd.DataFrame, ps: pd.DataFrame, age0: float) -> pd.Dat
     Uses nothing from the NFL side, which is what keeps the talent model pre-draft."""
     f = subj[["sid", "player_id", "pos", "cutoff", "dob", "hs_class"]].merge(ps, on="player_id")
     f = f[f.season <= f.cutoff].copy()
-    f["ryptpa_raw"] = f["ryptpa"]
+    f["ryptpa_raw"] = f["ryptpa_posted"]
     f.loc[f.thin, "ryptpa"] = np.nan
     sept1 = pd.to_datetime(f.season.astype(int).astype(str) + "-09-01")
     f["age"] = np.where(f.dob.notna(), age_years(sept1, f.dob), age0 + f.season - f.hs_class)
@@ -276,7 +313,7 @@ def career_features(subj: pd.DataFrame, ps: pd.DataFrame, age0: float) -> pd.Dat
     out["scrim_ypg"] = ga.scrim_yds.sum() / ga.games.sum().replace(0, np.nan)
     out["ryptpa_raw_career"] = ga.rec_yds.sum() / ga.t_pass_att.sum().replace(0, np.nan)
     ok = f[~f.thin].groupby("sid")
-    out["ryptpa_career"] = ok.rec_yds.sum() / ok.t_pass_att.sum().replace(0, np.nan)
+    out["ryptpa_career"] = ok.rec_yds.sum() / ok.pass_den.sum().replace(0, np.nan)
     out["n_seasons"] = ga.season.nunique()
     out["n_qual"] = ga.qual.sum()
     out["power"] = out.pop("power_final")
@@ -313,60 +350,94 @@ def career_features(subj: pd.DataFrame, ps: pd.DataFrame, age0: float) -> pd.Dat
 
 # ----------------------------------------------------------------------------- NFL side
 
+def name_key(s) -> str:
+    """norm_name with the first name mapped through NICK."""
+    s = "" if s is None or (isinstance(s, float) and math.isnan(s)) else str(s)
+    toks = [t for t in s.lower().replace(".", "").replace("'", "").replace("-", " ").split() if t not in bpp.SUFFIXES]
+    if toks:
+        toks[0] = NICK.get(toks[0], toks[0])
+    return "".join(toks)
+
+
 def link_college(draft: pd.DataFrame, espn_ids: pd.Series, ps: pd.DataFrame) -> pd.Series:
     """College player_id per draft row. ESPN kept the college id into the NFL only from about
-    the 2017 class on, so older classes fall back to name + final college season + school."""
-    known = set(ps.player_id.dropna().astype(int))
+    the 2017 class on, so older classes fall back to name + final college season + school.
+    An id whose college seasons run into his draft year is someone else (Taylor Price, 2010,
+    carried the id of a 2015 Fresno State player) and falls back too. The name side matches any
+    name the id was listed under (ESPN has Robert Griffin III as "Griffin III" in 2010-11)."""
+    last = ps.sort_values("season").groupby("player_id").agg(last_season=("season", "max"),
+                                                             team=("pos_team", "last"), name=("name", "last"))
+    last["_k"] = last.name.map(name_key)
     eid = pd.to_numeric(espn_ids, errors="coerce")
-    direct = eid.where(eid.isin(known))
-    last = ps.sort_values("season").groupby("player_id").agg(name=("name", "last"), last_season=("season", "max"),
-                                       team=("pos_team", "last")).reset_index()
-    last["_k"] = last["name"].map(bpp.norm_name)
-    by_name = {k: g for k, g in last.groupby("_k")}
+    ok = eid.map(last.last_season) < draft["season"].reindex(eid.index)
+    direct = eid.where(ok)
+    names = ps[["player_id", "name"]].dropna().drop_duplicates()
+    ids_by_name = names.assign(_k=names.name.map(name_key)).groupby("_k")["player_id"].agg(lambda s: sorted(set(s)))
     out = {}
     for i, row in draft.iterrows():
         if pd.notna(direct.get(i)):
             out[i] = int(direct[i])
             continue
-        c = by_name.get(bpp.norm_name(row["pfr_player_name"]))
-        if c is None:
+        key = name_key(row["pfr_player_name"])
+        ids = ids_by_name.get(key)
+        if ids is None:
             continue
+        c = last.loc[ids]
         c = c[c.last_season.between(row["season"] - 2, row["season"] - 1)]
         if c.empty:
             continue
         sim = c.team.map(lambda t: school_sim(row["college"], t))
-        c = c[sim >= 0.5]
+        c = c[(sim >= 0.5) & (sim == sim.max())]
+        if len(c) > 1:   # a stray season under his name on a second id: the id still carrying it wins
+            c = c[c._k == key]
         if len(c) == 1:
-            out[i] = int(c.player_id.iloc[0])
+            out[i] = int(c.index[0])
     return pd.Series(out, dtype="Int64")
 
 
+def school_key(s) -> str:
+    s = str(s or "").lower().replace("st.", "state").replace("col.", "college").replace("&", "and").replace("-", " ")
+    s = " ".join(re.sub(r"[^a-z ]", "", s).replace("university", "").split())
+    return SCHOOL_ALIAS.get(s, s)
+
+
 def school_sim(a, b) -> float:
-    def n(s):
-        s = str(s or "").lower().replace("st.", "state").replace("col.", "college").replace("&", "and")
-        return re.sub(r"[^a-z ]", "", s).replace("university", "").strip()
-    a, b = n(a), n(b)
+    # No substring rule: it scored "Central Florida" a perfect match for "Florida".
+    a, b = school_key(a), school_key(b)
     if not a or not b:
         return 0.0
-    if a in b or b in a:
-        return 1.0
-    return difflib.SequenceMatcher(None, a, b).ratio()
+    return 1.0 if a == b else difflib.SequenceMatcher(None, a, b).ratio()
 
 
-def nfl_outcomes(stats: pd.DataFrame) -> pd.DataFrame:
-    """Season rank by PPR points per game within the position, 8+ games to be ranked."""
+def season_positions() -> pd.Series:
+    """(gsis_id, season) -> position he was listed at on that season's nflverse roster."""
+    r = pd.concat([pd.read_parquet(nfl_file("rosters", f"roster_{y}.parquet", 24.0 if y >= SEASON else INF),
+                                   columns=["gsis_id", "season", "position"]) for y in range(FIRST_CLASS, LAST_NFL + 1)])
+    return r.dropna().drop_duplicates(["gsis_id", "season"]).set_index(["gsis_id", "season"])["position"]
+
+
+def nfl_outcomes(stats: pd.DataFrame, season_pos: pd.Series) -> pd.DataFrame:
+    """PPR points per game per player-season (8+ games) and his position THAT season (`spos`).
+    The stats file's `position` is his current one, which ranked fullbacks drafted as RBs
+    among FBs and a drafted RB among DBs; it is only the fallback here."""
     s = stats[stats.games >= MIN_GAMES][["player_id", "season", "position", "games", "fantasy_points_ppr"]].copy()
     s["ppg"] = s.fantasy_points_ppr / s.games
-    s["rank"] = s.groupby(["season", "position"])["ppg"].rank(ascending=False, method="min")
+    s["spos"] = pd.Series(pd.MultiIndex.from_arrays([s.player_id, s.season]).map(season_pos), index=s.index
+                          ).fillna(s.position)
     return s
 
 
 def attach_outcomes(t: pd.DataFrame, seasons: pd.DataFrame) -> pd.DataFrame:
-    """hit / best_ppg / best_rank inside each player's window; blank when the window is open."""
+    """hit / best_ppg / best_rank inside each player's window; blank when the window is open.
+    Each of his seasons is ranked against that season's players listed at his DRAFT position,
+    whatever he was listed at himself (a drafted TE playing RB still counts as a TE)."""
     m = t[["sid", "gsis_id", "pos", "draft_year"]].merge(seasons, left_on="gsis_id", right_on="player_id")
     win = m.pos.map(lambda p: TARGET[p][1])
-    m = m[(m.season >= m.draft_year) & (m.season < m.draft_year + win)]
-    m["top"] = m.pos.map(lambda p: TARGET[p][0])
+    m = m[(m.season >= m.draft_year) & (m.season < m.draft_year + win)].copy()
+    pools = {k: np.sort(g.ppg.to_numpy()) for k, g in seasons.groupby(["season", "spos"])}
+    empty = np.array([])
+    m["rank"] = [1 + len(p) - np.searchsorted(p, v, side="right")          # 1 + players strictly ahead
+                 for p, v in ((pools.get((s, pos), empty), v) for s, pos, v in zip(m.season, m.pos, m.ppg))]
     g = m.groupby("sid")
     t = t.set_index("sid")
     t["best_ppg"] = g.ppg.max()
@@ -398,37 +469,70 @@ def sleeper_maps():
 
 # ----------------------------------------------------------------------------- models
 
-def _boost_last(Z):
+def _boost_linear(Z):
     Z = np.array(Z, dtype=float, copy=True)
-    Z[:, -1] *= UNPEN
+    Z[:, 0] *= UNPEN
     return Z
 
 
-def make_lr(C: float, boost_last: bool = False):
+class RCS:
+    """Restricted cubic spline of one column (Harrell): 4 knots at its 5/35/65/95th training
+    percentiles, linear beyond the outer two, 3 columns (linear term first). The draft-only
+    baseline is this curve in log(pick), not a straight line, so a talent model cannot win by
+    bending capital. Chosen on the development classes only, over linear, quadratic, and 3- and
+    4-knot splines with and without a curvature penalty (model card, "Capital curve")."""
+    def fit(self, X, y=None):
+        self.k_ = np.percentile(np.asarray(X, float)[:, 0], [5, 35, 65, 95])
+        return self
+
+    def transform(self, X):
+        x, k = np.asarray(X, float)[:, 0], self.k_
+        p = lambda u: np.maximum(u, 0.0) ** 3
+        cols = [x] + [(p(x - k[j]) - p(x - k[2]) * (k[3] - k[j]) / (k[3] - k[2])
+                       + p(x - k[3]) * (k[2] - k[j]) / (k[3] - k[2])) / (k[3] - k[0]) ** 2 for j in (0, 1)]
+        return np.column_stack(cols)
+
+    def fit_transform(self, X, y=None):
+        return self.fit(X).transform(X)
+
+
+def make_lr(C: float, n_talent: int | None = None, capital: bool = False):
+    """Logistic model on standardized features. capital=True treats the LAST column as log(pick),
+    spline-expanded: its linear term is scaled up so the L2 penalty barely touches it, its two
+    curvature terms are penalized like a college stat (unpenalized, the curve bent to 95%+ at
+    the top QB picks and lost to a straight line even leave-one-class-out). n_talent=0 with
+    capital is the draft-only baseline, fit at the same C so both models bend capital alike."""
+    from sklearn.compose import ColumnTransformer
     from sklearn.impute import SimpleImputer
     from sklearn.linear_model import LogisticRegression
     from sklearn.pipeline import make_pipeline
     from sklearn.preprocessing import FunctionTransformer, StandardScaler
-    steps = [SimpleImputer(strategy="median"), StandardScaler()]
-    if boost_last:
-        steps.append(FunctionTransformer(_boost_last))
-    return make_pipeline(*steps, LogisticRegression(C=C, max_iter=5000))
+    if not capital:
+        return make_pipeline(SimpleImputer(strategy="median"), StandardScaler(), LogisticRegression(C=C, max_iter=5000))
+    cap = make_pipeline(RCS(), StandardScaler(), FunctionTransformer(_boost_linear))
+    parts = [("cap", cap, [n_talent])]
+    if n_talent:
+        parts.insert(0, ("tal", make_pipeline(SimpleImputer(strategy="median"), StandardScaler()), list(range(n_talent))))
+    return make_pipeline(ColumnTransformer(parts), LogisticRegression(C=C, max_iter=5000))
 
 
-def folds(groups: np.ndarray, forward: bool = False, start: int | None = None):
-    """(train_mask, test_mask) per draft class. Forward-chaining trains only on earlier classes."""
+def folds(groups: np.ndarray, forward: bool = False, start: int | None = None, embargo: int = 1):
+    """(train_mask, test_mask) per draft class. Forward-chaining trains only on classes at least
+    `embargo` years older, so with embargo = the outcome window every training label was final
+    by the held-out class's draft."""
     for g in np.unique(groups):
         if start is not None and g < start:
             continue
         te = groups == g
-        tr = (groups < g) if forward else ~te
+        tr = (groups <= g - embargo) if forward else ~te
         assert not te[tr].any() and g not in set(groups[tr]), "fold trains on its held-out class"
+        assert not forward or groups[tr].max(initial=-1) <= g - embargo, "fold trains on an open outcome window"
         yield tr, te
 
 
-def cv_predict(X, y, groups, fit, forward=False, start=None):
+def cv_predict(X, y, groups, fit, forward=False, start=None, embargo=1):
     p = np.full(len(y), np.nan)
-    for tr, te in folds(groups, forward, start):
+    for tr, te in folds(groups, forward, start, embargo):
         if y[tr].sum() < 3:
             continue
         p[te] = fit(X[tr], y[tr], groups[tr]).predict_proba(X[te])[:, 1]
@@ -445,10 +549,15 @@ def fit_talent(X, y, _groups):
 
 
 def fit_full(X, y, _groups):
-    return make_lr(C_FIXED, boost_last=True).fit(X, y)
+    return make_lr(C_FIXED, X.shape[1] - 1, capital=True).fit(X, y)
 
 
 def fit_baseline(X, y, _groups):
+    return make_lr(C_FIXED, 0, capital=True).fit(X, y)
+
+
+def fit_linear_baseline(X, y, _groups):
+    """The old baseline (straight line in log pick), kept only to report what the spline changed."""
     return make_lr(1e4).fit(X, y)
 
 
@@ -562,9 +671,11 @@ def prepare(say=print):
     say(f"age proxy: {age0:.2f} at first college season, draft-age error sd {err.std():.2f}y (n={len(known)})")
 
     linked = d[d.player_id.notna()].copy()
-    feats = career_features(linked, ps, age0)
+    # Train on the same age estimator college players are scored with (no DOB), so a real birth
+    # date never gives the model a sharper age than it will see at prediction time.
+    feats = career_features(linked.assign(dob=pd.NaT), ps, age0)
     t = linked.merge(feats, on="sid", how="left")
-    t = attach_outcomes(t, nfl_outcomes(stats))
+    t = attach_outcomes(t, nfl_outcomes(stats, season_positions()))
     return ps, bio, d, t, age0
 
 
@@ -609,39 +720,57 @@ def build(verbose=True):
                & t.gsis_id.notna()].copy()
         cols = FEATS[pos]
         assert not set(cols) & POST_DRAFT, f"{pos} talent features leak post-draft info"
+        win = TARGET[pos][1]
         y, g, ppg = tp.hit.to_numpy(float), tp.draft_year.to_numpy(int), tp.best_ppg.to_numpy(float)
         Xt, Xb = tp[cols].to_numpy(float), tp[["log_pick"]].to_numpy(float)
         Xf = tp[cols + ["log_pick"]].to_numpy(float)
-        fwd0 = FIRST_CLASS + 5
         fit_gbm = fit_lgbm([MONO.get(c, 0) for c in cols + ["log_pick"]])
-        fits = {"draft": (Xb, fit_baseline), "talent": (Xt, fit_talent), "full": (Xf, fit_full), "gbm": (Xf, fit_gbm)}
-        pred = {k: cv_predict(X, y, g, f) for k, (X, f) in fits.items()}
-        fwd = {k: cv_predict(X, y, g, f, forward=True, start=fwd0) for k, (X, f) in fits.items() if k != "talent"}
-        base = np.full(len(y), y.mean())
+        fits = {"draft": (Xb, fit_baseline), "talent": (Xt, fit_talent), "full": (Xf, fit_full), "gbm": (Xf, fit_gbm),
+                "linear": (Xb, fit_linear_baseline)}
+        dev = g < HOLD
+        # Development classes only: leave-one-class-out, and forward-chaining embargoed by the
+        # outcome window (the class just before a draft has played one season of its three).
+        pred = {k: np.full(len(y), np.nan) for k in fits}
+        for k, (X, f) in fits.items():
+            pred[k][dev] = cv_predict(X[dev], y[dev], g[dev], f)
+        fwd = {k: cv_predict(X[dev], y[dev], g[dev], f, forward=True, start=FIRST_CLASS + 5, embargo=win)
+               for k, (X, f) in fits.items() if k != "talent"}
+        # Holdout: each class from HOLD on, scored by a fit on the classes whose window had closed by its draft.
+        hold = {k: cv_predict(X, y, g, f, forward=True, start=HOLD, embargo=win) for k, (X, f) in fits.items()}
+        hb = np.full(len(y), np.nan)
+        for c in np.unique(g[~dev]):
+            hb[g == c] = y[g <= c - win].mean()
         res = {k: metrics(y, v, ppg) for k, v in pred.items()}
-        res["base_rate"] = {"logloss": ll(y, base), "brier": float(np.mean((y - y.mean()) ** 2)), "rate": float(y.mean())}
-        res["forward"] = {k: metrics(y, v) for k, v in fwd.items()}
+        yd = y[dev]
+        res["base_rate"] = {"logloss": ll(yd, np.full(len(yd), yd.mean())), "brier": float(np.mean((yd - yd.mean()) ** 2)),
+                            "rate": float(y.mean())}
+        res["forward"] = {k: metrics(yd, v) for k, v in fwd.items()}
+        res["hold"] = {k: metrics(y, v, ppg) for k, v in hold.items()}
+        res["hold"]["base"] = {"logloss": ll(y[~dev], hb[~dev]), "brier": float(np.mean((y[~dev] - hb[~dev]) ** 2))}
+        res["hold_classes"] = [int(g[~dev].min()), int(g[~dev].max())]
+        res["boot"] = {k: class_bootstrap(yd, pred["draft"][dev], pred[k][dev], g[dev]) for k in ("full", "gbm")}
 
-        res["boot"] = {k: class_bootstrap(y, pred["draft"], pred[k], g) for k in ("full", "gbm")}
-
-        def beats(a, b):  # lower log loss both ways, and not a coin flip across draft classes
+        def beats(a, b):  # lower log loss in all three runs, and not a coin flip across draft classes
             return (res[a]["logloss"] < res[b]["logloss"] and res["forward"][a]["logloss"] < res["forward"][b]["logloss"]
+                    and res["hold"][a]["logloss"] < res["hold"][b]["logloss"]
                     and (b != "draft" or res["boot"][a]["p"] >= BOOT_P))
         shipped = "full" if beats("full", "draft") else "draft"
         if beats("gbm", "draft") and beats("gbm", shipped if shipped != "draft" else "full"):
             shipped = "gbm"
         res["shipped"] = shipped
-        res["calibration"] = calibration(y, pred[shipped])
+        # Out of sample for every training player: dev classes leave-one-class-out, holdout walk-forward.
+        oos = {k: np.where(dev, pred[k], hold[k]) for k in ("talent", shipped)}
+        assert not np.isnan(oos["talent"]).any() and not np.isnan(oos[shipped]).any(), f"{pos}: a player has no OOS score"
+        res["calibration"] = calibration(y, oos[shipped])
         m_t, m_f, m_b = fit_talent(Xt, y, g), fit_full(Xf, y, g), fit_baseline(Xb, y, g)
         m_g = fit_gbm(Xf, y, g)
         res["C"] = {"talent": C_FIXED, "full": C_FIXED}
-        cf = m_f[-1].coef_[0].copy()
-        cf[-1] *= UNPEN  # back to the per-SD effect of log(pick)
         res["coef"] = {"talent": dict(zip(cols, m_t[-1].coef_[0].round(3).tolist())),
-                       "full": dict(zip(cols + ["log_pick"], cf.round(3).tolist())),
-                       "draft": {"log_pick": round(float(m_b[-1].coef_[0][0]), 3)}}
+                       "full": dict(zip(cols, m_f[-1].coef_[0][:len(cols)].round(3).tolist()))}
+        res["curve"] = {int(k): round(float(v), 3) for k, v in
+                        zip(CURVE_PICKS, m_b.predict_proba(np.log(np.array(CURVE_PICKS, float)).reshape(-1, 1))[:, 1])}
         # Tiers on the out-of-sample talent logit, so each tier's hit rate is honest.
-        ref = logit(pred["talent"])
+        ref = logit(oos["talent"])
         tp["_tpct"] = [pctile(ref, v) for v in ref]
         tp["_tier"] = [tier_of(v) for v in tp._tpct]
         res["tier_hit"] = [{"tier": TIERS[i][0], "n": int((tp._tier == i).sum()),
@@ -650,15 +779,16 @@ def build(verbose=True):
         res["n_linked"] = int(len(tp))
         results[pos] = res
         final[pos] = {"cols": cols, "talent": m_t, "full": m_f, "draft": m_b, "gbm": m_g, "shipped": shipped,
-                      "ref": ref, "train": tp, "oos": dict(zip(tp.sid, zip(pred["talent"], pred[shipped])))}
+                      "ref": ref, "train": tp, "oos": dict(zip(tp.sid, zip(oos["talent"], oos[shipped])))}
         if set(cols) & SHARE_FEATS:
             res["ceiling"] = low_volume_ceiling(final[pos], pos, age0, ps)
             assert res["ceiling"] < TIERS[0][1], (
                 f"{pos}: shares at {LOW_VOLUME_PG:.0f} team passes a game alone reach talent {res['ceiling']:.0f}")
-        say(f"{pos}: n={len(tp)} hits={int(y.sum())}  logloss draft {res['draft']['logloss']:.4f} "
-            f"talent {res['talent']['logloss']:.4f} full {res['full']['logloss']:.4f} gbm {res['gbm']['logloss']:.4f} "
+        say(f"{pos}: n={len(tp)} hits={int(y.sum())} | dev LOCO draft {res['draft']['logloss']:.4f} "
+            f"full {res['full']['logloss']:.4f} (linear {res['linear']['logloss']:.4f}) boot {res['boot']['full']['p']:.0%} "
             f"| fwd draft {res['forward']['draft']['logloss']:.4f} full {res['forward']['full']['logloss']:.4f} "
-            f"gbm {res['forward']['gbm']['logloss']:.4f} -> {shipped}")
+            f"| hold draft {res['hold']['draft']['logloss']:.4f} full {res['hold']['full']['logloss']:.4f} "
+            f"gbm {res['hold']['gbm']['logloss']:.4f} -> {shipped}")
 
     nfl = score_nfl(t, d, final)
     college = score_college(ps, bio, final, age0)
@@ -761,9 +891,33 @@ def score_nfl(t, d, final):
     return out
 
 
+def exit_scenario(s: pd.DataFrame, years: int, age0: float) -> pd.DataFrame:
+    """His profile if he leaves after `years` college years (or now, if that is already past):
+    draft year, draft age (the same class-year estimator the model trains on) and the early
+    flag, counting the seasons he would still play. As-of-now, every underclassman has 3 or
+    fewer seasons, so `early` was 1 for all of them by construction."""
+    s = s.copy()
+    s["draft_year"] = np.maximum(SEASON + 1, s.hs_class + years)
+    s["early"] = ((s.n_seasons + (s.draft_year - 1 - SEASON)) <= 3).astype(float)
+    s["draft_age"] = np.where(s.dob.notna(), age_years(pd.to_datetime(s.draft_year.astype(int).astype(str) + "-04-25"), s.dob),
+                              age0 + s.draft_year - s.hs_class - 0.35)
+    return s
+
+
+def censor_breakout(s: pd.DataFrame, med: float) -> pd.DataFrame:
+    """Active player, no breakout yet: model value = training median floored at his current age,
+    shown value = blank. A breakout on file is left alone."""
+    s = s.copy()
+    open_ = s.broke_out.eq(0)
+    s.loc[open_, "breakout_age"] = np.maximum(s.loc[open_, "age_final"], med)
+    s["ba_show"] = s.breakout_age.where(~open_)
+    return s
+
+
 def score_college(ps, bio, final, age0, top_n=60):
-    """Every current college QB/RB/WR/TE, profiled as of now and 'drafted' at his first
-    eligible draft (three seasons after his first on file)."""
+    """Every current college QB/RB/WR/TE, profiled as of now and scored at the more conservative
+    of two exits: after his third college year or after his fourth. `cls` stays his first
+    eligible draft; `ex` says which exit the score assumes."""
     cur = ps[ps.season == SEASON].drop_duplicates("player_id").set_index("player_id")
     cand = bio.loc[bio.index.isin(cur.index)].copy()
     cand = cand[cand.ros_pos.isin(POS)]
@@ -776,6 +930,7 @@ def score_college(ps, bio, final, age0, top_n=60):
     feats = career_features(subj, ps, age0)
     subj = subj.merge(feats, on="sid", how="left").rename(columns={"ros_weight": "weight"})
     subj["speed_score"] = np.nan
+    subj["cls"] = subj.draft_year
     rows = []
     for pos in POS:
         fin = final[pos]
@@ -783,10 +938,22 @@ def score_college(ps, bio, final, age0, top_n=60):
         # starter. The models were fit on draftees, nearly all of them starters, so a backup's
         # 30-attempt completion rate is an extrapolation, not a profile.
         s = subj[(subj.pos == pos) & (subj.n_qual >= 1) & ((pos != "QB") | (subj.starts >= 1))].copy()
-        X = s[fin["cols"]].to_numpy(float)
-        s["_tp"] = fin["talent"].predict_proba(X)[:, 1]
+        # Still playing and no breakout yet is censored, not late: "final age + 1" is right for a
+        # finished career only. He can still break out, just not younger than he is now, so any
+        # model using it sees the training median floored at his current age; the card shows a
+        # blank. (No shipped feature set uses breakout age today; it is display-only.)
+        if pos != "QB":
+            s = censor_breakout(s, float(np.nanmedian(fin["train"].breakout_age)))
+        else:
+            s["ba_show"] = np.nan
+        sc = {n: exit_scenario(s, n, age0) for n in (3, 4)}
+        tp = {n: pd.Series(fin["talent"].predict_proba(v[fin["cols"]].to_numpy(float))[:, 1], index=s.index)
+              for n, v in sc.items()}
+        pick4 = tp[4] <= tp[3]
+        s = pd.concat([sc[3][~pick4], sc[4][pick4]])
+        s["_tp"] = np.minimum(tp[3], tp[4]).reindex(s.index)
         s = s.sort_values("_tp", ascending=False)
-        s = pd.concat([s[s.draft_year == SEASON + 1].head(top_n), s[s.draft_year > SEASON + 1].head(top_n // 2)])
+        s = pd.concat([s[s.cls == SEASON + 1].head(top_n), s[s.cls > SEASON + 1].head(top_n // 2)])
         X = s[fin["cols"]].to_numpy(float)
         for i, (_, r) in enumerate(s.iterrows()):
             scen = []
@@ -800,9 +967,9 @@ def score_college(ps, bio, final, age0, top_n=60):
             ts = pctile(fin["ref"], float(logit(r._tp)))
             st, line = key_stats(r)
             rows.append({"n": r["name_final"], "p": pos, "sch": cur.pos_team.get(r.player_id, r.pos_team_final),
-                         "cls": int(r.draft_year),
+                         "cls": int(r.cls), "ex": int(r.draft_year - r.hs_class),
                          "ts": round(ts), "tr": tier_of(ts), "tp": round(float(r._tp), 3),
-                         "ba": None if pd.isna(r.breakout_age) else round(float(r.breakout_age), 1),
+                         "ba": None if pd.isna(r.ba_show) else round(float(r.ba_show), 1),
                          "age": None if pd.isna(r.draft_age) else round(float(r.draft_age), 1),
                          "st": st, "ln": line, "r": scen, "cp": comp_rows(fin, X[i], "talent")})
     return rows
@@ -815,17 +982,19 @@ FIELDS = {
     "tr": "Tier index into tiers[] (cut on the talent score)",
     "hp": "Hit probability with actual draft capital (shipped model, see pos[].shipped)",
     "tp": "Talent-only hit probability, as if drafted, with no draft capital",
-    "ba": "Breakout age: age at the first college season at the dominator line (never broke out = final age + 1)",
+    "ba": "Breakout age: age at the first college season at the dominator line (drafted and never broke out = final "
+          "age + 1; a current player who has not broken out yet is blank). Ages come from class year for everyone",
     "st": "Key college stats, as posted: dom = best dominator, yptpa = rec yds per team pass att (WR career, TE best, "
           "RB final; the model skips seasons on teams under 15 passes a game), share = best rec yds share, "
           "sypg = career scrimmage yds/game, aya/comp = final passing season, rypg = best QB rush yds/game, starts = 150-att seasons",
     "ln": "Final counted college season line",
     "cp": "Comps: [name, draft year, pick, best PPR PPG in window, hit 0/1]",
-    "oos": "1 = hp/tp are leave-one-class-out (the model never saw his class)",
-    "out": "Observed: [hit 0/1, best PPR PPG in window, best position rank]",
-    "r": "College only: hit probability if drafted in [Round 1, Round 2, Round 3, Day 3]",
+    "oos": "1 = hp/tp are out of sample (the model never saw his class; holdout classes scored walk-forward)",
+    "out": "Observed: [hit 0/1, best PPR PPG, best rank among that season's players at his draft position]",
+    "r": "College only: hit probability if drafted in [Round 1, Round 2, Round 3, Day 3], at the scored exit",
     "cls": "College only: first eligible draft year",
-    "age": "College only: projected age at that draft (estimated from class, no public DOB)",
+    "ex": "College only: college years at the exit he is scored at, the more conservative of leaving after year 3 or 4",
+    "age": "College only: projected age at the scored exit's draft (estimated from class, no public DOB)",
 }
 
 
@@ -834,10 +1003,11 @@ def write_payload(res):
     for pos, r in res["results"].items():
         top, win = TARGET[pos]
         pos_meta[pos] = {"target": f"Top-{top} {pos} season by PPR points per game ({MIN_GAMES}+ games) in NFL years 1-{win}",
-                         "base_rate": round(r["base_rate"]["rate"], 3), "n": r["draft"]["n"], "shipped": r["shipped"],
+                         "base_rate": round(r["base_rate"]["rate"], 3), "n": r["n_linked"], "shipped": r["shipped"],
                          "tier_hit": [[x["n"], None if x["hit"] is None else round(x["hit"], 3)] for x in r["tier_hit"]],
-                         "auc": {k: round(r[k]["auc"], 3) for k in ("draft", "talent", "full")},
-                         "logloss": {k: round(r[k]["logloss"], 4) for k in ("draft", "talent", "full")}}
+                         "holdout": f"{r['hold_classes'][0]}-{r['hold_classes'][1]}",
+                         "auc": {k: round(r["hold"][k]["auc"], 3) for k in ("draft", "talent", "full")},
+                         "logloss": {k: round(r["hold"][k]["logloss"], 4) for k in ("draft", "talent", "full")}}
     payload = {"generated": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"), "season": SEASON,
                "source": "sportsdataverse-data (ESPN college PBP seasons, rosters, recruits) + nflverse-data "
                          "(draft picks, players, combine, season stats); see notes/prospect-research/data-sources.md",
@@ -859,70 +1029,93 @@ def write_card(res):
     L.append(f"Linked {cov['linked']} of {cov['drafted']} drafted QB/RB/WR/TE since {FIRST_CLASS} to college data "
              f"({cov['by_era']['2008-2016']:.0%} of 2008-2016 classes, {cov['by_era']['2017-2026']:.0%} of 2017-2026).")
     L.append("")
-    L.append("### Headline: leave-one-draft-class-out")
+    rows = (("draft", "draft only, spline (baseline)"), ("talent", "talent (no capital)"), ("full", "talent + capital"),
+            ("gbm", "monotone LightGBM (challenger)"), ("linear", "draft only, linear (old baseline)"))
+
+    def table(get, base_row):
+        L.append("| Pos | Target | n / hits | Model | AUC | Brier | Log loss | r vs best PPG |")
+        L.append("|---|---|---|---|---|---|---|---|")
+        for pos, r in res["results"].items():
+            top, win = TARGET[pos]
+            for k, lab in rows:
+                m = get(r)[k]
+                L.append(f"| {pos} | top-{top}, yrs 1-{win} | {m['n']} / {m['events']} | {lab} | {m['auc']:.3f} | "
+                         f"{m['brier']:.4f} | {m['logloss']:.4f} | {m.get('r_ppg', float('nan')):.2f} |")
+            b = base_row(r)
+            L.append(f"| {pos} | | | {b[0]} | 0.500 | {b[1]['brier']:.4f} | {b[1]['logloss']:.4f} | |")
+        L.append("")
+
+    h0, h1 = min(r["hold_classes"][0] for r in res["results"].values()), max(r["hold_classes"][1] for r in res["results"].values())
+    L.append(f"### Headline: untouched holdout, draft classes {h0}-{h1}")
     L.append("")
-    L.append("| Pos | Target | n / hits | Model | AUC | Brier | Log loss | r vs best PPG |")
-    L.append("|---|---|---|---|---|---|---|---|")
-    for pos, r in res["results"].items():
-        top, win = TARGET[pos]
-        for k, lab in (("draft", "draft only (baseline)"), ("talent", "talent (no capital)"), ("full", "talent + capital"),
-                       ("gbm", "monotone LightGBM (challenger)")):
-            m = r[k]
-            L.append(f"| {pos} | top-{top}, yrs 1-{win} | {m['n']} / {m['events']} | {lab} | {m['auc']:.3f} | "
-                     f"{m['brier']:.4f} | {m['logloss']:.4f} | {m.get('r_ppg', float('nan')):.2f} |")
-        L.append(f"| {pos} | | | base rate {r['base_rate']['rate']:.1%} (no model) | 0.500 | {r['base_rate']['brier']:.4f} | "
-                 f"{r['base_rate']['logloss']:.4f} | |")
+    L.append(f"Each class is scored by a fit on the classes whose outcome window had closed by its draft (WR/RB: classes "
+             f"up to three years older; QB/TE: four). QB and TE stop at {LAST_CLASS['QB']}, the last class with four seasons "
+             "played. Nothing in the 2026-09-28 revision was chosen on these classes; the feature sets and C inherited from "
+             "the first build were (model card, \"Read these\", item 1).")
     L.append("")
-    L.append(f"### Forward-chained check (train on earlier classes only, test {FIRST_CLASS + 5} on)")
+    table(lambda r: r["hold"], lambda r: ("base rate, walk-forward (no model)", r["hold"]["base"]))
+    L.append(f"### Development classes {FIRST_CLASS}-{HOLD - 1}: leave-one-draft-class-out")
     L.append("")
-    L.append("| Pos | n | draft only | talent + capital | LightGBM | draft AUC | full AUC | Shipped hit model |")
-    L.append("|---|---|---|---|---|---|---|---|")
+    table(lambda r: r, lambda r: (f"base rate (no model)", r["base_rate"]))
+    L.append(f"### Embargoed forward check (development classes {FIRST_CLASS + 5}-{HOLD - 1})")
+    L.append("")
+    L.append("Train only on classes whose whole outcome window had been played by the held-out class's draft.")
+    L.append("")
+    L.append("| Pos | n | draft only, spline | talent + capital | LightGBM | draft only, linear | draft AUC | full AUC | Shipped hit model |")
+    L.append("|---|---|---|---|---|---|---|---|---|")
     label = {"draft": "draft only", "full": "talent + capital", "gbm": "monotone LightGBM"}
     for pos, r in res["results"].items():
         fw = r["forward"]
         L.append(f"| {pos} | {fw['draft']['n']} | {fw['draft']['logloss']:.4f} | {fw['full']['logloss']:.4f} | "
-                 f"{fw['gbm']['logloss']:.4f} | {fw['draft']['auc']:.3f} | {fw['full']['auc']:.3f} | **{label[r['shipped']]}** |")
+                 f"{fw['gbm']['logloss']:.4f} | {fw['linear']['logloss']:.4f} | {fw['draft']['auc']:.3f} | "
+                 f"{fw['full']['auc']:.3f} | **{label[r['shipped']]}** |")
     L.append("")
-    L.append("Log loss columns. Ship rule: a model replaces the draft-only baseline only if it has lower log loss in BOTH "
-             f"the leave-one-class-out and the forward-chained runs AND wins in at least {BOOT_P:.0%} of draft-class "
-             "bootstrap resamples of the leave-one-class-out predictions.")
+    L.append("Log loss columns. Ship rule: a model replaces the spline draft-only baseline only if it has lower log loss "
+             "in ALL THREE runs (development leave-one-class-out, embargoed forward, holdout) AND wins in at least "
+             f"{BOOT_P:.0%} of draft-class bootstrap resamples of the development leave-one-class-out predictions.")
     L.append("")
     L.append("### Verdict per position")
     L.append("")
     for pos, r in res["results"].items():
-        fw = r["forward"]
+        fw, ho = r["forward"], r["hold"]
+        hl = ho["draft"]["logloss"] - ho["full"]["logloss"]
         dl = r["draft"]["logloss"] - r["full"]["logloss"]
         fl = fw["draft"]["logloss"] - fw["full"]["logloss"]
-        head = (f"- **{pos}**: talent + capital vs capital alone, log loss gain {dl:+.4f} leave-one-class-out and "
-                f"{fl:+.4f} forward-chained (AUC {r['draft']['auc']:.3f} to {r['full']['auc']:.3f}). ")
         bt = r["boot"]["full"]
-        head += (f"Class bootstrap: the gain is positive in {bt['p']:.0%} of resamples "
-                 f"(90% interval {bt['lo']:+.4f} to {bt['hi']:+.4f}). ")
+        head = (f"- **{pos}**: talent + capital vs the spline baseline, log loss gain {hl:+.4f} on the holdout "
+                f"(AUC {ho['draft']['auc']:.3f} to {ho['full']['auc']:.3f}), {dl:+.4f} development leave-one-class-out, "
+                f"{fl:+.4f} embargoed forward. Class bootstrap: positive in {bt['p']:.0%} of resamples "
+                f"(90% interval {bt['lo']:+.4f} to {bt['hi']:+.4f}). ")
         if r["shipped"] == "draft":
-            head += ("That is not a reliable win over capital alone, so the hit probability ships from the draft-only "
-                     "model; the talent score still shows as the pre-draft profile.")
+            failed = [n for n, ok in (("holdout", hl > 0), ("development", dl > 0), ("forward", fl > 0),
+                                      (f"bootstrap under {BOOT_P:.0%}", bt["p"] >= BOOT_P)) if not ok]
+            head += (f"Fails: {', '.join(failed)}. The hit probability ships from the draft-only model; "
+                     "the talent score still shows, as a profile, not a forecast.")
         else:
             head += f"Ships **{label[r['shipped']]}**."
         L.append(head)
-        L.append(f"  - LightGBM challenger: {r['gbm']['logloss']:.4f} leave-one-class-out, {fw['gbm']['logloss']:.4f} "
-                 f"forward ({'promoted' if r['shipped'] == 'gbm' else 'not promoted'}).")
+        L.append(f"  - LightGBM challenger: {ho['gbm']['logloss']:.4f} holdout, {r['gbm']['logloss']:.4f} development, "
+                 f"{fw['gbm']['logloss']:.4f} forward ({'promoted' if r['shipped'] == 'gbm' else 'not promoted'}).")
     L.append("")
     L.append("### Low-volume check (asserted on every build)")
     L.append("")
-    L.append(f"Talent score of a two-season career on a team throwing {LOW_VOLUME_PG:.0f} passes a game, at the best YPTPA and "
-             "dominator a drafted player at the position posted on a normal passing team, every other feature at the median: "
-             + ", ".join(f"{pos} {r['ceiling']:.0f}" for pos, r in res["results"].items() if "ceiling" in r)
+    L.append(f"Talent score of a two-season career on a team throwing {LOW_VOLUME_PG:.0f} passes a game (just over the "
+             f"{MIN_PASS_PG:.0f} floor, so the shares count), at the best YPTPA and dominator a drafted player at the "
+             "position posted on a normal passing team, every other feature at the median: "
+             + ", ".join(f"{pos} {r['ceiling']:.1f}" for pos, r in res["results"].items() if "ceiling" in r)
              + f". The build fails at {TIERS[0][1]} (top decile).")
     L.append("")
-    L.append("### Standardized coefficients (final fit on every training class)")
+    L.append("### Coefficients (final fit on every training class)")
     L.append("")
     for pos, r in res["results"].items():
-        for k in ("draft", "talent", "full"):
+        L.append(f"- {pos} draft only (spline in log pick, curvature penalized at C={C_FIXED}), hit chance by pick: "
+                 + ", ".join(f"{k} {v:.0%}" for k, v in r["curve"].items()))
+        for k in ("talent", "full"):
             c = sorted(r["coef"][k].items(), key=lambda kv: -abs(kv[1]))
-            pen = f" (C={r['C'][k]})" if k in r["C"] else " (unpenalized)"
-            L.append(f"- {pos} {k}{pen}: " + ", ".join(f"`{a}` {b:+.3f}" for a, b in c))
+            extra = " + spline in log pick" if k == "full" else ""
+            L.append(f"- {pos} {k} (C={r['C'][k]}, standardized){extra}: " + ", ".join(f"`{a}` {b:+.3f}" for a, b in c))
     L.append("")
-    L.append("### Calibration by decile of the shipped hit model (out of sample)")
+    L.append("### Calibration by decile of the shipped hit model (out of sample: development leave-one-class-out plus holdout walk-forward)")
     L.append("")
     L.append("| Pos | " + " | ".join(f"D{i}" for i in range(1, 11)) + " |")
     L.append("|---|" + "---|" * 10)
@@ -932,7 +1125,7 @@ def write_card(res):
     L.append("")
     L.append("Each decile holds about a tenth of the position's sample (n per cell = n / 10).")
     L.append("")
-    L.append("### Tier hit rates (tiers cut on the out-of-sample talent score)")
+    L.append("### Tier hit rates (tiers cut on the same out-of-sample talent score)")
     L.append("")
     L.append("| Pos | " + " | ".join(f"{t[0]} (>= {t[1]})" for t in TIERS) + " |")
     L.append("|---|" + "---|" * len(TIERS))
@@ -991,6 +1184,21 @@ def self_check():
     assert got.get(1) == 12, "espn id wins"
     assert 2 not in got.index, "a school mismatch is left unlinked, not guessed"
     assert 3 not in got.index
+    # school aliases, nicknames, an id listed under two names, and a direct id that is someone else.
+    ps3 = pd.DataFrame({"player_id": pd.array([20, 30, 31, 40, 41, 50, 50, 60, 60, 61], dtype="Int64"),
+                        "season": [2010, 2007, 2007, 2015, 2009, 2009, 2011, 2005, 2006, 2007],
+                        "name": ["Cameron Newton", "Kevin Smith", "Kevin Smith", "Justin Johnson", "Taylor Price",
+                                 "Robert Griffin III", "Griffin III", "Martellus Bennett", "Other Guy", "Martellus Bennett"],
+                        "pos_team": ["Auburn", "UCF", "Florida", "Fresno State", "Ohio", "Baylor", "Baylor"] + ["Texas A&M"] * 3})
+    dr3 = pd.DataFrame({"pfr_player_name": ["Cam Newton", "Kevin Smith", "Taylor Price", "Robert Griffin III", "Martellus Bennett"],
+                        "season": [2011, 2008, 2010, 2012, 2008],
+                        "college": ["Auburn", "Central Florida", "Ohio", "Baylor", "Texas A&M"]})
+    got = link_college(dr3, pd.Series([np.nan, np.nan, "40", np.nan, np.nan]), ps3)
+    assert got.get(0) == 20, "Cam is Cameron"
+    assert got.get(1) == 30, "Central Florida is UCF, not Florida"
+    assert got.get(2) == 41, "an espn id whose college seasons run past his draft is someone else"
+    assert got.get(3) == 50, "match any name the id was listed under"
+    assert got.get(4) == 61, "a stray season under his name on another id does not make him ambiguous"
 
     # 3. no post-draft input in any talent model, and the talent profile ignores the pick.
     for pos, cols in FEATS.items():
@@ -1005,6 +1213,12 @@ def self_check():
         assert set(g[te]).isdisjoint(g[tr]) and len(set(g[te])) == 1
     for tr, te in folds(g, forward=True, start=2011):
         assert g[tr].max(initial=0) < g[te].min()
+    for tr, te in folds(g, forward=True, start=2012, embargo=2):   # a 2-year window: 2011 is still open at 2012
+        assert g[tr].max(initial=0) <= g[te].min() - 2
+    # the spline baseline is linear beyond its outer knots
+    r = RCS().fit(np.linspace(0, 5.5, 200).reshape(-1, 1))
+    tail = r.transform(np.array([[6.0], [7.0], [8.0]]))
+    assert np.allclose(np.diff(tail, 2, axis=0), 0.0), "RCS must be linear past the last knot"
     y = np.array([0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1], float)
     X = np.arange(12, dtype=float).reshape(-1, 1)
     gg = np.repeat([2010, 2011, 2012, 2013], 3)
@@ -1015,13 +1229,27 @@ def self_check():
     cv_predict(X, y, gg, spy)
     assert all(len(s) == 3 for s in seen) and len(seen) == 4
 
-    # 5. outcome window: only seasons inside the window count, and an open window is blank.
-    t = pd.DataFrame({"sid": ["a", "b"], "gsis_id": ["g1", "g2"], "pos": ["WR", "WR"], "draft_year": [2018, LAST_NFL]})
-    s = pd.DataFrame({"player_id": ["g1", "g1", "g2"], "season": [2019, 2021, LAST_NFL], "ppg": [12.0, 20.0, 18.0],
-                      "rank": [30, 5, 10]})
+    # 5. outcomes: only seasons inside the window count, an open window is blank, and every season
+    #    is ranked against that season's players at his DRAFT position, whatever he was listed at.
+    t = pd.DataFrame({"sid": ["a", "b", "fb", "te"], "gsis_id": ["g1", "g2", "g3", "g4"], "pos": ["WR", "WR", "RB", "TE"],
+                      "draft_year": [2018, LAST_NFL, 2018, 2018]})
+    s = pd.DataFrame({"player_id": ["g1", "g1", "g2", "g3", "g4"], "season": [2019, 2021, LAST_NFL, 2019, 2019],
+                      "ppg": [12.0, 20.0, 18.0, 3.0, 10.0], "spos": ["WR", "WR", "WR", "FB", "RB"]})
+    fill = [("WR", 2019, 13.0 + i) for i in range(30)] + [("RB", 2019, 4.0 + i) for i in range(40)] + \
+           [("FB", 2019, 1.0 + i / 10) for i in range(5)] + [("TE", 2019, 10.5 + i) for i in range(5)] + \
+           [("TE", 2019, 2.0 + i / 10) for i in range(20)]
+    s = pd.concat([s, pd.DataFrame([{"player_id": f"x{i}", "season": se, "ppg": v, "spos": p} for i, (p, se, v) in enumerate(fill)])])
     o = attach_outcomes(t, s).set_index("sid")
-    assert o.loc["a", "hit"] == 0.0 and o.loc["a", "best_ppg"] == 12.0, "2021 is year 4, outside a 3-year window"
+    assert o.loc["a", "hit"] == 0.0 and o.loc["a", "best_ppg"] == 12.0 and o.loc["a", "best_rank"] == 31, \
+        "2021 is year 4, outside a 3-year window; 30 WRs were ahead in 2019"
     assert pd.isna(o.loc["b", "hit"])
+    assert o.loc["fb", "hit"] == 0.0 and o.loc["fb", "best_rank"] == 42, \
+        "a drafted RB listed at FB ranks among RBs (41 ahead of him), not first among fullbacks"
+    assert o.loc["te", "hit"] == 1.0 and o.loc["te", "best_rank"] == 6, "a drafted TE listed at RB ranks among TEs"
+    st = pd.DataFrame({"player_id": ["g3", "g3"], "season": [2019, 2020], "position": ["FB", "FB"], "games": [10, 10],
+                       "fantasy_points_ppr": [30.0, 30.0]})
+    no = nfl_outcomes(st, pd.Series({("g3", 2019): "RB"}))
+    assert no.spos.tolist() == ["RB", "FB"], "season roster position first, current position only as the fallback"
 
     # 6. low-volume shares: a season on a team under MIN_PASS_PG passes a game keeps its raw
     #    numbers for display but carries no YPTPA and cannot be the breakout.
@@ -1031,18 +1259,25 @@ def self_check():
     assert abs(ct.ryptpa_best - 2.5) < 1e-9 and abs(ct.ryptpa_career - 2.5) < 1e-9, "the thin 2020 season drops out"
     assert abs(ct.ryptpa_raw_best - 3.0) < 1e-9 and abs(ct.ryptpa_raw_career - 2.6) < 1e-9
     assert abs(ct.breakout_age - 20.0) < 0.01, "2020 cleared the line on 100 team attempts; 2021 is the breakout"
-    # ...and a low-volume player cannot reach a top-decile talent score on shares alone, even
-    # against a model that runs on YPTPA and nothing else.
-    rng = np.random.default_rng(7)
-    ypa = rng.normal(1.6, 0.6, 400)
-    hit = (rng.random(400) < 1 / (1 + np.exp(-3 * (ypa - 2.2)))).astype(float)
-    Xy = np.column_stack([ypa, rng.normal(20.5, 1.0, 400)])                # ryptpa_career, breakout_age
-    toy = make_lr(C_FIXED).fit(Xy, hit)
-    lv = low_volume_profile("WR", 5.0, 0.6, 18.7)
-    assert np.isnan(lv.ryptpa_career) and np.isnan(lv.ryptpa_best) and lv.broke_out == 0
-    lv_pct = pctile(logit(toy.predict_proba(Xy)[:, 1]),
-                    float(logit(toy.predict_proba([[lv.ryptpa_career, lv.breakout_age]])[0, 1])))
-    assert lv_pct < TIERS[0][1], f"low-volume shares alone reach talent {lv_pct:.0f}"
+    # ...and just over the floor (the guard's 16 a game) the season counts, but the model's YPTPA
+    # divides by PASS_DEN_PG a game, while the card still shows the posted number. The guard
+    # itself runs against the shipped fit in build().
+    assert MIN_PASS_PG < LOW_VOLUME_PG < PASS_DEN_PG, "the guard must test volume the floor lets through"
+    lv = low_volume_profile("WR", 3.0, 0.6, 18.7)
+    assert abs(lv.ryptpa_career - 3.0 * LOW_VOLUME_PG / PASS_DEN_PG) < 1e-9 and abs(lv.ryptpa_raw_career - 3.0) < 1e-9
+    lv12 = season_metrics(ps.assign(pass_att=[12 * 12, 0, 12 * 12, 0]))
+    assert lv12.thin.all(), "12 a game is under the floor"
+
+    # 7. current players: exit scenarios and censored breakouts.
+    cur = pd.DataFrame({"n_seasons": [2, 4], "hs_class": [SEASON - 1, SEASON - 3], "dob": [pd.NaT, pd.NaT]})
+    e3, e4 = exit_scenario(cur, 3, 18.7), exit_scenario(cur, 4, 18.7)
+    assert e3.early.tolist() == [1.0, 0.0] and e4.early.tolist() == [0.0, 0.0], "a sophomore is early only if he leaves after year 3"
+    assert e3.draft_year.tolist() == [SEASON + 2, SEASON + 1] and e4.draft_year.tolist() == [SEASON + 3, SEASON + 1]
+    assert abs(e4.draft_age.iloc[0] - e3.draft_age.iloc[0] - 1.0) < 1e-9, "a year later is a year older"
+    cb = censor_breakout(pd.DataFrame({"broke_out": [1.0, 0.0, 0.0], "breakout_age": [19.5, 22.0, 21.0],
+                                       "age_final": [20.5, 19.7, 21.6]}), 20.4)
+    assert cb.breakout_age.tolist() == [19.5, 20.4, 21.6] and cb.ba_show.isna().tolist() == [False, True, True], \
+        "no breakout yet: the median, floored at his current age, and shown blank"
     print("self-check OK")
 
 

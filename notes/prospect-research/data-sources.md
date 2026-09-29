@@ -26,7 +26,7 @@ season shares), `cfb_crosswalk` (ESPN/Fox/Yahoo id map; no NFL ids in it).
 What the files are, verified:
 
 - **Season rows are play-by-play aggregates, FBS only.** Every row's `division` is `fbs` (118 teams
-  in 2004, 138 in 2026). FCS and lower-division seasons are absent, which is most of the 9.4% of
+  in 2004, 138 in 2026). FCS and lower-division seasons are absent, which is most of the 7.3% of
   drafted players the join could not place.
 - **2004 is thin and 2005-2007 miss games.** 2004's leading receiver has 786 yards and the median
   team shows 202 pass attempts. Michael Crabtree's 2007 row has 1,604 of his 1,962 yards over 11 of
@@ -64,10 +64,14 @@ the existing helper in `projections/build_prospect_profile.py` (given `base`, `c
 | `players` | `players.parquet` | `gsis_id -> espn_id`, `birth_date`, `height`, `weight` |
 | `combine` | `combine.parquet` | `wt, forty` by `pfr_id` for speed score (Barnwell's formula, the `prospect.js` helper) |
 | `stats_player` | `stats_player_reg_<YYYY>.parquet`, 2008-2025 | `player_id` (gsis), `position, games, fantasy_points_ppr` for the outcome |
+| `rosters` | `roster_<YYYY>.parquet`, 2008-2025 | `gsis_id, season, position`: the position he was listed at THAT season |
 | `rosters` | `roster_2026.parquet` | `gsis_id -> sleeper_id` fallback |
 
-- `fantasy_points_ppr` is nflverse's full PPR (4-point pass TD). A season is ranked by points per
-  game among players at the same `position` with 8+ games.
+- `fantasy_points_ppr` is nflverse's full PPR (4-point pass TD). A draftee's season is ranked by
+  points per game against every player with 8+ games who was listed at his DRAFT position on that
+  season's roster. The stats file's own `position` is the player's CURRENT one (Cordarrelle
+  Patterson reads RB in 2013), which ranked five fullbacks drafted as RBs among fullbacks and two
+  draftees among defensive backs, so it is only the fallback when a roster row is missing.
 - Birth dates cover 97% to 100% of drafted QB/RB/WR/TE in every class from 2008.
 - 2025 is the last complete NFL season; 2026 is not used for outcomes.
 
@@ -83,14 +87,23 @@ QB/RB/WR/TE land on a Sleeper id.
 - **By id where ESPN kept it.** nflverse `espn_id` equals the college `player_id` only from about
   the 2017 class: 0% of 2008-2015 picks match, 4% of 2016, 30% of 2017, 67% of 2018 and 94% to 96%
   from 2019 on. ESPN used to issue a new athlete id when a player turned pro.
-- **By name otherwise.** Normalized name (punctuation and Jr/Sr/II-V dropped), a final college season
-  one or two years before the draft, and a school match (`St.` expanded, containment or a
-  SequenceMatcher ratio of 0.5 or better). A name that matches two schools, or no school, stays
-  unlinked rather than guessed.
+- **An id is trusted only if his college seasons end before the draft.** Taylor Price (2010) carried
+  the id of a 2015 Fresno State player; he now falls back to the name join and lands on his own
+  Ohio career.
+- **By name otherwise.** Normalized name (punctuation and Jr/Sr/II-V dropped, first name through a
+  nickname table: Cam/Cameron, Matt/Matthew, Will/William, Kenny/Kenneth), matched against ANY name
+  the college id was listed under (ESPN lists Robert Griffin III as "Griffin III" in 2010-11 and
+  A.J. McCarron as "Corey McCarron" in 2013), a final college season one or two years before the
+  draft, and a school match: `St.` expanded, a school alias map (Mississippi/Ole Miss, Central
+  Florida/UCF, Ala-Birmingham/UAB, Texas-El Paso/UTEP, NC State, UConn, UTSA and a few more), then
+  exact or a SequenceMatcher ratio of 0.5 or better, best match only. The old substring rule is
+  gone: it scored "Central Florida" a perfect match for "Florida". A name that still matches two
+  ids, or no school, stays unlinked rather than guessed.
 - **Graded on the classes where both work:** run name-only on the 691 id-known picks, it found all
-  691 and 99.8% of them were the same player the id join picked.
-- **Result:** 1,382 of 1,525 picks since 2008 linked (86% of the 2008-2016 classes, 95% of
-  2017-2026). The rest are almost all FCS or lower-division players; they appear on the card with a
+  691 and 99.9% of them were the same player the id join picked (99.8% before the aliases).
+- **Result:** 1,414 of 1,525 picks since 2008 linked (90% of the 2008-2016 classes, 96% of
+  2017-2026), up from 1,382; 32 new links (Mike Wallace, Evan Engram, Cam Newton, Robert Griffin III,
+  Blake Bortles, Aaron Jones among them), none lost. The rest are almost all FCS or lower-division players; they appear on the card with a
   capital-only probability and no college profile.
 
 ## Estimated age for current college players
@@ -99,5 +112,6 @@ No public DOB exists (above), so a player's age on Sept 1 of a season is 18.71 p
 his first season on file. "First season" is the earliest of his first roster or stat season, his
 recruit class, and (2025+ rosters only) the season minus his class year plus one. 18.71 is the
 median age on Sept 1 of that first season among drafted players from 2012 on who have a real birth
-date; on those same 1,095 players the estimated draft age misses the real one with a 1.25-year SD.
-Drafted players always use their real nflverse birth date.
+date; on those same 1,115 players the estimated draft age misses the real one with a 1.24-year SD.
+Since 2026-09-28 the model trains on this same estimate for drafted players too, so training and
+scoring see the same ages; a real birth date only sets the 18.71 and grades the estimate.
