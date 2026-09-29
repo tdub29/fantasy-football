@@ -17,12 +17,15 @@ What it joins, and on what:
 
 Two numbers are ESTIMATES and are labelled that way everywhere they surface:
 
-  * Routes run. nflverse participation (the only public per-play route data)
-    ends with 2025, so routes = his share of the team's offensive snaps x the
-    team's dropbacks that game, calibrated on 2025 participation (ROUTE_MULT).
-    It counts every dropback he was on the field for, so it over-counts
-    players who block on passing downs, mostly TEs and pass-protecting backs,
-    which is why Route% / TPRR / YPRR carry "(est)".
+  * Routes run, for a season with no participation on disk (2026 on). nflverse
+    participation (the only public per-play route data) ends with 2025, so
+    routes = his share of the team's offensive snaps x the team's dropbacks
+    that game, calibrated on pooled 2023-2025 participation (ROUTE_MULT).
+    A season that HAS participation (2023-2025) uses the measured count
+    instead, the team dropbacks he was on the field for, and drops "(est)".
+    Either way a pass-block counts as a route, so blocking TEs and backs read
+    high. Route% divides by the team's dropbacks in the games he played, at
+    the team he played for that game.
   * Expected fantasy points. ffopportunity's (ffverse) per-play XGBoost
     expected points, receiving plus rushing, full PPR, joined on gsis id.
     FPOE = his actual PPR minus that. If ffopportunity is unreachable the
@@ -194,64 +197,118 @@ def ffo_points(e: pd.DataFrame, reg_games: set) -> pd.DataFrame:
 # 6.5% more plays than pbp keeps, so a full-time QB came out at 103-106% of
 # his own dropbacks and DK Metcalf at 103%.
 #
-# Calibrated against 2025, the last season with public participation data:
-# the median of on-field dropbacks over this estimate, players with 100+
-# on-field dropbacks, by position and (TEs) season snap share.
-# route_calibration() refits it and --self-check fails if ROUTE_MULT drifts
-# more than 0.01 from the fit. WRs are on the field for more of the dropbacks
-# than of the runs (1.07x); part-time TEs are the reverse. QBs fit 1.00,
-# which is the check that both sides now count the same plays. The target is
-# on-field dropbacks, so a pass-block counts as a route: upper bounds for
-# blocking TEs and backs. A game's routes never exceed the team's dropbacks.
-ROUTE_MULT = {"WR": 1.07, "RB": 0.99, "TE>=.75": 1.05, "TE>=.5": 0.95, "TE<.5": 0.87}
-ROUTE_FIT = {"season": 2025, "min_on_field_db": 100, "tol": 0.01}
+# Fitted on pooled 2023-2025 participation, the seasons that have it: the
+# median of on-field dropbacks over this estimate, players with 100+ on-field
+# dropbacks. WRs and RBs get one number each. A TE's multiplier rises with his
+# season snap share, linear between the median TE under 50% snaps (37% snaps,
+# 0.807x) and the median TE at 50%+ (65%, 1.038x), flat outside: the old
+# 2025-only fit had three TE steps, and a TE at 74% vs 76% moved Route% about
+# 9.5 points while the 50-75% step swung from 1.065x to 0.946x between seasons
+# on 28-31 players. Held out one season at a time (fit on the other two), the
+# season Route% misses the measured number by 3.2 points at the median and 8.8
+# at the 90th percentile, against 3.4 and 9.2 for the 2025-only steps on
+# 2023-2024. --self-check refits all of it; ROUTE_FIT holds the claims it
+# enforces. The target is on-field dropbacks, so a pass-block counts as a
+# route. QBs fit 1.00: both sides count the same plays. A game's routes never
+# exceed the team's dropbacks.
+ROUTE_MULT = {"WR": 1.063, "RB": 0.987, "TE": ((0.374, 0.807), (0.651, 1.038))}
+ROUTE_FIT = {"seasons": (2023, 2024, 2025), "min_on_field_db": 100, "te_split": 0.5,
+             "oos_median": 0.0325, "oos_p90": 0.0885}
+ROUTE_KEYS = ("route_rate_est", "tprr_est", "yprr_est", "fprr_est")
 
 
-def route_bucket(position, snap_pct) -> np.ndarray:
+def route_mult(position, snap_pct, fit: dict = ROUTE_MULT) -> np.ndarray:
     pos = np.asarray(position, dtype=object)
     sp = np.nan_to_num(np.asarray(snap_pct, dtype=float))
-    return np.where(pos == "TE", np.where(sp >= 0.75, "TE>=.75", np.where(sp >= 0.5, "TE>=.5", "TE<.5")), pos)
+    (x0, y0), (x1, y1) = fit["TE"]
+    return np.where(pos == "TE", np.interp(sp, [x0, x1], [y0, y1]),
+                    np.where(pos == "WR", fit["WR"], np.where(pos == "RB", fit["RB"], 1.0)))
 
 
-def route_mult(position, snap_pct) -> np.ndarray:
-    return np.array([ROUTE_MULT.get(b, 1.0) for b in route_bucket(position, snap_pct)])
-
-
-def add_routes(snaps: pd.DataFrame, pbp_plays: pd.DataFrame, roster: pd.DataFrame, calibrate: bool = True) -> pd.DataFrame:
-    """snap_counts rows (gsis_id mapped) plus team_db and routes_est for that game."""
-    db = pbp_plays[pbp_plays["qb_dropback"] == 1].groupby(["game_id", "posteam"]).size()
-    s = snaps.merge(db.rename("team_db").reset_index().rename(columns={"posteam": "team"}),
-                    on=["game_id", "team"], how="left")
-    m = route_mult(s["gsis_id"].map(roster.set_index("gsis_id")["position"]),
-                   s.groupby("gsis_id")["offense_pct"].transform("mean")) if calibrate else 1.0
-    s["routes_est"] = np.minimum(s["offense_pct"] * s["team_db"] * m, s["team_db"])
-    return s
-
-
-def route_calibration(season: int = ROUTE_FIT["season"]):
-    """(median, count) of on-field dropbacks over the uncalibrated estimate per
-    ROUTE_MULT bucket, or None when the participation file is not on disk."""
+def on_field_dropbacks(season: int, plays: pd.DataFrame):
+    """(gsis_id, game_id) -> the team's dropbacks he was on the field for, from
+    nflverse participation, or None when the season has none on disk."""
     csv = PART / f"{season}.csv"
     if not csv.exists():
         return None
-    pbp = read("pbp", f"play_by_play_{season}.parquet")
-    p = pbp[(pbp["season_type"] == "REG") & pbp["play_type"].isin(["pass", "run"])]
     part = pd.read_csv(csv, usecols=["nflverse_game_id", "play_id", "offense_players"])
-    part = part.rename(columns={"nflverse_game_id": "game_id"}).astype({"play_id": float})
-    on = p.loc[p["qb_dropback"] == 1, ["game_id", "play_id"]].astype({"play_id": float}).merge(part)
+    part = part.rename(columns={"nflverse_game_id": "game_id"}).astype({"play_id": float}) \
+        .drop_duplicates(["game_id", "play_id"])
+    on = plays.loc[plays["qb_dropback"] == 1, ["game_id", "play_id"]].astype({"play_id": float}).merge(part)
     on = on.assign(gsis_id=on["offense_players"].fillna("").str.split(";")).explode("gsis_id")
-    on = on.groupby("gsis_id").size().rename("on")
-    roster = read("rosters", f"roster_{season}.parquet").sort_values("week").drop_duplicates("gsis_id", keep="last")
-    roster = roster[roster["position"].isin(SKILL) & roster["gsis_id"].notna()]
-    snaps = read("snap_counts", f"snap_counts_{season}.parquet")
-    snaps = snaps[snaps["game_type"] == "REG"].copy()
-    snaps["gsis_id"] = snaps["pfr_player_id"].map(roster.dropna(subset=["pfr_id"]).set_index("pfr_id")["gsis_id"])
-    s = add_routes(snaps.dropna(subset=["gsis_id"]), p, roster, calibrate=False)
-    g = s.groupby("gsis_id").agg(raw=("routes_est", "sum"), snap=("offense_pct", "mean"))
-    g = g.join(roster.set_index("gsis_id")["position"], how="inner").join(on, how="inner")
-    g = g[g["on"] >= ROUTE_FIT["min_on_field_db"]]
-    ratio = (g["on"] / g["raw"]).groupby(route_bucket(g["position"], g["snap"]))
-    return ratio.median(), ratio.size()
+    return on[on["gsis_id"] != ""].groupby(["gsis_id", "game_id"]).size()
+
+
+def add_routes(snaps: pd.DataFrame, pbp_plays: pd.DataFrame, roster: pd.DataFrame, calibrate: bool = True,
+               measured=None) -> pd.DataFrame:
+    """snap_counts rows (gsis_id mapped) plus team_db and routes_est for that game.
+    `measured` (on_field_dropbacks) replaces the estimate with the charted count.
+    The build_split_cube and build_weekly_splits builders call this too, so one
+    calibration serves all three."""
+    db = pbp_plays[pbp_plays["qb_dropback"] == 1].groupby(["game_id", "posteam"]).size()
+    s = snaps.merge(db.rename("team_db").reset_index().rename(columns={"posteam": "team"}),
+                    on=["game_id", "team"], how="left")
+    if measured is not None:
+        r = pd.MultiIndex.from_frame(s[["gsis_id", "game_id"]]).map(measured).to_numpy(dtype=float)
+        r = np.where(s["team_db"].notna(), np.nan_to_num(r), np.nan)
+    else:
+        m = route_mult(s["gsis_id"].map(roster.set_index("gsis_id")["position"]),
+                       s.groupby("gsis_id")["offense_pct"].transform("mean")) if calibrate else 1.0
+        r = s["offense_pct"] * s["team_db"] * m
+    s["routes_est"] = np.minimum(r, s["team_db"])
+    return s
+
+
+def route_totals(s: pd.DataFrame) -> pd.DataFrame:
+    """Season routes per player and the dropbacks they are out of: the team's
+    dropbacks in the games he has a snap row in, each at the team he played for
+    that game. Until 2026-09-28 the denominator was his final team's dropbacks
+    in every game, so a player who missed games (2025 Garrett Wilson, 7 of 17)
+    read 36.8% instead of 95.0%."""
+    s = s[s["routes_est"].notna()]
+    return s.groupby("gsis_id").agg(routes_est=("routes_est", "sum"), route_db=("team_db", "sum"))
+
+
+def route_fit_frame(seasons=ROUTE_FIT["seasons"]):
+    """Per player-season: uncalibrated estimate (raw), measured on-field
+    dropbacks (on), their dropbacks (db) and mean snap share, over the same
+    snap rows. None when a season's participation is not on disk."""
+    out = []
+    for season in seasons:
+        pbp = read("pbp", f"play_by_play_{season}.parquet")
+        p = pbp[(pbp["season_type"] == "REG") & pbp["play_type"].isin(["pass", "run"])]
+        measured = on_field_dropbacks(season, p)
+        if measured is None:
+            return None
+        roster = read("rosters", f"roster_{season}.parquet").sort_values("week").drop_duplicates("gsis_id", keep="last")
+        roster = roster[roster["position"].isin(SKILL) & roster["gsis_id"].notna()]
+        snaps = read("snap_counts", f"snap_counts_{season}.parquet")
+        snaps = snaps[snaps["game_type"] == "REG"].copy()
+        snaps["gsis_id"] = snaps["pfr_player_id"].map(roster.dropna(subset=["pfr_id"]).set_index("pfr_id")["gsis_id"])
+        snaps = snaps.dropna(subset=["gsis_id"])
+        s = add_routes(snaps, p, roster, calibrate=False)
+        s["on"] = add_routes(snaps, p, roster, measured=measured)["routes_est"]
+        s = s[s["routes_est"].notna()]
+        g = s.groupby("gsis_id").agg(raw=("routes_est", "sum"), on=("on", "sum"), db=("team_db", "sum"),
+                                     snap=("offense_pct", "mean"))
+        out.append(g.join(roster.set_index("gsis_id")["position"], how="inner").assign(season=season))
+    g = pd.concat(out)
+    return g[(g["on"] >= ROUTE_FIT["min_on_field_db"]) & (g["raw"] > 0)]
+
+
+def fit_routes(g: pd.DataFrame) -> dict:
+    """ROUTE_MULT's shape, fitted on route_fit_frame rows."""
+    r = g["on"] / g["raw"]
+    te = g["position"] == "TE"
+    lo, hi = te & (g["snap"] < ROUTE_FIT["te_split"]), te & (g["snap"] >= ROUTE_FIT["te_split"])
+    return {"WR": r[g["position"] == "WR"].median(), "RB": r[g["position"] == "RB"].median(),
+            "TE": ((g["snap"][lo].median(), r[lo].median()), (g["snap"][hi].median(), r[hi].median()))}
+
+
+def route_error(g: pd.DataFrame, fit: dict) -> pd.Series:
+    """|estimated - measured| season Route%, in Route% units (0.03 = 3 points)."""
+    est = np.minimum(g["raw"] * route_mult(g["position"], g["snap"], fit), g["db"])
+    return (est - g["on"]).abs() / g["db"]
 
 
 # --------------------------------------------------------------------------
@@ -449,12 +506,10 @@ def player_table(season: int) -> tuple[pd.DataFrame, dict, pd.DataFrame]:
     snaps = snaps[snaps["game_type"] == "REG"]
     pfr_to_gsis = roster.dropna(subset=["pfr_id"]).set_index("pfr_id")["gsis_id"].to_dict()
     snaps["gsis_id"] = snaps["pfr_player_id"].map(pfr_to_gsis)
-    snaps = add_routes(snaps, p, roster)
-    # Route stats count only games whose snap counts are posted, on both sides of
-    # every ratio: play-by-play lands the night of a game, snap_counts a day or so later.
-    snapped = pd.MultiIndex.from_frame(snaps[["game_id", "team"]])
-    covered = pd.MultiIndex.from_arrays([p["game_id"], p["posteam"]]).isin(snapped)
-    route_db = p[covered & (p["qb_dropback"] == 1)].groupby("posteam").size()
+    measured = on_field_dropbacks(season, p)
+    snaps = add_routes(snaps, p, roster, measured=measured)
+    # Route stats count only games he has a snap row in, on both sides of every
+    # ratio: play-by-play lands the night of a game, snap_counts a day or so later.
     played = pd.MultiIndex.from_frame(snaps.dropna(subset=["gsis_id"])[["gsis_id", "game_id"]])
     routed = t[pd.MultiIndex.from_arrays([t["receiver_player_id"], t["game_id"]]).isin(played)]
     routed = routed.groupby("receiver_player_id").agg(
@@ -463,8 +518,7 @@ def player_table(season: int) -> tuple[pd.DataFrame, dict, pd.DataFrame]:
         games=("game_id", "nunique"),
         off_snaps=("offense_snaps", "sum"),
         snap_pct=("offense_pct", "mean"),
-        routes_est=("routes_est", "sum"),
-    )
+    ).join(route_totals(snaps.dropna(subset=["gsis_id"])))
 
     # ---- NGS (season rows are week 0) ----
     def ngs(name, cols):
@@ -558,8 +612,8 @@ def player_table(season: int) -> tuple[pd.DataFrame, dict, pd.DataFrame]:
     else:
         df["xfp_pg"] = df["xfp"] / g
         df["fpoe_pg"] = df["fpoe"] / g
-    # routes_est is already calibrated and capped per game (add_routes).
-    df["route_rate_est"] = df["routes_est"] / df["team"].map(route_db)
+    # routes_est is already calibrated (or measured) and capped per game (add_routes).
+    df["route_rate_est"] = df["routes_est"] / df["route_db"].where(df["route_db"] > 0)
     routes = df["routes_est"].where(df["routes_est"] >= 5)
     df["tprr_est"] = df["routed_tgt"] / routes
     df["yprr_est"] = df["routed_yds"] / routes
@@ -600,7 +654,7 @@ def player_table(season: int) -> tuple[pd.DataFrame, dict, pd.DataFrame]:
 
     keep = df[(df["opportunities"] > 0) | (df["dropbacks"].fillna(0) > 0) | (df["off_snaps"].fillna(0) > 0)]
     keep = keep[keep["sleeper_id"].notna()]
-    return keep, {"through_week": through, "xfp_source": xfp_source}, teams
+    return keep, {"through_week": through, "xfp_source": xfp_source, "routes_measured": measured is not None}, teams
 
 
 # --------------------------------------------------------------------------
@@ -613,7 +667,7 @@ RUSH = ["RB", "QB"]
 COLUMNS = [
     C("games", "G", "Usage", SKILL, "int", "Games with an offensive snap."),
     C("snap_pct", "Snap%", "Usage", SKILL, "pct", "Average share of offensive snaps. Beyond the Box Score benchmark: 80%+ is a bell-cow back."),
-    C("route_rate_est", "Route% (est)", "Usage", REC, "pct", "Estimated routes over team dropbacks. His share of the offensive snaps x the team's dropbacks each game, because public route data ends in 2025, calibrated on 2025 participation (WRs 1.07x, TEs 0.87-1.05x by snap share, RBs 0.99x) and never more than the team's dropbacks that game. It counts every dropback he was on the field for, so a pass-block counts as a route: an upper bound for blocking TEs and backs. Benchmark cited on the show: 65-70%+ is an every-down receiver."),
+    C("route_rate_est", "Route% (est)", "Usage", REC, "pct", "Estimated routes over the team's dropbacks in the games he played, at the team he played for. His share of the offensive snaps x the team's dropbacks each game, because public route data ends in 2025, calibrated on pooled 2023-2025 participation (WRs 1.06x, RBs 0.99x, TEs 0.81x at 37% snaps rising to 1.04x at 65%) and never more than the team's dropbacks that game. Held out a season at a time, it misses the measured number by 3.2 points at the median and 8.8 at the 90th percentile. It counts every dropback he was on the field for, so a pass-block counts as a route: an upper bound for blocking TEs and backs. Benchmark cited on the show: 65-70%+ is an every-down receiver."),
     C("targets", "Tgt", "Usage", REC, "int", "Targets."),
     C("target_share", "Tgt%", "Usage", REC, "pct", "Share of the team's targets. Benchmark cited on the show: 28%+ is elite."),
     C("touch_share", "Touch%", "Usage", ["RB"], "pct", "Targets plus carries over the team's targets plus carries."),
@@ -715,11 +769,34 @@ XFP_LOOKUP_DESC = ("Expected PPR points per game from the targets and carries he
                    "for plays like them. ffopportunity was unavailable for this build, so this is the fallback.")
 
 
+ESTIMATES = ["route_rate_est", "tprr_est", "yprr_est", "fprr_est", "xfp_pg", "fpoe_pg"]
+MEASURED_ROUTE_DESC = ("Routes over the team's dropbacks in the games he played, at the team he played for. Measured, "
+                       "not estimated: routes are the team's dropbacks he was on the field for, from nflverse participation "
+                       "charting, so a pass-block counts as a route and blocking TEs and backs read high. Benchmark cited "
+                       "on the show: 65-70%+ is an every-down receiver.")
+MEASURED_ROUTE_NOTE = (" Routes are measured this season: the team's dropbacks he was on the field for (nflverse "
+                       "participation), so a pass-block counts as a route.")
+
+
+def season_columns(measured: bool, xfp_source: str) -> tuple[list, list]:
+    """(columns, estimate keys) for one season's file. A season with
+    participation measures routes, so its route columns drop "(est)"; the keys
+    stay, because the page reads every season by the same key."""
+    cols = COLUMNS if xfp_source == "ffopportunity" else \
+        [dict(c, desc=XFP_LOOKUP_DESC) if c["key"] == "xfp_pg" else c for c in COLUMNS]
+    if not measured:
+        return cols, ESTIMATES
+    cols = [dict(c, label=c["label"].replace(" (est)", ""),
+                 desc=MEASURED_ROUTE_DESC if c["key"] == "route_rate_est"
+                 else c["desc"].replace("estimated route", "route") + MEASURED_ROUTE_NOTE)
+            if c["key"] in ROUTE_KEYS else c for c in cols]
+    return cols, [k for k in ESTIMATES if k not in ROUTE_KEYS]
+
+
 def build(season: int) -> dict:
     players, meta, teams = player_table(season)
     keys = [c["key"] for c in COLUMNS]
-    cols = COLUMNS if meta["xfp_source"] == "ffopportunity" else \
-        [dict(c, desc=XFP_LOOKUP_DESC) if c["key"] == "xfp_pg" else c for c in COLUMNS]
+    cols, estimates = season_columns(meta["routes_measured"], meta["xfp_source"])
     out_p = {}
     for gsis, row in players.iterrows():
         # nflverse writes the Rams as LA; every other file on the site says LAR.
@@ -741,9 +818,10 @@ def build(season: int) -> dict:
         "throughWeek": meta["through_week"],
         "generated": dt.datetime.now().isoformat(timespec="seconds"),
         "source": "nflverse-data (play-by-play, stats, snap counts, Next Gen Stats, PFR advanced, ESPN QBR, injuries, depth charts)"
-                  + (", ffopportunity expected points" if meta["xfp_source"] == "ffopportunity" else ""),
+                  + (", ffopportunity expected points" if meta["xfp_source"] == "ffopportunity" else "")
+                  + (", participation (routes)" if meta["routes_measured"] else ""),
         "xfpSource": meta["xfp_source"],
-        "estimates": ["route_rate_est", "tprr_est", "yprr_est", "fprr_est", "xfp_pg", "fpoe_pg"],
+        "estimates": estimates,
         "logFields": ["week", "opp", "snap_pct", "tgt", "rec", "rec_yds", "rec_td", "car", "rush_yds",
                       "rush_td", "att", "pass_yds", "pass_td", "int", "ppr"],
         "columns": cols,
@@ -791,28 +869,68 @@ def self_check() -> int:
     plays = pd.DataFrame({"game_id": ["g"] * 50, "posteam": ["X"] * 50, "qb_dropback": [1] * 40 + [0] * 10})
     pos = pd.DataFrame({"gsis_id": ["w", "t", "q", "r"], "position": ["WR", "TE", "QB", "RB"]})
     got = add_routes(snaps, plays, pos)["routes_est"].tolist()
-    assert np.allclose(got, [40, 0.3 * 40 * 0.87, 40, 0.5 * 40 * 0.99]), got
-    # The calibration still matches its documented target (the 2025 fit), and a QB,
-    # on the field for every dropback, fits 1.00: numerator and denominator count
-    # the same plays. Needs the gitignored participation file (FF_PARTICIPATION_DIR).
-    cal = route_calibration()
-    if cal is None:
-        print(f"  route calibration: SKIPPED, no {PART / (str(ROUTE_FIT['season']) + '.csv')}")
+    te_m = route_mult(["TE"], [0.30])[0]
+    assert abs(te_m - ROUTE_MULT["TE"][0][1]) < 1e-9, te_m          # flat below the low anchor
+    assert np.allclose(got, [40, 0.3 * 40 * te_m, 40, 0.5 * 40 * ROUTE_MULT["RB"]]), got
+    # The TE multiplier has no steps: 74% vs 76% snaps moves it by the slope only.
+    (x0, y0), (x1, y1) = ROUTE_MULT["TE"]
+    step = route_mult(["TE", "TE", "TE"], [0.49, 0.51, (x0 + x1) / 2])
+    assert abs(step[1] - step[0]) < 0.02 and np.isclose(step[2], (y0 + y1) / 2), step
+    # Route% is out of the team's dropbacks in HIS games, at the team he played for:
+    # w misses X's game g2; z plays g1 for X, then g4 for Y, who had played g0 without him.
+    snaps = pd.DataFrame({"game_id": ["g1", "g3", "g1", "g4"], "team": ["X", "X", "X", "Y"],
+                          "gsis_id": ["w", "w", "z", "z"], "offense_pct": [0.9, 0.9, 0.5, 0.5]})
+    dbs = {("g1", "X"): 40, ("g2", "X"): 30, ("g3", "X"): 50, ("g4", "Y"): 35, ("g0", "Y"): 60}
+    plays = pd.DataFrame([{"game_id": g, "posteam": t, "qb_dropback": 1} for (g, t), n in dbs.items() for _ in range(n)])
+    pos = pd.DataFrame({"gsis_id": ["w", "z"], "position": ["WR", "WR"]})
+    tot = route_totals(add_routes(snaps, plays, pos))
+    assert tot.loc["w", "route_db"] == 90 and tot.loc["z", "route_db"] == 75, tot   # not 120, not Y's 95
+    assert abs(tot.loc["w", "routes_est"] / 90 - 0.9 * ROUTE_MULT["WR"]) < 1e-9, tot
+    # A measured season counts charted on-field dropbacks, 0 in a game he has none.
+    measured = pd.Series({("w", "g1"): 38, ("w", "g3"): 49, ("z", "g1"): 12})
+    tot = route_totals(add_routes(snaps, plays, pos, measured=measured))
+    assert tot["routes_est"].to_dict() == {"w": 87, "z": 12} and tot.loc["z", "route_db"] == 75, tot
+    # A measured season's file says so: no "(est)" on its route columns, and not in its estimates.
+    cols, est = season_columns(True, "ffopportunity")
+    lab = {c["key"]: c["label"] for c in cols}
+    assert all("(est)" not in lab[k] for k in ROUTE_KEYS) and not set(ROUTE_KEYS) & set(est), (lab, est)
+    assert all("(est)" in c["label"] for c in season_columns(False, "ffopportunity")[0] if c["key"] in ROUTE_KEYS)
+    # The calibration still matches pooled 2023-2025 participation, and a QB, on the
+    # field for every dropback, fits 1.00: numerator and denominator count the same
+    # plays. Needs the gitignored participation files (FF_PARTICIPATION_DIR).
+    g = route_fit_frame()
+    if g is None:
+        print(f"  route calibration: SKIPPED, participation {ROUTE_FIT['seasons']} not all in {PART}")
     else:
-        med, n = cal
-        tol = ROUTE_FIT["tol"]
-        for b, m in {**ROUTE_MULT, "QB": 1.0}.items():
-            assert abs(med[b] - m) <= tol, f"route calibration: {b} fits {med[b]:.3f} on {n[b]} players, shipped {m}"
-        print("  route calibration matches the " + str(ROUTE_FIT["season"]) + " fit: "
-              + ", ".join(f"{b} {med[b]:.3f} (n={n[b]})" for b in [*ROUTE_MULT, "QB"]))
-    # No written season has a route rate over 100%.
+        flat = lambda f: [f["WR"], f["RB"], *f["TE"][0], *f["TE"][1]]
+        names = ["WR", "RB", "TE lo snap", "TE lo mult", "TE hi snap", "TE hi mult"]
+        pooled, ys = fit_routes(g), ROUTE_FIT["seasons"]
+        folds = {y: fit_routes(g[g["season"] != y]) for y in ys}
+        # Tolerance: how far the fit moves when any one season is left out. Drift
+        # inside that is what dropping a season does anyway; drift past it is new.
+        for i, name in enumerate(names):
+            tol = max(abs(flat(f)[i] - flat(pooled)[i]) for f in folds.values()) + 0.0005
+            assert abs(flat(ROUTE_MULT)[i] - flat(pooled)[i]) <= tol, \
+                f"route calibration: {name} fits {flat(pooled)[i]:.3f}, shipped {flat(ROUTE_MULT)[i]}, tol {tol:.3f}"
+        qb = (g["on"] / g["raw"])[g["position"] == "QB"].median()
+        assert abs(qb - 1.0) <= 0.01, f"QBs fit {qb:.3f}: the two sides no longer count the same plays"
+        # The out-of-sample error the Route% (est) description quotes is still true.
+        err = pd.concat([route_error(g[(g["season"] == y) & (g["position"] != "QB")], folds[y]) for y in ys])
+        med, p90 = err.median(), err.quantile(0.9)
+        assert med <= ROUTE_FIT["oos_median"] and p90 <= ROUTE_FIT["oos_p90"], (med, p90)
+        print(f"  route calibration matches pooled {ys[0]}-{ys[-1]} (n={len(g)}), QB {qb:.3f}; "
+              f"leave-one-season-out Route% error median {med:.1%}, p90 {p90:.1%}")
+    # No written season has a route rate over 100%, and each says whether its routes are measured.
     for path in sorted(OUT.parent.glob("advanced*.js")):
         txt = path.read_text(encoding="utf-8")
-        players = json.loads(txt[txt.index('={"season"') + 1:].rstrip().rstrip(";"))["players"]
+        data = json.loads(txt[txt.index('={"season"') + 1:].rstrip().rstrip(";"))
+        players = data["players"]
         over = [(v["n"], v["route_rate_est"]) for v in players.values() if (v.get("route_rate_est") or 0) > 1]
-        assert not over, f"{path.name}: Route% (est) over 100% for {over}"
+        assert not over, f"{path.name}: Route% over 100% for {over}"
+        has_part = (PART / f"{data['season']}.csv").exists()
+        assert ("route_rate_est" in data["estimates"]) != has_part, f"{path.name}: stale build, rerun the suite"
         top = max((v.get("route_rate_est") or 0) for v in players.values() if v["p"] != "QB")
-        print(f"  {path.name}: max non-QB Route% (est) {top:.1%}")
+        print(f"  {path.name}: routes {'measured' if has_part else 'estimated'}, max non-QB Route% {top:.1%}")
     print("build_nflverse_suite self-check ok")
     return 0
 
