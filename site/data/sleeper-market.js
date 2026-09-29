@@ -1,308 +1,308 @@
 window.SLEEPER_MARKET = {
-  "fetched": "2026-09-27",
+  "fetched": "2026-09-29",
   "season": "2026",
   "risers": [
     {
+      "player_id": "12495",
+      "count": 8973503,
+      "name": "Ollie Gordon"
+    },
+    {
       "player_id": "11435",
-      "count": 6134175,
+      "count": 3860460,
       "name": "Emanuel Wilson"
     },
     {
       "player_id": "11625",
-      "count": 4455808,
+      "count": 3144120,
       "name": "Adonai Mitchell"
     },
     {
+      "player_id": "13330",
+      "count": 2591136,
+      "name": "Kenyon Sadiq"
+    },
+    {
       "player_id": "12545",
-      "count": 3307584,
+      "count": 2220584,
       "name": "Tyler Shough"
     },
     {
-      "player_id": "9228",
-      "count": 2519476,
-      "name": "Bryce Young"
+      "player_id": "11576",
+      "count": 2213672,
+      "name": "Braelon Allen"
     },
     {
       "player_id": "2505",
-      "count": 2386125,
+      "count": 1936116,
       "name": "Darren Waller"
     },
     {
-      "player_id": "10213",
-      "count": 2382294,
-      "name": "Tre Tucker"
-    },
-    {
       "player_id": "12487",
-      "count": 2029272,
+      "count": 1882760,
       "name": "Terrance Ferguson"
     },
     {
+      "player_id": "1166",
+      "count": 1623344,
+      "name": "Kirk Cousins"
+    },
+    {
+      "player_id": "4035",
+      "count": 1509208,
+      "name": "Alvin Kamara"
+    },
+    {
+      "player_id": "3321",
+      "count": 1428592,
+      "name": "Tyreek Hill"
+    },
+    {
       "player_id": "1339",
-      "count": 1868004,
+      "count": 1364796,
       "name": "Zach Ertz"
     },
     {
       "player_id": "11637",
-      "count": 1833750,
+      "count": 1260198,
       "name": "Keon Coleman"
     },
     {
-      "player_id": "1166",
-      "count": 1526736,
-      "name": "Kirk Cousins"
-    },
-    {
-      "player_id": "9225",
-      "count": 1467536,
-      "name": "Tank Bigsby"
+      "player_id": "10213",
+      "count": 1251840,
+      "name": "Tre Tucker"
     },
     {
       "player_id": "5849",
-      "count": 1363072,
+      "count": 1210792,
       "name": "Kyler Murray"
     },
     {
-      "player_id": "6650",
-      "count": 1321232,
-      "name": "Chase McLaughlin"
-    },
-    {
       "player_id": "MIN",
-      "count": 1294070,
+      "count": 1187185,
       "name": "Minnesota Vikings"
     },
     {
-      "player_id": "4035",
-      "count": 1080352,
-      "name": "Alvin Kamara"
+      "player_id": "6650",
+      "count": 1003848,
+      "name": "Chase McLaughlin"
     },
     {
-      "player_id": "13337",
-      "count": 1061325,
-      "name": "Emmett Johnson"
-    },
-    {
-      "player_id": "13346",
-      "count": 1053206,
-      "name": "Denzel Boston"
-    },
-    {
-      "player_id": "13345",
-      "count": 907442,
-      "name": "Jonah Coleman"
-    },
-    {
-      "player_id": "2307",
-      "count": 888112,
-      "name": "Marcus Mariota"
-    },
-    {
-      "player_id": "12493",
-      "count": 872590,
-      "name": "Oronde Gadsden"
-    },
-    {
-      "player_id": "11256",
-      "count": 852648,
-      "name": "Tyson Bagent"
-    },
-    {
-      "player_id": "9486",
-      "count": 850869,
-      "name": "Dontayvion Wicks"
+      "player_id": "9228",
+      "count": 976660,
+      "name": "Bryce Young"
     },
     {
       "player_id": "11610",
-      "count": 806752,
+      "count": 973400,
       "name": "Malik Washington"
     },
     {
+      "player_id": "13337",
+      "count": 900198,
+      "name": "Emmett Johnson"
+    },
+    {
+      "player_id": "9225",
+      "count": 813736,
+      "name": "Tank Bigsby"
+    },
+    {
       "player_id": "6828",
-      "count": 757792,
+      "count": 749064,
       "name": "AJ Dillon"
     },
     {
-      "player_id": "9758",
-      "count": 731948,
-      "name": "C.J. Stroud"
+      "player_id": "9511",
+      "count": 716778,
+      "name": "Keaton Mitchell"
     },
     {
-      "player_id": "8188",
-      "count": 727993,
-      "name": "Tyquan Thornton"
+      "player_id": "9756",
+      "count": 686610,
+      "name": "Jordan Addison"
     },
     {
-      "player_id": "11624",
-      "count": 721350,
-      "name": "Xavier Worthy"
+      "player_id": "12493",
+      "count": 654070,
+      "name": "Oronde Gadsden"
     },
     {
-      "player_id": "3163",
-      "count": 703120,
-      "name": "Jared Goff"
+      "player_id": "2307",
+      "count": 632480,
+      "name": "Marcus Mariota"
     },
     {
-      "player_id": "NYG",
-      "count": 628756,
-      "name": "New York Giants"
+      "player_id": "4943",
+      "count": 626220,
+      "name": "Sam Darnold"
     },
     {
       "player_id": "4017",
-      "count": 586600,
+      "count": 624944,
       "name": "Deshaun Watson"
+    },
+    {
+      "player_id": "LV",
+      "count": 606546,
+      "name": "Las Vegas Raiders"
+    },
+    {
+      "player_id": "12718",
+      "count": 592902,
+      "name": "Konata Mumpfield"
     }
   ],
   "fallers": [
     {
-      "player_id": "TB",
-      "count": 2471685,
-      "name": "Tampa Bay Buccaneers"
-    },
-    {
       "player_id": "13296",
-      "count": 2075072,
+      "count": 1660120,
       "name": "Caleb Douglas"
     },
     {
-      "player_id": "10222",
-      "count": 1860462,
-      "name": "Jayden Reed"
-    },
-    {
-      "player_id": "9482",
-      "count": 1582416,
-      "name": "Michael Mayer"
-    },
-    {
-      "player_id": "6130",
-      "count": 1417428,
-      "name": "Devin Singletary"
-    },
-    {
-      "player_id": "10219",
-      "count": 1306566,
-      "name": "Chris Rodriguez"
-    },
-    {
-      "player_id": "11566",
-      "count": 1197032,
-      "name": "Jayden Daniels"
+      "player_id": "TB",
+      "count": 1618840,
+      "name": "Tampa Bay Buccaneers"
     },
     {
       "player_id": "11581",
-      "count": 1115415,
+      "count": 1610514,
       "name": "MarShawn Lloyd"
     },
     {
-      "player_id": "9754",
-      "count": 1061928,
-      "name": "Quentin Johnston"
+      "player_id": "11435",
+      "count": 1577205,
+      "name": "Emanuel Wilson"
+    },
+    {
+      "player_id": "10222",
+      "count": 1434033,
+      "name": "Jayden Reed"
+    },
+    {
+      "player_id": "6130",
+      "count": 1411002,
+      "name": "Devin Singletary"
+    },
+    {
+      "player_id": "9226",
+      "count": 1389222,
+      "name": "De'Von Achane"
+    },
+    {
+      "player_id": "9482",
+      "count": 1234044,
+      "name": "Michael Mayer"
+    },
+    {
+      "player_id": "12487",
+      "count": 1017920,
+      "name": "Terrance Ferguson"
+    },
+    {
+      "player_id": "10219",
+      "count": 979524,
+      "name": "Chris Rodriguez"
     },
     {
       "player_id": "7567",
-      "count": 879504,
+      "count": 917296,
       "name": "Kenny Gainwell"
     },
     {
-      "player_id": "3161",
-      "count": 838674,
-      "name": "Carson Wentz"
-    },
-    {
-      "player_id": "8180",
-      "count": 821826,
-      "name": "Jalen Nailor"
+      "player_id": "9754",
+      "count": 906409,
+      "name": "Quentin Johnston"
     },
     {
       "player_id": "12508",
-      "count": 780584,
+      "count": 766846,
       "name": "Jaxson Dart"
     },
     {
-      "player_id": "13330",
-      "count": 659754,
-      "name": "Kenyon Sadiq"
-    },
-    {
-      "player_id": "13414",
-      "count": 659295,
-      "name": "Kaelon Black"
-    },
-    {
-      "player_id": "9756",
-      "count": 636048,
-      "name": "Jordan Addison"
+      "player_id": "11566",
+      "count": 756248,
+      "name": "Jayden Daniels"
     },
     {
       "player_id": "13298",
-      "count": 626553,
+      "count": 755829,
       "name": "KC Concepcion"
     },
     {
-      "player_id": "2020",
-      "count": 594741,
-      "name": "Cairo Santos"
+      "player_id": "13414",
+      "count": 727566,
+      "name": "Kaelon Black"
     },
     {
-      "player_id": "JAX",
-      "count": 578556,
-      "name": "Jacksonville Jaguars"
+      "player_id": "9225",
+      "count": 724787,
+      "name": "Tank Bigsby"
+    },
+    {
+      "player_id": "8180",
+      "count": 681786,
+      "name": "Jalen Nailor"
+    },
+    {
+      "player_id": "11625",
+      "count": 622080,
+      "name": "Adonai Mitchell"
+    },
+    {
+      "player_id": "3161",
+      "count": 613800,
+      "name": "Carson Wentz"
+    },
+    {
+      "player_id": "8134",
+      "count": 594504,
+      "name": "Khalil Shakir"
+    },
+    {
+      "player_id": "11637",
+      "count": 564273,
+      "name": "Keon Coleman"
+    },
+    {
+      "player_id": "NE",
+      "count": 548121,
+      "name": "New England Patriots"
+    },
+    {
+      "player_id": "13337",
+      "count": 537993,
+      "name": "Emmett Johnson"
+    },
+    {
+      "player_id": "7553",
+      "count": 533253,
+      "name": "Kyle Pitts"
     },
     {
       "player_id": "10218",
-      "count": 567091,
+      "count": 529830,
       "name": "Xavier Hutchinson"
     },
     {
       "player_id": "13285",
-      "count": 562565,
+      "count": 517005,
       "name": "Malachi Fields"
     },
     {
+      "player_id": "12493",
+      "count": 503960,
+      "name": "Oronde Gadsden"
+    },
+    {
       "player_id": "9480",
-      "count": 554985,
+      "count": 488817,
       "name": "Brenton Strange"
     },
     {
-      "player_id": "4993",
-      "count": 542684,
-      "name": "Mike Gesicki"
-    },
-    {
-      "player_id": "12492",
-      "count": 540904,
-      "name": "Pat Bryant"
-    },
-    {
-      "player_id": "DET",
-      "count": 497529,
-      "name": "Detroit Lions"
-    },
-    {
-      "player_id": "5947",
-      "count": 494448,
-      "name": "Jakobi Meyers"
-    },
-    {
-      "player_id": "13294",
-      "count": 490012,
-      "name": "Makai Lemon"
-    },
-    {
-      "player_id": "5045",
-      "count": 487125,
-      "name": "Courtland Sutton"
-    },
-    {
-      "player_id": "9511",
-      "count": 486387,
-      "name": "Keaton Mitchell"
-    },
-    {
-      "player_id": "11628",
-      "count": 481696,
-      "name": "Marvin Harrison"
+      "player_id": "8132",
+      "count": 486030,
+      "name": "Tyler Allgeier"
     }
   ]
 };
