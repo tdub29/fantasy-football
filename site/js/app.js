@@ -608,7 +608,8 @@
     _rosPts.set(last, out);
     const wr = window.WEEKLY_RANKINGS;
     if (!wr || !wr.players) return out;
-    const from = Math.max(1, wr.currentWeek || 1);
+    // `liveWeek`: the live Sleeper pull (below) rewrote the lines from that week.
+    const from = Math.max(1, wr.liveWeek || wr.currentWeek || 1);
     for (const p of wr.players) {
       const wk = p.sleeper || [];
       // `away`: weeks from now before his first line, his known absence.
@@ -620,6 +621,115 @@
       if (games) out.set(String(p.id), { pts: Math.round(sum * 10) / 10, games, pos: p.pos, out: away });
     }
     return out;
+  }
+
+  // ---- live sleeper
+  // Everything under data/ is as old as the last build, so an injury, a waiver
+  // claim or a final score after it never reached the title odds. On open the app
+  // pulls what moves week to week straight from Sleeper (key-free, CORS open):
+  // each league's rosters, records and this week's opponent, and every weekly
+  // line left this season with its injury designation. The lines are what time an
+  // absence (a null week is a week out), so every remaining week comes, ~240 KB
+  // each. Promise.all on purpose: one failed week read as all-null would bench
+  // the whole league, so any failure drops the pull and the build stands.
+  const LIVE_POS = ['QB', 'RB', 'WR', 'TE', 'K', 'DEF'].map(p => `position%5B%5D=${p}`).join('&');
+  async function fetchLive(get, leagueIds, now) {
+    const st = await get('https://api.sleeper.app/v1/state/nfl');
+    const season = Number(st.season), week = Math.max(1, Math.min(18, Number(st.week) || 1));
+    const leagues = {}, lines = {}, meta = {};
+    await Promise.all(leagueIds.map(async id => {
+      const [rosters, matchups] = await Promise.all([
+        get(`https://api.sleeper.app/v1/league/${id}/rosters`),
+        // No matchups posted yet is normal (bye week, offseason): no opponent.
+        get(`https://api.sleeper.app/v1/league/${id}/matchups/${week}`).catch(() => []),
+      ]);
+      // A matchup is a pair; anything else has no single opponent (build_site_data).
+      const sides = {}, opp = {};
+      for (const m of matchups || []) if (m.matchup_id != null) (sides[m.matchup_id] = sides[m.matchup_id] || []).push(m.roster_id);
+      for (const s of Object.values(sides)) if (s.length === 2) { opp[s[0]] = s[1]; opp[s[1]] = s[0]; }
+      leagues[id] = { opp, rosters: (rosters || []).map(r => ({ id: r.roster_id, players: r.players || [], starters: r.starters || [],
+        taxi: r.taxi || [], reserve: r.reserve || [], s: r.settings || {} })) };
+    }));
+    await Promise.all(Array.from({ length: 19 - week }, (_, i) => week + i).map(async w => {
+      for (const row of await get(`https://api.sleeper.com/projections/nfl/${season}/${w}?season_type=regular&${LIVE_POS}`) || []) {
+        const pid = String(row.player_id || ''), pts = row.stats?.pts_ppr;
+        if (!pid) continue;
+        if (pts != null) (lines[pid] = lines[pid] || {})[w] = Math.round(pts * 10) / 10;
+        if (w === week) {
+          const p = row.player || {};
+          meta[pid] = { inj: p.injury_status || null, pos: p.position, team: row.team || p.team,
+            name: [p.first_name, p.last_name].filter(Boolean).join(' ') };
+        }
+      }
+    }));
+    return { at: now, season, week, leagues, lines, meta };
+  }
+
+  // Writes a pull over the baked globals. Only weeks from the live week on are
+  // replaced, and a player absent from a week is null there: that is how an ACL
+  // after the build empties his season. Designations come from the current week,
+  // so an activation clears one too. A player the build never had a line for (a
+  // backup promoted by the injury) joins the feed.
+  function applyLive(live, wr, players, leagues) {
+    if (!wr?.players || Number(wr.season) !== live.season) return false;
+    const have = new Set();
+    for (const p of wr.players) {
+      const l = live.lines[p.id] || {};
+      p.sleeper = p.sleeper || Array(18).fill(null);
+      for (let w = live.week; w <= 18; w++) p.sleeper[w - 1] = l[w] ?? null;
+      have.add(String(p.id));
+    }
+    for (const pid in live.lines) {
+      const m = live.meta[pid];
+      if (have.has(pid) || !m) continue;
+      const sleeper = Array(18).fill(null);
+      for (const w in live.lines[pid]) sleeper[w - 1] = live.lines[pid][w];
+      wr.players.push({ id: pid, name: m.name, pos: m.pos, team: m.team, sleeper });
+    }
+    wr.liveWeek = live.week;
+    for (const pid in live.meta) if (players[pid]) players[pid].injury_status = live.meta[pid].inj;
+    for (const lg of leagues) {
+      const L = live.leagues[lg.id];
+      if (!L) continue;
+      lg.week = live.week;
+      for (const r of lg.rosters || []) {
+        const x = L.rosters.find(y => y.id === r.roster_id), s = x?.s;
+        if (!x) continue;
+        Object.assign(r, { players: x.players, starters: x.starters, taxi: x.taxi, reserve: x.reserve,
+          wins: s.wins || 0, losses: s.losses || 0, ties: s.ties || 0,
+          fpts: (s.fpts || 0) + (s.fpts_decimal || 0) / 100,
+          fpts_against: (s.fpts_against || 0) + (s.fpts_against_decimal || 0) / 100,
+          waiver_budget_used: s.waiver_budget_used || 0, waiver_position: s.waiver_position,
+          opponent_roster_id: L.opp[r.roster_id] ?? null });
+      }
+    }
+    return true;
+  }
+  // ---- end live sleeper
+
+  // A pull newer than the build paints first; one older than 30 minutes is then
+  // refetched and repaints in place. Playwright (verify-app) stays on the build,
+  // or every feature assert would chase live rosters.
+  const LIVE_KEY = 'ff-live-sleeper', LIVE_TTL_MS = 30 * 60 * 1000;
+  function liveRefresh() {
+    if (navigator.webdriver) return;
+    const leagues = (window.LEAGUES || []).filter(lg => lg.platform !== 'espn');
+    const apply = live => {
+      if (!applyLive(live, window.WEEKLY_RANKINGS, window.PLAYERS || {}, leagues)) return false;
+      _rosPts = null;
+      ODDS_CACHE.clear();
+      return true;
+    };
+    let cached = null;
+    try { cached = JSON.parse(localStorage.getItem(LIVE_KEY) || 'null'); } catch {}
+    const built = Date.parse(window.BUILD_INFO?.files?.['leagues.js'] || '') || 0;
+    if (cached && cached.at > built) apply(cached);
+    if (cached && Date.now() - cached.at < LIVE_TTL_MS) return;
+    const get = u => fetch(u).then(r => { if (!r.ok) throw new Error(`Sleeper ${r.status}: ${u}`); return r.json(); });
+    fetchLive(get, leagues.map(lg => lg.id), Date.now()).then(live => {
+      try { localStorage.setItem(LIVE_KEY, JSON.stringify(live)); } catch {}
+      if (apply(live)) { const y = window.scrollY; route(); window.scrollTo(0, y); }
+    }).catch(e => console.warn('Live Sleeper pull failed; odds are on the build.', e));
   }
 
   // Replacement level on the SAME rest-of-season basis, or the comparison is
@@ -12175,10 +12285,14 @@
     const ids = new Set([...startableIds(roster, { includeStashed: yearsOut > 0 || !!ros }), ...(extraIds || []).map(String)]);
     const pool = [];
     for (const pid of ids) {
-      const p = map.get(pid), ir = irSlot && irSlot.has(pid);
+      const sp = window.PLAYERS?.[pid] || {};
+      // An IR designation means the same as the IR slot: his weekly lines say when he
+      // is back, and no line left means the season is over. Only the slot counted, so
+      // a full-IR roster carrying an ACL (Achane, 2026-09-29) got the flat 6-week guess
+      // and came back in week 10.
+      const p = map.get(pid), ir = irSlot && (irSlot.has(pid) || sp.injury_status === 'IR');
       const kd = !p && wk.get(pid) && ['K', 'DEF'].includes(projPosGroup(wk.get(pid).pos)) ? wk.get(pid) : null;
       const line = kd || (lines && lines.get(pid)), perGame = !!(ros || kd);
-      const sp = window.PLAYERS?.[pid] || {};
       const pos = perGame ? line && projPosGroup(line.pos) : p?.pos;
       if (!(perGame ? line : p) || !takes.has(pos) || (ir && !line)) continue;
       let mean;
@@ -12195,7 +12309,11 @@
       // players, 2026-09-25), so it counts once there. Move dynasty onto the lines
       // too if a dynasty verdict ever reads title odds.
       // A live designation is this season's news; it says nothing about 2028.
-      const startOut = yearsOut ? 0 : ir || (perGame && SIM.designationWeeksOut[st]) ? line.out : perGame ? 0 : (SIM.designationWeeksOut[st] || 0);
+      // Any designation reads its length off the lines when they show one: a 3-week
+      // high ankle tagged Out is 3 weeks, not the table's 1. The table is the
+      // fallback for a player with no line, or one still projected this week.
+      const des = SIM.designationWeeksOut[st] || 0;
+      const startOut = yearsOut ? 0 : ir ? line.out : !des ? 0 : perGame ? line.out : (line?.out || des);
       // Every field the simulator will ever touch is declared here, including the
       // per-season scratch (mult/bye/outUntil/v), his draw stream (key) and his
       // week's noise (e). Adding them later would retag the object's shape on the
@@ -17192,6 +17310,7 @@
         setMobileNav(false, true);
       }
     });
+    liveRefresh();
     route();
   }
 
