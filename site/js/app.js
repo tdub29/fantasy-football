@@ -7812,8 +7812,10 @@
   // the men actually available right now, which is the question you have while the
   // claim window is open.
   //
-  // Range uses this league's completed claims for the two profile facts known before
-  // a claim: NFL experience and position. Situation needs weekly context.
+  // Each player is priced from his own comps: this league's past claims on players
+  // with the closest projection for the claim week. A player with no projection,
+  // or a position with too few projected claims, falls back to the experience and
+  // position profile.
   function faabLeagueRecord(data, lg) {
     const names = [lg?.short_name, lg?.name]
       .filter(Boolean)
@@ -7857,9 +7859,39 @@
     return sorted[lo] + (sorted[hi] - sorted[lo]) * (at - lo);
   }
 
-  function waiverBidRange(claims, candidate, budget, minSample = 5) {
+  // Per-player comps: this league's in-season claims at his position, nearest
+  // first by Sleeper's projection for the claim week, from the last two seasons
+  // (all seasons when that leaves fewer than k). Prices drift by league and year,
+  // which is why it stays local and recent. A forward-only backtest over every
+  // in-season claim since 2022 put this ahead of every profile and situation
+  // scheme tried; situation, depth chart and experience added nothing on top.
+  // Thirty, not ten: the median bid barely moves with k, but the win odds read
+  // off the comps need the tail, and a bid at the 90th percentile of 10 comps
+  // won only 83% of the time against 90% at 30.
+  function waiverComps(claims, candidate, season, k = 30) {
+    if (!Number.isFinite(candidate?.proj)) return [];
+    const pool = (claims || []).filter(c => c.phase === 'in-season'
+      && c.position === candidate.position && Number.isFinite(c.proj)
+      && c.pct != null && Number.isFinite(Number(c.pct)));
+    const recent = pool.filter(c => c.season >= season - 1);
+    return (recent.length >= k ? recent : pool)
+      .map(c => ({ c, d: Math.abs(c.proj - candidate.proj) }))
+      .sort((a, b) => a.d - b.d || b.c.season - a.c.season || b.c.week - a.c.week)
+      .slice(0, k).map(x => x.c);
+  }
+
+  function waiverBidRange(claims, candidate, budget, minSample = 5, season = null) {
     if (budget == null || budget < 0 || !claims?.length) return null;
     const usable = claims.filter(c => c.pct != null && Number.isFinite(Number(c.pct)));
+    const comps = season != null ? waiverComps(usable, candidate, season) : [];
+    if (comps.length >= minSample) {
+      const pcts = comps.map(c => Number(c.pct));
+      const q1 = waiverQuantile(pcts, 0.25), mid = waiverQuantile(pcts, 0.5), q3 = waiverQuantile(pcts, 0.75);
+      const lo = Math.max(0, Math.round(budget * q1 / 100));
+      return { lo, hi: Math.max(lo, Math.round(budget * q3 / 100)), mid: Math.round(budget * mid / 100),
+        q1, q3, n: comps.length, comps, pcts, exact: true,
+        source: `${comps.length} ${candidate.position} claims nearest his projection` };
+    }
     const exact = usable.filter(c => c.position === candidate.position && c.experience === candidate.experience);
     const byPosition = usable.filter(c => c.position === candidate.position);
     const byExperience = usable.filter(c => c.experience === candidate.experience);
@@ -7872,7 +7904,77 @@
     if (q1 == null || q3 == null) return null;
     const lo = Math.max(0, Math.round(budget * q1 / 100));
     const hi = Math.max(lo, Math.round(budget * q3 / 100));
-    return { lo, hi, q1, q3, n: pcts.length, source, exact: sample === exact };
+    const mid = Math.round(budget * waiverQuantile(pcts, 0.5) / 100);
+    return { lo, hi, mid, q1, q3, n: pcts.length, source, exact: sample === exact, comps: null, pcts };
+  }
+
+  // Win odds at a bid. Each comp's winning price, rescaled to this budget, stands
+  // in for the top rival bid on the man being priced: beat it and the claim is
+  // yours, tie it and waiver order splits it. The plotting position (+0.5 over
+  // n+1) keeps a small sample from ever promising 0 or 100%.
+  function waiverThresholds(pcts, budget) {
+    return pcts.map(p => Math.round(Number(p) * budget) / 100).sort((a, b) => a - b);
+  }
+
+  function waiverWinOdds(thresholds, bid) {
+    if (!thresholds?.length || !Number.isFinite(bid)) return null;
+    let below = 0, tied = 0;
+    for (const t of thresholds) { if (t < bid) below++; else if (t === bid) tied++; }
+    return (below + tied / 2 + 0.5) / (thresholds.length + 1);
+  }
+
+  // Smallest whole-dollar bid that reaches the target odds, or null when even
+  // maxBid falls short.
+  function waiverBidForOdds(thresholds, target, maxBid) {
+    for (let bid = 0; bid <= maxBid; bid++) {
+      if (waiverWinOdds(thresholds, bid) >= target - 1e-9) return bid;
+    }
+    return null;
+  }
+
+  // Chance of landing at least one, treating the claims as independent.
+  function waiverBundleOdds(odds) {
+    return 1 - odds.reduce((miss, p) => miss * (1 - p), 1);
+  }
+
+  // Cheapest whole-dollar bids that land at least one of a bundle at the target
+  // odds, with the bids summing to no more than maxTotal: a claim the budget can
+  // no longer cover fails. Exact, as a knapsack over dollars on the log of the
+  // miss chance; a player's only useful bids are the dollars where his odds step
+  // up, so it stays cheap. Out of reach, it returns the cheapest bids for the
+  // best odds the budget can buy. (A greedy version overspent by up to $43.)
+  function waiverSolveBundle(sets, target, maxTotal) {
+    maxTotal = Math.max(0, Math.floor(maxTotal));
+    const options = sets.map(ts => {
+      const opts = [{ bid: 0, p: waiverWinOdds(ts, 0) }];
+      for (let b = 1; b <= maxTotal; b++) {
+        const p = waiverWinOdds(ts, b);
+        if (p > opts[opts.length - 1].p) opts.push({ bid: b, p });
+      }
+      return opts.map(o => ({ bid: o.bid, v: -Math.log(1 - o.p) }));
+    });
+    // best[d]: most log-miss removed spending at most d; pick[i][d]: player i's option there.
+    let best = new Array(maxTotal + 1).fill(0);
+    const pick = options.map(opts => {
+      const next = new Array(maxTotal + 1).fill(-Infinity), choice = new Array(maxTotal + 1).fill(0);
+      for (let d = 0; d <= maxTotal; d++) {
+        opts.forEach((o, j) => {
+          if (o.bid <= d && best[d - o.bid] + o.v > next[d]) { next[d] = best[d - o.bid] + o.v; choice[d] = j; }
+        });
+      }
+      best = next;
+      return choice;
+    });
+    const goal = -Math.log(1 - target);
+    let d = best.findIndex(v => v >= goal - 1e-9);
+    if (d < 0) d = best.findIndex(v => v >= best[maxTotal] - 1e-9);
+    const bids = [];
+    for (let i = options.length - 1; i >= 0; i--) {
+      bids[i] = options[i][pick[i][d]].bid;
+      d -= bids[i];
+    }
+    const odds = bids.map((b, i) => waiverWinOdds(sets[i], b)), combined = waiverBundleOdds(odds);
+    return { bids, odds, combined, total: bids.reduce((sum, b) => sum + b, 0), reached: combined >= target - 1e-9 };
   }
 
   function rankWaiverCandidates(cands, targets) {
@@ -7907,7 +8009,7 @@
     const wr = window.WEEKLY_RANKINGS;
     const data = window.FAAB_ARCHETYPES;
     if (!wr || !lg) return null;
-    const week = wr.currentWeek || 1;
+    const week = wr.liveWeek || wr.currentWeek || 1;
 
     // Sleeper normally includes taxi and reserve in players, but treating that as
     // a guarantee can surface a stashed player after a partial export.
@@ -7945,6 +8047,8 @@
       cands.push({
         pid, name: row.name, pos: row.pos, team: row.team,
         ros, wk: wkProj,
+        // Sleeper's line, not the Vegas one: the comps were priced on Sleeper's.
+        proj: Number.isFinite((row.sleeper || [])[week - 1]) ? row.sleeper[week - 1] : null,
         vor, market,
         sortValue: dynasty ? (market ?? ros) : ros,
         experience, position,
@@ -7954,6 +8058,14 @@
     }
     if (!cands.length) return null;
     const top = rankWaiverCandidates(cands, targets).slice(0, 12);
+    // A backup promoted by an injury this week can trail on dynasty value and
+    // still be the claim the whole league makes. The two best week projections at
+    // each offensive position join the board when the ranking left them off.
+    for (const pos of ['QB', 'RB', 'WR', 'TE']) {
+      cands.filter(c => c.position === pos && Number.isFinite(c.wk))
+        .sort((a, b) => b.wk - a.wk).slice(0, 2)
+        .forEach(c => { if (!top.includes(c)) top.push(c); });
+    }
 
     // This league's own bid ladder. No format-wide fallback: local bidding habits
     // are the useful signal, and pretending a blended market is local is worse
@@ -7978,10 +8090,11 @@
           ? `You have $${faabMoney(left)} of $${faabMoney(budget)} left. `
           : '',
         hasBidHistory
-          ? `Bid range is the middle half of this league's completed claims, including $0 adds, for the player's experience and position profile. `
-            + `Profiles under 5 claims fall back to position, then experience, then this league's full history. `
+          ? `Bid is the median of the 30 in-season claims here, $0 adds included, on players at his position with the closest Sleeper projection for the claim week, last two seasons first; the small range is their middle half. `
+            + `Tested forward on 272 claims since 2025, half landed within about 3% of budget of it and the average miss was 6%; most of a bid is one manager's appetite, which no pre-claim fact predicts, so read the range as the answer. `
+            + `With no projection, the range falls back to his experience and position profile. `
           : 'No priced-claim history for this league, so no bid range is shown. ',
-        'Profile uses NFL experience and position, the two dimensions knowable before a claim.'));
+        'Hover a bid for the named comps. The line under each player sets a bid or a win chance and fills in the other; Chart opens the full curve.'));
 
     const head = h('thead', null, h('tr', null,
       h('th', null, '#'),
@@ -7995,35 +8108,239 @@
         : 'Rest-of-season points above the last league-wide starter at the position' }, dynasty ? 'Value' : 'VOR'),
       hasBidHistory ? h('th', { class: 'right', title: 'Suggested bid range from this league\'s matching historical claims' }, 'Bid') : null));
 
-    const body = h('tbody', null, ...top.map((c, i) => {
-      const b = waiverBidRange(claims, c, budget);
+    const season = Number(wr.season) || null;
+    const compLine = b => b.comps.slice(0, 2).map(x => `${x.player} $${faabMoney(x.bid)}`).join(', ');
+    const compTip = b => b.comps.map(x =>
+      `${x.player} ${x.season} wk ${x.week}: $${faabMoney(x.bid)} at ${fmt.decimal(x.proj, 1)} proj`).join('\n');
+    // A claim the budget can no longer cover fails, so the odds controls stop at
+    // what is left; with no live balance, at the whole budget.
+    const maxBid = Math.max(0, Math.floor(left ?? budget ?? 0));
+    const pctText = p => `${Math.round(p * 100)}%`;
+    // A spanning cell wider than the visible columns adds phantom columns, which
+    // steal width from the fixed phone layout, so the span tracks what shows;
+    // fitWaiverSpans redoes it when the page crosses the phone breakpoint.
+    const wideSpan = hideComparison ? 7 : 8;
+    const span = () => window.matchMedia(PHONE_Q).matches ? 5 : wideSpan;
+    const rows = new Map();
+    const bundle = new Set();
+    let target = 0.9, solved = null;
+    const bundleList = h('div', { class: 'wb-bundle-list' });
+    const bundleSum = h('p', { class: 'wb-bundle-sum' });
+    const targetSlider = h('input', { type: 'range', class: 'wb-odds-slider', min: 50, max: 98, step: 1, value: 90,
+      'aria-label': 'Target chance to land at least one', onInput: e => setTarget(e.target.value) });
+    const targetNum = h('input', { type: 'number', class: 'wb-odds-num', min: 50, max: 98, step: 1, value: 90,
+      inputmode: 'numeric', 'aria-label': 'Target chance to land at least one, percent',
+      onChange: e => setTarget(e.target.value) });
+    const bundlePanel = h('div', { class: 'wb-bundle', hidden: '' },
+      h('div', { class: 'wb-bundle-head' },
+        h('span', { class: 'wb-bundle-title' }, 'Land at least one'),
+        h('span', { class: 'wb-odds-field' }, targetSlider, targetNum, '%')),
+      bundleList, bundleSum,
+      h('button', { type: 'button', class: 'wb-bundle-use',
+        onClick: () => solved?.pids.forEach((pid, i) => rows.get(pid).setBid(solved.bids[i])) }, 'Use these bids'),
+      h('p', { class: 'tip' }, 'Treats each claim as independent, so a rival chasing the same players is not modeled. You pay every bid that wins, so the bids together stay inside what you have left.'));
+    const renderBundle = () => {
+      const picks = [...bundle].map(pid => rows.get(pid));
+      bundlePanel.hidden = !picks.length;
+      if (!picks.length) return;
+      const r = waiverSolveBundle(picks.map(x => x.ts), target, maxBid);
+      solved = { pids: picks.map(x => x.c.pid), bids: r.bids };
+      bundleList.replaceChildren(...picks.map((x, i) => h('div', { class: 'wb-bundle-row' },
+        h('span', { class: 'wb-bundle-name' }, x.c.name),
+        h('span', { class: 'tnum' }, `$${r.bids[i]}`),
+        h('span', { class: 'tnum wb-bundle-odds' }, pctText(r.odds[i])))));
+      bundleSum.replaceChildren(
+        h('strong', { class: 'tnum' }, `${pctText(r.combined)} to land at least one`),
+        ` · $${r.total} if all hit`,
+        left != null ? ` · $${faabMoney(left)} left` : '',
+        r.reached ? '' : `. ${pctText(target)} is out of reach with this budget.`);
+    };
+    function setTarget(v) {
+      const pct = Math.min(98, Math.max(50, Math.round(Number(v)) || 90));
+      target = pct / 100;
+      targetSlider.value = pct; targetNum.value = pct;
+      renderBundle();
+    }
+    if (hasBidHistory) card.appendChild(bundlePanel);
+
+    // Bid and win chance drive each other: drag or type the dollars and the
+    // chance follows, type a chance and the bid moves to the cheapest that
+    // reaches it.
+    const oddsControls = (c, b) => {
+      const ts = waiverThresholds(b.pcts, budget);
+      let bid = Math.min(maxBid, b.mid), detail = null;
+      const slider = h('input', { type: 'range', class: 'wb-odds-slider', min: 0, max: maxBid, step: 1, value: bid,
+        'aria-label': `Bid on ${c.name}, dollars`, onInput: e => setBid(e.target.value) });
+      const dollars = h('input', { type: 'number', class: 'wb-odds-num', min: 0, max: maxBid, step: 1, value: bid,
+        inputmode: 'numeric', 'aria-label': `Bid on ${c.name}, dollars`,
+        onInput: e => e.target.value !== '' && setBid(e.target.value, 'dollars'), onChange: () => setBid(bid) });
+      const odds = h('input', { type: 'number', class: 'wb-odds-num', min: 1, max: 99, step: 1,
+        inputmode: 'numeric', 'aria-label': `Chance to land ${c.name}, percent`,
+        onInput: e => e.target.value !== '' && setOdds(e.target.value), onChange: () => setBid(bid) });
+      const note = h('span', { class: 'wb-odds-note' });
+      function setBid(v, from) {
+        bid = Math.max(0, Math.min(maxBid, Math.round(Number(v)) || 0));
+        slider.value = bid;
+        if (from !== 'dollars') dollars.value = bid;
+        if (from !== 'odds') { odds.value = Math.round(waiverWinOdds(ts, bid) * 100); note.textContent = ''; }
+        detail?.update(bid);
+      }
+      function setOdds(v) {
+        const best = waiverWinOdds(ts, maxBid);
+        const need = waiverBidForOdds(ts, Math.min(99, Math.max(1, Number(v))) / 100, maxBid);
+        setBid(need ?? waiverBidForOdds(ts, best, maxBid), 'odds');
+        note.textContent = need == null ? `Tops out at ${pctText(best)}` : '';
+      }
+      const chartCell = h('td', { class: 'wb-sub', colspan: span() });
+      const chartRow = h('tr', { class: 'wb-chart-row', hidden: '' }, chartCell);
+      const oddsRow = h('tr', { class: 'wb-odds-row' });
+      const toggle = h('button', { type: 'button', class: 'wb-chart-toggle', 'aria-expanded': 'false',
+        'aria-label': `Odds chart for ${c.name}`, onClick: () => {
+          const open = chartRow.hidden;
+          chartRow.hidden = !open;
+          oddsRow.classList.toggle('is-open', open);
+          toggle.setAttribute('aria-expanded', String(open));
+          if (open && !detail) {
+            detail = waiverOddsDetail(ts, b.comps, budget, maxBid, setBid);
+            chartCell.appendChild(detail.el);
+          }
+          detail?.update(bid);
+        } }, 'Chart');
+      const pick = h('label', { class: 'wb-pick' },
+        h('input', { type: 'checkbox', 'aria-label': `Add ${c.name} to the bundle`, onChange: e => {
+          if (e.target.checked) bundle.add(c.pid); else bundle.delete(c.pid);
+          renderBundle();
+        } }), 'Bundle');
+      oddsRow.appendChild(h('td', { class: 'wb-sub', colspan: span() },
+        h('div', { class: 'wb-odds' },
+          h('span', { class: 'wb-odds-field' }, '$', dollars),
+          slider,
+          h('span', { class: 'wb-odds-field' }, odds, '% to win'),
+          note, toggle, pick)));
+      rows.set(c.pid, { c, ts, setBid });
+      setBid(bid);
+      return [oddsRow, chartRow];
+    };
+
+    const groups = top.map((c, i) => {
+      const b = waiverBidRange(claims, c, budget, 5, season);
       const overBudget = b && left != null && b.hi > left;
       const comparison = dynasty ? c.market : c.vor;
-      return h('tr', { class: 'clickable', 'data-player-id': c.pid, 'data-position': c.pos,
+      const withOdds = hasBidHistory && b;
+      const main = h('tr', { class: 'clickable wb-main' + (withOdds ? ' wb-has-odds' : ''), 'data-player-id': c.pid, 'data-position': c.pos,
         onclick: () => openPlayerDetail(c.name, c.pid) },
         h('td', { class: 'sr-slot' }, `${i + 1}`),
         h('td', { class: 'sr-name' },
           h('span', { class:'wb-player-line' },
             h('span', { class:'wb-player-name' }, c.name),
             c.injury ? injuryChip(c.pid) : null),
-          h('span', { class:'wb-profile-mobile' }, c.profile,
-            b ? h('span', { class:'wb-profile-mobile-sample' },
+          h('span', { class:'wb-profile-mobile' }, b?.comps ? `Like ${compLine(b)}` : c.profile,
+            b && !b.comps ? h('span', { class:'wb-profile-mobile-sample' },
               `${b.exact ? 'exact profile' : b.source}, n=${b.n}`) : null)),
         h('td', { class: 'sr-pos' }, posChip(c.pos)),
-        h('td', { class: 'wb-profile', title: `${c.experience}; ${c.position}` }, c.profile,
+        h('td', { class: 'wb-profile', title: b?.comps ? compTip(b) : `${c.experience}; ${c.position}` }, c.profile,
           b ? h('span', { class: 'wb-profile-sample' },
-            `${b.exact ? 'exact profile' : b.source}, n=${b.n}`) : null),
+            b.comps ? `like ${compLine(b)}` : `${b.exact ? 'exact profile' : b.source}, n=${b.n}`) : null),
         h('td', { class: 'sr-num tnum' }, fmt.decimal(c.ros, 0)),
         h('td', { class: 'sr-num tnum' }, c.wk != null ? fmt.decimal(c.wk, 1) : '·'),
         h('td', { class: 'sr-num sr-vor tnum' + (comparison != null && comparison < 0 ? ' neg' : ''), style: hideComparison },
           comparison != null ? `${!dynasty && comparison > 0 ? '+' : ''}${fmt.decimal(comparison, 0)}` : '·'),
         hasBidHistory ? h('td', { class: 'sr-num wb-bid tnum' + (overBudget ? ' over' : ''),
-                           title: b ? `${b.source}, n=${b.n}; middle half ${b.q1.toFixed(1)}% to ${b.q3.toFixed(1)}% of budget${overBudget ? '. Range exceeds what you have left.' : ''}` : '' },
-          b ? `$${b.lo}-${b.hi}` : '·') : null);
-    }));
+                           title: b ? `Likely $${b.mid}: median of ${b.source}, n=${b.n}; middle half $${b.lo} to $${b.hi}${overBudget ? '. Range exceeds what you have left.' : ''}${b.comps ? `\n${compTip(b)}` : ''}` : '' },
+          b ? [`$${b.mid}`, h('span', { class: 'wb-bid-range' }, `${b.lo}-${b.hi}`)] : '·') : null);
+      // Each player is his own tbody so the stripe and hover cover his odds line.
+      return h('tbody', { class: 'wb-group' }, main, withOdds ? oddsControls(c, b) : null);
+    });
 
-    card.appendChild(h('table', { class: 'data slot-table waiver-table' }, head, body));
+    card.appendChild(h('table', { class: 'data slot-table waiver-table', 'data-span': wideSpan }, head, ...groups));
     return card;
+  }
+
+  function fitWaiverSpans() {
+    const phone = window.matchMedia(PHONE_Q).matches;
+    document.querySelectorAll('.waiver-table[data-span]').forEach(t =>
+      t.querySelectorAll('td.wb-sub').forEach(td => { td.colSpan = phone ? 5 : Number(t.dataset.span); }));
+  }
+
+  // The detail behind a row's odds line: the bid each common target costs, and
+  // the whole curve with the bid on the x axis and the comps as a rug under it.
+  // Clicking the curve or a target sets the row's bid.
+  function waiverOddsDetail(ts, comps, budget, maxBid, onPick) {
+    const ns = 'http://www.w3.org/2000/svg';
+    const el = (tag, attrs, text) => {
+      const node = document.createElementNS(ns, tag);
+      for (const [k, v] of Object.entries(attrs)) node.setAttribute(k, v);
+      if (text != null) node.textContent = text;
+      return node;
+    };
+    const most = ts[ts.length - 1] || 0;
+    const xMax = Math.max(5, Math.min(budget, Math.ceil(Math.max(most * 1.15, most + 2))));
+    const W = 400, H = 180, L = 36, R = 12, T = 10, B = 26;
+    const x = v => L + (Math.min(v, xMax) / xMax) * (W - L - R);
+    const y = p => T + (1 - p) * (H - T - B);
+    const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, class: 'wb-odds-chart', role: 'img',
+      'aria-label': 'Chance to win the claim at each FAAB bid' });
+    if (maxBid < xMax) {
+      svg.appendChild(el('rect', { x: x(maxBid), y: T, width: x(xMax) - x(maxBid), height: H - T - B, class: 'wb-chart-over' }));
+    }
+    for (const p of [0.25, 0.5, 0.75, 1]) {
+      svg.appendChild(el('line', { x1: L, x2: W - R, y1: y(p), y2: y(p), class: 'wb-chart-grid' }));
+      svg.appendChild(el('text', { x: L - 5, y: y(p) + 4, 'text-anchor': 'end', class: 'wb-chart-label' }, `${p * 100}%`));
+    }
+    const step = [1, 2, 5, 10, 20, 25, 50, 100, 200].find(s => xMax / s <= 6) || 500;
+    for (let v = 0; v <= xMax; v += step) {
+      svg.appendChild(el('text', { x: x(v), y: H - 8, 'text-anchor': 'middle', class: 'wb-chart-label' }, `$${v}`));
+    }
+    svg.appendChild(el('line', { x1: L, x2: W - R, y1: y(0), y2: y(0), class: 'wb-chart-axis' }));
+    let d = `M ${x(0)} ${y(waiverWinOdds(ts, 0))}`;
+    for (let b = 1; b <= xMax; b++) d += ` H ${x(b)} V ${y(waiverWinOdds(ts, b))}`;
+    svg.appendChild(el('path', { d, class: 'wb-chart-curve' }));
+    const rug = comps ? comps.map(cp => ({ t: Math.round(Number(cp.pct) * budget) / 100, cp })) : ts.map(t => ({ t }));
+    for (const { t, cp } of rug) {
+      const tick = el('line', { x1: x(t), x2: x(t), y1: y(0), y2: y(0) - 7, class: 'wb-chart-rug' });
+      if (cp) tick.appendChild(el('title', {}, `${cp.player}, ${cp.season} week ${cp.week}: won at $${faabMoney(cp.bid)}`));
+      svg.appendChild(tick);
+    }
+    const marker = el('line', { y1: T, y2: y(0), class: 'wb-chart-marker' });
+    const dot = el('circle', { r: 5, class: 'wb-chart-dot' });
+    const tag = el('text', { y: T + 12, class: 'wb-chart-tag' });
+    svg.append(marker, dot, tag);
+    svg.addEventListener('click', ev => {
+      const box = svg.getBoundingClientRect();
+      const vx = (ev.clientX - box.left) / box.width * W;
+      onPick(Math.round(Math.max(0, (vx - L) / (W - L - R)) * xMax));
+    });
+
+    const steps = [0.5, 0.75, 0.9].map(t => {
+      const need = waiverBidForOdds(ts, t, budget);
+      const over = need != null && need > maxBid;
+      return h('button', { type: 'button', class: 'wb-ladder-step' + (over ? ' over' : ''),
+        disabled: need == null || over ? '' : null, onClick: () => onPick(need),
+        title: over ? 'More than you have left' : `Set the bid to $${need}` },
+        h('span', null, `${t * 100}%`), h('strong', { class: 'tnum' }, need == null ? 'n/a' : `$${need}`));
+    });
+    const wrap = h('div', { class: 'wb-odds-detail' },
+      h('div', { class: 'wb-odds-ladder' },
+        h('span', { class: 'wb-bundle-title' }, 'Bid to win'), ...steps,
+        h('p', { class: 'tip' }, comps
+          ? `From ${ts.length} comps: each one's winning bid, scaled to this budget, stands in for the top rival bid. `
+            + 'Tested forward on 272 claims since 2025, the bid named for 90% beat the winning price 91% of the time, and for 50%, 55%.'
+          // The forward test only covered projection comps, so the fallback makes no accuracy claim.
+          : `No projection, so these odds come from ${ts.length} past claims on the same experience and position profile, a looser match than projection comps.`)),
+      h('div', { class: 'wb-odds-plot' }, svg));
+    return {
+      el: wrap,
+      update(bid) {
+        const p = waiverWinOdds(ts, bid);
+        const at = x(bid);
+        marker.setAttribute('x1', at); marker.setAttribute('x2', at);
+        dot.setAttribute('cx', at); dot.setAttribute('cy', y(p));
+        const right = at > W - R - 90;
+        tag.setAttribute('x', right ? at - 6 : at + 6);
+        tag.setAttribute('text-anchor', right ? 'end' : 'start');
+        tag.textContent = `$${bid} · ${Math.round(p * 100)}%`;
+      },
+    };
   }
 
   function faabPanel(lg) {
@@ -17300,6 +17617,7 @@
     window.matchMedia(PHONE_Q).addEventListener('change', () => {
       collapseFiltersOnPhone();
       focusScrollRegions();
+      fitWaiverSpans();
     });
     document.addEventListener('keydown', (e) => {
       if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) {

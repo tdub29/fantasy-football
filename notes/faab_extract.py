@@ -70,7 +70,8 @@ KEEP_STATS = ["gp", "gs", "gms_active", "off_snp", "tm_off_snp", "def_snp",
               "tm_def_snp", "st_snp", "tm_st_snp", "pts_ppr", "pts_half_ppr",
               "rec_tgt", "rush_att", "pass_att", "pos_rank_ppr", "idp_tkl"]
 
-CURRENT_SEASON = 2026   # anchor for the years_exp fallback
+CURRENT_SEASON = 2026   # anchor for the years_exp fallback; refetched every run
+CURRENT_LEAGUES = {ids[0] for ids in CHAINS.values()}
 IDP_POS = {"DL", "LB", "DB", "DE", "DT", "CB", "SS", "FS", "NT", "ILB", "OLB", "S"}
 
 
@@ -93,11 +94,18 @@ def _fetch(url: str, timeout: int = 180):
             print(f"  retry {attempt + 1} on {url} ({e})", file=sys.stderr)
 
 
-def cached(name: str, url: str, slim=None, timeout: int = 180):
+_fetched = {}   # name -> payload, so a live file is pulled once per run
+
+
+def cached(name: str, url: str, slim=None, timeout: int = 180, live=False):
     """Return JSON for url, caching under faab-cache/name. slim(payload) may
-    shrink what gets written to disk."""
+    shrink what gets written to disk. live=True refetches once per run: the
+    current season is still being written, and a cache-forever read froze 2026
+    at week 1 with every later week cached as an empty list."""
     path = os.path.join(CACHE, name)
-    if os.path.exists(path) and not _refresh:
+    if name in _fetched:
+        return _fetched[name]
+    if os.path.exists(path) and not (_refresh or live):
         with open(path, encoding="utf-8") as f:
             return json.load(f)
     payload = _fetch(url, timeout=timeout)
@@ -106,6 +114,7 @@ def cached(name: str, url: str, slim=None, timeout: int = 180):
     os.makedirs(CACHE, exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         json.dump(payload, f)
+    _fetched[name] = payload
     return payload
 
 
@@ -121,7 +130,8 @@ def players_nfl() -> dict:
 
 def transactions(league_id: str, week: int) -> list:
     return cached(f"tx_{league_id}_{week}.json",
-                  f"https://api.sleeper.app/v1/league/{league_id}/transactions/{week}")
+                  f"https://api.sleeper.app/v1/league/{league_id}/transactions/{week}",
+                  live=league_id in CURRENT_LEAGUES)
 
 
 def _slim_week(rows: list) -> list:
@@ -150,7 +160,20 @@ def week_stats(season: int, week: int) -> list:
         f"wkstats_{season}_{week}.json",
         f"https://api.sleeper.app/stats/nfl/{season}/{week}"
         f"?season_type=regular&{pos}&order_by=pts_ppr",
-        slim=_slim_week, timeout=300)
+        slim=_slim_week, timeout=300, live=season == CURRENT_SEASON)
+
+
+def week_proj(season: int, week: int) -> dict:
+    """{player_id: Sleeper's PPR projection for that week}. The projection a
+    claimant saw is what prices a player's comps on the waiver board."""
+    pos = "&".join(f"position[]={p}" for p in STAT_POSITIONS)
+    return cached(
+        f"proj_{season}_{week}.json",
+        f"https://api.sleeper.com/projections/nfl/{season}/{week}"
+        f"?season_type=regular&{pos}",
+        slim=lambda rows: {r["player_id"]: (r.get("stats") or {}).get("pts_ppr")
+                           for r in rows if r.get("player_id")},
+        live=season == CURRENT_SEASON)
 
 
 def verify_chains() -> dict:
@@ -703,6 +726,8 @@ def classify_all(rows, players, holds):
             "situation": sit,
             "production_profile": prof,
             "weeks_held": "" if hold is None else hold,
+            "proj_ppr": (week_proj(r["season"], eff_week).get(r["player_id"])
+                         if 1 <= eff_week <= 18 else None),
             "evidence": json.dumps({**sev, **pev}, sort_keys=True),
         })
         rec["archetype"] = (f'{rec["exp_tier"]} | {sit} | {rec["pos_group"]} | {prof}')

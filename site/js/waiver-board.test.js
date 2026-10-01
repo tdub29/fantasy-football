@@ -8,12 +8,14 @@ const end = app.indexOf('\n  function waiverBoard', start);
 assert(start >= 0 && end > start, 'waiver helper source missing');
 const helpers = new Function(`${app.slice(start, end)}; return {
   faabLeagueRecord, waiverExperienceProfile, waiverPositionProfile,
-  waiverBidRange, rankWaiverCandidates, leagueRosteredIds
+  waiverBidRange, rankWaiverCandidates, leagueRosteredIds,
+  waiverComps, waiverThresholds, waiverWinOdds, waiverBidForOdds, waiverBundleOdds, waiverSolveBundle
 };`)();
 
 const {
   faabLeagueRecord, waiverExperienceProfile, waiverPositionProfile,
   waiverBidRange, rankWaiverCandidates, leagueRosteredIds,
+  waiverComps, waiverThresholds, waiverWinOdds, waiverBidForOdds, waiverBundleOdds, waiverSolveBundle,
 } = helpers;
 
 assert.equal(
@@ -50,6 +52,56 @@ assert.equal(fallback.source, 'RB claims');
 assert.equal(fallback.n, 6);
 assert.equal(fallback.exact, false);
 
+assert.deepEqual(exact.pcts, [0, 0, 5, 10, 20], 'range must hand its sample to the odds');
+
+// Win odds: comps' winning prices stand in for the top rival bid; a tie splits.
+const close = (a, b, msg) => assert(Math.abs(a - b) < 1e-9, `${msg}: ${a} vs ${b}`);
+assert.deepEqual(waiverThresholds([10, 2.5], 201), [5.03, 20.1], 'thresholds rescale to this budget, in cents');
+const ts = [0, 0, 5, 10, 20];
+close(waiverWinOdds(ts, 0), 1.5 / 6, '$0 ties the $0 adds');
+close(waiverWinOdds(ts, 10), 4 / 6, 'a tie counts half');
+close(waiverWinOdds(ts, 1000), 5.5 / 6, 'odds never reach 100%');
+assert.equal(waiverBidForOdds(ts, 0.5, 100), 5, 'cheapest bid reaching the target');
+assert.equal(waiverBidForOdds(ts, 0.95, 100), null, 'unreachable target says so');
+assert.equal(waiverBidForOdds(ts, 0.9, 15), null, 'target past what is left says so');
+close(waiverBundleOdds([0.5, 0.5]), 0.75, 'at least one of two coin flips');
+
+const bigPool = Array.from({ length: 60 }, (_, i) => ({
+  phase: 'in-season', position: 'RB', proj: i / 4, pct: i % 7, season: 2026, week: 1 + (i % 17),
+}));
+assert.equal(waiverComps(bigPool, { position: 'RB', proj: 5 }, 2026).length, 30, 'comps default to 30');
+
+const fs2 = require('node:fs');
+const ctx0 = { window: {} };
+vm.runInNewContext(fs2.readFileSync(`${__dirname}/../data/faab.js`, 'utf8'), ctx0);
+const taco = Object.values(ctx0.window.FAAB_ARCHETYPES.leagues).find(l => l.budget === 201);
+const sets = [4, 7, 10, 14].map(proj => {
+  const r = waiverBidRange(taco.claims, { position: 'RB', experience: 'x', proj }, taco.budget, 5, 2026);
+  assert(r?.comps, 'real RB comps must exist');
+  return waiverThresholds(r.pcts, taco.budget);
+});
+// The solver is exact: it must match a brute force over every pair of bids.
+for (const [i, j] of [[0, 1], [1, 2], [2, 3], [0, 3]]) {
+  for (const target of [0.7, 0.9, 0.95]) {
+    const left = 90;
+    const got = waiverSolveBundle([sets[i], sets[j]], target, left);
+    let best = null;
+    for (let a = 0; a <= left; a++) for (let b = 0; a + b <= left; b++) {
+      const p = waiverBundleOdds([waiverWinOdds(sets[i], a), waiverWinOdds(sets[j], b)]);
+      if (p >= target - 1e-9 && (best == null || a + b < best)) best = a + b;
+    }
+    assert.equal(got.reached, best != null, `reachability ${i}/${j} at ${target}`);
+    if (best != null) {
+      assert.equal(got.total, best, `bundle ${i}/${j} at ${target} must be the cheapest`);
+      assert(got.combined >= target - 1e-9, 'solved bids must reach the target');
+    }
+    assert(got.total <= left, 'bids together must fit what is left');
+  }
+}
+const short = waiverSolveBundle([sets[3], sets[2]], 0.98, 6);
+assert(!short.reached && short.total <= 6, 'out of reach returns the best the budget buys');
+close(short.combined, waiverSolveBundle([sets[3], sets[2]], 0.999, 6).combined, 'best odds do not depend on the target');
+
 const leagueA = leagueRosteredIds({ rosters: [{
   players: ['1'], taxi: ['2'], reserve: ['3'], starters: ['4'],
 }] });
@@ -73,6 +125,9 @@ assert(board.includes('b.hi > left'), 'any range exceeding remaining budget must
 assert(board.includes("'NT'"), 'IDP nose tackles must be startable');
 assert.match(board, /const startable = new Set\(Object\.entries\(targets\)/,
   'waiver positions must come from this league\'s starter slots');
+assert(board.includes('waiverSolveBundle('), 'bundle panel must use the solver');
+assert(board.includes("h('tbody', { class: 'wb-group' }"), 'each candidate keeps his odds line in his own tbody');
+assert(board.includes("'aria-expanded'"), 'the chart toggle must announce its state');
 assert.match(board, /'data-player-id': c\.pid/,
   'rendered candidates must expose stable ids for league ownership verification');
 

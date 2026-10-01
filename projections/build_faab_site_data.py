@@ -60,6 +60,9 @@ def claim_record(row, dimensions):
         "pct": num(row["bid_pct_budget"]),
         "pos": row["pos_group"],
         "team": row["nfl_team_at_pickup"],
+        # Sleeper's PPR projection for the claim week: what the claimant saw, and
+        # the distance the waiver board's per-player comps are matched on.
+        "proj": None if num(row.get("proj_ppr")) is None else round(num(row["proj_ppr"]), 1),
         "phase": row["phase"],
         **{key: row[source] or "unknown" for key, source, _ in dimensions},
     }

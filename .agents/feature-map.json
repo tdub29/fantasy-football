@@ -895,7 +895,7 @@
         }
       ],
       "selector": "#main .faab-panel",
-      "assert": "(() => { const leagueId=location.hash.split('/')[1]; const league=window.LEAGUES.find(l=>String(l.id)===leagueId); const rostered=new Set((league?.rosters||[]).flatMap(r=>[...(r.players||[]),...(r.taxi||[]),...(r.reserve||[]),...(r.starters||[])]).map(String)); const slots=league?.roster_positions||[]; const rows=[...document.querySelectorAll('#main .waiver-table tbody tr')]; return document.querySelectorAll('#main .faab-panel .faab-row').length >= 5 && rows.length >= 3 && rows.every(row => !rostered.has(row.dataset.playerId) && row.querySelector('.wb-profile')?.textContent.trim() && /^\\$\\d+-\\d+$/.test(row.querySelector('.wb-bid')?.textContent.trim()||'') && (slots.includes('K') || row.dataset.position!=='K') && (slots.includes('DEF') || slots.includes('DST') || !['DEF','DST'].includes(row.dataset.position))); })()",
+      "assert": "(() => { const leagueId=location.hash.split('/')[1]; const league=window.LEAGUES.find(l=>String(l.id)===leagueId); const rostered=new Set((league?.rosters||[]).flatMap(r=>[...(r.players||[]),...(r.taxi||[]),...(r.reserve||[]),...(r.starters||[])]).map(String)); const slots=league?.roster_positions||[]; const rows=[...document.querySelectorAll('#main .waiver-table tbody tr.wb-main')]; return document.querySelectorAll('#main .faab-panel .faab-row').length >= 5 && rows.length >= 3 && rows.every(row => !rostered.has(row.dataset.playerId) && row.querySelector('.wb-profile')?.textContent.trim() && /^\\$\\d+-\\d+$/.test(row.querySelector('.wb-bid')?.textContent.trim()||'') && (slots.includes('K') || row.dataset.position!=='K') && (slots.includes('DEF') || slots.includes('DST') || !['DEF','DST'].includes(row.dataset.position))); })()",
       "notes": "FAAB is a league view like the others. It previously existed only at the top of the Transactions feed and inside a collapsed panel on the Action Center, which read as unimplemented three separate times. Trade Lab moved into this same bar and links out to its own #trade route rather than being re-implemented as a tab body. Note validTabs in viewLeague gates the sub-route: a tab present in the bar but absent from that list silently falls back to standings. Browser proof now checks every candidate against this league's players, taxi, reserve and starters; requires profile and bid range on each row; and rejects K or DEF where those slots are absent. Note the tab guard reads formats[fmt].situation.length: formats[fmt] is an object keyed by dimension, and an array .length check there silently removes the tab."
     },
     {
@@ -907,12 +907,39 @@
         }
       ],
       "selector": "#main .waiver-table",
-      "assert": "(() => { const visible=el=>getComputedStyle(el).display!=='none'; const heads=[...document.querySelectorAll('#main .waiver-table thead th')].filter(visible).map(el=>el.textContent.trim().toUpperCase()); const rows=[...document.querySelectorAll('#main .waiver-table tbody tr')]; return document.documentElement.scrollWidth <= innerWidth + 1 && JSON.stringify(heads)===JSON.stringify(['#','PLAYER','POS','WK','BID']) && rows.length >= 3 && rows.every(row => { const cells=[...row.children].filter(visible); return cells.length===5 && /^\\$\\d+-\\d+$/.test(cells.at(-1).textContent.trim()) && visible(row.querySelector('.wb-profile-mobile')); }); })()",
+      "assert": "(() => { const visible=el=>getComputedStyle(el).display!=='none'; const heads=[...document.querySelectorAll('#main .waiver-table thead th')].filter(visible).map(el=>el.textContent.trim().toUpperCase()); const rows=[...document.querySelectorAll('#main .waiver-table tbody tr.wb-main')]; return document.documentElement.scrollWidth <= innerWidth + 1 && JSON.stringify(heads)===JSON.stringify(['#','PLAYER','POS','WK','BID']) && rows.length >= 3 && rows.every(row => { const cells=[...row.children].filter(visible); return cells.length===5 && /^\\$\\d+-\\d+$/.test(cells.at(-1).textContent.trim()) && visible(row.querySelector('.wb-profile-mobile')); }); })()",
       "notes": "At 390px, profile moves under player name while ROS and VOR disappear. Visible headers and cells remain #, Player, Pos, Wk and Bid, so weekly projection cannot slide under Bid and bid range cannot spill offscreen.",
       "viewport": {
         "width": 390,
         "height": 844
       }
+    },
+    {
+      "id": "faab-win-odds",
+      "name": "League FAAB: set a win chance, the bid follows; chart and bundle open",
+      "path": [
+        {
+          "eval": "location.hash='#league/1341184676601028608/faab'"
+        },
+        {
+          "sleepMs": 900
+        },
+        {
+          "eval": "(() => { const i = document.querySelectorAll('#main .wb-odds-row .wb-odds-num')[1]; i.value = '80'; i.dispatchEvent(new Event('input', { bubbles: true })); })()"
+        },
+        {
+          "click": "#main .wb-odds-row .wb-chart-toggle"
+        },
+        {
+          "click": "#main .wb-odds-row .wb-pick input"
+        },
+        {
+          "sleepMs": 300
+        }
+      ],
+      "selector": "#main .wb-chart-row:not([hidden]) .wb-odds-chart",
+      "assert": "(() => { const row = document.querySelector('#main .wb-odds-row'); const tag = document.querySelector('#main .wb-chart-row:not([hidden]) .wb-chart-tag')?.textContent || ''; const m = tag.match(/^\\$(\\d+) . (\\d+)%$/); const capped = !!row.querySelector('.wb-odds-note').textContent; return !!m && m[1] === row.querySelector('.wb-odds-num').value && (Number(m[2]) >= 80 || capped) && !!document.querySelector('#main .wb-chart-row:not([hidden]) .wb-chart-curve') && document.querySelectorAll('#main .wb-bundle:not([hidden]) .wb-bundle-row').length === 1 && /to land at least one/.test(document.querySelector('#main .wb-bundle-sum').textContent); })()",
+      "notes": "Typing a chance moves the bid to the cheapest that reaches it, or to the best reachable with a 'Tops out' note when the budget left cannot. The chart tag must name the same bid as the row's $ field, so the two controls cannot drift apart. Picking a player opens the land-at-least-one panel."
     },
     {
       "id": "faab-archetypes-mobile",

@@ -27,6 +27,9 @@ STEPS = [
     ("KTC dynasty rankings",       SITE_DATA / "build_ktc.py",            True),
     ("site data (players/leagues)", SITE_DATA / "build_site_data.py",     True),
     ("trade partner history",       SITE_DATA / "build_trade_history.py", True),
+    # Pull this season's claims and the projection each claimant saw, then
+    # publish them. Skipping the pull froze 2026 at week 1.
+    ("league FAAB claims (Sleeper)", ROOT / "notes" / "faab_extract.py",     True),
     ("league FAAB history",         PROJ / "build_faab_site_data.py",      True),
     ("IDP rankings",               SITE_DATA / "build_idp.py",            True),
     ("player info (contracts)",    SITE_DATA / "build_player_info.py",    True),

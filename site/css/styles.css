@@ -5426,6 +5426,69 @@ table.data tbody td.tnum { font-weight: 600; }
 .waiver-table .wb-profile-mobile { display: none; }
 .waiver-table .wb-bid { font-weight: 800; color: var(--fg-0); white-space: nowrap; }
 .waiver-table .wb-bid.over { color: var(--red); }
+.waiver-table .wb-bid-range { display: block; margin-top: 2px; color: var(--fg-3); font-size: 0.68rem; font-weight: 600; }
+/* Each candidate is his own tbody (row, odds line, chart), so the stripe and
+   the hover follow the player instead of the raw row count. */
+table.data.waiver-table tbody tr,
+table.data.waiver-table tbody tr:nth-child(even) { background: transparent; }
+table.data.waiver-table tbody:nth-of-type(even) tr { background: oklch(88% 0.04 285); }
+table.data.waiver-table tbody:hover tr { background: oklch(84% 0.06 285); }
+table.data.waiver-table tr.wb-has-odds td,
+table.data.waiver-table tr.wb-odds-row.is-open td { border-bottom: 0; }
+table.data.waiver-table td.wb-sub { padding-top: 0; }
+.wb-odds { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+.wb-odds-field { display: inline-flex; align-items: center; gap: 4px; font-weight: 700; color: var(--fg-2); white-space: nowrap; }
+.wb-odds-num { width: 4.2rem; padding: 4px 6px; text-align: right; font-variant-numeric: tabular-nums; }
+.wb-odds-slider {
+  flex: 1 1 140px; min-width: 120px; padding: 0;
+  background: none; border: 0; box-shadow: none; accent-color: var(--ink);
+}
+.wb-odds-slider:focus { box-shadow: none; }
+.wb-odds-slider:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.wb-odds-note { color: var(--red); font-size: 0.75rem; font-weight: 700; }
+.wb-odds-note:empty { display: none; }
+.wb-chart-toggle { padding: 4px 10px; font-size: 0.8rem; }
+.wb-chart-toggle[aria-expanded="true"] { background: var(--grad-gold); color: var(--ink); }
+.wb-pick { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding: 0 4px; font-size: 0.8rem; font-weight: 700; color: var(--fg-2); cursor: pointer; }
+.wb-pick input { accent-color: var(--ink); min-height: 0; margin: 0; }  /* the label is the 44px target */
+.wb-odds-detail { display: grid; grid-template-columns: minmax(9rem, 12rem) minmax(0, 560px); gap: 12px; align-items: start; padding-top: 4px; }
+.wb-odds-ladder { display: grid; gap: 4px; }
+.wb-odds-ladder .tip { margin: 4px 0 0; font-size: 0.72rem; }
+.wb-bundle-title { color: var(--fg-2); font-size: 0.72rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; }
+.wb-ladder-step { display: flex; justify-content: space-between; padding: 4px 10px; font-size: 0.85rem; }
+.wb-ladder-step.over strong { color: var(--red); }
+.wb-odds-chart { display: block; width: 100%; height: auto; cursor: crosshair; }
+.wb-chart-grid { stroke: var(--border); stroke-opacity: 0.35; stroke-dasharray: 2 4; }
+.wb-chart-axis { stroke: var(--ink); stroke-width: 1.5; }
+.wb-chart-label { fill: var(--fg-3); font-size: 11px; font-weight: 600; }
+.wb-chart-curve { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+.wb-chart-rug { stroke: var(--fg-2); stroke-width: 2; }
+.wb-chart-over { fill: color-mix(in oklch, var(--red) 12%, transparent); }
+.wb-chart-marker { stroke: var(--ink); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.wb-chart-dot { fill: var(--gold); stroke: var(--ink); stroke-width: 2; }
+.wb-chart-tag { fill: var(--fg-0); font-size: 12px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.wb-bundle {
+  display: grid; gap: 6px; margin: 0 0 10px; padding: 10px 12px;
+  background: var(--chalk); border: var(--plate-edge); border-radius: var(--radius-sm); box-shadow: var(--bevel-in);
+}
+.wb-bundle[hidden] { display: none; }
+.wb-bundle-head { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
+.wb-bundle-head .wb-odds-field { flex: 1 1 220px; }
+.wb-bundle-row { display: grid; grid-template-columns: minmax(0, 1fr) 3.5rem 3.5rem; gap: 8px; font-weight: 700; }
+.wb-bundle-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wb-bundle-row .tnum { text-align: right; }
+.wb-bundle-odds { color: var(--fg-2); }
+.wb-bundle-sum { margin: 2px 0 0; font-weight: 600; }
+.wb-bundle-use { justify-self: start; padding: 4px 12px; }
+.wb-bundle .tip { margin: 0; font-size: 0.72rem; }
+@media (max-width: 720px) {
+  .wb-odds-detail { grid-template-columns: minmax(0, 1fr); }
+  .wb-odds-ladder { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .wb-odds-ladder .wb-bundle-title, .wb-odds-ladder .tip { grid-column: 1 / -1; }
+  .wb-ladder-step { flex-direction: column; align-items: center; }
+  .wb-odds-slider { flex-basis: 100%; order: 3; }
+  table.data.waiver-table td.wb-sub { padding-left: 8px; padding-right: 8px; }
+}
 @media (max-width: 720px) {
   .waiver-table { table-layout: fixed; }
   .waiver-table .wb-profile-head,
