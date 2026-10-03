@@ -78,3 +78,6 @@ projections/nflverse-cache/
 # One-day OCR crops from the 2026-08-22 Gibbs ingest. Kept on disk, not in git.
 site/data/_shots/_crop/
 site/_shots/
+
+# Prospect model SQLite store, rebuilt by projections/prospect_db.py ingest (~150 MB)
+projections/prospect-db/

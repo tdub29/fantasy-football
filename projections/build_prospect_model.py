@@ -48,6 +48,7 @@ import pandas as pd
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import build_prospect_profile as bpp  # noqa: E402  (shared fetch, name/speed-score helpers)
+import prospect_db as pdb  # noqa: E402  (the local SQLite store every input is read from)
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 CACHE = pathlib.Path(os.environ.get("NFLVERSE_CACHE") or ROOT / "projections" / "nflverse-cache")
@@ -154,6 +155,28 @@ def nfl_file(tag: str, name: str, max_age_h: float = 24.0) -> pathlib.Path:
     return bpp.fetch(tag, name, cache=CACHE, max_age_h=max_age_h)
 
 
+# Every input is read from the SQLite store (projections/prospect_db.py), which loads the same
+# release files and records their sha256; the first read refreshes it under the cache rules above.
+# --source parquet reads the cached files directly and exists only to prove the two agree.
+SOURCE = "db"
+_CON = None
+
+
+def read_src(tbl: str, name: str, columns=None) -> pd.DataFrame:
+    global _CON
+    if SOURCE == "parquet":
+        base, tag = pdb.SOURCES[tbl][1:3]
+        m = re.search(r"_(\d{4})\.parquet$", name)
+        y = int(m.group(1)) if m else None
+        path = (cfb_file(tag, name, y) if base == SDV
+                else nfl_file(tag, name, 24.0 if y is None or y >= SEASON else INF))
+        return pd.read_parquet(path, columns=columns)
+    if _CON is None:
+        _CON = pdb.connect()
+        pdb.ingest(_CON, say=lambda *a: None)
+    return pdb.read_file(_CON, tbl, name, columns)
+
+
 def load_college(seasons=range(FIRST_CFB, SEASON + 1)) -> pd.DataFrame:
     """One row per player-season (the team he played most for), stats plus team totals."""
     specs = {
@@ -168,7 +191,7 @@ def load_college(seasons=range(FIRST_CFB, SEASON + 1)) -> pd.DataFrame:
     key = ["season", "player_id", "team_id"]
     parts = []
     for kind, (tag, name_col, stats) in specs.items():
-        frames = [pd.read_parquet(cfb_file(tag, f"cfb_{kind}_{y}.parquet", y)) for y in seasons]
+        frames = [read_src(f"cfb_{kind}", f"cfb_{kind}_{y}.parquet") for y in seasons]
         d = pd.concat(frames, ignore_index=True)
         d = d[key + [name_col, "pos_team", "fbs_class", "games", "team_games", *stats]].rename(
             columns={name_col: "name", "games": f"g_{kind}", **stats})
@@ -232,16 +255,14 @@ def season_metrics(ps: pd.DataFrame) -> pd.DataFrame:
 def load_rosters(seasons=range(FIRST_CFB, SEASON + 1)) -> pd.DataFrame:
     cols = ["season", "athlete_id", "team_id", "full_name", "position_abbreviation",
             "height", "weight", "date_of_birth", "experience_years"]
-    d = pd.concat([pd.read_parquet(cfb_file("espn_cfb_rosters", f"cfb_rosters_{y}.parquet", y), columns=cols)
-                   for y in seasons], ignore_index=True)
+    d = pd.concat([read_src("cfb_roster", f"cfb_rosters_{y}.parquet", cols) for y in seasons], ignore_index=True)
     d["athlete_id"] = pd.to_numeric(d["athlete_id"], errors="coerce").astype("Int64")
     d["team_id"] = pd.to_numeric(d["team_id"], errors="coerce")
     return d
 
 
 def load_recruits(seasons=range(FIRST_CFB, SEASON + 1)) -> pd.DataFrame:
-    d = pd.concat([pd.read_parquet(cfb_file("cfb_recruits", f"cfb_recruits_{y}.parquet", y))
-                   for y in seasons], ignore_index=True)
+    d = pd.concat([read_src("cfb_recruit", f"cfb_recruits_{y}.parquet") for y in seasons], ignore_index=True)
     d["team_id"] = pd.to_numeric(d["team_id"], errors="coerce")
     d["_k"] = d["player_name"].map(bpp.norm_name)
     return d
@@ -411,8 +432,8 @@ def school_sim(a, b) -> float:
 
 def season_positions() -> pd.Series:
     """(gsis_id, season) -> position he was listed at on that season's nflverse roster."""
-    r = pd.concat([pd.read_parquet(nfl_file("rosters", f"roster_{y}.parquet", 24.0 if y >= SEASON else INF),
-                                   columns=["gsis_id", "season", "position"]) for y in range(FIRST_CLASS, LAST_NFL + 1)])
+    r = pd.concat([read_src("nfl_roster", f"roster_{y}.parquet", ["gsis_id", "season", "position"])
+                   for y in range(FIRST_CLASS, LAST_NFL + 1)])
     return r.dropna().drop_duplicates(["gsis_id", "season"]).set_index(["gsis_id", "season"])["position"]
 
 
@@ -459,7 +480,7 @@ def sleeper_maps():
             if p.get("espn_id"):
                 espn[str(p["espn_id"])] = sid
     try:
-        r = pd.read_parquet(nfl_file("rosters", f"roster_{SEASON}.parquet"), columns=["gsis_id", "sleeper_id"])
+        r = read_src("nfl_roster", f"roster_{SEASON}.parquet", ["gsis_id", "sleeper_id"])
         for g, s in r.dropna().itertuples(index=False):
             gsis.setdefault(str(g), str(s))
     except SystemExit:
@@ -629,11 +650,10 @@ def prepare(say=print):
     bio = player_bio(ps, rosters, recruits)
     say(f"college: {len(ps):,} player-seasons {ps.season.min()}-{ps.season.max()}, {ps.player_id.nunique():,} players")
 
-    players = pd.read_parquet(nfl_file("players", "players.parquet"))
-    draft = pd.read_parquet(nfl_file("draft_picks", "draft_picks.parquet"))
-    combine = pd.read_parquet(nfl_file("combine", "combine.parquet"))
-    stats = pd.concat([pd.read_parquet(nfl_file("stats_player", f"stats_player_reg_{y}.parquet",
-                                                24.0 if y >= SEASON else INF))
+    players = read_src("nfl_player", "players.parquet")
+    draft = read_src("nfl_draft_pick", "draft_picks.parquet")
+    combine = read_src("nfl_combine", "combine.parquet")
+    stats = pd.concat([read_src("nfl_player_season", f"stats_player_reg_{y}.parquet")
                        for y in range(FIRST_CLASS, LAST_NFL + 1)], ignore_index=True)
 
     d = draft[(draft.season >= FIRST_CLASS) & draft.position.isin(POS) & draft.pick.notna()].copy()
@@ -1281,12 +1301,51 @@ def self_check():
     print("self-check OK")
 
 
+def parity():
+    """The SQLite store must hand the builder exactly what the parquet files do: same rows, same
+    links, same features, same labels. Run after any change to prospect_db.py or its ingest."""
+    global SOURCE
+    out = {}
+    for src in ("parquet", "db"):
+        SOURCE = src
+        out[src] = prepare(say=lambda *a: None)
+    names = ("college seasons", "bio", "draft table", "training table")
+    for name, a, b in zip(names, out["parquet"][:4], out["db"][:4]):
+        a, b = a.reset_index(drop=True), b.reset_index(drop=True)
+        # The store keeps only the source columns a model may use (no post-draft career columns
+        # such as w_av or allpro), so the parquet side can carry extras; the output diff proves
+        # nothing downstream read them.
+        extra = [c for c in a.columns if c not in b.columns]
+        assert set(b.columns) <= set(a.columns) and len(a) == len(b), f"{name}: shape {a.shape} vs {b.shape}"
+        a = a[list(b.columns)]
+        for c in a.columns:
+            x, y = a[c], b[c]
+            if pd.api.types.is_numeric_dtype(x) and pd.api.types.is_numeric_dtype(y):
+                xv, yv = x.astype(float).to_numpy(), y.astype(float).to_numpy()
+                ok = np.allclose(xv, yv, rtol=1e-9, atol=1e-9, equal_nan=True)
+            else:
+                ok = (x.isna().eq(y.isna()) & (x.astype(str).where(x.notna(), "") == y.astype(str).where(y.notna(), ""))).all()
+            assert ok, f"{name}: column {c} differs between parquet and db"
+        print(f"parity {name}: {a.shape[0]:,} rows x {a.shape[1]} columns identical"
+              + (f" (parquet-only, unused: {', '.join(extra)})" if extra else ""))
+    assert out["parquet"][4] == out["db"][4], "age proxy differs"
+    print("parity OK")
+
+
 def main():
+    global SOURCE
     ap = argparse.ArgumentParser()
     ap.add_argument("--self-check", action="store_true")
+    ap.add_argument("--parity", action="store_true", help="prove the SQLite store and the parquet files agree")
+    ap.add_argument("--source", choices=["db", "parquet"], default="db")
     args = ap.parse_args()
+    SOURCE = args.source
     if args.self_check:
         self_check()
+        return
+    if args.parity:
+        warnings.filterwarnings("ignore", category=FutureWarning)
+        parity()
         return
     warnings.filterwarnings("ignore", category=FutureWarning)
     warnings.filterwarnings("ignore", message="X does not have valid feature names")
