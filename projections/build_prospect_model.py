@@ -967,16 +967,27 @@ def fit_stage(ps, bio, d, t, age0) -> dict:
         X, y = tp[r["cols"]].to_numpy(float), tp.hit.to_numpy(float)
         fy = r["young_stage_1_2"]["fwd"]
         kind = NEXT_MODEL.get(pos, "S1")
-        if kind == "S3":
+        cols = list(r["cols"])
+        if kind.startswith("S4"):   # addendum 12: plus the next season's first n games
+            import prospect_live as pl
+            n = int(kind[3:])
+            live = pl.live_features(_CON, n)
+            key = pd.MultiIndex.from_arrays([tp.season.astype(int) + 1, tp.player_id.astype("Int64")])
+            tp = tp.join(pd.DataFrame(live.reindex(key).to_numpy(), columns=pl.LIVE, index=tp.index))
+            tp["has_live"] = tp.has_live.fillna(0.0)
+            cols = cols + pl.LIVE
+            X = tp[cols].to_numpy(float)
+        if kind == "S3" or kind.startswith("S4"):
             import prospect_experiments_b as peb
             model = peb.NestedLR().fit(X, y, tp.draft_year.to_numpy(int))
         else:
             model = make_lr(C_FIXED).fit(X, y)
-        out[pos] = {"cols": r["cols"], "model": model, "meta": {
+        out[pos] = {"cols": cols, "model": model, "kind": kind, "meta": {
             "model": kind, "rows": int(len(tp)), "players": int(tp.base_sid.nunique()),
             "logloss": round(r["fwd"]["cand"]["logloss"], 4), "base_logloss": round(r["fwd"]["base"]["logloss"], 4),
             "young_logloss": round(fy["cand"]["logloss"], 4), "young_base_logloss": round(fy["base"]["logloss"], 4),
-            "later": pos in STAGE, "next": pos in NEXT_STAGE}}
+            "later": pos in STAGE, "next": pos in NEXT_STAGE,
+            "live_n": int(kind[3:]) if kind.startswith("S4") else None}}
         b = sbt.get(f"{kind} {pos}")
         if b and pos in NEXT_STAGE:
             v = b["vs_stars_stage"]
@@ -1167,7 +1178,11 @@ def score_college(ps, bio, final, age0, top_n=60):
         if pos in STAGE:
             s = stage_score(s, done, fin["stage"], age0)
         if pos in NEXT_STAGE:
-            s = stage_score(s, done, fin["stage"], age0, which="next")
+            m = fin["stage"]
+            d_ = done
+            if m["kind"].startswith("S4"):
+                d_ = with_live(done, subj, ps, int(m["kind"][3:]))
+            s = stage_score(s, d_, m, age0, which="next")
         s = s.sort_values("_tp", ascending=False)
         nxt = s[s.cls == SEASON + 1]
         if pos in NEXT_STAGE:   # display rule D1: the next class's top by its own forecast, not by Talent
@@ -1208,6 +1223,22 @@ def predraft_profile(subj, ps, age0, season=SEASON) -> pd.DataFrame:
     now = ps[ps.season == season].set_index("player_id").started
     f["cur_start"] = c.set_index("sid").player_id.map(now).fillna(False).astype(float)
     return f.join(subj.set_index("sid")[["weight", "stars", "hs_class"]])
+
+
+def with_live(done, subj, ps, n, season=SEASON) -> pd.DataFrame:
+    """Attach the live line from his team's first n games of `season`. A player whose team has not
+    reached n games is dropped from `done` (no number yet); one who missed those games gets has_live 0,
+    as the training rows do."""
+    import prospect_live as pl
+    live = pl.live_features(_CON, n)
+    played = pl.team_games_played(_CON, season)
+    pid = subj.set_index("sid").player_id.reindex(done.index)
+    team = pid.map(ps[ps.season == season].drop_duplicates("player_id").set_index("player_id").team_id)
+    ok = team.map(played).fillna(0).ge(n)
+    lv = live.reindex(pd.MultiIndex.from_arrays([np.full(len(done), season), pid.astype("Int64")]))
+    d = done.join(pd.DataFrame(lv.to_numpy(), columns=pl.LIVE, index=done.index))
+    d["has_live"] = d.has_live.fillna(0.0)
+    return d[ok.to_numpy()]
 
 
 def stage_score(s, done, m, age0, season=SEASON, which="later") -> pd.DataFrame:

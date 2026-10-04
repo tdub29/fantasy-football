@@ -12132,7 +12132,9 @@
         const v = nst.served, pct = (r) => `${Math.round(Math.abs(r - 1) * 100)}% ${r >= 1 ? 'above' : 'below'}`;
         return `Pre-draft is his chance to hit counting the chance he goes undrafted, from a career-stage model: every FBS `
           + `${pos} who left college since 2008 contributes one row per completed season, so he is compared with players at `
-          + `the same college year. It uses his completed seasons only, not this one, and assumes no exit. This list is the `
+          + `the same college year. ${nst.live_n ? `It uses his completed seasons plus his team's first ${nst.live_n} games this `
+            + `season (no number until his team has played ${nst.live_n})` : 'It uses his completed seasons only, not this one'}, `
+          + `and assumes no exit. This list is the `
           + `class's top 60 by that chance. Replayed on the 2012-2021 seasons through the same code (${v.n.toLocaleString()} `
           + `player-seasons, ${v.players.toLocaleString()} players, ${v.players_hit} of whom hit): log loss ${v.logloss} against `
           + `${v.base_logloss} for recruiting stars plus college year, AUC ${v.auc} against ${v.base_auc}. The average forecast `
