@@ -49,12 +49,13 @@ def nested(X, y, g):
     return peb.NestedLR().fit(X, y, g)
 
 
-def replay(ctx, cols, *, snap=None, served=None, train=None, fit=None, seasons=psb.SEASONS, extra=None):
+def replay(ctx, cols, *, snap=None, served=None, train=None, fit=None, fit_on=None, seasons=psb.SEASONS, extra=None):
     """One served row per next-class QB per replayed season k + 1, exactly as run_stage builds it.
 
     snap: training snapshot frame (default ctx["snap"]); served(done, subj, season) -> done with any
     extra columns; train(tr) -> training rows (default all); fit(X, y, g) -> model (default S3's
-    NestedLR); extra: {name: (cols, fit)} scored on the same rows for comparison."""
+    NestedLR); fit_on(tr, season) -> model, for a candidate that builds its own training rows (the
+    baseline still fits on tr); extra: {name: (cols, fit)} scored on the same rows for comparison."""
     ps, e, age0, hit = ctx["ps"], ctx["e"], ctx["age0"], ctx["hit"]
     src = ctx["snap"] if snap is None else snap
     fit = fit or nested
@@ -64,7 +65,8 @@ def replay(ctx, cols, *, snap=None, served=None, train=None, fit=None, seasons=p
         if train is not None:
             tr = train(tr)
         g = tr.draft_year.to_numpy(int)
-        models = {"_pd": (fit(tr[cols].to_numpy(float), tr.hit.to_numpy(float), g), cols),
+        main = fit_on(tr, season) if fit_on else fit(tr[cols].to_numpy(float), tr.hit.to_numpy(float), g)
+        models = {"_pd": (main, cols),
                   "_base": (bpm.make_lr(bpm.C_FIXED).fit(tr[["stars", "stage"]].to_numpy(float), tr.hit.to_numpy(float)),
                             ["stars", "stage"])}
         for k, (c, f) in (extra or {}).items():

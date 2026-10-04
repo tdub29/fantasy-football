@@ -1,0 +1,1207 @@
+{
+ "created_at_utc": "2026-10-04T05:25:05+00:00",
+ "git_head": "b595581",
+ "prereg": "notes/prospect-research/lanes/qb/prereg.md (committed b595581 before scoring)",
+ "command": "python projections/lanes/qb/qb_candidates.py",
+ "candidates": {
+  "S3 (reference, logged)": {
+   "all": {
+    "n": 826,
+    "events": 31,
+    "mean_pred": 0.04044193861732451,
+    "obs": 0.03753026634382567,
+    "ratio": 1.0775819773519368,
+    "slope": 0.8400820103243775,
+    "logloss": 0.14293165385051065
+   },
+   "first_eligible": {
+    "n": 220,
+    "events": 18,
+    "mean_pred": 0.05552476831094358,
+    "obs": 0.08181818181818182,
+    "ratio": 0.6786360571337549,
+    "slope": 0.9606706894119766,
+    "logloss": 0.24020515426783098
+   },
+   "top60_by_pd": {
+    "n": 574,
+    "events": 29,
+    "mean_pred": 0.05444483247038071,
+    "obs": 0.050522648083623695,
+    "ratio": 1.0776322013102941,
+    "slope": 0.8372051392744397,
+    "logloss": 0.18390497086250027
+   },
+   "pass_all": true,
+   "pass_fe": false,
+   "pass_top60": true,
+   "pass": false,
+   "vs_stars_stage": {
+    "base_logloss": 0.15328073995814906,
+    "cand_logloss": 0.14293165385051065,
+    "boot_by_season": {
+     "p": 0.90475,
+     "lo": -0.0028710141860254367,
+     "hi": 0.023564466738241762
+    }
+   },
+   "replays_2017_2021": {
+    "all": {
+     "n": 368,
+     "events": 20,
+     "mean_pred": 0.04602554465363239,
+     "obs": 0.05434782608695652,
+     "ratio": 0.846870021626836,
+     "slope": 1.0868928596924963,
+     "logloss": 0.17880840740695278
+    },
+    "first_eligible": {
+     "n": 85,
+     "events": 12,
+     "mean_pred": 0.0733150591005794,
+     "obs": 0.1411764705882353,
+     "ratio": 0.5193150019624374,
+     "slope": 1.011587736749498,
+     "logloss": 0.36556454606286637
+    }
+   },
+   "players": 466,
+   "players_hit": 20,
+   "support": {
+    "all_ratio": 0.857,
+    "all_slope": 0.621,
+    "first_eligible_ratio": 0.224,
+    "first_eligible_slope": 0.633,
+    "top60_ratio": 0.84,
+    "top60_slope": 0.595,
+    "every_gate": 0.062
+   },
+   "margins": {
+    "all": {
+     "ratio": 0.1724,
+     "slope": 0.0901
+    },
+    "first_eligible": {
+     "ratio": -0.1214,
+     "slope": 0.2107
+    },
+    "top60_by_pd": {
+     "ratio": 0.1724,
+     "slope": 0.0872
+    }
+   },
+   "power_if_calibrated": {
+    "all_ratio": 0.6965,
+    "all_slope": 0.7535,
+    "first_eligible_ratio": 0.651,
+    "first_eligible_slope": 0.6085,
+    "top60_ratio": 0.665,
+    "top60_slope": 0.6945,
+    "every_gate": 0.2375,
+    "interval_90": {
+     "all_ratio": [
+      0.726,
+      1.518
+     ],
+     "all_slope": [
+      0.676,
+      1.381
+     ],
+     "first_eligible_ratio": [
+      0.679,
+      1.745
+     ],
+     "first_eligible_slope": [
+      0.576,
+      1.61
+     ],
+     "top60_ratio": [
+      0.727,
+      1.488
+     ],
+     "top60_slope": [
+      0.628,
+      1.426
+     ]
+    }
+   },
+   "verdict": "fail"
+  },
+  "Q1": {
+   "all": {
+    "n": 826,
+    "events": 31,
+    "mean_pred": 0.04907387007847048,
+    "obs": 0.03753026634382567,
+    "ratio": 1.307581183381181,
+    "slope": 0.6886580134568239,
+    "logloss": 0.14480109463292892
+   },
+   "first_eligible": {
+    "n": 220,
+    "events": 18,
+    "mean_pred": 0.0629032223118321,
+    "obs": 0.08181818181818182,
+    "ratio": 0.768817161589059,
+    "slope": 0.7447252209885818,
+    "logloss": 0.2412020729231236
+   },
+   "top60_by_pd": {
+    "n": 574,
+    "events": 28,
+    "mean_pred": 0.06840882381026457,
+    "obs": 0.04878048780487805,
+    "ratio": 1.4023808881104236,
+    "slope": 0.730056387244449,
+    "logloss": 0.18130969808366973
+   },
+   "pass_all": false,
+   "pass_fe": false,
+   "pass_top60": false,
+   "pass": false,
+   "vs_stars_stage": {
+    "base_logloss": 0.15328073995814906,
+    "cand_logloss": 0.14480109463292892,
+    "boot_by_season": {
+     "p": 0.77375,
+     "lo": -0.00967833663851486,
+     "hi": 0.027989069392816507
+    }
+   },
+   "replays_2017_2021": {
+    "all": {
+     "n": 368,
+     "events": 20,
+     "mean_pred": 0.056932948322699635,
+     "obs": 0.05434782608695652,
+     "ratio": 1.0475662491376734,
+     "slope": 0.7256884609616779,
+     "logloss": 0.1853728352570577
+    },
+    "first_eligible": {
+     "n": 85,
+     "events": 12,
+     "mean_pred": 0.09161805298887159,
+     "obs": 0.1411764705882353,
+     "ratio": 0.6489612086711738,
+     "slope": 0.5914207134998206,
+     "logloss": 0.3910950532130582
+    }
+   },
+   "players": 466,
+   "players_hit": 20,
+   "support": {
+    "all_ratio": 0.351,
+    "all_slope": 0.4,
+    "first_eligible_ratio": 0.426,
+    "first_eligible_slope": 0.436,
+    "top60_ratio": 0.217,
+    "top60_slope": 0.467,
+    "every_gate": 0.038
+   },
+   "margins": {
+    "all": {
+     "ratio": -0.0576,
+     "slope": -0.0613
+    },
+    "first_eligible": {
+     "ratio": -0.0312,
+     "slope": -0.0053
+    },
+    "top60_by_pd": {
+     "ratio": -0.1524,
+     "slope": -0.0199
+    }
+   },
+   "power_if_calibrated": {
+    "all_ratio": 0.764,
+    "all_slope": 0.866,
+    "first_eligible_ratio": 0.6115,
+    "first_eligible_slope": 0.675,
+    "top60_ratio": 0.775,
+    "top60_slope": 0.8255,
+    "every_gate": 0.3175,
+    "interval_90": {
+     "all_ratio": [
+      0.765,
+      1.398
+     ],
+     "all_slope": [
+      0.763,
+      1.323
+     ],
+     "first_eligible_ratio": [
+      0.728,
+      1.538
+     ],
+     "first_eligible_slope": [
+      0.648,
+      1.539
+     ],
+     "top60_ratio": [
+      0.77,
+      1.402
+     ],
+     "top60_slope": [
+      0.735,
+      1.348
+     ]
+    }
+   },
+   "verdict": "fail",
+   "info": {
+    "train_has_live_share": 0.5769230769230769,
+    "train_has_live_by_plays_next": {
+     "False": 0.004448398576512456,
+     "True": 0.9590261282660333
+    }
+   }
+  },
+  "Q2": {
+   "all": {
+    "n": 826,
+    "events": 31,
+    "mean_pred": 0.04855421186541423,
+    "obs": 0.03753026634382567,
+    "ratio": 1.2937348064784566,
+    "slope": 0.7311377443184905,
+    "logloss": 0.14920137386800345
+   },
+   "first_eligible": {
+    "n": 220,
+    "events": 18,
+    "mean_pred": 0.06437329067323784,
+    "obs": 0.08181818181818182,
+    "ratio": 0.786784663784018,
+    "slope": 0.7105919746730571,
+    "logloss": 0.25931510024549165
+   },
+   "top60_by_pd": {
+    "n": 574,
+    "events": 30,
+    "mean_pred": 0.06539826211715834,
+    "obs": 0.05226480836236934,
+    "ratio": 1.2512867485082961,
+    "slope": 0.569815372358456,
+    "logloss": 0.20348690205925615
+   },
+   "pass_all": false,
+   "pass_fe": false,
+   "pass_top60": false,
+   "pass": false,
+   "vs_stars_stage": {
+    "base_logloss": 0.15328073995814906,
+    "cand_logloss": 0.14920137386800345,
+    "boot_by_season": {
+     "p": 0.66525,
+     "lo": -0.01279507785166921,
+     "hi": 0.021347058836886763
+    }
+   },
+   "replays_2017_2021": {
+    "all": {
+     "n": 368,
+     "events": 20,
+     "mean_pred": 0.044769239399089326,
+     "obs": 0.05434782608695652,
+     "ratio": 0.8237540049432436,
+     "slope": 1.2873046415872087,
+     "logloss": 0.17724008987318782
+    },
+    "first_eligible": {
+     "n": 85,
+     "events": 12,
+     "mean_pred": 0.0667854262135873,
+     "obs": 0.1411764705882353,
+     "ratio": 0.4730634356795767,
+     "slope": 1.1557080833157534,
+     "logloss": 0.3689610695512409
+    }
+   },
+   "players": 466,
+   "players_hit": 20,
+   "support": {
+    "all_ratio": 0.402,
+    "all_slope": 0.458,
+    "first_eligible_ratio": 0.408,
+    "first_eligible_slope": 0.438,
+    "top60_ratio": 0.472,
+    "top60_slope": 0.273,
+    "every_gate": 0.028
+   },
+   "margins": {
+    "all": {
+     "ratio": -0.0437,
+     "slope": -0.0189
+    },
+    "first_eligible": {
+     "ratio": -0.0132,
+     "slope": -0.0394
+    },
+    "top60_by_pd": {
+     "ratio": -0.0013,
+     "slope": -0.1802
+    }
+   },
+   "power_if_calibrated": {
+    "all_ratio": 0.75,
+    "all_slope": 0.8355,
+    "first_eligible_ratio": 0.635,
+    "first_eligible_slope": 0.6695,
+    "top60_ratio": 0.721,
+    "top60_slope": 0.7785,
+    "every_gate": 0.291,
+    "interval_90": {
+     "all_ratio": [
+      0.757,
+      1.432
+     ],
+     "all_slope": [
+      0.725,
+      1.326
+     ],
+     "first_eligible_ratio": [
+      0.708,
+      1.574
+     ],
+     "first_eligible_slope": [
+      0.626,
+      1.525
+     ],
+     "top60_ratio": [
+      0.751,
+      1.444
+     ],
+     "top60_slope": [
+      0.691,
+      1.377
+     ]
+    }
+   },
+   "verdict": "fail",
+   "info": {
+    "per_replay": {
+     "2012": {
+      "rows": 1267,
+      "events": 13,
+      "players": 215,
+      "classes": "2008-2011",
+      "closed_window_rows": 115,
+      "closed_window_hitters": 1,
+      "C": 0.3
+     },
+     "2013": {
+      "rows": 1788,
+      "events": 24,
+      "players": 262,
+      "classes": "2008-2012",
+      "closed_window_rows": 240,
+      "closed_window_hitters": 3,
+      "C": 0.1
+     },
+     "2014": {
+      "rows": 2337,
+      "events": 31,
+      "players": 322,
+      "classes": "2008-2013",
+      "closed_window_rows": 394,
+      "closed_window_hitters": 4,
+      "C": 0.1
+     },
+     "2015": {
+      "rows": 2898,
+      "events": 33,
+      "players": 387,
+      "classes": "2008-2014",
+      "closed_window_rows": 529,
+      "closed_window_hitters": 6,
+      "C": 0.1
+     },
+     "2016": {
+      "rows": 3451,
+      "events": 38,
+      "players": 443,
+      "classes": "2008-2015",
+      "closed_window_rows": 649,
+      "closed_window_hitters": 12,
+      "C": 0.03
+     },
+     "2017": {
+      "rows": 4026,
+      "events": 44,
+      "players": 497,
+      "classes": "2008-2016",
+      "closed_window_rows": 804,
+      "closed_window_hitters": 12,
+      "C": 0.03
+     },
+     "2018": {
+      "rows": 4605,
+      "events": 47,
+      "players": 562,
+      "classes": "2008-2017",
+      "closed_window_rows": 977,
+      "closed_window_hitters": 14,
+      "C": 0.03
+     },
+     "2019": {
+      "rows": 5177,
+      "events": 53,
+      "players": 623,
+      "classes": "2008-2018",
+      "closed_window_rows": 1098,
+      "closed_window_hitters": 14,
+      "C": 0.03
+     },
+     "2020": {
+      "rows": 5756,
+      "events": 59,
+      "players": 680,
+      "classes": "2008-2019",
+      "closed_window_rows": 1232,
+      "closed_window_hitters": 16,
+      "C": 0.03
+     },
+     "2021": {
+      "rows": 6345,
+      "events": 66,
+      "players": 737,
+      "classes": "2008-2020",
+      "closed_window_rows": 1394,
+      "closed_window_hitters": 19,
+      "C": 0.03
+     }
+    }
+   }
+  },
+  "Q3": {
+   "all": {
+    "n": 826,
+    "events": 31,
+    "mean_pred": 0.04365593128059818,
+    "obs": 0.03753026634382567,
+    "ratio": 1.1632193302507772,
+    "slope": 0.8688748077479055,
+    "logloss": 0.14081391101475987
+   },
+   "first_eligible": {
+    "n": 220,
+    "events": 18,
+    "mean_pred": 0.06681314373198938,
+    "obs": 0.08181818181818182,
+    "ratio": 0.8166050900576479,
+    "slope": 0.9628375163364086,
+    "logloss": 0.23244051219177636
+   },
+   "top60_by_pd": {
+    "n": 574,
+    "events": 29,
+    "mean_pred": 0.05884430528611484,
+    "obs": 0.050522648083623695,
+    "ratio": 1.1647114218699972,
+    "slope": 0.884395258554404,
+    "logloss": 0.1806871872697057
+   },
+   "pass_all": true,
+   "pass_fe": true,
+   "pass_top60": true,
+   "pass": true,
+   "vs_stars_stage": {
+    "base_logloss": 0.15328073995814906,
+    "cand_logloss": 0.14081391101475987,
+    "boot_by_season": {
+     "p": 0.93225,
+     "lo": -0.0017515025632433995,
+     "hi": 0.026059948531283326
+    }
+   },
+   "replays_2017_2021": {
+    "all": {
+     "n": 368,
+     "events": 20,
+     "mean_pred": 0.05117518642331439,
+     "obs": 0.05434782608695652,
+     "ratio": 0.9416234301889848,
+     "slope": 1.0989449275224243,
+     "logloss": 0.17457022963039204
+    },
+    "first_eligible": {
+     "n": 85,
+     "events": 12,
+     "mean_pred": 0.09351774408106285,
+     "obs": 0.1411764705882353,
+     "ratio": 0.6624173539075285,
+     "slope": 1.0193761042487957,
+     "logloss": 0.34761322734698785
+    }
+   },
+   "players": 466,
+   "players_hit": 20,
+   "support": {
+    "all_ratio": 0.717,
+    "all_slope": 0.673,
+    "first_eligible_ratio": 0.546,
+    "first_eligible_slope": 0.67,
+    "top60_ratio": 0.698,
+    "top60_slope": 0.698,
+    "every_gate": 0.144
+   },
+   "margins": {
+    "all": {
+     "ratio": 0.0868,
+     "slope": 0.1189
+    },
+    "first_eligible": {
+     "ratio": 0.0166,
+     "slope": 0.2128
+    },
+    "top60_by_pd": {
+     "ratio": 0.0853,
+     "slope": 0.1344
+    }
+   },
+   "power_if_calibrated": {
+    "all_ratio": 0.741,
+    "all_slope": 0.7915,
+    "first_eligible_ratio": 0.6775,
+    "first_eligible_slope": 0.646,
+    "top60_ratio": 0.697,
+    "top60_slope": 0.7385,
+    "every_gate": 0.2815,
+    "interval_90": {
+     "all_ratio": [
+      0.75,
+      1.502
+     ],
+     "all_slope": [
+      0.695,
+      1.35
+     ],
+     "first_eligible_ratio": [
+      0.7,
+      1.633
+     ],
+     "first_eligible_slope": [
+      0.614,
+      1.538
+     ],
+     "top60_ratio": [
+      0.734,
+      1.469
+     ],
+     "top60_slope": [
+      0.654,
+      1.396
+     ]
+    }
+   },
+   "verdict": "pass, fragile",
+   "info": {
+    "per_replay": {
+     "2012": {
+      "C": 3.0,
+      "recal_rows": 1,
+      "recal_events": 0,
+      "a": 0.0,
+      "b": 0.0,
+      "shifted": false
+     },
+     "2013": {
+      "C": 0.1,
+      "recal_rows": 114,
+      "recal_events": 4,
+      "a": 0.0,
+      "b": 0.0,
+      "shifted": false
+     },
+     "2014": {
+      "C": 0.3,
+      "recal_rows": 189,
+      "recal_events": 6,
+      "a": 0.0,
+      "b": 0.0,
+      "shifted": false
+     },
+     "2015": {
+      "C": 0.1,
+      "recal_rows": 261,
+      "recal_events": 9,
+      "a": 0.0,
+      "b": 0.0,
+      "shifted": false
+     },
+     "2016": {
+      "C": 0.1,
+      "recal_rows": 320,
+      "recal_events": 21,
+      "a": -0.002158485509724947,
+      "b": 0.3834688486376702,
+      "shifted": true
+     },
+     "2017": {
+      "C": 0.1,
+      "recal_rows": 402,
+      "recal_events": 21,
+      "a": -0.027124962976161907,
+      "b": 0.4302555551920179,
+      "shifted": true
+     },
+     "2018": {
+      "C": 0.1,
+      "recal_rows": 493,
+      "recal_events": 24,
+      "a": 0.03370573536931934,
+      "b": 0.2125643634547754,
+      "shifted": true
+     },
+     "2019": {
+      "C": 0.03,
+      "recal_rows": 547,
+      "recal_events": 24,
+      "a": 0.03880881532509286,
+      "b": 0.27008004619286763,
+      "shifted": true
+     },
+     "2020": {
+      "C": 0.1,
+      "recal_rows": 611,
+      "recal_events": 27,
+      "a": 0.06572025763104669,
+      "b": 0.11830830894288287,
+      "shifted": true
+     },
+     "2021": {
+      "C": 0.1,
+      "recal_rows": 692,
+      "recal_events": 29,
+      "a": -0.033481171903351606,
+      "b": 0.19534257881360084,
+      "shifted": true
+     }
+    }
+   }
+  }
+ },
+ "q3_checks": {
+  "q3_vs_s3_same_rows": {
+   "s3_logloss": 0.14293165385051065,
+   "q3_logloss": 0.14081391101475987,
+   "boot_by_season": {
+    "p": 0.99275,
+    "lo": 0.0003855358254916751,
+    "hi": 0.0044408378864190376
+   },
+   "auc_s3": 0.7508622438628525,
+   "auc_q3": 0.762791641306553,
+   "logit_corr": 0.9968618072530753
+  },
+  "bootstrap_200k": {
+   "q3_vs_stars_stage": {
+    "p": 0.928905,
+    "lo": -0.001665096503414897,
+    "hi": 0.025862427927097382
+   },
+   "q3_vs_s3": {
+    "p": 0.994865,
+    "lo": 0.0004151379348044106,
+    "hi": 0.0044194735738909575
+   }
+  },
+  "leave_one_season_out": {
+   "passes": 3,
+   "of": 10,
+   "by_season": {
+    "2012": {
+     "gates": {
+      "all": [
+       1.149,
+       1.066
+      ],
+      "first_eligible": [
+       0.838,
+       1.092
+      ],
+      "top60": [
+       1.11,
+       0.99
+      ]
+     },
+     "every_gate": true
+    },
+    "2013": {
+     "gates": {
+      "all": [
+       1.176,
+       0.909
+      ],
+      "first_eligible": [
+       0.798,
+       0.95
+      ],
+      "top60": [
+       1.193,
+       0.976
+      ]
+     },
+     "every_gate": false
+    },
+    "2014": {
+     "gates": {
+      "all": [
+       1.127,
+       0.878
+      ],
+      "first_eligible": [
+       0.753,
+       0.971
+      ],
+      "top60": [
+       1.127,
+       0.897
+      ]
+     },
+     "every_gate": false
+    },
+    "2015": {
+     "gates": {
+      "all": [
+       1.146,
+       0.828
+      ],
+      "first_eligible": [
+       0.8,
+       0.94
+      ],
+      "top60": [
+       1.153,
+       0.844
+      ]
+     },
+     "every_gate": true
+    },
+    "2016": {
+     "gates": {
+      "all": [
+       1.064,
+       0.831
+      ],
+      "first_eligible": [
+       0.785,
+       0.926
+      ],
+      "top60": [
+       1.075,
+       0.854
+      ]
+     },
+     "every_gate": false
+    },
+    "2017": {
+     "gates": {
+      "all": [
+       1.17,
+       0.887
+      ],
+      "first_eligible": [
+       0.914,
+       1.149
+      ],
+      "top60": [
+       1.186,
+       0.948
+      ]
+     },
+     "every_gate": true
+    },
+    "2018": {
+     "gates": {
+      "all": [
+       1.255,
+       0.906
+      ],
+      "first_eligible": [
+       0.816,
+       0.923
+      ],
+      "top60": [
+       1.227,
+       0.918
+      ]
+     },
+     "every_gate": false
+    },
+    "2019": {
+     "gates": {
+      "all": [
+       1.235,
+       0.801
+      ],
+      "first_eligible": [
+       0.793,
+       0.894
+      ],
+      "top60": [
+       1.262,
+       0.834
+      ]
+     },
+     "every_gate": false
+    },
+    "2020": {
+     "gates": {
+      "all": [
+       1.18,
+       0.75
+      ],
+      "first_eligible": [
+       0.911,
+       0.816
+      ],
+      "top60": [
+       1.183,
+       0.721
+      ]
+     },
+     "every_gate": false
+    },
+    "2021": {
+     "gates": {
+      "all": [
+       1.151,
+       0.861
+      ],
+      "first_eligible": [
+       0.794,
+       1.006
+      ],
+      "top60": [
+       1.151,
+       0.873
+      ]
+     },
+     "every_gate": false
+    }
+   }
+  },
+  "first_eligible_by_season": {
+   "2012": {
+    "n": 26,
+    "events": 1,
+    "pred": 0.45
+   },
+   "2013": {
+    "n": 25,
+    "events": 1,
+    "pred": 1.14
+   },
+   "2014": {
+    "n": 27,
+    "events": 0,
+    "pred": 1.15
+   },
+   "2015": {
+    "n": 28,
+    "events": 1,
+    "pred": 1.1
+   },
+   "2016": {
+    "n": 29,
+    "events": 3,
+    "pred": 2.92
+   },
+   "2017": {
+    "n": 26,
+    "events": 5,
+    "pred": 2.82
+   },
+   "2018": {
+    "n": 33,
+    "events": 3,
+    "pred": 2.46
+   },
+   "2019": {
+    "n": 17,
+    "events": 1,
+    "pred": 1.22
+   },
+   "2020": {
+    "n": 7,
+    "events": 3,
+    "pred": 1.03
+   },
+   "2021": {
+    "n": 2,
+    "events": 0,
+    "pred": 0.41
+   }
+  },
+  "without_zero_completed_start_rows": {
+   "rows": 716,
+   "events": 26,
+   "gates": {
+    "all": [
+     1.277,
+     0.968
+    ],
+    "first_eligible": [
+     0.911,
+     1.225
+    ],
+    "top60": [
+     1.275,
+     1.04
+    ]
+   },
+   "every_gate": false
+  },
+  "min_events_sensitivity": {
+   "5": {
+    "gates": {
+     "all": [
+      1.175,
+      0.828
+     ],
+     "first_eligible": [
+      0.885,
+      0.912
+     ],
+     "top60": [
+      1.177,
+      0.83
+     ]
+    },
+    "every_gate": true,
+    "shifted_replays": [
+     2014,
+     2015,
+     2016,
+     2017,
+     2018,
+     2019,
+     2020,
+     2021
+    ],
+    "logloss": 0.14194473735651014
+   },
+   "15": {
+    "gates": {
+     "all": [
+      1.163,
+      0.869
+     ],
+     "first_eligible": [
+      0.817,
+      0.963
+     ],
+     "top60": [
+      1.165,
+      0.884
+     ]
+    },
+    "every_gate": true,
+    "shifted_replays": [
+     2016,
+     2017,
+     2018,
+     2019,
+     2020,
+     2021
+    ],
+    "logloss": 0.14081391101475987
+   }
+  }
+ },
+ "replay_censoring": {
+  "by_replay": {
+   "2012": {
+    "served": 99,
+    "dropped_open_window": 0,
+    "first_eligible": 26,
+    "first_eligible_dropped": 0,
+    "first_eligible_kept_left_after_season": 4
+   },
+   "2013": {
+    "served": 98,
+    "dropped_open_window": 0,
+    "first_eligible": 25,
+    "first_eligible_dropped": 0,
+    "first_eligible_kept_left_after_season": 4
+   },
+   "2014": {
+    "served": 82,
+    "dropped_open_window": 0,
+    "first_eligible": 27,
+    "first_eligible_dropped": 0,
+    "first_eligible_kept_left_after_season": 5
+   },
+   "2015": {
+    "served": 85,
+    "dropped_open_window": 0,
+    "first_eligible": 28,
+    "first_eligible_dropped": 0,
+    "first_eligible_kept_left_after_season": 5
+   },
+   "2016": {
+    "served": 94,
+    "dropped_open_window": 0,
+    "first_eligible": 29,
+    "first_eligible_dropped": 0,
+    "first_eligible_kept_left_after_season": 10
+   },
+   "2017": {
+    "served": 93,
+    "dropped_open_window": 0,
+    "first_eligible": 26,
+    "first_eligible_dropped": 0,
+    "first_eligible_kept_left_after_season": 7
+   },
+   "2018": {
+    "served": 94,
+    "dropped_open_window": 1,
+    "first_eligible": 34,
+    "first_eligible_dropped": 1,
+    "first_eligible_kept_left_after_season": 2
+   },
+   "2019": {
+    "served": 104,
+    "dropped_open_window": 16,
+    "first_eligible": 29,
+    "first_eligible_dropped": 12,
+    "first_eligible_kept_left_after_season": 4
+   },
+   "2020": {
+    "served": 97,
+    "dropped_open_window": 40,
+    "first_eligible": 28,
+    "first_eligible_dropped": 21,
+    "first_eligible_kept_left_after_season": 3
+   },
+   "2021": {
+    "served": 127,
+    "dropped_open_window": 90,
+    "first_eligible": 31,
+    "first_eligible_dropped": 29,
+    "first_eligible_kept_left_after_season": 2
+   }
+  },
+  "gates_on_2012_2019_replays_only": {
+   "S3": {
+    "all": {
+     "n": 732,
+     "events": 27,
+     "mean_pred": 0.03975992357428021,
+     "obs": 0.036885245901639344,
+     "ratio": 1.0779357057915968,
+     "slope": 0.6965351061120012,
+     "logloss": 0.14766554915778163
+    },
+    "first_eligible": {
+     "n": 211,
+     "events": 15,
+     "mean_pred": 0.051821020394719385,
+     "obs": 0.07109004739336493,
+     "ratio": 0.7289490202190527,
+     "slope": 0.8420954018109614,
+     "logloss": 0.22758688651233908
+    },
+    "top60": {
+     "n": 480,
+     "events": 25,
+     "mean_pred": 0.056146992909295014,
+     "obs": 0.052083333333333336,
+     "ratio": 1.0780222638584642,
+     "slope": 0.6203742074467502,
+     "logloss": 0.1991481024542698
+    }
+   },
+   "Q1": {
+    "all": {
+     "n": 732,
+     "events": 27,
+     "mean_pred": 0.04759706035747651,
+     "obs": 0.036885245901639344,
+     "ratio": 1.2904091919138077,
+     "slope": 0.5987188603855093,
+     "logloss": 0.1494103752290442
+    },
+    "first_eligible": {
+     "n": 211,
+     "events": 15,
+     "mean_pred": 0.056287676455883895,
+     "obs": 0.07109004739336493,
+     "ratio": 0.7917799821461001,
+     "slope": 0.6525173568598804,
+     "logloss": 0.2320096033185724
+    },
+    "top60": {
+     "n": 480,
+     "events": 24,
+     "mean_pred": 0.06994311742489176,
+     "obs": 0.05,
+     "ratio": 1.398862348497835,
+     "slope": 0.5941993929660193,
+     "logloss": 0.195488452501849
+    }
+   },
+   "Q2": {
+    "all": {
+     "n": 732,
+     "events": 27,
+     "mean_pred": 0.048822297839091894,
+     "obs": 0.036885245901639344,
+     "ratio": 1.3236267414153802,
+     "slope": 0.5948908029992857,
+     "logloss": 0.15455118946013452
+    },
+    "first_eligible": {
+     "n": 211,
+     "events": 15,
+     "mean_pred": 0.06127647235185986,
+     "obs": 0.07109004739336493,
+     "ratio": 0.8619557110828288,
+     "slope": 0.5799169457844664,
+     "logloss": 0.24783974085759508
+    },
+    "top60": {
+     "n": 480,
+     "events": 26,
+     "mean_pred": 0.06910571973464998,
+     "obs": 0.05416666666666667,
+     "ratio": 1.275797902793538,
+     "slope": 0.32493081946457125,
+     "logloss": 0.2222762867747097
+    }
+   },
+   "Q3": {
+    "all": {
+     "n": 732,
+     "events": 27,
+     "mean_pred": 0.0430491110966962,
+     "obs": 0.036885245901639344,
+     "ratio": 1.167109234177097,
+     "slope": 0.7358878926831764,
+     "logloss": 0.14553369485783094
+    },
+    "first_eligible": {
+     "n": 211,
+     "events": 15,
+     "mean_pred": 0.06279553316216427,
+     "obs": 0.07109004739336493,
+     "ratio": 0.8833238331477774,
+     "slope": 0.8542289218101088,
+     "logloss": 0.2209593686066558
+    },
+    "top60": {
+     "n": 480,
+     "events": 25,
+     "mean_pred": 0.06089329441507802,
+     "obs": 0.052083333333333336,
+     "ratio": 1.169151252769498,
+     "slope": 0.6935643257068896,
+     "logloss": 0.195693374230316
+    }
+   }
+  },
+  "note": "diagnostic only; the gate stays on all ten replays"
+ }
+}
