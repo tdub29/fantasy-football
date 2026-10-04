@@ -186,3 +186,16 @@ features. The test class never influences which features are chosen. Pools, fixe
 
 The join repair of 2026-10-04 (one added link) applies to every candidate; all of A0-A13 and B1-B10
 are re-run on the repaired data before A14 is compared, and the ledgers carry the re-run numbers.
+
+## Addendum 7, 2026-10-04 (after review C, before any candidate below was scored)
+
+Follow-ups to review C, exploratory like addenda 4-6. Same population B, folds and rules.
+
+| ID | Candidate | Weakness it targets |
+|---|---|---|
+| B11 | QB with passer features only: `rush_ypg_best`, `comp_final`, `aya_final`, `starts`, `n_seasons`, `n_qual`, `early`, `stars`, `draft_age`, `power`, `weight`; C = 0.1 | B9 fed passers receiving columns that are noise for them |
+| B12 | B11 with C picked per outer fold by inner leave-one-class-out | B11's likely over-shrinkage (B8's QB slope was 1.79) |
+| B14 | Career-stage model, RB/WR/TE/QB: one row per player per completed college season k (his first qualifying season through his exit), features as of season k (cutoff k), plus `stage` (college year at k) and the estimated age at k; label = his eventual hit; each row's class is the player's decision class, so all of a player's rows sit in one fold. Features: the shipped B10/B8 set (B11 at QB) without the exit-only `early`, `n_seasons`, `draft_age`. Baseline: stars plus stage, logistic. Scored on all rows and reported by stage (1-2 vs 3+) | review C: the frozen-production exit scenario ran 2.5x low for freshmen and sophomores, so younger players get no number today |
+
+B14 needs the five numeric rules on all rows AND on the stage 1-2 rows by themselves before it may
+serve underclassmen, plus an independent review.
