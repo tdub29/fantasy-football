@@ -13,7 +13,7 @@
       "id": "sleeper-idp-2026",
       "title": "Sleeper IDP Usage Rankings (2026)",
       "url": "https://sleeper.com/research",
-      "publishedAt": "2026-09-29",
+      "publishedAt": "2026-10-02",
       "format": "idp",
       "defaultEnabled": true,
       "players": [
@@ -384,7 +384,7 @@
           "name": "Devin Lloyd",
           "pos": "LB",
           "team": "CAR",
-          "age": 27,
+          "age": 28,
           "category": "foundational",
           "tier": "S",
           "ktcValue": 2648,

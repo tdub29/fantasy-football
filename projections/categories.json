@@ -2,43 +2,43 @@
  "method": "age-stage split + 1-D k-means on dynasty value within each stage (contiguous value tiers = no in-group outliers); tiers = global 1-D value k-means",
  "legend": [
   {
-   "cluster": 0,
-   "stage": "prime",
-   "tier": 0,
-   "label": "Cornerstone",
-   "why": "elite dynasty value, ascending age",
-   "n": 33,
-   "avg_value": 6649,
-   "value_range": [
-    5357,
-    9999
-   ],
-   "avg_age": 23.6,
-   "examples": [
-    "Jahmyr Gibbs",
-    "Jaxon Smith-Njigba",
-    "Bijan Robinson",
-    "Puka Nacua"
-   ]
-  },
-  {
    "cluster": 3,
    "stage": "mid",
    "tier": 0,
    "label": "Win-Now Star",
    "why": "elite value in prime, contend now",
-   "n": 20,
-   "avg_value": 6623,
+   "n": 18,
+   "avg_value": 6860,
    "value_range": [
-    5421,
-    9646
+    5769,
+    9307
    ],
-   "avg_age": 26.5,
+   "avg_age": 26.4,
    "examples": [
     "Ja'Marr Chase",
     "Amon-Ra St. Brown",
     "Trey McBride",
-    "Justin Jefferson"
+    "Kenneth Walker III"
+   ]
+  },
+  {
+   "cluster": 0,
+   "stage": "prime",
+   "tier": 0,
+   "label": "Cornerstone",
+   "why": "elite dynasty value, ascending age",
+   "n": 38,
+   "avg_value": 6345,
+   "value_range": [
+    5116,
+    9999
+   ],
+   "avg_age": 23.4,
+   "examples": [
+    "Jahmyr Gibbs",
+    "Jaxon Smith-Njigba",
+    "Bijan Robinson",
+    "Brock Bowers"
    ]
   },
   {
@@ -48,17 +48,17 @@
    "label": "Aging Elite",
    "why": "still-elite value but past 28, sell-high window",
    "n": 10,
-   "avg_value": 5847,
+   "avg_value": 5818,
    "value_range": [
-    5087,
-    7758
+    4835,
+    7819
    ],
    "avg_age": 29.5,
    "examples": [
     "Josh Allen",
     "Lamar Jackson",
     "Christian McCaffrey",
-    "Joe Burrow"
+    "Derrick Henry"
    ]
   },
   {
@@ -68,17 +68,17 @@
    "label": "Win-Now Starter",
    "why": "solid prime-age starter",
    "n": 24,
-   "avg_value": 4091,
+   "avg_value": 4354,
    "value_range": [
-    3119,
-    5271
+    3291,
+    5526
    ],
    "avg_age": 26.5,
    "examples": [
-    "Trevor Lawrence",
-    "Dalton Kincaid",
-    "Brock Purdy",
-    "Bo Nix"
+    "D'Andre Swift",
+    "Jaylen Waddle",
+    "Rashee Rice",
+    "Brock Purdy"
    ]
   },
   {
@@ -87,18 +87,18 @@
    "tier": 1,
    "label": "Ascending",
    "why": "strong value, young, trending up",
-   "n": 62,
-   "avg_value": 3986,
+   "n": 66,
+   "avg_value": 3737,
    "value_range": [
-    3116,
-    5232
+    2958,
+    5003
    ],
-   "avg_age": 23.5,
+   "avg_age": 23.6,
    "examples": [
-    "Bhayshul Tuten",
-    "Jalen Coker",
-    "Denzel Boston",
-    "Sam LaPorta"
+    "Rome Odunze",
+    "KC Concepcion",
+    "Jameson Williams",
+    "Makai Lemon"
    ]
   },
   {
@@ -108,37 +108,17 @@
    "label": "Veteran Starter",
    "why": "aging vet who still produces",
    "n": 33,
-   "avg_value": 3678,
+   "avg_value": 3670,
    "value_range": [
-    3058,
-    4623
+    2919,
+    4635
    ],
    "avg_age": 30.5,
    "examples": [
+    "Davante Adams",
     "Dak Prescott",
-    "David Montgomery",
     "D.J. Moore",
-    "Davante Adams"
-   ]
-  },
-  {
-   "cluster": 2,
-   "stage": "prime",
-   "tier": 2,
-   "label": "Young Upside",
-   "why": "young developmental piece, room to rise",
-   "n": 99,
-   "avg_value": 2204,
-   "value_range": [
-    1247,
-    3074
-   ],
-   "avg_age": 23.5,
-   "examples": [
-    "Zachariah Branch",
-    "AJ Barner",
-    "Tyjae Spears",
-    "Michael Mayer"
+    "George Kittle"
    ]
   },
   {
@@ -147,18 +127,38 @@
    "tier": 2,
    "label": "Rotational",
    "why": "prime-age depth / flex",
-   "n": 44,
-   "avg_value": 2118,
+   "n": 46,
+   "avg_value": 2181,
    "value_range": [
-    1304,
-    3008
+    1273,
+    3212
    ],
    "avg_age": 26.4,
    "examples": [
-    "Chris Rodriguez",
-    "Brian Robinson",
-    "Pat Freiermuth",
-    "Chigoziem Okonkwo"
+    "Rachaad White",
+    "Kenneth Gainwell",
+    "Ricky Pearsall",
+    "Brian Robinson"
+   ]
+  },
+  {
+   "cluster": 2,
+   "stage": "prime",
+   "tier": 2,
+   "label": "Young Upside",
+   "why": "young developmental piece, room to rise",
+   "n": 87,
+   "avg_value": 2130,
+   "value_range": [
+    1274,
+    2880
+   ],
+   "avg_age": 23.5,
+   "examples": [
+    "Jaylen Wright",
+    "Kaytron Allen",
+    "Kaleb Johnson",
+    "Tory Horton"
    ]
   },
   {
@@ -167,18 +167,18 @@
    "tier": 2,
    "label": "Aging Depth",
    "why": "older, low dynasty value, redraft depth",
-   "n": 25,
-   "avg_value": 1997,
+   "n": 28,
+   "avg_value": 1968,
    "value_range": [
-    1434,
-    2765
+    1318,
+    2622
    ],
-   "avg_age": 30.9,
+   "avg_age": 31.2,
    "examples": [
     "Hunter Henry",
-    "Jauan Jennings",
     "Alvin Kamara",
-    "David Njoku"
+    "Jauan Jennings",
+    "Evan Engram"
    ]
   }
  ],
@@ -187,48 +187,48 @@
    "tier": "S",
    "n": 4,
    "value_range": [
-    9646,
+    9307,
     9999
    ]
   },
   {
    "tier": "A",
-   "n": 18,
+   "n": 15,
    "value_range": [
-    6526,
-    8395
+    6943,
+    8148
    ]
   },
   {
    "tier": "B",
-   "n": 53,
+   "n": 54,
    "value_range": [
-    4885,
-    6395
+    4926,
+    6512
    ]
   },
   {
    "tier": "C",
-   "n": 76,
+   "n": 80,
    "value_range": [
-    3461,
-    4794
+    3428,
+    4835
    ]
   },
   {
    "tier": "D",
-   "n": 99,
+   "n": 98,
    "value_range": [
-    2330,
-    3407
+    2331,
+    3406
    ]
   },
   {
    "tier": "F",
-   "n": 100,
+   "n": 99,
    "value_range": [
-    1247,
-    2317
+    1273,
+    2309
    ]
   }
  ],
@@ -249,7 +249,7 @@
    "stage": "prime",
    "tier": "S",
    "why": "elite dynasty value, ascending age",
-   "value": 9986,
+   "value": 9999,
    "age": 24.0,
    "proj": 238.0
   },
@@ -259,9 +259,19 @@
    "stage": "prime",
    "tier": "S",
    "why": "elite dynasty value, ascending age",
-   "value": 9884,
+   "value": 9994,
    "age": 24.0,
    "proj": 288.0
+  },
+  "11604": {
+   "category": "Cornerstone",
+   "cluster": 0,
+   "stage": "prime",
+   "tier": "A",
+   "why": "elite dynasty value, ascending age",
+   "value": 8005,
+   "age": 23.0,
+   "proj": 229.1
   },
   "9493": {
    "category": "Cornerstone",
@@ -269,7 +279,7 @@
    "stage": "prime",
    "tier": "A",
    "why": "elite dynasty value, ascending age",
-   "value": 8042,
+   "value": 7663,
    "age": 25.0,
    "proj": 256.1
   },
@@ -279,39 +289,9 @@
    "stage": "prime",
    "tier": "A",
    "why": "elite dynasty value, ascending age",
-   "value": 7781,
+   "value": 7608,
    "age": 22.0,
    "proj": 225.6
-  },
-  "11604": {
-   "category": "Cornerstone",
-   "cluster": 0,
-   "stage": "prime",
-   "tier": "A",
-   "why": "elite dynasty value, ascending age",
-   "value": 7757,
-   "age": 23.0,
-   "proj": 229.1
-  },
-  "8151": {
-   "category": "Cornerstone",
-   "cluster": 0,
-   "stage": "prime",
-   "tier": "A",
-   "why": "elite dynasty value, ascending age",
-   "value": 7331,
-   "age": 25.0,
-   "proj": 214.7
-  },
-  "11632": {
-   "category": "Cornerstone",
-   "cluster": 0,
-   "stage": "prime",
-   "tier": "A",
-   "why": "elite dynasty value, ascending age",
-   "value": 7152,
-   "age": 23.0,
-   "proj": 190.9
   },
   "13287": {
    "category": "Cornerstone",
@@ -319,19 +299,29 @@
    "stage": "prime",
    "tier": "A",
    "why": "elite dynasty value, ascending age",
-   "value": 7266,
+   "value": 7502,
    "age": 21.0,
    "proj": 192.7
   },
-  "9226": {
+  "11632": {
    "category": "Cornerstone",
    "cluster": 0,
    "stage": "prime",
    "tier": "A",
    "why": "elite dynasty value, ascending age",
-   "value": 6869,
+   "value": 6943,
+   "age": 23.0,
+   "proj": 190.9
+  },
+  "9226": {
+   "category": "Cornerstone",
+   "cluster": 0,
+   "stage": "prime",
+   "tier": "B",
+   "why": "elite dynasty value, ascending age",
+   "value": 6006,
    "age": 25.0,
-   "proj": 227.3
+   "proj": 159.0
   },
   "8112": {
    "category": "Cornerstone",
@@ -339,29 +329,9 @@
    "stage": "prime",
    "tier": "A",
    "why": "elite dynasty value, ascending age",
-   "value": 6677,
+   "value": 6999,
    "age": 25.0,
    "proj": 203.9
-  },
-  "12507": {
-   "category": "Cornerstone",
-   "cluster": 0,
-   "stage": "prime",
-   "tier": "A",
-   "why": "elite dynasty value, ascending age",
-   "value": 6812,
-   "age": 23.0,
-   "proj": 200.3
-  },
-  "12526": {
-   "category": "Cornerstone",
-   "cluster": 0,
-   "stage": "prime",
-   "tier": "A",
-   "why": "elite dynasty value, ascending age",
-   "value": 6526,
-   "age": 23.0,
-   "proj": 181.1
   },
   "8137": {
    "category": "Cornerstone",
@@ -369,19 +339,49 @@
    "stage": "prime",
    "tier": "B",
    "why": "elite dynasty value, ascending age",
-   "value": 6378,
+   "value": 6388,
    "age": 25.0,
    "proj": 197.3
   },
-  "12514": {
+  "9487": {
    "category": "Cornerstone",
    "cluster": 0,
    "stage": "prime",
    "tier": "B",
    "why": "elite dynasty value, ascending age",
-   "value": 6283,
+   "value": 6375,
    "age": 24.0,
-   "proj": 179.6
+   "proj": 166.9
+  },
+  "12526": {
+   "category": "Cornerstone",
+   "cluster": 0,
+   "stage": "prime",
+   "tier": "B",
+   "why": "elite dynasty value, ascending age",
+   "value": 6363,
+   "age": 23.0,
+   "proj": 181.1
+  },
+  "12507": {
+   "category": "Cornerstone",
+   "cluster": 0,
+   "stage": "prime",
+   "tier": "B",
+   "why": "elite dynasty value, ascending age",
+   "value": 6360,
+   "age": 23.0,
+   "proj": 200.3
+  },
+  "12518": {
+   "category": "Cornerstone",
+   "cluster": 0,
+   "stage": "prime",
+   "tier": "B",
+   "why": "elite dynasty value, ascending age",
+   "value": 6193,
+   "age": 24.0,
+   "proj": 195.6
   },
   "11635": {
    "category": "Cornerstone",
@@ -389,7 +389,7 @@
    "stage": "prime",
    "tier": "B",
    "why": "elite dynasty value, ascending age",
-   "value": 6186,
+   "value": 6050,
    "age": 24.0,
    "proj": 217.4
   },
@@ -399,19 +399,9 @@
    "stage": "prime",
    "tier": "B",
    "why": "elite dynasty value, ascending age",
-   "value": 6168,
+   "value": 6162,
    "age": 25.0,
    "proj": 209.6
-  },
-  "12518": {
-   "category": "Cornerstone",
-   "cluster": 0,
-   "stage": "prime",
-   "tier": "B",
-   "why": "elite dynasty value, ascending age",
-   "value": 6128,
-   "age": 24.0,
-   "proj": 195.6
   },
   "11560": {
    "category": "Cornerstone",
@@ -419,7 +409,7 @@
    "stage": "prime",
    "tier": "B",
    "why": "elite dynasty value, ascending age",
-   "value": 6108,
+   "value": 6136,
    "age": 24.0,
    "proj": 294.1
   },
@@ -429,7 +419,7 @@
    "stage": "prime",
    "tier": "B",
    "why": "elite dynasty value, ascending age",
-   "value": 5718,
+   "value": 5730,
    "age": 24.0,
    "proj": 178.9
   },
@@ -439,49 +429,19 @@
    "stage": "prime",
    "tier": "B",
    "why": "elite dynasty value, ascending age",
-   "value": 6093,
+   "value": 5993,
    "age": 22.0,
    "proj": 169.8
   },
-  "9487": {
+  "12514": {
    "category": "Cornerstone",
    "cluster": 0,
    "stage": "prime",
    "tier": "B",
    "why": "elite dynasty value, ascending age",
-   "value": 6083,
+   "value": 5985,
    "age": 24.0,
-   "proj": 166.9
-  },
-  "11564": {
-   "category": "Cornerstone",
-   "cluster": 0,
-   "stage": "prime",
-   "tier": "B",
-   "why": "elite dynasty value, ascending age",
-   "value": 6081,
-   "age": 24.0,
-   "proj": 316.4
-  },
-  "13286": {
-   "category": "Cornerstone",
-   "cluster": 0,
-   "stage": "prime",
-   "tier": "B",
-   "why": "elite dynasty value, ascending age",
-   "value": 5853,
-   "age": 23.0,
-   "proj": 146.4
-  },
-  "12529": {
-   "category": "Cornerstone",
-   "cluster": 0,
-   "stage": "prime",
-   "tier": "B",
-   "why": "elite dynasty value, ascending age",
-   "value": 5772,
-   "age": 23.0,
-   "proj": 143.2
+   "proj": 179.6
   },
   "12519": {
    "category": "Cornerstone",
@@ -489,7 +449,7 @@
    "stage": "prime",
    "tier": "B",
    "why": "elite dynasty value, ascending age",
-   "value": 5761,
+   "value": 5950,
    "age": 22.0,
    "proj": 196.8
   },
@@ -499,9 +459,19 @@
    "stage": "prime",
    "tier": "B",
    "why": "elite dynasty value, ascending age",
-   "value": 5609,
+   "value": 5468,
    "age": 25.0,
    "proj": 297.7
+  },
+  "11564": {
+   "category": "Cornerstone",
+   "cluster": 0,
+   "stage": "prime",
+   "tier": "B",
+   "why": "elite dynasty value, ascending age",
+   "value": 5731,
+   "age": 24.0,
+   "proj": 316.4
   },
   "13279": {
    "category": "Cornerstone",
@@ -509,19 +479,19 @@
    "stage": "prime",
    "tier": "B",
    "why": "elite dynasty value, ascending age",
-   "value": 5721,
+   "value": 5652,
    "age": 21.0,
    "proj": 172.8
   },
-  "12481": {
+  "12501": {
    "category": "Cornerstone",
    "cluster": 0,
    "stage": "prime",
    "tier": "B",
    "why": "elite dynasty value, ascending age",
-   "value": 5529,
-   "age": 24.0,
-   "proj": 197.2
+   "value": 5595,
+   "age": 23.0,
+   "proj": 136.3
   },
   "13281": {
    "category": "Cornerstone",
@@ -529,7 +499,7 @@
    "stage": "prime",
    "tier": "B",
    "why": "elite dynasty value, ascending age",
-   "value": 5517,
+   "value": 5564,
    "age": 22.0,
    "proj": 111.0
   },
@@ -539,9 +509,69 @@
    "stage": "prime",
    "tier": "B",
    "why": "elite dynasty value, ascending age",
-   "value": 5500,
+   "value": 5536,
    "age": 22.0,
    "proj": 165.7
+  },
+  "12481": {
+   "category": "Cornerstone",
+   "cluster": 0,
+   "stage": "prime",
+   "tier": "B",
+   "why": "elite dynasty value, ascending age",
+   "value": 5528,
+   "age": 24.0,
+   "proj": 197.2
+  },
+  "12529": {
+   "category": "Cornerstone",
+   "cluster": 0,
+   "stage": "prime",
+   "tier": "B",
+   "why": "elite dynasty value, ascending age",
+   "value": 5457,
+   "age": 23.0,
+   "proj": 143.2
+  },
+  "12490": {
+   "category": "Cornerstone",
+   "cluster": 0,
+   "stage": "prime",
+   "tier": "B",
+   "why": "elite dynasty value, ascending age",
+   "value": 5454,
+   "age": 23.0,
+   "proj": 160.4
+  },
+  "13286": {
+   "category": "Cornerstone",
+   "cluster": 0,
+   "stage": "prime",
+   "tier": "B",
+   "why": "elite dynasty value, ascending age",
+   "value": 5423,
+   "age": 23.0,
+   "proj": 146.4
+  },
+  "13346": {
+   "category": "Cornerstone",
+   "cluster": 0,
+   "stage": "prime",
+   "tier": "B",
+   "why": "elite dynasty value, ascending age",
+   "value": 5299,
+   "age": 22.0,
+   "proj": 105.3
+  },
+  "12506": {
+   "category": "Cornerstone",
+   "cluster": 0,
+   "stage": "prime",
+   "tier": "B",
+   "why": "elite dynasty value, ascending age",
+   "value": 5268,
+   "age": 22.0,
+   "proj": 141.8
   },
   "9484": {
    "category": "Cornerstone",
@@ -549,19 +579,39 @@
    "stage": "prime",
    "tier": "B",
    "why": "elite dynasty value, ascending age",
-   "value": 5495,
+   "value": 5266,
    "age": 25.0,
    "proj": 141.1
   },
-  "11620": {
+  "10859": {
    "category": "Cornerstone",
    "cluster": 0,
    "stage": "prime",
    "tier": "B",
    "why": "elite dynasty value, ascending age",
-   "value": 5357,
+   "value": 5124,
+   "age": 25.0,
+   "proj": 182.6
+  },
+  "11646": {
+   "category": "Cornerstone",
+   "cluster": 0,
+   "stage": "prime",
+   "tier": "B",
+   "why": "elite dynasty value, ascending age",
+   "value": 5246,
    "age": 24.0,
-   "proj": 163.6
+   "proj": 127.1
+  },
+  "13330": {
+   "category": "Cornerstone",
+   "cluster": 0,
+   "stage": "prime",
+   "tier": "B",
+   "why": "elite dynasty value, ascending age",
+   "value": 5116,
+   "age": 21.0,
+   "proj": 84.2
   },
   "11631": {
    "category": "Ascending",
@@ -569,7 +619,7 @@
    "stage": "prime",
    "tier": "C",
    "why": "strong value, young, trending up",
-   "value": 4607,
+   "value": 4194,
    "age": 24.0,
    "proj": 148.3
   },
@@ -579,59 +629,29 @@
    "stage": "prime",
    "tier": "C",
    "why": "strong value, young, trending up",
-   "value": 4417,
+   "value": 4239,
    "age": 24.0,
    "proj": 151.4
+  },
+  "11620": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "B",
+   "why": "strong value, young, trending up",
+   "value": 5003,
+   "age": 24.0,
+   "proj": 163.6
   },
   "8148": {
    "category": "Ascending",
    "cluster": 1,
    "stage": "prime",
-   "tier": "B",
+   "tier": "C",
    "why": "strong value, young, trending up",
-   "value": 5045,
+   "value": 4829,
    "age": 25.0,
    "proj": 198.8
-  },
-  "12490": {
-   "category": "Ascending",
-   "cluster": 1,
-   "stage": "prime",
-   "tier": "B",
-   "why": "strong value, young, trending up",
-   "value": 5232,
-   "age": 23.0,
-   "proj": 160.4
-  },
-  "10859": {
-   "category": "Ascending",
-   "cluster": 1,
-   "stage": "prime",
-   "tier": "B",
-   "why": "strong value, young, trending up",
-   "value": 5138,
-   "age": 25.0,
-   "proj": 182.6
-  },
-  "11646": {
-   "category": "Ascending",
-   "cluster": 1,
-   "stage": "prime",
-   "tier": "B",
-   "why": "strong value, young, trending up",
-   "value": 5204,
-   "age": 24.0,
-   "proj": 127.1
-  },
-  "13346": {
-   "category": "Ascending",
-   "cluster": 1,
-   "stage": "prime",
-   "tier": "B",
-   "why": "strong value, young, trending up",
-   "value": 5168,
-   "age": 22.0,
-   "proj": 105.3
   },
   "12489": {
    "category": "Ascending",
@@ -639,9 +659,9 @@
    "stage": "prime",
    "tier": "C",
    "why": "strong value, young, trending up",
-   "value": 4046,
+   "value": 4053,
    "age": 25.0,
-   "proj": 112.3
+   "proj": 111.6
   },
   "13298": {
    "category": "Ascending",
@@ -649,39 +669,19 @@
    "stage": "prime",
    "tier": "B",
    "why": "strong value, young, trending up",
-   "value": 5016,
+   "value": 4926,
    "age": 22.0,
    "proj": 121.1
-  },
-  "12501": {
-   "category": "Ascending",
-   "cluster": 1,
-   "stage": "prime",
-   "tier": "B",
-   "why": "strong value, young, trending up",
-   "value": 4987,
-   "age": 23.0,
-   "proj": 136.3
-  },
-  "12506": {
-   "category": "Ascending",
-   "cluster": 1,
-   "stage": "prime",
-   "tier": "B",
-   "why": "strong value, young, trending up",
-   "value": 4963,
-   "age": 22.0,
-   "proj": 141.8
   },
   "13294": {
    "category": "Ascending",
    "cluster": 1,
    "stage": "prime",
-   "tier": "B",
+   "tier": "C",
    "why": "strong value, young, trending up",
-   "value": 4885,
+   "value": 4789,
    "age": 22.0,
-   "proj": 128.0
+   "proj": 127.1
   },
   "12508": {
    "category": "Ascending",
@@ -689,39 +689,9 @@
    "stage": "prime",
    "tier": "C",
    "why": "strong value, young, trending up",
-   "value": 4794,
+   "value": 4773,
    "age": 23.0,
    "proj": 168.0
-  },
-  "11586": {
-   "category": "Ascending",
-   "cluster": 1,
-   "stage": "prime",
-   "tier": "C",
-   "why": "strong value, young, trending up",
-   "value": 4519,
-   "age": 25.0,
-   "proj": 132.8
-  },
-  "13269": {
-   "category": "Ascending",
-   "cluster": 1,
-   "stage": "prime",
-   "tier": "C",
-   "why": "strong value, young, trending up",
-   "value": 4431,
-   "age": 23.0,
-   "proj": 188.1
-  },
-  "13330": {
-   "category": "Ascending",
-   "cluster": 1,
-   "stage": "prime",
-   "tier": "C",
-   "why": "strong value, young, trending up",
-   "value": 4430,
-   "age": 21.0,
-   "proj": 84.2
   },
   "9500": {
    "category": "Ascending",
@@ -729,39 +699,9 @@
    "stage": "prime",
    "tier": "C",
    "why": "strong value, young, trending up",
-   "value": 4379,
+   "value": 4539,
    "age": 25.0,
    "proj": 141.6
-  },
-  "13345": {
-   "category": "Ascending",
-   "cluster": 1,
-   "stage": "prime",
-   "tier": "C",
-   "why": "strong value, young, trending up",
-   "value": 4339,
-   "age": 23.0,
-   "proj": 70.3
-  },
-  "12534": {
-   "category": "Ascending",
-   "cluster": 1,
-   "stage": "prime",
-   "tier": "C",
-   "why": "strong value, young, trending up",
-   "value": 4320,
-   "age": 24.0,
-   "proj": 139.1
-  },
-  "13417": {
-   "category": "Ascending",
-   "cluster": 1,
-   "stage": "prime",
-   "tier": "C",
-   "why": "strong value, young, trending up",
-   "value": 4307,
-   "age": 23.0,
-   "proj": 128.4
   },
   "9756": {
    "category": "Ascending",
@@ -769,19 +709,59 @@
    "stage": "prime",
    "tier": "C",
    "why": "strong value, young, trending up",
-   "value": 4285,
+   "value": 4478,
    "age": 24.0,
    "proj": 163.0
   },
-  "13301": {
+  "13269": {
    "category": "Ascending",
    "cluster": 1,
    "stage": "prime",
    "tier": "C",
    "why": "strong value, young, trending up",
-   "value": 4077,
-   "age": 22.0,
-   "proj": 59.6
+   "value": 4379,
+   "age": 23.0,
+   "proj": 188.1
+  },
+  "11586": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "C",
+   "why": "strong value, young, trending up",
+   "value": 4370,
+   "age": 25.0,
+   "proj": 132.8
+  },
+  "13417": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "C",
+   "why": "strong value, young, trending up",
+   "value": 4332,
+   "age": 23.0,
+   "proj": 128.4
+  },
+  "12534": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "C",
+   "why": "strong value, young, trending up",
+   "value": 4294,
+   "age": 24.0,
+   "proj": 139.1
+  },
+  "13345": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "C",
+   "why": "strong value, young, trending up",
+   "value": 4232,
+   "age": 23.0,
+   "proj": 70.3
   },
   "9753": {
    "category": "Ascending",
@@ -789,9 +769,19 @@
    "stage": "prime",
    "tier": "C",
    "why": "strong value, young, trending up",
-   "value": 4069,
+   "value": 4093,
    "age": 25.0,
    "proj": 67.2
+  },
+  "13311": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "C",
+   "why": "strong value, young, trending up",
+   "value": 4076,
+   "age": 22.0,
+   "proj": 53.3
   },
   "13276": {
    "category": "Ascending",
@@ -799,9 +789,29 @@
    "stage": "prime",
    "tier": "C",
    "why": "strong value, young, trending up",
-   "value": 4051,
+   "value": 4049,
    "age": 22.0,
-   "proj": 117.8
+   "proj": 127.1
+  },
+  "12487": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "C",
+   "why": "strong value, young, trending up",
+   "value": 4023,
+   "age": 23.0,
+   "proj": 80.7
+  },
+  "13301": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "C",
+   "why": "strong value, young, trending up",
+   "value": 3997,
+   "age": 22.0,
+   "proj": 59.6
   },
   "13296": {
    "category": "Ascending",
@@ -809,7 +819,7 @@
    "stage": "prime",
    "tier": "C",
    "why": "strong value, young, trending up",
-   "value": 4027,
+   "value": 3972,
    "age": 23.0,
    "proj": 59.8
   },
@@ -819,19 +829,9 @@
    "stage": "prime",
    "tier": "C",
    "why": "strong value, young, trending up",
-   "value": 4007,
-   "age": 24.0,
+   "value": 3959,
+   "age": 25.0,
    "proj": 56.5
-  },
-  "13293": {
-   "category": "Ascending",
-   "cluster": 1,
-   "stage": "prime",
-   "tier": "C",
-   "why": "strong value, young, trending up",
-   "value": 4005,
-   "age": 22.0,
-   "proj": 104.9
   },
   "12533": {
    "category": "Ascending",
@@ -839,49 +839,19 @@
    "stage": "prime",
    "tier": "C",
    "why": "strong value, young, trending up",
-   "value": 4001,
+   "value": 3955,
    "age": 25.0,
-   "proj": 130.4
+   "proj": 133.1
   },
-  "11624": {
+  "13293": {
    "category": "Ascending",
    "cluster": 1,
    "stage": "prime",
    "tier": "C",
    "why": "strong value, young, trending up",
-   "value": 3993,
-   "age": 23.0,
-   "proj": 160.4
-  },
-  "13285": {
-   "category": "Ascending",
-   "cluster": 1,
-   "stage": "prime",
-   "tier": "C",
-   "why": "strong value, young, trending up",
-   "value": 3917,
-   "age": 23.0,
-   "proj": 82.3
-  },
-  "12522": {
-   "category": "Ascending",
-   "cluster": 1,
-   "stage": "prime",
-   "tier": "C",
-   "why": "strong value, young, trending up",
-   "value": 3910,
-   "age": 24.0,
-   "proj": 217.2
-  },
-  "9754": {
-   "category": "Ascending",
-   "cluster": 1,
-   "stage": "prime",
-   "tier": "C",
-   "why": "strong value, young, trending up",
-   "value": 3895,
-   "age": 25.0,
-   "proj": 133.7
+   "value": 3953,
+   "age": 22.0,
+   "proj": 104.9
   },
   "13337": {
    "category": "Ascending",
@@ -889,69 +859,19 @@
    "stage": "prime",
    "tier": "C",
    "why": "strong value, young, trending up",
-   "value": 3873,
+   "value": 3938,
    "age": 23.0,
    "proj": 48.9
   },
-  "12484": {
+  "11624": {
    "category": "Ascending",
    "cluster": 1,
    "stage": "prime",
    "tier": "C",
    "why": "strong value, young, trending up",
-   "value": 3860,
+   "value": 3890,
    "age": 23.0,
-   "proj": 0.0
-  },
-  "13311": {
-   "category": "Ascending",
-   "cluster": 1,
-   "stage": "prime",
-   "tier": "C",
-   "why": "strong value, young, trending up",
-   "value": 3853,
-   "age": 22.0,
-   "proj": 53.3
-  },
-  "11583": {
-   "category": "Ascending",
-   "cluster": 1,
-   "stage": "prime",
-   "tier": "C",
-   "why": "strong value, young, trending up",
-   "value": 3840,
-   "age": 23.0,
-   "proj": 110.9
-  },
-  "12487": {
-   "category": "Ascending",
-   "cluster": 1,
-   "stage": "prime",
-   "tier": "C",
-   "why": "strong value, young, trending up",
-   "value": 3813,
-   "age": 23.0,
-   "proj": 80.7
-  },
-  "9758": {
-   "category": "Ascending",
-   "cluster": 1,
-   "stage": "prime",
-   "tier": "C",
-   "why": "strong value, young, trending up",
-   "value": 3810,
-   "age": 25.0,
-   "proj": 249.8
-  },
-  "8126": {
-   "category": "Ascending",
-   "cluster": 1,
-   "stage": "prime",
-   "tier": "C",
-   "why": "strong value, young, trending up",
-   "value": 3717,
-   "age": 25.0,
-   "proj": 167.5
+   "proj": 160.4
   },
   "11625": {
    "category": "Ascending",
@@ -959,39 +879,9 @@
    "stage": "prime",
    "tier": "C",
    "why": "strong value, young, trending up",
-   "value": 3686,
+   "value": 3866,
    "age": 24.0,
-   "proj": 116.2
-  },
-  "13305": {
-   "category": "Ascending",
-   "cluster": 1,
-   "stage": "prime",
-   "tier": "C",
-   "why": "strong value, young, trending up",
-   "value": 3642,
-   "age": 23.0,
-   "proj": 78.0
-  },
-  "9486": {
-   "category": "Ascending",
-   "cluster": 1,
-   "stage": "prime",
-   "tier": "C",
-   "why": "strong value, young, trending up",
-   "value": 3630,
-   "age": 25.0,
-   "proj": 72.8
-  },
-  "12493": {
-   "category": "Ascending",
-   "cluster": 1,
-   "stage": "prime",
-   "tier": "C",
-   "why": "strong value, young, trending up",
-   "value": 3627,
-   "age": 23.0,
-   "proj": 112.0
+   "proj": 116.5
   },
   "9228": {
    "category": "Ascending",
@@ -999,29 +889,89 @@
    "stage": "prime",
    "tier": "C",
    "why": "strong value, young, trending up",
-   "value": 3596,
+   "value": 3841,
    "age": 25.0,
    "proj": 230.0
   },
-  "12474": {
+  "9758": {
    "category": "Ascending",
    "cluster": 1,
    "stage": "prime",
    "tier": "C",
    "why": "strong value, young, trending up",
-   "value": 3559,
+   "value": 3809,
    "age": 25.0,
-   "proj": 62.3
+   "proj": 249.8
   },
-  "13274": {
+  "12522": {
    "category": "Ascending",
    "cluster": 1,
    "stage": "prime",
    "tier": "C",
    "why": "strong value, young, trending up",
-   "value": 3556,
+   "value": 3751,
+   "age": 24.0,
+   "proj": 217.2
+  },
+  "12484": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "C",
+   "why": "strong value, young, trending up",
+   "value": 3746,
+   "age": 23.0,
+   "proj": 0.0
+  },
+  "11576": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "C",
+   "why": "strong value, young, trending up",
+   "value": 3734,
    "age": 22.0,
-   "proj": 94.6
+   "proj": 38.5
+  },
+  "13305": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "C",
+   "why": "strong value, young, trending up",
+   "value": 3698,
+   "age": 23.0,
+   "proj": 78.0
+  },
+  "13285": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "C",
+   "why": "strong value, young, trending up",
+   "value": 3698,
+   "age": 23.0,
+   "proj": 82.3
+  },
+  "9486": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "C",
+   "why": "strong value, young, trending up",
+   "value": 3689,
+   "age": 25.0,
+   "proj": 72.8
+  },
+  "8126": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "C",
+   "why": "strong value, young, trending up",
+   "value": 3680,
+   "age": 25.0,
+   "proj": 167.5
   },
   "12492": {
    "category": "Ascending",
@@ -1029,9 +979,79 @@
    "stage": "prime",
    "tier": "C",
    "why": "strong value, young, trending up",
-   "value": 3524,
+   "value": 3649,
    "age": 23.0,
    "proj": 60.7
+  },
+  "9754": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "C",
+   "why": "strong value, young, trending up",
+   "value": 3624,
+   "age": 25.0,
+   "proj": 133.7
+  },
+  "12495": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "C",
+   "why": "strong value, young, trending up",
+   "value": 3622,
+   "age": 22.0,
+   "proj": 23.2
+  },
+  "12474": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "C",
+   "why": "strong value, young, trending up",
+   "value": 3580,
+   "age": 25.0,
+   "proj": 62.3
+  },
+  "12493": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "C",
+   "why": "strong value, young, trending up",
+   "value": 3530,
+   "age": 23.0,
+   "proj": 112.0
+  },
+  "10213": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "C",
+   "why": "strong value, young, trending up",
+   "value": 3524,
+   "age": 25.0,
+   "proj": 127.2
+  },
+  "11583": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "C",
+   "why": "strong value, young, trending up",
+   "value": 3498,
+   "age": 23.0,
+   "proj": 110.9
+  },
+  "13274": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "C",
+   "why": "strong value, young, trending up",
+   "value": 3464,
+   "age": 22.0,
+   "proj": 94.6
   },
   "9480": {
    "category": "Ascending",
@@ -1039,69 +1059,9 @@
    "stage": "prime",
    "tier": "C",
    "why": "strong value, young, trending up",
-   "value": 3520,
+   "value": 3451,
    "age": 25.0,
    "proj": 148.1
-  },
-  "13349": {
-   "category": "Ascending",
-   "cluster": 1,
-   "stage": "prime",
-   "tier": "D",
-   "why": "strong value, young, trending up",
-   "value": 3407,
-   "age": 23.0,
-   "proj": 81.4
-  },
-  "10213": {
-   "category": "Ascending",
-   "cluster": 1,
-   "stage": "prime",
-   "tier": "D",
-   "why": "strong value, young, trending up",
-   "value": 3353,
-   "age": 25.0,
-   "proj": 127.2
-  },
-  "11576": {
-   "category": "Ascending",
-   "cluster": 1,
-   "stage": "prime",
-   "tier": "D",
-   "why": "strong value, young, trending up",
-   "value": 3318,
-   "age": 22.0,
-   "proj": 38.5
-  },
-  "13275": {
-   "category": "Ascending",
-   "cluster": 1,
-   "stage": "prime",
-   "tier": "D",
-   "why": "strong value, young, trending up",
-   "value": 3317,
-   "age": 23.0,
-   "proj": 13.6
-  },
-  "11581": {
-   "category": "Ascending",
-   "cluster": 1,
-   "stage": "prime",
-   "tier": "D",
-   "why": "strong value, young, trending up",
-   "value": 3307,
-   "age": 25.0,
-   "proj": 107.5
-  },
-  "13288": {
-   "category": "Ascending",
-   "cluster": 1,
-   "stage": "prime",
-   "tier": "D",
-   "why": "strong value, young, trending up",
-   "value": 3254,
-   "age": 22.0,
-   "proj": 63.7
   },
   "13317": {
    "category": "Ascending",
@@ -1109,39 +1069,9 @@
    "stage": "prime",
    "tier": "D",
    "why": "strong value, young, trending up",
-   "value": 3252,
+   "value": 3406,
    "age": 22.0,
    "proj": 97.9
-  },
-  "9504": {
-   "category": "Ascending",
-   "cluster": 1,
-   "stage": "prime",
-   "tier": "D",
-   "why": "strong value, young, trending up",
-   "value": 3247,
-   "age": 24.0,
-   "proj": 77.9
-  },
-  "9225": {
-   "category": "Ascending",
-   "cluster": 1,
-   "stage": "prime",
-   "tier": "D",
-   "why": "strong value, young, trending up",
-   "value": 3231,
-   "age": 25.0,
-   "proj": 49.0
-  },
-  "11618": {
-   "category": "Ascending",
-   "cluster": 1,
-   "stage": "prime",
-   "tier": "D",
-   "why": "strong value, young, trending up",
-   "value": 3226,
-   "age": 24.0,
-   "proj": 79.5
   },
   "11610": {
    "category": "Ascending",
@@ -1149,9 +1079,39 @@
    "stage": "prime",
    "tier": "D",
    "why": "strong value, young, trending up",
-   "value": 3225,
+   "value": 3355,
    "age": 25.0,
    "proj": 87.2
+  },
+  "13349": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "D",
+   "why": "strong value, young, trending up",
+   "value": 3338,
+   "age": 23.0,
+   "proj": 81.4
+  },
+  "13275": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "D",
+   "why": "strong value, young, trending up",
+   "value": 3322,
+   "age": 23.0,
+   "proj": 13.6
+  },
+  "9511": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "D",
+   "why": "strong value, young, trending up",
+   "value": 3244,
+   "age": 24.0,
+   "proj": 71.1
   },
   "12509": {
    "category": "Ascending",
@@ -1159,19 +1119,29 @@
    "stage": "prime",
    "tier": "D",
    "why": "strong value, young, trending up",
-   "value": 3171,
+   "value": 3232,
    "age": 24.0,
    "proj": 71.9
   },
-  "13413": {
+  "13288": {
    "category": "Ascending",
    "cluster": 1,
    "stage": "prime",
    "tier": "D",
    "why": "strong value, young, trending up",
-   "value": 3164,
-   "age": 23.0,
-   "proj": 94.5
+   "value": 3227,
+   "age": 22.0,
+   "proj": 63.7
+  },
+  "9225": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "D",
+   "why": "strong value, young, trending up",
+   "value": 3213,
+   "age": 25.0,
+   "proj": 49.0
   },
   "11637": {
    "category": "Ascending",
@@ -1179,9 +1149,129 @@
    "stage": "prime",
    "tier": "D",
    "why": "strong value, young, trending up",
-   "value": 3116,
+   "value": 3176,
    "age": 23.0,
    "proj": 85.8
+  },
+  "11603": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "D",
+   "why": "strong value, young, trending up",
+   "value": 3140,
+   "age": 24.0,
+   "proj": 89.2
+  },
+  "9504": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "D",
+   "why": "strong value, young, trending up",
+   "value": 3128,
+   "age": 24.0,
+   "proj": 77.9
+  },
+  "13320": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "D",
+   "why": "strong value, young, trending up",
+   "value": 3109,
+   "age": 22.0,
+   "proj": 78.5
+  },
+  "13413": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "D",
+   "why": "strong value, young, trending up",
+   "value": 3061,
+   "age": 23.0,
+   "proj": 94.5
+  },
+  "11618": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "D",
+   "why": "strong value, young, trending up",
+   "value": 3039,
+   "age": 24.0,
+   "proj": 79.5
+  },
+  "9508": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "D",
+   "why": "strong value, young, trending up",
+   "value": 3036,
+   "age": 25.0,
+   "proj": 69.2
+  },
+  "9482": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "D",
+   "why": "strong value, young, trending up",
+   "value": 2996,
+   "age": 25.0,
+   "proj": 80.8
+  },
+  "11581": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "D",
+   "why": "strong value, young, trending up",
+   "value": 2994,
+   "age": 25.0,
+   "proj": 107.5
+  },
+  "12469": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "D",
+   "why": "strong value, young, trending up",
+   "value": 2985,
+   "age": 22.0,
+   "proj": 88.7
+  },
+  "12536": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "D",
+   "why": "strong value, young, trending up",
+   "value": 2965,
+   "age": 24.0,
+   "proj": 53.0
+  },
+  "13421": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "D",
+   "why": "strong value, young, trending up",
+   "value": 2965,
+   "age": 22.0,
+   "proj": 26.7
+  },
+  "12535": {
+   "category": "Ascending",
+   "cluster": 1,
+   "stage": "prime",
+   "tier": "D",
+   "why": "strong value, young, trending up",
+   "value": 2958,
+   "age": 24.0,
+   "proj": 87.1
   },
   "13353": {
    "category": "Young Upside",
@@ -1199,7 +1289,7 @@
    "stage": "prime",
    "tier": "D",
    "why": "young developmental piece, room to rise",
-   "value": 2502,
+   "value": 2513,
    "age": 24.0,
    "proj": 30.8
   },
@@ -1209,89 +1299,19 @@
    "stage": "prime",
    "tier": "D",
    "why": "young developmental piece, room to rise",
-   "value": 2588,
+   "value": 2448,
    "age": 23.0,
    "proj": 39.4
   },
-  "13320": {
+  "12472": {
    "category": "Young Upside",
    "cluster": 2,
    "stage": "prime",
    "tier": "D",
    "why": "young developmental piece, room to rise",
-   "value": 3074,
-   "age": 22.0,
-   "proj": 78.5
-  },
-  "11603": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "D",
-   "why": "young developmental piece, room to rise",
-   "value": 3065,
+   "value": 2406,
    "age": 24.0,
-   "proj": 89.2
-  },
-  "9508": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "D",
-   "why": "young developmental piece, room to rise",
-   "value": 3034,
-   "age": 25.0,
-   "proj": 69.2
-  },
-  "9482": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "D",
-   "why": "young developmental piece, room to rise",
-   "value": 3019,
-   "age": 25.0,
-   "proj": 80.8
-  },
-  "9511": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "D",
-   "why": "young developmental piece, room to rise",
-   "value": 3010,
-   "age": 24.0,
-   "proj": 71.1
-  },
-  "12536": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "D",
-   "why": "young developmental piece, room to rise",
-   "value": 2975,
-   "age": 24.0,
-   "proj": 53.0
-  },
-  "13405": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "D",
-   "why": "young developmental piece, room to rise",
-   "value": 2975,
-   "age": 23.0,
-   "proj": 45.9
-  },
-  "13421": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "D",
-   "why": "young developmental piece, room to rise",
-   "value": 2975,
-   "age": 22.0,
-   "proj": 26.7
+   "proj": 4.1
   },
   "12531": {
    "category": "Young Upside",
@@ -1299,59 +1319,39 @@
    "stage": "prime",
    "tier": "F",
    "why": "young developmental piece, room to rise",
-   "value": 2317,
+   "value": 2309,
    "age": 22.0,
    "proj": 36.2
   },
-  "12469": {
+  "11643": {
    "category": "Young Upside",
    "cluster": 2,
    "stage": "prime",
    "tier": "D",
    "why": "young developmental piece, room to rise",
-   "value": 2973,
-   "age": 22.0,
-   "proj": 88.7
+   "value": 2880,
+   "age": 23.0,
+   "proj": 44.1
   },
-  "12535": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "D",
-   "why": "young developmental piece, room to rise",
-   "value": 2928,
-   "age": 24.0,
-   "proj": 87.1
-  },
-  "12472": {
+  "12505": {
    "category": "Young Upside",
    "cluster": 2,
    "stage": "prime",
    "tier": "F",
    "why": "young developmental piece, room to rise",
-   "value": 2288,
-   "age": 24.0,
-   "proj": 4.1
+   "value": 2261,
+   "age": 23.0,
+   "proj": 33.9
   },
-  "12483": {
+  "13405": {
    "category": "Young Upside",
    "cluster": 2,
    "stage": "prime",
    "tier": "D",
    "why": "young developmental piece, room to rise",
-   "value": 2900,
+   "value": 2878,
    "age": 23.0,
-   "proj": 77.9
-  },
-  "13347": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "D",
-   "why": "young developmental piece, room to rise",
-   "value": 2848,
-   "age": 23.0,
-   "proj": 24.8
+   "proj": 45.9
   },
   "12485": {
    "category": "Young Upside",
@@ -1359,7 +1359,7 @@
    "stage": "prime",
    "tier": "D",
    "why": "young developmental piece, room to rise",
-   "value": 2411,
+   "value": 2498,
    "age": 24.0,
    "proj": 38.4
   },
@@ -1369,19 +1369,9 @@
    "stage": "prime",
    "tier": "F",
    "why": "young developmental piece, room to rise",
-   "value": 2262,
+   "value": 2243,
    "age": 22.0,
    "proj": 62.8
-  },
-  "12471": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "F",
-   "why": "young developmental piece, room to rise",
-   "value": 2229,
-   "age": 23.0,
-   "proj": 30.0
   },
   "12504": {
    "category": "Young Upside",
@@ -1393,55 +1383,15 @@
    "age": 23.0,
    "proj": 32.0
   },
-  "13268": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "D",
-   "why": "young developmental piece, room to rise",
-   "value": 2818,
-   "age": 23.0,
-   "proj": 61.4
-  },
-  "12499": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "D",
-   "why": "young developmental piece, room to rise",
-   "value": 2808,
-   "age": 23.0,
-   "proj": 44.9
-  },
   "12497": {
    "category": "Young Upside",
    "cluster": 2,
    "stage": "prime",
    "tier": "D",
    "why": "young developmental piece, room to rise",
-   "value": 2792,
+   "value": 2819,
    "age": 23.0,
    "proj": 92.0
-  },
-  "12502": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "D",
-   "why": "young developmental piece, room to rise",
-   "value": 2780,
-   "age": 24.0,
-   "proj": 92.2
-  },
-  "12505": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "F",
-   "why": "young developmental piece, room to rise",
-   "value": 2193,
-   "age": 23.0,
-   "proj": 33.9
   },
   "11627": {
    "category": "Young Upside",
@@ -1449,59 +1399,29 @@
    "stage": "prime",
    "tier": "D",
    "why": "young developmental piece, room to rise",
-   "value": 2775,
+   "value": 2813,
    "age": 23.0,
    "proj": 52.3
   },
-  "11630": {
+  "13268": {
    "category": "Young Upside",
    "cluster": 2,
    "stage": "prime",
    "tier": "D",
    "why": "young developmental piece, room to rise",
-   "value": 2460,
-   "age": 25.0,
-   "proj": 22.5
+   "value": 2793,
+   "age": 23.0,
+   "proj": 61.4
   },
-  "11643": {
+  "12483": {
    "category": "Young Upside",
    "cluster": 2,
    "stage": "prime",
    "tier": "D",
    "why": "young developmental piece, room to rise",
-   "value": 2740,
+   "value": 2790,
    "age": 23.0,
-   "proj": 44.1
-  },
-  "12547": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "D",
-   "why": "young developmental piece, room to rise",
-   "value": 2674,
-   "age": 23.0,
-   "proj": 31.2
-  },
-  "12510": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "F",
-   "why": "young developmental piece, room to rise",
-   "value": 2085,
-   "age": 23.0,
-   "proj": 13.9
-  },
-  "12521": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "D",
-   "why": "young developmental piece, room to rise",
-   "value": 2672,
-   "age": 23.0,
-   "proj": 72.2
+   "proj": 77.9
   },
   "11577": {
    "category": "Young Upside",
@@ -1509,39 +1429,69 @@
    "stage": "prime",
    "tier": "F",
    "why": "young developmental piece, room to rise",
-   "value": 2058,
+   "value": 2185,
    "age": 24.0,
    "proj": 33.8
   },
-  "12498": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "D",
-   "why": "young developmental piece, room to rise",
-   "value": 2669,
-   "age": 22.0,
-   "proj": 59.3
-  },
-  "13423": {
+  "12471": {
    "category": "Young Upside",
    "cluster": 2,
    "stage": "prime",
    "tier": "F",
    "why": "young developmental piece, room to rise",
-   "value": 2045,
+   "value": 2149,
    "age": 23.0,
-   "proj": 0.0
+   "proj": 30.0
   },
-  "13402": {
+  "11630": {
    "category": "Young Upside",
    "cluster": 2,
    "stage": "prime",
    "tier": "D",
    "why": "young developmental piece, room to rise",
-   "value": 2637,
+   "value": 2679,
+   "age": 25.0,
+   "proj": 22.5
+  },
+  "13347": {
+   "category": "Young Upside",
+   "cluster": 2,
+   "stage": "prime",
+   "tier": "D",
+   "why": "young developmental piece, room to rise",
+   "value": 2729,
+   "age": 23.0,
+   "proj": 24.8
+  },
+  "12499": {
+   "category": "Young Upside",
+   "cluster": 2,
+   "stage": "prime",
+   "tier": "D",
+   "why": "young developmental piece, room to rise",
+   "value": 2724,
+   "age": 23.0,
+   "proj": 44.9
+  },
+  "12502": {
+   "category": "Young Upside",
+   "cluster": 2,
+   "stage": "prime",
+   "tier": "D",
+   "why": "young developmental piece, room to rise",
+   "value": 2712,
    "age": 24.0,
-   "proj": 63.6
+   "proj": 92.2
+  },
+  "9757": {
+   "category": "Young Upside",
+   "cluster": 2,
+   "stage": "prime",
+   "tier": "D",
+   "why": "young developmental piece, room to rise",
+   "value": 2689,
+   "age": 24.0,
+   "proj": 5.6
   },
   "9501": {
    "category": "Young Upside",
@@ -1549,29 +1499,19 @@
    "stage": "prime",
    "tier": "D",
    "why": "young developmental piece, room to rise",
-   "value": 2626,
+   "value": 2643,
    "age": 25.0,
    "proj": 51.2
   },
-  "13329": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "F",
-   "why": "young developmental piece, room to rise",
-   "value": 2031,
-   "age": 23.0,
-   "proj": 60.6
-  },
-  "13338": {
+  "12547": {
    "category": "Young Upside",
    "cluster": 2,
    "stage": "prime",
    "tier": "D",
    "why": "young developmental piece, room to rise",
-   "value": 2615,
+   "value": 2627,
    "age": 23.0,
-   "proj": 32.4
+   "proj": 31.2
   },
   "13380": {
    "category": "Young Upside",
@@ -1579,19 +1519,99 @@
    "stage": "prime",
    "tier": "F",
    "why": "young developmental piece, room to rise",
-   "value": 2011,
+   "value": 2043,
    "age": 23.0,
    "proj": 39.0
   },
-  "9506": {
+  "13338": {
    "category": "Young Upside",
    "cluster": 2,
    "stage": "prime",
    "tier": "D",
    "why": "young developmental piece, room to rise",
-   "value": 2585,
+   "value": 2624,
+   "age": 23.0,
+   "proj": 32.4
+  },
+  "13423": {
+   "category": "Young Upside",
+   "cluster": 2,
+   "stage": "prime",
+   "tier": "F",
+   "why": "young developmental piece, room to rise",
+   "value": 2019,
+   "age": 23.0,
+   "proj": 0.0
+  },
+  "12521": {
+   "category": "Young Upside",
+   "cluster": 2,
+   "stage": "prime",
+   "tier": "D",
+   "why": "young developmental piece, room to rise",
+   "value": 2621,
+   "age": 23.0,
+   "proj": 72.2
+  },
+  "12510": {
+   "category": "Young Upside",
+   "cluster": 2,
+   "stage": "prime",
+   "tier": "F",
+   "why": "young developmental piece, room to rise",
+   "value": 2013,
+   "age": 23.0,
+   "proj": 13.9
+  },
+  "12498": {
+   "category": "Young Upside",
+   "cluster": 2,
+   "stage": "prime",
+   "tier": "D",
+   "why": "young developmental piece, room to rise",
+   "value": 2620,
+   "age": 22.0,
+   "proj": 59.3
+  },
+  "12718": {
+   "category": "Young Upside",
+   "cluster": 2,
+   "stage": "prime",
+   "tier": "F",
+   "why": "young developmental piece, room to rise",
+   "value": 2011,
+   "age": 23.0,
+   "proj": 41.7
+  },
+  "13402": {
+   "category": "Young Upside",
+   "cluster": 2,
+   "stage": "prime",
+   "tier": "D",
+   "why": "young developmental piece, room to rise",
+   "value": 2599,
    "age": 24.0,
-   "proj": 52.5
+   "proj": 63.6
+  },
+  "13411": {
+   "category": "Young Upside",
+   "cluster": 2,
+   "stage": "prime",
+   "tier": "D",
+   "why": "young developmental piece, room to rise",
+   "value": 2567,
+   "age": 22.0,
+   "proj": 57.2
+  },
+  "13329": {
+   "category": "Young Upside",
+   "cluster": 2,
+   "stage": "prime",
+   "tier": "F",
+   "why": "young developmental piece, room to rise",
+   "value": 1955,
+   "age": 24.0,
+   "proj": 60.6
   },
   "11647": {
    "category": "Young Upside",
@@ -1599,29 +1619,9 @@
    "stage": "prime",
    "tier": "D",
    "why": "young developmental piece, room to rise",
-   "value": 2584,
+   "value": 2534,
    "age": 25.0,
    "proj": 60.0
-  },
-  "12495": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "D",
-   "why": "young developmental piece, room to rise",
-   "value": 2583,
-   "age": 22.0,
-   "proj": 23.2
-  },
-  "11600": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "F",
-   "why": "young developmental piece, room to rise",
-   "value": 1974,
-   "age": 23.0,
-   "proj": 24.9
   },
   "13278": {
    "category": "Young Upside",
@@ -1629,9 +1629,19 @@
    "stage": "prime",
    "tier": "D",
    "why": "young developmental piece, room to rise",
-   "value": 2580,
+   "value": 2512,
    "age": 23.0,
    "proj": 56.1
+  },
+  "9506": {
+   "category": "Young Upside",
+   "cluster": 2,
+   "stage": "prime",
+   "tier": "D",
+   "why": "young developmental piece, room to rise",
+   "value": 2501,
+   "age": 24.0,
+   "proj": 52.5
   },
   "12467": {
    "category": "Young Upside",
@@ -1639,7 +1649,7 @@
    "stage": "prime",
    "tier": "D",
    "why": "young developmental piece, room to rise",
-   "value": 2575,
+   "value": 2476,
    "age": 22.0,
    "proj": 30.4
   },
@@ -1649,59 +1659,19 @@
    "stage": "prime",
    "tier": "D",
    "why": "young developmental piece, room to rise",
-   "value": 2540,
+   "value": 2456,
    "age": 22.0,
    "proj": 30.1
   },
-  "13411": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "D",
-   "why": "young developmental piece, room to rise",
-   "value": 2537,
-   "age": 22.0,
-   "proj": 57.2
-  },
-  "13400": {
+  "11600": {
    "category": "Young Upside",
    "cluster": 2,
    "stage": "prime",
    "tier": "F",
    "why": "young developmental piece, room to rise",
-   "value": 1914,
-   "age": 22.0,
-   "proj": 58.0
-  },
-  "9757": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "D",
-   "why": "young developmental piece, room to rise",
-   "value": 2510,
-   "age": 24.0,
-   "proj": 5.6
-  },
-  "11596": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "F",
-   "why": "young developmental piece, room to rise",
-   "value": 1889,
-   "age": 24.0,
-   "proj": 18.1
-  },
-  "12482": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "F",
-   "why": "young developmental piece, room to rise",
-   "value": 1867,
-   "age": 24.0,
-   "proj": 32.0
+   "value": 1842,
+   "age": 23.0,
+   "proj": 24.9
   },
   "12540": {
    "category": "Young Upside",
@@ -1709,29 +1679,29 @@
    "stage": "prime",
    "tier": "D",
    "why": "young developmental piece, room to rise",
-   "value": 2424,
+   "value": 2426,
    "age": 24.0,
    "proj": 89.4
   },
-  "12544": {
+  "11596": {
    "category": "Young Upside",
    "cluster": 2,
    "stage": "prime",
-   "tier": "D",
+   "tier": "F",
    "why": "young developmental piece, room to rise",
-   "value": 2420,
-   "age": 22.0,
-   "proj": 56.2
-  },
-  "12641": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "D",
-   "why": "young developmental piece, room to rise",
-   "value": 2398,
+   "value": 1799,
    "age": 24.0,
-   "proj": 37.7
+   "proj": 18.1
+  },
+  "9479": {
+   "category": "Young Upside",
+   "cluster": 2,
+   "stage": "prime",
+   "tier": "D",
+   "why": "young developmental piece, room to rise",
+   "value": 2405,
+   "age": 25.0,
+   "proj": 68.8
   },
   "13424": {
    "category": "Young Upside",
@@ -1739,19 +1709,39 @@
    "stage": "prime",
    "tier": "D",
    "why": "young developmental piece, room to rise",
-   "value": 2375,
+   "value": 2381,
    "age": 24.0,
    "proj": 36.3
   },
-  "13333": {
+  "12641": {
+   "category": "Young Upside",
+   "cluster": 2,
+   "stage": "prime",
+   "tier": "D",
+   "why": "young developmental piece, room to rise",
+   "value": 2378,
+   "age": 24.0,
+   "proj": 37.7
+  },
+  "12482": {
+   "category": "Young Upside",
+   "cluster": 2,
+   "stage": "prime",
+   "tier": "F",
+   "why": "young developmental piece, room to rise",
+   "value": 1750,
+   "age": 24.0,
+   "proj": 32.0
+  },
+  "13400": {
    "category": "Young Upside",
    "cluster": 2,
    "stage": "prime",
    "tier": "F",
    "why": "young developmental piece, room to rise",
    "value": 1744,
-   "age": 23.0,
-   "proj": 23.3
+   "age": 22.0,
+   "proj": 58.0
   },
   "9494": {
    "category": "Young Upside",
@@ -1759,19 +1749,29 @@
    "stage": "prime",
    "tier": "D",
    "why": "young developmental piece, room to rise",
-   "value": 2370,
+   "value": 2339,
    "age": 24.0,
    "proj": 69.9
   },
-  "11597": {
+  "12544": {
    "category": "Young Upside",
    "cluster": 2,
    "stage": "prime",
-   "tier": "F",
+   "tier": "D",
    "why": "young developmental piece, room to rise",
-   "value": 2304,
-   "age": 25.0,
-   "proj": 77.0
+   "value": 2333,
+   "age": 22.0,
+   "proj": 56.2
+  },
+  "11571": {
+   "category": "Young Upside",
+   "cluster": 2,
+   "stage": "prime",
+   "tier": "D",
+   "why": "young developmental piece, room to rise",
+   "value": 2331,
+   "age": 24.0,
+   "proj": 60.5
   },
   "12524": {
    "category": "Young Upside",
@@ -1779,69 +1779,19 @@
    "stage": "prime",
    "tier": "F",
    "why": "young developmental piece, room to rise",
-   "value": 2289,
+   "value": 2300,
    "age": 24.0,
    "proj": 97.1
   },
-  "9479": {
+  "13333": {
    "category": "Young Upside",
    "cluster": 2,
    "stage": "prime",
    "tier": "F",
    "why": "young developmental piece, room to rise",
-   "value": 2271,
-   "age": 25.0,
-   "proj": 68.8
-  },
-  "11650": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "F",
-   "why": "young developmental piece, room to rise",
-   "value": 1663,
-   "age": 25.0,
-   "proj": 9.3
-  },
-  "12541": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "F",
-   "why": "young developmental piece, room to rise",
-   "value": 2226,
+   "value": 1684,
    "age": 23.0,
-   "proj": 4.7
-  },
-  "11571": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "F",
-   "why": "young developmental piece, room to rise",
-   "value": 2215,
-   "age": 24.0,
-   "proj": 60.5
-  },
-  "12718": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "F",
-   "why": "young developmental piece, room to rise",
-   "value": 1658,
-   "age": 23.0,
-   "proj": 41.7
-  },
-  "13307": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "F",
-   "why": "young developmental piece, room to rise",
-   "value": 1641,
-   "age": 24.0,
-   "proj": 29.5
+   "proj": 23.3
   },
   "11626": {
    "category": "Young Upside",
@@ -1849,19 +1799,49 @@
    "stage": "prime",
    "tier": "F",
    "why": "young developmental piece, room to rise",
-   "value": 2197,
+   "value": 2238,
    "age": 25.0,
    "proj": 52.3
   },
-  "12523": {
+  "11597": {
    "category": "Young Upside",
    "cluster": 2,
    "stage": "prime",
    "tier": "F",
    "why": "young developmental piece, room to rise",
-   "value": 1596,
-   "age": 24.0,
-   "proj": 30.2
+   "value": 2221,
+   "age": 25.0,
+   "proj": 77.0
+  },
+  "11650": {
+   "category": "Young Upside",
+   "cluster": 2,
+   "stage": "prime",
+   "tier": "F",
+   "why": "young developmental piece, room to rise",
+   "value": 1653,
+   "age": 25.0,
+   "proj": 9.3
+  },
+  "13394": {
+   "category": "Young Upside",
+   "cluster": 2,
+   "stage": "prime",
+   "tier": "F",
+   "why": "young developmental piece, room to rise",
+   "value": 1629,
+   "age": 23.0,
+   "proj": 59.6
+  },
+  "12541": {
+   "category": "Young Upside",
+   "cluster": 2,
+   "stage": "prime",
+   "tier": "F",
+   "why": "young developmental piece, room to rise",
+   "value": 2159,
+   "age": 23.0,
+   "proj": 4.7
   },
   "13079": {
    "category": "Young Upside",
@@ -1869,79 +1849,29 @@
    "stage": "prime",
    "tier": "F",
    "why": "young developmental piece, room to rise",
-   "value": 1591,
+   "value": 1577,
    "age": 24.0,
    "proj": 25.9
   },
-  "12670": {
+  "13307": {
    "category": "Young Upside",
    "cluster": 2,
    "stage": "prime",
    "tier": "F",
    "why": "young developmental piece, room to rise",
-   "value": 1586,
+   "value": 1543,
    "age": 24.0,
-   "proj": 35.5
+   "proj": 29.5
   },
-  "13533": {
+  "13425": {
    "category": "Young Upside",
    "cluster": 2,
    "stage": "prime",
    "tier": "F",
    "why": "young developmental piece, room to rise",
-   "value": 2122,
-   "age": 22.0,
-   "proj": 63.0
-  },
-  "12455": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "F",
-   "why": "young developmental piece, room to rise",
-   "value": 2109,
+   "value": 2087,
    "age": 23.0,
-   "proj": 26.3
-  },
-  "11589": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "F",
-   "why": "young developmental piece, room to rise",
-   "value": 2107,
-   "age": 24.0,
    "proj": 0.0
-  },
-  "12496": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "F",
-   "why": "young developmental piece, room to rise",
-   "value": 1552,
-   "age": 23.0,
-   "proj": 29.2
-  },
-  "12511": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "F",
-   "why": "young developmental piece, room to rise",
-   "value": 1539,
-   "age": 25.0,
-   "proj": 22.5
-  },
-  "11629": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "F",
-   "why": "young developmental piece, room to rise",
-   "value": 1775,
-   "age": 25.0,
-   "proj": 20.0
   },
   "13477": {
    "category": "Young Upside",
@@ -1949,9 +1879,129 @@
    "stage": "prime",
    "tier": "F",
    "why": "young developmental piece, room to rise",
-   "value": 1504,
+   "value": 1539,
    "age": 24.0,
    "proj": 31.0
+  },
+  "12455": {
+   "category": "Young Upside",
+   "cluster": 2,
+   "stage": "prime",
+   "tier": "F",
+   "why": "young developmental piece, room to rise",
+   "value": 2059,
+   "age": 23.0,
+   "proj": 26.3
+  },
+  "12634": {
+   "category": "Young Upside",
+   "cluster": 2,
+   "stage": "prime",
+   "tier": "F",
+   "why": "young developmental piece, room to rise",
+   "value": 1535,
+   "age": 24.0,
+   "proj": 2.4
+  },
+  "12511": {
+   "category": "Young Upside",
+   "cluster": 2,
+   "stage": "prime",
+   "tier": "F",
+   "why": "young developmental piece, room to rise",
+   "value": 1533,
+   "age": 25.0,
+   "proj": 22.5
+  },
+  "13533": {
+   "category": "Young Upside",
+   "cluster": 2,
+   "stage": "prime",
+   "tier": "F",
+   "why": "young developmental piece, room to rise",
+   "value": 2059,
+   "age": 22.0,
+   "proj": 63.0
+  },
+  "12670": {
+   "category": "Young Upside",
+   "cluster": 2,
+   "stage": "prime",
+   "tier": "F",
+   "why": "young developmental piece, room to rise",
+   "value": 1531,
+   "age": 25.0,
+   "proj": 35.5
+  },
+  "11589": {
+   "category": "Young Upside",
+   "cluster": 2,
+   "stage": "prime",
+   "tier": "F",
+   "why": "young developmental piece, room to rise",
+   "value": 2034,
+   "age": 24.0,
+   "proj": 0.0
+  },
+  "11629": {
+   "category": "Young Upside",
+   "cluster": 2,
+   "stage": "prime",
+   "tier": "F",
+   "why": "young developmental piece, room to rise",
+   "value": 1786,
+   "age": 25.0,
+   "proj": 20.0
+  },
+  "11565": {
+   "category": "Young Upside",
+   "cluster": 2,
+   "stage": "prime",
+   "tier": "F",
+   "why": "young developmental piece, room to rise",
+   "value": 1964,
+   "age": 23.0,
+   "proj": 13.6
+  },
+  "12496": {
+   "category": "Young Upside",
+   "cluster": 2,
+   "stage": "prime",
+   "tier": "F",
+   "why": "young developmental piece, room to rise",
+   "value": 1490,
+   "age": 23.0,
+   "proj": 29.2
+  },
+  "11617": {
+   "category": "Young Upside",
+   "cluster": 2,
+   "stage": "prime",
+   "tier": "F",
+   "why": "young developmental piece, room to rise",
+   "value": 1478,
+   "age": 24.0,
+   "proj": 6.8
+  },
+  "13272": {
+   "category": "Young Upside",
+   "cluster": 2,
+   "stage": "prime",
+   "tier": "F",
+   "why": "young developmental piece, room to rise",
+   "value": 1884,
+   "age": 24.0,
+   "proj": 54.9
+  },
+  "12523": {
+   "category": "Young Upside",
+   "cluster": 2,
+   "stage": "prime",
+   "tier": "F",
+   "why": "young developmental piece, room to rise",
+   "value": 1460,
+   "age": 24.0,
+   "proj": 30.2
   },
   "13270": {
    "category": "Young Upside",
@@ -1959,7 +2009,7 @@
    "stage": "prime",
    "tier": "F",
    "why": "young developmental piece, room to rise",
-   "value": 1479,
+   "value": 1411,
    "age": 24.0,
    "proj": 39.3
   },
@@ -1969,79 +2019,9 @@
    "stage": "prime",
    "tier": "F",
    "why": "young developmental piece, room to rise",
-   "value": 1967,
+   "value": 1841,
    "age": 25.0,
    "proj": 7.6
-  },
-  "12634": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "F",
-   "why": "young developmental piece, room to rise",
-   "value": 1468,
-   "age": 24.0,
-   "proj": 2.4
-  },
-  "11617": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "F",
-   "why": "young developmental piece, room to rise",
-   "value": 1460,
-   "age": 24.0,
-   "proj": 6.8
-  },
-  "12543": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "F",
-   "why": "young developmental piece, room to rise",
-   "value": 1903,
-   "age": 24.0,
-   "proj": 24.4
-  },
-  "9229": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "F",
-   "why": "young developmental piece, room to rise",
-   "value": 1840,
-   "age": 24.0,
-   "proj": 21.3
-  },
-  "11565": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "F",
-   "why": "young developmental piece, room to rise",
-   "value": 1794,
-   "age": 23.0,
-   "proj": 13.6
-  },
-  "12500": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "F",
-   "why": "young developmental piece, room to rise",
-   "value": 1381,
-   "age": 23.0,
-   "proj": 12.4
-  },
-  "13282": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "F",
-   "why": "young developmental piece, room to rise",
-   "value": 1369,
-   "age": 22.0,
-   "proj": 53.3
   },
   "13348": {
    "category": "Young Upside",
@@ -2049,39 +2029,19 @@
    "stage": "prime",
    "tier": "F",
    "why": "young developmental piece, room to rise",
-   "value": 1364,
+   "value": 1398,
    "age": 24.0,
    "proj": 30.7
   },
-  "11579": {
+  "12543": {
    "category": "Young Upside",
    "cluster": 2,
    "stage": "prime",
    "tier": "F",
    "why": "young developmental piece, room to rise",
-   "value": 1749,
-   "age": 23.0,
-   "proj": 22.6
-  },
-  "9497": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "F",
-   "why": "young developmental piece, room to rise",
-   "value": 1345,
-   "age": 25.0,
-   "proj": 0.0
-  },
-  "11616": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "F",
-   "why": "young developmental piece, room to rise",
-   "value": 1468,
-   "age": 25.0,
-   "proj": 1.7
+   "value": 1800,
+   "age": 24.0,
+   "proj": 24.4
   },
   "12473": {
    "category": "Young Upside",
@@ -2089,19 +2049,49 @@
    "stage": "prime",
    "tier": "F",
    "why": "young developmental piece, room to rise",
-   "value": 1345,
+   "value": 1339,
    "age": 23.0,
    "proj": 15.7
   },
-  "13394": {
+  "9229": {
    "category": "Young Upside",
    "cluster": 2,
    "stage": "prime",
    "tier": "F",
    "why": "young developmental piece, room to rise",
-   "value": 1342,
+   "value": 1775,
+   "age": 24.0,
+   "proj": 21.3
+  },
+  "11616": {
+   "category": "Young Upside",
+   "cluster": 2,
+   "stage": "prime",
+   "tier": "F",
+   "why": "young developmental piece, room to rise",
+   "value": 1485,
+   "age": 25.0,
+   "proj": 1.7
+  },
+  "13282": {
+   "category": "Young Upside",
+   "cluster": 2,
+   "stage": "prime",
+   "tier": "F",
+   "why": "young developmental piece, room to rise",
+   "value": 1321,
+   "age": 22.0,
+   "proj": 53.3
+  },
+  "12500": {
+   "category": "Young Upside",
+   "cluster": 2,
+   "stage": "prime",
+   "tier": "F",
+   "why": "young developmental piece, room to rise",
+   "value": 1305,
    "age": 23.0,
-   "proj": 59.6
+   "proj": 12.4
   },
   "11569": {
    "category": "Young Upside",
@@ -2109,9 +2099,19 @@
    "stage": "prime",
    "tier": "F",
    "why": "young developmental piece, room to rise",
-   "value": 1735,
+   "value": 1724,
    "age": 23.0,
    "proj": 9.6
+  },
+  "13322": {
+   "category": "Young Upside",
+   "cluster": 2,
+   "stage": "prime",
+   "tier": "F",
+   "why": "young developmental piece, room to rise",
+   "value": 1287,
+   "age": 23.0,
+   "proj": 33.5
   },
   "13404": {
    "category": "Young Upside",
@@ -2119,39 +2119,9 @@
    "stage": "prime",
    "tier": "F",
    "why": "young developmental piece, room to rise",
-   "value": 1305,
+   "value": 1274,
    "age": 24.0,
    "proj": 0.0
-  },
-  "13272": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "F",
-   "why": "young developmental piece, room to rise",
-   "value": 1707,
-   "age": 24.0,
-   "proj": 54.9
-  },
-  "12542": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "F",
-   "why": "young developmental piece, room to rise",
-   "value": 1293,
-   "age": 24.0,
-   "proj": 4.6
-  },
-  "12520": {
-   "category": "Young Upside",
-   "cluster": 2,
-   "stage": "prime",
-   "tier": "F",
-   "why": "young developmental piece, room to rise",
-   "value": 1247,
-   "age": 24.0,
-   "proj": 4.8
   },
   "7564": {
    "category": "Win-Now Star",
@@ -2159,7 +2129,7 @@
    "stage": "mid",
    "tier": "S",
    "why": "elite value in prime, contend now",
-   "value": 9646,
+   "value": 9307,
    "age": 26.0,
    "proj": 255.5
   },
@@ -2169,19 +2139,9 @@
    "stage": "mid",
    "tier": "A",
    "why": "elite value in prime, contend now",
-   "value": 8395,
+   "value": 8148,
    "age": 26.0,
    "proj": 284.9
-  },
-  "6794": {
-   "category": "Win-Now Star",
-   "cluster": 3,
-   "stage": "mid",
-   "tier": "A",
-   "why": "elite value in prime, contend now",
-   "value": 7645,
-   "age": 27.0,
-   "proj": 208.9
   },
   "6786": {
    "category": "Win-Now Star",
@@ -2189,9 +2149,19 @@
    "stage": "mid",
    "tier": "A",
    "why": "elite value in prime, contend now",
-   "value": 7388,
+   "value": 7307,
    "age": 27.0,
    "proj": 265.7
+  },
+  "6794": {
+   "category": "Win-Now Star",
+   "cluster": 3,
+   "stage": "mid",
+   "tier": "A",
+   "why": "elite value in prime, contend now",
+   "value": 7316,
+   "age": 27.0,
+   "proj": 208.9
   },
   "8130": {
    "category": "Win-Now Star",
@@ -2199,9 +2169,29 @@
    "stage": "mid",
    "tier": "A",
    "why": "elite value in prime, contend now",
-   "value": 7694,
+   "value": 7651,
    "age": 26.0,
    "proj": 187.5
+  },
+  "8151": {
+   "category": "Win-Now Star",
+   "cluster": 3,
+   "stage": "mid",
+   "tier": "A",
+   "why": "elite value in prime, contend now",
+   "value": 7516,
+   "age": 26.0,
+   "proj": 214.7
+  },
+  "8144": {
+   "category": "Win-Now Star",
+   "cluster": 3,
+   "stage": "mid",
+   "tier": "A",
+   "why": "elite value in prime, contend now",
+   "value": 7083,
+   "age": 26.0,
+   "proj": 190.8
   },
   "6813": {
    "category": "Win-Now Star",
@@ -2209,7 +2199,7 @@
    "stage": "mid",
    "tier": "A",
    "why": "elite value in prime, contend now",
-   "value": 7165,
+   "value": 7014,
    "age": 27.0,
    "proj": 239.3
   },
@@ -2219,7 +2209,7 @@
    "stage": "mid",
    "tier": "A",
    "why": "elite value in prime, contend now",
-   "value": 6872,
+   "value": 6953,
    "age": 27.0,
    "proj": 254.4
   },
@@ -2229,29 +2219,9 @@
    "stage": "mid",
    "tier": "B",
    "why": "elite value in prime, contend now",
-   "value": 6180,
+   "value": 6210,
    "age": 27.0,
    "proj": 250.8
-  },
-  "8144": {
-   "category": "Win-Now Star",
-   "cluster": 3,
-   "stage": "mid",
-   "tier": "A",
-   "why": "elite value in prime, contend now",
-   "value": 6809,
-   "age": 26.0,
-   "proj": 190.8
-  },
-  "9224": {
-   "category": "Win-Now Star",
-   "cluster": 3,
-   "stage": "mid",
-   "tier": "B",
-   "why": "elite value in prime, contend now",
-   "value": 6395,
-   "age": 26.0,
-   "proj": 220.6
   },
   "9997": {
    "category": "Win-Now Star",
@@ -2259,19 +2229,9 @@
    "stage": "mid",
    "tier": "B",
    "why": "elite value in prime, contend now",
-   "value": 6394,
+   "value": 6512,
    "age": 26.0,
    "proj": 226.1
-  },
-  "7525": {
-   "category": "Win-Now Star",
-   "cluster": 3,
-   "stage": "mid",
-   "tier": "B",
-   "why": "elite value in prime, contend now",
-   "value": 6271,
-   "age": 27.0,
-   "proj": 224.6
   },
   "8146": {
    "category": "Win-Now Star",
@@ -2279,9 +2239,29 @@
    "stage": "mid",
    "tier": "B",
    "why": "elite value in prime, contend now",
-   "value": 6224,
+   "value": 6507,
    "age": 26.0,
    "proj": 178.8
+  },
+  "9224": {
+   "category": "Win-Now Star",
+   "cluster": 3,
+   "stage": "mid",
+   "tier": "B",
+   "why": "elite value in prime, contend now",
+   "value": 6365,
+   "age": 26.0,
+   "proj": 220.6
+  },
+  "7525": {
+   "category": "Win-Now Star",
+   "cluster": 3,
+   "stage": "mid",
+   "tier": "B",
+   "why": "elite value in prime, contend now",
+   "value": 6138,
+   "age": 27.0,
+   "proj": 224.6
   },
   "8150": {
    "category": "Win-Now Star",
@@ -2289,7 +2269,7 @@
    "stage": "mid",
    "tier": "B",
    "why": "elite value in prime, contend now",
-   "value": 5802,
+   "value": 5964,
    "age": 26.0,
    "proj": 202.4
   },
@@ -2299,39 +2279,9 @@
    "stage": "mid",
    "tier": "B",
    "why": "elite value in prime, contend now",
-   "value": 5721,
+   "value": 5857,
    "age": 27.0,
    "proj": 181.6
-  },
-  "10229": {
-   "category": "Win-Now Star",
-   "cluster": 3,
-   "stage": "mid",
-   "tier": "B",
-   "why": "elite value in prime, contend now",
-   "value": 5421,
-   "age": 26.0,
-   "proj": 192.1
-  },
-  "7526": {
-   "category": "Win-Now Star",
-   "cluster": 3,
-   "stage": "mid",
-   "tier": "B",
-   "why": "elite value in prime, contend now",
-   "value": 5661,
-   "age": 27.0,
-   "proj": 213.6
-  },
-  "7588": {
-   "category": "Win-Now Star",
-   "cluster": 3,
-   "stage": "mid",
-   "tier": "B",
-   "why": "elite value in prime, contend now",
-   "value": 5656,
-   "age": 26.0,
-   "proj": 196.0
   },
   "8167": {
    "category": "Win-Now Star",
@@ -2339,19 +2289,59 @@
    "stage": "mid",
    "tier": "B",
    "why": "elite value in prime, contend now",
-   "value": 5579,
+   "value": 5865,
    "age": 27.0,
    "proj": 165.4
   },
-  "6790": {
+  "7588": {
    "category": "Win-Now Star",
    "cluster": 3,
    "stage": "mid",
    "tier": "B",
    "why": "elite value in prime, contend now",
-   "value": 5547,
+   "value": 5769,
+   "age": 26.0,
+   "proj": 196.0
+  },
+  "10229": {
+   "category": "Win-Now Starter",
+   "cluster": 4,
+   "stage": "mid",
+   "tier": "B",
+   "why": "solid prime-age starter",
+   "value": 5388,
+   "age": 26.0,
+   "proj": 192.1
+  },
+  "6790": {
+   "category": "Win-Now Starter",
+   "cluster": 4,
+   "stage": "mid",
+   "tier": "B",
+   "why": "solid prime-age starter",
+   "value": 5526,
    "age": 27.0,
    "proj": 188.8
+  },
+  "7526": {
+   "category": "Win-Now Starter",
+   "cluster": 4,
+   "stage": "mid",
+   "tier": "B",
+   "why": "solid prime-age starter",
+   "value": 5434,
+   "age": 27.0,
+   "proj": 213.6
+  },
+  "8183": {
+   "category": "Win-Now Starter",
+   "cluster": 4,
+   "stage": "mid",
+   "tier": "B",
+   "why": "solid prime-age starter",
+   "value": 5262,
+   "age": 26.0,
+   "proj": 287.2
   },
   "7523": {
    "category": "Win-Now Starter",
@@ -2359,7 +2349,7 @@
    "stage": "mid",
    "tier": "B",
    "why": "solid prime-age starter",
-   "value": 5271,
+   "value": 5254,
    "age": 27.0,
    "proj": 303.4
   },
@@ -2369,29 +2359,9 @@
    "stage": "mid",
    "tier": "B",
    "why": "solid prime-age starter",
-   "value": 5028,
-   "age": 26.0,
-   "proj": 155.4
-  },
-  "8183": {
-   "category": "Win-Now Starter",
-   "cluster": 4,
-   "stage": "mid",
-   "tier": "B",
-   "why": "solid prime-age starter",
-   "value": 4968,
-   "age": 26.0,
-   "proj": 287.2
-  },
-  "7543": {
-   "category": "Win-Now Starter",
-   "cluster": 4,
-   "stage": "mid",
-   "tier": "C",
-   "why": "solid prime-age starter",
-   "value": 4709,
+   "value": 5099,
    "age": 27.0,
-   "proj": 186.4
+   "proj": 155.4
   },
   "7594": {
    "category": "Win-Now Starter",
@@ -2399,29 +2369,19 @@
    "stage": "mid",
    "tier": "C",
    "why": "solid prime-age starter",
-   "value": 4462,
+   "value": 4727,
    "age": 27.0,
    "proj": 136.3
   },
-  "11563": {
+  "7543": {
    "category": "Win-Now Starter",
    "cluster": 4,
    "stage": "mid",
    "tier": "C",
    "why": "solid prime-age starter",
-   "value": 4728,
-   "age": 26.0,
-   "proj": 271.9
-  },
-  "8131": {
-   "category": "Win-Now Starter",
-   "cluster": 4,
-   "stage": "mid",
-   "tier": "C",
-   "why": "solid prime-age starter",
-   "value": 4720,
-   "age": 26.0,
-   "proj": 123.7
+   "value": 4393,
+   "age": 27.0,
+   "proj": 131.5
   },
   "10232": {
    "category": "Win-Now Starter",
@@ -2429,29 +2389,19 @@
    "stage": "mid",
    "tier": "C",
    "why": "solid prime-age starter",
-   "value": 4569,
+   "value": 4810,
    "age": 26.0,
    "proj": 163.2
   },
-  "7553": {
+  "11563": {
    "category": "Win-Now Starter",
    "cluster": 4,
    "stage": "mid",
    "tier": "C",
    "why": "solid prime-age starter",
-   "value": 4453,
+   "value": 4619,
    "age": 26.0,
-   "proj": 170.2
-  },
-  "8228": {
-   "category": "Win-Now Starter",
-   "cluster": 4,
-   "stage": "mid",
-   "tier": "C",
-   "why": "solid prime-age starter",
-   "value": 4040,
-   "age": 27.0,
-   "proj": 136.5
+   "proj": 271.9
   },
   "12545": {
    "category": "Win-Now Starter",
@@ -2459,9 +2409,29 @@
    "stage": "mid",
    "tier": "C",
    "why": "solid prime-age starter",
-   "value": 4342,
+   "value": 4582,
    "age": 27.0,
    "proj": 254.0
+  },
+  "8131": {
+   "category": "Win-Now Starter",
+   "cluster": 4,
+   "stage": "mid",
+   "tier": "C",
+   "why": "solid prime-age starter",
+   "value": 4508,
+   "age": 26.0,
+   "proj": 123.7
+  },
+  "8228": {
+   "category": "Win-Now Starter",
+   "cluster": 4,
+   "stage": "mid",
+   "tier": "C",
+   "why": "solid prime-age starter",
+   "value": 4343,
+   "age": 27.0,
+   "proj": 136.5
   },
   "6804": {
    "category": "Win-Now Starter",
@@ -2469,7 +2439,7 @@
    "stage": "mid",
    "tier": "C",
    "why": "solid prime-age starter",
-   "value": 4315,
+   "value": 4259,
    "age": 27.0,
    "proj": 269.8
   },
@@ -2479,9 +2449,19 @@
    "stage": "mid",
    "tier": "C",
    "why": "solid prime-age starter",
-   "value": 4297,
+   "value": 4228,
    "age": 26.0,
    "proj": 152.2
+  },
+  "7553": {
+   "category": "Win-Now Starter",
+   "cluster": 4,
+   "stage": "mid",
+   "tier": "C",
+   "why": "solid prime-age starter",
+   "value": 4143,
+   "age": 26.0,
+   "proj": 170.2
   },
   "10222": {
    "category": "Win-Now Starter",
@@ -2489,9 +2469,9 @@
    "stage": "mid",
    "tier": "C",
    "why": "solid prime-age starter",
-   "value": 3634,
+   "value": 3499,
    "age": 26.0,
-   "proj": 185.6
+   "proj": 157.7
   },
   "6806": {
    "category": "Win-Now Starter",
@@ -2499,7 +2479,7 @@
    "stage": "mid",
    "tier": "C",
    "why": "solid prime-age starter",
-   "value": 3599,
+   "value": 3587,
    "age": 27.0,
    "proj": 146.0
   },
@@ -2509,7 +2489,7 @@
    "stage": "mid",
    "tier": "C",
    "why": "solid prime-age starter",
-   "value": 3776,
+   "value": 3811,
    "age": 27.0,
    "proj": 155.4
   },
@@ -2519,19 +2499,9 @@
    "stage": "mid",
    "tier": "C",
    "why": "solid prime-age starter",
-   "value": 3622,
+   "value": 3540,
    "age": 26.0,
    "proj": 163.6
-  },
-  "8121": {
-   "category": "Win-Now Starter",
-   "cluster": 4,
-   "stage": "mid",
-   "tier": "C",
-   "why": "solid prime-age starter",
-   "value": 3621,
-   "age": 26.0,
-   "proj": 154.8
   },
   "8408": {
    "category": "Win-Now Starter",
@@ -2539,17 +2509,27 @@
    "stage": "mid",
    "tier": "C",
    "why": "solid prime-age starter",
-   "value": 3598,
+   "value": 3480,
    "age": 27.0,
    "proj": 153.7
+  },
+  "8121": {
+   "category": "Win-Now Starter",
+   "cluster": 4,
+   "stage": "mid",
+   "tier": "D",
+   "why": "solid prime-age starter",
+   "value": 3364,
+   "age": 26.0,
+   "proj": 154.8
   },
   "8161": {
    "category": "Win-Now Starter",
    "cluster": 4,
    "stage": "mid",
-   "tier": "C",
+   "tier": "D",
    "why": "solid prime-age starter",
-   "value": 3461,
+   "value": 3359,
    "age": 27.0,
    "proj": 256.8
   },
@@ -2559,29 +2539,9 @@
    "stage": "mid",
    "tier": "D",
    "why": "solid prime-age starter",
-   "value": 3385,
+   "value": 3291,
    "age": 26.0,
    "proj": 57.4
-  },
-  "8136": {
-   "category": "Win-Now Starter",
-   "cluster": 4,
-   "stage": "mid",
-   "tier": "D",
-   "why": "solid prime-age starter",
-   "value": 3221,
-   "age": 27.0,
-   "proj": 101.4
-  },
-  "11638": {
-   "category": "Win-Now Starter",
-   "cluster": 4,
-   "stage": "mid",
-   "tier": "D",
-   "why": "solid prime-age starter",
-   "value": 3119,
-   "age": 26.0,
-   "proj": 0.0
   },
   "11559": {
    "category": "Rotational",
@@ -2589,19 +2549,29 @@
    "stage": "mid",
    "tier": "D",
    "why": "prime-age depth / flex",
-   "value": 2759,
+   "value": 2871,
    "age": 26.0,
-   "proj": 158.8
+   "proj": 159.0
   },
-  "10219": {
+  "8136": {
    "category": "Rotational",
    "cluster": 5,
    "stage": "mid",
    "tier": "D",
    "why": "prime-age depth / flex",
-   "value": 3008,
+   "value": 3212,
+   "age": 27.0,
+   "proj": 101.4
+  },
+  "11638": {
+   "category": "Rotational",
+   "cluster": 5,
+   "stage": "mid",
+   "tier": "D",
+   "why": "prime-age depth / flex",
+   "value": 3105,
    "age": 26.0,
-   "proj": 91.1
+   "proj": 0.0
   },
   "8154": {
    "category": "Rotational",
@@ -2609,9 +2579,19 @@
    "stage": "mid",
    "tier": "D",
    "why": "prime-age depth / flex",
-   "value": 2837,
+   "value": 3003,
    "age": 27.0,
    "proj": 53.2
+  },
+  "10219": {
+   "category": "Rotational",
+   "cluster": 5,
+   "stage": "mid",
+   "tier": "D",
+   "why": "prime-age depth / flex",
+   "value": 2953,
+   "age": 26.0,
+   "proj": 91.1
   },
   "7600": {
    "category": "Rotational",
@@ -2619,7 +2599,7 @@
    "stage": "mid",
    "tier": "D",
    "why": "prime-age depth / flex",
-   "value": 2820,
+   "value": 2875,
    "age": 27.0,
    "proj": 98.0
   },
@@ -2629,7 +2609,7 @@
    "stage": "mid",
    "tier": "D",
    "why": "prime-age depth / flex",
-   "value": 2763,
+   "value": 2859,
    "age": 26.0,
    "proj": 100.2
   },
@@ -2639,7 +2619,7 @@
    "stage": "mid",
    "tier": "F",
    "why": "prime-age depth / flex",
-   "value": 2123,
+   "value": 2193,
    "age": 27.0,
    "proj": 32.6
   },
@@ -2649,7 +2629,7 @@
    "stage": "mid",
    "tier": "D",
    "why": "prime-age depth / flex",
-   "value": 2727,
+   "value": 2762,
    "age": 26.0,
    "proj": 51.9
   },
@@ -2659,7 +2639,7 @@
    "stage": "mid",
    "tier": "D",
    "why": "prime-age depth / flex",
-   "value": 2684,
+   "value": 2650,
    "age": 27.0,
    "proj": 130.6
   },
@@ -2669,7 +2649,7 @@
    "stage": "mid",
    "tier": "D",
    "why": "prime-age depth / flex",
-   "value": 2676,
+   "value": 2635,
    "age": 27.0,
    "proj": 94.9
   },
@@ -2679,29 +2659,9 @@
    "stage": "mid",
    "tier": "D",
    "why": "prime-age depth / flex",
-   "value": 2583,
+   "value": 2572,
    "age": 26.0,
    "proj": 95.2
-  },
-  "6783": {
-   "category": "Rotational",
-   "cluster": 5,
-   "stage": "mid",
-   "tier": "D",
-   "why": "prime-age depth / flex",
-   "value": 2518,
-   "age": 27.0,
-   "proj": 97.2
-  },
-  "11575": {
-   "category": "Rotational",
-   "cluster": 5,
-   "stage": "mid",
-   "tier": "D",
-   "why": "prime-age depth / flex",
-   "value": 2490,
-   "age": 26.0,
-   "proj": 65.1
   },
   "10218": {
    "category": "Rotational",
@@ -2709,19 +2669,9 @@
    "stage": "mid",
    "tier": "D",
    "why": "prime-age depth / flex",
-   "value": 2486,
+   "value": 2567,
    "age": 26.0,
    "proj": 24.1
-  },
-  "8117": {
-   "category": "Rotational",
-   "cluster": 5,
-   "stage": "mid",
-   "tier": "F",
-   "why": "prime-age depth / flex",
-   "value": 1870,
-   "age": 27.0,
-   "proj": 34.2
   },
   "6826": {
    "category": "Rotational",
@@ -2729,29 +2679,9 @@
    "stage": "mid",
    "tier": "D",
    "why": "prime-age depth / flex",
-   "value": 2459,
+   "value": 2465,
    "age": 27.0,
    "proj": 47.2
-  },
-  "8172": {
-   "category": "Rotational",
-   "cluster": 5,
-   "stage": "mid",
-   "tier": "D",
-   "why": "prime-age depth / flex",
-   "value": 2437,
-   "age": 26.0,
-   "proj": 110.0
-  },
-  "12048": {
-   "category": "Rotational",
-   "cluster": 5,
-   "stage": "mid",
-   "tier": "D",
-   "why": "prime-age depth / flex",
-   "value": 2425,
-   "age": 26.0,
-   "proj": 18.4
   },
   "6865": {
    "category": "Rotational",
@@ -2759,19 +2689,69 @@
    "stage": "mid",
    "tier": "D",
    "why": "prime-age depth / flex",
-   "value": 2403,
+   "value": 2437,
    "age": 27.0,
    "proj": 63.0
   },
-  "11655": {
+  "6783": {
    "category": "Rotational",
    "cluster": 5,
    "stage": "mid",
    "tier": "D",
    "why": "prime-age depth / flex",
-   "value": 2391,
+   "value": 2418,
+   "age": 27.0,
+   "proj": 97.2
+  },
+  "8172": {
+   "category": "Rotational",
+   "cluster": 5,
+   "stage": "mid",
+   "tier": "D",
+   "why": "prime-age depth / flex",
+   "value": 2411,
    "age": 26.0,
-   "proj": 111.3
+   "proj": 110.0
+  },
+  "11575": {
+   "category": "Rotational",
+   "cluster": 5,
+   "stage": "mid",
+   "tier": "D",
+   "why": "prime-age depth / flex",
+   "value": 2372,
+   "age": 26.0,
+   "proj": 65.1
+  },
+  "8188": {
+   "category": "Rotational",
+   "cluster": 5,
+   "stage": "mid",
+   "tier": "D",
+   "why": "prime-age depth / flex",
+   "value": 2371,
+   "age": 26.0,
+   "proj": 48.0
+  },
+  "12048": {
+   "category": "Rotational",
+   "cluster": 5,
+   "stage": "mid",
+   "tier": "D",
+   "why": "prime-age depth / flex",
+   "value": 2357,
+   "age": 26.0,
+   "proj": 18.4
+  },
+  "11435": {
+   "category": "Rotational",
+   "cluster": 5,
+   "stage": "mid",
+   "tier": "D",
+   "why": "prime-age depth / flex",
+   "value": 2342,
+   "age": 27.0,
+   "proj": 56.5
   },
   "9481": {
    "category": "Rotational",
@@ -2779,7 +2759,7 @@
    "stage": "mid",
    "tier": "F",
    "why": "prime-age depth / flex",
-   "value": 1749,
+   "value": 1734,
    "age": 26.0,
    "proj": 0.0
   },
@@ -2789,19 +2769,9 @@
    "stage": "mid",
    "tier": "F",
    "why": "prime-age depth / flex",
-   "value": 1729,
+   "value": 1697,
    "age": 26.0,
    "proj": 23.3
-  },
-  "8188": {
-   "category": "Rotational",
-   "cluster": 5,
-   "stage": "mid",
-   "tier": "D",
-   "why": "prime-age depth / flex",
-   "value": 2340,
-   "age": 26.0,
-   "proj": 48.0
   },
   "7562": {
    "category": "Rotational",
@@ -2809,39 +2779,29 @@
    "stage": "mid",
    "tier": "F",
    "why": "prime-age depth / flex",
-   "value": 1700,
+   "value": 1668,
    "age": 27.0,
    "proj": 10.7
   },
-  "11370": {
+  "8117": {
    "category": "Rotational",
    "cluster": 5,
    "stage": "mid",
    "tier": "F",
    "why": "prime-age depth / flex",
-   "value": 2281,
+   "value": 1666,
+   "age": 27.0,
+   "proj": 34.2
+  },
+  "11655": {
+   "category": "Rotational",
+   "cluster": 5,
+   "stage": "mid",
+   "tier": "F",
+   "why": "prime-age depth / flex",
+   "value": 2199,
    "age": 26.0,
-   "proj": 42.8
-  },
-  "11435": {
-   "category": "Rotational",
-   "cluster": 5,
-   "stage": "mid",
-   "tier": "F",
-   "why": "prime-age depth / flex",
-   "value": 2213,
-   "age": 27.0,
-   "proj": 56.5
-  },
-  "8205": {
-   "category": "Rotational",
-   "cluster": 5,
-   "stage": "mid",
-   "tier": "F",
-   "why": "prime-age depth / flex",
-   "value": 2136,
-   "age": 27.0,
-   "proj": 53.6
+   "proj": 111.3
   },
   "8147": {
    "category": "Rotational",
@@ -2849,7 +2809,7 @@
    "stage": "mid",
    "tier": "F",
    "why": "prime-age depth / flex",
-   "value": 1578,
+   "value": 1615,
    "age": 26.0,
    "proj": 48.8
   },
@@ -2859,29 +2819,9 @@
    "stage": "mid",
    "tier": "F",
    "why": "prime-age depth / flex",
-   "value": 1697,
+   "value": 1558,
    "age": 26.0,
    "proj": 0.2
-  },
-  "8800": {
-   "category": "Rotational",
-   "cluster": 5,
-   "stage": "mid",
-   "tier": "F",
-   "why": "prime-age depth / flex",
-   "value": 2103,
-   "age": 27.0,
-   "proj": 0.0
-  },
-  "8698": {
-   "category": "Rotational",
-   "cluster": 5,
-   "stage": "mid",
-   "tier": "F",
-   "why": "prime-age depth / flex",
-   "value": 2062,
-   "age": 27.0,
-   "proj": 70.8
   },
   "7587": {
    "category": "Rotational",
@@ -2889,9 +2829,29 @@
    "stage": "mid",
    "tier": "F",
    "why": "prime-age depth / flex",
-   "value": 1534,
+   "value": 1545,
    "age": 26.0,
    "proj": 4.3
+  },
+  "11370": {
+   "category": "Rotational",
+   "cluster": 5,
+   "stage": "mid",
+   "tier": "F",
+   "why": "prime-age depth / flex",
+   "value": 2100,
+   "age": 26.0,
+   "proj": 42.8
+  },
+  "8205": {
+   "category": "Rotational",
+   "cluster": 5,
+   "stage": "mid",
+   "tier": "F",
+   "why": "prime-age depth / flex",
+   "value": 2074,
+   "age": 27.0,
+   "proj": 53.6
   },
   "10444": {
    "category": "Rotational",
@@ -2899,7 +2859,7 @@
    "stage": "mid",
    "tier": "F",
    "why": "prime-age depth / flex",
-   "value": 1521,
+   "value": 1530,
    "age": 26.0,
    "proj": 6.6
   },
@@ -2909,9 +2869,19 @@
    "stage": "mid",
    "tier": "F",
    "why": "prime-age depth / flex",
-   "value": 2003,
+   "value": 1960,
    "age": 26.0,
    "proj": 56.3
+  },
+  "8698": {
+   "category": "Rotational",
+   "cluster": 5,
+   "stage": "mid",
+   "tier": "F",
+   "why": "prime-age depth / flex",
+   "value": 1954,
+   "age": 27.0,
+   "proj": 70.8
   },
   "8135": {
    "category": "Rotational",
@@ -2919,29 +2889,19 @@
    "stage": "mid",
    "tier": "F",
    "why": "prime-age depth / flex",
-   "value": 1656,
+   "value": 1722,
    "age": 26.0,
    "proj": 34.8
   },
-  "10226": {
+  "8800": {
    "category": "Rotational",
    "cluster": 5,
    "stage": "mid",
    "tier": "F",
    "why": "prime-age depth / flex",
-   "value": 1913,
-   "age": 26.0,
-   "proj": 56.6
-  },
-  "11599": {
-   "category": "Rotational",
-   "cluster": 5,
-   "stage": "mid",
-   "tier": "F",
-   "why": "prime-age depth / flex",
-   "value": 1454,
-   "age": 26.0,
-   "proj": 33.2
+   "value": 1915,
+   "age": 27.0,
+   "proj": 0.0
   },
   "11651": {
    "category": "Rotational",
@@ -2949,9 +2909,29 @@
    "stage": "mid",
    "tier": "F",
    "why": "prime-age depth / flex",
-   "value": 1432,
+   "value": 1431,
    "age": 26.0,
    "proj": 6.2
+  },
+  "11599": {
+   "category": "Rotational",
+   "cluster": 5,
+   "stage": "mid",
+   "tier": "F",
+   "why": "prime-age depth / flex",
+   "value": 1419,
+   "age": 26.0,
+   "proj": 33.2
+  },
+  "7828": {
+   "category": "Rotational",
+   "cluster": 5,
+   "stage": "mid",
+   "tier": "F",
+   "why": "prime-age depth / flex",
+   "value": 1800,
+   "age": 27.0,
+   "proj": 48.1
   },
   "11557": {
    "category": "Rotational",
@@ -2963,25 +2943,15 @@
    "age": 26.0,
    "proj": 12.4
   },
-  "7596": {
+  "10226": {
    "category": "Rotational",
    "cluster": 5,
    "stage": "mid",
    "tier": "F",
    "why": "prime-age depth / flex",
-   "value": 1364,
-   "age": 26.0,
-   "proj": 0.0
-  },
-  "7591": {
-   "category": "Rotational",
-   "cluster": 5,
-   "stage": "mid",
-   "tier": "F",
-   "why": "prime-age depth / flex",
-   "value": 1750,
+   "value": 1782,
    "age": 27.0,
-   "proj": 34.7
+   "proj": 56.6
   },
   "11439": {
    "category": "Rotational",
@@ -2989,28 +2959,28 @@
    "stage": "mid",
    "tier": "F",
    "why": "prime-age depth / flex",
-   "value": 1328,
+   "value": 1316,
    "age": 26.0,
    "proj": 7.5
   },
-  "7828": {
+  "11199": {
    "category": "Rotational",
    "cluster": 5,
    "stage": "mid",
    "tier": "F",
    "why": "prime-age depth / flex",
-   "value": 1713,
+   "value": 1687,
    "age": 27.0,
-   "proj": 48.1
+   "proj": 50.0
   },
-  "8125": {
+  "7596": {
    "category": "Rotational",
    "cluster": 5,
    "stage": "mid",
    "tier": "F",
    "why": "prime-age depth / flex",
-   "value": 1304,
-   "age": 27.0,
+   "value": 1273,
+   "age": 26.0,
    "proj": 0.0
   },
   "4984": {
@@ -3019,7 +2989,7 @@
    "stage": "aging",
    "tier": "A",
    "why": "still-elite value but past 28, sell-high window",
-   "value": 7758,
+   "value": 7819,
    "age": 30.0,
    "proj": 354.6
   },
@@ -3029,7 +2999,7 @@
    "stage": "aging",
    "tier": "B",
    "why": "still-elite value but past 28, sell-high window",
-   "value": 5698,
+   "value": 5683,
    "age": 29.0,
    "proj": 226.8
   },
@@ -3039,19 +3009,9 @@
    "stage": "aging",
    "tier": "B",
    "why": "still-elite value but past 28, sell-high window",
-   "value": 6178,
+   "value": 6255,
    "age": 30.0,
    "proj": 260.3
-  },
-  "5859": {
-   "category": "Aging Elite",
-   "cluster": 6,
-   "stage": "aging",
-   "tier": "B",
-   "why": "still-elite value but past 28, sell-high window",
-   "value": 5385,
-   "age": 29.0,
-   "proj": 167.0
   },
   "4881": {
    "category": "Aging Elite",
@@ -3059,9 +3019,19 @@
    "stage": "aging",
    "tier": "B",
    "why": "still-elite value but past 28, sell-high window",
-   "value": 6249,
+   "value": 6327,
    "age": 29.0,
    "proj": 312.2
+  },
+  "5859": {
+   "category": "Aging Elite",
+   "cluster": 6,
+   "stage": "aging",
+   "tier": "B",
+   "why": "still-elite value but past 28, sell-high window",
+   "value": 5197,
+   "age": 29.0,
+   "proj": 167.0
   },
   "3198": {
    "category": "Aging Elite",
@@ -3069,7 +3039,7 @@
    "stage": "aging",
    "tier": "B",
    "why": "still-elite value but past 28, sell-high window",
-   "value": 5708,
+   "value": 5830,
    "age": 32.0,
    "proj": 239.8
   },
@@ -3079,7 +3049,7 @@
    "stage": "aging",
    "tier": "B",
    "why": "still-elite value but past 28, sell-high window",
-   "value": 5861,
+   "value": 5777,
    "age": 29.0,
    "proj": 298.5
   },
@@ -3089,7 +3059,7 @@
    "stage": "aging",
    "tier": "B",
    "why": "still-elite value but past 28, sell-high window",
-   "value": 5349,
+   "value": 5238,
    "age": 28.0,
    "proj": 304.4
   },
@@ -3099,7 +3069,7 @@
    "stage": "aging",
    "tier": "B",
    "why": "still-elite value but past 28, sell-high window",
-   "value": 5205,
+   "value": 5228,
    "age": 31.0,
    "proj": 273.9
   },
@@ -3107,9 +3077,9 @@
    "category": "Aging Elite",
    "cluster": 6,
    "stage": "aging",
-   "tier": "B",
+   "tier": "C",
    "why": "still-elite value but past 28, sell-high window",
-   "value": 5087,
+   "value": 4835,
    "age": 28.0,
    "proj": 291.1
   },
@@ -3119,7 +3089,7 @@
    "stage": "aging",
    "tier": "C",
    "why": "aging vet who still produces",
-   "value": 4069,
+   "value": 4096,
    "age": 31.0,
    "proj": 171.8
   },
@@ -3129,7 +3099,7 @@
    "stage": "aging",
    "tier": "C",
    "why": "aging vet who still produces",
-   "value": 4494,
+   "value": 4635,
    "age": 33.0,
    "proj": 194.3
   },
@@ -3139,7 +3109,7 @@
    "stage": "aging",
    "tier": "C",
    "why": "aging vet who still produces",
-   "value": 3930,
+   "value": 3984,
    "age": 28.0,
    "proj": 180.2
   },
@@ -3149,7 +3119,7 @@
    "stage": "aging",
    "tier": "C",
    "why": "aging vet who still produces",
-   "value": 4161,
+   "value": 4054,
    "age": 33.0,
    "proj": 206.0
   },
@@ -3159,7 +3129,7 @@
    "stage": "aging",
    "tier": "C",
    "why": "aging vet who still produces",
-   "value": 4206,
+   "value": 4417,
    "age": 33.0,
    "proj": 138.9
   },
@@ -3169,7 +3139,7 @@
    "stage": "aging",
    "tier": "C",
    "why": "aging vet who still produces",
-   "value": 4577,
+   "value": 4345,
    "age": 29.0,
    "proj": 172.3
   },
@@ -3179,49 +3149,19 @@
    "stage": "aging",
    "tier": "C",
    "why": "aging vet who still produces",
-   "value": 4623,
+   "value": 4595,
    "age": 33.0,
    "proj": 284.9
-  },
-  "5045": {
-   "category": "Veteran Starter",
-   "cluster": 7,
-   "stage": "aging",
-   "tier": "C",
-   "why": "aging vet who still produces",
-   "value": 3467,
-   "age": 31.0,
-   "proj": 144.1
   },
   "4037": {
    "category": "Veteran Starter",
    "cluster": 7,
    "stage": "aging",
-   "tier": "C",
-   "why": "aging vet who still produces",
-   "value": 3638,
-   "age": 30.0,
-   "proj": 136.9
-  },
-  "7611": {
-   "category": "Veteran Starter",
-   "cluster": 7,
-   "stage": "aging",
-   "tier": "C",
-   "why": "aging vet who still produces",
-   "value": 4042,
-   "age": 28.0,
-   "proj": 140.3
-  },
-  "1466": {
-   "category": "Veteran Starter",
-   "cluster": 7,
-   "stage": "aging",
    "tier": "D",
    "why": "aging vet who still produces",
-   "value": 3343,
-   "age": 37.0,
-   "proj": 135.4
+   "value": 3352,
+   "age": 30.0,
+   "proj": 136.9
   },
   "5967": {
    "category": "Veteran Starter",
@@ -3229,9 +3169,19 @@
    "stage": "aging",
    "tier": "D",
    "why": "aging vet who still produces",
-   "value": 3246,
+   "value": 3302,
    "age": 29.0,
    "proj": 138.9
+  },
+  "5045": {
+   "category": "Veteran Starter",
+   "cluster": 7,
+   "stage": "aging",
+   "tier": "D",
+   "why": "aging vet who still produces",
+   "value": 3301,
+   "age": 31.0,
+   "proj": 144.1
   },
   "3163": {
    "category": "Veteran Starter",
@@ -3239,9 +3189,29 @@
    "stage": "aging",
    "tier": "C",
    "why": "aging vet who still produces",
-   "value": 4029,
+   "value": 4072,
    "age": 32.0,
    "proj": 282.8
+  },
+  "1466": {
+   "category": "Veteran Starter",
+   "cluster": 7,
+   "stage": "aging",
+   "tier": "C",
+   "why": "aging vet who still produces",
+   "value": 3595,
+   "age": 37.0,
+   "proj": 135.4
+  },
+  "7611": {
+   "category": "Veteran Starter",
+   "cluster": 7,
+   "stage": "aging",
+   "tier": "C",
+   "why": "aging vet who still produces",
+   "value": 3792,
+   "age": 28.0,
+   "proj": 140.3
   },
   "5012": {
    "category": "Veteran Starter",
@@ -3249,7 +3219,7 @@
    "stage": "aging",
    "tier": "D",
    "why": "aging vet who still produces",
-   "value": 3195,
+   "value": 3135,
    "age": 31.0,
    "proj": 126.0
   },
@@ -3259,19 +3229,9 @@
    "stage": "aging",
    "tier": "C",
    "why": "aging vet who still produces",
-   "value": 3952,
+   "value": 3832,
    "age": 31.0,
-   "proj": 271.8
-  },
-  "5850": {
-   "category": "Veteran Starter",
-   "cluster": 7,
-   "stage": "aging",
-   "tier": "C",
-   "why": "aging vet who still produces",
-   "value": 3920,
-   "age": 28.0,
-   "proj": 179.3
+   "proj": 145.1
   },
   "421": {
    "category": "Veteran Starter",
@@ -3279,49 +3239,29 @@
    "stage": "aging",
    "tier": "C",
    "why": "aging vet who still produces",
-   "value": 3775,
+   "value": 3832,
    "age": 38.0,
    "proj": 273.4
   },
-  "6819": {
+  "5850": {
    "category": "Veteran Starter",
    "cluster": 7,
    "stage": "aging",
    "tier": "C",
    "why": "aging vet who still produces",
-   "value": 3656,
-   "age": 29.0,
-   "proj": 136.9
-  },
-  "7021": {
-   "category": "Veteran Starter",
-   "cluster": 7,
-   "stage": "aging",
-   "tier": "C",
-   "why": "aging vet who still produces",
-   "value": 3493,
+   "value": 3773,
    "age": 28.0,
-   "proj": 154.9
+   "proj": 179.3
   },
-  "5849": {
+  "7002": {
    "category": "Veteran Starter",
    "cluster": 7,
    "stage": "aging",
    "tier": "C",
    "why": "aging vet who still produces",
-   "value": 3626,
-   "age": 29.0,
-   "proj": 265.6
-  },
-  "5022": {
-   "category": "Veteran Starter",
-   "cluster": 7,
-   "stage": "aging",
-   "tier": "D",
-   "why": "aging vet who still produces",
-   "value": 3389,
-   "age": 31.0,
-   "proj": 83.6
+   "value": 3707,
+   "age": 30.0,
+   "proj": 138.4
   },
   "4943": {
    "category": "Veteran Starter",
@@ -3329,9 +3269,29 @@
    "stage": "aging",
    "tier": "C",
    "why": "aging vet who still produces",
-   "value": 3605,
+   "value": 3690,
    "age": 29.0,
    "proj": 259.6
+  },
+  "5022": {
+   "category": "Veteran Starter",
+   "cluster": 7,
+   "stage": "aging",
+   "tier": "D",
+   "why": "aging vet who still produces",
+   "value": 3337,
+   "age": 31.0,
+   "proj": 112.7
+  },
+  "7021": {
+   "category": "Veteran Starter",
+   "cluster": 7,
+   "stage": "aging",
+   "tier": "D",
+   "why": "aging vet who still produces",
+   "value": 3370,
+   "age": 28.0,
+   "proj": 116.8
   },
   "2449": {
    "category": "Veteran Starter",
@@ -3339,37 +3299,27 @@
    "stage": "aging",
    "tier": "C",
    "why": "aging vet who still produces",
-   "value": 3540,
+   "value": 3530,
    "age": 32.0,
    "proj": 133.1
   },
-  "7002": {
+  "5849": {
    "category": "Veteran Starter",
    "cluster": 7,
    "stage": "aging",
-   "tier": "D",
+   "tier": "C",
    "why": "aging vet who still produces",
-   "value": 3365,
-   "age": 30.0,
-   "proj": 138.4
-  },
-  "5870": {
-   "category": "Veteran Starter",
-   "cluster": 7,
-   "stage": "aging",
-   "tier": "D",
-   "why": "aging vet who still produces",
-   "value": 3327,
+   "value": 3526,
    "age": 29.0,
-   "proj": 217.6
+   "proj": 265.6
   },
   "5872": {
    "category": "Veteran Starter",
    "cluster": 7,
    "stage": "aging",
-   "tier": "D",
+   "tier": "C",
    "why": "aging vet who still produces",
-   "value": 3294,
+   "value": 3498,
    "age": 30.0,
    "proj": 127.5
   },
@@ -3377,21 +3327,21 @@
    "category": "Veteran Starter",
    "cluster": 7,
    "stage": "aging",
-   "tier": "D",
+   "tier": "C",
    "why": "aging vet who still produces",
-   "value": 3282,
+   "value": 3460,
    "age": 29.0,
    "proj": 165.8
   },
-  "4199": {
+  "6819": {
    "category": "Veteran Starter",
    "cluster": 7,
    "stage": "aging",
-   "tier": "D",
+   "tier": "C",
    "why": "aging vet who still produces",
-   "value": 3238,
-   "age": 31.0,
-   "proj": 116.0
+   "value": 3428,
+   "age": 29.0,
+   "proj": 136.9
   },
   "11834": {
    "category": "Veteran Starter",
@@ -3399,19 +3349,29 @@
    "stage": "aging",
    "tier": "D",
    "why": "aging vet who still produces",
-   "value": 3107,
+   "value": 3278,
    "age": 28.0,
    "proj": 87.9
   },
-  "5844": {
+  "4199": {
    "category": "Veteran Starter",
    "cluster": 7,
    "stage": "aging",
    "tier": "D",
    "why": "aging vet who still produces",
-   "value": 3103,
+   "value": 3249,
+   "age": 31.0,
+   "proj": 114.8
+  },
+  "5870": {
+   "category": "Veteran Starter",
+   "cluster": 7,
+   "stage": "aging",
+   "tier": "D",
+   "why": "aging vet who still produces",
+   "value": 3247,
    "age": 29.0,
-   "proj": 115.2
+   "proj": 217.6
   },
   "5001": {
    "category": "Veteran Starter",
@@ -3419,8 +3379,18 @@
    "stage": "aging",
    "tier": "D",
    "why": "aging vet who still produces",
-   "value": 3084,
+   "value": 3155,
    "age": 30.0,
+   "proj": 115.2
+  },
+  "5844": {
+   "category": "Veteran Starter",
+   "cluster": 7,
+   "stage": "aging",
+   "tier": "D",
+   "why": "aging vet who still produces",
+   "value": 3083,
+   "age": 29.0,
    "proj": 115.2
   },
   "8676": {
@@ -3429,7 +3399,7 @@
    "stage": "aging",
    "tier": "D",
    "why": "aging vet who still produces",
-   "value": 3058,
+   "value": 2919,
    "age": 28.0,
    "proj": 109.9
   },
@@ -3439,39 +3409,9 @@
    "stage": "aging",
    "tier": "D",
    "why": "older, low dynasty value, redraft depth",
-   "value": 2765,
+   "value": 2622,
    "age": 31.0,
    "proj": 143.8
-  },
-  "7049": {
-   "category": "Aging Depth",
-   "cluster": 8,
-   "stage": "aging",
-   "tier": "D",
-   "why": "older, low dynasty value, redraft depth",
-   "value": 2515,
-   "age": 29.0,
-   "proj": 105.7
-  },
-  "6130": {
-   "category": "Aging Depth",
-   "cluster": 8,
-   "stage": "aging",
-   "tier": "F",
-   "why": "older, low dynasty value, redraft depth",
-   "value": 1835,
-   "age": 29.0,
-   "proj": 30.6
-  },
-  "4454": {
-   "category": "Aging Depth",
-   "cluster": 8,
-   "stage": "aging",
-   "tier": "F",
-   "why": "older, low dynasty value, redraft depth",
-   "value": 1799,
-   "age": 31.0,
-   "proj": 47.2
   },
   "4035": {
    "category": "Aging Depth",
@@ -3479,59 +3419,9 @@
    "stage": "aging",
    "tier": "D",
    "why": "older, low dynasty value, redraft depth",
-   "value": 2359,
+   "value": 2509,
    "age": 31.0,
-   "proj": 58.4
-  },
-  "4033": {
-   "category": "Aging Depth",
-   "cluster": 8,
-   "stage": "aging",
-   "tier": "D",
-   "why": "older, low dynasty value, redraft depth",
-   "value": 2346,
-   "age": 30.0,
-   "proj": 47.8
-  },
-  "4066": {
-   "category": "Aging Depth",
-   "cluster": 8,
-   "stage": "aging",
-   "tier": "D",
-   "why": "older, low dynasty value, redraft depth",
-   "value": 2330,
-   "age": 32.0,
-   "proj": 79.3
-  },
-  "5857": {
-   "category": "Aging Depth",
-   "cluster": 8,
-   "stage": "aging",
-   "tier": "F",
-   "why": "older, low dynasty value, redraft depth",
-   "value": 1700,
-   "age": 28.0,
-   "proj": 29.5
-  },
-  "1339": {
-   "category": "Aging Depth",
-   "cluster": 8,
-   "stage": "aging",
-   "tier": "F",
-   "why": "older, low dynasty value, redraft depth",
-   "value": 1662,
-   "age": 35.0,
-   "proj": 36.7
-  },
-  "7090": {
-   "category": "Aging Depth",
-   "cluster": 8,
-   "stage": "aging",
-   "tier": "F",
-   "why": "older, low dynasty value, redraft depth",
-   "value": 2198,
-   "age": 28.0,
-   "proj": 73.4
+   "proj": 58.3
   },
   "4177": {
    "category": "Aging Depth",
@@ -3539,19 +3429,59 @@
    "stage": "aging",
    "tier": "F",
    "why": "older, low dynasty value, redraft depth",
-   "value": 1623,
+   "value": 1874,
    "age": 33.0,
    "proj": 38.4
   },
-  "5906": {
+  "4454": {
    "category": "Aging Depth",
    "cluster": 8,
    "stage": "aging",
    "tier": "F",
    "why": "older, low dynasty value, redraft depth",
-   "value": 2182,
+   "value": 1871,
+   "age": 31.0,
+   "proj": 47.2
+  },
+  "6130": {
+   "category": "Aging Depth",
+   "cluster": 8,
+   "stage": "aging",
+   "tier": "F",
+   "why": "older, low dynasty value, redraft depth",
+   "value": 1801,
    "age": 29.0,
-   "proj": 76.4
+   "proj": 30.6
+  },
+  "7049": {
+   "category": "Aging Depth",
+   "cluster": 8,
+   "stage": "aging",
+   "tier": "D",
+   "why": "older, low dynasty value, redraft depth",
+   "value": 2406,
+   "age": 29.0,
+   "proj": 105.7
+  },
+  "5857": {
+   "category": "Aging Depth",
+   "cluster": 8,
+   "stage": "aging",
+   "tier": "F",
+   "why": "older, low dynasty value, redraft depth",
+   "value": 1847,
+   "age": 28.0,
+   "proj": 29.5
+  },
+  "4066": {
+   "category": "Aging Depth",
+   "cluster": 8,
+   "stage": "aging",
+   "tier": "F",
+   "why": "older, low dynasty value, redraft depth",
+   "value": 2303,
+   "age": 32.0,
+   "proj": 79.3
   },
   "3257": {
    "category": "Aging Depth",
@@ -3559,7 +3489,7 @@
    "stage": "aging",
    "tier": "F",
    "why": "older, low dynasty value, redraft depth",
-   "value": 2180,
+   "value": 2236,
    "age": 33.0,
    "proj": 153.8
   },
@@ -3569,19 +3499,49 @@
    "stage": "aging",
    "tier": "F",
    "why": "older, low dynasty value, redraft depth",
-   "value": 2036,
+   "value": 2213,
    "age": 31.0,
    "proj": 63.9
   },
-  "4039": {
+  "5906": {
    "category": "Aging Depth",
    "cluster": 8,
    "stage": "aging",
    "tier": "F",
    "why": "older, low dynasty value, redraft depth",
-   "value": 2020,
+   "value": 2197,
+   "age": 29.0,
+   "proj": 76.4
+  },
+  "3271": {
+   "category": "Aging Depth",
+   "cluster": 8,
+   "stage": "aging",
+   "tier": "F",
+   "why": "older, low dynasty value, redraft depth",
+   "value": 1637,
    "age": 33.0,
-   "proj": 69.4
+   "proj": 32.9
+  },
+  "4033": {
+   "category": "Aging Depth",
+   "cluster": 8,
+   "stage": "aging",
+   "tier": "F",
+   "why": "older, low dynasty value, redraft depth",
+   "value": 2188,
+   "age": 30.0,
+   "proj": 47.8
+  },
+  "7090": {
+   "category": "Aging Depth",
+   "cluster": 8,
+   "stage": "aging",
+   "tier": "F",
+   "why": "older, low dynasty value, redraft depth",
+   "value": 2129,
+   "age": 28.0,
+   "proj": 73.4
   },
   "1479": {
    "category": "Aging Depth",
@@ -3589,29 +3549,39 @@
    "stage": "aging",
    "tier": "F",
    "why": "older, low dynasty value, redraft depth",
-   "value": 2004,
+   "value": 2126,
    "age": 34.0,
    "proj": 85.9
   },
-  "4950": {
+  "2505": {
    "category": "Aging Depth",
    "cluster": 8,
    "stage": "aging",
    "tier": "F",
    "why": "older, low dynasty value, redraft depth",
-   "value": 1979,
-   "age": 29.0,
-   "proj": 46.4
+   "value": 2117,
+   "age": 34.0,
+   "proj": 97.7
   },
-  "7528": {
+  "4039": {
    "category": "Aging Depth",
    "cluster": 8,
    "stage": "aging",
    "tier": "F",
    "why": "older, low dynasty value, redraft depth",
-   "value": 1969,
-   "age": 28.0,
-   "proj": 26.3
+   "value": 2105,
+   "age": 33.0,
+   "proj": 69.4
+  },
+  "1339": {
+   "category": "Aging Depth",
+   "cluster": 8,
+   "stage": "aging",
+   "tier": "F",
+   "why": "older, low dynasty value, redraft depth",
+   "value": 1527,
+   "age": 35.0,
+   "proj": 36.7
   },
   "5995": {
    "category": "Aging Depth",
@@ -3619,7 +3589,7 @@
    "stage": "aging",
    "tier": "F",
    "why": "older, low dynasty value, redraft depth",
-   "value": 1961,
+   "value": 1998,
    "age": 28.0,
    "proj": 53.2
   },
@@ -3629,9 +3599,39 @@
    "stage": "aging",
    "tier": "F",
    "why": "older, low dynasty value, redraft depth",
-   "value": 1945,
+   "value": 1928,
    "age": 28.0,
    "proj": 26.7
+  },
+  "7528": {
+   "category": "Aging Depth",
+   "cluster": 8,
+   "stage": "aging",
+   "tier": "F",
+   "why": "older, low dynasty value, redraft depth",
+   "value": 1868,
+   "age": 28.0,
+   "proj": 26.3
+  },
+  "4950": {
+   "category": "Aging Depth",
+   "cluster": 8,
+   "stage": "aging",
+   "tier": "F",
+   "why": "older, low dynasty value, redraft depth",
+   "value": 1853,
+   "age": 29.0,
+   "proj": 46.4
+  },
+  "3634": {
+   "category": "Aging Depth",
+   "cluster": 8,
+   "stage": "aging",
+   "tier": "F",
+   "why": "older, low dynasty value, redraft depth",
+   "value": 1828,
+   "age": 32.0,
+   "proj": 23.1
   },
   "6768": {
    "category": "Aging Depth",
@@ -3639,39 +3639,19 @@
    "stage": "aging",
    "tier": "F",
    "why": "older, low dynasty value, redraft depth",
-   "value": 1879,
+   "value": 1789,
    "age": 28.0,
    "proj": 93.0
   },
-  "3271": {
+  "4144": {
    "category": "Aging Depth",
    "cluster": 8,
    "stage": "aging",
    "tier": "F",
    "why": "older, low dynasty value, redraft depth",
-   "value": 1434,
-   "age": 33.0,
-   "proj": 32.9
-  },
-  "4981": {
-   "category": "Aging Depth",
-   "cluster": 8,
-   "stage": "aging",
-   "tier": "F",
-   "why": "older, low dynasty value, redraft depth",
-   "value": 1766,
+   "value": 1337,
    "age": 31.0,
-   "proj": 89.5
-  },
-  "2505": {
-   "category": "Aging Depth",
-   "cluster": 8,
-   "stage": "aging",
-   "tier": "F",
-   "why": "older, low dynasty value, redraft depth",
-   "value": 1738,
-   "age": 34.0,
-   "proj": 97.7
+   "proj": 29.5
   },
   "1373": {
    "category": "Aging Depth",
@@ -3679,9 +3659,29 @@
    "stage": "aging",
    "tier": "F",
    "why": "older, low dynasty value, redraft depth",
-   "value": 1721,
+   "value": 1763,
    "age": 36.0,
    "proj": 188.8
+  },
+  "2307": {
+   "category": "Aging Depth",
+   "cluster": 8,
+   "stage": "aging",
+   "tier": "F",
+   "why": "older, low dynasty value, redraft depth",
+   "value": 1318,
+   "age": 32.0,
+   "proj": 13.1
+  },
+  "1166": {
+   "category": "Aging Depth",
+   "cluster": 8,
+   "stage": "aging",
+   "tier": "F",
+   "why": "older, low dynasty value, redraft depth",
+   "value": 1732,
+   "age": 38.0,
+   "proj": 54.8
   }
  }
 }

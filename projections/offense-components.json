@@ -1,5 +1,5 @@
 {
- "count": 654,
+ "count": 659,
  "players": [
   {
    "sleeper_id": "10217",
@@ -72,7 +72,7 @@
     "pass_2pt": 1.0
    },
    "pp_stats": {
-    "pass_yd": 2876.18,
+    "pass_yd": 2885.52,
     "pass_td": 13.0,
     "pass_int": 8.0,
     "rush_yd": 94.0,
@@ -177,7 +177,7 @@
   {
    "sleeper_id": "11565",
    "name": "J.J. McCarthy",
-   "team": "MIN",
+   "team": "NYG",
    "pos": "QB",
    "sleeper_stats": {
     "pass_yd": 213.0,
@@ -540,6 +540,19 @@
    ]
   },
   {
+   "sleeper_id": "1737",
+   "name": "Case Keenum",
+   "team": "CHI",
+   "pos": "QB",
+   "sleeper_stats": {
+    "pass_yd": 194.0,
+    "pass_td": 1.0,
+    "pass_int": 1.0
+   },
+   "pp_stats": null,
+   "pp_borrowed": []
+  },
+  {
    "sleeper_id": "1837",
    "name": "Jimmy Garoppolo",
    "team": null,
@@ -894,14 +907,15 @@
     "pass_2pt": 1.0
    },
    "pp_stats": {
-    "pass_yd": 3487.65,
-    "rush_yd": 309.5,
-    "pass_td": 25.28,
-    "rush_td": 1.68,
-    "pass_int": 13.0
+    "pass_yd": 215.5,
+    "rush_yd": 16.5,
+    "pass_td": 1.5,
+    "pass_int": 13.0,
+    "rush_td": 2.0
    },
    "pp_borrowed": [
-    "pass_int"
+    "pass_int",
+    "rush_td"
    ]
   },
   {
@@ -1756,7 +1770,7 @@
   {
    "sleeper_id": "11579",
    "name": "Audric Estime",
-   "team": "NO",
+   "team": "MIN",
    "pos": "RB",
    "sleeper_stats": {
     "rush_yd": 119.0,
@@ -2105,7 +2119,7 @@
   {
    "sleeper_id": "12476",
    "name": "Devin Neal",
-   "team": null,
+   "team": "MIN",
    "pos": "RB",
    "sleeper_stats": {
     "rush_yd": 160.0,
@@ -2157,7 +2171,7 @@
    "pp_stats": {
     "rush_yd": 27.5,
     "rec_yd": 19.5,
-    "rush_td": 4.49,
+    "rush_td": 4.23,
     "rec": 37.0,
     "rec_td": 2.0
    },
@@ -2367,7 +2381,7 @@
    "pp_stats": {
     "rush_yd": 606.7,
     "rec_yd": 2.5,
-    "rush_td": 7.85,
+    "rush_td": 8.72,
     "rec": 19.0,
     "rec_td": 1.0
    },
@@ -2812,6 +2826,19 @@
    "pp_borrowed": []
   },
   {
+   "sleeper_id": "14026",
+   "name": "DJ Herman",
+   "team": "MIA",
+   "pos": "RB",
+   "sleeper_stats": {
+    "rush_yd": 30.0,
+    "rec": 5.0,
+    "rec_yd": 52.0
+   },
+   "pp_stats": null,
+   "pp_borrowed": []
+  },
+  {
    "sleeper_id": "2359",
    "name": "Ameer Abdullah",
    "team": "JAX",
@@ -2900,7 +2927,7 @@
    "pp_stats": {
     "rush_yd": 16.5,
     "rec_yd": 12.5,
-    "rush_td": 4.13,
+    "rush_td": 4.12,
     "rec": 20.0,
     "rec_td": 1.0
    },
@@ -2981,7 +3008,7 @@
     "rush_yd": 479.89,
     "rec_yd": 15.5,
     "rec": 2.5,
-    "rush_td": 6.15,
+    "rush_td": 5.76,
     "rec_td": 1.0
    },
    "pp_borrowed": [
@@ -3004,7 +3031,7 @@
   {
    "sleeper_id": "4663",
    "name": "Austin Ekeler",
-   "team": null,
+   "team": "WAS",
    "pos": "RB",
    "sleeper_stats": {
     "rush_yd": 41.0,
@@ -3017,7 +3044,7 @@
   {
    "sleeper_id": "4718",
    "name": "Dare Ogunbowale",
-   "team": "LV",
+   "team": "HOU",
    "pos": "RB",
    "sleeper_stats": {
     "rush_yd": 24.0,
@@ -3313,13 +3340,14 @@
     "fum_lost": 1.0
    },
    "pp_stats": {
-    "rush_yd": 708.5,
+    "rush_yd": 32.5,
     "rec_yd": 12.5,
-    "rush_td": 5.43,
+    "rush_td": 4.0,
     "rec": 38.0,
     "rec_td": 1.0
    },
    "pp_borrowed": [
+    "rush_td",
     "rec",
     "rec_td"
    ]
@@ -3366,13 +3394,16 @@
     "rush_2pt": 1.0
    },
    "pp_stats": {
-    "rush_yd": 821.39,
-    "rec_yd": 325.5,
+    "rush_yd": 41.5,
+    "rec_yd": 11.5,
     "rec": 2,
-    "rush_td": 5.4,
-    "rec_td": 2.67
+    "rush_td": 6.0,
+    "rec_td": 2.0
    },
-   "pp_borrowed": []
+   "pp_borrowed": [
+    "rush_td",
+    "rec_td"
+   ]
   },
   {
    "sleeper_id": "7561",
@@ -3403,7 +3434,7 @@
    "pp_stats": {
     "rush_yd": 26.5,
     "rec_yd": 12.5,
-    "rush_td": 4.51,
+    "rush_td": 4.66,
     "rec": 47.0,
     "rec_td": 2.0
    },
@@ -3909,13 +3940,16 @@
     "fum_lost": 2.0
    },
    "pp_stats": {
-    "rush_yd": 959.83,
-    "rec_yd": 375.5,
+    "rush_yd": 58.5,
+    "rec_yd": 27.5,
     "rec": 4,
-    "rush_td": 5.27,
-    "rec_td": 4.67
+    "rush_td": 6.0,
+    "rec_td": 2.0
    },
-   "pp_borrowed": []
+   "pp_borrowed": [
+    "rush_td",
+    "rec_td"
+   ]
   },
   {
    "sleeper_id": "9227",
@@ -4103,14 +4137,15 @@
     "fum_lost": 1.0
    },
    "pp_stats": {
-    "rec_yd": 672.84,
-    "rec_td": 4.67,
+    "rec_yd": 35.5,
     "rush_yd": 83.0,
-    "rec": 70.0
+    "rec": 70.0,
+    "rec_td": 6.0
    },
    "pp_borrowed": [
     "rush_yd",
-    "rec"
+    "rec",
+    "rec_td"
    ]
   },
   {
@@ -4224,6 +4259,18 @@
    "sleeper_stats": {
     "rec": 3.0,
     "rec_yd": 35.0
+   },
+   "pp_stats": null,
+   "pp_borrowed": []
+  },
+  {
+   "sleeper_id": "11157",
+   "name": "Brycen Tremayne",
+   "team": "CAR",
+   "pos": "WR",
+   "sleeper_stats": {
+    "rec": 8.0,
+    "rec_yd": 56.0
    },
    "pp_stats": null,
    "pp_borrowed": []
@@ -4434,7 +4481,7 @@
     "rec_td": 3.0
    },
    "pp_stats": {
-    "rec_yd": 802.31,
+    "rec_yd": 806.88,
     "rush_yd": 10.0,
     "rec": 35.0,
     "rec_td": 3.0
@@ -5287,6 +5334,18 @@
    "pp_borrowed": []
   },
   {
+   "sleeper_id": "13264",
+   "name": "Dohnte Meyers",
+   "team": "CIN",
+   "pos": "WR",
+   "sleeper_stats": {
+    "rec": 17.0,
+    "rec_yd": 190.0
+   },
+   "pp_stats": null,
+   "pp_borrowed": []
+  },
+  {
    "sleeper_id": "13268",
    "name": "Elijah Sarratt",
    "team": "BAL",
@@ -5347,16 +5406,8 @@
     "rec_yd": 567.0,
     "rec_td": 4.0
    },
-   "pp_stats": {
-    "rec_yd": 421.46,
-    "rec_td": 3.32,
-    "rush_yd": 14.0,
-    "rec": 45.0
-   },
-   "pp_borrowed": [
-    "rush_yd",
-    "rec"
-   ]
+   "pp_stats": null,
+   "pp_borrowed": []
   },
   {
    "sleeper_id": "13279",
@@ -5445,7 +5496,7 @@
    "pp_stats": {
     "rec_yd": 580.97,
     "rec": 2.5,
-    "rec_td": 4.32,
+    "rec_td": 4.01,
     "rush_yd": 10.0
    },
    "pp_borrowed": [
@@ -5898,7 +5949,7 @@
   {
    "sleeper_id": "2078",
    "name": "Odell Beckham",
-   "team": "NYG",
+   "team": null,
    "pos": "WR",
    "sleeper_stats": {
     "rec": 10.0,
@@ -5907,7 +5958,7 @@
    },
    "pp_stats": {
     "rec_yd": 5.5,
-    "rec_td": 0.95,
+    "rec_td": 0.31,
     "rec": 10.0
    },
    "pp_borrowed": [
@@ -6318,7 +6369,7 @@
   {
    "sleeper_id": "4992",
    "name": "Dante Pettis",
-   "team": null,
+   "team": "SF",
    "pos": "WR",
    "sleeper_stats": {
     "rush_yd": 6.0,
@@ -6379,6 +6430,19 @@
    "sleeper_stats": {
     "rec": 3.0,
     "rec_yd": 34.0
+   },
+   "pp_stats": null,
+   "pp_borrowed": []
+  },
+  {
+   "sleeper_id": "5773",
+   "name": "KhaDarel Hodge",
+   "team": "SF",
+   "pos": "WR",
+   "sleeper_stats": {
+    "rec": 8.0,
+    "rec_yd": 116.0,
+    "rec_td": 1.0
    },
    "pp_stats": null,
    "pp_borrowed": []
@@ -6884,8 +6948,8 @@
    },
    "pp_stats": {
     "rec_yd": 1238.61,
-    "rush_yd": 12.5,
     "rec_td": 9.71,
+    "rush_yd": 12.5,
     "rec": 106.0
    },
    "pp_borrowed": [
@@ -8463,7 +8527,7 @@
   {
    "sleeper_id": "13431",
    "name": "Miles Kitselman",
-   "team": null,
+   "team": "DET",
    "pos": "TE",
    "sleeper_stats": {
     "rec": 13.0,
@@ -8861,13 +8925,11 @@
     "rec_td": 4.0
    },
    "pp_stats": {
-    "rec_yd": 37.5,
+    "rec_yd": 566.99,
     "rec": 3.5,
-    "rec_td": 4.0
+    "rec_td": 4.85
    },
-   "pp_borrowed": [
-    "rec_td"
-   ]
+   "pp_borrowed": []
   },
   {
    "sleeper_id": "5133",
