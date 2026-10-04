@@ -55,14 +55,14 @@ separating who gets drafted at all: among drafted players alone the AUC is 0.70-
 0.52-0.61 for stars (review B). The draft-bucket model built on the same features predicts the round
 range far better than base shares (multiclass log loss 0.52 to 0.34 at WR), but it is not shipped.
 
-**What ships (2026-10-04).** After three independent reviews: a pre-draft hit chance (`pd`) on the
-prospects board for RB (B10), WR (B10) and TE (B8), for the next draft class only, scored from each
-player's completed seasons with the current one counted as one more, at the more conservative of
-leaving now or after one more year (`pdx`). Review C's backtest found the same method calibrated for
-the next class and 2.5x too low for freshmen and sophomores, so younger classes get no number. QB
-ships nothing: its only passing candidate leaned on receiving columns that are noise for passers.
-The WR and TE picks are near-ties among passing variants (selection bias at most 0.0008 log loss).
-Everything after the draft is still draft capital alone.
+**What ships: nothing new yet (2026-10-04).** After three reviews a pre-draft hit chance shipped for
+next-class RB, WR and TE, then was pulled the same day. The models are sound on real exits (mean
+predicted over observed 0.94-1.07 for first-eligible players), but a current player has to be fed to
+them through an exit scenario, and the in-repo serving backtest (`prospect_serving_backtest.py`,
+2012-2021 seasons replayed through the exact served code) found that path about 2x low for
+first-eligible players (0.42-0.45), even when he is assumed to leave after this season (0.47-0.68).
+Freezing a junior's production at his first two seasons misses the jump most hits make in year
+three. QB never shipped. Everything after the draft is still draft capital alone.
 
 ## What it predicts
 

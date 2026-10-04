@@ -121,6 +121,7 @@ class NestedLR:
             v = bpm.ll(y[m], p[m])
             if v < best_ll:
                 best, best_ll = c, v
+        best = C if best is None else best   # too few classes to tune: the fixed C
         NestedLR.chosen.append(best)
         self.m = bpm.make_lr(best).fit(X, y)
         return self

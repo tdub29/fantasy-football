@@ -73,19 +73,30 @@ def run(spec: dict, say=print):
             subj["sid"] = "k" + subj.player_id.astype(str)
             subj["cls"] = np.maximum(season + 1, subj.hs_class + 3)
             done = bpm.predraft_profile(subj, ps, age0, season)
-            s = bpm.predraft_score(subj.assign(_pd=np.nan, _pdx=np.nan), done, {"model": model, "cols": cols}, age0, season)
+            pre = {"model": model, "cols": cols}
+            s = bpm.predraft_score(subj.assign(_pd=np.nan, _pdx=np.nan), done, pre, age0, season)
+            for ex in (3, 4):   # diagnostics: each exit alone
+                s[f"_p{ex}"] = bpm.predraft_score(subj.assign(_pd=np.nan, _pdx=np.nan), done, pre, age0, season, (ex,))._pd.to_numpy()
+            # diagnostic: the same model on his real exit row (what the forward folds score)
+            er = e.drop_duplicates("player_id").set_index("player_id")
+            s["_oracle"] = model.predict_proba(er.loc[s.player_id, cols].to_numpy(float))[:, 1]
             s = s[s._pd.notna()]
             s["y"] = s.player_id.map(hit)
             s = s[s.y.notna()]
             s["first_eligible"] = (season - s.hs_class + 1) == 3
             s["season"] = season
-            rows.append(s[["season", "player_id", "_pd", "y", "first_eligible"]])
+            rows.append(s[["season", "player_id", "_pd", "_p3", "_p4", "_oracle", "y", "first_eligible"]])
         r = pd.concat(rows)
         allr = summary(r.y.to_numpy(float), r._pd.to_numpy(float))
         fe = r[r.first_eligible]
         fer = summary(fe.y.to_numpy(float), fe._pd.to_numpy(float))
         ok = passes(allr) and passes(fer)
-        out[f"{cid} {pos}"] = {"all": allr, "first_eligible": fer, "pass": ok}
+        diag = {k: {"all": summary(r.y.to_numpy(float), r[k].to_numpy(float)),
+                    "first_eligible": summary(fe.y.to_numpy(float), fe[k].to_numpy(float))} for k in ("_p3", "_p4", "_oracle")}
+        out[f"{cid} {pos}"] = {"all": allr, "first_eligible": fer, "pass": ok, "diagnostics": diag}
+        for k, v in diag.items():
+            say(f"   {k}: all ratio {v['all'].get('ratio', float('nan')):.2f} slope {v['all'].get('slope', float('nan')):.2f} | "
+                f"first-eligible ratio {v['first_eligible'].get('ratio', float('nan')):.2f} slope {v['first_eligible'].get('slope', float('nan')):.2f}")
         say(f"{cid} {pos}: all n={allr['n']} events={allr['events']} ratio {allr.get('ratio', float('nan')):.2f} "
             f"slope {allr.get('slope', float('nan')):.2f} | first-eligible n={fer['n']} events={fer['events']} "
             f"ratio {fer.get('ratio', float('nan')):.2f} slope {fer.get('slope', float('nan')):.2f} | {'PASS' if ok else 'FAIL'}")

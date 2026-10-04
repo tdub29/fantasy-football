@@ -126,7 +126,11 @@ BOOT_P = 0.8   # a model must beat draft-only in 80% of draft-class bootstrap re
 # or not; validation-charter-v2.md addenda 1-2). A position is listed only after its candidate passed
 # the five numeric rules AND an independent leakage review; the choice among passing candidates is
 # the lowest forward log loss (addendum 2). Empty = no pre-draft forecast ships.
-PREDRAFT: dict[str, str] = {"RB": "B10", "WR": "B10", "TE": "B8"}
+# Pulled 2026-10-04 under addendum 8: the serving backtest (prospect_serving_backtest.py) found the
+# exit-scenario transform about 2x low for first-eligible players (mean ratio 0.42-0.45) although
+# the same models are calibrated on real exits (0.94-1.07). B10/B8 remain reviewed as models; the
+# way a current player is fed to them is what failed. Was {"RB": "B10", "WR": "B10", "TE": "B8"}.
+PREDRAFT: dict[str, str] = {}
 # QB is out: its only passing candidate (B9) leaned on receiving columns that are noise for passers
 # and its calibration pass was a coin flip under resampling (experiments/review-c-2026-10-04.md).
 # Positions whose career-stage model (B14, prospect_stage.py) passed the rules on all rows and on
@@ -1181,7 +1185,7 @@ def stage_score(s, done, m, age0) -> pd.DataFrame:
     return s
 
 
-def predraft_score(s, done, pre, age0, season=SEASON) -> pd.DataFrame:
+def predraft_score(s, done, pre, age0, season=SEASON, exits=(3, 4)) -> pd.DataFrame:
     """Pre-draft hit chance for the next draft class only (review C: for freshmen and sophomores the
     frozen-production scenario ran 2.5x too low on a 2014-2017 backtest; for the next class it was
     calibrated). The current season counts as one more season played, qualifying, at his completed
@@ -1195,7 +1199,7 @@ def predraft_score(s, done, pre, age0, season=SEASON) -> pd.DataFrame:
         return s
     base = done.loc[s.sid[nxt]].reset_index()
     best_p, best_x = None, None
-    for years in (3, 4):
+    for years in exits:
         v = base.copy()
         v["draft_year"] = np.maximum(season + 1, v.hs_class + years)
         extra = v.draft_year - season
