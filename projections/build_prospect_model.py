@@ -127,6 +127,11 @@ BOOT_P = 0.8   # a model must beat draft-only in 80% of draft-class bootstrap re
 # the five numeric rules AND an independent leakage review; the choice among passing candidates is
 # the lowest forward log loss (addendum 2). Empty = no pre-draft forecast ships.
 PREDRAFT: dict[str, str] = {}
+# Positions where the charter v2 candidate A10 ships: a fixed 50/50 average of the draft-only and
+# talent + capital logits. Listed only after it passed the charter's five numeric rules on identical
+# folds AND an independent review (notes/prospect-research/experiments/A10.json). The v1 three-run
+# rule still decides every other position.
+BLEND: set[str] = set()
 ROUNDS = {"R1": (1, 32), "R2": (33, 64), "R3": (65, 100), "D3": (101, 257)}
 # Our tier names, cut on the talent percentile vs every drafted player at the position.
 TIERS = [("Blue Chip", 90), ("Plus Starter", 70), ("Contributor", 45), ("Project", 20), ("Long Shot", 0)]
@@ -522,6 +527,22 @@ class RCS:
         return self.fit(X).transform(X)
 
 
+def blend_p(p_draft, p_full, w=0.5):
+    """Charter v2 A10: average the two models' logits with a fixed weight (no tuning)."""
+    return 1 / (1 + np.exp(-((1 - w) * logit(p_draft) + w * logit(p_full))))
+
+
+class Blend:
+    """Fitted draft-only and talent + capital models, blended (X: talent columns then log pick)."""
+    def __init__(self, draft, full, w=0.5):
+        self.draft, self.full, self.w = draft, full, w
+
+    def predict_proba(self, X):
+        X = np.asarray(X, float)
+        q = blend_p(self.draft.predict_proba(X[:, -1:])[:, 1], self.full.predict_proba(X)[:, 1], self.w)
+        return np.column_stack([1 - q, q])
+
+
 def make_lr(C: float, n_talent: int | None = None, capital: bool = False):
     """Logistic model on standardized features. capital=True treats the LAST column as log(pick),
     spline-expanded: its linear term is scaled up so the L2 penalty barely touches it, its two
@@ -782,6 +803,12 @@ def build(verbose=True):
         shipped = "full" if beats("full", "draft") else "draft"
         if beats("gbm", "draft") and beats("gbm", shipped if shipped != "draft" else "full"):
             shipped = "gbm"
+        if pos in BLEND:
+            shipped = "blend"
+            for dct in (pred, hold):
+                dct["blend"] = blend_p(dct["draft"], dct["full"])
+            res["blend"] = metrics(y, pred["blend"], ppg)
+            res["hold"]["blend"] = metrics(y, hold["blend"], ppg)
         res["shipped"] = shipped
         # Out of sample for every training player: dev classes leave-one-class-out, holdout walk-forward.
         oos = {k: np.where(dev, pred[k], hold[k]) for k in ("talent", shipped)}
@@ -803,7 +830,7 @@ def build(verbose=True):
                            for i in range(len(TIERS))]
         res["n_linked"] = int(len(tp))
         results[pos] = res
-        final[pos] = {"cols": cols, "talent": m_t, "full": m_f, "draft": m_b, "gbm": m_g, "shipped": shipped,
+        final[pos] = {"cols": cols, "talent": m_t, "full": m_f, "draft": m_b, "gbm": m_g, "blend": Blend(m_b, m_f), "shipped": shipped,
                       "ref": ref, "train": tp, "oos": dict(zip(tp.sid, zip(oos["talent"], oos[shipped])))}
         if set(cols) & SHARE_FEATS:
             res["ceiling"] = low_volume_ceiling(final[pos], pos, age0, ps)
@@ -1174,7 +1201,8 @@ def write_card(res):
     L.append("")
     L.append("| Pos | n | draft only, spline | talent + capital | LightGBM | draft only, linear | draft AUC | full AUC | Shipped hit model |")
     L.append("|---|---|---|---|---|---|---|---|---|")
-    label = {"draft": "draft only", "full": "talent + capital", "gbm": "monotone LightGBM"}
+    label = {"draft": "draft only", "full": "talent + capital", "gbm": "monotone LightGBM",
+             "blend": "50/50 blend of draft only and talent + capital (charter v2 A10, independently reviewed)"}
     for pos, r in res["results"].items():
         fw = r["forward"]
         L.append(f"| {pos} | {fw['draft']['n']} | {fw['draft']['logloss']:.4f} | {fw['full']['logloss']:.4f} | "
@@ -1389,6 +1417,9 @@ def self_check():
                                        "age_final": [20.5, 19.7, 21.6]}), 20.4)
     assert cb.breakout_age.tolist() == [19.5, 20.4, 21.6] and cb.ba_show.isna().tolist() == [False, True, True], \
         "no breakout yet: the median, floored at his current age, and shown blank"
+    # 8. the A10 blend is the logit midpoint and stays inside its two inputs.
+    q = blend_p(np.array([0.2, 0.6]), np.array([0.4, 0.6]))
+    assert np.allclose(logit(q[:1]), (logit(np.array([0.2])) + logit(np.array([0.4]))) / 2) and abs(q[1] - 0.6) < 1e-12
     print("self-check OK")
 
 
