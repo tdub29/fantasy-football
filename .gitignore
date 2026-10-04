@@ -78,3 +78,6 @@ projections/nflverse-cache/
 # One-day OCR crops from the 2026-08-22 Gibbs ingest. Kept on disk, not in git.
 site/data/_shots/_crop/
 site/_shots/
+
+# Agent worktrees: their own checkouts, never content of this one.
+.claude/worktrees/
