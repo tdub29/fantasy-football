@@ -663,6 +663,72 @@
       "notes": "The rookie toggle lists every player of the newest draft class at the position from PROSPECT_MODEL.nfl (keyed by Sleeper id), so a row opens his player card. One click on Hit % sorts it descending, the default for a probability, and the arrow on the header is the sort signal. The row count is tied to the payload so a filter bug that drops players fails here."
     },
     {
+      "id": "prospects-college-card",
+      "name": "Prospects: a college player's name opens his card from his own model record",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "location.hash='#prospects/WR'"
+        },
+        {
+          "sleepMs": 600
+        },
+        {
+          "eval": "document.querySelector('#main table.prm-table tbody tr .player-name-button').click()"
+        },
+        {
+          "sleepMs": 400
+        }
+      ],
+      "selector": ".modal .prm-card",
+      "assert": "(() => { const M = window.PROSPECT_MODEL; const name = document.querySelector('#main table.prm-table tbody tr .player-name-button').textContent; const r = M.college.find(x => x.n === name); const m = document.querySelector('.modal[role=\"dialog\"]'); if (!r || !m) return false; const t = m.textContent; const pct = Math.round(r.tp * 100) + '%'; return m.querySelector('h2').textContent.includes(name) && t.includes(r.sch) && t.includes('College %') && t.includes(pct) && t.includes('one draft-slot curve for every WR') && !t.includes('Not matched to a Sleeper player') && document.activeElement === m.querySelector('.close-btn'); })()",
+      "notes": "College players have no Sleeper id, so viewProspects hands playerModal the PROSPECT_MODEL.college record and the card renders collegeProspectBlock. The card must lead with what differs by player (talent, tier, College % from college stats alone) and state the draft-only round curve once as the position reference. Focus lands on the close button."
+    },
+    {
+      "id": "prospects-college-card-keyboard",
+      "name": "Prospects: college card opens from the keyboard, Escape closes it and returns focus",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "location.hash='#prospects/TE/later'"
+        },
+        {
+          "sleepMs": 600
+        },
+        {
+          "eval": "document.querySelector('#main table.prm-table tbody tr .player-name-button').focus()"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "sleepMs": 400
+        },
+        {
+          "eval": "window.__prmOpened = !!document.querySelector('.modal .prm-card')"
+        },
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        }
+      ],
+      "selector": "#main table.prm-table",
+      "assert": "window.__prmOpened === true && !document.querySelector('.modal-backdrop') && document.activeElement?.classList.contains('player-name-button') && !!document.activeElement.closest('#main table.prm-table')",
+      "notes": "Later classes (2028+) reach the same card. The name is a real button, so Enter opens the card, Escape closes it, and focus returns to the name that opened it."
+    },
+    {
       "id": "player-card-prospect-profile",
       "name": "Player card: Prospect profile block (tier, hit chance, breakout age, comps)",
       "path": [

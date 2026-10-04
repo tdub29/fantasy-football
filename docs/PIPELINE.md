@@ -83,8 +83,8 @@ trap lives here.
   (Gibbs, Kiorkof, ...) alongside the Vegas/Sleeper context. Toggle columns on the Sources page.
 - Smoke-test by booting `python -m http.server 8765` in `site/` and opening
   http://localhost:8765
-- Don't `git commit` unless explicitly asked; the user controls the commit
-  log.
+- Commit your own finished work without asking: stage only your files, then push the
+  branch.
 
 
 ## Why each trap above exists, in one line

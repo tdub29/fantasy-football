@@ -11596,10 +11596,11 @@
     return h('div', { class: 'pm-tabs' }, bar, ...panels);
   }
 
-  function playerModal(name, ranked, sleeper) {
+  function playerModal(name, ranked, sleeper, college = null) {
     const restoreFocus = document.activeElement;
     const titleId = `player-dialog-${norm(name).replace(/\s+/g, '-')}`;
-    const expertBadges = activeExpertSources().map(src => {
+    // A college prospect has no id, and a name match would borrow an NFL namesake's ranks.
+    const expertBadges = (college ? [] : activeExpertSources()).map(src => {
       const e = expertEntry(src, name, sleeper?.id || ranked?._sleeperId);
       if (!e) return null;
       const val = e.rank != null ? `#${e.rank} · ${e.pos}${e.posRank != null ? e.posRank : ''}` : `${e.pos}${e.posRank != null ? e.posRank : ''}`;
@@ -11667,8 +11668,8 @@
             h('h2', { id:titleId, style:{ marginTop:0, marginBottom:'4px' } }, name,
               sleeper ? injuryChip(sleeper.id) : null),
             h('div', { class:'row gap-4 wrap', style:{ marginBottom:'12px' } },
-              ranked ? posChip(ranked.pos) : sleeper ? posChip(sleeper.pos) : null,
-              ranked ? teamChip(ranked.team) : sleeper ? teamChip(sleeper.team) : null,
+              ranked ? posChip(ranked.pos) : sleeper ? posChip(sleeper.pos) : college ? posChip(college.p) : null,
+              ranked ? teamChip(ranked.team) : sleeper ? teamChip(sleeper.team) : college ? h('span', { class:'badge' }, college.sch) : null,
               rookieBadge(ranked || {}),
               uncertainBadge(ranked || {}),
               depBadge(ranked || {}),
@@ -11745,13 +11746,14 @@
             injuryHistoryBlock(sleeper),
             contractBlock(sleeper),
             prospectBlock(sleeper),
-            prospectModelBlock(sleeper),
-            playerInfoBlock(name, sleeper),
+            college ? collegeProspectBlock(college) : prospectModelBlock(sleeper),
+            college ? null : playerInfoBlock(name, sleeper),
           ] },
         ]),
         sleeper ? h('div', { class:'tip', style:{ marginBottom:'12px' } },
           [sleeper.college, (sleeper.exp != null ? `${sleeper.exp} yr exp` : null), `Sleeper #${sleeper.id}`].filter(Boolean).join('  ·  ')
-        ) : h('div', { class:'tip', style:{ marginBottom:'12px' } }, 'Not matched to a Sleeper player.')
+        ) : h('div', { class:'tip', style:{ marginBottom:'12px' } },
+          college ? `College prospect at ${college.sch}, not in the NFL yet.` : 'Not matched to a Sleeper player.')
       )
     );
     document.addEventListener('keydown', onKeydown);
@@ -12023,9 +12025,10 @@
   // ============================================================
   // Built by projections/build_prospect_model.py; method and honest error bars in
   // notes/prospect-research/model-card.md. Draft capital is most of the signal, so
-  // where college stats did not beat it on the held-out draft classes (every position
-  // since 2026-09-28) the hit chance is the draft-only model and the talent score is
-  // shown as a profile, not a forecast.
+  // where college stats did not add to it in validation (every position since
+  // 2026-09-28) a drafted player's hit chance is the draft-only model. Before the draft
+  // there is no slot, so a college player's own read is the college-only model (tp),
+  // shown with its holdout accuracy.
   const PM_TIER_CLS = ['S', 'A', 'B', 'C', 'D'];
   const pmPct = (p) => p == null ? '·' : `${Math.round(p * 100)}%`;
   const pmNum = (d) => (v) => v == null ? '·' : Number(v).toFixed(d);
@@ -12071,6 +12074,72 @@
         `${n} (${y}, pick ${pk}, best ${Number(ppg).toFixed(1)} PPG, ${hit ? 'hit' : 'miss'})${i < cp.length - 1 ? '; ' : ''}`)));
   }
 
+  // What the college profile is worth before a draft slot exists, in the holdout's own numbers.
+  // AUC read plainly: how often a random eventual hit ranks above a random miss.
+  function pmTrust(pos) {
+    const meta = window.PROSPECT_MODEL.pos[pos] || {}, a = meta.auc || {};
+    if (a.talent == null) return null;
+    // Optimistic on two counts the model card records: the inherited feature sets were pruned
+    // with these classes in view, and the QB and TE holdouts have 8 and 6 hits.
+    return `On the held-out ${meta.holdout} draft classes, college stats alone ranked a random ${pos} hit `
+      + `above a random miss ${pmPct(a.talent)} of the time (a coin flip is 50%; draft slot, once known, ${pmPct(a.draft)}). `
+      + `Read it as optimistic: those classes also helped pick the features${pos === 'QB' || pos === 'TE' ? ', and they hold only a handful of hits' : ''}. `
+      + 'It is ranking evidence; the percentages have no calibration check of their own.';
+  }
+  // Draft-only positions give every player the same round curve, so it is stated once as a
+  // position reference, never as one player's forecast.
+  const PM_ROUNDS = ['Round 1', 'Round 2', 'Round 3', 'Day 3'];
+  function pmSlotLine(pos, r) {
+    if ((window.PROSPECT_MODEL.pos[pos] || {}).shipped !== 'draft' || !r) return null;
+    return `Once he is drafted, slot is the forecast: college stats on top of slot did not pass every validation run, `
+      + `so hit chance follows one draft-slot curve for every ${pos}, averaging ${PM_ROUNDS.map((n, i) => `${n} ${pmPct(r[i])}`).join(', ')}.`;
+  }
+  // Hand-written from model-card.md "Bottom line"; the WR model is the one carrying the flag.
+  // Untested as a cause until someone refits without it (handoff-wr-early-declare-2026-10-03.md).
+  const PM_WR_EARLY = 'The model card\'s best explanation for the WR miss on 2020-2023 is the early-declare flag, not yet tested by a refit: '
+    + 'four-year WRs hit 5% of the time in 2008-2019 and 11% in 2020-2023, probably the COVID extra year. '
+    + 'The college read uses the same flag, so it may underrate a four-year WR.';
+
+  // Card for a current college player (window.PROSPECT_MODEL.college). No Sleeper id and no
+  // draft slot exist yet, so the individual read is the college-only model and its track record.
+  function collegeProspectBlock(r) {
+    const M = window.PROSPECT_MODEL;
+    if (!M || !r) return null;
+    const meta = M.pos[r.p] || {};
+    const peers = M.college.filter(x => x.p === r.p && x.cls === r.cls);
+    const rank = peers.filter(x => x.ts > r.ts).length + 1;
+    const tierHit = (meta.tier_hit || [])[r.tr];
+    const tiles = [
+      pmTile('Tier', pmTierChip(r.tr), 'Our tier, cut on the talent score'),
+      pmTile('Talent', h('span', null, `${r.ts} `, pmPips(r.ts)),
+        `College profile with no draft capital: percentile against every drafted ${r.p} since 2008`,
+        `#${rank} of ${peers.length} listed`),
+      pmTile('College %', pmPct(r.tp), 'Hit chance from college stats alone, if he is drafted. Its ranking was checked on a holdout; the percentage has no calibration check. Undrafted players are not in the history.', 'if drafted'),
+      r.ba != null ? pmTile('Breakout age', Number(r.ba).toFixed(1),
+        'Age at his first college season at the dominator line. Profile only, no model uses it') : null,
+      r.age != null ? pmTile('Draft age', pmNum(1)(r.age),
+        'Estimated age at the draft he is scored for: the more conservative of leaving after his third or fourth college year. No public birth dates', 'est.') : null,
+      ...pmStatCols(r.p).map(([k, label, f, t]) => r.st && r.st[k] != null ? pmTile(label, f(r.st[k]), t) : null),
+      r.st && r.st.stars != null ? pmTile('Recruit', `${r.st.stars}-star`, 'Recruiting stars out of high school') : null,
+    ].filter(Boolean);
+    const read = [
+      tierHit && tierHit[1] != null
+        ? `Past ${M.tiers[r.tr]} ${r.p}s hit ${pmPct(tierHit[1])} of the time (${tierHit[0]} players, out of sample), `
+          + 'but all were drafted, and where they went carries much of that.' : null,
+      pmTrust(r.p),
+    ].filter(Boolean).join(' ');
+    return h('div', { class:'card adv-card prm-card' },
+      h('div', { class:'card-title' }, 'Prospect profile'),
+      h('div', { class:'tip', style:{ marginBottom:'8px' } },
+        `Hit = ${(meta.target || '').replace(/^Top/, 'top')}. ${r.sch}, first eligible for the ${r.cls} draft.`),
+      h('div', { class:'adv-grid' }, ...tiles),
+      read ? h('div', { class:'tip prm-line' }, read) : null,
+      pmSlotLine(r.p, r.r) ? h('div', { class:'tip prm-line' }, pmSlotLine(r.p, r.r)) : null,
+      r.p === 'WR' && meta.shipped === 'draft' ? h('div', { class:'tip prm-line' }, PM_WR_EARLY) : null,
+      r.ln ? h('div', { class:'tip prm-line' }, r.ln) : null,
+      pmComps(r.cp));
+  }
+
   function prospectModelBlock(sleeper) {
     const M = window.PROSPECT_MODEL;
     const me = sleeper && M && M.nfl && M.nfl[String(sleeper.id)];
@@ -12090,7 +12159,8 @@
         `College profile with no draft capital: percentile against every drafted ${me.p} since 2008`) : null,
       pmTile('Hit chance', pmPct(me.hp),
         capOnly ? `Draft capital alone. At ${me.p}, college stats did not beat draft slot on the held-out ${meta.holdout || ''} draft classes.`
-          : 'College profile plus draft capital', capOnly ? 'draft slot only' : `talent only ${pmPct(me.tp)}`),
+          : 'College profile plus draft capital',
+        capOnly ? `slot only${me.tp != null ? `, college alone ${pmPct(me.tp)}` : ''}` : `talent only ${pmPct(me.tp)}`),
       me.ba != null ? pmTile('Breakout age', Number(me.ba).toFixed(1),
         'Age at his first college season at the dominator line (never broke out: final age plus one)') : null,
       ...pmStatCols(me.p).map(([k, label, f, t]) => me.st && me.st[k] != null ? pmTile(label, f(me.st[k]), t) : null),
@@ -12127,7 +12197,9 @@
       ? Object.entries(M.nfl).filter(([, r]) => r.p === pos && r.y === M.season).map(([id, r]) => ({ ...r, id }))
       : M.college.filter(r => r.p === pos && (mode === 'later' ? r.cls > next : r.cls === next));
     const scen = (M.college.find(r => r.p === pos) || {}).r;
-    const roundNames = ['Round 1', 'Round 2', 'Round 3', 'Day 3'];
+    const roundNames = PM_ROUNDS;
+    // College players have no Sleeper id, so their card is built from the model record itself.
+    const openRow = (r) => rookies ? openPlayerDetail(r.n, r.id) : document.body.appendChild(playerModal(r.n, null, null, r));
 
     main.appendChild(breadcrumbs([{ label:'Tools' }, { label:'Prospects' }]));
     main.appendChild(pageHeader({
@@ -12143,15 +12215,19 @@
           onclick:() => navigate(hashFor(pos, m)) }, label))));
 
     const hitLine = (meta.tier_hit || []).map(([n, hit], i) => hit == null ? null : `${M.tiers[i]} ${pmPct(hit)}`).filter(Boolean).join(', ');
+    // Lead with what differs player to player. The shared round curve is a reference line, and
+    // the validation result stays on the page in full.
     const notes = [
-      capOnly
-        ? `At ${pos} the college stats did not beat draft slot on the held-out ${meta.holdout || ''} draft classes, so the forecast is draft capital alone`
-          + (scen ? `: ${roundNames.map((r, i) => `${r} ${pmPct(scen[i])}`).join(', ')} for any ${pos}.` : '.')
-          + ' Talent and tier describe the college profile only.'
-        : rookies ? 'Hit chance uses his actual draft slot plus his college profile.'
-          : `If drafted columns average the model over every pick in the range (Round 1 = 1-32, Round 2 = 33-64, `
-            + `Round 3 = 65-100, Day 3 = 101-257).`,
+      rookies
+        ? (capOnly ? 'Hit % is his actual draft slot alone. College % is the pre-draft read from his college stats, for comparison.'
+          : 'Hit chance uses his actual draft slot plus his college profile.')
+        : [pmTrust(pos), 'College % is that model\'s hit chance if he is drafted; undrafted players are not in the history.']
+          .filter(Boolean).join(' '),
       hitLine ? `Past hit rate by tier, out of sample: ${hitLine}.` : null,
+      rookies ? null : capOnly ? pmSlotLine(pos, scen)
+        : `If drafted columns average the model over every pick in the range (Round 1 = 1-32, Round 2 = 33-64, `
+          + `Round 3 = 65-100, Day 3 = 101-257).`,
+      pos === 'WR' && capOnly ? PM_WR_EARLY : null,
       rookies ? null : 'College ages are estimated from class year (no public birth dates), and a live season counts once it reaches 6 games. '
         + 'Each player is scored at the more conservative of leaving after his third or fourth college year.',
     ].filter(Boolean);
@@ -12165,6 +12241,7 @@
       ['ts', 'Talent', { right:true, title:`College profile, no draft capital: percentile vs drafted ${pos}s since 2008` }],
       ['tr', 'Tier', { asc:true, title:'Our tier, cut on the talent score' }],
       rookies ? ['hp', 'Hit %', { right:true, title:capOnly ? 'Draft capital alone' : 'College profile plus his actual draft slot' }] : null,
+      ['tp', 'College %', { right:true, title:`Hit chance from college stats alone${rookies ? ', the pre-draft read' : ', if drafted'}. ${pmTrust(pos) || ''}` }],
       pos === 'QB' ? null : ['ba', 'Breakout', { right:true, asc:true, title:'Age at his first college season at the dominator line (blank: not yet). Profile only, no model uses it' }],
       rookies ? null : ['age', 'Draft age', { right:true, asc:true, title:'Estimated age at the draft he is scored for: the more conservative of leaving after his third or fourth college year' }],
       ...stat.map(([k, label, , t]) => [`st.${k}`, label, { right:true, title:t }]),
@@ -12194,10 +12271,13 @@
     const fmtCell = (r, k) => {
       const v = get(r, k);
       if (k === 'tr') return pmTierChip(v);
-      if (k === 'n') return h('div', { class:'name-cell' }, h('span', { class:'name' }, v),
+      // A real button, so the card opens from the keyboard too; the row click is the mouse shortcut.
+      if (k === 'n') return h('div', { class:'name-cell' },
+        h('button', { type:'button', class:'name player-name-button',
+          onclick:(e) => { e.stopPropagation(); openRow(r); } }, v),
         r.sch ? h('span', { class:'muted prm-school' }, r.sch) : null);
       if (k.startsWith('st.')) return stat.find(s => `st.${s[0]}` === k)[2](v);
-      if (k === 'hp' || /^r\d$/.test(k)) return pmPct(v);
+      if (k === 'hp' || k === 'tp' || /^r\d$/.test(k)) return pmPct(v);
       if (k === 'ba' || k === 'age') return pmNum(1)(v);
       return v == null ? '·' : String(v);
     };
@@ -12207,7 +12287,7 @@
     }
     const tbl = h('table', { class:'data prm-table' },
       h('thead', null, h('tr', null, h('th', { class:'right' }, '#'), ...cols.map(sortHdr))),
-      h('tbody', null, ...rows.map((r, i) => h('tr', rookies ? { class:'clickable', onclick:() => openPlayerDetail(r.n, r.id) } : null,
+      h('tbody', null, ...rows.map((r, i) => h('tr', { class:'clickable', onclick:() => openRow(r) },
         h('td', { class:'right tnum' }, String(i + 1)),
         ...cols.map(([k, , o]) => h('td', { class:`${o.right ? 'right ' : ''}tnum` }, fmtCell(r, k)))))));
     const card = h('div', { class:'card' });
