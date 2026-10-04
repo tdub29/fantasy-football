@@ -142,8 +142,12 @@ STAGE: set[str] = set()
 # the serving backtest (prospect_serving_backtest.py) and an independent review.
 # WR only (2026-10-04): RB passed the serving backtest pooled but failed display rule D1 (top 60 by
 # forecast: slope 0.74 against the 0.75 floor), addendum 10; WR passed both (review E + addendum 10).
-# Position -> served variant: S1 = fixed C 0.1, S3 = C picked by inner leave-one-class-out (addendum 11).
-NEXT_MODEL: dict[str, str] = {"WR": "S1"}
+# Position -> served variant: S1 = fixed C 0.1, S3 = C picked by inner leave-one-class-out (addendum 11;
+# in practice C = 0.03, the grid's floor, on a nearly flat curve). WR: S3, which beat the shipped S1 on
+# served log loss in every season resample (review G). RB is held back: S3 passes the registered gates
+# but its display-rule pass has 62% resampling support and it is effectively S1 (logit correlation
+# 0.993), which failed that rule; shipping it would be a re-roll, not a demonstrated improvement.
+NEXT_MODEL: dict[str, str] = {"WR": "S3"}
 NEXT_STAGE: set[str] = set(NEXT_MODEL)
 # Positions where the charter v2 candidate A10 ships: a fixed 50/50 average of the draft-only and
 # talent + capital logits. Listed only after it passed the charter's five numeric rules on identical
@@ -978,7 +982,9 @@ def fit_stage(ps, bio, d, t, age0) -> dict:
             v = b["vs_stars_stage"]
             # strings: the payload rounds floats to 2 places, which would show 0.066 vs 0.080 as 0.07 vs 0.08
             out[pos]["meta"]["served"] = {"logloss": f"{v['cand_logloss']:.3f}", "base_logloss": f"{v['base_logloss']:.3f}",
-                                          "auc": round(v["cand_auc"], 3), "base_auc": round(v["base_auc"], 3),
+                                          "auc": f"{v['cand_auc']:.2f}", "base_auc": f"{v['base_auc']:.2f}",
+                                          "drafted_auc_gain": f"{v['drafted_cand_auc'] - v['drafted_base_auc']:.2f}",
+                                          "auc_gain": f"{v['cand_auc'] - v['base_auc']:.2f}",
                                           "ratio": round(b["all"]["ratio"], 2), "fe_ratio": round(b["first_eligible"]["ratio"], 2),
                                           "n": b["all"]["n"], "events": b["all"]["events"],
                                           "players": b.get("players"), "players_hit": b.get("players_hit"),
@@ -1279,7 +1285,7 @@ FIELDS = {
     "r": "College only: hit probability if drafted in [Round 1, Round 2, Round 3, Day 3], at the scored exit",
     "pd": "College only: pre-draft hit probability counting the chance he goes undrafted, from his completed college "
           "seasons only (the live season is not used) and with no exit assumed. Next class: pos[].stage with stage.next "
-          "(career-stage model S1) or pos[].predraft (exit model); later classes: pos[].stage with stage.later. Null where "
+          "(career-stage model, variant in stage.model: S1 fixed C, S3 tuned C) or pos[].predraft (exit model); later classes: pos[].stage with stage.later. Null where "
           "no reviewed model serves that class or he has no completed qualifying season",
     "pdx": "College only: the draft year pd assumes (the lower of leaving after this season or, for a junior, one more)",
     "cls": "College only: first eligible draft year",

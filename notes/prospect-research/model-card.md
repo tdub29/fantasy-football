@@ -55,16 +55,18 @@ separating who gets drafted at all: among drafted players alone the AUC is 0.70-
 0.52-0.61 for stars (review B). The draft-bucket model built on the same features predicts the round
 range far better than base shares (multiclass log loss 0.52 to 0.34 at WR), but it is not shipped.
 
-**What ships (2026-10-04, after five reviews).** A pre-draft hit chance for the next draft class at
-**WR only**, from a career-stage model (S1): every FBS receiver who left college since 2008 adds one
+**What ships (2026-10-04, after seven reviews).** A pre-draft hit chance for the next draft class at
+**WR only**, from a career-stage model (S3): every FBS receiver who left college since 2008 adds one
 row per completed season, so a junior is compared with juniors on his completed seasons, with no exit
-assumed. Replayed on the 2012-2021 seasons through the served code (`prospect_serving_backtest.py`),
-it beats recruiting stars plus college year (log loss 0.080 to 0.066, AUC 0.77 to 0.89) and ranks
-better than the Talent score; its average forecast ran 19% high over all replays and 22% low on the
-2017-2021 ones. The board lists the class's top 60 by that chance (display rule D1). RB passed
-everything but D1 (slope 0.74), TE and QB failed the backtest, and the first version (an exit-scenario
-transform) was pulled when the backtest found it 2x low for first-eligible players. Everything after
-the draft is still draft capital alone.
+assumed and C tuned inside training data (0.03 in practice). Replayed on the 2012-2021 seasons through
+the served code (`prospect_serving_backtest.py`), it beats recruiting stars plus college year (log loss
+0.080 to 0.065, AUC 0.77 to 0.90; among drafted receivers alone the AUC gain is 0.09 of the 0.13) and
+ranks better than the Talent score. Its average forecast ran 15% high over all replays, 1% high on each
+season's top 60 (the list the board shows, display rule D1) and 19% low on the 2017-2021 replays.
+RB passed the gates with a near-copy of a model that had failed (62% resampling support) and is held
+back; TE and QB fail the serving backtest; the first version, an exit-scenario transform, was pulled
+when the backtest found it 2x low for first-eligible players. Everything after the draft is still draft
+capital alone.
 
 ## What it predicts
 

@@ -105,12 +105,20 @@
    "reason": "only stage 1 would be served and stage 1 alone fails"
   },
   "S1 WR": {
-   "verdict": "confirmed; ships for the next class under display rule D1",
+   "verdict": "confirmed; shipped, then replaced by S3",
    "by": "review-e-2026-10-04.md"
   },
   "S1 RB": {
    "verdict": "model confirmed; not shipped (failed display rule D1, slope 0.74)",
    "by": "review-e-2026-10-04.md"
+  },
+  "S3 WR": {
+   "verdict": "confirmed; ships for the next class (replaces S1)",
+   "by": "review-g-2026-10-04.md"
+  },
+  "S3 RB": {
+   "verdict": "confirmed under the charter, held back (62% resampling support, near-copy of S1)",
+   "by": "review-g-2026-10-04.md"
   }
  }
 }

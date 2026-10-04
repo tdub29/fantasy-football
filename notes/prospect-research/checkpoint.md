@@ -68,7 +68,16 @@ said plainly that most of the AUC gain is separating who gets drafted (among dra
   (slope 0.74). **Shipped WR only** (commit fb1a1d1); all review E fixes in; site tests pass; prospect
   verify-app checks pass and now assert the Pre-draft column. A short independent fix check is running.
 
-**Next**: if the fix check passes, the cycle is done. Open research: RB (S1 fails D1 by 0.01 of slope;
+## Cycle 6 (2026-10-04): WR upgraded to S3; RB held back
+
+- S3 (S1 with C tuned inside training, addendum 11) passes every gate at RB and WR; TE and QB fail.
+- Review G: WR S3 confirmed (beats S1 in every season resample); RB S3 passes but with 62% resampling
+  support on the display rule and is a near-copy of S1, so it is held back as a re-roll. Copy fixes in;
+  WR now serves S3. Site tests and prospect verify-app checks pass.
+
+**Next (open research)**: RB/TE/QB served models need a genuinely different idea, not a re-roll (for
+example more training seasons, or features the serving backtest says matter); later classes (stage 1)
+fail; prospective holdout from January 2027. **Next**: if the fix check passes, the cycle is done. Open research: RB (S1 fails D1 by 0.01 of slope;
 no threshold change), TE and QB (fail the serving backtest), later classes (stage 1 fails), and the
 prospective holdout from January 2027. Earlier: review E verdict on S1.
 Earlier note: review whatever of B11/B12/B14 passes; if B14 passes on stage 1-2 rows, serve underclassmen

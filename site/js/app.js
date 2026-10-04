@@ -12138,7 +12138,7 @@
           + `${v.base_logloss} for recruiting stars plus college year, AUC ${v.auc} against ${v.base_auc}. The average forecast `
           + `ran ${pct(v.ratio)} the real hit rate over all replays, ${pct(v.top60_ratio)} on each season's top 60 like this list, `
           + `and ${pct(v.late_ratio)} on the 2017-2021 replays. Among drafted players alone its edge over stars plus college year is `
-          + `smaller (independent review E: AUC gain 0.08 against 0.13 overall), so much of it is telling who gets drafted at all.`;
+          + `smaller (AUC gain ${v.drafted_auc_gain} against ${v.auc_gain} overall), so much of it is telling who gets drafted at all.`;
       })() : null,
       mode === 'later' && stg ? `Pre-draft here comes from a career-stage model: every FBS ${pos} who left college since 2008 `
         + `contributes one row per completed season (${stg.rows.toLocaleString()} rows, ${stg.players.toLocaleString()} players), so a `
@@ -12155,7 +12155,7 @@
       ['ts', 'Talent', { right:true, title:`College profile, no draft capital: percentile vs drafted ${pos}s since 2008` }],
       ['tr', 'Tier', { asc:true, title:'Our tier, cut on the talent score' }],
       (mode === 'later' && stg) ? ['pd', 'Pre-draft', { right:true, title:'Chance he hits, before the draft, counting the chance he goes undrafted, from his completed seasons compared with players at the same college year (B14)' }] : null,
-      mode === 'next' && nst ? ['pd', 'Pre-draft', { right:true, title:'Chance he hits, before the draft, counting the chance he goes undrafted, from his completed seasons compared with players at the same college year (S1)' }] : null,
+      mode === 'next' && nst ? ['pd', 'Pre-draft', { right:true, title:`Chance he hits, before the draft, counting the chance he goes undrafted, from his completed seasons compared with players at the same college year (${nst.model})` }] : null,
       mode === 'next' && pre ? ['pd', 'Pre-draft', { right:true, title:`Chance he hits, before the draft, counting the chance he goes undrafted (${pre.model}; scored at the more conservative of leaving after this season or one more)` }] : null,
       rookies ? ['hp', 'Hit %', { right:true, title:capOnly ? 'Draft capital alone' : 'College profile plus his actual draft slot' }] : null,
       pos === 'QB' ? null : ['ba', 'Breakout', { right:true, asc:true, title:'Age at his first college season at the dominator line (blank: not yet). Profile only, no model uses it' }],

@@ -91,8 +91,11 @@ def run_stage(spec: dict, say=print):
         from sklearn.metrics import roc_auc_score
         y_, pc, pb = r.y.to_numpy(float), r._pd.to_numpy(float), r._base.to_numpy(float)
         boot = bpm.class_bootstrap(y_, pb, pc, r.season.to_numpy(int))
+        dr = r.player_id.map(e.drop_duplicates("player_id").set_index("player_id").drafted).eq(1).to_numpy()
         vs = {"base_logloss": bpm.ll(y_, pb), "cand_logloss": bpm.ll(y_, pc), "base_auc": float(roc_auc_score(y_, pb)),
-              "cand_auc": float(roc_auc_score(y_, pc)), "boot_by_season": boot}
+              "cand_auc": float(roc_auc_score(y_, pc)), "boot_by_season": boot,
+              # how much of the edge survives among players who were drafted (who gets drafted is most of it)
+              "drafted_base_auc": float(roc_auc_score(y_[dr], pb[dr])), "drafted_cand_auc": float(roc_auc_score(y_[dr], pc[dr]))}
         fe = r[r.first_eligible]
         allr, fer = summary(r.y.to_numpy(float), r._pd.to_numpy(float)), summary(fe.y.to_numpy(float), fe._pd.to_numpy(float))
         ok = passes(allr) and passes(fer)
