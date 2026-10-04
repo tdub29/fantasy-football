@@ -154,7 +154,11 @@ STAGE: set[str] = set(LATER_MODEL)
 # RB: S4n4 (2026-10-04, review H): every gate passed, beats S3 on served log loss in 92% of season
 # resamples, and is a different model (logit correlation 0.944). Known risk: its D1 slope pass has
 # 68% resampling support. N=8 failed D1 (0.67); WR S4 failed the all-rows ratio, so WR stays on S3.
-NEXT_MODEL: dict[str, str] = {"WR": "S3", "RB": "S4n4"}
+# WR: S6n4 (2026-10-04, review J): S4n4 recalibrated on served-shaped rows (addendum 15). Beats the shipped
+# S3 on served log loss in 99.9% of 200,000 season resamples, gain positive in every leave-one-season-out
+# run and not carried by a few rows. Known risk (addendum 17): its first-eligible slope (1.22) stays in
+# band in only 58% of resamples and leaves it in 3 of 10 leave-one-season-out runs (under-confident).
+NEXT_MODEL: dict[str, str] = {"WR": "S6n4", "RB": "S4n4"}
 NEXT_STAGE: set[str] = set(NEXT_MODEL)
 # Positions where the charter v2 candidate A10 ships: a fixed 50/50 average of the draft-only and
 # talent + capital logits. Listed only after it passed the charter's five numeric rules on identical
@@ -1367,7 +1371,7 @@ FIELDS = {
           "stage.model: S1 fixed C, S3 tuned C, S4n = S3 plus his team's first n games this season, n in stage.live_n, S5n = S4n fit on served-shaped rows, S6n = S4n recalibrated on served-shaped rows) or "
           "pos[].predraft (exit model); later classes: pos[].later (YL1: sophomores only, fit on served-shaped "
           "sophomore rows). Null where no reviewed model serves "
-          "that class, he has no completed qualifying season, or (S4) his team has not played n games or he has no stat line this season",
+          "that class, he has no completed qualifying season, or (S4n, S5n, S6n) his team has not played n games or he has no stat line this season",
     "pdx": "College only: the draft year pd assumes (the lower of leaving after this season or, for a junior, one more)",
     "cls": "College only: first eligible draft year",
     "cid": "College only: ESPN college athlete id (the key in the SQLite store, projections/prospect_db.py)",

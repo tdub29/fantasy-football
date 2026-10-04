@@ -104,7 +104,7 @@ said plainly that most of the AUC gain is separating who gets drafted (among dra
 - Addendum 15 S6n4 (S4n4 recalibrated on served-shaped rows; replacement tests at 95% of 200,000
   resamples), `python projections/prospect_serving_backtest.py RB=S6n4 WR=S6n4`:
   - WR: every gate passes (all 1.08/1.14, first-eligible 1.07/1.22, D1 0.98/1.08); served log loss
-    0.0649 (S3) to 0.0618, better in 100% of resamples; also beats S4n4 (90%). First-eligible slope
+    0.0649 (S3) to 0.0618, better in 99.9% of resamples; also beats S4n4 (90%). First-eligible slope
     1.22 sits near the 1.25 ceiling. To independent review J; builder can serve it (gated).
   - RB: gates pass (D1 0.90/0.85) but it beats the shipped S4n4 in only 39%. Rejected at RB.
 - TE lane (closed): T1-T3 fail the all-rows and top-60 ratio (1.35-1.41); power check says a correct
@@ -132,6 +132,14 @@ said plainly that most of the AUC gain is separating who gets drafted (among dra
   prospectively. Addendum 16 records the adoption. Build, site tests and prospect verify-app pass.
 - QB lane closed: Q3 rejected on the served population (see cycle 9 entry). TE lane closed.
 - Still open: review J (WR S6n4), data-gaps lane.
+
+## Cycle 11 (2026-10-04): WR next class moves to S6n4
+
+- Review J confirmed WR S6n4 with fixes: beats S3 in 99.85-99.89% of 200,000 resamples across 40 seeds,
+  gain positive in all 10 leave-one-season-out runs and robust to dropping its top 5 gain rows; by college
+  year the ratio goes from S3's 0.92/1.61/1.53 to 1.07/1.10/1.08 (the diagnosed over-forecast fixed);
+  ranking identical to S4n4. Known risk: first-eligible slope in band in 58% of resamples (S3 92%).
+- Fixes applied (copy for S6, pd doc, NEXT_MODEL comment, addendum 17). NEXT_MODEL = WR S6n4, RB S4n4.
 
 **Next (open research)**: RB/TE/QB served models need a genuinely different idea, not a re-roll (for
 example more training seasons, or features the serving backtest says matter); later classes (stage 1)

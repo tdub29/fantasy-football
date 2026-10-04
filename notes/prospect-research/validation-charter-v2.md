@@ -338,3 +338,13 @@ support 67% (all rows) and 53% (top 30); dropping any one of four replay seasons
 slope above 1.25; among drafted players it ranks no better than stars. The prospective freeze in
 `experiments/prospective-served.json` scores it when the 2028 class's window closes.
 
+## Addendum 17, 2026-10-04 (adoption record, WR S6n4, after review J)
+
+S6n4 passed every addendum 15 gate at WR and review J confirmed it: it beats the shipped S3 on served
+log loss in 99.9% of 200,000 season resamples (stable across 40 seeds), the gain survives every
+leave-one-season-out run and dropping its top 5 gain rows, and the per-college-year ratios move from
+0.92/1.61/1.53 (S3) to 1.07/1.10/1.08. Known risk, recorded as addendum 13 did for RB: the first-eligible
+calibration slope (1.22) stays inside 0.75-1.25 in only 58% of season resamples (S3: 92%) and leaves the
+band in 3 of 10 leave-one-season-out runs. The error is under-confidence: the recalibration slope
+(0.63-0.90) squeezes forecasts. The prospective freeze compares S3 and S6n4 lists on the 2027 class.
+

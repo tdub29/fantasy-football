@@ -113,7 +113,7 @@
    "by": "review-e-2026-10-04.md"
   },
   "S3 WR": {
-   "verdict": "confirmed; ships for the next class (replaces S1)",
+   "verdict": "confirmed; shipped for the next class (replaced S1), then replaced by S6n4",
    "by": "review-g-2026-10-04.md"
   },
   "S3 RB": {
@@ -171,6 +171,14 @@
   "YL1 RB": {
    "verdict": "confirmed, fragile; shipped for RB sophomores (later classes) after fixes a-e (own later model, D1L list, no TEAM rows, copy, prospective freeze)",
    "by": "review-k-2026-10-04.md"
+  },
+  "S6n4 WR": {
+   "verdict": "confirmed with fixes; shipped (replaces S3; first-eligible slope risk, addendum 17)",
+   "by": "review-j-2026-10-04.md"
+  },
+  "S6n4 RB": {
+   "verdict": "rejected on the replacement test (beats shipped S4n4 in 39%)",
+   "by": "addendum 15 rule"
   }
  }
 }

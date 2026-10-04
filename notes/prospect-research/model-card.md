@@ -59,10 +59,11 @@ range far better than base shares (multiclass log loss 0.52 to 0.34 at WR), but 
 **WR and RB**, from career-stage models: every FBS player who left college since 2008 adds one row per
 completed season, so a junior is compared with juniors, with no exit assumed and C tuned inside
 training data. Replayed on the 2012-2021 seasons through the served code (`prospect_serving_backtest.py`):
-- **WR (S3, completed seasons only)** beats recruiting stars plus college year (log loss 0.080 to 0.065,
-  AUC 0.77 to 0.90; among drafted receivers alone the AUC gain is 0.09 of the 0.13). Average forecast
-  ran 15% high over all replays, 1% high on each season's top 60 (the list shown, display rule D1) and
-  19% low on the 2017-2021 replays.
+- **WR (S6n4, completed seasons plus his team's first 4 games, rescaled on returners)** beats
+  recruiting stars plus college year (log loss 0.080 to 0.062, AUC 0.77 to 0.90) and the previous S3
+  (0.065 to 0.062, 99.9% of season resamples). Average forecast ran 8% high over all replays and 2% low
+  on each season's top 60. Known risk: on first-eligible receivers it is under-confident (slope 1.22,
+  in band in 58% of resamples). No number until his team has played 4 games.
 - **RB (S4n4, completed seasons plus his team's first 4 games this season)** beats stars plus college
   year (log loss 0.148 to 0.118) and the completed-seasons model S3 (0.121 to 0.118, 92% of season
   resamples). Ratio 1.03 overall, 0.97 first-eligible, 1.04 on the top 60. Known risk: the top-60
