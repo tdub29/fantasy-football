@@ -1169,16 +1169,18 @@ def predraft_profile(subj, ps, age0, season=SEASON) -> pd.DataFrame:
     return f.join(subj.set_index("sid")[["weight", "stars", "hs_class"]])
 
 
-def stage_score(s, done, m, age0) -> pd.DataFrame:
-    """B14 for the classes after the next one: his profile through his last completed season, his
-    college year then, and his estimated age then. No exit is assumed, so `pdx` stays empty."""
+def stage_score(s, done, m, age0, season=SEASON, which="later") -> pd.DataFrame:
+    """A career-stage model (B14 family) on his profile through his last completed season, his
+    college year then, and his estimated age then. No exit is assumed, so `pdx` stays empty.
+    `which`: "later" = classes after the next one, "next" = the next draft class (addendum 9)."""
     s = s.copy()
-    later = s.cls.gt(SEASON + 1) & s.sid.isin(done.index)
+    cls_ok = s.cls.gt(season + 1) if which == "later" else s.cls.eq(season + 1)
+    later = cls_ok & s.sid.isin(done.index)
     if not later.any():
         return s
     v = done.loc[s.sid[later]].copy()
-    v["stage"] = ((SEASON - 1) - v.hs_class + 1).clip(1, 6)
-    v["age_k"] = age0 + (SEASON - 1) - v.hs_class
+    v["stage"] = ((season - 1) - v.hs_class + 1).clip(1, 6)
+    v["age_k"] = age0 + (season - 1) - v.hs_class
     p = m["model"].predict_proba(v[m["cols"]].to_numpy(float))[:, 1]
     ok = (v.n_qual >= 1).to_numpy()
     s.loc[later, "_pd"] = np.where(ok, p, np.nan)

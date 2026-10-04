@@ -40,7 +40,8 @@ def stage_cols(pos):
 def snapshots(e, ps, age0, con) -> pd.DataFrame:
     """One row per player per completed season k <= exit, features as of k."""
     seasons = ps[["player_id", "season"]].drop_duplicates()
-    s = e[["sid", "player_id", "cpos", "exit", "hs_class", "draft_year", "hit", "best_ppg", "win", "weight", "stars"]].merge(
+    s = e[["sid", "player_id", "cpos", "exit", "hs_class", "draft_year", "outcome_year", "hit", "best_ppg", "win", "weight",
+           "stars"]].merge(
         seasons, on="player_id")
     s = s[s.season <= s.exit].copy()
     s["base_sid"] = s.sid
@@ -53,6 +54,8 @@ def snapshots(e, ps, age0, con) -> pd.DataFrame:
     s = s.join(pe.usage_quality(s.assign(cutoff=s.season.astype(int)), ps, con), on="sid")
     s["stage"] = (s.season - s.hs_class + 1).clip(1, 6)
     s["age_k"] = age0 + s.season - s.hs_class
+    nxt = set(zip(seasons.player_id, seasons.season))
+    s["plays_next"] = [(p, k + 1) in nxt for p, k in zip(s.player_id, s.season)]
     s = s[(s.n_qual >= 1) & ((s.cpos != "QB") | (s.starts >= 1))]
     return s.reset_index(drop=True)
 

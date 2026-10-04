@@ -46,6 +46,54 @@ def passes(x):
     return ("slope" in x and SLOPE[0] <= x["slope"] <= SLOPE[1] and RATIO[0] <= x["ratio"] <= RATIO[1])
 
 
+def run_stage(spec: dict, say=print):
+    """Addendum 9: S1 (B14 rows, every stage) and S2 (served-shaped rows: college year 2+ and playing
+    the next season), refit per replayed season, served to the next class by `stage_score`."""
+    warnings.filterwarnings("ignore")
+    import prospect_population as pp
+    import prospect_stage as pst
+    bpm.SOURCE = "db"
+    ps, bio, d, t, age0 = bpm.prepare(say=lambda *a: None)
+    e = pp.build(ps, bio, d, t, age0, bpm._CON, say=lambda *a: None)
+    e = e[e.draft_year >= bpm.FIRST_CLASS]
+    snap = pst.snapshots(e, ps, age0, bpm._CON)
+    hit = e.drop_duplicates("player_id").set_index("player_id").hit
+    out = {}
+    for pos, cid in spec.items():
+        cols = pst.stage_cols(pos)
+        rows = []
+        for season in SEASONS:
+            tr = snap[(snap.cpos == pos) & snap.hit.notna() & (snap.outcome_year <= season - snap.win) & (snap.season <= season - 1)]
+            if cid == "S2":
+                tr = tr[(tr.stage >= 2) & tr.plays_next]
+            model = bpm.make_lr(bpm.C_FIXED).fit(tr[cols].to_numpy(float), tr.hit.to_numpy(float))
+            cur = ps[ps.season == season].player_id.unique()
+            subj = e[(e.cpos == pos) & e.player_id.isin(cur)][["player_id", "hs_class", "weight", "stars"]].copy()
+            subj["pos"], subj["dob"] = pos, pd.NaT
+            subj["sid"] = "k" + subj.player_id.astype(str)
+            subj["cls"] = np.maximum(season + 1, subj.hs_class + 3)
+            done = bpm.predraft_profile(subj, ps, age0, season)
+            s = bpm.stage_score(subj.assign(_pd=np.nan, _pdx=np.nan), done, {"model": model, "cols": cols}, age0, season, "next")
+            s = s[s._pd.notna()]
+            s["y"] = s.player_id.map(hit)
+            s = s[s.y.notna()]
+            s["first_eligible"] = (season - s.hs_class + 1) == 3
+            rows.append(s[["player_id", "_pd", "y", "first_eligible"]])
+        r = pd.concat(rows)
+        fe = r[r.first_eligible]
+        allr, fer = summary(r.y.to_numpy(float), r._pd.to_numpy(float)), summary(fe.y.to_numpy(float), fe._pd.to_numpy(float))
+        ok = passes(allr) and passes(fer)
+        out[f"{cid} {pos}"] = {"all": allr, "first_eligible": fer, "pass": ok}
+        say(f"{cid} {pos}: all n={allr['n']} events={allr['events']} ratio {allr.get('ratio', float('nan')):.2f} "
+            f"slope {allr.get('slope', float('nan')):.2f} ll {allr.get('logloss', float('nan')):.4f} | first-eligible "
+            f"n={fer['n']} events={fer['events']} ratio {fer.get('ratio', float('nan')):.2f} slope {fer.get('slope', float('nan')):.2f} "
+            f"| {'PASS' if ok else 'FAIL'}")
+    book = json.loads(OUT.read_text(encoding="utf-8")) if OUT.exists() else {}
+    book.update(out)
+    OUT.write_text(json.dumps(book, indent=1), encoding="utf-8")
+    return out
+
+
 def run(spec: dict, say=print):
     warnings.filterwarnings("ignore")
     import prospect_experiments_b as peb
@@ -108,7 +156,12 @@ def run(spec: dict, say=print):
 
 def main():
     spec = dict(a.split("=") for a in sys.argv[1:]) or dict(bpm.PREDRAFT)
-    run(spec)
+    stage = {k: v for k, v in spec.items() if v.startswith("S")}
+    if stage:
+        run_stage(stage)
+    rest = {k: v for k, v in spec.items() if not v.startswith("S")}
+    if rest:
+        run(rest)
 
 
 if __name__ == "__main__":
