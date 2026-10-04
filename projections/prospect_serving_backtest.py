@@ -64,7 +64,7 @@ def run_stage(spec: dict, say=print):
     for pos, cid in spec.items():
         cols = pst.stage_cols(pos)
         live = None
-        if cid.startswith(("S4", "S5")):   # addenda 12, 14: live features from the first n games of the next season
+        if cid.startswith(("S4", "S5", "S6")):   # addenda 12, 14, 15: live features from the first n games of the next season
             n = int(cid[3:])
             live = lives.setdefault(n, pl.live_features(bpm._CON, n))
             key = pd.MultiIndex.from_arrays([snap.season.astype(int) + 1, snap.player_id.astype("Int64")])
@@ -79,12 +79,17 @@ def run_stage(spec: dict, say=print):
             tr_all = tr
             if cid == "S2" or cid.startswith("S5"):   # addenda 9, 14: served-shaped training rows only
                 tr = tr[(tr.stage >= 2) & tr.plays_next]
-            if cid == "S3" or cid.startswith(("S4", "S5")):   # addenda 11-14: C by inner leave-one-class-out on this replay's rows
+            if cid == "S3" or cid.startswith(("S4", "S5", "S6")):   # addenda 11-15: C by inner leave-one-class-out on this replay's rows
                 import prospect_experiments_b as peb
-                model = peb.NestedLR().fit(tr[cols].to_numpy(float), tr.hit.to_numpy(float), tr.draft_year.to_numpy(int))
+                if cid.startswith("S6"):   # addendum 15: S4 recalibrated on served-shaped rows
+                    model = peb.RecalLR(cols.index("stage")).fit(tr[cols].to_numpy(float), tr.hit.to_numpy(float),
+                                                                  tr.draft_year.to_numpy(int),
+                                                                  ((tr.stage >= 2) & tr.plays_next).to_numpy())
+                else:
+                    model = peb.NestedLR().fit(tr[cols].to_numpy(float), tr.hit.to_numpy(float), tr.draft_year.to_numpy(int))
                 if live is not None:
                     m3 = peb.NestedLR().fit(tr_all[cols_s3].to_numpy(float), tr_all.hit.to_numpy(float), tr_all.draft_year.to_numpy(int))
-                if cid.startswith("S5"):   # addendum 14 replacement test at RB: the shipped S4 fit on every row
+                if cid.startswith(("S5", "S6")):   # addenda 14-15 replacement test at RB: the shipped S4 fit on every row
                     m4 = peb.NestedLR().fit(tr_all[cols].to_numpy(float), tr_all.hit.to_numpy(float), tr_all.draft_year.to_numpy(int))
             else:
                 model = bpm.make_lr(bpm.C_FIXED).fit(tr[cols].to_numpy(float), tr.hit.to_numpy(float))
@@ -103,7 +108,7 @@ def run_stage(spec: dict, say=print):
             if live is not None:
                 s["_s3"] = bpm.stage_score(subj.assign(_pd=np.nan, _pdx=np.nan), done, {"model": m3, "cols": cols_s3}, age0, season,
                                            "next")._pd.to_numpy()
-            if cid.startswith("S5"):
+            if cid.startswith(("S5", "S6")):
                 s["_s4"] = bpm.stage_score(subj.assign(_pd=np.nan, _pdx=np.nan), done, {"model": m4, "cols": cols}, age0, season,
                                            "next")._pd.to_numpy()
             s["_base"] = bpm.stage_score(subj.assign(_pd=np.nan, _pdx=np.nan), done, {"model": base, "cols": ["stars", "stage"]},
@@ -114,7 +119,7 @@ def run_stage(spec: dict, say=print):
             s["first_eligible"] = (season - s.hs_class + 1) == 3
             s["season"] = season
             rows.append(s[["season", "player_id", "_pd", "_base", "y", "first_eligible"] + (["_s3"] if live is not None else [])
-                          + (["_s4"] if cid.startswith("S5") else [])])
+                          + (["_s4"] if cid.startswith(("S5", "S6")) else [])])
         r = pd.concat(rows)
         from sklearn.metrics import roc_auc_score
         y_, pc, pb = r.y.to_numpy(float), r._pd.to_numpy(float), r._base.to_numpy(float)
@@ -133,14 +138,15 @@ def run_stage(spec: dict, say=print):
         later = {"all": summary(late.y.to_numpy(float), late._pd.to_numpy(float)),
                  "first_eligible": summary(late[late.first_eligible].y.to_numpy(float), late[late.first_eligible]._pd.to_numpy(float))}
         uniq = r.groupby("player_id").y.max()
+        nb = 200_000 if cid.startswith("S6") else 4000   # addendum 15: enough resamples that seed noise cannot decide
         if live is not None:   # addendum 12 replacement test: S4 against S3 on the same served rows
             vs["vs_s3"] = {"s3_logloss": bpm.ll(y_, r._s3.to_numpy(float)),
-                           "boot_by_season": bpm.class_bootstrap(y_, r._s3.to_numpy(float), pc, r.season.to_numpy(int))}
+                           "boot_by_season": bpm.class_bootstrap(y_, r._s3.to_numpy(float), pc, r.season.to_numpy(int), n=nb)}
             say(f"{cid} {pos}: vs S3 on the same rows: {vs['vs_s3']['s3_logloss']:.4f} -> {bpm.ll(y_, pc):.4f}, "
                 f"season bootstrap {vs['vs_s3']['boot_by_season']['p']:.0%}")
-        if cid.startswith("S5"):
+        if cid.startswith(("S5", "S6")):
             vs["vs_s4"] = {"s4_logloss": bpm.ll(y_, r._s4.to_numpy(float)),
-                           "boot_by_season": bpm.class_bootstrap(y_, r._s4.to_numpy(float), pc, r.season.to_numpy(int))}
+                           "boot_by_season": bpm.class_bootstrap(y_, r._s4.to_numpy(float), pc, r.season.to_numpy(int), n=nb)}
             say(f"{cid} {pos}: vs S4 (every row) on the same rows: {vs['vs_s4']['s4_logloss']:.4f} -> {bpm.ll(y_, pc):.4f}, "
                 f"season bootstrap {vs['vs_s4']['boot_by_season']['p']:.0%}")
         out[f"{cid} {pos}"] = {"all": allr, "first_eligible": fer, "pass": ok, "vs_stars_stage": vs,

@@ -130,6 +130,48 @@ class NestedLR:
         return self.m.predict_proba(X)
 
 
+class RecalLR:
+    """Charter v2 addendum 15 (S6): NestedLR on every row, then a logistic recalibration of its
+    out-of-fold logit plus a later-eligible offset (college year 3+), fit on served-shaped rows only."""
+
+    def __init__(self, stage_col: int):
+        self.j = stage_col
+
+    def _z(self, p, X):
+        p = np.clip(p, 1e-6, 1 - 1e-6)
+        return np.column_stack([np.log(p / (1 - p)), (X[:, self.j] >= 3).astype(float)])
+
+    def fit(self, X, y, g, shaped):
+        from sklearn.linear_model import LogisticRegression
+        self.m = NestedLR().fit(X, y, g)
+        c = NestedLR.chosen[-1]
+        oof = np.full(len(y), np.nan)
+        for k in np.unique(g):
+            te = g == k
+            if y[~te].sum() < 3:
+                continue
+            oof[te] = bpm.make_lr(c).fit(X[~te], y[~te]).predict_proba(X[te])[:, 1]
+        k = shaped & ~np.isnan(oof)
+        self.r = LogisticRegression(C=1e6, max_iter=1000).fit(self._z(oof[k], X[k]), y[k])
+        return self
+
+    def predict_proba(self, X):
+        return self.r.predict_proba(self._z(self.m.predict_proba(X)[:, 1], X))
+
+
+def _recal_check():
+    """RecalLR moves the level of a model that over-forecasts the shaped rows back toward their rate."""
+    rng = np.random.default_rng(0)
+    n = 6000
+    X = np.column_stack([rng.normal(size=n), rng.integers(1, 6, n).astype(float)])
+    g = rng.integers(0, 8, n)
+    shaped = X[:, 1] >= 3
+    y = (rng.random(n) < 1 / (1 + np.exp(-(X[:, 0] - 2 - 1.5 * shaped)))).astype(float)
+    m = RecalLR(1).fit(X, y, g, shaped)
+    p = m.predict_proba(X[shaped])[:, 1]
+    assert abs(p.mean() / y[shaped].mean() - 1) < 0.1, p.mean() / y[shaped].mean()
+
+
 class Rate:
     def fit(self, X, y):
         self.p = float(np.mean(y))
