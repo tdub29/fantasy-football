@@ -48,7 +48,11 @@ CANDIDATES = {"B1": "v1 talent features refit on every exiting player (no athlet
               "B7": "B2 plus team offense, schedule strength, first-down share, explosive rate (addendum 3)",
               "B8": "B2 without the QB-only features for RB/WR/TE (addendum 4)",
               "B9": "B8 with C picked by inner leave-one-class-out (addendum 4)",
-              "B10": "B7 without the QB-only features for RB/WR/TE (addendum 5)"}
+              "B10": "B7 without the QB-only features for RB/WR/TE (addendum 5)",
+              "B11": "QB with passer features only (addendum 7)",
+              "B12": "B11 with C picked by inner leave-one-class-out (addendum 7)"}
+B11 = ["rush_ypg_best", "comp_final", "aya_final", "starts", "n_seasons", "n_qual", "early", "stars", "draft_age",
+       "power", "weight"]
 QB_ONLY = {"comp_final", "rush_ypg_best"}
 
 
@@ -206,12 +210,14 @@ def run(ids, say=print):
             f"(rate {bl['B0r']:.4f}, stars {bl['B0s']:.4f})")
         for cid in ids:
             cols = {"B1": b1_cols(pos), "B2": B2, "B3": B2, "B4": B4, "B5": B2, "B6": B2 + ["stars_missing"], "B7": B7,
-                    "B8": no_qb(B2, pos), "B9": no_qb(B2, pos), "B10": no_qb(B7, pos)}[cid]
+                    "B8": no_qb(B2, pos), "B9": no_qb(B2, pos), "B10": no_qb(B7, pos), "B11": B11, "B12": B11}[cid]
+            if cid in ("B11", "B12") and pos != "QB":
+                continue
             X = tp[cols].to_numpy(float)
             NestedLR.chosen = []
             if cid == "B3":
                 pr = predictor(tp, X, None, win, bucket=tp.bucket.to_numpy())
-            elif cid in ("B5", "B9"):
+            elif cid in ("B5", "B9", "B12"):
                 pr = predictor(tp, X, None, win, nested=True)
             else:
                 pr = predictor(tp, X, lr(cols), win)
@@ -222,7 +228,7 @@ def run(ids, say=print):
                    "baseline_fwd_logloss": bl}
             if cid == "B3":
                 res["bucket"] = bucket_quality(tp, X, win)
-            if cid in ("B5", "B9"):
+            if cid in ("B5", "B9", "B12"):
                 res["chosen_C"] = list(NestedLR.chosen)
             results.setdefault(cid, {})[pos] = res
             frozen.append((cid, pos, tp, final_fit(tp, X, cid, cols)))
@@ -248,7 +254,7 @@ def final_fit(tp, X, cid, cols):
     y = tp.hit.to_numpy(float)
     if cid == "B3":
         mod = TwoStage().fit(X[m], y[m], tp.bucket.to_numpy()[m])
-    elif cid in ("B5", "B9"):
+    elif cid in ("B5", "B9", "B12"):
         mod = NestedLR().fit(X[m], y[m], tp.draft_year.to_numpy(int)[m])
     else:
         mod = bpm.make_lr(C).fit(X[m], y[m])

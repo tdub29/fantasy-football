@@ -37,14 +37,20 @@ wide margin at every position (forward log loss WR 0.093 to 0.062, RB 0.154 to 0
 said plainly that most of the AUC gain is separating who gets drafted (among drafted players AUC is
 0.70-0.74). It found a spec flaw (QB-only stats in RB/WR/TE models) that B8-B10 fix.
 
-**Pending decisions (next cycle).**
+## Cycle 3 (2026-10-04): shipped
 
-1. Finish the re-run; pick per position the lowest forward log loss among candidates that pass all
-   six rules (addendum 2). Today's front-runners: QB B9, RB B10, WR B10, TE B8.
-2. Independent review of B8/B9/B10 (not yet reviewed) and the join repair.
-3. If confirmed: set `PREDRAFT` in `build_prospect_model.py`, rebuild, run the site checks
-   (`node --check site/js/app.js`, the site tests, `python ../.agents/scripts/verify-app.py "Fantasy Football"`),
-   update the model card with the charter v2 section.
+- **A14** (feature selection inside each training fold) loses to draft-only at every position:
+  post-draft, college stats add nothing reliable to capital. Draft-only stays.
+- **Review C** confirmed RB B10, WR B10, TE B8 and rejected QB B9. Shipped in commit b019fcf:
+  `PREDRAFT` set, `pd`/`pdx` on next-class college rows only, scored from completed seasons; the
+  prospects board shows a Pre-draft column. Prospect verify-app checks pass; site tests pass.
+  Three unrelated verify-app failures (trade-finder redraft timeouts, Gibbs week column) are in code
+  this branch does not touch.
+- Running: B11/B12 (QB passer-only features) and B14 (career-stage model for underclassmen),
+  registered in addendum 7. Each needs an independent review before it can ship.
+
+**Next**: review whatever of B11/B12/B14 passes; if B14 passes on stage 1-2 rows, serve underclassmen
+from it; score the prospective holdout from January 2027 (`python projections/prospect_prospective.py`).
 
 ## Rejected or deferred, with reasons
 
