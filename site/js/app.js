@@ -12086,6 +12086,7 @@
     const meta = M.pos[pos] || {};
     const capOnly = meta.shipped === 'draft';
     const pre = meta.predraft;
+    const stg = meta.stage;   // career-stage model for the classes after the next one (only once reviewed)
     const next = M.season + 1;
     const hashFor = (p, m) => `#prospects/${p}${m === 'next' ? '' : `/${m}`}`;
     const rows = rookies
@@ -12126,6 +12127,10 @@
         + `${pre.base_logloss} for ${pre.baseline === 'B0s' ? 'recruiting stars alone' : 'the base rate'}, AUC ${pre.auc} against `
         + `${pre.base_auc}. Most of that edge is telling who gets drafted at all; among drafted players it ranks talent far less sharply. `
         + `Next class only: for younger players the same method ran well short of real hit rates in a backtest.` : null,
+      mode === 'later' && stg ? `Pre-draft here comes from a career-stage model: every FBS ${pos} who left college since 2008 `
+        + `contributes one row per completed season (${stg.rows.toLocaleString()} rows, ${stg.players.toLocaleString()} players), so a `
+        + `sophomore is compared with sophomores. On draft classes it never saw, freshman and sophomore rows scored log loss `
+        + `${stg.young_logloss} against ${stg.young_base_logloss} for recruiting stars plus college year.` : null,
     ].filter(Boolean);
     main.appendChild(h('div', { class:'card prm-notes' }, ...notes.map(t => h('p', { class:'tip' }, t))));
 
@@ -12136,6 +12141,7 @@
       mode === 'later' ? ['cls', 'Eligible', { right:true, asc:true, title:'First draft he is eligible for' }] : null,
       ['ts', 'Talent', { right:true, title:`College profile, no draft capital: percentile vs drafted ${pos}s since 2008` }],
       ['tr', 'Tier', { asc:true, title:'Our tier, cut on the talent score' }],
+      (mode === 'later' && stg) ? ['pd', 'Pre-draft', { right:true, title:'Chance he hits, before the draft, counting the chance he goes undrafted, from his completed seasons compared with players at the same college year (B14)' }] : null,
       mode === 'next' && pre ? ['pd', 'Pre-draft', { right:true, title:`Chance he hits, before the draft, counting the chance he goes undrafted (${pre.model}; scored at the more conservative of leaving after this season or one more)` }] : null,
       rookies ? ['hp', 'Hit %', { right:true, title:capOnly ? 'Draft capital alone' : 'College profile plus his actual draft slot' }] : null,
       pos === 'QB' ? null : ['ba', 'Breakout', { right:true, asc:true, title:'Age at his first college season at the dominator line (blank: not yet). Profile only, no model uses it' }],

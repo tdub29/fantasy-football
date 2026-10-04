@@ -129,6 +129,10 @@ BOOT_P = 0.8   # a model must beat draft-only in 80% of draft-class bootstrap re
 PREDRAFT: dict[str, str] = {"RB": "B10", "WR": "B10", "TE": "B8"}
 # QB is out: its only passing candidate (B9) leaned on receiving columns that are noise for passers
 # and its calibration pass was a coin flip under resampling (experiments/review-c-2026-10-04.md).
+# Positions whose career-stage model (B14, prospect_stage.py) passed the rules on all rows and on
+# freshman-sophomore rows AND an independent review: it serves the classes after the next one, from
+# completed seasons, with no exit assumption. Empty = those classes get no pre-draft number.
+STAGE: set[str] = set()
 # Positions where the charter v2 candidate A10 ships: a fixed 50/50 average of the draft-only and
 # talent + capital logits. Listed only after it passed the charter's five numeric rules on identical
 # folds AND an independent review (notes/prospect-research/experiments/A10.json). The v1 three-run
@@ -885,11 +889,15 @@ def build(verbose=True):
     for pos, m in fit_predraft(ps, bio, d, t, age0).items():
         final[pos]["predraft"] = m
         results[pos]["predraft"] = m["meta"]
+    for pos, m in fit_stage(ps, bio, d, t, age0).items():
+        final[pos]["stage"] = m
+        results[pos]["stage"] = m["meta"]
     college = score_college(ps, bio, final, age0)
     # Generated-data consistency: a pre-draft number exists exactly where a reviewed model ships.
     for r in college:
-        assert r["pd"] is None or (r["p"] in PREDRAFT and r["cls"] == SEASON + 1 and 0.0 <= r["pd"] <= 1.0), \
-            f"{r['n']}: pd outside PREDRAFT, outside the next class, or out of range"
+        nxt = r["cls"] == SEASON + 1
+        assert r["pd"] is None or (0.0 <= r["pd"] <= 1.0 and ((nxt and r["p"] in PREDRAFT) or (not nxt and r["p"] in STAGE))), \
+            f"{r['n']}: pd where no reviewed model serves that class, or out of range"
     for pos in PREDRAFT:
         nxt = [r for r in college if r["p"] == pos and r["cls"] == SEASON + 1]
         assert sum(r["pd"] is not None for r in nxt) >= 0.8 * len(nxt), f"{pos}: most next-class players lack pd"
@@ -913,13 +921,35 @@ def fit_predraft(ps, bio, d, t, age0) -> dict:
         r = rec["results"][pos]
         tp = e[(e.cpos == pos) & e.hit.notna()]
         X, y = tp[r["cols"]].to_numpy(float), tp.hit.to_numpy(float)
-        m = (peb.NestedLR().fit(X, y, tp.draft_year.to_numpy(int)) if cid in ("B5", "B9") else make_lr(C_FIXED).fit(X, y))
+        m = (peb.NestedLR().fit(X, y, tp.draft_year.to_numpy(int)) if cid in ("B5", "B9", "B12") else make_lr(C_FIXED).fit(X, y))
         fw = r["fwd"]
         out[pos] = {"cols": r["cols"], "model": m, "meta": {
             "model": cid, "n": int(len(tp)), "hits": int(y.sum()), "base_rate": round(float(y.mean()), 4),
             "logloss": round(fw["cand"]["logloss"], 4), "base_logloss": round(fw["base"]["logloss"], 4),
             "auc": round(fw["cand"]["auc"], 3), "base_auc": round(fw["base"]["auc"], 3), "baseline": r["baseline"],
             "classes": f"{min(c['class'] for c in fw['per_class'])}-{max(c['class'] for c in fw['per_class'])}"}}
+    return out
+
+
+def fit_stage(ps, bio, d, t, age0) -> dict:
+    """Fit B14 per STAGE position on every mature snapshot (prospect_stage.py)."""
+    if not STAGE:
+        return {}
+    import prospect_population as pp
+    import prospect_stage as pst
+    e = pp.build(ps, bio, d, t, age0, _CON, say=lambda *a: None)
+    snap = pst.snapshots(e[e.draft_year >= FIRST_CLASS], ps, age0, _CON)
+    rec = json.loads((ROOT / "notes" / "prospect-research" / "experiments" / "B14.json").read_text(encoding="utf-8"))
+    out = {}
+    for pos in STAGE:
+        r = rec["results"][pos]
+        tp = snap[(snap.cpos == pos) & snap.hit.notna()]
+        X, y = tp[r["cols"]].to_numpy(float), tp.hit.to_numpy(float)
+        fy = r["young_stage_1_2"]["fwd"]
+        out[pos] = {"cols": r["cols"], "model": make_lr(C_FIXED).fit(X, y), "meta": {
+            "model": "B14", "rows": int(len(tp)), "players": int(tp.base_sid.nunique()),
+            "logloss": round(r["fwd"]["cand"]["logloss"], 4), "base_logloss": round(r["fwd"]["base"]["logloss"], 4),
+            "young_logloss": round(fy["cand"]["logloss"], 4), "young_base_logloss": round(fy["base"]["logloss"], 4)}}
     return out
 
 
@@ -1064,7 +1094,7 @@ def score_college(ps, bio, final, age0, top_n=60):
     subj["sid"] = "c" + subj.player_id.astype(str)
     feats = career_features(subj, ps, age0)
     subj = subj.merge(feats, on="sid", how="left").rename(columns={"ros_weight": "weight"})
-    if PREDRAFT:
+    if PREDRAFT or STAGE:
         subj = subj.join(context_features(subj, ps), on="sid")
         done = predraft_profile(subj, ps, age0)
     subj["speed_score"] = np.nan
@@ -1094,6 +1124,8 @@ def score_college(ps, bio, final, age0, top_n=60):
         pre = fin.get("predraft")
         if pre:
             s = predraft_score(s, done, pre, age0)
+        if fin.get("stage"):
+            s = stage_score(s, done, fin["stage"], age0)
         s = s.sort_values("_tp", ascending=False)
         s = pd.concat([s[s.cls == SEASON + 1].head(top_n), s[s.cls > SEASON + 1].head(top_n // 2)])
         X = s[fin["cols"]].to_numpy(float)
@@ -1127,6 +1159,22 @@ def predraft_profile(subj, ps, age0) -> pd.DataFrame:
     f = career_features(c, ps, age0).set_index("sid")
     f = f.join(context_features(c.merge(f[["season_final"]], left_on="sid", right_index=True), ps))
     return f.join(subj.set_index("sid")[["weight", "stars", "hs_class"]])
+
+
+def stage_score(s, done, m, age0) -> pd.DataFrame:
+    """B14 for the classes after the next one: his profile through his last completed season, his
+    college year then, and his estimated age then. No exit is assumed, so `pdx` stays empty."""
+    s = s.copy()
+    later = s.cls.gt(SEASON + 1) & s.sid.isin(done.index)
+    if not later.any():
+        return s
+    v = done.loc[s.sid[later]].copy()
+    v["stage"] = ((SEASON - 1) - v.hs_class + 1).clip(1, 6)
+    v["age_k"] = age0 + (SEASON - 1) - v.hs_class
+    p = m["model"].predict_proba(v[m["cols"]].to_numpy(float))[:, 1]
+    ok = (v.n_qual >= 1).to_numpy()
+    s.loc[later, "_pd"] = np.where(ok, p, np.nan)
+    return s
 
 
 def predraft_score(s, done, pre, age0) -> pd.DataFrame:
@@ -1179,9 +1227,9 @@ FIELDS = {
     "oos": "1 = hp/tp are out of sample (the model never saw his class; holdout classes scored walk-forward)",
     "out": "Observed: [hit 0/1, best PPR PPG, best rank among that season's players at his draft position]",
     "r": "College only: hit probability if drafted in [Round 1, Round 2, Round 3, Day 3], at the scored exit",
-    "pd": "College only, next draft class only: pre-draft hit probability counting the chance he goes undrafted "
-          "(pos[].predraft holds the model and its validation), from his completed college seasons; null where no "
-          "reviewed pre-draft model ships (QB) or he has no completed qualifying season",
+    "pd": "College only: pre-draft hit probability counting the chance he goes undrafted, from his completed college "
+          "seasons. Next class: pos[].predraft (exit model); later classes: pos[].stage (career-stage model). Null where "
+          "no reviewed model serves that class or he has no completed qualifying season",
     "pdx": "College only: the draft year pd assumes (the lower of leaving after this season or, for a junior, one more)",
     "cls": "College only: first eligible draft year",
     "cid": "College only: ESPN college athlete id (the key in the SQLite store, projections/prospect_db.py)",
