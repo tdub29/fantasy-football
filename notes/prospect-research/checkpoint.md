@@ -4,8 +4,8 @@ Resumable state of the usage-bounded research loop in `claude-model-upgrade-brie
 Rewritten at the end of every cycle; history is in git.
 
 **Where:** worktree `Fantasy Football/.claude/worktrees/prospect-model-db`, branch `prospect-model-db`
-(off local `main` 855ce59). Nothing pushed, deployed or sent. The shipped site file is untouched
-(`site/data/prospect-model.js` still the v1 draft-only model).
+(off local `main` 855ce59). Nothing pushed, deployed or sent. The shipped site file is still the v1
+draft-only model until a population B model clears review and the build is rerun.
 
 **Environment for every command** (bash, from the worktree):
 
@@ -13,39 +13,42 @@ Rewritten at the end of every cycle; history is in git.
 export NFLVERSE_CACHE="/c/Users/TrevorWhite/Downloads/Big Projects/Fantasy Football/projections/nflverse-cache"
 python projections/prospect_db.py ingest          # refresh the SQLite store (no-op when nothing changed)
 python projections/build_prospect_model.py --parity
-python projections/prospect_experiments.py all    # population A candidates
-python projections/prospect_experiments_b.py      # population B candidates
+python projections/prospect_experiments.py all    # population A candidates (about 20 min)
+python projections/prospect_experiments_b.py      # population B candidates (about 15 min)
 python projections/prospect_db.py coverage        # data-coverage.md + feature registry
+python projections/build_prospect_model.py        # shipping build: prospect-model.js + model card
 ```
 
-## Cycle 1 (2026-10-03)
+## State after cycle 2 (2026-10-04)
 
-Done:
+**Database.** `projections/prospect_db.py`: 13 raw source tables (226 release files, sha256 and
+licence each), idempotent per-file loads, derived run/link/row/feature/prediction tables. The builder
+reads only from it; `--parity` proves identical inputs and a byte-identical export. Every shipping
+build and experiment run is recorded as a `build_run`; the JS carries `db_run`.
 
-1. **SQLite store** (`projections/prospect_db.py`, DB gitignored at `projections/prospect-db/`):
-   13 raw tables from 224 release files, sha256 + licence per file, idempotent per-file
-   transactions, derived run/link/row/feature/prediction tables. Builder reads from it.
-   **Parity proven**: inputs identical (58,496 college seasons, 1,414 training rows) and a DB-mode
-   build writes byte-identical `prospect-model.js` (except timestamp) and model card.
-2. **Charter v2** (`validation-charter-v2.md`) committed before any scoring, plus addendum 1.
-   States that the 2020-2023 holdout is spent; freezes 2024-2026 predictions as a prospective holdout.
-3. **Population A candidates A0-A12** scored (`experiments/ledger.md`). A0 reproduces v1 exactly.
-   Only **A10 at RB** (50/50 logit blend of baseline and v1 full) passes the five numeric rules;
-   independent review running. A10 at WR fails only the 2020+ check. All else rejected.
-4. **Population B** (`prospect_population.py`): every exiting FBS QB/RB/WR/TE, drafted or not,
-   11k+ exits, undrafted NFL players linked, never-played players as real zeros; pre-2014 positions
-   inferred (94.6% agreement with ESPN's position where known).
-5. Public source and licence registry (`public-source-registry.md`).
+**Population A (drafted, capital known).** A0-A13 scored under charter v2. One candidate (A10 RB,
+a 50/50 blend) passed rules 1-5 and was **rejected by independent review**: v1's features were
+pruned on every class, so the pass is selection leakage; two classes carry it. Draft-only stays.
+A14 (feature selection inside each training fold, the honest test) is running.
 
-Open:
+**Population B (pre-draft, every exiting FBS player).** College profile beats recruiting stars by a
+wide margin at every position (forward log loss WR 0.093 to 0.062, RB 0.154 to 0.098, TE 0.144 to
+0.100, QB 0.147 to 0.116 with nested C). Independent review confirmed B1/B2/B4 with no leakage, and
+said plainly that most of the AUC gain is separating who gets drafted (among drafted players AUC is
+0.70-0.74). It found a spec flaw (QB-only stats in RB/WR/TE models) that B8-B10 fix.
 
-- Population B results (B1-B4), then independent review of anything that passes.
-- Independent review verdict on A10 RB; if CONFIRM, implement in the builder (ship rule v2) and
-  rebuild; if REJECT, keep baseline.
-- Coverage report (`prospect_db.py coverage`).
+**Pending decisions (next cycle).**
 
-## Next falsifiable experiments (not yet registered)
+1. Finish the re-run; pick per position the lowest forward log loss among candidates that pass all
+   six rules (addendum 2). Today's front-runners: QB B9, RB B10, WR B10, TE B8.
+2. Independent review of B8/B9/B10 (not yet reviewed) and the join repair.
+3. If confirmed: set `PREDRAFT` in `build_prospect_model.py`, rebuild, run the site checks
+   (`node --check site/js/app.js`, the site tests, `python ../.agents/scripts/verify-app.py "Fantasy Football"`),
+   update the model card with the charter v2 section.
 
-- Population B with capital-free shrinkage blends (B2 averaged with the stars baseline), the
-  pre-draft analog of A10.
-- Prospective holdout scoring: rerun `freeze_prospective` entries against outcomes in Jan 2027.
+## Rejected or deferred, with reasons
+
+A1-A13 at every position (ledger.md); B3 everywhere (calibration); QB B1-B4/B6/B8/B10 (calibration);
+FantasyPros rookie ECR (5 mature classes, terms unverified, revisit Jan 2027); RAS pro-day archive
+(train-serve skew); any-school name join (tied FCS players to FBS namesakes). Prospective holdout:
+`experiments/prospective-2024-2026.json` and `prospective-b.json`, scoreable from January 2027.
