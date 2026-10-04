@@ -168,3 +168,21 @@ B7 (scored after addendum 3) carries the same QB-only-feature flaw as B2. **B10*
 `comp_final` and `rush_ypg_best` for RB/WR/TE, C = 0.1. Exploratory follow-up like B8/B9. The
 in-season ship choice stays: lowest forward log loss among candidates that passed all six rules,
 disclosed as a selection among passing candidates.
+
+## Addendum 6, 2026-10-04 (after the A10 review, before A14 was scored)
+
+The A10 review found that v1's feature sets were pruned on every class, so any candidate built on
+them carries selection leakage. **A14** removes it: inside each outer training set (forward and
+leave-one-class-out alike), greedy forward selection starting from the capital spline alone adds,
+one at a time, the pool feature that most lowers inner leave-one-class-out log loss of the full model
+(C = 0.1), stopping when the best addition improves inner log loss by less than 0.001 or at four
+features. The test class never influences which features are chosen. Pools, fixed now:
+
+- WR and TE: `ryptpa_career`, `ryptpa_best`, `ryptpa_final`, `dom_best`, `dom_final`,
+  `target_share_best`, `rec_epa_best`, `early`, `stars`, `draft_age`, `power`, `weight`, `speed_score`
+- RB: `ryptpa_final`, `ryptpa_best`, `scrim_ypg`, `dom_best`, `dom_final`, `rec_epa_best`,
+  `rush_succ_best`, `early`, `stars`, `draft_age`, `power`, `weight`, `speed_score`
+- QB: `rush_ypg_best`, `comp_final`, `aya_final`, `starts`, `n_seasons`, `early`, `stars`, `draft_age`, `power`
+
+The join repair of 2026-10-04 (one added link) applies to every candidate; all of A0-A13 and B1-B10
+are re-run on the repaired data before A14 is compared, and the ledgers carry the re-run numbers.
