@@ -135,6 +135,9 @@ def build(ps, bio, d, t, age0, con, say=print) -> pd.DataFrame:
     # Model group = his COLLEGE position (known before the draft); the label still ranks him at the
     # position he was drafted or signed at. A college QB drafted as a WR stays in the QB model.
     e["cpos"] = e.ros_pos.where(e.ros_pos.isin(bpm.POS), e.inf_pos)
+    # College roster weight (last listing) and recruiting stars: both known before the draft.
+    e["weight"] = e.player_id.map(bio.ros_weight)
+    e["stars"] = e.player_id.map(bio.stars)
     # Decision class = the draft right after his last season. Features are built as of that draft;
     # the outcome window opens when he actually entered the NFL (a drafted player who sat out a year
     # is labelled from his real draft).
