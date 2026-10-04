@@ -115,3 +115,20 @@ classes 2008+. Baseline: B0 base rate and stars-only. Rules 1-5 apply against th
 two baselines (lower forward log loss), per position.
 
 Deferred or rejected sources, with reasons, are in `public-source-registry.md`; none was scored.
+
+## Addendum 2, 2026-10-04 (committed before any candidate below was scored)
+
+Motivated by results already logged (so these are follow-ups, labelled as such): B1-B3 at QB fail
+rule 5 with calibration slopes of 1.5 to 2.1 (predictions too compressed, i.e. C = 0.1 shrinks too
+hard), and the recruit source leaves stars null for 25-30% of the 2018-2021 recruit classes,
+including many later transfers (Caleb Williams, Bo Nix, Jayden Daniels), which the fold median
+then fills as an average recruit.
+
+| ID | Candidate | Weakness it targets |
+|---|---|---|
+| B5 | B2 with C chosen per outer fold by inner leave-one-class-out on that fold's training classes, from {0.03, 0.1, 0.3, 1, 3} | over-shrinkage, calibration slope > 1 |
+| B6 | B2 plus `stars_missing` (1 where no star rating was found or the source rating is null) | source-null stars imputed as an average recruit |
+
+Same population, folds, baseline and rules as B1-B4. If more than one population B candidate passes
+at a position, the in-season (pre-combine) model ships the one with the lowest forward log loss and
+the choice is disclosed as a selection among passing candidates.
