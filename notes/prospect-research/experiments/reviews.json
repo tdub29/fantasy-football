@@ -127,6 +127,22 @@
   "S4n8 RB": {
    "verdict": "rejected (D1 slope 0.67, 20% resampling support)",
    "by": "review-h-2026-10-04.md"
+  },
+  "S5n4 RB": {
+   "verdict": "rejected on the registered replacement test (beats shipped S4n4 in 14% of season resamples)",
+   "by": "addendum 14 rule"
+  },
+  "S5n4 TE": {
+   "verdict": "rejected (all-rows ratio 1.39, D1 1.32/0.73)",
+   "by": "addendum 14 gates"
+  },
+  "S5n4 QB": {
+   "verdict": "rejected (first-eligible 0.77/1.27)",
+   "by": "addendum 14 gates"
+  },
+  "S5n4 WR": {
+   "verdict": "passes every gate, beats S3 in 91% (fragile); independent review I pending",
+   "by": "checkpoint cycle 8"
   }
  }
 }

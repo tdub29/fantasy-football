@@ -92,6 +92,44 @@ Position inference (usage, then recruit position and weight) agrees with ESPN's 
 | `starts` | experience (QB) | ESPN PBP | end of final season | pre + post | 100% | A14: QB reject, RB reject, WR reject, TE reject |
 | `n_qual` | experience | seasons on file | declaration | pre | 100% | B2: QB reject, RB pass, review confirmed, spec flaw (QB-only features), WR pass, review confirmed, spec flaw (QB-only features), TE pass, review confirmed, spec flaw (QB-only features); B8: QB reject, RB pass, review confirmed (not shipped), WR pass, review confirmed (not shipped), TE pass, review confirmed, shipped for the next class only; B10: QB reject, RB pass, review confirmed, shipped for the next class only, WR pass, review confirmed, shipped for the next class only, TE pass, review confirmed (not shipped) |
 | `stars_missing` | recruiting missingness | 247 stars null or unmatched | signing day | pre | n/a | B6: QB reject, RB pass rules 1-5, review pending, WR pass rules 1-5, review pending, TE pass rules 1-5, review pending |
+| `stage` | college year | season minus recruit class | any time | pre (served) | n/a | served models table below |
+| `age_k` | age (estimated) | 18.71 + seasons | any time | pre (served) | n/a | served models table below |
+| `live_yptpa` | live production | sportsdataverse player + team box | after his team's 4th game | pre (served) | n/a | served models table below |
+| `live_rec_share` | live production | sportsdataverse player box | after his team's 4th game | pre (served) | n/a | served models table below |
+| `live_scrim_pg` | live production | sportsdataverse player box | after his team's 4th game | pre (served) | n/a | served models table below |
+| `live_games` | live availability | sportsdataverse player box | after his team's 4th game | pre (served) | n/a | served models table below |
+| `has_live` | live availability | sportsdataverse player box | after his team's 4th game | pre (served) | n/a | served models table below |
+
+### Served pre-draft models (serving backtest, next class, 2012-2021 replays)
+
+Gates: mean ratio 0.8-1.25 and calibration slope 0.75-1.25 on all rows, first-eligible rows and (from addendum 10) each season's top 60 by the model; then an independent review. Ratio / slope shown.
+
+| Candidate | Position | All rows | First-eligible | Top 60 | Log loss vs stars + stage | Gates | Review |
+|---|---|---|---|---|---|---|---|
+| S1 | RB | 0.96 / 0.95 | 0.94 / 0.88 | 0.92 / 0.74 | 0.1478 to 0.1214 | fail (D1) | model confirmed; not shipped (failed display rule D1, slope 0.74) |
+| S1 | WR | 1.19 / 0.96 | 1.02 / 0.95 | 1.15 / 0.80 | 0.0798 to 0.0658 | pass | confirmed; shipped, then replaced by S3 |
+| S1 | TE | 1.13 / 1.19 | 0.77 / 1.11 | not scored | n/a | fail |  |
+| S1 | QB | 1.08 / 1.08 | 0.70 / 1.10 | not scored | n/a | fail |  |
+| S2 | RB | 0.92 / 1.06 | 0.92 / 1.01 | not scored | n/a | pass, D1 not scored |  |
+| S2 | WR | 1.13 / 1.08 | 0.95 / 1.11 | not scored | n/a | pass, D1 not scored |  |
+| S2 | TE | 1.40 / 1.30 | 1.00 / 1.08 | not scored | n/a | fail |  |
+| S2 | QB | 1.16 / 1.48 | 0.77 / 1.61 | not scored | n/a | fail |  |
+| S3 | RB | 0.96 / 1.02 | 0.91 / 0.95 | 0.89 / 0.78 | 0.1478 to 0.1213 | pass | confirmed under the charter, held back (62% resampling support, near-copy of S1) |
+| S3 | WR | 1.15 / 1.12 | 0.92 / 1.09 | 1.01 / 0.95 | 0.0798 to 0.0649 | pass | confirmed; ships for the next class (replaces S1) |
+| S3 | TE | 1.31 / 0.68 | 0.83 / 0.78 | 1.27 / 0.59 | 0.1689 to 0.1582 | fail |  |
+| S3 | QB | 1.08 / 0.84 | 0.68 / 0.96 | 1.08 / 0.84 | 0.1533 to 0.1429 | fail |  |
+| S4n4 | WR | 1.31 / 1.05 | 1.04 / 1.04 | 1.22 / 0.94 | 0.0798 to 0.0629 | fail |  |
+| S4n4 | RB | 1.03 / 0.92 | 0.97 / 0.86 | 1.04 / 0.79 | 0.1478 to 0.1178 | pass | confirmed, shipped after fixes (D1 slope pass has 68% resampling support, recorded as a known risk in addendum 13) |
+| S4n4 | TE | 1.39 / 0.73 | 0.87 / 0.94 | 1.36 / 0.65 | 0.1689 to 0.1442 | fail |  |
+| S4n4 | QB | 1.19 / 0.78 | 0.72 / 0.91 | 1.25 / 0.84 | 0.1533 to 0.1427 | fail |  |
+| S4n8 | WR | 1.34 / 1.00 | 1.05 / 1.02 | 1.26 / 0.90 | 0.0798 to 0.0622 | fail |  |
+| S4n8 | RB | 1.03 / 0.93 | 0.98 / 0.85 | 0.94 / 0.67 | 0.1478 to 0.1134 | fail (D1) | rejected (D1 slope 0.67, 20% resampling support) |
+| S4n8 | TE | 1.37 / 0.77 | 0.85 / 0.94 | 1.35 / 0.71 | 0.1689 to 0.1414 | fail |  |
+| S4n8 | QB | 1.17 / 0.83 | 0.70 / 0.95 | 1.18 / 0.82 | 0.1533 to 0.1411 | fail |  |
+| S5n4 | RB | 0.92 / 1.00 | 0.92 / 0.98 | 0.84 / 0.78 | 0.1471 to 0.1194 | pass | rejected on the registered replacement test (beats shipped S4n4 in 14% of season resamples) |
+| S5n4 | WR | 1.12 / 1.16 | 0.92 / 1.20 | 1.00 / 1.11 | 0.0796 to 0.0635 | pass | passes every gate, beats S3 in 91% (fragile); independent review I pending |
+| S5n4 | TE | 1.39 / 0.83 | 0.94 / 1.02 | 1.32 / 0.73 | 0.1738 to 0.1439 | fail | rejected (all-rows ratio 1.39, D1 1.32/0.73) |
+| S5n4 | QB | 1.11 / 0.95 | 0.77 / 1.27 | 1.04 / 0.80 | 0.1511 to 0.1423 | fail | rejected (first-eligible 0.77/1.27) |
 
 ### Families searched and not built
 
