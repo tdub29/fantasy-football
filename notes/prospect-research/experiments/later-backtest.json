@@ -1,0 +1,77 @@
+{
+ "note": "Later-class serving backtest cells adopted after independent review (young lane, review K). Copied from lanes/young/results.json; the lane file is the source of record.",
+ "source": "notes/prospect-research/lanes/young/results.json",
+ "source_sha256": "b35c1256ea1cf83794733d12c8f82c78551e875c8f98fb2bb027629ea7aaf21f",
+ "YL1 RB": {
+  "seasons": "2012-2019",
+  "all": {
+   "n": 461,
+   "events": 38,
+   "mean_pred": 0.07660654910033508,
+   "obs": 0.0824295010845987,
+   "ratio": 0.9293583982961703,
+   "slope": 1.1190750219475638,
+   "logloss": 0.24177265651232188,
+   "status": "pass (fragile)",
+   "support": 0.6655,
+   "loso_ratio": [
+    0.8796686596019306,
+    0.9724065512148806
+   ],
+   "loso_slope": [
+    1.0237733308361723,
+    1.343716570270063
+   ]
+  },
+  "top30_by_pd": {
+   "n": 240,
+   "events": 32,
+   "mean_pred": 0.119442185437129,
+   "obs": 0.13333333333333333,
+   "ratio": 0.8958163907784675,
+   "slope": 1.2070767101467104,
+   "logloss": 0.3451086597913144,
+   "status": "pass (fragile)",
+   "support": 0.5305,
+   "loso_ratio": [
+    0.862300199150471,
+    0.9325009030490774
+   ],
+   "loso_slope": [
+    1.0753260471593555,
+    1.3539263859450832
+   ]
+  },
+  "vs_stars_year": {
+   "base_logloss": 0.25467635055863314,
+   "cand_logloss": 0.24177265651232188,
+   "boot": {
+    "p": 0.94075,
+    "lo": -0.0008083630979998496,
+    "hi": 0.023528241394400306
+   },
+   "status": "pass"
+  },
+  "extra": {
+   "auc": 0.7821326365559289,
+   "base_auc": 0.7242441209406494,
+   "drafted_auc": 0.6082089552238806,
+   "drafted_base_auc": 0.6422056384742951,
+   "replays_2016_on": {
+    "n": 213,
+    "events": 16,
+    "mean_pred": 0.06617567299920024,
+    "obs": 0.07511737089201878,
+    "ratio": 0.8809636468018532,
+    "slope": 1.5447189972399369,
+    "logloss": 0.22424014537722742
+   },
+   "players": 461,
+   "players_hit": 38,
+   "seasons": [
+    2012,
+    2019
+   ]
+  }
+ }
+}

@@ -12160,7 +12160,9 @@
       pmTile('Talent', h('span', null, `${r.ts} `, pmPips(r.ts)),
         `College profile with no draft capital: percentile against every drafted ${r.p} since 2008`,
         `#${rank} of ${peers.length} listed`),
-      pmTile('College %', pmPct(r.tp), 'Hit chance from college stats alone, if he is drafted. Its ranking was checked on a holdout; the percentage has no calibration check. Undrafted players are not in the history.', 'if drafted'),
+      r.pd != null ? pmTile('Pre-draft', pmPct(r.pd),
+        'Chance he hits counting the chance he goes undrafted, from the pre-draft model in the table notes', 'incl. undrafted') : null,
+      pmTile('College %', pmPct(r.tp),'Hit chance from college stats alone, if he is drafted. Its ranking was checked on a holdout; the percentage has no calibration check. Undrafted players are not in the history.', 'if drafted'),
       r.ba != null ? pmTile('Breakout age', Number(r.ba).toFixed(1),
         'Age at his first college season at the dominator line. Profile only, no model uses it') : null,
       r.age != null ? pmTile('Draft age', pmNum(1)(r.age),
@@ -12237,6 +12239,9 @@
     const rookies = mode === 'rookies';
     const meta = M.pos[pos] || {};
     const capOnly = meta.shipped === 'draft';
+    const pre = meta.predraft;
+    const stg = meta.later || null;   // classes after the next one: their own model (YL1, sophomores only)
+    const nst = meta.stage && meta.stage.next ? meta.stage : null;    // the same model serving the next class
     const next = M.season + 1;
     const hashFor = (p, m) => `#prospects/${p}${m === 'next' ? '' : `/${m}`}`;
     const rows = rookies
@@ -12275,7 +12280,40 @@
           + `Round 3 = 65-100, Day 3 = 101-257).`,
       pos === 'WR' && capOnly ? PM_WR_EARLY : null,
       rookies ? null : 'College ages are estimated from class year (no public birth dates), and a live season counts once it reaches 6 games. '
-        + 'Each player is scored at the more conservative of leaving after his third or fourth college year.',
+        + 'Talent scores each player at the more conservative of leaving after his third or fourth college year.',
+      // Pre-draft forecast (population B): only for positions that passed validation and review.
+      mode === 'next' && pre ? `Pre-draft is his chance to hit counting the chance he goes undrafted, from a model fit on all `
+        + `${pre.n.toLocaleString()} ${pos}s who left FBS college football since 2008, drafted or not (${pre.hits} hits), `
+        + `using his completed seasons. Scored on draft classes ${pre.classes} it never saw: log loss ${pre.logloss} against `
+        + `${pre.base_logloss} for ${pre.baseline === 'B0s' ? 'recruiting stars alone' : 'the base rate'}, AUC ${pre.auc} against `
+        + `${pre.base_auc}. Most of that edge is telling who gets drafted at all; among drafted players it ranks talent far less sharply. `
+        + `Next class only: for younger players the same method ran well short of real hit rates in a backtest.` : null,
+      mode === 'next' && nst && nst.served ? (() => {
+        const v = nst.served, pct = (r) => `${Math.round(Math.abs(r - 1) * 100)}% ${r >= 1 ? 'above' : 'below'}`;
+        return `Pre-draft is his chance to hit counting the chance he goes undrafted, from a career-stage model: every FBS `
+          + `${pos} who left college since 2008 contributes one row per completed season, so he is compared with players at `
+          + `the same college year. ${nst.live_n ? `It uses his completed seasons plus his team's first ${nst.live_n} games this `
+            + `season (no number until his team has played ${nst.live_n}, or if he has no stat line this season)` : 'It uses his completed seasons only, not this one'}, `
+          + `and assumes no exit. ${/^S6/.test(nst.model) ? 'The forecast is then rescaled on players who came back for another '
+            + 'college season, with fourth-year and older players scaled separately. ' : ''}This list is the `
+          + `class's top 60 by that chance. Replayed on the 2012-2021 seasons through the same code (${v.n.toLocaleString()} `
+          + `player-seasons, ${v.players.toLocaleString()} players, ${v.players_hit} of whom hit): log loss ${v.logloss} against `
+          + `${v.base_logloss} for recruiting stars plus college year, AUC ${v.auc} against ${v.base_auc}. The average forecast `
+          + `ran ${pct(v.ratio)} the real hit rate over all replays, ${pct(v.top60_ratio)} on each season's top 60 like this list, `
+          + `and ${pct(v.late_ratio)} on the 2017-2021 replays. Among drafted players alone its edge over stars plus college year is `
+          + `smaller (AUC gain ${v.drafted_auc_gain} against ${v.auc_gain} overall), so much of it is telling who gets drafted at all.`;
+      })() : null,
+      mode === 'later' && stg && stg.served ? (() => {
+        const v = stg.served, pct = (r) => `${Math.round(Math.abs(r - 1) * 100)}% ${r >= 1 ? 'above' : 'below'}`;
+        return `Pre-draft for sophomores comes from a model fit only on ${pos}s who finished a college freshman season and `
+          + `played the next one (${stg.players.toLocaleString()} players, ${stg.hits} hits). Freshmen get no number yet. `
+          + `Numbered sophomores lead this list by that chance; the rest follow by Talent. Replayed on the ${v.seasons} seasons `
+          + `through the same code (${v.n.toLocaleString()} player-seasons, ${v.events} hits): log loss ${v.logloss} against `
+          + `${v.base_logloss} for recruiting stars plus college year; the average forecast ran ${pct(v.ratio)} the real hit `
+          + `rate, ${pct(v.top_ratio)} on each season's top 30. Thin evidence: calibration held in ${Math.round(v.support * 100)}% `
+          + `of season resamples (${Math.round(v.top_support * 100)}% on the top 30), and among players who were drafted it ranks `
+          + `no better than stars (AUC ${v.drafted_auc} against ${v.drafted_base_auc}).`;
+      })() : null,
     ].filter(Boolean);
     main.appendChild(h('div', { class:'card prm-notes' }, ...notes.map(t => h('p', { class:'tip' }, t))));
 
@@ -12286,6 +12324,9 @@
       mode === 'later' ? ['cls', 'Eligible', { right:true, asc:true, title:'First draft he is eligible for' }] : null,
       ['ts', 'Talent', { right:true, title:`College profile, no draft capital: percentile vs drafted ${pos}s since 2008` }],
       ['tr', 'Tier', { asc:true, title:'Our tier, cut on the talent score' }],
+      (mode === 'later' && stg) ? ['pd', 'Pre-draft', { right:true, title:`Chance he hits, before the draft, counting the chance he goes undrafted, from his completed freshman season compared with other sophomores (${stg.model}). Sophomores only` }] : null,
+      mode === 'next' && nst ? ['pd', 'Pre-draft', { right:true, title:`Chance he hits, before the draft, counting the chance he goes undrafted, from his completed seasons${nst.live_n ? ` plus his team's first ${nst.live_n} games this season` : ''} compared with players at the same college year${/^S6/.test(nst.model) ? ', rescaled on players who came back for another college season' : ''} (${nst.model})` }] : null,
+      mode === 'next' && pre ? ['pd', 'Pre-draft', { right:true, title:`Chance he hits, before the draft, counting the chance he goes undrafted (${pre.model}; scored at the more conservative of leaving after this season or one more)` }] : null,
       rookies ? ['hp', 'Hit %', { right:true, title:capOnly ? 'Draft capital alone' : 'College profile plus his actual draft slot' }] : null,
       ['tp', 'College %', { right:true, title:`Hit chance from college stats alone${rookies ? ', the pre-draft read' : ', if drafted'}. ${pmTrust(pos) || ''}` }],
       pos === 'QB' ? null : ['ba', 'Breakout', { right:true, asc:true, title:'Age at his first college season at the dominator line (blank: not yet). Profile only, no model uses it' }],
@@ -12323,7 +12364,7 @@
           onclick:(e) => { e.stopPropagation(); openRow(r); } }, v),
         r.sch ? h('span', { class:'muted prm-school' }, r.sch) : null);
       if (k.startsWith('st.')) return stat.find(s => `st.${s[0]}` === k)[2](v);
-      if (k === 'hp' || k === 'tp' || /^r\d$/.test(k)) return pmPct(v);
+      if (k === 'hp' || k === 'tp' || k === 'pd' || /^r\d$/.test(k)) return pmPct(v);
       if (k === 'ba' || k === 'age') return pmNum(1)(v);
       return v == null ? '·' : String(v);
     };

@@ -1,0 +1,200 @@
+{
+ "note": "Rule 6 (independent review) outcomes. The ledgers print these over the numeric verdict. Key: '<id> <pos>'. Only reviewed results appear; anything else stays 'pending independent review'.",
+ "reviews": {
+  "A10 RB": {
+   "verdict": "reject",
+   "by": "review-a10-2026-10-04.md",
+   "reason": "selection leakage of the v1 feature set; two classes carry the gain"
+  },
+  "B1 RB": {
+   "verdict": "confirmed",
+   "by": "review-b-2026-10-04.md"
+  },
+  "B1 WR": {
+   "verdict": "confirmed",
+   "by": "review-b-2026-10-04.md"
+  },
+  "B2 RB": {
+   "verdict": "confirmed, spec flaw (QB-only features)",
+   "by": "review-b-2026-10-04.md"
+  },
+  "B2 WR": {
+   "verdict": "confirmed, spec flaw (QB-only features)",
+   "by": "review-b-2026-10-04.md"
+  },
+  "B2 TE": {
+   "verdict": "confirmed, spec flaw (QB-only features)",
+   "by": "review-b-2026-10-04.md"
+  },
+  "B4 RB": {
+   "verdict": "confirmed (post-combine phase), spec flaw",
+   "by": "review-b-2026-10-04.md"
+  },
+  "B4 WR": {
+   "verdict": "confirmed (post-combine phase), spec flaw",
+   "by": "review-b-2026-10-04.md"
+  },
+  "B4 TE": {
+   "verdict": "confirmed (post-combine phase), spec flaw",
+   "by": "review-b-2026-10-04.md"
+  },
+  "B9 QB": {
+   "verdict": "reject",
+   "by": "review-c-2026-10-04.md",
+   "reason": "receiving-noise features; calibration pass a coin flip"
+  },
+  "B10 RB": {
+   "verdict": "confirmed, shipped for the next class only",
+   "by": "review-c-2026-10-04.md"
+  },
+  "B10 WR": {
+   "verdict": "confirmed, shipped for the next class only",
+   "by": "review-c-2026-10-04.md"
+  },
+  "B8 TE": {
+   "verdict": "confirmed, shipped for the next class only",
+   "by": "review-c-2026-10-04.md"
+  },
+  "B8 RB": {
+   "verdict": "confirmed (not shipped)",
+   "by": "review-c-2026-10-04.md"
+  },
+  "B8 WR": {
+   "verdict": "confirmed (not shipped)",
+   "by": "review-c-2026-10-04.md"
+  },
+  "B9 RB": {
+   "verdict": "confirmed (not shipped)",
+   "by": "review-c-2026-10-04.md"
+  },
+  "B9 WR": {
+   "verdict": "confirmed (not shipped)",
+   "by": "review-c-2026-10-04.md"
+  },
+  "B9 TE": {
+   "verdict": "confirmed (not shipped)",
+   "by": "review-c-2026-10-04.md"
+  },
+  "B10 TE": {
+   "verdict": "confirmed (not shipped)",
+   "by": "review-c-2026-10-04.md"
+  },
+  "B12 QB": {
+   "verdict": "reject",
+   "by": "review-d-2026-10-04.md",
+   "reason": "model holds; the served exit transform fails a QB backtest (slope 0.72, 2.4x low first-eligible)"
+  },
+  "B14 RB": {
+   "verdict": "reject",
+   "by": "review-d-2026-10-04.md",
+   "reason": "only stage 1 would be served and stage 1 alone fails"
+  },
+  "B14 WR": {
+   "verdict": "reject",
+   "by": "review-d-2026-10-04.md",
+   "reason": "only stage 1 would be served and stage 1 alone fails"
+  },
+  "B14 TE": {
+   "verdict": "reject",
+   "by": "review-d-2026-10-04.md",
+   "reason": "only stage 1 would be served and stage 1 alone fails"
+  },
+  "B14 QB": {
+   "verdict": "reject",
+   "by": "review-d-2026-10-04.md",
+   "reason": "only stage 1 would be served and stage 1 alone fails"
+  },
+  "S1 WR": {
+   "verdict": "confirmed; shipped, then replaced by S3",
+   "by": "review-e-2026-10-04.md"
+  },
+  "S1 RB": {
+   "verdict": "model confirmed; not shipped (failed display rule D1, slope 0.74)",
+   "by": "review-e-2026-10-04.md"
+  },
+  "S3 WR": {
+   "verdict": "confirmed; shipped for the next class (replaced S1), then replaced by S6n4",
+   "by": "review-g-2026-10-04.md"
+  },
+  "S3 RB": {
+   "verdict": "confirmed under the charter, held back (62% resampling support, near-copy of S1)",
+   "by": "review-g-2026-10-04.md"
+  },
+  "S4n4 RB": {
+   "verdict": "confirmed, shipped after fixes (D1 slope pass has 68% resampling support, recorded as a known risk in addendum 13)",
+   "by": "review-h-2026-10-04.md"
+  },
+  "S4n8 RB": {
+   "verdict": "rejected (D1 slope 0.67, 20% resampling support)",
+   "by": "review-h-2026-10-04.md"
+  },
+  "S5n4 RB": {
+   "verdict": "rejected on the registered replacement test (beats shipped S4n4 in 14% of season resamples)",
+   "by": "addendum 14 rule"
+  },
+  "S5n4 TE": {
+   "verdict": "rejected (all-rows ratio 1.39, D1 1.32/0.73)",
+   "by": "addendum 14 gates"
+  },
+  "S5n4 QB": {
+   "verdict": "rejected (first-eligible 0.77/1.27)",
+   "by": "addendum 14 gates"
+  },
+  "S5n4 WR": {
+   "verdict": "rejected by review I: replacement win is Monte Carlo noise (72% of seeds clear 90%), carried by 3 first-eligible hits, first-eligible slope support 64% vs S3 91%; S3 stays",
+   "by": "review-i-2026-10-04.md"
+  },
+  "Q3 QB": {
+   "verdict": "rejected by the coordinator without promotion review: on the served population (QBs with a completed start) its all-rows ratio is 1.28, a fail; joint gate support 14%; beats stars plus year in 93%, under addendum 15's 95%; same family as S6 (level recalibration), not independent",
+   "by": "lanes/qb/results.md"
+  },
+  "Q1 QB": {
+   "verdict": "fails (all 1.31/0.69, first-eligible 0.77/0.74)",
+   "by": "lanes/qb/results.md"
+  },
+  "Q2 QB": {
+   "verdict": "fails (all 1.29/0.73, top-60 slope 0.57)",
+   "by": "lanes/qb/results.md"
+  },
+  "T1 TE": {
+   "verdict": "fails the all-rows and top-60 ratio (all 1.35/0.86)",
+   "by": "lanes/te/results.md"
+  },
+  "T2 TE": {
+   "verdict": "fails the all-rows and top-60 ratio (all 1.38/0.94)",
+   "by": "lanes/te/results.md"
+  },
+  "T3 TE": {
+   "verdict": "fails the all-rows and top-60 ratio (all 1.41/0.90)",
+   "by": "lanes/te/results.md"
+  },
+  "YL1 RB": {
+   "verdict": "confirmed, fragile; shipped for RB sophomores (later classes) after fixes a-e (own later model, D1L list, no TEAM rows, copy, prospective freeze)",
+   "by": "review-k-2026-10-04.md"
+  },
+  "S6n4 WR": {
+   "verdict": "confirmed with fixes; shipped (replaces S3; first-eligible slope risk, addendum 17)",
+   "by": "review-j-2026-10-04.md"
+  },
+  "S6n4 RB": {
+   "verdict": "rejected on the replacement test (beats shipped S4n4 in 39%)",
+   "by": "addendum 15 rule"
+  },
+  "F1 WR": {
+   "verdict": "fails replacement test (beats S6n4 in 0.7%)",
+   "by": "lanes/features/results.md"
+  },
+  "F2 WR": {
+   "verdict": "fails replacement test (32.8%) and gain concentration",
+   "by": "lanes/features/results.md"
+  },
+  "F1 RB": {
+   "verdict": "fails D1 slope (0.72) and replacement test (91.7%)",
+   "by": "lanes/features/results.md"
+  },
+  "F2 RB": {
+   "verdict": "rejected by the coordinator: passes every preregistered gate but fragile (drop-5 support 77.6%, D1 slope 0.76 in band 54%) and the whole gain comes from 14 Alabama RB rows (without them -0.00006, 46%)",
+   "by": "lanes/features/results.md"
+  }
+ }
+}

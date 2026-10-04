@@ -1,0 +1,497 @@
+{
+ "QB": {
+  "replay_seasons": [
+   2012,
+   2017
+  ],
+  "year2_served": {
+   "rows": 66,
+   "events": 5,
+   "rate": 0.0758,
+   "per_season": {
+    "2012": {
+     "size": 10,
+     "sum": 0
+    },
+    "2013": {
+     "size": 6,
+     "sum": 0
+    },
+    "2014": {
+     "size": 14,
+     "sum": 1
+    },
+    "2015": {
+     "size": 13,
+     "sum": 1
+    },
+    "2016": {
+     "size": 13,
+     "sum": 1
+    },
+    "2017": {
+     "size": 10,
+     "sum": 2
+    }
+   }
+  },
+  "stage1_pool": {
+   "rows": 175,
+   "plays_next_share": 0.874,
+   "rate_plays_next": 0.0654,
+   "rate_not_next": 0.0,
+   "events_not_next": 0
+  },
+  "stage1_transfer_next": {
+   "share": 0.007,
+   "rate_moved": 0.0,
+   "rate_stayed": 0.0658
+  },
+  "rate_by_stage": {
+   "1.0": {
+    "size": 175,
+    "sum": 10.0,
+    "mean": 0.0571
+   },
+   "2.0": {
+    "size": 375,
+    "sum": 23.0,
+    "mean": 0.0613
+   },
+   "3.0": {
+    "size": 500,
+    "sum": 28.0,
+    "mean": 0.056
+   },
+   "4.0": {
+    "size": 568,
+    "sum": 21.0,
+    "mean": 0.037
+   },
+   "5.0": {
+    "size": 396,
+    "sum": 7.0,
+    "mean": 0.0177
+   },
+   "6.0": {
+    "size": 43,
+    "sum": 0.0,
+    "mean": 0.0
+   }
+  },
+  "year1_all": {
+   "rows": 245,
+   "events": 10,
+   "rate": 0.0408,
+   "with_live4": 169,
+   "events_live4": 9
+  },
+  "year2_by_stars": {
+   "-1.0": {
+    "size": 13,
+    "sum": 0
+   },
+   "2.0": {
+    "size": 11,
+    "sum": 0
+   },
+   "3.0": {
+    "size": 27,
+    "sum": 3
+   },
+   "4.0": {
+    "size": 11,
+    "sum": 2
+   },
+   "5.0": {
+    "size": 4,
+    "sum": 0
+   }
+  },
+  "year2_hit_horizon": {
+   "2": 3,
+   "3": 2
+  },
+  "year2_exit_year": {
+   "2.0": 14,
+   "3.0": 15,
+   "4.0": 25,
+   "5.0": 10,
+   "6.0": 2
+  }
+ },
+ "RB": {
+  "replay_seasons": [
+   2012,
+   2018
+  ],
+  "year2_served": {
+   "rows": 420,
+   "events": 34,
+   "rate": 0.081,
+   "per_season": {
+    "2012": {
+     "size": 47,
+     "sum": 3
+    },
+    "2013": {
+     "size": 69,
+     "sum": 6
+    },
+    "2014": {
+     "size": 66,
+     "sum": 6
+    },
+    "2015": {
+     "size": 66,
+     "sum": 7
+    },
+    "2016": {
+     "size": 63,
+     "sum": 5
+    },
+    "2017": {
+     "size": 53,
+     "sum": 3
+    },
+    "2018": {
+     "size": 56,
+     "sum": 4
+    }
+   }
+  },
+  "stage1_pool": {
+   "rows": 1010,
+   "plays_next_share": 0.847,
+   "rate_plays_next": 0.0725,
+   "rate_not_next": 0.0129,
+   "events_not_next": 2
+  },
+  "stage1_transfer_next": {
+   "share": 0.002,
+   "rate_moved": 0.5,
+   "rate_stayed": 0.0715
+  },
+  "rate_by_stage": {
+   "1.0": {
+    "size": 1010,
+    "sum": 64.0,
+    "mean": 0.0634
+   },
+   "2.0": {
+    "size": 1603,
+    "sum": 86.0,
+    "mean": 0.0536
+   },
+   "3.0": {
+    "size": 1714,
+    "sum": 87.0,
+    "mean": 0.0508
+   },
+   "4.0": {
+    "size": 1473,
+    "sum": 44.0,
+    "mean": 0.0299
+   },
+   "5.0": {
+    "size": 718,
+    "sum": 12.0,
+    "mean": 0.0167
+   },
+   "6.0": {
+    "size": 139,
+    "sum": 0.0,
+    "mean": 0.0
+   }
+  },
+  "year1_all": {
+   "rows": 815,
+   "events": 39,
+   "rate": 0.0479,
+   "with_live4": 685,
+   "events_live4": 39
+  },
+  "year2_by_stars": {
+   "-1.0": {
+    "size": 85,
+    "sum": 0
+   },
+   "2.0": {
+    "size": 54,
+    "sum": 2
+   },
+   "3.0": {
+    "size": 186,
+    "sum": 11
+   },
+   "4.0": {
+    "size": 59,
+    "sum": 8
+   },
+   "5.0": {
+    "size": 36,
+    "sum": 13
+   }
+  },
+  "year2_hit_horizon": {
+   "1": 2,
+   "2": 21,
+   "3": 11
+  },
+  "year2_exit_year": {
+   "2.0": 57,
+   "3.0": 96,
+   "4.0": 188,
+   "5.0": 64,
+   "6.0": 13,
+   "7.0": 2
+  }
+ },
+ "WR": {
+  "replay_seasons": [
+   2012,
+   2018
+  ],
+  "year2_served": {
+   "rows": 525,
+   "events": 17,
+   "rate": 0.0324,
+   "per_season": {
+    "2012": {
+     "size": 78,
+     "sum": 3
+    },
+    "2013": {
+     "size": 80,
+     "sum": 3
+    },
+    "2014": {
+     "size": 85,
+     "sum": 1
+    },
+    "2015": {
+     "size": 88,
+     "sum": 2
+    },
+    "2016": {
+     "size": 67,
+     "sum": 2
+    },
+    "2017": {
+     "size": 61,
+     "sum": 1
+    },
+    "2018": {
+     "size": 66,
+     "sum": 5
+    }
+   }
+  },
+  "stage1_pool": {
+   "rows": 1272,
+   "plays_next_share": 0.831,
+   "rate_plays_next": 0.0426,
+   "rate_not_next": 0.014,
+   "events_not_next": 3
+  },
+  "stage1_transfer_next": {
+   "share": 0.005,
+   "rate_moved": 0.0,
+   "rate_stayed": 0.0428
+  },
+  "rate_by_stage": {
+   "1.0": {
+    "size": 1272,
+    "sum": 48.0,
+    "mean": 0.0377
+   },
+   "2.0": {
+    "size": 2304,
+    "sum": 65.0,
+    "mean": 0.0282
+   },
+   "3.0": {
+    "size": 2595,
+    "sum": 65.0,
+    "mean": 0.025
+   },
+   "4.0": {
+    "size": 2327,
+    "sum": 31.0,
+    "mean": 0.0133
+   },
+   "5.0": {
+    "size": 1252,
+    "sum": 9.0,
+    "mean": 0.0072
+   },
+   "6.0": {
+    "size": 246,
+    "sum": 0.0,
+    "mean": 0.0
+   }
+  },
+  "year1_all": {
+   "rows": 1457,
+   "events": 28,
+   "rate": 0.0192,
+   "with_live4": 1052,
+   "events_live4": 24
+  },
+  "year2_by_stars": {
+   "-1.0": {
+    "size": 117,
+    "sum": 1
+   },
+   "2.0": {
+    "size": 82,
+    "sum": 0
+   },
+   "3.0": {
+    "size": 208,
+    "sum": 2
+   },
+   "4.0": {
+    "size": 85,
+    "sum": 6
+   },
+   "5.0": {
+    "size": 33,
+    "sum": 8
+   }
+  },
+  "year2_hit_horizon": {
+   "1": 1,
+   "2": 14,
+   "3": 2
+  },
+  "year2_exit_year": {
+   "2.0": 108,
+   "3.0": 112,
+   "4.0": 220,
+   "5.0": 71,
+   "6.0": 11,
+   "7.0": 3
+  }
+ },
+ "TE": {
+  "replay_seasons": [
+   2012,
+   2017
+  ],
+  "year2_served": {
+   "rows": 75,
+   "events": 7,
+   "rate": 0.0933,
+   "per_season": {
+    "2012": {
+     "size": 15,
+     "sum": 0
+    },
+    "2013": {
+     "size": 14,
+     "sum": 0
+    },
+    "2014": {
+     "size": 15,
+     "sum": 4
+    },
+    "2015": {
+     "size": 16,
+     "sum": 2
+    },
+    "2016": {
+     "size": 9,
+     "sum": 0
+    },
+    "2017": {
+     "size": 6,
+     "sum": 1
+    }
+   }
+  },
+  "stage1_pool": {
+   "rows": 192,
+   "plays_next_share": 0.818,
+   "rate_plays_next": 0.0764,
+   "rate_not_next": 0.0286,
+   "events_not_next": 1
+  },
+  "stage1_transfer_next": {
+   "share": 0.0,
+   "rate_moved": NaN,
+   "rate_stayed": 0.0764
+  },
+  "rate_by_stage": {
+   "1.0": {
+    "size": 192,
+    "sum": 13.0,
+    "mean": 0.0677
+   },
+   "2.0": {
+    "size": 484,
+    "sum": 33.0,
+    "mean": 0.0682
+   },
+   "3.0": {
+    "size": 678,
+    "sum": 35.0,
+    "mean": 0.0516
+   },
+   "4.0": {
+    "size": 734,
+    "sum": 25.0,
+    "mean": 0.0341
+   },
+   "5.0": {
+    "size": 479,
+    "sum": 9.0,
+    "mean": 0.0188
+   },
+   "6.0": {
+    "size": 78,
+    "sum": 1.0,
+    "mean": 0.0128
+   }
+  },
+  "year1_all": {
+   "rows": 280,
+   "events": 8,
+   "rate": 0.0286,
+   "with_live4": 174,
+   "events_live4": 7
+  },
+  "year2_by_stars": {
+   "-1.0": {
+    "size": 24,
+    "sum": 0
+   },
+   "2.0": {
+    "size": 14,
+    "sum": 2
+   },
+   "3.0": {
+    "size": 23,
+    "sum": 2
+   },
+   "4.0": {
+    "size": 10,
+    "sum": 2
+   },
+   "5.0": {
+    "size": 4,
+    "sum": 1
+   }
+  },
+  "year2_hit_horizon": {
+   "2": 3,
+   "3": 4
+  },
+  "year2_exit_year": {
+   "2.0": 22,
+   "3.0": 18,
+   "4.0": 28,
+   "5.0": 7
+  }
+ }
+}

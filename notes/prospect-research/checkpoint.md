@@ -1,0 +1,181 @@
+# Prospect research checkpoint
+
+Resumable state of the usage-bounded research loop in `claude-model-upgrade-brief-2026-10-03.md`.
+Rewritten at the end of every cycle; history is in git.
+
+**Where:** worktree `Fantasy Football/.claude/worktrees/prospect-model-db`, branch `prospect-model-db`
+(off local `main` 855ce59). Nothing pushed, deployed or sent. The shipped site file is still the v1
+draft-only model until a population B model clears review and the build is rerun.
+
+**Environment for every command** (bash, from the worktree):
+
+```bash
+export NFLVERSE_CACHE="/c/Users/TrevorWhite/Downloads/Big Projects/Fantasy Football/projections/nflverse-cache"
+python projections/prospect_db.py ingest          # refresh the SQLite store (no-op when nothing changed)
+python projections/build_prospect_model.py --parity
+python projections/prospect_experiments.py all    # population A candidates (about 20 min)
+python projections/prospect_experiments_b.py      # population B candidates (about 15 min)
+python projections/prospect_db.py coverage        # data-coverage.md + feature registry
+python projections/build_prospect_model.py        # shipping build: prospect-model.js + model card
+```
+
+## State after cycle 2 (2026-10-04)
+
+**Database.** `projections/prospect_db.py`: 13 raw source tables (226 release files, sha256 and
+licence each), idempotent per-file loads, derived run/link/row/feature/prediction tables. The builder
+reads only from it; `--parity` proves identical inputs and a byte-identical export. Every shipping
+build and experiment run is recorded as a `build_run`; the JS carries `db_run`.
+
+**Population A (drafted, capital known).** A0-A13 scored under charter v2. One candidate (A10 RB,
+a 50/50 blend) passed rules 1-5 and was **rejected by independent review**: v1's features were
+pruned on every class, so the pass is selection leakage; two classes carry it. Draft-only stays.
+A14 (feature selection inside each training fold, the honest test) is running.
+
+**Population B (pre-draft, every exiting FBS player).** College profile beats recruiting stars by a
+wide margin at every position (forward log loss WR 0.093 to 0.062, RB 0.154 to 0.098, TE 0.144 to
+0.100, QB 0.147 to 0.116 with nested C). Independent review confirmed B1/B2/B4 with no leakage, and
+said plainly that most of the AUC gain is separating who gets drafted (among drafted players AUC is
+0.70-0.74). It found a spec flaw (QB-only stats in RB/WR/TE models) that B8-B10 fix.
+
+## Cycle 3 (2026-10-04): shipped
+
+- **A14** (feature selection inside each training fold) loses to draft-only at every position:
+  post-draft, college stats add nothing reliable to capital. Draft-only stays.
+- **Review C** confirmed RB B10, WR B10, TE B8 and rejected QB B9. Shipped in commit b019fcf:
+  `PREDRAFT` set, `pd`/`pdx` on next-class college rows only, scored from completed seasons; the
+  prospects board shows a Pre-draft column. Prospect verify-app checks pass; site tests pass.
+  Three unrelated verify-app failures (trade-finder redraft timeouts, Gibbs week column) are in code
+  this branch does not touch.
+- Running: B11/B12 (QB passer-only features) and B14 (career-stage model for underclassmen),
+  registered in addendum 7. Each needs an independent review before it can ship.
+
+## Cycle 4 (2026-10-04): pulled, then a served-shape replacement
+
+- Review D rejected QB B12 as served and B14 for underclassmen.
+- New in-repo serving backtest (`prospect_serving_backtest.py`, addendum 8) replays the exact served
+  code on 2012-2021: the shipped exit-scenario path ran about 2x low for first-eligible players while
+  the same models are calibrated on real exits. **Pre-draft numbers pulled** (commit 9a5a340).
+- S1 (career-stage model served from completed seasons, addendum 9) passes that backtest at RB and WR
+  and beats stars plus college year served the same way (RB log loss 0.148 to 0.121, WR 0.080 to
+  0.066; AUC about 0.88; 100% of seasons). TE and QB fail. Wired behind `NEXT_STAGE` (empty);
+  review E running.
+
+## Cycle 5 (2026-10-04): WR shipped
+
+- Review E confirmed S1 at RB and WR as models, rejected the wiring (crash, missing payload metadata,
+  misleading copy) and found the top-60-by-Talent cut breaks calibration. Display rule D1 (addendum
+  10: list the next class by S1's own forecast) passed at WR (ratio 1.15, slope 0.80) and failed at RB
+  (slope 0.74). **Shipped WR only** (commit fb1a1d1); all review E fixes in; site tests pass; prospect
+  verify-app checks pass and now assert the Pre-draft column. A short independent fix check is running.
+
+## Cycle 6 (2026-10-04): WR upgraded to S3; RB held back
+
+- S3 (S1 with C tuned inside training, addendum 11) passes every gate at RB and WR; TE and QB fail.
+- Review G: WR S3 confirmed (beats S1 in every season resample); RB S3 passes but with 62% resampling
+  support on the display rule and is a near-copy of S1, so it is held back as a re-roll. Copy fixes in;
+  WR now serves S3. Site tests and prospect verify-app checks pass.
+
+
+## Cycle 7 (2026-10-04): live as-of-game features (S4); RB ships S4n4
+
+- Per-game box scores (sportsdataverse player and team box, 2004-2026) in the store; addendum 12
+  registered S4 = S3 plus the first N team games of the season in progress, N = 4 and 8.
+- Serving backtest: RB S4n4 passes every gate (beats S3 in 92% of resamples); RB S4n8 fails D1
+  (0.67); WR S4 fails the all-rows ratio (1.31/1.34); TE and QB fail.
+- Review H confirmed RB S4n4 with fixes: addendum 13 (fixed N=4, no S3 fallback, 68% D1 support as a
+  known risk), three copy fixes. RB now serves S4n4; site tests and prospect verify-app checks pass.
+
+## Cycle 8 (2026-10-04): S5n4 (live model on served-shaped rows); parallel lanes
+
+- Addendum 14 registered S5n4 before scoring. Serving backtest
+  (`python projections/prospect_serving_backtest.py RB=S5n4 WR=S5n4 TE=S5n4 QB=S5n4`):
+  - RB: every gate passes (all 0.92/1.00, D1 0.84/0.78) but it loses to the shipped S4n4 (14% of
+    season resamples). Rejected at RB on the replacement test.
+  - WR: every gate passes (all 1.12/1.16, first-eligible 0.92/1.20, D1 1.00/1.11) and it beats the
+    shipped S3 on served log loss (0.0649 to 0.0635) in 91% of resamples, one point over the floor.
+    FRAGILE; review I REJECTED it (seed noise: 72% of seeds clear 90%; gain carried by 3 hits). S3 stays.
+  - TE: fails (all 1.39/0.83, D1 1.32/0.73). QB: fails (first-eligible 0.77/1.27).
+- Parallel lanes launched (`notes/prospect-research/lanes/README.md`): QB, TE and young (classes after
+  the next one), each in its own write zone with a private copy of the store. The coordinator keeps
+  RB/WR and integrates; only reviewed candidates reach the builder.
+
+## Cycle 9 (2026-10-04, resumed after the usage-limit stop): S6n4; lane results reconciled
+
+- Addendum 15 S6n4 (S4n4 recalibrated on served-shaped rows; replacement tests at 95% of 200,000
+  resamples), `python projections/prospect_serving_backtest.py RB=S6n4 WR=S6n4`:
+  - WR: every gate passes (all 1.08/1.14, first-eligible 1.07/1.22, D1 0.98/1.08); served log loss
+    0.0649 (S3) to 0.0618, better in 99.9% of resamples; also beats S4n4 (90%). First-eligible slope
+    1.22 sits near the 1.25 ceiling. To independent review J; builder can serve it (gated).
+  - RB: gates pass (D1 0.90/0.85) but it beats the shipped S4n4 in only 39%. Rejected at RB.
+- TE lane (closed): T1-T3 fail the all-rows and top-60 ratio (1.35-1.41); power check says a correct
+  TE model clears all six gates about a third of the time. T2 frozen prospectively
+  (`lanes/te/prospective-t2.json`), serves nothing. Open proposals, not adopted: a minimum-history
+  replay window (would move a fold after seeing results) and a NestedLR guard for replays whose only
+  scorable inner class has no hit (C = 3 at the 2012 replay); the guard needs a re-score of every
+  shipped model before adoption.
+- QB lane (closed, fecad5d): Q1 (live passing line) and Q2 (NFL-year hazard) fail. Q3 (recalibration-
+  in-the-large of S3) passes every gate on the replay but is REJECTED: on the population the board
+  actually numbers (QBs with a completed start) its all-rows ratio is 1.28; joint support 14%; 93% vs
+  stars plus year misses addendum 15's 95%; it is the S6 mechanism, not independent evidence. With 31
+  events a calibrated-by-construction model passes all six gates only 24-32% of the time: QB needs the
+  prospective holdout. Replay caveats for any future QB work: served-population mismatch (starts) and
+  open windows dropping 62 of 88 late first-eligible rows.
+- Young lane (interrupted): YL1 at RB (sophomore-only stage model on served-shaped rows) passes every
+  later-class gate, FRAGILE (67% and 53% support; D1L slope 1.26 without the last replay). Every other
+  cell fails; QB and TE later classes have under 15 events and cannot be validated. To review K.
+- Data-gaps lane: interrupted before any result; resumed.
+
+## Cycle 10 (2026-10-04): RB sophomores ship (YL1); QB closed
+
+- Review K confirmed YL1 at RB, fragile, with fixes a-e; all applied. `LATER_MODEL = {"RB": "YL1"}`,
+  own later fit in `fit_stage`, display rule D1L, TEAM rows excluded, later copy rewritten, list frozen
+  prospectively. Addendum 16 records the adoption. Build, site tests and prospect verify-app pass.
+- QB lane closed: Q3 rejected on the served population (see cycle 9 entry). TE lane closed.
+- Still open: review J (WR S6n4), data-gaps lane.
+
+## Cycle 11 (2026-10-04): WR next class moves to S6n4
+
+- Review J confirmed WR S6n4 with fixes: beats S3 in 99.85-99.89% of 200,000 resamples across 40 seeds,
+  gain positive in all 10 leave-one-season-out runs and robust to dropping its top 5 gain rows; by college
+  year the ratio goes from S3's 0.92/1.61/1.53 to 1.07/1.10/1.08 (the diagnosed over-forecast fixed);
+  ranking identical to S4n4. Known risk: first-eligible slope in band in 58% of resamples (S3 92%).
+- Fixes applied (copy for S6, pd doc, NEXT_MODEL comment, addendum 17). NEXT_MODEL = WR S6n4, RB S4n4.
+
+## Cycle 12 (2026-10-04, third authorized run): label fix, lanes reconciled
+
+- Data lane (closed, d9f35e3 and 2b8bb8f): FCS usable 2013+ via the sportsdataverse `ncaa_mfb_*`
+  releases (stats.ncaa.org), 95 of 109 FCS NFL players join, all 8 hits; NCAA terms allow personal
+  non-commercial use only and forbid republishing the statistics, and the site is public, so FCS
+  ingestion waits on Trevor's call. Real college DOB unavailable (missingness leaks NFL status),
+  pro-day after 2019 unavailable, FantasyPros ECR terms forbid, ESPN Scouts Inc grade deferred (best
+  lead), injury unavailable (`espn_cfb_injuries` holds 2026 only), transfer and sit-out years usable.
+- Packages lane (separate session, stopped): loader matrix committed; every loader reaches the same
+  upstreams the store already reads; nothing new to ingest.
+- Label fix from the data lane: Beanie Wells (Chris Wells, Ohio State) and Stevie Johnson (two
+  Kentucky ids) were FBS hits labeled misses. `NICK` gains beanie; a same-name same-school tie goes to
+  the id that played closest to the draft; self-check covers both. Re-score of the shipped models on
+  the corrected labels: RB S4n4 all 1.07/0.93, first-eligible 1.00/0.87, D1 1.06/0.78; WR S6n4 all
+  1.11/1.13, first-eligible 1.10/1.22, D1 1.01/1.07, vs S3 100%. Both still pass. Rebuilt; tests and
+  prospect verify-app pass.
+- Features lane launched: receiving shape (air yards, aDOT, YAC from `espn_cfb_adv_receiving`) and
+  team talent (`cfb_team_talent`), against the shipped models at the 95% / 200k rule.
+
+- Features lane (closed, fdeef37/740f25f/cce8d57): air yards/aDOT/YAC dropped before preregistration
+  (empty before 2023). F1 (team talent) fails at WR and RB. F2 (4-5 star teammates at his position)
+  fails at WR; at RB it passes every preregistered gate (beats S4n4 in 99.71%) but is fragile and its
+  whole gain is 14 Alabama RB rows: rejected. Shipped models unchanged.
+
+**Next (open research)**: RB/TE/QB served models need a genuinely different idea, not a re-roll (for
+example more training seasons, or features the serving backtest says matter); later classes (stage 1)
+fail; prospective holdout from January 2027. **Next**: if the fix check passes, the cycle is done. Open research: RB (S1 fails D1 by 0.01 of slope;
+no threshold change), TE and QB (fail the serving backtest), later classes (stage 1 fails), and the
+prospective holdout from January 2027. Earlier: review E verdict on S1.
+Earlier note: review whatever of B11/B12/B14 passes; if B14 passes on stage 1-2 rows, serve underclassmen
+from it; score the prospective holdout from January 2027 (`python projections/prospect_prospective.py`).
+
+## Rejected or deferred, with reasons
+
+A1-A13 at every position (ledger.md); B3 everywhere (calibration); QB B1-B4/B6/B8/B10 (calibration);
+FantasyPros rookie ECR (5 mature classes, terms unverified, revisit Jan 2027); RAS pro-day archive
+(train-serve skew); any-school name join (tied FCS players to FBS namesakes). Prospective holdout:
+`experiments/prospective-2024-2026.json` and `prospective-b.json`, scoreable from January 2027.

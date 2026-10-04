@@ -1,0 +1,1367 @@
+{
+ "id": "A14",
+ "description": "feature selection redone inside every training fold (greedy forward, inner leave-one-class-out)",
+ "created_at_utc": "2026-10-04T01:12:02+00:00",
+ "charter": "notes/prospect-research/validation-charter-v2.md",
+ "git_head": "ab5f29b69823cf9acba8de6ec4940ac36414b226",
+ "sources_sha256": "76394de5e0d16f68252126b56d52a600e609e11c33ffb4037d4147954b6f475d",
+ "command": "python projections/prospect_experiments.py A14",
+ "population": "A: drafted QB/RB/WR/TE 2008+, linked college career",
+ "primary_metric": "pooled log loss, fwd",
+ "results": {
+  "QB": {
+   "fwd": {
+    "n": 105,
+    "events": 20,
+    "base": {
+     "logloss": 0.36337444609659203,
+     "brier": 0.11261973573057153,
+     "auc": 0.8400000000000001,
+     "slope": 0.8851287082890398,
+     "intercept": -0.007255109489653844,
+     "spearman_ppg": 0.6654022569024519
+    },
+    "cand": {
+     "logloss": 0.3768034484508761,
+     "brier": 0.11711633005316795,
+     "auc": 0.8300000000000001,
+     "slope": 0.7858258034572624,
+     "intercept": -0.12901914911627768,
+     "spearman_ppg": 0.6364850702734077
+    },
+    "gain": -0.01342900235428407,
+    "boot": {
+     "p": 0.06575,
+     "lo": -0.02848897177271504,
+     "hi": 0.001008848602504071
+    },
+    "per_class": [
+     {
+      "class": 2013,
+      "n": 10,
+      "hits": 0,
+      "base": 0.058066336976143704,
+      "cand": 0.04542871949798911
+     },
+     {
+      "class": 2014,
+      "n": 12,
+      "hits": 2,
+      "base": 0.26891677536495456,
+      "cand": 0.31011343320395973
+     },
+     {
+      "class": 2015,
+      "n": 7,
+      "hits": 0,
+      "base": 0.3786607101841001,
+      "cand": 0.39098163902970795
+     },
+     {
+      "class": 2016,
+      "n": 14,
+      "hits": 2,
+      "base": 0.28764013085703316,
+      "cand": 0.26453572104775586
+     },
+     {
+      "class": 2017,
+      "n": 10,
+      "hits": 3,
+      "base": 0.2746479816002083,
+      "cand": 0.27826956506696116
+     },
+     {
+      "class": 2018,
+      "n": 12,
+      "hits": 2,
+      "base": 0.5008902511669434,
+      "cand": 0.552993380411179
+     },
+     {
+      "class": 2019,
+      "n": 10,
+      "hits": 3,
+      "base": 0.5166968015953655,
+      "cand": 0.5548020974266212
+     },
+     {
+      "class": 2020,
+      "n": 12,
+      "hits": 5,
+      "base": 0.46496206176569244,
+      "cand": 0.4472276813298166
+     },
+     {
+      "class": 2021,
+      "n": 9,
+      "hits": 2,
+      "base": 0.3658637525721587,
+      "cand": 0.4000907256576378
+     },
+     {
+      "class": 2022,
+      "n": 9,
+      "hits": 1,
+      "base": 0.5414017780463677,
+      "cand": 0.5571284699212811
+     }
+    ],
+    "class_wins": 3,
+    "regime_2020": {
+     "n": 30,
+     "base": 0.45816448389183495,
+     "cand": 0.4660568312056023
+    }
+   },
+   "loco": {
+    "n": 128,
+    "events": 24,
+    "base": {
+     "logloss": 0.37448138471267667,
+     "brier": 0.11740911453851915,
+     "auc": 0.828125,
+     "slope": 0.903863178978324,
+     "intercept": -0.1179936965209709,
+     "spearman_ppg": 0.7015611112306603
+    },
+    "cand": {
+     "logloss": 0.40515580502100457,
+     "brier": 0.12764559886214516,
+     "auc": 0.8028846153846154,
+     "slope": 0.73073433974725,
+     "intercept": -0.3212082543450612,
+     "spearman_ppg": 0.6597313546927069
+    },
+    "gain": -0.0306744203083279,
+    "boot": {
+     "p": 0.001,
+     "lo": -0.049162243378918224,
+     "hi": -0.012625333538790449
+    },
+    "per_class": [
+     {
+      "class": 2008,
+      "n": 10,
+      "hits": 1,
+      "base": 0.13700782261815045,
+      "cand": 0.13148317451459107
+     },
+     {
+      "class": 2009,
+      "n": 9,
+      "hits": 2,
+      "base": 0.30129659127237374,
+      "cand": 0.3247353874339952
+     },
+     {
+      "class": 2010,
+      "n": 12,
+      "hits": 1,
+      "base": 0.2975263954547625,
+      "cand": 0.3691543117818135
+     },
+     {
+      "class": 2011,
+      "n": 12,
+      "hits": 2,
+      "base": 0.34243425914550657,
+      "cand": 0.37996982826288095
+     },
+     {
+      "class": 2012,
+      "n": 10,
+      "hits": 6,
+      "base": 0.9792965617001477,
+      "cand": 1.0320233762565698
+     },
+     {
+      "class": 2013,
+      "n": 10,
+      "hits": 0,
+      "base": 0.1382739928561902,
+      "cand": 0.12020620213281816
+     },
+     {
+      "class": 2014,
+      "n": 12,
+      "hits": 2,
+      "base": 0.2664247077183134,
+      "cand": 0.3679297953415348
+     },
+     {
+      "class": 2015,
+      "n": 7,
+      "hits": 0,
+      "base": 0.5023571668813038,
+      "cand": 0.5165838230899549
+     },
+     {
+      "class": 2016,
+      "n": 14,
+      "hits": 2,
+      "base": 0.2911767993014297,
+      "cand": 0.2896732670754009
+     },
+     {
+      "class": 2017,
+      "n": 10,
+      "hits": 3,
+      "base": 0.32346701494200786,
+      "cand": 0.32264242698101103
+     },
+     {
+      "class": 2018,
+      "n": 12,
+      "hits": 2,
+      "base": 0.48402975571073187,
+      "cand": 0.5576920360254826
+     },
+     {
+      "class": 2019,
+      "n": 10,
+      "hits": 3,
+      "base": 0.5163537225865368,
+      "cand": 0.5105308599306885
+     }
+    ],
+    "class_wins": 5
+   },
+   "rules": {
+    "1 fwd log loss lower": false,
+    "2 loco log loss lower": false,
+    "3 bootstrap >= 90%": false,
+    "4 2020+ not worse": false,
+    "5 calibration slope in range": true
+   },
+   "verdict": "reject",
+   "cols": null,
+   "selected_per_fold": [
+    [
+     "rush_ypg_best",
+     "comp_final",
+     "aya_final",
+     "starts"
+    ],
+    [
+     "aya_final",
+     "starts",
+     "rush_ypg_best",
+     "power"
+    ],
+    [
+     "starts"
+    ],
+    [
+     "starts",
+     "power",
+     "n_seasons"
+    ],
+    [
+     "starts",
+     "power"
+    ],
+    [
+     "starts"
+    ],
+    [
+     "n_seasons",
+     "starts"
+    ],
+    [
+     "n_seasons",
+     "starts",
+     "early"
+    ],
+    [
+     "n_seasons",
+     "starts",
+     "comp_final"
+    ],
+    [
+     "stars",
+     "n_seasons"
+    ],
+    [
+     "stars",
+     "rush_ypg_best"
+    ],
+    [
+     "stars",
+     "rush_ypg_best"
+    ],
+    [
+     "stars"
+    ],
+    [
+     "rush_ypg_best",
+     "aya_final",
+     "stars"
+    ],
+    [
+     "rush_ypg_best"
+    ],
+    [
+     "stars"
+    ],
+    [
+     "rush_ypg_best",
+     "power",
+     "stars"
+    ],
+    [
+     "stars"
+    ],
+    [
+     "stars"
+    ],
+    [
+     "stars"
+    ],
+    [
+     "starts",
+     "comp_final",
+     "stars"
+    ],
+    [
+     "stars",
+     "n_seasons"
+    ]
+   ],
+   "selected_final": [
+    "rush_ypg_best"
+   ]
+  },
+  "RB": {
+   "fwd": {
+    "n": 223,
+    "events": 64,
+    "base": {
+     "logloss": 0.4646626603561734,
+     "brier": 0.1461113420799721,
+     "auc": 0.7949095911949685,
+     "slope": 0.9193555311946616,
+     "intercept": 0.21648128097360253,
+     "spearman_ppg": 0.6132729776008237
+    },
+    "cand": {
+     "logloss": 0.4838157725695957,
+     "brier": 0.14732167136254237,
+     "auc": 0.7856721698113208,
+     "slope": 0.7480104301115964,
+     "intercept": -0.018051673491446756,
+     "spearman_ppg": 0.5909429778729538
+    },
+    "gain": -0.019153112213422308,
+    "boot": {
+     "p": 0.186,
+     "lo": -0.054187659256777106,
+     "hi": 0.015125769856602638
+    },
+    "per_class": [
+     {
+      "class": 2013,
+      "n": 24,
+      "hits": 7,
+      "base": 0.6453316398753174,
+      "cand": 0.8086865364838642
+     },
+     {
+      "class": 2014,
+      "n": 16,
+      "hits": 5,
+      "base": 0.4348205301285495,
+      "cand": 0.48047083890770875
+     },
+     {
+      "class": 2015,
+      "n": 17,
+      "hits": 7,
+      "base": 0.5534425850080581,
+      "cand": 0.4611482119843128
+     },
+     {
+      "class": 2016,
+      "n": 20,
+      "hits": 5,
+      "base": 0.3912280377750969,
+      "cand": 0.4686589926077236
+     },
+     {
+      "class": 2017,
+      "n": 25,
+      "hits": 10,
+      "base": 0.5665692864440439,
+      "cand": 0.4906795462404059
+     },
+     {
+      "class": 2018,
+      "n": 19,
+      "hits": 4,
+      "base": 0.35818667674811044,
+      "cand": 0.3687697124718375
+     },
+     {
+      "class": 2019,
+      "n": 25,
+      "hits": 6,
+      "base": 0.38945029412113913,
+      "cand": 0.42748259552029716
+     },
+     {
+      "class": 2020,
+      "n": 18,
+      "hits": 4,
+      "base": 0.3805183985650984,
+      "cand": 0.3930627764092863
+     },
+     {
+      "class": 2021,
+      "n": 19,
+      "hits": 4,
+      "base": 0.39650103936183373,
+      "cand": 0.39653409636212245
+     },
+     {
+      "class": 2022,
+      "n": 22,
+      "hits": 8,
+      "base": 0.5605086001582594,
+      "cand": 0.5604004624653527
+     },
+     {
+      "class": 2023,
+      "n": 18,
+      "hits": 4,
+      "base": 0.36230690121396264,
+      "cand": 0.3713023037515684
+     }
+    ],
+    "class_wins": 3,
+    "regime_2020": {
+     "n": 77,
+     "base": 0.4316307058101253,
+     "cand": 0.4366432395845905
+    }
+   },
+   "loco": {
+    "n": 241,
+    "events": 69,
+    "base": {
+     "logloss": 0.44076080778184723,
+     "brier": 0.13976987292502763,
+     "auc": 0.8211998651836873,
+     "slope": 0.9439835695912463,
+     "intercept": -0.049602371428894315,
+     "spearman_ppg": 0.6362763507612988
+    },
+    "cand": {
+     "logloss": 0.43135376924163293,
+     "brier": 0.1362979471207874,
+     "auc": 0.8296258847320526,
+     "slope": 0.8996677846524709,
+     "intercept": -0.08445662115613467,
+     "spearman_ppg": 0.6227606469051764
+    },
+    "gain": 0.009407038540214296,
+    "boot": {
+     "p": 0.77275,
+     "lo": -0.009453385395639776,
+     "hi": 0.030365304840460166
+    },
+    "per_class": [
+     {
+      "class": 2008,
+      "n": 19,
+      "hits": 10,
+      "base": 0.47603541737728355,
+      "cand": 0.4560542600097918
+     },
+     {
+      "class": 2009,
+      "n": 19,
+      "hits": 3,
+      "base": 0.2949454272266625,
+      "cand": 0.2632708885570116
+     },
+     {
+      "class": 2010,
+      "n": 11,
+      "hits": 3,
+      "base": 0.32757473507422286,
+      "cand": 0.2796702595778369
+     },
+     {
+      "class": 2011,
+      "n": 27,
+      "hits": 4,
+      "base": 0.37167300152170624,
+      "cand": 0.36237859071015965
+     },
+     {
+      "class": 2012,
+      "n": 19,
+      "hits": 5,
+      "base": 0.49262957139975944,
+      "cand": 0.5165986425425068
+     },
+     {
+      "class": 2013,
+      "n": 24,
+      "hits": 7,
+      "base": 0.6019919116981991,
+      "cand": 0.6263311459627147
+     },
+     {
+      "class": 2014,
+      "n": 16,
+      "hits": 5,
+      "base": 0.4193736075841823,
+      "cand": 0.4034092087661939
+     },
+     {
+      "class": 2015,
+      "n": 17,
+      "hits": 7,
+      "base": 0.5092111735862745,
+      "cand": 0.45098945934616513
+     },
+     {
+      "class": 2016,
+      "n": 20,
+      "hits": 5,
+      "base": 0.38106098394200844,
+      "cand": 0.4104258963777487
+     },
+     {
+      "class": 2017,
+      "n": 25,
+      "hits": 10,
+      "base": 0.5597537723776744,
+      "cand": 0.47308081086797066
+     },
+     {
+      "class": 2018,
+      "n": 19,
+      "hits": 4,
+      "base": 0.39279842509463236,
+      "cand": 0.40016806300334357
+     },
+     {
+      "class": 2019,
+      "n": 25,
+      "hits": 6,
+      "base": 0.3873462410520747,
+      "cand": 0.43284258012237187
+     }
+    ],
+    "class_wins": 7
+   },
+   "rules": {
+    "1 fwd log loss lower": false,
+    "2 loco log loss lower": true,
+    "3 bootstrap >= 90%": false,
+    "4 2020+ not worse": false,
+    "5 calibration slope in range": false
+   },
+   "verdict": "reject",
+   "cols": null,
+   "selected_per_fold": [
+    [
+     "scrim_ypg",
+     "rec_epa_best",
+     "draft_age",
+     "early"
+    ],
+    [
+     "rec_epa_best",
+     "dom_final",
+     "early",
+     "scrim_ypg"
+    ],
+    [
+     "dom_final",
+     "scrim_ypg",
+     "early",
+     "ryptpa_final"
+    ],
+    [
+     "dom_final",
+     "ryptpa_final"
+    ],
+    [
+     "ryptpa_final",
+     "dom_final",
+     "rush_succ_best"
+    ],
+    [
+     "ryptpa_final",
+     "dom_final",
+     "rush_succ_best",
+     "stars"
+    ],
+    [
+     "dom_final",
+     "rush_succ_best",
+     "early",
+     "ryptpa_final"
+    ],
+    [
+     "ryptpa_final",
+     "rush_succ_best",
+     "early",
+     "dom_final"
+    ],
+    [
+     "ryptpa_final",
+     "rush_succ_best",
+     "early",
+     "dom_final"
+    ],
+    [
+     "ryptpa_final",
+     "rush_succ_best",
+     "scrim_ypg",
+     "ryptpa_best"
+    ],
+    [
+     "ryptpa_final",
+     "rush_succ_best",
+     "early"
+    ],
+    [
+     "ryptpa_final",
+     "rush_succ_best",
+     "early",
+     "stars"
+    ],
+    [
+     "ryptpa_final",
+     "rush_succ_best",
+     "early",
+     "dom_best"
+    ],
+    [
+     "ryptpa_final",
+     "rush_succ_best",
+     "ryptpa_best",
+     "scrim_ypg"
+    ],
+    [
+     "ryptpa_final",
+     "rush_succ_best",
+     "draft_age",
+     "dom_best"
+    ],
+    [
+     "ryptpa_final",
+     "rush_succ_best",
+     "early",
+     "scrim_ypg"
+    ],
+    [
+     "scrim_ypg",
+     "rush_succ_best",
+     "early",
+     "ryptpa_final"
+    ],
+    [
+     "ryptpa_final",
+     "scrim_ypg",
+     "ryptpa_best",
+     "rush_succ_best"
+    ],
+    [
+     "ryptpa_final",
+     "rush_succ_best",
+     "scrim_ypg",
+     "ryptpa_best"
+    ],
+    [
+     "ryptpa_final",
+     "scrim_ypg",
+     "rush_succ_best",
+     "ryptpa_best"
+    ],
+    [
+     "ryptpa_final",
+     "ryptpa_best",
+     "scrim_ypg",
+     "rush_succ_best"
+    ],
+    [
+     "ryptpa_final",
+     "rush_succ_best",
+     "dom_best",
+     "stars"
+    ],
+    [
+     "ryptpa_final",
+     "rush_succ_best",
+     "early",
+     "dom_final"
+    ]
+   ],
+   "selected_final": [
+    "ryptpa_final",
+    "rush_succ_best"
+   ]
+  },
+  "WR": {
+   "fwd": {
+    "n": 324,
+    "events": 54,
+    "base": {
+     "logloss": 0.3506464102431558,
+     "brier": 0.11208311799496226,
+     "auc": 0.8307270233196159,
+     "slope": 0.974915556220282,
+     "intercept": 0.10675556751743123,
+     "spearman_ppg": 0.6104188430843206
+    },
+    "cand": {
+     "logloss": 0.34800624441484423,
+     "brier": 0.10921834267915634,
+     "auc": 0.8304526748971194,
+     "slope": 0.9049733395599161,
+     "intercept": 0.03236238755354941,
+     "spearman_ppg": 0.6017728935305279
+    },
+    "gain": 0.002640165828311558,
+    "boot": {
+     "p": 0.603,
+     "lo": -0.012813845687715068,
+     "hi": 0.018865614094993908
+    },
+    "per_class": [
+     {
+      "class": 2013,
+      "n": 23,
+      "hits": 2,
+      "base": 0.3002510875290655,
+      "cand": 0.2613307810480553
+     },
+     {
+      "class": 2014,
+      "n": 29,
+      "hits": 10,
+      "base": 0.44372032005651674,
+      "cand": 0.42850931178293455
+     },
+     {
+      "class": 2015,
+      "n": 30,
+      "hits": 2,
+      "base": 0.285779331885901,
+      "cand": 0.24135785752016423
+     },
+     {
+      "class": 2016,
+      "n": 30,
+      "hits": 4,
+      "base": 0.3654140697879637,
+      "cand": 0.3894618169093977
+     },
+     {
+      "class": 2017,
+      "n": 29,
+      "hits": 3,
+      "base": 0.4208825585779695,
+      "cand": 0.36151640978285604
+     },
+     {
+      "class": 2018,
+      "n": 31,
+      "hits": 4,
+      "base": 0.2548466273717473,
+      "cand": 0.2480538168621907
+     },
+     {
+      "class": 2019,
+      "n": 28,
+      "hits": 7,
+      "base": 0.502601193462458,
+      "cand": 0.5340729627687775
+     },
+     {
+      "class": 2020,
+      "n": 34,
+      "hits": 6,
+      "base": 0.28930860291448246,
+      "cand": 0.28657872335221785
+     },
+     {
+      "class": 2021,
+      "n": 34,
+      "hits": 5,
+      "base": 0.27919255449177793,
+      "cand": 0.2744484074033367
+     },
+     {
+      "class": 2022,
+      "n": 25,
+      "hits": 3,
+      "base": 0.2668543191334881,
+      "cand": 0.3053708763467483
+     },
+     {
+      "class": 2023,
+      "n": 31,
+      "hits": 8,
+      "base": 0.45551290901209285,
+      "cand": 0.5017797881741369
+     }
+    ],
+    "class_wins": 7,
+    "regime_2020": {
+     "n": 124,
+     "base": 0.3235588508832656,
+     "cand": 0.3408416757077081
+    }
+   },
+   "loco": {
+    "n": 338,
+    "events": 51,
+    "base": {
+     "logloss": 0.3458863104085968,
+     "brier": 0.11138244154645408,
+     "auc": 0.8178588508574162,
+     "slope": 0.998200938878311,
+     "intercept": -0.0028488552255661256,
+     "spearman_ppg": 0.5841161182850664
+    },
+    "cand": {
+     "logloss": 0.31809202919372004,
+     "brier": 0.10074257326818052,
+     "auc": 0.8468948555031769,
+     "slope": 1.0725593040481898,
+     "intercept": 0.09175536211730181,
+     "spearman_ppg": 0.6047222802769632
+    },
+    "gain": 0.02779428121487676,
+    "boot": {
+     "p": 0.99675,
+     "lo": 0.010045475830673336,
+     "hi": 0.045372567323075784
+    },
+    "per_class": [
+     {
+      "class": 2008,
+      "n": 29,
+      "hits": 2,
+      "base": 0.22548378059439836,
+      "cand": 0.25109896966494066
+     },
+     {
+      "class": 2009,
+      "n": 27,
+      "hits": 6,
+      "base": 0.4442766741207257,
+      "cand": 0.3442082087747052
+     },
+     {
+      "class": 2010,
+      "n": 25,
+      "hits": 4,
+      "base": 0.3332770139362238,
+      "cand": 0.3111005166595378
+     },
+     {
+      "class": 2011,
+      "n": 25,
+      "hits": 4,
+      "base": 0.26970446742855636,
+      "cand": 0.22832980951681525
+     },
+     {
+      "class": 2012,
+      "n": 32,
+      "hits": 3,
+      "base": 0.28448458720186415,
+      "cand": 0.2589583749990339
+     },
+     {
+      "class": 2013,
+      "n": 23,
+      "hits": 2,
+      "base": 0.28705617130522953,
+      "cand": 0.24168889733620602
+     },
+     {
+      "class": 2014,
+      "n": 29,
+      "hits": 10,
+      "base": 0.5145620251830071,
+      "cand": 0.4687558664313914
+     },
+     {
+      "class": 2015,
+      "n": 30,
+      "hits": 2,
+      "base": 0.30188782696425026,
+      "cand": 0.25626764306054334
+     },
+     {
+      "class": 2016,
+      "n": 30,
+      "hits": 4,
+      "base": 0.35248483137997677,
+      "cand": 0.3360456720121682
+     },
+     {
+      "class": 2017,
+      "n": 29,
+      "hits": 3,
+      "base": 0.38449965015264487,
+      "cand": 0.3168835642222781
+     },
+     {
+      "class": 2018,
+      "n": 31,
+      "hits": 4,
+      "base": 0.25701229560511585,
+      "cand": 0.25780001303456845
+     },
+     {
+      "class": 2019,
+      "n": 28,
+      "hits": 7,
+      "base": 0.49726385057820727,
+      "cand": 0.537985713284179
+     }
+    ],
+    "class_wins": 9
+   },
+   "rules": {
+    "1 fwd log loss lower": true,
+    "2 loco log loss lower": true,
+    "3 bootstrap >= 90%": false,
+    "4 2020+ not worse": false,
+    "5 calibration slope in range": true
+   },
+   "verdict": "reject",
+   "cols": null,
+   "selected_per_fold": [
+    [
+     "dom_final",
+     "rec_epa_best",
+     "ryptpa_career",
+     "power"
+    ],
+    [
+     "early",
+     "rec_epa_best",
+     "dom_final"
+    ],
+    [
+     "ryptpa_career",
+     "early",
+     "rec_epa_best"
+    ],
+    [
+     "ryptpa_career",
+     "early",
+     "rec_epa_best",
+     "dom_final"
+    ],
+    [
+     "early",
+     "ryptpa_final",
+     "ryptpa_career"
+    ],
+    [
+     "early",
+     "ryptpa_career",
+     "ryptpa_final"
+    ],
+    [
+     "early",
+     "ryptpa_career"
+    ],
+    [
+     "early",
+     "ryptpa_career"
+    ],
+    [
+     "early",
+     "ryptpa_career"
+    ],
+    [
+     "early",
+     "ryptpa_career"
+    ],
+    [
+     "early",
+     "ryptpa_career"
+    ],
+    [
+     "early",
+     "ryptpa_career"
+    ],
+    [
+     "early",
+     "ryptpa_career"
+    ],
+    [
+     "early",
+     "ryptpa_career"
+    ],
+    [
+     "early",
+     "ryptpa_career"
+    ],
+    [
+     "early",
+     "ryptpa_career"
+    ],
+    [
+     "early",
+     "ryptpa_career"
+    ],
+    [
+     "early",
+     "ryptpa_career"
+    ],
+    [
+     "early",
+     "ryptpa_career"
+    ],
+    [
+     "early",
+     "ryptpa_career"
+    ],
+    [
+     "early",
+     "ryptpa_career"
+    ],
+    [
+     "early",
+     "ryptpa_career"
+    ],
+    [
+     "early",
+     "ryptpa_career"
+    ]
+   ],
+   "selected_final": [
+    "early",
+    "ryptpa_career"
+   ]
+  },
+  "TE": {
+   "fwd": {
+    "n": 130,
+    "events": 25,
+    "base": {
+     "logloss": 0.4034973108665265,
+     "brier": 0.1238559403583709,
+     "auc": 0.8278095238095238,
+     "slope": 0.792772454171694,
+     "intercept": -0.5866954889768412,
+     "spearman_ppg": 0.6699938981704447
+    },
+    "cand": {
+     "logloss": 0.4184189130989393,
+     "brier": 0.12838905521549723,
+     "auc": 0.8259047619047619,
+     "slope": 0.7106002443421113,
+     "intercept": -0.7272836169861795,
+     "spearman_ppg": 0.647941972803477
+    },
+    "gain": -0.01492160223241279,
+    "boot": {
+     "p": 0.149,
+     "lo": -0.038824562858174864,
+     "hi": 0.009013283691602514
+    },
+    "per_class": [
+     {
+      "class": 2013,
+      "n": 16,
+      "hits": 4,
+      "base": 0.30819929321547096,
+      "cand": 0.2885861105741928
+     },
+     {
+      "class": 2014,
+      "n": 10,
+      "hits": 0,
+      "base": 1.0291966381033524,
+      "cand": 1.0734954213671457
+     },
+     {
+      "class": 2015,
+      "n": 16,
+      "hits": 0,
+      "base": 0.1992808545646088,
+      "cand": 0.23105512687436652
+     },
+     {
+      "class": 2016,
+      "n": 7,
+      "hits": 3,
+      "base": 0.5216928093857436,
+      "cand": 0.5178274294430038
+     },
+     {
+      "class": 2017,
+      "n": 12,
+      "hits": 5,
+      "base": 0.4748172451022758,
+      "cand": 0.572867572496401
+     },
+     {
+      "class": 2018,
+      "n": 14,
+      "hits": 4,
+      "base": 0.6332401209728534,
+      "cand": 0.5527088040204277
+     },
+     {
+      "class": 2019,
+      "n": 16,
+      "hits": 3,
+      "base": 0.28371003605267153,
+      "cand": 0.3166377116370529
+     },
+     {
+      "class": 2020,
+      "n": 11,
+      "hits": 1,
+      "base": 0.2046349714577449,
+      "cand": 0.24793248963067238
+     },
+     {
+      "class": 2021,
+      "n": 10,
+      "hits": 2,
+      "base": 0.24905606921952023,
+      "cand": 0.28787728049833206
+     },
+     {
+      "class": 2022,
+      "n": 18,
+      "hits": 3,
+      "base": 0.36372652286183577,
+      "cand": 0.3575491655864618
+     }
+    ],
+    "class_wins": 4,
+    "regime_2020": {
+     "n": 39,
+     "base": 0.28945186640367787,
+     "cand": 0.30876705567889823
+    }
+   },
+   "loco": {
+    "n": 164,
+    "events": 35,
+    "base": {
+     "logloss": 0.4296752128829385,
+     "brier": 0.13621071606065202,
+     "auc": 0.7893687707641196,
+     "slope": 0.8830731318868159,
+     "intercept": -0.1239563859627844,
+     "spearman_ppg": 0.6227688431896268
+    },
+    "cand": {
+     "logloss": 0.4169939890170434,
+     "brier": 0.13340361068606607,
+     "auc": 0.8035437430786269,
+     "slope": 0.9016616911108742,
+     "intercept": -0.10299512635358493,
+     "spearman_ppg": 0.5924245065178465
+    },
+    "gain": 0.012681223865895097,
+    "boot": {
+     "p": 0.8455,
+     "lo": -0.007224914822066296,
+     "hi": 0.033716727317274146
+    },
+    "per_class": [
+     {
+      "class": 2008,
+      "n": 15,
+      "hits": 5,
+      "base": 0.48466534795895455,
+      "cand": 0.45684094683985077
+     },
+     {
+      "class": 2009,
+      "n": 17,
+      "hits": 2,
+      "base": 0.3251397773540559,
+      "cand": 0.373719694593337
+     },
+     {
+      "class": 2010,
+      "n": 18,
+      "hits": 6,
+      "base": 0.5354529391955398,
+      "cand": 0.5371665474214629
+     },
+     {
+      "class": 2011,
+      "n": 12,
+      "hits": 2,
+      "base": 0.5444856440495186,
+      "cand": 0.5725051252806728
+     },
+     {
+      "class": 2012,
+      "n": 11,
+      "hits": 1,
+      "base": 0.22041735777609067,
+      "cand": 0.24279732262440426
+     },
+     {
+      "class": 2013,
+      "n": 16,
+      "hits": 4,
+      "base": 0.34078538581160095,
+      "cand": 0.2785335098795996
+     },
+     {
+      "class": 2014,
+      "n": 10,
+      "hits": 0,
+      "base": 0.6709814140236086,
+      "cand": 0.5566772723139624
+     },
+     {
+      "class": 2015,
+      "n": 16,
+      "hits": 0,
+      "base": 0.16111073042606297,
+      "cand": 0.17630042572007965
+     },
+     {
+      "class": 2016,
+      "n": 7,
+      "hits": 3,
+      "base": 0.5925646564980044,
+      "cand": 0.5807796308385925
+     },
+     {
+      "class": 2017,
+      "n": 12,
+      "hits": 5,
+      "base": 0.5167476043482732,
+      "cand": 0.475934858474277
+     },
+     {
+      "class": 2018,
+      "n": 14,
+      "hits": 4,
+      "base": 0.6507460267542712,
+      "cand": 0.5963944514128269
+     },
+     {
+      "class": 2019,
+      "n": 16,
+      "hits": 3,
+      "base": 0.3045804179052424,
+      "cand": 0.31256384701326406
+     }
+    ],
+    "class_wins": 6
+   },
+   "rules": {
+    "1 fwd log loss lower": false,
+    "2 loco log loss lower": true,
+    "3 bootstrap >= 90%": false,
+    "4 2020+ not worse": false,
+    "5 calibration slope in range": false
+   },
+   "verdict": "reject",
+   "cols": null,
+   "selected_per_fold": [
+    [
+     "ryptpa_final",
+     "early",
+     "power"
+    ],
+    [
+     "ryptpa_final",
+     "dom_final",
+     "power",
+     "draft_age"
+    ],
+    [
+     "draft_age",
+     "dom_final"
+    ],
+    [
+     "draft_age",
+     "ryptpa_final"
+    ],
+    [
+     "ryptpa_final",
+     "draft_age",
+     "weight"
+    ],
+    [
+     "weight",
+     "ryptpa_final"
+    ],
+    [
+     "ryptpa_final",
+     "weight"
+    ],
+    [
+     "ryptpa_final",
+     "weight"
+    ],
+    [
+     "weight"
+    ],
+    [
+     "weight"
+    ],
+    [
+     "weight",
+     "speed_score"
+    ],
+    [
+     "weight"
+    ],
+    [
+     "weight"
+    ],
+    [
+     "weight",
+     "rec_epa_best"
+    ],
+    [
+     "weight"
+    ],
+    [
+     "weight"
+    ],
+    [
+     "weight"
+    ],
+    [
+     "weight"
+    ],
+    [
+     "weight"
+    ],
+    [
+     "weight"
+    ],
+    [
+     "weight",
+     "rec_epa_best"
+    ],
+    [
+     "weight"
+    ]
+   ],
+   "selected_final": [
+    "weight",
+    "ryptpa_best"
+   ]
+  }
+ }
+}

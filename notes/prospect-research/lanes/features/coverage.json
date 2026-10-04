@@ -1,0 +1,543 @@
+{
+ "family1_adv_receiving": {
+  "2004": {
+   "rows": 7251,
+   "airyds_nonnull": 0.0,
+   "name_null_rows": 0.1277,
+   "player_seasons": 1655,
+   "joined_to_store_id": 0.8394,
+   "store_name_team_dups": 2,
+   "targets_equal": 0.4827,
+   "yards_equal": 0.423,
+   "receptions_equal": 0.4827,
+   "epa_corr": 0.9887
+  },
+  "2005": {
+   "rows": 10822,
+   "airyds_nonnull": 0.0,
+   "name_null_rows": 0.1087,
+   "player_seasons": 2534,
+   "joined_to_store_id": 0.6821,
+   "store_name_team_dups": 16,
+   "targets_equal": 0.7791,
+   "yards_equal": 0.827,
+   "receptions_equal": 0.8258,
+   "epa_corr": 0.9727
+  },
+  "2006": {
+   "rows": 12037,
+   "airyds_nonnull": 0.0,
+   "name_null_rows": 0.1106,
+   "player_seasons": 2610,
+   "joined_to_store_id": 0.6721,
+   "store_name_team_dups": 14,
+   "targets_equal": 0.6691,
+   "yards_equal": 0.7379,
+   "receptions_equal": 0.7345,
+   "epa_corr": 0.9499
+  },
+  "2007": {
+   "rows": 12995,
+   "airyds_nonnull": 0.0,
+   "name_null_rows": 0.1063,
+   "player_seasons": 2609,
+   "joined_to_store_id": 0.6896,
+   "store_name_team_dups": 8,
+   "targets_equal": 0.7064,
+   "yards_equal": 0.7514,
+   "receptions_equal": 0.7497,
+   "epa_corr": 0.9867
+  },
+  "2008": {
+   "rows": 13661,
+   "airyds_nonnull": 0.0,
+   "name_null_rows": 0.1103,
+   "player_seasons": 2739,
+   "joined_to_store_id": 0.6641,
+   "store_name_team_dups": 12,
+   "targets_equal": 0.6478,
+   "yards_equal": 0.6884,
+   "receptions_equal": 0.6857,
+   "epa_corr": 0.9907
+  },
+  "2009": {
+   "rows": 14250,
+   "airyds_nonnull": 0.0,
+   "name_null_rows": 0.1069,
+   "player_seasons": 2832,
+   "joined_to_store_id": 0.6346,
+   "store_name_team_dups": 6,
+   "targets_equal": 0.6209,
+   "yards_equal": 0.6626,
+   "receptions_equal": 0.6598,
+   "epa_corr": 0.9828
+  },
+  "2010": {
+   "rows": 14359,
+   "airyds_nonnull": 0.0,
+   "name_null_rows": 0.1065,
+   "player_seasons": 2835,
+   "joined_to_store_id": 0.6425,
+   "store_name_team_dups": 2,
+   "targets_equal": 0.624,
+   "yards_equal": 0.6734,
+   "receptions_equal": 0.6718,
+   "epa_corr": 0.9914
+  },
+  "2011": {
+   "rows": 14945,
+   "airyds_nonnull": 0.0,
+   "name_null_rows": 0.1035,
+   "player_seasons": 2964,
+   "joined_to_store_id": 0.6252,
+   "store_name_team_dups": 6,
+   "targets_equal": 0.5332,
+   "yards_equal": 0.6,
+   "receptions_equal": 0.5978,
+   "epa_corr": 0.989
+  },
+  "2012": {
+   "rows": 15605,
+   "airyds_nonnull": 0.0,
+   "name_null_rows": 0.1019,
+   "player_seasons": 3123,
+   "joined_to_store_id": 0.6215,
+   "store_name_team_dups": 10,
+   "targets_equal": 0.537,
+   "yards_equal": 0.5998,
+   "receptions_equal": 0.6003,
+   "epa_corr": 0.9837
+  },
+  "2013": {
+   "rows": 16075,
+   "airyds_nonnull": 0.0,
+   "name_null_rows": 0.0963,
+   "player_seasons": 3245,
+   "joined_to_store_id": 0.6135,
+   "store_name_team_dups": 10,
+   "targets_equal": 0.5201,
+   "yards_equal": 0.5848,
+   "receptions_equal": 0.5832,
+   "epa_corr": 0.9851
+  },
+  "2014": {
+   "rows": 15803,
+   "airyds_nonnull": 0.0001,
+   "name_null_rows": 0.104,
+   "player_seasons": 3011,
+   "joined_to_store_id": 0.6702,
+   "store_name_team_dups": 0,
+   "targets_equal": 0.5555,
+   "yards_equal": 0.6125,
+   "receptions_equal": 0.6085,
+   "epa_corr": 0.9909
+  },
+  "2015": {
+   "rows": 15383,
+   "airyds_nonnull": 0.0,
+   "name_null_rows": 0.1098,
+   "player_seasons": 2892,
+   "joined_to_store_id": 0.7144,
+   "store_name_team_dups": 0,
+   "targets_equal": 0.5847,
+   "yards_equal": 0.6142,
+   "receptions_equal": 0.6152,
+   "epa_corr": 0.9875
+  },
+  "2016": {
+   "rows": 15102,
+   "airyds_nonnull": 0.0,
+   "name_null_rows": 0.1114,
+   "player_seasons": 2899,
+   "joined_to_store_id": 0.6992,
+   "store_name_team_dups": 0,
+   "targets_equal": 0.5673,
+   "yards_equal": 0.6004,
+   "receptions_equal": 0.6014,
+   "epa_corr": 0.9907
+  },
+  "2017": {
+   "rows": 15505,
+   "airyds_nonnull": 0.0,
+   "name_null_rows": 0.1097,
+   "player_seasons": 2863,
+   "joined_to_store_id": 0.7311,
+   "store_name_team_dups": 0,
+   "targets_equal": 0.6192,
+   "yards_equal": 0.6431,
+   "receptions_equal": 0.6417,
+   "epa_corr": 0.991
+  },
+  "2018": {
+   "rows": 15785,
+   "airyds_nonnull": 0.0,
+   "name_null_rows": 0.1093,
+   "player_seasons": 3041,
+   "joined_to_store_id": 0.6995,
+   "store_name_team_dups": 2,
+   "targets_equal": 0.5724,
+   "yards_equal": 0.6039,
+   "receptions_equal": 0.6001,
+   "epa_corr": 0.9888
+  },
+  "2019": {
+   "rows": 15890,
+   "airyds_nonnull": 0.0,
+   "name_null_rows": 0.1097,
+   "player_seasons": 3060,
+   "joined_to_store_id": 0.6968,
+   "store_name_team_dups": 2,
+   "targets_equal": 0.5649,
+   "yards_equal": 0.5973,
+   "receptions_equal": 0.5973,
+   "epa_corr": 0.9895
+  },
+  "2020": {
+   "rows": 9999,
+   "airyds_nonnull": 0.0,
+   "name_null_rows": 0.1109,
+   "player_seasons": 2126,
+   "joined_to_store_id": 0.8909,
+   "store_name_team_dups": 0,
+   "targets_equal": 0.8569,
+   "yards_equal": 0.8654,
+   "receptions_equal": 0.8643,
+   "epa_corr": 0.9912
+  },
+  "2021": {
+   "rows": 14939,
+   "airyds_nonnull": 0.0,
+   "name_null_rows": 0.1086,
+   "player_seasons": 2939,
+   "joined_to_store_id": 0.72,
+   "store_name_team_dups": 0,
+   "targets_equal": 0.6257,
+   "yards_equal": 0.6366,
+   "receptions_equal": 0.6522,
+   "epa_corr": 0.9914
+  },
+  "2022": {
+   "rows": 15185,
+   "airyds_nonnull": 0.0,
+   "name_null_rows": 0.1098,
+   "player_seasons": 3070,
+   "joined_to_store_id": 0.701,
+   "store_name_team_dups": 0,
+   "targets_equal": 0.5753,
+   "yards_equal": 0.5874,
+   "receptions_equal": 0.5943,
+   "epa_corr": 0.9902
+  },
+  "2023": {
+   "rows": 15791,
+   "airyds_nonnull": 0.002,
+   "name_null_rows": 0.1108,
+   "player_seasons": 3010,
+   "joined_to_store_id": 0.7113,
+   "store_name_team_dups": 0,
+   "targets_equal": 0.561,
+   "yards_equal": 0.5778,
+   "receptions_equal": 0.5796,
+   "epa_corr": 0.9923
+  },
+  "2024": {
+   "rows": 16006,
+   "airyds_nonnull": 0.0001,
+   "name_null_rows": 0.117,
+   "player_seasons": 3118,
+   "joined_to_store_id": 0.6777,
+   "store_name_team_dups": 0,
+   "targets_equal": 0.557,
+   "yards_equal": 0.5457,
+   "receptions_equal": 0.5622,
+   "epa_corr": 0.9933
+  },
+  "2025": {
+   "rows": 18388,
+   "airyds_nonnull": 0.3706,
+   "name_null_rows": 0.0955,
+   "player_seasons": 3569,
+   "joined_to_store_id": 0.6528,
+   "store_name_team_dups": 0,
+   "targets_equal": 0.4837,
+   "yards_equal": 0.4837,
+   "receptions_equal": 0.5481,
+   "epa_corr": 0.9872
+  },
+  "2026": {
+   "rows": 7880,
+   "airyds_nonnull": 0.903,
+   "name_null_rows": 0.0896,
+   "player_seasons": 3063,
+   "joined_to_store_id": 0.5822,
+   "store_name_team_dups": 2,
+   "targets_equal": 0.3526,
+   "yards_equal": 0.4159,
+   "receptions_equal": 0.4131,
+   "epa_corr": 0.9107
+  }
+ },
+ "family2_team_talent": {
+  "2005": {
+   "teams": 121,
+   "talent_null": 0,
+   "player_seasons_team_covered": 0.9937,
+   "n_recruits_vs_store_window_corr": 0.878,
+   "store_recruit_classes_in_window": [
+    2004,
+    2005
+   ]
+  },
+  "2006": {
+   "teams": 125,
+   "talent_null": 0,
+   "player_seasons_team_covered": 0.9959,
+   "n_recruits_vs_store_window_corr": 0.9763,
+   "store_recruit_classes_in_window": [
+    2004,
+    2005,
+    2006
+   ]
+  },
+  "2007": {
+   "teams": 129,
+   "talent_null": 0,
+   "player_seasons_team_covered": 0.992,
+   "n_recruits_vs_store_window_corr": 1.0,
+   "store_recruit_classes_in_window": [
+    2004,
+    2005,
+    2006,
+    2007
+   ]
+  },
+  "2008": {
+   "teams": 137,
+   "talent_null": 0,
+   "player_seasons_team_covered": 0.9908,
+   "n_recruits_vs_store_window_corr": 1.0,
+   "store_recruit_classes_in_window": [
+    2005,
+    2006,
+    2007,
+    2008
+   ]
+  },
+  "2009": {
+   "teams": 150,
+   "talent_null": 0,
+   "player_seasons_team_covered": 0.9925,
+   "n_recruits_vs_store_window_corr": 1.0,
+   "store_recruit_classes_in_window": [
+    2006,
+    2007,
+    2008,
+    2009
+   ]
+  },
+  "2010": {
+   "teams": 165,
+   "talent_null": 0,
+   "player_seasons_team_covered": 0.9935,
+   "n_recruits_vs_store_window_corr": 1.0,
+   "store_recruit_classes_in_window": [
+    2007,
+    2008,
+    2009,
+    2010
+   ]
+  },
+  "2011": {
+   "teams": 182,
+   "talent_null": 0,
+   "player_seasons_team_covered": 0.9927,
+   "n_recruits_vs_store_window_corr": 1.0,
+   "store_recruit_classes_in_window": [
+    2008,
+    2009,
+    2010,
+    2011
+   ]
+  },
+  "2012": {
+   "teams": 212,
+   "talent_null": 0,
+   "player_seasons_team_covered": 0.9901,
+   "n_recruits_vs_store_window_corr": 1.0,
+   "store_recruit_classes_in_window": [
+    2009,
+    2010,
+    2011,
+    2012
+   ]
+  },
+  "2013": {
+   "teams": 238,
+   "talent_null": 0,
+   "player_seasons_team_covered": 0.9916,
+   "n_recruits_vs_store_window_corr": 1.0,
+   "store_recruit_classes_in_window": [
+    2010,
+    2011,
+    2012,
+    2013
+   ]
+  },
+  "2014": {
+   "teams": 281,
+   "talent_null": 0,
+   "player_seasons_team_covered": 0.9917,
+   "n_recruits_vs_store_window_corr": 1.0,
+   "store_recruit_classes_in_window": [
+    2011,
+    2012,
+    2013,
+    2014
+   ]
+  },
+  "2015": {
+   "teams": 291,
+   "talent_null": 0,
+   "player_seasons_team_covered": 0.9919,
+   "n_recruits_vs_store_window_corr": 1.0,
+   "store_recruit_classes_in_window": [
+    2012,
+    2013,
+    2014,
+    2015
+   ]
+  },
+  "2016": {
+   "teams": 305,
+   "talent_null": 0,
+   "player_seasons_team_covered": 0.9924,
+   "n_recruits_vs_store_window_corr": 1.0,
+   "store_recruit_classes_in_window": [
+    2013,
+    2014,
+    2015,
+    2016
+   ]
+  },
+  "2017": {
+   "teams": 310,
+   "talent_null": 0,
+   "player_seasons_team_covered": 0.9926,
+   "n_recruits_vs_store_window_corr": 1.0,
+   "store_recruit_classes_in_window": [
+    2014,
+    2015,
+    2016,
+    2017
+   ]
+  },
+  "2018": {
+   "teams": 306,
+   "talent_null": 0,
+   "player_seasons_team_covered": 0.9932,
+   "n_recruits_vs_store_window_corr": 1.0,
+   "store_recruit_classes_in_window": [
+    2015,
+    2016,
+    2017,
+    2018
+   ]
+  },
+  "2019": {
+   "teams": 307,
+   "talent_null": 0,
+   "player_seasons_team_covered": 0.9929,
+   "n_recruits_vs_store_window_corr": 1.0,
+   "store_recruit_classes_in_window": [
+    2016,
+    2017,
+    2018,
+    2019
+   ]
+  },
+  "2020": {
+   "teams": 305,
+   "talent_null": 0,
+   "player_seasons_team_covered": 0.9928,
+   "n_recruits_vs_store_window_corr": 1.0,
+   "store_recruit_classes_in_window": [
+    2017,
+    2018,
+    2019,
+    2020
+   ]
+  },
+  "2021": {
+   "teams": 308,
+   "talent_null": 0,
+   "player_seasons_team_covered": 0.9923,
+   "n_recruits_vs_store_window_corr": 1.0,
+   "store_recruit_classes_in_window": [
+    2018,
+    2019,
+    2020,
+    2021
+   ]
+  },
+  "2022": {
+   "teams": 308,
+   "talent_null": 0,
+   "player_seasons_team_covered": 0.9916,
+   "n_recruits_vs_store_window_corr": 1.0,
+   "store_recruit_classes_in_window": [
+    2019,
+    2020,
+    2021,
+    2022
+   ]
+  },
+  "2023": {
+   "teams": 309,
+   "talent_null": 0,
+   "player_seasons_team_covered": 0.992,
+   "n_recruits_vs_store_window_corr": 1.0,
+   "store_recruit_classes_in_window": [
+    2020,
+    2021,
+    2022,
+    2023
+   ]
+  },
+  "2024": {
+   "teams": 317,
+   "talent_null": 0,
+   "player_seasons_team_covered": 0.9927,
+   "n_recruits_vs_store_window_corr": 1.0,
+   "store_recruit_classes_in_window": [
+    2021,
+    2022,
+    2023,
+    2024
+   ]
+  },
+  "2025": {
+   "teams": 320,
+   "talent_null": 0,
+   "player_seasons_team_covered": 0.9935,
+   "n_recruits_vs_store_window_corr": 1.0,
+   "store_recruit_classes_in_window": [
+    2022,
+    2023,
+    2024,
+    2025
+   ]
+  },
+  "2026": {
+   "teams": 312,
+   "talent_null": 0,
+   "player_seasons_team_covered": 0.9914,
+   "n_recruits_vs_store_window_corr": 1.0,
+   "store_recruit_classes_in_window": [
+    2023,
+    2024,
+    2025,
+    2026
+   ]
+  }
+ }
+}

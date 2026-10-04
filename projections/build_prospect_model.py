@@ -48,6 +48,7 @@ import pandas as pd
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import build_prospect_profile as bpp  # noqa: E402  (shared fetch, name/speed-score helpers)
+import prospect_db as pdb  # noqa: E402  (the local SQLite store every input is read from)
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 CACHE = pathlib.Path(os.environ.get("NFLVERSE_CACHE") or ROOT / "projections" / "nflverse-cache")
@@ -121,6 +122,49 @@ UNPEN = 10.0
 # per-fold search on 150-450 players picked noisy values and cost 60x the fits.
 C_FIXED = 0.1
 BOOT_P = 0.8   # a model must beat draft-only in 80% of draft-class bootstrap resamples to ship
+# Pre-draft hit chance for current college players (population B: every exiting FBS player, drafted
+# or not; validation-charter-v2.md addenda 1-2). A position is listed only after its candidate passed
+# the five numeric rules AND an independent leakage review; the choice among passing candidates is
+# the lowest forward log loss (addendum 2). Empty = no pre-draft forecast ships.
+# Pulled 2026-10-04 under addendum 8: the serving backtest (prospect_serving_backtest.py) found the
+# exit-scenario transform about 2x low for first-eligible players (mean ratio 0.42-0.45) although
+# the same models are calibrated on real exits (0.94-1.07). B10/B8 remain reviewed as models; the
+# way a current player is fed to them is what failed. Was {"RB": "B10", "WR": "B10", "TE": "B8"}.
+PREDRAFT: dict[str, str] = {}
+# QB is out: its only passing candidate (B9) leaned on receiving columns that are noise for passers
+# and its calibration pass was a coin flip under resampling (experiments/review-c-2026-10-04.md).
+# Classes after the next one: position -> served model, its own fit (not the next-class model).
+# YL1 (young lane, review K, 2026-10-04): fit only on served-shaped sophomore rows (a completed freshman
+# season, then played the next), numbers college sophomores only; freshmen get none. RB only: it passed
+# every later-class gate, fragile (support 67% all rows, 53% on the list's top 30); every other
+# position failed or had under 15 events. B14's pooled fit ran about 28% low on these players.
+LATER_MODEL: dict[str, str] = {"RB": "YL1"}
+STAGE: set[str] = set(LATER_MODEL)
+# Positions whose NEXT draft class is served by the career-stage model fit on every completed season
+# (S1, charter v2 addendum 9): from completed seasons, no exit scenario. Listed only after it passed
+# the serving backtest (prospect_serving_backtest.py) and an independent review.
+# WR only (2026-10-04): RB passed the serving backtest pooled but failed display rule D1 (top 60 by
+# forecast: slope 0.74 against the 0.75 floor), addendum 10; WR passed both (review E + addendum 10).
+# Position -> served variant: S1 = fixed C 0.1, S3 = C picked by inner leave-one-class-out (addendum 11;
+# in practice C = 0.03, the grid's floor, on a nearly flat curve). WR: S3, which beat the shipped S1 on
+# served log loss in every season resample (review G). RB is held back: S3 passes the registered gates
+# but its display-rule pass has 62% resampling support and it is effectively S1 (logit correlation
+# 0.993), which failed that rule; shipping it would be a re-roll, not a demonstrated improvement.
+# S4n = S3 plus his team's first n games of the season in progress (addenda 12-13, prospect_live.py).
+# RB: S4n4 (2026-10-04, review H): every gate passed, beats S3 on served log loss in 92% of season
+# resamples, and is a different model (logit correlation 0.944). Known risk: its D1 slope pass has
+# 68% resampling support. N=8 failed D1 (0.67); WR S4 failed the all-rows ratio, so WR stays on S3.
+# WR: S6n4 (2026-10-04, review J): S4n4 recalibrated on served-shaped rows (addendum 15). Beats the shipped
+# S3 on served log loss in 99.9% of 200,000 season resamples, gain positive in every leave-one-season-out
+# run and not carried by a few rows. Known risk (addendum 17): its first-eligible slope (1.22) stays in
+# band in only 58% of resamples and leaves it in 3 of 10 leave-one-season-out runs (under-confident).
+NEXT_MODEL: dict[str, str] = {"WR": "S6n4", "RB": "S4n4"}
+NEXT_STAGE: set[str] = set(NEXT_MODEL)
+# Positions where the charter v2 candidate A10 ships: a fixed 50/50 average of the draft-only and
+# talent + capital logits. Listed only after it passed the charter's five numeric rules on identical
+# folds AND an independent review (notes/prospect-research/experiments/A10.json). The v1 three-run
+# rule still decides every other position.
+BLEND: set[str] = set()
 ROUNDS = {"R1": (1, 32), "R2": (33, 64), "R3": (65, 100), "D3": (101, 257)}
 # Our tier names, cut on the talent percentile vs every drafted player at the position.
 TIERS = [("Blue Chip", 90), ("Plus Starter", 70), ("Contributor", 45), ("Project", 20), ("Long Shot", 0)]
@@ -131,7 +175,7 @@ SCHOOL_ALIAS = {"mississippi": "ole miss", "central florida": "ucf", "ala birmin
                 "la monroe": "ul monroe", "louisiana monroe": "ul monroe", "middle tenn state": "middle tennessee",
                 "florida international": "florida intl", "louisiana lafayette": "louisiana"}
 # First-name forms joined as one (Cam/Cameron Newton, Matt/Matthew Slater, Will/William Franklin).
-NICK = {"cam": "cameron", "will": "william", "bill": "william", "billy": "william", "ken": "kenneth",
+NICK = {"beanie": "christopher", "cam": "cameron", "will": "william", "bill": "william", "billy": "william", "ken": "kenneth",
         "kenny": "kenneth", "matt": "matthew", "mike": "michael", "chris": "christopher", "steve": "steven",
         "stevie": "steven", "stephen": "steven", "jon": "jonathan", "josh": "joshua", "joe": "joseph",
         "joey": "joseph", "tony": "anthony", "nick": "nicholas", "alex": "alexander", "zach": "zachary",
@@ -154,6 +198,28 @@ def nfl_file(tag: str, name: str, max_age_h: float = 24.0) -> pathlib.Path:
     return bpp.fetch(tag, name, cache=CACHE, max_age_h=max_age_h)
 
 
+# Every input is read from the SQLite store (projections/prospect_db.py), which loads the same
+# release files and records their sha256; the first read refreshes it under the cache rules above.
+# --source parquet reads the cached files directly and exists only to prove the two agree.
+SOURCE = "db"
+_CON = None
+
+
+def read_src(tbl: str, name: str, columns=None) -> pd.DataFrame:
+    global _CON
+    if SOURCE == "parquet":
+        base, tag = pdb.SOURCES[tbl][1:3]
+        m = re.search(r"_(\d{4})\.parquet$", name)
+        y = int(m.group(1)) if m else None
+        path = (cfb_file(tag, name, y) if base == SDV
+                else nfl_file(tag, name, 24.0 if y is None or y >= SEASON else INF))
+        return pd.read_parquet(path, columns=columns)
+    if _CON is None:
+        _CON = pdb.connect()
+        pdb.ingest(_CON, say=lambda *a: None)
+    return pdb.read_file(_CON, tbl, name, columns)
+
+
 def load_college(seasons=range(FIRST_CFB, SEASON + 1)) -> pd.DataFrame:
     """One row per player-season (the team he played most for), stats plus team totals."""
     specs = {
@@ -168,7 +234,7 @@ def load_college(seasons=range(FIRST_CFB, SEASON + 1)) -> pd.DataFrame:
     key = ["season", "player_id", "team_id"]
     parts = []
     for kind, (tag, name_col, stats) in specs.items():
-        frames = [pd.read_parquet(cfb_file(tag, f"cfb_{kind}_{y}.parquet", y)) for y in seasons]
+        frames = [read_src(f"cfb_{kind}", f"cfb_{kind}_{y}.parquet") for y in seasons]
         d = pd.concat(frames, ignore_index=True)
         d = d[key + [name_col, "pos_team", "fbs_class", "games", "team_games", *stats]].rename(
             columns={name_col: "name", "games": f"g_{kind}", **stats})
@@ -232,16 +298,14 @@ def season_metrics(ps: pd.DataFrame) -> pd.DataFrame:
 def load_rosters(seasons=range(FIRST_CFB, SEASON + 1)) -> pd.DataFrame:
     cols = ["season", "athlete_id", "team_id", "full_name", "position_abbreviation",
             "height", "weight", "date_of_birth", "experience_years"]
-    d = pd.concat([pd.read_parquet(cfb_file("espn_cfb_rosters", f"cfb_rosters_{y}.parquet", y), columns=cols)
-                   for y in seasons], ignore_index=True)
+    d = pd.concat([read_src("cfb_roster", f"cfb_rosters_{y}.parquet", cols) for y in seasons], ignore_index=True)
     d["athlete_id"] = pd.to_numeric(d["athlete_id"], errors="coerce").astype("Int64")
     d["team_id"] = pd.to_numeric(d["team_id"], errors="coerce")
     return d
 
 
 def load_recruits(seasons=range(FIRST_CFB, SEASON + 1)) -> pd.DataFrame:
-    d = pd.concat([pd.read_parquet(cfb_file("cfb_recruits", f"cfb_recruits_{y}.parquet", y))
-                   for y in seasons], ignore_index=True)
+    d = pd.concat([read_src("cfb_recruit", f"cfb_recruits_{y}.parquet") for y in seasons], ignore_index=True)
     d["team_id"] = pd.to_numeric(d["team_id"], errors="coerce")
     d["_k"] = d["player_name"].map(bpp.norm_name)
     return d
@@ -359,12 +423,18 @@ def name_key(s) -> str:
     return "".join(toks)
 
 
-def link_college(draft: pd.DataFrame, espn_ids: pd.Series, ps: pd.DataFrame) -> pd.Series:
+def link_college(draft: pd.DataFrame, espn_ids: pd.Series, ps: pd.DataFrame, methods: dict | None = None) -> pd.Series:
     """College player_id per draft row. ESPN kept the college id into the NFL only from about
     the 2017 class on, so older classes fall back to name + final college season + school.
     An id whose college seasons run into his draft year is someone else (Taylor Price, 2010,
     carried the id of a 2015 Fresno State player) and falls back too. The name side matches any
-    name the id was listed under (ESPN has Robert Griffin III as "Griffin III" in 2010-11)."""
+    name the id was listed under (ESPN has Robert Griffin III as "Griffin III" in 2010-11).
+
+    One fallback runs only for a pick nothing above linked (2026-10-04): a first name that is a prefix
+    of the other (Ray Rice was "Raymell Rice") with the same surname, final season and school. A second
+    one, the exact name at any school when one id fits the window, was tried and dropped: it found
+    Dorial Green-Beckham but tied FCS players to FBS namesakes (Josh Johnson, San Diego, to Iowa State's;
+    Isaiah Davis, South Dakota State, to UTSA's). `methods`, if given, gets each link's rule."""
     last = ps.sort_values("season").groupby("player_id").agg(last_season=("season", "max"),
                                                              team=("pos_team", "last"), name=("name", "last"))
     last["_k"] = last.name.map(name_key)
@@ -374,9 +444,13 @@ def link_college(draft: pd.DataFrame, espn_ids: pd.Series, ps: pd.DataFrame) -> 
     names = ps[["player_id", "name"]].dropna().drop_duplicates()
     ids_by_name = names.assign(_k=names.name.map(name_key)).groupby("_k")["player_id"].agg(lambda s: sorted(set(s)))
     out = {}
+    methods = {} if methods is None else methods
+    by_last = names.assign(_t=names.name.map(_name_tokens)).dropna(subset=["_t"])
+    by_last = by_last.assign(_l=by_last._t.str[-1], _f=by_last._t.str[0])
     for i, row in draft.iterrows():
         if pd.notna(direct.get(i)):
             out[i] = int(direct[i])
+            methods[i] = "espn_id"
             continue
         key = name_key(row["pfr_player_name"])
         ids = ids_by_name.get(key)
@@ -390,9 +464,32 @@ def link_college(draft: pd.DataFrame, espn_ids: pd.Series, ps: pd.DataFrame) -> 
         c = c[(sim >= 0.5) & (sim == sim.max())]
         if len(c) > 1:   # a stray season under his name on a second id: the id still carrying it wins
             c = c[c._k == key]
+        if len(c) > 1:   # same name, same school: the id that played closest to his draft (data lane, Stevie Johnson)
+            c = c[c.last_season == c.last_season.max()]
         if len(c) == 1:
             out[i] = int(c.index[0])
+            methods[i] = "name_school"
+    for i, row in draft.iterrows():
+        if i in out:
+            continue
+        win = lambda ids: last.loc[[x for x in ids if x in last.index]].query("last_season >= @lo and last_season <= @hi",
+                                                                               local_dict={"lo": row["season"] - 2, "hi": row["season"] - 1})
+        t = _name_tokens(row["pfr_player_name"])
+        if t:
+            cand = by_last[(by_last._l == t[-1]) & by_last._f.map(lambda f: f != t[0] and len(min(f, t[0], key=len)) >= 3
+                                                                      and (f.startswith(t[0]) or t[0].startswith(f)))]
+            c = win(sorted(set(cand.player_id)))
+            c = c[[school_sim(row["college"], tm) >= 0.5 for tm in c.team]]
+            if len(c) == 1 and int(c.index[0]) not in out.values():
+                out[i] = int(c.index[0])
+                methods[i] = "name_prefix"
     return pd.Series(out, dtype="Int64")
+
+
+def _name_tokens(s):
+    s = "" if s is None or (isinstance(s, float) and math.isnan(s)) else str(s)
+    toks = [t for t in s.lower().replace(".", "").replace("'", "").replace("-", " ").split() if t not in bpp.SUFFIXES]
+    return toks if len(toks) >= 2 else None
 
 
 def school_key(s) -> str:
@@ -411,8 +508,8 @@ def school_sim(a, b) -> float:
 
 def season_positions() -> pd.Series:
     """(gsis_id, season) -> position he was listed at on that season's nflverse roster."""
-    r = pd.concat([pd.read_parquet(nfl_file("rosters", f"roster_{y}.parquet", 24.0 if y >= SEASON else INF),
-                                   columns=["gsis_id", "season", "position"]) for y in range(FIRST_CLASS, LAST_NFL + 1)])
+    r = pd.concat([read_src("nfl_roster", f"roster_{y}.parquet", ["gsis_id", "season", "position"])
+                   for y in range(FIRST_CLASS, LAST_NFL + 1)])
     return r.dropna().drop_duplicates(["gsis_id", "season"]).set_index(["gsis_id", "season"])["position"]
 
 
@@ -459,7 +556,7 @@ def sleeper_maps():
             if p.get("espn_id"):
                 espn[str(p["espn_id"])] = sid
     try:
-        r = pd.read_parquet(nfl_file("rosters", f"roster_{SEASON}.parquet"), columns=["gsis_id", "sleeper_id"])
+        r = read_src("nfl_roster", f"roster_{SEASON}.parquet", ["gsis_id", "sleeper_id"])
         for g, s in r.dropna().itertuples(index=False):
             gsis.setdefault(str(g), str(s))
     except SystemExit:
@@ -494,6 +591,22 @@ class RCS:
 
     def fit_transform(self, X, y=None):
         return self.fit(X).transform(X)
+
+
+def blend_p(p_draft, p_full, w=0.5):
+    """Charter v2 A10: average the two models' logits with a fixed weight (no tuning)."""
+    return 1 / (1 + np.exp(-((1 - w) * logit(p_draft) + w * logit(p_full))))
+
+
+class Blend:
+    """Fitted draft-only and talent + capital models, blended (X: talent columns then log pick)."""
+    def __init__(self, draft, full, w=0.5):
+        self.draft, self.full, self.w = draft, full, w
+
+    def predict_proba(self, X):
+        X = np.asarray(X, float)
+        q = blend_p(self.draft.predict_proba(X[:, -1:])[:, 1], self.full.predict_proba(X)[:, 1], self.w)
+        return np.column_stack([1 - q, q])
 
 
 def make_lr(C: float, n_talent: int | None = None, capital: bool = False):
@@ -629,21 +742,26 @@ def prepare(say=print):
     bio = player_bio(ps, rosters, recruits)
     say(f"college: {len(ps):,} player-seasons {ps.season.min()}-{ps.season.max()}, {ps.player_id.nunique():,} players")
 
-    players = pd.read_parquet(nfl_file("players", "players.parquet"))
-    draft = pd.read_parquet(nfl_file("draft_picks", "draft_picks.parquet"))
-    combine = pd.read_parquet(nfl_file("combine", "combine.parquet"))
-    stats = pd.concat([pd.read_parquet(nfl_file("stats_player", f"stats_player_reg_{y}.parquet",
-                                                24.0 if y >= SEASON else INF))
+    players = read_src("nfl_player", "players.parquet")
+    draft = read_src("nfl_draft_pick", "draft_picks.parquet")
+    combine = read_src("nfl_combine", "combine.parquet")
+    stats = pd.concat([read_src("nfl_player_season", f"stats_player_reg_{y}.parquet")
                        for y in range(FIRST_CLASS, LAST_NFL + 1)], ignore_index=True)
 
     d = draft[(draft.season >= FIRST_CLASS) & draft.position.isin(POS) & draft.pick.notna()].copy()
     d = d.merge(players[["gsis_id", "espn_id", "birth_date"]], on="gsis_id", how="left")
     d.index = range(len(d))
-    d["player_id"] = link_college(d, d.espn_id, ps)
+    lm = {}
+    d["player_id"] = link_college(d, d.espn_id, ps, lm)
+    d["link_method"] = pd.Series(lm).reindex(d.index).fillna("none")
     # The name fallback is graded against the espn id join on the classes where both work.
     both = d[pd.to_numeric(d.espn_id, errors="coerce").isin(set(ps.player_id.dropna().astype(int)))]
-    chk = link_college(both.assign(espn_id=np.nan), pd.Series(np.nan, index=both.index), ps)
+    cm = {}
+    chk = link_college(both.assign(espn_id=np.nan), pd.Series(np.nan, index=both.index), ps, cm)
     agree = (chk.reindex(both.index) == pd.to_numeric(both.espn_id, errors="coerce").astype("Int64"))
+    # The prefix fallback runs only where the main name join failed, so it never fires on these rows;
+    # run alone on all 691 id-known picks it fired once and was right (review C, 2026-10-04).
+    say(f"  name_prefix fallback: {(d.link_method == 'name_prefix').sum()} picks linked this way")
     say(f"join: {d.player_id.notna().mean():.1%} of {len(d)} drafted QB/RB/WR/TE {FIRST_CLASS}+ linked to college; "
         f"name fallback on {len(both)} id-known rows: {chk.notna().mean():.1%} found, "
         f"{agree.sum() / max(chk.notna().sum(), 1):.1%} of those correct")
@@ -757,6 +875,12 @@ def build(verbose=True):
         shipped = "full" if beats("full", "draft") else "draft"
         if beats("gbm", "draft") and beats("gbm", shipped if shipped != "draft" else "full"):
             shipped = "gbm"
+        if pos in BLEND:
+            shipped = "blend"
+            for dct in (pred, hold):
+                dct["blend"] = blend_p(dct["draft"], dct["full"])
+            res["blend"] = metrics(y, pred["blend"], ppg)
+            res["hold"]["blend"] = metrics(y, hold["blend"], ppg)
         res["shipped"] = shipped
         # Out of sample for every training player: dev classes leave-one-class-out, holdout walk-forward.
         oos = {k: np.where(dev, pred[k], hold[k]) for k in ("talent", shipped)}
@@ -778,7 +902,7 @@ def build(verbose=True):
                            for i in range(len(TIERS))]
         res["n_linked"] = int(len(tp))
         results[pos] = res
-        final[pos] = {"cols": cols, "talent": m_t, "full": m_f, "draft": m_b, "gbm": m_g, "shipped": shipped,
+        final[pos] = {"cols": cols, "talent": m_t, "full": m_f, "draft": m_b, "gbm": m_g, "blend": Blend(m_b, m_f), "shipped": shipped,
                       "ref": ref, "train": tp, "oos": dict(zip(tp.sid, zip(oos["talent"], oos[shipped])))}
         if set(cols) & SHARE_FEATS:
             res["ceiling"] = low_volume_ceiling(final[pos], pos, age0, ps)
@@ -791,8 +915,144 @@ def build(verbose=True):
             f"gbm {res['hold']['gbm']['logloss']:.4f} -> {shipped}")
 
     nfl = score_nfl(t, d, final)
+    for pos, m in fit_predraft(ps, bio, d, t, age0).items():
+        final[pos]["predraft"] = m
+        results[pos]["predraft"] = m["meta"]
+    nxt_m, later_m = fit_stage(ps, bio, d, t, age0)
+    for pos, m in nxt_m.items():
+        final[pos]["stage"] = m
+        results[pos]["stage"] = m["meta"]
+    for pos, m in later_m.items():
+        final[pos]["later"] = m
+        results[pos]["later"] = m["meta"]
     college = score_college(ps, bio, final, age0)
-    return {"results": results, "nfl": nfl, "college": college, "coverage": coverage(d, t)}
+    # Generated-data consistency: a pre-draft number exists exactly where a reviewed model ships.
+    for r in college:
+        nxt = r["cls"] == SEASON + 1
+        assert r["pd"] is None or (0.0 <= r["pd"] <= 1.0 and ((nxt and (r["p"] in PREDRAFT or r["p"] in NEXT_STAGE))
+                                                             or (not nxt and r["p"] in STAGE))), \
+            f"{r['n']}: pd where no reviewed model serves that class, or out of range"
+    assert not set(PREDRAFT) & NEXT_STAGE, "one next-class model per position"
+    for pos in set(PREDRAFT) | NEXT_STAGE:
+        nxt = [r for r in college if r["p"] == pos and r["cls"] == SEASON + 1]
+        assert sum(r["pd"] is not None for r in nxt) >= 0.8 * len(nxt), f"{pos}: most next-class players lack pd"
+    return {"results": results, "nfl": nfl, "college": college, "coverage": coverage(d, t), "t": t, "d": d, "ps": ps}
+
+
+def fit_predraft(ps, bio, d, t, age0) -> dict:
+    """Fit each PREDRAFT position's population B model on every mature exit. The candidate's
+    feature list, C rule and validation numbers come from its experiment record."""
+    if not PREDRAFT:
+        return {}
+    import prospect_experiments as pe
+    import prospect_experiments_b as peb
+    import prospect_population as pp
+    e = pp.build(ps, bio, d, t, age0, _CON, say=lambda *a: None)
+    e = e[e.draft_year >= FIRST_CLASS]
+    e = e.join(context_features(e, ps), on="sid")
+    out = {}
+    for pos, cid in PREDRAFT.items():
+        rec = json.loads((ROOT / "notes" / "prospect-research" / "experiments" / f"{cid}.json").read_text(encoding="utf-8"))
+        r = rec["results"][pos]
+        tp = e[(e.cpos == pos) & e.hit.notna()]
+        X, y = tp[r["cols"]].to_numpy(float), tp.hit.to_numpy(float)
+        m = (peb.NestedLR().fit(X, y, tp.draft_year.to_numpy(int)) if cid in ("B5", "B9", "B12") else make_lr(C_FIXED).fit(X, y))
+        fw = r["fwd"]
+        out[pos] = {"cols": r["cols"], "model": m, "meta": {
+            "model": cid, "n": int(len(tp)), "hits": int(y.sum()), "base_rate": round(float(y.mean()), 4),
+            "logloss": round(fw["cand"]["logloss"], 4), "base_logloss": round(fw["base"]["logloss"], 4),
+            "auc": round(fw["cand"]["auc"], 3), "base_auc": round(fw["base"]["auc"], 3), "baseline": r["baseline"],
+            "classes": f"{min(c['class'] for c in fw['per_class'])}-{max(c['class'] for c in fw['per_class'])}"}}
+    return out
+
+
+def fit_stage(ps, bio, d, t, age0) -> tuple[dict, dict]:
+    """Career-stage models on mature snapshots (prospect_stage.py): the next-class model per NEXT_STAGE
+    position and the later-class model per STAGE position (LATER_MODEL)."""
+    if not (STAGE or NEXT_STAGE):
+        return {}, {}
+    import prospect_population as pp
+    import prospect_stage as pst
+    e = pp.build(ps, bio, d, t, age0, _CON, say=lambda *a: None)
+    snap = pst.snapshots(e[e.draft_year >= FIRST_CLASS], ps, age0, _CON)
+    rec = json.loads((ROOT / "notes" / "prospect-research" / "experiments" / "B14.json").read_text(encoding="utf-8"))
+    sbt = ROOT / "notes" / "prospect-research" / "experiments" / "serving-backtest.json"
+    sbt = json.loads(sbt.read_text(encoding="utf-8")) if sbt.exists() else {}
+    out = {}
+    for pos in NEXT_STAGE:
+        r = rec["results"][pos]
+        tp = snap[(snap.cpos == pos) & snap.hit.notna()]
+        X, y = tp[r["cols"]].to_numpy(float), tp.hit.to_numpy(float)
+        fy = r["young_stage_1_2"]["fwd"]
+        kind = NEXT_MODEL.get(pos, "S1")
+        cols = list(r["cols"])
+        live_n = int(kind[3:]) if kind.startswith(("S4", "S5", "S6")) else None
+        if live_n:   # addendum 12: plus the next season's first n games
+            import prospect_live as pl
+            live = pl.live_features(_CON, live_n)
+            key = pd.MultiIndex.from_arrays([tp.season.astype(int) + 1, tp.player_id.astype("Int64")])
+            tp = tp.join(pd.DataFrame(live.reindex(key).to_numpy(), columns=pl.LIVE, index=tp.index))
+            tp["has_live"] = tp.has_live.fillna(0.0)
+            cols = cols + pl.LIVE
+        if kind.startswith("S5"):   # addendum 14: only rows shaped like the served ones
+            tp = tp[(tp.stage >= 2) & tp.plays_next]
+        X, y = tp[cols].to_numpy(float), tp.hit.to_numpy(float)
+        if kind.startswith("S6"):   # addendum 15: S4 recalibrated on served-shaped rows
+            import prospect_experiments_b as peb
+            model = peb.RecalLR(cols.index("stage")).fit(X, y, tp.draft_year.to_numpy(int),
+                                                        ((tp.stage >= 2) & tp.plays_next).to_numpy())
+        elif kind == "S3" or live_n:
+            import prospect_experiments_b as peb
+            model = peb.NestedLR().fit(X, y, tp.draft_year.to_numpy(int))
+        else:
+            model = make_lr(C_FIXED).fit(X, y)
+        out[pos] = {"cols": cols, "model": model, "kind": kind, "meta": {
+            "model": kind, "rows": int(len(tp)), "players": int(tp.base_sid.nunique()),
+            "logloss": round(r["fwd"]["cand"]["logloss"], 4), "base_logloss": round(r["fwd"]["base"]["logloss"], 4),
+            "young_logloss": round(fy["cand"]["logloss"], 4), "young_base_logloss": round(fy["base"]["logloss"], 4),
+            "later": False, "next": True,
+            "live_n": live_n}}
+        b = sbt.get(f"{kind} {pos}")
+        if b and pos in NEXT_STAGE:
+            v = b["vs_stars_stage"]
+            # strings: the payload rounds floats to 2 places, which would show 0.066 vs 0.080 as 0.07 vs 0.08
+            out[pos]["meta"]["served"] = {"logloss": f"{v['cand_logloss']:.3f}", "base_logloss": f"{v['base_logloss']:.3f}",
+                                          "auc": f"{v['cand_auc']:.2f}", "base_auc": f"{v['base_auc']:.2f}",
+                                          "drafted_auc_gain": f"{v['drafted_cand_auc'] - v['drafted_base_auc']:.2f}",
+                                          "auc_gain": f"{v['cand_auc'] - v['base_auc']:.2f}",
+                                          "ratio": round(b["all"]["ratio"], 2), "fe_ratio": round(b["first_eligible"]["ratio"], 2),
+                                          "n": b["all"]["n"], "events": b["all"]["events"],
+                                          "players": b.get("players"), "players_hit": b.get("players_hit"),
+                                          "top60_ratio": round(b["top60_by_pd"]["ratio"], 2),
+                                          "late_ratio": round(b["replays_2017_2021"]["all"]["ratio"], 2)}
+    lbt = ROOT / "notes" / "prospect-research" / "experiments" / "later-backtest.json"
+    lbt = json.loads(lbt.read_text(encoding="utf-8")) if lbt.exists() else {}
+    later = {}
+    for pos, kind in LATER_MODEL.items():
+        assert kind == "YL1", kind
+        import prospect_experiments_b as peb
+        cols = [c for c in pst.stage_cols(pos) if c not in ("stage", "age_k")]   # constant on these rows
+        tp = snap[(snap.cpos == pos) & snap.hit.notna() & (snap.stage == 1) & snap.plays_next]
+        model = peb.NestedLR().fit(tp[cols].to_numpy(float), tp.hit.to_numpy(float), tp.draft_year.to_numpy(int))
+        meta = {"model": kind, "rows": int(len(tp)), "players": int(tp.base_sid.nunique()), "hits": int(tp.hit.sum()),
+                "years": [2]}
+        b = lbt.get(f"{kind} {pos}")
+        if b:
+            v = b["vs_stars_year"]
+            meta["served"] = {"seasons": b["seasons"], "n": b["all"]["n"], "events": b["all"]["events"],
+                              "logloss": f"{v['cand_logloss']:.3f}", "base_logloss": f"{v['base_logloss']:.3f}",
+                              "ratio": round(b["all"]["ratio"], 2), "top_ratio": round(b["top30_by_pd"]["ratio"], 2),
+                              "support": round(b["all"]["support"], 2), "top_support": round(b["top30_by_pd"]["support"], 2),
+                              "drafted_auc": f"{b['extra']['drafted_auc']:.2f}", "drafted_base_auc": f"{b['extra']['drafted_base_auc']:.2f}"}
+        later[pos] = {"cols": cols, "model": model, "kind": kind, "stage_only": 1, "meta": meta}
+    return out, later
+
+
+def context_features(f, ps) -> pd.DataFrame:
+    """Team offense, schedule strength, first-down share and explosive rate (charter v2 A11/A12)
+    per sid, from the store; frame needs sid, player_id, cutoff, season_final."""
+    import prospect_experiments as pe
+    return pe.schedule_context(f, ps, _CON).join(pe.usage_quality(f, ps, _CON))
 
 
 def coverage(d, t):
@@ -929,6 +1189,9 @@ def score_college(ps, bio, final, age0, top_n=60):
     subj["sid"] = "c" + subj.player_id.astype(str)
     feats = career_features(subj, ps, age0)
     subj = subj.merge(feats, on="sid", how="left").rename(columns={"ros_weight": "weight"})
+    if PREDRAFT or STAGE or NEXT_STAGE:
+        subj = subj.join(context_features(subj, ps), on="sid")
+        done = predraft_profile(subj, ps, age0)
     subj["speed_score"] = np.nan
     subj["cls"] = subj.draft_year
     rows = []
@@ -937,7 +1200,8 @@ def score_college(ps, bio, final, age0, top_n=60):
         # Plausible prospects only: a qualifying season on file, and for a QB a season as the
         # starter. The models were fit on draftees, nearly all of them starters, so a backup's
         # 30-attempt completion rate is an extrapolation, not a profile.
-        s = subj[(subj.pos == pos) & (subj.n_qual >= 1) & ((pos != "QB") | (subj.starts >= 1))].copy()
+        s = subj[(subj.pos == pos) & (subj.n_qual >= 1) & ((pos != "QB") | (subj.starts >= 1))
+                 & (subj.player_id > 0)].copy()   # negative ESPN ids are placeholder TEAM rows (review K)
         # Still playing and no breakout yet is censored, not late: "final age + 1" is right for a
         # finished career only. He can still break out, just not younger than he is now, so any
         # model using it sees the training median floored at his current age; the card shows a
@@ -952,8 +1216,29 @@ def score_college(ps, bio, final, age0, top_n=60):
         pick4 = tp[4] <= tp[3]
         s = pd.concat([sc[3][~pick4], sc[4][pick4]])
         s["_tp"] = np.minimum(tp[3], tp[4]).reindex(s.index)
+        s["_pd"], s["_pdx"] = np.nan, np.nan
+        pre = fin.get("predraft")
+        if pre:
+            s = predraft_score(s, done, pre, age0)
+        if pos in STAGE:
+            s = stage_score(s, done, fin["later"], age0)
+        if pos in NEXT_STAGE:
+            m = fin["stage"]
+            d_ = done
+            if m["kind"].startswith(("S4", "S5", "S6")):
+                d_ = with_live(done, subj, ps, int(m["kind"][3:]))
+            s = stage_score(s, d_, m, age0, which="next")
         s = s.sort_values("_tp", ascending=False)
-        s = pd.concat([s[s.cls == SEASON + 1].head(top_n), s[s.cls > SEASON + 1].head(top_n // 2)])
+        nxt = s[s.cls == SEASON + 1]
+        if pos in NEXT_STAGE:   # display rule D1: the next class's top by its own forecast, not by Talent
+            nxt = nxt.sort_values("_pd", ascending=False, na_position="last")
+        lat = s[s.cls > SEASON + 1]
+        if pos in STAGE:   # display rule D1L: the later list's top by its own forecast, then the rest by Talent
+            lat = pd.concat([lat[lat._pd.notna()].sort_values("_pd", ascending=False).head(top_n // 2),
+                             lat[lat._pd.isna()].head(top_n // 2)])
+        else:
+            lat = lat.head(top_n // 2)
+        s = pd.concat([nxt.head(top_n), lat])
         X = s[fin["cols"]].to_numpy(float)
         for i, (_, r) in enumerate(s.iterrows()):
             scen = []
@@ -966,13 +1251,104 @@ def score_college(ps, bio, final, age0, top_n=60):
                 scen.append(round(float(fin[fin["shipped"]].predict_proba(Xs)[:, 1].mean()), 3))
             ts = pctile(fin["ref"], float(logit(r._tp)))
             st, line = key_stats(r)
-            rows.append({"n": r["name_final"], "p": pos, "sch": cur.pos_team.get(r.player_id, r.pos_team_final),
+            rows.append({"n": r["name_final"], "p": pos, "cid": int(r.player_id), "sch": cur.pos_team.get(r.player_id, r.pos_team_final),
                          "cls": int(r.cls), "ex": int(r.draft_year - r.hs_class),
                          "ts": round(ts), "tr": tier_of(ts), "tp": round(float(r._tp), 3),
                          "ba": None if pd.isna(r.ba_show) else round(float(r.ba_show), 1),
                          "age": None if pd.isna(r.draft_age) else round(float(r.draft_age), 1),
-                         "st": st, "ln": line, "r": scen, "cp": comp_rows(fin, X[i], "talent")})
+                         "st": st, "ln": line, "r": scen, "cp": comp_rows(fin, X[i], "talent"),
+                         "pd": None if pd.isna(r._pd) else round(float(r._pd), 3),
+                         "pdx": None if pd.isna(r._pdx) else int(r._pdx)})
     return rows
+
+
+def predraft_profile(subj, ps, age0, season=SEASON) -> pd.DataFrame:
+    """Each current player's college profile through his last COMPLETED season, the shape the
+    population B models were trained on (finished careers). Scoring from the live season instead
+    made the number jump when a player crossed six games with no new production (review C).
+    `cur_start`: he is the passer of record in the current season (`season`), so far.
+    `season` is a parameter only so the serving backtest can replay past seasons."""
+    c = subj[["sid", "player_id", "pos", "hs_class", "dob"]].assign(cutoff=season - 1, draft_year=season + 1, dob=pd.NaT)
+    f = career_features(c, ps, age0).set_index("sid")
+    f = f.join(context_features(c.merge(f[["season_final"]], left_on="sid", right_index=True), ps))
+    now = ps[ps.season == season].set_index("player_id").started
+    f["cur_start"] = c.set_index("sid").player_id.map(now).fillna(False).astype(float)
+    return f.join(subj.set_index("sid")[["weight", "stars", "hs_class"]])
+
+
+def with_live(done, subj, ps, n, season=SEASON) -> pd.DataFrame:
+    """Attach the live line from his team's first n games of `season` (addendum 13: always the first n,
+    even later in the season). Dropped from `done` (no number yet): a player whose team has not reached
+    n games, and one with no stat line this season (his team is unknown). One whose team reached n
+    games but who missed those games gets has_live 0, as the training rows do."""
+    import prospect_live as pl
+    live = pl.live_features(_CON, n)
+    played = pl.team_games_played(_CON, season)
+    pid = subj.set_index("sid").player_id.reindex(done.index)
+    team = pid.map(ps[ps.season == season].drop_duplicates("player_id").set_index("player_id").team_id)
+    ok = team.map(played).fillna(0).ge(n)
+    lv = live.reindex(pd.MultiIndex.from_arrays([np.full(len(done), season), pid.astype("Int64")]))
+    d = done.join(pd.DataFrame(lv.to_numpy(), columns=pl.LIVE, index=done.index))
+    d["has_live"] = d.has_live.fillna(0.0)
+    return d[ok.to_numpy()]
+
+
+def stage_score(s, done, m, age0, season=SEASON, which="later") -> pd.DataFrame:
+    """A career-stage model (B14 family) on his profile through his last completed season, his
+    college year then, and his estimated age then. No exit is assumed, so `pdx` stays empty.
+    `which`: "later" = classes after the next one, "next" = the next draft class (addendum 9)."""
+    s = s.copy()
+    cls_ok = s.cls.gt(season + 1) if which == "later" else s.cls.eq(season + 1)
+    later = cls_ok & s.sid.isin(done.index)
+    if not later.any():
+        return s
+    v = done.loc[s.sid[later]].copy()
+    v["stage"] = ((season - 1) - v.hs_class + 1).clip(1, 6)
+    v["age_k"] = age0 + (season - 1) - v.hs_class
+    p = m["model"].predict_proba(v[m["cols"]].to_numpy(float))[:, 1]
+    ok = (v.n_qual >= 1).to_numpy().copy()
+    if m.get("stage_only") is not None:   # YL1 numbers one college year only
+        ok &= v.stage.eq(m["stage_only"]).to_numpy()
+    s.loc[later, "_pd"] = np.where(ok, p, np.nan)
+    return s
+
+
+def predraft_score(s, done, pre, age0, season=SEASON, exits=(3, 4)) -> pd.DataFrame:
+    """Pre-draft hit chance for the next draft class only (review C: for freshmen and sophomores the
+    frozen-production scenario ran 2.5x too low on a 2014-2017 backtest; for the next class it was
+    calibrated). The current season counts as one more season played, qualifying, at his completed
+    seasons' production; he is scored leaving after it and, for a junior, after one more year; the
+    lower ships and `pdx` says which draft that is. A QB model (it uses `starts`) also counts the
+    remaining seasons as starts for a player starting now, and gives no number to a QB with no
+    completed start, who sits outside its training data (review D, addendum 8)."""
+    s = s.copy()
+    nxt = s.cls.eq(season + 1) & s.sid.isin(done.index)
+    if not nxt.any():
+        return s
+    base = done.loc[s.sid[nxt]].reset_index()
+    best_p, best_x = None, None
+    for years in exits:
+        v = base.copy()
+        v["draft_year"] = np.maximum(season + 1, v.hs_class + years)
+        extra = v.draft_year - season
+        v["n_seasons"] = v.n_seasons + extra
+        v["n_qual"] = v.n_qual + extra
+        v["early"] = (v.n_seasons <= 3).astype(float)
+        v["draft_age"] = age0 + v.draft_year - v.hs_class - 0.35
+        ok = v.n_qual.notna().to_numpy() & (v.n_qual - extra >= 1).to_numpy()   # a completed qualifying season
+        if "starts" in pre["cols"]:
+            ok &= (v.starts.fillna(0) >= 1).to_numpy()
+            v["starts"] = v.starts + extra * v.cur_start
+        p = pre["model"].predict_proba(v[pre["cols"]].to_numpy(float))[:, 1]
+        p = np.where(ok, p, np.nan)
+        if best_p is None:
+            best_p, best_x = p, v.draft_year.to_numpy(float)
+        else:
+            take = p < best_p
+            best_p, best_x = np.where(take, p, best_p), np.where(take, v.draft_year, best_x)
+    s.loc[nxt, "_pd"] = best_p
+    s.loc[nxt, "_pdx"] = np.where(np.isnan(best_p), np.nan, best_x)
+    return s
 
 
 # ----------------------------------------------------------------------------- output
@@ -992,13 +1368,66 @@ FIELDS = {
     "oos": "1 = hp/tp are out of sample (the model never saw his class; holdout classes scored walk-forward)",
     "out": "Observed: [hit 0/1, best PPR PPG, best rank among that season's players at his draft position]",
     "r": "College only: hit probability if drafted in [Round 1, Round 2, Round 3, Day 3], at the scored exit",
+    "pd": "College only: pre-draft hit probability counting the chance he goes undrafted, from his completed college "
+          "seasons and with no exit assumed. Next class: pos[].stage with stage.next (career-stage model, variant in "
+          "stage.model: S1 fixed C, S3 tuned C, S4n = S3 plus his team's first n games this season, n in stage.live_n, S5n = S4n fit on served-shaped rows, S6n = S4n recalibrated on served-shaped rows) or "
+          "pos[].predraft (exit model); later classes: pos[].later (YL1: sophomores only, fit on served-shaped "
+          "sophomore rows). Null where no reviewed model serves "
+          "that class, he has no completed qualifying season, or (S4n, S5n, S6n) his team has not played n games or he has no stat line this season",
+    "pdx": "College only: the draft year pd assumes (the lower of leaving after this season or, for a junior, one more)",
     "cls": "College only: first eligible draft year",
+    "cid": "College only: ESPN college athlete id (the key in the SQLite store, projections/prospect_db.py)",
     "ex": "College only: college years at the exit he is scored at, the more conservative of leaving after year 3 or 4",
     "age": "College only: projected age at the scored exit's draft (estimated from class, no public DOB)",
 }
 
 
-def write_payload(res):
+def record_build(res) -> str | None:
+    """Record this build in the SQLite store: the run (code + source sha256s), every draft row's
+    college link and how it was found, the population and outcomes, and the shipped probabilities.
+    The JS payload carries the run id, so a shipped number traces to its data and code."""
+    if SOURCE != "db" or _CON is None:
+        return None
+    con, t, d, ps = _CON, res["t"], res["d"], res["ps"]
+    rid = pdb.record_run(con, __file__, {"feats": FEATS, "C": C_FIXED, "hold": HOLD, "shipped":
+                                         {p: r["shipped"] for p, r in res["results"].items()}}, note="shipped build")
+    last = ps.groupby("player_id").season.max()
+    eid = pd.to_numeric(d.espn_id, errors="coerce")
+    links = []
+    for r, e in zip(d.itertuples(), eid):
+        if pd.isna(r.player_id):
+            method = "none"
+        elif pd.notna(e) and int(e) == int(r.player_id) and last.get(int(e), 9999) < r.season:
+            method = "espn_id"
+        else:
+            method = "name_school"
+        key = r.gsis_id if isinstance(r.gsis_id, str) else f"pfr:{r.pfr_player_id}"
+        links.append((rid, key, None if pd.isna(r.player_id) else int(r.player_id), method, int(r.season)))
+    pdb.write_rows(con, "player_link", links)
+    rows = t[t.gsis_id.notna()]
+    pdb.write_rows(con, "model_row", [
+        (rid, r.sid, "A_drafted_linked", r.pos, int(r.draft_year), r.gsis_id, int(r.player_id), r.pfr_player_name,
+         int(r.pick), None if pd.isna(r.hit) else float(r.hit), None if pd.isna(r.best_ppg) else float(r.best_ppg),
+         None if pd.isna(r.best_rank) else int(r.best_rank), "open" if pd.isna(r.hit) else "final") for r in rows.itertuples()])
+    pdb.write_rows(con, "model_row", [
+        (rid, f"c{c['cid']}", "college_current", c["p"], int(c["cls"]), None, c["cid"], c["n"], None, None, None, None, "open")
+        for c in res["college"]])
+    sid_by_gsis = dict(zip(rows.gsis_id, rows.sid))
+    gsis_by_slp = {v: k for k, v in sleeper_maps()[0].items()}
+    preds = []
+    for slp, r in res["nfl"].items():
+        sid = sid_by_gsis.get(gsis_by_slp.get(slp))
+        if sid:
+            preds.append((rid, sid, "shipped_hit", "oos" if r.get("oos") else "final_fit", float(r["hp"])))
+            if r.get("tp") is not None:
+                preds.append((rid, sid, "talent", "oos" if r.get("oos") else "final_fit", float(r["tp"])))
+    preds += [(rid, f"c{c['cid']}", "talent", "exit_scenario", float(c["tp"])) for c in res["college"]]
+    pdb.write_rows(con, "prediction", preds)
+    print(f"recorded run {rid}: {len(links)} links, {len(rows) + len(res['college'])} rows, {len(preds)} predictions")
+    return rid
+
+
+def write_payload(res, run_id=None):
     pos_meta = {}
     for pos, r in res["results"].items():
         top, win = TARGET[pos]
@@ -1007,8 +1436,9 @@ def write_payload(res):
                          "tier_hit": [[x["n"], None if x["hit"] is None else round(x["hit"], 3)] for x in r["tier_hit"]],
                          "holdout": f"{r['hold_classes'][0]}-{r['hold_classes'][1]}",
                          "auc": {k: round(r["hold"][k]["auc"], 3) for k in ("draft", "talent", "full")},
-                         "logloss": {k: round(r["hold"][k]["logloss"], 4) for k in ("draft", "talent", "full")}}
-    payload = {"generated": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"), "season": SEASON,
+                         "logloss": {k: round(r["hold"][k]["logloss"], 4) for k in ("draft", "talent", "full")},
+                         "predraft": r.get("predraft"), "stage": r.get("stage")}
+    payload = {"generated": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"), "season": SEASON, "db_run": run_id,
                "source": "sportsdataverse-data (ESPN college PBP seasons, rosters, recruits) + nflverse-data "
                          "(draft picks, players, combine, season stats); see notes/prospect-research/data-sources.md",
                "tiers": [t[0] for t in TIERS], "tier_cut": [t[1] for t in TIERS], "rounds": list(ROUNDS),
@@ -1063,7 +1493,8 @@ def write_card(res):
     L.append("")
     L.append("| Pos | n | draft only, spline | talent + capital | LightGBM | draft only, linear | draft AUC | full AUC | Shipped hit model |")
     L.append("|---|---|---|---|---|---|---|---|---|")
-    label = {"draft": "draft only", "full": "talent + capital", "gbm": "monotone LightGBM"}
+    label = {"draft": "draft only", "full": "talent + capital", "gbm": "monotone LightGBM",
+             "blend": "50/50 blend of draft only and talent + capital (charter v2 A10, independently reviewed)"}
     for pos, r in res["results"].items():
         fw = r["forward"]
         L.append(f"| {pos} | {fw['draft']['n']} | {fw['draft']['logloss']:.4f} | {fw['full']['logloss']:.4f} | "
@@ -1179,11 +1610,19 @@ def self_check():
                         "pos_team": ["Michigan State", "Rice", "Oregon", "Iowa"]})
     dr = pd.DataFrame({"pfr_player_name": ["Joe Smith", "Ann Lee", "Bo Diddley", "Zed Q"], "season": [2016] * 4,
                        "college": ["Michigan St.", "Oregon", "Texas", "Iowa"]})
-    got = link_college(dr, pd.Series([np.nan, "12", np.nan, np.nan]), ps2)
-    assert got.get(0) == 10, "name + school picks the right Joe Smith"
-    assert got.get(1) == 12, "espn id wins"
-    assert 2 not in got.index, "a school mismatch is left unlinked, not guessed"
+    lm = {}
+    got = link_college(dr, pd.Series([np.nan, "12", np.nan, np.nan]), ps2, lm)
+    assert got.get(0) == 10 and lm[0] == "name_school", "name + school picks the right Joe Smith"
+    assert got.get(1) == 12 and lm[1] == "espn_id", "espn id wins"
+    assert 2 not in got.index, "a school mismatch is left unlinked, not guessed (FCS players have FBS namesakes)"
     assert 3 not in got.index
+    # first-name prefix with the same surname, season window and school: Ray Rice was Raymell Rice.
+    ps2c = pd.DataFrame({"player_id": pd.array([30], dtype="Int64"), "season": [2007], "name": ["Raymell Rice"],
+                         "pos_team": ["Rutgers"]})
+    lm = {}
+    got = link_college(pd.DataFrame({"pfr_player_name": ["Ray Rice"], "season": [2008], "college": ["Rutgers"]}),
+                       pd.Series([np.nan]), ps2c, lm)
+    assert got.get(0) == 30 and lm[0] == "name_prefix"
     # school aliases, nicknames, an id listed under two names, and a direct id that is someone else.
     ps3 = pd.DataFrame({"player_id": pd.array([20, 30, 31, 40, 41, 50, 50, 60, 60, 61], dtype="Int64"),
                         "season": [2010, 2007, 2007, 2015, 2009, 2009, 2011, 2005, 2006, 2007],
@@ -1199,6 +1638,14 @@ def self_check():
     assert got.get(2) == 41, "an espn id whose college seasons run past his draft is someone else"
     assert got.get(3) == 50, "match any name the id was listed under"
     assert got.get(4) == 61, "a stray season under his name on another id does not make him ambiguous"
+    ps4 = pd.DataFrame({"player_id": pd.array([70, 71, 71, 80], dtype="Int64"), "season": [2006, 2006, 2007, 2008],
+                        "name": ["Steve Johnson", "Steve Johnson", "Steve Johnson", "Chris Wells"],
+                        "pos_team": ["Kentucky", "Kentucky", "Kentucky", "Ohio State"]})
+    dr4 = pd.DataFrame({"pfr_player_name": ["Stevie Johnson", "Beanie Wells"], "season": [2008, 2009],
+                        "college": ["Kentucky", "Ohio St."]})
+    got = link_college(dr4, pd.Series([np.nan, np.nan]), ps4)
+    assert got.get(0) == 71, "same name and school: the id that played closest to the draft"
+    assert got.get(1) == 80, "Beanie is Chris (Christopher) Wells"
 
     # 3. no post-draft input in any talent model, and the talent profile ignores the pick.
     for pos, cols in FEATS.items():
@@ -1278,20 +1725,65 @@ def self_check():
                                        "age_final": [20.5, 19.7, 21.6]}), 20.4)
     assert cb.breakout_age.tolist() == [19.5, 20.4, 21.6] and cb.ba_show.isna().tolist() == [False, True, True], \
         "no breakout yet: the median, floored at his current age, and shown blank"
+    # 8. the A10 blend is the logit midpoint and stays inside its two inputs.
+    q = blend_p(np.array([0.2, 0.6]), np.array([0.4, 0.6]))
+    assert np.allclose(logit(q[:1]), (logit(np.array([0.2])) + logit(np.array([0.4]))) / 2) and abs(q[1] - 0.6) < 1e-12
     print("self-check OK")
 
 
+def parity():
+    """The SQLite store must hand the builder exactly what the parquet files do: same rows, same
+    links, same features, same labels. Run after any change to prospect_db.py or its ingest."""
+    global SOURCE
+    out = {}
+    for src in ("parquet", "db"):
+        SOURCE = src
+        out[src] = prepare(say=lambda *a: None)
+    names = ("college seasons", "bio", "draft table", "training table")
+    for name, a, b in zip(names, out["parquet"][:4], out["db"][:4]):
+        a, b = a.reset_index(drop=True), b.reset_index(drop=True)
+        # The store keeps only the source columns a model may use (no post-draft career columns
+        # such as w_av or allpro), so the parquet side can carry extras; the output diff proves
+        # nothing downstream read them.
+        extra = [c for c in a.columns if c not in b.columns]
+        assert set(b.columns) <= set(a.columns) and len(a) == len(b), f"{name}: shape {a.shape} vs {b.shape}"
+        a = a[list(b.columns)]
+        for c in a.columns:
+            x, y = a[c], b[c]
+            if pd.api.types.is_numeric_dtype(x) and pd.api.types.is_numeric_dtype(y):
+                xv, yv = x.astype(float).to_numpy(), y.astype(float).to_numpy()
+                ok = np.allclose(xv, yv, rtol=1e-9, atol=1e-9, equal_nan=True)
+            else:
+                ok = (x.isna().eq(y.isna()) & (x.astype(str).where(x.notna(), "") == y.astype(str).where(y.notna(), ""))).all()
+            assert ok, f"{name}: column {c} differs between parquet and db"
+        print(f"parity {name}: {a.shape[0]:,} rows x {a.shape[1]} columns identical"
+              + (f" (parquet-only, unused: {', '.join(extra)})" if extra else ""))
+    assert out["parquet"][4] == out["db"][4], "age proxy differs"
+    print("parity OK")
+
+
 def main():
+    global SOURCE
+    # Run as a script this module is __main__; the population B helpers import it by name, and must
+    # share this copy (its SOURCE and open store connection) rather than load a second one.
+    sys.modules.setdefault("build_prospect_model", sys.modules[__name__])
     ap = argparse.ArgumentParser()
     ap.add_argument("--self-check", action="store_true")
+    ap.add_argument("--parity", action="store_true", help="prove the SQLite store and the parquet files agree")
+    ap.add_argument("--source", choices=["db", "parquet"], default="db")
     args = ap.parse_args()
+    SOURCE = args.source
     if args.self_check:
         self_check()
+        return
+    if args.parity:
+        warnings.filterwarnings("ignore", category=FutureWarning)
+        parity()
         return
     warnings.filterwarnings("ignore", category=FutureWarning)
     warnings.filterwarnings("ignore", message="X does not have valid feature names")
     res = build()
-    write_payload(res)
+    write_payload(res, record_build(res))
     write_card(res)
 
 

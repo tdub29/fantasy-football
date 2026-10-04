@@ -1,0 +1,207 @@
+{
+ "lane": "data",
+ "date": "2026-10-04",
+ "gaps": {
+  "fcs_stats": {
+   "disposition": "usable",
+   "scope": "FBS + FCS, seasons 2013-2026; D2/D3/NAIA unavailable",
+   "source": "sportsdataverse-data releases ncaa_mfb_pbp_cfbfastr, ncaa_mfb_rosters, ncaa_mfb_teams (stats.ncaa.org)",
+   "licence": "repo MIT; NCAA.org Terms of Service govern the statistics: personal non-commercial use, no public republication, no scraping of NCAA sites",
+   "outside_b_2008_2023": {
+    "fcs": {
+     "players": 163,
+     "drafted": 70,
+     "undrafted": 93,
+     "hits": 10
+    },
+    "lower_division_other": {
+     "players": 121,
+     "drafted": 17,
+     "hits": 4
+    },
+    "fbs_join_misses": {
+     "players": 90,
+     "drafted": 21,
+     "hits": 3
+    }
+   },
+   "fcs_covered_2014_2023": {
+    "players": 109,
+    "hits": 8,
+    "joined_roster": 103,
+    "joined_final_line": 95,
+    "joined_drafted": 37,
+    "joined_hits": 8
+   },
+   "fcs_exits_by_class": {
+    "2014": 392,
+    "2015": 558,
+    "2016": 544,
+    "2017": 630,
+    "2018": 563,
+    "2019": 614,
+    "2020": 703,
+    "2021": 293,
+    "2022": 700,
+    "2023": 765,
+    "2024": 766,
+    "2025": 863,
+    "2026": 968
+   },
+   "line_quality_vs_ncaa_box_2020_2025_median": {
+    "fbs_rush_yds_within5": 0.86,
+    "fcs_rush_yds_within5": 0.84,
+    "fbs_rec_yds_within5": 0.89,
+    "fcs_rec_yds_within5": 0.84,
+    "fbs_pass_yds_within5": 0.8,
+    "fcs_pass_yds_within5": 0.79,
+    "median_ratio": 1.0
+   },
+   "shift_vs_store_espn_fbs_2013_2019": {
+    "rec_yds_median_ratio": 1.021,
+    "rush_yds_median_ratio": 1.05,
+    "rec_within5": 0.43,
+    "rush_within5": 0.37
+   },
+   "scripts": [
+    "projections/lanes/data/fetch_ncaa_mfb.py",
+    "projections/lanes/data/ncaa_pbp_stats.py",
+    "projections/lanes/data/nfl_outside_b.py",
+    "projections/lanes/data/fcs_measure.py",
+    "projections/lanes/data/ncaa_validate.py",
+    "projections/lanes/data/ncaa_vs_espn.py"
+   ]
+  },
+  "college_dob": {
+   "disposition": "unavailable (leakage through missingness)",
+   "espn_roster_dob_fill_pop_b": {
+    "2008-12": {
+     "drafted": 0.848,
+     "udfa": 0.834,
+     "never": 0.784
+    },
+    "2013-17": {
+     "drafted": 0.556,
+     "udfa": 0.258,
+     "never": 0.093
+    },
+    "2018-22": {
+     "drafted": 0.971,
+     "udfa": 0.794,
+     "never": 0.07
+    },
+    "2023-26": {
+     "drafted": 1.0,
+     "udfa": 0.993,
+     "never": 0.1
+    }
+   },
+   "espn_nfl_athlete_dob_undrafted_prospects": {
+    "n": 97,
+    "reached_nfl_with_dob": "29/43",
+    "never_nfl_with_dob": "10/54"
+   },
+   "wikidata": {
+    "licence": "CC0",
+    "p7262_espn_cfb_items": 119,
+    "p3697_items": 5230,
+    "p3697_with_dob": 3805,
+    "born_1985_2006": 2586,
+    "born_1985_2006_without_pfr_id": 573,
+    "pop_b_never_nfl_2008_2026": 7337,
+    "max_never_nfl_coverage": 0.078
+   },
+   "fantasypros_rookie_age": "ranked rookies only, 73-147 skill players a class, 2019-2026",
+   "ncaa_rosters": "no birth-date field"
+  },
+  "pro_day_after_2019": {
+   "disposition": "unavailable",
+   "espn_speed": {
+    "vs_combine_n": 497,
+    "corr": 0.961,
+    "exact_0.005": 0.346,
+    "within_0.02": 0.493,
+    "vs_ras_proday_n": 55,
+    "proday_corr": 0.806,
+    "proday_median_abs_diff": 0.05,
+    "sample_fill_by_class": {
+     "2008-2013": "85-100%",
+     "2014": 0.4,
+     "2015": 0.18,
+     "2016-2021": "82-100%",
+     "2022": 0.62,
+     "2023-2026": 0.0
+    }
+   },
+   "ras_football": "HTTP 429, no bulk download, terms unverified; DynastyProcess archive ends 2019",
+   "nflverse_combine": "combine invitees only"
+  },
+  "predraft_rank": {
+   "fantasypros_ecr": {
+    "disposition": "terms forbid + too sparse",
+    "terms": "FantasyPros Terms of Use: single personal copy only; no reproduce/republish/distribute; no commercial use",
+    "predraft_classes": {
+     "2019": 73,
+     "2020": 93,
+     "2021": 85,
+     "2022": 108,
+     "2023": 92,
+     "2024": 147,
+     "2025": 124,
+     "2026": 120
+    },
+    "mature_classes": {
+     "RB_WR": 5,
+     "QB_TE": 4
+    }
+   },
+   "espn_scouts_inc_grade": {
+    "disposition": "deferred (best lead)",
+    "drafted_skill_grade_fill_2008_2017": "0.97-1.00",
+    "drafted_skill_overall_rank_fill_2008_2017": "0.43-0.94",
+    "rank_vs_pick_spearman_2008_2017": "0.72-0.89",
+    "all_prospect_sample_grade_fill": {
+     "2008-2013": "0.85-1.00",
+     "2014": 0.4,
+     "2015": 0.18,
+     "2016-2022": "0.90-1.00",
+     "2023": 0.0,
+     "2024": 0.28,
+     "2025": 0.28,
+     "2026": 1.0
+    },
+    "closure_route": "full pull (~25k records), undrafted coverage by class, Wayback check of pre-draft boards"
+   }
+  },
+  "injury_transfer_redshirt": {
+   "injury": {
+    "disposition": "unavailable",
+    "espn_cfb_injuries": "93 rows, 3 teams, 31 days of 2026",
+    "espn_durability_grade": "0-48% 2008-2018, 72-95% 2019-2022, 0% from 2023"
+   },
+   "transfer": {
+    "disposition": "usable at season grain (store ESPN rosters)",
+    "pop_b_share_2plus_schools": {
+     "2008-2014": "0.06-0.09",
+     "2015-2021": "0.12-0.25",
+     "2022-2026": "0.40-0.69"
+    },
+    "caveat": "drop all-star team ids 3144-3147, 3193-3194, 125290-125291; thin pre-2014 rosters depress early rate"
+   },
+   "redshirt_sitout": {
+    "disposition": "usable at season grain, 2013+ (NCAA rosters games_played)",
+    "pop_b_2014_2026_exit_roster_join": 0.833,
+    "share_with_0_game_season": 0.215,
+    "n_joined": 6441
+   },
+   "allstar_side_finding": {
+    "rate": {
+     "drafted": 0.242,
+     "udfa": 0.188,
+     "never": 0.024
+    },
+    "classes_with_rows": "2009-2010, 2015-2023 (none 2008, 2011-2014, 2024-2026)"
+   }
+  }
+ }
+}

@@ -81,3 +81,5 @@ site/_shots/
 
 # Agent worktrees: their own checkouts, never content of this one.
 .claude/worktrees/
+# Prospect model SQLite store, rebuilt by projections/prospect_db.py ingest (~150 MB)
+projections/prospect-db/
