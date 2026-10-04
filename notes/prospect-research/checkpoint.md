@@ -60,7 +60,17 @@ said plainly that most of the AUC gain is separating who gets drafted (among dra
   0.066; AUC about 0.88; 100% of seasons). TE and QB fail. Wired behind `NEXT_STAGE` (empty);
   review E running.
 
-**Next**: review E verdict on S1; if confirmed set `NEXT_STAGE = {"RB", "WR"}`, rebuild, site checks.
+## Cycle 5 (2026-10-04): WR shipped
+
+- Review E confirmed S1 at RB and WR as models, rejected the wiring (crash, missing payload metadata,
+  misleading copy) and found the top-60-by-Talent cut breaks calibration. Display rule D1 (addendum
+  10: list the next class by S1's own forecast) passed at WR (ratio 1.15, slope 0.80) and failed at RB
+  (slope 0.74). **Shipped WR only** (commit fb1a1d1); all review E fixes in; site tests pass; prospect
+  verify-app checks pass and now assert the Pre-draft column. A short independent fix check is running.
+
+**Next**: if the fix check passes, the cycle is done. Open research: RB (S1 fails D1 by 0.01 of slope;
+no threshold change), TE and QB (fail the serving backtest), later classes (stage 1 fails), and the
+prospective holdout from January 2027. Earlier: review E verdict on S1.
 Earlier note: review whatever of B11/B12/B14 passes; if B14 passes on stage 1-2 rows, serve underclassmen
 from it; score the prospective holdout from January 2027 (`python projections/prospect_prospective.py`).
 

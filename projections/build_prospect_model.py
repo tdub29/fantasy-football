@@ -968,7 +968,8 @@ def fit_stage(ps, bio, d, t, age0) -> dict:
         b = sbt.get(f"S1 {pos}")
         if b and pos in NEXT_STAGE:
             v = b["vs_stars_stage"]
-            out[pos]["meta"]["served"] = {"logloss": round(v["cand_logloss"], 4), "base_logloss": round(v["base_logloss"], 4),
+            # strings: the payload rounds floats to 2 places, which would show 0.066 vs 0.080 as 0.07 vs 0.08
+            out[pos]["meta"]["served"] = {"logloss": f"{v['cand_logloss']:.3f}", "base_logloss": f"{v['base_logloss']:.3f}",
                                           "auc": round(v["cand_auc"], 3), "base_auc": round(v["base_auc"], 3),
                                           "ratio": round(b["all"]["ratio"], 2), "fe_ratio": round(b["first_eligible"]["ratio"], 2),
                                           "n": b["all"]["n"], "events": b["all"]["events"],

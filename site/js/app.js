@@ -12136,8 +12136,9 @@
           + `class's top 60 by that chance. Replayed on the 2012-2021 seasons through the same code (${v.n.toLocaleString()} `
           + `player-seasons, ${v.players.toLocaleString()} players, ${v.players_hit} of whom hit): log loss ${v.logloss} against `
           + `${v.base_logloss} for recruiting stars plus college year, AUC ${v.auc} against ${v.base_auc}. The average forecast `
-          + `ran ${pct(v.ratio)} the real hit rate over all replays and ${pct(v.late_ratio)} on the 2017-2021 replays. `
-          + `Most of the edge is telling who gets drafted at all.`;
+          + `ran ${pct(v.ratio)} the real hit rate over all replays, ${pct(v.top60_ratio)} on each season's top 60 like this list, `
+          + `and ${pct(v.late_ratio)} on the 2017-2021 replays. Among drafted players alone its edge over stars plus college year is `
+          + `smaller (independent review E: AUC gain 0.08 against 0.13 overall), so much of it is telling who gets drafted at all.`;
       })() : null,
       mode === 'later' && stg ? `Pre-draft here comes from a career-stage model: every FBS ${pos} who left college since 2008 `
         + `contributes one row per completed season (${stg.rows.toLocaleString()} rows, ${stg.players.toLocaleString()} players), so a `
