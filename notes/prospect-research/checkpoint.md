@@ -49,7 +49,19 @@ said plainly that most of the AUC gain is separating who gets drafted (among dra
 - Running: B11/B12 (QB passer-only features) and B14 (career-stage model for underclassmen),
   registered in addendum 7. Each needs an independent review before it can ship.
 
-**Next**: review whatever of B11/B12/B14 passes; if B14 passes on stage 1-2 rows, serve underclassmen
+## Cycle 4 (2026-10-04): pulled, then a served-shape replacement
+
+- Review D rejected QB B12 as served and B14 for underclassmen.
+- New in-repo serving backtest (`prospect_serving_backtest.py`, addendum 8) replays the exact served
+  code on 2012-2021: the shipped exit-scenario path ran about 2x low for first-eligible players while
+  the same models are calibrated on real exits. **Pre-draft numbers pulled** (commit 9a5a340).
+- S1 (career-stage model served from completed seasons, addendum 9) passes that backtest at RB and WR
+  and beats stars plus college year served the same way (RB log loss 0.148 to 0.121, WR 0.080 to
+  0.066; AUC about 0.88; 100% of seasons). TE and QB fail. Wired behind `NEXT_STAGE` (empty);
+  review E running.
+
+**Next**: review E verdict on S1; if confirmed set `NEXT_STAGE = {"RB", "WR"}`, rebuild, site checks.
+Earlier note: review whatever of B11/B12/B14 passes; if B14 passes on stage 1-2 rows, serve underclassmen
 from it; score the prospective holdout from January 2027 (`python projections/prospect_prospective.py`).
 
 ## Rejected or deferred, with reasons
