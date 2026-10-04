@@ -12086,7 +12086,8 @@
     const meta = M.pos[pos] || {};
     const capOnly = meta.shipped === 'draft';
     const pre = meta.predraft;
-    const stg = meta.stage;   // career-stage model for the classes after the next one (only once reviewed)
+    const stg = meta.stage && meta.stage.later ? meta.stage : null;   // career-stage model, classes after the next one
+    const nst = meta.stage && meta.stage.next ? meta.stage : null;    // the same model serving the next class
     const next = M.season + 1;
     const hashFor = (p, m) => `#prospects/${p}${m === 'next' ? '' : `/${m}`}`;
     const rows = rookies
@@ -12127,6 +12128,13 @@
         + `${pre.base_logloss} for ${pre.baseline === 'B0s' ? 'recruiting stars alone' : 'the base rate'}, AUC ${pre.auc} against `
         + `${pre.base_auc}. Most of that edge is telling who gets drafted at all; among drafted players it ranks talent far less sharply. `
         + `Next class only: for younger players the same method ran well short of real hit rates in a backtest.` : null,
+      mode === 'next' && nst && nst.served ? `Pre-draft is his chance to hit counting the chance he goes undrafted, from a `
+        + `career-stage model: every FBS ${pos} who left college since 2008 contributes one row per completed season `
+        + `(${nst.rows.toLocaleString()} rows), so he is compared with players at the same college year, on his completed seasons. `
+        + `Replayed on the 2012-2021 seasons exactly as served (${nst.served.n.toLocaleString()} players, ${nst.served.events} hits): `
+        + `log loss ${nst.served.logloss} against ${nst.served.base_logloss} for recruiting stars plus college year, AUC `
+        + `${nst.served.auc} against ${nst.served.base_auc}, and the average forecast within ${Math.round(Math.abs(1 - nst.served.ratio) * 100)}% `
+        + `of the real hit rate. Most of that edge is telling who gets drafted at all.` : null,
       mode === 'later' && stg ? `Pre-draft here comes from a career-stage model: every FBS ${pos} who left college since 2008 `
         + `contributes one row per completed season (${stg.rows.toLocaleString()} rows, ${stg.players.toLocaleString()} players), so a `
         + `sophomore is compared with sophomores. On draft classes it never saw, freshman and sophomore rows scored log loss `
@@ -12142,6 +12150,7 @@
       ['ts', 'Talent', { right:true, title:`College profile, no draft capital: percentile vs drafted ${pos}s since 2008` }],
       ['tr', 'Tier', { asc:true, title:'Our tier, cut on the talent score' }],
       (mode === 'later' && stg) ? ['pd', 'Pre-draft', { right:true, title:'Chance he hits, before the draft, counting the chance he goes undrafted, from his completed seasons compared with players at the same college year (B14)' }] : null,
+      mode === 'next' && nst ? ['pd', 'Pre-draft', { right:true, title:'Chance he hits, before the draft, counting the chance he goes undrafted, from his completed seasons compared with players at the same college year (S1)' }] : null,
       mode === 'next' && pre ? ['pd', 'Pre-draft', { right:true, title:`Chance he hits, before the draft, counting the chance he goes undrafted (${pre.model}; scored at the more conservative of leaving after this season or one more)` }] : null,
       rookies ? ['hp', 'Hit %', { right:true, title:capOnly ? 'Draft capital alone' : 'College profile plus his actual draft slot' }] : null,
       pos === 'QB' ? null : ['ba', 'Breakout', { right:true, asc:true, title:'Age at his first college season at the dominator line (blank: not yet). Profile only, no model uses it' }],

@@ -67,6 +67,7 @@ def run_stage(spec: dict, say=print):
             if cid == "S2":
                 tr = tr[(tr.stage >= 2) & tr.plays_next]
             model = bpm.make_lr(bpm.C_FIXED).fit(tr[cols].to_numpy(float), tr.hit.to_numpy(float))
+            base = bpm.make_lr(bpm.C_FIXED).fit(tr[["stars", "stage"]].to_numpy(float), tr.hit.to_numpy(float))
             cur = ps[ps.season == season].player_id.unique()
             subj = e[(e.cpos == pos) & e.player_id.isin(cur)][["player_id", "hs_class", "weight", "stars"]].copy()
             subj["pos"], subj["dob"] = pos, pd.NaT
@@ -74,16 +75,26 @@ def run_stage(spec: dict, say=print):
             subj["cls"] = np.maximum(season + 1, subj.hs_class + 3)
             done = bpm.predraft_profile(subj, ps, age0, season)
             s = bpm.stage_score(subj.assign(_pd=np.nan, _pdx=np.nan), done, {"model": model, "cols": cols}, age0, season, "next")
+            s["_base"] = bpm.stage_score(subj.assign(_pd=np.nan, _pdx=np.nan), done, {"model": base, "cols": ["stars", "stage"]},
+                                         age0, season, "next")._pd.to_numpy()
             s = s[s._pd.notna()]
             s["y"] = s.player_id.map(hit)
             s = s[s.y.notna()]
             s["first_eligible"] = (season - s.hs_class + 1) == 3
-            rows.append(s[["player_id", "_pd", "y", "first_eligible"]])
+            s["season"] = season
+            rows.append(s[["season", "player_id", "_pd", "_base", "y", "first_eligible"]])
         r = pd.concat(rows)
+        from sklearn.metrics import roc_auc_score
+        y_, pc, pb = r.y.to_numpy(float), r._pd.to_numpy(float), r._base.to_numpy(float)
+        boot = bpm.class_bootstrap(y_, pb, pc, r.season.to_numpy(int))
+        vs = {"base_logloss": bpm.ll(y_, pb), "cand_logloss": bpm.ll(y_, pc), "base_auc": float(roc_auc_score(y_, pb)),
+              "cand_auc": float(roc_auc_score(y_, pc)), "boot_by_season": boot}
         fe = r[r.first_eligible]
         allr, fer = summary(r.y.to_numpy(float), r._pd.to_numpy(float)), summary(fe.y.to_numpy(float), fe._pd.to_numpy(float))
         ok = passes(allr) and passes(fer)
-        out[f"{cid} {pos}"] = {"all": allr, "first_eligible": fer, "pass": ok}
+        out[f"{cid} {pos}"] = {"all": allr, "first_eligible": fer, "pass": ok, "vs_stars_stage": vs}
+        say(f"{cid} {pos}: vs stars+stage served the same way: log loss {vs['base_logloss']:.4f} -> {vs['cand_logloss']:.4f}, "
+            f"AUC {vs['base_auc']:.3f} -> {vs['cand_auc']:.3f}, season bootstrap {boot['p']:.0%}")
         say(f"{cid} {pos}: all n={allr['n']} events={allr['events']} ratio {allr.get('ratio', float('nan')):.2f} "
             f"slope {allr.get('slope', float('nan')):.2f} ll {allr.get('logloss', float('nan')):.4f} | first-eligible "
             f"n={fer['n']} events={fer['events']} ratio {fer.get('ratio', float('nan')):.2f} slope {fer.get('slope', float('nan')):.2f} "

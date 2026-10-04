@@ -137,6 +137,10 @@ PREDRAFT: dict[str, str] = {}
 # freshman-sophomore rows AND an independent review: it serves the classes after the next one, from
 # completed seasons, with no exit assumption. Empty = those classes get no pre-draft number.
 STAGE: set[str] = set()
+# Positions whose NEXT draft class is served by the career-stage model fit on every completed season
+# (S1, charter v2 addendum 9): from completed seasons, no exit scenario. Listed only after it passed
+# the serving backtest (prospect_serving_backtest.py) and an independent review.
+NEXT_STAGE: set[str] = set()
 # Positions where the charter v2 candidate A10 ships: a fixed 50/50 average of the draft-only and
 # talent + capital logits. Listed only after it passed the charter's five numeric rules on identical
 # folds AND an independent review (notes/prospect-research/experiments/A10.json). The v1 three-run
@@ -900,9 +904,11 @@ def build(verbose=True):
     # Generated-data consistency: a pre-draft number exists exactly where a reviewed model ships.
     for r in college:
         nxt = r["cls"] == SEASON + 1
-        assert r["pd"] is None or (0.0 <= r["pd"] <= 1.0 and ((nxt and r["p"] in PREDRAFT) or (not nxt and r["p"] in STAGE))), \
+        assert r["pd"] is None or (0.0 <= r["pd"] <= 1.0 and ((nxt and (r["p"] in PREDRAFT or r["p"] in NEXT_STAGE))
+                                                             or (not nxt and r["p"] in STAGE))), \
             f"{r['n']}: pd where no reviewed model serves that class, or out of range"
-    for pos in PREDRAFT:
+    assert not set(PREDRAFT) & NEXT_STAGE, "one next-class model per position"
+    for pos in set(PREDRAFT) | NEXT_STAGE:
         nxt = [r for r in college if r["p"] == pos and r["cls"] == SEASON + 1]
         assert sum(r["pd"] is not None for r in nxt) >= 0.8 * len(nxt), f"{pos}: most next-class players lack pd"
     return {"results": results, "nfl": nfl, "college": college, "coverage": coverage(d, t), "t": t, "d": d, "ps": ps}
@@ -937,15 +943,17 @@ def fit_predraft(ps, bio, d, t, age0) -> dict:
 
 def fit_stage(ps, bio, d, t, age0) -> dict:
     """Fit B14 per STAGE position on every mature snapshot (prospect_stage.py)."""
-    if not STAGE:
+    if not (STAGE or NEXT_STAGE):
         return {}
     import prospect_population as pp
     import prospect_stage as pst
     e = pp.build(ps, bio, d, t, age0, _CON, say=lambda *a: None)
     snap = pst.snapshots(e[e.draft_year >= FIRST_CLASS], ps, age0, _CON)
     rec = json.loads((ROOT / "notes" / "prospect-research" / "experiments" / "B14.json").read_text(encoding="utf-8"))
+    sbt = ROOT / "notes" / "prospect-research" / "experiments" / "serving-backtest.json"
+    sbt = json.loads(sbt.read_text(encoding="utf-8")) if sbt.exists() else {}
     out = {}
-    for pos in STAGE:
+    for pos in STAGE | NEXT_STAGE:
         r = rec["results"][pos]
         tp = snap[(snap.cpos == pos) & snap.hit.notna()]
         X, y = tp[r["cols"]].to_numpy(float), tp.hit.to_numpy(float)
@@ -953,7 +961,15 @@ def fit_stage(ps, bio, d, t, age0) -> dict:
         out[pos] = {"cols": r["cols"], "model": make_lr(C_FIXED).fit(X, y), "meta": {
             "model": "B14", "rows": int(len(tp)), "players": int(tp.base_sid.nunique()),
             "logloss": round(r["fwd"]["cand"]["logloss"], 4), "base_logloss": round(r["fwd"]["base"]["logloss"], 4),
-            "young_logloss": round(fy["cand"]["logloss"], 4), "young_base_logloss": round(fy["base"]["logloss"], 4)}}
+            "young_logloss": round(fy["cand"]["logloss"], 4), "young_base_logloss": round(fy["base"]["logloss"], 4),
+            "later": pos in STAGE, "next": pos in NEXT_STAGE}}
+        b = sbt.get(f"S1 {pos}")
+        if b and pos in NEXT_STAGE:
+            v = b["vs_stars_stage"]
+            out[pos]["meta"]["served"] = {"logloss": round(v["cand_logloss"], 4), "base_logloss": round(v["base_logloss"], 4),
+                                          "auc": round(v["cand_auc"], 3), "base_auc": round(v["base_auc"], 3),
+                                          "ratio": round(b["all"]["ratio"], 2), "fe_ratio": round(b["first_eligible"]["ratio"], 2),
+                                          "n": b["all"]["n"], "events": b["all"]["events"]}
     return out
 
 
@@ -1128,8 +1144,10 @@ def score_college(ps, bio, final, age0, top_n=60):
         pre = fin.get("predraft")
         if pre:
             s = predraft_score(s, done, pre, age0)
-        if fin.get("stage"):
+        if pos in STAGE:
             s = stage_score(s, done, fin["stage"], age0)
+        if pos in NEXT_STAGE:
+            s = stage_score(s, done, fin["stage"], age0, which="next")
         s = s.sort_values("_tp", ascending=False)
         s = pd.concat([s[s.cls == SEASON + 1].head(top_n), s[s.cls > SEASON + 1].head(top_n // 2)])
         X = s[fin["cols"]].to_numpy(float)
