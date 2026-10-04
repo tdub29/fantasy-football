@@ -229,3 +229,14 @@ rows whose outcome windows had closed) and then by an independent review.
 | S2 | B14's features and C, trained only on snapshot rows shaped like the served ones: a completed season k at college year 2 or later by a player who played in season k + 1 |
 
 RB, WR and TE use the B10/B8-derived B14 columns; QB uses B11-derived columns.
+
+## Addendum 10, 2026-10-04 (after review E, before the display rule was scored)
+
+Review E confirmed the S1 model at RB and WR but found that the board lists only the next class's top
+60 by Talent, which uses the live season S1 ignores; within that cut S1's calibration slope is 0.63
+(RB) and 0.72 (WR). Selecting on a model's own forecast does not bias its calibration the same way.
+
+**Display rule D1:** where S1 serves the next class, the board lists that class's top 60 by S1's
+pre-draft chance (Talent stays a column). Gate, from `run_stage` on the replayed seasons, using
+each season's top 60 by S1: calibration slope 0.75-1.25 and mean ratio 0.8-1.25, pooled. Also
+reported, not gating: the 2017-2021 replays alone, and unique players and hits next to player-seasons.
