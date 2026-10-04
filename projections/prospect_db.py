@@ -75,6 +75,20 @@ SOURCES = {
     "cfb_recruit": ("sdv", SDV, "cfb_recruits", "cfb_recruits_{y}.parquet", (FIRST_CFB, SEASON),
                     ["season", "team_id", "team_id_247", "team", "recruit_id", "player_name", "stars", "grade",
                      "position"], None),
+    # Team strength and player usage (charter v2 addendum 1). Regenerated daily upstream by current
+    # code, so a past season's numbers are today's method on that season's plays, not a vintage.
+    "cfb_rating": ("sdv", SDV, "cfb_ratings", "cfb_ratings_{y}.parquet", (FIRST_CFB, SEASON),
+                   ["season", "team_id", "adj_off_epa", "adj_def_epa", "adj_st_epa", "adj_net", "fei_off", "fei_def",
+                    "fei_net", "games", "off_pace", "net_z"], ["season", "team_id"]),
+    "cfb_team_game": ("sdv", SDV, "cfb_team_opponent_splits", "cfb_team_opponent_splits_{y}.parquet", (FIRST_CFB, SEASON),
+                      ["season", "season_type", "week", "game_id", "team_id", "opponent_id", "is_home", "points_for",
+                       "points_against", "plays", "epa_per_play", "success_rate"], ["game_id", "team_id"]),
+    "cfb_usage": ("sdv", SDV, "espn_cfb_usage_players", "usage_players_{y}.parquet", (FIRST_CFB, SEASON),
+                  ["season", "pos_team_id", "player_id", "player_name", "position_group", "games", "rushes", "targets",
+                   "receptions", "touches", "opportunities", "first_downs", "explosive_plays", "successful_plays", "epa",
+                   "rz_targets", "rz_touches", "team_targets", "team_first_downs", "team_touches", "explosive_rate",
+                   "success_rate", "epa_per_opportunity", "third_down_over_expected", "target_share",
+                   "first_down_share", "touch_share"], None),   # null-id "Team" and "N/A" rows repeat; real ids are unique
     "nfl_player": ("nflv", NFLV, "players", "players.parquet", None,
                    ["gsis_id", "display_name", "first_name", "last_name", "position", "birth_date", "height", "weight",
                     "college_name", "college_conference", "espn_id", "pfr_id", "pff_id", "rookie_season", "last_season",
