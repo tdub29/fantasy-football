@@ -78,6 +78,31 @@
   "B10 TE": {
    "verdict": "confirmed (not shipped)",
    "by": "review-c-2026-10-04.md"
+  },
+  "B12 QB": {
+   "verdict": "reject",
+   "by": "review-d-2026-10-04.md",
+   "reason": "model holds; the served exit transform fails a QB backtest (slope 0.72, 2.4x low first-eligible)"
+  },
+  "B14 RB": {
+   "verdict": "reject",
+   "by": "review-d-2026-10-04.md",
+   "reason": "only stage 1 would be served and stage 1 alone fails"
+  },
+  "B14 WR": {
+   "verdict": "reject",
+   "by": "review-d-2026-10-04.md",
+   "reason": "only stage 1 would be served and stage 1 alone fails"
+  },
+  "B14 TE": {
+   "verdict": "reject",
+   "by": "review-d-2026-10-04.md",
+   "reason": "only stage 1 would be served and stage 1 alone fails"
+  },
+  "B14 QB": {
+   "verdict": "reject",
+   "by": "review-d-2026-10-04.md",
+   "reason": "only stage 1 would be served and stage 1 alone fails"
   }
  }
 }
