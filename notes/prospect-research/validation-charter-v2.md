@@ -161,3 +161,10 @@ The review also found three drafted FBS hits the name join misses (Ray Rice as "
 Beanie Wells as "Chris Wells", Stevie Johnson) and four drafted non-hits carried as undrafted. A
 join repair is a data-completeness change, measured separately (links found, accuracy on id-known
 picks) and applied to baseline and candidates alike, followed by a full re-run of every candidate.
+
+## Addendum 5, 2026-10-04 (before B10 was scored)
+
+B7 (scored after addendum 3) carries the same QB-only-feature flaw as B2. **B10** = B7 without
+`comp_final` and `rush_ypg_best` for RB/WR/TE, C = 0.1. Exploratory follow-up like B8/B9. The
+in-season ship choice stays: lowest forward log loss among candidates that passed all six rules,
+disclosed as a selection among passing candidates.

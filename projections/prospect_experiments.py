@@ -60,6 +60,9 @@ def enrich(ps, bio, d, t, age0, con) -> pd.DataFrame:
     eff = efficiency(t, ps, con)                                            # A5
     t = t.join(eff, on="sid")
     t["no_forty"] = t.forty.isna().astype(float)                            # A8
+    import prospect_experiments_b as peb                                     # A13
+    pre = peb.oof_predraft(ps, bio, d, t, age0, con)
+    t["pre_logit"] = bpm.logit(t.player_id.map(pre).astype(float).to_numpy())
     t = t.join(schedule_context(t, ps, con), on="sid")                       # A11
     t = t.join(usage_quality(t, ps, con), on="sid")                          # A12
     ctx = team_context(con)                                                 # A9
@@ -194,6 +197,8 @@ def cand_cols(cid: str, pos: str) -> list[str] | None:
         return v + ["team_off_final", "sos_career"]
     if cid == "A12":
         return v + ["fd_share_best", "explosive_best"] if pos != "QB" else None
+    if cid == "A13":
+        return v + ["pre_logit"]
     return None
 
 
@@ -211,13 +216,14 @@ CANDIDATES = {
     "A10": "50/50 logit average of baseline and v1 full model",
     "A11": "final-season team adjusted offensive EPA and career opponent strength",
     "A12": "best-season first-down share and explosive rate (30+ opportunities)",
+    "A13": "logit of the population B pre-draft probability (forward out-of-fold) as a talent feature",
 }
 
 
 # ----------------------------------------------------------------------------- evaluation
 
-def test_classes(g, scheme):
-    return [c for c in sorted(set(g.tolist())) if (c >= FWD_START if scheme == "fwd" else c <= DEV_END)]
+def test_classes(g, scheme, first_test=FWD_START):
+    return [c for c in sorted(set(g.tolist())) if (c >= first_test if scheme == "fwd" else c <= DEV_END)]
 
 
 def fold_mask(g, scheme, c, win):
@@ -227,12 +233,12 @@ def fold_mask(g, scheme, c, win):
     return (g <= c - win) if scheme == "fwd" else ((g != c) & (g <= DEV_END))
 
 
-def oof(tp, predictor, scheme):
+def oof(tp, predictor, scheme, first_test=FWD_START):
     """Out-of-fold probabilities for the mature rows of tp. predictor(scheme, c, test_mask) -> p."""
     p = np.full(len(tp), np.nan)
     g = tp.draft_year.to_numpy(int)
     mature = tp.hit.notna().to_numpy()
-    for c in test_classes(g[mature], scheme):
+    for c in test_classes(g[mature], scheme, first_test):
         te = mature & (g == c)
         p[te] = predictor(scheme, c, te)
     return p
@@ -492,7 +498,8 @@ def record_db(con, t, preds, ids):
     feats = sorted({c for pos in bpm.POS for c in V1[pos]} | {"draft_age_real", "early_covid", "grade", "rec_epa_best",
                                                             "rush_succ_best", "target_share_best", "no_forty",
                                                             "tm_pass_att_prev", "tm_pos_ppr_prev", "log_pick",
-                                                            "team_off_final", "sos_career", "fd_share_best", "explosive_best"})
+                                                            "team_off_final", "sos_career", "fd_share_best", "explosive_best",
+                                                            "pre_logit"})
     out = []
     for r in rows.itertuples():
         for f in feats:

@@ -44,7 +44,11 @@ CANDIDATES = {"B1": "v1 talent features refit on every exiting player (no athlet
               "B3": "two-stage: predicted draft bucket times training hit rate per bucket",
               "B4": "post-combine phase: B2 plus combine invite and measured forty, weight, speed score",
               "B5": "B2 with C picked per outer fold by inner leave-one-class-out (addendum 2)",
-              "B6": "B2 plus a stars-missing indicator (addendum 2)"}
+              "B6": "B2 plus a stars-missing indicator (addendum 2)",
+              "B7": "B2 plus team offense, schedule strength, first-down share, explosive rate (addendum 3)"}
+B7 = B2 + ["team_off_final", "sos_career", "fd_share_best", "explosive_best"]
+# Addendum 2 pick per college position (lowest forward log loss among passing candidates); A13 uses it.
+PICK = {"QB": "B5", "RB": "B1", "WR": "B5", "TE": "B2"}
 C_GRID = (0.03, 0.1, 0.3, 1.0, 3.0)
 
 
@@ -153,6 +157,8 @@ def predictor(tp, X, fit, win, bucket=None, nested=False):
     def predict(scheme, c, te):
         tr = mature & pe.fold_mask(g, scheme, c, win)
         assert not (tr & te).any()
+        if y[tr].sum() < 3:   # too little history (the first classes of a 4-year window): no score
+            return np.full(te.sum(), np.nan)
         if nested:
             m = NestedLR().fit(X[tr], y[tr], g[tr])
         else:
@@ -170,6 +176,7 @@ def run(ids, say=print):
     e = e[e.draft_year >= FIRST].reset_index(drop=True)
     e = e.join(combine_join(e, d, con).reset_index(drop=True))
     e["stars_missing"] = e.stars.isna().astype(float)
+    e = e.join(pe.schedule_context(e, ps, con), on="sid").join(pe.usage_quality(e, ps, con), on="sid")
     say(f"combine: {e.invited.mean():.1%} of population B invited; drafted {e[e.drafted == 1].invited.mean():.1%}, "
         f"undrafted {e[e.drafted == 0].invited.mean():.1%}")
     stamp = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
@@ -190,7 +197,7 @@ def run(ids, say=print):
         say(f"{pos}: n={int(mature.sum())} hits={int(tp.hit.sum())} baseline {bkey} fwd {bl[bkey]:.4f} "
             f"(rate {bl['B0r']:.4f}, stars {bl['B0s']:.4f})")
         for cid in ids:
-            cols = {"B1": b1_cols(pos), "B2": B2, "B3": B2, "B4": B4, "B5": B2, "B6": B2 + ["stars_missing"]}[cid]
+            cols = {"B1": b1_cols(pos), "B2": B2, "B3": B2, "B4": B4, "B5": B2, "B6": B2 + ["stars_missing"], "B7": B7}[cid]
             X = tp[cols].to_numpy(float)
             NestedLR.chosen = []
             if cid == "B3":
@@ -253,6 +260,23 @@ def freeze(frozen, stamp, srcs):
         book["entries"].append({"id": cid, "pos": pos, "frozen_at_utc": stamp, "git_head": pe.git_head(),
                                 "sources_sha256": srcs, "sha256": sha, "p_by_college_id": body})
     path.write_text(json.dumps(book, indent=1), encoding="utf-8")
+
+
+def oof_predraft(ps, bio, d, t, age0, con) -> pd.Series:
+    """A13 feature: college id -> population B forward out-of-fold pre-draft probability, using the
+    addendum 2 pick per college position, first scored class 2011 (trained on 2008)."""
+    e = pp.build(ps, bio, d, t, age0, con, say=lambda *a: None)
+    e = e[e.draft_year >= FIRST].reset_index(drop=True)
+    out = []
+    for pos, cid in PICK.items():
+        tp = e[e.cpos == pos].reset_index(drop=True)
+        cols = b1_cols(pos) if cid == "B1" else B2
+        X = tp[cols].to_numpy(float)
+        pr = predictor(tp, X, None if cid == "B5" else lr(cols), tp.win.to_numpy(int), nested=cid == "B5")
+        p = pe.oof(tp, pr, "fwd", first_test=FIRST + 3)
+        out.append(pd.Series(p, index=tp.player_id))
+    s = pd.concat(out)
+    return s[~s.index.duplicated()].dropna()
 
 
 def _fwd_ll(tp, p):
