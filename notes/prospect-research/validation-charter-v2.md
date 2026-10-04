@@ -199,3 +199,19 @@ Follow-ups to review C, exploratory like addenda 4-6. Same population B, folds a
 
 B14 needs the five numeric rules on all rows AND on the stage 1-2 rows by themselves before it may
 serve underclassmen, plus an independent review.
+
+## Addendum 8, 2026-10-04 (after review D, before the QB serving fix was scored)
+
+Two reviews found that a model can pass on real exit rows and still fail as served, because the
+board scores a current player through the exit-scenario transform (`predraft_score`). From now on a
+served pre-draft number needs a **serving backtest**, in-repo (`projections/prospect_serving_backtest.py`):
+for each completed season k from 2011 to 2020, refit the shipped model on population B rows whose
+outcome windows had closed by season k + 1, score every player who was playing in season k + 1 and
+belonged to the next draft class through the exact served code path, and compare with his real
+outcome. Pass: calibration slope 0.75-1.25 AND mean predicted / observed between 0.8 and 1.25, both
+overall AND on first-eligible players (college year 3 at k + 1).
+
+**QB serving fix (QB-S1):** B12 served with the scenario's remaining seasons also added to `starts`
+for a player starting in the current season, and no number when he has zero completed starts. It may
+enter `PREDRAFT` only if it passes the serving backtest and an independent review. The shipped RB B10,
+WR B10 and TE B8 are run through the same backtest as a check; a failure there pulls them.
