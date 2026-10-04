@@ -93,7 +93,7 @@ said plainly that most of the AUC gain is separating who gets drafted (among dra
     season resamples). Rejected at RB on the replacement test.
   - WR: every gate passes (all 1.12/1.16, first-eligible 0.92/1.20, D1 1.00/1.11) and it beats the
     shipped S3 on served log loss (0.0649 to 0.0635) in 91% of resamples, one point over the floor.
-    FRAGILE; sent to independent review I.
+    FRAGILE; review I REJECTED it (seed noise: 72% of seeds clear 90%; gain carried by 3 hits). S3 stays.
   - TE: fails (all 1.39/0.83, D1 1.32/0.73). QB: fails (first-eligible 0.77/1.27).
 - Parallel lanes launched (`notes/prospect-research/lanes/README.md`): QB, TE and young (classes after
   the next one), each in its own write zone with a private copy of the store. The coordinator keeps

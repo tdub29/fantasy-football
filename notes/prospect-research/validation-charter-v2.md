@@ -307,3 +307,22 @@ neither position has a served model. This is the ninth served candidate family (
 S3, S4n4, S4n8, S5n4); a pass that clears its floors by less than the earlier near misses missed by
 is reported as fragile, not as a win.
 
+## Addendum 15, 2026-10-04 (after review I, before S6 was built or scored)
+
+Review I rejected S5n4 at WR: training only on served-shaped rows costs log loss, while the live
+features carry a real gain (S4n4 beats S3 in 97.7% of resamples) that S4n4 could not ship because its
+all-rows ratio was 1.31, almost all of it on later-eligible rows.
+
+**S6n4** (RB and WR only; TE and QB belong to their lanes): fit S4n4 on every training row as
+addendum 12 (C by inner leave-one-class-out). Compute out-of-fold S4n4 forecasts for every training
+row by leave-one-draft-class-out refits at the chosen C. Then fit a logistic recalibration, effectively
+unpenalized, of the hit on [out-of-fold logit, 1 if the snapshot's college year is 3 or later] using
+only the served-shaped training rows (college year 2 or later, played the next season). Serve the
+recalibrated S4n4 forecast. Three recalibration parameters; nothing else is tuned. Serving as addendum 13.
+
+Gates: the addendum 8 serving backtest (all rows and first-eligible) and display rule D1, as before.
+Replacement tests are stricter than earlier addenda, for the family-wise concern review I raised:
+season-resampling bootstrap with 200,000 resamples, and the candidate must beat the shipped model
+(S3 at WR, S4n4 at RB) in at least 95% of them. Then an independent review, which also checks the gain
+does not rest on a handful of rows. This is the tenth served candidate family.
+

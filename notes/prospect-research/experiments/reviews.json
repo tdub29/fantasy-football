@@ -141,8 +141,8 @@
    "by": "addendum 14 gates"
   },
   "S5n4 WR": {
-   "verdict": "passes every gate, beats S3 in 91% (fragile); independent review I pending",
-   "by": "checkpoint cycle 8"
+   "verdict": "rejected by review I: replacement win is Monte Carlo noise (72% of seeds clear 90%), carried by 3 first-eligible hits, first-eligible slope support 64% vs S3 91%; S3 stays",
+   "by": "review-i-2026-10-04.md"
   }
  }
 }
