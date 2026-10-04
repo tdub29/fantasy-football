@@ -89,6 +89,14 @@ SOURCES = {
                    "rz_targets", "rz_touches", "team_targets", "team_first_downs", "team_touches", "explosive_rate",
                    "success_rate", "epa_per_opportunity", "third_down_over_expected", "target_share",
                    "first_down_share", "touch_share"], None),   # null-id "Team" and "N/A" rows repeat; real ids are unique
+    # Per-game lines (charter v2 addendum 12): as-of-game features for the season in progress.
+    "cfb_player_box": ("sdv", SDV, "espn_cfb_player_box", "player_box_{y}.parquet", (FIRST_CFB, SEASON),
+                       ["season", "game_id", "team_id", "athlete_id", "athlete_name", "category", "receptions",
+                        "receivingYards", "receivingTouchdowns", "rushingAttempts", "rushingYards", "rushingTouchdowns",
+                        "completions/passingAttempts", "passingYards", "passingTouchdowns", "interceptions"], None),
+    "cfb_team_box": ("sdv", SDV, "espn_cfb_team_box", "team_box_{y}.parquet", (FIRST_CFB, SEASON),
+                     ["season", "game_id", "team_id", "home_away", "completionAttempts", "netPassingYards", "rushingYards",
+                      "rushingAttempts"], None),
     "nfl_player": ("nflv", NFLV, "players", "players.parquet", None,
                    ["gsis_id", "display_name", "first_name", "last_name", "position", "birth_date", "height", "weight",
                     "college_name", "college_conference", "espn_id", "pfr_id", "pff_id", "rookie_season", "last_season",
