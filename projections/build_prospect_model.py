@@ -122,6 +122,11 @@ UNPEN = 10.0
 # per-fold search on 150-450 players picked noisy values and cost 60x the fits.
 C_FIXED = 0.1
 BOOT_P = 0.8   # a model must beat draft-only in 80% of draft-class bootstrap resamples to ship
+# Pre-draft hit chance for current college players (population B: every exiting FBS player, drafted
+# or not; validation-charter-v2.md addenda 1-2). A position is listed only after its candidate passed
+# the five numeric rules AND an independent leakage review; the choice among passing candidates is
+# the lowest forward log loss (addendum 2). Empty = no pre-draft forecast ships.
+PREDRAFT: dict[str, str] = {}
 ROUNDS = {"R1": (1, 32), "R2": (33, 64), "R3": (65, 100), "D3": (101, 257)}
 # Our tier names, cut on the talent percentile vs every drafted player at the position.
 TIERS = [("Blue Chip", 90), ("Plus Starter", 70), ("Contributor", 45), ("Project", 20), ("Long Shot", 0)]
@@ -811,8 +816,36 @@ def build(verbose=True):
             f"gbm {res['hold']['gbm']['logloss']:.4f} -> {shipped}")
 
     nfl = score_nfl(t, d, final)
+    for pos, m in fit_predraft(ps, bio, d, t, age0).items():
+        final[pos]["predraft"] = m
+        results[pos]["predraft"] = m["meta"]
     college = score_college(ps, bio, final, age0)
     return {"results": results, "nfl": nfl, "college": college, "coverage": coverage(d, t), "t": t, "d": d, "ps": ps}
+
+
+def fit_predraft(ps, bio, d, t, age0) -> dict:
+    """Fit each PREDRAFT position's population B model on every mature exit. The candidate's
+    feature list, C rule and validation numbers come from its experiment record."""
+    if not PREDRAFT:
+        return {}
+    import prospect_experiments_b as peb
+    import prospect_population as pp
+    e = pp.build(ps, bio, d, t, age0, _CON, say=lambda *a: None)
+    e = e[e.draft_year >= FIRST_CLASS]
+    out = {}
+    for pos, cid in PREDRAFT.items():
+        rec = json.loads((ROOT / "notes" / "prospect-research" / "experiments" / f"{cid}.json").read_text(encoding="utf-8"))
+        r = rec["results"][pos]
+        tp = e[(e.cpos == pos) & e.hit.notna()]
+        X, y = tp[r["cols"]].to_numpy(float), tp.hit.to_numpy(float)
+        m = (peb.NestedLR().fit(X, y, tp.draft_year.to_numpy(int)) if cid == "B5" else make_lr(C_FIXED).fit(X, y))
+        fw = r["fwd"]
+        out[pos] = {"cols": r["cols"], "model": m, "meta": {
+            "model": cid, "n": int(len(tp)), "hits": int(y.sum()), "base_rate": round(float(y.mean()), 4),
+            "logloss": round(fw["cand"]["logloss"], 4), "base_logloss": round(fw["base"]["logloss"], 4),
+            "auc": round(fw["cand"]["auc"], 3), "base_auc": round(fw["base"]["auc"], 3), "baseline": r["baseline"],
+            "classes": f"{min(c['class'] for c in fw['per_class'])}-{max(c['class'] for c in fw['per_class'])}"}}
+    return out
 
 
 def coverage(d, t):
@@ -970,8 +1003,16 @@ def score_college(ps, bio, final, age0, top_n=60):
         tp = {n: pd.Series(fin["talent"].predict_proba(v[fin["cols"]].to_numpy(float))[:, 1], index=s.index)
               for n, v in sc.items()}
         pick4 = tp[4] <= tp[3]
+        pre = fin.get("predraft")
+        if pre:   # pre-draft hit chance at each exit, his seasons counted through that exit; the lower ships
+            pdp = {}
+            for n, v in sc.items():
+                extra = (v.draft_year - 1 - SEASON).clip(lower=0)
+                vv = v.assign(n_seasons=v.n_seasons + extra, n_qual=v.n_qual + extra)
+                pdp[n] = pd.Series(pre["model"].predict_proba(vv[pre["cols"]].to_numpy(float))[:, 1], index=s.index)
         s = pd.concat([sc[3][~pick4], sc[4][pick4]])
         s["_tp"] = np.minimum(tp[3], tp[4]).reindex(s.index)
+        s["_pd"] = np.minimum(pdp[3], pdp[4]).reindex(s.index) if pre else np.nan
         s = s.sort_values("_tp", ascending=False)
         s = pd.concat([s[s.cls == SEASON + 1].head(top_n), s[s.cls > SEASON + 1].head(top_n // 2)])
         X = s[fin["cols"]].to_numpy(float)
@@ -991,7 +1032,8 @@ def score_college(ps, bio, final, age0, top_n=60):
                          "ts": round(ts), "tr": tier_of(ts), "tp": round(float(r._tp), 3),
                          "ba": None if pd.isna(r.ba_show) else round(float(r.ba_show), 1),
                          "age": None if pd.isna(r.draft_age) else round(float(r.draft_age), 1),
-                         "st": st, "ln": line, "r": scen, "cp": comp_rows(fin, X[i], "talent")})
+                         "st": st, "ln": line, "r": scen, "cp": comp_rows(fin, X[i], "talent"),
+                         "pd": None if pd.isna(r._pd) else round(float(r._pd), 3)})
     return rows
 
 
@@ -1012,6 +1054,8 @@ FIELDS = {
     "oos": "1 = hp/tp are out of sample (the model never saw his class; holdout classes scored walk-forward)",
     "out": "Observed: [hit 0/1, best PPR PPG, best rank among that season's players at his draft position]",
     "r": "College only: hit probability if drafted in [Round 1, Round 2, Round 3, Day 3], at the scored exit",
+    "pd": "College only: pre-draft hit probability, counting the chance he goes undrafted (pos[].predraft holds "
+          "the model and its validation); the lower of leaving after year 3 or 4. Null where no pre-draft model passed",
     "cls": "College only: first eligible draft year",
     "cid": "College only: ESPN college athlete id (the key in the SQLite store, projections/prospect_db.py)",
     "ex": "College only: college years at the exit he is scored at, the more conservative of leaving after year 3 or 4",
@@ -1073,7 +1117,8 @@ def write_payload(res, run_id=None):
                          "tier_hit": [[x["n"], None if x["hit"] is None else round(x["hit"], 3)] for x in r["tier_hit"]],
                          "holdout": f"{r['hold_classes'][0]}-{r['hold_classes'][1]}",
                          "auc": {k: round(r["hold"][k]["auc"], 3) for k in ("draft", "talent", "full")},
-                         "logloss": {k: round(r["hold"][k]["logloss"], 4) for k in ("draft", "talent", "full")}}
+                         "logloss": {k: round(r["hold"][k]["logloss"], 4) for k in ("draft", "talent", "full")},
+                         "predraft": r.get("predraft")}
     payload = {"generated": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"), "season": SEASON, "db_run": run_id,
                "source": "sportsdataverse-data (ESPN college PBP seasons, rosters, recruits) + nflverse-data "
                          "(draft picks, players, combine, season stats); see notes/prospect-research/data-sources.md",
@@ -1380,6 +1425,9 @@ def parity():
 
 def main():
     global SOURCE
+    # Run as a script this module is __main__; the population B helpers import it by name, and must
+    # share this copy (its SOURCE and open store connection) rather than load a second one.
+    sys.modules.setdefault("build_prospect_model", sys.modules[__name__])
     ap = argparse.ArgumentParser()
     ap.add_argument("--self-check", action="store_true")
     ap.add_argument("--parity", action="store_true", help="prove the SQLite store and the parquet files agree")

@@ -12085,6 +12085,7 @@
     const rookies = mode === 'rookies';
     const meta = M.pos[pos] || {};
     const capOnly = meta.shipped === 'draft';
+    const pre = meta.predraft;
     const next = M.season + 1;
     const hashFor = (p, m) => `#prospects/${p}${m === 'next' ? '' : `/${m}`}`;
     const rows = rookies
@@ -12118,6 +12119,11 @@
       hitLine ? `Past hit rate by tier, out of sample: ${hitLine}.` : null,
       rookies ? null : 'College ages are estimated from class year (no public birth dates), and a live season counts once it reaches 6 games. '
         + 'Each player is scored at the more conservative of leaving after his third or fourth college year.',
+      // Pre-draft forecast (population B): only for positions that passed validation and review.
+      !rookies && pre ? `Pre-draft is his chance to hit counting the chance he goes undrafted, from a model fit on all `
+        + `${pre.n.toLocaleString()} ${pos}s who left FBS college football since 2008, drafted or not (${pre.hits} hits). `
+        + `Scored on draft classes ${pre.classes} it never saw: log loss ${pre.logloss} against ${pre.base_logloss} `
+        + `for ${pre.baseline === 'B0s' ? 'recruiting stars alone' : 'the base rate'}, AUC ${pre.auc} against ${pre.base_auc}.` : null,
     ].filter(Boolean);
     main.appendChild(h('div', { class:'card prm-notes' }, ...notes.map(t => h('p', { class:'tip' }, t))));
 
@@ -12128,6 +12134,7 @@
       mode === 'later' ? ['cls', 'Eligible', { right:true, asc:true, title:'First draft he is eligible for' }] : null,
       ['ts', 'Talent', { right:true, title:`College profile, no draft capital: percentile vs drafted ${pos}s since 2008` }],
       ['tr', 'Tier', { asc:true, title:'Our tier, cut on the talent score' }],
+      !rookies && pre ? ['pd', 'Pre-draft', { right:true, title:`Chance he hits, before the draft, counting the chance he goes undrafted (${pre.model})` }] : null,
       rookies ? ['hp', 'Hit %', { right:true, title:capOnly ? 'Draft capital alone' : 'College profile plus his actual draft slot' }] : null,
       pos === 'QB' ? null : ['ba', 'Breakout', { right:true, asc:true, title:'Age at his first college season at the dominator line (blank: not yet). Profile only, no model uses it' }],
       rookies ? null : ['age', 'Draft age', { right:true, asc:true, title:'Estimated age at the draft he is scored for: the more conservative of leaving after his third or fourth college year' }],
@@ -12161,7 +12168,7 @@
       if (k === 'n') return h('div', { class:'name-cell' }, h('span', { class:'name' }, v),
         r.sch ? h('span', { class:'muted prm-school' }, r.sch) : null);
       if (k.startsWith('st.')) return stat.find(s => `st.${s[0]}` === k)[2](v);
-      if (k === 'hp' || /^r\d$/.test(k)) return pmPct(v);
+      if (k === 'hp' || k === 'pd' || /^r\d$/.test(k)) return pmPct(v);
       if (k === 'ba' || k === 'age') return pmNum(1)(v);
       return v == null ? '·' : String(v);
     };
