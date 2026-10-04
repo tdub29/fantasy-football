@@ -812,7 +812,7 @@ def build(verbose=True):
 
     nfl = score_nfl(t, d, final)
     college = score_college(ps, bio, final, age0)
-    return {"results": results, "nfl": nfl, "college": college, "coverage": coverage(d, t)}
+    return {"results": results, "nfl": nfl, "college": college, "coverage": coverage(d, t), "t": t, "d": d, "ps": ps}
 
 
 def coverage(d, t):
@@ -986,7 +986,7 @@ def score_college(ps, bio, final, age0, top_n=60):
                 scen.append(round(float(fin[fin["shipped"]].predict_proba(Xs)[:, 1].mean()), 3))
             ts = pctile(fin["ref"], float(logit(r._tp)))
             st, line = key_stats(r)
-            rows.append({"n": r["name_final"], "p": pos, "sch": cur.pos_team.get(r.player_id, r.pos_team_final),
+            rows.append({"n": r["name_final"], "p": pos, "cid": int(r.player_id), "sch": cur.pos_team.get(r.player_id, r.pos_team_final),
                          "cls": int(r.cls), "ex": int(r.draft_year - r.hs_class),
                          "ts": round(ts), "tr": tier_of(ts), "tp": round(float(r._tp), 3),
                          "ba": None if pd.isna(r.ba_show) else round(float(r.ba_show), 1),
@@ -1013,12 +1013,58 @@ FIELDS = {
     "out": "Observed: [hit 0/1, best PPR PPG, best rank among that season's players at his draft position]",
     "r": "College only: hit probability if drafted in [Round 1, Round 2, Round 3, Day 3], at the scored exit",
     "cls": "College only: first eligible draft year",
+    "cid": "College only: ESPN college athlete id (the key in the SQLite store, projections/prospect_db.py)",
     "ex": "College only: college years at the exit he is scored at, the more conservative of leaving after year 3 or 4",
     "age": "College only: projected age at the scored exit's draft (estimated from class, no public DOB)",
 }
 
 
-def write_payload(res):
+def record_build(res) -> str | None:
+    """Record this build in the SQLite store: the run (code + source sha256s), every draft row's
+    college link and how it was found, the population and outcomes, and the shipped probabilities.
+    The JS payload carries the run id, so a shipped number traces to its data and code."""
+    if SOURCE != "db" or _CON is None:
+        return None
+    con, t, d, ps = _CON, res["t"], res["d"], res["ps"]
+    rid = pdb.record_run(con, __file__, {"feats": FEATS, "C": C_FIXED, "hold": HOLD, "shipped":
+                                         {p: r["shipped"] for p, r in res["results"].items()}}, note="shipped build")
+    last = ps.groupby("player_id").season.max()
+    eid = pd.to_numeric(d.espn_id, errors="coerce")
+    links = []
+    for r, e in zip(d.itertuples(), eid):
+        if pd.isna(r.player_id):
+            method = "none"
+        elif pd.notna(e) and int(e) == int(r.player_id) and last.get(int(e), 9999) < r.season:
+            method = "espn_id"
+        else:
+            method = "name_school"
+        key = r.gsis_id if isinstance(r.gsis_id, str) else f"pfr:{r.pfr_player_id}"
+        links.append((rid, key, None if pd.isna(r.player_id) else int(r.player_id), method, int(r.season)))
+    pdb.write_rows(con, "player_link", links)
+    rows = t[t.gsis_id.notna()]
+    pdb.write_rows(con, "model_row", [
+        (rid, r.sid, "A_drafted_linked", r.pos, int(r.draft_year), r.gsis_id, int(r.player_id), r.pfr_player_name,
+         int(r.pick), None if pd.isna(r.hit) else float(r.hit), None if pd.isna(r.best_ppg) else float(r.best_ppg),
+         None if pd.isna(r.best_rank) else int(r.best_rank), "open" if pd.isna(r.hit) else "final") for r in rows.itertuples()])
+    pdb.write_rows(con, "model_row", [
+        (rid, f"c{c['cid']}", "college_current", c["p"], int(c["cls"]), None, c["cid"], c["n"], None, None, None, None, "open")
+        for c in res["college"]])
+    sid_by_gsis = dict(zip(rows.gsis_id, rows.sid))
+    gsis_by_slp = {v: k for k, v in sleeper_maps()[0].items()}
+    preds = []
+    for slp, r in res["nfl"].items():
+        sid = sid_by_gsis.get(gsis_by_slp.get(slp))
+        if sid:
+            preds.append((rid, sid, "shipped_hit", "oos" if r.get("oos") else "final_fit", float(r["hp"])))
+            if r.get("tp") is not None:
+                preds.append((rid, sid, "talent", "oos" if r.get("oos") else "final_fit", float(r["tp"])))
+    preds += [(rid, f"c{c['cid']}", "talent", "exit_scenario", float(c["tp"])) for c in res["college"]]
+    pdb.write_rows(con, "prediction", preds)
+    print(f"recorded run {rid}: {len(links)} links, {len(rows) + len(res['college'])} rows, {len(preds)} predictions")
+    return rid
+
+
+def write_payload(res, run_id=None):
     pos_meta = {}
     for pos, r in res["results"].items():
         top, win = TARGET[pos]
@@ -1028,7 +1074,7 @@ def write_payload(res):
                          "holdout": f"{r['hold_classes'][0]}-{r['hold_classes'][1]}",
                          "auc": {k: round(r["hold"][k]["auc"], 3) for k in ("draft", "talent", "full")},
                          "logloss": {k: round(r["hold"][k]["logloss"], 4) for k in ("draft", "talent", "full")}}
-    payload = {"generated": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"), "season": SEASON,
+    payload = {"generated": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"), "season": SEASON, "db_run": run_id,
                "source": "sportsdataverse-data (ESPN college PBP seasons, rosters, recruits) + nflverse-data "
                          "(draft picks, players, combine, season stats); see notes/prospect-research/data-sources.md",
                "tiers": [t[0] for t in TIERS], "tier_cut": [t[1] for t in TIERS], "rounds": list(ROUNDS),
@@ -1350,7 +1396,7 @@ def main():
     warnings.filterwarnings("ignore", category=FutureWarning)
     warnings.filterwarnings("ignore", message="X does not have valid feature names")
     res = build()
-    write_payload(res)
+    write_payload(res, record_build(res))
     write_card(res)
 
 

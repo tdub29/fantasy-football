@@ -174,7 +174,7 @@ def run(ids, say=print):
         f"undrafted {e[e.drafted == 0].invited.mean():.1%}")
     stamp = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
     srcs = hashlib.sha256(json.dumps(pdb.source_shas(con), sort_keys=True).encode()).hexdigest()
-    results = {}
+    results, frozen = {}, []
     for pos in bpm.POS:
         tp = e[e.cpos == pos].reset_index(drop=True)
         win = tp.win.to_numpy(int)
@@ -209,6 +209,7 @@ def run(ids, say=print):
             if cid == "B5":
                 res["chosen_C"] = list(NestedLR.chosen)
             results.setdefault(cid, {})[pos] = res
+            frozen.append((cid, pos, tp, final_fit(tp, X, cid, cols)))
             say(f"  {cid} {pos}: fwd {fwd['base']['logloss']:.4f} -> {fwd['cand']['logloss']:.4f} (boot {fwd['boot']['p']:.0%}, "
                 f"slope {fwd['cand']['slope']:.2f}, AUC {fwd['base']['auc']:.3f} -> {fwd['cand']['auc']:.3f}, 2020+ "
                 f"{fwd['regime_2020']['base']:.4f} -> {fwd['regime_2020']['cand']:.4f}) | loco {loco['base']['logloss']:.4f} -> "
@@ -221,7 +222,37 @@ def run(ids, say=print):
                "primary_metric": "pooled log loss, fwd", "results": by_pos}
         (pe.EXP / f"{cid}.json").write_text(json.dumps(rec, indent=1, default=float), encoding="utf-8")
     write_ledger()
+    freeze(frozen, stamp, srcs)
     return results
+
+
+def final_fit(tp, X, cid, cols):
+    """Fit on every mature row; predict the rows whose outcome window is still open."""
+    m = tp.hit.notna().to_numpy()
+    y = tp.hit.to_numpy(float)
+    if cid == "B3":
+        mod = TwoStage().fit(X[m], y[m], tp.bucket.to_numpy()[m])
+    elif cid == "B5":
+        mod = NestedLR().fit(X[m], y[m], tp.draft_year.to_numpy(int)[m])
+    else:
+        mod = bpm.make_lr(C).fit(X[m], y[m])
+    return mod.predict_proba(X[~m])[:, 1], ~m
+
+
+def freeze(frozen, stamp, srcs):
+    """Pre-draft predictions for decision classes whose outcome is still open, keyed by college id."""
+    path = pe.EXP / "prospective-b.json"
+    book = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {"note": (
+        "Frozen population B (pre-draft) predictions for classes whose window is open, keyed by ESPN college id. "
+        "Never edited: a new config adds an entry."), "entries": []}
+    for cid, pos, tp, (p, open_) in frozen:
+        body = {str(pid): round(float(v), 4) for pid, v in zip(tp.player_id[open_], p)}
+        sha = hashlib.sha256(json.dumps(body, sort_keys=True).encode()).hexdigest()
+        if any(e["sha256"] == sha and e["id"] == cid and e["pos"] == pos for e in book["entries"]):
+            continue
+        book["entries"].append({"id": cid, "pos": pos, "frozen_at_utc": stamp, "git_head": pe.git_head(),
+                                "sources_sha256": srcs, "sha256": sha, "p_by_college_id": body})
+    path.write_text(json.dumps(book, indent=1), encoding="utf-8")
 
 
 def _fwd_ll(tp, p):
