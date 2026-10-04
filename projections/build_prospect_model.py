@@ -972,16 +972,18 @@ def fit_stage(ps, bio, d, t, age0) -> dict:
         fy = r["young_stage_1_2"]["fwd"]
         kind = NEXT_MODEL.get(pos, "S1")
         cols = list(r["cols"])
-        if kind.startswith("S4"):   # addendum 12: plus the next season's first n games
+        live_n = int(kind[3:]) if kind.startswith(("S4", "S5")) else None
+        if live_n:   # addendum 12: plus the next season's first n games
             import prospect_live as pl
-            n = int(kind[3:])
-            live = pl.live_features(_CON, n)
+            live = pl.live_features(_CON, live_n)
             key = pd.MultiIndex.from_arrays([tp.season.astype(int) + 1, tp.player_id.astype("Int64")])
             tp = tp.join(pd.DataFrame(live.reindex(key).to_numpy(), columns=pl.LIVE, index=tp.index))
             tp["has_live"] = tp.has_live.fillna(0.0)
             cols = cols + pl.LIVE
-            X = tp[cols].to_numpy(float)
-        if kind == "S3" or kind.startswith("S4"):
+        if kind.startswith("S5"):   # addendum 14: only rows shaped like the served ones
+            tp = tp[(tp.stage >= 2) & tp.plays_next]
+        X, y = tp[cols].to_numpy(float), tp.hit.to_numpy(float)
+        if kind == "S3" or live_n:
             import prospect_experiments_b as peb
             model = peb.NestedLR().fit(X, y, tp.draft_year.to_numpy(int))
         else:
@@ -991,7 +993,7 @@ def fit_stage(ps, bio, d, t, age0) -> dict:
             "logloss": round(r["fwd"]["cand"]["logloss"], 4), "base_logloss": round(r["fwd"]["base"]["logloss"], 4),
             "young_logloss": round(fy["cand"]["logloss"], 4), "young_base_logloss": round(fy["base"]["logloss"], 4),
             "later": pos in STAGE, "next": pos in NEXT_STAGE,
-            "live_n": int(kind[3:]) if kind.startswith("S4") else None}}
+            "live_n": live_n}}
         b = sbt.get(f"{kind} {pos}")
         if b and pos in NEXT_STAGE:
             v = b["vs_stars_stage"]
@@ -1184,7 +1186,7 @@ def score_college(ps, bio, final, age0, top_n=60):
         if pos in NEXT_STAGE:
             m = fin["stage"]
             d_ = done
-            if m["kind"].startswith("S4"):
+            if m["kind"].startswith(("S4", "S5")):
                 d_ = with_live(done, subj, ps, int(m["kind"][3:]))
             s = stage_score(s, d_, m, age0, which="next")
         s = s.sort_values("_tp", ascending=False)
@@ -1321,7 +1323,7 @@ FIELDS = {
     "r": "College only: hit probability if drafted in [Round 1, Round 2, Round 3, Day 3], at the scored exit",
     "pd": "College only: pre-draft hit probability counting the chance he goes undrafted, from his completed college "
           "seasons and with no exit assumed. Next class: pos[].stage with stage.next (career-stage model, variant in "
-          "stage.model: S1 fixed C, S3 tuned C, S4n = S3 plus his team's first n games this season, n in stage.live_n) or "
+          "stage.model: S1 fixed C, S3 tuned C, S4n = S3 plus his team's first n games this season, n in stage.live_n, S5n = S4n fit on served-shaped rows) or "
           "pos[].predraft (exit model); later classes: pos[].stage with stage.later. Null where no reviewed model serves "
           "that class, he has no completed qualifying season, or (S4) his team has not played n games or he has no stat line this season",
     "pdx": "College only: the draft year pd assumes (the lower of leaving after this season or, for a junior, one more)",
