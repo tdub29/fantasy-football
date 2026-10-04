@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pixel Field Specimen</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@400;700;800&family=Atkinson+Hyperlegible+Next:wght@400;700&family=Rubik:wght@400;600&family=Lexend:wght@400;600&family=Jersey+10&family=Silkscreen&family=Pixelify+Sans:wght@500;700&family=Press+Start+2P&family=VT323&family=Tiny5&display=swap">
+<style>
+/* Tokens copied from site/css/styles.css so this page judges the real palette. */
+:root {
+  --fg-0: oklch(24% 0.06 275); --fg-2: oklch(40% 0.045 275);
+  --bg-1: oklch(93% 0.03 285); --bg-2: oklch(87% 0.045 285);
+  --ink: oklch(18% 0.03 275); --gold: oklch(86% 0.17 90); --gold-deep: oklch(74% 0.165 82);
+  --band: oklch(58% 0.115 285); --band-deep: oklch(46% 0.115 283);
+  --turf: oklch(48% 0.13 145); --turf-deep: oklch(38% 0.12 145);
+  --endzone: oklch(34% 0.13 290); --chalk: oklch(99% 0 0);
+  --led: oklch(84% 0.24 145); --led-bg: oklch(18% 0.05 145);
+  --green: oklch(40% 0.13 150); --red: oklch(43% 0.19 25);
+  --grad-panel: linear-gradient(180deg, oklch(96% 0.02 285), var(--bg-1));
+  --grad-band: linear-gradient(180deg, var(--band), var(--band-deep));
+  --grad-gold: linear-gradient(180deg, var(--gold), var(--gold-deep));
+  --bevel: inset 0 0 0 2px rgba(255,255,255,.55), inset 0 -2px 0 rgba(0,0,0,.16);
+  --shadow-2: 0 4px 0 rgba(0,0,0,.32);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: oklch(22% 0.04 275); color: var(--chalk); font: 400 15px/1.5 "Nunito", sans-serif; }
+main { max-width: 1240px; margin: 0 auto; padding: 24px 16px 64px; }
+h1 { font: 800 1.9rem/1.1 "Baloo 2", sans-serif; margin: 0 0 4px; color: var(--gold); }
+h2 { font: 800 1.3rem/1.2 "Baloo 2", sans-serif; margin: 40px 0 6px; color: var(--gold); }
+.lede, .note { color: oklch(86% 0.03 285); max-width: 72ch; margin: 0 0 14px; }
+.note { font-size: .9rem; }
+
+/* ---------- field tiles ---------- */
+.field { position: relative; height: 300px; border: 3px solid var(--ink); border-radius: 10px; overflow: hidden; margin: 10px 0 6px; }
+.field .tag { position: absolute; left: 10px; bottom: 10px; z-index: 3; background: var(--ink); color: var(--gold); font: 700 .75rem/1 "Nunito"; padding: 5px 8px; border-radius: 4px; }
+.field .over { position: absolute; z-index: 2; left: 24px; top: 26px; display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
+.pill { font: 800 1.35rem/1.2 "Baloo 2", sans-serif; color: var(--gold); background: var(--grad-band); border: 3px solid var(--ink);
+  border-radius: 999px; padding: 4px 20px; box-shadow: var(--bevel), var(--shadow-2); -webkit-text-stroke: 2px var(--ink); paint-order: stroke fill; text-shadow: 0 2px 0 rgba(0,0,0,.45); }
+.plate { background: var(--grad-panel); color: var(--fg-0); border: 2px solid var(--ink); border-radius: 10px; box-shadow: var(--bevel), 0 2px 0 rgba(0,0,0,.28); padding: 10px 14px; width: min(340px, 78vw); font-weight: 700; }
+.plate small { display: block; color: var(--fg-2); font-weight: 600; }
+.layer { position: absolute; inset: 0; }
+
+/* A: the shipped field, abridged (smooth gradient, % chalk, Arial Black numerals at 13%). */
+.f-current { background: linear-gradient(180deg, var(--turf), var(--turf-deep)); }
+.f-current .layer { background-image:
+  repeating-linear-gradient(90deg, rgba(255,255,255,.20) 0 4px, transparent 4px 5%),
+  repeating-linear-gradient(90deg, rgba(255,255,255,.035) 0 5%, rgba(0,0,0,.05) 5% 10%); }
+.f-current .nums { position: absolute; inset: 24px 0 auto 0; display: flex; justify-content: space-around;
+  font: 900 44px/1 "Arial Black", Arial, sans-serif; color: rgba(255,255,255,.13); }
+
+/* B: pixel turf. Hard mow stripes on a FIXED 120px grid (5 yards at 24px), crisp chalk on every
+   stripe edge, a 2px checker dither instead of a smooth gradient, bitmap numerals and hash ticks
+   drawn as rects (see the script), so production needs no web font inside a data URI. */
+.f-pixel { background-color: var(--turf);
+  background-image:
+    repeating-linear-gradient(90deg, rgba(255,255,255,.55) 0 3px, transparent 3px 120px),
+    repeating-linear-gradient(90deg, transparent 0 120px, rgba(0,0,0,.09) 120px 240px),
+    conic-gradient(rgba(0,0,0,.07) 25%, transparent 0 50%, rgba(0,0,0,.07) 0 75%, transparent 0);
+  background-size: auto, auto, 4px 4px; image-rendering: pixelated; }
+/* C: B plus a stepped (banded) vertical fall-off: four hard steps, the 16-bit way to keep
+   DESIGN.md's "nothing is flat" without a smooth gradient. */
+.f-banded { background-image:
+    repeating-linear-gradient(90deg, rgba(255,255,255,.55) 0 3px, transparent 3px 120px),
+    repeating-linear-gradient(90deg, transparent 0 120px, rgba(0,0,0,.09) 120px 240px),
+    conic-gradient(rgba(0,0,0,.07) 25%, transparent 0 50%, rgba(0,0,0,.07) 0 75%, transparent 0),
+    linear-gradient(180deg, oklch(50% 0.13 145) 0 25%, oklch(47% 0.13 145) 25% 50%, oklch(44% 0.125 145) 50% 75%, oklch(41% 0.12 145) 75%);
+  background-size: auto, auto, 4px 4px, auto; }
+/* D: C plus an end zone in the existing --endzone token, the purple the video uses too. */
+.f-endzone::after { content: ''; position: absolute; top: 0; bottom: 0; right: 0; width: 132px; z-index: 1;
+  border-left: 4px solid var(--chalk);
+  background: var(--endzone) repeating-linear-gradient(135deg, rgba(255,255,255,.06) 0 6px, transparent 6px 12px); }
+svg.bits { position: absolute; inset: 0; width: 100%; height: 100%; shape-rendering: crispEdges; }
+
+/* ---------- type ---------- */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+.spec { background: var(--grad-panel); color: var(--fg-0); border: 2px solid var(--ink); border-radius: 10px; box-shadow: var(--bevel), 0 2px 0 rgba(0,0,0,.28); overflow: hidden; }
+.spec header { background: var(--grad-band); color: var(--chalk); font: 800 .72rem/1 "Nunito"; letter-spacing: .09em; text-transform: uppercase; padding: 8px 12px; border-bottom: 3px solid var(--ink); display: flex; justify-content: space-between; }
+.spec .body { padding: 12px; display: grid; gap: 10px; }
+.big { font-size: 2.1rem; line-height: 1; color: var(--fg-0); }
+.big .win { color: var(--green); } .big .loss { color: var(--red); }
+.micro { font-size: .7rem; letter-spacing: .06em; color: var(--fg-2); text-transform: uppercase; }
+.led { background: var(--led-bg); color: var(--led); border: 2px solid var(--ink); border-radius: 6px; padding: 6px 10px; font-size: .85rem; text-shadow: 0 0 6px oklch(84% 0.24 145 / .5); }
+.why { font: 600 .82rem/1.4 "Nunito"; color: var(--fg-2); }
+.ok { color: var(--green); font-weight: 800; } .warn { color: var(--red); font-weight: 800; }
+table.mini { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+table.mini th { background: var(--grad-band); color: var(--chalk); font-size: .68rem; letter-spacing: .07em; text-transform: uppercase; text-align: left; padding: 6px 8px; }
+table.mini td { padding: 7px 8px; border-bottom: 2px solid var(--chalk); }
+table.mini tr:nth-child(even) td { background: var(--bg-2); }
+table.mini td.n { text-align: right; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Pixel field and type, side by side</h1>
+  <p class="lede">Built on the site's own tokens. Each field carries a real page-title pill and a plate so you judge readability, not wallpaper. Fonts below are candidates for one pixel accent role only; Baloo 2 stays the display face.</p>
+
+  <h2>1. Field background</h2>
+  <div class="field f-current"><div class="layer"></div><div class="nums"><span>10</span><span>20</span><span>30</span><span>40</span><span>50</span></div>
+    <div class="over"><div class="pill">Team Strength Rankings</div><div class="plate">Boutte Hunter<small>1QB · 10tm · 5-1 · #5</small></div></div>
+    <span class="tag">A. Shipped today</span></div>
+  <p class="note">Smooth gradient, chalk spaced in percent so a phone gets a line every 20px, numerals in Arial Black that sit right behind the title pill.</p>
+
+  <div class="field f-pixel" data-bits><div class="over"><div class="pill">Team Strength Rankings</div><div class="plate">Boutte Hunter<small>1QB · 10tm · 5-1 · #5</small></div></div>
+    <span class="tag">B. Pixel turf: hard mow stripes, checker dither, bitmap numerals</span></div>
+  <p class="note">Fixed 120px stripe grid at every width, chalk on each stripe edge, numerals and hash ticks drawn as square rects. No web font needed in the background SVG.</p>
+
+  <div class="field f-pixel f-banded" data-bits><div class="over"><div class="pill">Team Strength Rankings</div><div class="plate">Boutte Hunter<small>1QB · 10tm · 5-1 · #5</small></div></div>
+    <span class="tag">C. B plus four-step banding</span></div>
+  <p class="note">The vertical fall-off kept, but stepped in four hard bands like a 16-bit palette, instead of a smooth blend.</p>
+
+  <div class="field f-pixel f-banded f-endzone" data-bits><div class="over"><div class="pill">Team Strength Rankings</div><div class="plate">Boutte Hunter<small>1QB · 10tm · 5-1 · #5</small></div></div>
+    <span class="tag">D. C plus an end zone in --endzone</span></div>
+  <p class="note">The purple end zone is already a token in the palette and the video uses the same move. On the real page it would sit at the right edge of the field.</p>
+
+  <h2>2. One pixel accent face (scoreboard roles only)</h2>
+  <p class="note">Roles: big stat callouts, verdict numbers, the LED freshness panel, yard numerals. Never body copy or dense table cells.</p>
+  <div class="grid" id="pixels"></div>
+
+  <h2>3. Body face alternatives (tables and copy)</h2>
+  <p class="note">Nunito ships today. Same three rows in each, tabular figures on.</p>
+  <div class="grid" id="bodies"></div>
+</main>
+<script>
+// 5x7 bitmap digits for the field numerals, drawn as rects so they stay crisp at any zoom.
+const DIGITS = {
+  0: ['01110','10001','10011','10101','11001','10001','01110'], 1: ['00100','01100','00100','00100','00100','00100','01110'],
+  2: ['01110','10001','00001','00010','00100','01000','11111'], 3: ['11110','00001','00001','01110','00001','00001','11110'],
+  4: ['00010','00110','01010','10010','11111','00010','00010'], 5: ['11111','10000','11110','00001','00001','10001','01110'],
+};
+const glyph = (d, x, y, s) => DIGITS[d].flatMap((row, r) => [...row].map((b, c) => b === '1'
+  ? `<rect x="${x + c * s}" y="${y + r * s}" width="${s}" height="${s}"/>` : '')).join('');
+document.querySelectorAll('[data-bits]').forEach(el => {
+  const w = 2400, s = 5, labels = [10, 20, 30, 40, 50, 40, 30, 20, 10];
+  let nums = '', ticks = '';
+  labels.forEach((n, i) => { const cx = 180 + i * 240, [a, b] = String(n); nums += glyph(a, cx - 32, 228, s) + glyph(b, cx + 3, 228, s); });
+  for (let x = 24; x < w; x += 24) if (x % 120) { ticks += `<rect x="${x}" y="150" width="3" height="9"/><rect x="${x}" y="190" width="3" height="9"/>`; }
+  el.insertAdjacentHTML('afterbegin', `<svg class="bits" viewBox="0 0 ${w} 300" preserveAspectRatio="xMinYMin slice">
+    <g fill="white" fill-opacity=".38">${ticks}</g><g fill="white" fill-opacity=".24">${nums}</g></svg>`);
+});
+
+const pixel = [
+  ['Jersey 10', 'Jersey numerals. The most football of the set, readable large, narrow.', 1.25],
+  ['Silkscreen', 'Crisp at small sizes. Best for micro labels and the LED panel.', 0.8],
+  ['Pixelify Sans', 'Has real weights, the most readable pixel face here.', 1],
+  ['Press Start 2P', 'The iconic arcade face. Very wide, short labels only.', 0.62],
+  ['VT323', 'Terminal and CRT feel. Thin, suits the LED panel more than callouts.', 1.2],
+  ['Tiny5', 'Tight 5px grid. Good for dense chips, tiny at body size.', 1],
+];
+document.getElementById('pixels').innerHTML = pixel.map(([f, why, k]) => `
+  <div class="spec"><header><span>${f}</span><span>accent</span></header><div class="body">
+    <div class="big" style="font-family:'${f}';font-size:${2.1 * k}rem"><span class="win">57%</span> · <span class="loss">#11</span> · 24.6</div>
+    <div class="micro" style="font-family:'${f}';font-size:${0.78 * k}rem">Title odds · Fair share 10%</div>
+    <div class="led" style="font-family:'${f}';font-size:${0.9 * k}rem">DATA 2026 WK 4 · FRESH</div>
+    <div class="why">${why} <span data-check="${f}"></span></div></div></div>`).join('');
+
+const bodies = [
+  ['Nunito', 'Shipped. Rounded, pairs with Baloo 2, slightly soft in dense tables.'],
+  ['Atkinson Hyperlegible Next', 'Built for legibility; distinct 1/l/I and 0/O in dense numbers.'],
+  ['Rubik', 'Slightly squared corners, a little more game-UI than Nunito.'],
+  ['Lexend', 'Wide and even, reads well small on a phone, more neutral.'],
+];
+document.getElementById('bodies').innerHTML = bodies.map(([f, why]) => `
+  <div class="spec" style="font-family:'${f}'"><header style="font-family:'${f}'"><span>${f}</span><span>body</span></header><div class="body">
+    <table class="mini"><tr><th>League</th><th>Rec</th><th class="n">PV</th></tr>
+      <tr><td><b>Boutte Hunter</b></td><td>5-1</td><td class="n">560</td></tr>
+      <tr><td><b>World of Tanks</b></td><td>0-6</td><td class="n">609</td></tr>
+      <tr><td><b>Team WHITE</b></td><td>2-1</td><td class="n">1,111</td></tr></table>
+    <div style="font-size:.94rem">Sell the RB2 before his age-27 season: value falls faster than production.</div>
+    <div class="why">${why} <span data-check="${f}"></span></div></div></div>`).join('');
+
+// Say plainly when a font failed to load, so a fallback is never judged as the candidate.
+document.fonts.ready.then(() => document.querySelectorAll('[data-check]').forEach(s => {
+  const ok = document.fonts.check(`16px "${s.dataset.check}"`);
+  s.textContent = ok ? 'Loaded.' : 'NOT LOADED, showing a fallback.';
+  s.className = ok ? 'ok' : 'warn';
+}));
+</script>
+</body>
+</html>
