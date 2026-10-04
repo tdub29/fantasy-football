@@ -126,7 +126,9 @@ BOOT_P = 0.8   # a model must beat draft-only in 80% of draft-class bootstrap re
 # or not; validation-charter-v2.md addenda 1-2). A position is listed only after its candidate passed
 # the five numeric rules AND an independent leakage review; the choice among passing candidates is
 # the lowest forward log loss (addendum 2). Empty = no pre-draft forecast ships.
-PREDRAFT: dict[str, str] = {}
+PREDRAFT: dict[str, str] = {"RB": "B10", "WR": "B10", "TE": "B8"}
+# QB is out: its only passing candidate (B9) leaned on receiving columns that are noise for passers
+# and its calibration pass was a coin flip under resampling (experiments/review-c-2026-10-04.md).
 # Positions where the charter v2 candidate A10 ships: a fixed 50/50 average of the draft-only and
 # talent + capital logits. Listed only after it passed the charter's five numeric rules on identical
 # folds AND an independent review (notes/prospect-research/experiments/A10.json). The v1 three-run
@@ -724,10 +726,9 @@ def prepare(say=print):
     cm = {}
     chk = link_college(both.assign(espn_id=np.nan), pd.Series(np.nan, index=both.index), ps, cm)
     agree = (chk.reindex(both.index) == pd.to_numeric(both.espn_id, errors="coerce").astype("Int64"))
-    for meth in ("name_prefix",):
-        k = [i for i, v in cm.items() if v == meth]
-        say(f"  fallback {meth}: {len(k)} id-known picks linked, {agree.reindex(k).sum()} correct; "
-            f"{(d.link_method == meth).sum()} picks linked this way in the full table")
+    # The prefix fallback runs only where the main name join failed, so it never fires on these rows;
+    # run alone on all 691 id-known picks it fired once and was right (review C, 2026-10-04).
+    say(f"  name_prefix fallback: {(d.link_method == 'name_prefix').sum()} picks linked this way")
     say(f"join: {d.player_id.notna().mean():.1%} of {len(d)} drafted QB/RB/WR/TE {FIRST_CLASS}+ linked to college; "
         f"name fallback on {len(both)} id-known rows: {chk.notna().mean():.1%} found, "
         f"{agree.sum() / max(chk.notna().sum(), 1):.1%} of those correct")
@@ -887,8 +888,11 @@ def build(verbose=True):
     college = score_college(ps, bio, final, age0)
     # Generated-data consistency: a pre-draft number exists exactly where a reviewed model ships.
     for r in college:
-        assert (r["pd"] is not None) == (r["p"] in PREDRAFT), f"{r['n']}: pd present outside PREDRAFT or missing inside"
-        assert r["pd"] is None or 0.0 <= r["pd"] <= 1.0
+        assert r["pd"] is None or (r["p"] in PREDRAFT and r["cls"] == SEASON + 1 and 0.0 <= r["pd"] <= 1.0), \
+            f"{r['n']}: pd outside PREDRAFT, outside the next class, or out of range"
+    for pos in PREDRAFT:
+        nxt = [r for r in college if r["p"] == pos and r["cls"] == SEASON + 1]
+        assert sum(r["pd"] is not None for r in nxt) >= 0.8 * len(nxt), f"{pos}: most next-class players lack pd"
     return {"results": results, "nfl": nfl, "college": college, "coverage": coverage(d, t), "t": t, "d": d, "ps": ps}
 
 
@@ -1062,6 +1066,7 @@ def score_college(ps, bio, final, age0, top_n=60):
     subj = subj.merge(feats, on="sid", how="left").rename(columns={"ros_weight": "weight"})
     if PREDRAFT:
         subj = subj.join(context_features(subj, ps), on="sid")
+        done = predraft_profile(subj, ps, age0)
     subj["speed_score"] = np.nan
     subj["cls"] = subj.draft_year
     rows = []
@@ -1083,16 +1088,12 @@ def score_college(ps, bio, final, age0, top_n=60):
         tp = {n: pd.Series(fin["talent"].predict_proba(v[fin["cols"]].to_numpy(float))[:, 1], index=s.index)
               for n, v in sc.items()}
         pick4 = tp[4] <= tp[3]
-        pre = fin.get("predraft")
-        if pre:   # pre-draft hit chance at each exit, his seasons counted through that exit; the lower ships
-            pdp = {}
-            for n, v in sc.items():
-                extra = (v.draft_year - 1 - SEASON).clip(lower=0)
-                vv = v.assign(n_seasons=v.n_seasons + extra, n_qual=v.n_qual + extra)
-                pdp[n] = pd.Series(pre["model"].predict_proba(vv[pre["cols"]].to_numpy(float))[:, 1], index=s.index)
         s = pd.concat([sc[3][~pick4], sc[4][pick4]])
         s["_tp"] = np.minimum(tp[3], tp[4]).reindex(s.index)
-        s["_pd"] = np.minimum(pdp[3], pdp[4]).reindex(s.index) if pre else np.nan
+        s["_pd"], s["_pdx"] = np.nan, np.nan
+        pre = fin.get("predraft")
+        if pre:
+            s = predraft_score(s, done, pre, age0)
         s = s.sort_values("_tp", ascending=False)
         s = pd.concat([s[s.cls == SEASON + 1].head(top_n), s[s.cls > SEASON + 1].head(top_n // 2)])
         X = s[fin["cols"]].to_numpy(float)
@@ -1113,8 +1114,52 @@ def score_college(ps, bio, final, age0, top_n=60):
                          "ba": None if pd.isna(r.ba_show) else round(float(r.ba_show), 1),
                          "age": None if pd.isna(r.draft_age) else round(float(r.draft_age), 1),
                          "st": st, "ln": line, "r": scen, "cp": comp_rows(fin, X[i], "talent"),
-                         "pd": None if pd.isna(r._pd) else round(float(r._pd), 3)})
+                         "pd": None if pd.isna(r._pd) else round(float(r._pd), 3),
+                         "pdx": None if pd.isna(r._pdx) else int(r._pdx)})
     return rows
+
+
+def predraft_profile(subj, ps, age0) -> pd.DataFrame:
+    """Each current player's college profile through his last COMPLETED season, the shape the
+    population B models were trained on (finished careers). Scoring from the live season instead
+    made the number jump when a player crossed six games with no new production (review C)."""
+    c = subj[["sid", "player_id", "pos", "hs_class", "dob"]].assign(cutoff=SEASON - 1, draft_year=SEASON + 1, dob=pd.NaT)
+    f = career_features(c, ps, age0).set_index("sid")
+    f = f.join(context_features(c.merge(f[["season_final"]], left_on="sid", right_index=True), ps))
+    return f.join(subj.set_index("sid")[["weight", "stars", "hs_class"]])
+
+
+def predraft_score(s, done, pre, age0) -> pd.DataFrame:
+    """Pre-draft hit chance for the next draft class only (review C: for freshmen and sophomores the
+    frozen-production scenario ran 2.5x too low on a 2014-2017 backtest; for the next class it was
+    calibrated). The current season counts as one more season played, qualifying, at his completed
+    seasons' production; he is scored leaving after it and, for a junior, after one more year; the
+    lower ships and `pdx` says which draft that is."""
+    s = s.copy()
+    nxt = s.cls.eq(SEASON + 1) & s.sid.isin(done.index)
+    if not nxt.any():
+        return s
+    base = done.loc[s.sid[nxt]].reset_index()
+    best_p, best_x = None, None
+    for years in (3, 4):
+        v = base.copy()
+        v["draft_year"] = np.maximum(SEASON + 1, v.hs_class + years)
+        extra = v.draft_year - SEASON
+        v["n_seasons"] = v.n_seasons + extra
+        v["n_qual"] = v.n_qual + extra
+        v["early"] = (v.n_seasons <= 3).astype(float)
+        v["draft_age"] = age0 + v.draft_year - v.hs_class - 0.35
+        p = pre["model"].predict_proba(v[pre["cols"]].to_numpy(float))[:, 1]
+        ok = v.n_qual.notna().to_numpy() & (v.n_qual - extra >= 1).to_numpy()   # a completed qualifying season
+        p = np.where(ok, p, np.nan)
+        if best_p is None:
+            best_p, best_x = p, v.draft_year.to_numpy(float)
+        else:
+            take = p < best_p
+            best_p, best_x = np.where(take, p, best_p), np.where(take, v.draft_year, best_x)
+    s.loc[nxt, "_pd"] = best_p
+    s.loc[nxt, "_pdx"] = np.where(np.isnan(best_p), np.nan, best_x)
+    return s
 
 
 # ----------------------------------------------------------------------------- output
@@ -1134,8 +1179,10 @@ FIELDS = {
     "oos": "1 = hp/tp are out of sample (the model never saw his class; holdout classes scored walk-forward)",
     "out": "Observed: [hit 0/1, best PPR PPG, best rank among that season's players at his draft position]",
     "r": "College only: hit probability if drafted in [Round 1, Round 2, Round 3, Day 3], at the scored exit",
-    "pd": "College only: pre-draft hit probability, counting the chance he goes undrafted (pos[].predraft holds "
-          "the model and its validation); the lower of leaving after year 3 or 4. Null where no pre-draft model passed",
+    "pd": "College only, next draft class only: pre-draft hit probability counting the chance he goes undrafted "
+          "(pos[].predraft holds the model and its validation), from his completed college seasons; null where no "
+          "reviewed pre-draft model ships (QB) or he has no completed qualifying season",
+    "pdx": "College only: the draft year pd assumes (the lower of leaving after this season or, for a junior, one more)",
     "cls": "College only: first eligible draft year",
     "cid": "College only: ESPN college athlete id (the key in the SQLite store, projections/prospect_db.py)",
     "ex": "College only: college years at the exit he is scored at, the more conservative of leaving after year 3 or 4",
