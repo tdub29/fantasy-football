@@ -23,12 +23,20 @@ Full write-up and numbers: `package-matrix.md`; review verdicts: `review.md`.
 | R5 | ESPN recruit grade by id: 247 coverage 55.9% to 78.1% (2018-21 cohorts), Spearman 0.68 | accepted as source (reviewed) |
 | R6 | ESPN FCS box scores with ESPN ids, 2007/2010/2016 tested; parity vs NCAA median 1.00; pre-2013 FCS hits covered | accepted as source, NOT yet reviewed |
 
+## Usage-limit stop (2026-10-04)
+
+The R6 reviewer died on HTTP 429 "You've hit your session limit" (resets 9:10am PT). This is the
+authorized hard stop: no autoresume. R6 stays UNREVIEWED; rerun the review (same brief: parity,
+playoff-game completeness, id test by hand, coverage selection) before recommending FCS ingestion.
+Background downloads below are plain Python processes, not Claude work; they keep running and are
+resumable if killed.
+
 ## Running in background
 
 - ESPN recruit classes 2022-2026 then 2017 down to 2006 (about 170k records, 10 workers), log
   `<scratch>/recruits_rest.log`, raw `<scratch>/espn_recruits/raw_<y>.jsonl`, resumable.
-- ESPN FCS box scores 2008, 2009, 2011, 2012, 2006, 2005, 2004 (2007, 2010, 2016 done), log
-  `<scratch>/fcs_pre2013.log`, raw `<scratch>/espn_fcs/box_<y>.jsonl`, resumable.
+- ESPN FCS box scores 2004-2012 and 2016 done (lines written); 2013-2015 and 2017-2025 pulling, log
+  `<scratch>/fcs_post2013.log`, raw `<scratch>/espn_fcs/box_<y>.jsonl`, resumable.
 
 ## Resume
 
