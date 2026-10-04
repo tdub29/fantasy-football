@@ -53,9 +53,11 @@ def stars_247(con):
                     (("cfb_receiving", "receiver_player_name"), ("cfb_rushing", "rusher_player_name"), ("cfb_passing", "passer_player_name"))])
     ros = pd.read_sql("SELECT athlete_id AS player_id, full_name AS name, team_id FROM cfb_roster WHERE athlete_id IS NOT NULL", con)
     names = pd.concat([ps, ros])
+    names["team_id"] = pd.to_numeric(names.team_id, errors="coerce")   # TEXT in some tables, INTEGER in cfb_roster (as player_bio does)
     names["_k"] = names["name"].map(bpp.norm_name)
     rec = pd.read_sql("SELECT season, team_id, player_name, stars FROM cfb_recruit", con)
     rec["_k"] = rec.player_name.map(bpp.norm_name)
+    rec["team_id"] = pd.to_numeric(rec.team_id, errors="coerce")
     rk = rec.groupby(["_k", "team_id"]).agg(rclass=("season", "min"), stars=("stars", "max")).reset_index()
     m = names.drop_duplicates(["player_id", "_k", "team_id"]).merge(rk, on=["_k", "team_id"])
     out = m.groupby("player_id").agg(rclass247=("rclass", "min"), stars247=("stars", "max"))
@@ -108,6 +110,15 @@ def main():
     res["spearman_grade_vs_247stars"] = round(float(both.grade.corr(both.stars247, method="spearman")), 3) if len(both) > 10 else None
     res["n_both"] = int(len(both))
     res["presence_by_group"] = d.groupby("grp")[["has247", "espn_graded"]].mean().round(3).to_dict()
+    # Descriptive only, not a model test: univariate AUC for "drafted" (not the model's hit label).
+    from sklearn.metrics import roc_auc_score
+    y = d.drafted.eq(1).astype(int)
+    only = d.espn_graded & ~d.has247
+    res["auc_both_rated"] = {"stars247": round(float(roc_auc_score(y[both.index], both.stars247)), 3),
+                             "espn_grade": round(float(roc_auc_score(y[both.index], both.grade)), 3)}
+    res["auc_espn_only_rows"] = round(float(roc_auc_score(y[only], d.grade[only])), 3)
+    res["drafted_rate_espn_only_vs_neither"] = [round(float(y[only].mean()), 3),
+                                                round(float(y[~d.espn_graded & ~d.has247].mean()), 3)]
     print(json.dumps({k: v for k, v in res.items() if k != "by_class"}, indent=1))
     d.to_parquet(SCR / "recruits_measure_rows.parquet", index=False)
     (SCR / "recruits_measure.json").write_text(json.dumps(res, indent=1, default=str))

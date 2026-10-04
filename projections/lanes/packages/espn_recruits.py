@@ -25,7 +25,7 @@ OUT = pathlib.Path(os.environ.get("LANE_PK", r"C:\Users\TrevorWhite\.claude\jobs
 BASE = "https://sports.core.api.espn.com/v2/sports/football/leagues/college-football"
 HDR = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", "Accept": "application/json",
        "Origin": "https://www.espn.com", "Referer": "https://www.espn.com/"}  # cfbfastR's headers
-WORKERS = 6  # ponytail: fixed politeness cap; lower it if ESPN starts refusing
+WORKERS = int(os.environ.get("ESPN_WORKERS", 6))  # politeness cap; lower it if ESPN starts refusing
 
 
 def get(url):
@@ -66,7 +66,13 @@ def main():
     years = [int(a) for a in args if a.isdigit() and (n is None or int(a) != n)]
     for y in years:
         f = OUT / f"raw_{y}.jsonl"
-        have = {json.loads(line)["_id"] for line in f.open(encoding="utf-8")} if f.exists() else set()
+        have = set()
+        if f.exists():   # a killed run can leave one partial last line: skip it, refetch that record
+            for line in f.open(encoding="utf-8"):
+                try:
+                    have.add(json.loads(line)["_id"])
+                except ValueError:
+                    pass
         pool = refs(y)
         if n:
             pool = random.Random(7).sample(pool, min(n, len(pool)))

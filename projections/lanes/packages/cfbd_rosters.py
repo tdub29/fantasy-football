@@ -75,7 +75,25 @@ def main():
         res[f"agree_rate_{'drafted' if g else 'undrafted'}"] = round(
             float((d.cfbd_skill == d.cpos).sum() / max(d.cfbd_pos.notna().sum(), 1)), 3)
 
+    res["with_real_cfbd_position"] = int((pre.cfbd_pos.notna() & (pre.cfbd_pos != "?")).sum())   # "?" = CFBD unknown
+
     con = sqlite3.connect(store)
+    # Grade both against the NFL position (draft position, else first NFL roster position), NFL
+    # QB/RB/WR/TE only, with and without CFBD's "?" rows.
+    dp = pd.read_sql("SELECT gsis_id, position FROM nfl_draft_pick WHERE gsis_id IS NOT NULL", con
+                     ).drop_duplicates("gsis_id").set_index("gsis_id").position
+    ro = pd.read_sql("SELECT gsis_id, position FROM nfl_roster ORDER BY season, source_key, src_row", con)
+    first = ro.dropna().drop_duplicates("gsis_id").set_index("gsis_id").position
+    b["nfl_pos"] = b.gsis_id.map(dp).fillna(b.gsis_id.map(first))
+    for lo, hi, lab in ((2008, 2014, "pre2014"), (2016, 2020, "2016_20")):
+        g = b[b.cls.between(lo, hi) & b.cfbd_pos.notna() & b.nfl_pos.isin(["QB", "RB", "WR", "TE"])]
+        for tag, h in (("all", g), ("excl_unknown", g[g.cfbd_pos != "?"])):
+            dis = h[h.cpos != h.cfbd_skill]
+            res[f"nfl_grade_{lab}_{tag}"] = {"n": int(len(h)), "population_pos": round(float((h.cpos == h.nfl_pos).mean()), 3),
+                                             "cfbd": round(float((h.cfbd_skill == h.nfl_pos).mean()), 3),
+                                             "disagree": int(len(dis)), "population_right": int((dis.cpos == dis.nfl_pos).sum()),
+                                             "cfbd_right": int((dis.cfbd_skill == dis.nfl_pos).sum())}
+
     es = pd.read_sql("SELECT season, athlete_id, position_abbreviation AS espn_pos FROM cfb_roster "
                      "WHERE season BETWEEN 2015 AND 2019 AND position_abbreviation NOT IN ('-', '')", con)
     v = es.merge(cf[["season", "athlete_id", "position"]], on=["season", "athlete_id"])
@@ -89,7 +107,7 @@ def main():
     rid = rid[rid.recruit_ids > 0].drop_duplicates()
     hit = rid.merge(rec, left_on="recruit_ids", right_on=pd.to_numeric(rec.recruit_id, errors="coerce"))
     res["cfbd_recruit_ids_positive"] = int(rid.recruit_ids.nunique())
-    res["cfbd_recruit_ids_matching_cfb_recruit"] = int(hit.recruit_ids.nunique())
+    res["cfbd_recruit_ids_matching_any_cfb_recruit_id"] = int(hit.recruit_ids.nunique())
     print(json.dumps(res, indent=1))
     b.to_parquet(OUT.parent / "cfbd_positions_popb.parquet", index=False)
     (OUT.parent / "cfbd_rosters_result.json").write_text(json.dumps(res, indent=1))

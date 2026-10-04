@@ -46,8 +46,12 @@ def main():
     hit = ids[ids.gsis_id.isin(nob) & ids.birthdate.notna()]
     out["ff_playerids"]["fills_missing_nflverse_dob"] = int(len(hit))
     # pre-draft rookies listed before they have an NFL id: the only pre-draft DOB source here
-    pre = ids[ids.gsis_id.isna() & ids.draft_year.isna() & ids.birthdate.notna() & ids.position.isin(["QB", "RB", "WR", "TE"])]
-    out["ff_playerids"]["no_gsis_qb_rb_wr_te_with_dob"] = int(len(pre))
+    # draft_year is 0 (not null) for undrafted rows, so look for incoming classes directly: a draft
+    # year after the last draft, or a no-gsis skill player young enough to be in college
+    skill = ids.position.isin(["QB", "RB", "WR", "TE"]) & ids.birthdate.notna()
+    out["ff_playerids"]["draft_year_2027_plus_with_dob"] = int((skill & (pd.to_numeric(ids.draft_year, errors="coerce") >= 2027)).sum())
+    out["ff_playerids"]["no_gsis_born_2000_plus_with_dob"] = int((skill & ids.gsis_id.isna()
+                                                                  & (pd.to_datetime(ids.birthdate, errors="coerce").dt.year >= 2000)).sum())
     out["ff_playerids"]["db_season_values"] = sorted(ids.db_season.dropna().astype(int).unique().tolist())[-3:]
     print(json.dumps(out, indent=1, default=str))
 

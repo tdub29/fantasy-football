@@ -10,27 +10,25 @@ experiments, site or other lanes.
 Does not duplicate the data-gaps lane (stats.ncaa.org `ncaa_mfb_*`, Wikidata DOB, ESPN draft
 prospects); reads its outputs read-only (`pop_b.parquet`, `nfl_outside_b.csv`, copied with sha256).
 
-## State (cycle 1 done; independent review running)
+## State (cycle 2: review applied)
 
-Full write-up and numbers: `package-matrix.md`.
+Full write-up and numbers: `package-matrix.md`; review verdicts: `review.md`.
 
 | # | Finding | Verdict |
 |---|---|---|
-| R1 | nflreadpy 0.1.5 = store's nflverse tables exactly (0 diffs); ff_playerids adds 0 DOB | redundant |
-| R2 | CFBD-derived positions (cfbfastR-data) worse than current inference vs NFL position (88.7% vs 94.2%) | rejected |
-| R3 | ESPN college athlete DOB present 98% drafted / 5% never-NFL (2018-22) | leakage, rejected (corroborates data lane) |
-| R4 | ESPN NFL athlete `collegeAthlete` crosswalk: validates 693/694 name links, +2 hits, +11 A profiles, +48 UDFA links, 2 split ids | accepted pending review |
-| R5 | ESPN recruit grades by id: 247 coverage 52.8% to 76.6% (2018-21 cohorts), Spearman 0.68 vs 247 | accepted as source pending review; model value = coordinator experiment |
-
-Rejected or not needed: nfl_data_py (archived), nflreadr (no R, same upstream), cfbfastR (no R; its
-endpoints reused from Python), CFBD API/clients (key), cfbreadr (does not exist), ncaa_stats_py and
-henrygd/ncaa-api (same NCAA upstream as the data lane's releases), sportsipy/sportsreference
-(unmaintained, SR terms), espn-api (irrelevant), sports247/on3 wrappers (site APIs, terms unchecked).
+| R1 | nflreadpy 0.1.5 = store's nflverse tables (rows and compared values identical); ff_playerids adds 0 pre-draft DOB | redundant |
+| R2 | CFBD positions vs NFL position: 87.3% vs inference 94.8% (93.4% vs 94.6% excluding CFBD `?`) | rejected |
+| R3 | ESPN college DOB present 98% drafted / 5% never-NFL (2018-22) | leakage, rejected |
+| R4 | ESPN crosswalk: name joins 693/694; after eff88be still adds 3 A profiles, 49 B links, 1 B link fix, 1 merge | accepted with guards (reviewed) |
+| R5 | ESPN recruit grade by id: 247 coverage 55.9% to 78.1% (2018-21 cohorts), Spearman 0.68 | accepted as source (reviewed) |
+| R6 | ESPN FCS box scores with ESPN ids, 2007/2010/2016 tested; parity vs NCAA median 1.00; pre-2013 FCS hits covered | accepted as source, NOT yet reviewed |
 
 ## Running in background
 
-- ESPN recruit classes 2022-2026 then 2017 down to 2006 (about 170k records), log
+- ESPN recruit classes 2022-2026 then 2017 down to 2006 (about 170k records, 10 workers), log
   `<scratch>/recruits_rest.log`, raw `<scratch>/espn_recruits/raw_<y>.jsonl`, resumable.
+- ESPN FCS box scores 2008, 2009, 2011, 2012, 2006, 2005, 2004 (2007, 2010, 2016 done), log
+  `<scratch>/fcs_pre2013.log`, raw `<scratch>/espn_fcs/box_<y>.jsonl`, resumable.
 
 ## Resume
 
@@ -46,6 +44,10 @@ $T/pkvenv/Scripts/python.exe projections/lanes/packages/nflreadpy_parity.py $T/p
 
 ## Next
 
-1. Apply review corrections; record the verdict in `review.md`.
+1. When the FCS pull finishes: run `fcs_parity.py` for every pulled season (id test per class), then
+   an independent review of R6 before recommending ingestion.
 2. When the recruit pull finishes: snapshot all classes, re-measure fill by class 2006-2026, report
    the coverage history the coordinator needs to preregister an ESPN-grade candidate.
+
+Resume FCS: `python projections/lanes/packages/espn_fcs_box.py fetch <years>` then `lines <years>`,
+then `python projections/lanes/packages/fcs_parity.py <y> "C:/Users/TrevorWhite/.claude/jobs/15921b94/tmp/lane-data/ncaa" $T/espn_nfl_college_xwalk.parquet $T/nfl_outside_b.csv`.

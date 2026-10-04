@@ -80,6 +80,42 @@ def main():
     print("conflicts:\n", b[b.v == "conflict"][cols + ["gsis_id"]].head(30).to_string())
     b[b.v.isin(["missed by B", "conflict"])][cols + ["gsis_id", "v"]].to_csv(pathlib_out(store, "xwalk_popb_issues.csv"), index=False)
 
+    # B2. the other direction: B links a gsis that ESPN maps to a DIFFERENT college id
+    rev = b[b.gsis_id.notna()].copy()
+    rev["espn_college"] = rev.gsis_id.map(g2c)
+    rev = rev[rev.espn_college.notna() & (rev.espn_college != rev.player_id)]
+    rev["espn_college_has_rows"] = rev.espn_college.isin(known)
+    res["B_reverse_conflicts"] = int(len(rev))
+    res["B_reverse_conflicts_espn_id_empty"] = int((~rev.espn_college_has_rows).sum())
+    print("\nB2. B links whose gsis ESPN maps to another college id:\n",
+          rev[["sid", "cls", "name_final", "pos_team_final", "gsis_id", "player_id", "espn_college", "espn_college_has_rows"]].to_string())
+
+    # Proposed rule, measured: accept ESPN's college id only if that career has rows in the store and
+    # ends in time. Drafted: last FBS stat season in [draft_year - 2, draft_year - 1], the name join's
+    # window. Population B: career's last season before the NFL career starts.
+    seasons = pd.concat([pd.read_sql(f"SELECT player_id, season FROM {t}", con) for t in ("cfb_receiving", "cfb_rushing", "cfb_passing")])
+    last_stat = seasons.groupby("player_id").season.max()
+    allseas = pd.concat([seasons, pd.read_sql("SELECT athlete_id AS player_id, season FROM cfb_roster", con)])
+    last_any = allseas.groupby("player_id").season.max()
+    newl = pl[pl.verdict == "new link"].copy()
+    newl["last_fbs"] = newl.espn.map(last_stat)
+    newl["in_window"] = newl.last_fbs.between(newl.draft_year - 2, newl.draft_year - 1)
+    res["A_new_links_in_window"] = int(newl.in_window.sum())
+    res["A_new_links_stale_or_no_fbs"] = int((~newl.in_window & newl.last_fbs.notna()).sum())
+    nfl = pd.read_sql("SELECT gsis_id, rookie_season, draft_year FROM nfl_player", con).set_index("gsis_id")
+    ro1 = pd.read_sql("SELECT gsis_id, MIN(season) AS s FROM nfl_roster GROUP BY 1", con).set_index("gsis_id").s
+    miss = b[b.v == "missed by B"].copy()
+    miss["nfl_start"] = pd.concat([miss.espn_gsis.map(nfl.rookie_season), miss.espn_gsis.map(ro1)], axis=1).min(axis=1)
+    miss["career_end"] = miss.player_id.map(last_any)
+    miss["valid"] = miss.career_end < miss.nfl_start
+    miss["nfl_drafted"] = miss.espn_gsis.map(nfl.draft_year).fillna(0) > 0
+    ok = miss[miss.valid & (miss.espn_games > 0)]
+    res["B_missed_valid_with_games"] = int(len(ok))
+    res["B_missed_valid_drafted"] = int(ok.nfl_drafted.sum())
+    res["B_missed_valid_undrafted"] = int((~ok.nfl_drafted).sum())
+    res["B_missed_rejected_by_timing"] = miss[~miss.valid & (miss.espn_games > 0)][["name_final", "cls"]].values.tolist()
+    res["B_missed_valid_already_linked_elsewhere"] = int(ok.espn_gsis.isin(set(b.gsis_id.dropna())).sum())
+
     # C. NFL players outside B whose ESPN college career is in the store
     ob = o[(o.in_b == False) & o.hit.notna()].copy()  # noqa: E712
     ob["espn_college"] = ob.gsis_id.map(g2c)
