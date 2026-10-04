@@ -210,7 +210,7 @@ Full pipeline detail, and the evidence behind every trap below, is in
   `build_gibbs_fullppr.py`, then `site/data/_sources/build_gibbs_brief.py`. Skip the last and the
   rank column moves while the tier board lies. All three leagues are full PPR and he publishes
   half, so the full-PPR board is DERIVED and must never be presented as his.
-- Don't `git commit` unless explicitly asked; the user controls the commit log.
+- Commit your own finished work without asking. Stage only the files you changed (other sessions leave edits in this checkout), Trevor as sole author, then push the branch. Never force-push.
 
 ## House style for code
 
