@@ -1,0 +1,76 @@
+{
+ "reader": "reader2",
+ "board": "week-4",
+ "note": "Four FantasyPros-powered top-12 cards for QB, RB, WR, TE; the QB card header reads NON-PPR and the RB, WR, and TE card headers read HALF-PPR.",
+ "scoringByPosition": {
+  "QB": "non_ppr",
+  "RB": "half_ppr",
+  "WR": "half_ppr",
+  "TE": "half_ppr"
+ },
+ "positions": {
+  "QB": [
+   {"rank": 1, "player": "JOSH ALLEN", "team": "BUF"},
+   {"rank": 2, "player": "LAMAR JACKSON", "team": "BAL"},
+   {"rank": 3, "player": "TYLER SHOUGH", "team": "NO"},
+   {"rank": 4, "player": "PATRICK MAHOMES", "team": "KC"},
+   {"rank": 5, "player": "TREVOR LAWRENCE", "team": "JAC"},
+   {"rank": 6, "player": "JOE BURROW", "team": "CIN"},
+   {"rank": 7, "player": "JARED GOFF", "team": "DET"},
+   {"rank": 8, "player": "BROCK PURDY", "team": "SF"},
+   {"rank": 9, "player": "JALEN HURTS", "team": "PHI"},
+   {"rank": 10, "player": "DAK PRESCOTT", "team": "DAL"},
+   {"rank": 11, "player": "BRYCE YOUNG", "team": "CAR"},
+   {"rank": 12, "player": "JORDAN LOVE", "team": "GB"}
+  ],
+  "RB": [
+   {"rank": 1, "player": "JAHMYR GIBBS", "team": "DET"},
+   {"rank": 2, "player": "BIJAN ROBINSON", "team": "ATL"},
+   {"rank": 3, "player": "KENNETH WALKER", "team": "KC"},
+   {"rank": 4, "player": "CHRISTIAN MCCAFFREY", "team": "SF"},
+   {"rank": 5, "player": "JONATHAN TAYLOR", "team": "IND"},
+   {"rank": 6, "player": "DERRICK HENRY", "team": "BAL"},
+   {"rank": 7, "player": "JAMES COOK", "team": "BUF"},
+   {"rank": 8, "player": "JEREMIYAH LOVE", "team": "ARI"},
+   {"rank": 9, "player": "CHASE BROWN", "team": "CIN"},
+   {"rank": 10, "player": "ASHTON JEANTY", "team": "LV"},
+   {"rank": 11, "player": "D'ANDRE SWIFT", "team": "CHI"},
+   {"rank": 12, "player": "KYREN WILLIAMS", "team": "LAR"}
+  ],
+  "WR": [
+   {"rank": 1, "player": "JAXON SMITH-NJIGBA", "team": "SEA"},
+   {"rank": 2, "player": "JA'MARR CHASE", "team": "CIN"},
+   {"rank": 3, "player": "AMON-RA ST. BROWN", "team": "DET"},
+   {"rank": 4, "player": "CHRIS OLAVE", "team": "NO"},
+   {"rank": 5, "player": "DRAKE LONDON", "team": "ATL"},
+   {"rank": 6, "player": "PARKER WASHINGTON", "team": "JAC"},
+   {"rank": 7, "player": "CEEDEE LAMB", "team": "DAL"},
+   {"rank": 8, "player": "GARRETT WILSON", "team": "NYJ"},
+   {"rank": 9, "player": "ZAY FLOWERS", "team": "BAL"},
+   {"rank": 10, "player": "JOSH DOWNS", "team": "IND"},
+   {"rank": 11, "player": "MICHAEL WILSON", "team": "ARI"},
+   {"rank": 12, "player": "CHRISTIAN WATSON", "team": "GB"}
+  ],
+  "TE": [
+   {"rank": 1, "player": "TREY MCBRIDE", "team": "ARI"},
+   {"rank": 2, "player": "BROCK BOWERS", "team": "LV"},
+   {"rank": 3, "player": "GEORGE KITTLE", "team": "SF"},
+   {"rank": 4, "player": "DALTON KINCAID", "team": "BUF"},
+   {"rank": 5, "player": "SAM LAPORTA", "team": "DET"},
+   {"rank": 6, "player": "TRAVIS KELCE", "team": "KC"},
+   {"rank": 7, "player": "TUCKER KRAFT", "team": "GB"},
+   {"rank": 8, "player": "TYLER WARREN", "team": "IND"},
+   {"rank": 9, "player": "JUWAN JOHNSON", "team": "NO"},
+   {"rank": 10, "player": "ISAIAH LIKELY", "team": "NYG"},
+   {"rank": 11, "player": "KENYON SADIQ", "team": "NYJ"},
+   {"rank": 12, "player": "HAROLD FANNIN", "team": "CLE"}
+  ]
+ },
+ "gaps": [],
+ "rowCounts": {
+  "QB": 12,
+  "RB": 12,
+  "WR": 12,
+  "TE": 12
+ }
+}

@@ -563,12 +563,20 @@ def player_table(season: int) -> tuple[pd.DataFrame, dict, pd.DataFrame]:
     # ---- injuries and depth ----
     def _inj():
         d = read("injuries", f"injuries_{season}.parquet")
-        d = d[d["season_type"] == "REG"].sort_values("week").drop_duplicates("gsis_id", keep="last")
+        kind = "season_type" if "season_type" in d.columns else "game_type"  # 2024 file has only game_type
+        d = d[d[kind] == "REG"].sort_values("week").drop_duplicates("gsis_id", keep="last")
         return d.set_index("gsis_id")[["week", "report_status", "report_primary_injury", "practice_status"]] \
             .rename(columns={"week": "inj_week"})
 
     def _depth():
         d = read("depth_charts", f"depth_charts_{season}.parquet")
+        if "pos_abb" not in d.columns:
+            # 2024 and earlier ship the old weekly schema: club_code/week/depth_team, no timestamps
+            d = d[(d["game_type"] == "REG") & d["position"].isin(SKILL)]
+            d = d[d["week"] == d.groupby("club_code")["week"].transform("max")]
+            d = d.assign(pos_rank=pd.to_numeric(d["depth_team"], errors="coerce"))
+            d = d.sort_values("pos_rank").drop_duplicates("gsis_id")
+            return d.set_index("gsis_id")[["pos_rank"]].rename(columns={"pos_rank": "depth"})
         d = d[d["pos_abb"].isin(SKILL)]
         last_dt = d.groupby("team")["dt"].transform("max")
         d = d[d["dt"] == last_dt].sort_values("pos_rank").drop_duplicates("gsis_id")
