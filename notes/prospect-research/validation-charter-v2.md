@@ -215,3 +215,17 @@ overall AND on first-eligible players (college year 3 at k + 1).
 for a player starting in the current season, and no number when he has zero completed starts. It may
 enter `PREDRAFT` only if it passes the serving backtest and an independent review. The shipped RB B10,
 WR B10 and TE B8 are run through the same backtest as a check; a failure there pulls them.
+
+## Addendum 9, 2026-10-04 (after the serving backtest pulled B10/B8, before S1/S2 were scored)
+
+The exit-scenario transform failed because it freezes production. Two candidates are trained on rows
+shaped like what is served (features through the last completed season), so no transform is needed.
+Both are judged by the addendum 8 serving backtest on next-class players (refit per replayed season on
+rows whose outcome windows had closed) and then by an independent review.
+
+| ID | Candidate |
+|---|---|
+| S1 | B14 as fit (one row per completed season, every stage), served for the next class from completed seasons with `stage` and `age_k` |
+| S2 | B14's features and C, trained only on snapshot rows shaped like the served ones: a completed season k at college year 2 or later by a player who played in season k + 1 |
+
+RB, WR and TE use the B10/B8-derived B14 columns; QB uses B11-derived columns.
