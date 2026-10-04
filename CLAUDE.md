@@ -34,7 +34,7 @@ Match the execution shape to the task - **solo**, **subagents**, a **workflow**,
 
 - **Check for a skill before starting, not after getting stuck.** A skill costs instructions, not a spawn, so there is no cost argument for skipping one that fits. Design, review, writing, research, data, decisions, finance, security and docs are all covered. Unsure what exists? `scout-skills` (first token `mid` | `high` | `max`), and if it flags a real gap, install that skill as a complete local bundle rather than noting the gap and moving on.
 - **A verdict is not certified by whoever produced it.** Rankings, design choices, exploitability calls, "is this right", any number reaching a person: fresh lens, or be the reviewer only if you did not do the work.
-- **Breadth gets workers.** Three or more independent shards (files, sources, claims, candidates, or skills to import, each carrying its own proof and verification): one worker per shard, then deterministic code decides what survives. "More than a handful" used to be the trigger and it read as affirmative permission to stay solo on three: graded 2026-09-15 on skill-install-pass-also-retires-the-unrun, where three skills times gap-proof plus bundle fetch plus four-tree mirror plus lockfile hash is twelve real shards that the old wording gave no way to see.
+- **Breadth gets workers.** Three or more independent shards (files, sources, claims, candidates, or skills to import, each carrying its own proof and verification): one worker per shard, then deterministic code decides what survives. Count shards by the work, not the items: three skills to install is twelve shards once gap-proof, bundle fetch, four-tree mirror and lockfile hash each count.
 - **None of this licenses spawning for trivial work.** A one-file mechanical edit stays solo and self-inspected; the cost gate still applies and over-orchestration is its own failure. The line is judgement and breadth, not effort.
 
 **Here:** Fan out player and stat analysis; rank trade offers as a **tournament**, not by absolute score, and remember a dynasty trade is anchored by its biggest single asset (a pile of small pieces does not substitute even at equal KTC total). **Solo** for site edits -- it is vanilla JS with no build step.
@@ -94,13 +94,21 @@ build step.
 - **Picks ARE counted** in `computeRosterStrength`. They are NOT counted in the
   projected-finish path (`originSlot` → `startingStrength` with `includePicks`
   false). That is what breaks the recursion. Don't conflate these.
-- **Projected draft slot ranks STARTERS, never roster totals.** `originSlot` calls
-  `startingStrength`; a hoarder of ranked bench bodies is not a contender and his future
-  first is not a late pick. Summing whole rosters priced a rebuilder's 2027 first as a 1.09.
+- **Draft rules are league-specific (Trevor's call).** The League: lowest Max PF
+  first. Password is taco: bottom-four 40/30/20/10 lottery drawing all four slots
+  (each eligible team can land 1.01 through 1.04). Bad record does not establish
+  an early Max PF pick; bottom four does not guarantee 1.01. Track origin-team outcomes
+  after trades and ownership of retained picks. Confirm eligible pool, lottery weight
+  assignment/draw mechanics and round treatment before exact slot claims. Full policy:
+  [docs/FRAMEWORKS.md](docs/FRAMEWORKS.md), league-specific draft order.
+- **Current projected-slot code is a proxy.** `originSlot` ranks `startingStrength`,
+  not cumulative Max PF or lottery outcomes. Do not sum roster dynasty values to fix
+  it; Max PF requires optimal legal weekly scoring, including eligible bench players.
+  Label pick-sensitive multi-year outputs proxy-dependent until actual rules are modeled.
 - **A pick's price is ENDOGENOUS to the trade that moves it.** Slot every pick in a
   proposal off the rosters as they look AFTER the deal, and cross-check any hand-built KTC
-  ledger against the simulator's own pick values. Both traps cost a backwards
-  recommendation on 2026-09-12; reasoning in [docs/FRAMEWORKS.md](docs/FRAMEWORKS.md).
+  ledger against the simulator's own pick values. Either trap produces a backwards
+  recommendation; reasoning in [docs/FRAMEWORKS.md](docs/FRAMEWORKS.md).
 - **There is ONE lineup filler: `fillLineup(assets, slots)` + `offenseStartingSlots(lg)`.**
   Both the value model (`startingStrength`) and the points model (`optimalOffense`)
   go through it. Never hand-roll a "top-K by value" lineup. That shipped for
@@ -131,7 +139,7 @@ build step.
 - **Every ranking column is PPR; `*` marks one converted from half-PPR data.** No
   "(PPR)" or "(half)" tags in headers. A half-PPR source is converted before it shows
   (positional: `"scoring": "half"` in `_expert_sources.json`), with the unconverted rank in
-  the tooltip. An expert's own PPR board shows with no mark (Trevor, 2026-09-24).
+  the tooltip. An expert's own PPR board shows with no mark (Trevor's call).
 
 ## Dynasty strategy skills
 
@@ -150,8 +158,8 @@ relevant one before answering any contend/rebuild/trade question:
 | `dynasty-replacement-level` | Pricing any bench body, backup or depth piece against what is FREE. Owns the waiver/FAAB channel and the QB-count call. |
 | `dynasty-player-evaluation` | A question about ONE player, and the hard line between what the repo can measure about him and what it cannot |
 
-**Re-derive replacement level, never quote it.** Best free QB fell 196 to 154 and TE 120 to 84 by
-2026-09-17, which flipped `dynasty-replacement-level` from always-sell-the-QB2 to a hold on its own
+**Re-derive replacement level, never quote it.** Best free QB fell 196 to 154 and TE 120 to 84 in
+one stretch, which flipped `dynasty-replacement-level` from always-sell-the-QB2 to a hold on its own
 10-point bar while its two-of-two gate still says sell:
 [notes/replacement-level-shift-2026-09-17.html](notes/replacement-level-shift-2026-09-17.html).
 
@@ -210,7 +218,7 @@ Full pipeline detail, and the evidence behind every trap below, is in
   `build_gibbs_fullppr.py`, then `site/data/_sources/build_gibbs_brief.py`. Skip the last and the
   rank column moves while the tier board lies. All three leagues are full PPR and he publishes
   half, so the full-PPR board is DERIVED and must never be presented as his.
-- Don't `git commit` unless explicitly asked; the user controls the commit log.
+- Commit your own finished work without asking. Stage only the files you changed (other sessions leave edits in this checkout), Trevor as sole author, then push the branch. Never force-push.
 
 ## House style for code
 
@@ -220,8 +228,8 @@ Full pipeline detail, and the evidence behind every trap below, is in
 - Backyard aesthetic: every surface is an outlined plate, nothing is flat, and
   SELECTION IS A GOLD FILL with ink text. Vertical gradients come from the six
   `--grad-*` tokens, never hand-written in a component. Hard shadow offsets,
-  zero blur. No em dashes, no SaaS purple. Replaced the old flat-by-default
-  tier-sheet standard on 2026-09-15; `site/DESIGN.md` is the standard and
+  zero blur. No em dashes, no SaaS purple.
+  `site/DESIGN.md` is the standard and
   `site/BACKYARD-INVENTORY.md` is the reference world behind it
 - Comments: short. Explain *why* something exists when the why isn't obvious.
   Don't comment what the code already says.

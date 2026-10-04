@@ -33,7 +33,7 @@ Match the execution shape to the task - **solo**, **subagents**, a **workflow**,
 
 - **Check for a skill before starting, not after getting stuck.** A skill costs instructions, not a spawn, so there is no cost argument for skipping one that fits. Design, review, writing, research, data, decisions, finance, security and docs are all covered. Unsure what exists? `scout-skills` (first token `mid` | `high` | `max`), and if it flags a real gap, install that skill as a complete local bundle rather than noting the gap and moving on.
 - **A verdict is not certified by whoever produced it.** Rankings, design choices, exploitability calls, "is this right", any number reaching a person: fresh lens, or be the reviewer only if you did not do the work.
-- **Breadth gets workers.** Three or more independent shards (files, sources, claims, candidates, or skills to import, each carrying its own proof and verification): one worker per shard, then deterministic code decides what survives. "More than a handful" used to be the trigger and it read as affirmative permission to stay solo on three: graded 2026-09-15 on skill-install-pass-also-retires-the-unrun, where three skills times gap-proof plus bundle fetch plus four-tree mirror plus lockfile hash is twelve real shards that the old wording gave no way to see.
+- **Breadth gets workers.** Three or more independent shards (files, sources, claims, candidates, or skills to import, each carrying its own proof and verification): one worker per shard, then deterministic code decides what survives. Count shards by the work, not the items: three skills to install is twelve shards once gap-proof, bundle fetch, four-tree mirror and lockfile hash each count.
 - **None of this licenses spawning for trivial work.** A one-file mechanical edit stays solo and self-inspected; the cost gate still applies and over-orchestration is its own failure. The line is judgement and breadth, not effort.
 
 **Here:** Fan out player and stat analysis; rank trade offers as a **tournament**, not by absolute score, and remember a dynasty trade is anchored by its biggest single asset (a pile of small pieces does not substitute even at equal KTC total). **Solo** for site edits -- it is vanilla JS with no build step.
@@ -46,6 +46,19 @@ A dynasty fantasy football tool for tdub1329 (Sleeper). It overlays curated tier
 the Dynasty Domain framework onto three live Sleeper rosters: *Password is taco* (10-team, 1QB),
 *The League* (superflex), *yuH* (IDP). KTC is the source of truth for player and pick value;
 analyst boards are season-production context beside it, never the value model.
+
+## Draft-order mental model (Trevor confirmed)
+
+- **The League:** lowest Max PF first. Record and actual PF do not establish pick
+  priority; eligible bench production can count in optimal weekly scoring.
+- **Password is taco:** bottom-four 40/30/20/10 lottery drawing all four slots.
+  Each eligible team can land 1.01 through 1.04. Entry and conditional draw
+  odds are separate; no guaranteed 1.01. Weight assignment, reweighting procedure and
+  later-round treatment remain unconfirmed.
+- Reprice origin-team outcomes after trades; compensation from improved draft
+  priority benefits only picks still owned. Current `originSlot` uses starter-strength
+  rank, not these rules. Treat pick-sensitive multi-year outputs as proxy-dependent.
+  Full policy: [docs/FRAMEWORKS.md](docs/FRAMEWORKS.md), league-specific draft order.
 
 ## Stack
 

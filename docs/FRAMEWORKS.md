@@ -18,13 +18,55 @@ dynasty rankings page (`https://keeptradecut.com/dynasty-rankings`).
   internal scale (top elite ≈ 75-80, average starter ≈ 30-50).
 - `pickIndex()` builds a `season|slot|round` lookup; format chosen per
   league (`is_superflex` ? SF : 1QB). Published Sleeper draft order supplies
-  exact slots; player-only roster projection fills unknown future slots.
+  exact finalized slots; current player-only roster projection supplies a proxy for
+  unknown future slots. It does not implement the confirmed rules below.
 - Fallback to `strategy.js::pick_values_1qb` only when KTC misses a bucket;
   a one-time `console.warn` fires when fallback triggers within the
   current+2-year window so we catch rollover drift.
 
 **Don't estimate values from memory.** Always look up `ktc.js` for the live
 number.
+
+### League-specific draft order (Trevor confirmed, 2026-09-30)
+
+**The League: lowest Max PF first.** Do not infer an early pick from a bad record,
+actual points for, or dynasty starter-value rank. Project cumulative Max PF using
+accrued potential points plus remaining weekly optimal scoring for each origin
+team, under that league's eligible-player and scoring-window rules. Bench players
+can contribute; benching a healthy player does not lower Max PF. Do not replace
+optimal legal weekly lineups with a sum of all roster points. Confirm eligible
+draft-order pool, ties, cutoff and IR/taxi treatment before reporting exact slots;
+do not assume Max PF overrides playoff-team order.
+
+**Password is taco: bottom four, 40% / 30% / 20% / 10% lottery drawing all four
+slots.** Each eligible origin team can land 1.01 through 1.04. Model entry into
+the bottom-four group separately from the draw conditional on entry. Confirm how
+bottom four and weight rank are determined, how weights change between draws,
+and how later rounds are ordered. Until then, carry conditional ranges.
+A 40% chance at 1.01 still means a 60% chance of missing it, if the stated weights
+are first-pick odds. Never call a bottom team's first a guaranteed 1.01. Price
+the slot distribution as `sum(P(slot) * KTC(slot))`, not value at the mean slot;
+derive that distribution only from confirmed draw mechanics. Preserve shared
+lottery outcomes when modeling multiple picks from the same draft.
+
+**Origin team and ownership are separate.** Recompute each origin team's draft
+outcomes after a proposed trade using its league's rule. Improvements to your
+draft priority benefit only picks you retain; acquired picks follow the team
+that originated them. In The League, buying scoring can worsen retained-pick
+priority as well as cost the asset paid; selling scoring can improve it. These
+effects occur only when optimal scoring and relative Max PF rank change. In taco,
+changes to eligibility or weight change a probability distribution, not a fixed
+slot. No own first means no own-first compensation for losing.
+
+**Simulator boundary.** Current `originSlotOrder` ranks `startingStrength` and
+does not model cumulative Max PF or the taco lottery. It is a proxy, not the
+confirmed mechanism. Published finalized draft order takes precedence for that
+draft only. Until rules are implemented, label pick shares, forward rookie
+conversion and multi-year trade equity as proxy-dependent. `SCALE=1.3` addresses
+pick conversion value, not slot mechanics. Do not require every scoring purchase
+to make its own pick strictly cheaper: under real rules, priority may stay fixed.
+Single-season title odds remain a separate calculation. See the correction in
+`notes/achane-injury-2026-09-29.md` for the immediate roster implications.
 
 ### Seasonal production context
 
@@ -199,8 +241,9 @@ shipped once already: a teardown was scored over 3 years, lost, and was reported
 remaining career. `productionRetention` is season POINTS. Value leads production by about a season,
 which is why the sell trigger fires while a player is still producing.
 
-**A pick's price is endogenous to the trade that moves it.** `pickValue` slots a pick by its
-origin team's projected finish, and the deal being priced is what changes that finish. Price
+**A pick's price is endogenous to the trade that moves it.** The current `pickValue` proxy slots
+a pick by origin-team strength; correct analysis uses the league-specific draft rule above.
+The deal being priced can change that outcome or distribution. Price
 a buyer's own picks at his pre-trade slot and you will tell him to keep the wrong ones.
 Measured 2026-09-12 on the JoeysYIDS + Deal A pair: pre-trade, roster 10 sat at slot 3 and his
 own 2027 2nd read 4,410 against 4,070 for the one he had acquired from a better team, so the
@@ -208,11 +251,13 @@ advice was to send the acquired pick. Adding five starting receivers moved him t
 it inverted, 4,000 against 4,150. Across the five picks he sent, pre-trade slotting overstated
 the bill by 1,660 KTC. `pv(season, round, rid, whatIf)` in `site/js/trade-sim.js` takes the
 what-if, `repriceUnder()` prints before against after, and `trade-sim.test.js` fails if a
-buyer's own pick does not get strictly cheaper once his trade lands.
+buyer's own pick does not get strictly cheaper once his trade lands. That is a historical
+proxy-specific test, not a universal invariant under Max PF or a lottery.
 
 **Cross-check the two numbers that reach the reader, not one of them four times.**
-`championshipOdds` was right the whole time, because `projectLeagueForward` already slots
-converted picks off the post-trade finish. The error lived only in a KTC ledger hand-built
+In that historical audit, the simulation was internally consistent with its strength proxy,
+because `projectLeagueForward` already slots converted picks off post-trade strength.
+That did not validate Max PF or lottery mechanics. The discrepancy lived in a KTC ledger hand-built
 beside it, and every verification pass tested the simulator. When a doc carries a model number
 and a hand number for the same thing, the check that matters is whether they agree.
 
