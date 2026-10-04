@@ -143,3 +143,21 @@ Follow-ups to logged results, labelled as such.
 | B7 | B2 plus A11 and A12 features (team offense, schedule strength, first-down share, explosive rate) on population B | context features may matter more across all exits than among draftees |
 
 Same folds and rules. A13's population B feature is rebuilt inside the run from the same store.
+
+## Addendum 4, 2026-10-04 (after the independent population B review, before any candidate below was scored)
+
+The population B review (`experiments/review-b-2026-10-04.md`) confirmed the B1/B2/B4 passes and
+found no leakage, but found a flaw in the pre-registered B2 spec: it feeds the QB-only features
+`comp_final` and `rush_ypg_best` to the RB/WR/TE models, where they exist for 5-22 rows and, median
+filled and standardized, reach |z| = 45 (Keenan Reynolds, a Navy QB in the RB group, predicted 1.000).
+Fixing a spec after seeing results makes these exploratory follow-ups, scored under the same rules.
+
+| ID | Candidate |
+|---|---|
+| B8 | B2 without `comp_final` and `rush_ypg_best` for RB/WR/TE (QB unchanged), C = 0.1 |
+| B9 | B8 with C picked per outer fold by inner leave-one-class-out (as B5) |
+
+The review also found three drafted FBS hits the name join misses (Ray Rice as "Raymell Rice",
+Beanie Wells as "Chris Wells", Stevie Johnson) and four drafted non-hits carried as undrafted. A
+join repair is a data-completeness change, measured separately (links found, accuracy on id-known
+picks) and applied to baseline and candidates alike, followed by a full re-run of every candidate.
