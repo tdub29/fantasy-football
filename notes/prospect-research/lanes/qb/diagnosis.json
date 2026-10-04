@@ -1,0 +1,486 @@
+{
+ "s3_first_eligible": {
+  "n": 220,
+  "events": 18,
+  "pred": 12.22,
+  "ratio": 0.679
+ },
+ "fe_by_zero_completed_starts": {
+  "False": {
+   "n": 162,
+   "events": 14,
+   "pred": 10.54,
+   "ratio": 0.753
+  },
+  "True": {
+   "n": 58,
+   "events": 4,
+   "pred": 1.67,
+   "ratio": 0.418
+  }
+ },
+ "all_by_zero_completed_starts": {
+  "False": {
+   "n": 716,
+   "events": 26,
+   "pred": 30.84,
+   "ratio": 1.186
+  },
+  "True": {
+   "n": 110,
+   "events": 5,
+   "pred": 2.57,
+   "ratio": 0.514
+  }
+ },
+ "fe_by_declared_after_season": {
+  "False": {
+   "n": 174,
+   "events": 9,
+   "pred": 7.71,
+   "ratio": 0.856
+  },
+  "True": {
+   "n": 46,
+   "events": 9,
+   "pred": 4.51,
+   "ratio": 0.501
+  }
+ },
+ "fe_by_era": {
+  "2012-2016": {
+   "n": 135,
+   "events": 6,
+   "pred": 5.98,
+   "ratio": 0.997
+  },
+  "2017-2021": {
+   "n": 85,
+   "events": 12,
+   "pred": 6.23,
+   "ratio": 0.519
+  }
+ },
+ "all_by_stage": {
+  "2": {
+   "n": 220,
+   "events": 18,
+   "pred": 12.22,
+   "ratio": 0.679
+  },
+  "3": {
+   "n": 304,
+   "events": 10,
+   "pred": 11.69,
+   "ratio": 1.169
+  },
+  "4": {
+   "n": 266,
+   "events": 3,
+   "pred": 8.83,
+   "ratio": 2.944
+  },
+  "5": {
+   "n": 32,
+   "events": 0,
+   "pred": 0.64,
+   "ratio": null
+  },
+  "6": {
+   "n": 4,
+   "events": 0,
+   "pred": 0.03,
+   "ratio": null
+  }
+ },
+ "fe_by_drafted": {
+  "0.0": {
+   "n": 162,
+   "events": 0,
+   "pred": 5.57,
+   "ratio": null
+  },
+  "1.0": {
+   "n": 58,
+   "events": 18,
+   "pred": 6.65,
+   "ratio": 0.369
+  }
+ },
+ "fe_hitters": [
+  {
+   "season": 2012,
+   "name": "Blake Bortles",
+   "p": 0.007,
+   "starts": 0.0,
+   "aya": 8.32,
+   "rush_ypg_best": 6.7,
+   "declared_after_season": false,
+   "zero_starts": true
+  },
+  {
+   "season": 2017,
+   "name": "Gardner Minshew II",
+   "p": 0.019,
+   "starts": 1.0,
+   "aya": 6.7,
+   "rush_ypg_best": 3.9,
+   "declared_after_season": false,
+   "zero_starts": false
+  },
+  {
+   "season": 2018,
+   "name": "Jordan Love",
+   "p": 0.02,
+   "starts": 1.0,
+   "aya": 6.81,
+   "rush_ypg_best": 18.0,
+   "declared_after_season": false,
+   "zero_starts": false
+  },
+  {
+   "season": 2017,
+   "name": "Kyler Murray",
+   "p": 0.036,
+   "starts": 0.0,
+   "aya": 4.03,
+   "rush_ypg_best": 46.6,
+   "declared_after_season": false,
+   "zero_starts": true
+  },
+  {
+   "season": 2016,
+   "name": "Mitchell Trubisky",
+   "p": 0.044,
+   "starts": 0.0,
+   "aya": null,
+   "rush_ypg_best": null,
+   "declared_after_season": true,
+   "zero_starts": true
+  },
+  {
+   "season": 2013,
+   "name": "Dak Prescott",
+   "p": 0.052,
+   "starts": 0.0,
+   "aya": null,
+   "rush_ypg_best": null,
+   "declared_after_season": false,
+   "zero_starts": true
+  },
+  {
+   "season": 2017,
+   "name": "Josh Allen",
+   "p": 0.058,
+   "starts": 1.0,
+   "aya": 8.15,
+   "rush_ypg_best": 52.1,
+   "declared_after_season": true,
+   "zero_starts": false
+  },
+  {
+   "season": 2017,
+   "name": "Daniel Jones",
+   "p": 0.073,
+   "starts": 1.0,
+   "aya": 6.29,
+   "rush_ypg_best": 54.2,
+   "declared_after_season": false,
+   "zero_starts": false
+  },
+  {
+   "season": 2015,
+   "name": "Jared Goff",
+   "p": 0.083,
+   "starts": 2.0,
+   "aya": 8.42,
+   "rush_ypg_best": 12.7,
+   "declared_after_season": true,
+   "zero_starts": false
+  },
+  {
+   "season": 2020,
+   "name": "Brock Purdy",
+   "p": 0.14,
+   "starts": 2.0,
+   "aya": 8.94,
+   "rush_ypg_best": 47.8,
+   "declared_after_season": false,
+   "zero_starts": false
+  },
+  {
+   "season": 2016,
+   "name": "Patrick Mahomes",
+   "p": 0.187,
+   "starts": 2.0,
+   "aya": 8.11,
+   "rush_ypg_best": 47.3,
+   "declared_after_season": true,
+   "zero_starts": false
+  },
+  {
+   "season": 2018,
+   "name": "Jalen Hurts",
+   "p": 0.19,
+   "starts": 2.0,
+   "aya": 8.88,
+   "rush_ypg_best": 73.0,
+   "declared_after_season": false,
+   "zero_starts": false
+  },
+  {
+   "season": 2018,
+   "name": "Justin Herbert",
+   "p": 0.264,
+   "starts": 2.0,
+   "aya": 9.76,
+   "rush_ypg_best": 34.1,
+   "declared_after_season": false,
+   "zero_starts": false
+  },
+  {
+   "season": 2019,
+   "name": "Tua Tagovailoa",
+   "p": 0.267,
+   "starts": 1.0,
+   "aya": 12.62,
+   "rush_ypg_best": 18.9,
+   "declared_after_season": true,
+   "zero_starts": false
+  },
+  {
+   "season": 2020,
+   "name": "Trevor Lawrence",
+   "p": 0.27,
+   "starts": 2.0,
+   "aya": 9.41,
+   "rush_ypg_best": 47.2,
+   "declared_after_season": true,
+   "zero_starts": false
+  },
+  {
+   "season": 2017,
+   "name": "Lamar Jackson",
+   "p": 0.278,
+   "starts": 2.0,
+   "aya": 9.35,
+   "rush_ypg_best": 145.4,
+   "declared_after_season": true,
+   "zero_starts": false
+  },
+  {
+   "season": 2020,
+   "name": "Justin Fields",
+   "p": 0.38,
+   "starts": 1.0,
+   "aya": 11.28,
+   "rush_ypg_best": 49.1,
+   "declared_after_season": true,
+   "zero_starts": false
+  },
+  {
+   "season": 2016,
+   "name": "Deshaun Watson",
+   "p": 0.387,
+   "starts": 1.0,
+   "aya": 8.84,
+   "rush_ypg_best": 83.2,
+   "declared_after_season": true,
+   "zero_starts": false
+  }
+ ],
+ "train_stage2_hit_rate": {
+  "plays_next": {
+   "False": {
+    "n": 87,
+    "hits": 0,
+    "rate": 0.0
+   },
+   "True": {
+    "n": 288,
+    "hits": 23,
+    "rate": 0.0799
+   }
+  }
+ },
+ "train_stage3plus_hit_rate": {
+  "False": {
+   "n": 757,
+   "hits": 32,
+   "rate": 0.0423
+  },
+  "True": {
+   "n": 750,
+   "hits": 24,
+   "rate": 0.032
+  }
+ },
+ "training_by_replay": {
+  "2012": {
+   "rows": 115,
+   "players": 50,
+   "hitters": 1,
+   "classes": "2008-2009"
+  },
+  "2013": {
+   "rows": 240,
+   "players": 102,
+   "hitters": 3,
+   "classes": "2008-2010"
+  },
+  "2014": {
+   "rows": 394,
+   "players": 164,
+   "hitters": 4,
+   "classes": "2008-2010"
+  },
+  "2015": {
+   "rows": 529,
+   "players": 215,
+   "hitters": 6,
+   "classes": "2008-2011"
+  },
+  "2016": {
+   "rows": 649,
+   "players": 263,
+   "hitters": 12,
+   "classes": "2008-2013"
+  },
+  "2017": {
+   "rows": 804,
+   "players": 322,
+   "hitters": 12,
+   "classes": "2008-2013"
+  },
+  "2018": {
+   "rows": 977,
+   "players": 389,
+   "hitters": 14,
+   "classes": "2008-2015"
+  },
+  "2019": {
+   "rows": 1098,
+   "players": 443,
+   "hitters": 14,
+   "classes": "2008-2015"
+  },
+  "2020": {
+   "rows": 1232,
+   "players": 499,
+   "hitters": 16,
+   "classes": "2008-2017"
+  },
+  "2021": {
+   "rows": 1394,
+   "players": 563,
+   "hitters": 19,
+   "classes": "2008-2018"
+  }
+ },
+ "qb_exit_hit_rate_by_class": {
+  "2008": {
+   "n": 49,
+   "hits": 1
+  },
+  "2009": {
+   "n": 52,
+   "hits": 2
+  },
+  "2010": {
+   "n": 63,
+   "hits": 1
+  },
+  "2011": {
+   "n": 51,
+   "hits": 2
+  },
+  "2012": {
+   "n": 47,
+   "hits": 6
+  },
+  "2013": {
+   "n": 60,
+   "hits": 0
+  },
+  "2014": {
+   "n": 65,
+   "hits": 2
+  },
+  "2015": {
+   "n": 56,
+   "hits": 0
+  },
+  "2016": {
+   "n": 54,
+   "hits": 2
+  },
+  "2017": {
+   "n": 65,
+   "hits": 3
+  },
+  "2018": {
+   "n": 61,
+   "hits": 2
+  },
+  "2019": {
+   "n": 57,
+   "hits": 3
+  },
+  "2020": {
+   "n": 57,
+   "hits": 5
+  },
+  "2021": {
+   "n": 27,
+   "hits": 2
+  },
+  "2022": {
+   "n": 52,
+   "hits": 1
+  },
+  "2023": {
+   "n": 1,
+   "hits": 0
+  }
+ },
+ "fe_tail_prob_if_calibrated": {
+  "expected": 12.22,
+  "observed": 18,
+  "p_ge_observed": 0.05560388890637249
+ },
+ "power_check_S3_forecasts": {
+  "all_ratio": 0.6965,
+  "all_slope": 0.7535,
+  "first_eligible_ratio": 0.651,
+  "first_eligible_slope": 0.6085,
+  "top60_ratio": 0.665,
+  "top60_slope": 0.6945,
+  "every_gate": 0.2375,
+  "interval_90": {
+   "all_ratio": [
+    0.726,
+    1.518
+   ],
+   "all_slope": [
+    0.676,
+    1.381
+   ],
+   "first_eligible_ratio": [
+    0.679,
+    1.745
+   ],
+   "first_eligible_slope": [
+    0.576,
+    1.61
+   ],
+   "top60_ratio": [
+    0.727,
+    1.488
+   ],
+   "top60_slope": [
+    0.628,
+    1.426
+   ]
+  }
+ }
+}
