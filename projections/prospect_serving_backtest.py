@@ -66,7 +66,11 @@ def run_stage(spec: dict, say=print):
             tr = snap[(snap.cpos == pos) & snap.hit.notna() & (snap.outcome_year <= season - snap.win) & (snap.season <= season - 1)]
             if cid == "S2":
                 tr = tr[(tr.stage >= 2) & tr.plays_next]
-            model = bpm.make_lr(bpm.C_FIXED).fit(tr[cols].to_numpy(float), tr.hit.to_numpy(float))
+            if cid == "S3":   # addendum 11: C by inner leave-one-class-out on this replay's training rows
+                import prospect_experiments_b as peb
+                model = peb.NestedLR().fit(tr[cols].to_numpy(float), tr.hit.to_numpy(float), tr.draft_year.to_numpy(int))
+            else:
+                model = bpm.make_lr(bpm.C_FIXED).fit(tr[cols].to_numpy(float), tr.hit.to_numpy(float))
             base = bpm.make_lr(bpm.C_FIXED).fit(tr[["stars", "stage"]].to_numpy(float), tr.hit.to_numpy(float))
             cur = ps[ps.season == season].player_id.unique()
             subj = e[(e.cpos == pos) & e.player_id.isin(cur)][["player_id", "hs_class", "weight", "stars"]].copy()

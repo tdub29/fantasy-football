@@ -142,7 +142,9 @@ STAGE: set[str] = set()
 # the serving backtest (prospect_serving_backtest.py) and an independent review.
 # WR only (2026-10-04): RB passed the serving backtest pooled but failed display rule D1 (top 60 by
 # forecast: slope 0.74 against the 0.75 floor), addendum 10; WR passed both (review E + addendum 10).
-NEXT_STAGE: set[str] = {"WR"}
+# Position -> served variant: S1 = fixed C 0.1, S3 = C picked by inner leave-one-class-out (addendum 11).
+NEXT_MODEL: dict[str, str] = {"WR": "S1"}
+NEXT_STAGE: set[str] = set(NEXT_MODEL)
 # Positions where the charter v2 candidate A10 ships: a fixed 50/50 average of the draft-only and
 # talent + capital logits. Listed only after it passed the charter's five numeric rules on identical
 # folds AND an independent review (notes/prospect-research/experiments/A10.json). The v1 three-run
@@ -960,12 +962,18 @@ def fit_stage(ps, bio, d, t, age0) -> dict:
         tp = snap[(snap.cpos == pos) & snap.hit.notna()]
         X, y = tp[r["cols"]].to_numpy(float), tp.hit.to_numpy(float)
         fy = r["young_stage_1_2"]["fwd"]
-        out[pos] = {"cols": r["cols"], "model": make_lr(C_FIXED).fit(X, y), "meta": {
-            "model": "B14", "rows": int(len(tp)), "players": int(tp.base_sid.nunique()),
+        kind = NEXT_MODEL.get(pos, "S1")
+        if kind == "S3":
+            import prospect_experiments_b as peb
+            model = peb.NestedLR().fit(X, y, tp.draft_year.to_numpy(int))
+        else:
+            model = make_lr(C_FIXED).fit(X, y)
+        out[pos] = {"cols": r["cols"], "model": model, "meta": {
+            "model": kind, "rows": int(len(tp)), "players": int(tp.base_sid.nunique()),
             "logloss": round(r["fwd"]["cand"]["logloss"], 4), "base_logloss": round(r["fwd"]["base"]["logloss"], 4),
             "young_logloss": round(fy["cand"]["logloss"], 4), "young_base_logloss": round(fy["base"]["logloss"], 4),
             "later": pos in STAGE, "next": pos in NEXT_STAGE}}
-        b = sbt.get(f"S1 {pos}")
+        b = sbt.get(f"{kind} {pos}")
         if b and pos in NEXT_STAGE:
             v = b["vs_stars_stage"]
             # strings: the payload rounds floats to 2 places, which would show 0.066 vs 0.080 as 0.07 vs 0.08
