@@ -1151,13 +1151,17 @@ def score_college(ps, bio, final, age0, top_n=60):
     return rows
 
 
-def predraft_profile(subj, ps, age0) -> pd.DataFrame:
+def predraft_profile(subj, ps, age0, season=SEASON) -> pd.DataFrame:
     """Each current player's college profile through his last COMPLETED season, the shape the
     population B models were trained on (finished careers). Scoring from the live season instead
-    made the number jump when a player crossed six games with no new production (review C)."""
-    c = subj[["sid", "player_id", "pos", "hs_class", "dob"]].assign(cutoff=SEASON - 1, draft_year=SEASON + 1, dob=pd.NaT)
+    made the number jump when a player crossed six games with no new production (review C).
+    `cur_start`: he is the passer of record in the current season (`season`), so far.
+    `season` is a parameter only so the serving backtest can replay past seasons."""
+    c = subj[["sid", "player_id", "pos", "hs_class", "dob"]].assign(cutoff=season - 1, draft_year=season + 1, dob=pd.NaT)
     f = career_features(c, ps, age0).set_index("sid")
     f = f.join(context_features(c.merge(f[["season_final"]], left_on="sid", right_index=True), ps))
+    now = ps[ps.season == season].set_index("player_id").started
+    f["cur_start"] = c.set_index("sid").player_id.map(now).fillna(False).astype(float)
     return f.join(subj.set_index("sid")[["weight", "stars", "hs_class"]])
 
 
@@ -1177,28 +1181,33 @@ def stage_score(s, done, m, age0) -> pd.DataFrame:
     return s
 
 
-def predraft_score(s, done, pre, age0) -> pd.DataFrame:
+def predraft_score(s, done, pre, age0, season=SEASON) -> pd.DataFrame:
     """Pre-draft hit chance for the next draft class only (review C: for freshmen and sophomores the
     frozen-production scenario ran 2.5x too low on a 2014-2017 backtest; for the next class it was
     calibrated). The current season counts as one more season played, qualifying, at his completed
     seasons' production; he is scored leaving after it and, for a junior, after one more year; the
-    lower ships and `pdx` says which draft that is."""
+    lower ships and `pdx` says which draft that is. A QB model (it uses `starts`) also counts the
+    remaining seasons as starts for a player starting now, and gives no number to a QB with no
+    completed start, who sits outside its training data (review D, addendum 8)."""
     s = s.copy()
-    nxt = s.cls.eq(SEASON + 1) & s.sid.isin(done.index)
+    nxt = s.cls.eq(season + 1) & s.sid.isin(done.index)
     if not nxt.any():
         return s
     base = done.loc[s.sid[nxt]].reset_index()
     best_p, best_x = None, None
     for years in (3, 4):
         v = base.copy()
-        v["draft_year"] = np.maximum(SEASON + 1, v.hs_class + years)
-        extra = v.draft_year - SEASON
+        v["draft_year"] = np.maximum(season + 1, v.hs_class + years)
+        extra = v.draft_year - season
         v["n_seasons"] = v.n_seasons + extra
         v["n_qual"] = v.n_qual + extra
         v["early"] = (v.n_seasons <= 3).astype(float)
         v["draft_age"] = age0 + v.draft_year - v.hs_class - 0.35
-        p = pre["model"].predict_proba(v[pre["cols"]].to_numpy(float))[:, 1]
         ok = v.n_qual.notna().to_numpy() & (v.n_qual - extra >= 1).to_numpy()   # a completed qualifying season
+        if "starts" in pre["cols"]:
+            ok &= (v.starts.fillna(0) >= 1).to_numpy()
+            v["starts"] = v.starts + extra * v.cur_start
+        p = pre["model"].predict_proba(v[pre["cols"]].to_numpy(float))[:, 1]
         p = np.where(ok, p, np.nan)
         if best_p is None:
             best_p, best_x = p, v.draft_year.to_numpy(float)
