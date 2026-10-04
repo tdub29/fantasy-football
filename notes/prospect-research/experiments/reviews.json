@@ -143,6 +143,30 @@
   "S5n4 WR": {
    "verdict": "rejected by review I: replacement win is Monte Carlo noise (72% of seeds clear 90%), carried by 3 first-eligible hits, first-eligible slope support 64% vs S3 91%; S3 stays",
    "by": "review-i-2026-10-04.md"
+  },
+  "Q3 QB": {
+   "verdict": "rejected by the coordinator without promotion review: on the served population (QBs with a completed start) its all-rows ratio is 1.28, a fail; joint gate support 14%; beats stars plus year in 93%, under addendum 15's 95%; same family as S6 (level recalibration), not independent",
+   "by": "lanes/qb/results.md"
+  },
+  "Q1 QB": {
+   "verdict": "fails (all 1.31/0.69, first-eligible 0.77/0.74)",
+   "by": "lanes/qb/results.md"
+  },
+  "Q2 QB": {
+   "verdict": "fails (all 1.29/0.73, top-60 slope 0.57)",
+   "by": "lanes/qb/results.md"
+  },
+  "T1 TE": {
+   "verdict": "fails the all-rows and top-60 ratio (all 1.35/0.86)",
+   "by": "lanes/te/results.md"
+  },
+  "T2 TE": {
+   "verdict": "fails the all-rows and top-60 ratio (all 1.38/0.94)",
+   "by": "lanes/te/results.md"
+  },
+  "T3 TE": {
+   "verdict": "fails the all-rows and top-60 ratio (all 1.41/0.90)",
+   "by": "lanes/te/results.md"
   }
  }
 }

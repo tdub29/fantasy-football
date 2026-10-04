@@ -113,9 +113,13 @@ said plainly that most of the AUC gain is separating who gets drafted (among dra
   replay window (would move a fold after seeing results) and a NestedLR guard for replays whose only
   scorable inner class has no hit (C = 3 at the 2012 replay); the guard needs a re-score of every
   shipped model before adoption.
-- QB lane (interrupted by the limit, resumed): Q3 (nested recalibration-in-the-large of S3) passes
-  every gate, FRAGILE (first-eligible ratio 0.82, joint support 14%, beats stars plus year in 93%);
-  Q1 and Q2 fail. results.md pending.
+- QB lane (closed, fecad5d): Q1 (live passing line) and Q2 (NFL-year hazard) fail. Q3 (recalibration-
+  in-the-large of S3) passes every gate on the replay but is REJECTED: on the population the board
+  actually numbers (QBs with a completed start) its all-rows ratio is 1.28; joint support 14%; 93% vs
+  stars plus year misses addendum 15's 95%; it is the S6 mechanism, not independent evidence. With 31
+  events a calibrated-by-construction model passes all six gates only 24-32% of the time: QB needs the
+  prospective holdout. Replay caveats for any future QB work: served-population mismatch (starts) and
+  open windows dropping 62 of 88 late first-eligible rows.
 - Young lane (interrupted): YL1 at RB (sophomore-only stage model on served-shaped rows) passes every
   later-class gate, FRAGILE (67% and 53% support; D1L slope 1.26 without the last replay). Every other
   cell fails; QB and TE later classes have under 15 events and cannot be validated. To review K.
