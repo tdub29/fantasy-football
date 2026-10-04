@@ -390,12 +390,18 @@ def name_key(s) -> str:
     return "".join(toks)
 
 
-def link_college(draft: pd.DataFrame, espn_ids: pd.Series, ps: pd.DataFrame) -> pd.Series:
+def link_college(draft: pd.DataFrame, espn_ids: pd.Series, ps: pd.DataFrame, methods: dict | None = None) -> pd.Series:
     """College player_id per draft row. ESPN kept the college id into the NFL only from about
     the 2017 class on, so older classes fall back to name + final college season + school.
     An id whose college seasons run into his draft year is someone else (Taylor Price, 2010,
     carried the id of a 2015 Fresno State player) and falls back too. The name side matches any
-    name the id was listed under (ESPN has Robert Griffin III as "Griffin III" in 2010-11)."""
+    name the id was listed under (ESPN has Robert Griffin III as "Griffin III" in 2010-11).
+
+    One fallback runs only for a pick nothing above linked (2026-10-04): a first name that is a prefix
+    of the other (Ray Rice was "Raymell Rice") with the same surname, final season and school. A second
+    one, the exact name at any school when one id fits the window, was tried and dropped: it found
+    Dorial Green-Beckham but tied FCS players to FBS namesakes (Josh Johnson, San Diego, to Iowa State's;
+    Isaiah Davis, South Dakota State, to UTSA's). `methods`, if given, gets each link's rule."""
     last = ps.sort_values("season").groupby("player_id").agg(last_season=("season", "max"),
                                                              team=("pos_team", "last"), name=("name", "last"))
     last["_k"] = last.name.map(name_key)
@@ -405,9 +411,13 @@ def link_college(draft: pd.DataFrame, espn_ids: pd.Series, ps: pd.DataFrame) -> 
     names = ps[["player_id", "name"]].dropna().drop_duplicates()
     ids_by_name = names.assign(_k=names.name.map(name_key)).groupby("_k")["player_id"].agg(lambda s: sorted(set(s)))
     out = {}
+    methods = {} if methods is None else methods
+    by_last = names.assign(_t=names.name.map(_name_tokens)).dropna(subset=["_t"])
+    by_last = by_last.assign(_l=by_last._t.str[-1], _f=by_last._t.str[0])
     for i, row in draft.iterrows():
         if pd.notna(direct.get(i)):
             out[i] = int(direct[i])
+            methods[i] = "espn_id"
             continue
         key = name_key(row["pfr_player_name"])
         ids = ids_by_name.get(key)
@@ -423,7 +433,28 @@ def link_college(draft: pd.DataFrame, espn_ids: pd.Series, ps: pd.DataFrame) -> 
             c = c[c._k == key]
         if len(c) == 1:
             out[i] = int(c.index[0])
+            methods[i] = "name_school"
+    for i, row in draft.iterrows():
+        if i in out:
+            continue
+        win = lambda ids: last.loc[[x for x in ids if x in last.index]].query("last_season >= @lo and last_season <= @hi",
+                                                                               local_dict={"lo": row["season"] - 2, "hi": row["season"] - 1})
+        t = _name_tokens(row["pfr_player_name"])
+        if t:
+            cand = by_last[(by_last._l == t[-1]) & by_last._f.map(lambda f: f != t[0] and len(min(f, t[0], key=len)) >= 3
+                                                                      and (f.startswith(t[0]) or t[0].startswith(f)))]
+            c = win(sorted(set(cand.player_id)))
+            c = c[[school_sim(row["college"], tm) >= 0.5 for tm in c.team]]
+            if len(c) == 1 and int(c.index[0]) not in out.values():
+                out[i] = int(c.index[0])
+                methods[i] = "name_prefix"
     return pd.Series(out, dtype="Int64")
+
+
+def _name_tokens(s):
+    s = "" if s is None or (isinstance(s, float) and math.isnan(s)) else str(s)
+    toks = [t for t in s.lower().replace(".", "").replace("'", "").replace("-", " ").split() if t not in bpp.SUFFIXES]
+    return toks if len(toks) >= 2 else None
 
 
 def school_key(s) -> str:
@@ -685,11 +716,18 @@ def prepare(say=print):
     d = draft[(draft.season >= FIRST_CLASS) & draft.position.isin(POS) & draft.pick.notna()].copy()
     d = d.merge(players[["gsis_id", "espn_id", "birth_date"]], on="gsis_id", how="left")
     d.index = range(len(d))
-    d["player_id"] = link_college(d, d.espn_id, ps)
+    lm = {}
+    d["player_id"] = link_college(d, d.espn_id, ps, lm)
+    d["link_method"] = pd.Series(lm).reindex(d.index).fillna("none")
     # The name fallback is graded against the espn id join on the classes where both work.
     both = d[pd.to_numeric(d.espn_id, errors="coerce").isin(set(ps.player_id.dropna().astype(int)))]
-    chk = link_college(both.assign(espn_id=np.nan), pd.Series(np.nan, index=both.index), ps)
+    cm = {}
+    chk = link_college(both.assign(espn_id=np.nan), pd.Series(np.nan, index=both.index), ps, cm)
     agree = (chk.reindex(both.index) == pd.to_numeric(both.espn_id, errors="coerce").astype("Int64"))
+    for meth in ("name_prefix",):
+        k = [i for i, v in cm.items() if v == meth]
+        say(f"  fallback {meth}: {len(k)} id-known picks linked, {agree.reindex(k).sum()} correct; "
+            f"{(d.link_method == meth).sum()} picks linked this way in the full table")
     say(f"join: {d.player_id.notna().mean():.1%} of {len(d)} drafted QB/RB/WR/TE {FIRST_CLASS}+ linked to college; "
         f"name fallback on {len(both)} id-known rows: {chk.notna().mean():.1%} found, "
         f"{agree.sum() / max(chk.notna().sum(), 1):.1%} of those correct")
@@ -865,7 +903,7 @@ def fit_predraft(ps, bio, d, t, age0) -> dict:
         r = rec["results"][pos]
         tp = e[(e.cpos == pos) & e.hit.notna()]
         X, y = tp[r["cols"]].to_numpy(float), tp.hit.to_numpy(float)
-        m = (peb.NestedLR().fit(X, y, tp.draft_year.to_numpy(int)) if cid == "B5" else make_lr(C_FIXED).fit(X, y))
+        m = (peb.NestedLR().fit(X, y, tp.draft_year.to_numpy(int)) if cid in ("B5", "B9") else make_lr(C_FIXED).fit(X, y))
         fw = r["fwd"]
         out[pos] = {"cols": r["cols"], "model": m, "meta": {
             "model": cid, "n": int(len(tp)), "hits": int(y.sum()), "base_rate": round(float(y.mean()), 4),
@@ -1318,11 +1356,19 @@ def self_check():
                         "pos_team": ["Michigan State", "Rice", "Oregon", "Iowa"]})
     dr = pd.DataFrame({"pfr_player_name": ["Joe Smith", "Ann Lee", "Bo Diddley", "Zed Q"], "season": [2016] * 4,
                        "college": ["Michigan St.", "Oregon", "Texas", "Iowa"]})
-    got = link_college(dr, pd.Series([np.nan, "12", np.nan, np.nan]), ps2)
-    assert got.get(0) == 10, "name + school picks the right Joe Smith"
-    assert got.get(1) == 12, "espn id wins"
-    assert 2 not in got.index, "a school mismatch is left unlinked, not guessed"
+    lm = {}
+    got = link_college(dr, pd.Series([np.nan, "12", np.nan, np.nan]), ps2, lm)
+    assert got.get(0) == 10 and lm[0] == "name_school", "name + school picks the right Joe Smith"
+    assert got.get(1) == 12 and lm[1] == "espn_id", "espn id wins"
+    assert 2 not in got.index, "a school mismatch is left unlinked, not guessed (FCS players have FBS namesakes)"
     assert 3 not in got.index
+    # first-name prefix with the same surname, season window and school: Ray Rice was Raymell Rice.
+    ps2c = pd.DataFrame({"player_id": pd.array([30], dtype="Int64"), "season": [2007], "name": ["Raymell Rice"],
+                         "pos_team": ["Rutgers"]})
+    lm = {}
+    got = link_college(pd.DataFrame({"pfr_player_name": ["Ray Rice"], "season": [2008], "college": ["Rutgers"]}),
+                       pd.Series([np.nan]), ps2c, lm)
+    assert got.get(0) == 30 and lm[0] == "name_prefix"
     # school aliases, nicknames, an id listed under two names, and a direct id that is someone else.
     ps3 = pd.DataFrame({"player_id": pd.array([20, 30, 31, 40, 41, 50, 50, 60, 60, 61], dtype="Int64"),
                         "season": [2010, 2007, 2007, 2015, 2009, 2009, 2011, 2005, 2006, 2007],

@@ -1,0 +1,14 @@
+{
+ "note": "Rule 6 (independent review) outcomes. The ledgers print these over the numeric verdict. Key: '<id> <pos>'. Only reviewed results appear; anything else stays 'pending independent review'.",
+ "reviews": {
+  "A10 RB": {"verdict": "reject", "by": "review-a10-2026-10-04.md", "reason": "selection leakage of the v1 feature set; two classes carry the gain"},
+  "B1 RB": {"verdict": "confirmed", "by": "review-b-2026-10-04.md"},
+  "B1 WR": {"verdict": "confirmed", "by": "review-b-2026-10-04.md"},
+  "B2 RB": {"verdict": "confirmed, spec flaw (QB-only features)", "by": "review-b-2026-10-04.md"},
+  "B2 WR": {"verdict": "confirmed, spec flaw (QB-only features)", "by": "review-b-2026-10-04.md"},
+  "B2 TE": {"verdict": "confirmed, spec flaw (QB-only features)", "by": "review-b-2026-10-04.md"},
+  "B4 RB": {"verdict": "confirmed (post-combine phase), spec flaw", "by": "review-b-2026-10-04.md"},
+  "B4 WR": {"verdict": "confirmed (post-combine phase), spec flaw", "by": "review-b-2026-10-04.md"},
+  "B4 TE": {"verdict": "confirmed (post-combine phase), spec flaw", "by": "review-b-2026-10-04.md"}
+ }
+}
