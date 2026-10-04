@@ -240,3 +240,12 @@ Review E confirmed the S1 model at RB and WR but found that the board lists only
 pre-draft chance (Talent stays a column). Gate, from `run_stage` on the replayed seasons, using
 each season's top 60 by S1: calibration slope 0.75-1.25 and mean ratio 0.8-1.25, pooled. Also
 reported, not gating: the 2017-2021 replays alone, and unique players and hits next to player-seasons.
+
+## Addendum 11, 2026-10-04 (before S3 was scored)
+
+S1 failed at RB (D1 slope 0.74, over-confident at the top), TE (first-eligible ratio 0.77) and QB
+(first-eligible ratio 0.70). **S3** = S1 with C picked per replayed season by inner
+leave-one-class-out on that replay's training snapshots, from {0.03, 0.1, 0.3, 1, 3}; everything else
+as S1. Same gates: the addendum 8 serving backtest (overall and first-eligible) AND display rule D1,
+then an independent review. Exploratory follow-up; WR is scored too but its shipped S1 stays unless
+S3 passes every gate with lower served log loss.
