@@ -1,0 +1,35 @@
+{
+  "lane": "data",
+  "date": "2026-10-04",
+  "gaps": {
+    "fcs_stats": {
+      "disposition": "usable",
+      "scope": "FBS + FCS, seasons 2013-2026; D2/D3/NAIA unavailable",
+      "source": "sportsdataverse-data releases ncaa_mfb_pbp_cfbfastr, ncaa_mfb_rosters, ncaa_mfb_teams (stats.ncaa.org)",
+      "licence": "repo MIT; NCAA.org Terms of Service govern the statistics: personal non-commercial use, no public republication, no scraping of NCAA sites",
+      "outside_b_2008_2023": {"fcs": {"players": 163, "drafted": 70, "undrafted": 93, "hits": 10},
+                              "lower_division_other": {"players": 121, "drafted": 17, "hits": 4},
+                              "fbs_join_misses": {"players": 90, "drafted": 21, "hits": 3}},
+      "fcs_covered_2014_2023": {"players": 109, "hits": 8, "joined_roster": 103, "joined_final_line": 95,
+                                "joined_drafted": 37, "joined_hits": 8},
+      "fcs_exits_by_class": {"2014": 392, "2015": 558, "2016": 544, "2017": 630, "2018": 563, "2019": 614,
+                             "2020": 703, "2021": 293, "2022": 700, "2023": 765, "2024": 766, "2025": 863, "2026": 968},
+      "line_quality_vs_ncaa_box_2020_2025_median": {"fbs_rush_yds_within5": 0.86, "fcs_rush_yds_within5": 0.84,
+                                                    "fbs_rec_yds_within5": 0.89, "fcs_rec_yds_within5": 0.84,
+                                                    "fbs_pass_yds_within5": 0.80, "fcs_pass_yds_within5": 0.79,
+                                                    "median_ratio": 1.0},
+      "shift_vs_store_espn_fbs_2013_2019": {"rec_yds_median_ratio": 1.021, "rush_yds_median_ratio": 1.050,
+                                            "rec_within5": 0.43, "rush_within5": 0.37},
+      "scripts": ["projections/lanes/data/fetch_ncaa_mfb.py", "projections/lanes/data/ncaa_pbp_stats.py",
+                  "projections/lanes/data/nfl_outside_b.py", "projections/lanes/data/fcs_measure.py",
+                  "projections/lanes/data/ncaa_validate.py", "projections/lanes/data/ncaa_vs_espn.py"]
+    },
+    "college_dob": {"disposition": "in progress",
+                    "wikidata": {"licence": "CC0", "p7262_espn_cfb_items": 119, "p3697_items": 5230, "p3697_with_dob": 3805,
+                                 "born_1985_2006": 2586, "born_1985_2006_without_pfr_id": 573,
+                                 "pop_b_never_nfl_2008_2026": 7337, "max_never_nfl_coverage": 0.078}},
+    "pro_day_after_2019": {"disposition": "in progress"},
+    "predraft_rank": {"disposition": "in progress"},
+    "injury_transfer_redshirt": {"disposition": "in progress"}
+  }
+}
