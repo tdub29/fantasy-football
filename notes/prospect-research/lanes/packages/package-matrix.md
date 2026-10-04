@@ -198,8 +198,12 @@ games a season); this adds games involving FCS teams. 2016: 790 games, all with 
   lane measured 2-5% below box-score totals; these FCS lines are box-score totals. Scoring FCS rows
   next to FBS rows needs FBS lines rebuilt from `cfb_player_box` (already in the store) or the shift
   modeled, the same caveat the data lane raised for stats.ncaa.org.
-- Pull for 2004-2006, 2008-2009, 2011-2012 running; 2013-2026 not pulled (stats.ncaa.org covers
-  them by name; ESPN would add ids and one source family).
+- **Every season before stats.ncaa.org** (2004-2012 pulled: 740-822 games a season, every one with a
+  player box score; no duplicate game ids). For the data lane's 54 FCS NFL players of the 2008-2013
+  classes, the ones its route must leave outside B: ESPN has a college id for 47 and a final-season
+  line by that id for 38 (70%), including both hits (Hightower 2008, Julius Thomas 2011). By class:
+  2008 7 of 9, 2009 6 of 11, 2010 9 of 10, 2011 6 of 8, 2012 6 of 10, 2013 4 of 6.
+- 2013-2025 pulling (one source family for every FCS season if the coordinator wants it).
 
 ## Integration recommendations (for the coordinator; nothing applied to shared code)
 
