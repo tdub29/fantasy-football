@@ -42,7 +42,10 @@ BUCKETS = ["R1", "R2", "R3", "D3", "UD"]
 CANDIDATES = {"B1": "v1 talent features refit on every exiting player (no athleticism)",
               "B2": "union of v1 college features plus dominator and seasons",
               "B3": "two-stage: predicted draft bucket times training hit rate per bucket",
-              "B4": "post-combine phase: B2 plus combine invite and measured forty, weight, speed score"}
+              "B4": "post-combine phase: B2 plus combine invite and measured forty, weight, speed score",
+              "B5": "B2 with C picked per outer fold by inner leave-one-class-out (addendum 2)",
+              "B6": "B2 plus a stars-missing indicator (addendum 2)"}
+C_GRID = (0.03, 0.1, 0.3, 1.0, 3.0)
 
 
 def b1_cols(pos):
@@ -85,6 +88,31 @@ def lr(cols):
     return fit
 
 
+class NestedLR:
+    """B5: C chosen by leave-one-class-out inside the training classes only, then refit on all of them."""
+    chosen: list = []
+
+    def fit(self, X, y, g):
+        best, best_ll = None, np.inf
+        for c in C_GRID:
+            p = np.full(len(y), np.nan)
+            for k in np.unique(g):
+                te = g == k
+                if y[~te].sum() < 3:
+                    continue
+                p[te] = bpm.make_lr(c).fit(X[~te], y[~te]).predict_proba(X[te])[:, 1]
+            m = ~np.isnan(p)
+            v = bpm.ll(y[m], p[m])
+            if v < best_ll:
+                best, best_ll = c, v
+        NestedLR.chosen.append(best)
+        self.m = bpm.make_lr(best).fit(X, y)
+        return self
+
+    def predict_proba(self, X):
+        return self.m.predict_proba(X)
+
+
 class Rate:
     def fit(self, X, y):
         self.p = float(np.mean(y))
@@ -117,7 +145,7 @@ class TwoStage:
         return np.column_stack([1 - p, p])
 
 
-def predictor(tp, X, fit, win, bucket=None):
+def predictor(tp, X, fit, win, bucket=None, nested=False):
     y = tp.hit.to_numpy(float)
     g = tp.draft_year.to_numpy(int)
     mature = tp.hit.notna().to_numpy()
@@ -125,7 +153,10 @@ def predictor(tp, X, fit, win, bucket=None):
     def predict(scheme, c, te):
         tr = mature & pe.fold_mask(g, scheme, c, win)
         assert not (tr & te).any()
-        m = fit(X[tr], y[tr]) if bucket is None else TwoStage().fit(X[tr], y[tr], bucket[tr])
+        if nested:
+            m = NestedLR().fit(X[tr], y[tr], g[tr])
+        else:
+            m = fit(X[tr], y[tr]) if bucket is None else TwoStage().fit(X[tr], y[tr], bucket[tr])
         return m.predict_proba(X[te])[:, 1]
     return predict
 
@@ -138,6 +169,7 @@ def run(ids, say=print):
     e = pp.build(ps, bio, d, t, age0, con, say=say)
     e = e[e.draft_year >= FIRST].reset_index(drop=True)
     e = e.join(combine_join(e, d, con).reset_index(drop=True))
+    e["stars_missing"] = e.stars.isna().astype(float)
     say(f"combine: {e.invited.mean():.1%} of population B invited; drafted {e[e.drafted == 1].invited.mean():.1%}, "
         f"undrafted {e[e.drafted == 0].invited.mean():.1%}")
     stamp = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
@@ -158,10 +190,13 @@ def run(ids, say=print):
         say(f"{pos}: n={int(mature.sum())} hits={int(tp.hit.sum())} baseline {bkey} fwd {bl[bkey]:.4f} "
             f"(rate {bl['B0r']:.4f}, stars {bl['B0s']:.4f})")
         for cid in ids:
-            cols = {"B1": b1_cols(pos), "B2": B2, "B3": B2, "B4": B4}[cid]
+            cols = {"B1": b1_cols(pos), "B2": B2, "B3": B2, "B4": B4, "B5": B2, "B6": B2 + ["stars_missing"]}[cid]
             X = tp[cols].to_numpy(float)
+            NestedLR.chosen = []
             if cid == "B3":
                 pr = predictor(tp, X, None, win, bucket=tp.bucket.to_numpy())
+            elif cid == "B5":
+                pr = predictor(tp, X, None, win, nested=True)
             else:
                 pr = predictor(tp, X, lr(cols), win)
             pc = {s: pe.oof(tp, pr, s) for s in ("fwd", "loco")}
@@ -171,6 +206,8 @@ def run(ids, say=print):
                    "baseline_fwd_logloss": bl}
             if cid == "B3":
                 res["bucket"] = bucket_quality(tp, X, win)
+            if cid == "B5":
+                res["chosen_C"] = list(NestedLR.chosen)
             results.setdefault(cid, {})[pos] = res
             say(f"  {cid} {pos}: fwd {fwd['base']['logloss']:.4f} -> {fwd['cand']['logloss']:.4f} (boot {fwd['boot']['p']:.0%}, "
                 f"slope {fwd['cand']['slope']:.2f}, AUC {fwd['base']['auc']:.3f} -> {fwd['cand']['auc']:.3f}, 2020+ "

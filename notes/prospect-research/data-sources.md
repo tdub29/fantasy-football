@@ -115,3 +115,28 @@ median age on Sept 1 of that first season among drafted players from 2012 on who
 date; on those same 1,115 players the estimated draft age misses the real one with a 1.24-year SD.
 Since 2026-09-28 the model trains on this same estimate for drafted players too, so training and
 scoring see the same ages; a real birth date only sets the 18.71 and grades the estimate.
+
+## The SQLite store and what changed on 2026-10-03
+
+Every source above now loads into `projections/prospect-db/prospect.sqlite` (gitignored) through
+`python projections/prospect_db.py ingest`, one raw table per source family with the file's sha256
+and licence, and the model builders read from it. `build_prospect_model.py --parity` proves the store
+and the parquet files hand the builder identical inputs. Added sources (charter v2 addendum 1):
+`cfb_ratings` (season team ratings), `cfb_team_opponent_splits` (per-game opponents) and
+`espn_cfb_usage_players` (season usage rates), all from the same sportsdataverse release host.
+Licences and every source examined but not used: `public-source-registry.md`. Counts by class:
+`data-coverage.md` (`python projections/prospect_db.py coverage`).
+
+Defects found while building population B (every exiting FBS player, `prospect_population.py`):
+
+- **ESPN rosters before 2014 list every position as "-".** Older players' positions are inferred
+  from usage, then recruit position and weight; 94.6% agreement with ESPN's own position where both
+  exist. Pre-2014 rosters also hold 6,000-9,000 rows a season against 22,000+ from 2014.
+- **The recruit source leaves stars and grade null for 25-30% of the 2018-2021 classes**, including
+  highly rated players who later transferred (Caleb Williams, Bo Nix, Jayden Daniels, Keon
+  Coleman). The careers themselves are intact under one ESPN id. Stars on file for linked draftees
+  fall from 84-95% (2009-2023) to 47-62% (2024-2026). No key-free source fills it (CFBD needs a key).
+- **A few usage rows repeat** (no player id, or one player-season under two name spellings); they
+  are summed back together or dropped on read.
+- **Supplemental draft picks** (Josh Gordon, Terrelle Pryor) carry no draft year in nflverse and so
+  count as undrafted; their label position is the one on their first NFL roster.
