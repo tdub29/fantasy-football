@@ -32,8 +32,11 @@ Carson Wentz 2016, Cooper Kupp 2017, Robert Tonyan 2017, Tarik Cohen 2017, Dalla
 James Robinson 2020; lower division Victor Cruz 2010 (UMass, FCS in his era, an alias miss here),
 Cecil Shorts 2011 (D3), Tyrell Williams 2015 (D2), Austin Ekeler 2017 (D2); FBS Stevie Johnson 2008
 (Kentucky), Beanie Wells 2009 (Ohio State), Isaiah Crowell 2014 (Georgia, then FCS Alabama State).
-Side finding for the coordinator: Stevie Johnson and Beanie Wells are FBS hits missing from B (likely
-"Steve Johnson" / "Chris Wells" name variants), a join gap, not a coverage gap.
+Side finding for the coordinator: Stevie Johnson and Beanie Wells are FBS hits missing from B, a join
+gap, not a coverage gap. Confirmed in the store: ESPN lists them as "Chris Wells" (Ohio State,
+player_id 183932, 1,570 rushing yards in 2007) and "Steve Johnson" (Kentucky, 188616, 60-1,028 in
+2007; a second id 188615 shares the name). Adding Beanie/Chris and Stevie/Steve to the nickname table
+should link both.
 
 ### Source found: `ncaa_mfb_*` releases (stats.ncaa.org, FBS + FCS)
 

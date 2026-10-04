@@ -1,5 +1,13 @@
 # Actual Claude usage-limit stop
 
+## Second authorized run: stopped 2026-10-04T08:49Z
+
+Data-gaps worker and coordinator reported actual HTTP 429 session limit, reset displayed as 4:10am America/Los_Angeles. Coordinator cae475e7-e8c3-4236-8c96-0d892690a2f0 and package worker b56027d3-d313-4870-abb0-1a494a5cdddb explicitly stopped; heartbeat PAUSED. Do not resume after reset without new user authorization.
+
+Current reviewed research-branch state supersedes earlier accepted-state paragraph: WR next class S6n4, RB next class S4n4, RB sophomores YL1. Build/site/prospect checks passed per coordinator checkpoint. Known calibration uncertainty remains; nothing deployed.
+
+Data lane now reports FCS 2013+ and season-grain transfer/sit-out data usable, with ingest plan in lanes/data/results.md. FBS/FCS source-shift validation required before scoring FCS. ESPN scouting grades remain a lead requiring coverage/availability validation. Drafted-player ESPN extraction may have partial downloads; refresh summary and speed checks from checkpoint instructions. DOB missingness risks leakage; historical pro-day and injury coverage unresolved. Package lane remains incomplete: loader matrix/tests, cfbfastR ESPN recruit IDs, nflreadpy parity/additional tables; preserve lane outputs and private scratch under .claude/jobs/b56027d3/tmp. Review and reconcile both lanes before shared ingestion changes. No extra accepted model gain from these partial data findings.
+
 Observed 2026-10-04T05:46Z. Coordinator and QB, TE, young and public-source workers reported HTTP 429: "You've hit your session limit". This is the authorized hard stop. Heartbeat keep-prospect-model-research-moving is PAUSED. Do not resume after reset without fresh Trevor authorization. No credits, account switch or permission bypass.
 
 Coordinator: cae475e7-e8c3-4236-8c96-0d892690a2f0. Prior f522bb8d and 15921b94 stay stopped. Worktree: Fantasy Football/.claude/worktrees/prospect-model-db. Existing checkpoint.md records cycles through 8; lane checkpoint/results files hold later partial work. Nothing deployed or pushed by this monitoring turn.
