@@ -283,3 +283,27 @@ Serving differs from addendum 12 in two ways, and the backtest replayed exactly 
 Known risk, recorded by review H: the D1 slope pass (0.79) has 68% support under season resampling
 (RB S3 had 62-64%), and a top-70 cut gives 0.74. The top-60 ratio is robust (90% interval
 0.95-1.13). The prospective holdout scores this when the 2027 class's outcome window closes.
+
+## Addendum 14, 2026-10-04 (before S5 was built or scored)
+
+Diagnosis from the S1-S4 backtests: the over-forecast sits in the rows past first eligibility (WR S4n4
+all-rows ratio 1.31 against 1.04 first-eligible; TE S3 1.31 against 0.83). Training snapshots at
+college year 3+ mix players who left after that season (early entrants, who hit often, and seniors,
+who rarely do) with players who came back, while every served row is a player who came back. The
+`has_live` flag enters as a main effect only, so it cannot separate those two kinds of leaver. S2 fixed
+the same mismatch for S1 by training on served-shaped rows only, and passed at RB and WR, but it was
+never scored on display rule D1 and never combined with tuned C or live games.
+
+**S5n4**: S4n4 (addenda 12-13: S3 plus his team's first 4 games of the season in progress, tuned C by
+inner leave-one-class-out) trained only on S2's served-shaped rows: a completed season k at college
+year 2 or later by a player who played in season k + 1. Serving as addendum 13 (first 4 team games
+always; no number below 4 games or with no stat line). N = 4 only; no N = 8 variant.
+
+Gates, every position: the addendum 8 serving backtest (overall and first-eligible), display rule D1,
+then an independent review. Replacement tests on the same served rows, at least 90% of season
+resamples with lower served log loss: at RB against the shipped S4n4; at WR against the shipped S3.
+At TE and QB it must also beat stars plus college year in at least 90% of season resamples, since
+neither position has a served model. This is the ninth served candidate family (B10/B8, B12, S1, S2,
+S3, S4n4, S4n8, S5n4); a pass that clears its floors by less than the earlier near misses missed by
+is reported as fragile, not as a win.
+
