@@ -1,5 +1,10 @@
 {
   "skills": {
+    "test-audit": {
+      "computedHash": "e7fdd5cdd713046395c05deb005831e01a4d752b44bd2a06b4865a178c4e4220",
+      "source": "openclaw/openclaw",
+      "sourceType": "github"
+    },
     "ai-writing-detection": {
       "computedHash": "bb2eb759461cff1812d62002f2d2a9744e022ba857600a128213eed5af33bf7a",
       "source": "local/self",
