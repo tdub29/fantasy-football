@@ -1284,6 +1284,39 @@
       "notes": "Kicker model now lives inside a league's Weekly player table. K filter exists only for leagues whose roster_positions include K, and selecting it replaces irrelevant Vegas, ECR, ROS, expert and offensive-stat columns with Sleeper points plus dedicated expected, floor, ceiling and 15-plus projections. Missing model matches remain blank and sort last."
     },
     {
+      "id": "league-weekly-defenses",
+      "name": "League Players: team defense board only where DEF starts",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "location.hash='#league/1389722402430136320/players'"
+        },
+        {
+          "sleepMs": 1500
+        },
+        {
+          "click": "#main .player-table-views button:text-is(\"Weekly\")"
+        },
+        {
+          "sleepMs": 500
+        },
+        {
+          "click": "#main .rankings-pos-toggle button:text-is(\"DST\")"
+        },
+        {
+          "sleepMs": 700
+        }
+      ],
+      "selector": "#main table.weekly-rankings-table tbody tr",
+      "assert": "(() => { const rows=[...document.querySelectorAll('#main table.weekly-rankings-table tbody tr')]; const heads=[...document.querySelectorAll('#main table.weekly-rankings-table thead th')].map(h=>h.textContent.replace(/[↑↓]/g,'').trim()); const num=(r,i)=>parseFloat(r.children[i]?.textContent); const pts=rows.map(r=>num(r,6)).filter(Number.isFinite); return rows.length >= 24 && rows.every(r=>r.children[2]?.textContent.trim()==='DST') && ['Sleeper pts','Opp implied'].every(h=>heads.includes(h)) && !heads.includes('Vegas pts') && pts.length >= 24 && pts.every((v,i)=>i===0||v<=pts[i-1]) && rows.filter(r=>Number.isFinite(num(r,7))).length >= 20 && window.LEAGUES.filter(l=>l.roster_positions.includes('DEF')).length===2; })()",
+      "notes": "Team defenses get their own Weekly board, like K, only in leagues whose roster_positions include DEF (Phi Kap, Washington). Columns: Sleeper's weekly DEF projection (default sort, high first) and the opponent's Vegas implied points, reused from the kicker model's lines for the same week; lower is better and a game with no line stays blank."
+    },
+    {
       "id": "idp-matchup-grid",
       "name": "IDP league: which offenses feed defenders",
       "path": [

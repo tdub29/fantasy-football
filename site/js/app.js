@@ -1372,8 +1372,11 @@
     const isElite = ['cornerstone','foundational','upside_premier'].includes(category);
     return h('span', { class:`tier-chip ${tier}${isElite || category == null ? '' : ' muted'}` }, tier);
   }
+  // Team defense reads DST to the user whichever alias the source used; the
+  // DEF class keeps its colour.
   function posChip(pos) {
-    return h('span', { class:`pos-chip ${pos}` }, pos);
+    const team = pos === 'DEF' || pos === 'DST';
+    return h('span', { class:`pos-chip ${team ? 'DEF' : pos}` }, team ? 'DST' : pos);
   }
   // KeepTradeCut's own codes. build_ktc.py maps them now; this covers an older
   // ktc.js and any row whose team falls back to the ranked entry.
@@ -2973,6 +2976,32 @@
       || (selected.has('mine') && !!ownerRoster?.is_me);
   }
 
+  // Position buttons on a league's Players table. K and team defense show only
+  // in leagues whose lineup starts one, and only on views whose rows carry them:
+  // K on Weekly, where its model columns live; DEF on Weekly and Sleeper weeks,
+  // since Sleeper projects every defense every week. Stats and SOS list dynasty
+  // assets, which never include special teams.
+  function leaguePlayerPosOptions(lg, view) {
+    const starts = (pos) => offenseStartingSlots(lg).some(slot => slot.pos === pos);
+    const options = lg.is_idp && !['weekly', 'ros', 'sleeper-weeks'].includes(view)
+      ? ['ALL','QB','RB','WR','TE','FLEX','LB','DB','DL']
+      : ['ALL','QB','RB','WR','TE','FLEX'];
+    if (view === 'weekly' && starts('K')) options.push('K');
+    if ((view === 'weekly' || view === 'sleeper-weeks') && starts('DEF')) options.push('DEF');
+    return options;
+  }
+
+  // Whether a row at `pos` belongs under button `filterPos`. Special teams only
+  // show on their own board, never in ALL, so they cannot pollute the main
+  // view; SLOT_TAKES maps the DST alias onto DEF and FLEX onto RB/WR/TE.
+  function leaguePlayerRowFits(lg, posOptions, filterPos, pos) {
+    const takes = SLOT_TAKES[filterPos] || [filterPos];
+    if (pos === 'K' || SLOT_TAKES.DEF.includes(pos)) return posOptions.includes(filterPos) && takes.includes(pos);
+    if (pos === 'P') return false;
+    if (!lg.is_idp && isIdpPos(pos)) return false;
+    return filterPos === 'ALL' || takes.includes(pos);
+  }
+
   function renderLeaguePlayers(main, lg) {
     const leagueDynasty = isDynastyLeague(lg);
     const idx = rankIndex();
@@ -3064,11 +3093,7 @@
     // column or layout change cannot land on Weekly and skip ROS.
     const weeklyTable = filter.view === 'weekly' || filter.view === 'ros';
     const weeklyView = weeklyTable || filter.view === 'sleeper-weeks';
-    const leagueHasKicker = (lg.roster_positions || []).includes('K');
-    const posOptions = lg.is_idp && !weeklyView
-      ? ['ALL','QB','RB','WR','TE','FLEX','LB','DB','DL']
-      : ['ALL','QB','RB','WR','TE','FLEX'];
-    if (filter.view === 'weekly' && leagueHasKicker) posOptions.push('K');
+    const posOptions = leaguePlayerPosOptions(lg, filter.view);
     if (!posOptions.includes(filter.pos)) { filter.pos = 'ALL'; persist(); }
     for (const p of posOptions) {
       posBtns.appendChild(h('button', {
@@ -3076,11 +3101,13 @@
         onclick:(e) => {
           filter.pos = p;
           if (p === 'K') { filter.sort = 'kicker-exp'; filter.dir = 'desc'; }
-          else if (String(filter.sort).startsWith('kicker-')) { filter.sort = 'weekly-sleeper'; filter.dir = 'desc'; }
+          // Sleeper weeks keeps its week sort; the Weekly DST board has no Vegas column.
+          else if (p === 'DEF' && filter.view === 'weekly') { filter.sort = 'weekly-sleeper'; filter.dir = 'desc'; }
+          else if (/^(kicker-|def-)/.test(String(filter.sort))) { filter.sort = 'weekly-sleeper'; filter.dir = 'desc'; }
           persist();
           posBtns.querySelectorAll('.toggle').forEach(b => b.classList.toggle('active', b===e.target));
           render(); }
-      }, p));
+      }, p === 'DEF' ? 'DST' : p));
     }
     filterBar.appendChild(h('div', { class:'group' }, h('label', null, 'Pos'), posBtns));
 
@@ -3143,24 +3170,22 @@
     const tableWrap = h('div', { class:'card', style:{ padding:0, overflow:'hidden' } });
     main.appendChild(tableWrap);
 
-    // Position scope: this league's lineup positions only. IDP positions
-    // (LB/DB/DL/CB/S/DT/DE/NT) only show in IDP leagues. K appears only on its
-    // own Weekly position board, and only when this league starts one. Without
-    // this gate, special teams pollute every league's all-player view.
-    const idpPositions = new Set(['LB','DB','DL','CB','S','DT','DE','NT']);
-    const irrelevantPositions = new Set(['DST','DEF','P']);
-    const isLeagueRelevantPos = (pos) => {
-      if (pos === 'K') return filter.view === 'weekly' && leagueHasKicker && filter.pos === 'K';
-      if (irrelevantPositions.has(pos)) return false;
-      if (!lg.is_idp && idpPositions.has(pos)) return false;
-      return true;
-    };
-
     const kickerByPid = new Map((window.KICKER_MODEL?.kickers || []).map(kicker => {
       const initialAndLast = String(kicker.name || '').replace(/^([A-Za-z])\./, '$1 ');
       return [sleeperIdForFuzzy(initialAndLast, 'K'), kicker];
     }).filter(([pid]) => pid));
     const kickerProjectionFor = (player) => kickerByPid.get(String(player._sleeperId)) || null;
+    // Opponent's Vegas implied points, the main defense streaming signal. The
+    // kicker model already carries each team's implied total for its week, so
+    // it is reused only when that week is this week; a team it has no kicker
+    // for stays blank.
+    const impliedByTeam = window.KICKER_MODEL?.week === currentWeek
+      ? new Map((window.KICKER_MODEL.kickers || []).map(k => [k.team, k.impliedTotal]))
+      : new Map();
+    const defOppImplied = (player) => {
+      const opp = (weeklyData.games || {})[teamOfP(player)]?.opp;
+      return opp ? impliedByTeam.get(opp) ?? null : null;
+    };
 
     function render() {
       tableWrap.innerHTML = '';
@@ -3169,9 +3194,7 @@
         return;
       }
       const filtered = (weeklyView ? weeklyPlayers : idx.all).filter(p => {
-        if (!isLeagueRelevantPos(p.pos)) return false;
-        if (filter.pos === 'FLEX') { if (!['RB','WR','TE'].includes(p.pos)) return false; }
-        else if (filter.pos !== 'ALL' && p.pos !== filter.pos) return false;
+        if (!leaguePlayerRowFits(lg, posOptions, filter.pos, p.pos)) return false;
         if (filter.view === 'stats' && filter.cat !== 'ALL' && p.category !== filter.cat) return false;
         if (filter.team !== 'ALL' && teamOfP(p) !== filter.team) return false;
         if (filter.q && !norm(p.name).includes(norm(filter.q))) return false;
@@ -3255,6 +3278,7 @@
             || filter.sort === 'weekly-gibbs-x' || filter.sort === 'weekly-gibbs-wk'
             || (typeof filter.sort === 'string' && filter.sort.startsWith('weekly-x:'))
             || (typeof filter.sort === 'string' && filter.sort.startsWith('kicker-'))
+            || filter.sort === 'def-oppImplied'
             || (typeof filter.sort === 'string' && filter.sort.startsWith('sw:'))
             || (typeof filter.sort === 'string' && filter.sort.startsWith('wc:'))) {
           const weeklyValue = (player) => {
@@ -3275,6 +3299,7 @@
               const kicker = kickerProjectionFor(player);
               return kicker?.[String(filter.sort).slice(7)];
             }
+            if (filter.sort === 'def-oppImplied') return defOppImplied(player);
             if (filter.sort === 'weekly-ros') return row.ros;
             // `player`, not `p`. weeklyValue's parameter is named `player`, and
             // `p` resolves to nothing here, so this threw ReferenceError and
@@ -3338,6 +3363,7 @@
             filter.dir = (key === 'rank' || key === 'age' || key === 'pos' || key === 'name'
               || key === 'weekly-ecr' || key === 'weekly-gibbs'
               || key === 'weekly-ros'
+              || key === 'def-oppImplied' // fewer points for the opponent is better for a defense
               // Both Gibbs X columns are RANKS. They were missing here, so the
               // first click sorted them descending and put his worst-ranked
               // player on top, which reads as a broken column rather than a
@@ -3488,7 +3514,9 @@
           wxFlag ? h('div', { class:'weekly-opp-wx' }, wxFlag.toUpperCase()) : null);
       };
 
-      const kickerOnly = filter.view === 'weekly' && filter.pos === 'K' && leagueHasKicker;
+      // filter.pos only holds K or DEF when posOptions offers it on this view.
+      const kickerOnly = filter.view === 'weekly' && filter.pos === 'K';
+      const defOnly = filter.view === 'weekly' && filter.pos === 'DEF';
       // Weekly columns belong on the Weekly view and rest-of-season columns on
       // the ROS view, never both: a weekly rank beside a ROS rank under the
       // same heading is how a WR16 for this week read as his ROS opinion.
@@ -3507,6 +3535,9 @@
               sortHdr('kicker-floor', 'Floor', { right:true, title:'20th-percentile kicker outcome.' }),
               sortHdr('kicker-ceil', 'Ceil', { right:true, title:'90th-percentile kicker outcome.' }),
               sortHdr('kicker-pGe15', '15+', { right:true, title:'Modelled chance of scoring 15 or more points.' }),
+            ] : defOnly ? [
+              sortHdr('weekly-sleeper', 'Sleeper pts', { right:true, title:'Sleeper weekly team defense projection.' }),
+              sortHdr('def-oppImplied', 'Opp implied', { right:true, title:`Opponent's Vegas implied points for week ${currentWeek}. Lower is better for a defense.` }),
             ] : [
               isRosView ? null : sortHdr('weekly-vegas', 'Vegas pts', { right:true, title:'Week PPR projection from price-adjusted BettingPros player props. Missing scoring components are filled from Sleeper.' }),
               isRosView ? null : sortHdr('weekly-sleeper', 'Sleeper pts', { right:true, title:'Sleeper weekly PPR projection.' }),
@@ -3547,7 +3578,10 @@
                   h('td', { class:'right tnum', title:'Modelled chance of 15 or more points' },
                     kicker?.pGe15 == null ? emptyValue() : `${Math.round(kicker.pGe15 * 100)}%`),
                 ];
-              })() : [
+              })() : defOnly ? [
+                pointCell(weekly.sleeper?.[currentWeek - 1], `Sleeper week ${currentWeek} team defense projection`),
+                pointCell(defOppImplied(p), 'Opponent Vegas implied points (from the kicker model lines). Blank when no line.'),
+              ] : [
                 isRosView ? null : pointCell(weekly.vegas, weekly.vegasBorrowed?.length
                   ? `Market stats plus Sleeper fills: ${weekly.vegasBorrowed.join(', ')}` : 'BettingPros market projection'),
                 isRosView ? null : pointCell(weekly.sleeper?.[currentWeek - 1], `Sleeper week ${currentWeek} PPR projection`),
@@ -3702,6 +3736,8 @@
           ? ` · FantasyPros free API top ${ecrCoverage.limitPerPosition}/position` : '';
         const sourceNote = kickerOnly
           ? `Week ${window.KICKER_MODEL?.week || currentWeek} kickers · ${rows.length} shown · K Proj is expected points from the dedicated model. Floor and Ceil are its 20th and 90th percentile outcomes. Blank means no current model match.`
+          : defOnly
+          ? `Week ${currentWeek} team defenses · ${rows.length} shown · Sleeper pts is Sleeper's projection. Opp implied is the opponent's Vegas implied points; lower is better, blank means no line for that game.`
           : (filter.view === 'ros'
             ? `Rest-of-season PPR, sorted by the FP ROS column · ${rosMeta.available ? `${coverage.rosPlayers || 0} ranked as of ${rosMeta.updated}` : 'board unavailable'}${rosStale ? ', stale' : ''} · the other columns are week ${currentWeek}. `
             : '')
@@ -3720,7 +3756,7 @@
         tableWrap.appendChild(h('div', { class:'tip rankings-source-note' }, sourceNote));
       } else if (filter.view === 'sleeper-weeks') {
         tableWrap.appendChild(h('div', { class:'tip rankings-source-note' },
-          `${rows.length} players with Sleeper PPR projections · Click week heading to sort.`));
+          `${rows.length} ${filter.pos === 'DEF' ? 'team defenses with Sleeper projections' : 'players with Sleeper PPR projections'} · Click week heading to sort.`));
       }
       if (filtered.length > rows.length) {
         tableWrap.appendChild(h('div', { class:'tip', style:{ padding:'10px 14px' } },
