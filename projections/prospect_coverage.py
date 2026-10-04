@@ -25,26 +25,26 @@ EXP = bpm.ROOT / "notes" / "prospect-research" / "experiments"
 # feature -> (family, source, known at, phases it may serve, candidate ids that tested it)
 REGISTRY = {
     "log_pick": ("draft capital", "nflverse draft_picks", "the pick", "post-draft", ["A0"]),
-    "ryptpa_career": ("production", "ESPN PBP receiving / team pass att", "end of final season", "pre + post", ["A0", "B1", "B2"]),
-    "ryptpa_best": ("production", "ESPN PBP", "end of final season", "pre + post", ["A0", "B1", "B2"]),
-    "ryptpa_final": ("production", "ESPN PBP", "end of final season", "pre + post", ["A0", "B1", "B2"]),
-    "scrim_ypg": ("production", "ESPN PBP", "end of final season", "pre + post", ["A0", "B1", "B2"]),
-    "rush_ypg_best": ("production (QB)", "ESPN PBP", "end of final season", "pre + post", ["A0", "B1", "B2"]),
-    "comp_final": ("production (QB)", "ESPN PBP", "end of final season", "pre + post", ["A0", "B1", "B2"]),
+    "ryptpa_career": ("production", "ESPN PBP receiving / team pass att", "end of final season", "pre + post", ["A0", "A14", "B1", "B2", "B8", "B10"]),
+    "ryptpa_best": ("production", "ESPN PBP", "end of final season", "pre + post", ["A0", "A14", "B1", "B2", "B8", "B10"]),
+    "ryptpa_final": ("production", "ESPN PBP", "end of final season", "pre + post", ["A0", "A14", "B1", "B2", "B8", "B10"]),
+    "scrim_ypg": ("production", "ESPN PBP", "end of final season", "pre + post", ["A0", "A14", "B1", "B2", "B8", "B10"]),
+    "rush_ypg_best": ("production (QB)", "ESPN PBP", "end of final season", "pre + post", ["A0", "A14", "B1", "B2", "B8", "B10"]),
+    "comp_final": ("production (QB)", "ESPN PBP", "end of final season", "pre + post", ["A0", "A14", "B1", "B2", "B8", "B10"]),
     "dom_best": ("dominator", "ESPN PBP", "end of final season", "pre + post", ["B2"]),
     "dom_final": ("dominator", "ESPN PBP", "end of final season", "pre + post", ["B2"]),
     "target_share_best": ("usage", "ESPN PBP targets", "end of final season", "pre + post", ["A6"]),
     "rec_epa_best": ("efficiency", "ESPN PBP EPA", "end of final season", "pre + post", ["A5"]),
     "rush_succ_best": ("efficiency", "ESPN PBP success", "end of final season", "pre + post", ["A5"]),
-    "fd_share_best": ("usage quality", "sportsdataverse usage", "end of final season", "pre + post", ["A12"]),
-    "explosive_best": ("usage quality", "sportsdataverse usage", "end of final season", "pre + post", ["A12"]),
-    "team_off_final": ("team context", "sportsdataverse cfb_ratings", "end of final season", "pre + post", ["A11"]),
-    "sos_career": ("schedule strength", "cfb_ratings + opponent splits", "end of final season", "pre + post", ["A11"]),
-    "power": ("conference", "ESPN fbs_class", "end of final season", "pre + post", ["A0", "B1", "B2"]),
-    "early": ("declaration", "seasons on file", "declaration", "pre + post", ["A0", "B1", "B2"]),
+    "fd_share_best": ("usage quality", "sportsdataverse usage", "end of final season", "pre + post", ["A12", "B7", "B10"]),
+    "explosive_best": ("usage quality", "sportsdataverse usage", "end of final season", "pre + post", ["A12", "B7", "B10"]),
+    "team_off_final": ("team context", "sportsdataverse cfb_ratings", "end of final season", "pre + post", ["A11", "B7", "B10"]),
+    "sos_career": ("schedule strength", "cfb_ratings + opponent splits", "end of final season", "pre + post", ["A11", "B7", "B10"]),
+    "power": ("conference", "ESPN fbs_class", "end of final season", "pre + post", ["A0", "A14", "B1", "B2", "B8", "B10"]),
+    "early": ("declaration", "seasons on file", "declaration", "pre + post", ["A0", "A14", "B1", "B2", "B8", "B10"]),
     "early_covid": ("declaration", "seasons excl. 2020", "declaration", "pre + post", ["A2"]),
     "n_seasons": ("experience", "seasons on file", "declaration", "pre + post", ["B2"]),
-    "draft_age": ("age (estimated)", "class year, 18.71 + years", "any time", "pre + post", ["A0", "B1", "B2"]),
+    "draft_age": ("age (estimated)", "class year, 18.71 + years", "any time", "pre + post", ["A0", "A14", "B1", "B2", "B8", "B10"]),
     "draft_age_real": ("age (observed)", "nflverse birth_date", "draft day (drafted only)", "post-draft", ["A1", "A3"]),
     "stars": ("recruiting", "247 stars", "signing day", "pre + post", ["A0", "B0s", "B1", "B2"]),
     "grade": ("recruiting", "247 composite grade", "signing day", "pre + post", ["A4"]),
@@ -54,6 +54,11 @@ REGISTRY = {
     "invited": ("combine invite", "nflverse combine", "combine", "post-combine", ["B4"]),
     "tm_pass_att_prev": ("landing spot", "nflverse prior-season stats", "draft day", "post-draft", ["A9"]),
     "tm_pos_ppr_prev": ("landing spot", "nflverse prior-season stats", "draft day", "post-draft", ["A9"]),
+    "pre_logit": ("population B summary", "B model, forward out-of-fold", "draft day", "post-draft", ["A13"]),
+    "aya_final": ("production (QB)", "ESPN PBP", "end of final season", "pre + post", ["A14"]),
+    "starts": ("experience (QB)", "ESPN PBP", "end of final season", "pre + post", ["A14"]),
+    "n_qual": ("experience", "seasons on file", "declaration", "pre", ["B2", "B8", "B10"]),
+    "stars_missing": ("recruiting missingness", "247 stars null or unmatched", "signing day", "pre", ["B6"]),
 }
 # Families searched but never built, with the reason (see public-source-registry.md).
 NOT_BUILT = [
@@ -131,7 +136,7 @@ def write_report(con=None):
     hist = tt[tt.draft_year <= 2023]
     for f, (fam, src, when, phase, ids) in REGISTRY.items():
         cov = f"{hist[f].notna().mean():.0%}" if f in hist else "n/a"
-        tested = "; ".join(f"{i}: " + ", ".join(f"{p} {'pass' if s.startswith('pass') else 'reject'}" for p, s in v[i].items())
+        tested = "; ".join(f"{i}: " + ", ".join(f"{p} {pe.final_verdict(i, p, s_).replace('**', '')}" for p, s_ in v[i].items())
                            for i in ids if i in v) or "baseline/definition"
         L.append(f"| `{f}` | {fam} | {src} | {when} | {phase} | {cov} | {tested} |")
     L += ["", "### Families searched and not built", "", "| Family | Reason | Disposition |", "|---|---|---|"]

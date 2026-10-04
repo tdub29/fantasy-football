@@ -1,10 +1,10 @@
 {
  "id": "A3",
  "description": "WR: early flag replaced by real draft age",
- "created_at_utc": "2026-10-03T23:57:23+00:00",
+ "created_at_utc": "2026-10-04T01:12:02+00:00",
  "charter": "notes/prospect-research/validation-charter-v2.md",
- "git_head": "54cbe2d8a270930db0226056d143690297ba1907",
- "sources_sha256": "1a54f4ee6751cba9da3108fc1450ee56c025ab3122829d99d4cac291a8075ade",
+ "git_head": "ab5f29b69823cf9acba8de6ec4940ac36414b226",
+ "sources_sha256": "76394de5e0d16f68252126b56d52a600e609e11c33ffb4037d4147954b6f475d",
  "command": "python projections/prospect_experiments.py A3",
  "population": "A: drafted QB/RB/WR/TE 2008+, linked college career",
  "primary_metric": "pooled log loss, fwd",

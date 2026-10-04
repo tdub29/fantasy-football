@@ -885,6 +885,10 @@ def build(verbose=True):
         final[pos]["predraft"] = m
         results[pos]["predraft"] = m["meta"]
     college = score_college(ps, bio, final, age0)
+    # Generated-data consistency: a pre-draft number exists exactly where a reviewed model ships.
+    for r in college:
+        assert (r["pd"] is not None) == (r["p"] in PREDRAFT), f"{r['n']}: pd present outside PREDRAFT or missing inside"
+        assert r["pd"] is None or 0.0 <= r["pd"] <= 1.0
     return {"results": results, "nfl": nfl, "college": college, "coverage": coverage(d, t), "t": t, "d": d, "ps": ps}
 
 
@@ -893,10 +897,12 @@ def fit_predraft(ps, bio, d, t, age0) -> dict:
     feature list, C rule and validation numbers come from its experiment record."""
     if not PREDRAFT:
         return {}
+    import prospect_experiments as pe
     import prospect_experiments_b as peb
     import prospect_population as pp
     e = pp.build(ps, bio, d, t, age0, _CON, say=lambda *a: None)
     e = e[e.draft_year >= FIRST_CLASS]
+    e = e.join(context_features(e, ps), on="sid")
     out = {}
     for pos, cid in PREDRAFT.items():
         rec = json.loads((ROOT / "notes" / "prospect-research" / "experiments" / f"{cid}.json").read_text(encoding="utf-8"))
@@ -911,6 +917,13 @@ def fit_predraft(ps, bio, d, t, age0) -> dict:
             "auc": round(fw["cand"]["auc"], 3), "base_auc": round(fw["base"]["auc"], 3), "baseline": r["baseline"],
             "classes": f"{min(c['class'] for c in fw['per_class'])}-{max(c['class'] for c in fw['per_class'])}"}}
     return out
+
+
+def context_features(f, ps) -> pd.DataFrame:
+    """Team offense, schedule strength, first-down share and explosive rate (charter v2 A11/A12)
+    per sid, from the store; frame needs sid, player_id, cutoff, season_final."""
+    import prospect_experiments as pe
+    return pe.schedule_context(f, ps, _CON).join(pe.usage_quality(f, ps, _CON))
 
 
 def coverage(d, t):
@@ -1047,6 +1060,8 @@ def score_college(ps, bio, final, age0, top_n=60):
     subj["sid"] = "c" + subj.player_id.astype(str)
     feats = career_features(subj, ps, age0)
     subj = subj.merge(feats, on="sid", how="left").rename(columns={"ros_weight": "weight"})
+    if PREDRAFT:
+        subj = subj.join(context_features(subj, ps), on="sid")
     subj["speed_score"] = np.nan
     subj["cls"] = subj.draft_year
     rows = []

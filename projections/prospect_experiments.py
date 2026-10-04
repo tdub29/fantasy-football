@@ -217,7 +217,70 @@ CANDIDATES = {
     "A11": "final-season team adjusted offensive EPA and career opponent strength",
     "A12": "best-season first-down share and explosive rate (30+ opportunities)",
     "A13": "logit of the population B pre-draft probability (forward out-of-fold) as a talent feature",
+    "A14": "feature selection redone inside every training fold (greedy forward, inner leave-one-class-out)",
 }
+_REC = ["ryptpa_career", "ryptpa_best", "ryptpa_final", "dom_best", "dom_final", "target_share_best", "rec_epa_best",
+        "early", "stars", "draft_age", "power", "weight", "speed_score"]
+POOL = {"WR": _REC, "TE": _REC,
+        "RB": ["ryptpa_final", "ryptpa_best", "scrim_ypg", "dom_best", "dom_final", "rec_epa_best", "rush_succ_best",
+               "early", "stars", "draft_age", "power", "weight", "speed_score"],
+        "QB": ["rush_ypg_best", "comp_final", "aya_final", "starts", "n_seasons", "early", "stars", "draft_age", "power"]}
+SEL_MIN, SEL_MAX = 0.001, 4
+
+
+def _inner_ll(X, y, g, cols):
+    """Inner leave-one-class-out log loss of the full model on talent columns `cols` (indices into X,
+    whose last column is log pick). No columns = the draft-only baseline."""
+    idx = list(cols) + [X.shape[1] - 1]
+    p = np.full(len(y), np.nan)
+    for k in np.unique(g):
+        te = g == k
+        if y[~te].sum() < 3:
+            continue
+        p[te] = bpm.make_lr(C, len(cols), capital=True).fit(X[~te][:, idx], y[~te]).predict_proba(X[te][:, idx])[:, 1]
+    m = ~np.isnan(p)
+    return bpm.ll(y[m], p[m])
+
+
+def forward_select(X, y, g, n_pool):
+    chosen, best = [], _inner_ll(X, y, g, [])
+    while len(chosen) < SEL_MAX:
+        trials = {j: _inner_ll(X, y, g, chosen + [j]) for j in range(n_pool) if j not in chosen}
+        j = min(trials, key=trials.get)
+        if best - trials[j] < SEL_MIN:
+            break
+        chosen.append(j)
+        best = trials[j]
+    return chosen
+
+
+class Selected:
+    log: list = []
+
+    def __init__(self, pool):
+        self.pool = pool
+
+    def fit(self, X, y, g):
+        self.cols = forward_select(X, y, g, len(self.pool))
+        Selected.log.append([self.pool[j] for j in self.cols])
+        idx = self.cols + [X.shape[1] - 1]
+        self.idx = idx
+        self.m = bpm.make_lr(C, len(self.cols), capital=True).fit(X[:, idx], y)
+        return self
+
+    def predict_proba(self, X):
+        return self.m.predict_proba(X[:, self.idx])
+
+
+def selected_predictor(tp, X, pool, win):
+    y = tp.hit.to_numpy(float)
+    g = tp.draft_year.to_numpy(int)
+    mature = tp.hit.notna().to_numpy()
+
+    def predict(scheme, c, te):
+        tr = mature & fold_mask(g, scheme, c, win)
+        return Selected(pool).fit(X[tr], y[tr], g[tr]).predict_proba(X[te])[:, 1]
+    return predict
 
 
 # ----------------------------------------------------------------------------- evaluation
@@ -401,6 +464,16 @@ def run(ids, say=print):
                 pr, fin = pooled_predictor(t, tp)
                 pc = {s: oof(tp, pr, s) for s in ("fwd", "loco")}
                 final = fin()
+            elif cid == "A14":
+                pool = POOL[pos]
+                X = tp[pool + ["log_pick"]].to_numpy(float)
+                Selected.log = []
+                pr = selected_predictor(tp, X, pool, win)
+                pc = {s: oof(tp, pr, s) for s in ("fwd", "loco")}
+                sel_log = list(Selected.log)
+                m = tp.hit.notna().to_numpy()
+                fin_sel = Selected(pool).fit(X[m], tp.hit[m].to_numpy(float), tp.draft_year.to_numpy(int)[m])
+                final = fin_sel.predict_proba(X)[:, 1]
             elif cid == "A10":
                 cols = V1[pos]
                 X = tp[cols + ["log_pick"]].to_numpy(float)
@@ -430,7 +503,10 @@ def run(ids, say=print):
             fwd, loco = score(tp, pb["fwd"], pc["fwd"], "fwd"), score(tp, pb["loco"], pc["loco"], "loco")
             rules, verdict = decide(fwd, loco)
             results.setdefault(cid, {})[pos] = {"fwd": fwd, "loco": loco, "rules": rules, "verdict": verdict,
-                                                "cols": cand_cols(cid, pos) if cid not in ("A7", "A10") else None}
+                                                "cols": cand_cols(cid, pos) if cid not in ("A7", "A10", "A14") else None}
+            if cid == "A14":
+                results[cid][pos]["selected_per_fold"] = sel_log
+                results[cid][pos]["selected_final"] = [POOL[pos][j] for j in fin_sel.cols]
             preds[(pos, cid)] = (tp, pc, final)
             say(f"{cid} {pos}: fwd {fwd['base']['logloss']:.4f} -> {fwd['cand']['logloss']:.4f} "
                 f"(boot {fwd['boot']['p']:.0%}, slope {fwd['cand']['slope']:.2f}, 2020+ "
