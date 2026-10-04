@@ -179,6 +179,22 @@
   "S6n4 RB": {
    "verdict": "rejected on the replacement test (beats shipped S4n4 in 39%)",
    "by": "addendum 15 rule"
+  },
+  "F1 WR": {
+   "verdict": "fails replacement test (beats S6n4 in 0.7%)",
+   "by": "lanes/features/results.md"
+  },
+  "F2 WR": {
+   "verdict": "fails replacement test (32.8%) and gain concentration",
+   "by": "lanes/features/results.md"
+  },
+  "F1 RB": {
+   "verdict": "fails D1 slope (0.72) and replacement test (91.7%)",
+   "by": "lanes/features/results.md"
+  },
+  "F2 RB": {
+   "verdict": "rejected by the coordinator: passes every preregistered gate but fragile (drop-5 support 77.6%, D1 slope 0.76 in band 54%) and the whole gain comes from 14 Alabama RB rows (without them -0.00006, 46%)",
+   "by": "lanes/features/results.md"
   }
  }
 }

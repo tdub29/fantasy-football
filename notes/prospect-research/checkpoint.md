@@ -160,6 +160,11 @@ said plainly that most of the AUC gain is separating who gets drafted (among dra
 - Features lane launched: receiving shape (air yards, aDOT, YAC from `espn_cfb_adv_receiving`) and
   team talent (`cfb_team_talent`), against the shipped models at the 95% / 200k rule.
 
+- Features lane (closed, fdeef37/740f25f/cce8d57): air yards/aDOT/YAC dropped before preregistration
+  (empty before 2023). F1 (team talent) fails at WR and RB. F2 (4-5 star teammates at his position)
+  fails at WR; at RB it passes every preregistered gate (beats S4n4 in 99.71%) but is fragile and its
+  whole gain is 14 Alabama RB rows: rejected. Shipped models unchanged.
+
 **Next (open research)**: RB/TE/QB served models need a genuinely different idea, not a re-roll (for
 example more training seasons, or features the serving backtest says matter); later classes (stage 1)
 fail; prospective holdout from January 2027. **Next**: if the fix check passes, the cycle is done. Open research: RB (S1 fails D1 by 0.01 of slope;

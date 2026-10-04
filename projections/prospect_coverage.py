@@ -78,6 +78,12 @@ NOT_BUILT = [
     ("transfer / redshirt history", "player-level history not public; team portal counts only", "too sparse"),
     ("vacated targets at landing spot", "needs the post-draft roster", "leakage"),
     ("film / scouting grades", "no licensed, dated public source", "unavailable"),
+    ("air yards, aDOT, YAC (espn_cfb_adv_receiving)", "empty 2004-2022 and 2024; repeats the store's ESPN pbp otherwise", "unavailable"),
+    ("team talent percentile (cfb_team_talent), F1", "fails the replacement test at WR (0.7%) and RB (91.7%, D1 slope 0.72)", "tested, rejected"),
+    ("4-5 star teammates at his position, F2", "WR fails; RB passes but the gain is 14 Alabama rows", "tested, rejected"),
+    ("FCS season lines (stats.ncaa.org via ncaa_mfb_*)", "usable 2013+, 95 of 109 FCS NFL players join; NCAA terms bar republication", "deferred to Trevor"),
+    ("college injury history (espn_cfb_injuries)", "2026 only", "unavailable"),
+    ("ESPN Scouts Inc pre-draft grade", "97-100% of drafted skill players 2008-2017; vintage and undrafted coverage unverified", "deferred, best lead"),
 ]
 
 
