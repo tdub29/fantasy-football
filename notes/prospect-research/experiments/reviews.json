@@ -103,6 +103,14 @@
    "verdict": "reject",
    "by": "review-d-2026-10-04.md",
    "reason": "only stage 1 would be served and stage 1 alone fails"
+  },
+  "S1 WR": {
+   "verdict": "confirmed; ships for the next class under display rule D1",
+   "by": "review-e-2026-10-04.md"
+  },
+  "S1 RB": {
+   "verdict": "model confirmed; not shipped (failed display rule D1, slope 0.74)",
+   "by": "review-e-2026-10-04.md"
   }
  }
 }

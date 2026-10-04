@@ -55,14 +55,16 @@ separating who gets drafted at all: among drafted players alone the AUC is 0.70-
 0.52-0.61 for stars (review B). The draft-bucket model built on the same features predicts the round
 range far better than base shares (multiclass log loss 0.52 to 0.34 at WR), but it is not shipped.
 
-**What ships: nothing new yet (2026-10-04).** After three reviews a pre-draft hit chance shipped for
-next-class RB, WR and TE, then was pulled the same day. The models are sound on real exits (mean
-predicted over observed 0.94-1.07 for first-eligible players), but a current player has to be fed to
-them through an exit scenario, and the in-repo serving backtest (`prospect_serving_backtest.py`,
-2012-2021 seasons replayed through the exact served code) found that path about 2x low for
-first-eligible players (0.42-0.45), even when he is assumed to leave after this season (0.47-0.68).
-Freezing a junior's production at his first two seasons misses the jump most hits make in year
-three. QB never shipped. Everything after the draft is still draft capital alone.
+**What ships (2026-10-04, after five reviews).** A pre-draft hit chance for the next draft class at
+**WR only**, from a career-stage model (S1): every FBS receiver who left college since 2008 adds one
+row per completed season, so a junior is compared with juniors on his completed seasons, with no exit
+assumed. Replayed on the 2012-2021 seasons through the served code (`prospect_serving_backtest.py`),
+it beats recruiting stars plus college year (log loss 0.080 to 0.066, AUC 0.77 to 0.89) and ranks
+better than the Talent score; its average forecast ran 19% high over all replays and 22% low on the
+2017-2021 ones. The board lists the class's top 60 by that chance (display rule D1). RB passed
+everything but D1 (slope 0.74), TE and QB failed the backtest, and the first version (an exit-scenario
+transform) was pulled when the backtest found it 2x low for first-eligible players. Everything after
+the draft is still draft capital alone.
 
 ## What it predicts
 

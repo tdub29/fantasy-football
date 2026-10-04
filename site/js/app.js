@@ -12120,7 +12120,7 @@
             + `Round 3 = 65-100, Day 3 = 101-257).`,
       hitLine ? `Past hit rate by tier, out of sample: ${hitLine}.` : null,
       rookies ? null : 'College ages are estimated from class year (no public birth dates), and a live season counts once it reaches 6 games. '
-        + 'Each player is scored at the more conservative of leaving after his third or fourth college year.',
+        + 'Talent scores each player at the more conservative of leaving after his third or fourth college year.',
       // Pre-draft forecast (population B): only for positions that passed validation and review.
       mode === 'next' && pre ? `Pre-draft is his chance to hit counting the chance he goes undrafted, from a model fit on all `
         + `${pre.n.toLocaleString()} ${pos}s who left FBS college football since 2008, drafted or not (${pre.hits} hits), `
@@ -12128,13 +12128,17 @@
         + `${pre.base_logloss} for ${pre.baseline === 'B0s' ? 'recruiting stars alone' : 'the base rate'}, AUC ${pre.auc} against `
         + `${pre.base_auc}. Most of that edge is telling who gets drafted at all; among drafted players it ranks talent far less sharply. `
         + `Next class only: for younger players the same method ran well short of real hit rates in a backtest.` : null,
-      mode === 'next' && nst && nst.served ? `Pre-draft is his chance to hit counting the chance he goes undrafted, from a `
-        + `career-stage model: every FBS ${pos} who left college since 2008 contributes one row per completed season `
-        + `(${nst.rows.toLocaleString()} rows), so he is compared with players at the same college year, on his completed seasons. `
-        + `Replayed on the 2012-2021 seasons exactly as served (${nst.served.n.toLocaleString()} players, ${nst.served.events} hits): `
-        + `log loss ${nst.served.logloss} against ${nst.served.base_logloss} for recruiting stars plus college year, AUC `
-        + `${nst.served.auc} against ${nst.served.base_auc}, and the average forecast within ${Math.round(Math.abs(1 - nst.served.ratio) * 100)}% `
-        + `of the real hit rate. Most of that edge is telling who gets drafted at all.` : null,
+      mode === 'next' && nst && nst.served ? (() => {
+        const v = nst.served, pct = (r) => `${Math.round(Math.abs(r - 1) * 100)}% ${r >= 1 ? 'above' : 'below'}`;
+        return `Pre-draft is his chance to hit counting the chance he goes undrafted, from a career-stage model: every FBS `
+          + `${pos} who left college since 2008 contributes one row per completed season, so he is compared with players at `
+          + `the same college year. It uses his completed seasons only, not this one, and assumes no exit. This list is the `
+          + `class's top 60 by that chance. Replayed on the 2012-2021 seasons through the same code (${v.n.toLocaleString()} `
+          + `player-seasons, ${v.players.toLocaleString()} players, ${v.players_hit} of whom hit): log loss ${v.logloss} against `
+          + `${v.base_logloss} for recruiting stars plus college year, AUC ${v.auc} against ${v.base_auc}. The average forecast `
+          + `ran ${pct(v.ratio)} the real hit rate over all replays and ${pct(v.late_ratio)} on the 2017-2021 replays. `
+          + `Most of the edge is telling who gets drafted at all.`;
+      })() : null,
       mode === 'later' && stg ? `Pre-draft here comes from a career-stage model: every FBS ${pos} who left college since 2008 `
         + `contributes one row per completed season (${stg.rows.toLocaleString()} rows, ${stg.players.toLocaleString()} players), so a `
         + `sophomore is compared with sophomores. On draft classes it never saw, freshman and sophomore rows scored log loss `

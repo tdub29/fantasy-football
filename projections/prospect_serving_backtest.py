@@ -92,7 +92,19 @@ def run_stage(spec: dict, say=print):
         fe = r[r.first_eligible]
         allr, fer = summary(r.y.to_numpy(float), r._pd.to_numpy(float)), summary(fe.y.to_numpy(float), fe._pd.to_numpy(float))
         ok = passes(allr) and passes(fer)
-        out[f"{cid} {pos}"] = {"all": allr, "first_eligible": fer, "pass": ok, "vs_stars_stage": vs}
+        top = r.sort_values("_pd", ascending=False).groupby("season").head(60)          # display rule D1
+        topr = summary(top.y.to_numpy(float), top._pd.to_numpy(float))
+        late = r[r.season >= 2017]
+        later = {"all": summary(late.y.to_numpy(float), late._pd.to_numpy(float)),
+                 "first_eligible": summary(late[late.first_eligible].y.to_numpy(float), late[late.first_eligible]._pd.to_numpy(float))}
+        uniq = r.groupby("player_id").y.max()
+        out[f"{cid} {pos}"] = {"all": allr, "first_eligible": fer, "pass": ok, "vs_stars_stage": vs,
+                               "top60_by_pd": topr, "top60_pass": passes(topr), "replays_2017_2021": later,
+                               "players": int(len(uniq)), "players_hit": int(uniq.sum())}
+        say(f"{cid} {pos}: D1 top 60 by pd: n={topr['n']} events={topr['events']} ratio {topr.get('ratio', float('nan')):.2f} "
+            f"slope {topr.get('slope', float('nan')):.2f} -> {'PASS' if passes(topr) else 'FAIL'} | 2017-2021 ratio "
+            f"{later['all'].get('ratio', float('nan')):.2f} slope {later['all'].get('slope', float('nan')):.2f}, first-eligible "
+            f"{later['first_eligible'].get('ratio', float('nan')):.2f} | {len(uniq)} players, {int(uniq.sum())} hit")
         say(f"{cid} {pos}: vs stars+stage served the same way: log loss {vs['base_logloss']:.4f} -> {vs['cand_logloss']:.4f}, "
             f"AUC {vs['base_auc']:.3f} -> {vs['cand_auc']:.3f}, season bootstrap {boot['p']:.0%}")
         say(f"{cid} {pos}: all n={allr['n']} events={allr['events']} ratio {allr.get('ratio', float('nan')):.2f} "

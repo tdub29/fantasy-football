@@ -140,7 +140,9 @@ STAGE: set[str] = set()
 # Positions whose NEXT draft class is served by the career-stage model fit on every completed season
 # (S1, charter v2 addendum 9): from completed seasons, no exit scenario. Listed only after it passed
 # the serving backtest (prospect_serving_backtest.py) and an independent review.
-NEXT_STAGE: set[str] = set()
+# WR only (2026-10-04): RB passed the serving backtest pooled but failed display rule D1 (top 60 by
+# forecast: slope 0.74 against the 0.75 floor), addendum 10; WR passed both (review E + addendum 10).
+NEXT_STAGE: set[str] = {"WR"}
 # Positions where the charter v2 candidate A10 ships: a fixed 50/50 average of the draft-only and
 # talent + capital logits. Listed only after it passed the charter's five numeric rules on identical
 # folds AND an independent review (notes/prospect-research/experiments/A10.json). The v1 three-run
@@ -969,7 +971,10 @@ def fit_stage(ps, bio, d, t, age0) -> dict:
             out[pos]["meta"]["served"] = {"logloss": round(v["cand_logloss"], 4), "base_logloss": round(v["base_logloss"], 4),
                                           "auc": round(v["cand_auc"], 3), "base_auc": round(v["base_auc"], 3),
                                           "ratio": round(b["all"]["ratio"], 2), "fe_ratio": round(b["first_eligible"]["ratio"], 2),
-                                          "n": b["all"]["n"], "events": b["all"]["events"]}
+                                          "n": b["all"]["n"], "events": b["all"]["events"],
+                                          "players": b.get("players"), "players_hit": b.get("players_hit"),
+                                          "top60_ratio": round(b["top60_by_pd"]["ratio"], 2),
+                                          "late_ratio": round(b["replays_2017_2021"]["all"]["ratio"], 2)}
     return out
 
 
@@ -1114,7 +1119,7 @@ def score_college(ps, bio, final, age0, top_n=60):
     subj["sid"] = "c" + subj.player_id.astype(str)
     feats = career_features(subj, ps, age0)
     subj = subj.merge(feats, on="sid", how="left").rename(columns={"ros_weight": "weight"})
-    if PREDRAFT or STAGE:
+    if PREDRAFT or STAGE or NEXT_STAGE:
         subj = subj.join(context_features(subj, ps), on="sid")
         done = predraft_profile(subj, ps, age0)
     subj["speed_score"] = np.nan
@@ -1149,7 +1154,10 @@ def score_college(ps, bio, final, age0, top_n=60):
         if pos in NEXT_STAGE:
             s = stage_score(s, done, fin["stage"], age0, which="next")
         s = s.sort_values("_tp", ascending=False)
-        s = pd.concat([s[s.cls == SEASON + 1].head(top_n), s[s.cls > SEASON + 1].head(top_n // 2)])
+        nxt = s[s.cls == SEASON + 1]
+        if pos in NEXT_STAGE:   # display rule D1: the next class's top by its own forecast, not by Talent
+            nxt = nxt.sort_values("_pd", ascending=False, na_position="last")
+        s = pd.concat([nxt.head(top_n), s[s.cls > SEASON + 1].head(top_n // 2)])
         X = s[fin["cols"]].to_numpy(float)
         for i, (_, r) in enumerate(s.iterrows()):
             scen = []
@@ -1261,7 +1269,8 @@ FIELDS = {
     "out": "Observed: [hit 0/1, best PPR PPG, best rank among that season's players at his draft position]",
     "r": "College only: hit probability if drafted in [Round 1, Round 2, Round 3, Day 3], at the scored exit",
     "pd": "College only: pre-draft hit probability counting the chance he goes undrafted, from his completed college "
-          "seasons. Next class: pos[].predraft (exit model); later classes: pos[].stage (career-stage model). Null where "
+          "seasons only (the live season is not used) and with no exit assumed. Next class: pos[].stage with stage.next "
+          "(career-stage model S1) or pos[].predraft (exit model); later classes: pos[].stage with stage.later. Null where "
           "no reviewed model serves that class or he has no completed qualifying season",
     "pdx": "College only: the draft year pd assumes (the lower of leaving after this season or, for a junior, one more)",
     "cls": "College only: first eligible draft year",
@@ -1326,7 +1335,7 @@ def write_payload(res, run_id=None):
                          "holdout": f"{r['hold_classes'][0]}-{r['hold_classes'][1]}",
                          "auc": {k: round(r["hold"][k]["auc"], 3) for k in ("draft", "talent", "full")},
                          "logloss": {k: round(r["hold"][k]["logloss"], 4) for k in ("draft", "talent", "full")},
-                         "predraft": r.get("predraft")}
+                         "predraft": r.get("predraft"), "stage": r.get("stage")}
     payload = {"generated": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"), "season": SEASON, "db_run": run_id,
                "source": "sportsdataverse-data (ESPN college PBP seasons, rosters, recruits) + nflverse-data "
                          "(draft picks, players, combine, season stats); see notes/prospect-research/data-sources.md",
