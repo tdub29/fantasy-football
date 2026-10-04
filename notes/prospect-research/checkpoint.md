@@ -141,6 +141,25 @@ said plainly that most of the AUC gain is separating who gets drafted (among dra
   ranking identical to S4n4. Known risk: first-eligible slope in band in 58% of resamples (S3 92%).
 - Fixes applied (copy for S6, pd doc, NEXT_MODEL comment, addendum 17). NEXT_MODEL = WR S6n4, RB S4n4.
 
+## Cycle 12 (2026-10-04, third authorized run): label fix, lanes reconciled
+
+- Data lane (closed, d9f35e3 and 2b8bb8f): FCS usable 2013+ via the sportsdataverse `ncaa_mfb_*`
+  releases (stats.ncaa.org), 95 of 109 FCS NFL players join, all 8 hits; NCAA terms allow personal
+  non-commercial use only and forbid republishing the statistics, and the site is public, so FCS
+  ingestion waits on Trevor's call. Real college DOB unavailable (missingness leaks NFL status),
+  pro-day after 2019 unavailable, FantasyPros ECR terms forbid, ESPN Scouts Inc grade deferred (best
+  lead), injury unavailable (`espn_cfb_injuries` holds 2026 only), transfer and sit-out years usable.
+- Packages lane (separate session, stopped): loader matrix committed; every loader reaches the same
+  upstreams the store already reads; nothing new to ingest.
+- Label fix from the data lane: Beanie Wells (Chris Wells, Ohio State) and Stevie Johnson (two
+  Kentucky ids) were FBS hits labeled misses. `NICK` gains beanie; a same-name same-school tie goes to
+  the id that played closest to the draft; self-check covers both. Re-score of the shipped models on
+  the corrected labels: RB S4n4 all 1.07/0.93, first-eligible 1.00/0.87, D1 1.06/0.78; WR S6n4 all
+  1.11/1.13, first-eligible 1.10/1.22, D1 1.01/1.07, vs S3 100%. Both still pass. Rebuilt; tests and
+  prospect verify-app pass.
+- Features lane launched: receiving shape (air yards, aDOT, YAC from `espn_cfb_adv_receiving`) and
+  team talent (`cfb_team_talent`), against the shipped models at the 95% / 200k rule.
+
 **Next (open research)**: RB/TE/QB served models need a genuinely different idea, not a re-roll (for
 example more training seasons, or features the serving backtest says matter); later classes (stage 1)
 fail; prospective holdout from January 2027. **Next**: if the fix check passes, the cycle is done. Open research: RB (S1 fails D1 by 0.01 of slope;

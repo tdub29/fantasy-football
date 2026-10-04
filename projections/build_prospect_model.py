@@ -175,7 +175,7 @@ SCHOOL_ALIAS = {"mississippi": "ole miss", "central florida": "ucf", "ala birmin
                 "la monroe": "ul monroe", "louisiana monroe": "ul monroe", "middle tenn state": "middle tennessee",
                 "florida international": "florida intl", "louisiana lafayette": "louisiana"}
 # First-name forms joined as one (Cam/Cameron Newton, Matt/Matthew Slater, Will/William Franklin).
-NICK = {"cam": "cameron", "will": "william", "bill": "william", "billy": "william", "ken": "kenneth",
+NICK = {"beanie": "christopher", "cam": "cameron", "will": "william", "bill": "william", "billy": "william", "ken": "kenneth",
         "kenny": "kenneth", "matt": "matthew", "mike": "michael", "chris": "christopher", "steve": "steven",
         "stevie": "steven", "stephen": "steven", "jon": "jonathan", "josh": "joshua", "joe": "joseph",
         "joey": "joseph", "tony": "anthony", "nick": "nicholas", "alex": "alexander", "zach": "zachary",
@@ -464,6 +464,8 @@ def link_college(draft: pd.DataFrame, espn_ids: pd.Series, ps: pd.DataFrame, met
         c = c[(sim >= 0.5) & (sim == sim.max())]
         if len(c) > 1:   # a stray season under his name on a second id: the id still carrying it wins
             c = c[c._k == key]
+        if len(c) > 1:   # same name, same school: the id that played closest to his draft (data lane, Stevie Johnson)
+            c = c[c.last_season == c.last_season.max()]
         if len(c) == 1:
             out[i] = int(c.index[0])
             methods[i] = "name_school"
@@ -1636,6 +1638,14 @@ def self_check():
     assert got.get(2) == 41, "an espn id whose college seasons run past his draft is someone else"
     assert got.get(3) == 50, "match any name the id was listed under"
     assert got.get(4) == 61, "a stray season under his name on another id does not make him ambiguous"
+    ps4 = pd.DataFrame({"player_id": pd.array([70, 71, 71, 80], dtype="Int64"), "season": [2006, 2006, 2007, 2008],
+                        "name": ["Steve Johnson", "Steve Johnson", "Steve Johnson", "Chris Wells"],
+                        "pos_team": ["Kentucky", "Kentucky", "Kentucky", "Ohio State"]})
+    dr4 = pd.DataFrame({"pfr_player_name": ["Stevie Johnson", "Beanie Wells"], "season": [2008, 2009],
+                        "college": ["Kentucky", "Ohio St."]})
+    got = link_college(dr4, pd.Series([np.nan, np.nan]), ps4)
+    assert got.get(0) == 71, "same name and school: the id that played closest to the draft"
+    assert got.get(1) == 80, "Beanie is Chris (Christopher) Wells"
 
     # 3. no post-draft input in any talent model, and the talent profile ignores the pick.
     for pos, cols in FEATS.items():
