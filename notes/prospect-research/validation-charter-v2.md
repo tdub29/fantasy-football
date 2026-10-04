@@ -132,3 +132,14 @@ then fills as an average recruit.
 Same population, folds, baseline and rules as B1-B4. If more than one population B candidate passes
 at a position, the in-season (pre-combine) model ships the one with the lowest forward log loss and
 the choice is disclosed as a selection among passing candidates.
+
+## Addendum 3, 2026-10-04 (committed before any candidate below was scored)
+
+Follow-ups to logged results, labelled as such.
+
+| ID | Candidate | Weakness it targets |
+|---|---|---|
+| A13 | Population A full model with one extra talent feature: the logit of the population B pre-draft probability for his college position (the addendum 2 pick: QB B5, RB B1, WR B5, TE B2), taken from population B forward folds (each class scored by a model trained only on classes whose window had closed, first scored class 2011), so no row's feature saw its own or a later class's outcome | v1 talent features learned from ~300 draftees per position; the B model learned from ~1,000-4,000 exits |
+| B7 | B2 plus A11 and A12 features (team offense, schedule strength, first-down share, explosive rate) on population B | context features may matter more across all exits than among draftees |
+
+Same folds and rules. A13's population B feature is rebuilt inside the run from the same store.
