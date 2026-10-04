@@ -205,8 +205,11 @@ bands, **gold** as selection, and the **six semantic hues** as category and tier
 
 ### Surfaces
 
-- **Turf** (#3f9f43, deep #2c7a31) is the page ground, a vertical gradient with a halftone dot mesh
-  and chalk yardlines over it.
+- **Turf** (#3f9f43, deep #2c7a31) is the page ground, drawn as pixel art since 2026-10-04 (after
+  the Eagles Eric video, `notes/design/`): four hard vertical bands instead of a blend, a 2px
+  checker dither, hard mow stripes, chalk yardlines, and 5x7 bitmap yard numerals with a pixel
+  arrow toward the nearer goal line, on the bottom sideline only (the top row sat behind every
+  page header). `site/check-field-tile.py` guards the geometry.
 - **Panel** (#e9e9fa) is the card and plate face. Light enough that navy ink clears AA on it.
 - **Panel Alt** (#d5d5f0) is the even table row and the default button face.
 - **Periwinkle** (#b9b9e4) is chip backgrounds.
@@ -253,10 +256,18 @@ A bespoke gradient in a component is the thing to avoid now, not gradients thems
 
 ## 3. Typography
 
-**Display and body font:** the system sans stack. One family, every weight, weights pushed heavier
-than before (700 to 900 where the old system used 600 to 700). The reference has no thin type.
+**Display font:** Baloo 2 (`--font-display`), rounded and heavy, on page titles, card bands and
+callouts. **Body font:** Nunito (`--font-body`). Weights run heavy (700 to 900). The reference
+has no thin type. The frontmatter's system-sans entries above predate both and are fallbacks only.
 
-**Numeric font:** the same stack with `font-variant-numeric: tabular-nums` enforced everywhere.
+**Pixel font:** Jersey 10 (`--font-pixel`), and only for the numbers a scoreboard would show: the
+strength score, the player card number band, and the LED freshness panel. Never body copy, labels
+or dense table cells. It has one weight, so `font-synthesis: none`; it ships tabular figures.
+
+**Numeric font:** whichever face the role uses, with `font-variant-numeric: tabular-nums` enforced.
+
+**Pixel icons:** nav and Cmd+K icons are 9x9 bitmaps drawn as SVG rects at 2px a cell
+(`PIXEL_ICONS` in app.js), one grid and one weight for all of them.
 
 **Character:** the personality now lives partly in the type, which is a change. Page titles are
 gold with a 3px ink stroke via `-webkit-text-stroke` and `paint-order: stroke fill`, uppercase,
@@ -283,6 +294,9 @@ uppercase.
 Stroked body text is unreadable at small sizes and stroked labels turn a table into a poster.
 
 **The 65 to 75ch Rule** is unchanged for body copy.
+
+**The One-Pixel-Face Rule.** Baloo 2, Nunito and Jersey 10 are the three families, which is the
+ceiling. A second pixel face, or pixel type on body copy, breaks it.
 
 ## 4. Elevation
 

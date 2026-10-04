@@ -71,7 +71,11 @@ def main() -> int:
         problems.append("field layers must not repeat; browser zoom otherwise creates multiple fields")
 
     # The geometry that the two reported bugs were about.
-    nums = [int(m) for m in re.findall(r"%3Ctext x='(\d+)'", img)]
+    # Numerals are 5x7 bitmap rect groups, one <g id='nX'> per numeral centred on X.
+    nums = [int(m) for m in re.findall(r"%3Cg id='n(\d+)'", img)]
+    cell_bottoms = [int(y) + 6 for y in re.findall(r"y='(\d+)' width='\d+' height='6'", img)]
+    if cell_bottoms and max(cell_bottoms) > 52:
+        problems.append(f"a numeral cell ends at y={max(cell_bottoms)}, inside the hash band below y=52")
     if nums:
         chalk = 120  # one 5-yard segment on the 1-yard = 24px grid
         bisected = [x for x in nums if min(x % chalk, chalk - x % chalk) < 24]
