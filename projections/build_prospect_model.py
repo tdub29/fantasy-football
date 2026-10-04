@@ -972,7 +972,7 @@ def fit_stage(ps, bio, d, t, age0) -> dict:
         fy = r["young_stage_1_2"]["fwd"]
         kind = NEXT_MODEL.get(pos, "S1")
         cols = list(r["cols"])
-        live_n = int(kind[3:]) if kind.startswith(("S4", "S5")) else None
+        live_n = int(kind[3:]) if kind.startswith(("S4", "S5", "S6")) else None
         if live_n:   # addendum 12: plus the next season's first n games
             import prospect_live as pl
             live = pl.live_features(_CON, live_n)
@@ -983,7 +983,11 @@ def fit_stage(ps, bio, d, t, age0) -> dict:
         if kind.startswith("S5"):   # addendum 14: only rows shaped like the served ones
             tp = tp[(tp.stage >= 2) & tp.plays_next]
         X, y = tp[cols].to_numpy(float), tp.hit.to_numpy(float)
-        if kind == "S3" or live_n:
+        if kind.startswith("S6"):   # addendum 15: S4 recalibrated on served-shaped rows
+            import prospect_experiments_b as peb
+            model = peb.RecalLR(cols.index("stage")).fit(X, y, tp.draft_year.to_numpy(int),
+                                                        ((tp.stage >= 2) & tp.plays_next).to_numpy())
+        elif kind == "S3" or live_n:
             import prospect_experiments_b as peb
             model = peb.NestedLR().fit(X, y, tp.draft_year.to_numpy(int))
         else:
@@ -1186,7 +1190,7 @@ def score_college(ps, bio, final, age0, top_n=60):
         if pos in NEXT_STAGE:
             m = fin["stage"]
             d_ = done
-            if m["kind"].startswith(("S4", "S5")):
+            if m["kind"].startswith(("S4", "S5", "S6")):
                 d_ = with_live(done, subj, ps, int(m["kind"][3:]))
             s = stage_score(s, d_, m, age0, which="next")
         s = s.sort_values("_tp", ascending=False)
@@ -1323,7 +1327,7 @@ FIELDS = {
     "r": "College only: hit probability if drafted in [Round 1, Round 2, Round 3, Day 3], at the scored exit",
     "pd": "College only: pre-draft hit probability counting the chance he goes undrafted, from his completed college "
           "seasons and with no exit assumed. Next class: pos[].stage with stage.next (career-stage model, variant in "
-          "stage.model: S1 fixed C, S3 tuned C, S4n = S3 plus his team's first n games this season, n in stage.live_n, S5n = S4n fit on served-shaped rows) or "
+          "stage.model: S1 fixed C, S3 tuned C, S4n = S3 plus his team's first n games this season, n in stage.live_n, S5n = S4n fit on served-shaped rows, S6n = S4n recalibrated on served-shaped rows) or "
           "pos[].predraft (exit model); later classes: pos[].stage with stage.later. Null where no reviewed model serves "
           "that class, he has no completed qualifying season, or (S4) his team has not played n games or he has no stat line this season",
     "pdx": "College only: the draft year pd assumes (the lower of leaving after this season or, for a junior, one more)",

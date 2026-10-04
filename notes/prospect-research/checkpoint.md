@@ -99,6 +99,28 @@ said plainly that most of the AUC gain is separating who gets drafted (among dra
   the next one), each in its own write zone with a private copy of the store. The coordinator keeps
   RB/WR and integrates; only reviewed candidates reach the builder.
 
+## Cycle 9 (2026-10-04, resumed after the usage-limit stop): S6n4; lane results reconciled
+
+- Addendum 15 S6n4 (S4n4 recalibrated on served-shaped rows; replacement tests at 95% of 200,000
+  resamples), `python projections/prospect_serving_backtest.py RB=S6n4 WR=S6n4`:
+  - WR: every gate passes (all 1.08/1.14, first-eligible 1.07/1.22, D1 0.98/1.08); served log loss
+    0.0649 (S3) to 0.0618, better in 100% of resamples; also beats S4n4 (90%). First-eligible slope
+    1.22 sits near the 1.25 ceiling. To independent review J; builder can serve it (gated).
+  - RB: gates pass (D1 0.90/0.85) but it beats the shipped S4n4 in only 39%. Rejected at RB.
+- TE lane (closed): T1-T3 fail the all-rows and top-60 ratio (1.35-1.41); power check says a correct
+  TE model clears all six gates about a third of the time. T2 frozen prospectively
+  (`lanes/te/prospective-t2.json`), serves nothing. Open proposals, not adopted: a minimum-history
+  replay window (would move a fold after seeing results) and a NestedLR guard for replays whose only
+  scorable inner class has no hit (C = 3 at the 2012 replay); the guard needs a re-score of every
+  shipped model before adoption.
+- QB lane (interrupted by the limit, resumed): Q3 (nested recalibration-in-the-large of S3) passes
+  every gate, FRAGILE (first-eligible ratio 0.82, joint support 14%, beats stars plus year in 93%);
+  Q1 and Q2 fail. results.md pending.
+- Young lane (interrupted): YL1 at RB (sophomore-only stage model on served-shaped rows) passes every
+  later-class gate, FRAGILE (67% and 53% support; D1L slope 1.26 without the last replay). Every other
+  cell fails; QB and TE later classes have under 15 events and cannot be validated. To review K.
+- Data-gaps lane: interrupted before any result; resumed.
+
 **Next (open research)**: RB/TE/QB served models need a genuinely different idea, not a re-roll (for
 example more training seasons, or features the serving backtest says matter); later classes (stage 1)
 fail; prospective holdout from January 2027. **Next**: if the fix check passes, the cycle is done. Open research: RB (S1 fails D1 by 0.01 of slope;
