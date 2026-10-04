@@ -55,18 +55,23 @@ separating who gets drafted at all: among drafted players alone the AUC is 0.70-
 0.52-0.61 for stars (review B). The draft-bucket model built on the same features predicts the round
 range far better than base shares (multiclass log loss 0.52 to 0.34 at WR), but it is not shipped.
 
-**What ships (2026-10-04, after seven reviews).** A pre-draft hit chance for the next draft class at
-**WR only**, from a career-stage model (S3): every FBS receiver who left college since 2008 adds one
-row per completed season, so a junior is compared with juniors on his completed seasons, with no exit
-assumed and C tuned inside training data (0.03 in practice). Replayed on the 2012-2021 seasons through
-the served code (`prospect_serving_backtest.py`), it beats recruiting stars plus college year (log loss
-0.080 to 0.065, AUC 0.77 to 0.90; among drafted receivers alone the AUC gain is 0.09 of the 0.13) and
-ranks better than the Talent score. Its average forecast ran 15% high over all replays, 1% high on each
-season's top 60 (the list the board shows, display rule D1) and 19% low on the 2017-2021 replays.
-RB passed the gates with a near-copy of a model that had failed (62% resampling support) and is held
-back; TE and QB fail the serving backtest; the first version, an exit-scenario transform, was pulled
-when the backtest found it 2x low for first-eligible players. Everything after the draft is still draft
-capital alone.
+**What ships (2026-10-04, after eight reviews).** A pre-draft hit chance for the next draft class at
+**WR and RB**, from career-stage models: every FBS player who left college since 2008 adds one row per
+completed season, so a junior is compared with juniors, with no exit assumed and C tuned inside
+training data. Replayed on the 2012-2021 seasons through the served code (`prospect_serving_backtest.py`):
+- **WR (S3, completed seasons only)** beats recruiting stars plus college year (log loss 0.080 to 0.065,
+  AUC 0.77 to 0.90; among drafted receivers alone the AUC gain is 0.09 of the 0.13). Average forecast
+  ran 15% high over all replays, 1% high on each season's top 60 (the list shown, display rule D1) and
+  19% low on the 2017-2021 replays.
+- **RB (S4n4, completed seasons plus his team's first 4 games this season)** beats stars plus college
+  year (log loss 0.148 to 0.118) and the completed-seasons model S3 (0.121 to 0.118, 92% of season
+  resamples). Ratio 1.03 overall, 0.97 first-eligible, 1.04 on the top 60. Known risk: the top-60
+  calibration slope (0.79) clears its 0.75 floor in only 68% of resamples. No number until his team
+  has played 4 games or if he has no stat line this season.
+
+TE and QB fail the serving backtest; WR with live games ran 31% high; the first version, an
+exit-scenario transform, was pulled when the backtest found it 2x low for first-eligible players.
+Everything after the draft is still draft capital alone.
 
 ## What it predicts
 

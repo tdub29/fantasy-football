@@ -75,6 +75,16 @@ said plainly that most of the AUC gain is separating who gets drafted (among dra
   support on the display rule and is a near-copy of S1, so it is held back as a re-roll. Copy fixes in;
   WR now serves S3. Site tests and prospect verify-app checks pass.
 
+
+## Cycle 7 (2026-10-04): live as-of-game features (S4); RB ships S4n4
+
+- Per-game box scores (sportsdataverse player and team box, 2004-2026) in the store; addendum 12
+  registered S4 = S3 plus the first N team games of the season in progress, N = 4 and 8.
+- Serving backtest: RB S4n4 passes every gate (beats S3 in 92% of resamples); RB S4n8 fails D1
+  (0.67); WR S4 fails the all-rows ratio (1.31/1.34); TE and QB fail.
+- Review H confirmed RB S4n4 with fixes: addendum 13 (fixed N=4, no S3 fallback, 68% D1 support as a
+  known risk), three copy fixes. RB now serves S4n4; site tests and prospect verify-app checks pass.
+
 **Next (open research)**: RB/TE/QB served models need a genuinely different idea, not a re-roll (for
 example more training seasons, or features the serving backtest says matter); later classes (stage 1)
 fail; prospective holdout from January 2027. **Next**: if the fix check passes, the cycle is done. Open research: RB (S1 fails D1 by 0.01 of slope;

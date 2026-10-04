@@ -267,3 +267,19 @@ games. Serving: the largest N his team has reached; below 4 games, S3 alone.
 Gates, per N and position: the addendum 8 serving backtest replayed with live features through N
 games (overall and first-eligible) and display rule D1; to replace S3 at WR, also lower served log
 loss than S3 in at least 90% of season resamples. Then an independent review.
+
+## Addendum 13, 2026-10-04 (after S4 was scored; a serving change, not a new candidate)
+
+Written after the S4 numbers were seen, so it is labelled as a deviation from addendum 12, not a
+pre-registration. Results: RB S4n4 passed every gate; RB S4n8 failed D1 (slope 0.67); WR S4n4 and
+S4n8 failed the all-rows ratio (1.31, 1.34); TE and QB failed.
+
+Serving differs from addendum 12 in two ways, and the backtest replayed exactly this rule:
+1. Always the first 4 team games, never 8, because N=8 failed. Later in the season the number still
+   uses games 1-4 only.
+2. Below 4 team games, or with no stat line this season, no number at all instead of an S3
+   fallback, so one displayed list never mixes two models.
+
+Known risk, recorded by review H: the D1 slope pass (0.79) has 68% support under season resampling
+(RB S3 had 62-64%), and a top-70 cut gives 0.74. The top-60 ratio is robust (90% interval
+0.95-1.13). The prospective holdout scores this when the 2027 class's outcome window closes.

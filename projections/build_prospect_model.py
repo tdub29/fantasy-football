@@ -147,7 +147,11 @@ STAGE: set[str] = set()
 # served log loss in every season resample (review G). RB is held back: S3 passes the registered gates
 # but its display-rule pass has 62% resampling support and it is effectively S1 (logit correlation
 # 0.993), which failed that rule; shipping it would be a re-roll, not a demonstrated improvement.
-NEXT_MODEL: dict[str, str] = {"WR": "S3"}
+# S4n = S3 plus his team's first n games of the season in progress (addenda 12-13, prospect_live.py).
+# RB: S4n4 (2026-10-04, review H): every gate passed, beats S3 on served log loss in 92% of season
+# resamples, and is a different model (logit correlation 0.944). Known risk: its D1 slope pass has
+# 68% resampling support. N=8 failed D1 (0.67); WR S4 failed the all-rows ratio, so WR stays on S3.
+NEXT_MODEL: dict[str, str] = {"WR": "S3", "RB": "S4n4"}
 NEXT_STAGE: set[str] = set(NEXT_MODEL)
 # Positions where the charter v2 candidate A10 ships: a fixed 50/50 average of the draft-only and
 # talent + capital logits. Listed only after it passed the charter's five numeric rules on identical
@@ -1226,9 +1230,10 @@ def predraft_profile(subj, ps, age0, season=SEASON) -> pd.DataFrame:
 
 
 def with_live(done, subj, ps, n, season=SEASON) -> pd.DataFrame:
-    """Attach the live line from his team's first n games of `season`. A player whose team has not
-    reached n games is dropped from `done` (no number yet); one who missed those games gets has_live 0,
-    as the training rows do."""
+    """Attach the live line from his team's first n games of `season` (addendum 13: always the first n,
+    even later in the season). Dropped from `done` (no number yet): a player whose team has not reached
+    n games, and one with no stat line this season (his team is unknown). One whose team reached n
+    games but who missed those games gets has_live 0, as the training rows do."""
     import prospect_live as pl
     live = pl.live_features(_CON, n)
     played = pl.team_games_played(_CON, season)
@@ -1315,9 +1320,10 @@ FIELDS = {
     "out": "Observed: [hit 0/1, best PPR PPG, best rank among that season's players at his draft position]",
     "r": "College only: hit probability if drafted in [Round 1, Round 2, Round 3, Day 3], at the scored exit",
     "pd": "College only: pre-draft hit probability counting the chance he goes undrafted, from his completed college "
-          "seasons only (the live season is not used) and with no exit assumed. Next class: pos[].stage with stage.next "
-          "(career-stage model, variant in stage.model: S1 fixed C, S3 tuned C) or pos[].predraft (exit model); later classes: pos[].stage with stage.later. Null where "
-          "no reviewed model serves that class or he has no completed qualifying season",
+          "seasons and with no exit assumed. Next class: pos[].stage with stage.next (career-stage model, variant in "
+          "stage.model: S1 fixed C, S3 tuned C, S4n = S3 plus his team's first n games this season, n in stage.live_n) or "
+          "pos[].predraft (exit model); later classes: pos[].stage with stage.later. Null where no reviewed model serves "
+          "that class, he has no completed qualifying season, or (S4) his team has not played n games or he has no stat line this season",
     "pdx": "College only: the draft year pd assumes (the lower of leaving after this season or, for a junior, one more)",
     "cls": "College only: first eligible draft year",
     "cid": "College only: ESPN college athlete id (the key in the SQLite store, projections/prospect_db.py)",

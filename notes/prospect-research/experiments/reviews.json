@@ -119,6 +119,14 @@
   "S3 RB": {
    "verdict": "confirmed under the charter, held back (62% resampling support, near-copy of S1)",
    "by": "review-g-2026-10-04.md"
+  },
+  "S4n4 RB": {
+   "verdict": "confirmed, shipped after fixes (D1 slope pass has 68% resampling support, recorded as a known risk in addendum 13)",
+   "by": "review-h-2026-10-04.md"
+  },
+  "S4n8 RB": {
+   "verdict": "rejected (D1 slope 0.67, 20% resampling support)",
+   "by": "review-h-2026-10-04.md"
   }
  }
 }
