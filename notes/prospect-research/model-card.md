@@ -29,6 +29,32 @@ college talent score is a pre-draft profile, not a forecast, at QB, RB, WR and T
 The conclusion does not depend on which capital curve is the baseline: talent + capital also loses
 the holdout to the old straight line in log pick at QB, RB and WR.
 
+## Charter v2 research, 2026-10-03 to 2026-10-04
+
+Rules, candidates and every number: `validation-charter-v2.md`, `experiments/ledger.md`,
+`experiments/ledger-b.md`, the per-candidate JSON beside them, and three independent reviews in
+`experiments/review-*.md`. Data now comes from a local SQLite store (`projections/prospect_db.py`);
+coverage by class is in `data-coverage.md`.
+
+**After the draft (capital known): draft-only stays at every position, now on firmer evidence.**
+Fifteen candidates (A0-A14) were scored on identical embargoed forward folds, 2013 to the last mature
+class. One passed the numeric rules (A10, a 50/50 blend at RB) and was rejected on review: v1's
+feature sets were pruned on every class, including the ones used to test, so any candidate built on
+them is flattered, and two classes carried that pass. A14 removes the leak by choosing features
+inside each training fold; it loses to draft capital alone at QB, RB and TE and does not clear the
+bootstrap at WR. The 2020-2023 classes are spent as a holdout, so 2024-2026 predictions are frozen
+in `experiments/prospective-2024-2026.json` for scoring from January 2027.
+
+**Before the draft: a real forecast now exists.** v1 trained only on drafted players, so its college
+numbers were conditional on a draft that has not happened. Population B (`prospect_population.py`)
+holds every FBS QB/RB/WR/TE who left college since 2008, drafted or not, about 8,100 mature exits,
+with undrafted NFL players linked and never-played players as real zeros. Fit on all of them, the
+college profile beats recruiting stars by a wide margin on forward folds at every position (log loss
+WR 0.093 to 0.062, RB 0.155 to 0.099, TE 0.144 to 0.100, QB 0.147 to 0.116). Most of that is
+separating who gets drafted at all: among drafted players alone the AUC is 0.70-0.74, against
+0.52-0.61 for stars (review B). The draft-bucket model built on the same features predicts the round
+range far better than base shares (multiclass log loss 0.52 to 0.34 at WR), but it is not shipped.
+
 ## What it predicts
 
 | Position | Hit | Window | Base rate | Training classes |
