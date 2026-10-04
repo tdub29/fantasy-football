@@ -249,3 +249,21 @@ leave-one-class-out on that replay's training snapshots, from {0.03, 0.1, 0.3, 1
 as S1. Same gates: the addendum 8 serving backtest (overall and first-eligible) AND display rule D1,
 then an independent review. Exploratory follow-up; WR is scored too but its shipped S1 stays unless
 S3 passes every gate with lower served log loss.
+
+## Addendum 12, 2026-10-04 (before S4 was built or scored)
+
+Every served failure so far traces to the same gap: the forecast cannot see the season in progress,
+and the junior-year jump is where most hits separate. sportsdataverse `espn_cfb_player_box` and
+`espn_cfb_team_box` (per-game lines, 2004-2026, same release host and licence) make as-of-game
+features reconstructible for every past season.
+
+**S4**: S3 plus live features from the first N games his team played in the season in progress
+(N = 4 and N = 8, fit separately): games he appeared in, receiving yards per team pass attempt (team
+attempts from the team box, floored at the PASS_DEN_PG rate), share of team receiving yards,
+scrimmage yards per game, and a `has_live` flag (0 when he did not play that season; values median
+filled). Training: every career-stage snapshot k with live features from season k + 1's first N team
+games. Serving: the largest N his team has reached; below 4 games, S3 alone.
+
+Gates, per N and position: the addendum 8 serving backtest replayed with live features through N
+games (overall and first-eligible) and display rule D1; to replace S3 at WR, also lower served log
+loss than S3 in at least 90% of season resamples. Then an independent review.
