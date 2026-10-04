@@ -85,6 +85,20 @@ said plainly that most of the AUC gain is separating who gets drafted (among dra
 - Review H confirmed RB S4n4 with fixes: addendum 13 (fixed N=4, no S3 fallback, 68% D1 support as a
   known risk), three copy fixes. RB now serves S4n4; site tests and prospect verify-app checks pass.
 
+## Cycle 8 (2026-10-04): S5n4 (live model on served-shaped rows); parallel lanes
+
+- Addendum 14 registered S5n4 before scoring. Serving backtest
+  (`python projections/prospect_serving_backtest.py RB=S5n4 WR=S5n4 TE=S5n4 QB=S5n4`):
+  - RB: every gate passes (all 0.92/1.00, D1 0.84/0.78) but it loses to the shipped S4n4 (14% of
+    season resamples). Rejected at RB on the replacement test.
+  - WR: every gate passes (all 1.12/1.16, first-eligible 0.92/1.20, D1 1.00/1.11) and it beats the
+    shipped S3 on served log loss (0.0649 to 0.0635) in 91% of resamples, one point over the floor.
+    FRAGILE; sent to independent review I.
+  - TE: fails (all 1.39/0.83, D1 1.32/0.73). QB: fails (first-eligible 0.77/1.27).
+- Parallel lanes launched (`notes/prospect-research/lanes/README.md`): QB, TE and young (classes after
+  the next one), each in its own write zone with a private copy of the store. The coordinator keeps
+  RB/WR and integrates; only reviewed candidates reach the builder.
+
 **Next (open research)**: RB/TE/QB served models need a genuinely different idea, not a re-roll (for
 example more training seasons, or features the serving backtest says matter); later classes (stage 1)
 fail; prospective holdout from January 2027. **Next**: if the fix check passes, the cycle is done. Open research: RB (S1 fails D1 by 0.01 of slope;
