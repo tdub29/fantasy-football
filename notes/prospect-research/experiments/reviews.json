@@ -167,6 +167,10 @@
   "T3 TE": {
    "verdict": "fails the all-rows and top-60 ratio (all 1.41/0.90)",
    "by": "lanes/te/results.md"
+  },
+  "YL1 RB": {
+   "verdict": "confirmed, fragile; shipped for RB sophomores (later classes) after fixes a-e (own later model, D1L list, no TEAM rows, copy, prospective freeze)",
+   "by": "review-k-2026-10-04.md"
   }
  }
 }

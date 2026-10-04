@@ -125,6 +125,14 @@ said plainly that most of the AUC gain is separating who gets drafted (among dra
   cell fails; QB and TE later classes have under 15 events and cannot be validated. To review K.
 - Data-gaps lane: interrupted before any result; resumed.
 
+## Cycle 10 (2026-10-04): RB sophomores ship (YL1); QB closed
+
+- Review K confirmed YL1 at RB, fragile, with fixes a-e; all applied. `LATER_MODEL = {"RB": "YL1"}`,
+  own later fit in `fit_stage`, display rule D1L, TEAM rows excluded, later copy rewritten, list frozen
+  prospectively. Addendum 16 records the adoption. Build, site tests and prospect verify-app pass.
+- QB lane closed: Q3 rejected on the served population (see cycle 9 entry). TE lane closed.
+- Still open: review J (WR S6n4), data-gaps lane.
+
 **Next (open research)**: RB/TE/QB served models need a genuinely different idea, not a re-roll (for
 example more training seasons, or features the serving backtest says matter); later classes (stage 1)
 fail; prospective holdout from January 2027. **Next**: if the fix check passes, the cycle is done. Open research: RB (S1 fails D1 by 0.01 of slope;

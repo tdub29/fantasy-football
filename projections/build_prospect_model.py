@@ -133,10 +133,13 @@ BOOT_P = 0.8   # a model must beat draft-only in 80% of draft-class bootstrap re
 PREDRAFT: dict[str, str] = {}
 # QB is out: its only passing candidate (B9) leaned on receiving columns that are noise for passers
 # and its calibration pass was a coin flip under resampling (experiments/review-c-2026-10-04.md).
-# Positions whose career-stage model (B14, prospect_stage.py) passed the rules on all rows and on
-# freshman-sophomore rows AND an independent review: it serves the classes after the next one, from
-# completed seasons, with no exit assumption. Empty = those classes get no pre-draft number.
-STAGE: set[str] = set()
+# Classes after the next one: position -> served model, its own fit (not the next-class model).
+# YL1 (young lane, review K, 2026-10-04): fit only on served-shaped sophomore rows (a completed freshman
+# season, then played the next), numbers college sophomores only; freshmen get none. RB only: it passed
+# every later-class gate, fragile (support 67% all rows, 53% on the list's top 30); every other
+# position failed or had under 15 events. B14's pooled fit ran about 28% low on these players.
+LATER_MODEL: dict[str, str] = {"RB": "YL1"}
+STAGE: set[str] = set(LATER_MODEL)
 # Positions whose NEXT draft class is served by the career-stage model fit on every completed season
 # (S1, charter v2 addendum 9): from completed seasons, no exit scenario. Listed only after it passed
 # the serving backtest (prospect_serving_backtest.py) and an independent review.
@@ -909,9 +912,13 @@ def build(verbose=True):
     for pos, m in fit_predraft(ps, bio, d, t, age0).items():
         final[pos]["predraft"] = m
         results[pos]["predraft"] = m["meta"]
-    for pos, m in fit_stage(ps, bio, d, t, age0).items():
+    nxt_m, later_m = fit_stage(ps, bio, d, t, age0)
+    for pos, m in nxt_m.items():
         final[pos]["stage"] = m
         results[pos]["stage"] = m["meta"]
+    for pos, m in later_m.items():
+        final[pos]["later"] = m
+        results[pos]["later"] = m["meta"]
     college = score_college(ps, bio, final, age0)
     # Generated-data consistency: a pre-draft number exists exactly where a reviewed model ships.
     for r in college:
@@ -953,10 +960,11 @@ def fit_predraft(ps, bio, d, t, age0) -> dict:
     return out
 
 
-def fit_stage(ps, bio, d, t, age0) -> dict:
-    """Fit B14 per STAGE position on every mature snapshot (prospect_stage.py)."""
+def fit_stage(ps, bio, d, t, age0) -> tuple[dict, dict]:
+    """Career-stage models on mature snapshots (prospect_stage.py): the next-class model per NEXT_STAGE
+    position and the later-class model per STAGE position (LATER_MODEL)."""
     if not (STAGE or NEXT_STAGE):
-        return {}
+        return {}, {}
     import prospect_population as pp
     import prospect_stage as pst
     e = pp.build(ps, bio, d, t, age0, _CON, say=lambda *a: None)
@@ -965,7 +973,7 @@ def fit_stage(ps, bio, d, t, age0) -> dict:
     sbt = ROOT / "notes" / "prospect-research" / "experiments" / "serving-backtest.json"
     sbt = json.loads(sbt.read_text(encoding="utf-8")) if sbt.exists() else {}
     out = {}
-    for pos in STAGE | NEXT_STAGE:
+    for pos in NEXT_STAGE:
         r = rec["results"][pos]
         tp = snap[(snap.cpos == pos) & snap.hit.notna()]
         X, y = tp[r["cols"]].to_numpy(float), tp.hit.to_numpy(float)
@@ -996,7 +1004,7 @@ def fit_stage(ps, bio, d, t, age0) -> dict:
             "model": kind, "rows": int(len(tp)), "players": int(tp.base_sid.nunique()),
             "logloss": round(r["fwd"]["cand"]["logloss"], 4), "base_logloss": round(r["fwd"]["base"]["logloss"], 4),
             "young_logloss": round(fy["cand"]["logloss"], 4), "young_base_logloss": round(fy["base"]["logloss"], 4),
-            "later": pos in STAGE, "next": pos in NEXT_STAGE,
+            "later": False, "next": True,
             "live_n": live_n}}
         b = sbt.get(f"{kind} {pos}")
         if b and pos in NEXT_STAGE:
@@ -1011,7 +1019,27 @@ def fit_stage(ps, bio, d, t, age0) -> dict:
                                           "players": b.get("players"), "players_hit": b.get("players_hit"),
                                           "top60_ratio": round(b["top60_by_pd"]["ratio"], 2),
                                           "late_ratio": round(b["replays_2017_2021"]["all"]["ratio"], 2)}
-    return out
+    lbt = ROOT / "notes" / "prospect-research" / "experiments" / "later-backtest.json"
+    lbt = json.loads(lbt.read_text(encoding="utf-8")) if lbt.exists() else {}
+    later = {}
+    for pos, kind in LATER_MODEL.items():
+        assert kind == "YL1", kind
+        import prospect_experiments_b as peb
+        cols = [c for c in pst.stage_cols(pos) if c not in ("stage", "age_k")]   # constant on these rows
+        tp = snap[(snap.cpos == pos) & snap.hit.notna() & (snap.stage == 1) & snap.plays_next]
+        model = peb.NestedLR().fit(tp[cols].to_numpy(float), tp.hit.to_numpy(float), tp.draft_year.to_numpy(int))
+        meta = {"model": kind, "rows": int(len(tp)), "players": int(tp.base_sid.nunique()), "hits": int(tp.hit.sum()),
+                "years": [2]}
+        b = lbt.get(f"{kind} {pos}")
+        if b:
+            v = b["vs_stars_year"]
+            meta["served"] = {"seasons": b["seasons"], "n": b["all"]["n"], "events": b["all"]["events"],
+                              "logloss": f"{v['cand_logloss']:.3f}", "base_logloss": f"{v['base_logloss']:.3f}",
+                              "ratio": round(b["all"]["ratio"], 2), "top_ratio": round(b["top30_by_pd"]["ratio"], 2),
+                              "support": round(b["all"]["support"], 2), "top_support": round(b["top30_by_pd"]["support"], 2),
+                              "drafted_auc": f"{b['extra']['drafted_auc']:.2f}", "drafted_base_auc": f"{b['extra']['drafted_base_auc']:.2f}"}
+        later[pos] = {"cols": cols, "model": model, "kind": kind, "stage_only": 1, "meta": meta}
+    return out, later
 
 
 def context_features(f, ps) -> pd.DataFrame:
@@ -1166,7 +1194,8 @@ def score_college(ps, bio, final, age0, top_n=60):
         # Plausible prospects only: a qualifying season on file, and for a QB a season as the
         # starter. The models were fit on draftees, nearly all of them starters, so a backup's
         # 30-attempt completion rate is an extrapolation, not a profile.
-        s = subj[(subj.pos == pos) & (subj.n_qual >= 1) & ((pos != "QB") | (subj.starts >= 1))].copy()
+        s = subj[(subj.pos == pos) & (subj.n_qual >= 1) & ((pos != "QB") | (subj.starts >= 1))
+                 & (subj.player_id > 0)].copy()   # negative ESPN ids are placeholder TEAM rows (review K)
         # Still playing and no breakout yet is censored, not late: "final age + 1" is right for a
         # finished career only. He can still break out, just not younger than he is now, so any
         # model using it sees the training median floored at his current age; the card shows a
@@ -1186,7 +1215,7 @@ def score_college(ps, bio, final, age0, top_n=60):
         if pre:
             s = predraft_score(s, done, pre, age0)
         if pos in STAGE:
-            s = stage_score(s, done, fin["stage"], age0)
+            s = stage_score(s, done, fin["later"], age0)
         if pos in NEXT_STAGE:
             m = fin["stage"]
             d_ = done
@@ -1197,7 +1226,13 @@ def score_college(ps, bio, final, age0, top_n=60):
         nxt = s[s.cls == SEASON + 1]
         if pos in NEXT_STAGE:   # display rule D1: the next class's top by its own forecast, not by Talent
             nxt = nxt.sort_values("_pd", ascending=False, na_position="last")
-        s = pd.concat([nxt.head(top_n), s[s.cls > SEASON + 1].head(top_n // 2)])
+        lat = s[s.cls > SEASON + 1]
+        if pos in STAGE:   # display rule D1L: the later list's top by its own forecast, then the rest by Talent
+            lat = pd.concat([lat[lat._pd.notna()].sort_values("_pd", ascending=False).head(top_n // 2),
+                             lat[lat._pd.isna()].head(top_n // 2)])
+        else:
+            lat = lat.head(top_n // 2)
+        s = pd.concat([nxt.head(top_n), lat])
         X = s[fin["cols"]].to_numpy(float)
         for i, (_, r) in enumerate(s.iterrows()):
             scen = []
@@ -1265,7 +1300,9 @@ def stage_score(s, done, m, age0, season=SEASON, which="later") -> pd.DataFrame:
     v["stage"] = ((season - 1) - v.hs_class + 1).clip(1, 6)
     v["age_k"] = age0 + (season - 1) - v.hs_class
     p = m["model"].predict_proba(v[m["cols"]].to_numpy(float))[:, 1]
-    ok = (v.n_qual >= 1).to_numpy()
+    ok = (v.n_qual >= 1).to_numpy().copy()
+    if m.get("stage_only") is not None:   # YL1 numbers one college year only
+        ok &= v.stage.eq(m["stage_only"]).to_numpy()
     s.loc[later, "_pd"] = np.where(ok, p, np.nan)
     return s
 
@@ -1328,7 +1365,8 @@ FIELDS = {
     "pd": "College only: pre-draft hit probability counting the chance he goes undrafted, from his completed college "
           "seasons and with no exit assumed. Next class: pos[].stage with stage.next (career-stage model, variant in "
           "stage.model: S1 fixed C, S3 tuned C, S4n = S3 plus his team's first n games this season, n in stage.live_n, S5n = S4n fit on served-shaped rows, S6n = S4n recalibrated on served-shaped rows) or "
-          "pos[].predraft (exit model); later classes: pos[].stage with stage.later. Null where no reviewed model serves "
+          "pos[].predraft (exit model); later classes: pos[].later (YL1: sophomores only, fit on served-shaped "
+          "sophomore rows). Null where no reviewed model serves "
           "that class, he has no completed qualifying season, or (S4) his team has not played n games or he has no stat line this season",
     "pdx": "College only: the draft year pd assumes (the lower of leaving after this season or, for a junior, one more)",
     "cls": "College only: first eligible draft year",

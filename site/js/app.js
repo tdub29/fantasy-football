@@ -12086,7 +12086,7 @@
     const meta = M.pos[pos] || {};
     const capOnly = meta.shipped === 'draft';
     const pre = meta.predraft;
-    const stg = meta.stage && meta.stage.later ? meta.stage : null;   // career-stage model, classes after the next one
+    const stg = meta.later || null;   // classes after the next one: their own model (YL1, sophomores only)
     const nst = meta.stage && meta.stage.next ? meta.stage : null;    // the same model serving the next class
     const next = M.season + 1;
     const hashFor = (p, m) => `#prospects/${p}${m === 'next' ? '' : `/${m}`}`;
@@ -12142,10 +12142,17 @@
           + `and ${pct(v.late_ratio)} on the 2017-2021 replays. Among drafted players alone its edge over stars plus college year is `
           + `smaller (AUC gain ${v.drafted_auc_gain} against ${v.auc_gain} overall), so much of it is telling who gets drafted at all.`;
       })() : null,
-      mode === 'later' && stg ? `Pre-draft here comes from a career-stage model: every FBS ${pos} who left college since 2008 `
-        + `contributes one row per completed season (${stg.rows.toLocaleString()} rows, ${stg.players.toLocaleString()} players), so a `
-        + `sophomore is compared with sophomores. On draft classes it never saw, freshman and sophomore rows scored log loss `
-        + `${stg.young_logloss} against ${stg.young_base_logloss} for recruiting stars plus college year.` : null,
+      mode === 'later' && stg && stg.served ? (() => {
+        const v = stg.served, pct = (r) => `${Math.round(Math.abs(r - 1) * 100)}% ${r >= 1 ? 'above' : 'below'}`;
+        return `Pre-draft for sophomores comes from a model fit only on ${pos}s who finished a college freshman season and `
+          + `played the next one (${stg.players.toLocaleString()} players, ${stg.hits} hits). Freshmen get no number yet. `
+          + `Numbered sophomores lead this list by that chance; the rest follow by Talent. Replayed on the ${v.seasons} seasons `
+          + `through the same code (${v.n.toLocaleString()} player-seasons, ${v.events} hits): log loss ${v.logloss} against `
+          + `${v.base_logloss} for recruiting stars plus college year; the average forecast ran ${pct(v.ratio)} the real hit `
+          + `rate, ${pct(v.top_ratio)} on each season's top 30. Thin evidence: calibration held in ${Math.round(v.support * 100)}% `
+          + `of season resamples (${Math.round(v.top_support * 100)}% on the top 30), and among players who were drafted it ranks `
+          + `no better than stars (AUC ${v.drafted_auc} against ${v.drafted_base_auc}).`;
+      })() : null,
     ].filter(Boolean);
     main.appendChild(h('div', { class:'card prm-notes' }, ...notes.map(t => h('p', { class:'tip' }, t))));
 
@@ -12156,7 +12163,7 @@
       mode === 'later' ? ['cls', 'Eligible', { right:true, asc:true, title:'First draft he is eligible for' }] : null,
       ['ts', 'Talent', { right:true, title:`College profile, no draft capital: percentile vs drafted ${pos}s since 2008` }],
       ['tr', 'Tier', { asc:true, title:'Our tier, cut on the talent score' }],
-      (mode === 'later' && stg) ? ['pd', 'Pre-draft', { right:true, title:'Chance he hits, before the draft, counting the chance he goes undrafted, from his completed seasons compared with players at the same college year (B14)' }] : null,
+      (mode === 'later' && stg) ? ['pd', 'Pre-draft', { right:true, title:`Chance he hits, before the draft, counting the chance he goes undrafted, from his completed freshman season compared with other sophomores (${stg.model}). Sophomores only` }] : null,
       mode === 'next' && nst ? ['pd', 'Pre-draft', { right:true, title:`Chance he hits, before the draft, counting the chance he goes undrafted, from his completed seasons${nst.live_n ? ` plus his team's first ${nst.live_n} games this season` : ''} compared with players at the same college year (${nst.model})` }] : null,
       mode === 'next' && pre ? ['pd', 'Pre-draft', { right:true, title:`Chance he hits, before the draft, counting the chance he goes undrafted (${pre.model}; scored at the more conservative of leaving after this season or one more)` }] : null,
       rookies ? ['hp', 'Hit %', { right:true, title:capOnly ? 'Draft capital alone' : 'College profile plus his actual draft slot' }] : null,

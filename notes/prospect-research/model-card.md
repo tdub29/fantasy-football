@@ -55,7 +55,7 @@ separating who gets drafted at all: among drafted players alone the AUC is 0.70-
 0.52-0.61 for stars (review B). The draft-bucket model built on the same features predicts the round
 range far better than base shares (multiclass log loss 0.52 to 0.34 at WR), but it is not shipped.
 
-**What ships (2026-10-04, after eight reviews).** A pre-draft hit chance for the next draft class at
+**What ships (2026-10-04, after eleven reviews).** A pre-draft hit chance for the next draft class at
 **WR and RB**, from career-stage models: every FBS player who left college since 2008 adds one row per
 completed season, so a junior is compared with juniors, with no exit assumed and C tuned inside
 training data. Replayed on the 2012-2021 seasons through the served code (`prospect_serving_backtest.py`):
@@ -68,6 +68,12 @@ training data. Replayed on the 2012-2021 seasons through the served code (`prosp
   resamples). Ratio 1.03 overall, 0.97 first-eligible, 1.04 on the top 60. Known risk: the top-60
   calibration slope (0.79) clears its 0.75 floor in only 68% of resamples. No number until his team
   has played 4 games or if he has no stat line this season.
+
+- **RB sophomores (YL1, later classes)**: a model fit only on players who finished a freshman season and
+  played the next one. Replayed on 2012-2019, it beats stars plus college year (log loss 0.255 to 0.242,
+  94% of resamples) and runs 7% low (10% on each season's top 30). Fragile: calibration held in 67% of
+  resamples (53% on the top 30), and among drafted players it ranks no better than stars. Freshmen and
+  every other position get no later-class number.
 
 TE and QB fail the serving backtest; WR with live games ran 31% high; the first version, an
 exit-scenario transform, was pulled when the backtest found it 2x low for first-eligible players.

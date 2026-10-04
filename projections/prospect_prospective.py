@@ -64,6 +64,17 @@ def freeze_served(res: dict, tag: str, positions=("RB", "WR")):
              "sha256": hashlib.sha256(json.dumps(pmap, sort_keys=True).encode()).hexdigest()}
         book["entries"].append(e)
         print(f"froze {e['id']}: {len(pmap)} players, live through week {wk}")
+    for pos, m in ((p_, res["results"][p_].get("later")) for p_ in positions):
+        if not m:
+            continue
+        x = c[(c.p == pos) & (c.cls > bpm.SEASON + 1) & c.pd.notna()]
+        pmap = {str(int(k)): float(v) for k, v in zip(x.cid, x.pd)}
+        e = {"id": f"served later {m['model']} {pos} {tag}", "pos": pos, "model": m["model"], "class": sorted(set(int(v) for v in x.cls)),
+             "frozen_at_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
+             "git_head": head, "live_through_week": wk, "p_by_college_id": pmap,
+             "sha256": hashlib.sha256(json.dumps(pmap, sort_keys=True).encode()).hexdigest()}
+        book["entries"].append(e)
+        print(f"froze {e['id']}: {len(pmap)} players")
     path.write_text(json.dumps(book, indent=1) + "\n", encoding="utf-8")
 
 

@@ -326,3 +326,15 @@ season-resampling bootstrap with 200,000 resamples, and the candidate must beat 
 (S3 at WR, S4n4 at RB) in at least 95% of them. Then an independent review, which also checks the gain
 does not rest on a handful of rows. This is the tenth served candidate family.
 
+## Addendum 16, 2026-10-04 (adoption record for later classes, after review K)
+
+The young lane preregistered its later-class replay, display rule and candidates in
+`lanes/young/prereg.md` (commit b312698) before scoring; this addendum records adoption, not a new
+test. YL1 at RB passed every later-class gate (all rows 0.93/1.12, D1L top 30 0.90/1.21, beats stars
+plus college year in 94%) and review K confirmed it as fragile. It serves RB sophomores only; freshmen,
+and every other position, get no later-class number. Display rule D1L: the later list's numbered
+players lead by their own forecast (top 30), the rest follow by Talent. Known risks: calibration
+support 67% (all rows) and 53% (top 30); dropping any one of four replay seasons pushes the top-30
+slope above 1.25; among drafted players it ranks no better than stars. The prospective freeze in
+`experiments/prospective-served.json` scores it when the 2028 class's window closes.
+
