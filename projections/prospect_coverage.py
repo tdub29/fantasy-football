@@ -59,6 +59,13 @@ REGISTRY = {
     "starts": ("experience (QB)", "ESPN PBP", "end of final season", "pre + post", ["A14"]),
     "n_qual": ("experience", "seasons on file", "declaration", "pre", ["B2", "B8", "B10"]),
     "stars_missing": ("recruiting missingness", "247 stars null or unmatched", "signing day", "pre", ["B6"]),
+    "stage": ("college year", "season minus recruit class", "any time", "pre (served)", ["S1", "S2", "S3"]),
+    "age_k": ("age (estimated)", "18.71 + seasons", "any time", "pre (served)", ["S1", "S2", "S3"]),
+    "live_yptpa": ("live production", "sportsdataverse player + team box", "after his team's 4th game", "pre (served)", ["S4n4", "S4n8", "S5n4"]),
+    "live_rec_share": ("live production", "sportsdataverse player box", "after his team's 4th game", "pre (served)", ["S4n4", "S4n8", "S5n4"]),
+    "live_scrim_pg": ("live production", "sportsdataverse player box", "after his team's 4th game", "pre (served)", ["S4n4", "S4n8", "S5n4"]),
+    "live_games": ("live availability", "sportsdataverse player box", "after his team's 4th game", "pre (served)", ["S4n4", "S4n8", "S5n4"]),
+    "has_live": ("live availability", "sportsdataverse player box", "after his team's 4th game", "pre (served)", ["S4n4", "S4n8", "S5n4"]),
 }
 # Families searched but never built, with the reason (see public-source-registry.md).
 NOT_BUILT = [
@@ -80,6 +87,32 @@ def verdicts() -> dict:
         r = json.loads(f.read_text(encoding="utf-8"))
         out[r["id"]] = {pos: x["verdict"] for pos, x in r["results"].items()}
     return out
+
+
+def served_table() -> list[str]:
+    """Pre-draft candidates replayed through the served code (prospect_serving_backtest.py), 2012-2021 seasons."""
+    sb, rv = EXP / "serving-backtest.json", EXP / "reviews.json"
+    if not sb.exists():
+        return []
+    b = json.loads(sb.read_text(encoding="utf-8"))
+    reviews = json.loads(rv.read_text(encoding="utf-8")).get("reviews", {}) if rv.exists() else {}
+    f = lambda x: f"{x['ratio']:.2f} / {x['slope']:.2f}" if x.get("ratio") is not None else "n/a"
+    L = ["", "### Served pre-draft models (serving backtest, next class, 2012-2021 replays)", "",
+         "Gates: mean ratio 0.8-1.25 and calibration slope 0.75-1.25 on all rows, first-eligible rows and (from addendum 10) "
+         "each season's top 60 by the model; then an independent review. Ratio / slope shown.", "",
+         "| Candidate | Position | All rows | First-eligible | Top 60 | Log loss vs stars + stage | Gates | Review |",
+         "|---|---|---|---|---|---|---|---|"]
+    for k, x in b.items():
+        cid, pos = k.split()
+        if not cid.startswith("S"):
+            continue
+        vs = x.get("vs_stars_stage", {})
+        ll = f"{vs['base_logloss']:.4f} to {vs['cand_logloss']:.4f}" if vs else "n/a"
+        top = x.get("top60_by_pd", {})
+        gates = "fail" if not x["pass"] else ("pass, D1 not scored" if "top60_pass" not in x else "pass" if x["top60_pass"] else "fail (D1)")
+        r = reviews.get(f"{cid} {pos}", {}).get("verdict", "")
+        L.append(f"| {cid} | {pos} | {f(x['all'])} | {f(x['first_eligible'])} | {f(top) if top else 'not scored'} | {ll} | {gates} | {r} |")
+    return L
 
 
 def write_report(con=None):
@@ -137,8 +170,9 @@ def write_report(con=None):
     for f, (fam, src, when, phase, ids) in REGISTRY.items():
         cov = f"{hist[f].notna().mean():.0%}" if f in hist else "n/a"
         tested = "; ".join(f"{i}: " + ", ".join(f"{p} {pe.final_verdict(i, p, s_).replace('**', '')}" for p, s_ in v[i].items())
-                           for i in ids if i in v) or "baseline/definition"
+                           for i in ids if i in v) or ("served models table below" if ids and ids[0][0] == "S" else "baseline/definition")
         L.append(f"| `{f}` | {fam} | {src} | {when} | {phase} | {cov} | {tested} |")
+    L += served_table()
     L += ["", "### Families searched and not built", "", "| Family | Reason | Disposition |", "|---|---|---|"]
     L += [f"| {a_} | {b_} | {c_} |" for a_, b_, c_ in NOT_BUILT]
     OUT.write_text("\n".join(L) + "\n", encoding="utf-8")
