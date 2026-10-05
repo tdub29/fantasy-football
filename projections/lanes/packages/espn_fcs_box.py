@@ -45,7 +45,10 @@ def events(y):
     if f.exists():
         return json.loads(f.read_text())
     ev = {}
-    for st, weeks in ((2, range(1, 17)), (3, [1])):
+    kinds = [(2, range(1, 17)), (3, [1])]
+    if y == 2020:   # FCS played spring 2021 under season 2020: season types 5 (regular) and 6 (playoffs)
+        kinds += [(5, range(1, 14)), (6, range(1, 4))]
+    for st, weeks in kinds:
         for w in weeks:
             d = get(f"{SITE}/scoreboard?groups=81&dates={y}&seasontype={st}&week={w}&limit=400")
             for e in d.get("events", []):

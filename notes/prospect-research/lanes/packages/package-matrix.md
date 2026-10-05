@@ -209,8 +209,8 @@ block, but 0.1-2.7% of FCS team-games a season have an empty team box (2004 2.7%
 2004, Old Dominion and Georgia State 2012). In 2016 per-team event counts equal stats.ncaa.org's
 schedule for 118 of 121 teams; FCS playoffs, the championship and the Celebration Bowl are captured.
 The same team and name appear under two ESPN ids 1-2 times a season in 2007-2012 and 20 times in
-2016 (one season split into two lines). 2013-2025 pulled afterwards (2020: 58 games; the spring 2021
-FCS season is not under the fall-2020 scoreboard weeks and is likely missing).
+2016 (one season split into two lines). 2013-2025 pulled afterwards (813-878 games a season; 2020 has 307 because the FCS played
+spring 2021 under season 2020, season types 5 and 6, which the fetcher now adds).
 
 `python projections/lanes/packages/fcs_parity.py <season> <data lane ncaa dir> <xwalk> <nfl_outside_b.csv>`:
 
@@ -263,7 +263,7 @@ FCS season is not under the fall-2020 scoreboard weeks and is likely missing).
    Before use: keep only FCS teams' lines (the pull also holds FBS and Division II opponents'
    one-game lines); flag team-seasons with empty boxes; bridge crosswalk ids with name + team; take
    the exit season from the last season on file, not draft year minus 1; put QB rushing on one sack
-   basis; check whether the spring 2021 FCS season needs its own pull.
+   basis.
 4. **`prospect_db`**: a `local` base in `SOURCES` reading a snapshot directory instead of `bpp.fetch`,
    same sha256 / `source_file` bookkeeping. Licence string: "ESPN APIs (undocumented, key-free;
    endpoints used by cfbfastR/sportsdataverse); ESPN terms; local research use only".

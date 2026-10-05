@@ -68,6 +68,8 @@ def main():
     for y in [int(a) for a in sys.argv[1:]]:
         write(recruit_rows(y), f"espn_recruits_{y}.parquet", man,
               f"sports.core.api.espn.com college-football seasons/{y}/recruits (+ one GET per record)")
+    for f in sorted((SCR / "espn_fcs").glob("lines_*.parquet")):   # FCS box-score season lines (espn_fcs_box.py)
+        write(pd.read_parquet(f), f"espn_fcs_{f.name}", man, "site.api.espn.com college-football scoreboard groups=81 + summary boxscore")
     xw = SCR / "espn_nfl_college_xwalk.parquet"
     if xw.exists():
         x = pd.read_parquet(xw)[["gsis_id", "espn_id", "status", "college_athlete_id", "espn_college_id", "fetched_at"]]
