@@ -50,7 +50,7 @@ $T/pkvenv/Scripts/python.exe projections/lanes/packages/nflreadpy_parity.py $T/p
 
 ## Next
 
-1. Recruit classes 2006-2014 finish: snapshot them and re-run `recruits_measure.py` on all classes.
+1. Done: all 21 recruit classes pulled, snapshotted and measured (R5, id-or-fallback join).
 2. When the recruit pull finishes: snapshot all classes, re-measure fill by class 2006-2026, report
    the coverage history the coordinator needs to preregister an ESPN-grade candidate.
 

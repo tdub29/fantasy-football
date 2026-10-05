@@ -197,6 +197,17 @@ so the fallback is graded where the id is a real roster id: precision 94.6% (201
 class 1,657, 2025 3,338, 2026 4,029, enough to serve the grade to current underclassmen. Recommended
 join: id where it is a roster id, else the fallback, the same rule for training and serving rows.
 
+**All 21 classes (2006-2026, 187,575 records), recommended join.** Classes before 2013 carry reissued
+ESPN ids (median about 4.5M) that no store roster uses, so by id alone they join 0% of population B
+rows with a first season 2006-2013; the fallback is the only route there (graded on the 2013 class:
+99.2% precise; older classes have no independent id to grade against). With
+`RECRUIT_FALLBACK=1 python projections/lanes/packages/recruits_measure.py <store> <pop_b> 2006 ... 2026`,
+over 9,344 population B rows with a first season 2006-2025: ESPN grades 71.9% (6,721) against 247's
+71.0% (6,636), either 81.6% (7,626); ESPN fills 990 of 2,708 rows 247 misses. ESPN coverage holds at
+65-86% a cohort from 2007 on (2006, the first class, 33%). Spearman with 247 stars 0.75 on 5,731 rows
+with both; univariate drafted AUC 0.705 (247) vs 0.711 (ESPN) on those rows, 0.636 on ESPN-only rows.
+Presence by outcome now matches 247's (ESPN drafted 85%, undrafted 70%; 247 84% / 69%).
+
 ### R6. ESPN box scores give FCS seasons with ESPN ids, before 2013 too (accepted as a source, reviewed)
 
 `python projections/lanes/packages/espn_fcs_box.py fetch|lines <season>` (ESPN site API scoreboard

@@ -69,6 +69,20 @@ def stars_247(con):
     return out
 
 
+def fallback_ids(rf, con, y):
+    """recruit_id -> college athlete id by recruit_fallback's rule (unique name + committed school)."""
+    ros = pd.read_sql("SELECT season, athlete_id, team_id, full_name FROM cfb_roster WHERE athlete_id IS NOT NULL", con)
+    ros["team_id"] = pd.to_numeric(ros.team_id, errors="coerce")
+    ros["_k"] = ros.full_name.map(bpp.norm_name)
+    r = rf.recruits(y)
+    r["_k"] = r.name.map(bpp.norm_name)
+    m = r.dropna(subset=["team_id"]).merge(ros[ros.season >= y].drop_duplicates(["_k", "team_id", "athlete_id"])
+                                           [["_k", "team_id", "athlete_id"]], on=["_k", "team_id"])
+    n = m.groupby("recruit_id").athlete_id.nunique()
+    m = m[m.recruit_id.isin(n[n == 1].index)].drop_duplicates("recruit_id")
+    return m[["recruit_id", "athlete_id"]].rename(columns={"athlete_id": "fallback"})
+
+
 def main():
     store, popb, years = sys.argv[1], sys.argv[2], [int(a) for a in sys.argv[3:]]
     con = sqlite3.connect(store)
@@ -82,6 +96,15 @@ def main():
     s = stars_247(con)
     b = pd.read_parquet(popb)
     b = b[b.player_id > 0].join(s, on="player_id")
+    if os.environ.get("RECRUIT_FALLBACK") == "1":
+        # id where it is a store roster id, else recruit_fallback.py's name + committed-school join
+        # (old classes carry reissued 4.4M+ ids no store roster uses)
+        import recruit_fallback as rf
+        ros_ids = set(pd.read_sql("SELECT DISTINCT athlete_id FROM cfb_roster", con).athlete_id)
+        fb = pd.concat([fallback_ids(rf, con, y) for y in years])
+        e = e.merge(fb, on="recruit_id", how="left")
+        e["player_id"] = e.player_id.where(e.player_id.isin(ros_ids), e.fallback)
+        res["join"] = "id where on a roster, else name + school"
     e1 = e[e.player_id > 0].sort_values("grade", ascending=False).drop_duplicates("player_id").set_index("player_id")
     b = b.join(e1[["rclass", "grade", "espn_stars", "pos", "pos_rank", "fortyYrdDash", "twentyYrdShuttle", "verticalJump"]], on="player_id")
     b["hs_forty"] = b.fortyYrdDash.notna()
