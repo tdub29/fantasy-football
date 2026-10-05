@@ -13,9 +13,16 @@ Reran every lane script on the scratch data and rebuilt several numbers by hand.
 | R5 ESPN recruits | confirmed with fixes | `stars_247()` did not make `team_id` numeric as `player_bio` does, so roster-name matches never joined: 247 coverage 52.8% became 55.9%, ESPN fill 493/980 became 460/915, either 76.6% became 78.1%; id join verified (99.0% last-name agreement on 1,343 rows); leakage evidence (no timestamps; status fields not updated) recorded |
 | Integration 1-5 | confirmed (1-2 with fixes) | numbers and guards above |
 
-Not reviewed (added after the review): R6, ESPN FCS box scores. Its parity and id numbers come from
-saved scripts (`espn_fcs_box.py`, `fcs_parity.py`) and spot checks against published totals; it needs
-its own independent check before any FCS row is ingested.
+## R6 review (second reviewer, same day)
+
+Confirmed with fixes. Events complete (2016 per-team counts equal stats.ncaa.org's schedule for 118 of
+121 teams; playoffs and bowls captured); stat keys stable 2004-2016. Fixes applied: "all games with a
+player box" was wrong (0.1-2.7% of FCS team-games have an empty team box, mostly whole-season holes);
+the parity script's fuzzy team map sent 24 of 125 schools to the wrong or no team (replaced by an exact
+map; now 278/276/112 joined, within 5% 69/62/62%); misses decompose mostly to the NCAA side and QB
+sacks; the FBS source gap is 6-12% measured directly, not the 2-5% inferred; the 16 id-test misses are
+explained (6 not FCS, 1 defender, 5 id gaps, 4 earlier last line); no consistent outcome-dependent
+coverage. Its checks: `C:\Users\TrevorWhite\.claude\jobs\b56027d3\tmp\review_r6\`.
 
 After the review the coordinator's commit eff88be linked Stevie Johnson and Beanie Wells by name;
 R4 and integration item 1 now state the remaining delta.
