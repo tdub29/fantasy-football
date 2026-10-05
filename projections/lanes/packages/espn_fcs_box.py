@@ -62,17 +62,31 @@ def fetch(y):
     OUT.mkdir(parents=True, exist_ok=True)
     ev = events(y)
     f = OUT / f"box_{y}.jsonl"
-    have = {json.loads(line)["game_id"] for line in f.open(encoding="utf-8")} if f.exists() else set()
+    have = set()
+    if f.exists():   # a killed run can leave one partial last line: skip it
+        for line in f.open(encoding="utf-8"):
+            try:
+                have.add(json.loads(line)["game_id"])
+            except ValueError:
+                pass
     todo = [e["id"] for e in ev if e["id"] not in have]
 
     def one(gid):
-        d = get(f"{SITE}/summary?event={gid}")
+        try:
+            d = get(f"{SITE}/summary?event={gid}")
+        except RuntimeError as ex:   # left for the next run (resumable)
+            print("skip", ex)
+            return None
         return {"game_id": gid, "players": (d.get("boxscore") or {}).get("players") or []}
 
+    failed = 0
     with f.open("a", encoding="utf-8") as fh, ThreadPoolExecutor(6) as ex:
         for rec in ex.map(one, todo):
+            if rec is None:
+                failed += 1
+                continue
             fh.write(json.dumps(rec) + "\n")
-    print(y, "events", len(ev), "fetched", len(todo))
+    print(y, "events", len(ev), "fetched", len(todo) - failed, "failed", failed)
 
 
 KEEP = {"passing": {"completions/passingAttempts": "cmp_att", "passingYards": "pass_yds", "passingTouchdowns": "pass_td",

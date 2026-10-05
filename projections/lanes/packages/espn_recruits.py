@@ -41,6 +41,14 @@ def get(url):
     raise RuntimeError(f"{url}: {err}")
 
 
+def safe_get(url):
+    try:
+        return get(url)
+    except RuntimeError as ex:
+        print("skip", ex)
+        return None
+
+
 def refs(y):
     f = OUT / f"refs_{y}.json"   # the class index, saved once (pageCount GETs)
     if f.exists():
@@ -79,10 +87,14 @@ def main():
         todo = [r for r in pool if rid(r) not in have]
         t = time.time()
         with f.open("a", encoding="utf-8") as fh, ThreadPoolExecutor(WORKERS) as ex:
-            for ref, rec in zip(todo, ex.map(get, todo)):
+            failed = 0
+            for ref, rec in zip(todo, ex.map(safe_get, todo)):
+                if rec is None:   # left for the next run (resumable), never written as an empty record
+                    failed += 1
+                    continue
                 rec["_id"] = rid(ref)
                 fh.write(json.dumps(rec) + "\n")
-        print(y, "had", len(have), "fetched", len(todo), f"{time.time() - t:.0f}s")
+        print(y, "had", len(have), "fetched", len(todo) - failed, "failed", failed, f"{time.time() - t:.0f}s")
 
 
 if __name__ == "__main__":
