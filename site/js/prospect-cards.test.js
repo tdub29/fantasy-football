@@ -15,7 +15,8 @@ const start = app.indexOf('  // College prospect model (window.PROSPECT_MODEL)')
 const end = app.indexOf('  // weather.js keys teams by nflverse code', start);
 assert(start >= 0 && end > start, 'prospect model block missing');
 
-const h = (tag, attrs, ...kids) => ({ tag, attrs: attrs || {}, kids: kids.flat(Infinity).filter(k => k != null && k !== false) });
+const h = (tag, attrs, ...kids) => ({ tag, attrs: attrs || {}, kids: kids.flat(Infinity).filter(k => k != null && k !== false),
+  appendChild(n) { this.kids.push(n); }, set innerHTML(_) { this.kids = []; } });
 const text = (n) => n == null ? '' : typeof n !== 'object' ? String(n) : n.kids.map(text).join(' ');
 const find = (n, pred, out = []) => {
   if (n && typeof n === 'object') { if (pred(n)) out.push(n); n.kids.forEach(k => find(k, pred, out)); }
@@ -42,19 +43,20 @@ for (const r of M.college) {
 }
 assert(new Set(M.college.map(r => r.cls)).size >= 2, 'both the next class and later classes are covered');
 
-// The trust line quotes the holdout, and the shared curve is stated as a position reference.
+// The verbose trust paragraph is gone (Trevor, 2026-10-04); the shared curve stays as a position reference.
 const wr = M.college.filter(r => r.p === 'WR').sort((a, b) => b.ts - a.ts);
-const top = text(collegeProspectBlock(wr[0])), low = text(collegeProspectBlock(wr[wr.length - 1]));
-assert(top.includes(`${pmPct(M.pos.WR.auc.talent)} of the time`), 'trust line uses the shipped holdout AUC');
+const top = text(collegeProspectBlock(wr[0]));
 assert.match(top, /one draft-slot curve for every WR/);
-assert.match(top, /no calibration check/);
+assert.doesNotMatch(top, /no calibration check|Read it as optimistic/);
 assert.match(top, /early-declare flag/);
 assert.notEqual(pmPct(wr[0].tp), pmPct(wr[wr.length - 1].tp));
 assert.doesNotMatch(text(collegeProspectBlock(M.college.find(r => r.p === 'RB'))), /early-declare/);
 
-// Table rows open the right card, by keyboard button or row click, in every mode.
-for (const pos of ['QB', 'RB', 'WR', 'TE']) {
-  for (const mode of ['next', 'later', 'rookies']) {
+// Table rows open the right card, by keyboard button or row click, for every position and class
+// filter. 'next' and 'later' are the legacy routes and must still land on the matching class.
+const years = [...new Set(M.college.map(r => r.cls))];
+for (const pos of ['ALL', 'QB', 'RB', 'WR', 'TE']) {
+  for (const mode of ['all', 'next', 'later', 'rookies', ...years.map(String)]) {
     viewProspects(pos, mode);
     const buttons = find({ attrs: {}, kids: main.kids }, n => n.tag === 'button' && /player-name-button/.test(n.attrs.class || ''));
     const rows = find({ attrs: {}, kids: main.kids }, n => n.tag === 'tr' && n.attrs.onclick);
@@ -71,9 +73,15 @@ for (const pos of ['QB', 'RB', 'WR', 'TE']) {
         assert.equal(kind, 'modal');
         assert.equal(a, null); assert.equal(b, null);
         assert.equal(rec.n, name);
-        assert(mode === 'later' ? rec.cls > M.season + 1 : rec.cls === M.season + 1, `${name}: right class`);
+        if (pos !== 'ALL') assert.equal(rec.p, pos, `${name}: right position`);
+        const want = mode === 'next' ? M.season + 1 : mode === 'later' ? M.season + 2 : Number(mode);
+        if (mode !== 'all') assert.equal(rec.cls, want, `${name}: right class`);
       }
     }
+    // One table, filtered by a Class select: the old per-class mode buttons are gone.
+    assert.equal(find({ attrs: {}, kids: main.kids }, n => n.tag === 'table').length, rows.length ? 1 : 0, `${pos} ${mode}: one table`);
+    assert.equal(find({ attrs: {}, kids: main.kids }, n => n.tag === 'select' && n.attrs['aria-label'] === 'Filter by draft class').length, 1);
+    if (mode === 'all' && pos !== 'ALL') assert.equal(rows.length, M.college.filter(r => r.p === pos).length, `${pos}: all classes in one table`);
     // No explanation block above the table (Trevor, 2026-10-04): header, filters, then the board.
     assert.equal(find({ attrs: {}, kids: main.kids }, n => /prm-notes/.test(n.attrs.class || '')).length, 0, `${pos} ${mode}: no notes block`);
   }

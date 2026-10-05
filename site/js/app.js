@@ -1274,19 +1274,9 @@
       sections[seen.get(r.section)].items.push(r);
     }
 
-    for (const sec of sections) {
-      sidebar.appendChild(h('div', { class:'nav-section-title' }, sec.name));
-      const nav = h('div', { class:'nav' });
-      for (const r of sec.items) {
-        const a = h('a', { href:r.hash, dataset:{ route: r.hash }, onclick: () => setMobileNav(false) },
-          h('span', { class:'icon' }, pixelIcon(r.hash, r.icon)),
-          h('span', { class:'nav-label' }, r.label)
-        );
-        nav.appendChild(a);
-      }
-      sidebar.appendChild(nav);
-    }
-
+    // Leagues sit above Reference (Trevor, 2026-10-04): the leagues are daily work, the
+    // reference pages are not. Every other section keeps ROUTES order.
+    const appendLeagues = () => {
     // Quick league shortcuts. The active league (if any) gets a "context"
     // sub-list under it with sub-tabs for the workspace.
     const allLeagues = window.LEAGUES || [];
@@ -1351,6 +1341,24 @@
     }
     sidebar.appendChild(lnav);
     }
+    };
+
+    let leaguesDone = false;
+    for (const sec of sections) {
+      if (sec.name === 'Reference' && !leaguesDone) { appendLeagues(); leaguesDone = true; }
+      sidebar.appendChild(h('div', { class:'nav-section-title' }, sec.name));
+      const nav = h('div', { class:'nav' });
+      for (const r of sec.items) {
+        const a = h('a', { href:r.hash, dataset:{ route: r.hash }, onclick: () => setMobileNav(false) },
+          h('span', { class:'icon' }, pixelIcon(r.hash, r.icon)),
+          h('span', { class:'nav-label' }, r.label)
+        );
+        nav.appendChild(a);
+      }
+      sidebar.appendChild(nav);
+    }
+
+    if (!leaguesDone) appendLeagues();
 
     // Data freshness footer: staleest critical dataset age. Amber if >3 days old.
     const fr = dataFreshness();
@@ -12155,8 +12163,12 @@
     const peers = M.college.filter(x => x.p === r.p && x.cls === r.cls);
     const rank = peers.filter(x => x.ts > r.ts).length + 1;
     const tierHit = (meta.tier_hit || [])[r.tr];
+    // The tier's track record rides on the tile; the paragraph that restated it with the holdout
+    // AUC caveats was cut (Trevor, 2026-10-04). Those caveats stay on the College % column header.
     const tiles = [
-      pmTile('Tier', pmTierChip(r.tr), 'Our tier, cut on the talent score'),
+      pmTile('Tier', pmTierChip(r.tr),
+        `Our tier, cut on the talent score.${tierHit && tierHit[1] != null ? ` Past ${M.tiers[r.tr]} ${r.p}s, all drafted, hit ${pmPct(tierHit[1])} of the time (${tierHit[0]} players, out of sample)` : ''}`,
+        tierHit && tierHit[1] != null ? `past hit ${pmPct(tierHit[1])}` : null),
       pmTile('Talent', h('span', null, `${r.ts} `, pmPips(r.ts)),
         `College profile with no draft capital: percentile against every drafted ${r.p} since 2008`,
         `#${rank} of ${peers.length} listed`),
@@ -12170,18 +12182,11 @@
       ...pmStatCols(r.p).map(([k, label, f, t]) => r.st && r.st[k] != null ? pmTile(label, f(r.st[k]), t) : null),
       r.st && r.st.stars != null ? pmTile('Recruit', `${r.st.stars}-star`, 'Recruiting stars out of high school') : null,
     ].filter(Boolean);
-    const read = [
-      tierHit && tierHit[1] != null
-        ? `Past ${M.tiers[r.tr]} ${r.p}s hit ${pmPct(tierHit[1])} of the time (${tierHit[0]} players, out of sample), `
-          + 'but all were drafted, and where they went carries much of that.' : null,
-      pmTrust(r.p),
-    ].filter(Boolean).join(' ');
     return h('div', { class:'card adv-card prm-card' },
       h('div', { class:'card-title' }, 'Prospect profile'),
       h('div', { class:'tip', style:{ marginBottom:'8px' } },
         `Hit = ${(meta.target || '').replace(/^Top/, 'top')}. ${r.sch}, first eligible for the ${r.cls} draft.`),
       h('div', { class:'adv-grid' }, ...tiles),
-      read ? h('div', { class:'tip prm-line' }, read) : null,
       pmSlotLine(r.p, r.r) ? h('div', { class:'tip prm-line' }, pmSlotLine(r.p, r.r)) : null,
       r.p === 'WR' && meta.shipped === 'draft' ? h('div', { class:'tip prm-line' }, PM_WR_EARLY) : null,
       r.ln ? h('div', { class:'tip prm-line' }, r.ln) : null,
@@ -12227,28 +12232,44 @@
       pmComps(me.cp));
   }
 
-  // #prospects: current college players by position, plus the newest rookie class.
-  const prospectSort = { key:'ts', dir:'desc' };
-  function viewProspects(posArg, modeArg) {
+  // #prospects: one table over every current college player plus the newest rookie class,
+  // filtered like Players: position chips, a Class select, and a name search.
+  // Route: #prospects/<ALL|QB|RB|WR|TE>/<all|year|rookies>.
+  const prospectSort = { key:'ts', dir:'desc', q:'' };
+  function viewProspects(posArg, clsArg) {
     const main = $('#main'); main.innerHTML = '';
     const M = window.PROSPECT_MODEL;
     if (!M) { main.appendChild(h('div', { class:'empty' }, 'prospect-model.js not loaded. Run projections/build_prospect_model.py.')); return; }
     const POSL = ['QB', 'RB', 'WR', 'TE'];
-    const pos = POSL.includes(posArg) ? posArg : 'WR';
-    const mode = ['later', 'rookies'].includes(modeArg) ? modeArg : 'next';
-    const rookies = mode === 'rookies';
-    const meta = M.pos[pos] || {};
-    const capOnly = meta.shipped === 'draft';
-    const pre = meta.predraft;
-    const stg = meta.later || null;   // classes after the next one: their own model (YL1, sophomores only)
-    const nst = meta.stage && meta.stage.next ? meta.stage : null;    // the same model serving the next class
+    const pos = POSL.includes(posArg) ? posArg : 'ALL';
+    const one = pos !== 'ALL';
     const next = M.season + 1;
-    const hashFor = (p, m) => `#prospects/${p}${m === 'next' ? '' : `/${m}`}`;
-    const rows = rookies
-      ? Object.entries(M.nfl).filter(([, r]) => r.p === pos && r.y === M.season).map(([id, r]) => ({ ...r, id }))
-      : M.college.filter(r => r.p === pos && (mode === 'later' ? r.cls > next : r.cls === next));
-    const scen = (M.college.find(r => r.p === pos) || {}).r;
-    const roundNames = PM_ROUNDS;
+    const years = [...new Set(M.college.map(r => r.cls))].sort((a, b) => a - b);
+    // 'next' and 'later' are the old mode routes; they land on the matching class.
+    const cls = clsArg === 'rookies' ? 'rookies' : clsArg === 'next' ? String(next)
+      : clsArg === 'later' ? String(next + 1) : years.includes(Number(clsArg)) ? String(clsArg) : 'all';
+    const rookies = cls === 'rookies';
+    const meta = one ? (M.pos[pos] || {}) : {};
+    const capOnly = !one || meta.shipped === 'draft';
+    const posWord = one ? pos : 'player at his position';
+    const hashFor = (p, c) => `#prospects/${p}${c === 'all' ? '' : `/${c}`}`;
+    // Redraw in place like Players, so the phone filter panel stays open between taps.
+    const go = (p, c) => {
+      history.pushState(null, '', hashFor(p, c));
+      viewProspects(p, c);
+      requestAnimationFrame(() => { wrapDataTables(); collapseFiltersOnPhone();
+        const btn = document.querySelector('#main .filters-toggle');
+        if (btn && btn.getAttribute('aria-expanded') === 'false') btn.click(); });
+    };
+    const pick = (p) => !one || p === pos;
+    const all = rookies
+      ? Object.entries(M.nfl).filter(([, r]) => pick(r.p) && r.y === M.season).map(([id, r]) => ({ ...r, id }))
+      : M.college.filter(r => pick(r.p) && (cls === 'all' || r.cls === Number(cls)));
+    // A pre-draft number shows only where a reviewed model serves that player's class, the same
+    // gate the per-class boards used: next class by its stage or pre-draft model, later by `later`.
+    const nst = one && meta.stage && meta.stage.next ? meta.stage : null;   // the reviewed model serving the next class
+    const pdOk = (r) => { const m = M.pos[r.p] || {};
+      return r.cls === next ? !!((m.stage && m.stage.next) || m.predraft) : !!m.later; };
     // College players have no Sleeper id, so their card is built from the model record itself.
     const openRow = (r) => rookies ? openPlayerDetail(r.n, r.id) : document.body.appendChild(playerModal(r.n, null, null, r));
 
@@ -12256,53 +12277,47 @@
     main.appendChild(pageHeader({
       eyebrow:'PROSPECT MODEL',
       title: rookies ? `${M.season} rookies` : 'College prospects',
-      sub: `Hit = ${(meta.target || '').replace(/^Top/, 'top')}. Talent is the college profile with no draft capital, `
-        + `as a percentile against every drafted ${pos} since 2008.`,
+      sub: (one ? `Hit = ${(meta.target || '').replace(/^Top/, 'top')}. ` : '')
+        + `Talent is the college profile with no draft capital, as a percentile against every drafted ${posWord} since 2008.`,
     }));
-    main.appendChild(tabBar(POSL.map(k => ({ key:k, label:k })), pos, k => hashFor(k, mode)));
-    main.appendChild(h('div', { class:'sos-position-tabs prm-modes', role:'group', 'aria-label':'Which players' },
-      ...[['next', `${next} class`], ['later', `${next + 1}+`], ['rookies', `${M.season} rookies`]].map(([m, label]) =>
-        h('button', { class:`ghost${m === mode ? ' active' : ''}`, 'aria-pressed':String(m === mode),
-          onclick:() => navigate(hashFor(pos, m)) }, label))));
 
-    const stat = pmStatCols(pos);
+    const filterBar = h('div', { class:'filters prm-filters' });
+    const search = h('input', { type:'search', placeholder:'Search prospects', value:prospectSort.q, 'aria-label':'Search prospects',
+      oninput:(e) => { prospectSort.q = e.target.value.trim(); render(); } });
+    filterBar.appendChild(h('div', { class:'group' }, h('label', null, 'Search'), search));
+    filterBar.appendChild(h('div', { class:'group' }, h('label', null, 'Pos'),
+      h('div', { class:'toggle-group rankings-pos-toggle', role:'group', 'aria-label':'Position' },
+        ...['ALL', ...POSL].map(p => h('button', { class:`toggle${p === pos ? ' active' : ''}`, 'aria-pressed':String(p === pos),
+          onclick:() => go(p, cls) }, p)))));
+    const clsSel = h('select', { 'aria-label':'Filter by draft class', onchange:(e) => go(pos, e.target.value) },
+      h('option', { value:'all', selected: cls === 'all' ? '' : null }, 'All classes'),
+      ...years.map(y => h('option', { value:String(y), selected: cls === String(y) ? '' : null }, `${y} class`)),
+      h('option', { value:'rookies', selected: rookies ? '' : null }, `${M.season} rookies`));
+    filterBar.appendChild(h('div', { class:'group' }, h('label', null, 'Class'), clsSel));
+    main.appendChild(filterBar);
+
+    const stat = one ? pmStatCols(pos) : [];
     const cols = [
       ['n', 'Player', { asc:true }],
+      one ? null : ['p', 'Pos', { asc:true }],
       rookies ? ['pk', 'Pick', { right:true, asc:true, title:'Overall draft pick' }] : null,
-      mode === 'later' ? ['cls', 'Eligible', { right:true, asc:true, title:'First draft he is eligible for' }] : null,
-      ['ts', 'Talent', { right:true, title:`College profile, no draft capital: percentile vs drafted ${pos}s since 2008` }],
+      !rookies && cls === 'all' ? ['cls', 'Class', { right:true, asc:true, title:'First draft he is eligible for' }] : null,
+      ['ts', 'Talent', { right:true, title:`College profile, no draft capital: percentile vs every drafted ${posWord} since 2008` }],
       ['tr', 'Tier', { asc:true, title:'Our tier, cut on the talent score' }],
-      (mode === 'later' && stg) ? ['pd', 'Pre-draft', { right:true, title:`Chance he hits, before the draft, counting the chance he goes undrafted, from his completed freshman season compared with other sophomores (${stg.model}). Sophomores only` }] : null,
-      mode === 'next' && nst ? ['pd', 'Pre-draft', { right:true, title:`Chance he hits, before the draft, counting the chance he goes undrafted, from his completed seasons${nst.live_n ? ` plus his team's first ${nst.live_n} games this season` : ''} compared with players at the same college year${/^S6/.test(nst.model) ? ', rescaled on players who came back for another college season' : ''} (${nst.model})` }] : null,
-      mode === 'next' && pre ? ['pd', 'Pre-draft', { right:true, title:`Chance he hits, before the draft, counting the chance he goes undrafted (${pre.model}; scored at the more conservative of leaving after this season or one more)` }] : null,
-      rookies ? ['hp', 'Hit %', { right:true, title:capOnly ? 'Draft capital alone' : 'College profile plus his actual draft slot' }] : null,
-      ['tp', 'College %', { right:true, title:`Hit chance from college stats alone${rookies ? ', the pre-draft read' : ', if drafted'}. ${pmTrust(pos) || ''}` }],
+      !rookies && all.some(pdOk) ? ['pd', 'Pre-draft', { right:true, title:'Chance he hits, before the draft, counting the chance he goes undrafted, '
+        + `compared with players at the same college year${nst && nst.live_n ? `, plus his team's first ${nst.live_n} games this season` : ''}`
+        + `${nst && /^S6/.test(nst.model) ? ', rescaled on players who came back for another college season' : ''}`
+        + `${nst ? ` (${nst.model})` : ''}. Blank where no reviewed model serves his class` }] : null,
+      rookies ? ['hp', 'Hit %', { right:true, title:'College profile plus his actual draft slot (draft capital alone where college stats did not beat slot)' }] : null,
+      ['tp', 'College %', { right:true, title:`Hit chance from college stats alone${rookies ? ', the pre-draft read' : ', if drafted'}. ${one ? pmTrust(pos) || '' : ''}` }],
       pos === 'QB' ? null : ['ba', 'Breakout', { right:true, asc:true, title:'Age at his first college season at the dominator line (blank: not yet). Profile only, no model uses it' }],
       rookies ? null : ['age', 'Draft age', { right:true, asc:true, title:'Estimated age at the draft he is scored for: the more conservative of leaving after his third or fourth college year' }],
       ...stat.map(([k, label, , t]) => [`st.${k}`, label, { right:true, title:t }]),
-      ...(!rookies && !capOnly ? roundNames.map((r, i) => [`r${i}`, i < 3 ? `R${i + 1}` : 'Day 3',
+      ...(!rookies && !capOnly ? PM_ROUNDS.map((r, i) => [`r${i}`, i < 3 ? `R${i + 1}` : 'Day 3',
         { right:true, title:`Hit chance if drafted in ${r}` }]) : []),
     ].filter(Boolean);
-    const get = (r, k) => /^r\d$/.test(k) ? (r.r || [])[Number(k[1])] : k.startsWith('st.') ? (r.st || {})[k.slice(3)] : r[k];
-    const { key, dir } = cols.some(c => c[0] === prospectSort.key) ? prospectSort : { key:'ts', dir:'desc' };
-    const sgn = dir === 'desc' ? -1 : 1;
-    rows.sort((a, b) => {
-      const x = get(a, key), y = get(b, key);
-      if (x == null || y == null) return (x == null) - (y == null);   // blanks last both ways
-      return (typeof x === 'string' ? x.localeCompare(y) : x - y) * sgn;
-    });
-    const sortHdr = ([k, label, o]) => {
-      const on = k === key;
-      const activate = () => {
-        prospectSort.key = k;
-        prospectSort.dir = on ? (dir === 'desc' ? 'asc' : 'desc') : (o.asc ? 'asc' : 'desc');
-        viewProspects(pos, mode);
-      };
-      return h('th', { class:`clickable${on ? ' sort-active' : ''}${o.right ? ' right' : ''}`, title:o.title, tabindex:'0',
-        'aria-sort':on ? (dir === 'desc' ? 'descending' : 'ascending') : 'none', onclick:activate,
-        onkeydown:(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(); } } },
-        label + (on ? (dir === 'desc' ? ' ↓' : ' ↑') : ''));
-    };
+    const get = (r, k) => /^r\d$/.test(k) ? (r.r || [])[Number(k[1])] : k.startsWith('st.') ? (r.st || {})[k.slice(3)]
+      : k === 'pd' ? (pdOk(r) ? r.pd : null) : r[k];
     const fmtCell = (r, k) => {
       const v = get(r, k);
       if (k === 'tr') return pmTierChip(v);
@@ -12316,18 +12331,45 @@
       if (k === 'ba' || k === 'age') return pmNum(1)(v);
       return v == null ? '·' : String(v);
     };
-    if (!rows.length) {
-      main.appendChild(h('div', { class:'empty' }, rookies ? `No ${M.season} ${pos}s on file.` : `No ${pos} prospects in this group.`));
-      return;
-    }
-    const tbl = h('table', { class:'data prm-table' },
-      h('thead', null, h('tr', null, h('th', { class:'right' }, '#'), ...cols.map(sortHdr))),
-      h('tbody', null, ...rows.map((r, i) => h('tr', { class:'clickable', onclick:() => openRow(r) },
-        h('td', { class:'right tnum' }, String(i + 1)),
-        ...cols.map(([k, , o]) => h('td', { class:`${o.right ? 'right ' : ''}tnum` }, fmtCell(r, k)))))));
     const card = h('div', { class:'card' });
-    appendTable(card, tbl);
     main.appendChild(card);
+    // Sort and search redraw only the table, so the search box keeps focus while typing.
+    function render() {
+      card.innerHTML = '';
+      const q = (prospectSort.q || '').toLowerCase();
+      const rows = q ? all.filter(r => `${r.n} ${r.sch || ''}`.toLowerCase().includes(q)) : all.slice();
+      const { key, dir } = cols.some(c => c[0] === prospectSort.key) ? prospectSort : { key:'ts', dir:'desc' };
+      const sgn = dir === 'desc' ? -1 : 1;
+      rows.sort((a, b) => {
+        const x = get(a, key), y = get(b, key);
+        if (x == null || y == null) return (x == null) - (y == null);   // blanks last both ways
+        return (typeof x === 'string' ? x.localeCompare(y) : x - y) * sgn;
+      });
+      if (!rows.length) {
+        card.appendChild(h('div', { class:'empty' }, q ? 'No prospects match that search.'
+          : rookies ? `No ${M.season} ${one ? pos : 'rookie'}s on file.` : 'No prospects in this group.'));
+        return;
+      }
+      const sortHdr = ([k, label, o]) => {
+        const on = k === key;
+        const activate = () => {
+          prospectSort.key = k;
+          prospectSort.dir = on ? (dir === 'desc' ? 'asc' : 'desc') : (o.asc ? 'asc' : 'desc');
+          render();
+        };
+        return h('th', { class:`clickable${on ? ' sort-active' : ''}${o.right ? ' right' : ''}`, title:o.title, tabindex:'0',
+          'aria-sort':on ? (dir === 'desc' ? 'descending' : 'ascending') : 'none', onclick:activate,
+          onkeydown:(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(); } } },
+          label + (on ? (dir === 'desc' ? ' ↓' : ' ↑') : ''));
+      };
+      const tbl = h('table', { class:'data prm-table' },
+        h('thead', null, h('tr', null, h('th', { class:'right' }, '#'), ...cols.map(sortHdr))),
+        h('tbody', null, ...rows.map((r, i) => h('tr', { class:'clickable', onclick:() => openRow(r) },
+          h('td', { class:'right tnum' }, String(i + 1)),
+          ...cols.map(([k, , o]) => h('td', { class:`${o.right ? 'right ' : ''}tnum` }, fmtCell(r, k)))))));
+      appendTable(card, tbl);
+    }
+    render();
   }
 
   // weather.js keys teams by nflverse code, which writes the Rams as LA.

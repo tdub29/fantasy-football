@@ -23,8 +23,8 @@
         }
       ],
       "selector": "#sidebar",
-      "assert": "(() => { const watch=document.querySelector('#sidebar a[href=\"#watch\"]'); const action=document.querySelector('#sidebar a[href=\"#action\"]'); const titles=[...document.querySelectorAll('#sidebar .nav-section-title')].map(x=>x.textContent.trim()); return location.hash==='#dashboard' && document.querySelectorAll('#sidebar a[href^=\"#\"]').length>=9 && action?.parentElement?.previousElementSibling?.textContent.trim()==='Overview' && watch?.parentElement?.previousElementSibling?.textContent.trim()==='Tools' && !document.querySelector('#sidebar a[href=\"#leagues\"]') && !titles.includes('Dynasty') && titles.includes('Leagues') && !document.querySelector('#sidebar a[href^=\"#projections\"]') && ![...document.querySelectorAll('#main button')].some(b=>/quick jump/i.test(b.textContent)); })()",
-      "notes": "Dashboard and Action Center share Overview. My Leagues is Dashboard Overview content, not a duplicate route. League shortcuts share one Leagues group, with format carried by each labeled shape instead of Dynasty and Redraft sidebar sections."
+      "assert": "(() => { const watch=document.querySelector('#sidebar a[href=\"#watch\"]'); const action=document.querySelector('#sidebar a[href=\"#action\"]'); const titles=[...document.querySelectorAll('#sidebar .nav-section-title')].map(x=>x.textContent.trim()); return location.hash==='#dashboard' && document.querySelectorAll('#sidebar a[href^=\"#\"]').length>=9 && action?.parentElement?.previousElementSibling?.textContent.trim()==='Overview' && watch?.parentElement?.previousElementSibling?.textContent.trim()==='Tools' && !document.querySelector('#sidebar a[href=\"#leagues\"]') && !titles.includes('Dynasty') && titles.includes('Leagues') && (!titles.includes('Reference') || titles.indexOf('Leagues') < titles.indexOf('Reference')) && !document.querySelector('#sidebar a[href^=\"#projections\"]') && ![...document.querySelectorAll('#main button')].some(b=>/quick jump/i.test(b.textContent)); })()",
+      "notes": "Dashboard and Action Center share Overview. My Leagues is Dashboard Overview content, not a duplicate route. League shortcuts share one Leagues group, with format carried by each labeled shape instead of Dynasty and Redraft sidebar sections. Leagues sits above Reference (Trevor, 2026-10-04)."
     },
     {
       "id": "dashboard",
@@ -616,7 +616,7 @@
     },
     {
       "id": "prospects-view",
-      "name": "Prospects: college board by position with round-scenario hit chances",
+      "name": "Prospects: one board filtered by position and class, with round-scenario hit chances",
       "path": [
         {
           "press": "Escape"
@@ -625,19 +625,19 @@
           "sleepMs": 200
         },
         {
-          "eval": "location.hash='#prospects/WR'"
+          "eval": "location.hash='#prospects/WR/' + (window.PROSPECT_MODEL.season + 1)"
         },
         {
           "sleepMs": 600
         }
       ],
       "selector": "#main table.prm-table",
-      "assert": "(() => { const M = window.PROSPECT_MODEL; if (!M || !M.pos.WR) return false; const heads = [...document.querySelectorAll('#main table.prm-table thead th')].map(t => t.textContent.trim().replace(/ [↑↓]$/, '')); const rows = [...document.querySelectorAll('#main table.prm-table tbody tr')]; const full = M.pos.WR.shipped !== 'draft'; if (rows.length < 30 || !['Player', 'Talent', 'Tier', 'Breakout', 'Career YPTPA'].every(x => heads.includes(x))) return false; if (full !== heads.includes('R1')) return false; const nst = !!(M.pos.WR.stage && M.pos.WR.stage.next); if (nst !== heads.includes('Pre-draft')) return false; if (nst && !rows.every(r => { const v = parseInt(r.children[heads.indexOf('Pre-draft')].textContent, 10); return Number.isFinite(v) && v >= 0 && v <= 100; })) return false; const cell = (r, lab) => parseInt(r.children[heads.indexOf(lab)].textContent, 10); const ts = rows.map(r => cell(r, 'Talent')); const monotone = !full || rows.every(r => cell(r, 'R1') >= cell(r, 'R2') && cell(r, 'R2') >= cell(r, 'R3') && cell(r, 'R3') >= cell(r, 'Day 3')); return monotone && ts.every((v, i) => i === 0 || v <= ts[i - 1]) && !!rows[0].querySelector('.tier-chip.prm-tier') && document.querySelectorAll('#main .prm-modes button[aria-pressed]').length === 3 && !!document.querySelector('#sidebar a[href=\"#prospects\"]')?.classList.contains('active'); })()",
-      "notes": "#prospects (viewProspects in app.js) over site/data/prospect-model.js, built by projections/build_prospect_model.py. Default sort is the talent score, descending. Where the full model ships (WR today) every row carries Round 1 / 2 / 3 / Day 3 hit chances, and they must fall as the pick gets later: a column that rises with worse capital means the log-pick term flipped sign or the columns were shuffled. Where the career-stage model serves the WR next class (pos.WR.stage.next) a Pre-draft column must show a 0-100% chance on every row, and must be absent otherwise. If a rebuild demotes WR to the draft-only model the R columns must disappear (the scenario is then the same number for every player and is printed once in the notes card), and this case checks that too rather than failing on it. The sidebar's Prospects link must exist and be lit on a #prospects/<pos> sub-route."
+      "assert": "(() => { const M = window.PROSPECT_MODEL; if (!M || !M.pos.WR) return false; const heads = [...document.querySelectorAll('#main table.prm-table thead th')].map(t => t.textContent.trim().replace(/ [↑↓]$/, '')); const rows = [...document.querySelectorAll('#main table.prm-table tbody tr')]; const full = M.pos.WR.shipped !== 'draft'; if (rows.length < 30 || !['Player', 'Talent', 'Tier', 'Breakout', 'Career YPTPA'].every(x => heads.includes(x))) return false; if (full !== heads.includes('R1')) return false; const nst = !!(M.pos.WR.stage && M.pos.WR.stage.next); if (nst !== heads.includes('Pre-draft')) return false; if (nst && !rows.every(r => { const v = parseInt(r.children[heads.indexOf('Pre-draft')].textContent, 10); return Number.isFinite(v) && v >= 0 && v <= 100; })) return false; const cell = (r, lab) => parseInt(r.children[heads.indexOf(lab)].textContent, 10); const ts = rows.map(r => cell(r, 'Talent')); const monotone = !full || rows.every(r => cell(r, 'R1') >= cell(r, 'R2') && cell(r, 'R2') >= cell(r, 'R3') && cell(r, 'R3') >= cell(r, 'Day 3')); return monotone && ts.every((v, i) => i === 0 || v <= ts[i - 1]) && !!rows[0].querySelector('.tier-chip.prm-tier') && document.querySelector('#main select[aria-label=\"Filter by draft class\"]')?.value === String(M.season + 1) && document.querySelector('#main .rankings-pos-toggle .toggle.active')?.textContent === 'WR' && !document.querySelector('#main .prm-modes') && !!document.querySelector('#sidebar a[href=\"#prospects\"]')?.classList.contains('active'); })()",
+      "notes": "#prospects (viewProspects in app.js) over site/data/prospect-model.js, built by projections/build_prospect_model.py. Default sort is the talent score, descending. Where the full model ships (WR today) every row carries Round 1 / 2 / 3 / Day 3 hit chances, and they must fall as the pick gets later: a column that rises with worse capital means the log-pick term flipped sign or the columns were shuffled. Where the career-stage model serves the WR next class (pos.WR.stage.next) a Pre-draft column must show a 0-100% chance on every row, and must be absent otherwise. If a rebuild demotes WR to the draft-only model the R columns must disappear (the scenario is then the same number for every player and is printed once in the notes card), and this case checks that too rather than failing on it. Class is a select over one table, not a set of mode buttons; this case pins the next class so every row is one the Pre-draft model serves. The sidebar's Prospects link must exist and be lit on a #prospects/<pos> sub-route."
     },
     {
       "id": "prospects-rookies-sort",
-      "name": "Prospects: rookie toggle and sortable hit column",
+      "name": "Prospects: rookie class filter and sortable hit column",
       "path": [
         {
           "press": "Escape"
@@ -659,8 +659,29 @@
         }
       ],
       "selector": "#main table.prm-table",
-      "assert": "(() => { const M = window.PROSPECT_MODEL; const want = Object.values(M.nfl).filter(r => r.p === 'RB' && r.y === M.season).length; const heads = [...document.querySelectorAll('#main table.prm-table thead th')].map(t => t.textContent.trim()); const i = heads.findIndex(x => x.startsWith('Hit %')); const rows = [...document.querySelectorAll('#main table.prm-table tbody tr')]; const hp = rows.map(r => parseInt(r.children[i].textContent, 10)); return want >= 5 && rows.length === want && heads[i].endsWith('↓') && hp.every((v, k) => k === 0 || v <= hp[k - 1]) && document.querySelector('#main .prm-modes button[aria-pressed=\"true\"]').textContent.includes('rookies') && rows.every(r => r.classList.contains('clickable')); })()",
+      "assert": "(() => { const M = window.PROSPECT_MODEL; const want = Object.values(M.nfl).filter(r => r.p === 'RB' && r.y === M.season).length; const heads = [...document.querySelectorAll('#main table.prm-table thead th')].map(t => t.textContent.trim()); const i = heads.findIndex(x => x.startsWith('Hit %')); const rows = [...document.querySelectorAll('#main table.prm-table tbody tr')]; const hp = rows.map(r => parseInt(r.children[i].textContent, 10)); return want >= 5 && rows.length === want && heads[i].endsWith('↓') && hp.every((v, k) => k === 0 || v <= hp[k - 1]) && document.querySelector('#main select[aria-label=\"Filter by draft class\"]')?.value === 'rookies' && rows.every(r => r.classList.contains('clickable')); })()",
       "notes": "The rookie toggle lists every player of the newest draft class at the position from PROSPECT_MODEL.nfl (keyed by Sleeper id), so a row opens his player card. One click on Hit % sorts it descending, the default for a probability, and the arrow on the header is the sort signal. The row count is tied to the payload so a filter bug that drops players fails here."
+    },
+    {
+      "id": "prospects-all-classes",
+      "name": "Prospects: default board is every college player in one table, Players-style filters",
+      "path": [
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "location.hash='#prospects'"
+        },
+        {
+          "sleepMs": 600
+        }
+      ],
+      "selector": "#main table.prm-table",
+      "assert": "(() => { const M = window.PROSPECT_MODEL; const heads = [...document.querySelectorAll('#main table.prm-table thead th')].map(t => t.textContent.trim().replace(/ [↑↓]$/, '')); const rows = document.querySelectorAll('#main table.prm-table tbody tr'); const sel = document.querySelector('#main .filters select[aria-label=\"Filter by draft class\"]'); return document.querySelectorAll('#main table.prm-table').length === 1 && rows.length === M.college.length && heads.includes('Pos') && heads.includes('Class') && sel?.value === 'all' && document.querySelector('#main .rankings-pos-toggle .toggle.active')?.textContent === 'ALL' && !!document.querySelector('#main .filters input[type=\"search\"]'); })()",
+      "notes": "Class is a filter over one Prospects table, like Players (Trevor, 2026-10-04): position toggles with ALL, a Class select, and a name search. The default route lists every college record, so the row count is tied to the payload."
     },
     {
       "id": "prospects-college-card",
