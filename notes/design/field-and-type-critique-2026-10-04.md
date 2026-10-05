@@ -67,4 +67,11 @@ end zone. Our palette already holds every one of those colors.
 3. **Range bars on odds**, as in the video's "How sure are we?" frame (`even_08`). Details are in the
    video study, recommendation 3.
 
-Nothing here is applied to the site yet. The specimen is a comparison page, not product code.
+## What shipped (2026-10-04, merge 3fee317)
+
+- Field: four-step turf, 2px dither, hard mow stripes, 5x7 bitmap numerals with arrows on the bottom
+  sideline only. The fixed-120px chalk grid in finding 1 was not taken, because the field must scale
+  once across any width (`field-single-span`); the phone fix is chalk on the same 960px tile as the
+  numerals instead. Upside-down far-side numerals were built and removed: they sat behind headers.
+- Jersey 10 on the strength score, number band and LED panel. Pixel icons on nav, Cmd+K and tabs.
+- Not taken: end zone (needs a 120-yard grid), pixelated watermark (read as a glitch between cards).
