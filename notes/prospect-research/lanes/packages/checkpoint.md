@@ -21,22 +21,20 @@ Full write-up and numbers: `package-matrix.md`; review verdicts: `review.md`.
 | R3 | ESPN college DOB present 98% drafted / 5% never-NFL (2018-22) | leakage, rejected |
 | R4 | ESPN crosswalk: name joins 693/694; after eff88be still adds 3 A profiles, 49 B links, 1 B link fix, 1 merge | accepted with guards (reviewed) |
 | R5 | ESPN recruit grade by id: 247 coverage 55.9% to 78.1% (2018-21 cohorts), Spearman 0.68 | accepted as source (reviewed) |
-| R6 | ESPN FCS box scores with ESPN ids, 2007/2010/2016 tested; parity vs NCAA median 1.00; pre-2013 FCS hits covered | accepted as source, NOT yet reviewed |
+| R6 | ESPN FCS box scores 2004-2025 with ESPN ids; parity vs NCAA median 1.00; classes 2008-2023 add 8,680 FCS exits, 67 drafted, 12 hits | accepted as source (reviewed, fixes applied) |
+| R5b | ESPN alternateId lags for recent classes (2026: 7%); name+school fallback 99.7-100% precise, recovers 4,029 of the 2026 class | serving fix, measured |
 
-## Usage-limit stop (2026-10-04)
+## Usage-limit stops
 
-The R6 reviewer died on HTTP 429 "You've hit your session limit" (resets 9:10am PT). This is the
-authorized hard stop: no autoresume. R6 stays UNREVIEWED; rerun the review (same brief: parity,
-playoff-game completeness, id test by hand, coverage selection) before recommending FCS ingestion.
-Background downloads below are plain Python processes, not Claude work; they keep running and are
-resumable if killed.
+Two so far (2026-10-04); both resumed on Trevor's word. Background downloads are plain Python,
+resumable, and skip failed requests instead of crashing.
 
 ## Running in background
 
 - ESPN recruit classes 2022-2026 then 2017 down to 2006 (about 170k records, 10 workers), log
   `<scratch>/recruits_rest.log`, raw `<scratch>/espn_recruits/raw_<y>.jsonl`, resumable.
-- ESPN FCS box scores 2004-2012 and 2016 done (lines written); 2013-2015 and 2017-2025 pulling, log
-  `<scratch>/fcs_post2013.log`, raw `<scratch>/espn_fcs/box_<y>.jsonl`, resumable.
+- ESPN FCS box scores 2004-2025 done (2020 includes spring 2021); 2026 not pulled (live season).
+- Snapshots: `<scratch>/snapshots/` (recruits 2015-2026, FCS lines 2004-2025, crosswalk; manifest with sha256).
 
 ## Resume
 
@@ -52,8 +50,7 @@ $T/pkvenv/Scripts/python.exe projections/lanes/packages/nflreadpy_parity.py $T/p
 
 ## Next
 
-1. When the FCS pull finishes: run `fcs_parity.py` for every pulled season (id test per class), then
-   an independent review of R6 before recommending ingestion.
+1. Recruit classes 2006-2014 finish: snapshot them and re-run `recruits_measure.py` on all classes.
 2. When the recruit pull finishes: snapshot all classes, re-measure fill by class 2006-2026, report
    the coverage history the coordinator needs to preregister an ESPN-grade candidate.
 

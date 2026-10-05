@@ -239,6 +239,14 @@ spring 2021 under season 2020, season types 5 and 6, which the fetcher now adds)
   1.021 receiving, 1.050 rushing); measured directly against `cfb_player_box`, the store's lines run
   6-12% below box totals (median 0.93 receiving and 0.88-0.94 rushing, 2010 and 2016). These FCS lines
   are box totals, so FCS and FBS rows need one counting basis before they are scored together.
+- **Population sizing** (`python projections/lanes/packages/fcs_population.py <xwalk> <nfl_outside_b.csv>`;
+  ESPN's FCS teams, career = one ESPN id, 20+ rushes, receptions or pass attempts, exit = last season
+  with a line, 649 careers that continue at an FBS school dropped): classes 2008-2023 add 8,680 FCS
+  exits (518-621 a class), 342 linked by id to an nflverse QB/RB/WR/TE/FB (any NFL roster, not only
+  game players), 67 drafted, 12 hits under the data lane's labels. Class 2020 (791) and 2021 (40) are
+  distorted by the spring 2021 season (players who skipped it exit a year early); class 2026 is not
+  usable until the 2026 season is pulled (its "exits" include players still in school). Positions
+  are not in box scores: infer from usage as population B already does before 2014.
 - **Outcome dependence**: usable-box coverage for teams that produced NFL players (flagged from
   neighbouring seasons) vs the rest: 98.9% vs 98.3% (2005), 98.9% vs 98.8% (2007), 99.9% vs 99.5%
   (2011), 96.2% vs 99.9% (2012, Old Dominion and Georgia State); no consistent sign. The real risk is
