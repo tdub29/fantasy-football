@@ -188,6 +188,15 @@ classes needs a name + school fallback (the 247 join's rule) or the grade stays 
 models; training rows must use the same join the served rows get, or the feature's missingness
 differs between training and serving.
 
+**Fallback, measured** (`python projections/lanes/packages/recruit_fallback.py <store> <classes>`:
+normalized name + committed ESPN team id against store rosters from the class year on, ambiguous keys
+left unlinked). Not every `alternateId` is a college id: only 53-89% of a class's ids appear on any
+store roster (the rest belong to transfer-portal records or players never on an ESPN-covered roster),
+so the fallback is graded where the id is a real roster id: precision 94.6% (2019 class), 99.7-100%
+(2021-2026); recall 74% (2019), 86-92% (2021-2026). Records it links that have no usable id: 2024
+class 1,657, 2025 3,338, 2026 4,029, enough to serve the grade to current underclassmen. Recommended
+join: id where it is a roster id, else the fallback, the same rule for training and serving rows.
+
 ### R6. ESPN box scores give FCS seasons with ESPN ids, before 2013 too (accepted as a source)
 
 `python projections/lanes/packages/espn_fcs_box.py fetch|lines <season>` (ESPN site API scoreboard
