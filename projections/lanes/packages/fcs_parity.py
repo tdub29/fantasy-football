@@ -3,7 +3,7 @@ same season, plus the id test that matters for labels: do the FCS NFL players ge
 the college id ESPN's own NFL-to-college crosswalk gives them?
 
 Reads (read-only) the data lane's `pbp_player_season_<y>.parquet` and reuses its team/name keys
-(`projections/lanes/data/fcs_measure.py`: skey, sim; `ncaa_pbp_stats.split_name`).
+(`projections/lanes/data/fcs_measure.py`: skey; `ncaa_pbp_stats.split_name`).
 
     python projections/lanes/packages/fcs_parity.py <season> <ncaa lines dir> <xwalk.parquet> <nfl_outside_b.csv>
 """
@@ -16,7 +16,7 @@ import pandas as pd
 
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent / "data"))
-from fcs_measure import sim, skey  # noqa: E402
+from fcs_measure import skey  # noqa: E402
 from ncaa_pbp_stats import split_name  # noqa: E402
 
 SCR = pathlib.Path(os.environ.get("LANE_PK", r"C:\Users\TrevorWhite\.claude\jobs\b56027d3\tmp"))
@@ -33,20 +33,29 @@ def parity(e, ncaa_dir, y):
     n = pd.read_parquet(ncaa_dir / f"pbp_player_season_{y}.parquet")
     res = {"ncaa_lines": int(len(n))}
 
-    # name + school join, the data lane's own rule (sim >= 0.85 on the team name)
-    teams_e, teams_n = e.school.unique(), n.team.unique()
-    tmap = {}
-    for t in teams_e:
-        best = max(teams_n, key=lambda u: sim(t, u))
-        if sim(t, best) >= 0.85:
-            tmap[t] = best
-    e["ncaa_team"] = e.school.map(tmap)
-    res["espn_schools"] = int(len(teams_e))
-    res["espn_schools_matched_to_ncaa_team"] = int(len(tmap))
-    # FBS opponents appear with one-game lines: keep FCS teams only (NCAA team table, division 12)
+    # Exact team map (reviewer's fix): the longest leading part of ESPN's "School Mascot" whose
+    # normalized key equals an FCS team name. A fuzzy best match (sim >= 0.85, prefix = 1.0) sent
+    # North Dakota State to North Dakota and Indiana State to Indiana.
     nt = pd.read_parquet(ncaa_dir / f"ncaa_mfb_teams_{y}.parquet")
     fcs = set(nt[nt.division == 12].team_name)
-    e = e[e.ncaa_team.isin(fcs)].copy()
+    keys = {skey(t): t for t in fcs}
+
+    def exact(full):
+        p = str(full).split()
+        for k in range(len(p) - 1, 0, -1):
+            hit = keys.get(skey(" ".join(p[:k])))
+            if hit:
+                return hit
+        return None
+    # ESPN's own FCS teams: 8+ games on that season's FCS scoreboard (drops FBS and Division II
+    # opponents' one-game lines)
+    ev = json.loads((SCR / "espn_fcs" / f"events_{y}.json").read_text())
+    games = pd.Series([t[0] for g in ev for t in g["teams"]]).value_counts()
+    main = set(games[games >= 8].index)
+    e["ncaa_team"] = e.team.map(exact)
+    res["espn_fcs_teams"] = int(e[e.team_id.isin(main)].team.nunique())
+    res["espn_fcs_teams_mapped"] = int(e[e.team_id.isin(main)].dropna(subset=["ncaa_team"]).team.nunique())
+    e = e[e.team_id.isin(main) & e.ncaa_team.notna()].copy()
     res["espn_fcs_lines"] = int(len(e))
     n = n[n.team.isin(fcs)]
     m = e.merge(n, left_on=["ncaa_team", "last", "fi"], right_on=["team", "last", "fi"], suffixes=("_espn", "_ncaa"))

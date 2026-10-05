@@ -197,35 +197,52 @@ so the fallback is graded where the id is a real roster id: precision 94.6% (201
 class 1,657, 2025 3,338, 2026 4,029, enough to serve the grade to current underclassmen. Recommended
 join: id where it is a roster id, else the fallback, the same rule for training and serving rows.
 
-### R6. ESPN box scores give FCS seasons with ESPN ids, before 2013 too (accepted as a source)
+### R6. ESPN box scores give FCS seasons with ESPN ids, before 2013 too (accepted as a source, reviewed)
 
 `python projections/lanes/packages/espn_fcs_box.py fetch|lines <season>` (ESPN site API scoreboard
 `groups=81` plus one summary per completed game; the endpoints behind cfbfastR `espn_cfb_schedule` /
-`espn_cfb_game_player_box`). The store's ESPN files hold FBS games only (200-236 teams, 800-960
-games a season); this adds games involving FCS teams. 2016: 790 games, all with a player box score;
-2010: 782; 2007: 768.
+`espn_cfb_game_player_box`). The store's ESPN files hold FBS games only (from about 2010: 200-236
+teams, 800-960 games a season; 2004: 161 teams, 699 games); this adds games involving FCS teams.
+2004-2012 and 2016 pulled: 740-822 games a season, no duplicate game ids. Every game has a players
+block, but 0.1-2.7% of FCS team-games a season have an empty team box (2004 2.7%, 2012 2.0%, 2016
+0.4%), mostly whole-season holes for FBS-transition teams (Western Kentucky 2004-2006, FIU and FAU
+2004, Old Dominion and Georgia State 2012). In 2016 per-team event counts equal stats.ncaa.org's
+schedule for 118 of 121 teams; FCS playoffs, the championship and the Celebration Bowl are captured.
+The same team and name appear under two ESPN ids 1-2 times a season in 2007-2012 and 20 times in
+2016 (one season split into two lines). 2013-2025 pulled afterwards (2020: 58 games; the spring 2021
+FCS season is not under the fall-2020 scoreboard weeks and is likely missing).
 
 `python projections/lanes/packages/fcs_parity.py <season> <data lane ncaa dir> <xwalk> <nfl_outside_b.csv>`:
 
-- **Against stats.ncaa.org, 2016, FCS teams only** (name + school join, the data lane's own rule):
-  median ESPN/NCAA ratio 1.00 for receiving (237 players with 300+ yards), 1.00 rushing (230), 1.006
-  passing (96); within 5%: 71%, 61%, 64%; within 10%: 84%, 73%, 77%. Spot checks: Cooper Kupp 2016
-  ESPN 116-1,700 (published 117-1,700); Joe Flacco 2007 4,263 passing yards (published 4,263); Tarik
-  Cohen 2016 1,434 rushing yards in 11 games (published 1,588: ESPN misses at least one game).
+- **Against stats.ncaa.org, 2016, ESPN's FCS teams only** (exact school-name map after review; the
+  first version's fuzzy map sent 24 of 125 FCS schools to the wrong or no NCAA team): median ESPN/NCAA
+  ratio 1.00 receiving (278 of 283 players with 300+ yards joined), 1.00 rushing (276 of 278), 1.007
+  passing (112 of 115); within 5%: 69%, 62%, 62%; within 10%: 81%, 73%, 79%. Most misses are on the
+  NCAA side (NCAA has fewer games in 38, 34 and 15 of the 86, 105 and 43 rows outside 5%; ESPN in 28,
+  14 and 6), and same-game rushing misses are mostly QBs (46 of 57: ESPN counts sacks as rushes).
+- **Spot checks**: Kupp 2016 116-1,700 (published 117-1,700); Flacco 2007 4,263 (4,263); Julius Thomas
+  2010 32-474 (29-453); Cohen 2016 1,434 in 11 games (1,588 in 12) and Hightower 2007 1,829 (1,924)
+  each lose one game whose team box is empty.
 - **Exact-id lines for the FCS NFL players** (ESPN crosswalk college id, no name join): final season
-  2016 (class 2017) 9 of 11, all 3 hits (Kupp, Cohen, Tonyan); 2010 (class 2011) 6 of 8 including
-  Julius Thomas; 2007 (class 2008) 7 of 9 including Tim Hightower. The data lane's stats.ncaa.org
-  route has no data before the 2013 season, so Thomas and Hightower stay outside population B there.
-- **Source caveat**: the store's FBS season lines are ESPN play-by-play aggregates, which the data
-  lane measured 2-5% below box-score totals; these FCS lines are box-score totals. Scoring FCS rows
-  next to FBS rows needs FBS lines rebuilt from `cfb_player_box` (already in the store) or the shift
-  modeled, the same caveat the data lane raised for stats.ncaa.org.
-- **Every season before stats.ncaa.org** (2004-2012 pulled: 740-822 games a season, every one with a
-  player box score; no duplicate game ids). For the data lane's 54 FCS NFL players of the 2008-2013
-  classes, the ones its route must leave outside B: ESPN has a college id for 47 and a final-season
-  line by that id for 38 (70%), including both hits (Hightower 2008, Julius Thomas 2011). By class:
-  2008 7 of 9, 2009 6 of 11, 2010 9 of 10, 2011 6 of 8, 2012 6 of 10, 2013 4 of 6.
-- 2013-2025 pulling (one source family for every FCS season if the coordinator wants it).
+  2016 (class 2017) 9 of 11, all 3 hits (Kupp, Cohen, Tonyan). For the data lane's 54 FCS NFL players
+  of the 2008-2013 classes, which its stats.ncaa.org route must leave outside B (no data before the
+  2013 season): ESPN has a college id for 47 and a final-season line by that id for 38, including
+  both hits (Hightower 2008, Julius Thomas 2011). By class: 2008 7 of 9, 2009 6 of 11, 2010 9 of 10,
+  2011 6 of 8, 2012 6 of 10, 2013 4 of 6. A line by id can be a few games (Mahaffey 2, Lawrence 3).
+  Of the 16 misses, 6 were not FCS in their last season (Abilene Christian before 2013, Henderson
+  State, Tarleton), 1 played defense, 2 have box lines under a different ESPN id than the crosswalk
+  gives (Sorensen, Vaughan), 3 have lines but no crosswalk id (Bomar, Sherry, Shields), and 4 have
+  their last line before draft year minus 1. With a name + team fallback, all 47 FCS offensive players
+  have a last-season line.
+- **Source caveat**: the store's FBS season lines are ESPN play-by-play aggregates. The data lane
+  inferred they run 2-5% low (stats.ncaa.org play-by-play over ESPN play-by-play, FBS 2013-2019 medians
+  1.021 receiving, 1.050 rushing); measured directly against `cfb_player_box`, the store's lines run
+  6-12% below box totals (median 0.93 receiving and 0.88-0.94 rushing, 2010 and 2016). These FCS lines
+  are box totals, so FCS and FBS rows need one counting basis before they are scored together.
+- **Outcome dependence**: usable-box coverage for teams that produced NFL players (flagged from
+  neighbouring seasons) vs the rest: 98.9% vs 98.3% (2005), 98.9% vs 98.8% (2007), 99.9% vs 99.5%
+  (2011), 96.2% vs 99.9% (2012, Old Dominion and Georgia State); no consistent sign. The real risk is
+  the population definition: a whole-season hole moves a player's exit back a year or drops him.
 
 ## Integration recommendations (for the coordinator; nothing applied to shared code)
 
@@ -243,6 +260,10 @@ games a season); this adds games involving FCS teams. 2016: 790 games, all with 
    plus `espn_missing` next to 247 stars, in a "fill 247 nulls" and a "second opinion" form.
 3. **ESPN FCS box-score lines (R6)** as the FCS source for seasons before 2013 and as the id layer for
    the data lane's stats.ncaa.org lines after; decide one counting basis for FBS and FCS first.
+   Before use: keep only FCS teams' lines (the pull also holds FBS and Division II opponents'
+   one-game lines); flag team-seasons with empty boxes; bridge crosswalk ids with name + team; take
+   the exit season from the last season on file, not draft year minus 1; put QB rushing on one sack
+   basis; check whether the spring 2021 FCS season needs its own pull.
 4. **`prospect_db`**: a `local` base in `SOURCES` reading a snapshot directory instead of `bpp.fetch`,
    same sha256 / `source_file` bookkeeping. Licence string: "ESPN APIs (undocumented, key-free;
    endpoints used by cfbfastR/sportsdataverse); ESPN terms; local research use only".
