@@ -30,6 +30,7 @@ const env = {
   openPlayerDetail: (...a) => calls.push(['nfl', ...a]),
   playerModal: (...a) => { calls.push(['modal', ...a]); return null; },
   document: { body: { appendChild: () => {} } },
+  history: { replaceState: (...a) => calls.push(['replace', ...a]) },
 };
 const { collegeProspectBlock, viewProspects, pmPct } = new Function(...Object.keys(env),
   `${app.slice(start, end)}; return { collegeProspectBlock, viewProspects, pmPct };`)(...Object.values(env));
@@ -53,7 +54,8 @@ assert.notEqual(pmPct(wr[0].tp), pmPct(wr[wr.length - 1].tp));
 assert.doesNotMatch(text(collegeProspectBlock(M.college.find(r => r.p === 'RB'))), /early-declare/);
 
 // Table rows open the right card, by keyboard button or row click, for every position and class
-// filter. 'next' and 'later' are the legacy routes and must still land on the matching class.
+// filter. 'next', 'later' and 'rookies' are legacy routes: the first two land on the matching class,
+// 'rookies' on the upcoming board, because drafted rookies are NFL players now (Trevor, 2026-10-05).
 const years = [...new Set(M.college.map(r => r.cls))];
 for (const pos of ['ALL', 'QB', 'RB', 'WR', 'TE']) {
   for (const mode of ['all', 'next', 'later', 'rookies', ...years.map(String)]) {
@@ -62,31 +64,32 @@ for (const pos of ['ALL', 'QB', 'RB', 'WR', 'TE']) {
     const rows = find({ attrs: {}, kids: main.kids }, n => n.tag === 'tr' && n.attrs.onclick);
     assert.equal(buttons.length, rows.length, `${pos} ${mode}: one name button per row`);
     if (!rows.length) continue;
+    if (mode === 'rookies') assert.equal(rows.length, M.college.filter(r => pos === 'ALL' || r.p === pos).length, `${pos} rookies: legacy link lands on all upcoming`);
     calls.length = 0;
     buttons[0].attrs.onclick({ stopPropagation() {} });
     rows[rows.length - 1].attrs.onclick();
     for (const [kind, name, a, b, rec] of calls) {
-      if (mode === 'rookies') {
-        assert.equal(kind, 'nfl');
-        assert.equal(M.nfl[a].n, name, 'rookie card resolves by his Sleeper id');
-      } else {
-        assert.equal(kind, 'modal');
-        assert.equal(a, null); assert.equal(b, null);
-        assert.equal(rec.n, name);
-        if (pos !== 'ALL') assert.equal(rec.p, pos, `${name}: right position`);
-        const want = mode === 'next' ? M.season + 1 : mode === 'later' ? M.season + 2 : Number(mode);
-        if (mode !== 'all') assert.equal(rec.cls, want, `${name}: right class`);
-      }
+      assert.equal(kind, 'modal');
+      assert.equal(a, null); assert.equal(b, null);
+      assert.equal(rec.n, name);
+      assert(rec.cls > M.season, `${name}: upcoming class only`);
+      if (pos !== 'ALL') assert.equal(rec.p, pos, `${name}: right position`);
+      const want = mode === 'next' ? M.season + 1 : mode === 'later' ? M.season + 2 : Number(mode);
+      if (mode !== 'all' && mode !== 'rookies') assert.equal(rec.cls, want, `${name}: right class`);
     }
     // One table, filtered by a Class select: the old per-class mode buttons are gone.
     assert.equal(find({ attrs: {}, kids: main.kids }, n => n.tag === 'table').length, rows.length ? 1 : 0, `${pos} ${mode}: one table`);
     assert.equal(find({ attrs: {}, kids: main.kids }, n => n.tag === 'select' && n.attrs['aria-label'] === 'Filter by draft class').length, 1);
+    assert(!find({ attrs: {}, kids: main.kids }, n => n.tag === 'option' && n.attrs.value === 'rookies').length, `${pos} ${mode}: no rookies option`);
     if (mode === 'all' && pos !== 'ALL') assert.equal(rows.length, M.college.filter(r => r.p === pos).length, `${pos}: all classes in one table`);
     // No explanation block above the table (Trevor, 2026-10-04): header, filters, then the board.
     assert.equal(find({ attrs: {}, kids: main.kids }, n => /prm-notes/.test(n.attrs.class || '')).length, 0, `${pos} ${mode}: no notes block`);
   }
 }
 
+// Rookie model cards stay reachable from the NFL player card.
+assert.match(app, /prospectModelBlock\(sleeper\)/);
+assert(Object.keys(M.nfl).length > 0, 'rookie model records still ship');
 assert.match(app, /function playerModal\(name, ranked, sleeper, college = null\)/);
 assert.match(app, /college \? collegeProspectBlock\(college\) : prospectModelBlock\(sleeper\)/);
 assert.match(app, /\(college \? \[\] : activeExpertSources\(\)\)/);

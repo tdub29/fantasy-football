@@ -12232,9 +12232,10 @@
       pmComps(me.cp));
   }
 
-  // #prospects: one table over every current college player plus the newest rookie class,
+  // #prospects: one table over every college player in an upcoming draft class,
   // filtered like Players: position chips, a Class select, and a name search.
-  // Route: #prospects/<ALL|QB|RB|WR|TE>/<all|year|rookies>.
+  // Route: #prospects/<ALL|QB|RB|WR|TE>/<all|year>. Upcoming classes only (Trevor, 2026-10-05):
+  // drafted rookies are NFL players now, and their model card stays on the player card.
   const prospectSort = { key:'ts', dir:'desc', q:'' };
   function viewProspects(posArg, clsArg) {
     const main = $('#main'); main.innerHTML = '';
@@ -12244,11 +12245,13 @@
     const pos = POSL.includes(posArg) ? posArg : 'ALL';
     const one = pos !== 'ALL';
     const next = M.season + 1;
-    const years = [...new Set(M.college.map(r => r.cls))].sort((a, b) => a - b);
+    const upcoming = M.college.filter(r => r.cls > M.season);
+    const years = [...new Set(upcoming.map(r => r.cls))].sort((a, b) => a - b);
+    // The old rookies board is retired; its links land on the upcoming board.
+    if (clsArg === 'rookies') history.replaceState(null, '', `#prospects/${POSL.includes(posArg) ? posArg : 'ALL'}`);
     // 'next' and 'later' are the old mode routes; they land on the matching class.
-    const cls = clsArg === 'rookies' ? 'rookies' : clsArg === 'next' ? String(next)
+    const cls = clsArg === 'next' ? String(next)
       : clsArg === 'later' ? String(next + 1) : years.includes(Number(clsArg)) ? String(clsArg) : 'all';
-    const rookies = cls === 'rookies';
     const meta = one ? (M.pos[pos] || {}) : {};
     const capOnly = !one || meta.shipped === 'draft';
     const posWord = one ? pos : 'player at his position';
@@ -12262,21 +12265,19 @@
         if (btn && btn.getAttribute('aria-expanded') === 'false') btn.click(); });
     };
     const pick = (p) => !one || p === pos;
-    const all = rookies
-      ? Object.entries(M.nfl).filter(([, r]) => pick(r.p) && r.y === M.season).map(([id, r]) => ({ ...r, id }))
-      : M.college.filter(r => pick(r.p) && (cls === 'all' || r.cls === Number(cls)));
+    const all = upcoming.filter(r => pick(r.p) && (cls === 'all' || r.cls === Number(cls)));
     // A pre-draft number shows only where a reviewed model serves that player's class, the same
     // gate the per-class boards used: next class by its stage or pre-draft model, later by `later`.
     const nst = one && meta.stage && meta.stage.next ? meta.stage : null;   // the reviewed model serving the next class
     const pdOk = (r) => { const m = M.pos[r.p] || {};
       return r.cls === next ? !!((m.stage && m.stage.next) || m.predraft) : !!m.later; };
     // College players have no Sleeper id, so their card is built from the model record itself.
-    const openRow = (r) => rookies ? openPlayerDetail(r.n, r.id) : document.body.appendChild(playerModal(r.n, null, null, r));
+    const openRow = (r) => document.body.appendChild(playerModal(r.n, null, null, r));
 
     main.appendChild(breadcrumbs([{ label:'Tools' }, { label:'Prospects' }]));
     main.appendChild(pageHeader({
       eyebrow:'PROSPECT MODEL',
-      title: rookies ? `${M.season} rookies` : 'College prospects',
+      title: 'College prospects',
       sub: (one ? `Hit = ${(meta.target || '').replace(/^Top/, 'top')}. ` : '')
         + `Talent is the college profile with no draft capital, as a percentile against every drafted ${posWord} since 2008.`,
     }));
@@ -12291,8 +12292,7 @@
           onclick:() => go(p, cls) }, p)))));
     const clsSel = h('select', { 'aria-label':'Filter by draft class', onchange:(e) => go(pos, e.target.value) },
       h('option', { value:'all', selected: cls === 'all' ? '' : null }, 'All classes'),
-      ...years.map(y => h('option', { value:String(y), selected: cls === String(y) ? '' : null }, `${y} class`)),
-      h('option', { value:'rookies', selected: rookies ? '' : null }, `${M.season} rookies`));
+      ...years.map(y => h('option', { value:String(y), selected: cls === String(y) ? '' : null }, `${y} class`)));
     filterBar.appendChild(h('div', { class:'group' }, h('label', null, 'Class'), clsSel));
     main.appendChild(filterBar);
 
@@ -12300,20 +12300,18 @@
     const cols = [
       ['n', 'Player', { asc:true }],
       one ? null : ['p', 'Pos', { asc:true }],
-      rookies ? ['pk', 'Pick', { right:true, asc:true, title:'Overall draft pick' }] : null,
-      !rookies && cls === 'all' ? ['cls', 'Class', { right:true, asc:true, title:'First draft he is eligible for' }] : null,
+      cls === 'all' ? ['cls', 'Class', { right:true, asc:true, title:'First draft he is eligible for' }] : null,
       ['ts', 'Talent', { right:true, title:`College profile, no draft capital: percentile vs every drafted ${posWord} since 2008` }],
       ['tr', 'Tier', { asc:true, title:'Our tier, cut on the talent score' }],
-      !rookies && all.some(pdOk) ? ['pd', 'Pre-draft', { right:true, title:'Chance he hits, before the draft, counting the chance he goes undrafted, '
+      all.some(pdOk) ? ['pd', 'Pre-draft', { right:true, title:'Chance he hits, before the draft, counting the chance he goes undrafted, '
         + `compared with players at the same college year${nst && nst.live_n ? `, plus his team's first ${nst.live_n} games this season` : ''}`
         + `${nst && /^S6/.test(nst.model) ? ', rescaled on players who came back for another college season' : ''}`
         + `${nst ? ` (${nst.model})` : ''}. Blank where no reviewed model serves his class` }] : null,
-      rookies ? ['hp', 'Hit %', { right:true, title:'College profile plus his actual draft slot (draft capital alone where college stats did not beat slot)' }] : null,
-      ['tp', 'College %', { right:true, title:`Hit chance from college stats alone${rookies ? ', the pre-draft read' : ', if drafted'}. ${one ? pmTrust(pos) || '' : ''}` }],
+      ['tp', 'College %', { right:true, title:`Hit chance from college stats alone, if drafted. ${one ? pmTrust(pos) || '' : ''}` }],
       pos === 'QB' ? null : ['ba', 'Breakout', { right:true, asc:true, title:'Age at his first college season at the dominator line (blank: not yet). Profile only, no model uses it' }],
-      rookies ? null : ['age', 'Draft age', { right:true, asc:true, title:'Estimated age at the draft he is scored for: the more conservative of leaving after his third or fourth college year' }],
+      ['age', 'Draft age', { right:true, asc:true, title:'Estimated age at the draft he is scored for: the more conservative of leaving after his third or fourth college year' }],
       ...stat.map(([k, label, , t]) => [`st.${k}`, label, { right:true, title:t }]),
-      ...(!rookies && !capOnly ? PM_ROUNDS.map((r, i) => [`r${i}`, i < 3 ? `R${i + 1}` : 'Day 3',
+      ...(!capOnly ? PM_ROUNDS.map((r, i) => [`r${i}`, i < 3 ? `R${i + 1}` : 'Day 3',
         { right:true, title:`Hit chance if drafted in ${r}` }]) : []),
     ].filter(Boolean);
     const get = (r, k) => /^r\d$/.test(k) ? (r.r || [])[Number(k[1])] : k.startsWith('st.') ? (r.st || {})[k.slice(3)]
@@ -12347,7 +12345,7 @@
       });
       if (!rows.length) {
         card.appendChild(h('div', { class:'empty' }, q ? 'No prospects match that search.'
-          : rookies ? `No ${M.season} ${one ? pos : 'rookie'}s on file.` : 'No prospects in this group.'));
+          : 'No prospects in this group.'));
         return;
       }
       const sortHdr = ([k, label, o]) => {

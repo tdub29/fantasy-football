@@ -636,8 +636,8 @@
       "notes": "#prospects (viewProspects in app.js) over site/data/prospect-model.js, built by projections/build_prospect_model.py. Default sort is the talent score, descending. Where the full model ships (WR today) every row carries Round 1 / 2 / 3 / Day 3 hit chances, and they must fall as the pick gets later: a column that rises with worse capital means the log-pick term flipped sign or the columns were shuffled. Where the career-stage model serves the WR next class (pos.WR.stage.next) a Pre-draft column must show a 0-100% chance on every row, and must be absent otherwise. If a rebuild demotes WR to the draft-only model the R columns must disappear (the scenario is then the same number for every player and is printed once in the notes card), and this case checks that too rather than failing on it. Class is a select over one table, not a set of mode buttons; this case pins the next class so every row is one the Pre-draft model serves. The sidebar's Prospects link must exist and be lit on a #prospects/<pos> sub-route."
     },
     {
-      "id": "prospects-rookies-sort",
-      "name": "Prospects: rookie class filter and sortable hit column",
+      "id": "prospects-upcoming-only",
+      "name": "Prospects: upcoming classes only, legacy rookies link lands on the upcoming board",
       "path": [
         {
           "press": "Escape"
@@ -650,17 +650,11 @@
         },
         {
           "sleepMs": 600
-        },
-        {
-          "eval": "[...document.querySelectorAll('#main table.prm-table thead th')].find(t => t.textContent.trim().startsWith('Hit %')).click()"
-        },
-        {
-          "sleepMs": 300
         }
       ],
       "selector": "#main table.prm-table",
-      "assert": "(() => { const M = window.PROSPECT_MODEL; const want = Object.values(M.nfl).filter(r => r.p === 'RB' && r.y === M.season).length; const heads = [...document.querySelectorAll('#main table.prm-table thead th')].map(t => t.textContent.trim()); const i = heads.findIndex(x => x.startsWith('Hit %')); const rows = [...document.querySelectorAll('#main table.prm-table tbody tr')]; const hp = rows.map(r => parseInt(r.children[i].textContent, 10)); return want >= 5 && rows.length === want && heads[i].endsWith('↓') && hp.every((v, k) => k === 0 || v <= hp[k - 1]) && document.querySelector('#main select[aria-label=\"Filter by draft class\"]')?.value === 'rookies' && rows.every(r => r.classList.contains('clickable')); })()",
-      "notes": "The rookie toggle lists every player of the newest draft class at the position from PROSPECT_MODEL.nfl (keyed by Sleeper id), so a row opens his player card. One click on Hit % sorts it descending, the default for a probability, and the arrow on the header is the sort signal. The row count is tied to the payload so a filter bug that drops players fails here."
+      "assert": "(() => { const M = window.PROSPECT_MODEL; const want = M.college.filter(r => r.p === 'RB' && r.cls > M.season).length; const heads = [...document.querySelectorAll('#main table.prm-table thead th')].map(t => t.textContent.trim().replace(/ [↑↓]$/, '')); const ci = heads.indexOf('Class'); const rows = [...document.querySelectorAll('#main table.prm-table tbody tr')]; const sel = document.querySelector('#main select[aria-label=\"Filter by draft class\"]'); return location.hash === '#prospects/RB' && want >= 5 && rows.length === want && ci >= 0 && rows.every(r => Number(r.children[ci].textContent) > M.season) && !!sel && sel.value === 'all' && ![...sel.options].some(o => o.value === 'rookies' || Number(o.value) <= M.season) && !heads.includes('Hit %') && !heads.includes('Pick'); })()",
+      "notes": "Upcoming Prospects shows only classes after PROSPECT_MODEL.season (Trevor, 2026-10-05): drafted rookies are NFL players and their model card stays on the player card (player-card-prospect-profile). The retired #prospects/<pos>/rookies route must rewrite to #prospects/<pos> and show every upcoming player at the position, with no rookie option, Pick or Hit % column."
     },
     {
       "id": "prospects-all-classes",
