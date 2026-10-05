@@ -12247,15 +12247,16 @@
     const next = M.season + 1;
     const upcoming = M.college.filter(r => r.cls > M.season);
     const years = [...new Set(upcoming.map(r => r.cls))].sort((a, b) => a - b);
-    // The old rookies board is retired; its links land on the upcoming board.
-    if (clsArg === 'rookies') history.replaceState(null, '', `#prospects/${POSL.includes(posArg) ? posArg : 'ALL'}`);
     // 'next' and 'later' are the old mode routes; they land on the matching class.
     const cls = clsArg === 'next' ? String(next)
       : clsArg === 'later' ? String(next + 1) : years.includes(Number(clsArg)) ? String(clsArg) : 'all';
+    const hashFor = (p, c) => `#prospects/${p}${c === 'all' ? '' : `/${c}`}`;
+    // A retired class link (the old rookies board, a class already drafted) lands on the upcoming
+    // board, and the address says so.
+    if (clsArg && clsArg !== 'next' && clsArg !== 'later' && String(clsArg) !== cls) history.replaceState(null, '', hashFor(pos, cls));
     const meta = one ? (M.pos[pos] || {}) : {};
     const capOnly = !one || meta.shipped === 'draft';
     const posWord = one ? pos : 'player at his position';
-    const hashFor = (p, c) => `#prospects/${p}${c === 'all' ? '' : `/${c}`}`;
     // Redraw in place like Players, so the phone filter panel stays open between taps.
     const go = (p, c) => {
       history.pushState(null, '', hashFor(p, c));
@@ -12325,7 +12326,7 @@
           onclick:(e) => { e.stopPropagation(); openRow(r); } }, v),
         r.sch ? h('span', { class:'muted prm-school' }, r.sch) : null);
       if (k.startsWith('st.')) return stat.find(s => `st.${s[0]}` === k)[2](v);
-      if (k === 'hp' || k === 'tp' || k === 'pd' || /^r\d$/.test(k)) return pmPct(v);
+      if (k === 'tp' || k === 'pd' || /^r\d$/.test(k)) return pmPct(v);
       if (k === 'ba' || k === 'age') return pmNum(1)(v);
       return v == null ? '·' : String(v);
     };
