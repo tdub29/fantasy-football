@@ -74,10 +74,8 @@ for (const pos of ['QB', 'RB', 'WR', 'TE']) {
         assert(mode === 'later' ? rec.cls > M.season + 1 : rec.cls === M.season + 1, `${name}: right class`);
       }
     }
-    if (mode !== 'rookies') {
-      const notes = find({ attrs: {}, kids: main.kids }, n => /prm-notes/.test(n.attrs.class || ''))[0];
-      assert.match(text(notes.kids[0]), /college stats alone/, `${pos}: the individual read leads the notes`);
-    }
+    // No explanation block above the table (Trevor, 2026-10-04): header, filters, then the board.
+    assert.equal(find({ attrs: {}, kids: main.kids }, n => /prm-notes/.test(n.attrs.class || '')).length, 0, `${pos} ${mode}: no notes block`);
   }
 }
 

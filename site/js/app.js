@@ -12265,58 +12265,6 @@
         h('button', { class:`ghost${m === mode ? ' active' : ''}`, 'aria-pressed':String(m === mode),
           onclick:() => navigate(hashFor(pos, m)) }, label))));
 
-    const hitLine = (meta.tier_hit || []).map(([n, hit], i) => hit == null ? null : `${M.tiers[i]} ${pmPct(hit)}`).filter(Boolean).join(', ');
-    // Lead with what differs player to player. The shared round curve is a reference line, and
-    // the validation result stays on the page in full.
-    const notes = [
-      rookies
-        ? (capOnly ? 'Hit % is his actual draft slot alone. College % is the pre-draft read from his college stats, for comparison.'
-          : 'Hit chance uses his actual draft slot plus his college profile.')
-        : [pmTrust(pos), 'College % is that model\'s hit chance if he is drafted; undrafted players are not in the history.']
-          .filter(Boolean).join(' '),
-      hitLine ? `Past hit rate by tier, out of sample: ${hitLine}.` : null,
-      rookies ? null : capOnly ? pmSlotLine(pos, scen)
-        : `If drafted columns average the model over every pick in the range (Round 1 = 1-32, Round 2 = 33-64, `
-          + `Round 3 = 65-100, Day 3 = 101-257).`,
-      pos === 'WR' && capOnly ? PM_WR_EARLY : null,
-      rookies ? null : 'College ages are estimated from class year (no public birth dates), and a live season counts once it reaches 6 games. '
-        + 'Talent scores each player at the more conservative of leaving after his third or fourth college year.',
-      // Pre-draft forecast (population B): only for positions that passed validation and review.
-      mode === 'next' && pre ? `Pre-draft is his chance to hit counting the chance he goes undrafted, from a model fit on all `
-        + `${pre.n.toLocaleString()} ${pos}s who left FBS college football since 2008, drafted or not (${pre.hits} hits), `
-        + `using his completed seasons. Scored on draft classes ${pre.classes} it never saw: log loss ${pre.logloss} against `
-        + `${pre.base_logloss} for ${pre.baseline === 'B0s' ? 'recruiting stars alone' : 'the base rate'}, AUC ${pre.auc} against `
-        + `${pre.base_auc}. Most of that edge is telling who gets drafted at all; among drafted players it ranks talent far less sharply. `
-        + `Next class only: for younger players the same method ran well short of real hit rates in a backtest.` : null,
-      mode === 'next' && nst && nst.served ? (() => {
-        const v = nst.served, pct = (r) => `${Math.round(Math.abs(r - 1) * 100)}% ${r >= 1 ? 'above' : 'below'}`;
-        return `Pre-draft is his chance to hit counting the chance he goes undrafted, from a career-stage model: every FBS `
-          + `${pos} who left college since 2008 contributes one row per completed season, so he is compared with players at `
-          + `the same college year. ${nst.live_n ? `It uses his completed seasons plus his team's first ${nst.live_n} games this `
-            + `season (no number until his team has played ${nst.live_n}, or if he has no stat line this season)` : 'It uses his completed seasons only, not this one'}, `
-          + `and assumes no exit. ${/^S6/.test(nst.model) ? 'The forecast is then rescaled on players who came back for another '
-            + 'college season, with fourth-year and older players scaled separately. ' : ''}This list is the `
-          + `class's top 60 by that chance. Replayed on the 2012-2021 seasons through the same code (${v.n.toLocaleString()} `
-          + `player-seasons, ${v.players.toLocaleString()} players, ${v.players_hit} of whom hit): log loss ${v.logloss} against `
-          + `${v.base_logloss} for recruiting stars plus college year, AUC ${v.auc} against ${v.base_auc}. The average forecast `
-          + `ran ${pct(v.ratio)} the real hit rate over all replays, ${pct(v.top60_ratio)} on each season's top 60 like this list, `
-          + `and ${pct(v.late_ratio)} on the 2017-2021 replays. Among drafted players alone its edge over stars plus college year is `
-          + `smaller (AUC gain ${v.drafted_auc_gain} against ${v.auc_gain} overall), so much of it is telling who gets drafted at all.`;
-      })() : null,
-      mode === 'later' && stg && stg.served ? (() => {
-        const v = stg.served, pct = (r) => `${Math.round(Math.abs(r - 1) * 100)}% ${r >= 1 ? 'above' : 'below'}`;
-        return `Pre-draft for sophomores comes from a model fit only on ${pos}s who finished a college freshman season and `
-          + `played the next one (${stg.players.toLocaleString()} players, ${stg.hits} hits). Freshmen get no number yet. `
-          + `Numbered sophomores lead this list by that chance; the rest follow by Talent. Replayed on the ${v.seasons} seasons `
-          + `through the same code (${v.n.toLocaleString()} player-seasons, ${v.events} hits): log loss ${v.logloss} against `
-          + `${v.base_logloss} for recruiting stars plus college year; the average forecast ran ${pct(v.ratio)} the real hit `
-          + `rate, ${pct(v.top_ratio)} on each season's top 30. Thin evidence: calibration held in ${Math.round(v.support * 100)}% `
-          + `of season resamples (${Math.round(v.top_support * 100)}% on the top 30), and among players who were drafted it ranks `
-          + `no better than stars (AUC ${v.drafted_auc} against ${v.drafted_base_auc}).`;
-      })() : null,
-    ].filter(Boolean);
-    main.appendChild(h('div', { class:'card prm-notes' }, ...notes.map(t => h('p', { class:'tip' }, t))));
-
     const stat = pmStatCols(pos);
     const cols = [
       ['n', 'Player', { asc:true }],

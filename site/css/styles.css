@@ -6180,9 +6180,6 @@ td.gm-swing { white-space: nowrap; }
 }
 table.data.prm-table .name-cell { flex-direction: column; align-items: flex-start; gap: 0; min-width: 150px; }
 .prm-school { font-size: 0.72rem; }
-.prm-notes { margin-bottom: 12px; }
-.prm-notes p { margin: 0 0 6px; }
-.prm-notes p:last-child { margin-bottom: 0; }
 .prm-line, .prm-out, .prm-comps { margin-top: 8px; }
 .adv-stat-value .rating-track { margin-left: 2px; }
 
