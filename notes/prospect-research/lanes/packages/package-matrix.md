@@ -175,6 +175,19 @@ High-school 40 time is on file for 19% of the cohort (drafted 29%, undrafted 18%
 selective to use. Population B classes before about 2010 cannot carry the grade (records start with
 the 2006 class).
 
+**All complete classes, 2015-2026** (same command with those years; classes 2006-2014 still pulling):
+over 4,179 population B rows with a first season 2015-2025, 247 covers 65.5%, either source 79.4%;
+Spearman 0.735 on 2,167 rows with both; univariate drafted AUC 0.727 (247) vs 0.728 (ESPN) on those
+rows, 0.634 on the 579 ESPN-only rows. ESPN fills little where 247 is strong (2015-2017 first
+seasons: 247 75-83%, ESPN fills 14-26% of the gaps) and about half where 247 thins (2018-2021).
+
+**Serving caveat (train-serve skew):** ESPN attaches `alternateId` late. Share of a class's records
+with it: 2015-2023 classes 91-97%, 2024 54%, 2025 16%, 2026 7%. So the id join reaches the next
+draft class (mostly 2022-2023 recruits) but not most underclassmen now in college. Serving later
+classes needs a name + school fallback (the 247 join's rule) or the grade stays out of the young
+models; training rows must use the same join the served rows get, or the feature's missingness
+differs between training and serving.
+
 ### R6. ESPN box scores give FCS seasons with ESPN ids, before 2013 too (accepted as a source)
 
 `python projections/lanes/packages/espn_fcs_box.py fetch|lines <season>` (ESPN site API scoreboard
