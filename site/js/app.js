@@ -2389,7 +2389,7 @@
         return { lg, me, rank, pv, fv, dyn, format, stance: dyn ? rosterStance(me, lg) : null, need: needs.map(n => n.p).join('/') || '·', rec };
       });
       main.appendChild(h('div', { class:'card leagues-table-card' },
-        h('table', { class:'data leagues-table' },
+        h('table', { class:'data leagues-table fit-num' },
           h('thead', null, h('tr', null,
             h('th', null, 'League'), h('th', null, 'Format'), h('th', { class:'right' }, 'Record'),
             h('th', { class:'right', title:'Lineup rank: your best legal starting lineup against the league, picks excluded. The roster Snapshot also shows roster value rank, picks included.' }, 'Rank'),
@@ -8549,7 +8549,7 @@
             [c.experience, c.situation, c.position].filter(Boolean).join(' · ')),
           h('td', { class:'right tnum' }, `$${faabMoney(c.bid)}`,
             c.pct != null ? h('span', { class:'muted' }, ` · ${c.pct}%`) : null)));
-        const historyTable = h('table', { class: 'data faab-history-table' },
+        const historyTable = h('table', { class: 'data faab-history-table fit-num' },
           h('thead', null, h('tr', null,
             h('th', null, 'Player'), h('th', null, 'When'), h('th', null, 'Claim context'),
             h('th', { class:'right' }, 'Bid'))),
@@ -12300,10 +12300,10 @@
     const stat = one ? pmStatCols(pos) : [];
     const cols = [
       ['n', 'Player', { asc:true }],
-      one ? null : ['p', 'Pos', { asc:true }],
+      one ? null : ['p', 'Pos', { asc:true, fit:true }],
       cls === 'all' ? ['cls', 'Class', { right:true, asc:true, title:'First draft he is eligible for' }] : null,
       ['ts', 'Talent', { right:true, title:`College profile, no draft capital: percentile vs every drafted ${posWord} since 2008` }],
-      ['tr', 'Tier', { asc:true, title:'Our tier, cut on the talent score' }],
+      ['tr', 'Tier', { asc:true, fit:true, title:'Our tier, cut on the talent score' }],
       all.some(pdOk) ? ['pd', 'Pre-draft', { right:true, title:'Chance he hits, before the draft, counting the chance he goes undrafted, '
         + `compared with players at the same college year${nst && nst.live_n ? `, plus his team's first ${nst.live_n} games this season` : ''}`
         + `${nst && /^S6/.test(nst.model) ? ', rescaled on players who came back for another college season' : ''}`
@@ -12356,16 +12356,16 @@
           prospectSort.dir = on ? (dir === 'desc' ? 'asc' : 'desc') : (o.asc ? 'asc' : 'desc');
           render();
         };
-        return h('th', { class:`clickable${on ? ' sort-active' : ''}${o.right ? ' right' : ''}`, title:o.title, tabindex:'0',
+        return h('th', { class:`clickable${on ? ' sort-active' : ''}${o.right ? ' right' : ''}${o.fit ? ' fit' : ''}`, title:o.title, tabindex:'0',
           'aria-sort':on ? (dir === 'desc' ? 'descending' : 'ascending') : 'none', onclick:activate,
           onkeydown:(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(); } } },
           label + (on ? (dir === 'desc' ? ' ↓' : ' ↑') : ''));
       };
-      const tbl = h('table', { class:'data prm-table' },
+      const tbl = h('table', { class:'data prm-table fit-num' },
         h('thead', null, h('tr', null, h('th', { class:'right' }, '#'), ...cols.map(sortHdr))),
         h('tbody', null, ...rows.map((r, i) => h('tr', { class:'clickable', onclick:() => openRow(r) },
           h('td', { class:'right tnum' }, String(i + 1)),
-          ...cols.map(([k, , o]) => h('td', { class:`${o.right ? 'right ' : ''}tnum` }, fmtCell(r, k)))))));
+          ...cols.map(([k, , o]) => h('td', { class:`${o.right ? 'right ' : ''}${o.fit ? 'fit ' : ''}tnum` }, fmtCell(r, k)))))));
       appendTable(card, tbl);
     }
     render();

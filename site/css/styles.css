@@ -4941,6 +4941,21 @@ table.data.faab-history-table tbody td { padding-block: 7px; font-size: 0.8rem; 
 table.data thead th.right,  table.data tbody td.right  { text-align: right; }
 table.data thead th.center, table.data tbody td.center { text-align: center; }
 
+/* Fourth shape: a full-width board with a few text columns and many numeric
+   ones. Under width:100% the browser spreads the spare width across EVERY
+   column by content share, so at 1440 each 2-digit Prospects score sat in a
+   106px cell, 50px from its own header. `fit-num` makes the `.right` columns
+   as narrow as value and header allow, and the text columns take the slack.
+   Opt-in, like `snug`: done globally it wrapped the snug tables' headers,
+   pushed Trends into a scroll and widened the 25-column board by 58px.
+   `.fit` does the same for a short TEXT column (Pos, Tier) that should not
+   share the name's slack. Desktop only: the phone `.leagues-table` widths are
+   lower specificity and would collapse to 1px under `table-layout:fixed`. */
+@media (min-width: 721px) {
+  table.data.fit-num thead th.right, table.data.fit-num tbody td.right,
+  table.data.fit-num thead th.fit,   table.data.fit-num tbody td.fit { width: 1px; white-space: nowrap; }
+}
+
 /* ==========================================================================
    Narrow tables do not stretch
    ==========================================================================
