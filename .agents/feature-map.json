@@ -636,8 +636,8 @@
       "notes": "#prospects (viewProspects in app.js) over site/data/prospect-model.js, built by projections/build_prospect_model.py. Default sort is the talent score, descending. Where the full model ships (WR today) every row carries Round 1 / 2 / 3 / Day 3 hit chances, and they must fall as the pick gets later: a column that rises with worse capital means the log-pick term flipped sign or the columns were shuffled. Where the career-stage model serves the WR next class (pos.WR.stage.next) a Pre-draft column must show a 0-100% chance on every row, and must be absent otherwise. If a rebuild demotes WR to the draft-only model the R columns must disappear (the scenario is then the same number for every player and is printed once in the notes card), and this case checks that too rather than failing on it. Class is a select over one table, not a set of mode buttons; this case pins the next class so every row is one the Pre-draft model serves. The sidebar's Prospects link must exist and be lit on a #prospects/<pos> sub-route."
     },
     {
-      "id": "prospects-upcoming-only",
-      "name": "Prospects: upcoming classes only, legacy rookies link lands on the upcoming board",
+      "id": "prospects-history-link",
+      "name": "Prospects: legacy rookies link lands on All classes, history marked and opening the NFL card",
       "path": [
         {
           "press": "Escape"
@@ -653,12 +653,12 @@
         }
       ],
       "selector": "#main table.prm-table",
-      "assert": "(() => { const M = window.PROSPECT_MODEL; const want = M.college.filter(r => r.p === 'RB' && r.cls > M.season).length; const heads = [...document.querySelectorAll('#main table.prm-table thead th')].map(t => t.textContent.trim().replace(/ [↑↓]$/, '')); const ci = heads.indexOf('Class'); const rows = [...document.querySelectorAll('#main table.prm-table tbody tr')]; const sel = document.querySelector('#main select[aria-label=\"Filter by draft class\"]'); return location.hash === '#prospects/RB' && want >= 5 && rows.length === want && ci >= 0 && rows.every(r => Number(r.children[ci].textContent) > M.season) && !!sel && sel.value === 'all' && ![...sel.options].some(o => o.value === 'rookies' || Number(o.value) <= M.season) && !heads.includes('Hit %') && !heads.includes('Pick'); })()",
-      "notes": "Upcoming Prospects shows only classes after PROSPECT_MODEL.season (Trevor, 2026-10-05): drafted rookies are NFL players and their model card stays on the player card (player-card-prospect-profile). The retired #prospects/<pos>/rookies route must rewrite to #prospects/<pos> and show every upcoming player at the position, with no rookie option, Pick or Hit % column."
+      "assert": "(() => { const M = window.PROSPECT_MODEL; const up = M.college.filter(r => r.p === 'RB' && r.cls > M.season).length; const nfl = Object.values(M.nfl).filter(r => r.p === 'RB').length; const heads = [...document.querySelectorAll('#main table.prm-table thead th')].map(t => t.textContent.trim().replace(/ [↑↓]$/, '')); const rows = [...document.querySelectorAll('#main table.prm-table tbody tr')]; const sel = document.querySelector('#main select[aria-label=\"Filter by draft class\"]'); const marked = [...document.querySelectorAll('#main table.prm-table .prm-school')].filter(s => /NFL, \\d{4} pick \\d+$/.test(s.textContent)).length; return location.hash === '#prospects/RB/all' && nfl >= 50 && rows.length === up + nfl && marked === nfl && !!sel && sel.value === 'all' && [...sel.options].map(o => o.textContent).join('|') === ['All classes', 'Future classes', ...[...new Set(M.college.filter(r => r.cls > M.season).map(r => r.cls))].sort()].join('|') && ['Class', 'Pick', 'Hit %'].every(x => heads.includes(x)); })()",
+      "notes": "The Class select is exactly All classes, Future classes and each upcoming year (Trevor, 2026-10-05). All classes is every class the model scored: upcoming college players plus every drafted class in PROSPECT_MODEL.nfl, each drafted row marked 'NFL, <year> pick <n>' under the name, with Class, Pick and Hit % columns; those rows open the NFL player card (player-card-prospect-profile). The retired #prospects/<pos>/rookies route rewrites to #prospects/<pos>/all."
     },
     {
-      "id": "prospects-all-classes",
-      "name": "Prospects: default board is every college player in one table, Players-style filters",
+      "id": "prospects-future-classes",
+      "name": "Prospects: default board is Future classes, every upcoming college player in one table, Players-style filters",
       "path": [
         {
           "press": "Escape"
@@ -674,8 +674,8 @@
         }
       ],
       "selector": "#main table.prm-table",
-      "assert": "(() => { const M = window.PROSPECT_MODEL; const heads = [...document.querySelectorAll('#main table.prm-table thead th')].map(t => t.textContent.trim().replace(/ [↑↓]$/, '')); const rows = document.querySelectorAll('#main table.prm-table tbody tr'); const sel = document.querySelector('#main .filters select[aria-label=\"Filter by draft class\"]'); return document.querySelectorAll('#main table.prm-table').length === 1 && rows.length === M.college.length && heads.includes('Pos') && heads.includes('Class') && sel?.value === 'all' && document.querySelector('#main .rankings-pos-toggle .toggle.active')?.textContent === 'ALL' && !!document.querySelector('#main .filters input[type=\"search\"]'); })()",
-      "notes": "Class is a filter over one Prospects table, like Players (Trevor, 2026-10-04): position toggles with ALL, a Class select, and a name search. The default route lists every college record, so the row count is tied to the payload."
+      "assert": "(() => { const M = window.PROSPECT_MODEL; const heads = [...document.querySelectorAll('#main table.prm-table thead th')].map(t => t.textContent.trim().replace(/ [↑↓]$/, '')); const rows = document.querySelectorAll('#main table.prm-table tbody tr'); const sel = document.querySelector('#main .filters select[aria-label=\"Filter by draft class\"]'); return document.querySelectorAll('#main table.prm-table').length === 1 && rows.length === M.college.filter(r => r.cls > M.season).length && ![...rows].some(r => /NFL, \\d{4} pick/.test(r.textContent)) && !heads.includes('Pick') && heads.includes('Pos') && heads.includes('Class') && sel?.value === 'future' && document.querySelector('#main .rankings-pos-toggle .toggle.active')?.textContent === 'ALL' && !!document.querySelector('#main .filters input[type=\"search\"]'); })()",
+      "notes": "Class is a filter over one Prospects table, like Players (Trevor, 2026-10-04): position toggles with ALL, a Class select, and a name search. The default route is Future classes (Trevor, 2026-10-05): every upcoming college record and no drafted player, so the row count is tied to the payload."
     },
     {
       "id": "prospects-college-card",

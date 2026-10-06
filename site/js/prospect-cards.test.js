@@ -54,34 +54,58 @@ assert.notEqual(pmPct(wr[0].tp), pmPct(wr[wr.length - 1].tp));
 assert.doesNotMatch(text(collegeProspectBlock(M.college.find(r => r.p === 'RB'))), /early-declare/);
 
 // Table rows open the right card, by keyboard button or row click, for every position and class
-// filter. 'next', 'later' and 'rookies' are legacy routes: the first two land on the matching class,
-// 'rookies' on the upcoming board, because drafted rookies are NFL players now (Trevor, 2026-10-05).
-const years = [...new Set(M.college.map(r => r.cls))];
+// filter. The Class select is exactly All classes, Future classes and each upcoming year (Trevor,
+// 2026-10-05). Future classes is the default; All classes adds every drafted class, whose rows open
+// the NFL card. Legacy routes: 'next' and 'later' land on the matching year, 'rookies' and a drafted
+// year on All classes.
+const years = [...new Set(M.college.map(r => r.cls))].sort((a, b) => a - b);
+const nfl = Object.values(M.nfl);
 for (const pos of ['ALL', 'QB', 'RB', 'WR', 'TE']) {
-  for (const mode of ['all', 'next', 'later', 'rookies', ...years.map(String)]) {
+  const at = (r) => pos === 'ALL' || r.p === pos;
+  for (const mode of [undefined, 'all', 'future', 'next', 'later', 'rookies', String(M.season), ...years.map(String)]) {
+    calls.length = 0;
     viewProspects(pos, mode);
+    const hist = mode === 'all' || mode === 'rookies' || mode === String(M.season);
+    const replaced = calls.filter(c => c[0] === 'replace').map(c => c[3]);
+    if (mode === 'rookies' || mode === String(M.season)) assert.deepEqual(replaced, [`#prospects/${pos}/all`], `${pos} ${mode}: lands on All classes`);
+    if (!mode || years.includes(Number(mode))) assert.deepEqual(replaced, [], `${pos} ${mode}: address kept`);
+    const sel = find({ attrs: {}, kids: main.kids }, n => n.tag === 'select' && n.attrs['aria-label'] === 'Filter by draft class');
+    assert.equal(sel.length, 1);
+    const opts = find(sel[0], n => n.tag === 'option');
+    assert.deepEqual(opts.map(o => text(o)), ['All classes', 'Future classes', ...years.map(String)], `${pos} ${mode}: class options`);
+    assert.equal(opts.filter(o => o.attrs.selected === '').map(o => o.attrs.value).join(),
+      hist ? 'all' : mode === 'next' ? String(M.season + 1) : mode === 'later' ? String(M.season + 2) : years.includes(Number(mode)) ? mode : 'future');
     const buttons = find({ attrs: {}, kids: main.kids }, n => n.tag === 'button' && /player-name-button/.test(n.attrs.class || ''));
     const rows = find({ attrs: {}, kids: main.kids }, n => n.tag === 'tr' && n.attrs.onclick);
     assert.equal(buttons.length, rows.length, `${pos} ${mode}: one name button per row`);
-    if (!rows.length) continue;
-    if (mode === 'rookies') assert.equal(rows.length, M.college.filter(r => pos === 'ALL' || r.p === pos).length, `${pos} rookies: legacy link lands on all upcoming`);
+    const up = M.college.filter(at).length;
+    if (hist) assert.equal(rows.length, up + nfl.filter(at).length, `${pos} ${mode}: every class, history included`);
+    if (!mode || mode === 'future') assert.equal(rows.length, up, `${pos} ${mode}: upcoming only`);
+    // Each table row opens its own card: drafted players the NFL card, college players their own.
     calls.length = 0;
-    buttons[0].attrs.onclick({ stopPropagation() {} });
-    rows[rows.length - 1].attrs.onclick();
+    rows.forEach(r => r.attrs.onclick());
+    buttons.forEach(b => b.attrs.onclick({ stopPropagation() {} }));
+    assert.equal(calls.length, rows.length * 2);
+    const want = mode === 'next' ? M.season + 1 : mode === 'later' ? M.season + 2 : Number(mode);
     for (const [kind, name, a, b, rec] of calls) {
+      if (kind === 'nfl') {
+        assert(hist, `${pos} ${mode}: drafted rows only under All classes`);
+        assert.equal(M.nfl[a].n, name); if (pos !== 'ALL') assert.equal(M.nfl[a].p, pos);
+        continue;
+      }
       assert.equal(kind, 'modal');
       assert.equal(a, null); assert.equal(b, null);
       assert.equal(rec.n, name);
-      assert(rec.cls > M.season, `${name}: upcoming class only`);
+      assert(rec.cls > M.season, `${name}: upcoming class`);
       if (pos !== 'ALL') assert.equal(rec.p, pos, `${name}: right position`);
-      const want = mode === 'next' ? M.season + 1 : mode === 'later' ? M.season + 2 : Number(mode);
-      if (mode !== 'all' && mode !== 'rookies') assert.equal(rec.cls, want, `${name}: right class`);
+      if (years.includes(want)) assert.equal(rec.cls, want, `${name}: right class`);
     }
-    // One table, filtered by a Class select: the old per-class mode buttons are gone.
+    if (hist) {
+      const heads = find({ attrs: {}, kids: main.kids }, n => n.tag === 'th').map(text);
+      assert(['Class', 'Pick', 'Hit %'].every(x => heads.some(t => t.startsWith(x))), `${pos} ${mode}: drafted rows are marked`);
+      assert(find({ attrs: {}, kids: main.kids }, n => /prm-school/.test(n.attrs.class || '') && /^(.* · )?NFL, \d{4} pick \d+$/.test(text(n))).length >= nfl.filter(at).length);
+    }
     assert.equal(find({ attrs: {}, kids: main.kids }, n => n.tag === 'table').length, rows.length ? 1 : 0, `${pos} ${mode}: one table`);
-    assert.equal(find({ attrs: {}, kids: main.kids }, n => n.tag === 'select' && n.attrs['aria-label'] === 'Filter by draft class').length, 1);
-    assert(!find({ attrs: {}, kids: main.kids }, n => n.tag === 'option' && n.attrs.value === 'rookies').length, `${pos} ${mode}: no rookies option`);
-    if (mode === 'all' && pos !== 'ALL') assert.equal(rows.length, M.college.filter(r => r.p === pos).length, `${pos}: all classes in one table`);
     // No explanation block above the table (Trevor, 2026-10-04): header, filters, then the board.
     assert.equal(find({ attrs: {}, kids: main.kids }, n => /prm-notes/.test(n.attrs.class || '')).length, 0, `${pos} ${mode}: no notes block`);
   }

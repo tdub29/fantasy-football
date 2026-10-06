@@ -12232,10 +12232,10 @@
       pmComps(me.cp));
   }
 
-  // #prospects: one table over every college player in an upcoming draft class,
-  // filtered like Players: position chips, a Class select, and a name search.
-  // Route: #prospects/<ALL|QB|RB|WR|TE>/<all|year>. Upcoming classes only (Trevor, 2026-10-05):
-  // drafted rookies are NFL players now, and their model card stays on the player card.
+  // #prospects: one table filtered like Players: position chips, a Class select, and a name search.
+  // Route: #prospects/<ALL|QB|RB|WR|TE>/<all|year>; no class is Future classes, the default.
+  // Future classes are college players in an upcoming draft. All classes adds every drafted class
+  // the model scored, marked by pick, and those rows open the NFL player card (Trevor, 2026-10-05).
   const prospectSort = { key:'ts', dir:'desc', q:'' };
   function viewProspects(posArg, clsArg) {
     const main = $('#main'); main.innerHTML = '';
@@ -12247,12 +12247,13 @@
     const next = M.season + 1;
     const upcoming = M.college.filter(r => r.cls > M.season);
     const years = [...new Set(upcoming.map(r => r.cls))].sort((a, b) => a - b);
-    // 'next' and 'later' are the old mode routes; they land on the matching class.
-    const cls = clsArg === 'next' ? String(next)
-      : clsArg === 'later' ? String(next + 1) : years.includes(Number(clsArg)) ? String(clsArg) : 'all';
-    const hashFor = (p, c) => `#prospects/${p}${c === 'all' ? '' : `/${c}`}`;
-    // A retired class link (the old rookies board, a class already drafted) lands on the upcoming
-    // board, and the address says so.
+    // 'next' and 'later' are the old mode routes; they land on the matching class. The old rookies
+    // board and any drafted class year land on All classes, where those players now live.
+    const cls = clsArg === 'next' ? String(next) : clsArg === 'later' ? String(next + 1)
+      : years.includes(Number(clsArg)) ? String(clsArg)
+      : clsArg === 'all' || clsArg === 'rookies' || (clsArg && Number(clsArg) <= M.season) ? 'all' : 'future';
+    const hist = cls === 'all';
+    const hashFor = (p, c) => `#prospects/${p}${c === 'future' ? '' : `/${c}`}`;
     if (clsArg && clsArg !== 'next' && clsArg !== 'later' && String(clsArg) !== cls) history.replaceState(null, '', hashFor(pos, cls));
     const meta = one ? (M.pos[pos] || {}) : {};
     const capOnly = !one || meta.shipped === 'draft';
@@ -12266,20 +12267,24 @@
         if (btn && btn.getAttribute('aria-expanded') === 'false') btn.click(); });
     };
     const pick = (p) => !one || p === pos;
-    const all = upcoming.filter(r => pick(r.p) && (cls === 'all' || r.cls === Number(cls)));
+    // Drafted rows carry their Sleeper id and pick; `cls` is the draft they went in.
+    const drafted = hist ? Object.entries(M.nfl).map(([id, r]) => ({ ...r, id, cls:r.y })) : [];
+    const all = [...upcoming, ...drafted].filter(r => pick(r.p) && (cls === 'all' || cls === 'future' || r.cls === Number(cls)));
     // A pre-draft number shows only where a reviewed model serves that player's class, the same
     // gate the per-class boards used: next class by its stage or pre-draft model, later by `later`.
     const nst = one && meta.stage && meta.stage.next ? meta.stage : null;   // the reviewed model serving the next class
-    const pdOk = (r) => { const m = M.pos[r.p] || {};
+    const pdOk = (r) => { const m = M.pos[r.p] || {}; if (r.id) return false;
       return r.cls === next ? !!((m.stage && m.stage.next) || m.predraft) : !!m.later; };
     // College players have no Sleeper id, so their card is built from the model record itself.
-    const openRow = (r) => document.body.appendChild(playerModal(r.n, null, null, r));
+    // Drafted players open the NFL card, where their model record stays.
+    const openRow = (r) => r.id ? openPlayerDetail(r.n, r.id) : document.body.appendChild(playerModal(r.n, null, null, r));
 
     main.appendChild(breadcrumbs([{ label:'Tools' }, { label:'Prospects' }]));
     main.appendChild(pageHeader({
       eyebrow:'PROSPECT MODEL',
-      title: 'College prospects',
+      title: hist ? 'Prospects, every class' : 'College prospects',
       sub: (one ? `Hit = ${(meta.target || '').replace(/^Top/, 'top')}. ` : '')
+        + (hist ? `Classes through ${M.season} are drafted NFL players, marked by pick. ` : '')
         + `Talent is the college profile with no draft capital, as a percentile against every drafted ${posWord} since 2008.`,
     }));
 
@@ -12293,7 +12298,8 @@
           onclick:() => go(p, cls) }, p)))));
     const clsSel = h('select', { 'aria-label':'Filter by draft class', onchange:(e) => go(pos, e.target.value) },
       h('option', { value:'all', selected: cls === 'all' ? '' : null }, 'All classes'),
-      ...years.map(y => h('option', { value:String(y), selected: cls === String(y) ? '' : null }, `${y} class`)));
+      h('option', { value:'future', selected: cls === 'future' ? '' : null }, 'Future classes'),
+      ...years.map(y => h('option', { value:String(y), selected: cls === String(y) ? '' : null }, String(y))));
     filterBar.appendChild(h('div', { class:'group' }, h('label', null, 'Class'), clsSel));
     main.appendChild(filterBar);
 
@@ -12301,13 +12307,15 @@
     const cols = [
       ['n', 'Player', { asc:true }],
       one ? null : ['p', 'Pos', { asc:true, fit:true }],
-      cls === 'all' ? ['cls', 'Class', { right:true, asc:true, title:'First draft he is eligible for' }] : null,
+      cls === 'all' || cls === 'future' ? ['cls', 'Class', { right:true, asc:true, title:'Draft he went in, or the first one he is eligible for' }] : null,
+      hist ? ['pk', 'Pick', { right:true, asc:true, title:'Overall draft pick. Blank: not drafted yet' }] : null,
       ['ts', 'Talent', { right:true, title:`College profile, no draft capital: percentile vs every drafted ${posWord} since 2008` }],
       ['tr', 'Tier', { asc:true, fit:true, title:'Our tier, cut on the talent score' }],
       all.some(pdOk) ? ['pd', 'Pre-draft', { right:true, title:'Chance he hits, before the draft, counting the chance he goes undrafted, '
         + `compared with players at the same college year${nst && nst.live_n ? `, plus his team's first ${nst.live_n} games this season` : ''}`
         + `${nst && /^S6/.test(nst.model) ? ', rescaled on players who came back for another college season' : ''}`
         + `${nst ? ` (${nst.model})` : ''}. Blank where no reviewed model serves his class` }] : null,
+      hist ? ['hp', 'Hit %', { right:true, title:'Drafted players: hit chance with his actual draft slot (slot alone where college stats did not beat it). Blank: not drafted yet' }] : null,
       ['tp', 'College %', { right:true, title:`Hit chance from college stats alone, if drafted. ${one ? pmTrust(pos) || '' : ''}` }],
       pos === 'QB' ? null : ['ba', 'Breakout', { right:true, asc:true, title:'Age at his first college season at the dominator line (blank: not yet). Profile only, no model uses it' }],
       ['age', 'Draft age', { right:true, asc:true, title:'Estimated age at the draft he is scored for: the more conservative of leaving after his third or fourth college year' }],
@@ -12324,9 +12332,9 @@
       if (k === 'n') return h('div', { class:'name-cell' },
         h('button', { type:'button', class:'name player-name-button',
           onclick:(e) => { e.stopPropagation(); openRow(r); } }, v),
-        r.sch ? h('span', { class:'muted prm-school' }, r.sch) : null);
+        r.sch || r.id ? h('span', { class:'muted prm-school' }, [r.sch, r.id ? `NFL, ${r.y} pick ${r.pk}` : null].filter(Boolean).join(' · ')) : null);
       if (k.startsWith('st.')) return stat.find(s => `st.${s[0]}` === k)[2](v);
-      if (k === 'tp' || k === 'pd' || /^r\d$/.test(k)) return pmPct(v);
+      if (k === 'tp' || k === 'pd' || k === 'hp' || /^r\d$/.test(k)) return pmPct(v);
       if (k === 'ba' || k === 'age') return pmNum(1)(v);
       return v == null ? '·' : String(v);
     };
