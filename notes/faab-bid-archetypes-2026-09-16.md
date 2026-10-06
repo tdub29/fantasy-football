@@ -378,18 +378,18 @@ Three dynasty situations have no redraft row at all, and that is the format diff
 | Archetype | n | median | IQR | Q1 | Q3 | max | $0 claims | $0 share |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
 | upside play | 90 | 11 | 20 | 5 | 25 | 200 | 48 | 34.8% |
-| low output, neither profile | 314 | 10 | 20 | 3 | 23 | 175 | 202 | 39.1% |
-| floor play | 70 | 10 | 24.2 | 5 | 29.2 | 143 | 26 | 27.1% |
+| low output, neither profile | 315 | 10 | 21 | 3 | 24 | 175 | 202 | 39.1% |
+| floor play | 69 | 10 | 22 | 5 | 27 | 143 | 26 | 27.4% |
 | unknown (under 3 games after pickup) | 111 | 8 | 16 | 2 | 18 | 100 | 92 | 45.3% |
 
 ### Point-production profile, redraft
 
 | Archetype | n | median | IQR | Q1 | Q3 | max | $0 claims | $0 share |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| unknown (under 3 games after pickup) | 14 | 12 | 14 | 5 | 19 | 84 | 6 | 30% |
+| unknown (under 3 games after pickup) | 15 | 10 | 14.5 | 3.5 | 18 | 84 | 6 | 28.6% |
 | low output, neither profile | 51 | 8 | 12.5 | 3 | 15.5 | 60 | 14 | 21.5% |
 | floor play | 24 | 5 | 14.5 | 2 | 16.5 | 27 | 9 | 27.3% |
-| upside play | 35 | 3 | 5 | 2 | 7 | 80 | 17 | 32.7% |
+| upside play | 34 | 3.5 | 5 | 2 | 7 | 80 | 17 | 33.3% |
 
 ### Full four-dimension archetype, dynasty, n >= 8
 
@@ -429,8 +429,8 @@ No cell in this grouping reaches the minimum sample, so there is no table to dra
 | experience n/a (team defense) | 2.5% | 16.6% |
 | position unknown | 0% | 0% |
 | situation unclassified | 0% | 0% |
-| production profile unknown | 20.2% | 12.1% |
-| any dimension unknown | 20.2% | 12.1% |
+| production profile unknown | 20.2% | 12.6% |
+| any dimension unknown | 20.2% | 12.6% |
 
 The production profile is the only real gap and its cause is structural: it needs three games after the pickup, so week-16-and-later claims and all of 2026 to date cannot have one. Nothing was invented to fill it.
 <!-- FAAB-TABLES:END -->

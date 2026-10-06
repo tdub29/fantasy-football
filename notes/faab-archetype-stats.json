@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-06 01:23",
+ "generated": "2026-10-06 07:56",
  "dims": {
   "situation": {
    "dynasty": {
@@ -724,30 +724,30 @@
      "zero_share": 34.8
     },
     "low output, neither profile": {
-     "n": 314,
+     "n": 315,
      "min": 1,
      "q1": 3.0,
-     "median": 10.0,
-     "q3": 23.0,
-     "iqr": 20.0,
+     "median": 10,
+     "q3": 24.0,
+     "iqr": 21.0,
      "max": 175,
      "mean": 19.9,
      "zero_claims": 202,
-     "all_claims": 516,
+     "all_claims": 517,
      "zero_share": 39.1
     },
     "floor play": {
-     "n": 70,
+     "n": 69,
      "min": 1,
      "q1": 5.0,
-     "median": 10.0,
-     "q3": 29.2,
-     "iqr": 24.2,
+     "median": 10,
+     "q3": 27.0,
+     "iqr": 22.0,
      "max": 143,
-     "mean": 20.8,
+     "mean": 20.7,
      "zero_claims": 26,
-     "all_claims": 96,
-     "zero_share": 27.1
+     "all_claims": 95,
+     "zero_share": 27.4
     },
     "unknown (under 3 games after pickup)": {
      "n": 111,
@@ -765,17 +765,17 @@
    },
    "redraft": {
     "unknown (under 3 games after pickup)": {
-     "n": 14,
+     "n": 15,
      "min": 1,
-     "q1": 5.0,
-     "median": 12.0,
-     "q3": 19.0,
-     "iqr": 14.0,
+     "q1": 3.5,
+     "median": 10,
+     "q3": 18.0,
+     "iqr": 14.5,
      "max": 84,
-     "mean": 16.3,
+     "mean": 15.4,
      "zero_claims": 6,
-     "all_claims": 20,
-     "zero_share": 30.0
+     "all_claims": 21,
+     "zero_share": 28.6
     },
     "low output, neither profile": {
      "n": 51,
@@ -804,17 +804,17 @@
      "zero_share": 27.3
     },
     "upside play": {
-     "n": 35,
+     "n": 34,
      "min": 1,
      "q1": 2.0,
-     "median": 3,
+     "median": 3.5,
      "q3": 7.0,
      "iqr": 5.0,
      "max": 80,
-     "mean": 8.1,
+     "mean": 8.2,
      "zero_claims": 17,
-     "all_claims": 52,
-     "zero_share": 32.7
+     "all_claims": 51,
+     "zero_share": 33.3
     }
    }
   },
@@ -1005,9 +1005,9 @@
    "experience_unknown_pct": 0.0,
    "experience_na_team_defense_pct": 16.6,
    "position_unknown_pct": 0.0,
-   "production_unknown_pct": 12.1,
+   "production_unknown_pct": 12.6,
    "situation_unresolved_pct": 0.0,
-   "any_dimension_unknown_pct": 12.1
+   "any_dimension_unknown_pct": 12.6
   }
  },
  "excluded": {

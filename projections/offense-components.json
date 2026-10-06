@@ -216,7 +216,7 @@
    },
    "pp_stats": {
     "pass_td": 16.27,
-    "pass_yd": 3021.93,
+    "pass_yd": 192.5,
     "pass_int": 3.0,
     "rush_yd": 6.0
    },
@@ -2092,7 +2092,7 @@
    "pp_stats": {
     "rush_yd": 28.5,
     "rec_yd": 10.5,
-    "rush_td": 5.99,
+    "rush_td": 6.28,
     "rec": 19.0,
     "rec_td": 1.0
    },
@@ -2366,7 +2366,7 @@
    "pp_stats": {
     "rush_yd": 606.7,
     "rec_yd": 2.5,
-    "rush_td": 5.61,
+    "rush_td": 5.89,
     "rec": 19.0,
     "rec_td": 1.0
    },
@@ -2993,7 +2993,7 @@
     "rush_yd": 479.89,
     "rec_yd": 15.5,
     "rec": 2.5,
-    "rush_td": 4.38,
+    "rush_td": 4.54,
     "rec_td": 1.0
    },
    "pp_borrowed": [
@@ -3549,7 +3549,7 @@
    "pp_stats": {
     "rush_yd": 34.5,
     "rec_yd": 7.5,
-    "rush_td": 4.0,
+    "rush_td": 4.17,
     "rec": 9.0
    },
    "pp_borrowed": [
@@ -4491,7 +4491,7 @@
     "rec_td": 3.0
    },
    "pp_stats": {
-    "rec_yd": 34.5,
+    "rec_yd": 698.23,
     "rush_yd": 10.0,
     "rec": 35.0,
     "rec_td": 3.0
@@ -5991,7 +5991,7 @@
    },
    "pp_stats": {
     "rec_yd": 5.5,
-    "rec_td": 0.27,
+    "rec_td": 1.15,
     "rec": 10.0
    },
    "pp_borrowed": [

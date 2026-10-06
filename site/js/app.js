@@ -899,15 +899,17 @@
     // which has no id, so they keep the dynasty currency.
     if (format && format.id && !isDynastyLeague(format)) {
       const pid = p._sleeperId != null ? p._sleeperId : p.sleeperId;
-      // Rest-of-season first. Full-season VOR is the fallback for a player with
-      // no weekly line, and it overstates him by the weeks already played.
+      // Rest-of-season only. A player with no weekly line left has no games left
+      // (Pacheco, IR, 2026-10-06, was priced off his 74-point full-season blend),
+      // so he is worth 0. Full-season VOR is the fallback only when the weekly feed
+      // is missing altogether, and it overstates everyone by the weeks played.
       // With no roster there is no tier, so the baseline is replacement: the best
       // body free in THIS league (DEPTH_TIER). Defaulting to tier 1 measured every
       // player against rank n+1 and floored 162 of Phi Kap's 210 rostered players
       // to 0, depth and flex bodies included.
       const tier = roster || tierOverride != null ? tierOverride : DEPTH_TIER;
       let vor = pid != null ? rosVorByPid(pid, format, roster, tier) : null;
-      if (vor == null && pid != null) vor = vorByPid(pid, format, 'blend');
+      if (vor == null && pid != null && !rosPointsByPid(format).size) vor = vorByPid(pid, format, 'blend');
       return vor == null ? 0 : Math.round(Math.max(0, vor) * REDRAFT_VOR_SCALE * 10) / 10;
     }
     let val;
