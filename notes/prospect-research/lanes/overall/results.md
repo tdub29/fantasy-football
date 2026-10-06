@@ -1,3 +1,11 @@
+# Overall-rating study: outcome and independent judge (2026-10-06)
+
+**Gates fail as preregistered.** On F1 (1QB) the capital-plus-profile model (M1) beats capital alone (C0) in 1.8% of class resamples against a 90% bar, and the profile-only pre-draft model (P1) trails FantasyPros pre-draft consensus by 0.145 Spearman against a 0.05 tolerance. F2 and F3 agree. College profile adds nothing measurable over draft slot, and no pre-draft overall number is supported.
+
+**Independent judge verdict: PUBLISH WITH CHANGES.** C0 may ship only as a draft-capital rating, never as an overall talent or prospect rating. It ties post-draft consensus within noise (C0-K0post -0.007, 5 classes) and must never be reported as beating pre-draft consensus, since it uses actual slot. Required: label it "Draft-capital rating (1QB)"; rename or annotate Solid/Dart/Long shot, whose median VOR3 is 0 (F1 p75 VOR3 is 0, so "above p75" means any starter season); show the 1QB and superflex QB ratings side by side; profile percentile secondary only; no overall number before the draft. Panel: Love 99.9 Elite from RB pick 3, Stowers 64.5 Dart, 30th in his class; nothing tuned on the panel. Austin Ekeler unlinked (UDFA match miss).
+
+**Development remaining:** a profile signal that adds to capital (try a residual on C0; TE and RB lose most), a licensed timestamped projected-capital source for any pre-draft rating, a target suited to zero-heavy VOR3 (two-part or P(VOR>0)), UDFA linkage fixes, the label-embargoed window as primary, and more consensus classes than 5.
+
 ## Generated tables
 
 All values unrounded at source (`results.json`); shown to 3-4 places. Intervals are 90% from 2000 class resamples (12 classes 2012-2023; K0 rows 5 classes 2019-2023).
@@ -156,7 +164,7 @@ Embargo sensitivity (F1, train on classes <= Y-3): C0 0.512 [0.487, 0.536], M1 0
 | Eli Stowers | 2026 | TE | 54 | 64.5 | Dart | 30/2 | 48.6 | 64.5 | 41.8 | 15.8 [8.4, 27.7] | 15.5 [10.3, 28.6] |  |
 | Kenyon Sadiq | 2026 | TE | 16 | 77.8 | Solid | 13/1 | 59.6 | 77.8 | 54.2 | 35.6 [20.7, 57.7] | 22.5 [12.2, 55.3] |  |
 
-Upcoming classes under P1 (F1), top five by expected VOR3 (profile percentile vs drafted P1 reference); pool sizes {2027: 825, 2028: 100}:
+Upcoming classes under P1 (F1), top five by expected VOR3 (profile percentile vs drafted P1 reference); pool sizes {'2027': 825, '2028': 100}:
 
 - 2027: Jeremiah Smith (WR, Ohio State) 111.1 / pct 99.1; Ryan Coleman-Williams (WR, Alabama) 82.0 / pct 95.0; Cam Coleman (WR, Auburn) 80.8 / pct 94.8; T.J. Moore (WR, Clemson) 72.9 / pct 92.1; KJ Duff (WR, Rutgers) 71.2 / pct 91.2
 - 2028: Caleb Hawkins (RB, North Texas) 105.2 / pct 98.9; Malachi Toney (WR, Miami) 88.2 / pct 97.5; Andrew Marsh (WR, Michigan) 68.4 / pct 90.4; Vernell Brown III (WR, Florida) 68.1 / pct 90.3; Nate Sheppard (RB, Duke) 61.2 / pct 86.8
@@ -212,7 +220,7 @@ Upcoming classes under P1 (F1), top five by expected VOR3 (profile percentile vs
 | Eli Stowers | 2026 | TE | 54 | 61.6 | Dart | 31/2 | 44.2 | 61.6 | 34.1 | 15.8 [9.3, 30.3] | 15.5 [10.0, 32.5] |  |
 | Kenyon Sadiq | 2026 | TE | 16 | 74.3 | Solid | 14/1 | 54.9 | 74.3 | 45.1 | 35.6 [24.5, 58.0] | 22.5 [14.6, 57.7] |  |
 
-Upcoming classes under P1 (F2), top five by expected VOR3 (profile percentile vs drafted P1 reference); pool sizes {2027: 825, 2028: 100}:
+Upcoming classes under P1 (F2), top five by expected VOR3 (profile percentile vs drafted P1 reference); pool sizes {'2027': 825, '2028': 100}:
 
 - 2027: Demond Williams Jr. (QB, Washington) 112.8 / pct 98.7; Jeremiah Smith (WR, Ohio State) 111.1 / pct 98.7; Brad Jackson (QB, Texas State) 101.6 / pct 98.3; Devon Dampier (QB, Utah) 88.5 / pct 96.8; Julian Sayin (QB, Ohio State) 82.7 / pct 94.3
 - 2028: Caleb Hawkins (RB, North Texas) 105.2 / pct 98.4; Malachi Toney (WR, Miami) 88.2 / pct 96.6; Bear Bachmeier (QB, BYU) 77.7 / pct 92.5; Andrew Marsh (WR, Michigan) 68.4 / pct 88.6; Vernell Brown III (WR, Florida) 68.1 / pct 88.5
