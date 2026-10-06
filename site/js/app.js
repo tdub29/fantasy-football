@@ -12145,14 +12145,13 @@
   const PM_ROUNDS = ['Round 1', 'Round 2', 'Round 3', 'Day 3'];
   function pmSlotLine(pos, r) {
     if ((window.PROSPECT_MODEL.pos[pos] || {}).shipped !== 'draft' || !r) return null;
-    return `Once he is drafted, slot is the forecast: college stats on top of slot did not pass every validation run, `
-      + `so hit chance follows one draft-slot curve for every ${pos}, averaging ${PM_ROUNDS.map((n, i) => `${n} ${pmPct(r[i])}`).join(', ')}.`;
+    return `If drafted (one draft-slot curve for every ${pos}): ${PM_ROUNDS.map((n, i) => `${n} ${pmPct(r[i])}`).join(', ')}`;
   }
   // Hand-written from model-card.md "Bottom line"; the WR model is the one carrying the flag.
   // Untested as a cause until someone refits without it (handoff-wr-early-declare-2026-10-03.md).
-  const PM_WR_EARLY = 'The model card\'s best explanation for the WR miss on 2020-2023 is the early-declare flag, not yet tested by a refit: '
-    + 'four-year WRs hit 5% of the time in 2008-2019 and 11% in 2020-2023, probably the COVID extra year. '
-    + 'The college read uses the same flag, so it may underrate a four-year WR.';
+  // Rides on the College % tile tooltip, not a card paragraph (Trevor, 2026-10-06).
+  const PM_WR_EARLY = 'May underrate a four-year WR: the early-declare flag is the model card\'s best, untested explanation '
+    + 'for the 2020-2023 WR miss (four-year WRs hit 5% in 2008-2019, 11% in 2020-2023, probably the COVID extra year).';
 
   // Card for a current college player (window.PROSPECT_MODEL.college). No Sleeper id and no
   // draft slot exist yet, so the individual read is the college-only model and its track record.
@@ -12174,7 +12173,8 @@
         `#${rank} of ${peers.length} listed`),
       r.pd != null ? pmTile('Pre-draft', pmPct(r.pd),
         'Chance he hits counting the chance he goes undrafted, from the pre-draft model in the table notes', 'incl. undrafted') : null,
-      pmTile('College %', pmPct(r.tp),'Hit chance from college stats alone, if he is drafted. Its ranking was checked on a holdout; the percentage has no calibration check. Undrafted players are not in the history.', 'if drafted'),
+      pmTile('College %', pmPct(r.tp),'Hit chance from college stats alone, if he is drafted. Its ranking was checked on a holdout; the percentage has no calibration check. Undrafted players are not in the history.'
+        + (r.p === 'WR' && meta.shipped === 'draft' ? ` ${PM_WR_EARLY}` : ''), 'if drafted'),
       r.ba != null ? pmTile('Breakout age', Number(r.ba).toFixed(1),
         'Age at his first college season at the dominator line. Profile only, no model uses it') : null,
       r.age != null ? pmTile('Draft age', pmNum(1)(r.age),
@@ -12188,7 +12188,6 @@
         `Hit = ${(meta.target || '').replace(/^Top/, 'top')}. ${r.sch}, first eligible for the ${r.cls} draft.`),
       h('div', { class:'adv-grid' }, ...tiles),
       pmSlotLine(r.p, r.r) ? h('div', { class:'tip prm-line' }, pmSlotLine(r.p, r.r)) : null,
-      r.p === 'WR' && meta.shipped === 'draft' ? h('div', { class:'tip prm-line' }, PM_WR_EARLY) : null,
       r.ln ? h('div', { class:'tip prm-line' }, r.ln) : null,
       pmComps(r.cp));
   }

@@ -44,14 +44,20 @@ for (const r of M.college) {
 }
 assert(new Set(M.college.map(r => r.cls)).size >= 2, 'both the next class and later classes are covered');
 
-// The verbose trust paragraph is gone (Trevor, 2026-10-04); the shared curve stays as a position reference.
+// The verbose trust paragraph is gone (Trevor, 2026-10-04); the shared curve stays as a one-line
+// position reference and the WR early-declare caveat rides on the College % tooltip (2026-10-06).
+const titles = (n) => find(n, x => x.attrs && x.attrs.title).map(x => x.attrs.title).join(' ');
 const wr = M.college.filter(r => r.p === 'WR').sort((a, b) => b.ts - a.ts);
-const top = text(collegeProspectBlock(wr[0]));
-assert.match(top, /one draft-slot curve for every WR/);
-assert.doesNotMatch(top, /no calibration check|Read it as optimistic/);
-assert.match(top, /early-declare flag/);
+const topCard = collegeProspectBlock(wr[0]);
+const top = text(topCard);
+assert.match(top, /If drafted \(one draft-slot curve for every WR\): Round 1 \d+%, Round 2 \d+%, Round 3 \d+%, Day 3 \d+%/);
+assert.doesNotMatch(top, /no calibration check|Read it as optimistic|Once he is drafted|early-declare/);
+const collegeTile = find(topCard, x => x.attrs.class === 'adv-stat' && text(x).startsWith('College %'))[0];
+assert.match(collegeTile.attrs.title, /early-declare flag/);
+assert.equal((titles(topCard).match(/early-declare/g) || []).length, 1, 'caveat sits on the College % tile only');
 assert.notEqual(pmPct(wr[0].tp), pmPct(wr[wr.length - 1].tp));
-assert.doesNotMatch(text(collegeProspectBlock(M.college.find(r => r.p === 'RB'))), /early-declare/);
+const rbCard = collegeProspectBlock(M.college.find(r => r.p === 'RB'));
+assert.doesNotMatch(text(rbCard) + titles(rbCard), /early-declare/);
 
 // Table rows open the right card, by keyboard button or row click, for every position and class
 // filter. The Class select is exactly All classes, Future classes and each upcoming year (Trevor,
