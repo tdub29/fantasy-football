@@ -13,7 +13,7 @@
       "id": "sleeper-idp-2026",
       "title": "Sleeper IDP Usage Rankings (2026)",
       "url": "https://sleeper.com/research",
-      "publishedAt": "2026-10-02",
+      "publishedAt": "2026-10-06",
       "format": "idp",
       "defaultEnabled": true,
       "players": [
@@ -1385,7 +1385,7 @@
           "name": "Mike Sainristil",
           "pos": "DB",
           "team": "WAS",
-          "age": 25,
+          "age": 26,
           "category": "mainstay",
           "tier": "S",
           "ktcValue": 112,

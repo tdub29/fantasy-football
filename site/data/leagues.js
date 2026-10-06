@@ -4,7 +4,7 @@ window.LEAGUES = [
     "name": "Password is taco",
     "short_name": "Password is taco",
     "buy_in": 100,
-    "week": 4,
+    "week": 5,
     "season": "2026",
     "status": "in_season",
     "total_rosters": 10,
@@ -183,7 +183,7 @@ window.LEAGUES = [
         "owner_name": "connorw23",
         "team_name": "Scrote Squad",
         "is_me": false,
-        "opponent_roster_id": 5,
+        "opponent_roster_id": 7,
         "starters": [
           "4881",
           "6813",
@@ -239,11 +239,11 @@ window.LEAGUES = [
         "reserve": [
           "9753"
         ],
-        "wins": 6,
+        "wins": 8,
         "losses": 0,
         "ties": 0,
-        "fpts": 587.7,
-        "fpts_against": 317.58,
+        "fpts": 796.58,
+        "fpts_against": 454.56,
         "waiver_budget_used": 3,
         "waiver_position": 4
       },
@@ -253,7 +253,7 @@ window.LEAGUES = [
         "owner_name": "NatePackard12",
         "team_name": "Mahomies ",
         "is_me": false,
-        "opponent_roster_id": 10,
+        "opponent_roster_id": 6,
         "starters": [
           "4046",
           "9221",
@@ -303,11 +303,11 @@ window.LEAGUES = [
           "13338"
         ],
         "reserve": [],
-        "wins": 6,
-        "losses": 0,
+        "wins": 7,
+        "losses": 1,
         "ties": 0,
-        "fpts": 530.18,
-        "fpts_against": 371.42,
+        "fpts": 659.38,
+        "fpts_against": 499.94,
         "waiver_budget_used": 0,
         "waiver_position": 1
       },
@@ -317,7 +317,7 @@ window.LEAGUES = [
         "owner_name": "JoeysYIDS",
         "team_name": "Pre bobby Mud Dogs",
         "is_me": false,
-        "opponent_roster_id": 8,
+        "opponent_roster_id": 5,
         "starters": [
           "11563",
           "7528",
@@ -366,11 +366,11 @@ window.LEAGUES = [
           "13380"
         ],
         "reserve": [],
-        "wins": 1,
+        "wins": 3,
         "losses": 5,
         "ties": 0,
-        "fpts": 262.2,
-        "fpts_against": 443.66,
+        "fpts": 407.96,
+        "fpts_against": 538.38,
         "waiver_budget_used": 45,
         "waiver_position": 3
       },
@@ -380,7 +380,7 @@ window.LEAGUES = [
         "owner_name": "DasCoopa",
         "team_name": "Captain Insano",
         "is_me": false,
-        "opponent_roster_id": 7,
+        "opponent_roster_id": 8,
         "starters": [
           "9758",
           "12533",
@@ -438,10 +438,10 @@ window.LEAGUES = [
           "6803"
         ],
         "wins": 0,
-        "losses": 6,
+        "losses": 8,
         "ties": 0,
-        "fpts": 312.2,
-        "fpts_against": 470.86,
+        "fpts": 418.78,
+        "fpts_against": 654.38,
         "waiver_budget_used": 0,
         "waiver_position": 2
       },
@@ -451,7 +451,7 @@ window.LEAGUES = [
         "owner_name": "ShroomBrainMeatHead",
         "team_name": "Wood Grain Grippers",
         "is_me": false,
-        "opponent_roster_id": 1,
+        "opponent_roster_id": 3,
         "starters": [
           "7523",
           "9509",
@@ -504,10 +504,10 @@ window.LEAGUES = [
           "4892"
         ],
         "wins": 5,
-        "losses": 1,
+        "losses": 3,
         "ties": 0,
-        "fpts": 426.9,
-        "fpts_against": 431.62,
+        "fpts": 563.88,
+        "fpts_against": 640.5,
         "waiver_budget_used": 0,
         "waiver_position": 6
       },
@@ -517,17 +517,17 @@ window.LEAGUES = [
         "owner_name": "JCon4",
         "team_name": "Karl Havoc ",
         "is_me": false,
-        "opponent_roster_id": 9,
+        "opponent_roster_id": 2,
         "starters": [
-          "5849",
-          "8138",
+          "11564",
+          "7611",
           "12490",
-          "7564",
-          "11632",
-          "12518",
           "12519",
-          "4983",
+          "11632",
           "11604",
+          "7564",
+          "8138",
+          "12518",
           "9997"
         ],
         "players": [
@@ -575,13 +575,13 @@ window.LEAGUES = [
           "13345",
           "5859"
         ],
-        "wins": 2,
-        "losses": 4,
+        "wins": 3,
+        "losses": 5,
         "ties": 0,
-        "fpts": 345.7,
-        "fpts_against": 378.22,
+        "fpts": 483.08,
+        "fpts_against": 529.48,
         "waiver_budget_used": 8,
-        "waiver_position": 9
+        "waiver_position": 8
       },
       {
         "roster_id": 7,
@@ -589,7 +589,7 @@ window.LEAGUES = [
         "owner_name": "mhickie24",
         "team_name": "Give Rome Dome",
         "is_me": false,
-        "opponent_roster_id": 4,
+        "opponent_roster_id": 1,
         "starters": [
           "6770",
           "12534",
@@ -599,7 +599,7 @@ window.LEAGUES = [
           "12517",
           "8121",
           "9486",
-          "11646",
+          "11624",
           "11620"
         ],
         "players": [
@@ -624,8 +624,8 @@ window.LEAGUES = [
           "13311",
           "13405",
           "13423",
-          "13533",
           "1373",
+          "4018",
           "4950",
           "6770",
           "8111",
@@ -647,13 +647,13 @@ window.LEAGUES = [
           "11589",
           "12484"
         ],
-        "wins": 1,
+        "wins": 3,
         "losses": 5,
         "ties": 0,
-        "fpts": 280.92,
-        "fpts_against": 279.06,
-        "waiver_budget_used": 41,
-        "waiver_position": 8
+        "fpts": 464.44,
+        "fpts_against": 385.64,
+        "waiver_budget_used": 50,
+        "waiver_position": 10
       },
       {
         "roster_id": 8,
@@ -661,7 +661,7 @@ window.LEAGUES = [
         "owner_name": "djcomstock",
         "team_name": "Breece\u2019s Pieces",
         "is_me": false,
-        "opponent_roster_id": 3,
+        "opponent_roster_id": 4,
         "starters": [
           "8183",
           "6806",
@@ -718,10 +718,10 @@ window.LEAGUES = [
           "4033"
         ],
         "wins": 1,
-        "losses": 5,
+        "losses": 7,
         "ties": 0,
-        "fpts": 311.06,
-        "fpts_against": 431.92,
+        "fpts": 405.78,
+        "fpts_against": 577.68,
         "waiver_budget_used": 103,
         "waiver_position": 5
       },
@@ -731,7 +731,7 @@ window.LEAGUES = [
         "owner_name": "settles34",
         "team_name": "Santa Cruz Brockies",
         "is_me": false,
-        "opponent_roster_id": 6,
+        "opponent_roster_id": 10,
         "starters": [
           "9228",
           "11584",
@@ -787,13 +787,13 @@ window.LEAGUES = [
           "13286",
           "4351"
         ],
-        "wins": 3,
+        "wins": 5,
         "losses": 3,
         "ties": 0,
-        "fpts": 427.14,
-        "fpts_against": 422.52,
+        "fpts": 578.4,
+        "fpts_against": 559.9,
         "waiver_budget_used": 0,
-        "waiver_position": 10
+        "waiver_position": 9
       },
       {
         "roster_id": 10,
@@ -801,7 +801,7 @@ window.LEAGUES = [
         "owner_name": "tdub1329",
         "team_name": "Boutte Hunter",
         "is_me": true,
-        "opponent_roster_id": 2,
+        "opponent_roster_id": 9,
         "starters": [
           "4984",
           "9511",
@@ -860,10 +860,10 @@ window.LEAGUES = [
           "9226"
         ],
         "wins": 5,
-        "losses": 1,
+        "losses": 3,
         "ties": 0,
-        "fpts": 453.24,
-        "fpts_against": 390.38,
+        "fpts": 581.76,
+        "fpts_against": 519.58,
         "waiver_budget_used": 164,
         "waiver_position": 7
       }
@@ -1320,7 +1320,7 @@ window.LEAGUES = [
     "name": "Phi Kap Fantasy",
     "short_name": "Phi Kap Fantasy",
     "buy_in": 100,
-    "week": 4,
+    "week": 5,
     "season": "2026",
     "status": "in_season",
     "total_rosters": 12,
@@ -1405,7 +1405,7 @@ window.LEAGUES = [
         "owner_name": "BeachBoy69",
         "team_name": "Runnin A-Love-chane",
         "is_me": false,
-        "opponent_roster_id": 11,
+        "opponent_roster_id": 6,
         "starters": [
           "4046",
           "11435",
@@ -1443,10 +1443,10 @@ window.LEAGUES = [
           "8142"
         ],
         "wins": 0,
-        "losses": 3,
+        "losses": 4,
         "ties": 0,
-        "fpts": 352.12,
-        "fpts_against": 404.16,
+        "fpts": 476.02,
+        "fpts_against": 558.08,
         "waiver_budget_used": 100,
         "waiver_position": 8
       },
@@ -1456,7 +1456,7 @@ window.LEAGUES = [
         "owner_name": "kadryden777",
         "team_name": "PriceIsRight",
         "is_me": false,
-        "opponent_roster_id": 10,
+        "opponent_roster_id": 12,
         "starters": [
           "4984",
           "12533",
@@ -1494,10 +1494,10 @@ window.LEAGUES = [
           "4137"
         ],
         "wins": 1,
-        "losses": 2,
+        "losses": 3,
         "ties": 0,
-        "fpts": 343.94,
-        "fpts_against": 398.78,
+        "fpts": 460.86,
+        "fpts_against": 529.16,
         "waiver_budget_used": 58,
         "waiver_position": 9
       },
@@ -1507,7 +1507,7 @@ window.LEAGUES = [
         "owner_name": "mrimmortal",
         "team_name": "Mr immortals sex lords",
         "is_me": false,
-        "opponent_roster_id": 5,
+        "opponent_roster_id": 10,
         "starters": [
           "9758",
           "12527",
@@ -1516,11 +1516,12 @@ window.LEAGUES = [
           "4983",
           "8130",
           "9756",
-          "11646",
+          "11157",
           "2747",
           "MIN"
         ],
         "players": [
+          "11157",
           "11625",
           "11631",
           "11646",
@@ -1530,7 +1531,6 @@ window.LEAGUES = [
           "3634",
           "4035",
           "4983",
-          "6797",
           "8130",
           "8132",
           "9488",
@@ -1544,10 +1544,10 @@ window.LEAGUES = [
           "11625"
         ],
         "wins": 3,
-        "losses": 0,
+        "losses": 1,
         "ties": 0,
-        "fpts": 408.84,
-        "fpts_against": 310.68,
+        "fpts": 525.82,
+        "fpts_against": 428.08,
         "waiver_budget_used": 50,
         "waiver_position": 12
       },
@@ -1557,7 +1557,7 @@ window.LEAGUES = [
         "owner_name": "MMMcDermott",
         "team_name": "MayeISeeUrWorthyKupps",
         "is_me": false,
-        "opponent_roster_id": 6,
+        "opponent_roster_id": 7,
         "starters": [
           "11564",
           "4866",
@@ -1592,10 +1592,10 @@ window.LEAGUES = [
         "taxi": [],
         "reserve": [],
         "wins": 1,
-        "losses": 2,
+        "losses": 3,
         "ties": 0,
-        "fpts": 333.6,
-        "fpts_against": 406.82,
+        "fpts": 439.56,
+        "fpts_against": 581.52,
         "waiver_budget_used": 0,
         "waiver_position": 1
       },
@@ -1605,7 +1605,7 @@ window.LEAGUES = [
         "owner_name": "eesch",
         "team_name": "The Infirmary",
         "is_me": false,
-        "opponent_roster_id": 3,
+        "opponent_roster_id": 11,
         "starters": [
           "1166",
           "9221",
@@ -1642,11 +1642,11 @@ window.LEAGUES = [
         "reserve": [
           "9753"
         ],
-        "wins": 2,
+        "wins": 3,
         "losses": 1,
         "ties": 0,
-        "fpts": 403.46,
-        "fpts_against": 326.04,
+        "fpts": 520.86,
+        "fpts_against": 443.02,
         "waiver_budget_used": 18,
         "waiver_position": 10
       },
@@ -1656,7 +1656,7 @@ window.LEAGUES = [
         "owner_name": "UncWill",
         "team_name": "UncWill",
         "is_me": false,
-        "opponent_roster_id": 4,
+        "opponent_roster_id": 1,
         "starters": [
           "3294",
           "8150",
@@ -1693,11 +1693,11 @@ window.LEAGUES = [
         "reserve": [
           "11566"
         ],
-        "wins": 0,
+        "wins": 1,
         "losses": 3,
         "ties": 0,
-        "fpts": 317.84,
-        "fpts_against": 416.8,
+        "fpts": 492.54,
+        "fpts_against": 522.76,
         "waiver_budget_used": 15,
         "waiver_position": 5
       },
@@ -1707,7 +1707,7 @@ window.LEAGUES = [
         "owner_name": "tdub1329",
         "team_name": "tuten browns\ud83c\udfc6",
         "is_me": true,
-        "opponent_roster_id": 8,
+        "opponent_roster_id": 4,
         "starters": [
           "12545",
           "4034",
@@ -1745,10 +1745,10 @@ window.LEAGUES = [
           "13281"
         ],
         "wins": 2,
-        "losses": 1,
+        "losses": 2,
         "ties": 0,
-        "fpts": 391.38,
-        "fpts_against": 371.08,
+        "fpts": 483.22,
+        "fpts_against": 538.4,
         "waiver_budget_used": 11,
         "waiver_position": 6
       },
@@ -1758,7 +1758,7 @@ window.LEAGUES = [
         "owner_name": "hughjanus66",
         "team_name": "Golden Dicker",
         "is_me": false,
-        "opponent_roster_id": 7,
+        "opponent_roster_id": 9,
         "starters": [
           "6904",
           "8151",
@@ -1777,7 +1777,6 @@ window.LEAGUES = [
           "12501",
           "12517",
           "12529",
-          "13276",
           "1466",
           "6783",
           "6786",
@@ -1791,14 +1790,12 @@ window.LEAGUES = [
           "CHI"
         ],
         "taxi": [],
-        "reserve": [
-          "13276"
-        ],
-        "wins": 2,
+        "reserve": [],
+        "wins": 3,
         "losses": 1,
         "ties": 0,
-        "fpts": 394.4,
-        "fpts_against": 380.68,
+        "fpts": 561.72,
+        "fpts_against": 472.52,
         "waiver_budget_used": 0,
         "waiver_position": 2
       },
@@ -1808,7 +1805,7 @@ window.LEAGUES = [
         "owner_name": "SantiTena",
         "team_name": "Fire Staley ",
         "is_me": false,
-        "opponent_roster_id": 12,
+        "opponent_roster_id": 8,
         "starters": [
           "8183",
           "8138",
@@ -1845,11 +1842,11 @@ window.LEAGUES = [
         "reserve": [
           "13417"
         ],
-        "wins": 2,
+        "wins": 3,
         "losses": 1,
         "ties": 0,
-        "fpts": 352.34,
-        "fpts_against": 355.92,
+        "fpts": 530.16,
+        "fpts_against": 494.88,
         "waiver_budget_used": 4,
         "waiver_position": 11
       },
@@ -1859,7 +1856,7 @@ window.LEAGUES = [
         "owner_name": "hmvarela",
         "team_name": "Los Pollos Hermanos",
         "is_me": false,
-        "opponent_roster_id": 2,
+        "opponent_roster_id": 3,
         "starters": [
           "4881",
           "6813",
@@ -1893,11 +1890,11 @@ window.LEAGUES = [
         ],
         "taxi": [],
         "reserve": [],
-        "wins": 0,
+        "wins": 1,
         "losses": 3,
         "ties": 0,
-        "fpts": 355.8,
-        "fpts_against": 452.36,
+        "fpts": 486.18,
+        "fpts_against": 569.28,
         "waiver_budget_used": 0,
         "waiver_position": 3
       },
@@ -1907,7 +1904,7 @@ window.LEAGUES = [
         "owner_name": "Swaggysealseth",
         "team_name": "Swaggysealseth",
         "is_me": false,
-        "opponent_roster_id": 1,
+        "opponent_roster_id": 5,
         "starters": [
           "6770",
           "9509",
@@ -1944,11 +1941,11 @@ window.LEAGUES = [
         "reserve": [
           "13296"
         ],
-        "wins": 2,
+        "wins": 3,
         "losses": 1,
         "ties": 0,
-        "fpts": 427.42,
-        "fpts_against": 336.76,
+        "fpts": 581.34,
+        "fpts_against": 460.66,
         "waiver_budget_used": 0,
         "waiver_position": 4
       },
@@ -1958,7 +1955,7 @@ window.LEAGUES = [
         "owner_name": "Hybl",
         "team_name": "King Henry",
         "is_me": false,
-        "opponent_roster_id": 9,
+        "opponent_roster_id": 2,
         "starters": [
           "11563",
           "3198",
@@ -1996,10 +1993,10 @@ window.LEAGUES = [
           "3286"
         ],
         "wins": 3,
-        "losses": 0,
+        "losses": 1,
         "ties": 0,
-        "fpts": 438.8,
-        "fpts_against": 359.86,
+        "fpts": 577.76,
+        "fpts_against": 537.68,
         "waiver_budget_used": 7,
         "waiver_position": 7
       }
@@ -2129,7 +2126,7 @@ window.LEAGUES = [
     "name": "The League ",
     "short_name": "The League",
     "buy_in": 150,
-    "week": 4,
+    "week": 5,
     "season": "2026",
     "status": "in_season",
     "total_rosters": 10,
@@ -2225,7 +2222,7 @@ window.LEAGUES = [
         "owner_name": "Lpack23",
         "team_name": "CeeDeez TDs",
         "is_me": false,
-        "opponent_roster_id": 4,
+        "opponent_roster_id": 3,
         "starters": [
           "4881",
           "8138",
@@ -2278,11 +2275,11 @@ window.LEAGUES = [
         "reserve": [
           "11638"
         ],
-        "wins": 5,
+        "wins": 7,
         "losses": 1,
         "ties": 0,
-        "fpts": 539.04,
-        "fpts_against": 518.08,
+        "fpts": 711.0,
+        "fpts_against": 663.12,
         "waiver_budget_used": 0,
         "waiver_position": 1
       },
@@ -2292,16 +2289,16 @@ window.LEAGUES = [
         "owner_name": "connorw23",
         "team_name": "The San Francisco 49ers",
         "is_me": false,
-        "opponent_roster_id": 3,
+        "opponent_roster_id": 4,
         "starters": [
           "11564",
           "9224",
-          "4034",
-          "8112",
+          "5892",
+          "6801",
           "7569",
           "4217",
-          "6801",
-          "11646",
+          "8112",
+          "4034",
           "12519",
           "2133",
           "8183"
@@ -2352,11 +2349,11 @@ window.LEAGUES = [
           "5859",
           "6803"
         ],
-        "wins": 4,
+        "wins": 6,
         "losses": 2,
         "ties": 0,
-        "fpts": 509.96,
-        "fpts_against": 527.9,
+        "fpts": 703.84,
+        "fpts_against": 674.82,
         "waiver_budget_used": 18,
         "waiver_position": 6
       },
@@ -2366,19 +2363,19 @@ window.LEAGUES = [
         "owner_name": "GPaduke11",
         "team_name": "Mother Shough\u2019ers",
         "is_me": false,
-        "opponent_roster_id": 2,
+        "opponent_roster_id": 1,
         "starters": [
-          "9758",
-          "11571",
+          "12545",
+          "9511",
           "12534",
+          "8167",
           "5846",
+          "9484",
+          "11620",
+          "11628",
           "9487",
           "8131",
-          "8167",
-          "11628",
-          "11620",
-          "9484",
-          "12545"
+          "9758"
         ],
         "players": [
           "8155",
@@ -2426,11 +2423,11 @@ window.LEAGUES = [
           "11583",
           "13281"
         ],
-        "wins": 1,
-        "losses": 5,
+        "wins": 2,
+        "losses": 6,
         "ties": 0,
-        "fpts": 389.04,
-        "fpts_against": 396.68,
+        "fpts": 535.96,
+        "fpts_against": 590.56,
         "waiver_budget_used": 7,
         "waiver_position": 10
       },
@@ -2440,7 +2437,7 @@ window.LEAGUES = [
         "owner_name": "tdub1329",
         "team_name": "World of Tanks",
         "is_me": true,
-        "opponent_roster_id": 1,
+        "opponent_roster_id": 2,
         "starters": [
           "9228",
           "12489",
@@ -2501,10 +2498,10 @@ window.LEAGUES = [
           "9226"
         ],
         "wins": 0,
-        "losses": 6,
+        "losses": 8,
         "ties": 0,
-        "fpts": 361.24,
-        "fpts_against": 474.94,
+        "fpts": 506.28,
+        "fpts_against": 646.9,
         "waiver_budget_used": 68,
         "waiver_position": 8
       },
@@ -2514,7 +2511,7 @@ window.LEAGUES = [
         "owner_name": "ganderson09",
         "team_name": "ganderson09",
         "is_me": false,
-        "opponent_roster_id": 6,
+        "opponent_roster_id": 10,
         "starters": [
           "4984",
           "12527",
@@ -2572,10 +2569,10 @@ window.LEAGUES = [
           "7543"
         ],
         "wins": 3,
-        "losses": 3,
+        "losses": 5,
         "ties": 0,
-        "fpts": 476.1,
-        "fpts_against": 366.16,
+        "fpts": 604.2,
+        "fpts_against": 575.68,
         "waiver_budget_used": 12,
         "waiver_position": 3
       },
@@ -2585,7 +2582,7 @@ window.LEAGUES = [
         "owner_name": "CollinWolf23",
         "team_name": "6am Tarp Pull",
         "is_me": false,
-        "opponent_roster_id": 5,
+        "opponent_roster_id": 9,
         "starters": [
           "4046",
           "6813",
@@ -2637,11 +2634,11 @@ window.LEAGUES = [
           "11618",
           "8142"
         ],
-        "wins": 4,
+        "wins": 6,
         "losses": 2,
         "ties": 0,
-        "fpts": 488.62,
-        "fpts_against": 407.78,
+        "fpts": 698.14,
+        "fpts_against": 535.88,
         "waiver_budget_used": 77,
         "waiver_position": 5
       },
@@ -2651,7 +2648,7 @@ window.LEAGUES = [
         "owner_name": "JoeysYIDS",
         "team_name": "JoeysYIDS",
         "is_me": false,
-        "opponent_roster_id": 9,
+        "opponent_roster_id": 8,
         "starters": [
           "3163",
           "9509",
@@ -2698,11 +2695,11 @@ window.LEAGUES = [
           "13300"
         ],
         "reserve": [],
-        "wins": 5,
+        "wins": 7,
         "losses": 1,
         "ties": 0,
-        "fpts": 498.66,
-        "fpts_against": 426.26,
+        "fpts": 674.56,
+        "fpts_against": 560.96,
         "waiver_budget_used": 200,
         "waiver_position": 2
       },
@@ -2712,7 +2709,7 @@ window.LEAGUES = [
         "owner_name": "StonePiece7",
         "team_name": "My Chubb is Limp",
         "is_me": false,
-        "opponent_roster_id": 10,
+        "opponent_roster_id": 7,
         "starters": [
           "6797",
           "12512",
@@ -2724,7 +2721,7 @@ window.LEAGUES = [
           "9754",
           "8121",
           "11603",
-          "12048"
+          "4943"
         ],
         "players": [
           "11370",
@@ -2758,10 +2755,10 @@ window.LEAGUES = [
         ],
         "reserve": [],
         "wins": 1,
-        "losses": 5,
+        "losses": 7,
         "ties": 0,
-        "fpts": 335.96,
-        "fpts_against": 477.8,
+        "fpts": 469.24,
+        "fpts_against": 624.52,
         "waiver_budget_used": 10,
         "waiver_position": 7
       },
@@ -2771,7 +2768,7 @@ window.LEAGUES = [
         "owner_name": "NatePackard12",
         "team_name": "NatePackard12",
         "is_me": false,
-        "opponent_roster_id": 7,
+        "opponent_roster_id": 6,
         "starters": [
           "6904",
           "9221",
@@ -2818,10 +2815,10 @@ window.LEAGUES = [
         ],
         "reserve": [],
         "wins": 5,
-        "losses": 1,
+        "losses": 3,
         "ties": 0,
-        "fpts": 539.58,
-        "fpts_against": 490.22,
+        "fpts": 674.28,
+        "fpts_against": 666.12,
         "waiver_budget_used": 15,
         "waiver_position": 4
       },
@@ -2831,7 +2828,7 @@ window.LEAGUES = [
         "owner_name": "CNelly007",
         "team_name": "Man, I Love Football ",
         "is_me": false,
-        "opponent_roster_id": 8,
+        "opponent_roster_id": 5,
         "starters": [
           "3294",
           "13287",
@@ -2885,11 +2882,11 @@ window.LEAGUES = [
           "12482",
           "12484"
         ],
-        "wins": 2,
-        "losses": 4,
+        "wins": 3,
+        "losses": 5,
         "ties": 0,
-        "fpts": 454.76,
-        "fpts_against": 507.14,
+        "fpts": 601.48,
+        "fpts_against": 640.42,
         "waiver_budget_used": 13,
         "waiver_position": 9
       }
@@ -3380,7 +3377,7 @@ window.LEAGUES = [
     "name": "yuH",
     "short_name": "yuH",
     "buy_in": 50,
-    "week": 4,
+    "week": 5,
     "season": "2026",
     "status": "in_season",
     "total_rosters": 10,
@@ -3488,7 +3485,7 @@ window.LEAGUES = [
         "owner_name": "noahstifle",
         "team_name": "Wyd step Burrow?",
         "is_me": false,
-        "opponent_roster_id": 5,
+        "opponent_roster_id": 6,
         "starters": [
           "8183",
           "8138",
@@ -3552,11 +3549,11 @@ window.LEAGUES = [
           "10905",
           "13276"
         ],
-        "wins": 3,
+        "wins": 4,
         "losses": 0,
         "ties": 0,
-        "fpts": 521.53,
-        "fpts_against": 319.65,
+        "fpts": 648.65,
+        "fpts_against": 436.63,
         "waiver_budget_used": 0,
         "waiver_position": 6
       },
@@ -3566,7 +3563,7 @@ window.LEAGUES = [
         "owner_name": "matthewarmstrong02",
         "team_name": "Wake N Baker",
         "is_me": false,
-        "opponent_roster_id": 7,
+        "opponent_roster_id": 9,
         "starters": [
           "9228",
           "12495",
@@ -3591,10 +3588,9 @@ window.LEAGUES = [
           "13293",
           "9997",
           "11625",
-          "11729",
-          "11199",
           "8121",
           "12547",
+          "4018",
           "12472",
           "5927",
           "11631",
@@ -3615,7 +3611,6 @@ window.LEAGUES = [
           "7569",
           "4892",
           "8110",
-          "8205",
           "12597",
           "11635"
         ],
@@ -3630,17 +3625,17 @@ window.LEAGUES = [
           "13452"
         ],
         "reserve": [
+          "11560",
           "11625",
           "7021",
-          "8205",
           "8800",
           "9226"
         ],
-        "wins": 1,
+        "wins": 2,
         "losses": 2,
         "ties": 0,
-        "fpts": 385.42,
-        "fpts_against": 413.73,
+        "fpts": 562.38,
+        "fpts_against": 537.9,
         "waiver_budget_used": 0,
         "waiver_position": 2
       },
@@ -3650,7 +3645,7 @@ window.LEAGUES = [
         "owner_name": "MaryLynnfrolfs",
         "team_name": "Dr.F",
         "is_me": false,
-        "opponent_roster_id": 4,
+        "opponent_roster_id": 8,
         "starters": [
           "7523",
           "6813",
@@ -3710,11 +3705,11 @@ window.LEAGUES = [
         "reserve": [
           "12508"
         ],
-        "wins": 2,
+        "wins": 3,
         "losses": 1,
         "ties": 0,
-        "fpts": 418.39,
-        "fpts_against": 311.51,
+        "fpts": 602.57,
+        "fpts_against": 438.01,
         "waiver_budget_used": 3,
         "waiver_position": 9
       },
@@ -3724,12 +3719,12 @@ window.LEAGUES = [
         "owner_name": "JDillman5",
         "team_name": "PapaZoot0",
         "is_me": false,
-        "opponent_roster_id": 3,
+        "opponent_roster_id": 7,
         "starters": [
-          "4046",
+          "11559",
           "9509",
-          "8151",
-          "10229",
+          "11435",
+          "11637",
           "2216",
           "12518",
           "11584",
@@ -3780,10 +3775,10 @@ window.LEAGUES = [
         ],
         "reserve": [],
         "wins": 1,
-        "losses": 2,
+        "losses": 3,
         "ties": 0,
-        "fpts": 442.73,
-        "fpts_against": 471.41,
+        "fpts": 569.23,
+        "fpts_against": 655.59,
         "waiver_budget_used": 15,
         "waiver_position": 7
       },
@@ -3793,7 +3788,7 @@ window.LEAGUES = [
         "owner_name": "tdub1329",
         "team_name": "Team WHITE",
         "is_me": true,
-        "opponent_roster_id": 1,
+        "opponent_roster_id": 10,
         "starters": [
           "5849",
           "9221",
@@ -3865,10 +3860,10 @@ window.LEAGUES = [
           "8155"
         ],
         "wins": 2,
-        "losses": 1,
+        "losses": 2,
         "ties": 0,
-        "fpts": 412.0,
-        "fpts_against": 352.4,
+        "fpts": 528.98,
+        "fpts_against": 479.52,
         "waiver_budget_used": 11,
         "waiver_position": 10
       },
@@ -3878,7 +3873,7 @@ window.LEAGUES = [
         "owner_name": "jonahlarson",
         "team_name": "Larsswag10",
         "is_me": false,
-        "opponent_roster_id": 8,
+        "opponent_roster_id": 1,
         "starters": [
           "4984",
           "12512",
@@ -3887,7 +3882,7 @@ window.LEAGUES = [
           "7525",
           "1466",
           "7611",
-          "11834",
+          "11604",
           "7672",
           "5332"
         ],
@@ -3934,11 +3929,11 @@ window.LEAGUES = [
         "reserve": [
           "13281"
         ],
-        "wins": 2,
+        "wins": 3,
         "losses": 1,
         "ties": 0,
-        "fpts": 400.44,
-        "fpts_against": 374.06,
+        "fpts": 544.76,
+        "fpts_against": 512.14,
         "waiver_budget_used": 30,
         "waiver_position": 8
       },
@@ -3948,7 +3943,7 @@ window.LEAGUES = [
         "owner_name": "Nathanmetz",
         "team_name": "MT EVEREST",
         "is_me": false,
-        "opponent_roster_id": 2,
+        "opponent_roster_id": 4,
         "starters": [
           "6904",
           "4034",
@@ -3978,6 +3973,7 @@ window.LEAGUES = [
           "13347",
           "13348",
           "2133",
+          "2505",
           "4034",
           "5022",
           "5041",
@@ -4008,10 +4004,10 @@ window.LEAGUES = [
           "8408"
         ],
         "wins": 2,
-        "losses": 1,
+        "losses": 2,
         "ties": 0,
-        "fpts": 421.9,
-        "fpts_against": 431.06,
+        "fpts": 546.07,
+        "fpts_against": 608.02,
         "waiver_budget_used": 0,
         "waiver_position": 1
       },
@@ -4021,7 +4017,7 @@ window.LEAGUES = [
         "owner_name": "JamesJessen",
         "team_name": "Jenny",
         "is_me": false,
-        "opponent_roster_id": 6,
+        "opponent_roster_id": 3,
         "starters": [
           "4881",
           "4866",
@@ -4066,10 +4062,10 @@ window.LEAGUES = [
         "taxi": [],
         "reserve": [],
         "wins": 0,
-        "losses": 3,
+        "losses": 4,
         "ties": 0,
-        "fpts": 308.2,
-        "fpts_against": 457.42,
+        "fpts": 446.28,
+        "fpts_against": 601.74,
         "waiver_budget_used": 0,
         "waiver_position": 3
       },
@@ -4079,7 +4075,7 @@ window.LEAGUES = [
         "owner_name": "tbonerito",
         "team_name": "tbonerito",
         "is_me": false,
-        "opponent_roster_id": 10,
+        "opponent_roster_id": 2,
         "starters": [
           "4943",
           "4199",
@@ -4122,12 +4118,15 @@ window.LEAGUES = [
         "taxi": [
           "12497"
         ],
-        "reserve": [],
-        "wins": 0,
+        "reserve": [
+          "5859",
+          "7543"
+        ],
+        "wins": 1,
         "losses": 3,
         "ties": 0,
-        "fpts": 389.77,
-        "fpts_against": 487.75,
+        "fpts": 554.09,
+        "fpts_against": 620.03,
         "waiver_budget_used": 0,
         "waiver_position": 4
       },
@@ -4137,7 +4136,7 @@ window.LEAGUES = [
         "owner_name": "Dydelldaddy",
         "team_name": "Noah Stifle",
         "is_me": false,
-        "opponent_roster_id": 9,
+        "opponent_roster_id": 5,
         "starters": [
           "3163",
           "13287",
@@ -4190,10 +4189,10 @@ window.LEAGUES = [
           "7640"
         ],
         "wins": 2,
-        "losses": 1,
+        "losses": 2,
         "ties": 0,
-        "fpts": 353.26,
-        "fpts_against": 434.65,
+        "fpts": 485.54,
+        "fpts_against": 598.97,
         "waiver_budget_used": 0,
         "waiver_position": 5
       }
@@ -4596,7 +4595,7 @@ window.LEAGUES = [
     "short_name": "Washington Football League",
     "season": "2026",
     "buy_in": 30,
-    "week": 4,
+    "week": 5,
     "status": "in_season",
     "total_rosters": 12,
     "roster_positions": [
@@ -4649,7 +4648,7 @@ window.LEAGUES = [
         "owner_name": "espn30782061",
         "team_name": "Hash Slinging Slashers",
         "is_me": false,
-        "opponent_roster_id": 11,
+        "opponent_roster_id": 5,
         "starters": [
           "7547",
           "12527",
@@ -4684,11 +4683,11 @@ window.LEAGUES = [
         "reserve": [
           "8142"
         ],
-        "wins": 3,
+        "wins": 4,
         "losses": 0,
         "ties": 0,
-        "fpts": 445.48,
-        "fpts_against": 292.44
+        "fpts": 546.0600000000001,
+        "fpts_against": 364.14
       },
       {
         "roster_id": 2,
@@ -4696,7 +4695,7 @@ window.LEAGUES = [
         "owner_name": "leitrim65",
         "team_name": "Lord of Flatbush",
         "is_me": false,
-        "opponent_roster_id": 5,
+        "opponent_roster_id": 10,
         "starters": [
           "9493",
           "8144",
@@ -4731,11 +4730,11 @@ window.LEAGUES = [
         "reserve": [
           "8408"
         ],
-        "wins": 1,
+        "wins": 2,
         "losses": 2,
         "ties": 0,
-        "fpts": 346.82,
-        "fpts_against": 352.72
+        "fpts": 484.84000000000003,
+        "fpts_against": 454.70000000000005
       },
       {
         "roster_id": 3,
@@ -4743,17 +4742,17 @@ window.LEAGUES = [
         "owner_name": "ESPNfan1299424352",
         "team_name": "Joshsdawgs",
         "is_me": false,
-        "opponent_roster_id": 13,
+        "opponent_roster_id": 6,
         "starters": [
           "8138",
           "12507",
-          "10229",
           "13279",
           "9484",
-          "12533",
+          "8134",
           "4943",
           "MIN",
-          "12185"
+          "12185",
+          "11435"
         ],
         "players": [
           "8138",
@@ -4779,10 +4778,10 @@ window.LEAGUES = [
           "13286"
         ],
         "wins": 1,
-        "losses": 2,
+        "losses": 3,
         "ties": 0,
-        "fpts": 303.16,
-        "fpts_against": 333.7
+        "fpts": 417.08000000000004,
+        "fpts_against": 458.56
       },
       {
         "roster_id": 4,
@@ -4790,7 +4789,7 @@ window.LEAGUES = [
         "owner_name": "ESPNFAN5512399465",
         "team_name": "Ratnam Finn Abrams",
         "is_me": false,
-        "opponent_roster_id": 9,
+        "opponent_roster_id": 11,
         "starters": [
           "4034",
           "6801",
@@ -4826,10 +4825,10 @@ window.LEAGUES = [
           "5859"
         ],
         "wins": 2,
-        "losses": 1,
+        "losses": 2,
         "ties": 0,
-        "fpts": 345.2,
-        "fpts_against": 347.22
+        "fpts": 448.14,
+        "fpts_against": 499.30000000000007
       },
       {
         "roster_id": 5,
@@ -4837,7 +4836,7 @@ window.LEAGUES = [
         "owner_name": "ESPNFAN9093367607",
         "team_name": "Carter's Competitive Team",
         "is_me": false,
-        "opponent_roster_id": 2,
+        "opponent_roster_id": 1,
         "starters": [
           "9221",
           "8112",
@@ -4870,10 +4869,10 @@ window.LEAGUES = [
         "taxi": [],
         "reserve": [],
         "wins": 2,
-        "losses": 1,
+        "losses": 2,
         "ties": 0,
-        "fpts": 336.6,
-        "fpts_against": 333.3
+        "fpts": 438.58000000000004,
+        "fpts_against": 471.32000000000005
       },
       {
         "roster_id": 6,
@@ -4881,7 +4880,7 @@ window.LEAGUES = [
         "owner_name": "bdpardo",
         "team_name": "Dix Drive-In",
         "is_me": false,
-        "opponent_roster_id": 8,
+        "opponent_roster_id": 3,
         "starters": [
           "7564",
           "7569",
@@ -4914,10 +4913,10 @@ window.LEAGUES = [
         "taxi": [],
         "reserve": [],
         "wins": 2,
-        "losses": 1,
+        "losses": 2,
         "ties": 0,
-        "fpts": 347.0,
-        "fpts_against": 274.12
+        "fpts": 475.1,
+        "fpts_against": 418.14
       },
       {
         "roster_id": 8,
@@ -4925,7 +4924,7 @@ window.LEAGUES = [
         "owner_name": "ESPNfan8462081535",
         "team_name": "Matthew's Magnificent Team",
         "is_me": false,
-        "opponent_roster_id": 6,
+        "opponent_roster_id": 9,
         "starters": [
           "6786",
           "3198",
@@ -4953,15 +4952,18 @@ window.LEAGUES = [
           "8205",
           "5844",
           "1479",
-          "11624"
+          "11624",
+          "11643"
         ],
         "taxi": [],
-        "reserve": [],
-        "wins": 3,
+        "reserve": [
+          "8205"
+        ],
+        "wins": 4,
         "losses": 0,
         "ties": 0,
-        "fpts": 447.24,
-        "fpts_against": 330.21999999999997
+        "fpts": 591.26,
+        "fpts_against": 458.31999999999994
       },
       {
         "roster_id": 9,
@@ -4969,7 +4971,7 @@ window.LEAGUES = [
         "owner_name": "tdub1329",
         "team_name": "Daaaa bears",
         "is_me": true,
-        "opponent_roster_id": 4,
+        "opponent_roster_id": 8,
         "starters": [
           "9509",
           "8151",
@@ -5004,11 +5006,11 @@ window.LEAGUES = [
         "reserve": [
           "13281"
         ],
-        "wins": 2,
+        "wins": 3,
         "losses": 1,
         "ties": 0,
-        "fpts": 337.06,
-        "fpts_against": 336.24
+        "fpts": 489.14,
+        "fpts_against": 439.18
       },
       {
         "roster_id": 10,
@@ -5016,7 +5018,7 @@ window.LEAGUES = [
         "owner_name": "IcyLatinoHellmund",
         "team_name": "Pretty Sure",
         "is_me": false,
-        "opponent_roster_id": 12,
+        "opponent_roster_id": 2,
         "starters": [
           "9224",
           "12526",
@@ -5051,11 +5053,11 @@ window.LEAGUES = [
         "reserve": [
           "13417"
         ],
-        "wins": 1,
+        "wins": 2,
         "losses": 2,
         "ties": 0,
-        "fpts": 322.09999999999997,
-        "fpts_against": 396.24
+        "fpts": 480.26,
+        "fpts_against": 487.32
       },
       {
         "roster_id": 11,
@@ -5063,7 +5065,7 @@ window.LEAGUES = [
         "owner_name": "ESPNFAN1288689340",
         "team_name": "Seirin High School",
         "is_me": false,
-        "opponent_roster_id": 1,
+        "opponent_roster_id": 4,
         "starters": [
           "4866",
           "8146",
@@ -5072,7 +5074,7 @@ window.LEAGUES = [
           "12506",
           "3294",
           "2747",
-          "12495",
+          "7002",
           "BUF"
         ],
         "players": [
@@ -5096,10 +5098,10 @@ window.LEAGUES = [
         "taxi": [],
         "reserve": [],
         "wins": 1,
-        "losses": 2,
+        "losses": 3,
         "ties": 0,
-        "fpts": 299.7,
-        "fpts_against": 337.68
+        "fpts": 371.4,
+        "fpts_against": 438.26
       },
       {
         "roster_id": 12,
@@ -5107,7 +5109,7 @@ window.LEAGUES = [
         "owner_name": "TheLukeHunt",
         "team_name": "Chewie Chicken Pants",
         "is_me": false,
-        "opponent_roster_id": 10,
+        "opponent_roster_id": 13,
         "starters": [
           "9488",
           "13287",
@@ -5140,10 +5142,10 @@ window.LEAGUES = [
         "taxi": [],
         "reserve": [],
         "wins": 0,
-        "losses": 3,
+        "losses": 4,
         "ties": 0,
-        "fpts": 333.6,
-        "fpts_against": 487.38
+        "fpts": 424.68,
+        "fpts_against": 645.54
       },
       {
         "roster_id": 13,
@@ -5151,7 +5153,7 @@ window.LEAGUES = [
         "owner_name": "espnfan4679401506",
         "team_name": "Damier's Dangerous Team",
         "is_me": false,
-        "opponent_roster_id": 3,
+        "opponent_roster_id": 12,
         "starters": [
           "6813",
           "11604",
@@ -5186,11 +5188,11 @@ window.LEAGUES = [
         "reserve": [
           "7543"
         ],
-        "wins": 0,
+        "wins": 1,
         "losses": 3,
         "ties": 0,
-        "fpts": 345.66,
-        "fpts_against": 388.36
+        "fpts": 470.52000000000004,
+        "fpts_against": 502.28000000000003
       }
     ],
     "users": [

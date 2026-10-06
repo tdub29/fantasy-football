@@ -1,5 +1,5 @@
 {
- "count": 659,
+ "count": 660,
  "players": [
   {
    "sleeper_id": "10217",
@@ -71,19 +71,8 @@
     "fum_lost": 3.0,
     "pass_2pt": 1.0
    },
-   "pp_stats": {
-    "pass_yd": 2885.52,
-    "pass_td": 13.0,
-    "pass_int": 8.0,
-    "rush_yd": 94.0,
-    "rush_td": 1.0
-   },
-   "pp_borrowed": [
-    "pass_td",
-    "pass_int",
-    "rush_yd",
-    "rush_td"
-   ]
+   "pp_stats": null,
+   "pp_borrowed": []
   },
   {
    "sleeper_id": "11560",
@@ -227,7 +216,7 @@
    },
    "pp_stats": {
     "pass_td": 16.27,
-    "pass_yd": 192.5,
+    "pass_yd": 3021.93,
     "pass_int": 3.0,
     "rush_yd": 6.0
    },
@@ -907,15 +896,14 @@
     "pass_2pt": 1.0
    },
    "pp_stats": {
-    "pass_yd": 215.5,
-    "rush_yd": 16.5,
-    "pass_td": 1.5,
-    "pass_int": 13.0,
-    "rush_td": 2.0
+    "pass_yd": 3487.65,
+    "rush_yd": 309.5,
+    "pass_td": 25.28,
+    "rush_td": 1.68,
+    "pass_int": 13.0
    },
    "pp_borrowed": [
-    "pass_int",
-    "rush_td"
+    "pass_int"
    ]
   },
   {
@@ -1017,7 +1005,7 @@
     "pass_yd": 2980.11,
     "rush_yd": 375.5,
     "pass_td": 18.92,
-    "rush_td": 4.3,
+    "rush_td": 4.27,
     "pass_int": 10.0
    },
    "pp_borrowed": [
@@ -1042,12 +1030,11 @@
     "pass_yd": 3275.5,
     "rush_yd": 8.5,
     "pass_td": 19.67,
-    "pass_int": 11.0,
-    "rush_td": 2.0
+    "rush_td": 3.94,
+    "pass_int": 11.0
    },
    "pp_borrowed": [
-    "pass_int",
-    "rush_td"
+    "pass_int"
    ]
   },
   {
@@ -1821,14 +1808,13 @@
     "fum_lost": 1.0
    },
    "pp_stats": {
-    "rush_yd": 21.5,
+    "rush_yd": 662.5,
     "rec_yd": 7.5,
-    "rush_td": 4.0,
+    "rush_td": 3.88,
     "rec": 34.0,
     "rec_td": 1.0
    },
    "pp_borrowed": [
-    "rush_td",
     "rec",
     "rec_td"
    ]
@@ -2106,12 +2092,11 @@
    "pp_stats": {
     "rush_yd": 28.5,
     "rec_yd": 10.5,
-    "rush_td": 2.0,
+    "rush_td": 5.99,
     "rec": 19.0,
     "rec_td": 1.0
    },
    "pp_borrowed": [
-    "rush_td",
     "rec",
     "rec_td"
    ]
@@ -2381,7 +2366,7 @@
    "pp_stats": {
     "rush_yd": 606.7,
     "rec_yd": 2.5,
-    "rush_td": 8.72,
+    "rush_td": 5.61,
     "rec": 19.0,
     "rec_td": 1.0
    },
@@ -3008,7 +2993,7 @@
     "rush_yd": 479.89,
     "rec_yd": 15.5,
     "rec": 2.5,
-    "rush_td": 5.76,
+    "rush_td": 4.38,
     "rec_td": 1.0
    },
    "pp_borrowed": [
@@ -3340,14 +3325,13 @@
     "fum_lost": 1.0
    },
    "pp_stats": {
-    "rush_yd": 32.5,
+    "rush_yd": 708.5,
     "rec_yd": 12.5,
-    "rush_td": 4.0,
+    "rush_td": 5.43,
     "rec": 38.0,
     "rec_td": 1.0
    },
    "pp_borrowed": [
-    "rush_td",
     "rec",
     "rec_td"
    ]
@@ -3394,16 +3378,13 @@
     "rush_2pt": 1.0
    },
    "pp_stats": {
-    "rush_yd": 41.5,
-    "rec_yd": 11.5,
+    "rush_yd": 821.39,
+    "rec_yd": 325.5,
     "rec": 2,
-    "rush_td": 6.0,
-    "rec_td": 2.0
+    "rush_td": 5.4,
+    "rec_td": 2.67
    },
-   "pp_borrowed": [
-    "rush_td",
-    "rec_td"
-   ]
+   "pp_borrowed": []
   },
   {
    "sleeper_id": "7561",
@@ -3568,7 +3549,7 @@
    "pp_stats": {
     "rush_yd": 34.5,
     "rec_yd": 7.5,
-    "rush_td": 4.05,
+    "rush_td": 4.0,
     "rec": 9.0
    },
    "pp_borrowed": [
@@ -3773,8 +3754,16 @@
     "rec_yd": 73.0,
     "fum_lost": 1.0
    },
-   "pp_stats": null,
-   "pp_borrowed": []
+   "pp_stats": {
+    "rush_yd": 500.5,
+    "rush_td": 4.53,
+    "rec": 10.0,
+    "rec_yd": 73.0
+   },
+   "pp_borrowed": [
+    "rec",
+    "rec_yd"
+   ]
   },
   {
    "sleeper_id": "8207",
@@ -3852,8 +3841,18 @@
     "rec_td": 1.0,
     "fum_lost": 1.0
    },
-   "pp_stats": null,
-   "pp_borrowed": []
+   "pp_stats": {
+    "rush_yd": 653.74,
+    "rush_td": 4.87,
+    "rec": 20.0,
+    "rec_yd": 140.0,
+    "rec_td": 1.0
+   },
+   "pp_borrowed": [
+    "rec",
+    "rec_yd",
+    "rec_td"
+   ]
   },
   {
    "sleeper_id": "9221",
@@ -4067,8 +4066,19 @@
     "rec_td": 1.0,
     "fum_lost": 1.0
    },
-   "pp_stats": null,
-   "pp_borrowed": []
+   "pp_stats": {
+    "rush_td": 6.17,
+    "rush_yd": 264.0,
+    "rec": 11.0,
+    "rec_yd": 78.0,
+    "rec_td": 1.0
+   },
+   "pp_borrowed": [
+    "rush_yd",
+    "rec",
+    "rec_yd",
+    "rec_td"
+   ]
   },
   {
    "sleeper_id": "9757",
@@ -4278,7 +4288,7 @@
   {
    "sleeper_id": "11168",
    "name": "Xavier Smith",
-   "team": "LAR",
+   "team": null,
    "pos": "WR",
    "sleeper_stats": {
     "rush_yd": 16.0,
@@ -4481,7 +4491,7 @@
     "rec_td": 3.0
    },
    "pp_stats": {
-    "rec_yd": 806.88,
+    "rec_yd": 34.5,
     "rush_yd": 10.0,
     "rec": 35.0,
     "rec_td": 3.0
@@ -5406,8 +5416,16 @@
     "rec_yd": 567.0,
     "rec_td": 4.0
    },
-   "pp_stats": null,
-   "pp_borrowed": []
+   "pp_stats": {
+    "rec_yd": 421.46,
+    "rec_td": 3.32,
+    "rush_yd": 14.0,
+    "rec": 45.0
+   },
+   "pp_borrowed": [
+    "rush_yd",
+    "rec"
+   ]
   },
   {
    "sleeper_id": "13279",
@@ -5442,8 +5460,16 @@
     "rec_yd": 514.0,
     "rec_td": 3.0
    },
-   "pp_stats": null,
-   "pp_borrowed": []
+   "pp_stats": {
+    "rec_yd": 768.91,
+    "rec_td": 4.55,
+    "rush_yd": 6.0,
+    "rec": 41.0
+   },
+   "pp_borrowed": [
+    "rush_yd",
+    "rec"
+   ]
   },
   {
    "sleeper_id": "13285",
@@ -5853,8 +5879,15 @@
     "rec_yd": 584.0,
     "rec_td": 4.0
    },
-   "pp_stats": null,
-   "pp_borrowed": []
+   "pp_stats": {
+    "rec_yd": 655.48,
+    "rec": 46.0,
+    "rec_td": 4.0
+   },
+   "pp_borrowed": [
+    "rec",
+    "rec_td"
+   ]
   },
   {
    "sleeper_id": "13420",
@@ -5958,7 +5991,7 @@
    },
    "pp_stats": {
     "rec_yd": 5.5,
-    "rec_td": 0.31,
+    "rec_td": 0.27,
     "rec": 10.0
    },
    "pp_borrowed": [
@@ -6437,7 +6470,7 @@
   {
    "sleeper_id": "5773",
    "name": "KhaDarel Hodge",
-   "team": "SF",
+   "team": null,
    "pos": "WR",
    "sleeper_stats": {
     "rec": 8.0,
@@ -6985,8 +7018,8 @@
    "pp_stats": {
     "rec_yd": 1331.58,
     "rec": 6.5,
-    "rush_yd": 11.5,
-    "rec_td": 9.83
+    "rec_td": 9.83,
+    "rush_yd": 11.5
    },
    "pp_borrowed": []
   },
@@ -8060,6 +8093,18 @@
    "sleeper_stats": {
     "rec": 4.0,
     "rec_yd": 33.0
+   },
+   "pp_stats": null,
+   "pp_borrowed": []
+  },
+  {
+   "sleeper_id": "12079",
+   "name": "Treyton Welch",
+   "team": "NO",
+   "pos": "TE",
+   "sleeper_stats": {
+    "rec": 2.0,
+    "rec_yd": 20.0
    },
    "pp_stats": null,
    "pp_borrowed": []
