@@ -184,6 +184,13 @@ def main() -> int:
         return 0
     board = load_board(a.board)
     capture = json.loads(cap_path.read_text(encoding="utf-8"))
+    # A card from another week is a different ranking, not a wrong board.
+    cap_week = re.search(r"week-?(\d+)", str(capture.get("board") or cap_path.name))
+    if cap_week and board.get("week") and int(cap_week.group(1)) != int(board["week"]):
+        print(f"newest X capture ({cap_path.name}) is week {cap_week.group(1)}, board is "
+              f"week {board['week']}; no same-week card to cross-reference. Not a "
+              f"failure; archive his week {board['week']} card to re-arm the check.")
+        return 0
     print(f"Week board ({board.get('board')}, {board.get('updatedLabel')}) "
           f"vs his X cards ({cap_path.name}, {capture.get('posted')})")
     stamp = re.search(r"\d{4}-\d{2}-\d{2}", str(board.get("updatedLabel") or ""))

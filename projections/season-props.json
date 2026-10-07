@@ -1,7 +1,7 @@
 {
  "season": "2026",
- "fetched": "2026-10-06T07:56:57",
- "count": 2069,
+ "fetched": "2026-10-06T23:53:46",
+ "count": 2054,
  "rows": [
   {
    "player": "Chris Olave + Chase Brown + David Montgomery",
@@ -16744,6 +16744,30 @@
    "source": "prizepicks"
   },
   {
+   "player": "Bryce Young",
+   "team": "CAR",
+   "pos": "QB",
+   "stat_type": "Pass Yards",
+   "stat_key": "pass_yd",
+   "line": 2875.5,
+   "posted_line": 2875.5,
+   "fair_prob_over": 0.5,
+   "devig_method": "normal",
+   "consensus_over_odds": -110,
+   "consensus_under_odds": -110,
+   "best_over": {
+    "odds": -110,
+    "line": 2874.5,
+    "book": "DraftKings"
+   },
+   "best_under": {
+    "odds": 100,
+    "line": 4499.5,
+    "book": "Kalshi"
+   },
+   "source": "bettingpros"
+  },
+  {
    "player": "Matthew Stafford",
    "team": "LAR",
    "pos": "QB",
@@ -16780,12 +16804,12 @@
    "consensus_over_odds": -115,
    "consensus_under_odds": -105,
    "best_over": {
-    "odds": 122,
+    "odds": -108,
     "line": 3849.5,
     "book": "Polymarket"
    },
    "best_under": {
-    "odds": 117,
+    "odds": 108,
     "line": 4499.5,
     "book": "Kalshi"
    },
@@ -16816,50 +16840,26 @@
    "source": "bettingpros"
   },
   {
-   "player": "Baker Mayfield",
-   "team": "TB",
+   "player": "Joe Burrow",
+   "team": "CIN",
    "pos": "QB",
    "stat_type": "Pass Yards",
    "stat_key": "pass_yd",
-   "line": 3487.65,
-   "posted_line": 3500.5,
-   "fair_prob_over": 0.4948,
+   "line": 3915.61,
+   "posted_line": 3962.5,
+   "fair_prob_over": 0.4831,
    "devig_method": "normal",
-   "consensus_over_odds": -110,
+   "consensus_over_odds": 100,
    "consensus_under_odds": -115,
    "best_over": {
-    "odds": 194,
-    "line": 3250.5,
+    "odds": -115,
+    "line": 3900.5,
+    "book": "Caesars"
+   },
+   "best_under": {
+    "odds": 108,
+    "line": 4250.5,
     "book": "Polymarket US"
-   },
-   "best_under": {
-    "odds": -186,
-    "line": 3999.5,
-    "book": "Kalshi"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Bryce Young",
-   "team": "CAR",
-   "pos": "QB",
-   "stat_type": "Pass Yards",
-   "stat_key": "pass_yd",
-   "line": 2875.5,
-   "posted_line": 2875.5,
-   "fair_prob_over": 0.5,
-   "devig_method": "normal",
-   "consensus_over_odds": -110,
-   "consensus_under_odds": -110,
-   "best_over": {
-    "odds": -110,
-    "line": 2874.5,
-    "book": "DraftKings"
-   },
-   "best_under": {
-    "odds": -138,
-    "line": 3999.5,
-    "book": "Kalshi"
    },
    "source": "bettingpros"
   },
@@ -16884,6 +16884,30 @@
     "odds": -270,
     "line": 3999.5,
     "book": "Kalshi"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Justin Herbert",
+   "team": "LAC",
+   "pos": "QB",
+   "stat_type": "Pass Yards",
+   "stat_key": "pass_yd",
+   "line": 3678.26,
+   "posted_line": 3650.5,
+   "fair_prob_over": 0.5108,
+   "devig_method": "normal",
+   "consensus_over_odds": -115,
+   "consensus_under_odds": -105,
+   "best_over": {
+    "odds": -115,
+    "line": 3499.5,
+    "book": "theScore Bet"
+   },
+   "best_under": {
+    "odds": -1011,
+    "line": 4099.5,
+    "book": "Polymarket"
    },
    "source": "bettingpros"
   },
@@ -16936,6 +16960,54 @@
    "source": "bettingpros"
   },
   {
+   "player": "Jordan Love",
+   "team": "GB",
+   "pos": "QB",
+   "stat_type": "Pass Yards",
+   "stat_key": "pass_yd",
+   "line": 3504.64,
+   "posted_line": 3531.5,
+   "fair_prob_over": 0.4892,
+   "devig_method": "normal",
+   "consensus_over_odds": -105,
+   "consensus_under_odds": -115,
+   "best_over": {
+    "odds": -105,
+    "line": 3499.5,
+    "book": "theScore Bet"
+   },
+   "best_under": {
+    "odds": -257,
+    "line": 4049.5,
+    "book": "Polymarket"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Kirk Cousins",
+   "team": "LV",
+   "pos": "QB",
+   "stat_type": "Pass Yards",
+   "stat_key": "pass_yd",
+   "line": 3719.57,
+   "posted_line": 3999.5,
+   "fair_prob_over": 0.4013,
+   "devig_method": "normal",
+   "consensus_over_odds": 133,
+   "consensus_under_odds": -178,
+   "best_over": {
+    "odds": 133,
+    "line": 3999.5,
+    "book": "Kalshi"
+   },
+   "best_under": {
+    "odds": -178,
+    "line": 3999.5,
+    "book": "Kalshi"
+   },
+   "source": "bettingpros"
+  },
+  {
    "player": "Trevor Lawrence",
    "team": "JAC",
    "pos": "QB",
@@ -16953,7 +17025,7 @@
     "book": "Polymarket"
    },
    "best_under": {
-    "odds": -170,
+    "odds": -178,
     "line": 3999.5,
     "book": "Kalshi"
    },
@@ -16984,26 +17056,26 @@
    "source": "bettingpros"
   },
   {
-   "player": "Jordan Love",
-   "team": "GB",
+   "player": "Tyler Shough",
+   "team": "NO",
    "pos": "QB",
    "stat_type": "Pass Yards",
    "stat_key": "pass_yd",
-   "line": 3504.64,
-   "posted_line": 3531.5,
-   "fair_prob_over": 0.4892,
+   "line": 3423.61,
+   "posted_line": 3400.5,
+   "fair_prob_over": 0.5097,
    "devig_method": "normal",
-   "consensus_over_odds": -105,
-   "consensus_under_odds": -115,
+   "consensus_over_odds": -115,
+   "consensus_under_odds": -106,
    "best_over": {
-    "odds": -105,
-    "line": 3499.5,
-    "book": "theScore Bet"
+    "odds": -115,
+    "line": 3400.5,
+    "book": "BetMGM"
    },
    "best_under": {
-    "odds": -257,
-    "line": 4049.5,
-    "book": "Polymarket"
+    "odds": 133,
+    "line": 3999.5,
+    "book": "Kalshi"
    },
    "source": "bettingpros"
   },
@@ -17032,24 +17104,24 @@
    "source": "bettingpros"
   },
   {
-   "player": "Tyler Shough",
-   "team": "NO",
+   "player": "Drake Maye",
+   "team": "NE",
    "pos": "QB",
    "stat_type": "Pass Yards",
    "stat_key": "pass_yd",
-   "line": 3423.61,
-   "posted_line": 3400.5,
-   "fair_prob_over": 0.5097,
+   "line": 3788.86,
+   "posted_line": 3750.5,
+   "fair_prob_over": 0.5146,
    "devig_method": "normal",
-   "consensus_over_odds": -115,
+   "consensus_over_odds": -120,
    "consensus_under_odds": -106,
    "best_over": {
-    "odds": -115,
-    "line": 3400.5,
-    "book": "BetMGM"
+    "odds": -155,
+    "line": 3499.5,
+    "book": "theScore Bet"
    },
    "best_under": {
-    "odds": 133,
+    "odds": -223,
     "line": 3999.5,
     "book": "Kalshi"
    },
@@ -17092,110 +17164,14 @@
    "consensus_over_odds": -115,
    "consensus_under_odds": -115,
    "best_over": {
-    "odds": -113,
-    "line": 3449.5,
-    "book": "Polymarket"
-   },
-   "best_under": {
-    "odds": -400,
-    "line": 3999.5,
-    "book": "Kalshi"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Joe Burrow",
-   "team": "CIN",
-   "pos": "QB",
-   "stat_type": "Pass Yards",
-   "stat_key": "pass_yd",
-   "line": 3915.61,
-   "posted_line": 3962.5,
-   "fair_prob_over": 0.4831,
-   "devig_method": "normal",
-   "consensus_over_odds": 100,
-   "consensus_under_odds": -115,
-   "best_over": {
-    "odds": -115,
-    "line": 3900.5,
-    "book": "Caesars"
-   },
-   "best_under": {
-    "odds": 108,
-    "line": 4000.5,
-    "book": "Polymarket US"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Caleb Williams",
-   "team": "CHI",
-   "pos": "QB",
-   "stat_type": "Pass Yards",
-   "stat_key": "pass_yd",
-   "line": 3672.4,
-   "posted_line": 3650.5,
-   "fair_prob_over": 0.5085,
-   "devig_method": "normal",
-   "consensus_over_odds": -115,
-   "consensus_under_odds": -107,
-   "best_over": {
-    "odds": -156,
+    "odds": -194,
     "line": 2999.5,
     "book": "Kalshi"
    },
    "best_under": {
-    "odds": -110,
-    "line": 3699.5,
-    "book": "DraftKings"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Drake Maye",
-   "team": "NE",
-   "pos": "QB",
-   "stat_type": "Pass Yards",
-   "stat_key": "pass_yd",
-   "line": 3788.86,
-   "posted_line": 3750.5,
-   "fair_prob_over": 0.5146,
-   "devig_method": "normal",
-   "consensus_over_odds": -120,
-   "consensus_under_odds": -106,
-   "best_over": {
-    "odds": -155,
-    "line": 3499.5,
-    "book": "theScore Bet"
-   },
-   "best_under": {
-    "odds": 100,
-    "line": 3799.5,
-    "book": "DraftKings"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Justin Herbert",
-   "team": "LAC",
-   "pos": "QB",
-   "stat_type": "Pass Yards",
-   "stat_key": "pass_yd",
-   "line": 3678.26,
-   "posted_line": 3650.5,
-   "fair_prob_over": 0.5108,
-   "devig_method": "normal",
-   "consensus_over_odds": -115,
-   "consensus_under_odds": -105,
-   "best_over": {
-    "odds": 194,
-    "line": 3349.5,
-    "book": "Polymarket"
-   },
-   "best_under": {
-    "odds": -108,
-    "line": 3750.5,
-    "book": "Polymarket US"
+    "odds": -120,
+    "line": 3700.5,
+    "book": "BetMGM"
    },
    "source": "bettingpros"
   },
@@ -17224,30 +17200,6 @@
    "source": "bettingpros"
   },
   {
-   "player": "Malik Willis",
-   "team": "MIA",
-   "pos": "QB",
-   "stat_type": "Pass Yards",
-   "stat_key": "pass_yd",
-   "line": 2871.82,
-   "posted_line": 2919,
-   "fair_prob_over": 0.477,
-   "devig_method": "normal",
-   "consensus_over_odds": 105,
-   "consensus_under_odds": -115,
-   "best_over": {
-    "odds": -115,
-    "line": 2850.5,
-    "book": "Caesars"
-   },
-   "best_under": {
-    "odds": -163,
-    "line": 3499.5,
-    "book": "Kalshi"
-   },
-   "source": "bettingpros"
-  },
-  {
    "player": "Bo Nix",
    "team": "DEN",
    "pos": "QB",
@@ -17260,9 +17212,9 @@
    "consensus_over_odds": -106,
    "consensus_under_odds": -110,
    "best_over": {
-    "odds": -108,
+    "odds": -317,
     "line": 2999.5,
-    "book": "Polymarket"
+    "book": "Kalshi"
    },
    "best_under": {
     "odds": -110,
@@ -17308,12 +17260,12 @@
    "consensus_over_odds": -110,
    "consensus_under_odds": -110,
    "best_over": {
-    "odds": -150,
+    "odds": -213,
     "line": 2999.5,
     "book": "Kalshi"
    },
    "best_under": {
-    "odds": -233,
+    "odds": -212,
     "line": 3299.5,
     "book": "Polymarket"
    },
@@ -17361,7 +17313,7 @@
     "book": "Polymarket"
    },
    "best_under": {
-    "odds": -144,
+    "odds": 117,
     "line": 3250.5,
     "book": "Polymarket US"
    },
@@ -17416,6 +17368,30 @@
    "source": "bettingpros"
   },
   {
+   "player": "Malik Willis",
+   "team": "MIA",
+   "pos": "QB",
+   "stat_type": "Pass Yards",
+   "stat_key": "pass_yd",
+   "line": 2871.82,
+   "posted_line": 2919,
+   "fair_prob_over": 0.477,
+   "devig_method": "normal",
+   "consensus_over_odds": 105,
+   "consensus_under_odds": -115,
+   "best_over": {
+    "odds": 245,
+    "line": 2699.5,
+    "book": "Polymarket"
+   },
+   "best_under": {
+    "odds": 122,
+    "line": 2999.5,
+    "book": "Kalshi"
+   },
+   "source": "bettingpros"
+  },
+  {
    "player": "Jacoby Brissett",
    "team": "ARI",
    "pos": "QB",
@@ -17457,7 +17433,7 @@
     "book": "DraftKings"
    },
    "best_under": {
-    "odds": 144,
+    "odds": 156,
     "line": 1724.5,
     "book": "Polymarket"
    },
@@ -17481,9 +17457,9 @@
     "book": "Hard Rock"
    },
    "best_under": {
-    "odds": -108,
-    "line": 1499.5,
-    "book": "Kalshi"
+    "odds": -156,
+    "line": 1500.5,
+    "book": "Polymarket US"
    },
    "source": "bettingpros"
   },
@@ -17500,14 +17476,14 @@
    "consensus_over_odds": -115,
    "consensus_under_odds": -110,
    "best_over": {
-    "odds": -140,
-    "line": 1249.5,
-    "book": "theScore Bet"
+    "odds": 117,
+    "line": 1124.5,
+    "book": "Polymarket"
    },
    "best_under": {
-    "odds": -355,
-    "line": 1524.5,
-    "book": "Polymarket"
+    "odds": -400,
+    "line": 1499.5,
+    "book": "Kalshi"
    },
    "source": "bettingpros"
   },
@@ -17536,6 +17512,30 @@
    "source": "bettingpros"
   },
   {
+   "player": "Derrick Henry",
+   "team": "BAL",
+   "pos": "RB",
+   "stat_type": "Rush Yards",
+   "stat_key": "rush_yd",
+   "line": 1211.72,
+   "posted_line": 1231.5,
+   "fair_prob_over": 0.4831,
+   "devig_method": "normal",
+   "consensus_over_odds": 100,
+   "consensus_under_odds": -115,
+   "best_over": {
+    "odds": 100,
+    "line": 1200.5,
+    "book": "Hard Rock"
+   },
+   "best_under": {
+    "odds": -194,
+    "line": 1449.5,
+    "book": "Polymarket"
+   },
+   "source": "bettingpros"
+  },
+  {
    "player": "Tetairoa McMillan",
    "team": "CAR",
    "pos": "WR",
@@ -17555,30 +17555,6 @@
    "best_under": {
     "odds": -3233,
     "line": 1349.5,
-    "book": "Polymarket"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "George Pickens",
-   "team": "DAL",
-   "pos": "WR",
-   "stat_type": "Receiving Yards",
-   "stat_key": "rec_yd",
-   "line": 1000.5,
-   "posted_line": 1000.5,
-   "fair_prob_over": 0.5,
-   "devig_method": "normal",
-   "consensus_over_odds": -110,
-   "consensus_under_odds": -110,
-   "best_over": {
-    "odds": 100,
-    "line": 999.5,
-    "book": "theScore Bet"
-   },
-   "best_under": {
-    "odds": -355,
-    "line": 1399.5,
     "book": "Polymarket"
    },
    "source": "bettingpros"
@@ -17649,7 +17625,7 @@
     "book": "Kalshi"
    },
    "best_under": {
-    "odds": -150,
+    "odds": 178,
     "line": 1349.5,
     "book": "Polymarket"
    },
@@ -17668,7 +17644,7 @@
    "consensus_over_odds": 100,
    "consensus_under_odds": -115,
    "best_over": {
-    "odds": -335,
+    "odds": -317,
     "line": 999.5,
     "book": "Kalshi"
    },
@@ -17692,7 +17668,7 @@
    "consensus_over_odds": -110,
    "consensus_under_odds": -115,
    "best_over": {
-    "odds": -170,
+    "odds": -223,
     "line": 699.5,
     "book": "Polymarket"
    },
@@ -17716,14 +17692,38 @@
    "consensus_over_odds": -115,
    "consensus_under_odds": -110,
    "best_over": {
-    "odds": 163,
-    "line": 649.5,
-    "book": "Polymarket"
+    "odds": -130,
+    "line": 999.5,
+    "book": "theScore Bet"
    },
    "best_under": {
     "odds": -400,
     "line": 1249.5,
     "book": "Kalshi"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Nico Collins",
+   "team": "HOU",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "stat_key": "rec_yd",
+   "line": 1150.5,
+   "posted_line": 1150.5,
+   "fair_prob_over": 0.5,
+   "devig_method": "normal",
+   "consensus_over_odds": -115,
+   "consensus_under_odds": -115,
+   "best_over": {
+    "odds": -140,
+    "line": 999.5,
+    "book": "theScore Bet"
+   },
+   "best_under": {
+    "odds": -1329,
+    "line": 1274.5,
+    "book": "Polymarket"
    },
    "source": "bettingpros"
   },
@@ -17776,30 +17776,6 @@
    "source": "bettingpros"
   },
   {
-   "player": "Jonathan Taylor",
-   "team": "IND",
-   "pos": "RB",
-   "stat_type": "Rush Yards",
-   "stat_key": "rush_yd",
-   "line": 1237.59,
-   "posted_line": 1250.5,
-   "fair_prob_over": 0.4892,
-   "devig_method": "normal",
-   "consensus_over_odds": -105,
-   "consensus_under_odds": -115,
-   "best_over": {
-    "odds": -105,
-    "line": 1224.5,
-    "book": "DraftKings"
-   },
-   "best_under": {
-    "odds": 113,
-    "line": 1250.5,
-    "book": "Polymarket US"
-   },
-   "source": "bettingpros"
-  },
-  {
    "player": "James Cook III",
    "team": "BUF",
    "pos": "RB",
@@ -17812,60 +17788,12 @@
    "consensus_over_odds": 100,
    "consensus_under_odds": -115,
    "best_over": {
-    "odds": -118,
-    "line": 1199.5,
-    "book": "PrizePicks"
-   },
-   "best_under": {
-    "odds": 113,
-    "line": 1250.5,
-    "book": "Polymarket US"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Jahmyr Gibbs",
-   "team": "DET",
-   "pos": "RB",
-   "stat_type": "Rush Yards",
-   "stat_key": "rush_yd",
-   "line": 1200.5,
-   "posted_line": 1200.5,
-   "fair_prob_over": 0.5,
-   "devig_method": "normal",
-   "consensus_over_odds": -110,
-   "consensus_under_odds": -110,
-   "best_over": {
-    "odds": 108,
-    "line": 1199.5,
+    "odds": -213,
+    "line": 1049.5,
     "book": "Polymarket"
    },
    "best_under": {
-    "odds": 156,
-    "line": 1250.5,
-    "book": "Polymarket US"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Derrick Henry",
-   "team": "BAL",
-   "pos": "RB",
-   "stat_type": "Rush Yards",
-   "stat_key": "rush_yd",
-   "line": 1211.72,
-   "posted_line": 1231.5,
-   "fair_prob_over": 0.4831,
-   "devig_method": "normal",
-   "consensus_over_odds": 100,
-   "consensus_under_odds": -115,
-   "best_over": {
-    "odds": 100,
-    "line": 1200.5,
-    "book": "Hard Rock"
-   },
-   "best_under": {
-    "odds": 122,
+    "odds": 150,
     "line": 1250.5,
     "book": "Polymarket US"
    },
@@ -17896,26 +17824,50 @@
    "source": "bettingpros"
   },
   {
-   "player": "D'Andre Swift",
-   "team": "CHI",
+   "player": "Jonathan Taylor",
+   "team": "IND",
    "pos": "RB",
    "stat_type": "Rush Yards",
    "stat_key": "rush_yd",
-   "line": 816.5,
-   "posted_line": 816.5,
+   "line": 1237.59,
+   "posted_line": 1250.5,
+   "fair_prob_over": 0.4892,
+   "devig_method": "normal",
+   "consensus_over_odds": -105,
+   "consensus_under_odds": -115,
+   "best_over": {
+    "odds": -105,
+    "line": 1224.5,
+    "book": "DraftKings"
+   },
+   "best_under": {
+    "odds": 113,
+    "line": 1250.5,
+    "book": "Polymarket US"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Jahmyr Gibbs",
+   "team": "DET",
+   "pos": "RB",
+   "stat_type": "Rush Yards",
+   "stat_key": "rush_yd",
+   "line": 1200.5,
+   "posted_line": 1200.5,
    "fair_prob_over": 0.5,
    "devig_method": "normal",
    "consensus_over_odds": -110,
    "consensus_under_odds": -110,
    "best_over": {
-    "odds": -118,
-    "line": 799.5,
-    "book": "PrizePicks"
+    "odds": -488,
+    "line": 999.5,
+    "book": "Kalshi"
    },
    "best_under": {
-    "odds": 104,
-    "line": 1199.5,
-    "book": "Polymarket"
+    "odds": 156,
+    "line": 1250.5,
+    "book": "Polymarket US"
    },
    "source": "bettingpros"
   },
@@ -17937,8 +17889,56 @@
     "book": "theScore Bet"
    },
    "best_under": {
-    "odds": -233,
+    "odds": -170,
     "line": 1224.5,
+    "book": "Polymarket"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Garrett Wilson",
+   "team": "NYJ",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "stat_key": "rec_yd",
+   "line": 975.5,
+   "posted_line": 975.5,
+   "fair_prob_over": 0.5,
+   "devig_method": "normal",
+   "consensus_over_odds": -110,
+   "consensus_under_odds": -110,
+   "best_over": {
+    "odds": -115,
+    "line": 975.5,
+    "book": "Caesars"
+   },
+   "best_under": {
+    "odds": -355,
+    "line": 1199.5,
+    "book": "Polymarket"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "D'Andre Swift",
+   "team": "CHI",
+   "pos": "RB",
+   "stat_type": "Rush Yards",
+   "stat_key": "rush_yd",
+   "line": 816.5,
+   "posted_line": 816.5,
+   "fair_prob_over": 0.5,
+   "devig_method": "normal",
+   "consensus_over_odds": -110,
+   "consensus_under_odds": -110,
+   "best_over": {
+    "odds": -118,
+    "line": 799.5,
+    "book": "PrizePicks"
+   },
+   "best_under": {
+    "odds": -133,
+    "line": 1199.5,
     "book": "Polymarket"
    },
    "source": "bettingpros"
@@ -18009,7 +18009,7 @@
     "book": "theScore Bet"
    },
    "best_under": {
-    "odds": -150,
+    "odds": -117,
     "line": 1199.5,
     "book": "Polymarket"
    },
@@ -18057,7 +18057,7 @@
     "book": "Hard Rock"
    },
    "best_under": {
-    "odds": -747,
+    "odds": -521,
     "line": 1174.5,
     "book": "Polymarket"
    },
@@ -18088,54 +18088,6 @@
    "source": "bettingpros"
   },
   {
-   "player": "Nico Collins",
-   "team": "HOU",
-   "pos": "WR",
-   "stat_type": "Receiving Yards",
-   "stat_key": "rec_yd",
-   "line": 1150.5,
-   "posted_line": 1150.5,
-   "fair_prob_over": 0.5,
-   "devig_method": "normal",
-   "consensus_over_odds": -115,
-   "consensus_under_odds": -115,
-   "best_over": {
-    "odds": 108,
-    "line": 874.5,
-    "book": "Polymarket"
-   },
-   "best_under": {
-    "odds": -115,
-    "line": 1150.5,
-    "book": "Caesars"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Breece Hall",
-   "team": "NYJ",
-   "pos": "RB",
-   "stat_type": "Rush Yards",
-   "stat_key": "rush_yd",
-   "line": 904.99,
-   "posted_line": 900.5,
-   "fair_prob_over": 0.5052,
-   "devig_method": "normal",
-   "consensus_over_odds": -115,
-   "consensus_under_odds": -110,
-   "best_over": {
-    "odds": -225,
-    "line": 749.5,
-    "book": "theScore Bet"
-   },
-   "best_under": {
-    "odds": -270,
-    "line": 1099.5,
-    "book": "Polymarket"
-   },
-   "source": "bettingpros"
-  },
-  {
    "player": "Emeka Egbuka",
    "team": "TB",
    "pos": "WR",
@@ -18153,31 +18105,7 @@
     "book": "PrizePicks"
    },
    "best_under": {
-    "odds": -300,
-    "line": 1099.5,
-    "book": "Polymarket"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Jeremiyah Love",
-   "team": "ARI",
-   "pos": "RB",
-   "stat_type": "Rush Yards",
-   "stat_key": "rush_yd",
-   "line": 779.36,
-   "posted_line": 775.5,
-   "fair_prob_over": 0.5052,
-   "devig_method": "normal",
-   "consensus_over_odds": -115,
-   "consensus_under_odds": -110,
-   "best_over": {
-    "odds": -200,
-    "line": 749.5,
-    "book": "theScore Bet"
-   },
-   "best_under": {
-    "odds": -525,
+    "odds": -285,
     "line": 1099.5,
     "book": "Polymarket"
    },
@@ -18208,49 +18136,73 @@
    "source": "bettingpros"
   },
   {
-   "player": "J.K. Dobbins",
-   "team": "DEN",
+   "player": "Jeremiyah Love",
+   "team": "ARI",
    "pos": "RB",
    "stat_type": "Rush Yards",
    "stat_key": "rush_yd",
-   "line": 675.5,
-   "posted_line": 675.5,
-   "fair_prob_over": 0.5,
+   "line": 779.36,
+   "posted_line": 775.5,
+   "fair_prob_over": 0.5052,
    "devig_method": "normal",
-   "consensus_over_odds": -110,
+   "consensus_over_odds": -115,
    "consensus_under_odds": -110,
    "best_over": {
-    "odds": -110,
-    "line": 674.5,
-    "book": "DraftKings"
+    "odds": -200,
+    "line": 749.5,
+    "book": "theScore Bet"
    },
    "best_under": {
-    "odds": -614,
-    "line": 1074.5,
+    "odds": -525,
+    "line": 1099.5,
     "book": "Polymarket"
    },
    "source": "bettingpros"
   },
   {
-   "player": "Makai Lemon",
-   "team": "PHI",
+   "player": "Quentin Johnston",
+   "team": "LAC",
    "pos": "WR",
    "stat_type": "Receiving Yards",
    "stat_key": "rec_yd",
-   "line": 580.97,
-   "posted_line": 575.5,
-   "fair_prob_over": 0.5108,
+   "line": 647.52,
+   "posted_line": 650.5,
+   "fair_prob_over": 0.4948,
    "devig_method": "normal",
-   "consensus_over_odds": -115,
-   "consensus_under_odds": -105,
+   "consensus_over_odds": -110,
+   "consensus_under_odds": -115,
    "best_over": {
-    "odds": -110,
-    "line": 575.5,
+    "odds": 100,
+    "line": 650.5,
     "book": "Hard Rock"
    },
    "best_under": {
     "odds": -1900,
     "line": 1049.5,
+    "book": "Polymarket"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Tee Higgins",
+   "team": "CIN",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "stat_key": "rec_yd",
+   "line": 875.0,
+   "posted_line": 875,
+   "fair_prob_over": 0.5,
+   "devig_method": "normal",
+   "consensus_over_odds": -110,
+   "consensus_under_odds": -110,
+   "best_over": {
+    "odds": -120,
+    "line": 850.5,
+    "book": "Hard Rock"
+   },
+   "best_under": {
+    "odds": -144,
+    "line": 1074.5,
     "book": "Polymarket"
    },
    "source": "bettingpros"
@@ -18292,7 +18244,7 @@
    "consensus_over_odds": -110,
    "consensus_under_odds": -110,
    "best_over": {
-    "odds": -104,
+    "odds": 122,
     "line": 500.5,
     "book": "Polymarket US"
    },
@@ -18324,6 +18276,30 @@
     "odds": -186,
     "line": 999.5,
     "book": "Kalshi"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "George Pickens",
+   "team": "DAL",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "stat_key": "rec_yd",
+   "line": 1000.5,
+   "posted_line": 1000.5,
+   "fair_prob_over": 0.5,
+   "devig_method": "normal",
+   "consensus_over_odds": -110,
+   "consensus_under_odds": -110,
+   "best_over": {
+    "odds": -113,
+    "line": 799.5,
+    "book": "Polymarket"
+   },
+   "best_under": {
+    "odds": -110,
+    "line": 1050.5,
+    "book": "BetMGM"
    },
    "source": "bettingpros"
   },
@@ -18369,7 +18345,7 @@
     "book": "Caesars"
    },
    "best_under": {
-    "odds": -355,
+    "odds": -335,
     "line": 1024.5,
     "book": "Polymarket"
    },
@@ -18400,6 +18376,30 @@
    "source": "bettingpros"
   },
   {
+   "player": "Dallas Goedert",
+   "team": "PHI",
+   "pos": "TE",
+   "stat_type": "Receiving Yards",
+   "stat_key": "rec_yd",
+   "line": 566.99,
+   "posted_line": 575.5,
+   "fair_prob_over": 0.4831,
+   "devig_method": "normal",
+   "consensus_over_odds": 100,
+   "consensus_under_odds": -115,
+   "best_over": {
+    "odds": -110,
+    "line": 574.5,
+    "book": "DraftKings"
+   },
+   "best_under": {
+    "odds": -1900,
+    "line": 974.5,
+    "book": "Polymarket"
+   },
+   "source": "bettingpros"
+  },
+  {
    "player": "Colston Loveland",
    "team": "CHI",
    "pos": "TE",
@@ -18412,14 +18412,38 @@
    "consensus_over_odds": -115,
    "consensus_under_odds": -110,
    "best_over": {
-    "odds": -189,
-    "line": 399.5,
-    "book": "Polymarket"
+    "odds": -135,
+    "line": 749.5,
+    "book": "theScore Bet"
    },
    "best_under": {
     "odds": -9900,
     "line": 999.5,
     "book": "Kalshi"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Omarion Hampton",
+   "team": "LAC",
+   "pos": "RB",
+   "stat_type": "Rush Yards",
+   "stat_key": "rush_yd",
+   "line": 944.93,
+   "posted_line": 950,
+   "fair_prob_over": 0.4944,
+   "devig_method": "normal",
+   "consensus_over_odds": -105,
+   "consensus_under_odds": -110,
+   "best_over": {
+    "odds": -115,
+    "line": 925.5,
+    "book": "Hard Rock"
+   },
+   "best_under": {
+    "odds": -170,
+    "line": 1000.5,
+    "book": "Polymarket US"
    },
    "source": "bettingpros"
   },
@@ -18448,6 +18472,54 @@
    "source": "bettingpros"
   },
   {
+   "player": "Luther Burden III",
+   "team": "CHI",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "stat_key": "rec_yd",
+   "line": 850.5,
+   "posted_line": 850.5,
+   "fair_prob_over": 0.5,
+   "devig_method": "normal",
+   "consensus_over_odds": -110,
+   "consensus_under_odds": -110,
+   "best_over": {
+    "odds": 100,
+    "line": 824.5,
+    "book": "Polymarket"
+   },
+   "best_under": {
+    "odds": -270,
+    "line": 999.5,
+    "book": "Kalshi"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Terry McLaurin",
+   "team": "WAS",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "stat_key": "rec_yd",
+   "line": 900.5,
+   "posted_line": 900.5,
+   "fair_prob_over": 0.5,
+   "devig_method": "normal",
+   "consensus_over_odds": -110,
+   "consensus_under_odds": -110,
+   "best_over": {
+    "odds": -110,
+    "line": 900.5,
+    "book": "BetMGM"
+   },
+   "best_under": {
+    "odds": -233,
+    "line": 999.5,
+    "book": "Kalshi"
+   },
+   "source": "bettingpros"
+  },
+  {
    "player": "Christian McCaffrey",
    "team": "SF",
    "pos": "RB",
@@ -18465,9 +18537,57 @@
     "book": "Caesars"
    },
    "best_under": {
-    "odds": 127,
+    "odds": 144,
     "line": 1000.5,
     "book": "Polymarket US"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Breece Hall",
+   "team": "NYJ",
+   "pos": "RB",
+   "stat_type": "Rush Yards",
+   "stat_key": "rush_yd",
+   "line": 904.99,
+   "posted_line": 900.5,
+   "fair_prob_over": 0.5052,
+   "devig_method": "normal",
+   "consensus_over_odds": -115,
+   "consensus_under_odds": -110,
+   "best_over": {
+    "odds": -225,
+    "line": 749.5,
+    "book": "theScore Bet"
+   },
+   "best_under": {
+    "odds": 133,
+    "line": 999.5,
+    "book": "Kalshi"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Tony Pollard",
+   "team": "TEN",
+   "pos": "RB",
+   "stat_type": "Rush Yards",
+   "stat_key": "rush_yd",
+   "line": 775.5,
+   "posted_line": 775.5,
+   "fair_prob_over": 0.5,
+   "devig_method": "normal",
+   "consensus_over_odds": -110,
+   "consensus_under_odds": -110,
+   "best_over": {
+    "odds": -525,
+    "line": 749.5,
+    "book": "Kalshi"
+   },
+   "best_under": {
+    "odds": 104,
+    "line": 999.5,
+    "book": "Polymarket"
    },
    "source": "bettingpros"
   },
@@ -18489,9 +18609,153 @@
     "book": "DraftKings"
    },
    "best_under": {
-    "odds": -203,
+    "odds": -138,
     "line": 1000.5,
     "book": "Polymarket US"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Jaylen Waddle",
+   "team": "DEN",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "stat_key": "rec_yd",
+   "line": 929.12,
+   "posted_line": 925.5,
+   "fair_prob_over": 0.5045,
+   "devig_method": "normal",
+   "consensus_over_odds": -110,
+   "consensus_under_odds": -106,
+   "best_over": {
+    "odds": 150,
+    "line": 874.5,
+    "book": "Polymarket"
+   },
+   "best_under": {
+    "odds": -335,
+    "line": 999.5,
+    "book": "Kalshi"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "DK Metcalf",
+   "team": "PIT",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "stat_key": "rec_yd",
+   "line": 804.17,
+   "posted_line": 800.5,
+   "fair_prob_over": 0.5052,
+   "devig_method": "normal",
+   "consensus_over_odds": -115,
+   "consensus_under_odds": -110,
+   "best_over": {
+    "odds": -150,
+    "line": 624.5,
+    "book": "Polymarket"
+   },
+   "best_under": {
+    "odds": -223,
+    "line": 999.5,
+    "book": "Kalshi"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Michael Pittman Jr.",
+   "team": "PIT",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "stat_key": "rec_yd",
+   "line": 722.17,
+   "posted_line": 725.5,
+   "fair_prob_over": 0.4948,
+   "devig_method": "normal",
+   "consensus_over_odds": -110,
+   "consensus_under_odds": -115,
+   "best_over": {
+    "odds": -115,
+    "line": 725.5,
+    "book": "Caesars"
+   },
+   "best_under": {
+    "odds": -3233,
+    "line": 974.5,
+    "book": "Polymarket"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "J.K. Dobbins",
+   "team": "DEN",
+   "pos": "RB",
+   "stat_type": "Rush Yards",
+   "stat_key": "rush_yd",
+   "line": 675.5,
+   "posted_line": 675.5,
+   "fair_prob_over": 0.5,
+   "devig_method": "normal",
+   "consensus_over_odds": -110,
+   "consensus_under_odds": -110,
+   "best_over": {
+    "odds": -110,
+    "line": 674.5,
+    "book": "DraftKings"
+   },
+   "best_under": {
+    "odds": -118,
+    "line": 999.5,
+    "book": "PrizePicks"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Parker Washington",
+   "team": "JAC",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "stat_key": "rec_yd",
+   "line": 828.79,
+   "posted_line": 825,
+   "fair_prob_over": 0.5052,
+   "devig_method": "normal",
+   "consensus_over_odds": -115,
+   "consensus_under_odds": -110,
+   "best_over": {
+    "odds": -125,
+    "line": 800.5,
+    "book": "Hard Rock"
+   },
+   "best_under": {
+    "odds": 122,
+    "line": 999.5,
+    "book": "Kalshi"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Malik Nabers",
+   "team": "NYG",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "stat_key": "rec_yd",
+   "line": 971.02,
+   "posted_line": 975.5,
+   "fair_prob_over": 0.4948,
+   "devig_method": "normal",
+   "consensus_over_odds": -110,
+   "consensus_under_odds": -115,
+   "best_over": {
+    "odds": -110,
+    "line": 949.5,
+    "book": "DraftKings"
+   },
+   "best_under": {
+    "odds": -120,
+    "line": 1000.5,
+    "book": "BetMGM"
    },
    "source": "bettingpros"
   },
@@ -18513,7 +18777,7 @@
     "book": "Caesars"
    },
    "best_under": {
-    "odds": -144,
+    "odds": -127,
     "line": 1000.5,
     "book": "Polymarket US"
    },
@@ -18544,218 +18808,26 @@
    "source": "bettingpros"
   },
   {
-   "player": "Terry McLaurin",
-   "team": "WAS",
+   "player": "Michael Wilson",
+   "team": "ARI",
    "pos": "WR",
    "stat_type": "Receiving Yards",
    "stat_key": "rec_yd",
-   "line": 900.5,
-   "posted_line": 900.5,
-   "fair_prob_over": 0.5,
-   "devig_method": "normal",
-   "consensus_over_odds": -110,
-   "consensus_under_odds": -110,
-   "best_over": {
-    "odds": -110,
-    "line": 900.5,
-    "book": "BetMGM"
-   },
-   "best_under": {
-    "odds": -233,
-    "line": 999.5,
-    "book": "Kalshi"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Dallas Goedert",
-   "team": "PHI",
-   "pos": "TE",
-   "stat_type": "Receiving Yards",
-   "stat_key": "rec_yd",
-   "line": 566.99,
-   "posted_line": 575.5,
-   "fair_prob_over": 0.4831,
-   "devig_method": "normal",
-   "consensus_over_odds": 100,
-   "consensus_under_odds": -115,
-   "best_over": {
-    "odds": -110,
-    "line": 574.5,
-    "book": "DraftKings"
-   },
-   "best_under": {
-    "odds": -1900,
-    "line": 974.5,
-    "book": "Polymarket"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "DK Metcalf",
-   "team": "PIT",
-   "pos": "WR",
-   "stat_type": "Receiving Yards",
-   "stat_key": "rec_yd",
-   "line": 804.17,
-   "posted_line": 800.5,
-   "fair_prob_over": 0.5052,
-   "devig_method": "normal",
-   "consensus_over_odds": -115,
-   "consensus_under_odds": -110,
-   "best_over": {
-    "odds": -145,
-    "line": 749.5,
-    "book": "theScore Bet"
-   },
-   "best_under": {
-    "odds": -567,
-    "line": 999.5,
-    "book": "Kalshi"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Parker Washington",
-   "team": "JAC",
-   "pos": "WR",
-   "stat_type": "Receiving Yards",
-   "stat_key": "rec_yd",
-   "line": 828.79,
-   "posted_line": 825,
-   "fair_prob_over": 0.5052,
-   "devig_method": "normal",
-   "consensus_over_odds": -115,
-   "consensus_under_odds": -110,
-   "best_over": {
-    "odds": -133,
-    "line": 749.5,
-    "book": "Polymarket"
-   },
-   "best_under": {
-    "odds": 117,
-    "line": 999.5,
-    "book": "Kalshi"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Jaylen Waddle",
-   "team": "DEN",
-   "pos": "WR",
-   "stat_type": "Receiving Yards",
-   "stat_key": "rec_yd",
-   "line": 929.12,
-   "posted_line": 925.5,
-   "fair_prob_over": 0.5045,
-   "devig_method": "normal",
-   "consensus_over_odds": -110,
-   "consensus_under_odds": -106,
-   "best_over": {
-    "odds": -117,
-    "line": 674.5,
-    "book": "Polymarket"
-   },
-   "best_under": {
-    "odds": -335,
-    "line": 999.5,
-    "book": "Kalshi"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Mike Evans",
-   "team": "SF",
-   "pos": "WR",
-   "stat_type": "Receiving Yards",
-   "stat_key": "rec_yd",
-   "line": 804.17,
-   "posted_line": 800.5,
-   "fair_prob_over": 0.5052,
-   "devig_method": "normal",
-   "consensus_over_odds": -115,
-   "consensus_under_odds": -110,
-   "best_over": {
-    "odds": 138,
-    "line": 624.5,
-    "book": "Polymarket"
-   },
-   "best_under": {
-    "odds": -223,
-    "line": 1000.5,
-    "book": "Polymarket US"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Michael Pittman Jr.",
-   "team": "PIT",
-   "pos": "WR",
-   "stat_type": "Receiving Yards",
-   "stat_key": "rec_yd",
-   "line": 722.17,
-   "posted_line": 725.5,
+   "line": 704.75,
+   "posted_line": 708,
    "fair_prob_over": 0.4948,
    "devig_method": "normal",
    "consensus_over_odds": -110,
    "consensus_under_odds": -115,
    "best_over": {
     "odds": -115,
-    "line": 725.5,
+    "line": 699.5,
     "book": "Caesars"
    },
    "best_under": {
-    "odds": -3233,
-    "line": 974.5,
-    "book": "Polymarket"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Malik Nabers",
-   "team": "NYG",
-   "pos": "WR",
-   "stat_type": "Receiving Yards",
-   "stat_key": "rec_yd",
-   "line": 971.02,
-   "posted_line": 975.5,
-   "fair_prob_over": 0.4948,
-   "devig_method": "normal",
-   "consensus_over_odds": -110,
-   "consensus_under_odds": -115,
-   "best_over": {
-    "odds": -110,
-    "line": 949.5,
-    "book": "DraftKings"
-   },
-   "best_under": {
-    "odds": -120,
-    "line": 1000.5,
-    "book": "BetMGM"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Garrett Wilson",
-   "team": "NYJ",
-   "pos": "WR",
-   "stat_type": "Receiving Yards",
-   "stat_key": "rec_yd",
-   "line": 975.5,
-   "posted_line": 975.5,
-   "fair_prob_over": 0.5,
-   "devig_method": "normal",
-   "consensus_over_odds": -110,
-   "consensus_under_odds": -110,
-   "best_over": {
-    "odds": -115,
-    "line": 975.5,
-    "book": "Caesars"
-   },
-   "best_under": {
-    "odds": 108,
-    "line": 1000.5,
-    "book": "Polymarket US"
+    "odds": -127,
+    "line": 999.5,
+    "book": "Kalshi"
    },
    "source": "bettingpros"
   },
@@ -18777,81 +18849,9 @@
     "book": "Caesars"
    },
    "best_under": {
-    "odds": -223,
+    "odds": -117,
     "line": 1000.5,
     "book": "Polymarket US"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Omarion Hampton",
-   "team": "LAC",
-   "pos": "RB",
-   "stat_type": "Rush Yards",
-   "stat_key": "rush_yd",
-   "line": 944.93,
-   "posted_line": 950,
-   "fair_prob_over": 0.4944,
-   "devig_method": "normal",
-   "consensus_over_odds": -105,
-   "consensus_under_odds": -110,
-   "best_over": {
-    "odds": -245,
-    "line": 749.5,
-    "book": "Kalshi"
-   },
-   "best_under": {
-    "odds": -115,
-    "line": 975.5,
-    "book": "BetMGM"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Bucky Irving",
-   "team": "TB",
-   "pos": "RB",
-   "stat_type": "Rush Yards",
-   "stat_key": "rush_yd",
-   "line": 792.78,
-   "posted_line": 800.5,
-   "fair_prob_over": 0.4899,
-   "devig_method": "normal",
-   "consensus_over_odds": -110,
-   "consensus_under_odds": -120,
-   "best_over": {
-    "odds": -110,
-    "line": 799.5,
-    "book": "DraftKings"
-   },
-   "best_under": {
-    "odds": -104,
-    "line": 999.5,
-    "book": "Kalshi"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Michael Wilson",
-   "team": "ARI",
-   "pos": "WR",
-   "stat_type": "Receiving Yards",
-   "stat_key": "rec_yd",
-   "line": 704.75,
-   "posted_line": 708,
-   "fair_prob_over": 0.4948,
-   "devig_method": "normal",
-   "consensus_over_odds": -110,
-   "consensus_under_odds": -115,
-   "best_over": {
-    "odds": -115,
-    "line": 699.5,
-    "book": "Caesars"
-   },
-   "best_under": {
-    "odds": -138,
-    "line": 999.5,
-    "book": "Kalshi"
    },
    "source": "bettingpros"
   },
@@ -18873,9 +18873,33 @@
     "book": "DraftKings"
    },
    "best_under": {
-    "odds": -1900,
+    "odds": -2400,
     "line": 974.5,
     "book": "Polymarket"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Bucky Irving",
+   "team": "TB",
+   "pos": "RB",
+   "stat_type": "Rush Yards",
+   "stat_key": "rush_yd",
+   "line": 792.78,
+   "posted_line": 800.5,
+   "fair_prob_over": 0.4899,
+   "devig_method": "normal",
+   "consensus_over_odds": -110,
+   "consensus_under_odds": -120,
+   "best_over": {
+    "odds": -110,
+    "line": 799.5,
+    "book": "DraftKings"
+   },
+   "best_under": {
+    "odds": -317,
+    "line": 999.5,
+    "book": "Kalshi"
    },
    "source": "bettingpros"
   },
@@ -18897,33 +18921,9 @@
     "book": "DraftKings"
    },
    "best_under": {
-    "odds": 100,
+    "odds": 108,
     "line": 1000.5,
     "book": "Polymarket US"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Tee Higgins",
-   "team": "CIN",
-   "pos": "WR",
-   "stat_type": "Receiving Yards",
-   "stat_key": "rec_yd",
-   "line": 875.0,
-   "posted_line": 875,
-   "fair_prob_over": 0.5,
-   "devig_method": "normal",
-   "consensus_over_odds": -110,
-   "consensus_under_odds": -110,
-   "best_over": {
-    "odds": -120,
-    "line": 850.5,
-    "book": "Hard Rock"
-   },
-   "best_under": {
-    "odds": -223,
-    "line": 999.5,
-    "book": "Kalshi"
    },
    "source": "bettingpros"
   },
@@ -18952,6 +18952,30 @@
    "source": "bettingpros"
   },
   {
+   "player": "Jake Ferguson",
+   "team": "DAL",
+   "pos": "TE",
+   "stat_type": "Receiving Yards",
+   "stat_key": "rec_yd",
+   "line": 523.09,
+   "posted_line": 525.5,
+   "fair_prob_over": 0.4948,
+   "devig_method": "normal",
+   "consensus_over_odds": -110,
+   "consensus_under_odds": -115,
+   "best_over": {
+    "odds": -110,
+    "line": 524.5,
+    "book": "DraftKings"
+   },
+   "best_under": {
+    "odds": -426,
+    "line": 924.5,
+    "book": "Polymarket"
+   },
+   "source": "bettingpros"
+  },
+  {
    "player": "George Kittle",
    "team": "SF",
    "pos": "TE",
@@ -18969,7 +18993,7 @@
     "book": "DraftKings"
    },
    "best_under": {
-    "odds": -245,
+    "odds": -212,
     "line": 924.5,
     "book": "Polymarket"
    },
@@ -18988,38 +19012,14 @@
    "consensus_over_odds": 100,
    "consensus_under_odds": -120,
    "best_over": {
-    "odds": -127,
-    "line": 749.5,
-    "book": "Kalshi"
+    "odds": -186,
+    "line": 699.5,
+    "book": "Polymarket"
    },
    "best_under": {
     "odds": -120,
     "line": 900.5,
     "book": "Hard Rock"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Travis Etienne Jr.",
-   "team": "NO",
-   "pos": "RB",
-   "stat_type": "Rush Yards",
-   "stat_key": "rush_yd",
-   "line": 821.39,
-   "posted_line": 825.5,
-   "fair_prob_over": 0.4948,
-   "devig_method": "normal",
-   "consensus_over_odds": -110,
-   "consensus_under_odds": -115,
-   "best_over": {
-    "odds": -186,
-    "line": 374.5,
-    "book": "Polymarket"
-   },
-   "best_under": {
-    "odds": -120,
-    "line": 850.5,
-    "book": "BetMGM"
    },
    "source": "bettingpros"
   },
@@ -19043,30 +19043,6 @@
    "best_under": {
     "odds": -113,
     "line": 824.5,
-    "book": "Polymarket"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Jordan Addison",
-   "team": "MIN",
-   "pos": "WR",
-   "stat_type": "Receiving Yards",
-   "stat_key": "rec_yd",
-   "line": 647.52,
-   "posted_line": 650.5,
-   "fair_prob_over": 0.4948,
-   "devig_method": "normal",
-   "consensus_over_odds": -110,
-   "consensus_under_odds": -115,
-   "best_over": {
-    "odds": -105,
-    "line": 650.5,
-    "book": "Hard Rock"
-   },
-   "best_under": {
-    "odds": -900,
-    "line": 874.5,
     "book": "Polymarket"
    },
    "source": "bettingpros"
@@ -19096,30 +19072,6 @@
    "source": "bettingpros"
   },
   {
-   "player": "Jahmyr Gibbs",
-   "team": "DET",
-   "pos": "RB",
-   "stat_type": "Receiving Yards",
-   "stat_key": "rec_yd",
-   "line": 475.5,
-   "posted_line": 475.5,
-   "fair_prob_over": 0.5,
-   "devig_method": "normal",
-   "consensus_over_odds": -110,
-   "consensus_under_odds": -110,
-   "best_over": {
-    "odds": -110,
-    "line": 449.5,
-    "book": "DraftKings"
-   },
-   "best_under": {
-    "odds": -233,
-    "line": 849.5,
-    "book": "Polymarket"
-   },
-   "source": "bettingpros"
-  },
-  {
    "player": "Kyle Monangai",
    "team": "CHI",
    "pos": "RB",
@@ -19137,7 +19089,7 @@
     "book": "DraftKings"
    },
    "best_under": {
-    "odds": -233,
+    "odds": -133,
     "line": 849.5,
     "book": "Polymarket"
    },
@@ -19168,30 +19120,6 @@
    "source": "bettingpros"
   },
   {
-   "player": "Luther Burden III",
-   "team": "CHI",
-   "pos": "WR",
-   "stat_type": "Receiving Yards",
-   "stat_key": "rec_yd",
-   "line": 850.5,
-   "posted_line": 850.5,
-   "fair_prob_over": 0.5,
-   "devig_method": "normal",
-   "consensus_over_odds": -110,
-   "consensus_under_odds": -110,
-   "best_over": {
-    "odds": -300,
-    "line": 749.5,
-    "book": "Kalshi"
-   },
-   "best_under": {
-    "odds": 100,
-    "line": 850.5,
-    "book": "BetMGM"
-   },
-   "source": "bettingpros"
-  },
-  {
    "player": "Marvin Harrison Jr.",
    "team": "ARI",
    "pos": "WR",
@@ -19204,9 +19132,9 @@
    "consensus_over_odds": -110,
    "consensus_under_odds": -115,
    "best_over": {
-    "odds": 117,
-    "line": 600.5,
-    "book": "Polymarket US"
+    "odds": 150,
+    "line": 424.5,
+    "book": "Polymarket"
    },
    "best_under": {
     "odds": -110,
@@ -19235,78 +19163,6 @@
    "best_under": {
     "odds": -110,
     "line": 825.5,
-    "book": "Hard Rock"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Jordyn Tyson",
-   "team": "NO",
-   "pos": "WR",
-   "stat_type": "Receiving Yards",
-   "stat_key": "rec_yd",
-   "line": 768.91,
-   "posted_line": 775.5,
-   "fair_prob_over": 0.4903,
-   "devig_method": "normal",
-   "consensus_over_odds": -106,
-   "consensus_under_odds": -115,
-   "best_over": {
-    "odds": 233,
-    "line": 749.5,
-    "book": "Kalshi"
-   },
-   "best_under": {
-    "odds": -115,
-    "line": 775.5,
-    "book": "Caesars"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Aaron Jones Sr.",
-   "team": "MIN",
-   "pos": "RB",
-   "stat_type": "Rush Yards",
-   "stat_key": "rush_yd",
-   "line": 479.89,
-   "posted_line": 475.5,
-   "fair_prob_over": 0.5097,
-   "devig_method": "normal",
-   "consensus_over_odds": -115,
-   "consensus_under_odds": -106,
-   "best_over": {
-    "odds": -115,
-    "line": 474.5,
-    "book": "DraftKings"
-   },
-   "best_under": {
-    "odds": 170,
-    "line": 824.5,
-    "book": "Polymarket"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Tony Pollard",
-   "team": "TEN",
-   "pos": "RB",
-   "stat_type": "Rush Yards",
-   "stat_key": "rush_yd",
-   "line": 775.5,
-   "posted_line": 775.5,
-   "fair_prob_over": 0.5,
-   "devig_method": "normal",
-   "consensus_over_odds": -110,
-   "consensus_under_odds": -110,
-   "best_over": {
-    "odds": -525,
-    "line": 749.5,
-    "book": "Kalshi"
-   },
-   "best_under": {
-    "odds": -115,
-    "line": 800.5,
     "book": "Hard Rock"
    },
    "source": "bettingpros"
@@ -19480,6 +19336,30 @@
    "source": "bettingpros"
   },
   {
+   "player": "Lamar Jackson",
+   "team": "BAL",
+   "pos": "QB",
+   "stat_type": "Rush Yards",
+   "stat_key": "rush_yd",
+   "line": 569.56,
+   "posted_line": 575.5,
+   "fair_prob_over": 0.4892,
+   "devig_method": "normal",
+   "consensus_over_odds": -105,
+   "consensus_under_odds": -115,
+   "best_over": {
+    "odds": -138,
+    "line": 500.5,
+    "book": "Polymarket US"
+   },
+   "best_under": {
+    "odds": -1567,
+    "line": 749.5,
+    "book": "Kalshi"
+   },
+   "source": "bettingpros"
+  },
+  {
    "player": "Kyle Pitts Sr.",
    "team": "ATL",
    "pos": "TE",
@@ -19492,7 +19372,7 @@
    "consensus_over_odds": -110,
    "consensus_under_odds": -110,
    "best_over": {
-    "odds": -163,
+    "odds": -270,
     "line": 374.5,
     "book": "Polymarket"
    },
@@ -19504,50 +19384,26 @@
    "source": "bettingpros"
   },
   {
-   "player": "Jaylen Warren",
-   "team": "PIT",
-   "pos": "RB",
-   "stat_type": "Rush Yards",
-   "stat_key": "rush_yd",
-   "line": 606.5,
-   "posted_line": 606.5,
-   "fair_prob_over": 0.5,
-   "devig_method": "normal",
-   "consensus_over_odds": -110,
-   "consensus_under_odds": -110,
-   "best_over": {
-    "odds": -115,
-    "line": 575.5,
-    "book": "Caesars"
-   },
-   "best_under": {
-    "odds": 127,
-    "line": 799.5,
-    "book": "Polymarket"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Kyler Murray",
-   "team": "MIN",
-   "pos": "QB",
-   "stat_type": "Rush Yards",
-   "stat_key": "rush_yd",
-   "line": 375.5,
-   "posted_line": 375.5,
-   "fair_prob_over": 0.5,
+   "player": "Mike Evans",
+   "team": "SF",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "stat_key": "rec_yd",
+   "line": 804.17,
+   "posted_line": 800.5,
+   "fair_prob_over": 0.5052,
    "devig_method": "normal",
    "consensus_over_odds": -115,
-   "consensus_under_odds": -115,
+   "consensus_under_odds": -110,
    "best_over": {
-    "odds": -118,
-    "line": 374.5,
-    "book": "PrizePicks"
+    "odds": 138,
+    "line": 624.5,
+    "book": "Polymarket"
    },
    "best_under": {
-    "odds": -809,
-    "line": 749.5,
-    "book": "Kalshi"
+    "odds": 163,
+    "line": 800.5,
+    "book": "Polymarket US"
    },
    "source": "bettingpros"
   },
@@ -19576,6 +19432,30 @@
    "source": "bettingpros"
   },
   {
+   "player": "Jaylen Warren",
+   "team": "PIT",
+   "pos": "RB",
+   "stat_type": "Rush Yards",
+   "stat_key": "rush_yd",
+   "line": 606.5,
+   "posted_line": 606.5,
+   "fair_prob_over": 0.5,
+   "devig_method": "normal",
+   "consensus_over_odds": -110,
+   "consensus_under_odds": -110,
+   "best_over": {
+    "odds": -115,
+    "line": 575.5,
+    "book": "Caesars"
+   },
+   "best_under": {
+    "odds": -138,
+    "line": 799.5,
+    "book": "Polymarket"
+   },
+   "source": "bettingpros"
+  },
+  {
    "player": "Jerry Jeudy",
    "team": "CLE",
    "pos": "WR",
@@ -19600,26 +19480,26 @@
    "source": "bettingpros"
   },
   {
-   "player": "Rico Dowdle",
-   "team": "PIT",
-   "pos": "RB",
+   "player": "Kyler Murray",
+   "team": "MIN",
+   "pos": "QB",
    "stat_type": "Rush Yards",
    "stat_key": "rush_yd",
-   "line": 708.5,
-   "posted_line": 708.5,
+   "line": 375.5,
+   "posted_line": 375.5,
    "fair_prob_over": 0.5,
    "devig_method": "normal",
-   "consensus_over_odds": -110,
-   "consensus_under_odds": -110,
+   "consensus_over_odds": -115,
+   "consensus_under_odds": -115,
    "best_over": {
-    "odds": -110,
-    "line": 699.5,
-    "book": "DraftKings"
+    "odds": -118,
+    "line": 374.5,
+    "book": "PrizePicks"
    },
    "best_under": {
-    "odds": -733,
+    "odds": -809,
     "line": 749.5,
-    "book": "Polymarket"
+    "book": "Kalshi"
    },
    "source": "bettingpros"
   },
@@ -19641,31 +19521,7 @@
     "book": "BetMGM"
    },
    "best_under": {
-    "odds": -614,
-    "line": 749.5,
-    "book": "Kalshi"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Josh Allen",
-   "team": "BUF",
-   "pos": "QB",
-   "stat_type": "Rush Yards",
-   "stat_key": "rush_yd",
-   "line": 500.5,
-   "posted_line": 500.5,
-   "fair_prob_over": 0.5,
-   "devig_method": "normal",
-   "consensus_over_odds": -110,
-   "consensus_under_odds": -110,
-   "best_over": {
-    "odds": -110,
-    "line": 499.5,
-    "book": "DraftKings"
-   },
-   "best_under": {
-    "odds": -1011,
+    "odds": -669,
     "line": 749.5,
     "book": "Kalshi"
    },
@@ -19696,48 +19552,72 @@
    "source": "bettingpros"
   },
   {
-   "player": "Lamar Jackson",
-   "team": "BAL",
+   "player": "Josh Allen",
+   "team": "BUF",
    "pos": "QB",
    "stat_type": "Rush Yards",
    "stat_key": "rush_yd",
-   "line": 569.56,
-   "posted_line": 575.5,
-   "fair_prob_over": 0.4892,
+   "line": 500.5,
+   "posted_line": 500.5,
+   "fair_prob_over": 0.5,
    "devig_method": "normal",
-   "consensus_over_odds": -105,
-   "consensus_under_odds": -115,
+   "consensus_over_odds": -110,
+   "consensus_under_odds": -110,
    "best_over": {
-    "odds": -170,
-    "line": 500.5,
-    "book": "Polymarket US"
+    "odds": -110,
+    "line": 499.5,
+    "book": "DraftKings"
    },
    "best_under": {
-    "odds": -809,
+    "odds": -1011,
     "line": 749.5,
     "book": "Kalshi"
    },
    "source": "bettingpros"
   },
   {
-   "player": "Adonai Mitchell",
-   "team": "NYJ",
+   "player": "Makai Lemon",
+   "team": "PHI",
    "pos": "WR",
    "stat_type": "Receiving Yards",
    "stat_key": "rec_yd",
-   "line": 698.23,
-   "posted_line": 749.5,
-   "fair_prob_over": 0.4225,
+   "line": 580.97,
+   "posted_line": 575.5,
+   "fair_prob_over": 0.5108,
    "devig_method": "normal",
-   "consensus_over_odds": 104,
-   "consensus_under_odds": -203,
+   "consensus_over_odds": -115,
+   "consensus_under_odds": -105,
    "best_over": {
-    "odds": 104,
+    "odds": -144,
+    "line": 449.5,
+    "book": "Polymarket"
+   },
+   "best_under": {
+    "odds": -285,
     "line": 749.5,
     "book": "Kalshi"
    },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Mark Andrews",
+   "team": "BAL",
+   "pos": "TE",
+   "stat_type": "Receiving Yards",
+   "stat_key": "rec_yd",
+   "line": 500.5,
+   "posted_line": 500.5,
+   "fair_prob_over": 0.5,
+   "devig_method": "normal",
+   "consensus_over_odds": -110,
+   "consensus_under_odds": -110,
+   "best_over": {
+    "odds": -110,
+    "line": 499.5,
+    "book": "DraftKings"
+   },
    "best_under": {
-    "odds": -203,
+    "odds": -456,
     "line": 749.5,
     "book": "Kalshi"
    },
@@ -19768,54 +19648,6 @@
    "source": "bettingpros"
   },
   {
-   "player": "Mark Andrews",
-   "team": "BAL",
-   "pos": "TE",
-   "stat_type": "Receiving Yards",
-   "stat_key": "rec_yd",
-   "line": 500.5,
-   "posted_line": 500.5,
-   "fair_prob_over": 0.5,
-   "devig_method": "normal",
-   "consensus_over_odds": -110,
-   "consensus_under_odds": -110,
-   "best_over": {
-    "odds": -110,
-    "line": 499.5,
-    "book": "DraftKings"
-   },
-   "best_under": {
-    "odds": -400,
-    "line": 749.5,
-    "book": "Kalshi"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Bijan Robinson",
-   "team": "ATL",
-   "pos": "RB",
-   "stat_type": "Receiving Yards",
-   "stat_key": "rec_yd",
-   "line": 575.5,
-   "posted_line": 575.5,
-   "fair_prob_over": 0.5,
-   "devig_method": "normal",
-   "consensus_over_odds": -115,
-   "consensus_under_odds": -115,
-   "best_over": {
-    "odds": 178,
-    "line": 574.5,
-    "book": "Polymarket"
-   },
-   "best_under": {
-    "odds": -9900,
-    "line": 749.5,
-    "book": "Kalshi"
-   },
-   "source": "bettingpros"
-  },
-  {
    "player": "Christian McCaffrey",
    "team": "SF",
    "pos": "RB",
@@ -19840,45 +19672,21 @@
    "source": "bettingpros"
   },
   {
-   "player": "Quentin Johnston",
-   "team": "LAC",
-   "pos": "WR",
+   "player": "Bijan Robinson",
+   "team": "ATL",
+   "pos": "RB",
    "stat_type": "Receiving Yards",
    "stat_key": "rec_yd",
-   "line": 647.52,
-   "posted_line": 650.5,
-   "fair_prob_over": 0.4948,
-   "devig_method": "normal",
-   "consensus_over_odds": -110,
-   "consensus_under_odds": -115,
-   "best_over": {
-    "odds": 138,
-    "line": 649.5,
-    "book": "Polymarket"
-   },
-   "best_under": {
-    "odds": -113,
-    "line": 749.5,
-    "book": "Kalshi"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Hunter Henry",
-   "team": "NE",
-   "pos": "TE",
-   "stat_type": "Receiving Yards",
-   "stat_key": "rec_yd",
-   "line": 500.5,
-   "posted_line": 500.5,
+   "line": 575.5,
+   "posted_line": 575.5,
    "fair_prob_over": 0.5,
    "devig_method": "normal",
    "consensus_over_odds": -115,
    "consensus_under_odds": -115,
    "best_over": {
-    "odds": -115,
-    "line": 500.5,
-    "book": "Caesars"
+    "odds": 138,
+    "line": 574.5,
+    "book": "Polymarket"
    },
    "best_under": {
     "odds": -9900,
@@ -19888,24 +19696,24 @@
    "source": "bettingpros"
   },
   {
-   "player": "Harold Fannin Jr.",
-   "team": "CLE",
-   "pos": "TE",
+   "player": "Adonai Mitchell",
+   "team": "NYJ",
+   "pos": "WR",
    "stat_type": "Receiving Yards",
    "stat_key": "rec_yd",
-   "line": 672.4,
-   "posted_line": 675.5,
-   "fair_prob_over": 0.4948,
+   "line": 688.63,
+   "posted_line": 749.5,
+   "fair_prob_over": 0.4082,
    "devig_method": "normal",
-   "consensus_over_odds": -110,
-   "consensus_under_odds": -115,
+   "consensus_over_odds": 113,
+   "consensus_under_odds": -213,
    "best_over": {
-    "odds": 127,
-    "line": 499.5,
-    "book": "Polymarket"
+    "odds": 113,
+    "line": 749.5,
+    "book": "Kalshi"
    },
    "best_under": {
-    "odds": -809,
+    "odds": -213,
     "line": 749.5,
     "book": "Kalshi"
    },
@@ -19929,7 +19737,79 @@
     "book": "DraftKings"
    },
    "best_under": {
-    "odds": -127,
+    "odds": -567,
+    "line": 749.5,
+    "book": "Kalshi"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Jahmyr Gibbs",
+   "team": "DET",
+   "pos": "RB",
+   "stat_type": "Receiving Yards",
+   "stat_key": "rec_yd",
+   "line": 475.5,
+   "posted_line": 475.5,
+   "fair_prob_over": 0.5,
+   "devig_method": "normal",
+   "consensus_over_odds": -110,
+   "consensus_under_odds": -110,
+   "best_over": {
+    "odds": -110,
+    "line": 449.5,
+    "book": "DraftKings"
+   },
+   "best_under": {
+    "odds": -426,
+    "line": 749.5,
+    "book": "Kalshi"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Hunter Henry",
+   "team": "NE",
+   "pos": "TE",
+   "stat_type": "Receiving Yards",
+   "stat_key": "rec_yd",
+   "line": 500.5,
+   "posted_line": 500.5,
+   "fair_prob_over": 0.5,
+   "devig_method": "normal",
+   "consensus_over_odds": -115,
+   "consensus_under_odds": -115,
+   "best_over": {
+    "odds": -115,
+    "line": 500.5,
+    "book": "Caesars"
+   },
+   "best_under": {
+    "odds": -4900,
+    "line": 749.5,
+    "book": "Kalshi"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Harold Fannin Jr.",
+   "team": "CLE",
+   "pos": "TE",
+   "stat_type": "Receiving Yards",
+   "stat_key": "rec_yd",
+   "line": 672.4,
+   "posted_line": 675.5,
+   "fair_prob_over": 0.4948,
+   "devig_method": "normal",
+   "consensus_over_odds": -110,
+   "consensus_under_odds": -115,
+   "best_over": {
+    "odds": 127,
+    "line": 499.5,
+    "book": "Polymarket"
+   },
+   "best_under": {
+    "odds": -233,
     "line": 749.5,
     "book": "Kalshi"
    },
@@ -19960,50 +19840,26 @@
    "source": "bettingpros"
   },
   {
-   "player": "TreVeyon Henderson",
-   "team": "NE",
-   "pos": "RB",
-   "stat_type": "Rush Yards",
-   "stat_key": "rush_yd",
-   "line": 697.01,
-   "posted_line": 700.5,
+   "player": "Jordan Addison",
+   "team": "MIN",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "stat_key": "rec_yd",
+   "line": 647.52,
+   "posted_line": 650.5,
    "fair_prob_over": 0.4948,
    "devig_method": "normal",
    "consensus_over_odds": -110,
    "consensus_under_odds": -115,
    "best_over": {
-    "odds": -118,
-    "line": 675.5,
-    "book": "PrizePicks"
-   },
-   "best_under": {
     "odds": -223,
-    "line": 749.5,
-    "book": "Kalshi"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Dalton Kincaid",
-   "team": "BUF",
-   "pos": "TE",
-   "stat_type": "Receiving Yards",
-   "stat_key": "rec_yd",
-   "line": 550.5,
-   "posted_line": 550.5,
-   "fair_prob_over": 0.5,
-   "devig_method": "normal",
-   "consensus_over_odds": -110,
-   "consensus_under_odds": -110,
-   "best_over": {
-    "odds": -115,
-    "line": 550.5,
-    "book": "Caesars"
+    "line": 474.5,
+    "book": "Polymarket"
    },
    "best_under": {
-    "odds": 117,
+    "odds": -118,
     "line": 749.5,
-    "book": "Polymarket"
+    "book": "PrizePicks"
    },
    "source": "bettingpros"
   },
@@ -20032,26 +19888,50 @@
    "source": "bettingpros"
   },
   {
-   "player": "Jacory Croskey-Merritt",
-   "team": "WAS",
+   "player": "TreVeyon Henderson",
+   "team": "NE",
    "pos": "RB",
    "stat_type": "Rush Yards",
    "stat_key": "rush_yd",
-   "line": 606.7,
-   "posted_line": 600.5,
-   "fair_prob_over": 0.5108,
+   "line": 697.01,
+   "posted_line": 700.5,
+   "fair_prob_over": 0.4948,
    "devig_method": "normal",
-   "consensus_over_odds": -115,
-   "consensus_under_odds": -105,
+   "consensus_over_odds": -110,
+   "consensus_under_odds": -115,
    "best_over": {
-    "odds": -300,
-    "line": 574.5,
-    "book": "Polymarket"
+    "odds": -118,
+    "line": 675.5,
+    "book": "PrizePicks"
    },
    "best_under": {
-    "odds": -118,
+    "odds": -117,
     "line": 749.5,
-    "book": "PrizePicks"
+    "book": "Kalshi"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Dalton Kincaid",
+   "team": "BUF",
+   "pos": "TE",
+   "stat_type": "Receiving Yards",
+   "stat_key": "rec_yd",
+   "line": 550.5,
+   "posted_line": 550.5,
+   "fair_prob_over": 0.5,
+   "devig_method": "normal",
+   "consensus_over_odds": -110,
+   "consensus_under_odds": -110,
+   "best_over": {
+    "odds": -115,
+    "line": 550.5,
+    "book": "Caesars"
+   },
+   "best_under": {
+    "odds": -108,
+    "line": 749.5,
+    "book": "Polymarket"
    },
    "source": "bettingpros"
   },
@@ -20068,8 +19948,8 @@
    "consensus_over_odds": -105,
    "consensus_under_odds": -115,
    "best_over": {
-    "odds": 104,
-    "line": 649.5,
+    "odds": 122,
+    "line": 449.5,
     "book": "Polymarket"
    },
    "best_under": {
@@ -20097,7 +19977,7 @@
     "book": "DraftKings"
    },
    "best_under": {
-    "odds": -144,
+    "odds": -194,
     "line": 749.5,
     "book": "Kalshi"
    },
@@ -20121,9 +20001,9 @@
     "book": "Polymarket"
    },
    "best_under": {
-    "odds": 117,
+    "odds": -118,
     "line": 749.5,
-    "book": "Kalshi"
+    "book": "PrizePicks"
    },
    "source": "bettingpros"
   },
@@ -20145,7 +20025,79 @@
     "book": "Polymarket"
    },
    "best_under": {
-    "odds": 127,
+    "odds": 335,
+    "line": 749.5,
+    "book": "Kalshi"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Jacory Croskey-Merritt",
+   "team": "WAS",
+   "pos": "RB",
+   "stat_type": "Rush Yards",
+   "stat_key": "rush_yd",
+   "line": 606.7,
+   "posted_line": 600.5,
+   "fair_prob_over": 0.5108,
+   "devig_method": "normal",
+   "consensus_over_odds": -115,
+   "consensus_under_odds": -105,
+   "best_over": {
+    "odds": -300,
+    "line": 574.5,
+    "book": "Polymarket"
+   },
+   "best_under": {
+    "odds": -118,
+    "line": 749.5,
+    "book": "PrizePicks"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Rico Dowdle",
+   "team": "PIT",
+   "pos": "RB",
+   "stat_type": "Rush Yards",
+   "stat_key": "rush_yd",
+   "line": 708.5,
+   "posted_line": 708.5,
+   "fair_prob_over": 0.5,
+   "devig_method": "normal",
+   "consensus_over_odds": -110,
+   "consensus_under_odds": -110,
+   "best_over": {
+    "odds": 270,
+    "line": 549.5,
+    "book": "Polymarket"
+   },
+   "best_under": {
+    "odds": -115,
+    "line": 725.5,
+    "book": "Caesars"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Matthew Golden",
+   "team": "GB",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "stat_key": "rec_yd",
+   "line": 656.03,
+   "posted_line": 650.5,
+   "fair_prob_over": 0.5097,
+   "devig_method": "normal",
+   "consensus_over_odds": -115,
+   "consensus_under_odds": -106,
+   "best_over": {
+    "odds": 150,
+    "line": 649.5,
+    "book": "Polymarket"
+   },
+   "best_under": {
+    "odds": -186,
     "line": 749.5,
     "book": "Kalshi"
    },
@@ -20176,30 +20128,6 @@
    "source": "bettingpros"
   },
   {
-   "player": "Matthew Golden",
-   "team": "GB",
-   "pos": "WR",
-   "stat_type": "Receiving Yards",
-   "stat_key": "rec_yd",
-   "line": 656.03,
-   "posted_line": 650.5,
-   "fair_prob_over": 0.5097,
-   "devig_method": "normal",
-   "consensus_over_odds": -115,
-   "consensus_under_odds": -106,
-   "best_over": {
-    "odds": 150,
-    "line": 649.5,
-    "book": "Polymarket"
-   },
-   "best_under": {
-    "odds": -186,
-    "line": 749.5,
-    "book": "Kalshi"
-   },
-   "source": "bettingpros"
-  },
-  {
    "player": "Jordan Mason",
    "team": "MIN",
    "pos": "RB",
@@ -20224,50 +20152,26 @@
    "source": "bettingpros"
   },
   {
-   "player": "Jakobi Meyers",
-   "team": "JAC",
-   "pos": "WR",
-   "stat_type": "Receiving Yards",
-   "stat_key": "rec_yd",
-   "line": 650.5,
-   "posted_line": 650.5,
-   "fair_prob_over": 0.5,
+   "player": "Aaron Jones Sr.",
+   "team": "MIN",
+   "pos": "RB",
+   "stat_type": "Rush Yards",
+   "stat_key": "rush_yd",
+   "line": 479.89,
+   "posted_line": 475.5,
+   "fair_prob_over": 0.5097,
    "devig_method": "normal",
-   "consensus_over_odds": -110,
-   "consensus_under_odds": -110,
+   "consensus_over_odds": -115,
+   "consensus_under_odds": -106,
    "best_over": {
-    "odds": -110,
-    "line": 649.5,
+    "odds": -115,
+    "line": 474.5,
     "book": "DraftKings"
    },
    "best_under": {
     "odds": -108,
-    "line": 699.5,
-    "book": "Polymarket"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Chris Godwin Jr.",
-   "team": "TB",
-   "pos": "WR",
-   "stat_type": "Receiving Yards",
-   "stat_key": "rec_yd",
-   "line": 669.27,
-   "posted_line": 675,
-   "fair_prob_over": 0.4903,
-   "devig_method": "normal",
-   "consensus_over_odds": -106,
-   "consensus_under_odds": -115,
-   "best_over": {
-    "odds": -115,
-    "line": 650.5,
-    "book": "Caesars"
-   },
-   "best_under": {
-    "odds": 108,
-    "line": 699.5,
-    "book": "Polymarket"
+    "line": 749.5,
+    "book": "Kalshi"
    },
    "source": "bettingpros"
   },
@@ -20292,6 +20196,54 @@
     "odds": -115,
     "line": 700.5,
     "book": "Caesars"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Chris Godwin Jr.",
+   "team": "TB",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "stat_key": "rec_yd",
+   "line": 669.27,
+   "posted_line": 675,
+   "fair_prob_over": 0.4903,
+   "devig_method": "normal",
+   "consensus_over_odds": -106,
+   "consensus_under_odds": -115,
+   "best_over": {
+    "odds": -115,
+    "line": 650.5,
+    "book": "Caesars"
+   },
+   "best_under": {
+    "odds": 178,
+    "line": 699.5,
+    "book": "Polymarket"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Jakobi Meyers",
+   "team": "JAC",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "stat_key": "rec_yd",
+   "line": 650.5,
+   "posted_line": 650.5,
+   "fair_prob_over": 0.5,
+   "devig_method": "normal",
+   "consensus_over_odds": -110,
+   "consensus_under_odds": -110,
+   "best_over": {
+    "odds": -110,
+    "line": 649.5,
+    "book": "DraftKings"
+   },
+   "best_under": {
+    "odds": -104,
+    "line": 699.5,
+    "book": "Polymarket"
    },
    "source": "bettingpros"
   },
@@ -20368,30 +20320,6 @@
    "source": "bettingpros"
   },
   {
-   "player": "Dontayvion Wicks",
-   "team": "PHI",
-   "pos": "WR",
-   "stat_type": "Receiving Yards",
-   "stat_key": "rec_yd",
-   "line": 599.5,
-   "posted_line": 599.5,
-   "fair_prob_over": 0.5,
-   "devig_method": "normal",
-   "consensus_over_odds": -110,
-   "consensus_under_odds": -110,
-   "best_over": {
-    "odds": -110,
-    "line": 599.5,
-    "book": "DraftKings"
-   },
-   "best_under": {
-    "odds": -110,
-    "line": 599.5,
-    "book": "DraftKings"
-   },
-   "source": "bettingpros"
-  },
-  {
    "player": "Calvin Ridley",
    "team": "TEN",
    "pos": "WR",
@@ -20411,6 +20339,30 @@
    "best_under": {
     "odds": -115,
     "line": 574.5,
+    "book": "DraftKings"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Dontayvion Wicks",
+   "team": "PHI",
+   "pos": "WR",
+   "stat_type": "Receiving Yards",
+   "stat_key": "rec_yd",
+   "line": 599.5,
+   "posted_line": 599.5,
+   "fair_prob_over": 0.5,
+   "devig_method": "normal",
+   "consensus_over_odds": -110,
+   "consensus_under_odds": -110,
+   "best_over": {
+    "odds": -110,
+    "line": 599.5,
+    "book": "DraftKings"
+   },
+   "best_under": {
+    "odds": -110,
+    "line": 599.5,
     "book": "DraftKings"
    },
    "source": "bettingpros"
@@ -20440,30 +20392,6 @@
    "source": "bettingpros"
   },
   {
-   "player": "Jayden Daniels",
-   "team": "WAS",
-   "pos": "QB",
-   "stat_type": "Rush Yards",
-   "stat_key": "rush_yd",
-   "line": 547.26,
-   "posted_line": 550,
-   "fair_prob_over": 0.4948,
-   "devig_method": "normal",
-   "consensus_over_odds": -110,
-   "consensus_under_odds": -115,
-   "best_over": {
-    "odds": 163,
-    "line": 500.5,
-    "book": "Polymarket US"
-   },
-   "best_under": {
-    "odds": -135,
-    "line": 575.5,
-    "book": "Hard Rock"
-   },
-   "source": "bettingpros"
-  },
-  {
    "player": "Rashid Shaheed",
    "team": "SEA",
    "pos": "WR",
@@ -20484,6 +20412,30 @@
     "odds": -110,
     "line": 574.5,
     "book": "DraftKings"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Jayden Daniels",
+   "team": "WAS",
+   "pos": "QB",
+   "stat_type": "Rush Yards",
+   "stat_key": "rush_yd",
+   "line": 547.26,
+   "posted_line": 550,
+   "fair_prob_over": 0.4948,
+   "devig_method": "normal",
+   "consensus_over_odds": -110,
+   "consensus_under_odds": -115,
+   "best_over": {
+    "odds": 170,
+    "line": 500.5,
+    "book": "Polymarket US"
+   },
+   "best_under": {
+    "odds": -135,
+    "line": 575.5,
+    "book": "Hard Rock"
    },
    "source": "bettingpros"
   },
@@ -20536,30 +20488,6 @@
    "source": "bettingpros"
   },
   {
-   "player": "Jake Ferguson",
-   "team": "DAL",
-   "pos": "TE",
-   "stat_type": "Receiving Yards",
-   "stat_key": "rec_yd",
-   "line": 523.09,
-   "posted_line": 525.5,
-   "fair_prob_over": 0.4948,
-   "devig_method": "normal",
-   "consensus_over_odds": -110,
-   "consensus_under_odds": -115,
-   "best_over": {
-    "odds": 100,
-    "line": 524.5,
-    "book": "Polymarket"
-   },
-   "best_under": {
-    "odds": -115,
-    "line": 525.5,
-    "book": "Caesars"
-   },
-   "source": "bettingpros"
-  },
-  {
    "player": "Dalton Schultz",
    "team": "HOU",
    "pos": "TE",
@@ -20608,30 +20536,6 @@
    "source": "bettingpros"
   },
   {
-   "player": "Brenton Strange",
-   "team": "JAC",
-   "pos": "TE",
-   "stat_type": "Receiving Yards",
-   "stat_key": "rec_yd",
-   "line": 500.5,
-   "posted_line": 500.5,
-   "fair_prob_over": 0.5,
-   "devig_method": "normal",
-   "consensus_over_odds": -115,
-   "consensus_under_odds": -115,
-   "best_over": {
-    "odds": -118,
-    "line": 499.5,
-    "book": "PrizePicks"
-   },
-   "best_under": {
-    "odds": -115,
-    "line": 500.5,
-    "book": "Caesars"
-   },
-   "source": "bettingpros"
-  },
-  {
    "player": "T.J. Hockenson",
    "team": "MIN",
    "pos": "TE",
@@ -20647,6 +20551,30 @@
     "odds": -110,
     "line": 474.5,
     "book": "DraftKings"
+   },
+   "best_under": {
+    "odds": -115,
+    "line": 500.5,
+    "book": "Caesars"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Brenton Strange",
+   "team": "JAC",
+   "pos": "TE",
+   "stat_type": "Receiving Yards",
+   "stat_key": "rec_yd",
+   "line": 500.5,
+   "posted_line": 500.5,
+   "fair_prob_over": 0.5,
+   "devig_method": "normal",
+   "consensus_over_odds": -115,
+   "consensus_under_odds": -115,
+   "best_over": {
+    "odds": -118,
+    "line": 499.5,
+    "book": "PrizePicks"
    },
    "best_under": {
     "odds": -115,
@@ -20800,30 +20728,6 @@
    "source": "bettingpros"
   },
   {
-   "player": "Caleb Williams",
-   "team": "CHI",
-   "pos": "QB",
-   "stat_type": "Rush Yards",
-   "stat_key": "rush_yd",
-   "line": 374.5,
-   "posted_line": 374.5,
-   "fair_prob_over": 0.5,
-   "devig_method": "normal",
-   "consensus_over_odds": -118,
-   "consensus_under_odds": -118,
-   "best_over": {
-    "odds": -118,
-    "line": 374.5,
-    "book": "PrizePicks"
-   },
-   "best_under": {
-    "odds": -118,
-    "line": 374.5,
-    "book": "PrizePicks"
-   },
-   "source": "bettingpros"
-  },
-  {
    "player": "Germie Bernard",
    "team": "PIT",
    "pos": "WR",
@@ -20872,30 +20776,6 @@
    "source": "bettingpros"
   },
   {
-   "player": "Travis Etienne Jr.",
-   "team": "NO",
-   "pos": "RB",
-   "stat_type": "Receiving Yards",
-   "stat_key": "rec_yd",
-   "line": 325.5,
-   "posted_line": 325.5,
-   "fair_prob_over": 0.5,
-   "devig_method": "normal",
-   "consensus_over_odds": -118,
-   "consensus_under_odds": -118,
-   "best_over": {
-    "odds": -118,
-    "line": 325.5,
-    "book": "PrizePicks"
-   },
-   "best_under": {
-    "odds": -118,
-    "line": 325.5,
-    "book": "PrizePicks"
-   },
-   "source": "bettingpros"
-  },
-  {
    "player": "Ashton Jeanty",
    "team": "LV",
    "pos": "RB",
@@ -20939,30 +20819,6 @@
    "best_under": {
     "odds": -118,
     "line": 349.5,
-    "book": "PrizePicks"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Baker Mayfield",
-   "team": "TB",
-   "pos": "QB",
-   "stat_type": "Rush Yards",
-   "stat_key": "rush_yd",
-   "line": 309.5,
-   "posted_line": 309.5,
-   "fair_prob_over": 0.5,
-   "devig_method": "normal",
-   "consensus_over_odds": -118,
-   "consensus_under_odds": -118,
-   "best_over": {
-    "odds": -118,
-    "line": 309.5,
-    "book": "PrizePicks"
-   },
-   "best_under": {
-    "odds": -118,
-    "line": 309.5,
     "book": "PrizePicks"
    },
    "source": "bettingpros"
@@ -21316,7 +21172,7 @@
    "consensus_over_odds": -115,
    "consensus_under_odds": -105,
    "best_over": {
-    "odds": -127,
+    "odds": -525,
     "line": 29.5,
     "book": "Kalshi"
    },
@@ -21324,6 +21180,30 @@
     "odds": -245,
     "line": 35.5,
     "book": "Polymarket"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Brock Purdy",
+   "team": "SF",
+   "pos": "QB",
+   "stat_type": "Pass TDs",
+   "stat_key": "pass_td",
+   "line": 27.67,
+   "posted_line": 27.5,
+   "fair_prob_over": 0.5,
+   "devig_method": "poisson",
+   "consensus_over_odds": -110,
+   "consensus_under_odds": -110,
+   "best_over": {
+    "odds": -135,
+    "line": 25.5,
+    "book": "Caesars"
+   },
+   "best_under": {
+    "odds": -133,
+    "line": 34.5,
+    "book": "Kalshi"
    },
    "source": "bettingpros"
   },
@@ -21352,54 +21232,6 @@
    "source": "bettingpros"
   },
   {
-   "player": "Brock Purdy",
-   "team": "SF",
-   "pos": "QB",
-   "stat_type": "Pass TDs",
-   "stat_key": "pass_td",
-   "line": 27.67,
-   "posted_line": 27.5,
-   "fair_prob_over": 0.5,
-   "devig_method": "poisson",
-   "consensus_over_odds": -110,
-   "consensus_under_odds": -110,
-   "best_over": {
-    "odds": -135,
-    "line": 25.5,
-    "book": "Caesars"
-   },
-   "best_under": {
-    "odds": -144,
-    "line": 34.5,
-    "book": "Kalshi"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Jordan Love",
-   "team": "GB",
-   "pos": "QB",
-   "stat_type": "Pass TDs",
-   "stat_key": "pass_td",
-   "line": 25.81,
-   "posted_line": 25.5,
-   "fair_prob_over": 0.5108,
-   "devig_method": "poisson",
-   "consensus_over_odds": -115,
-   "consensus_under_odds": -105,
-   "best_over": {
-    "odds": -426,
-    "line": 18.5,
-    "book": "Polymarket"
-   },
-   "best_under": {
-    "odds": -285,
-    "line": 34.5,
-    "book": "Kalshi"
-   },
-   "source": "bettingpros"
-  },
-  {
    "player": "Dak Prescott",
    "team": "DAL",
    "pos": "QB",
@@ -21415,6 +21247,30 @@
     "odds": 100,
     "line": 27.5,
     "book": "DraftKings"
+   },
+   "best_under": {
+    "odds": -257,
+    "line": 34.5,
+    "book": "Kalshi"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Matthew Stafford",
+   "team": "LAR",
+   "pos": "QB",
+   "stat_type": "Pass TDs",
+   "stat_key": "pass_td",
+   "line": 30.45,
+   "posted_line": 30.5,
+   "fair_prob_over": 0.4843,
+   "devig_method": "poisson",
+   "consensus_over_odds": -105,
+   "consensus_under_odds": -120,
+   "best_over": {
+    "odds": -144,
+    "line": 27.5,
+    "book": "Polymarket"
    },
    "best_under": {
     "odds": -257,
@@ -21460,14 +21316,14 @@
    "consensus_over_odds": -105,
    "consensus_under_odds": -125,
    "best_over": {
-    "odds": -525,
-    "line": 24.5,
-    "book": "Kalshi"
+    "odds": 100,
+    "line": 25.5,
+    "book": "Hard Rock"
    },
    "best_under": {
-    "odds": -118,
+    "odds": -113,
     "line": 29.5,
-    "book": "PrizePicks"
+    "book": "Kalshi"
    },
    "source": "bettingpros"
   },
@@ -21496,98 +21352,26 @@
    "source": "bettingpros"
   },
   {
-   "player": "Caleb Williams",
-   "team": "CHI",
+   "player": "Jordan Love",
+   "team": "GB",
    "pos": "QB",
    "stat_type": "Pass TDs",
    "stat_key": "pass_td",
-   "line": 24.67,
-   "posted_line": 24.5,
-   "fair_prob_over": 0.5,
+   "line": 25.81,
+   "posted_line": 25.5,
+   "fair_prob_over": 0.5108,
    "devig_method": "poisson",
    "consensus_over_odds": -115,
-   "consensus_under_odds": -115,
+   "consensus_under_odds": -105,
    "best_over": {
-    "odds": -156,
+    "odds": -376,
     "line": 18.5,
     "book": "Polymarket"
    },
    "best_under": {
-    "odds": -213,
+    "odds": 104,
     "line": 29.5,
     "book": "Kalshi"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Matthew Stafford",
-   "team": "LAR",
-   "pos": "QB",
-   "stat_type": "Pass TDs",
-   "stat_key": "pass_td",
-   "line": 30.45,
-   "posted_line": 30.5,
-   "fair_prob_over": 0.4843,
-   "devig_method": "poisson",
-   "consensus_over_odds": -105,
-   "consensus_under_odds": -120,
-   "best_over": {
-    "odds": -144,
-    "line": 27.5,
-    "book": "Polymarket"
-   },
-   "best_under": {
-    "odds": -115,
-    "line": 30.5,
-    "book": "BetMGM"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Sam Darnold",
-   "team": "SEA",
-   "pos": "QB",
-   "stat_type": "Pass TDs",
-   "stat_key": "pass_td",
-   "line": 23.4,
-   "posted_line": 23.5,
-   "fair_prob_over": 0.4783,
-   "devig_method": "poisson",
-   "consensus_over_odds": 100,
-   "consensus_under_odds": -120,
-   "best_over": {
-    "odds": 100,
-    "line": 22.5,
-    "book": "Caesars"
-   },
-   "best_under": {
-    "odds": -525,
-    "line": 29.5,
-    "book": "Kalshi"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Lamar Jackson",
-   "team": "BAL",
-   "pos": "QB",
-   "stat_type": "Pass TDs",
-   "stat_key": "pass_td",
-   "line": 24.6,
-   "posted_line": 24.5,
-   "fair_prob_over": 0.4944,
-   "devig_method": "poisson",
-   "consensus_over_odds": -105,
-   "consensus_under_odds": -110,
-   "best_over": {
-    "odds": -3233,
-    "line": 19.5,
-    "book": "Kalshi"
-   },
-   "best_under": {
-    "odds": -104,
-    "line": 28.5,
-    "book": "Polymarket US"
    },
    "source": "bettingpros"
   },
@@ -21604,9 +21388,9 @@
    "consensus_over_odds": -115,
    "consensus_under_odds": -110,
    "best_over": {
-    "odds": -108,
+    "odds": -110,
     "line": 24.5,
-    "book": "Polymarket"
+    "book": "Hard Rock"
    },
    "best_under": {
     "odds": -133,
@@ -21633,33 +21417,9 @@
     "book": "theScore Bet"
    },
    "best_under": {
-    "odds": -150,
+    "odds": -163,
     "line": 28.5,
     "book": "Polymarket"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Baker Mayfield",
-   "team": "TB",
-   "pos": "QB",
-   "stat_type": "Pass TDs",
-   "stat_key": "pass_td",
-   "line": 25.28,
-   "posted_line": 25.5,
-   "fair_prob_over": 0.4694,
-   "devig_method": "poisson",
-   "consensus_over_odds": 100,
-   "consensus_under_odds": -130,
-   "best_over": {
-    "odds": 355,
-    "line": 19.5,
-    "book": "Polymarket"
-   },
-   "best_under": {
-    "odds": -118,
-    "line": 25.5,
-    "book": "PrizePicks"
    },
    "source": "bettingpros"
   },
@@ -21712,6 +21472,30 @@
    "source": "bettingpros"
   },
   {
+   "player": "Jalen Hurts",
+   "team": "PHI",
+   "pos": "QB",
+   "stat_type": "Pass TDs",
+   "stat_key": "pass_td",
+   "line": 22.47,
+   "posted_line": 22.5,
+   "fair_prob_over": 0.4831,
+   "devig_method": "poisson",
+   "consensus_over_odds": 100,
+   "consensus_under_odds": -115,
+   "best_over": {
+    "odds": -1900,
+    "line": 19.5,
+    "book": "Kalshi"
+   },
+   "best_under": {
+    "odds": -1567,
+    "line": 25.5,
+    "book": "Polymarket"
+   },
+   "source": "bettingpros"
+  },
+  {
    "player": "Justin Herbert",
    "team": "LAC",
    "pos": "QB",
@@ -21736,26 +21520,26 @@
    "source": "bettingpros"
   },
   {
-   "player": "Jalen Hurts",
-   "team": "PHI",
+   "player": "Lamar Jackson",
+   "team": "BAL",
    "pos": "QB",
    "stat_type": "Pass TDs",
    "stat_key": "pass_td",
-   "line": 22.47,
-   "posted_line": 22.5,
-   "fair_prob_over": 0.4831,
+   "line": 24.6,
+   "posted_line": 24.5,
+   "fair_prob_over": 0.4944,
    "devig_method": "poisson",
-   "consensus_over_odds": 100,
-   "consensus_under_odds": -115,
+   "consensus_over_odds": -105,
+   "consensus_under_odds": -110,
    "best_over": {
-    "odds": -1900,
+    "odds": -3233,
     "line": 19.5,
     "book": "Kalshi"
    },
    "best_under": {
-    "odds": -118,
+    "odds": 144,
     "line": 24.5,
-    "book": "PrizePicks"
+    "book": "Polymarket US"
    },
    "source": "bettingpros"
   },
@@ -21772,13 +21556,61 @@
    "consensus_over_odds": 100,
    "consensus_under_odds": -115,
    "best_over": {
-    "odds": 105,
+    "odds": 122,
     "line": 24.5,
-    "book": "theScore Bet"
+    "book": "Polymarket"
    },
    "best_under": {
-    "odds": -108,
+    "odds": -110,
     "line": 24.5,
+    "book": "BetMGM"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Aaron Rodgers",
+   "team": "PIT",
+   "pos": "QB",
+   "stat_type": "Pass TDs",
+   "stat_key": "pass_td",
+   "line": 20.94,
+   "posted_line": 20.5,
+   "fair_prob_over": 0.5238,
+   "devig_method": "poisson",
+   "consensus_over_odds": -110,
+   "consensus_under_odds": 110,
+   "best_over": {
+    "odds": -233,
+    "line": 19.5,
+    "book": "Kalshi"
+   },
+   "best_under": {
+    "odds": -163,
+    "line": 24.5,
+    "book": "Polymarket"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Sam Darnold",
+   "team": "SEA",
+   "pos": "QB",
+   "stat_type": "Pass TDs",
+   "stat_key": "pass_td",
+   "line": 23.4,
+   "posted_line": 23.5,
+   "fair_prob_over": 0.4783,
+   "devig_method": "poisson",
+   "consensus_over_odds": 100,
+   "consensus_under_odds": -120,
+   "best_over": {
+    "odds": -456,
+    "line": 19.5,
+    "book": "Kalshi"
+   },
+   "best_under": {
+    "odds": 108,
+    "line": 23.5,
     "book": "Polymarket"
    },
    "source": "bettingpros"
@@ -21832,25 +21664,25 @@
    "source": "bettingpros"
   },
   {
-   "player": "Aaron Rodgers",
-   "team": "PIT",
+   "player": "Cam Ward",
+   "team": "TEN",
    "pos": "QB",
    "stat_type": "Pass TDs",
    "stat_key": "pass_td",
-   "line": 20.94,
-   "posted_line": 20.5,
-   "fair_prob_over": 0.5238,
+   "line": 19.55,
+   "posted_line": 19.5,
+   "fair_prob_over": 0.4892,
    "devig_method": "poisson",
-   "consensus_over_odds": -110,
-   "consensus_under_odds": 110,
+   "consensus_over_odds": -105,
+   "consensus_under_odds": -115,
    "best_over": {
-    "odds": -233,
-    "line": 19.5,
-    "book": "Kalshi"
+    "odds": 163,
+    "line": 18.5,
+    "book": "Polymarket"
    },
    "best_under": {
-    "odds": -110,
-    "line": 21.5,
+    "odds": -115,
+    "line": 20.5,
     "book": "DraftKings"
    },
    "source": "bettingpros"
@@ -21876,30 +21708,6 @@
     "odds": -669,
     "line": 19.5,
     "book": "Kalshi"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Cam Ward",
-   "team": "TEN",
-   "pos": "QB",
-   "stat_type": "Pass TDs",
-   "stat_key": "pass_td",
-   "line": 19.55,
-   "posted_line": 19.5,
-   "fair_prob_over": 0.4892,
-   "devig_method": "poisson",
-   "consensus_over_odds": -105,
-   "consensus_under_odds": -115,
-   "best_over": {
-    "odds": 156,
-    "line": 15.5,
-    "book": "Polymarket"
-   },
-   "best_under": {
-    "odds": -115,
-    "line": 20.5,
-    "book": "DraftKings"
    },
    "source": "bettingpros"
   },
@@ -21969,7 +21777,7 @@
     "book": "Caesars"
    },
    "best_under": {
-    "odds": -156,
+    "odds": -170,
     "line": 19.5,
     "book": "Kalshi"
    },
@@ -22005,19 +21813,43 @@
    "pos": "QB",
    "stat_type": "Pass TDs",
    "stat_key": "pass_td",
-   "line": 16.27,
+   "line": 24.11,
    "posted_line": 19.5,
-   "fair_prob_over": 0.2068,
+   "fair_prob_over": 0.8254,
    "devig_method": "poisson",
-   "consensus_over_odds": 317,
-   "consensus_under_odds": -1149,
+   "consensus_over_odds": -567,
+   "consensus_under_odds": 456,
    "best_over": {
-    "odds": 317,
+    "odds": -567,
     "line": 19.5,
     "book": "Kalshi"
    },
    "best_under": {
-    "odds": -1150,
+    "odds": 456,
+    "line": 19.5,
+    "book": "Kalshi"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Jacoby Brissett",
+   "team": "ARI",
+   "pos": "QB",
+   "stat_type": "Pass TDs",
+   "stat_key": "pass_td",
+   "line": 11.41,
+   "posted_line": 11.5,
+   "fair_prob_over": 0.4694,
+   "devig_method": "poisson",
+   "consensus_over_odds": 100,
+   "consensus_under_odds": -130,
+   "best_over": {
+    "odds": 100,
+    "line": 11.5,
+    "book": "Caesars"
+   },
+   "best_under": {
+    "odds": 117,
     "line": 19.5,
     "book": "Kalshi"
    },
@@ -22041,33 +21873,9 @@
     "book": "Caesars"
    },
    "best_under": {
-    "odds": -178,
+    "odds": -170,
     "line": 18.5,
     "book": "Polymarket US"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Jacoby Brissett",
-   "team": "ARI",
-   "pos": "QB",
-   "stat_type": "Pass TDs",
-   "stat_key": "pass_td",
-   "line": 11.41,
-   "posted_line": 11.5,
-   "fair_prob_over": 0.4694,
-   "devig_method": "poisson",
-   "consensus_over_odds": 100,
-   "consensus_under_odds": -130,
-   "best_over": {
-    "odds": 100,
-    "line": 11.5,
-    "book": "Caesars"
-   },
-   "best_under": {
-    "odds": 122,
-    "line": 19.5,
-    "book": "Kalshi"
    },
    "source": "bettingpros"
   },
@@ -22089,9 +21897,9 @@
     "book": "DraftKings"
    },
    "best_under": {
-    "odds": 127,
+    "odds": -117,
     "line": 15.5,
-    "book": "Polymarket US"
+    "book": "Kalshi"
    },
    "source": "bettingpros"
   },
@@ -22113,9 +21921,33 @@
     "book": "Kalshi"
    },
    "best_under": {
-    "odds": -144,
+    "odds": -138,
     "line": 15.5,
     "book": "Polymarket"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Jaxon Smith-Njigba",
+   "team": "SEA",
+   "pos": "WR",
+   "stat_type": "Rec TDs",
+   "stat_key": "rec_td",
+   "line": 8.51,
+   "posted_line": 8.5,
+   "fair_prob_over": 0.4783,
+   "devig_method": "poisson",
+   "consensus_over_odds": 100,
+   "consensus_under_odds": -120,
+   "best_over": {
+    "odds": -130,
+    "line": 7.5,
+    "book": "theScore Bet"
+   },
+   "best_under": {
+    "odds": 113,
+    "line": 15.5,
+    "book": "Polymarket US"
    },
    "source": "bettingpros"
   },
@@ -22137,9 +21969,33 @@
     "book": "DraftKings"
    },
    "best_under": {
-    "odds": 113,
+    "odds": -104,
     "line": 15.5,
-    "book": "Polymarket"
+    "book": "Polymarket US"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Javonte Williams",
+   "team": "DAL",
+   "pos": "RB",
+   "stat_type": "Rush TDs",
+   "stat_key": "rush_td",
+   "line": 9.63,
+   "posted_line": 9.5,
+   "fair_prob_over": 0.4948,
+   "devig_method": "poisson",
+   "consensus_over_odds": -110,
+   "consensus_under_odds": -115,
+   "best_over": {
+    "odds": 100,
+    "line": 9.5,
+    "book": "Hard Rock"
+   },
+   "best_under": {
+    "odds": -163,
+    "line": 15.5,
+    "book": "Kalshi"
    },
    "source": "bettingpros"
   },
@@ -22161,33 +22017,33 @@
     "book": "PrizePicks"
    },
    "best_under": {
-    "odds": 117,
+    "odds": 203,
     "line": 15.5,
-    "book": "Kalshi"
+    "book": "Polymarket US"
    },
    "source": "bettingpros"
   },
   {
-   "player": "Christian McCaffrey",
-   "team": "SF",
+   "player": "Kyren Williams",
+   "team": "LAR",
    "pos": "RB",
    "stat_type": "Rush TDs",
    "stat_key": "rush_td",
-   "line": 8.57,
-   "posted_line": 8.5,
-   "fair_prob_over": 0.4862,
+   "line": 9.72,
+   "posted_line": 9.5,
+   "fair_prob_over": 0.506,
    "devig_method": "poisson",
-   "consensus_over_odds": -115,
-   "consensus_under_odds": -130,
+   "consensus_over_odds": -105,
+   "consensus_under_odds": 100,
    "best_over": {
-    "odds": 110,
-    "line": 8.5,
-    "book": "Hard Rock"
+    "odds": -105,
+    "line": 9.5,
+    "book": "theScore Bet"
    },
    "best_under": {
-    "odds": -178,
+    "odds": -3233,
     "line": 13.5,
-    "book": "Kalshi"
+    "book": "Polymarket"
    },
    "source": "bettingpros"
   },
@@ -22216,54 +22072,6 @@
    "source": "bettingpros"
   },
   {
-   "player": "Jaxon Smith-Njigba",
-   "team": "SEA",
-   "pos": "WR",
-   "stat_type": "Rec TDs",
-   "stat_key": "rec_td",
-   "line": 8.51,
-   "posted_line": 8.5,
-   "fair_prob_over": 0.4783,
-   "devig_method": "poisson",
-   "consensus_over_odds": 100,
-   "consensus_under_odds": -120,
-   "best_over": {
-    "odds": -130,
-    "line": 7.5,
-    "book": "theScore Bet"
-   },
-   "best_under": {
-    "odds": -108,
-    "line": 13.5,
-    "book": "Kalshi"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Javonte Williams",
-   "team": "DAL",
-   "pos": "RB",
-   "stat_type": "Rush TDs",
-   "stat_key": "rush_td",
-   "line": 9.63,
-   "posted_line": 9.5,
-   "fair_prob_over": 0.4948,
-   "devig_method": "poisson",
-   "consensus_over_odds": -110,
-   "consensus_under_odds": -115,
-   "best_over": {
-    "odds": 100,
-    "line": 9.5,
-    "book": "Hard Rock"
-   },
-   "best_under": {
-    "odds": 117,
-    "line": 13.5,
-    "book": "Kalshi"
-   },
-   "source": "bettingpros"
-  },
-  {
    "player": "James Cook III",
    "team": "BUF",
    "pos": "RB",
@@ -22281,31 +22089,7 @@
     "book": "Caesars"
    },
    "best_under": {
-    "odds": -285,
-    "line": 12.5,
-    "book": "Polymarket"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "CeeDee Lamb",
-   "team": "DAL",
-   "pos": "WR",
-   "stat_type": "Rec TDs",
-   "stat_key": "rec_td",
-   "line": 7.63,
-   "posted_line": 7.5,
-   "fair_prob_over": 0.4948,
-   "devig_method": "poisson",
-   "consensus_over_odds": -110,
-   "consensus_under_odds": -115,
-   "best_over": {
-    "odds": 115,
-    "line": 7.5,
-    "book": "theScore Bet"
-   },
-   "best_under": {
-    "odds": -525,
+    "odds": -178,
     "line": 12.5,
     "book": "Polymarket US"
    },
@@ -22324,38 +22108,14 @@
    "consensus_over_odds": -125,
    "consensus_under_odds": -105,
    "best_over": {
-    "odds": -186,
-    "line": 8.5,
-    "book": "Polymarket"
+    "odds": -145,
+    "line": 9.5,
+    "book": "Caesars"
    },
    "best_under": {
     "odds": -150,
     "line": 12.5,
     "book": "Polymarket US"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Amon-Ra St. Brown",
-   "team": "DET",
-   "pos": "WR",
-   "stat_type": "Rush Yards",
-   "stat_key": "rush_yd",
-   "line": 12.5,
-   "posted_line": 12.5,
-   "fair_prob_over": 0.5,
-   "devig_method": "normal",
-   "consensus_over_odds": -118,
-   "consensus_under_odds": -118,
-   "best_over": {
-    "odds": -118,
-    "line": 12.5,
-    "book": "PrizePicks"
-   },
-   "best_under": {
-    "odds": -118,
-    "line": 12.5,
-    "book": "PrizePicks"
    },
    "source": "bettingpros"
   },
@@ -22384,6 +22144,30 @@
    "source": "bettingpros"
   },
   {
+   "player": "Amon-Ra St. Brown",
+   "team": "DET",
+   "pos": "WR",
+   "stat_type": "Rush Yards",
+   "stat_key": "rush_yd",
+   "line": 12.5,
+   "posted_line": 12.5,
+   "fair_prob_over": 0.5,
+   "devig_method": "normal",
+   "consensus_over_odds": -118,
+   "consensus_under_odds": -118,
+   "best_over": {
+    "odds": -118,
+    "line": 12.5,
+    "book": "PrizePicks"
+   },
+   "best_under": {
+    "odds": -118,
+    "line": 12.5,
+    "book": "PrizePicks"
+   },
+   "source": "bettingpros"
+  },
+  {
    "player": "Omarion Hampton",
    "team": "LAC",
    "pos": "RB",
@@ -22401,7 +22185,31 @@
     "book": "Polymarket"
    },
    "best_under": {
-    "odds": -156,
+    "odds": -117,
+    "line": 11.5,
+    "book": "Kalshi"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Christian McCaffrey",
+   "team": "SF",
+   "pos": "RB",
+   "stat_type": "Rush TDs",
+   "stat_key": "rush_td",
+   "line": 8.57,
+   "posted_line": 8.5,
+   "fair_prob_over": 0.4862,
+   "devig_method": "poisson",
+   "consensus_over_odds": -115,
+   "consensus_under_odds": -130,
+   "best_over": {
+    "odds": 110,
+    "line": 8.5,
+    "book": "Hard Rock"
+   },
+   "best_under": {
+    "odds": 113,
     "line": 11.5,
     "book": "Kalshi"
    },
@@ -22432,6 +22240,30 @@
    "source": "bettingpros"
   },
   {
+   "player": "CeeDee Lamb",
+   "team": "DAL",
+   "pos": "WR",
+   "stat_type": "Rec TDs",
+   "stat_key": "rec_td",
+   "line": 7.63,
+   "posted_line": 7.5,
+   "fair_prob_over": 0.4948,
+   "devig_method": "poisson",
+   "consensus_over_odds": -110,
+   "consensus_under_odds": -115,
+   "best_over": {
+    "odds": 115,
+    "line": 7.5,
+    "book": "theScore Bet"
+   },
+   "best_under": {
+    "odds": -117,
+    "line": 11.5,
+    "book": "Kalshi"
+   },
+   "source": "bettingpros"
+  },
+  {
    "player": "Ja'Marr Chase",
    "team": "CIN",
    "pos": "WR",
@@ -22456,30 +22288,6 @@
    "source": "bettingpros"
   },
   {
-   "player": "Kyren Williams",
-   "team": "LAR",
-   "pos": "RB",
-   "stat_type": "Rush TDs",
-   "stat_key": "rush_td",
-   "line": 9.72,
-   "posted_line": 9.5,
-   "fair_prob_over": 0.506,
-   "devig_method": "poisson",
-   "consensus_over_odds": -105,
-   "consensus_under_odds": 100,
-   "best_over": {
-    "odds": 213,
-    "line": 9.5,
-    "book": "Polymarket"
-   },
-   "best_under": {
-    "odds": -245,
-    "line": 11.5,
-    "book": "Kalshi"
-   },
-   "source": "bettingpros"
-  },
-  {
    "player": "Courtland Sutton",
    "team": "DEN",
    "pos": "WR",
@@ -22497,7 +22305,7 @@
     "book": "Caesars"
    },
    "best_under": {
-    "odds": -1567,
+    "odds": -1900,
     "line": 10.5,
     "book": "Polymarket"
    },
@@ -22528,6 +22336,30 @@
    "source": "bettingpros"
   },
   {
+   "player": "Justin Jefferson",
+   "team": "MIN",
+   "pos": "WR",
+   "stat_type": "Rec TDs",
+   "stat_key": "rec_td",
+   "line": 7.52,
+   "posted_line": 7.5,
+   "fair_prob_over": 0.4783,
+   "devig_method": "poisson",
+   "consensus_over_odds": 100,
+   "consensus_under_odds": -120,
+   "best_over": {
+    "odds": -127,
+    "line": 6.5,
+    "book": "Polymarket US"
+   },
+   "best_under": {
+    "odds": -400,
+    "line": 10.5,
+    "book": "Polymarket"
+   },
+   "source": "bettingpros"
+  },
+  {
    "player": "D'Andre Swift",
    "team": "CHI",
    "pos": "RB",
@@ -22545,7 +22377,7 @@
     "book": "BetMGM"
    },
    "best_under": {
-    "odds": -117,
+    "odds": -127,
     "line": 10.5,
     "book": "Polymarket"
    },
@@ -22564,7 +22396,7 @@
    "consensus_over_odds": 125,
    "consensus_under_odds": -145,
    "best_over": {
-    "odds": 144,
+    "odds": 150,
     "line": 3.5,
     "book": "Polymarket"
    },
@@ -22572,30 +22404,6 @@
     "odds": -4900,
     "line": 9.5,
     "book": "Kalshi"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Jalen Hurts",
-   "team": "PHI",
-   "pos": "QB",
-   "stat_type": "Rush TDs",
-   "stat_key": "rush_td",
-   "line": 8.12,
-   "posted_line": 8.5,
-   "fair_prob_over": 0.4235,
-   "devig_method": "poisson",
-   "consensus_over_odds": 130,
-   "consensus_under_odds": -145,
-   "best_over": {
-    "odds": -156,
-    "line": 6.5,
-    "book": "Polymarket"
-   },
-   "best_under": {
-    "odds": -133,
-    "line": 9.5,
-    "book": "Polymarket US"
    },
    "source": "bettingpros"
   },
@@ -22636,7 +22444,7 @@
    "consensus_over_odds": 120,
    "consensus_under_odds": -135,
    "best_over": {
-    "odds": 144,
+    "odds": 113,
     "line": 5.5,
     "book": "Polymarket"
    },
@@ -22644,6 +22452,30 @@
     "odds": -1567,
     "line": 9.5,
     "book": "Kalshi"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Jeremiyah Love",
+   "team": "ARI",
+   "pos": "RB",
+   "stat_type": "Rush TDs",
+   "stat_key": "rush_td",
+   "line": 5.83,
+   "posted_line": 5.5,
+   "fair_prob_over": 0.5263,
+   "devig_method": "poisson",
+   "consensus_over_odds": -125,
+   "consensus_under_odds": 100,
+   "best_over": {
+    "odds": -118,
+    "line": 5.5,
+    "book": "PrizePicks"
+   },
+   "best_under": {
+    "odds": -2400,
+    "line": 9.5,
+    "book": "Polymarket"
    },
    "source": "bettingpros"
   },
@@ -22668,6 +22500,30 @@
     "odds": -809,
     "line": 9.5,
     "book": "Polymarket"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Nico Collins",
+   "team": "HOU",
+   "pos": "WR",
+   "stat_type": "Rec TDs",
+   "stat_key": "rec_td",
+   "line": 6.46,
+   "posted_line": 6.5,
+   "fair_prob_over": 0.4675,
+   "devig_method": "poisson",
+   "consensus_over_odds": 105,
+   "consensus_under_odds": -125,
+   "best_over": {
+    "odds": -525,
+    "line": 5.5,
+    "book": "Kalshi"
+   },
+   "best_under": {
+    "odds": -186,
+    "line": 9.5,
+    "book": "Polymarket US"
    },
    "source": "bettingpros"
   },
@@ -22708,7 +22564,7 @@
    "consensus_over_odds": 110,
    "consensus_under_odds": -130,
    "best_over": {
-    "odds": 100,
+    "odds": -108,
     "line": 7.5,
     "book": "Polymarket"
    },
@@ -22756,12 +22612,12 @@
    "consensus_over_odds": -125,
    "consensus_under_odds": -105,
    "best_over": {
-    "odds": -233,
-    "line": 6.5,
-    "book": "Polymarket"
+    "odds": -108,
+    "line": 7.5,
+    "book": "Kalshi"
    },
    "best_under": {
-    "odds": 117,
+    "odds": 156,
     "line": 9.5,
     "book": "Polymarket US"
    },
@@ -22792,6 +22648,78 @@
    "source": "bettingpros"
   },
   {
+   "player": "Jalen Hurts",
+   "team": "PHI",
+   "pos": "QB",
+   "stat_type": "Rush TDs",
+   "stat_key": "rush_td",
+   "line": 8.12,
+   "posted_line": 8.5,
+   "fair_prob_over": 0.4235,
+   "devig_method": "poisson",
+   "consensus_over_odds": 130,
+   "consensus_under_odds": -145,
+   "best_over": {
+    "odds": -156,
+    "line": 6.5,
+    "book": "Polymarket"
+   },
+   "best_under": {
+    "odds": -120,
+    "line": 8.5,
+    "book": "BetMGM"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "DJ Moore",
+   "team": "BUF",
+   "pos": "WR",
+   "stat_type": "Rec TDs",
+   "stat_key": "rec_td",
+   "line": 6.29,
+   "posted_line": 6.5,
+   "fair_prob_over": 0.4401,
+   "devig_method": "poisson",
+   "consensus_over_odds": 115,
+   "consensus_under_odds": -145,
+   "best_over": {
+    "odds": -130,
+    "line": 5.5,
+    "book": "theScore Bet"
+   },
+   "best_under": {
+    "odds": -317,
+    "line": 8.5,
+    "book": "Polymarket"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Jake Ferguson",
+   "team": "DAL",
+   "pos": "TE",
+   "stat_type": "Rec TDs",
+   "stat_key": "rec_td",
+   "line": 4.79,
+   "posted_line": 4.5,
+   "fair_prob_over": 0.5217,
+   "devig_method": "poisson",
+   "consensus_over_odds": -120,
+   "consensus_under_odds": 100,
+   "best_over": {
+    "odds": 100,
+    "line": 4.5,
+    "book": "theScore Bet"
+   },
+   "best_under": {
+    "odds": -233,
+    "line": 8.5,
+    "book": "Polymarket"
+   },
+   "source": "bettingpros"
+  },
+  {
    "player": "TreVeyon Henderson",
    "team": "NE",
    "pos": "RB",
@@ -22816,78 +22744,6 @@
    "source": "bettingpros"
   },
   {
-   "player": "Cam Skattebo",
-   "team": "NYG",
-   "pos": "RB",
-   "stat_type": "Rush TDs",
-   "stat_key": "rush_td",
-   "line": 6.36,
-   "posted_line": 6.5,
-   "fair_prob_over": 0.4518,
-   "devig_method": "poisson",
-   "consensus_over_odds": 105,
-   "consensus_under_odds": -145,
-   "best_over": {
-    "odds": -113,
-    "line": 5.5,
-    "book": "Kalshi"
-   },
-   "best_under": {
-    "odds": -900,
-    "line": 8.5,
-    "book": "Polymarket"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "George Pickens",
-   "team": "DAL",
-   "pos": "WR",
-   "stat_type": "Rec TDs",
-   "stat_key": "rec_td",
-   "line": 7.29,
-   "posted_line": 7,
-   "fair_prob_over": 0.4444,
-   "devig_method": "poisson",
-   "consensus_over_odds": 125,
-   "consensus_under_odds": -125,
-   "best_over": {
-    "odds": -118,
-    "line": 5.5,
-    "book": "PrizePicks"
-   },
-   "best_under": {
-    "odds": -1900,
-    "line": 8.5,
-    "book": "Polymarket"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Jake Ferguson",
-   "team": "DAL",
-   "pos": "TE",
-   "stat_type": "Rec TDs",
-   "stat_key": "rec_td",
-   "line": 4.79,
-   "posted_line": 4.5,
-   "fair_prob_over": 0.5217,
-   "devig_method": "poisson",
-   "consensus_over_odds": -120,
-   "consensus_under_odds": 100,
-   "best_over": {
-    "odds": 100,
-    "line": 4.5,
-    "book": "theScore Bet"
-   },
-   "best_under": {
-    "odds": -900,
-    "line": 8.5,
-    "book": "Polymarket"
-   },
-   "source": "bettingpros"
-  },
-  {
    "player": "Mike Evans",
    "team": "SF",
    "pos": "WR",
@@ -22905,7 +22761,7 @@
     "book": "theScore Bet"
    },
    "best_under": {
-    "odds": -144,
+    "odds": -138,
     "line": 8.5,
     "book": "Polymarket"
    },
@@ -22936,24 +22792,24 @@
    "source": "bettingpros"
   },
   {
-   "player": "Nico Collins",
-   "team": "HOU",
-   "pos": "WR",
-   "stat_type": "Rec TDs",
-   "stat_key": "rec_td",
-   "line": 6.46,
+   "player": "Cam Skattebo",
+   "team": "NYG",
+   "pos": "RB",
+   "stat_type": "Rush TDs",
+   "stat_key": "rush_td",
+   "line": 6.36,
    "posted_line": 6.5,
-   "fair_prob_over": 0.4675,
+   "fair_prob_over": 0.4518,
    "devig_method": "poisson",
    "consensus_over_odds": 105,
-   "consensus_under_odds": -125,
+   "consensus_under_odds": -145,
    "best_over": {
-    "odds": -525,
+    "odds": -108,
     "line": 5.5,
     "book": "Kalshi"
    },
    "best_under": {
-    "odds": 100,
+    "odds": -809,
     "line": 8.5,
     "book": "Polymarket"
    },
@@ -22980,30 +22836,6 @@
     "odds": -150,
     "line": 8.5,
     "book": "Caesars"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Zach Charbonnet",
-   "team": "SEA",
-   "pos": "RB",
-   "stat_type": "Rush TDs",
-   "stat_key": "rush_td",
-   "line": 6.17,
-   "posted_line": 7.5,
-   "fair_prob_over": 0.2795,
-   "devig_method": "poisson",
-   "consensus_over_odds": 163,
-   "consensus_under_odds": -4902,
-   "best_over": {
-    "odds": 163,
-    "line": 7.5,
-    "book": "Kalshi"
-   },
-   "best_under": {
-    "odds": -4900,
-    "line": 7.5,
-    "book": "Kalshi"
    },
    "source": "bettingpros"
   },
@@ -23044,14 +22876,38 @@
    "consensus_over_odds": -120,
    "consensus_under_odds": -110,
    "best_over": {
-    "odds": 113,
+    "odds": 194,
     "line": 3.5,
-    "book": "Polymarket US"
+    "book": "Polymarket"
    },
    "best_under": {
     "odds": -900,
     "line": 7.5,
     "book": "Kalshi"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Saquon Barkley",
+   "team": "PHI",
+   "pos": "RB",
+   "stat_type": "Rush TDs",
+   "stat_key": "rush_td",
+   "line": 7.82,
+   "posted_line": 7.5,
+   "fair_prob_over": 0.5217,
+   "devig_method": "poisson",
+   "consensus_over_odds": -120,
+   "consensus_under_odds": 100,
+   "best_over": {
+    "odds": -233,
+    "line": 3.5,
+    "book": "Polymarket US"
+   },
+   "best_under": {
+    "odds": 100,
+    "line": 7.5,
+    "book": "DraftKings"
    },
    "source": "bettingpros"
   },
@@ -23076,30 +22932,6 @@
     "odds": -1011,
     "line": 7.5,
     "book": "Kalshi"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Saquon Barkley",
-   "team": "PHI",
-   "pos": "RB",
-   "stat_type": "Rush TDs",
-   "stat_key": "rush_td",
-   "line": 7.82,
-   "posted_line": 7.5,
-   "fair_prob_over": 0.5217,
-   "devig_method": "poisson",
-   "consensus_over_odds": -120,
-   "consensus_under_odds": 100,
-   "best_over": {
-    "odds": 156,
-    "line": 5.5,
-    "book": "Polymarket"
-   },
-   "best_under": {
-    "odds": 100,
-    "line": 7.5,
-    "book": "DraftKings"
    },
    "source": "bettingpros"
   },
@@ -23176,72 +23008,24 @@
    "source": "bettingpros"
   },
   {
-   "player": "DJ Moore",
-   "team": "BUF",
+   "player": "Zay Flowers",
+   "team": "BAL",
    "pos": "WR",
    "stat_type": "Rec TDs",
    "stat_key": "rec_td",
-   "line": 6.29,
-   "posted_line": 6.5,
-   "fair_prob_over": 0.4401,
+   "line": 5.58,
+   "posted_line": 5.5,
+   "fair_prob_over": 0.4843,
    "devig_method": "poisson",
-   "consensus_over_odds": 115,
-   "consensus_under_odds": -145,
-   "best_over": {
-    "odds": 117,
-    "line": 4.5,
-    "book": "Polymarket"
-   },
-   "best_under": {
-    "odds": -122,
-    "line": 7.5,
-    "book": "Kalshi"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Kyle Monangai",
-   "team": "CHI",
-   "pos": "RB",
-   "stat_type": "Rush TDs",
-   "stat_key": "rush_td",
-   "line": 4.73,
-   "posted_line": 4.5,
-   "fair_prob_over": 0.5101,
-   "devig_method": "poisson",
-   "consensus_over_odds": -120,
-   "consensus_under_odds": -110,
-   "best_over": {
-    "odds": -118,
-    "line": 4.5,
-    "book": "PrizePicks"
-   },
-   "best_under": {
-    "odds": -1011,
-    "line": 7.5,
-    "book": "Kalshi"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Malik Nabers",
-   "team": "NYG",
-   "pos": "WR",
-   "stat_type": "Rec TDs",
-   "stat_key": "rec_td",
-   "line": 6.8,
-   "posted_line": 6,
-   "fair_prob_over": 0.5204,
-   "devig_method": "poisson",
-   "consensus_over_odds": -145,
+   "consensus_over_odds": -105,
    "consensus_under_odds": -120,
    "best_over": {
-    "odds": -118,
+    "odds": 100,
     "line": 5.5,
-    "book": "PrizePicks"
+    "book": "Caesars"
    },
    "best_under": {
-    "odds": -127,
+    "odds": -138,
     "line": 7.5,
     "book": "Kalshi"
    },
@@ -23272,26 +23056,98 @@
    "source": "bettingpros"
   },
   {
-   "player": "Zay Flowers",
-   "team": "BAL",
+   "player": "Malik Nabers",
+   "team": "NYG",
    "pos": "WR",
    "stat_type": "Rec TDs",
    "stat_key": "rec_td",
-   "line": 5.58,
-   "posted_line": 5.5,
-   "fair_prob_over": 0.4843,
+   "line": 6.8,
+   "posted_line": 6,
+   "fair_prob_over": 0.5204,
    "devig_method": "poisson",
-   "consensus_over_odds": -105,
+   "consensus_over_odds": -145,
    "consensus_under_odds": -120,
    "best_over": {
-    "odds": 100,
+    "odds": -118,
     "line": 5.5,
-    "book": "Caesars"
+    "book": "PrizePicks"
    },
    "best_under": {
-    "odds": -138,
+    "odds": -127,
     "line": 7.5,
     "book": "Kalshi"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Kyle Monangai",
+   "team": "CHI",
+   "pos": "RB",
+   "stat_type": "Rush TDs",
+   "stat_key": "rush_td",
+   "line": 4.73,
+   "posted_line": 4.5,
+   "fair_prob_over": 0.5101,
+   "devig_method": "poisson",
+   "consensus_over_odds": -120,
+   "consensus_under_odds": -110,
+   "best_over": {
+    "odds": -118,
+    "line": 4.5,
+    "book": "PrizePicks"
+   },
+   "best_under": {
+    "odds": -1011,
+    "line": 7.5,
+    "book": "Kalshi"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Terry McLaurin",
+   "team": "WAS",
+   "pos": "WR",
+   "stat_type": "Rec TDs",
+   "stat_key": "rec_td",
+   "line": 5.83,
+   "posted_line": 5.5,
+   "fair_prob_over": 0.5263,
+   "devig_method": "poisson",
+   "consensus_over_odds": -125,
+   "consensus_under_odds": 100,
+   "best_over": {
+    "odds": -110,
+    "line": 4.5,
+    "book": "theScore Bet"
+   },
+   "best_under": {
+    "odds": -1150,
+    "line": 7.5,
+    "book": "Polymarket"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "George Pickens",
+   "team": "DAL",
+   "pos": "WR",
+   "stat_type": "Rec TDs",
+   "stat_key": "rec_td",
+   "line": 7.29,
+   "posted_line": 7,
+   "fair_prob_over": 0.4444,
+   "devig_method": "poisson",
+   "consensus_over_odds": 125,
+   "consensus_under_odds": -125,
+   "best_over": {
+    "odds": -118,
+    "line": 5.5,
+    "book": "PrizePicks"
+   },
+   "best_under": {
+    "odds": -155,
+    "line": 7.5,
+    "book": "Caesars"
    },
    "source": "bettingpros"
   },
@@ -23313,7 +23169,7 @@
     "book": "theScore Bet"
    },
    "best_under": {
-    "odds": -669,
+    "odds": -194,
     "line": 7.5,
     "book": "Polymarket"
    },
@@ -23344,26 +23200,26 @@
    "source": "bettingpros"
   },
   {
-   "player": "Justin Jefferson",
-   "team": "MIN",
-   "pos": "WR",
-   "stat_type": "Rec TDs",
-   "stat_key": "rec_td",
-   "line": 7.52,
-   "posted_line": 7.5,
-   "fair_prob_over": 0.4783,
+   "player": "Chase Brown",
+   "team": "CIN",
+   "pos": "RB",
+   "stat_type": "Rush TDs",
+   "stat_key": "rush_td",
+   "line": 6.5,
+   "posted_line": 6.5,
+   "fair_prob_over": 0.4737,
    "devig_method": "poisson",
    "consensus_over_odds": 100,
-   "consensus_under_odds": -120,
+   "consensus_under_odds": -125,
    "best_over": {
-    "odds": 113,
-    "line": 6.5,
-    "book": "Polymarket"
+    "odds": -178,
+    "line": 5.5,
+    "book": "Kalshi"
    },
    "best_under": {
-    "odds": -130,
+    "odds": -108,
     "line": 7.5,
-    "book": "Caesars"
+    "book": "Polymarket"
    },
    "source": "bettingpros"
   },
@@ -23385,7 +23241,7 @@
     "book": "DraftKings"
    },
    "best_under": {
-    "odds": 127,
+    "odds": 138,
     "line": 7.5,
     "book": "Kalshi"
    },
@@ -23464,30 +23320,6 @@
    "source": "bettingpros"
   },
   {
-   "player": "DeVonta Smith",
-   "team": "PHI",
-   "pos": "WR",
-   "stat_type": "Rec TDs",
-   "stat_key": "rec_td",
-   "line": 5.64,
-   "posted_line": 5.5,
-   "fair_prob_over": 0.4944,
-   "devig_method": "poisson",
-   "consensus_over_odds": -105,
-   "consensus_under_odds": -110,
-   "best_over": {
-    "odds": 138,
-    "line": 5.5,
-    "book": "Polymarket"
-   },
-   "best_under": {
-    "odds": -133,
-    "line": 6.5,
-    "book": "Polymarket US"
-   },
-   "source": "bettingpros"
-  },
-  {
    "player": "Christian McCaffrey",
    "team": "SF",
    "pos": "RB",
@@ -23505,9 +23337,33 @@
     "book": "BetMGM"
    },
    "best_under": {
-    "odds": -1900,
+    "odds": -1567,
     "line": 6.5,
     "book": "Polymarket"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "DeVonta Smith",
+   "team": "PHI",
+   "pos": "WR",
+   "stat_type": "Rec TDs",
+   "stat_key": "rec_td",
+   "line": 5.64,
+   "posted_line": 5.5,
+   "fair_prob_over": 0.4944,
+   "devig_method": "poisson",
+   "consensus_over_odds": -105,
+   "consensus_under_odds": -110,
+   "best_over": {
+    "odds": 186,
+    "line": 5.5,
+    "book": "Polymarket"
+   },
+   "best_under": {
+    "odds": -133,
+    "line": 6.5,
+    "book": "Polymarket US"
    },
    "source": "bettingpros"
   },
@@ -23524,7 +23380,7 @@
    "consensus_over_odds": -125,
    "consensus_under_odds": 110,
    "best_over": {
-    "odds": -335,
+    "odds": -300,
     "line": 1.5,
     "book": "Polymarket"
    },
@@ -23548,14 +23404,62 @@
    "consensus_over_odds": -105,
    "consensus_under_odds": -120,
    "best_over": {
-    "odds": -145,
-    "line": 5.5,
-    "book": "theScore Bet"
+    "odds": 100,
+    "line": 4.5,
+    "book": "Polymarket"
    },
    "best_under": {
     "odds": -118,
     "line": 6.5,
     "book": "PrizePicks"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Mark Andrews",
+   "team": "BAL",
+   "pos": "TE",
+   "stat_type": "Rec TDs",
+   "stat_key": "rec_td",
+   "line": 5.73,
+   "posted_line": 5.5,
+   "fair_prob_over": 0.5108,
+   "devig_method": "poisson",
+   "consensus_over_odds": -115,
+   "consensus_under_odds": -105,
+   "best_over": {
+    "odds": 156,
+    "line": 4.5,
+    "book": "Polymarket"
+   },
+   "best_under": {
+    "odds": -150,
+    "line": 6.5,
+    "book": "DraftKings"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Romeo Doubs",
+   "team": "NE",
+   "pos": "WR",
+   "stat_type": "Rec TDs",
+   "stat_key": "rec_td",
+   "line": 4.73,
+   "posted_line": 4.5,
+   "fair_prob_over": 0.5108,
+   "devig_method": "poisson",
+   "consensus_over_odds": -115,
+   "consensus_under_odds": -105,
+   "best_over": {
+    "odds": -115,
+    "line": 4.5,
+    "book": "BetMGM"
+   },
+   "best_under": {
+    "odds": -285,
+    "line": 6.5,
+    "book": "Polymarket"
    },
    "source": "bettingpros"
   },
@@ -23608,102 +23512,6 @@
    "source": "bettingpros"
   },
   {
-   "player": "Mark Andrews",
-   "team": "BAL",
-   "pos": "TE",
-   "stat_type": "Rec TDs",
-   "stat_key": "rec_td",
-   "line": 5.73,
-   "posted_line": 5.5,
-   "fair_prob_over": 0.5108,
-   "devig_method": "poisson",
-   "consensus_over_odds": -115,
-   "consensus_under_odds": -105,
-   "best_over": {
-    "odds": -125,
-    "line": 5.5,
-    "book": "Caesars"
-   },
-   "best_under": {
-    "odds": -150,
-    "line": 6.5,
-    "book": "DraftKings"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Romeo Doubs",
-   "team": "NE",
-   "pos": "WR",
-   "stat_type": "Rec TDs",
-   "stat_key": "rec_td",
-   "line": 4.73,
-   "posted_line": 4.5,
-   "fair_prob_over": 0.5108,
-   "devig_method": "poisson",
-   "consensus_over_odds": -115,
-   "consensus_under_odds": -105,
-   "best_over": {
-    "odds": -115,
-    "line": 4.5,
-    "book": "BetMGM"
-   },
-   "best_under": {
-    "odds": -567,
-    "line": 6.5,
-    "book": "Polymarket"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Jeremiyah Love",
-   "team": "ARI",
-   "pos": "RB",
-   "stat_type": "Rush TDs",
-   "stat_key": "rush_td",
-   "line": 5.83,
-   "posted_line": 5.5,
-   "fair_prob_over": 0.5263,
-   "devig_method": "poisson",
-   "consensus_over_odds": -125,
-   "consensus_under_odds": 100,
-   "best_over": {
-    "odds": 213,
-    "line": 5.5,
-    "book": "Polymarket"
-   },
-   "best_under": {
-    "odds": 108,
-    "line": 6.5,
-    "book": "Polymarket US"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Chase Brown",
-   "team": "CIN",
-   "pos": "RB",
-   "stat_type": "Rush TDs",
-   "stat_key": "rush_td",
-   "line": 6.5,
-   "posted_line": 6.5,
-   "fair_prob_over": 0.4737,
-   "devig_method": "poisson",
-   "consensus_over_odds": 100,
-   "consensus_under_odds": -125,
-   "best_over": {
-    "odds": 117,
-    "line": 5.5,
-    "book": "Polymarket"
-   },
-   "best_under": {
-    "odds": -120,
-    "line": 6.5,
-    "book": "BetMGM"
-   },
-   "source": "bettingpros"
-  },
-  {
    "player": "Garrett Wilson",
    "team": "NYJ",
    "pos": "WR",
@@ -23716,14 +23524,14 @@
    "consensus_over_odds": -105,
    "consensus_under_odds": -120,
    "best_over": {
-    "odds": 115,
-    "line": 4.5,
-    "book": "theScore Bet"
+    "odds": -567,
+    "line": 3.5,
+    "book": "Polymarket US"
    },
    "best_under": {
-    "odds": 117,
+    "odds": -245,
     "line": 6.5,
-    "book": "Polymarket US"
+    "book": "Polymarket"
    },
    "source": "bettingpros"
   },
@@ -23745,7 +23553,7 @@
     "book": "PrizePicks"
    },
    "best_under": {
-    "odds": -150,
+    "odds": 117,
     "line": 6.5,
     "book": "Polymarket"
    },
@@ -23764,9 +23572,9 @@
    "consensus_over_odds": -145,
    "consensus_under_odds": 120,
    "best_over": {
-    "odds": -135,
-    "line": 5.5,
-    "book": "theScore Bet"
+    "odds": -127,
+    "line": 3.5,
+    "book": "Polymarket"
    },
    "best_under": {
     "odds": -118,
@@ -23848,30 +23656,6 @@
    "source": "bettingpros"
   },
   {
-   "player": "Jonah Coleman",
-   "team": "DEN",
-   "pos": "RB",
-   "stat_type": "Rush TDs",
-   "stat_key": "rush_td",
-   "line": 3.82,
-   "posted_line": 5.5,
-   "fair_prob_over": 0.1876,
-   "devig_method": "poisson",
-   "consensus_over_odds": 376,
-   "consensus_under_odds": -1011,
-   "best_over": {
-    "odds": 376,
-    "line": 5.5,
-    "book": "Kalshi"
-   },
-   "best_under": {
-    "odds": -1011,
-    "line": 5.5,
-    "book": "Kalshi"
-   },
-   "source": "bettingpros"
-  },
-  {
    "player": "Fernando Mendoza",
    "team": "LV",
    "pos": "QB",
@@ -23920,30 +23704,6 @@
    "source": "bettingpros"
   },
   {
-   "player": "Travis Etienne Jr.",
-   "team": "NO",
-   "pos": "RB",
-   "stat_type": "Rush TDs",
-   "stat_key": "rush_td",
-   "line": 5.4,
-   "posted_line": 5.5,
-   "fair_prob_over": 0.4532,
-   "devig_method": "poisson",
-   "consensus_over_odds": 110,
-   "consensus_under_odds": -135,
-   "best_over": {
-    "odds": -140,
-    "line": 4.5,
-    "book": "theScore Bet"
-   },
-   "best_under": {
-    "odds": -135,
-    "line": 5.5,
-    "book": "BetMGM"
-   },
-   "source": "bettingpros"
-  },
-  {
    "player": "Kaelon Black",
    "team": "SF",
    "pos": "RB",
@@ -23968,48 +23728,24 @@
    "source": "bettingpros"
   },
   {
-   "player": "Calvin Ridley",
-   "team": "TEN",
-   "pos": "WR",
-   "stat_type": "Rec TDs",
-   "stat_key": "rec_td",
-   "line": 3.41,
-   "posted_line": 3.5,
-   "fair_prob_over": 0.4436,
-   "devig_method": "poisson",
-   "consensus_over_odds": 115,
-   "consensus_under_odds": -140,
-   "best_over": {
-    "odds": 135,
-    "line": 3.5,
-    "book": "Caesars"
-   },
-   "best_under": {
-    "odds": -1011,
-    "line": 5.5,
-    "book": "Polymarket"
-   },
-   "source": "bettingpros"
-  },
-  {
    "player": "Daniel Jones",
    "team": "IND",
    "pos": "QB",
    "stat_type": "Rush TDs",
    "stat_key": "rush_td",
-   "line": 3.94,
+   "line": 3.88,
    "posted_line": 5.5,
-   "fair_prob_over": 0.2053,
+   "fair_prob_over": 0.1963,
    "devig_method": "poisson",
-   "consensus_over_odds": 335,
-   "consensus_under_odds": -809,
+   "consensus_over_odds": 355,
+   "consensus_under_odds": -900,
    "best_over": {
-    "odds": 335,
+    "odds": 355,
     "line": 5.5,
     "book": "Kalshi"
    },
    "best_under": {
-    "odds": -809,
+    "odds": -900,
     "line": 5.5,
     "book": "Kalshi"
    },
@@ -24064,30 +23800,6 @@
    "source": "bettingpros"
   },
   {
-   "player": "Kyler Murray",
-   "team": "MIN",
-   "pos": "QB",
-   "stat_type": "Rush TDs",
-   "stat_key": "rush_td",
-   "line": 4.27,
-   "posted_line": 5.5,
-   "fair_prob_over": 0.2577,
-   "devig_method": "poisson",
-   "consensus_over_odds": 194,
-   "consensus_under_odds": -4902,
-   "best_over": {
-    "odds": 194,
-    "line": 5.5,
-    "book": "Kalshi"
-   },
-   "best_under": {
-    "odds": -4900,
-    "line": 5.5,
-    "book": "Kalshi"
-   },
-   "source": "bettingpros"
-  },
-  {
    "player": "RJ Harvey",
    "team": "DEN",
    "pos": "RB",
@@ -24101,6 +23813,30 @@
    "consensus_under_odds": -4902,
    "best_over": {
     "odds": 203,
+    "line": 5.5,
+    "book": "Kalshi"
+   },
+   "best_under": {
+    "odds": -4900,
+    "line": 5.5,
+    "book": "Kalshi"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Alvin Kamara",
+   "team": "NO",
+   "pos": "RB",
+   "stat_type": "Rush TDs",
+   "stat_key": "rush_td",
+   "line": 4.05,
+   "posted_line": 5.5,
+   "fair_prob_over": 0.2223,
+   "devig_method": "poisson",
+   "consensus_over_odds": 257,
+   "consensus_under_odds": -4902,
+   "best_over": {
+    "odds": 257,
     "line": 5.5,
     "book": "Kalshi"
    },
@@ -24136,6 +23872,30 @@
    "source": "bettingpros"
   },
   {
+   "player": "Carnell Tate",
+   "team": "TEN",
+   "pos": "WR",
+   "stat_type": "Rec TDs",
+   "stat_key": "rec_td",
+   "line": 4.24,
+   "posted_line": 4.5,
+   "fair_prob_over": 0.417,
+   "devig_method": "poisson",
+   "consensus_over_odds": 130,
+   "consensus_under_odds": -155,
+   "best_over": {
+    "odds": 300,
+    "line": 4.5,
+    "book": "Polymarket"
+   },
+   "best_under": {
+    "odds": -233,
+    "line": 5.5,
+    "book": "Kalshi"
+   },
+   "source": "bettingpros"
+  },
+  {
    "player": "Rico Dowdle",
    "team": "PIT",
    "pos": "RB",
@@ -24160,72 +23920,24 @@
    "source": "bettingpros"
   },
   {
-   "player": "Alvin Kamara",
-   "team": "NO",
+   "player": "Tyler Allgeier",
+   "team": "ARI",
    "pos": "RB",
    "stat_type": "Rush TDs",
    "stat_key": "rush_td",
-   "line": 4.12,
+   "line": 4.22,
    "posted_line": 5.5,
-   "fair_prob_over": 0.2334,
+   "fair_prob_over": 0.2501,
    "devig_method": "poisson",
    "consensus_over_odds": 257,
-   "consensus_under_odds": -1149,
+   "consensus_under_odds": -525,
    "best_over": {
     "odds": 257,
     "line": 5.5,
     "book": "Kalshi"
    },
    "best_under": {
-    "odds": -1150,
-    "line": 5.5,
-    "book": "Kalshi"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Tyler Allgeier",
-   "team": "ARI",
-   "pos": "RB",
-   "stat_type": "Rush TDs",
-   "stat_key": "rush_td",
-   "line": 4.17,
-   "posted_line": 5.5,
-   "fair_prob_over": 0.2412,
-   "devig_method": "poisson",
-   "consensus_over_odds": 270,
-   "consensus_under_odds": -567,
-   "best_over": {
-    "odds": 270,
-    "line": 5.5,
-    "book": "Kalshi"
-   },
-   "best_under": {
-    "odds": -567,
-    "line": 5.5,
-    "book": "Kalshi"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Woody Marks",
-   "team": "HOU",
-   "pos": "RB",
-   "stat_type": "Rush TDs",
-   "stat_key": "rush_td",
-   "line": 6.28,
-   "posted_line": 5.5,
-   "fair_prob_over": 0.598,
-   "devig_method": "poisson",
-   "consensus_over_odds": -203,
-   "consensus_under_odds": 122,
-   "best_over": {
-    "odds": -203,
-    "line": 5.5,
-    "book": "Kalshi"
-   },
-   "best_under": {
-    "odds": 122,
+    "odds": -525,
     "line": 5.5,
     "book": "Kalshi"
    },
@@ -24256,54 +23968,6 @@
    "source": "bettingpros"
   },
   {
-   "player": "Tony Pollard",
-   "team": "TEN",
-   "pos": "RB",
-   "stat_type": "Rush TDs",
-   "stat_key": "rush_td",
-   "line": 5.28,
-   "posted_line": 5.5,
-   "fair_prob_over": 0.4335,
-   "devig_method": "poisson",
-   "consensus_over_odds": 115,
-   "consensus_under_odds": -155,
-   "best_over": {
-    "odds": -170,
-    "line": 3.5,
-    "book": "Polymarket"
-   },
-   "best_under": {
-    "odds": -140,
-    "line": 5.5,
-    "book": "DraftKings"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Carnell Tate",
-   "team": "TEN",
-   "pos": "WR",
-   "stat_type": "Rec TDs",
-   "stat_key": "rec_td",
-   "line": 4.24,
-   "posted_line": 4.5,
-   "fair_prob_over": 0.417,
-   "devig_method": "poisson",
-   "consensus_over_odds": 130,
-   "consensus_under_odds": -155,
-   "best_over": {
-    "odds": 300,
-    "line": 4.5,
-    "book": "Polymarket"
-   },
-   "best_under": {
-    "odds": -233,
-    "line": 5.5,
-    "book": "Kalshi"
-   },
-   "source": "bettingpros"
-  },
-  {
    "player": "Ladd McConkey",
    "team": "LAC",
    "pos": "WR",
@@ -24328,72 +23992,24 @@
    "source": "bettingpros"
   },
   {
-   "player": "Jakobi Meyers",
-   "team": "JAC",
-   "pos": "WR",
-   "stat_type": "Rec TDs",
-   "stat_key": "rec_td",
-   "line": 5.2,
-   "posted_line": 5.5,
-   "fair_prob_over": 0.4194,
-   "devig_method": "poisson",
-   "consensus_over_odds": 125,
-   "consensus_under_odds": -160,
-   "best_over": {
-    "odds": -118,
-    "line": 4.5,
-    "book": "PrizePicks"
-   },
-   "best_under": {
-    "odds": -155,
-    "line": 5.5,
-    "book": "Caesars"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Luther Burden III",
-   "team": "CHI",
-   "pos": "WR",
-   "stat_type": "Rec TDs",
-   "stat_key": "rec_td",
-   "line": 4.59,
-   "posted_line": 4.5,
-   "fair_prob_over": 0.4843,
-   "devig_method": "poisson",
-   "consensus_over_odds": -105,
-   "consensus_under_odds": -120,
-   "best_over": {
-    "odds": -105,
-    "line": 4.5,
-    "book": "DraftKings"
-   },
-   "best_under": {
-    "odds": -2400,
-    "line": 5.5,
-    "book": "Kalshi"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Aaron Jones Sr.",
+   "player": "Kyler Murray",
    "team": "MIN",
-   "pos": "RB",
+   "pos": "QB",
    "stat_type": "Rush TDs",
    "stat_key": "rush_td",
-   "line": 4.54,
+   "line": 4.27,
    "posted_line": 5.5,
-   "fair_prob_over": 0.3036,
+   "fair_prob_over": 0.2577,
    "devig_method": "poisson",
    "consensus_over_odds": 194,
-   "consensus_under_odds": -355,
+   "consensus_under_odds": -4902,
    "best_over": {
     "odds": 194,
     "line": 5.5,
     "book": "Kalshi"
    },
    "best_under": {
-    "odds": -355,
+    "odds": -4900,
     "line": 5.5,
     "book": "Kalshi"
    },
@@ -24424,30 +24040,6 @@
    "source": "bettingpros"
   },
   {
-   "player": "Breece Hall",
-   "team": "NYJ",
-   "pos": "RB",
-   "stat_type": "Rush TDs",
-   "stat_key": "rush_td",
-   "line": 5.34,
-   "posted_line": 5.5,
-   "fair_prob_over": 0.4436,
-   "devig_method": "poisson",
-   "consensus_over_odds": 115,
-   "consensus_under_odds": -140,
-   "best_over": {
-    "odds": 133,
-    "line": 3.5,
-    "book": "Polymarket"
-   },
-   "best_under": {
-    "odds": -113,
-    "line": 5.5,
-    "book": "Kalshi"
-   },
-   "source": "bettingpros"
-  },
-  {
    "player": "Kenyon Sadiq",
    "team": "NYJ",
    "pos": "TE",
@@ -24472,98 +24064,98 @@
    "source": "bettingpros"
   },
   {
-   "player": "J.K. Dobbins",
-   "team": "DEN",
-   "pos": "RB",
-   "stat_type": "Rush TDs",
-   "stat_key": "rush_td",
-   "line": 5.32,
-   "posted_line": 5.5,
-   "fair_prob_over": 0.4401,
-   "devig_method": "poisson",
-   "consensus_over_odds": 115,
-   "consensus_under_odds": -145,
-   "best_over": {
-    "odds": 135,
-    "line": 5.5,
-    "book": "BetMGM"
-   },
-   "best_under": {
-    "odds": -118,
-    "line": 5.5,
-    "book": "PrizePicks"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Jaylen Warren",
-   "team": "PIT",
-   "pos": "RB",
-   "stat_type": "Rush TDs",
-   "stat_key": "rush_td",
-   "line": 5.15,
+   "player": "Luther Burden III",
+   "team": "CHI",
+   "pos": "WR",
+   "stat_type": "Rec TDs",
+   "stat_key": "rec_td",
+   "line": 4.59,
    "posted_line": 4.5,
-   "fair_prob_over": 0.586,
+   "fair_prob_over": 0.4843,
    "devig_method": "poisson",
-   "consensus_over_odds": -160,
-   "consensus_under_odds": 130,
+   "consensus_over_odds": -105,
+   "consensus_under_odds": -120,
    "best_over": {
-    "odds": -160,
+    "odds": -105,
     "line": 4.5,
     "book": "DraftKings"
    },
    "best_under": {
-    "odds": 257,
+    "odds": -2400,
     "line": 5.5,
     "book": "Kalshi"
    },
    "source": "bettingpros"
   },
   {
-   "player": "Bucky Irving",
-   "team": "TB",
+   "player": "Woody Marks",
+   "team": "HOU",
    "pos": "RB",
    "stat_type": "Rush TDs",
    "stat_key": "rush_td",
-   "line": 5.24,
+   "line": 7.18,
    "posted_line": 5.5,
-   "fair_prob_over": 0.4255,
+   "fair_prob_over": 0.7216,
    "devig_method": "poisson",
-   "consensus_over_odds": 125,
-   "consensus_under_odds": -150,
+   "consensus_over_odds": -2398,
+   "consensus_under_odds": 170,
    "best_over": {
-    "odds": -125,
-    "line": 4.5,
-    "book": "Hard Rock"
+    "odds": -2400,
+    "line": 5.5,
+    "book": "Kalshi"
    },
    "best_under": {
-    "odds": -170,
+    "odds": 170,
+    "line": 5.5,
+    "book": "Kalshi"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Jakobi Meyers",
+   "team": "JAC",
+   "pos": "WR",
+   "stat_type": "Rec TDs",
+   "stat_key": "rec_td",
+   "line": 5.2,
+   "posted_line": 5.5,
+   "fair_prob_over": 0.4194,
+   "devig_method": "poisson",
+   "consensus_over_odds": 125,
+   "consensus_under_odds": -160,
+   "best_over": {
+    "odds": -118,
+    "line": 4.5,
+    "book": "PrizePicks"
+   },
+   "best_under": {
+    "odds": -155,
     "line": 5.5,
     "book": "Caesars"
    },
    "source": "bettingpros"
   },
   {
-   "player": "Jameson Williams",
-   "team": "DET",
-   "pos": "WR",
-   "stat_type": "Rec TDs",
-   "stat_key": "rec_td",
-   "line": 5.67,
+   "player": "Tony Pollard",
+   "team": "TEN",
+   "pos": "RB",
+   "stat_type": "Rush TDs",
+   "stat_key": "rush_td",
+   "line": 5.28,
    "posted_line": 5.5,
-   "fair_prob_over": 0.5,
+   "fair_prob_over": 0.4335,
    "devig_method": "poisson",
-   "consensus_over_odds": -115,
-   "consensus_under_odds": -115,
+   "consensus_over_odds": 115,
+   "consensus_under_odds": -155,
    "best_over": {
-    "odds": 178,
-    "line": 5.5,
-    "book": "Kalshi"
+    "odds": -170,
+    "line": 3.5,
+    "book": "Polymarket"
    },
    "best_under": {
-    "odds": -105,
+    "odds": -140,
     "line": 5.5,
-    "book": "BetMGM"
+    "book": "DraftKings"
    },
    "source": "bettingpros"
   },
@@ -24616,6 +24208,150 @@
    "source": "bettingpros"
   },
   {
+   "player": "Bucky Irving",
+   "team": "TB",
+   "pos": "RB",
+   "stat_type": "Rush TDs",
+   "stat_key": "rush_td",
+   "line": 5.24,
+   "posted_line": 5.5,
+   "fair_prob_over": 0.4255,
+   "devig_method": "poisson",
+   "consensus_over_odds": 125,
+   "consensus_under_odds": -150,
+   "best_over": {
+    "odds": -125,
+    "line": 4.5,
+    "book": "Hard Rock"
+   },
+   "best_under": {
+    "odds": -170,
+    "line": 5.5,
+    "book": "Caesars"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Jameson Williams",
+   "team": "DET",
+   "pos": "WR",
+   "stat_type": "Rec TDs",
+   "stat_key": "rec_td",
+   "line": 5.67,
+   "posted_line": 5.5,
+   "fair_prob_over": 0.5,
+   "devig_method": "poisson",
+   "consensus_over_odds": -115,
+   "consensus_under_odds": -115,
+   "best_over": {
+    "odds": 203,
+    "line": 5.5,
+    "book": "Polymarket"
+   },
+   "best_under": {
+    "odds": -105,
+    "line": 5.5,
+    "book": "BetMGM"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "J.K. Dobbins",
+   "team": "DEN",
+   "pos": "RB",
+   "stat_type": "Rush TDs",
+   "stat_key": "rush_td",
+   "line": 5.32,
+   "posted_line": 5.5,
+   "fair_prob_over": 0.4401,
+   "devig_method": "poisson",
+   "consensus_over_odds": 115,
+   "consensus_under_odds": -145,
+   "best_over": {
+    "odds": 135,
+    "line": 5.5,
+    "book": "BetMGM"
+   },
+   "best_under": {
+    "odds": -118,
+    "line": 5.5,
+    "book": "PrizePicks"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Aaron Jones Sr.",
+   "team": "MIN",
+   "pos": "RB",
+   "stat_type": "Rush TDs",
+   "stat_key": "rush_td",
+   "line": 4.59,
+   "posted_line": 5.5,
+   "fair_prob_over": 0.3123,
+   "devig_method": "poisson",
+   "consensus_over_odds": 186,
+   "consensus_under_odds": -335,
+   "best_over": {
+    "odds": 186,
+    "line": 5.5,
+    "book": "Kalshi"
+   },
+   "best_under": {
+    "odds": -335,
+    "line": 5.5,
+    "book": "Kalshi"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Breece Hall",
+   "team": "NYJ",
+   "pos": "RB",
+   "stat_type": "Rush TDs",
+   "stat_key": "rush_td",
+   "line": 5.34,
+   "posted_line": 5.5,
+   "fair_prob_over": 0.4436,
+   "devig_method": "poisson",
+   "consensus_over_odds": 115,
+   "consensus_under_odds": -140,
+   "best_over": {
+    "odds": 133,
+    "line": 3.5,
+    "book": "Polymarket"
+   },
+   "best_under": {
+    "odds": -113,
+    "line": 5.5,
+    "book": "Kalshi"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Jaylen Warren",
+   "team": "PIT",
+   "pos": "RB",
+   "stat_type": "Rush TDs",
+   "stat_key": "rush_td",
+   "line": 5.15,
+   "posted_line": 4.5,
+   "fair_prob_over": 0.586,
+   "devig_method": "poisson",
+   "consensus_over_odds": -160,
+   "consensus_under_odds": 130,
+   "best_over": {
+    "odds": -160,
+    "line": 4.5,
+    "book": "DraftKings"
+   },
+   "best_under": {
+    "odds": 257,
+    "line": 5.5,
+    "book": "Kalshi"
+   },
+   "source": "bettingpros"
+  },
+  {
    "player": "Isaiah Likely",
    "team": "NYG",
    "pos": "TE",
@@ -24633,81 +24369,9 @@
     "book": "Caesars"
    },
    "best_under": {
-    "odds": 117,
+    "odds": 122,
     "line": 5.5,
     "book": "Kalshi"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Jacory Croskey-Merritt",
-   "team": "WAS",
-   "pos": "RB",
-   "stat_type": "Rush TDs",
-   "stat_key": "rush_td",
-   "line": 5.89,
-   "posted_line": 5.5,
-   "fair_prob_over": 0.5361,
-   "devig_method": "poisson",
-   "consensus_over_odds": -150,
-   "consensus_under_odds": -108,
-   "best_over": {
-    "odds": -150,
-    "line": 5.5,
-    "book": "Kalshi"
-   },
-   "best_under": {
-    "odds": -108,
-    "line": 5.5,
-    "book": "Kalshi"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Harold Fannin Jr.",
-   "team": "CLE",
-   "pos": "TE",
-   "stat_type": "Rec TDs",
-   "stat_key": "rec_td",
-   "line": 4.93,
-   "posted_line": 4.5,
-   "fair_prob_over": 0.5468,
-   "devig_method": "poisson",
-   "consensus_over_odds": -135,
-   "consensus_under_odds": 110,
-   "best_over": {
-    "odds": -118,
-    "line": 4.5,
-    "book": "PrizePicks"
-   },
-   "best_under": {
-    "odds": 178,
-    "line": 5.5,
-    "book": "Kalshi"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Terry McLaurin",
-   "team": "WAS",
-   "pos": "WR",
-   "stat_type": "Rec TDs",
-   "stat_key": "rec_td",
-   "line": 5.83,
-   "posted_line": 5.5,
-   "fair_prob_over": 0.5263,
-   "devig_method": "poisson",
-   "consensus_over_odds": -125,
-   "consensus_under_odds": 100,
-   "best_over": {
-    "odds": -110,
-    "line": 4.5,
-    "book": "theScore Bet"
-   },
-   "best_under": {
-    "odds": 110,
-    "line": 5.5,
-    "book": "BetMGM"
    },
    "source": "bettingpros"
   },
@@ -24736,26 +24400,50 @@
    "source": "bettingpros"
   },
   {
-   "player": "Trevor Lawrence",
-   "team": "JAC",
-   "pos": "QB",
-   "stat_type": "Rush TDs",
-   "stat_key": "rush_td",
-   "line": 5.67,
-   "posted_line": 5,
-   "fair_prob_over": 0.5,
+   "player": "Harold Fannin Jr.",
+   "team": "CLE",
+   "pos": "TE",
+   "stat_type": "Rec TDs",
+   "stat_key": "rec_td",
+   "line": 4.93,
+   "posted_line": 4.5,
+   "fair_prob_over": 0.5468,
    "devig_method": "poisson",
-   "consensus_over_odds": -118,
-   "consensus_under_odds": -118,
+   "consensus_over_odds": -135,
+   "consensus_under_odds": 110,
    "best_over": {
     "odds": -118,
-    "line": 5,
+    "line": 4.5,
     "book": "PrizePicks"
    },
    "best_under": {
-    "odds": -118,
-    "line": 5,
-    "book": "PrizePicks"
+    "odds": 178,
+    "line": 5.5,
+    "book": "Kalshi"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Jacory Croskey-Merritt",
+   "team": "WAS",
+   "pos": "RB",
+   "stat_type": "Rush TDs",
+   "stat_key": "rush_td",
+   "line": 5.92,
+   "posted_line": 5.5,
+   "fair_prob_over": 0.5406,
+   "devig_method": "poisson",
+   "consensus_over_odds": -150,
+   "consensus_under_odds": -104,
+   "best_over": {
+    "odds": -150,
+    "line": 5.5,
+    "book": "Kalshi"
+   },
+   "best_under": {
+    "odds": -104,
+    "line": 5.5,
+    "book": "Kalshi"
    },
    "source": "bettingpros"
   },
@@ -24775,6 +24463,30 @@
     "odds": -125,
     "line": 4.5,
     "book": "Caesars"
+   },
+   "best_under": {
+    "odds": -118,
+    "line": 5,
+    "book": "PrizePicks"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Trevor Lawrence",
+   "team": "JAC",
+   "pos": "QB",
+   "stat_type": "Rush TDs",
+   "stat_key": "rush_td",
+   "line": 5.67,
+   "posted_line": 5,
+   "fair_prob_over": 0.5,
+   "devig_method": "poisson",
+   "consensus_over_odds": -118,
+   "consensus_under_odds": -118,
+   "best_over": {
+    "odds": -118,
+    "line": 5,
+    "book": "PrizePicks"
    },
    "best_under": {
     "odds": -118,
@@ -24832,30 +24544,6 @@
    "source": "bettingpros"
   },
   {
-   "player": "Jordyn Tyson",
-   "team": "NO",
-   "pos": "WR",
-   "stat_type": "Rec TDs",
-   "stat_key": "rec_td",
-   "line": 4.55,
-   "posted_line": 4.5,
-   "fair_prob_over": 0.4783,
-   "devig_method": "poisson",
-   "consensus_over_odds": 100,
-   "consensus_under_odds": -120,
-   "best_over": {
-    "odds": 100,
-    "line": 4.5,
-    "book": "Caesars"
-   },
-   "best_under": {
-    "odds": -105,
-    "line": 4.5,
-    "book": "Hard Rock"
-   },
-   "source": "bettingpros"
-  },
-  {
    "player": "Tyler Shough",
    "team": "NO",
    "pos": "QB",
@@ -24897,33 +24585,9 @@
     "book": "Caesars"
    },
    "best_under": {
-    "odds": 127,
+    "odds": 122,
     "line": 4.5,
     "book": "Polymarket"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Jayden Daniels",
-   "team": "WAS",
-   "pos": "QB",
-   "stat_type": "Rush TDs",
-   "stat_key": "rush_td",
-   "line": 4.67,
-   "posted_line": 4.5,
-   "fair_prob_over": 0.5,
-   "devig_method": "poisson",
-   "consensus_over_odds": -110,
-   "consensus_under_odds": -110,
-   "best_over": {
-    "odds": 567,
-    "line": 3.5,
-    "book": "Polymarket US"
-   },
-   "best_under": {
-    "odds": -105,
-    "line": 4.5,
-    "book": "DraftKings"
    },
    "source": "bettingpros"
   },
@@ -24946,6 +24610,30 @@
    },
    "best_under": {
     "odds": -135,
+    "line": 4.5,
+    "book": "DraftKings"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Jayden Daniels",
+   "team": "WAS",
+   "pos": "QB",
+   "stat_type": "Rush TDs",
+   "stat_key": "rush_td",
+   "line": 4.67,
+   "posted_line": 4.5,
+   "fair_prob_over": 0.5,
+   "devig_method": "poisson",
+   "consensus_over_odds": -110,
+   "consensus_under_odds": -110,
+   "best_over": {
+    "odds": 567,
+    "line": 3.5,
+    "book": "Polymarket US"
+   },
+   "best_under": {
+    "odds": -105,
     "line": 4.5,
     "book": "DraftKings"
    },
@@ -25024,30 +24712,6 @@
    "source": "bettingpros"
   },
   {
-   "player": "Jahmyr Gibbs",
-   "team": "DET",
-   "pos": "RB",
-   "stat_type": "Rec TDs",
-   "stat_key": "rec_td",
-   "line": 3.53,
-   "posted_line": 3.5,
-   "fair_prob_over": 0.4694,
-   "devig_method": "poisson",
-   "consensus_over_odds": 100,
-   "consensus_under_odds": -130,
-   "best_over": {
-    "odds": 100,
-    "line": 3.5,
-    "book": "Caesars"
-   },
-   "best_under": {
-    "odds": 163,
-    "line": 4.5,
-    "book": "Polymarket"
-   },
-   "source": "bettingpros"
-  },
-  {
    "player": "Jordan Addison",
    "team": "MIN",
    "pos": "WR",
@@ -25068,6 +24732,30 @@
     "odds": -110,
     "line": 4.5,
     "book": "BetMGM"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Jahmyr Gibbs",
+   "team": "DET",
+   "pos": "RB",
+   "stat_type": "Rec TDs",
+   "stat_key": "rec_td",
+   "line": 3.53,
+   "posted_line": 3.5,
+   "fair_prob_over": 0.4694,
+   "devig_method": "poisson",
+   "consensus_over_odds": 100,
+   "consensus_under_odds": -130,
+   "best_over": {
+    "odds": 100,
+    "line": 3.5,
+    "book": "Caesars"
+   },
+   "best_under": {
+    "odds": 138,
+    "line": 4.5,
+    "book": "Polymarket"
    },
    "source": "bettingpros"
   },
@@ -25240,6 +24928,30 @@
    "source": "bettingpros"
   },
   {
+   "player": "Calvin Ridley",
+   "team": "TEN",
+   "pos": "WR",
+   "stat_type": "Rec TDs",
+   "stat_key": "rec_td",
+   "line": 3.41,
+   "posted_line": 3.5,
+   "fair_prob_over": 0.4436,
+   "devig_method": "poisson",
+   "consensus_over_odds": 115,
+   "consensus_under_odds": -140,
+   "best_over": {
+    "odds": 376,
+    "line": 3.5,
+    "book": "Polymarket"
+   },
+   "best_under": {
+    "odds": -118,
+    "line": 3.5,
+    "book": "PrizePicks"
+   },
+   "source": "bettingpros"
+  },
+  {
    "player": "Jerry Jeudy",
    "team": "CLE",
    "pos": "WR",
@@ -25267,54 +24979,6 @@
    "player": "Cade Otton",
    "team": "TB",
    "pos": "TE",
-   "stat_type": "Rec TDs",
-   "stat_key": "rec_td",
-   "line": 3.67,
-   "posted_line": 3.5,
-   "fair_prob_over": 0.5,
-   "devig_method": "poisson",
-   "consensus_over_odds": -118,
-   "consensus_under_odds": -118,
-   "best_over": {
-    "odds": -118,
-    "line": 3.5,
-    "book": "PrizePicks"
-   },
-   "best_under": {
-    "odds": -118,
-    "line": 3.5,
-    "book": "PrizePicks"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Bo Nix",
-   "team": "DEN",
-   "pos": "QB",
-   "stat_type": "Rush TDs",
-   "stat_key": "rush_td",
-   "line": 3.67,
-   "posted_line": 3.5,
-   "fair_prob_over": 0.5,
-   "devig_method": "poisson",
-   "consensus_over_odds": -118,
-   "consensus_under_odds": -118,
-   "best_over": {
-    "odds": -118,
-    "line": 3.5,
-    "book": "PrizePicks"
-   },
-   "best_under": {
-    "odds": -118,
-    "line": 3.5,
-    "book": "PrizePicks"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Khalil Shakir",
-   "team": "BUF",
-   "pos": "WR",
    "stat_type": "Rec TDs",
    "stat_key": "rec_td",
    "line": 3.67,
@@ -25408,26 +25072,26 @@
    "source": "bettingpros"
   },
   {
-   "player": "Bijan Robinson",
-   "team": "ATL",
-   "pos": "RB",
-   "stat_type": "Rec TDs",
-   "stat_key": "rec_td",
-   "line": 3.52,
+   "player": "Bo Nix",
+   "team": "DEN",
+   "pos": "QB",
+   "stat_type": "Rush TDs",
+   "stat_key": "rush_td",
+   "line": 3.67,
    "posted_line": 3.5,
-   "fair_prob_over": 0.4675,
+   "fair_prob_over": 0.5,
    "devig_method": "poisson",
-   "consensus_over_odds": 105,
-   "consensus_under_odds": -125,
+   "consensus_over_odds": -118,
+   "consensus_under_odds": -118,
    "best_over": {
-    "odds": 110,
+    "odds": -118,
     "line": 3.5,
-    "book": "Caesars"
+    "book": "PrizePicks"
    },
    "best_under": {
-    "odds": -104,
+    "odds": -118,
     "line": 3.5,
-    "book": "Polymarket"
+    "book": "PrizePicks"
    },
    "source": "bettingpros"
   },
@@ -25435,6 +25099,30 @@
    "player": "Chase Brown",
    "team": "CIN",
    "pos": "RB",
+   "stat_type": "Rec TDs",
+   "stat_key": "rec_td",
+   "line": 3.67,
+   "posted_line": 3.5,
+   "fair_prob_over": 0.5,
+   "devig_method": "poisson",
+   "consensus_over_odds": -118,
+   "consensus_under_odds": -118,
+   "best_over": {
+    "odds": -118,
+    "line": 3.5,
+    "book": "PrizePicks"
+   },
+   "best_under": {
+    "odds": -118,
+    "line": 3.5,
+    "book": "PrizePicks"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Khalil Shakir",
+   "team": "BUF",
+   "pos": "WR",
    "stat_type": "Rec TDs",
    "stat_key": "rec_td",
    "line": 3.67,
@@ -25476,6 +25164,30 @@
     "odds": -118,
     "line": 3.5,
     "book": "PrizePicks"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Bijan Robinson",
+   "team": "ATL",
+   "pos": "RB",
+   "stat_type": "Rec TDs",
+   "stat_key": "rec_td",
+   "line": 3.52,
+   "posted_line": 3.5,
+   "fair_prob_over": 0.4675,
+   "devig_method": "poisson",
+   "consensus_over_odds": 105,
+   "consensus_under_odds": -125,
+   "best_over": {
+    "odds": 110,
+    "line": 3.5,
+    "book": "Caesars"
+   },
+   "best_under": {
+    "odds": -104,
+    "line": 3.5,
+    "book": "Polymarket"
    },
    "source": "bettingpros"
   },
@@ -25648,54 +25360,6 @@
    "source": "bettingpros"
   },
   {
-   "player": "Caleb Williams",
-   "team": "CHI",
-   "pos": "QB",
-   "stat_type": "Rush TDs",
-   "stat_key": "rush_td",
-   "line": 2.67,
-   "posted_line": 2.5,
-   "fair_prob_over": 0.5,
-   "devig_method": "poisson",
-   "consensus_over_odds": -118,
-   "consensus_under_odds": -118,
-   "best_over": {
-    "odds": -118,
-    "line": 2.5,
-    "book": "PrizePicks"
-   },
-   "best_under": {
-    "odds": -118,
-    "line": 2.5,
-    "book": "PrizePicks"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Travis Etienne Jr.",
-   "team": "NO",
-   "pos": "RB",
-   "stat_type": "Rec TDs",
-   "stat_key": "rec_td",
-   "line": 2.67,
-   "posted_line": 2.5,
-   "fair_prob_over": 0.5,
-   "devig_method": "poisson",
-   "consensus_over_odds": -118,
-   "consensus_under_odds": -118,
-   "best_over": {
-    "odds": -118,
-    "line": 2.5,
-    "book": "PrizePicks"
-   },
-   "best_under": {
-    "odds": -118,
-    "line": 2.5,
-    "book": "PrizePicks"
-   },
-   "source": "bettingpros"
-  },
-  {
    "player": "Saquon Barkley",
    "team": "PHI",
    "pos": "RB",
@@ -25744,11 +25408,11 @@
    "source": "bettingpros"
   },
   {
-   "player": "Justin Herbert",
-   "team": "LAC",
-   "pos": "QB",
-   "stat_type": "Rush TDs",
-   "stat_key": "rush_td",
+   "player": "Gunnar Helm",
+   "team": "TEN",
+   "pos": "TE",
+   "stat_type": "Rec TDs",
+   "stat_key": "rec_td",
    "line": 2.67,
    "posted_line": 2.5,
    "fair_prob_over": 0.5,
@@ -25768,11 +25432,11 @@
    "source": "bettingpros"
   },
   {
-   "player": "Gunnar Helm",
-   "team": "TEN",
-   "pos": "TE",
-   "stat_type": "Rec TDs",
-   "stat_key": "rec_td",
+   "player": "Justin Herbert",
+   "team": "LAC",
+   "pos": "QB",
+   "stat_type": "Rush TDs",
+   "stat_key": "rush_td",
    "line": 2.67,
    "posted_line": 2.5,
    "fair_prob_over": 0.5,
@@ -25864,30 +25528,6 @@
    "source": "bettingpros"
   },
   {
-   "player": "Baker Mayfield",
-   "team": "TB",
-   "pos": "QB",
-   "stat_type": "Rush TDs",
-   "stat_key": "rush_td",
-   "line": 1.68,
-   "posted_line": 1.5,
-   "fair_prob_over": 0.5,
-   "devig_method": "poisson",
-   "consensus_over_odds": -118,
-   "consensus_under_odds": -118,
-   "best_over": {
-    "odds": -118,
-    "line": 1.5,
-    "book": "PrizePicks"
-   },
-   "best_under": {
-    "odds": -118,
-    "line": 1.5,
-    "book": "PrizePicks"
-   },
-   "source": "bettingpros"
-  },
-  {
    "player": "Jordan Love",
    "team": "GB",
    "pos": "QB",
@@ -25917,6 +25557,30 @@
    "pos": "QB",
    "stat_type": "Rush TDs",
    "stat_key": "rush_td",
+   "line": 1.68,
+   "posted_line": 1.5,
+   "fair_prob_over": 0.5,
+   "devig_method": "poisson",
+   "consensus_over_odds": -118,
+   "consensus_under_odds": -118,
+   "best_over": {
+    "odds": -118,
+    "line": 1.5,
+    "book": "PrizePicks"
+   },
+   "best_under": {
+    "odds": -118,
+    "line": 1.5,
+    "book": "PrizePicks"
+   },
+   "source": "bettingpros"
+  },
+  {
+   "player": "Jonathan Taylor",
+   "team": "IND",
+   "pos": "RB",
+   "stat_type": "Rec TDs",
+   "stat_key": "rec_td",
    "line": 1.68,
    "posted_line": 1.5,
    "fair_prob_over": 0.5,
@@ -25989,30 +25653,6 @@
    "pos": "QB",
    "stat_type": "Rush TDs",
    "stat_key": "rush_td",
-   "line": 1.68,
-   "posted_line": 1.5,
-   "fair_prob_over": 0.5,
-   "devig_method": "poisson",
-   "consensus_over_odds": -118,
-   "consensus_under_odds": -118,
-   "best_over": {
-    "odds": -118,
-    "line": 1.5,
-    "book": "PrizePicks"
-   },
-   "best_under": {
-    "odds": -118,
-    "line": 1.5,
-    "book": "PrizePicks"
-   },
-   "source": "bettingpros"
-  },
-  {
-   "player": "Jonathan Taylor",
-   "team": "IND",
-   "pos": "RB",
-   "stat_type": "Rec TDs",
-   "stat_key": "rec_td",
    "line": 1.68,
    "posted_line": 1.5,
    "fair_prob_over": 0.5,
@@ -26128,11 +25768,11 @@
    "source": "bettingpros"
   },
   {
-   "player": "Derrick Henry",
-   "team": "BAL",
-   "pos": "RB",
-   "stat_type": "Rec TDs",
-   "stat_key": "rec_td",
+   "player": "Jared Goff",
+   "team": "DET",
+   "pos": "QB",
+   "stat_type": "Rush TDs",
+   "stat_key": "rush_td",
    "line": 0.69,
    "posted_line": 0.5,
    "fair_prob_over": 0.5,
@@ -26152,11 +25792,11 @@
    "source": "bettingpros"
   },
   {
-   "player": "Jared Goff",
-   "team": "DET",
-   "pos": "QB",
-   "stat_type": "Rush TDs",
-   "stat_key": "rush_td",
+   "player": "Derrick Henry",
+   "team": "BAL",
+   "pos": "RB",
+   "stat_type": "Rec TDs",
+   "stat_key": "rec_td",
    "line": 0.69,
    "posted_line": 0.5,
    "fair_prob_over": 0.5,
@@ -26546,7 +26186,7 @@
     "Rush Attempts": 7.5,
     "Fantasy Score": 7.5,
     "Longest Reception": 6.5,
-    "Rush TDs": 6.28
+    "Rush TDs": 7.18
    }
   },
   {
@@ -27022,18 +26662,16 @@
    "pos": "QB",
    "lines": {
     "Pass+Rush Yds": 260.5,
-    "Pass Yards": 3672.4,
+    "Pass Yards": 228.5,
     "Completion Percentage": 63.1,
     "Longest Completion": 36.5,
     "Pass Attempts": 31,
-    "Rush Yards": 374.5,
+    "Rush Yards": 26.5,
     "Pass Completions": 19.5,
     "Fantasy Score": 19,
     "Longest Rush": 12.5,
     "Rush Attempts": 5,
-    "Sacks Taken": 1.5,
-    "Pass TDs": 24.67,
-    "Rush TDs": 2.67
+    "Sacks Taken": 1.5
    }
   },
   {
@@ -27096,7 +26734,7 @@
     "Rush Yards Per Carry": 3.7,
     "Yards on First Rush Attempt": 3.5,
     "Receptions": 2.5,
-    "Rush TDs": 4.54
+    "Rush TDs": 4.59
    }
   },
   {
@@ -27981,9 +27619,9 @@
    "pos": "RB",
    "lines": {
     "Rush+Rec Yds": 55.5,
-    "Rush Yards": 821.39,
+    "Rush Yards": 41.5,
     "Rush Yards in First 5 Attempts": 20.5,
-    "Receiving Yards": 325.5,
+    "Receiving Yards": 11.5,
     "Rush Attempts": 11,
     "Longest Rush": 10.5,
     "Fantasy Score": 9,
@@ -27992,9 +27630,7 @@
     "Rush Yards Per Carry": 3.9,
     "Yards on First Rush Attempt": 3.5,
     "Rec Targets": 3,
-    "Receptions": 2,
-    "Rush TDs": 5.4,
-    "Rec TDs": 2.67
+    "Receptions": 2
    }
   },
   {
@@ -28071,7 +27707,7 @@
     "Longest Rush": 7.5,
     "Fantasy Score": 6,
     "Rec Targets": 2.5,
-    "Rush TDs": 4.12
+    "Rush TDs": 4.05
    }
   },
   {
@@ -28372,7 +28008,7 @@
    "team": "NYJ",
    "pos": "WR",
    "lines": {
-    "Receiving Yards": 698.23,
+    "Receiving Yards": 688.63,
     "Longest Reception": 18.5,
     "Fantasy Score": 7,
     "Rec Targets": 5
@@ -28488,17 +28124,16 @@
    "pos": "QB",
    "lines": {
     "Pass+Rush Yds": 235.5,
-    "Pass Yards": 3487.65,
+    "Pass Yards": 215.5,
     "Completion Percentage": 67.3,
     "Longest Completion": 37.5,
     "Pass Attempts": 28,
     "Pass Completions": 18.5,
-    "Rush Yards": 309.5,
+    "Rush Yards": 16.5,
     "Fantasy Score": 16,
     "Longest Rush": 9.5,
     "Sacks Taken": 2,
-    "Pass TDs": 25.28,
-    "Rush TDs": 1.68
+    "Pass TDs": 1.5
    }
   },
   {
@@ -28794,8 +28429,8 @@
    "team": "LV",
    "pos": "QB",
    "lines": {
-    "Pass TDs": 16.27,
-    "Pass Yards": 192.5,
+    "Pass TDs": 24.11,
+    "Pass Yards": 3719.57,
     "Completion Percentage": 66.1,
     "Longest Completion": 31.5,
     "Pass Attempts": 29.5,
@@ -29530,7 +29165,7 @@
     "Rush Yards Per Carry": 4,
     "Longest Reception": 3.5,
     "Receiving Yards": 2.5,
-    "Rush TDs": 5.89
+    "Rush TDs": 5.92
    }
   },
   {
@@ -30110,7 +29745,7 @@
     "Longest Rush": 11.5,
     "Receiving Yards": 7.5,
     "Longest Reception": 6.5,
-    "Rush TDs": 4.17
+    "Rush TDs": 4.22
    }
   },
   {
@@ -30255,7 +29890,7 @@
     "Sacks Taken": 3,
     "INT": 0.5,
     "Pass TDs": 19.67,
-    "Rush TDs": 3.94
+    "Rush TDs": 3.88
    }
   },
   {
@@ -30881,6 +30516,15 @@
    }
   },
   {
+   "player": "Nico Collins",
+   "team": "HOU",
+   "pos": "WR",
+   "lines": {
+    "Receiving Yards": 1150.5,
+    "Rec TDs": 6.46
+   }
+  },
+  {
    "player": "Brock Bowers",
    "team": "LV",
    "pos": "TE",
@@ -30898,15 +30542,6 @@
     "Rush Yards": 54.5,
     "Rec TDs": 5.58,
     "Rush TDs": 0.69
-   }
-  },
-  {
-   "player": "Nico Collins",
-   "team": "HOU",
-   "pos": "WR",
-   "lines": {
-    "Receiving Yards": 1150.5,
-    "Rec TDs": 6.46
    }
   },
   {
@@ -30936,15 +30571,6 @@
    "lines": {
     "Receiving Yards": 900.5,
     "Rec TDs": 5.73
-   }
-  },
-  {
-   "player": "Jordyn Tyson",
-   "team": "NO",
-   "pos": "WR",
-   "lines": {
-    "Receiving Yards": 768.91,
-    "Rec TDs": 4.55
    }
   },
   {
@@ -31015,22 +30641,6 @@
    "pos": "TE",
    "lines": {
     "Receiving Yards": 500.5
-   }
-  },
-  {
-   "player": "Zach Charbonnet",
-   "team": "SEA",
-   "pos": "RB",
-   "lines": {
-    "Rush TDs": 6.17
-   }
-  },
-  {
-   "player": "Jonah Coleman",
-   "team": "DEN",
-   "pos": "RB",
-   "lines": {
-    "Rush TDs": 3.82
    }
   }
  ]
