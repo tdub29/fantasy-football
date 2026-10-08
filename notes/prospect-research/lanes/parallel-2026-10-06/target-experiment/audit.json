@@ -1,0 +1,2411 @@
+{
+ "store_sha_expected": "85d9801d4f2ec3f750af80e62f13f2b20615c508b1ce85fc27fd132981afa9c0",
+ "env": {
+  "PROSPECT_DB": "C:\\Users\\TrevorWhite\\Downloads\\Big Projects\\Fantasy Football\\.claude\\worktrees\\prospect-model-db\\projections\\lanes\\parallel-2026-10-06\\target-experiment\\scratch\\work.sqlite",
+  "NFLVERSE_CACHE": "C:\\Users\\TrevorWhite\\Downloads\\Big Projects\\Fantasy Football\\.claude\\worktrees\\prospect-model-db\\projections\\lanes\\parallel-2026-10-06\\target-experiment\\scratch\\nflverse-cache",
+  "OVERALL_SCRATCH": "C:\\Users\\TrevorWhite\\Downloads\\Big Projects\\Fantasy Football\\.claude\\worktrees\\prospect-model-db\\projections\\lanes\\parallel-2026-10-06\\target-experiment\\scratch",
+  "NFMDD_CSV": "C:\\Users\\TrevorWhite\\Downloads\\Big Projects\\Fantasy Football\\.claude\\worktrees\\prospect-model-db\\projections\\lanes\\parallel-2026-10-06\\target-experiment\\scratch\\nfmdd\\nfmdd_predraft.csv"
+ },
+ "work_db_sha_before_build": "85d9801d4f2ec3f750af80e62f13f2b20615c508b1ce85fc27fd132981afa9c0",
+ "new_pickle_sha256": "cb7ba4c90ae89aee8d0c1b7a868999979ce32277e2791f7a518e7150b03b7371",
+ "provenance": {
+  "old_pickle": {
+   "path": "C:\\Users\\TrevorWhite\\.claude\\jobs\\ea66a469\\tmp\\overall\\overall_data.pkl",
+   "sha256": "c79d7ab8182722277f78735278b81436a437b2a5058f08b72ec3ec79400c0d6e",
+   "mtime": "2026-10-05T22:52:39.262818575-07:00"
+  },
+  "old_scratch_store_mtime": "2026-10-05T22:51:03.092394829-07:00",
+  "master_store_mtime": "2026-10-06T09:02:23.466721535-07:00",
+  "age0_old": 18.71047227926078,
+  "age0_new": 18.71047227926078
+ },
+ "population_compare": {
+  "rows_old": 2479,
+  "rows_new": 2479,
+  "common": 2479,
+  "drafted_old": 1282,
+  "drafted_new": 1282,
+  "only_old": [],
+  "only_new": [],
+  "mismatch": {
+   "vor3_F1": 0,
+   "peak3_F1": 0,
+   "vor4_F1": 0,
+   "vor3_F2": 0,
+   "peak3_F2": 0,
+   "vor4_F2": 0,
+   "vor3_F3": 0,
+   "peak3_F3": 0,
+   "vor4_F3": 0,
+   "pos": 0,
+   "pick": 0,
+   "player_id": 0,
+   "link_method": 0,
+   "gsis_id": 0,
+   "weight": 0,
+   "cwt": 0,
+   "ros_weight": 0,
+   "comp_final": 56,
+   "draft_age": 0,
+   "early": 2,
+   "power": 139,
+   "rush_ypg_best": 10,
+   "ryptpa_best": 373,
+   "ryptpa_career": 949,
+   "ryptpa_final": 401,
+   "scrim_ypg": 402,
+   "speed_score": 0,
+   "stars": 0
+  },
+  "examples": {
+   "comp_final": [
+    {
+     "name": "Brian Brohm",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.6621315192743764",
+     "new": "0.6628959276018099"
+    },
+    {
+     "name": "Josh Freeman",
+     "class": "2009",
+     "udfa": "False",
+     "old": "0.5912806539509536",
+     "new": "0.5945205479452055"
+    },
+    {
+     "name": "Tim Tebow",
+     "class": "2010",
+     "udfa": "False",
+     "old": "0.6938775510204082",
+     "new": "0.6915254237288135"
+    },
+    {
+     "name": "Levi Brown",
+     "class": "2010",
+     "udfa": "False",
+     "old": "0.6345381526104418",
+     "new": "0.6356275303643725"
+    },
+    {
+     "name": "Jake Locker",
+     "class": "2011",
+     "udfa": "False",
+     "old": "0.5669781931464174",
+     "new": "0.5652173913043478"
+    },
+    {
+     "name": "Blaine Gabbert",
+     "class": "2011",
+     "udfa": "False",
+     "old": "0.6276346604215457",
+     "new": "0.6288416075650118"
+    },
+    {
+     "name": "Christian Ponder",
+     "class": "2011",
+     "udfa": "False",
+     "old": "0.6171003717472119",
+     "new": "0.6162361623616236"
+    },
+    {
+     "name": "Colin Kaepernick",
+     "class": "2011",
+     "udfa": "False",
+     "old": "0.65814696485623",
+     "new": "0.6592356687898089"
+    },
+    {
+     "name": "Robert Griffin III",
+     "class": "2012",
+     "udfa": "False",
+     "old": "0.7231182795698925",
+     "new": "0.7216216216216216"
+    },
+    {
+     "name": "Brandon Weeden",
+     "class": "2012",
+     "udfa": "False",
+     "old": "0.7367458866544789",
+     "new": "0.7372262773722628"
+    },
+    {
+     "name": "Chandler Harnish",
+     "class": "2012",
+     "udfa": "False",
+     "old": "0.6246246246246246",
+     "new": "0.6227544910179641"
+    },
+    {
+     "name": "Mike Glennon",
+     "class": "2013",
+     "udfa": "False",
+     "old": "0.5950570342205324",
+     "new": "0.5942857142857143"
+    },
+    {
+     "name": "Logan Thomas",
+     "class": "2014",
+     "udfa": "False",
+     "old": "0.5706214689265536",
+     "new": "0.5690140845070423"
+    },
+    {
+     "name": "Zach Mettenberger",
+     "class": "2014",
+     "udfa": "False",
+     "old": "0.660377358490566",
+     "new": "0.6616541353383458"
+    },
+    {
+     "name": "Keith Wenning",
+     "class": "2014",
+     "udfa": "False",
+     "old": "0.6541019955654102",
+     "new": "0.6526548672566371"
+    },
+    {
+     "name": "Garrett Gilbert",
+     "class": "2014",
+     "udfa": "False",
+     "old": "0.6688888888888889",
+     "new": "0.6703539823008849"
+    },
+    {
+     "name": "Marcus Mariota",
+     "class": "2015",
+     "udfa": "False",
+     "old": "0.6897374701670644",
+     "new": "0.6904761904761905"
+    },
+    {
+     "name": "Garrett Grayson",
+     "class": "2015",
+     "udfa": "False",
+     "old": "0.6384180790960452",
+     "new": "0.6394366197183099"
+    },
+    {
+     "name": "Bryce Petty",
+     "class": "2015",
+     "udfa": "False",
+     "old": "0.6426858513189448",
+     "new": "0.6435406698564593"
+    },
+    {
+     "name": "Jake Rudock",
+     "class": "2016",
+     "udfa": "False",
+     "old": "0.6569920844327177",
+     "new": "0.6552631578947369"
+    },
+    {
+     "name": "Deshaun Watson",
+     "class": "2017",
+     "udfa": "False",
+     "old": "0.6850828729281768",
+     "new": "0.6856617647058824"
+    },
+    {
+     "name": "Davis Webb",
+     "class": "2017",
+     "udfa": "False",
+     "old": "0.627677100494234",
+     "new": "0.6266447368421053"
+    },
+    {
+     "name": "Sam Darnold",
+     "class": "2018",
+     "udfa": "False",
+     "old": "0.6488222698072805",
+     "new": "0.6495726495726496"
+    },
+    {
+     "name": "Josh Rosen",
+     "class": "2018",
+     "udfa": "False",
+     "old": "0.639269406392694",
+     "new": "0.6400911161731208"
+    },
+    {
+     "name": "Mason Rudolph",
+     "class": "2018",
+     "udfa": "False",
+     "old": "0.6625",
+     "new": "0.6632016632016632"
+    }
+   ],
+   "early": [
+    {
+     "name": "Kellen Davis",
+     "class": "2008",
+     "udfa": "False",
+     "old": "1.0",
+     "new": "0.0"
+    },
+    {
+     "name": "Jonathan Stupar",
+     "class": "2008",
+     "udfa": "True",
+     "old": "1.0",
+     "new": "0.0"
+    }
+   ],
+   "power": [
+    {
+     "name": "Jonathan Stewart",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.0",
+     "new": "1.0"
+    },
+    {
+     "name": "Fred Davis",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.0",
+     "new": "1.0"
+    },
+    {
+     "name": "DeSean Jackson",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.0",
+     "new": "1.0"
+    },
+    {
+     "name": "Ray Rice",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.0",
+     "new": "1.0"
+    },
+    {
+     "name": "Brian Brohm",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.0",
+     "new": "1.0"
+    },
+    {
+     "name": "Harry Douglas",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.0",
+     "new": "1.0"
+    },
+    {
+     "name": "Craig Stevens",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.0",
+     "new": "1.0"
+    },
+    {
+     "name": "Steve Slaton",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.0",
+     "new": "1.0"
+    },
+    {
+     "name": "Lavelle Hawkins",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.0",
+     "new": "1.0"
+    },
+    {
+     "name": "John David Booty",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.0",
+     "new": "1.0"
+    },
+    {
+     "name": "Ryan Torain",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.0",
+     "new": "1.0"
+    },
+    {
+     "name": "Gary Barnidge",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.0",
+     "new": "1.0"
+    },
+    {
+     "name": "Matthew Slater",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.0",
+     "new": "1.0"
+    },
+    {
+     "name": "Dennis Dixon",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.0",
+     "new": "1.0"
+    },
+    {
+     "name": "Chauncey Washington",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.0",
+     "new": "1.0"
+    },
+    {
+     "name": "Alex Brink",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.0",
+     "new": "1.0"
+    },
+    {
+     "name": "Justin Forsett",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.0",
+     "new": "1.0"
+    },
+    {
+     "name": "Mario Urrutia",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.0",
+     "new": "1.0"
+    },
+    {
+     "name": "Mark Sanchez",
+     "class": "2009",
+     "udfa": "False",
+     "old": "0.0",
+     "new": "1.0"
+    },
+    {
+     "name": "Donald Brown",
+     "class": "2009",
+     "udfa": "False",
+     "old": "0.0",
+     "new": "1.0"
+    },
+    {
+     "name": "Kenny Britt",
+     "class": "2009",
+     "udfa": "False",
+     "old": "0.0",
+     "new": "1.0"
+    },
+    {
+     "name": "Pat White",
+     "class": "2009",
+     "udfa": "False",
+     "old": "0.0",
+     "new": "1.0"
+    },
+    {
+     "name": "LeSean McCoy",
+     "class": "2009",
+     "udfa": "False",
+     "old": "0.0",
+     "new": "1.0"
+    },
+    {
+     "name": "Patrick Turner",
+     "class": "2009",
+     "udfa": "False",
+     "old": "0.0",
+     "new": "1.0"
+    },
+    {
+     "name": "Mike Thomas",
+     "class": "2009",
+     "udfa": "False",
+     "old": "0.0",
+     "new": "1.0"
+    }
+   ],
+   "rush_ypg_best": [
+    {
+     "name": "Levi Brown",
+     "class": "2010",
+     "udfa": "False",
+     "old": "9.25",
+     "new": "9.125"
+    },
+    {
+     "name": "Jake Locker",
+     "class": "2011",
+     "udfa": "False",
+     "old": "90.0",
+     "new": "90.33333333333333"
+    },
+    {
+     "name": "Andy Dalton",
+     "class": "2011",
+     "udfa": "False",
+     "old": "51.9",
+     "new": "51.3"
+    },
+    {
+     "name": "Chandler Harnish",
+     "class": "2012",
+     "udfa": "False",
+     "old": "86.25",
+     "new": "87.08333333333333"
+    },
+    {
+     "name": "A.J. McCarron",
+     "class": "2014",
+     "udfa": "False",
+     "old": "8.615384615384615",
+     "new": "9.76923076923077"
+    },
+    {
+     "name": "Braxton Miller",
+     "class": "2016",
+     "udfa": "False",
+     "old": "116.16666666666667",
+     "new": "117.41666666666667"
+    },
+    {
+     "name": "Jarrett Brown",
+     "class": "2011",
+     "udfa": "True",
+     "old": "40.916666666666664",
+     "new": "41.083333333333336"
+    },
+    {
+     "name": "Kain Colter",
+     "class": "2014",
+     "udfa": "True",
+     "old": "74.08333333333333",
+     "new": "74.91666666666667"
+    },
+    {
+     "name": "Connor Shaw",
+     "class": "2014",
+     "udfa": "True",
+     "old": "65.0",
+     "new": "64.0"
+    },
+    {
+     "name": "Jeff Tuel",
+     "class": "2013",
+     "udfa": "True",
+     "old": "44.09090909090909",
+     "new": "43.27272727272727"
+    }
+   ],
+   "ryptpa_best": [
+    {
+     "name": "Jermichael Finley",
+     "class": "2008",
+     "udfa": "False",
+     "old": "1.3647342995169083",
+     "new": "1.3614457831325302"
+    },
+    {
+     "name": "Mike Hart",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.46938775510204084",
+     "new": "0.5753424657534246"
+    },
+    {
+     "name": "Allen Patrick",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.10362694300518134",
+     "new": "0.13178294573643412"
+    },
+    {
+     "name": "Gartrell Johnson",
+     "class": "2009",
+     "udfa": "False",
+     "old": "0.7448453608247423",
+     "new": "0.7467700258397932"
+    },
+    {
+     "name": "Davon Drew",
+     "class": "2009",
+     "udfa": "False",
+     "old": "1.6323529411764706",
+     "new": "1.6363636363636365"
+    },
+    {
+     "name": "Eddie Williams",
+     "class": "2009",
+     "udfa": "False",
+     "old": "1.6109090909090908",
+     "new": "1.6227106227106227"
+    },
+    {
+     "name": "LaRod Stephens-Howling",
+     "class": "2009",
+     "udfa": "False",
+     "old": "0.5504885993485342",
+     "new": "0.5487012987012987"
+    },
+    {
+     "name": "Marko Mitchell",
+     "class": "2009",
+     "udfa": "False",
+     "old": "3.1587301587301586",
+     "new": "3.096"
+    },
+    {
+     "name": "Derek Kinder",
+     "class": "2009",
+     "udfa": "False",
+     "old": "2.570032573289902",
+     "new": "2.561688311688312"
+    },
+    {
+     "name": "Eric Decker",
+     "class": "2010",
+     "udfa": "False",
+     "old": "2.6416040100250626",
+     "new": "2.6294416243654823"
+    },
+    {
+     "name": "Jimmy Graham",
+     "class": "2010",
+     "udfa": "False",
+     "old": "0.5068119891008175",
+     "new": "0.5054347826086957"
+    },
+    {
+     "name": "Dennis Pitta",
+     "class": "2010",
+     "udfa": "False",
+     "old": "2.0831234256926954",
+     "new": "2.077889447236181"
+    },
+    {
+     "name": "Garrett Graham",
+     "class": "2010",
+     "udfa": "False",
+     "old": "1.8930817610062893",
+     "new": "1.9182389937106918"
+    },
+    {
+     "name": "Andrew Quarless",
+     "class": "2010",
+     "udfa": "False",
+     "old": "1.486646884272997",
+     "new": "1.482248520710059"
+    },
+    {
+     "name": "Joe Webb",
+     "class": "2010",
+     "udfa": "False",
+     "old": "1.2722222222222221",
+     "new": "1.2651933701657458"
+    },
+    {
+     "name": "Levi Brown",
+     "class": "2010",
+     "udfa": "False",
+     "old": "0.032818532818532815",
+     "new": "0.033073929961089495"
+    },
+    {
+     "name": "Dorin Dickerson",
+     "class": "2010",
+     "udfa": "False",
+     "old": "1.5345911949685536",
+     "new": "1.550314465408805"
+    },
+    {
+     "name": "Jim Dray",
+     "class": "2010",
+     "udfa": "False",
+     "old": "0.4979919678714859",
+     "new": "0.496"
+    },
+    {
+     "name": "Dedrick Epps",
+     "class": "2010",
+     "udfa": "False",
+     "old": "0.7384105960264901",
+     "new": "0.735973597359736"
+    },
+    {
+     "name": "Jake Locker",
+     "class": "2011",
+     "udfa": "False",
+     "old": "0.04657534246575343",
+     "new": "0.04644808743169399"
+    },
+    {
+     "name": "Titus Young",
+     "class": "2011",
+     "udfa": "False",
+     "old": "2.925480769230769",
+     "new": "2.911483253588517"
+    },
+    {
+     "name": "Austin Pettis",
+     "class": "2011",
+     "udfa": "False",
+     "old": "2.300480769230769",
+     "new": "2.289473684210526"
+    },
+    {
+     "name": "Vincent Brown",
+     "class": "2011",
+     "udfa": "False",
+     "old": "3.404891304347826",
+     "new": "3.4141689373297"
+    },
+    {
+     "name": "Jerrel Jernigan",
+     "class": "2011",
+     "udfa": "False",
+     "old": "2.5617760617760617",
+     "new": "2.5817120622568095"
+    },
+    {
+     "name": "Alex Green",
+     "class": "2011",
+     "udfa": "False",
+     "old": "0.5067698259187621",
+     "new": "0.5057915057915058"
+    }
+   ],
+   "ryptpa_career": [
+    {
+     "name": "Matt Ryan",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.000564652738565782",
+     "new": "0.0005534034311012728"
+    },
+    {
+     "name": "Jonathan Stewart",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.27882960413080893",
+     "new": "0.27858985382631124"
+    },
+    {
+     "name": "Chris Johnson",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.6750629722921915",
+     "new": "0.67"
+    },
+    {
+     "name": "Dustin Keller",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.9156164383561644",
+     "new": "0.912176724137931"
+    },
+    {
+     "name": "Donnie Avery",
+     "class": "2008",
+     "udfa": "False",
+     "old": "2.173570019723866",
+     "new": "2.146056475170399"
+    },
+    {
+     "name": "Devin Thomas",
+     "class": "2008",
+     "udfa": "False",
+     "old": "1.6709346991037133",
+     "new": "1.6687979539641944"
+    },
+    {
+     "name": "John Carlson",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.680306905370844",
+     "new": "0.672566371681416"
+    },
+    {
+     "name": "James Hardy",
+     "class": "2008",
+     "udfa": "False",
+     "old": "2.152317880794702",
+     "new": "2.1502835538752363"
+    },
+    {
+     "name": "Eddie Royal",
+     "class": "2008",
+     "udfa": "False",
+     "old": "1.1245283018867924",
+     "new": "1.1924528301886792"
+    },
+    {
+     "name": "Fred Davis",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.8320146074254413",
+     "new": "0.8112759643916914"
+    },
+    {
+     "name": "Malcolm Kelly",
+     "class": "2008",
+     "udfa": "False",
+     "old": "2.1451162790697675",
+     "new": "2.143122676579926"
+    },
+    {
+     "name": "Limas Sweed",
+     "class": "2008",
+     "udfa": "False",
+     "old": "1.260431654676259",
+     "new": "1.304097771387491"
+    },
+    {
+     "name": "Brian Brohm",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.0006891798759476223",
+     "new": "0.0006798096532970768"
+    },
+    {
+     "name": "Earl Bennett",
+     "class": "2008",
+     "udfa": "False",
+     "old": "2.2853881278538815",
+     "new": "2.282782212086659"
+    },
+    {
+     "name": "Jamaal Charles",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.47337278106508873",
+     "new": "0.47294224647567074"
+    },
+    {
+     "name": "Brad Cottam",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.3333333333333333",
+     "new": "0.2719227674979887"
+    },
+    {
+     "name": "Early Doucet",
+     "class": "2008",
+     "udfa": "False",
+     "old": "1.239841783531104",
+     "new": "1.3225458468176914"
+    },
+    {
+     "name": "Harry Douglas",
+     "class": "2008",
+     "udfa": "False",
+     "old": "1.9000689179875947",
+     "new": "1.8742352141400407"
+    },
+    {
+     "name": "Craig Stevens",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.4396355353075171",
+     "new": "0.43830431491294475"
+    },
+    {
+     "name": "Steve Slaton",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.8291404612159329",
+     "new": "0.839622641509434"
+    },
+    {
+     "name": "Jermichael Finley",
+     "class": "2008",
+     "udfa": "False",
+     "old": "1.2108753315649867",
+     "new": "1.209271523178808"
+    },
+    {
+     "name": "Andre Caldwell",
+     "class": "2008",
+     "udfa": "False",
+     "old": "1.2782114975159689",
+     "new": "1.302439024390244"
+    },
+    {
+     "name": "Will Franklin",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.9618413082980012",
+     "new": "0.9778708133971292"
+    },
+    {
+     "name": "Martin Rucker",
+     "class": "2008",
+     "udfa": "False",
+     "old": "1.0884312537855845",
+     "new": "1.110645933014354"
+    },
+    {
+     "name": "Tashard Choice",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.1909221902017291",
+     "new": "0.18767705382436262"
+    }
+   ],
+   "ryptpa_final": [
+    {
+     "name": "James Hardy",
+     "class": "2008",
+     "udfa": "False",
+     "old": "2.301507537688442",
+     "new": "2.2957393483709274"
+    },
+    {
+     "name": "Malcolm Kelly",
+     "class": "2008",
+     "udfa": "False",
+     "old": "2.1709844559585494",
+     "new": "2.165374677002584"
+    },
+    {
+     "name": "Brian Brohm",
+     "class": "2008",
+     "udfa": "False",
+     "old": "-0.015486725663716814",
+     "new": "-0.01545253863134658"
+    },
+    {
+     "name": "Jamaal Charles",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.4806763285024155",
+     "new": "0.4795180722891566"
+    },
+    {
+     "name": "Harry Douglas",
+     "class": "2008",
+     "udfa": "False",
+     "old": "2.256637168141593",
+     "new": "2.251655629139073"
+    },
+    {
+     "name": "Steve Slaton",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.9956458635703919",
+     "new": "1.0246734397677795"
+    },
+    {
+     "name": "Jermichael Finley",
+     "class": "2008",
+     "udfa": "False",
+     "old": "1.3647342995169083",
+     "new": "1.3614457831325302"
+    },
+    {
+     "name": "Gary Barnidge",
+     "class": "2008",
+     "udfa": "False",
+     "old": "1.331858407079646",
+     "new": "1.3289183222958056"
+    },
+    {
+     "name": "Marcus Thomas",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.711340206185567",
+     "new": "0.7076923076923077"
+    },
+    {
+     "name": "Allen Patrick",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.10362694300518134",
+     "new": "0.13178294573643412"
+    },
+    {
+     "name": "Mario Urrutia",
+     "class": "2008",
+     "udfa": "False",
+     "old": "0.9800884955752213",
+     "new": "0.977924944812362"
+    },
+    {
+     "name": "Mike Goodson",
+     "class": "2009",
+     "udfa": "False",
+     "old": "0.9367396593673966",
+     "new": "0.9390243902439024"
+    },
+    {
+     "name": "Shawn Nelson",
+     "class": "2009",
+     "udfa": "False",
+     "old": "1.0535279805352797",
+     "new": "1.058679706601467"
+    },
+    {
+     "name": "Gartrell Johnson",
+     "class": "2009",
+     "udfa": "False",
+     "old": "0.7448453608247423",
+     "new": "0.7467700258397932"
+    },
+    {
+     "name": "Davon Drew",
+     "class": "2009",
+     "udfa": "False",
+     "old": "1.6323529411764706",
+     "new": "1.6363636363636365"
+    },
+    {
+     "name": "Eddie Williams",
+     "class": "2009",
+     "udfa": "False",
+     "old": "1.6109090909090908",
+     "new": "1.6227106227106227"
+    },
+    {
+     "name": "Sammie Stroughter",
+     "class": "2009",
+     "udfa": "False",
+     "old": "2.4153132250580045",
+     "new": "2.4444444444444446"
+    },
+    {
+     "name": "Marko Mitchell",
+     "class": "2009",
+     "udfa": "False",
+     "old": "3.1587301587301586",
+     "new": "3.096"
+    },
+    {
+     "name": "Jimmy Graham",
+     "class": "2010",
+     "udfa": "False",
+     "old": "0.5068119891008175",
+     "new": "0.5054347826086957"
+    },
+    {
+     "name": "Dennis Pitta",
+     "class": "2010",
+     "udfa": "False",
+     "old": "2.0831234256926954",
+     "new": "2.077889447236181"
+    },
+    {
+     "name": "Garrett Graham",
+     "class": "2010",
+     "udfa": "False",
+     "old": "1.8930817610062893",
+     "new": "1.9182389937106918"
+    },
+    {
+     "name": "Andrew Quarless",
+     "class": "2010",
+     "udfa": "False",
+     "old": "1.486646884272997",
+     "new": "1.482248520710059"
+    },
+    {
+     "name": "Levi Brown",
+     "class": "2010",
+     "udfa": "False",
+     "old": "0.032818532818532815",
+     "new": "0.033073929961089495"
+    },
+    {
+     "name": "Mickey Shuler",
+     "class": "2010",
+     "udfa": "False",
+     "old": "0.26409495548961426",
+     "new": "0.26331360946745563"
+    },
+    {
+     "name": "Dorin Dickerson",
+     "class": "2010",
+     "udfa": "False",
+     "old": "1.5345911949685536",
+     "new": "1.550314465408805"
+    }
+   ],
+   "scrim_ypg": [
+    {
+     "name": "Matt Ryan",
+     "class": "2008",
+     "udfa": "False",
+     "old": "11.567567567567568",
+     "new": "11.513513513513514"
+    },
+    {
+     "name": "Chris Johnson",
+     "class": "2008",
+     "udfa": "False",
+     "old": "76.27272727272727",
+     "new": "75.78787878787878"
+    },
+    {
+     "name": "Dustin Keller",
+     "class": "2008",
+     "udfa": "False",
+     "old": "47.74285714285714",
+     "new": "48.371428571428574"
+    },
+    {
+     "name": "Eddie Royal",
+     "class": "2008",
+     "udfa": "False",
+     "old": "43.333333333333336",
+     "new": "44.5"
+    },
+    {
+     "name": "Matt Forte",
+     "class": "2008",
+     "udfa": "False",
+     "old": "103.64",
+     "new": "104.0"
+    },
+    {
+     "name": "Limas Sweed",
+     "class": "2008",
+     "udfa": "False",
+     "old": "43.775",
+     "new": "45.325"
+    },
+    {
+     "name": "Brian Brohm",
+     "class": "2008",
+     "udfa": "False",
+     "old": "11.925",
+     "new": "11.55"
+    },
+    {
+     "name": "Chad Henne",
+     "class": "2008",
+     "udfa": "False",
+     "old": "5.711111111111111",
+     "new": "4.733333333333333"
+    },
+    {
+     "name": "Kevin Smith",
+     "class": "2008",
+     "udfa": "False",
+     "old": "131.75757575757575",
+     "new": "131.66666666666666"
+    },
+    {
+     "name": "Brad Cottam",
+     "class": "2008",
+     "udfa": "False",
+     "old": "21.714285714285715",
+     "new": "21.125"
+    },
+    {
+     "name": "Early Doucet",
+     "class": "2008",
+     "udfa": "False",
+     "old": "47.078947368421055",
+     "new": "47.6"
+    },
+    {
+     "name": "Steve Slaton",
+     "class": "2008",
+     "udfa": "False",
+     "old": "135.27272727272728",
+     "new": "135.57575757575756"
+    },
+    {
+     "name": "Andre Caldwell",
+     "class": "2008",
+     "udfa": "False",
+     "old": "56.945945945945944",
+     "new": "58.78378378378378"
+    },
+    {
+     "name": "Will Franklin",
+     "class": "2008",
+     "udfa": "False",
+     "old": "48.63636363636363",
+     "new": "49.84848484848485"
+    },
+    {
+     "name": "Martin Rucker",
+     "class": "2008",
+     "udfa": "False",
+     "old": "44.69047619047619",
+     "new": "45.04651162790697"
+    },
+    {
+     "name": "Tashard Choice",
+     "class": "2008",
+     "udfa": "False",
+     "old": "94.08108108108108",
+     "new": "94.4054054054054"
+    },
+    {
+     "name": "Jacob Tamme",
+     "class": "2008",
+     "udfa": "False",
+     "old": "39.36363636363637",
+     "new": "40.18181818181818"
+    },
+    {
+     "name": "Derek Fine",
+     "class": "2008",
+     "udfa": "False",
+     "old": "27.393939393939394",
+     "new": "27.727272727272727"
+    },
+    {
+     "name": "Dennis Dixon",
+     "class": "2008",
+     "udfa": "False",
+     "old": "36.470588235294116",
+     "new": "36.411764705882355"
+    },
+    {
+     "name": "Kellen Davis",
+     "class": "2008",
+     "udfa": "False",
+     "old": "27.76923076923077",
+     "new": "27.814814814814813"
+    },
+    {
+     "name": "Erik Ainge",
+     "class": "2008",
+     "udfa": "False",
+     "old": "1.5476190476190477",
+     "new": "0.9761904761904762"
+    },
+    {
+     "name": "Marcus Thomas",
+     "class": "2008",
+     "udfa": "False",
+     "old": "73.65384615384616",
+     "new": "75.5"
+    },
+    {
+     "name": "Marcus Henry",
+     "class": "2008",
+     "udfa": "False",
+     "old": "38.34285714285714",
+     "new": "38.77142857142857"
+    },
+    {
+     "name": "Jalen Parmele",
+     "class": "2008",
+     "udfa": "False",
+     "old": "85.375",
+     "new": "85.3125"
+    },
+    {
+     "name": "Kevin Robinson",
+     "class": "2008",
+     "udfa": "False",
+     "old": "49.166666666666664",
+     "new": "51.77777777777778"
+    }
+   ]
+  }
+ },
+ "repl_max_abs_diff": {
+  "F1": 0.0,
+  "F2": 0.0,
+  "F3": 0.0
+ },
+ "seasons": [
+  {
+   "season": 2008,
+   "sha256": "8f05ccd9d7804a65fa757205b7e27b8f6affdbfec27193110f6c66338bd6fe0b",
+   "rows": 1765,
+   "season_type": {
+    "REG": 1765
+   },
+   "null_id_rows": 1,
+   "null_id_games": [
+    256
+   ],
+   "teams": 32,
+   "max_games": 16,
+   "ppr_total": 40262.8,
+   "complete": true
+  },
+  {
+   "season": 2009,
+   "sha256": "0ae3f9c84980d374a1ee3db7615a014202a3cf59c678e1f71f5c3927fb7bf3d2",
+   "rows": 1785,
+   "season_type": {
+    "REG": 1785
+   },
+   "null_id_rows": 1,
+   "null_id_games": [
+    256
+   ],
+   "teams": 32,
+   "max_games": 17,
+   "ppr_total": 41340.4,
+   "complete": false
+  },
+  {
+   "season": 2010,
+   "sha256": "c9c2dfd246b36f8824348bcd828c87d9b59580cee99c8b4701e94bff4ad70a73",
+   "rows": 1820,
+   "season_type": {
+    "REG": 1820
+   },
+   "null_id_rows": 1,
+   "null_id_games": [
+    256
+   ],
+   "teams": 32,
+   "max_games": 16,
+   "ppr_total": 41933.6,
+   "complete": true
+  },
+  {
+   "season": 2011,
+   "sha256": "cf65f2d3776a2559d71b9473a7c9325859a024b4571013988a7049ec3343c15e",
+   "rows": 1803,
+   "season_type": {
+    "REG": 1803
+   },
+   "null_id_rows": 1,
+   "null_id_games": [
+    256
+   ],
+   "teams": 32,
+   "max_games": 16,
+   "ppr_total": 42634.6,
+   "complete": true
+  },
+  {
+   "season": 2012,
+   "sha256": "aa5eed25509f09fec72bd2109de572b89cfc8b5974aeef67e3ed7591a0be6549",
+   "rows": 1811,
+   "season_type": {
+    "REG": 1811
+   },
+   "null_id_rows": 1,
+   "null_id_games": [
+    256
+   ],
+   "teams": 32,
+   "max_games": 16,
+   "ppr_total": 43243.9,
+   "complete": true
+  },
+  {
+   "season": 2013,
+   "sha256": "ed43af50178cb17ae07466fad34b566a995b02bc3a005df3067e9545fc458a3b",
+   "rows": 1792,
+   "season_type": {
+    "REG": 1792
+   },
+   "null_id_rows": 1,
+   "null_id_games": [
+    256
+   ],
+   "teams": 32,
+   "max_games": 16,
+   "ppr_total": 44216.3,
+   "complete": true
+  },
+  {
+   "season": 2014,
+   "sha256": "52be3ec117b0e747e5faadd2c7f38e05561800b6a122fa6b46e55c24ce808841",
+   "rows": 1850,
+   "season_type": {
+    "REG": 1850
+   },
+   "null_id_rows": 1,
+   "null_id_games": [
+    256
+   ],
+   "teams": 32,
+   "max_games": 16,
+   "ppr_total": 44167.9,
+   "complete": true
+  },
+  {
+   "season": 2015,
+   "sha256": "525a19bd55f9297d0adb074f918053cdede354edf23488fa0593595645cce602",
+   "rows": 1846,
+   "season_type": {
+    "REG": 1846
+   },
+   "null_id_rows": 1,
+   "null_id_games": [
+    256
+   ],
+   "teams": 32,
+   "max_games": 16,
+   "ppr_total": 45215.9,
+   "complete": true
+  },
+  {
+   "season": 2016,
+   "sha256": "b84c116d5ecc4d3bd0fc7f828ec1fe25398891183258846149cb2a2679b73795",
+   "rows": 1856,
+   "season_type": {
+    "REG": 1856
+   },
+   "null_id_rows": 1,
+   "null_id_games": [
+    256
+   ],
+   "teams": 32,
+   "max_games": 16,
+   "ppr_total": 44931.3,
+   "complete": true
+  },
+  {
+   "season": 2017,
+   "sha256": "bff95d9b2146ca2b20d29a2a640e133572a096dedbd8a85539d309ad93a0194c",
+   "rows": 1869,
+   "season_type": {
+    "REG": 1869
+   },
+   "null_id_rows": 1,
+   "null_id_games": [
+    256
+   ],
+   "teams": 32,
+   "max_games": 16,
+   "ppr_total": 42262.6,
+   "complete": true
+  },
+  {
+   "season": 2018,
+   "sha256": "16911886f40b2ccecf3f5940f13227b779ca635e8e9fbbf89eef1a3491fb15eb",
+   "rows": 1884,
+   "season_type": {
+    "REG": 1884
+   },
+   "null_id_rows": 1,
+   "null_id_games": [
+    256
+   ],
+   "teams": 32,
+   "max_games": 17,
+   "ppr_total": 45655.6,
+   "complete": false
+  },
+  {
+   "season": 2019,
+   "sha256": "ccb42a19387aa09027c033c3c9ee2c5cd8635e913446e5dbf703410454af80c4",
+   "rows": 1889,
+   "season_type": {
+    "REG": 1889
+   },
+   "null_id_rows": 1,
+   "null_id_games": [
+    256
+   ],
+   "teams": 32,
+   "max_games": 17,
+   "ppr_total": 44777.1,
+   "complete": false
+  },
+  {
+   "season": 2020,
+   "sha256": "dda02cc8e94cf68c7a7d7c4e481e79c993ee5b96f1b4052c4550d56177434802",
+   "rows": 1984,
+   "season_type": {
+    "REG": 1984
+   },
+   "null_id_rows": 1,
+   "null_id_games": [
+    256
+   ],
+   "teams": 32,
+   "max_games": 16,
+   "ppr_total": 47068.8,
+   "complete": true
+  },
+  {
+   "season": 2021,
+   "sha256": "4484c93053c498b96b721754930825a4cc00c8e86903718fb1014ab8c7338ff1",
+   "rows": 2082,
+   "season_type": {
+    "REG": 2082
+   },
+   "null_id_rows": 1,
+   "null_id_games": [
+    272
+   ],
+   "teams": 32,
+   "max_games": 17,
+   "ppr_total": 47430.4,
+   "complete": true
+  },
+  {
+   "season": 2022,
+   "sha256": "f38bbc5e7712105cf3129ca5b76c72eb1d473347c219022c942f21d8b4e0c091",
+   "rows": 2007,
+   "season_type": {
+    "REG": 2007
+   },
+   "null_id_rows": 1,
+   "null_id_games": [
+    271
+   ],
+   "teams": 32,
+   "max_games": 17,
+   "ppr_total": 45345.3,
+   "complete": true
+  },
+  {
+   "season": 2023,
+   "sha256": "07ef1abd3be40255967991374ad59b860bdba4489768dda31176ce74b4b28604",
+   "rows": 1943,
+   "season_type": {
+    "REG": 1943
+   },
+   "null_id_rows": 1,
+   "null_id_games": [
+    272
+   ],
+   "teams": 32,
+   "max_games": 17,
+   "ppr_total": 45214.1,
+   "complete": true
+  },
+  {
+   "season": 2024,
+   "sha256": "bba8ed2ac16962c8c21d39b2855de113a155807ccf016b1a0bd6cc97e2e4ac43",
+   "rows": 1997,
+   "season_type": {
+    "REG": 1997
+   },
+   "null_id_rows": 1,
+   "null_id_games": [
+    272
+   ],
+   "teams": 32,
+   "max_games": 17,
+   "ppr_total": 46145.8,
+   "complete": true
+  },
+  {
+   "season": 2025,
+   "sha256": "47e73b56b12e883be620f2497cfc7f55350618414fc35710a89f0b3e651c8c68",
+   "rows": 2020,
+   "season_type": {
+    "REG": 2020
+   },
+   "null_id_rows": 1,
+   "null_id_games": [
+    272
+   ],
+   "teams": 32,
+   "max_games": 18,
+   "ppr_total": 45064.6,
+   "complete": false
+  }
+ ],
+ "all_seasons_complete": false,
+ "horizon": [
+  {
+   "class": 2012,
+   "emb1_future_label_seasons": 3,
+   "emb1_rows_with_future_labels": 160,
+   "emb1_train_rows": 334,
+   "emb2_future_label_seasons": 1,
+   "emb2_rows_with_future_labels": 78,
+   "emb2_train_rows": 252,
+   "emb3_future_label_seasons": 0,
+   "emb3_rows_with_future_labels": 0,
+   "emb3_train_rows": 174
+  },
+  {
+   "class": 2013,
+   "emb1_future_label_seasons": 3,
+   "emb1_rows_with_future_labels": 159,
+   "emb1_train_rows": 411,
+   "emb2_future_label_seasons": 1,
+   "emb2_rows_with_future_labels": 82,
+   "emb2_train_rows": 334,
+   "emb3_future_label_seasons": 0,
+   "emb3_rows_with_future_labels": 0,
+   "emb3_train_rows": 252
+  },
+  {
+   "class": 2014,
+   "emb1_future_label_seasons": 3,
+   "emb1_rows_with_future_labels": 157,
+   "emb1_train_rows": 491,
+   "emb2_future_label_seasons": 1,
+   "emb2_rows_with_future_labels": 77,
+   "emb2_train_rows": 411,
+   "emb3_future_label_seasons": 0,
+   "emb3_rows_with_future_labels": 0,
+   "emb3_train_rows": 334
+  },
+  {
+   "class": 2015,
+   "emb1_future_label_seasons": 3,
+   "emb1_rows_with_future_labels": 157,
+   "emb1_train_rows": 568,
+   "emb2_future_label_seasons": 1,
+   "emb2_rows_with_future_labels": 80,
+   "emb2_train_rows": 491,
+   "emb3_future_label_seasons": 0,
+   "emb3_rows_with_future_labels": 0,
+   "emb3_train_rows": 411
+  },
+  {
+   "class": 2016,
+   "emb1_future_label_seasons": 3,
+   "emb1_rows_with_future_labels": 156,
+   "emb1_train_rows": 647,
+   "emb2_future_label_seasons": 1,
+   "emb2_rows_with_future_labels": 77,
+   "emb2_train_rows": 568,
+   "emb3_future_label_seasons": 0,
+   "emb3_rows_with_future_labels": 0,
+   "emb3_train_rows": 491
+  },
+  {
+   "class": 2017,
+   "emb1_future_label_seasons": 3,
+   "emb1_rows_with_future_labels": 156,
+   "emb1_train_rows": 724,
+   "emb2_future_label_seasons": 1,
+   "emb2_rows_with_future_labels": 79,
+   "emb2_train_rows": 647,
+   "emb3_future_label_seasons": 0,
+   "emb3_rows_with_future_labels": 0,
+   "emb3_train_rows": 568
+  },
+  {
+   "class": 2018,
+   "emb1_future_label_seasons": 3,
+   "emb1_rows_with_future_labels": 160,
+   "emb1_train_rows": 807,
+   "emb2_future_label_seasons": 1,
+   "emb2_rows_with_future_labels": 77,
+   "emb2_train_rows": 724,
+   "emb3_future_label_seasons": 0,
+   "emb3_rows_with_future_labels": 0,
+   "emb3_train_rows": 647
+  },
+  {
+   "class": 2019,
+   "emb1_future_label_seasons": 3,
+   "emb1_rows_with_future_labels": 166,
+   "emb1_train_rows": 890,
+   "emb2_future_label_seasons": 1,
+   "emb2_rows_with_future_labels": 83,
+   "emb2_train_rows": 807,
+   "emb3_future_label_seasons": 0,
+   "emb3_rows_with_future_labels": 0,
+   "emb3_train_rows": 724
+  },
+  {
+   "class": 2020,
+   "emb1_future_label_seasons": 3,
+   "emb1_rows_with_future_labels": 163,
+   "emb1_train_rows": 970,
+   "emb2_future_label_seasons": 1,
+   "emb2_rows_with_future_labels": 83,
+   "emb2_train_rows": 890,
+   "emb3_future_label_seasons": 0,
+   "emb3_rows_with_future_labels": 0,
+   "emb3_train_rows": 807
+  },
+  {
+   "class": 2021,
+   "emb1_future_label_seasons": 3,
+   "emb1_rows_with_future_labels": 158,
+   "emb1_train_rows": 1048,
+   "emb2_future_label_seasons": 1,
+   "emb2_rows_with_future_labels": 80,
+   "emb2_train_rows": 970,
+   "emb3_future_label_seasons": 0,
+   "emb3_rows_with_future_labels": 0,
+   "emb3_train_rows": 890
+  },
+  {
+   "class": 2022,
+   "emb1_future_label_seasons": 3,
+   "emb1_rows_with_future_labels": 153,
+   "emb1_train_rows": 1123,
+   "emb2_future_label_seasons": 1,
+   "emb2_rows_with_future_labels": 78,
+   "emb2_train_rows": 1048,
+   "emb3_future_label_seasons": 0,
+   "emb3_rows_with_future_labels": 0,
+   "emb3_train_rows": 970
+  },
+  {
+   "class": 2023,
+   "emb1_future_label_seasons": 3,
+   "emb1_rows_with_future_labels": 154,
+   "emb1_train_rows": 1202,
+   "emb2_future_label_seasons": 1,
+   "emb2_rows_with_future_labels": 75,
+   "emb2_train_rows": 1123,
+   "emb3_future_label_seasons": 0,
+   "emb3_rows_with_future_labels": 0,
+   "emb3_train_rows": 1048
+  }
+ ],
+ "maturity": [
+  {
+   "class": 2008,
+   "label_seasons": "2008-2010",
+   "mature": true
+  },
+  {
+   "class": 2009,
+   "label_seasons": "2009-2011",
+   "mature": true
+  },
+  {
+   "class": 2010,
+   "label_seasons": "2010-2012",
+   "mature": true
+  },
+  {
+   "class": 2011,
+   "label_seasons": "2011-2013",
+   "mature": true
+  },
+  {
+   "class": 2012,
+   "label_seasons": "2012-2014",
+   "mature": true
+  },
+  {
+   "class": 2013,
+   "label_seasons": "2013-2015",
+   "mature": true
+  },
+  {
+   "class": 2014,
+   "label_seasons": "2014-2016",
+   "mature": true
+  },
+  {
+   "class": 2015,
+   "label_seasons": "2015-2017",
+   "mature": true
+  },
+  {
+   "class": 2016,
+   "label_seasons": "2016-2018",
+   "mature": true
+  },
+  {
+   "class": 2017,
+   "label_seasons": "2017-2019",
+   "mature": true
+  },
+  {
+   "class": 2018,
+   "label_seasons": "2018-2020",
+   "mature": true
+  },
+  {
+   "class": 2019,
+   "label_seasons": "2019-2021",
+   "mature": true
+  },
+  {
+   "class": 2020,
+   "label_seasons": "2020-2022",
+   "mature": true
+  },
+  {
+   "class": 2021,
+   "label_seasons": "2021-2023",
+   "mature": true
+  },
+  {
+   "class": 2022,
+   "label_seasons": "2022-2024",
+   "mature": true
+  },
+  {
+   "class": 2023,
+   "label_seasons": "2023-2025",
+   "mature": true
+  },
+  {
+   "class": 2024,
+   "label_seasons": "2024-2026",
+   "mature": false
+  },
+  {
+   "class": 2025,
+   "label_seasons": "2025-2027",
+   "mature": false
+  },
+  {
+   "class": 2026,
+   "label_seasons": "2026-2028",
+   "mature": false
+  }
+ ],
+ "vintage": {
+  "cutoff_is_year_minus_1": true,
+  "season_final_after_cutoff": 0,
+  "qb_season_final_after_cutoff": 0,
+  "roster_weight_rows": 134,
+  "roster_weight_from_draft_year_or_later": 1,
+  "roster_weight_late_examples": [
+   {
+    "pfr_player_name": "DeVonta Smith",
+    "draft_year": "2021",
+    "pos": "WR",
+    "pick": "10",
+    "last_roster": "2021"
+   }
+  ],
+  "draft_age_offset": {
+   "min": 18.360472279260783,
+   "max": 18.360472279260783,
+   "age0_minus_0.35": 18.36047227926078,
+   "n": 1182
+  },
+  "hit_rate_by_pick_band_and_link": {
+   "1-32|unlinked": {
+    "hit": 0.667,
+    "n": 3
+   },
+   "1-32|linked": {
+    "hit": 0.669,
+    "n": 148
+   },
+   "33-64|unlinked": {
+    "hit": 0.25,
+    "n": 8
+   },
+   "33-64|linked": {
+    "hit": 0.494,
+    "n": 160
+   },
+   "65-100|unlinked": {
+    "hit": 0.636,
+    "n": 11
+   },
+   "65-100|linked": {
+    "hit": 0.311,
+    "n": 164
+   },
+   "101-150|unlinked": {
+    "hit": 0.316,
+    "n": 19
+   },
+   "101-150|linked": {
+    "hit": 0.156,
+    "n": 237
+   },
+   "151+|unlinked": {
+    "hit": 0.017,
+    "n": 59
+   },
+   "151+|linked": {
+    "hit": 0.068,
+    "n": 473
+   }
+  },
+  "link_rate_by_class": {
+   "2008": 0.862,
+   "2009": 0.874,
+   "2010": 0.872,
+   "2011": 0.927,
+   "2012": 0.935,
+   "2013": 0.925,
+   "2014": 0.896,
+   "2015": 0.899,
+   "2016": 0.922,
+   "2017": 0.916,
+   "2018": 0.916,
+   "2019": 0.988,
+   "2020": 0.974,
+   "2021": 0.96,
+   "2022": 0.937,
+   "2023": 0.963
+  },
+  "link_method_counts": {
+   "name_school": 724,
+   "espn_id": 457,
+   "none": 100,
+   "name_prefix": 1
+  }
+ },
+ "linkage": {
+  "per_class": {
+   "2008": {
+    "draft_picks_qbrbwrte": 87,
+    "draft_picks_fb": 4,
+    "population_drafted": 87,
+    "with_gsis": 86
+   },
+   "2009": {
+    "draft_picks_qbrbwrte": 87,
+    "draft_picks_fb": 0,
+    "population_drafted": 87,
+    "with_gsis": 84
+   },
+   "2010": {
+    "draft_picks_qbrbwrte": 78,
+    "draft_picks_fb": 0,
+    "population_drafted": 78,
+    "with_gsis": 76
+   },
+   "2011": {
+    "draft_picks_qbrbwrte": 82,
+    "draft_picks_fb": 0,
+    "population_drafted": 82,
+    "with_gsis": 82
+   },
+   "2012": {
+    "draft_picks_qbrbwrte": 77,
+    "draft_picks_fb": 0,
+    "population_drafted": 77,
+    "with_gsis": 77
+   },
+   "2013": {
+    "draft_picks_qbrbwrte": 80,
+    "draft_picks_fb": 1,
+    "population_drafted": 80,
+    "with_gsis": 79
+   },
+   "2014": {
+    "draft_picks_qbrbwrte": 77,
+    "draft_picks_fb": 2,
+    "population_drafted": 77,
+    "with_gsis": 75
+   },
+   "2015": {
+    "draft_picks_qbrbwrte": 79,
+    "draft_picks_fb": 4,
+    "population_drafted": 79,
+    "with_gsis": 78
+   },
+   "2016": {
+    "draft_picks_qbrbwrte": 77,
+    "draft_picks_fb": 3,
+    "population_drafted": 77,
+    "with_gsis": 77
+   },
+   "2017": {
+    "draft_picks_qbrbwrte": 83,
+    "draft_picks_fb": 3,
+    "population_drafted": 83,
+    "with_gsis": 83
+   },
+   "2018": {
+    "draft_picks_qbrbwrte": 83,
+    "draft_picks_fb": 0,
+    "population_drafted": 83,
+    "with_gsis": 83
+   },
+   "2019": {
+    "draft_picks_qbrbwrte": 80,
+    "draft_picks_fb": 0,
+    "population_drafted": 80,
+    "with_gsis": 80
+   },
+   "2020": {
+    "draft_picks_qbrbwrte": 78,
+    "draft_picks_fb": 0,
+    "population_drafted": 78,
+    "with_gsis": 77
+   },
+   "2021": {
+    "draft_picks_qbrbwrte": 75,
+    "draft_picks_fb": 1,
+    "population_drafted": 75,
+    "with_gsis": 75
+   },
+   "2022": {
+    "draft_picks_qbrbwrte": 79,
+    "draft_picks_fb": 0,
+    "population_drafted": 79,
+    "with_gsis": 79
+   },
+   "2023": {
+    "draft_picks_qbrbwrte": 80,
+    "draft_picks_fb": 0,
+    "population_drafted": 80,
+    "with_gsis": 80
+   }
+  },
+  "drafted_equals_draft_picks": true,
+  "missing_gsis_total": 11,
+  "missing_gsis_top100": [],
+  "dup_gsis": 0,
+  "dup_class_pick": 0,
+  "dup_pfr": 0,
+  "dup_sid": 0,
+  "udfa_rows_2008_2023": 1197
+ },
+ "formats": {
+  "slots": {
+   "F1": {
+    "teams": 10,
+    "QB": 10,
+    "RB": 20,
+    "WR": 20,
+    "TE": 10,
+    "FLEX": 40,
+    "SUPER_FLEX": 0
+   },
+   "F2": {
+    "teams": 10,
+    "QB": 10,
+    "RB": 20,
+    "WR": 20,
+    "TE": 10,
+    "FLEX": 40,
+    "SUPER_FLEX": 10
+   },
+   "F3": {
+    "teams": 10,
+    "QB": 10,
+    "RB": 20,
+    "WR": 20,
+    "TE": 10,
+    "FLEX": 40,
+    "SUPER_FLEX": 0
+   }
+  },
+  "p75": {
+   "F1": 0.0,
+   "F2": 6.249999999999986,
+   "F3": 0.0
+  },
+  "zero_share_all": {
+   "F1": 0.7535,
+   "F2": 0.7426,
+   "F3": 0.7535
+  },
+  "repl_mean_2008_2025": {
+   "F1": {
+    "QB": 267.25,
+    "RB": 142.41,
+    "WR": 142.93,
+    "TE": 139.65
+   },
+   "F2": {
+    "QB": 207.21,
+    "RB": 142.41,
+    "WR": 142.93,
+    "TE": 139.65
+   },
+   "F3": {
+    "QB": 267.25,
+    "RB": 145.91,
+    "WR": 148.74,
+    "TE": 146.83
+   }
+  },
+  "share_by_class_F1": {
+   "2008": 0.276,
+   "2009": 0.207,
+   "2010": 0.192,
+   "2011": 0.232,
+   "2012": 0.221,
+   "2013": 0.237,
+   "2014": 0.299,
+   "2015": 0.203,
+   "2016": 0.169,
+   "2017": 0.313,
+   "2018": 0.241,
+   "2019": 0.25,
+   "2020": 0.295,
+   "2021": 0.227,
+   "2022": 0.304,
+   "2023": 0.275
+  }
+ },
+ "timestamps": {
+  "nfmdd": {
+   "2020": {
+    "capture": "20200416",
+    "draft": "2020-04-23",
+    "days_before": 7
+   },
+   "2021": {
+    "capture": "20210426",
+    "draft": "2021-04-29",
+    "days_before": 3
+   },
+   "2022": {
+    "capture": "20220426",
+    "draft": "2022-04-28",
+    "days_before": 2
+   },
+   "2023": {
+    "capture": "20230405",
+    "draft": "2023-04-27",
+    "days_before": 22
+   },
+   "2024": {
+    "capture": "20240424",
+    "draft": "2024-04-25",
+    "days_before": 1
+   },
+   "2025": {
+    "capture": "20250421",
+    "draft": "2025-04-24",
+    "days_before": 3
+   },
+   "2026": {
+    "capture": "20260420",
+    "draft": "2026-04-23",
+    "days_before": 3
+   }
+  },
+  "k0": {
+   "2019": {
+    "pre": "2019-04-23",
+    "post": "2019-04-30",
+    "draft": "2019-04-25",
+    "pre_before_draft": true,
+    "post_after_draft": true
+   },
+   "2020": {
+    "pre": "2020-04-21",
+    "post": "2020-04-26",
+    "draft": "2020-04-23",
+    "pre_before_draft": true,
+    "post_after_draft": true
+   },
+   "2021": {
+    "pre": "2021-04-28",
+    "post": "2021-05-07",
+    "draft": "2021-04-29",
+    "pre_before_draft": true,
+    "post_after_draft": true
+   },
+   "2022": {
+    "pre": "2022-04-22",
+    "post": "2022-05-06",
+    "draft": "2022-04-28",
+    "pre_before_draft": true,
+    "post_after_draft": true
+   },
+   "2023": {
+    "pre": "2023-04-21",
+    "post": "2023-05-05",
+    "draft": "2023-04-27",
+    "pre_before_draft": true,
+    "post_after_draft": true
+   }
+  }
+ },
+ "repro_compare": {
+  "n_keys": 344,
+  "n_diff": 68,
+  "diffs": {
+   "H2.F1.est": [
+    -0.005589478952043546,
+    -0.005827256073231535
+   ],
+   "H2.F1.hi": [
+    0.006586138718213136,
+    0.006119217265446557
+   ],
+   "H2.F1.lo": [
+    -0.01857032145685823,
+    -0.018467366496640266
+   ],
+   "H2.F1.share_gt0": [
+    0.237,
+    0.229
+   ],
+   "H2.F2.est": [
+    -0.00012849552313845083,
+    -5.4406955970573434e-05
+   ],
+   "H2.F2.hi": [
+    0.013429849203620583,
+    0.013430089403114522
+   ],
+   "H2.F2.lo": [
+    -0.01524187388675469,
+    -0.015319242689005341
+   ],
+   "H2.F2.share_gt0": [
+    0.499,
+    0.5125
+   ],
+   "H2.F3.est": [
+    0.004097992822616918,
+    0.0031405496423025417
+   ],
+   "H2.F3.hi": [
+    0.015421061384783224,
+    0.014200565109184729
+   ],
+   "H2.F3.lo": [
+    -0.0071913580147273245,
+    -0.00781597970599894
+   ],
+   "H2.F3.share_gt0": [
+    0.735,
+    0.687
+   ],
+   "ledger[1].F1.est": [
+    -0.005589478952043546,
+    -0.005827256073231535
+   ],
+   "ledger[1].F1.hi": [
+    0.006586138718213136,
+    0.006119217265446557
+   ],
+   "ledger[1].F1.lo": [
+    -0.01857032145685823,
+    -0.018467366496640266
+   ],
+   "ledger[1].F1.share_gt0": [
+    0.237,
+    0.229
+   ],
+   "ledger[1].F2_est": [
+    -0.00012849552313845083,
+    -5.4406955970573434e-05
+   ],
+   "ledger[1].F3_est": [
+    0.004097992822616918,
+    0.0031405496423025417
+   ],
+   "metrics_F1.h2.mae.est": [
+    33.581947862975724,
+    33.58519040036269
+   ],
+   "metrics_F1.h2.mae.hi": [
+    36.89402497610561,
+    36.88951981702013
+   ],
+   "metrics_F1.h2.mae.lo": [
+    30.39256566613175,
+    30.408657689180085
+   ],
+   "metrics_F1.h2.ndcg.est": [
+    0.6785071749700649,
+    0.6788398957388027
+   ],
+   "metrics_F1.h2.ndcg.hi": [
+    0.7278420519424318,
+    0.7280453665222312
+   ],
+   "metrics_F1.h2.ndcg.lo": [
+    0.6272812886265849,
+    0.6275508267634965
+   ],
+   "metrics_F1.h2.prec.est": [
+    0.5555555555555557,
+    0.5590277777777779
+   ],
+   "metrics_F1.h2.prec.hi": [
+    0.6006944444444445,
+    0.6076388888888888
+   ],
+   "metrics_F1.h2.sp.est": [
+    0.5059542689447003,
+    0.5057164918235123
+   ],
+   "metrics_F1.h2.sp.hi": [
+    0.5339680897180888,
+    0.534149875434376
+   ],
+   "metrics_F1.h2.sp.lo": [
+    0.47528665596539993,
+    0.475218127292563
+   ],
+   "metrics_F1.h2.sp_QB.est": [
+    0.4751160430912459,
+    0.454692710066407
+   ],
+   "metrics_F1.h2.sp_QB.hi": [
+    0.5822441280153299,
+    0.5845410352045365
+   ],
+   "metrics_F1.h2.sp_QB.lo": [
+    0.3415867494464429,
+    0.28376188846453254
+   ],
+   "metrics_F1.h2.sp_RB.est": [
+    0.5729359387202951,
+    0.5717888090051138
+   ],
+   "metrics_F1.h2.sp_RB.hi": [
+    0.644692487153377,
+    0.6435537102628954
+   ],
+   "metrics_F1.h2.sp_RB.lo": [
+    0.4844786740509011,
+    0.48371063481457777
+   ],
+   "metrics_F1.h2.sp_TE.est": [
+    0.43357729868257294,
+    0.4259919956648257
+   ],
+   "metrics_F1.h2.sp_TE.hi": [
+    0.5327136287483766,
+    0.5267384361773633
+   ],
+   "metrics_F1.h2.sp_TE.lo": [
+    0.331096470663764,
+    0.322736736194874
+   ],
+   "metrics_F2.h2.mae.est": [
+    37.34941394341473,
+    37.35005118913227
+   ],
+   "metrics_F2.h2.mae.hi": [
+    40.80166494971473,
+    40.79388032730064
+   ],
+   "metrics_F2.h2.mae.lo": [
+    33.8408798164163,
+    33.826970119640166
+   ],
+   "metrics_F2.h2.ndcg.est": [
+    0.6615458380354804,
+    0.661543542419471
+   ],
+   "metrics_F2.h2.ndcg.hi": [
+    0.7026604913917526,
+    0.7026226908904393
+   ],
+   "metrics_F2.h2.ndcg.lo": [
+    0.6181337208959199,
+    0.6181897346167802
+   ],
+   "metrics_F2.h2.sp.est": [
+    0.5111095228140033,
+    0.5111836113811711
+   ],
+   "metrics_F2.h2.sp.hi": [
+    0.546097971158956,
+    0.5463660204294856
+   ],
+   "metrics_F2.h2.sp.lo": [
+    0.47018985721089523,
+    0.47045947578545577
+   ],
+   "metrics_F2.h2.sp_RB.est": [
+    0.5729359387202951,
+    0.5717572296416116
+   ],
+   "metrics_F2.h2.sp_RB.hi": [
+    0.644692487153377,
+    0.6434921305040662
+   ],
+   "metrics_F2.h2.sp_RB.lo": [
+    0.4844786740509011,
+    0.48367747648290044
+   ],
+   "metrics_F2.h2.sp_TE.est": [
+    0.43357729868257294,
+    0.4259919956648257
+   ],
+   "metrics_F2.h2.sp_TE.hi": [
+    0.5327136287483766,
+    0.5267384361773633
+   ],
+   "metrics_F2.h2.sp_TE.lo": [
+    0.331096470663764,
+    0.322736736194874
+   ],
+   "metrics_F3.h2.mae.est": [
+    33.16034481363749,
+    33.15695552486469
+   ],
+   "metrics_F3.h2.mae.hi": [
+    36.548555883555345,
+    36.53484838883849
+   ],
+   "metrics_F3.h2.mae.lo": [
+    29.983443755031335,
+    29.99566484585583
+   ],
+   "metrics_F3.h2.ndcg.est": [
+    0.6611125842449975,
+    0.6612719396617888
+   ],
+   "metrics_F3.h2.ndcg.hi": [
+    0.7129884729885081,
+    0.7131838473816684
+   ],
+   "metrics_F3.h2.ndcg.lo": [
+    0.609565406353478,
+    0.6098630473028192
+   ],
+   "metrics_F3.h2.sp.est": [
+    0.5019780314377452,
+    0.5010205882574307
+   ],
+   "metrics_F3.h2.sp.hi": [
+    0.5280551347180613,
+    0.527729883050992
+   ],
+   "metrics_F3.h2.sp.lo": [
+    0.47771691008357575,
+    0.47661473360897566
+   ],
+   "metrics_F3.h2.sp_QB.est": [
+    0.4751160430912459,
+    0.454692710066407
+   ],
+   "metrics_F3.h2.sp_QB.hi": [
+    0.5822441280153299,
+    0.5845410352045365
+   ],
+   "metrics_F3.h2.sp_QB.lo": [
+    0.3415867494464429,
+    0.28376188846453254
+   ],
+   "metrics_F3.h2.sp_TE.est": [
+    0.48267294779782793,
+    0.47974470508398515
+   ],
+   "metrics_F3.h2.sp_TE.hi": [
+    0.5388140311701387,
+    0.5379002829479851
+   ],
+   "metrics_F3.h2.sp_TE.lo": [
+    0.4274928643848962,
+    0.42259434634813625
+   ]
+  }
+ },
+ "repro_verdicts": {
+  "original": [
+   [
+    "H1",
+    "NOT SUPPORTED"
+   ],
+   [
+    "H2",
+    "REJECTED"
+   ],
+   [
+    "H3",
+    "USABLE (descriptive, 3 classes)"
+   ]
+  ],
+  "repro": [
+   [
+    "H1",
+    "NOT SUPPORTED"
+   ],
+   [
+    "H2",
+    "REJECTED"
+   ],
+   [
+    "H3",
+    "USABLE (descriptive, 3 classes)"
+   ]
+  ]
+ }
+}

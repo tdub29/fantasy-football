@@ -1,0 +1,1923 @@
+{
+ "phase": "2-3",
+ "created": "2026-10-07T10:18:12",
+ "provenance": {
+  "store": "C:\\Users\\TrevorWhite\\.claude\\jobs\\915dc2f8\\tmp\\udfa_r2.sqlite",
+  "store_sha": "85d9801d4f2ec3f750af80e62f13f2b20615c508b1ce85fc27fd132981afa9c0",
+  "xwalk_sha": "eab2eccd774823e1a84a190c3b05a82eca8864649c8e690f275e42b17c559431",
+  "fcs_files": 22,
+  "fcs_bad": [],
+  "bpm_sha": "a6752cf201f4caca778b5057f862988b15de29c166082f5745ddae83addecafc",
+  "overall_sha": "a2b2fb80e213b051cdbd0bdd32614ffe35abd0a8e86cc5f3bf55ce98f738e732",
+  "code_sha": "613a554df15892adc59f1fcc1f10ab86762c058ac15fe0876f2168d3712cfa44",
+  "run": "20261004T144240-26c1527e",
+  "run_code_sha": "a83ac2fa31155c9dd99401a08ee4611a5284dd63b44c4cb21766c2419231d6ab",
+  "source_file": {
+   "espn_cfb_rosters/cfb_rosters_2004.parquet": "b85e5531d0f8e31d43d1fd01f975039decc4f1c1e4e49cef7590b1ed610d6835",
+   "espn_cfb_rosters/cfb_rosters_2005.parquet": "1b0b9b9785db8692267957d616672181d99b385217c928c4a7c94a06195dbfb8",
+   "espn_cfb_rosters/cfb_rosters_2006.parquet": "c9ec8c52cb1d98be5f1b3a0277a28ead8c749ab798993a943ec6486f12e026cb",
+   "espn_cfb_rosters/cfb_rosters_2007.parquet": "3efb44934f3d258c0324c0ca52e99525d5b6747d2b77779b0651141f6c97b9da",
+   "espn_cfb_rosters/cfb_rosters_2008.parquet": "4b7132ed8171b537642008e2b18aad4c211b049f747e2cab824e271c82e8d559",
+   "espn_cfb_rosters/cfb_rosters_2009.parquet": "382d8a5730de31b3347180283fd420d0f6ad28a9952d297be4ffee6a14cf9ecc",
+   "espn_cfb_rosters/cfb_rosters_2010.parquet": "296592c97cb50ea7f90ee2e95eb6ed1bc603b74908053a9794eff937022bf493",
+   "espn_cfb_rosters/cfb_rosters_2011.parquet": "cdf7d5d016b44d8c8392af9d22f5f4d479b6a9990ddfad5f0928565f8af3179c",
+   "espn_cfb_rosters/cfb_rosters_2012.parquet": "217316838c6b62c85ec0a2a3e2c0b325c5b2b1df8d6cb9c67eeff18c6577c4da",
+   "espn_cfb_rosters/cfb_rosters_2013.parquet": "5b0a80eb293ff0bb81111838245eb0df7c7e7c5b2f340b91179caf04485a9b7b",
+   "espn_cfb_rosters/cfb_rosters_2014.parquet": "ee717a9ca8f3351dbcb4afc890fa4f168425e40a61869dcc8aebd3c5c008f24a",
+   "espn_cfb_rosters/cfb_rosters_2015.parquet": "efd281cb48e869028861e53768535c35bd126ab7084b12bce431cfbb7ef35c30",
+   "espn_cfb_rosters/cfb_rosters_2016.parquet": "4a934b6e65f0c53dc1646ecdf7bc0ec2e30688fc1722ef7c425ccabab590b8a8",
+   "espn_cfb_rosters/cfb_rosters_2017.parquet": "e6cff43ebe38abd0c00382154fc85025aad5a04946fd7f658128e6df0cae4360",
+   "espn_cfb_rosters/cfb_rosters_2018.parquet": "233c6d7565265ac6075194be30f8ed9b333427ba710d48e73966bf8b5dbe3020",
+   "espn_cfb_rosters/cfb_rosters_2019.parquet": "46e6ba49848957077944bb3d655d76e2887aed7e05b2ab8efe231a049d5246fc",
+   "espn_cfb_rosters/cfb_rosters_2020.parquet": "f66641455e79e814bf421f2fc70ddcffe6d254d1c35030ab853ee9b972b56952",
+   "espn_cfb_rosters/cfb_rosters_2021.parquet": "aae9c5720db215333456a967cc316a47f69537accae9394ed46efd2e1ddbab52",
+   "espn_cfb_rosters/cfb_rosters_2022.parquet": "308e5486457cedeffa4bf603a92b636ac1b25e0fa00022de7e41a0d06bb71c61",
+   "espn_cfb_rosters/cfb_rosters_2023.parquet": "4ab0283a75ee1889068b971e88cbd853d710a9a71a20de02afa890f8fdf7cab4",
+   "espn_cfb_rosters/cfb_rosters_2024.parquet": "5d0f008bc4490ecd4ae0cd9c5224d5da4abc93914bd43321aa9cb854c168ba34",
+   "espn_cfb_rosters/cfb_rosters_2025.parquet": "e3253fafc7a04d68cbf115ddc5e83c14e24edc5ff7cef36683dd9983a2846793",
+   "cfb_recruits/cfb_recruits_2004.parquet": "3cade36e86b7e1cc04541330577e1b38022148fa186dc446dbe8462ed00b63e9",
+   "cfb_recruits/cfb_recruits_2005.parquet": "ead01ed98a59be77d9f7dbc06354c8a8bf413a2184d82e54aee65c66ec7b4c7c",
+   "cfb_recruits/cfb_recruits_2006.parquet": "0c164e912ca309162937d6cb3d1aa12db59782256eae839101f9f41cae5faff0",
+   "cfb_recruits/cfb_recruits_2007.parquet": "f1b4db098be1c2dbb8cca95ac84f75e0bd9fc3147f3f73d12f0f88e85b983f59",
+   "cfb_recruits/cfb_recruits_2008.parquet": "d6bb9af580dacf5b7b0eb7034a247973c05487bb5b83ac74aed719a92be5b95a",
+   "cfb_recruits/cfb_recruits_2009.parquet": "b8f041bd3e8e9d41d800c1bc8c17e486dc4a9265d319f7d2e5d2d853f6c4f0e8",
+   "cfb_recruits/cfb_recruits_2010.parquet": "ada91043b72420200565c719ae0bf9b7e25c9a26f6dcf0d525144d5b4d94d8b7",
+   "cfb_recruits/cfb_recruits_2011.parquet": "82167eb335a2593fff9858e5e10b2c37da9784337433ac73bc0fcf738dd56a39",
+   "cfb_recruits/cfb_recruits_2012.parquet": "369f780bf3157fc683111b17f6efa1a179be266edf7a7448dbfb1127e650b0d0",
+   "cfb_recruits/cfb_recruits_2013.parquet": "5962cd0e205e7904cc5a4ec9adf8e0b47a2cfd02a95f1cf1eb54da6f0c48be83",
+   "cfb_recruits/cfb_recruits_2014.parquet": "a608554ec6764ef9ab331e62c9d972f37bcc8c116dcab74628acbbd053dc644e",
+   "cfb_recruits/cfb_recruits_2015.parquet": "8bcf2aa037aedff6fdc6f9e3567631f20f68f8e1fab57e9a31f33d2aee58947f",
+   "cfb_recruits/cfb_recruits_2016.parquet": "fa24c0e520777ff92ece13646491e54a8448615b61e03f13dbffbd162f8abd3c",
+   "cfb_recruits/cfb_recruits_2017.parquet": "d7d2b2104542df45d105694812348339f3dfa750bd9efa830fe7cfb0414f695e",
+   "cfb_recruits/cfb_recruits_2018.parquet": "e62fd4291e16b8bc2cc6d58d5dac5cf14877c4902e1af31bc9b769a9672e5df5",
+   "cfb_recruits/cfb_recruits_2019.parquet": "7d4bfe2b79418174bffe716032bf935a20634b0c4d9eb9111628b4904581fb6d",
+   "cfb_recruits/cfb_recruits_2020.parquet": "5c34694a0642c787cead7d0854e006d907d52fe1ad243a8199375854ed15aa8a",
+   "cfb_recruits/cfb_recruits_2021.parquet": "f9360162f0ddfca94d68bf65e4d9788afcce6c25ac7e86b577d904e3e9b55031",
+   "cfb_recruits/cfb_recruits_2022.parquet": "626cb48999eaac4c14592dba72041404555bf94de97c5e28ec4cd091b9d9ad68",
+   "cfb_recruits/cfb_recruits_2023.parquet": "2da8cc68c78d32ce3053f4852a133e6e70479989cacdcb1b7437de1a5a74d127",
+   "cfb_recruits/cfb_recruits_2024.parquet": "91cc5275f402d2db8b85bb93333460e0508c0c0490080c2389da10ab9a4d2a84",
+   "cfb_recruits/cfb_recruits_2025.parquet": "908a79237a7c05d66eb80a00e3c64d6f253295a8ecd66ccfb7e064e0004c32d1",
+   "cfb_recruits/cfb_recruits_2026.parquet": "e0e7f3eb54825c8673ed581a0de35c6c3ca6800d81265eb429ddc6cffea9c48a",
+   "draft_picks/draft_picks.parquet": "7a289630a8d152ebbd469451974fbbd21caa8ebb1889bbe5c7fdc446367a8ecc",
+   "combine/combine.parquet": "1b6c48a0b56e515b043dd678ea38a2e6ae83cb9de488e6a0a89f8b2f980bf2cf",
+   "stats_player/stats_player_reg_2008.parquet": "8f05ccd9d7804a65fa757205b7e27b8f6affdbfec27193110f6c66338bd6fe0b",
+   "stats_player/stats_player_reg_2009.parquet": "0ae3f9c84980d374a1ee3db7615a014202a3cf59c678e1f71f5c3927fb7bf3d2",
+   "stats_player/stats_player_reg_2010.parquet": "c9c2dfd246b36f8824348bcd828c87d9b59580cee99c8b4701e94bff4ad70a73",
+   "stats_player/stats_player_reg_2011.parquet": "cf65f2d3776a2559d71b9473a7c9325859a024b4571013988a7049ec3343c15e",
+   "stats_player/stats_player_reg_2012.parquet": "aa5eed25509f09fec72bd2109de572b89cfc8b5974aeef67e3ed7591a0be6549",
+   "stats_player/stats_player_reg_2013.parquet": "ed43af50178cb17ae07466fad34b566a995b02bc3a005df3067e9545fc458a3b",
+   "stats_player/stats_player_reg_2014.parquet": "52be3ec117b0e747e5faadd2c7f38e05561800b6a122fa6b46e55c24ce808841",
+   "stats_player/stats_player_reg_2015.parquet": "525a19bd55f9297d0adb074f918053cdede354edf23488fa0593595645cce602",
+   "stats_player/stats_player_reg_2016.parquet": "b84c116d5ecc4d3bd0fc7f828ec1fe25398891183258846149cb2a2679b73795",
+   "stats_player/stats_player_reg_2017.parquet": "bff95d9b2146ca2b20d29a2a640e133572a096dedbd8a85539d309ad93a0194c",
+   "stats_player/stats_player_reg_2018.parquet": "16911886f40b2ccecf3f5940f13227b779ca635e8e9fbbf89eef1a3491fb15eb",
+   "stats_player/stats_player_reg_2019.parquet": "ccb42a19387aa09027c033c3c9ee2c5cd8635e913446e5dbf703410454af80c4",
+   "stats_player/stats_player_reg_2020.parquet": "dda02cc8e94cf68c7a7d7c4e481e79c993ee5b96f1b4052c4550d56177434802",
+   "stats_player/stats_player_reg_2021.parquet": "4484c93053c498b96b721754930825a4cc00c8e86903718fb1014ab8c7338ff1",
+   "stats_player/stats_player_reg_2022.parquet": "f38bbc5e7712105cf3129ca5b76c72eb1d473347c219022c942f21d8b4e0c091",
+   "stats_player/stats_player_reg_2023.parquet": "07ef1abd3be40255967991374ad59b860bdba4489768dda31176ce74b4b28604",
+   "stats_player/stats_player_reg_2024.parquet": "bba8ed2ac16962c8c21d39b2855de113a155807ccf016b1a0bd6cc97e2e4ac43",
+   "stats_player/stats_player_reg_2025.parquet": "47e73b56b12e883be620f2497cfc7f55350618414fc35710a89f0b3e651c8c68",
+   "rosters/roster_2008.parquet": "43fc467ab23d11e3f32cac804b1ba64eac96087c022c309c33091cf929f78ebb",
+   "rosters/roster_2009.parquet": "958fa64c44e78fe91988c61a2607886f0fcfcbb0cdc1262d871d792c18000d68",
+   "rosters/roster_2010.parquet": "7cdf397d498df9fed8b86714f339b87cb3d8b9876f56fd782791ea81cbbf8009",
+   "rosters/roster_2011.parquet": "11eae922edd6f77ebba75560d604bd3ab21030a75c6eaf113cfb609b7b1283a0",
+   "rosters/roster_2012.parquet": "016ae9c3f447521e0c3e4e570e449fdc3a752905be152ab2ad757f3bc12911a3",
+   "rosters/roster_2013.parquet": "c5629b691d7182f3ef6044e3a4f687b439755efc2bf7855ecc2eb32adf074f06",
+   "rosters/roster_2014.parquet": "24ff5af09bf06e7da21bd86213cbff6546cc87bbf679b2516c2e85202621fc05",
+   "rosters/roster_2015.parquet": "4c745ba50ba3def3354d924ea871c474e76517a341a6fdc9a5e3d9f212e847eb",
+   "rosters/roster_2016.parquet": "a99e54a253f9cfa2ff59158264ddcbe72d05aee601258eaa2ec928bd2400b0f5",
+   "rosters/roster_2017.parquet": "e8e6b9b056e4e6e99f72498070dfe7ca217d8c7cb5af9f606c9a0324e8bc3cb5",
+   "rosters/roster_2018.parquet": "259532b0bd2f68e01db949023e9f001878c9da9d2c912fef5352324d08b9df07",
+   "rosters/roster_2019.parquet": "8aeee315dbf27fc07d5a41a65ac0be0cb00bd63c4a4a23298e0b15228cedd49f",
+   "rosters/roster_2020.parquet": "f511f31fe0472c0d0bca87583240c68ca7dc1294f9b7975f5793655bd4598948",
+   "rosters/roster_2021.parquet": "6201527093636f44ac74d94f88d57b65bc48c3818c65854ee092b742d6ae6e47",
+   "rosters/roster_2022.parquet": "1d8e7987d2b07f510fdce9977354a960041064fdc4a51816cb51540f7835e193",
+   "rosters/roster_2023.parquet": "66dcb7d0e203c41b49e997b93eb55ed77bcc960e5dd0774b7e2426a87cef3c90",
+   "rosters/roster_2024.parquet": "bd38dbe785728c6b4ddc0b56b7d4fee69a8337595db3b631528d284253c04aaf",
+   "rosters/roster_2025.parquet": "902904a0500f066f02ef23f7857e3db35060517e50ffcfe36cc1bc5c6d230f70",
+   "cfb_ratings/cfb_ratings_2004.parquet": "fa14264c41fb06a5237cfe0614ca06120c76f7724e5468fc82b4c4d97e46bf8c",
+   "cfb_ratings/cfb_ratings_2005.parquet": "638b61adb3a0c0726b763edbac024a212161984a5baab8fa566a6061e5f93778",
+   "cfb_ratings/cfb_ratings_2006.parquet": "d4b084c2ead26194ee5865e7e0e28c6e872c6297f8d83220b2185bd43059b875",
+   "cfb_ratings/cfb_ratings_2007.parquet": "cbf588adc9bd41a48f6f730af111224821e7897c99bbe95c0a1502c2ec5e8e6a",
+   "cfb_ratings/cfb_ratings_2008.parquet": "1fdeed18182d2f43e35619d9c576ba70d1b124f5e343b219d325e11061e1c56c",
+   "cfb_ratings/cfb_ratings_2009.parquet": "3c14b974d42ef1ca97cf22c1d96bc7fc77009ac29a188c48a6e64e1e2c0bd0a5",
+   "cfb_ratings/cfb_ratings_2010.parquet": "061a2f8324f62ea16fee7dc679de962721dae13160ed5a77cbe9da4d906dbd19",
+   "cfb_ratings/cfb_ratings_2011.parquet": "4d1b00ce36691c024b84e421ee2670a0b4916783f2e8a823fabdc90e4972bdaa",
+   "cfb_ratings/cfb_ratings_2012.parquet": "c5b8eb3a7a8c7b02b1bdd2cfd11be6aa14dbcbbc1ec2cb6011f7de6e24c8cb31",
+   "cfb_ratings/cfb_ratings_2013.parquet": "b88f4a645ed750119b855cc831a460ea4881e609202a8753363f355eb8474a00",
+   "cfb_ratings/cfb_ratings_2014.parquet": "aa8faa1f3f7137f9bf6595f9a062ecfdba2db3126c4324b2b7c25150b6aa710a",
+   "cfb_ratings/cfb_ratings_2015.parquet": "6f796e0f06f91689dae3dbd48731dd85c41b5d0bc51abfbfb541900ef1752db6",
+   "cfb_ratings/cfb_ratings_2016.parquet": "83c05d67f117c8a7f53d6cc9bd23936db9ef0f0c88243c53b08bf620580ddfc0",
+   "cfb_ratings/cfb_ratings_2017.parquet": "13621ef134ffcba522e01a1c1f22bba6a481e326c0d1ef37d82cb7a33c3b1c6f",
+   "cfb_ratings/cfb_ratings_2018.parquet": "a9bc3e7b8da438ea35eca5ffc0560e5c5b4cb7b930fc167cc5730860976218f0",
+   "cfb_ratings/cfb_ratings_2019.parquet": "cb99702f6194373bfc92c89a107eb57c9ee516bc951ecf158a61cce9a9e55240",
+   "cfb_ratings/cfb_ratings_2020.parquet": "df5f0a044189e78345d85835e501d0d79b266b6735b4ec6903b7eed9f484a788",
+   "cfb_ratings/cfb_ratings_2021.parquet": "8770c543ac4505ed972a50c937940bef7ec518f51d8ff9ffcbc4d3e56106c948",
+   "cfb_ratings/cfb_ratings_2022.parquet": "307f2bbb4475a52f230e73e9d1d49f902da7cd616365d7f832fa5861b74400fd",
+   "cfb_ratings/cfb_ratings_2023.parquet": "67cb039a9fff34de19eda73f2914448a67dadad6816393bb8bdd9431a3e9af83",
+   "cfb_ratings/cfb_ratings_2024.parquet": "2743dc576c0f9dd7e32ad0d9c717d9c303e8a88c991a2edf376be995f0d2f1d2",
+   "cfb_ratings/cfb_ratings_2025.parquet": "90d60c4ddd6a3dfd606c890c3a251a684107760c55c681b75f3cb8c2a2ee1ce3",
+   "cfb_team_opponent_splits/cfb_team_opponent_splits_2004.parquet": "74dcf6690e41dd11e7de66fab2975319fc2a3dd3198fd40e7b7dfa9ebb61f9b5",
+   "cfb_team_opponent_splits/cfb_team_opponent_splits_2005.parquet": "b11ea08cecf45fc85d0fe5e6b3d26842c5b386d51a953a8b5b15e84e0e97f566",
+   "cfb_team_opponent_splits/cfb_team_opponent_splits_2017.parquet": "ff3867dc57a70a8cf02fed2926bd7ed2ec08eacf75f6f5ac4b3d7f365a1cdbb5",
+   "cfb_team_opponent_splits/cfb_team_opponent_splits_2018.parquet": "321ec7f943795a453d441ed7392fed9e6ec22ac8062c4e9ea458ae837dedf760",
+   "cfb_team_opponent_splits/cfb_team_opponent_splits_2019.parquet": "efc817b58348a9f304bd5661b38df663983e8751f102a3284f46d389c6cc4451",
+   "cfb_team_opponent_splits/cfb_team_opponent_splits_2020.parquet": "764df1d27700895f7cd87fa6d64b9fccfc05f2394ef81e297570a9b513663530",
+   "cfb_team_opponent_splits/cfb_team_opponent_splits_2021.parquet": "83627695ec8b4b8e473dac5a25a6b4da811cba995ada3624a6ea2569851a8dae",
+   "cfb_team_opponent_splits/cfb_team_opponent_splits_2022.parquet": "711d2fb3f0fbc1cc69749fe77141b6002bc5d8b6219aaa9d00b80d8c1620dcb4",
+   "cfb_team_opponent_splits/cfb_team_opponent_splits_2023.parquet": "64dc899381c44304fe6d5a9c6a35d9bb59f58d45acf973116247a4c4dcbf2fd1",
+   "cfb_team_opponent_splits/cfb_team_opponent_splits_2024.parquet": "d91b7fff3b4b6a63dddf23432669cb12a33c29c6c27bdfca35701ac5a9b1396a",
+   "cfb_team_opponent_splits/cfb_team_opponent_splits_2025.parquet": "c5cd22e0654551d5135d17595adb35450e7e49a3d528f2f5337cec842e956f56",
+   "espn_cfb_usage_players/usage_players_2004.parquet": "fd59033b8ef95a23408828bbe8f4c30f81a16e560a2f3f683c07d783998d84e1",
+   "espn_cfb_usage_players/usage_players_2005.parquet": "a7e097975a6d44629c376de51c2bdb3a60455419eecf2b6ce643973879b3df4e",
+   "espn_cfb_usage_players/usage_players_2017.parquet": "c6d221daa80e98a54c17696d05311a106bdbcbcc418e086eef3ee8eb2d26c822",
+   "espn_cfb_usage_players/usage_players_2018.parquet": "21cb323a261e04d0fe52f4b6f27681d40619c03a355012bdf7edf3748acea274",
+   "espn_cfb_usage_players/usage_players_2019.parquet": "2bf929773c9ba92a0679daff9460ced1e5cdfa18de73bd4c7eb5103c533a16bd",
+   "espn_cfb_usage_players/usage_players_2020.parquet": "bfc088b24065593987ae5cd89a39e0b1e29d53121649132e5705c11589a5b268",
+   "espn_cfb_usage_players/usage_players_2021.parquet": "64a5e98c5b2b129636ea9bc6c5ca957f1f003e7e7c6a1a82a95af66c3824db8c",
+   "espn_cfb_usage_players/usage_players_2022.parquet": "47870f6d7cae79fcfbd7e7929f035695a0f9cd735f1fa8a9782fd367dee6729f",
+   "espn_cfb_usage_players/usage_players_2023.parquet": "5927ae9a1bc50f70c7b6aa76c5afbd6027d269d76f789e602a1e893bb11c2f82",
+   "espn_cfb_usage_players/usage_players_2024.parquet": "4a89b9f206ef500e80fdddf3bc7bd153395ea99fb37dc8f4619602c89863b560",
+   "espn_cfb_usage_players/usage_players_2025.parquet": "2143deec35fc59f9bd52b5d41e4c9dd689cc9b0c612c8f12fd34a307b553e147",
+   "espn_cfb_player_box/player_box_2004.parquet": "909d248444a02269579b9483c015f9d721406869784d42739482c84df9a071f1",
+   "espn_cfb_player_box/player_box_2005.parquet": "f4fd721b706f54bc1ee702598ca3e453c34c09074b56d5ae4857e849e2a06437",
+   "espn_cfb_player_box/player_box_2006.parquet": "2c71c3e0e6e9aaf1b0d4d48d56e7d613c93c5fe8a0a06bfaf29c1fd5c7bd36fc",
+   "espn_cfb_player_box/player_box_2007.parquet": "36719deef5d1b3ab31785c47737e1727c2cde2ab6eee67beb6f20c6eec15ca3c",
+   "espn_cfb_player_box/player_box_2008.parquet": "f10dca4f3ec7546292b4de3054ad8d042c68269b09623cd81ad945d761aac321",
+   "espn_cfb_player_box/player_box_2009.parquet": "2684eb08cc84442f93477667ae33d7612d72fa9cc39b584809f608f33e05af72",
+   "espn_cfb_player_box/player_box_2010.parquet": "0bfee83df2c66cf5175c255c600f0ef876a418a43ef79cf12eebe9221f052812",
+   "espn_cfb_player_box/player_box_2011.parquet": "4f214a009008dca9a278a8775f2fd1293647152c9c943537de38f0b8861f49a1",
+   "espn_cfb_player_box/player_box_2012.parquet": "1a57a45e7a9e5ef87705d6bd4c20278455e0418843d4d30420e00e41754ad947",
+   "espn_cfb_player_box/player_box_2013.parquet": "525926dbadc57eb3c6965e8c5151ab556833ed59eaf9deecf3f65766c79e9c70",
+   "espn_cfb_player_box/player_box_2014.parquet": "258f012b1d57ad4c033d2296d37f6188d494c638de59a0e315b93bc7bd7e807f",
+   "espn_cfb_player_box/player_box_2015.parquet": "19074d9ea473e1ca108e340551b275fe28df62e6b116873b9dffbca4ec22af93",
+   "espn_cfb_player_box/player_box_2016.parquet": "657ed3627881f8581199899198f2c97638178bd01253619d63a9e81f51da3184",
+   "espn_cfb_player_box/player_box_2017.parquet": "be57bc465c407ddd065f9aa33445a316fcfab22940fbed80ab58c880e295bd92",
+   "espn_cfb_player_box/player_box_2018.parquet": "42d9607f03e5b6e56974289825201ce9a92079a26bac9329af84b729445cda23",
+   "espn_cfb_player_box/player_box_2019.parquet": "fdd30bf40f4d3cb4a336cf80a8622401defd4cf11165f21927d8ced4997d35fe",
+   "espn_cfb_player_box/player_box_2020.parquet": "7cfa97bcce7a69bbbaf787e93c5a5feafe9ab28f929cf42a5607ce7c949d9df2",
+   "espn_cfb_player_box/player_box_2021.parquet": "0a6eed194330956e2c03561e1e7c7e0ade4645002479c022aacd957a137ed939",
+   "espn_cfb_player_box/player_box_2022.parquet": "f02b5809abeb03f5bbaf51c657863a0f65d3d0e9abc685234e6dacabfb2c53ba",
+   "espn_cfb_player_box/player_box_2023.parquet": "c468119d73d089e3d30d53a936c9fc0d7eb1992d7bb2b567889c3ef413fb7c3b",
+   "espn_cfb_player_box/player_box_2024.parquet": "644ffdfe5b2303265bff528db21591e1eec7c6c4356e297ee1037c6972d8ad45",
+   "espn_cfb_player_box/player_box_2025.parquet": "ad2e6cbe50001dc26e3d1435aa80836453c823797061d0adede0ab862e4d5e3d",
+   "espn_cfb_team_box/team_box_2004.parquet": "2a95620aaa50b27ab627bb31e6d35ac18a4cb58b34e200e1cf0e0b53448bd07a",
+   "espn_cfb_team_box/team_box_2005.parquet": "9b953ad4b7ac70516db93675694c2448a143b1d0b75ad54ff3d9b6af377e0f6b",
+   "espn_cfb_team_box/team_box_2006.parquet": "1af47c5a1275d2351da3e44e232e35e9962d261237df41167411311360cac83d",
+   "espn_cfb_team_box/team_box_2007.parquet": "e22ef2e108a7fcb87798a03fd4e8902ce7a2a7fc1fd51fd5c7d9ff72a889dc51",
+   "espn_cfb_team_box/team_box_2008.parquet": "5b86152c6053e6ecfd600777d5d53faad79579886c1c4f97c469154af2d655be",
+   "espn_cfb_team_box/team_box_2009.parquet": "f98590f086fb88de677cae2fc02d38e9ddec13d26a7c3bafe5a3d6f2798b942e",
+   "espn_cfb_team_box/team_box_2010.parquet": "4197e3b3805c04611bb8b89ac9f8f0dcf356f7189c60ade1584fbb320cdecd13",
+   "espn_cfb_team_box/team_box_2011.parquet": "788a14c1a396eaefeb6ebff4b93d84e2b011d345136811adea14ceed73ebd7d1",
+   "espn_cfb_team_box/team_box_2012.parquet": "940ce5ba6317a9eab040f5a7ce3aa1f3a80189f694d24df1c408a8470096033a",
+   "espn_cfb_team_box/team_box_2013.parquet": "93562cb455441242104d7bdc92424b84dc0e4b50486eddddb9d558aeba424cb1",
+   "espn_cfb_team_box/team_box_2014.parquet": "a20c30b281721dd1374816c0581f246fe13c757734abae57a786425e248e967d",
+   "espn_cfb_team_box/team_box_2015.parquet": "c9d51c9299c9c9677828d492ef2049c717d0b32c1523a663ecb1b0fdf6252072",
+   "espn_cfb_team_box/team_box_2016.parquet": "1c20fa1cebebb154fcd280c3a932316050347b12b1cc26878f9275bb82a4a76c",
+   "espn_cfb_team_box/team_box_2017.parquet": "e0ba7298f85ed0ea2b23dbe06cd0757302df49d163f52d613be17fc2537e90b6",
+   "espn_cfb_team_box/team_box_2018.parquet": "935346abd296bf7b7797b2cf77b409ad4e9f61fca18fe83e1481ffbd240d5a16",
+   "espn_cfb_team_box/team_box_2019.parquet": "3991307384b2d52bdf0c23667cba5333898896c54037aecc4815dbc3d32af0f7",
+   "espn_cfb_team_box/team_box_2020.parquet": "fa9d3018b0d09257727df658a8503acce2b9b93e97b41a76b069c865b9725bd5",
+   "espn_cfb_team_box/team_box_2021.parquet": "30ab59a113be72f4d5bf3d5d0d8d210bd92cd4ed0cc5153be4ad89b7af1288cf",
+   "espn_cfb_team_box/team_box_2022.parquet": "7f54e5820899d97ca490d1042156293673721bf22b2f13f067a51c099f02d112",
+   "espn_cfb_team_box/team_box_2023.parquet": "8299e24ebedd4d7fe96d4580ff011c7bd5eb4696baa2b6e3ff1f4b8c6ba62baf",
+   "espn_cfb_team_box/team_box_2024.parquet": "cc0c941f118718d250415230c4a6885b666a82846089e2e70c138fc76b94ae05",
+   "espn_cfb_team_box/team_box_2025.parquet": "c8ec3ecc08c99909ccaea6c0d99173799a49cfd47fc6a216f73d0b648b2e5c45",
+   "espn_cfb_receiving/cfb_receiving_2004.parquet": "a2b65346512eea2cd881ce58dd54da6144f23f690930cd0403550b7b208186dd",
+   "espn_cfb_receiving/cfb_receiving_2005.parquet": "5f045f64e631b15588284d2c461aab10060d729f0f9be1db8ebe078f7d296cf7",
+   "espn_cfb_receiving/cfb_receiving_2006.parquet": "773024f5b08c8dc50483733922cb5d077ceab932d17f65db62a13bb21d6aacc0",
+   "espn_cfb_receiving/cfb_receiving_2007.parquet": "a26e572ae0bd3325e33f750933652813f0abc093f4f7e3c09caf08770b9c8e50",
+   "espn_cfb_receiving/cfb_receiving_2008.parquet": "9e4c49c63475965de5d5d4aed5e9053a67137a05e62ef0497ad8815b26b3359f",
+   "espn_cfb_receiving/cfb_receiving_2009.parquet": "6c5ffbdefb5b1659113e6eede0af869b5b9e39068bc20867848dc3bceca82784",
+   "espn_cfb_receiving/cfb_receiving_2010.parquet": "47df5f661002b5908c1b45e889bdeacfd58da24d310c8826e73785ce9a68866f",
+   "espn_cfb_receiving/cfb_receiving_2011.parquet": "838a2c0d5e4be6aa34edc7dcfd16b70505d2fa92c4b255d3d7b3a3d9067d756d",
+   "espn_cfb_receiving/cfb_receiving_2012.parquet": "c7b945d820f5d3988fc5f14d7287297ff37d721f5439f42d28e737eadf9fa1ca",
+   "espn_cfb_receiving/cfb_receiving_2013.parquet": "52bf16786f1dd0b297e75dddd91768b4e418bdca5fdb8115ea0c561f9dbff25d",
+   "espn_cfb_receiving/cfb_receiving_2014.parquet": "9294a23657a03c049e23d82161798744841b355680186a257704aa8f0b2851c6",
+   "espn_cfb_receiving/cfb_receiving_2015.parquet": "929f5cb48d7166ecf7692d06622065983954befa29aab7da8762b6bf2106dec5",
+   "espn_cfb_receiving/cfb_receiving_2016.parquet": "fa1ba0481d984abddcfe3410aa3018c4212261fcc1621abeecfc5f82a1b7c15e",
+   "espn_cfb_receiving/cfb_receiving_2017.parquet": "8707c396df587033642737a54b51a88c022cef2f1069991da061b4647bb52add",
+   "espn_cfb_receiving/cfb_receiving_2018.parquet": "8571b76ebfea9d69df82d463f4df5aca0e90ce11d9c707db3216fbbd11863999",
+   "espn_cfb_receiving/cfb_receiving_2019.parquet": "e87b319689b0b328c93cb2106045db406b60a5f4b78441eb1673e0a05f7137d1",
+   "espn_cfb_receiving/cfb_receiving_2020.parquet": "0b44009b2d2a1be5de7501d6e6666876cc9bf569614dffa92641c25a2c8e58c0",
+   "espn_cfb_receiving/cfb_receiving_2021.parquet": "f7ac9f846febf3f96b4aba5bbb4138bd887a2bd1293c0cb3a246813930bdd215",
+   "espn_cfb_receiving/cfb_receiving_2022.parquet": "1b2442cd28fb6b573d5dbdb083b853e73179e3e47f5c826458e537f51f6a00d6",
+   "espn_cfb_receiving/cfb_receiving_2023.parquet": "f032e89c2082cf6a3ce9cced76af77e42bd57f3a573beaf12943b06feb164e8b",
+   "espn_cfb_receiving/cfb_receiving_2024.parquet": "3f944e6dc090f69fe3c5255715ff72a5580d4ecfefb8c263348cb45e27d5f615",
+   "espn_cfb_receiving/cfb_receiving_2025.parquet": "db910b496942f9d4ce6f436a4dadc90cc4b6eaf421dbe6a6c9e08fbfa3e72609",
+   "espn_cfb_receiving/cfb_receiving_2026.parquet": "0fd6b747f7d9a8d6b4109877d3b58af0366f71e4acf4ac8c2e98cd426f7eb75c",
+   "espn_cfb_rushing/cfb_rushing_2004.parquet": "8b1dd9a17eec3f39b459cb93c6f07977ceef08a77571f9b924829b05dc2a3c28",
+   "espn_cfb_rushing/cfb_rushing_2005.parquet": "9766d83b38626bd04967081b13a91b2f318299cbeb485480c19cdc69c5278ac4",
+   "espn_cfb_rushing/cfb_rushing_2006.parquet": "accc7584c75d233a3a648831059e4489049ec64c17b0bad268a28355258cc19d",
+   "espn_cfb_rushing/cfb_rushing_2007.parquet": "36620147f508ebf809a21c1efbc84e2463d5d10a69f48959f2989a83f996d546",
+   "espn_cfb_rushing/cfb_rushing_2008.parquet": "5aedd5cc7ccfad4f87058367105045c3412b3adb107b11e0c810698b917bc959",
+   "espn_cfb_rushing/cfb_rushing_2009.parquet": "d2295dd1d239e324625eaf1a2e1269d7d4c0dee3cdd64808ae9c52c0251a76f1",
+   "espn_cfb_rushing/cfb_rushing_2010.parquet": "d35192b32701936ba61629acdd73c714afd0a44da3604b0ffd47ed2375f2897f",
+   "espn_cfb_rushing/cfb_rushing_2011.parquet": "af1f22d1e19d98da088673b136f0889c8e1864f406bbfe63230fb999d9bc8db6",
+   "espn_cfb_rushing/cfb_rushing_2012.parquet": "5f7dbfffe83c85bffb6d50a744e1cd0ec6b019b516bfb4a16d2d90eb0ab710a8",
+   "espn_cfb_rushing/cfb_rushing_2013.parquet": "815a88816ed3a05d53b91ebb9322138bcd5d7c36efab1d6b33f2109397d60780",
+   "espn_cfb_rushing/cfb_rushing_2014.parquet": "7afac78fe3a302ee46ec99b8d8ed7ecac90d1e4edca08955140575a5a678158d",
+   "espn_cfb_rushing/cfb_rushing_2015.parquet": "a2a21d5d267e59a1d22cfb7e7f77c38256c2f0ae2d20878af2c5fbb13224d0f8",
+   "espn_cfb_rushing/cfb_rushing_2016.parquet": "ea5e6243015bec3e12b53b8c7c70e71b313bbf50772d624dce80df444633452c",
+   "espn_cfb_rushing/cfb_rushing_2017.parquet": "85c63bdabbabbc1a747c22584f11bc018781a8566006863b2c7ba956c0694548",
+   "espn_cfb_rushing/cfb_rushing_2018.parquet": "3538433a9d5f5a5e1176a3c529eff5110d425ff0265c2e98e24d0583dfcd30c1",
+   "espn_cfb_rushing/cfb_rushing_2019.parquet": "c8fa2e1680cc45c99e81732eb808bc3e3960c4e5fb7d12d3755135524b852966",
+   "espn_cfb_rushing/cfb_rushing_2020.parquet": "d4b968a0293397995f1c7d18e57f80244a92a49f10c2c0d7957b948ad513f64d",
+   "espn_cfb_rushing/cfb_rushing_2021.parquet": "c7c2c481f2ad5b42b09ad90e087926f5b0cde400e6d841d11e0886d599d74035",
+   "espn_cfb_rushing/cfb_rushing_2022.parquet": "d35eec0cf8bdc9ea55fa1e2927b5bd0b42452caff511180ea4d466f13d97da00",
+   "espn_cfb_rushing/cfb_rushing_2023.parquet": "54fa8705ded0d932ee255b1c696e718158ca36a5c1b6d5f81cae79e6a41697f3",
+   "espn_cfb_rushing/cfb_rushing_2024.parquet": "04743582db2c7cf8f392ef7d3586fae5d366e163221c75a8a3c9d7cfb461fed4",
+   "espn_cfb_rushing/cfb_rushing_2025.parquet": "90ff1b3a83fc4cdbfb270baea499aa20fcc9c9f4430cdf9c9dd0dacd7c20810e",
+   "espn_cfb_rushing/cfb_rushing_2026.parquet": "55926ebcdc59fe09b615e122e799e2f0d9112982c64d5b5eac6b75e696ca726b",
+   "espn_cfb_passing/cfb_passing_2004.parquet": "fba0669814223767d5aa70160f3643e81d9a463fcf0578e4bb81accf3e4ab8a6",
+   "espn_cfb_passing/cfb_passing_2005.parquet": "794a4ce6d9ee5a7329d5d85cbc8bd6262b21cc9eeef8e91300cb5d79ee872533",
+   "espn_cfb_passing/cfb_passing_2006.parquet": "3b64a3a2292ab4bb969dc52b42a0483609b26c608e96b17a726b85abda838204",
+   "espn_cfb_passing/cfb_passing_2007.parquet": "2af664af593a934a39b3024bb536ac91c0f965dacfc03572110a8a724825cdfd",
+   "espn_cfb_passing/cfb_passing_2008.parquet": "67704608368580a9ddda7a614607a7d93477aee7f311d2619abe529d9aa8e6b9",
+   "espn_cfb_passing/cfb_passing_2009.parquet": "46fbb86fa105184c576f95c4e8f8d06e2637fe86be4bda78ffafff24be3c1703",
+   "espn_cfb_passing/cfb_passing_2010.parquet": "3c929624a17572dcecd21a6e573ac7b6d905f8e314e1f1e8ade50433e854d6aa",
+   "espn_cfb_passing/cfb_passing_2011.parquet": "ebac8fc44eda98dcb03cef0f6d22fa2ccc170b7fdba2097ff1c325a763de513a",
+   "espn_cfb_passing/cfb_passing_2012.parquet": "0e1ddfa68eeac1e4c92d02a7037c8450dcf56e163c35e94f2d442c944fb9a88d",
+   "espn_cfb_passing/cfb_passing_2013.parquet": "debf5fbd8872e97bd4c928b8c95435bbd48dac4857a6c252532ed437b5b24dd8",
+   "espn_cfb_passing/cfb_passing_2014.parquet": "ec9e62e73566920ec6dabe2062364824673ba1c612af90c2ec352583f97f0ef8",
+   "espn_cfb_passing/cfb_passing_2015.parquet": "2f633c5e72c6ee8e4cbc7eba97ade7c6a368b23b7ac977208a213043ab970db5",
+   "espn_cfb_passing/cfb_passing_2016.parquet": "8627250066867016b2f076653400bcdabeeadc8f410a6c125b5304476634a99e",
+   "espn_cfb_passing/cfb_passing_2017.parquet": "7c65b1c765d54de177cc2386a63a8ec028cbf9338b0ba695314b20ba00144528",
+   "espn_cfb_passing/cfb_passing_2018.parquet": "478a2340790d8512454006871b548e5c8bcae02829dfb7aaffe9a6af7b780586",
+   "espn_cfb_passing/cfb_passing_2019.parquet": "c5c0f5363b977c087d27c36fc8ae6419ff6b2779d195a5d4c81c507707f91d9b",
+   "espn_cfb_passing/cfb_passing_2020.parquet": "8df87f1a76df4e430fb795e32a878c951bf608bd2fbdc1108d116c96582cf899",
+   "espn_cfb_passing/cfb_passing_2021.parquet": "6bf2201ea2282e6b21230d577ebe3bfecc88a50b50aa6c1d54eef15e06c92002",
+   "espn_cfb_passing/cfb_passing_2022.parquet": "25c39fcfe3838b8b0c142ee88e9b581a24b2bb86459e636bdd194dd27889d4c3",
+   "espn_cfb_passing/cfb_passing_2023.parquet": "84a4aa64b1631eb9f9d8d0bbcc52a36e21d2616b7172a43f5d574d8d9d6239b6",
+   "espn_cfb_passing/cfb_passing_2024.parquet": "3c41babeda7108689d5ffb71e5846ca27306c80384d687ada0d1bc888866c98f",
+   "espn_cfb_passing/cfb_passing_2025.parquet": "8d8d27c65ce89adf733597c006307ec605bb77f064163d1a5730c45e0e50acd0",
+   "espn_cfb_passing/cfb_passing_2026.parquet": "05237c84912d9d09a54d95c2c899796dfbc6d5ddd756c23691288c427ba05520",
+   "espn_cfb_rosters/cfb_rosters_2026.parquet": "8d1db1451e44fb62bb19eb118c8d2b94f1b91e284cde44ea55ea69d9a0bb1769",
+   "cfb_ratings/cfb_ratings_2026.parquet": "fd7df14a75fafba8b55704a1068054ccae2c5004e575dd0ac3f9977641c56436",
+   "cfb_team_opponent_splits/cfb_team_opponent_splits_2006.parquet": "2d8789c779eb7a3141e8f32f586f1158d0208d623048da80ec446dbddd576507",
+   "cfb_team_opponent_splits/cfb_team_opponent_splits_2007.parquet": "55ad002809c31595a2a65192f49550ffcf6f63cbf0a07b418c1778d9aeb5f5f5",
+   "cfb_team_opponent_splits/cfb_team_opponent_splits_2008.parquet": "af6e34b3727911583970cb6c5a4bd8af356a1f897c6251556906df9f3027ff47",
+   "cfb_team_opponent_splits/cfb_team_opponent_splits_2009.parquet": "4ba17bebd1b7e9ca9c426a3cf716c642b2282033ffdd507f2164194613987400",
+   "cfb_team_opponent_splits/cfb_team_opponent_splits_2010.parquet": "fbe605063e131e5026ce1801b288fbdfb62a2c016f24661ff9c855baf847a1d4",
+   "cfb_team_opponent_splits/cfb_team_opponent_splits_2011.parquet": "fd3b2fcfd4fd9cd4387faba6be409e2686bd04d5dd341ca4ed645f1ead2f990d",
+   "cfb_team_opponent_splits/cfb_team_opponent_splits_2012.parquet": "85be922c43fd0a26a09c1f1ce8707e1de170f535e8ad83742347b75bd9507e3d",
+   "cfb_team_opponent_splits/cfb_team_opponent_splits_2013.parquet": "8f8d3ab8db076a2c2f29e50d5fd51e1d12c311a223cdefec79d3d3308cd62874",
+   "cfb_team_opponent_splits/cfb_team_opponent_splits_2014.parquet": "f713f0c0831614da6d537ba3b1fa3d6d3cdd6418d9f96dfd4ec95d01ae9ba4a7",
+   "cfb_team_opponent_splits/cfb_team_opponent_splits_2015.parquet": "76e49d314c4894dc823c261923763deb2076e7d500e87dada458f498556f290b",
+   "cfb_team_opponent_splits/cfb_team_opponent_splits_2016.parquet": "12c2f7847ab64d58761fca426d905fdabcfae94374e4c49b0d4a89485df994c3",
+   "cfb_team_opponent_splits/cfb_team_opponent_splits_2026.parquet": "480978f612737115c14c00fcf03336131411e9ef34a42941ba714855e1c79af9",
+   "espn_cfb_usage_players/usage_players_2006.parquet": "df7547e7ebe4d07f5ef121bd5ed75b713bbc081848e6b296a4a923e8f44f81cb",
+   "espn_cfb_usage_players/usage_players_2007.parquet": "f4362a2dc4a3e2c33a97834d5d3d1549323aceab667eef33b9347c464a678d09",
+   "espn_cfb_usage_players/usage_players_2008.parquet": "745cbffb9d37cd27d895cb15df2de2fbc9f59b8987fce7158876801d50a278fd",
+   "espn_cfb_usage_players/usage_players_2009.parquet": "56ef1bb1898afc36b117f045c1a00f7d97e8becf518cbc7a6454a3c23be87942",
+   "espn_cfb_usage_players/usage_players_2010.parquet": "bdfbdf879e1c4a865b3ef8b82a8bf91092c89ceb538cd7b77ede0ed582a63a35",
+   "espn_cfb_usage_players/usage_players_2011.parquet": "a3a0cfe226ad28463de55a139244e4747522f766a68884baa67ee9aff9261dfd",
+   "espn_cfb_usage_players/usage_players_2012.parquet": "1835e6bc6709cdc92fd7637adf8eabc101e5c217fb31538b1e18eb47f4078882",
+   "espn_cfb_usage_players/usage_players_2013.parquet": "55f648359d0d1a6b1a319b1876a9c63bdced6859889ae5ca88d8c26313ab426a",
+   "espn_cfb_usage_players/usage_players_2014.parquet": "19f09d056bd7435bd62298fefdd68f9130b37a0aac40b4b83725c4675803e1a0",
+   "espn_cfb_usage_players/usage_players_2015.parquet": "0be09966474eccae56f0ac732d814f19065c81cde260dc66b0af6accd865a904",
+   "espn_cfb_usage_players/usage_players_2016.parquet": "d414f8f8d04da63bf54a2bba19f94c95e8acbd100cbb238a11b431b3a2c9859a",
+   "espn_cfb_usage_players/usage_players_2026.parquet": "d2167bf7788c02a4ab91317f8cb8ad42cc52dac4821b50c20ff918673092aba8",
+   "espn_cfb_player_box/player_box_2026.parquet": "9482575b638fb0f064b15fa2f925a4aa6a921c3b6760e8c946eb5e247cd9ead6",
+   "espn_cfb_team_box/team_box_2026.parquet": "95d5a8f63767c548a63c71eed54dda4a06fa6dadd80d3139ae8542ac9dc2dedf",
+   "players/players.parquet": "84ed9906fbd8971b5cf54dbc6fbd7c01c93e5bb239f6f9830efb36b6c12612b3",
+   "rosters/roster_2026.parquet": "3a7c242ddccf2f63d2d4a32501e11e3b069057de332c925adf0b756af460da3e"
+  },
+  "ok": true
+ },
+ "parity": {
+  "d_rows": 1525,
+  "d_keys": 1520,
+  "store_rows": 1520,
+  "both": 1520,
+  "only_D": [],
+  "only_store": [],
+  "mismatch": 0,
+  "examples": []
+ },
+ "population": {
+  "D": 1525,
+  "U": 1767,
+  "multi_school": 232
+ },
+ "base_duplicate_ids": {},
+ "coverage": [
+  {
+   "pop": "D",
+   "cohort": "2008-2011",
+   "pos": "QB",
+   "n": 49,
+   "base": 44,
+   "identity": 48,
+   "feature": 46,
+   "fresh": 44
+  },
+  {
+   "pop": "D",
+   "cohort": "2008-2011",
+   "pos": "RB",
+   "n": 90,
+   "base": 79,
+   "identity": 88,
+   "feature": 81,
+   "fresh": 80
+  },
+  {
+   "pop": "D",
+   "cohort": "2008-2011",
+   "pos": "WR",
+   "n": 128,
+   "base": 110,
+   "identity": 122,
+   "feature": 111,
+   "fresh": 111
+  },
+  {
+   "pop": "D",
+   "cohort": "2008-2011",
+   "pos": "TE",
+   "n": 67,
+   "base": 62,
+   "identity": 66,
+   "feature": 62,
+   "fresh": 62
+  },
+  {
+   "pop": "D",
+   "cohort": "2008-2011",
+   "pos": "ALL",
+   "n": 334,
+   "base": 295,
+   "identity": 324,
+   "feature": 300,
+   "fresh": 297
+  },
+  {
+   "pop": "D",
+   "cohort": "2012-2015",
+   "pos": "QB",
+   "n": 43,
+   "base": 40,
+   "identity": 42,
+   "feature": 41,
+   "fresh": 40
+  },
+  {
+   "pop": "D",
+   "cohort": "2012-2015",
+   "pos": "RB",
+   "n": 83,
+   "base": 76,
+   "identity": 82,
+   "feature": 77,
+   "fresh": 76
+  },
+  {
+   "pop": "D",
+   "cohort": "2012-2015",
+   "pos": "WR",
+   "n": 130,
+   "base": 117,
+   "identity": 128,
+   "feature": 119,
+   "fresh": 119
+  },
+  {
+   "pop": "D",
+   "cohort": "2012-2015",
+   "pos": "TE",
+   "n": 57,
+   "base": 53,
+   "identity": 57,
+   "feature": 54,
+   "fresh": 53
+  },
+  {
+   "pop": "D",
+   "cohort": "2012-2015",
+   "pos": "ALL",
+   "n": 313,
+   "base": 286,
+   "identity": 309,
+   "feature": 291,
+   "fresh": 288
+  },
+  {
+   "pop": "D",
+   "cohort": "2016-2019",
+   "pos": "QB",
+   "n": 49,
+   "base": 46,
+   "identity": 49,
+   "feature": 46,
+   "fresh": 46
+  },
+  {
+   "pop": "D",
+   "cohort": "2016-2019",
+   "pos": "RB",
+   "n": 93,
+   "base": 89,
+   "identity": 93,
+   "feature": 89,
+   "fresh": 89
+  },
+  {
+   "pop": "D",
+   "cohort": "2016-2019",
+   "pos": "WR",
+   "n": 125,
+   "base": 118,
+   "identity": 123,
+   "feature": 118,
+   "fresh": 118
+  },
+  {
+   "pop": "D",
+   "cohort": "2016-2019",
+   "pos": "TE",
+   "n": 56,
+   "base": 49,
+   "identity": 54,
+   "feature": 50,
+   "fresh": 49
+  },
+  {
+   "pop": "D",
+   "cohort": "2016-2019",
+   "pos": "ALL",
+   "n": 323,
+   "base": 302,
+   "identity": 319,
+   "feature": 303,
+   "fresh": 302
+  },
+  {
+   "pop": "D",
+   "cohort": "2020-2023",
+   "pos": "QB",
+   "n": 46,
+   "base": 45,
+   "identity": 46,
+   "feature": 45,
+   "fresh": 43
+  },
+  {
+   "pop": "D",
+   "cohort": "2020-2023",
+   "pos": "RB",
+   "n": 78,
+   "base": 77,
+   "identity": 78,
+   "feature": 77,
+   "fresh": 77
+  },
+  {
+   "pop": "D",
+   "cohort": "2020-2023",
+   "pos": "WR",
+   "n": 131,
+   "base": 124,
+   "identity": 131,
+   "feature": 124,
+   "fresh": 123
+  },
+  {
+   "pop": "D",
+   "cohort": "2020-2023",
+   "pos": "TE",
+   "n": 57,
+   "base": 53,
+   "identity": 56,
+   "feature": 53,
+   "fresh": 53
+  },
+  {
+   "pop": "D",
+   "cohort": "2020-2023",
+   "pos": "ALL",
+   "n": 312,
+   "base": 299,
+   "identity": 311,
+   "feature": 299,
+   "fresh": 296
+  },
+  {
+   "pop": "D",
+   "cohort": "2024-2026",
+   "pos": "QB",
+   "n": 35,
+   "base": 32,
+   "identity": 35,
+   "feature": 32,
+   "fresh": 32
+  },
+  {
+   "pop": "D",
+   "cohort": "2024-2026",
+   "pos": "RB",
+   "n": 56,
+   "base": 54,
+   "identity": 56,
+   "feature": 54,
+   "fresh": 54
+  },
+  {
+   "pop": "D",
+   "cohort": "2024-2026",
+   "pos": "WR",
+   "n": 102,
+   "base": 99,
+   "identity": 102,
+   "feature": 99,
+   "fresh": 99
+  },
+  {
+   "pop": "D",
+   "cohort": "2024-2026",
+   "pos": "TE",
+   "n": 50,
+   "base": 50,
+   "identity": 50,
+   "feature": 50,
+   "fresh": 50
+  },
+  {
+   "pop": "D",
+   "cohort": "2024-2026",
+   "pos": "ALL",
+   "n": 243,
+   "base": 235,
+   "identity": 243,
+   "feature": 235,
+   "fresh": 235
+  },
+  {
+   "pop": "D",
+   "cohort": "2008-2026",
+   "pos": "QB",
+   "n": 222,
+   "base": 207,
+   "identity": 220,
+   "feature": 210,
+   "fresh": 205
+  },
+  {
+   "pop": "D",
+   "cohort": "2008-2026",
+   "pos": "RB",
+   "n": 400,
+   "base": 375,
+   "identity": 397,
+   "feature": 378,
+   "fresh": 376
+  },
+  {
+   "pop": "D",
+   "cohort": "2008-2026",
+   "pos": "WR",
+   "n": 616,
+   "base": 568,
+   "identity": 606,
+   "feature": 571,
+   "fresh": 570
+  },
+  {
+   "pop": "D",
+   "cohort": "2008-2026",
+   "pos": "TE",
+   "n": 287,
+   "base": 267,
+   "identity": 283,
+   "feature": 269,
+   "fresh": 267
+  },
+  {
+   "pop": "D",
+   "cohort": "2008-2026",
+   "pos": "ALL",
+   "n": 1525,
+   "base": 1417,
+   "identity": 1506,
+   "feature": 1428,
+   "fresh": 1418
+  },
+  {
+   "pop": "U",
+   "cohort": "2008-2011",
+   "pos": "QB",
+   "n": 23,
+   "base": 15,
+   "identity": 20,
+   "feature": 19,
+   "fresh": 16
+  },
+  {
+   "pop": "U",
+   "cohort": "2008-2011",
+   "pos": "RB",
+   "n": 116,
+   "base": 79,
+   "identity": 104,
+   "feature": 88,
+   "fresh": 84
+  },
+  {
+   "pop": "U",
+   "cohort": "2008-2011",
+   "pos": "WR",
+   "n": 179,
+   "base": 111,
+   "identity": 142,
+   "feature": 124,
+   "fresh": 113
+  },
+  {
+   "pop": "U",
+   "cohort": "2008-2011",
+   "pos": "TE",
+   "n": 69,
+   "base": 44,
+   "identity": 62,
+   "feature": 49,
+   "fresh": 48
+  },
+  {
+   "pop": "U",
+   "cohort": "2008-2011",
+   "pos": "ALL",
+   "n": 387,
+   "base": 249,
+   "identity": 328,
+   "feature": 280,
+   "fresh": 261
+  },
+  {
+   "pop": "U",
+   "cohort": "2012-2015",
+   "pos": "QB",
+   "n": 26,
+   "base": 17,
+   "identity": 22,
+   "feature": 20,
+   "fresh": 18
+  },
+  {
+   "pop": "U",
+   "cohort": "2012-2015",
+   "pos": "RB",
+   "n": 127,
+   "base": 78,
+   "identity": 119,
+   "feature": 91,
+   "fresh": 83
+  },
+  {
+   "pop": "U",
+   "cohort": "2012-2015",
+   "pos": "WR",
+   "n": 220,
+   "base": 129,
+   "identity": 194,
+   "feature": 145,
+   "fresh": 136
+  },
+  {
+   "pop": "U",
+   "cohort": "2012-2015",
+   "pos": "TE",
+   "n": 109,
+   "base": 57,
+   "identity": 90,
+   "feature": 65,
+   "fresh": 61
+  },
+  {
+   "pop": "U",
+   "cohort": "2012-2015",
+   "pos": "ALL",
+   "n": 482,
+   "base": 281,
+   "identity": 425,
+   "feature": 321,
+   "fresh": 298
+  },
+  {
+   "pop": "U",
+   "cohort": "2016-2019",
+   "pos": "QB",
+   "n": 33,
+   "base": 22,
+   "identity": 31,
+   "feature": 25,
+   "fresh": 23
+  },
+  {
+   "pop": "U",
+   "cohort": "2016-2019",
+   "pos": "RB",
+   "n": 122,
+   "base": 92,
+   "identity": 113,
+   "feature": 96,
+   "fresh": 93
+  },
+  {
+   "pop": "U",
+   "cohort": "2016-2019",
+   "pos": "WR",
+   "n": 244,
+   "base": 176,
+   "identity": 227,
+   "feature": 183,
+   "fresh": 178
+  },
+  {
+   "pop": "U",
+   "cohort": "2016-2019",
+   "pos": "TE",
+   "n": 104,
+   "base": 66,
+   "identity": 90,
+   "feature": 69,
+   "fresh": 67
+  },
+  {
+   "pop": "U",
+   "cohort": "2016-2019",
+   "pos": "ALL",
+   "n": 503,
+   "base": 356,
+   "identity": 461,
+   "feature": 373,
+   "fresh": 361
+  },
+  {
+   "pop": "U",
+   "cohort": "2020-2023",
+   "pos": "QB",
+   "n": 27,
+   "base": 20,
+   "identity": 27,
+   "feature": 21,
+   "fresh": 18
+  },
+  {
+   "pop": "U",
+   "cohort": "2020-2023",
+   "pos": "RB",
+   "n": 100,
+   "base": 83,
+   "identity": 96,
+   "feature": 83,
+   "fresh": 81
+  },
+  {
+   "pop": "U",
+   "cohort": "2020-2023",
+   "pos": "WR",
+   "n": 170,
+   "base": 130,
+   "identity": 164,
+   "feature": 131,
+   "fresh": 124
+  },
+  {
+   "pop": "U",
+   "cohort": "2020-2023",
+   "pos": "TE",
+   "n": 98,
+   "base": 78,
+   "identity": 89,
+   "feature": 78,
+   "fresh": 75
+  },
+  {
+   "pop": "U",
+   "cohort": "2020-2023",
+   "pos": "ALL",
+   "n": 395,
+   "base": 311,
+   "identity": 376,
+   "feature": 313,
+   "fresh": 298
+  },
+  {
+   "pop": "U",
+   "cohort": "2008-2026",
+   "pos": "QB",
+   "n": 109,
+   "base": 74,
+   "identity": 100,
+   "feature": 85,
+   "fresh": 75
+  },
+  {
+   "pop": "U",
+   "cohort": "2008-2026",
+   "pos": "RB",
+   "n": 465,
+   "base": 332,
+   "identity": 432,
+   "feature": 358,
+   "fresh": 341
+  },
+  {
+   "pop": "U",
+   "cohort": "2008-2026",
+   "pos": "WR",
+   "n": 813,
+   "base": 546,
+   "identity": 727,
+   "feature": 583,
+   "fresh": 551
+  },
+  {
+   "pop": "U",
+   "cohort": "2008-2026",
+   "pos": "TE",
+   "n": 380,
+   "base": 245,
+   "identity": 331,
+   "feature": 261,
+   "fresh": 251
+  },
+  {
+   "pop": "U",
+   "cohort": "2008-2026",
+   "pos": "ALL",
+   "n": 1767,
+   "base": 1197,
+   "identity": 1590,
+   "feature": 1287,
+   "fresh": 1218
+  }
+ ],
+ "methods": {
+  "D": {
+   "name_school": 726,
+   "espn_id": 690,
+   "xwalk+dob_name": 57,
+   "xwalk": 27,
+   "unlinked": 19,
+   "dob_name": 4,
+   "name_prefix": 1,
+   "xwalk+gap_window": 1
+  },
+  "U": {
+   "name_school": 738,
+   "espn_id": 458,
+   "unlinked": 177,
+   "xwalk": 162,
+   "xwalk+dob_name": 152,
+   "xwalk+dob_name+gap_window": 22,
+   "dob_name": 19,
+   "xwalk+dob_name+multi_school+gap_window": 13,
+   "xwalk+multi_school+gap_window": 12,
+   "xwalk+gap_window": 4,
+   "dob_name+multi_school+gap_window": 3,
+   "dob_name+gap_window": 3,
+   "xwalk+multi_school": 2,
+   "multi_school+gap_window": 1,
+   "name_prefix": 1
+  }
+ },
+ "causes": {
+  "D": {
+   "identity_no_stats:fcs": 75,
+   "xwalk_reject:no_rows": 10,
+   "school_not_in_ps:fcs_lines": 5,
+   "identity_no_stats:roster_box": 3,
+   "window_other": 1,
+   "xwalk_reject:end": 1,
+   "school_not_in_ps:absent": 1,
+   "player_not_in_ps": 1
+  },
+  "U": {
+   "identity_no_stats:fcs": 265,
+   "xwalk_reject:no_rows": 64,
+   "school_not_in_ps:absent": 41,
+   "identity_no_stats:roster_box": 38,
+   "school_not_in_ps:fcs_lines": 25,
+   "player_not_in_ps": 18,
+   "rule_conflict": 10,
+   "no_college": 10,
+   "window_other": 5,
+   "xwalk_reject:name": 4
+  }
+ },
+ "causes_by_pos": {
+  "D:QB": {
+   "identity_no_stats:fcs": 10,
+   "school_not_in_ps:fcs_lines": 1,
+   "xwalk_reject:no_rows": 1
+  },
+  "D:RB": {
+   "identity_no_stats:fcs": 18,
+   "school_not_in_ps:fcs_lines": 2,
+   "xwalk_reject:no_rows": 1,
+   "identity_no_stats:roster_box": 1
+  },
+  "D:WR": {
+   "identity_no_stats:fcs": 33,
+   "xwalk_reject:no_rows": 6,
+   "school_not_in_ps:fcs_lines": 2,
+   "identity_no_stats:roster_box": 2,
+   "xwalk_reject:end": 1,
+   "school_not_in_ps:absent": 1
+  },
+  "D:TE": {
+   "identity_no_stats:fcs": 14,
+   "xwalk_reject:no_rows": 2,
+   "window_other": 1,
+   "player_not_in_ps": 1
+  },
+  "U:QB": {
+   "identity_no_stats:fcs": 13,
+   "xwalk_reject:no_rows": 3,
+   "identity_no_stats:roster_box": 2,
+   "rule_conflict": 2,
+   "xwalk_reject:name": 1,
+   "school_not_in_ps:fcs_lines": 1,
+   "player_not_in_ps": 1,
+   "school_not_in_ps:absent": 1
+  },
+  "U:RB": {
+   "identity_no_stats:fcs": 54,
+   "identity_no_stats:roster_box": 20,
+   "xwalk_reject:no_rows": 13,
+   "school_not_in_ps:absent": 7,
+   "no_college": 5,
+   "school_not_in_ps:fcs_lines": 3,
+   "rule_conflict": 2,
+   "player_not_in_ps": 2,
+   "xwalk_reject:name": 1
+  },
+  "U:WR": {
+   "identity_no_stats:fcs": 137,
+   "xwalk_reject:no_rows": 31,
+   "school_not_in_ps:fcs_lines": 19,
+   "school_not_in_ps:absent": 19,
+   "identity_no_stats:roster_box": 7,
+   "player_not_in_ps": 6,
+   "rule_conflict": 5,
+   "no_college": 3,
+   "window_other": 2,
+   "xwalk_reject:name": 1
+  },
+  "U:TE": {
+   "identity_no_stats:fcs": 61,
+   "xwalk_reject:no_rows": 17,
+   "school_not_in_ps:absent": 14,
+   "player_not_in_ps": 9,
+   "identity_no_stats:roster_box": 9,
+   "window_other": 3,
+   "school_not_in_ps:fcs_lines": 2,
+   "no_college": 2,
+   "xwalk_reject:name": 1,
+   "rule_conflict": 1
+  }
+ },
+ "flags": {
+  "dob_conflict": 64,
+  "xw_school_mismatch": 46,
+  "xw_disagree": 7,
+  "school_mismatch": 41,
+  "dob_within1": 9,
+  "pos_conflict": 7,
+  "stale_espn_direct": 20,
+  "end_ge_t0": 2,
+  "later_stats": 1,
+  "fcs_same_name_later": 3
+ },
+ "collisions": [],
+ "rule_conflicts": [
+  {
+   "key": "00-0029494",
+   "name": "Joe Anderson",
+   "ids": {
+    "xwalk": 489006,
+    "dob_name": 237552,
+    "gap_window": 237552
+   }
+  },
+  {
+   "key": "BAT138483",
+   "name": "Phil Bates",
+   "ids": {
+    "xwalk": 489456,
+    "dob_name": 235698,
+    "multi_school": 489456,
+    "gap_window": 489456
+   }
+  },
+  {
+   "key": "00-0028359",
+   "name": "McLeod Bethel-Thompson",
+   "ids": {
+    "xwalk": 477950,
+    "dob_name": 192265
+   }
+  },
+  {
+   "key": "00-0030656",
+   "name": "Isaiah Crowell",
+   "ids": {
+    "xwalk": 536398,
+    "gap_window": 512836
+   }
+  },
+  {
+   "key": "00-0028863",
+   "name": "Dominique Davis",
+   "ids": {
+    "xwalk": 236575,
+    "dob_name": 236575,
+    "multi_school": 500941
+   }
+  },
+  {
+   "key": "00-0030806",
+   "name": "Nic Jacobs",
+   "ids": {
+    "xwalk": 548774,
+    "multi_school": 504189,
+    "gap_window": 504189
+   }
+  },
+  {
+   "key": "00-0031787",
+   "name": "Jake Kumerow",
+   "ids": {
+    "xwalk": 558147,
+    "dob_name": 558147,
+    "gap_window": 505112
+   }
+  },
+  {
+   "key": "00-0033266",
+   "name": "JoJo Natson",
+   "ids": {
+    "xwalk": 531268,
+    "dob_name": 531268,
+    "multi_school": 3125355,
+    "gap_window": 3125355
+   }
+  },
+  {
+   "key": "00-0027412",
+   "name": "Manase Tonga",
+   "ids": {
+    "xwalk": 487664,
+    "dob_name": 134674
+   }
+  },
+  {
+   "key": "00-0030274",
+   "name": "Myles White",
+   "ids": {
+    "xwalk": 536315,
+    "dob_name": 381923,
+    "multi_school": 536315
+   }
+  }
+ ],
+ "rule_status": {
+  "xwalk": {
+   "accept": 462,
+   "no_rows": 76,
+   "end": 1,
+   "name": 4
+  },
+  "dob_name": {
+   "accept": 281,
+   "none": 391
+  },
+  "multi_school": {
+   "none": 68,
+   "accept": 36
+  },
+  "gap_window": {
+   "school": 48,
+   "none": 555,
+   "ambiguous": 7,
+   "accept": 65,
+   "dob_conflict": 3
+  }
+ },
+ "lio": {
+  "D": {
+   "n": 690,
+   "found": 682,
+   "correct": 682,
+   "by_method": {
+    "name_school": 682
+   },
+   "wrong": []
+  },
+  "U": {
+   "n": 458,
+   "found": 404,
+   "correct": 403,
+   "by_method": {
+    "name_school": 404
+   },
+   "wrong": [
+    {
+     "key": "00-0038685",
+     "truth": 3149687,
+     "got": 4372721,
+     "method": "name_school"
+    }
+   ]
+  }
+ },
+ "rule_on_id_known": {
+  "xwalk": {
+   "n": 1148,
+   "accepted": 1146,
+   "agree": 1146,
+   "disagree": []
+  },
+  "dob_name": {
+   "n": 1148,
+   "accepted": 1020,
+   "agree": 1020,
+   "disagree": []
+  },
+  "multi_school": {
+   "n": 1148,
+   "accepted": 67,
+   "agree": 67,
+   "disagree": []
+  },
+  "gap_window": {
+   "n": 1148,
+   "accepted": 1097,
+   "agree": 1097,
+   "disagree": []
+  }
+ },
+ "r1_vs_base": {
+  "espn_id": {
+   "rows": 1148,
+   "with_xw": 1148,
+   "accepted": 1146,
+   "status": {
+    "accept": 1146,
+    "end": 2
+   },
+   "agree": 1146,
+   "disagree": []
+  },
+  "name_prefix": {
+   "rows": 2,
+   "with_xw": 2,
+   "accepted": 2,
+   "status": {
+    "accept": 2
+   },
+   "agree": 2,
+   "disagree": []
+  },
+  "name_school": {
+   "rows": 1464,
+   "with_xw": 1339,
+   "accepted": 1335,
+   "status": {
+    "accept": 1335,
+    "no_rows": 3,
+    "": 125,
+    "end": 1
+   },
+   "agree": 1334,
+   "disagree": [
+    {
+     "key": "00-0030299",
+     "name": "Dan Buckner",
+     "xw": 377926,
+     "base": 530818
+    }
+   ]
+  }
+ },
+ "dob_on_base": {
+  "espn_id": {
+   "exact": 1027,
+   "none": 93,
+   "conflict": 23,
+   "within1": 5,
+   "conflicts": [
+    {
+     "key": "00-0034331",
+     "name": "Jaylen Samuels",
+     "nfl": "1996-07-20",
+     "college": [
+      "1996-07-29"
+     ]
+    },
+    {
+     "key": "00-0035275",
+     "name": "Jordan Scarlett",
+     "nfl": "1995-07-08",
+     "college": [
+      "1996-02-09"
+     ]
+    },
+    {
+     "key": "00-0035304",
+     "name": "Cullen Gillaspia",
+     "nfl": "1995-05-12",
+     "college": [
+      "1995-06-12"
+     ]
+    },
+    {
+     "key": "00-0036196",
+     "name": "Gabe Davis",
+     "nfl": "1999-03-01",
+     "college": [
+      "1999-04-01"
+     ]
+    },
+    {
+     "key": "00-0037085",
+     "name": "Tyler Badie",
+     "nfl": "1999-02-07",
+     "college": [
+      "2000-02-07"
+     ]
+    },
+    {
+     "key": "00-0038406",
+     "name": "Zack Kuntz",
+     "nfl": "1999-06-09",
+     "college": [
+      "1999-06-06"
+     ]
+    },
+    {
+     "key": "00-0039875",
+     "name": "Ray Davis",
+     "nfl": "1999-11-20",
+     "college": [
+      "1999-11-11"
+     ]
+    },
+    {
+     "key": "00-0039880",
+     "name": "Malik Washington",
+     "nfl": "2000-10-20",
+     "college": [
+      "2001-01-04"
+     ]
+    },
+    {
+     "key": "00-0040705",
+     "name": "Chimere Dike",
+     "nfl": "2001-12-14",
+     "college": [
+      "2002-12-14"
+     ]
+    },
+    {
+     "key": "00-0040719",
+     "name": "Bhayshul Tuten",
+     "nfl": "2002-02-14",
+     "college": [
+      "2003-02-14"
+     ]
+    },
+    {
+     "key": "00-0040184",
+     "name": "KeAndre Lambert-Smith",
+     "nfl": "2001-10-16",
+     "college": [
+      "2002-07-29"
+     ]
+    },
+    {
+     "key": "00-0041561",
+     "name": "Carson Beck",
+     "nfl": "2001-11-19",
+     "college": [
+      "2002-11-19"
+     ]
+    },
+    {
+     "key": "00-0035912",
+     "name": "Levante Bellamy",
+     "nfl": "1996-11-28",
+     "college": [
+      "1996-11-26"
+     ]
+    },
+    {
+     "key": "00-0034208",
+     "name": "Mike Boone",
+     "nfl": "1995-07-30",
+     "college": [
+      "1995-06-30"
+     ]
+    },
+    {
+     "key": "00-0035988",
+     "name": "Anthony Gordon",
+     "nfl": "1997-08-28",
+     "college": [
+      "1996-08-28"
+     ]
+    },
+    {
+     "key": "00-0038656",
+     "name": "Mohamed Ibrahim",
+     "nfl": "1999-09-08",
+     "college": [
+      "1998-09-08"
+     ]
+    },
+    {
+     "key": "00-0037460",
+     "name": "Johnny Johnson III",
+     "nfl": "1999-05-14",
+     "college": [
+      "1999-05-04"
+     ]
+    },
+    {
+     "key": "00-0037068",
+     "name": "E.J. Perry",
+     "nfl": "1998-08-16",
+     "college": [
+      "1998-01-01"
+     ]
+    },
+    {
+     "key": "00-0034243",
+     "name": "Caleb Scott",
+     "nfl": "1996-01-08",
+     "college": [
+      "1996-02-08"
+     ]
+    },
+    {
+     "key": "00-0035359",
+     "name": "David Sills",
+     "nfl": "1995-05-29",
+     "college": [
+      "1996-05-29"
+     ]
+    }
+   ]
+  },
+  "name_prefix": {
+   "exact": 2,
+   "conflicts": []
+  },
+  "name_school": {
+   "exact": 853,
+   "conflict": 30,
+   "none": 577,
+   "within1": 4,
+   "conflicts": [
+    {
+     "key": "00-0026170",
+     "name": "Dustin Keller",
+     "nfl": "1984-09-25",
+     "college": [
+      "1984-09-05"
+     ]
+    },
+    {
+     "key": "00-0026364",
+     "name": "Stevie Johnson",
+     "nfl": "1986-07-22",
+     "college": [
+      "1986-11-28"
+     ]
+    },
+    {
+     "key": "00-0027139",
+     "name": "John Phillips",
+     "nfl": "1987-06-11",
+     "college": [
+      "1984-09-19"
+     ]
+    },
+    {
+     "key": "00-0026963",
+     "name": "Cameron Morrah",
+     "nfl": "1987-03-18",
+     "college": [
+      "1987-03-03"
+     ]
+    },
+    {
+     "key": "00-0027861",
+     "name": "C.J. Spiller",
+     "nfl": "1987-08-05",
+     "college": [
+      "1987-08-15"
+     ]
+    },
+    {
+     "key": "00-0028042",
+     "name": "Luke Stocker",
+     "nfl": "1988-07-17",
+     "college": [
+      "1988-07-01"
+     ]
+    },
+    {
+     "key": "00-0028112",
+     "name": "Charles Clay",
+     "nfl": "1989-02-13",
+     "college": [
+      "1986-12-06"
+     ]
+    },
+    {
+     "key": "00-0028158",
+     "name": "Shaun Chapas",
+     "nfl": "1988-05-02",
+     "college": [
+      "1988-03-02"
+     ]
+    },
+    {
+     "key": "00-0028165",
+     "name": "Scotty McKnight",
+     "nfl": "1988-02-11",
+     "college": [
+      "1987-02-11"
+     ]
+    },
+    {
+     "key": "00-0030128",
+     "name": "Michael Cox",
+     "nfl": "1988-11-14",
+     "college": [
+      "1989-11-14"
+     ]
+    },
+    {
+     "key": "00-0032392",
+     "name": "Austin Hooper",
+     "nfl": "1994-10-29",
+     "college": [
+      "1994-11-04"
+     ]
+    },
+    {
+     "key": "00-0033295",
+     "name": "Elijah McGuire",
+     "nfl": "1994-06-01",
+     "college": [
+      "1994-01-06"
+     ]
+    },
+    {
+     "key": "00-0025822",
+     "name": "Anthony Alridge",
+     "nfl": "1984-11-24",
+     "college": [
+      "1983-11-24"
+     ]
+    },
+    {
+     "key": "00-0027259",
+     "name": "Jake Ballard",
+     "nfl": "1987-12-21",
+     "college": [
+      "1987-12-02"
+     ]
+    },
+    {
+     "key": "00-0026650",
+     "name": "Britt Davis",
+     "nfl": "1986-04-23",
+     "college": [
+      "1985-04-23"
+     ]
+    },
+    {
+     "key": "00-0027585",
+     "name": "Richard Goodman",
+     "nfl": "1987-04-23",
+     "college": [
+      "1987-12-30"
+     ]
+    },
+    {
+     "key": "00-0029878",
+     "name": "MarQueis Gray",
+     "nfl": "1989-11-07",
+     "college": [
+      "1990-11-07"
+     ]
+    },
+    {
+     "key": "00-0031035",
+     "name": "Xavier Grimble",
+     "nfl": "1992-09-22",
+     "college": [
+      "1992-09-02"
+     ]
+    },
+    {
+     "key": "00-0034317",
+     "name": "Keith Kirkwood",
+     "nfl": "1994-12-26",
+     "college": [
+      "1993-12-26"
+     ]
+    },
+    {
+     "key": "00-0027352",
+     "name": "Max Komar",
+     "nfl": "1987-04-30",
+     "college": [
+      "1987-11-30"
+     ]
+    }
+   ]
+  }
+ },
+ "end_guard_calibration": {
+  "espn_exact_dob": {
+   "n": 1027,
+   "box": 1,
+   "fcs": 0,
+   "ps": 0,
+   "roster": 2
+  },
+  "all_base": {
+   "n": 2614,
+   "box": 1,
+   "fcs": 0,
+   "ps": 0,
+   "roster": 2
+  }
+ },
+ "xw_coverage": {
+  "D": {
+   "n": 1525,
+   "with_xw": 1482,
+   "r1": {
+    "accept": 1468,
+    "no_rows": 11,
+    "": 43,
+    "end": 3
+   }
+  },
+  "U": {
+   "n": 1767,
+   "with_xw": 1550,
+   "r1": {
+    "": 217,
+    "accept": 1477,
+    "no_rows": 68,
+    "end": 1,
+    "name": 4
+   }
+  }
+ },
+ "stale_espn_direct": {
+  "D": 2,
+  "U": 18
+ },
+ "named": [
+  {
+   "gsis_id": "00-0026300",
+   "label": "Josh Johnson (San Diego): never Iowa State's namesake",
+   "ok": true,
+   "pop": "D",
+   "name": "Josh Johnson",
+   "identity": 166992,
+   "base": null,
+   "feature": null,
+   "fresh": false,
+   "r1": "accept",
+   "cause": "identity_no_stats:fcs",
+   "method": "xwalk",
+   "flags": ""
+  },
+  {
+   "gsis_id": "00-0039798",
+   "label": "Isaiah Davis (South Dakota State): never UTSA's namesake",
+   "ok": true,
+   "pop": "D",
+   "name": "Isaiah Davis",
+   "identity": 4695404,
+   "base": null,
+   "feature": null,
+   "fresh": false,
+   "r1": "accept",
+   "cause": "identity_no_stats:fcs",
+   "method": "xwalk+dob_name",
+   "flags": ""
+  },
+  {
+   "gsis_id": "00-0027608",
+   "label": "Kyle Williams: crosswalk 183335 fails the end guard",
+   "ok": true,
+   "pop": "D",
+   "name": "Kyle Williams",
+   "identity": null,
+   "base": null,
+   "feature": null,
+   "fresh": false,
+   "r1": "end",
+   "cause": "xwalk_reject:end",
+   "method": "",
+   "flags": ""
+  },
+  {
+   "gsis_id": "00-0026234",
+   "label": "Kevin O'Connell: base 147785 kept, crosswalk id has no rows",
+   "ok": true,
+   "pop": "D",
+   "name": "Kevin O'Connell",
+   "identity": 147785,
+   "base": 147785,
+   "feature": 147785,
+   "fresh": true,
+   "r1": "no_rows",
+   "cause": "",
+   "method": "name_school",
+   "flags": "xw_disagree"
+  },
+  {
+   "gsis_id": "00-0027693",
+   "label": "Taylor Price: never the 2015 Fresno State id",
+   "ok": true,
+   "pop": "D",
+   "name": "Taylor Price",
+   "identity": 188925,
+   "base": 188925,
+   "feature": 188925,
+   "fresh": true,
+   "r1": "accept",
+   "cause": "",
+   "method": "name_school",
+   "flags": ""
+  },
+  {
+   "gsis_id": "00-0031118",
+   "label": "Corey Brown: never 487791",
+   "ok": true,
+   "pop": "U",
+   "name": "Corey Brown",
+   "identity": 534284,
+   "base": null,
+   "feature": 534284,
+   "fresh": true,
+   "r1": "accept",
+   "cause": "",
+   "method": "xwalk",
+   "flags": ""
+  },
+  {
+   "gsis_id": "00-0026836",
+   "label": "Kenneth Harris: base kept, crosswalk fails the end guard",
+   "ok": true,
+   "pop": "U",
+   "name": "Kenneth Harris",
+   "identity": 160066,
+   "base": 160066,
+   "feature": 160066,
+   "fresh": true,
+   "r1": "end",
+   "cause": "",
+   "method": "name_school",
+   "flags": "xw_disagree;xw_school_mismatch"
+  },
+  {
+   "gsis_id": "00-0029513",
+   "label": "Dwight Jones: crosswalk id has no rows",
+   "ok": true,
+   "pop": "U",
+   "name": "Dwight Jones",
+   "identity": 237134,
+   "base": 237134,
+   "feature": 237134,
+   "fresh": true,
+   "r1": "no_rows",
+   "cause": "",
+   "method": "name_school",
+   "flags": "xw_disagree"
+  },
+  {
+   "gsis_id": "00-0031275",
+   "label": "Ian Thompson: crosswalk id has no rows",
+   "ok": true,
+   "pop": "U",
+   "name": "Ian Thompson",
+   "identity": 481332,
+   "base": 481332,
+   "feature": 481332,
+   "fresh": true,
+   "r1": "no_rows",
+   "cause": "",
+   "method": "name_school",
+   "flags": "xw_disagree"
+  },
+  {
+   "gsis_id": "00-0033266",
+   "label": "JoJo Natson: base kept",
+   "ok": true,
+   "pop": "U",
+   "name": "JoJo Natson",
+   "identity": null,
+   "base": null,
+   "feature": null,
+   "fresh": false,
+   "r1": "accept",
+   "cause": "rule_conflict",
+   "method": "",
+   "flags": ""
+  },
+  {
+   "gsis_id": "00-0028863",
+   "label": "Dominique Davis: base kept",
+   "ok": true,
+   "pop": "U",
+   "name": "Dominique Davis",
+   "identity": null,
+   "base": null,
+   "feature": null,
+   "fresh": false,
+   "r1": "accept",
+   "cause": "rule_conflict",
+   "method": "",
+   "flags": ""
+  },
+  {
+   "gsis_id": "00-0026195",
+   "label": "Ray Rice (Raymell): linked with stats",
+   "ok": true,
+   "pop": "D",
+   "name": "Ray Rice",
+   "identity": 176934,
+   "base": 176934,
+   "feature": 176934,
+   "fresh": true,
+   "r1": "accept",
+   "cause": "",
+   "method": "name_prefix",
+   "flags": ""
+  },
+  {
+   "gsis_id": "00-0027007",
+   "label": "Beanie Wells: linked with stats",
+   "ok": true,
+   "pop": "D",
+   "name": "Beanie Wells",
+   "identity": 183932,
+   "base": 183932,
+   "feature": 183932,
+   "fresh": true,
+   "r1": "accept",
+   "cause": "",
+   "method": "name_school",
+   "flags": ""
+  },
+  {
+   "gsis_id": "00-0029665",
+   "label": "Robert Griffin III: linked with stats",
+   "ok": true,
+   "pop": "D",
+   "name": "Robert Griffin III",
+   "identity": 378497,
+   "base": 378497,
+   "feature": 378497,
+   "fresh": true,
+   "r1": "accept",
+   "cause": "",
+   "method": "name_school",
+   "flags": ""
+  },
+  {
+   "gsis_id": "00-0026364",
+   "label": "Steve Johnson (Stevie): linked with stats",
+   "ok": true,
+   "pop": "D",
+   "name": "Stevie Johnson",
+   "identity": 188616,
+   "base": 188616,
+   "feature": 188616,
+   "fresh": true,
+   "r1": "accept",
+   "cause": "",
+   "method": "name_school",
+   "flags": "dob_conflict"
+  },
+  {
+   "gsis_id": "00-0025860",
+   "label": "BenJarvus Green-Ellis: 145975",
+   "ok": true,
+   "pop": "U",
+   "name": "BenJarvus Green-Ellis",
+   "identity": 145975,
+   "base": null,
+   "feature": 145975,
+   "fresh": true,
+   "r1": "accept",
+   "cause": "",
+   "method": "xwalk+dob_name+multi_school+gap_window",
+   "flags": ""
+  },
+  {
+   "gsis_id": "00-0028411",
+   "label": "Dontrelle Inman: 236790, stale",
+   "ok": true,
+   "pop": "U",
+   "name": "Dontrelle Inman",
+   "identity": 236790,
+   "base": null,
+   "feature": 236790,
+   "fresh": false,
+   "r1": "accept",
+   "cause": "",
+   "method": "xwalk+dob_name+gap_window",
+   "flags": ""
+  },
+  {
+   "gsis_id": "00-0030656",
+   "label": "Isaiah Crowell: unlinked, or the stale Georgia id",
+   "ok": true,
+   "pop": "U",
+   "name": "Isaiah Crowell",
+   "identity": null,
+   "base": null,
+   "feature": null,
+   "fresh": false,
+   "r1": "accept",
+   "cause": "rule_conflict",
+   "method": "",
+   "flags": ""
+  },
+  {
+   "gsis_id": "00-0032218",
+   "label": "Dorial Green-Beckham: linked with stats",
+   "ok": true,
+   "pop": "D",
+   "name": "Dorial Green-Beckham",
+   "identity": 531380,
+   "base": null,
+   "feature": 531380,
+   "fresh": true,
+   "r1": "accept",
+   "cause": "",
+   "method": "xwalk",
+   "flags": ""
+  },
+  {
+   "gsis_id": "00-0027700",
+   "label": "Mardy Gilyard: linked with stats",
+   "ok": true,
+   "pop": "D",
+   "name": "Mardy Gilyard",
+   "identity": 169405,
+   "base": null,
+   "feature": 169405,
+   "fresh": true,
+   "r1": "accept",
+   "cause": "",
+   "method": "xwalk+dob_name",
+   "flags": ""
+  },
+  {
+   "gsis_id": "00-0030095",
+   "label": "Corey Fuller: linked with stats",
+   "ok": true,
+   "pop": "D",
+   "name": "Corey Fuller",
+   "identity": 501213,
+   "base": null,
+   "feature": 501213,
+   "fresh": true,
+   "r1": "accept",
+   "cause": "",
+   "method": "xwalk",
+   "flags": ""
+  },
+  {
+   "gsis_id": "00-0033699",
+   "label": "Austin Ekeler: FCS identity 555082, no FBS stats",
+   "ok": true,
+   "pop": "U",
+   "name": "Austin Ekeler",
+   "identity": 555082,
+   "base": null,
+   "feature": null,
+   "fresh": false,
+   "r1": "accept",
+   "cause": "identity_no_stats:fcs",
+   "method": "xwalk",
+   "flags": ""
+  }
+ ],
+ "named_ok": true
+}

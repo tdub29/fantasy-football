@@ -1,0 +1,586 @@
+{
+ "store": "C:/Users/TrevorWhite/.claude/jobs/915dc2f8/tmp/udfa.sqlite",
+ "udfa_candidates": 1767,
+ "linked_before": 1197,
+ "linked_after": 1295,
+ "by_method": {
+  "name_school": 738,
+  "none": 472,
+  "espn_id": 458,
+  "espn_xwalk": 86,
+  "gap_window": 7,
+  "multi_school": 5,
+  "name_prefix": 1
+ },
+ "duplicate_ids_after": 0,
+ "ppr3_total": 42015.7,
+ "ppr3_linked_before": 28721.0,
+ "ppr3_linked_after": 31782.3,
+ "by_cohort_pos": {
+  "2008-11|QB": "19/23 (base 15)",
+  "2008-11|RB": "89/116 (base 79)",
+  "2008-11|TE": "49/69 (base 44)",
+  "2008-11|WR": "121/179 (base 111)",
+  "2012-15|QB": "21/26 (base 17)",
+  "2012-15|RB": "92/127 (base 78)",
+  "2012-15|TE": "67/109 (base 57)",
+  "2012-15|WR": "149/220 (base 129)",
+  "2016-19|QB": "25/33 (base 22)",
+  "2016-19|RB": "97/122 (base 92)",
+  "2016-19|TE": "69/104 (base 66)",
+  "2016-19|WR": "184/244 (base 176)",
+  "2020-23|QB": "21/27 (base 20)",
+  "2020-23|RB": "83/100 (base 83)",
+  "2020-23|TE": "78/98 (base 78)",
+  "2020-23|WR": "131/170 (base 130)"
+ },
+ "precision_id_known_drafted": {
+  "rows": 457,
+  "correct/fired": {
+   "name_school": "449/449",
+   "name_prefix": "0/0",
+   "espn_xwalk": "8/8",
+   "multi_school": "0/0",
+   "gap_window": "0/0"
+  }
+ },
+ "newly_linked": [
+  {
+   "display_name": "Isaiah Crowell",
+   "season": 2014,
+   "position": "RB",
+   "college_name": "Alabama State; Georgia",
+   "method": "gap_window",
+   "player_id": 512836,
+   "ppr3": 465.30000000000007
+  },
+  {
+   "display_name": "LeGarrette Blount",
+   "season": 2010,
+   "position": "RB",
+   "college_name": "Oregon; East Mississippi JC",
+   "method": "multi_school",
+   "player_id": 378483,
+   "ppr3": 297.3
+  },
+  {
+   "display_name": "Dontrelle Inman",
+   "season": 2014,
+   "position": "WR",
+   "college_name": "Virginia",
+   "method": "espn_xwalk",
+   "player_id": 236790,
+   "ppr3": 290.4
+  },
+  {
+   "display_name": "BenJarvus Green-Ellis",
+   "season": 2008,
+   "position": "RB",
+   "college_name": "Mississippi; Indiana",
+   "method": "espn_xwalk",
+   "player_id": 145975,
+   "ppr3": 278.0
+  },
+  {
+   "display_name": "Corey Brown",
+   "season": 2014,
+   "position": "WR",
+   "college_name": "Ohio State",
+   "method": "espn_xwalk",
+   "player_id": 534284,
+   "ppr3": 242.8
+  },
+  {
+   "display_name": "Andrew Hawkins",
+   "season": 2011,
+   "position": "WR",
+   "college_name": "Toledo",
+   "method": "espn_xwalk",
+   "player_id": 166990,
+   "ppr3": 215.3
+  },
+  {
+   "display_name": "Kenbrell Thompkins",
+   "season": 2013,
+   "position": "WR",
+   "college_name": "Cincinnati; El Camino; Palomar College",
+   "method": "espn_xwalk",
+   "player_id": 502349,
+   "ppr3": 183.8
+  },
+  {
+   "display_name": "Joseph Fauria",
+   "season": 2013,
+   "position": "TE",
+   "college_name": "UCLA; Notre Dame",
+   "method": "espn_xwalk",
+   "player_id": 385326,
+   "ppr3": 104.1
+  },
+  {
+   "display_name": "Marcel Reece",
+   "season": 2008,
+   "position": "FB",
+   "college_name": "Washington; El Camino; Chaffey College",
+   "method": "espn_xwalk",
+   "player_id": 184383,
+   "ppr3": 96.5
+  },
+  {
+   "display_name": "Fozzy Whittaker",
+   "season": 2012,
+   "position": "RB",
+   "college_name": "Texas",
+   "method": "espn_xwalk",
+   "player_id": 232197,
+   "ppr3": 93.9
+  },
+  {
+   "display_name": "Joseph Morgan",
+   "season": 2011,
+   "position": "WR",
+   "college_name": "Walsh; Illinois",
+   "method": "gap_window",
+   "player_id": 189245,
+   "ppr3": 66.0
+  },
+  {
+   "display_name": "Tanner McEvoy",
+   "season": 2016,
+   "position": "WR",
+   "college_name": "Wisconsin; South Carolina; Arizona Western",
+   "method": "espn_xwalk",
+   "player_id": 515835,
+   "ppr3": 49.019999999999996
+  },
+  {
+   "display_name": "Chad Simpson",
+   "season": 2008,
+   "position": "RB",
+   "college_name": "Morgan State; University of South Florida",
+   "method": "espn_xwalk",
+   "player_id": 161658,
+   "ppr3": 47.8
+  },
+  {
+   "display_name": "Elijhaa Penny",
+   "season": 2016,
+   "position": "FB",
+   "college_name": "Idaho; Cerritos College",
+   "method": "espn_xwalk",
+   "player_id": 517182,
+   "ppr3": 47.7
+  },
+  {
+   "display_name": "Marcus Thigpen",
+   "season": 2012,
+   "position": "WR",
+   "college_name": "Indiana",
+   "method": "espn_xwalk",
+   "player_id": 160617,
+   "ppr3": 46.8
+  },
+  {
+   "display_name": "Jorvorskie Lane",
+   "season": 2012,
+   "position": "FB",
+   "college_name": "Texas A&M",
+   "method": "espn_xwalk",
+   "player_id": 177381,
+   "ppr3": 45.300000000000004
+  },
+  {
+   "display_name": "Da'Rick Rogers",
+   "season": 2013,
+   "position": "WR",
+   "college_name": "Tennessee Technological Univ; Tennessee",
+   "method": "espn_xwalk",
+   "player_id": 504329,
+   "ppr3": 45.2
+  },
+  {
+   "display_name": "Chad Hall",
+   "season": 2010,
+   "position": "WR",
+   "college_name": "Air Force",
+   "method": "espn_xwalk",
+   "player_id": 175929,
+   "ppr3": 43.7
+  },
+  {
+   "display_name": "Chris Jennings",
+   "season": 2009,
+   "position": "RB",
+   "college_name": "Arizona; Arizona Western",
+   "method": "espn_xwalk",
+   "player_id": 193510,
+   "ppr3": 42.6
+  },
+  {
+   "display_name": "Cooper Helfet",
+   "season": 2012,
+   "position": "TE",
+   "college_name": "Duke; Johns Hopkins University; Santa Rosa",
+   "method": "espn_xwalk",
+   "player_id": 501058,
+   "ppr3": 42.5
+  },
+  {
+   "display_name": "Myles White",
+   "season": 2013,
+   "position": "WR",
+   "college_name": "Louisiana Tech; Michigan State; Northwest Mississippi CC",
+   "method": "espn_xwalk",
+   "player_id": 536315,
+   "ppr3": 37.400000000000006
+  },
+  {
+   "display_name": "Duke Williams",
+   "season": 2019,
+   "position": "WR",
+   "college_name": "Auburn; Mississippi Gulf Coast CC",
+   "method": "espn_xwalk",
+   "player_id": 559703,
+   "ppr3": 34.6
+  },
+  {
+   "display_name": "Chris Matthews",
+   "season": 2014,
+   "position": "WR",
+   "college_name": "Kentucky; LAHC",
+   "method": "espn_xwalk",
+   "player_id": 482788,
+   "ppr3": 34.1
+  },
+  {
+   "display_name": "Silas Redd",
+   "season": 2014,
+   "position": "RB",
+   "college_name": "USC; Penn State",
+   "method": "espn_xwalk",
+   "player_id": 503340,
+   "ppr3": 32.2
+  },
+  {
+   "display_name": "Austin Johnson",
+   "season": 2013,
+   "position": "FB",
+   "college_name": "Tennessee",
+   "method": "espn_xwalk",
+   "player_id": 378233,
+   "ppr3": 26.6
+  },
+  {
+   "display_name": "Joe Banyard",
+   "season": 2012,
+   "position": "RB",
+   "college_name": "Texas-El Paso; TCU",
+   "method": "espn_xwalk",
+   "player_id": 237216,
+   "ppr3": 26.1
+  },
+  {
+   "display_name": "Chris Streveler",
+   "season": 2020,
+   "position": "QB",
+   "college_name": "South Dakota; Minnesota",
+   "method": "espn_xwalk",
+   "player_id": 545477,
+   "ppr3": 18.74
+  },
+  {
+   "display_name": "Matt Simms",
+   "season": 2013,
+   "position": "QB",
+   "college_name": "Tennessee; Louisville; El Camino",
+   "method": "espn_xwalk",
+   "player_id": 238915,
+   "ppr3": 11.700000000000001
+  },
+  {
+   "display_name": "Nic Jacobs",
+   "season": 2014,
+   "position": "TE",
+   "college_name": "McNeese State; LSU",
+   "method": "multi_school",
+   "player_id": 504189,
+   "ppr3": 11.2
+  },
+  {
+   "display_name": "Collin Mooney",
+   "season": 2012,
+   "position": "RB",
+   "college_name": "Army",
+   "method": "espn_xwalk",
+   "player_id": 182796,
+   "ppr3": 11.1
+  },
+  {
+   "display_name": "George Atkinson",
+   "season": 2014,
+   "position": "RB",
+   "college_name": "Notre Dame",
+   "method": "espn_xwalk",
+   "player_id": 517604,
+   "ppr3": 9.4
+  },
+  {
+   "display_name": "Brandon Williams",
+   "season": 2013,
+   "position": "TE",
+   "college_name": "Oregon; Joliet Junior College",
+   "method": "espn_xwalk",
+   "player_id": 504772,
+   "ppr3": 8.4
+  },
+  {
+   "display_name": "Dominique Jones",
+   "season": 2012,
+   "position": "TE",
+   "college_name": "Shepherd",
+   "method": "espn_xwalk",
+   "player_id": 481795,
+   "ppr3": 7.2
+  },
+  {
+   "display_name": "Ifeanyi Momah",
+   "season": 2014,
+   "position": "TE",
+   "college_name": "Boston College",
+   "method": "espn_xwalk",
+   "player_id": 236595,
+   "ppr3": 7.0
+  },
+  {
+   "display_name": "Manase Tonga",
+   "season": 2010,
+   "position": "FB",
+   "college_name": "BYU",
+   "method": "espn_xwalk",
+   "player_id": 487664,
+   "ppr3": 6.0
+  },
+  {
+   "display_name": "Taj Smith",
+   "season": 2008,
+   "position": "WR",
+   "college_name": "Syracuse; Bakersfield College",
+   "method": "espn_xwalk",
+   "player_id": 183812,
+   "ppr3": 6.0
+  },
+  {
+   "display_name": "JoJo Natson",
+   "season": 2017,
+   "position": "WR",
+   "college_name": "Akron; Utah State",
+   "method": "espn_xwalk",
+   "player_id": 531268,
+   "ppr3": 5.300000000000001
+  },
+  {
+   "display_name": "Gator Hoskins",
+   "season": 2014,
+   "position": "TE",
+   "college_name": "Marshall",
+   "method": "espn_xwalk",
+   "player_id": 503264,
+   "ppr3": 5.1
+  },
+  {
+   "display_name": "Jordan Leslie",
+   "season": 2015,
+   "position": "WR",
+   "college_name": "BYU; Texas-El Paso",
+   "method": "espn_xwalk",
+   "player_id": 500691,
+   "ppr3": 3.6
+  },
+  {
+   "display_name": "Cole Hikutini",
+   "season": 2017,
+   "position": "TE",
+   "college_name": "Louisville; City College (SF); Sacramento State",
+   "method": "espn_xwalk",
+   "player_id": 529568,
+   "ppr3": 3.5
+  }
+ ],
+ "still_unlinked_top": [
+  {
+   "display_name": "Austin Ekeler",
+   "season": 2017,
+   "position": "RB",
+   "college_name": "Western State",
+   "ppr3": 584.7
+  },
+  {
+   "display_name": "Victor Cruz",
+   "season": 2010,
+   "position": "WR",
+   "college_name": "UMass Amherst",
+   "ppr3": 543.0999999999999
+  },
+  {
+   "display_name": "James Robinson",
+   "season": 2020,
+   "position": "RB",
+   "college_name": "Illinois State",
+   "ppr3": 512.9
+  },
+  {
+   "display_name": "Tyrell Williams",
+   "season": 2015,
+   "position": "WR",
+   "college_name": "Western Oregon",
+   "ppr3": 371.70000000000005
+  },
+  {
+   "display_name": "Rashid Shaheed",
+   "season": 2022,
+   "position": "WR",
+   "college_name": "Weber State",
+   "ppr3": 339.90000000000003
+  },
+  {
+   "display_name": "Keelan Cole",
+   "season": 2017,
+   "position": "WR",
+   "college_name": "Kentucky Wesleyan",
+   "ppr3": 300.6
+  },
+  {
+   "display_name": "Taylor Gabriel",
+   "season": 2014,
+   "position": "WR",
+   "college_name": "Abilene Christian",
+   "ppr3": 297.2
+  },
+  {
+   "display_name": "Mike Tolbert",
+   "season": 2008,
+   "position": "FB",
+   "college_name": "Coastal Carolina",
+   "ppr3": 296.90000000000003
+  },
+  {
+   "display_name": "Kendrick Bourne",
+   "season": 2017,
+   "position": "WR",
+   "college_name": "Eastern Washington",
+   "ppr3": 254.20000000000002
+  },
+  {
+   "display_name": "Cameron Brate",
+   "season": 2014,
+   "position": "TE",
+   "college_name": "Harvard",
+   "ppr3": 243.5
+  },
+  {
+   "display_name": "Jaleel McLaughlin",
+   "season": 2023,
+   "position": "RB",
+   "college_name": "Youngstown State",
+   "ppr3": 234.6
+  },
+  {
+   "display_name": "Charcandrick West",
+   "season": 2014,
+   "position": "RB",
+   "college_name": "Abilene Christian; Louisiana Tech",
+   "ppr3": 226.9
+  },
+  {
+   "display_name": "Seth Roberts",
+   "season": 2014,
+   "position": "WR",
+   "college_name": "West Alabama; Pearl River",
+   "ppr3": 223.7
+  },
+  {
+   "display_name": "Chester Rogers",
+   "season": 2016,
+   "position": "WR",
+   "college_name": "Grambling State",
+   "ppr3": 221.6
+  },
+  {
+   "display_name": "Donald Jones",
+   "season": 2010,
+   "position": "WR",
+   "college_name": "Youngstown State; Lackawanna JC",
+   "ppr3": 207.0
+  },
+  {
+   "display_name": "Will Tye",
+   "season": 2015,
+   "position": "TE",
+   "college_name": "Stony Brook; Florida",
+   "ppr3": 205.70000000000002
+  },
+  {
+   "display_name": "Emanuel Wilson",
+   "season": 2023,
+   "position": "RB",
+   "college_name": "Fort Valley State College",
+   "ppr3": 205.3
+  },
+  {
+   "display_name": "Cameron Meredith",
+   "season": 2015,
+   "position": "WR",
+   "college_name": "Illinois State",
+   "ppr3": 202.48000000000002
+  },
+  {
+   "display_name": "Danny Woodhead",
+   "season": 2008,
+   "position": "RB",
+   "college_name": "Chadron State",
+   "ppr3": 183.70000000000002
+  },
+  {
+   "display_name": "Deonte Harty",
+   "season": 2019,
+   "position": "WR",
+   "college_name": "Assumption",
+   "ppr3": 182.3
+  },
+  {
+   "display_name": "Khiry Robinson",
+   "season": 2013,
+   "position": "RB",
+   "college_name": "West Texas State; Blinn College",
+   "ppr3": 165.4
+  },
+  {
+   "display_name": "Larry Donnell",
+   "season": 2012,
+   "position": "TE",
+   "college_name": "Grambling State",
+   "ppr3": 159.4
+  },
+  {
+   "display_name": "Joique Bell",
+   "season": 2010,
+   "position": "RB",
+   "college_name": "Wayne State",
+   "ppr3": 157.9
+  },
+  {
+   "display_name": "Anthony Armstrong",
+   "season": 2008,
+   "position": "WR",
+   "college_name": "West Texas State",
+   "ppr3": 147.10000000000002
+  },
+  {
+   "display_name": "Isaac Redman",
+   "season": 2009,
+   "position": "RB",
+   "college_name": "Bowie State",
+   "ppr3": 140.60000000000002
+  }
+ ]
+}

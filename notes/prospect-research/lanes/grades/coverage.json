@@ -1,0 +1,1749 @@
+{
+ "raw_audit": {
+  "top_keys": {
+   "$ref": 187575,
+   "athlete": 187575,
+   "recruitingClass": 187575,
+   "status": 187574,
+   "grade": 187575,
+   "gradeDisplayValue": 187575,
+   "attributes": 187575,
+   "analysis": 125404,
+   "schools": 85313,
+   "activity": 187575,
+   "_id": 187575
+  },
+  "athlete_keys": {
+   "id": 187575,
+   "alternateId": 169182,
+   "firstName": 187575,
+   "lastName": 187575,
+   "fullName": 187575,
+   "displayName": 187575,
+   "shortName": 187575,
+   "weight": 187575,
+   "height": 187575,
+   "links": 187575,
+   "highSchool": 180218,
+   "hometown": 187575,
+   "position": 187575
+  },
+  "attributes": {
+   "positionRank": 50797,
+   "stateRank": 37933,
+   "regionRank": 42352,
+   "rank": 10342,
+   "fortyYrdDash": 132779,
+   "threeConeDrill": 132758,
+   "twentyYrdShuttle": 132768,
+   "benchPressWeight": 2,
+   "verticalJump": 69053,
+   "broadJump": 171
+  },
+  "status": {
+   "Signed": 65266,
+   "Undecided": 115886,
+   "Verbal": 6418,
+   "Junior College": 4,
+   "null": 1
+  }
+ },
+ "population_by_class": {
+  "2004.0": {
+   "rows": 509,
+   "espn": 0.006,
+   "stars247": 0.552,
+   "either": 0.552,
+   "espn_fills_247_null": 0,
+   "join_id": 0,
+   "join_fallback": 3
+  },
+  "2005.0": {
+   "rows": 470,
+   "espn": 0.015,
+   "stars247": 0.7,
+   "either": 0.702,
+   "espn_fills_247_null": 1,
+   "join_id": 0,
+   "join_fallback": 7
+  },
+  "2006.0": {
+   "rows": 507,
+   "espn": 0.625,
+   "stars247": 0.704,
+   "either": 0.751,
+   "espn_fills_247_null": 24,
+   "join_id": 0,
+   "join_fallback": 317
+  },
+  "2007.0": {
+   "rows": 522,
+   "espn": 0.693,
+   "stars247": 0.736,
+   "either": 0.805,
+   "espn_fills_247_null": 36,
+   "join_id": 0,
+   "join_fallback": 362
+  },
+  "2008.0": {
+   "rows": 567,
+   "espn": 0.723,
+   "stars247": 0.748,
+   "either": 0.831,
+   "espn_fills_247_null": 47,
+   "join_id": 34,
+   "join_fallback": 376
+  },
+  "2009.0": {
+   "rows": 556,
+   "espn": 0.705,
+   "stars247": 0.748,
+   "either": 0.806,
+   "espn_fills_247_null": 32,
+   "join_id": 0,
+   "join_fallback": 392
+  },
+  "2010.0": {
+   "rows": 540,
+   "espn": 0.717,
+   "stars247": 0.772,
+   "either": 0.828,
+   "espn_fills_247_null": 30,
+   "join_id": 1,
+   "join_fallback": 386
+  },
+  "2011.0": {
+   "rows": 543,
+   "espn": 0.713,
+   "stars247": 0.781,
+   "either": 0.831,
+   "espn_fills_247_null": 27,
+   "join_id": 3,
+   "join_fallback": 384
+  },
+  "2012.0": {
+   "rows": 555,
+   "espn": 0.683,
+   "stars247": 0.726,
+   "either": 0.787,
+   "espn_fills_247_null": 34,
+   "join_id": 8,
+   "join_fallback": 371
+  },
+  "2013.0": {
+   "rows": 582,
+   "espn": 0.732,
+   "stars247": 0.778,
+   "either": 0.82,
+   "espn_fills_247_null": 24,
+   "join_id": 19,
+   "join_fallback": 407
+  },
+  "2014.0": {
+   "rows": 637,
+   "espn": 0.766,
+   "stars247": 0.754,
+   "either": 0.804,
+   "espn_fills_247_null": 32,
+   "join_id": 404,
+   "join_fallback": 84
+  },
+  "2015.0": {
+   "rows": 569,
+   "espn": 0.81,
+   "stars247": 0.8,
+   "either": 0.849,
+   "espn_fills_247_null": 28,
+   "join_id": 430,
+   "join_fallback": 31
+  },
+  "2016.0": {
+   "rows": 570,
+   "espn": 0.842,
+   "stars247": 0.832,
+   "either": 0.884,
+   "espn_fills_247_null": 30,
+   "join_id": 431,
+   "join_fallback": 49
+  },
+  "2017.0": {
+   "rows": 565,
+   "espn": 0.772,
+   "stars247": 0.747,
+   "either": 0.832,
+   "espn_fills_247_null": 48,
+   "join_id": 393,
+   "join_fallback": 43
+  },
+  "2018.0": {
+   "rows": 585,
+   "espn": 0.786,
+   "stars247": 0.617,
+   "either": 0.826,
+   "espn_fills_247_null": 122,
+   "join_id": 412,
+   "join_fallback": 48
+  },
+  "2019.0": {
+   "rows": 523,
+   "espn": 0.782,
+   "stars247": 0.509,
+   "either": 0.832,
+   "espn_fills_247_null": 169,
+   "join_id": 297,
+   "join_fallback": 112
+  },
+  "2020.0": {
+   "rows": 502,
+   "espn": 0.787,
+   "stars247": 0.52,
+   "either": 0.831,
+   "espn_fills_247_null": 156,
+   "join_id": 313,
+   "join_fallback": 82
+  },
+  "2021.0": {
+   "rows": 444,
+   "espn": 0.723,
+   "stars247": 0.556,
+   "either": 0.782,
+   "espn_fills_247_null": 100,
+   "join_id": 284,
+   "join_fallback": 37
+  },
+  "2022.0": {
+   "rows": 274,
+   "espn": 0.624,
+   "stars247": 0.5,
+   "either": 0.668,
+   "espn_fills_247_null": 46,
+   "join_id": 116,
+   "join_fallback": 55
+  },
+  "2023.0": {
+   "rows": 42,
+   "espn": 0.5,
+   "stars247": 0.5,
+   "either": 0.595,
+   "espn_fills_247_null": 4,
+   "join_id": 20,
+   "join_fallback": 1
+  },
+  "2024.0": {
+   "rows": 15,
+   "espn": 0.467,
+   "stars247": 0.467,
+   "either": 0.467,
+   "espn_fills_247_null": 0,
+   "join_id": 6,
+   "join_fallback": 1
+  }
+ },
+ "population_by_pos": {
+  "QB": {
+   "rows": 1064,
+   "espn": 0.727,
+   "stars247": 0.738,
+   "either": 0.857,
+   "espn_fills_247_null": 127,
+   "join_id": 363,
+   "join_fallback": 410
+  },
+  "RB": {
+   "rows": 2851,
+   "espn": 0.683,
+   "stars247": 0.714,
+   "either": 0.809,
+   "espn_fills_247_null": 271,
+   "join_id": 931,
+   "join_fallback": 1016
+  },
+  "TE": {
+   "rows": 1536,
+   "espn": 0.674,
+   "stars247": 0.708,
+   "either": 0.798,
+   "espn_fills_247_null": 137,
+   "join_id": 509,
+   "join_fallback": 527
+  },
+  "WR": {
+   "rows": 4626,
+   "espn": 0.641,
+   "stars247": 0.673,
+   "either": 0.771,
+   "espn_fills_247_null": 455,
+   "join_id": 1368,
+   "join_fallback": 1595
+  }
+ },
+ "population_by_pos_class": {
+  "WR": {
+   "2004.0": {
+    "rows": 215,
+    "espn": 0.0,
+    "stars247": 0.53,
+    "either": 0.53,
+    "espn_fills_247_null": 0,
+    "join_id": 0,
+    "join_fallback": 0
+   },
+   "2005.0": {
+    "rows": 213,
+    "espn": 0.019,
+    "stars247": 0.667,
+    "either": 0.671,
+    "espn_fills_247_null": 1,
+    "join_id": 0,
+    "join_fallback": 4
+   },
+   "2006.0": {
+    "rows": 230,
+    "espn": 0.574,
+    "stars247": 0.67,
+    "either": 0.713,
+    "espn_fills_247_null": 10,
+    "join_id": 0,
+    "join_fallback": 132
+   },
+   "2007.0": {
+    "rows": 248,
+    "espn": 0.669,
+    "stars247": 0.714,
+    "either": 0.786,
+    "espn_fills_247_null": 18,
+    "join_id": 0,
+    "join_fallback": 166
+   },
+   "2008.0": {
+    "rows": 268,
+    "espn": 0.687,
+    "stars247": 0.735,
+    "either": 0.813,
+    "espn_fills_247_null": 21,
+    "join_id": 20,
+    "join_fallback": 164
+   },
+   "2009.0": {
+    "rows": 245,
+    "espn": 0.641,
+    "stars247": 0.722,
+    "either": 0.784,
+    "espn_fills_247_null": 15,
+    "join_id": 0,
+    "join_fallback": 157
+   },
+   "2010.0": {
+    "rows": 259,
+    "espn": 0.691,
+    "stars247": 0.749,
+    "either": 0.811,
+    "espn_fills_247_null": 16,
+    "join_id": 0,
+    "join_fallback": 179
+   },
+   "2011.0": {
+    "rows": 240,
+    "espn": 0.704,
+    "stars247": 0.75,
+    "either": 0.804,
+    "espn_fills_247_null": 13,
+    "join_id": 0,
+    "join_fallback": 169
+   },
+   "2012.0": {
+    "rows": 265,
+    "espn": 0.634,
+    "stars247": 0.694,
+    "either": 0.747,
+    "espn_fills_247_null": 14,
+    "join_id": 5,
+    "join_fallback": 163
+   },
+   "2013.0": {
+    "rows": 277,
+    "espn": 0.697,
+    "stars247": 0.755,
+    "either": 0.791,
+    "espn_fills_247_null": 10,
+    "join_id": 10,
+    "join_fallback": 183
+   },
+   "2014.0": {
+    "rows": 295,
+    "espn": 0.749,
+    "stars247": 0.725,
+    "either": 0.783,
+    "espn_fills_247_null": 17,
+    "join_id": 177,
+    "join_fallback": 44
+   },
+   "2015.0": {
+    "rows": 260,
+    "espn": 0.792,
+    "stars247": 0.785,
+    "either": 0.842,
+    "espn_fills_247_null": 15,
+    "join_id": 190,
+    "join_fallback": 16
+   },
+   "2016.0": {
+    "rows": 263,
+    "espn": 0.802,
+    "stars247": 0.795,
+    "either": 0.859,
+    "espn_fills_247_null": 17,
+    "join_id": 182,
+    "join_fallback": 29
+   },
+   "2017.0": {
+    "rows": 260,
+    "espn": 0.754,
+    "stars247": 0.742,
+    "either": 0.835,
+    "espn_fills_247_null": 24,
+    "join_id": 174,
+    "join_fallback": 22
+   },
+   "2018.0": {
+    "rows": 259,
+    "espn": 0.745,
+    "stars247": 0.622,
+    "either": 0.795,
+    "espn_fills_247_null": 45,
+    "join_id": 164,
+    "join_fallback": 29
+   },
+   "2019.0": {
+    "rows": 246,
+    "espn": 0.752,
+    "stars247": 0.496,
+    "either": 0.805,
+    "espn_fills_247_null": 76,
+    "join_id": 134,
+    "join_fallback": 51
+   },
+   "2020.0": {
+    "rows": 218,
+    "espn": 0.771,
+    "stars247": 0.459,
+    "either": 0.807,
+    "espn_fills_247_null": 76,
+    "join_id": 132,
+    "join_fallback": 36
+   },
+   "2021.0": {
+    "rows": 207,
+    "espn": 0.681,
+    "stars247": 0.546,
+    "either": 0.739,
+    "espn_fills_247_null": 40,
+    "join_id": 122,
+    "join_fallback": 19
+   },
+   "2022.0": {
+    "rows": 132,
+    "espn": 0.598,
+    "stars247": 0.439,
+    "either": 0.629,
+    "espn_fills_247_null": 25,
+    "join_id": 47,
+    "join_fallback": 32
+   },
+   "2023.0": {
+    "rows": 22,
+    "espn": 0.5,
+    "stars247": 0.409,
+    "either": 0.5,
+    "espn_fills_247_null": 2,
+    "join_id": 11,
+    "join_fallback": 0
+   },
+   "2024.0": {
+    "rows": 4,
+    "espn": 0.0,
+    "stars247": 0.0,
+    "either": 0.0,
+    "espn_fills_247_null": 0,
+    "join_id": 0,
+    "join_fallback": 0
+   }
+  },
+  "RB": {
+   "2004.0": {
+    "rows": 149,
+    "espn": 0.007,
+    "stars247": 0.55,
+    "either": 0.55,
+    "espn_fills_247_null": 0,
+    "join_id": 0,
+    "join_fallback": 1
+   },
+   "2005.0": {
+    "rows": 124,
+    "espn": 0.024,
+    "stars247": 0.718,
+    "either": 0.718,
+    "espn_fills_247_null": 0,
+    "join_id": 0,
+    "join_fallback": 3
+   },
+   "2006.0": {
+    "rows": 150,
+    "espn": 0.62,
+    "stars247": 0.72,
+    "either": 0.76,
+    "espn_fills_247_null": 6,
+    "join_id": 0,
+    "join_fallback": 93
+   },
+   "2007.0": {
+    "rows": 148,
+    "espn": 0.736,
+    "stars247": 0.784,
+    "either": 0.838,
+    "espn_fills_247_null": 8,
+    "join_id": 0,
+    "join_fallback": 109
+   },
+   "2008.0": {
+    "rows": 154,
+    "espn": 0.753,
+    "stars247": 0.76,
+    "either": 0.851,
+    "espn_fills_247_null": 14,
+    "join_id": 7,
+    "join_fallback": 109
+   },
+   "2009.0": {
+    "rows": 175,
+    "espn": 0.731,
+    "stars247": 0.749,
+    "either": 0.794,
+    "espn_fills_247_null": 8,
+    "join_id": 0,
+    "join_fallback": 128
+   },
+   "2010.0": {
+    "rows": 159,
+    "espn": 0.742,
+    "stars247": 0.774,
+    "either": 0.83,
+    "espn_fills_247_null": 9,
+    "join_id": 0,
+    "join_fallback": 118
+   },
+   "2011.0": {
+    "rows": 163,
+    "espn": 0.693,
+    "stars247": 0.767,
+    "either": 0.828,
+    "espn_fills_247_null": 10,
+    "join_id": 1,
+    "join_fallback": 112
+   },
+   "2012.0": {
+    "rows": 157,
+    "espn": 0.694,
+    "stars247": 0.726,
+    "either": 0.803,
+    "espn_fills_247_null": 12,
+    "join_id": 1,
+    "join_fallback": 108
+   },
+   "2013.0": {
+    "rows": 170,
+    "espn": 0.765,
+    "stars247": 0.782,
+    "either": 0.841,
+    "espn_fills_247_null": 10,
+    "join_id": 6,
+    "join_fallback": 124
+   },
+   "2014.0": {
+    "rows": 170,
+    "espn": 0.812,
+    "stars247": 0.806,
+    "either": 0.865,
+    "espn_fills_247_null": 10,
+    "join_id": 124,
+    "join_fallback": 14
+   },
+   "2015.0": {
+    "rows": 157,
+    "espn": 0.86,
+    "stars247": 0.828,
+    "either": 0.885,
+    "espn_fills_247_null": 9,
+    "join_id": 131,
+    "join_fallback": 4
+   },
+   "2016.0": {
+    "rows": 149,
+    "espn": 0.846,
+    "stars247": 0.839,
+    "either": 0.879,
+    "espn_fills_247_null": 6,
+    "join_id": 117,
+    "join_fallback": 9
+   },
+   "2017.0": {
+    "rows": 163,
+    "espn": 0.773,
+    "stars247": 0.761,
+    "either": 0.828,
+    "espn_fills_247_null": 11,
+    "join_id": 122,
+    "join_fallback": 4
+   },
+   "2018.0": {
+    "rows": 151,
+    "espn": 0.808,
+    "stars247": 0.616,
+    "either": 0.834,
+    "espn_fills_247_null": 33,
+    "join_id": 113,
+    "join_fallback": 9
+   },
+   "2019.0": {
+    "rows": 148,
+    "espn": 0.811,
+    "stars247": 0.534,
+    "either": 0.845,
+    "espn_fills_247_null": 46,
+    "join_id": 87,
+    "join_fallback": 33
+   },
+   "2020.0": {
+    "rows": 156,
+    "espn": 0.769,
+    "stars247": 0.564,
+    "either": 0.833,
+    "espn_fills_247_null": 42,
+    "join_id": 96,
+    "join_fallback": 24
+   },
+   "2021.0": {
+    "rows": 113,
+    "espn": 0.717,
+    "stars247": 0.584,
+    "either": 0.796,
+    "espn_fills_247_null": 24,
+    "join_id": 76,
+    "join_fallback": 5
+   },
+   "2022.0": {
+    "rows": 72,
+    "espn": 0.625,
+    "stars247": 0.556,
+    "either": 0.708,
+    "espn_fills_247_null": 11,
+    "join_id": 37,
+    "join_fallback": 8
+   },
+   "2023.0": {
+    "rows": 15,
+    "espn": 0.533,
+    "stars247": 0.6,
+    "either": 0.733,
+    "espn_fills_247_null": 2,
+    "join_id": 8,
+    "join_fallback": 0
+   },
+   "2024.0": {
+    "rows": 8,
+    "espn": 0.75,
+    "stars247": 0.75,
+    "either": 0.75,
+    "espn_fills_247_null": 0,
+    "join_id": 5,
+    "join_fallback": 1
+   }
+  },
+  "TE": {
+   "2004.0": {
+    "rows": 81,
+    "espn": 0.025,
+    "stars247": 0.593,
+    "either": 0.593,
+    "espn_fills_247_null": 0,
+    "join_id": 0,
+    "join_fallback": 2
+   },
+   "2005.0": {
+    "rows": 82,
+    "espn": 0.0,
+    "stars247": 0.732,
+    "either": 0.732,
+    "espn_fills_247_null": 0,
+    "join_id": 0,
+    "join_fallback": 0
+   },
+   "2006.0": {
+    "rows": 72,
+    "espn": 0.75,
+    "stars247": 0.792,
+    "either": 0.861,
+    "espn_fills_247_null": 5,
+    "join_id": 0,
+    "join_fallback": 54
+   },
+   "2007.0": {
+    "rows": 77,
+    "espn": 0.688,
+    "stars247": 0.701,
+    "either": 0.779,
+    "espn_fills_247_null": 6,
+    "join_id": 0,
+    "join_fallback": 53
+   },
+   "2008.0": {
+    "rows": 84,
+    "espn": 0.786,
+    "stars247": 0.762,
+    "either": 0.869,
+    "espn_fills_247_null": 9,
+    "join_id": 4,
+    "join_fallback": 62
+   },
+   "2009.0": {
+    "rows": 67,
+    "espn": 0.791,
+    "stars247": 0.746,
+    "either": 0.806,
+    "espn_fills_247_null": 4,
+    "join_id": 0,
+    "join_fallback": 53
+   },
+   "2010.0": {
+    "rows": 67,
+    "espn": 0.716,
+    "stars247": 0.746,
+    "either": 0.806,
+    "espn_fills_247_null": 4,
+    "join_id": 1,
+    "join_fallback": 47
+   },
+   "2011.0": {
+    "rows": 82,
+    "espn": 0.768,
+    "stars247": 0.829,
+    "either": 0.854,
+    "espn_fills_247_null": 2,
+    "join_id": 1,
+    "join_fallback": 62
+   },
+   "2012.0": {
+    "rows": 74,
+    "espn": 0.743,
+    "stars247": 0.77,
+    "either": 0.838,
+    "espn_fills_247_null": 5,
+    "join_id": 2,
+    "join_fallback": 53
+   },
+   "2013.0": {
+    "rows": 74,
+    "espn": 0.743,
+    "stars247": 0.824,
+    "either": 0.851,
+    "espn_fills_247_null": 2,
+    "join_id": 2,
+    "join_fallback": 53
+   },
+   "2014.0": {
+    "rows": 102,
+    "espn": 0.706,
+    "stars247": 0.716,
+    "either": 0.735,
+    "espn_fills_247_null": 2,
+    "join_id": 60,
+    "join_fallback": 12
+   },
+   "2015.0": {
+    "rows": 94,
+    "espn": 0.745,
+    "stars247": 0.734,
+    "either": 0.777,
+    "espn_fills_247_null": 4,
+    "join_id": 64,
+    "join_fallback": 6
+   },
+   "2016.0": {
+    "rows": 91,
+    "espn": 0.868,
+    "stars247": 0.879,
+    "either": 0.89,
+    "espn_fills_247_null": 1,
+    "join_id": 71,
+    "join_fallback": 8
+   },
+   "2017.0": {
+    "rows": 77,
+    "espn": 0.766,
+    "stars247": 0.74,
+    "either": 0.805,
+    "espn_fills_247_null": 5,
+    "join_id": 50,
+    "join_fallback": 9
+   },
+   "2018.0": {
+    "rows": 108,
+    "espn": 0.769,
+    "stars247": 0.648,
+    "either": 0.806,
+    "espn_fills_247_null": 17,
+    "join_id": 79,
+    "join_fallback": 4
+   },
+   "2019.0": {
+    "rows": 78,
+    "espn": 0.782,
+    "stars247": 0.59,
+    "either": 0.872,
+    "espn_fills_247_null": 22,
+    "join_id": 41,
+    "join_fallback": 20
+   },
+   "2020.0": {
+    "rows": 82,
+    "espn": 0.78,
+    "stars247": 0.524,
+    "either": 0.829,
+    "espn_fills_247_null": 25,
+    "join_id": 56,
+    "join_fallback": 8
+   },
+   "2021.0": {
+    "rows": 81,
+    "espn": 0.741,
+    "stars247": 0.593,
+    "either": 0.79,
+    "espn_fills_247_null": 16,
+    "join_id": 51,
+    "join_fallback": 9
+   },
+   "2022.0": {
+    "rows": 57,
+    "espn": 0.649,
+    "stars247": 0.544,
+    "either": 0.684,
+    "espn_fills_247_null": 8,
+    "join_id": 25,
+    "join_fallback": 12
+   },
+   "2023.0": {
+    "rows": 3,
+    "espn": 0.333,
+    "stars247": 0.333,
+    "either": 0.333,
+    "espn_fills_247_null": 0,
+    "join_id": 1,
+    "join_fallback": 0
+   },
+   "2024.0": {
+    "rows": 3,
+    "espn": 0.333,
+    "stars247": 0.333,
+    "either": 0.333,
+    "espn_fills_247_null": 0,
+    "join_id": 1,
+    "join_fallback": 0
+   }
+  },
+  "QB": {
+   "2004.0": {
+    "rows": 64,
+    "espn": 0.0,
+    "stars247": 0.578,
+    "either": 0.578,
+    "espn_fills_247_null": 0,
+    "join_id": 0,
+    "join_fallback": 0
+   },
+   "2005.0": {
+    "rows": 51,
+    "espn": 0.0,
+    "stars247": 0.745,
+    "either": 0.745,
+    "espn_fills_247_null": 0,
+    "join_id": 0,
+    "join_fallback": 0
+   },
+   "2006.0": {
+    "rows": 55,
+    "espn": 0.691,
+    "stars247": 0.691,
+    "either": 0.745,
+    "espn_fills_247_null": 3,
+    "join_id": 0,
+    "join_fallback": 38
+   },
+   "2007.0": {
+    "rows": 49,
+    "espn": 0.694,
+    "stars247": 0.755,
+    "either": 0.837,
+    "espn_fills_247_null": 4,
+    "join_id": 0,
+    "join_fallback": 34
+   },
+   "2008.0": {
+    "rows": 61,
+    "espn": 0.721,
+    "stars247": 0.754,
+    "either": 0.803,
+    "espn_fills_247_null": 3,
+    "join_id": 3,
+    "join_fallback": 41
+   },
+   "2009.0": {
+    "rows": 69,
+    "espn": 0.783,
+    "stars247": 0.841,
+    "either": 0.913,
+    "espn_fills_247_null": 5,
+    "join_id": 0,
+    "join_fallback": 54
+   },
+   "2010.0": {
+    "rows": 55,
+    "espn": 0.764,
+    "stars247": 0.909,
+    "either": 0.927,
+    "espn_fills_247_null": 1,
+    "join_id": 0,
+    "join_fallback": 42
+   },
+   "2011.0": {
+    "rows": 58,
+    "espn": 0.724,
+    "stars247": 0.879,
+    "either": 0.914,
+    "espn_fills_247_null": 2,
+    "join_id": 1,
+    "join_fallback": 41
+   },
+   "2012.0": {
+    "rows": 59,
+    "espn": 0.797,
+    "stars247": 0.814,
+    "either": 0.864,
+    "espn_fills_247_null": 3,
+    "join_id": 0,
+    "join_fallback": 47
+   },
+   "2013.0": {
+    "rows": 61,
+    "espn": 0.787,
+    "stars247": 0.82,
+    "either": 0.852,
+    "espn_fills_247_null": 2,
+    "join_id": 1,
+    "join_fallback": 47
+   },
+   "2014.0": {
+    "rows": 70,
+    "espn": 0.814,
+    "stars247": 0.8,
+    "either": 0.843,
+    "espn_fills_247_null": 3,
+    "join_id": 43,
+    "join_fallback": 14
+   },
+   "2015.0": {
+    "rows": 58,
+    "espn": 0.862,
+    "stars247": 0.897,
+    "either": 0.897,
+    "espn_fills_247_null": 0,
+    "join_id": 45,
+    "join_fallback": 5
+   },
+   "2016.0": {
+    "rows": 67,
+    "espn": 0.955,
+    "stars247": 0.896,
+    "either": 0.985,
+    "espn_fills_247_null": 6,
+    "join_id": 61,
+    "join_fallback": 3
+   },
+   "2017.0": {
+    "rows": 65,
+    "espn": 0.846,
+    "stars247": 0.738,
+    "either": 0.862,
+    "espn_fills_247_null": 8,
+    "join_id": 47,
+    "join_fallback": 8
+   },
+   "2018.0": {
+    "rows": 67,
+    "espn": 0.925,
+    "stars247": 0.552,
+    "either": 0.955,
+    "espn_fills_247_null": 27,
+    "join_id": 56,
+    "join_fallback": 6
+   },
+   "2019.0": {
+    "rows": 51,
+    "espn": 0.843,
+    "stars247": 0.373,
+    "either": 0.863,
+    "espn_fills_247_null": 25,
+    "join_id": 35,
+    "join_fallback": 8
+   },
+   "2020.0": {
+    "rows": 46,
+    "espn": 0.935,
+    "stars247": 0.652,
+    "either": 0.935,
+    "espn_fills_247_null": 13,
+    "join_id": 29,
+    "join_fallback": 14
+   },
+   "2021.0": {
+    "rows": 43,
+    "espn": 0.907,
+    "stars247": 0.465,
+    "either": 0.93,
+    "espn_fills_247_null": 20,
+    "join_id": 35,
+    "join_fallback": 4
+   },
+   "2022.0": {
+    "rows": 13,
+    "espn": 0.769,
+    "stars247": 0.615,
+    "either": 0.769,
+    "espn_fills_247_null": 2,
+    "join_id": 7,
+    "join_fallback": 3
+   },
+   "2023.0": {
+    "rows": 2,
+    "espn": 0.5,
+    "stars247": 1.0,
+    "either": 1.0,
+    "espn_fills_247_null": 0,
+    "join_id": 0,
+    "join_fallback": 1
+   }
+  }
+ },
+ "linked_ids_by_class_join": {
+  "2006": {
+   "fallback": 1453,
+   "id": 22
+  },
+  "2007": {
+   "fallback": 1541,
+   "id": 22
+  },
+  "2008": {
+   "fallback": 1592,
+   "id": 29
+  },
+  "2009": {
+   "fallback": 1631,
+   "id": 28
+  },
+  "2010": {
+   "fallback": 1799,
+   "id": 54
+  },
+  "2011": {
+   "fallback": 2019,
+   "id": 69
+  },
+  "2012": {
+   "fallback": 2009,
+   "id": 91
+  },
+  "2013": {
+   "fallback": 2222,
+   "id": 208
+  },
+  "2014": {
+   "fallback": 399,
+   "id": 2414
+  },
+  "2015": {
+   "fallback": 270,
+   "id": 2479
+  },
+  "2016": {
+   "fallback": 281,
+   "id": 2423
+  },
+  "2017": {
+   "fallback": 290,
+   "id": 2383
+  },
+  "2018": {
+   "fallback": 326,
+   "id": 2338
+  },
+  "2019": {
+   "fallback": 738,
+   "id": 2358
+  },
+  "2020": {
+   "fallback": 600,
+   "id": 2150
+  },
+  "2021": {
+   "fallback": 175,
+   "id": 2112
+  },
+  "2022": {
+   "fallback": 265,
+   "id": 1941
+  },
+  "2023": {
+   "fallback": 306,
+   "id": 2098
+  },
+  "2024": {
+   "fallback": 655,
+   "id": 1777
+  },
+  "2025": {
+   "fallback": 2126,
+   "id": 652
+  },
+  "2026": {
+   "fallback": 2855,
+   "id": 307
+  }
+ },
+ "served": {
+  "WR": {
+   "training_snapshots_by_season": {
+    "2004": {
+     "rows": 40,
+     "espn": 0.0,
+     "stars247": 0.35,
+     "either": 0.35,
+     "espn_fills_247_null": 0,
+     "join_id": 0,
+     "join_fallback": 0
+    },
+    "2005": {
+     "rows": 185,
+     "espn": 0.0,
+     "stars247": 0.486,
+     "either": 0.486,
+     "espn_fills_247_null": 0,
+     "join_id": 0,
+     "join_fallback": 0
+    },
+    "2006": {
+     "rows": 350,
+     "espn": 0.077,
+     "stars247": 0.56,
+     "either": 0.566,
+     "espn_fills_247_null": 2,
+     "join_id": 0,
+     "join_fallback": 27
+    },
+    "2007": {
+     "rows": 589,
+     "espn": 0.212,
+     "stars247": 0.611,
+     "either": 0.633,
+     "espn_fills_247_null": 13,
+     "join_id": 0,
+     "join_fallback": 125
+    },
+    "2008": {
+     "rows": 606,
+     "espn": 0.404,
+     "stars247": 0.719,
+     "either": 0.761,
+     "espn_fills_247_null": 25,
+     "join_id": 0,
+     "join_fallback": 245
+    },
+    "2009": {
+     "rows": 601,
+     "espn": 0.601,
+     "stars247": 0.749,
+     "either": 0.819,
+     "espn_fills_247_null": 42,
+     "join_id": 0,
+     "join_fallback": 361
+    },
+    "2010": {
+     "rows": 602,
+     "espn": 0.711,
+     "stars247": 0.757,
+     "either": 0.831,
+     "espn_fills_247_null": 44,
+     "join_id": 0,
+     "join_fallback": 428
+    },
+    "2011": {
+     "rows": 637,
+     "espn": 0.727,
+     "stars247": 0.777,
+     "either": 0.838,
+     "espn_fills_247_null": 39,
+     "join_id": 0,
+     "join_fallback": 463
+    },
+    "2012": {
+     "rows": 656,
+     "espn": 0.738,
+     "stars247": 0.756,
+     "either": 0.825,
+     "espn_fills_247_null": 45,
+     "join_id": 0,
+     "join_fallback": 484
+    },
+    "2013": {
+     "rows": 667,
+     "espn": 0.763,
+     "stars247": 0.79,
+     "either": 0.85,
+     "espn_fills_247_null": 40,
+     "join_id": 0,
+     "join_fallback": 509
+    },
+    "2014": {
+     "rows": 686,
+     "espn": 0.783,
+     "stars247": 0.802,
+     "either": 0.859,
+     "espn_fills_247_null": 39,
+     "join_id": 67,
+     "join_fallback": 470
+    },
+    "2015": {
+     "rows": 668,
+     "espn": 0.781,
+     "stars247": 0.801,
+     "either": 0.852,
+     "espn_fills_247_null": 34,
+     "join_id": 181,
+     "join_fallback": 341
+    },
+    "2016": {
+     "rows": 669,
+     "espn": 0.806,
+     "stars247": 0.806,
+     "either": 0.859,
+     "espn_fills_247_null": 36,
+     "join_id": 302,
+     "join_fallback": 237
+    },
+    "2017": {
+     "rows": 691,
+     "espn": 0.844,
+     "stars247": 0.845,
+     "either": 0.897,
+     "espn_fills_247_null": 36,
+     "join_id": 454,
+     "join_fallback": 129
+    },
+    "2018": {
+     "rows": 682,
+     "espn": 0.831,
+     "stars247": 0.812,
+     "either": 0.877,
+     "espn_fills_247_null": 44,
+     "join_id": 512,
+     "join_fallback": 55
+    },
+    "2019": {
+     "rows": 704,
+     "espn": 0.831,
+     "stars247": 0.757,
+     "either": 0.881,
+     "espn_fills_247_null": 87,
+     "join_id": 518,
+     "join_fallback": 67
+    },
+    "2020": {
+     "rows": 661,
+     "espn": 0.823,
+     "stars247": 0.663,
+     "either": 0.873,
+     "espn_fills_247_null": 139,
+     "join_id": 472,
+     "join_fallback": 72
+    },
+    "2021": {
+     "rows": 705,
+     "espn": 0.816,
+     "stars247": 0.601,
+     "either": 0.864,
+     "espn_fills_247_null": 185,
+     "join_id": 481,
+     "join_fallback": 94
+    },
+    "2022": {
+     "rows": 676,
+     "espn": 0.797,
+     "stars247": 0.524,
+     "either": 0.84,
+     "espn_fills_247_null": 214,
+     "join_id": 446,
+     "join_fallback": 93
+    },
+    "2023": {
+     "rows": 621,
+     "espn": 0.749,
+     "stars247": 0.473,
+     "either": 0.797,
+     "espn_fills_247_null": 201,
+     "join_id": 376,
+     "join_fallback": 89
+    },
+    "2024": {
+     "rows": 484,
+     "espn": 0.733,
+     "stars247": 0.461,
+     "either": 0.771,
+     "espn_fills_247_null": 150,
+     "join_id": 280,
+     "join_fallback": 75
+    },
+    "2025": {
+     "rows": 274,
+     "espn": 0.693,
+     "stars247": 0.573,
+     "either": 0.755,
+     "espn_fills_247_null": 50,
+     "join_id": 145,
+     "join_fallback": 45
+    }
+   },
+   "served_next_class_by_season": {
+    "2012": {
+     "rows": 304,
+     "espn": 0.812,
+     "stars247": 0.826,
+     "either": 0.895,
+     "espn_fills_247_null": 21,
+     "join_id": 0,
+     "join_fallback": 247
+    },
+    "2013": {
+     "rows": 331,
+     "espn": 0.84,
+     "stars247": 0.837,
+     "either": 0.9,
+     "espn_fills_247_null": 21,
+     "join_id": 0,
+     "join_fallback": 278
+    },
+    "2014": {
+     "rows": 325,
+     "espn": 0.828,
+     "stars247": 0.834,
+     "either": 0.895,
+     "espn_fills_247_null": 20,
+     "join_id": 0,
+     "join_fallback": 269
+    },
+    "2015": {
+     "rows": 335,
+     "espn": 0.785,
+     "stars247": 0.827,
+     "either": 0.881,
+     "espn_fills_247_null": 18,
+     "join_id": 5,
+     "join_fallback": 258
+    },
+    "2016": {
+     "rows": 345,
+     "espn": 0.814,
+     "stars247": 0.835,
+     "either": 0.887,
+     "espn_fills_247_null": 18,
+     "join_id": 97,
+     "join_fallback": 184
+    },
+    "2017": {
+     "rows": 351,
+     "espn": 0.843,
+     "stars247": 0.849,
+     "either": 0.897,
+     "espn_fills_247_null": 17,
+     "join_id": 216,
+     "join_fallback": 80
+    },
+    "2018": {
+     "rows": 373,
+     "espn": 0.874,
+     "stars247": 0.866,
+     "either": 0.914,
+     "espn_fills_247_null": 18,
+     "join_id": 297,
+     "join_fallback": 29
+    },
+    "2019": {
+     "rows": 368,
+     "espn": 0.845,
+     "stars247": 0.848,
+     "either": 0.899,
+     "espn_fills_247_null": 19,
+     "join_id": 292,
+     "join_fallback": 19
+    },
+    "2020": {
+     "rows": 371,
+     "espn": 0.844,
+     "stars247": 0.765,
+     "either": 0.892,
+     "espn_fills_247_null": 47,
+     "join_id": 288,
+     "join_fallback": 25
+    },
+    "2021": {
+     "rows": 445,
+     "espn": 0.831,
+     "stars247": 0.67,
+     "either": 0.888,
+     "espn_fills_247_null": 97,
+     "join_id": 322,
+     "join_fallback": 48
+    }
+   },
+   "served_replay_all": {
+    "rows": 3548,
+    "espn": 0.833,
+    "stars247": 0.811,
+    "either": 0.895,
+    "espn_fills_247_null": 296,
+    "join_id": 1517,
+    "join_fallback": 1437
+   },
+   "training_all": {
+    "rows": 12454,
+    "espn": 0.694,
+    "stars247": 0.699,
+    "either": 0.817,
+    "espn_fills_247_null": 1465,
+    "join_id": 4234,
+    "join_fallback": 4409
+   }
+  },
+  "RB": {
+   "training_snapshots_by_season": {
+    "2004": {
+     "rows": 42,
+     "espn": 0.0,
+     "stars247": 0.31,
+     "either": 0.31,
+     "espn_fills_247_null": 0,
+     "join_id": 0,
+     "join_fallback": 0
+    },
+    "2005": {
+     "rows": 148,
+     "espn": 0.0,
+     "stars247": 0.554,
+     "either": 0.554,
+     "espn_fills_247_null": 0,
+     "join_id": 0,
+     "join_fallback": 0
+    },
+    "2006": {
+     "rows": 252,
+     "espn": 0.111,
+     "stars247": 0.611,
+     "either": 0.615,
+     "espn_fills_247_null": 1,
+     "join_id": 0,
+     "join_fallback": 28
+    },
+    "2007": {
+     "rows": 396,
+     "espn": 0.283,
+     "stars247": 0.664,
+     "either": 0.679,
+     "espn_fills_247_null": 6,
+     "join_id": 0,
+     "join_fallback": 112
+    },
+    "2008": {
+     "rows": 411,
+     "espn": 0.506,
+     "stars247": 0.783,
+     "either": 0.818,
+     "espn_fills_247_null": 14,
+     "join_id": 0,
+     "join_fallback": 208
+    },
+    "2009": {
+     "rows": 418,
+     "espn": 0.656,
+     "stars247": 0.792,
+     "either": 0.84,
+     "espn_fills_247_null": 20,
+     "join_id": 0,
+     "join_fallback": 274
+    },
+    "2010": {
+     "rows": 433,
+     "espn": 0.753,
+     "stars247": 0.799,
+     "either": 0.857,
+     "espn_fills_247_null": 25,
+     "join_id": 0,
+     "join_fallback": 326
+    },
+    "2011": {
+     "rows": 412,
+     "espn": 0.784,
+     "stars247": 0.806,
+     "either": 0.859,
+     "espn_fills_247_null": 22,
+     "join_id": 0,
+     "join_fallback": 323
+    },
+    "2012": {
+     "rows": 435,
+     "espn": 0.77,
+     "stars247": 0.784,
+     "either": 0.846,
+     "espn_fills_247_null": 27,
+     "join_id": 0,
+     "join_fallback": 335
+    },
+    "2013": {
+     "rows": 439,
+     "espn": 0.761,
+     "stars247": 0.781,
+     "either": 0.845,
+     "espn_fills_247_null": 28,
+     "join_id": 0,
+     "join_fallback": 334
+    },
+    "2014": {
+     "rows": 450,
+     "espn": 0.802,
+     "stars247": 0.813,
+     "either": 0.882,
+     "espn_fills_247_null": 31,
+     "join_id": 61,
+     "join_fallback": 300
+    },
+    "2015": {
+     "rows": 454,
+     "espn": 0.837,
+     "stars247": 0.837,
+     "either": 0.89,
+     "espn_fills_247_null": 24,
+     "join_id": 164,
+     "join_fallback": 216
+    },
+    "2016": {
+     "rows": 440,
+     "espn": 0.864,
+     "stars247": 0.852,
+     "either": 0.905,
+     "espn_fills_247_null": 23,
+     "join_id": 242,
+     "join_fallback": 138
+    },
+    "2017": {
+     "rows": 462,
+     "espn": 0.848,
+     "stars247": 0.844,
+     "either": 0.89,
+     "espn_fills_247_null": 21,
+     "join_id": 330,
+     "join_fallback": 62
+    },
+    "2018": {
+     "rows": 466,
+     "espn": 0.83,
+     "stars247": 0.8,
+     "either": 0.869,
+     "espn_fills_247_null": 32,
+     "join_id": 368,
+     "join_fallback": 19
+    },
+    "2019": {
+     "rows": 453,
+     "espn": 0.812,
+     "stars247": 0.726,
+     "either": 0.848,
+     "espn_fills_247_null": 55,
+     "join_id": 344,
+     "join_fallback": 24
+    },
+    "2020": {
+     "rows": 437,
+     "espn": 0.805,
+     "stars247": 0.652,
+     "either": 0.842,
+     "espn_fills_247_null": 83,
+     "join_id": 317,
+     "join_fallback": 35
+    },
+    "2021": {
+     "rows": 469,
+     "espn": 0.791,
+     "stars247": 0.599,
+     "either": 0.825,
+     "espn_fills_247_null": 106,
+     "join_id": 325,
+     "join_fallback": 46
+    },
+    "2022": {
+     "rows": 450,
+     "espn": 0.802,
+     "stars247": 0.544,
+     "either": 0.827,
+     "espn_fills_247_null": 127,
+     "join_id": 313,
+     "join_fallback": 48
+    },
+    "2023": {
+     "rows": 405,
+     "espn": 0.768,
+     "stars247": 0.528,
+     "either": 0.807,
+     "espn_fills_247_null": 113,
+     "join_id": 264,
+     "join_fallback": 47
+    },
+    "2024": {
+     "rows": 306,
+     "espn": 0.725,
+     "stars247": 0.533,
+     "either": 0.797,
+     "espn_fills_247_null": 81,
+     "join_id": 186,
+     "join_fallback": 36
+    },
+    "2025": {
+     "rows": 157,
+     "espn": 0.656,
+     "stars247": 0.643,
+     "either": 0.79,
+     "espn_fills_247_null": 23,
+     "join_id": 82,
+     "join_fallback": 21
+    }
+   },
+   "served_next_class_by_season": {
+    "2012": {
+     "rows": 216,
+     "espn": 0.87,
+     "stars247": 0.866,
+     "either": 0.907,
+     "espn_fills_247_null": 9,
+     "join_id": 0,
+     "join_fallback": 188
+    },
+    "2013": {
+     "rows": 204,
+     "espn": 0.824,
+     "stars247": 0.843,
+     "either": 0.892,
+     "espn_fills_247_null": 10,
+     "join_id": 0,
+     "join_fallback": 168
+    },
+    "2014": {
+     "rows": 216,
+     "espn": 0.787,
+     "stars247": 0.796,
+     "either": 0.875,
+     "espn_fills_247_null": 17,
+     "join_id": 0,
+     "join_fallback": 170
+    },
+    "2015": {
+     "rows": 220,
+     "espn": 0.832,
+     "stars247": 0.841,
+     "either": 0.9,
+     "espn_fills_247_null": 13,
+     "join_id": 2,
+     "join_fallback": 181
+    },
+    "2016": {
+     "rows": 238,
+     "espn": 0.874,
+     "stars247": 0.874,
+     "either": 0.924,
+     "espn_fills_247_null": 12,
+     "join_id": 91,
+     "join_fallback": 117
+    },
+    "2017": {
+     "rows": 241,
+     "espn": 0.863,
+     "stars247": 0.876,
+     "either": 0.917,
+     "espn_fills_247_null": 10,
+     "join_id": 156,
+     "join_fallback": 52
+    },
+    "2018": {
+     "rows": 257,
+     "espn": 0.852,
+     "stars247": 0.848,
+     "either": 0.887,
+     "espn_fills_247_null": 10,
+     "join_id": 212,
+     "join_fallback": 7
+    },
+    "2019": {
+     "rows": 261,
+     "espn": 0.843,
+     "stars247": 0.812,
+     "either": 0.874,
+     "espn_fills_247_null": 16,
+     "join_id": 216,
+     "join_fallback": 4
+    },
+    "2020": {
+     "rows": 225,
+     "espn": 0.782,
+     "stars247": 0.707,
+     "either": 0.827,
+     "espn_fills_247_null": 27,
+     "join_id": 170,
+     "join_fallback": 6
+    },
+    "2021": {
+     "rows": 296,
+     "espn": 0.78,
+     "stars247": 0.628,
+     "either": 0.821,
+     "espn_fills_247_null": 57,
+     "join_id": 205,
+     "join_fallback": 26
+    }
+   },
+   "served_replay_all": {
+    "rows": 2374,
+    "espn": 0.83,
+    "stars247": 0.805,
+    "either": 0.881,
+    "espn_fills_247_null": 181,
+    "join_id": 1052,
+    "join_fallback": 919
+   },
+   "training_all": {
+    "rows": 8335,
+    "espn": 0.711,
+    "stars247": 0.723,
+    "either": 0.827,
+    "espn_fills_247_null": 862,
+    "join_id": 2996,
+    "join_fallback": 2932
+   }
+  }
+ }
+}

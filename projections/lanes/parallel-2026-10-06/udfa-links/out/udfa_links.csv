@@ -1,0 +1,1768 @@
+gsis_id,display_name,season,position,college_name,espn_id,base_method,method,player_id,ppr3
+ABR390978,Josh Abrams,2008,RB,Ohio,,name_school,name_school,162689,0.0
+00-0031115,D.J. Adams,2014,RB,Portland State; Maryland,16961,none,espn_xwalk,480261,0.0
+00-0028746,Darvin Adams,2011,WR,Auburn,14759,name_school,name_school,382646,0.0
+ADA324014,Harry Adams,2013,WR,Auburn,16677,none,none,,0.0
+00-0034457,Josh Adams,2018,RB,Notre Dame,3932420,espn_id,espn_id,3932420,119.70000000000002
+00-0028338,Kris Adams,2011,WR,Texas-El Paso,14319,name_school,name_school,189681,4.6
+00-0028337,Kyle Adams,2011,TE,Purdue,14217,name_school,name_school,188543,8.0
+00-0028829,Royce Adams,2012,WR,Purdue,14863,none,espn_xwalk,188544,0.0
+00-0032482,Bralon Addison,2016,WR,Oregon,2971271,name_school,name_school,530859,2.5
+00-0033366,Quincy Adeboyejo,2017,WR,Mississippi,3051869,name_school,name_school,550110,0.0
+00-0027462,Damola Adeniji,2010,WR,Oregon State,,name_school,name_school,236664,0.0
+00-0038783,Nate Adkins,2023,TE,South Carolina,4383440,espn_id,espn_id,4383440,66.5
+00-0030653,Ray Agnew,2014,RB,Southern Illinois,17101,none,none,,4.7
+00-0026540,Robert Agnone,2009,TE,Delaware; Pittsburgh,,none,none,,0.0
+00-0033599,Carlton Agudosi,2017,WR,Rutgers,2982809,name_school,name_school,537318,0.0
+00-0038749,Holton Ahlers,2023,QB,East Carolina,4360131,espn_id,espn_id,4360131,0.0
+00-0036020,Salvon Ahmed,2020,RB,Washington,4243315,espn_id,espn_id,4243315,121.8
+00-0028497,Kamar Aiken,2011,WR,UCF,14583,name_school,name_school,237347,0.0
+00-0027581,Seyi Ajirotutu,2010,WR,Fresno State,13524,name_school,name_school,170074,60.1
+00-0036598,Landen Akers,2021,WR,Iowa State,4035554,espn_id,espn_id,4035554,0.0
+00-0029798,C.J. Akins,2013,WR,Angelo State University,16316,none,none,,0.0
+00-0029331,Alvester Alexander,2012,RB,Wyoming,15552,name_school,name_school,481983,0.0
+00-0027912,Danario Alexander,2010,WR,Missouri,13935,name_school,name_school,191583,282.5
+00-0034715,Deontez Alexander,2018,WR,Franklin College of Indiana,4055563,none,none,,0.0
+00-0037708,Maurice Alexander,2022,WR,Florida International,3914307,espn_id,espn_id,3914307,1.7000000000000002
+00-0038149,Josh Ali,2022,WR,Kentucky,4259976,espn_id,espn_id,4259976,0.0
+00-0033217,Mo Alie-Cox,2017,TE,Virginia Commonwealth Univ.,2998565,none,none,,49.599999999999994
+00-0028565,Armando Allen,2011,RB,Notre Dame,14358,name_school,name_school,389142,26.8
+00-0037369,Austin Allen,2022,TE,Nebraska,4240787,espn_id,espn_id,4240787,0.0
+00-0037100,Chase Allen,2022,TE,Iowa State,4035526,espn_id,espn_id,4035526,0.0
+00-0037039,Devon Allen,2022,WR,Oregon,3052083,none,espn_xwalk,550651,0.0
+00-0026022,Jake Allen,2008,WR,Mississippi College,11734,none,none,,0.0
+00-0038830,Kazmeir Allen,2023,WR,UCLA,4367180,espn_id,espn_id,4367180,0.0
+00-0034577,Kyle Allen,2018,QB,Houston; Texas A&M,3115293,name_school,name_school,559681,249.01999999999998
+00-0031213,RaShaun Allen,2014,TE,Southern,17423,none,none,,0.0
+00-0030914,Torrence Allen,2014,WR,West Texas State,16962,none,none,,0.0
+00-0032626,Geronimo Allison,2016,WR,Illinois; Iowa Western CC,3115913,espn_id,espn_id,3115913,152.8
+00-0025822,Anthony Alridge,2008,WR,Houston,,name_school,name_school,147494,0.0
+00-0026035,Danny Amendola,2008,WR,Texas Tech,11674,name_school,name_school,160411,259.4
+00-0027906,Andre' Anderson,2010,RB,Tulane,13930,name_school,name_school,191281,0.0
+00-0035467,Bruce Anderson,2019,RB,North Dakota State,3930901,none,none,,0.0
+00-0029854,C.J. Anderson,2013,RB,California; Laney College,16040,name_school,name_school,516996,356.40000000000003
+00-0036027,Darius Anderson,2020,RB,TCU,4038533,espn_id,espn_id,4038533,0.0
+00-0031504,Dres Anderson,2015,WR,Utah,2514542,name_school,name_school,503036,0.0
+00-0035483,Drew Anderson,2019,QB,Murray State,4040826,espn_id,espn_id,4040826,0.0
+00-0029494,Joe Anderson,2012,WR,Texas Southern; Louisiana Tech,2478555,none,gap_window,237552,0.0
+00-0036969,Otis Anderson,2021,RB,UCF,4243543,espn_id,espn_id,4243543,0.0
+00-0032725,Stephen Anderson,2016,TE,California,2576854,name_school,name_school,516997,91.5
+00-0030789,Antonio Andrews,2014,RB,Western Kentucky,17105,name_school,name_school,508524,116.64
+00-0034584,Darren Andrews,2018,WR,UCLA,3047553,name_school,name_school,547591,0.0
+00-0030707,Blake Annen,2014,TE,Cincinnati,16964,name_school,name_school,487707,0.0
+00-0027920,Emmanuel Arceneaux,2011,WR,Alcorn State,13954,none,none,,2.0
+00-0027384,R.J. Archer,2010,QB,William & Mary,13309,none,none,,0.0
+00-0038702,Daniel Arias,2023,WR,Colorado,4360644,espn_id,espn_id,4360644,0.0
+ARI447235,Ike Ariguzo,2014,TE,Eastern Kentucky,2530979,none,none,,0.0
+00-0026465,Anthony Armstrong,2008,WR,West Texas State,11946,none,none,,147.10000000000002
+00-0027277,Alric Arnett,2010,WR,West Virginia,,name_school,name_school,238899,0.0
+00-0034011,Dan Arnold,2017,TE,Wisconsin-Platteville,4212989,none,none,,65.7
+00-0029341,Stanley Arukwe,2012,WR,Troy,15560,name_school,name_school,517981,0.0
+00-0028198,Matt Asiata,2012,RB,Utah; Snow,14360,name_school,name_school,233017,235.2
+00-0034946,George Aston,2019,RB,Pittsburgh,3136308,espn_id,espn_id,3136308,0.0
+00-0026037,Drew Atchison,2008,TE,William & Mary,,none,none,,0.0
+00-0031158,George Atkinson,2014,RB,Notre Dame,17396,none,espn_xwalk,517604,9.4
+00-0033421,Antony Auclair,2017,TE,Laval,4081127,none,none,,18.400000000000002
+00-0031714,Damarr Aultman,2015,WR,Maine,2507242,none,none,,0.0
+00-0037231,Kevin Austin Jr.,2022,WR,Notre Dame,4372758,espn_id,espn_id,4372758,27.0
+00-0037359,Josh Babicz,2022,TE,North Dakota State,4248555,none,none,,0.0
+00-0035876,Andre Baccellia,2021,WR,Washington,3886809,espn_id,espn_id,3886809,11.5
+00-0033980,Joe Bacci,2017,RB,Central Michigan,2972498,name_school,name_school,531438,0.0
+00-0035602,Alex Bachman,2019,WR,Wake Forest,3919510,espn_id,espn_id,3919510,-0.30000000000000004
+00-0034207,Jeff Badet,2018,WR,Oklahoma,3053760,name_school,name_school,551091,0.0
+00-0038416,Tyson Bagent,2023,QB,Shepherd,4434153,none,none,,55.58
+00-0036549,Kenji Bahar,2021,QB,Monmouth,3910249,none,none,,0.0
+00-0028886,Antwon Bailey,2012,RB,Syracuse,15216,name_school,name_school,382568,0.0
+00-0031645,Rasheed Bailey,2015,WR,Delaware Valley College,3892271,none,none,,0.0
+00-0034609,Sergio Bailey II,2018,WR,Eastern Michigan,4039320,espn_id,espn_id,4039320,0.0
+00-0028291,Josh Baker,2011,TE,NW Missouri State University; Delaware,14323,none,none,,11.7
+00-0038147,Daylen Baldwin,2022,WR,Michigan; Jackson State University; Morgan State,4262900,espn_id,espn_id,4262900,4.5
+00-0028434,Doug Baldwin,2011,WR,Stanford,14221,name_school,name_school,236934,395.6
+00-0026432,Lance Ball,2008,RB,Maryland,11912,name_school,name_school,145814,30.200000000000003
+00-0027259,Jake Ballard,2010,TE,Ohio State,13530,name_school,name_school,188301,122.4
+00-0036959,Michael Bandy,2021,WR,San Diego,4034704,none,none,,18.9
+00-0027618,Brandon Banks,2010,WR,Kansas State; Bakersfield College,4780,name_school,name_school,381847,30.76
+00-0026056,Gary Banks,2008,WR,Troy,11613,name_school,name_school,158129,1.2
+00-0029048,Joe Banyard,2012,RB,Texas-El Paso; TCU,15296,none,espn_xwalk,237216,26.1
+00-0032741,Peyton Barber,2016,RB,Auburn,3051902,name_school,name_school,550025,272.1
+00-0028961,Brandon Barden,2012,TE,Vanderbilt,15195,name_school,name_school,231995,0.0
+00-0035975,Jake Bargas,2020,RB,North Carolina,3895835,espn_id,espn_id,3895835,0.0
+00-0033745,Brandon Barnes,2017,TE,Alabama State,3059165,none,none,,0.0
+00-0027361,Freddie Barnes,2010,WR,Bowling Green,,name_school,name_school,170533,0.0
+00-0034126,J.T. Barrett,2018,QB,Ohio State,3040507,name_school,name_school,545624,0.0
+BAT138483,Phil Bates,2012,WR,Ohio; Iowa State,15554,none,espn_xwalk,489456,0.0
+00-0034652,Cameron Batson,2018,WR,Texas Tech,3139456,espn_id,espn_id,3139456,46.3
+00-0034169,Marcus Baugh,2019,TE,Ohio State,3051387,name_school,name_school,549806,1.2
+00-0030895,Zach Bauman,2014,RB,Northern Arizona,17109,none,none,,0.0
+00-0030975,Alex Bayer,2014,TE,Bowling Green,17110,name_school,name_school,482925,0.0
+00-0035947,Omar Bayless,2020,WR,Arkansas State,3917166,espn_id,espn_id,3917166,0.0
+00-0033763,Evan Baylis,2017,TE,Oregon,2971280,name_school,name_school,530868,0.0
+00-0037115,B.J. Baylor,2022,RB,Oregon State,4255988,espn_id,espn_id,4255988,0.0
+00-0029000,Cole Beasley,2012,WR,SMU,15349,name_school,name_school,380280,214.60000000000002
+00-0034959,Andrew Beck,2019,FB,Texas,3125107,espn_id,espn_id,3125107,24.54
+00-0035322,Nate Becker,2019,TE,Miami (Ohio),3125999,espn_id,espn_id,3125999,0.0
+00-0035914,Ryan Becker,2021,TE,SMU,4039553,espn_id,espn_id,4039553,0.0
+00-0034309,Chad Beebe,2018,WR,Northern Illinois,3047968,name_school,name_school,547842,69.0
+00-0035750,Reggie Begelton,2020,WR,Lamar,2974503,none,none,,0.0
+00-0028234,Tyler Beiler,2011,WR,Bridgewater College,14364,none,none,,0.0
+00-0035484,Drew Belcher,2019,TE,Maine,3120540,none,none,,0.0
+00-0037437,Greg Bell,2022,RB,San Diego State,4361159,espn_id,espn_id,4361159,0.0
+00-0027218,Joique Bell,2010,RB,Wayne State,13536,none,none,,157.9
+00-0026579,Kahlil Bell,2009,RB,UCLA,12488,name_school,name_school,175586,93.4
+00-0031529,Reggie Bell,2015,WR,Univ of California-San Diego,2520767,none,none,,0.0
+00-0029319,Josh Bellamy,2012,WR,Louisville; Butte College,15555,name_school,name_school,500361,0.0
+00-0035912,Levante Bellamy,2020,RB,Western Michigan,3916721,espn_id,espn_id,3916721,2.6
+00-0029001,Tim Benford,2012,WR,Tennessee Technological Univ,15377,none,none,,0.0
+00-0034131,Kurt Benkert,2018,QB,Virginia; East Carolina,3040535,name_school,name_school,545645,0.0
+00-0032312,Michael Bennett,2015,WR,Georgia,2516079,name_school,name_school,503986,0.0
+00-0034930,Trinity Benson,2019,WR,East Central,4422214,none,none,,20.3
+00-0032901,Mike Bercovici,2017,QB,Arizona State,2576822,name_school,name_school,517393,0.0
+BER239728,Yvenson Bernard,2008,RB,Oregon State,,name_school,name_school,145041,0.0
+00-0037580,Jared Bernhardt,2022,WR,Ferris State,4911488,none,none,,0.0
+00-0028275,Damien Berry,2011,RB,Miami,14520,name_school,name_school,236050,0.0
+00-0037581,Stanley Berryhill,2022,WR,Arizona,4245639,espn_id,espn_id,4245639,0.0
+00-0029394,Brenton Bersin,2013,WR,Wofford,15547,none,none,,53.0
+00-0026000,Davone Bess,2008,WR,Hawaii,11678,name_school,name_school,170038,469.29999999999995
+00-0028359,McLeod Bethel-Thompson,2011,QB,Sacramento State,14594,none,none,,0.0
+00-0036718,Shaun Beyer,2021,TE,Iowa,4036124,espn_id,espn_id,4036124,0.0
+00-0031968,E.J. Bibbs,2015,TE,Iowa State; Arizona Western,3039924,name_school,name_school,545385,1.7000000000000002
+00-0031102,Kapri Bibbs,2014,RB,Colorado State; Front Range CC CO; Snow,16969,name_school,name_school,546233,28.400000000000002
+00-0027614,Montez Billings,2010,WR,Auburn,,name_school,name_school,175387,0.0
+00-0032553,Jace Billingsley,2016,WR,Eastern Oregon State Univ.,3060950,none,none,,0.0
+00-0028400,Armon Binns,2011,WR,Cincinnati,14223,name_school,name_school,232806,55.7
+00-0036491,Tarik Black,2021,WR,Texas; Michigan,4258170,espn_id,espn_id,4258170,2.0
+00-0034170,Saeed Blacknall,2018,WR,Penn State,3116155,espn_id,espn_id,3116155,0.0
+00-0037429,Raheem Blackshear,2022,RB,Virginia Tech,4259308,espn_id,espn_id,4259308,70.1
+00-0036463,Chris Blair,2021,WR,Alcorn State,4369886,none,none,,0.0
+00-0034132,Christian Blake,2018,WR,Northern Illinois,3126002,espn_id,espn_id,3126002,47.2
+00-0029860,Emory Blake,2013,WR,Auburn,16300,name_school,name_school,480370,0.0
+00-0031505,Issac Blakeney,2015,WR,Duke,2512449,name_school,name_school,501044,0.0
+00-0029495,Matt Blanchard,2012,QB,Wisconsin-Whitewater,15645,none,none,,0.0
+00-0035603,Kendall Blanton,2019,TE,Missouri,3122103,espn_id,espn_id,3122103,7.7
+00-0035099,Khari Blasingame,2019,FB,Vanderbilt,3122154,espn_id,espn_id,3122154,18.3
+00-0035040,David Blough,2019,QB,Purdue,3116188,espn_id,espn_id,3116188,57.72
+00-0027325,LeGarrette Blount,2010,RB,Oregon; East Mississippi JC,3166800,none,multi_school,378483,297.3
+00-0031823,Javess Blue,2015,WR,Kentucky,3053761,name_school,name_school,551092,0.0
+00-0033367,C.J. Board,2017,WR,Tennessee-Chattanooga,2973626,none,none,,5.1
+00-0038752,Jake Bobo,2023,WR,UCLA; Duke,4360405,espn_id,espn_id,4360405,90.60000000000001
+00-0028299,Dontavia Bogan,2011,WR,University of South Florida,,name_school,name_school,238890,0.0
+00-0029239,Brandon Bolden,2012,RB,Mississippi,15478,name_school,name_school,382707,141.5
+00-0037173,Slade Bolden,2022,WR,Alabama,4360115,espn_id,espn_id,4360115,0.0
+00-0033306,Victor Bolden,2017,WR,Oregon State,3056476,name_school,name_school,552103,2.0
+00-0026607,Brock Bolen,2009,RB,Louisville; Illinois,12763,name_school,name_school,157182,6.5
+00-0034578,Reggie Bonnafon,2018,RB,Louisville,3116642,espn_id,espn_id,3116642,46.0
+00-0032993,Andrew Bonnet,2016,FB,North Dakota State,2573098,none,none,,0.0
+00-0030709,Kadron Boone,2014,WR,LSU,16970,name_school,name_school,501536,0.0
+00-0034208,Mike Boone,2018,RB,Cincinnati,3139033,espn_id,espn_id,3139033,71.7
+00-0028588,Diondre Borel,2011,WR,Utah State,14677,name_school,name_school,238343,0.0
+00-0030227,Zach Boren,2013,FB,Ohio State,16501,name_school,name_school,481813,0.0
+00-0029601,Brandon Bostick,2012,TE,Newberry,15688,none,none,,33.3
+00-0033630,Joel Bouagnon,2018,RB,Northern Illinois,3047969,name_school,name_school,547843,0.0
+00-0033307,Kendrick Bourne,2017,WR,Eastern Washington,3045523,none,none,,254.20000000000002
+00-0036083,Nick Bowers,2020,TE,Penn State,3929633,espn_id,espn_id,3929633,0.0
+00-0032515,Braedon Bowman,2016,TE,South Alabama; Scottsdale CC,3125253,espn_id,espn_id,3125253,0.0
+00-0028435,Dorson Boyce,2012,FB,Washington; Allan Hancock College,14224,none,none,,0.0
+00-0030952,Chris Boyd,2014,WR,Vanderbilt,17318,name_school,name_school,500883,0.0
+00-0030029,Jheranie Boyd,2013,WR,North Carolina,16454,name_school,name_school,480220,0.0
+00-0029051,Jarrett Boykin,2012,WR,Virginia Tech,15358,name_school,name_school,381983,148.10000000000002
+00-0032462,Trevone Boykin,2016,QB,TCU,2575910,name_school,name_school,517127,7.9
+00-0034177,Tim Boyle,2018,QB,Eastern Kentucky,3045169,none,espn_xwalk,546675,-1.0
+00-0028451,Brett Brackett,2011,TE,Penn State,14542,name_school,name_school,188678,0.0
+00-0023588,Larry Brackins,2008,WR,Pearl River,,none,none,,0.0
+00-0026038,Mark Bradford,2008,WR,Stanford,,name_school,name_school,145086,0.0
+00-0036110,Ja'Marcus Bradley,2020,WR,Louisiana-Lafayette,3917569,espn_id,espn_id,3917569,21.4
+00-0028277,Rodney Bradley,2011,WR,Hawaii,,name_school,name_school,480912,0.0
+00-0035898,Darius Bradwell,2020,RB,Tulane,4040640,espn_id,espn_id,4040640,0.0
+00-0026513,Marquez Branson,2009,TE,Central Arkansas; East Mississippi JC,,none,none,,0.0
+00-0031273,Cameron Brate,2014,TE,Harvard,17453,none,none,,243.5
+00-0032661,Ben Braunecker,2016,TE,Harvard,2969241,none,none,,15.3
+00-0031514,Quan Bray,2015,WR,Auburn,2574545,name_school,name_school,515945,14.2
+00-0030151,Tyler Bray,2013,QB,Tennessee,16252,name_school,name_school,501546,0.0
+00-0036154,Jacob Breeland,2020,TE,Oregon,3915136,espn_id,espn_id,3915136,0.0
+00-0033308,Matt Breida,2017,RB,Georgia Southern,3049916,name_school,name_school,549314,369.3
+00-0032926,K.J. Brent,2016,WR,Wake Forest; South Carolina,2577664,name_school,name_school,515815,0.0
+00-0037174,Shemar Bridges,2022,WR,Fort Valley State College,4585376,none,none,,0.0
+00-0026492,Eugene Bright,2009,TE,Purdue,,none,none,,0.0
+00-0026745,Curtis Brinkley,2009,RB,Syracuse,12764,name_school,name_school,178728,30.300000000000004
+00-0026699,Kevin Brock,2009,TE,Rutgers,12874,name_school,name_school,161637,4.7
+00-0029506,Logan Brock,2012,TE,TCU,15587,name_school,name_school,237220,0.0
+00-0027583,Richie Brockel,2011,TE,Boise State,13538,name_school,name_school,174747,13.8
+00-0028755,Mason Brodine,2011,TE,Kearney State,14805,none,none,,0.0
+00-0031405,Demitrius Bronson,2014,RB,Eastern Washington,17486,none,espn_xwalk,379403,0.0
+00-0027524,Chris Brooks,2010,WR,Nebraska,13805,name_school,name_school,175273,0.0
+00-0038685,Chris Brooks,2023,RB,BYU; California,3149687,espn_id,espn_id,3149687,85.5
+00-0029478,Jourdan Brooks,2012,RB,Morgan State,15646,none,espn_xwalk,238834,0.0
+00-0037131,Kennedy Brooks,2022,RB,Oklahoma,4241371,espn_id,espn_id,4241371,0.0
+00-0035551,Tony Brooks-James,2019,RB,Oregon,3886841,espn_id,espn_id,3886841,1.1
+00-0034961,Nick Brossette,2019,RB,LSU,3843406,espn_id,espn_id,3843406,0.0
+00-0037175,Anthony Brown,2022,QB,Oregon; Boston College,4035312,espn_id,espn_id,4035312,5.58
+00-0033655,Brian Brown,2017,WR,Richmond,3049891,none,none,,0.0
+00-0026434,Chris Brown,2008,TE,Tennessee,,name_school,name_school,161066,0.0
+00-0032702,Chris Brown,2016,WR,Notre Dame,2980137,name_school,name_school,535947,0.0
+00-0031118,Corey Brown,2014,WR,Ohio State,17399,none,espn_xwalk,534284,242.8
+00-0032098,Daniel Brown,2015,TE,James Madison,2544798,none,none,,72.69999999999999
+00-0033994,Fred Brown,2017,WR,Mississippi State,2971397,name_school,name_school,531357,4.1
+00-0030300,Jaron Brown,2013,WR,Clemson,16172,name_school,name_school,381461,119.30000000000001
+00-0027376,Jarrett Brown,2011,QB,West Virginia,,name_school,name_school,174442,0.0
+00-0035605,Keenen Brown,2019,TE,Texas State-San Marcos; Oklahoma State,3122421,espn_id,espn_id,3122421,0.0
+00-0028861,LaMark Brown,2012,TE,Minnesota State,15138,none,espn_xwalk,236029,0.0
+00-0032048,Mack Brown,2015,RB,Florida,2512191,name_school,name_school,501523,20.0
+00-0031806,Malcolm Brown,2015,RB,Texas,2570986,name_school,name_school,512837,62.900000000000006
+00-0030400,Marlon Brown,2013,WR,Georgia,16581,name_school,name_school,480213,219.89999999999998
+00-0033439,Pharaoh Brown,2017,TE,Oregon,2971281,name_school,name_school,530869,4.7
+00-0036543,Spencer Brown,2021,RB,UAB,4239768,espn_id,espn_id,4239768,7.300000000000001
+00-0027260,Tim Brown,2010,WR,Rutgers,,name_school,name_school,191161,0.0
+00-0036111,Tony Brown,2020,WR,Colorado; Texas Tech,3915821,espn_id,espn_id,3915821,0.0
+BRO738794,Travis Brown,2008,WR,New Mexico,,name_school,name_school,160924,0.0
+00-0029155,Mike Brown,2012,WR,Liberty,15448,none,none,,100.39999999999999
+00-0033735,Billy Brown,2017,TE,Shepherd,3957543,none,none,,0.0
+00-0029710,Zach Brown,2012,RB,Pittsburgh,15722,name_school,name_school,236711,0.0
+00-0032831,Brandon Brown-Dukes,2016,RB,Mercyhurst College,4012719,none,none,,0.0
+00-0035100,Jake Browning,2019,QB,Washington,3886812,espn_id,espn_id,3886812,0.0
+00-0038492,Jason Brownlee,2023,WR,Southern Mississippi,4689988,espn_id,espn_id,4689988,16.6
+BRY060559,George Bryan,2012,TE,N.C. State,15306,name_school,name_school,238068,0.0
+00-0036008,Hunter Bryant,2020,TE,Washington,4243318,espn_id,espn_id,4243318,5.4
+00-0029637,Lamont Bryant,2012,WR,Morgan State,15696,none,none,,0.0
+00-0035548,Ventell Bryant,2019,WR,Temple,3138760,espn_id,espn_id,3138760,8.5
+00-0027207,Tim Buckley,2010,WR,Alcorn State,,none,none,,0.0
+00-0030299,Dan Buckner,2013,WR,Arizona; Texas,16173,name_school,name_school,530818,0.0
+00-0036679,Shane Buechele,2021,QB,SMU,4039034,espn_id,espn_id,4039034,0.0
+00-0029968,Chad Bumphis,2013,WR,Mississippi State,16369,name_school,name_school,480249,0.0
+00-0025892,Michael Bumpus,2008,WR,Washington State,11914,name_school,name_school,164336,15.8
+00-0032691,Quenton Bundrage,2016,WR,Iowa State,2577153,name_school,name_school,511948,0.0
+00-0033087,Marquis Bundy,2016,WR,New Mexico,2974198,name_school,name_school,533206,0.0
+00-0035067,Ian Bunting,2019,TE,California,3115981,espn_id,espn_id,3115981,0.0
+00-0025986,Rudy Burgess,2008,WR,Arizona State,,name_school,name_school,144955,0.0
+00-0032844,Brandon Burks,2016,RB,Troy,2972811,name_school,name_school,531721,-0.4
+00-0034653,Deontay Burnett,2018,WR,USC,3932935,espn_id,espn_id,3932935,36.0
+00-0038419,Robert Burns,2023,RB,Connecticut; Miami,4240636,espn_id,espn_id,4240636,0.0
+00-0029224,Troy Burrell,2012,WR,Wayne State,15484,none,none,,0.0
+00-0030671,Isaiah Burse,2014,WR,Fresno State,16972,name_school,name_school,504922,0.0
+00-0036088,Jake Burt,2020,TE,Boston College,3915308,espn_id,espn_id,3915308,0.0
+00-0030710,Trey Burton,2014,TE,Florida,16974,name_school,name_school,503955,91.10000000000001
+00-0036519,Matt Bushman,2021,TE,BYU,4242369,espn_id,espn_id,4242369,0.0
+00-0036541,Rico Bussey,2021,WR,Hawaii,4049750,name_school,name_school,4039072,0.0
+00-0026783,Carson Butler,2009,TE,Michigan,,name_school,name_school,180826,0.0
+00-0034943,Emmanuel Butler,2019,WR,Northern Arizona,3119471,none,none,,0.0
+00-0034870,James Butler,2018,RB,Iowa,3124608,espn_id,espn_id,3124608,0.0
+00-0030691,Jeremy Butler,2014,WR,Tennessee-Martin; College of the Sequoias,17122,none,none,,70.4
+00-0026397,Eric Butler,2008,TE,Mississippi State,,name_school,name_school,146848,0.0
+00-0034313,Paul Butler,2018,TE,California (PA),4337702,none,none,,0.0
+BUT729730,Derek Buttles,2012,TE,Maine,15757,none,none,,0.0
+00-0038860,Terrell Bynum,2023,WR,USC; Washington,4243319,espn_id,espn_id,4243319,0.0
+00-0031868,Damiere Byrd,2015,WR,South Carolina,2577667,name_school,name_school,515818,42.300000000000004
+00-0033514,Emanuel Byrd,2017,TE,Marshall; Georgia Military,3931761,espn_id,espn_id,3931761,5.1
+00-0029343,LaRon Byrd,2012,WR,Miami,15536,name_school,name_school,382149,1.8
+00-0029175,Jake Byrne,2012,TE,Wisconsin,15426,name_school,name_school,377790,0.0
+00-0034171,Jason Cabinda,2018,FB,Penn State,3116158,none,none,,2.8
+00-0026106,Matt Caddell,2008,WR,Alabama,,name_school,name_school,146646,0.0
+00-0029205,Travaris Cadet,2012,RB,Appalachian State; Pearl River,15457,none,none,,91.20000000000002
+00-0036145,Lawrence Cager,2020,TE,Georgia; Miami,3917849,espn_id,espn_id,3917849,36.3
+00-0032716,Devon Cajuste,2016,TE,Stanford,2577123,name_school,name_school,516352,0.0
+00-0027261,Duke Calhoun,2010,WR,Memphis,13545,name_school,name_school,184215,1.4
+00-0032630,Joe Callahan,2016,QB,Wesley,3078660,none,none,,0.44
+00-0036219,Marquez Callaway,2020,WR,Tennessee,4035170,espn_id,espn_id,4035170,231.90000000000003
+00-0031506,DiAndre Campbell,2015,WR,Washington,2509475,name_school,name_school,499789,0.0
+00-0029863,Jordan Campbell,2014,FB,New Mexico Highlands Univ.,16317,none,none,,0.0
+00-0028293,Michael Campbell,2011,WR,Temple,14473,name_school,name_school,236491,0.0
+00-0033309,KD Cannon,2017,WR,Baylor,3128348,espn_id,espn_id,3128348,0.0
+00-0026702,Hunter Cantwell,2009,QB,Louisville,,name_school,name_school,169219,0.0
+00-0035039,Stephen Carlson,2019,TE,Princeton,3948283,none,none,,20.200000000000003
+00-0026775,Rudy Carpenter,2009,QB,Arizona State,12469,name_school,name_school,160303,0.0
+00-0033382,Austin Carr,2017,WR,Northwestern,2974339,name_school,name_school,533308,32.6
+00-0036054,Patrick Carr,2020,RB,Houston,3915427,espn_id,espn_id,3915427,0.0
+00-0029119,Derek Carrier,2012,TE,Beloit College,15403,none,none,,19.700000000000003
+00-0032540,Tra Carson,2016,RB,Texas A&M; Oregon,2972283,name_school,name_school,532122,0.0
+00-0029120,Brandon Carswell,2012,WR,USC,15289,name_school,name_school,236573,0.0
+00-0033338,Cethan Carter,2017,TE,Nebraska,3040470,name_school,name_school,545589,9.3
+00-0031763,DeAndre Carter,2015,WR,Sacramento State,2580216,none,none,,0.0
+00-0031486,Duron Carter,2015,WR,Florida Atlantic; Alabama; Coffeyville CC; Ohio State,2447781,none,espn_xwalk,480256,0.0
+00-0032606,Kyle Carter,2016,TE,Penn State,2582138,name_school,name_school,518196,0.0
+00-0034099,Martez Carter,2018,RB,Grambling State,3140525,none,none,,0.0
+00-0026402,Patrick Carter,2009,WR,Louisville,,name_school,name_school,145782,0.0
+00-0037632,Roger Carter,2022,TE,Georgia State,4241273,espn_id,espn_id,4241273,0.0
+00-0036691,Tory Carter,2021,FB,LSU,4242212,espn_id,espn_id,4242212,0.0
+00-0032743,Kivon Cartwright,2016,TE,Colorado State,2514375,name_school,name_school,502870,0.0
+00-0026012,Jehuu Caulcrick,2008,RB,Michigan State,11745,name_school,name_school,146128,0.2
+00-0027500,Mike Caussin,2010,TE,James Madison,13335,none,none,,9.100000000000001
+00-0028903,Garrett Celek,2012,TE,Michigan State,15204,name_school,name_school,238798,22.200000000000003
+00-0037156,Irvin Charles,2022,WR,"Indiana PA,  University of; Penn State",3929636,espn_id,espn_id,3929636,0.0
+00-0037360,Davis Cheek,2022,QB,Elon,4248286,none,none,,0.0
+00-0026703,Jason Chery,2009,WR,Louisiana-Lafayette,,name_school,name_school,170835,0.0
+00-0037594,Julius Chestnut,2022,RB,Sacred Heart University,4367567,none,none,,21.6
+00-0029238,Jamie Childers,2014,TE,Coastal Carolina,15485,none,none,,0.0
+00-0028517,John Chiles,2011,WR,Texas,14372,name_school,name_school,232196,0.0
+00-0035976,Dan Chisena,2020,WR,Penn State,3929637,espn_id,espn_id,3929637,0.0
+00-0035086,Adam Choice,2019,RB,Clemson,3122842,espn_id,espn_id,3122842,0.0
+00-0032688,Robbie Chosen,2016,WR,Temple,2574808,name_school,name_school,513399,471.3
+00-0035087,Taryn Christion,2019,QB,South Dakota State,3909004,none,none,,0.0
+00-0034551,Jordan Chunn,2018,RB,Troy,3053732,name_school,name_school,551063,0.0
+00-0027340,Matt Clapp,2010,RB,Oklahoma,,name_school,name_school,174555,0.0
+00-0030501,Arceto Clark,2013,WR,Mississippi State,16618,none,espn_xwalk,382736,0.0
+00-0035756,Darion Clark,2020,TE,USC,2982484,none,none,,0.0
+00-0029680,Marques Clark,2012,WR,Henderson State University,15712,none,none,,0.0
+00-0033352,Michael Clark,2017,WR,Marshall,3931763,espn_id,espn_id,3931763,8.100000000000001
+00-0028208,John Clay,2011,RB,Wisconsin,14235,name_school,name_school,236715,10.100000000000001
+00-0031774,Cameron Clear,2015,TE,Texas A&M; Tennessee,3044687,name_school,name_school,546597,0.0
+00-0033725,Corey Clement,2017,RB,Wisconsin,3045260,name_school,name_school,546845,173.5
+00-0030832,Asante Cleveland,2014,TE,Miami,17125,name_school,name_school,501128,1.1
+00-0026669,Colin Cloherty,2009,TE,Brown,12965,none,none,,10.899999999999999
+00-0027917,Tyler Clutts,2010,FB,Fresno State,13945,none,none,,12.8
+00-0034068,Simmie Cobbs,2018,WR,Indiana,3128251,espn_id,espn_id,3128251,0.0
+00-0028550,Colin Cochart,2011,TE,South Dakota State,14658,none,none,,15.4
+00-0033681,Keelan Cole,2017,WR,Kentucky Wesleyan,3071572,none,none,,300.6
+00-0035838,Matt Cole,2020,WR,McKendree,4041703,none,none,,0.0
+00-0030801,Brandon Coleman,2014,WR,Rutgers,17127,name_school,name_school,503832,159.5
+00-0029068,Derrick Coleman,2012,FB,UCLA,15351,name_school,name_school,380721,31.4
+00-0034624,Lavon Coleman,2018,RB,Washington,3052163,name_school,name_school,550316,0.0
+00-0038875,Jack Colletto,2023,FB,Oregon State; Arizona Western,4360705,espn_id,espn_id,4360705,0.0
+00-0029465,Brandon Collins,2012,WR,Southeastern Louisiana; Texas,15588,none,espn_xwalk,236668,0.0
+00-0026764,Dobson Collins,2009,WR,Gardner-Webb,12913,none,none,,0.0
+00-0029971,Jasper Collins,2013,WR,Mount Union College,16052,none,none,,0.0
+00-0026072,Jed Collins,2008,FB,Washington State,11517,name_school,name_school,166678,0.0
+00-0030932,Kain Colter,2014,WR,Northwestern,17055,name_school,name_school,500403,0.0
+00-0028792,Kevin Cone,2011,WR,Georgia Tech,14818,name_school,name_school,377780,2.2
+00-0037348,Tanner Conner,2022,TE,Idaho State,4047422,none,none,,4.6
+00-0033766,Zach Conque,2017,TE,Stephen F. Austin State,2979985,none,espn_xwalk,535983,0.0
+00-0035009,C.J. Conrad,2019,TE,Kentucky,3915230,espn_id,espn_id,3915230,0.0
+00-0029834,Jamaine Cook,2013,RB,Youngstown State,16309,none,none,,0.0
+00-0031992,Kenny Cook,2015,WR,Gardner-Webb,2987210,none,none,,0.0
+00-0033683,Tim Cook,2017,RB,Oregon State,3930272,espn_id,espn_id,3930272,0.0
+00-0038667,Elijah Cooks,2023,WR,San Jose State; Nevada,4241588,espn_id,espn_id,4241588,6.800000000000001
+00-0035812,Case Cookus,2022,QB,Northern Arizona,3913822,none,none,,0.0
+00-0028930,Josh Cooper,2012,WR,Oklahoma State,15197,name_school,name_school,235657,33.6
+00-0030818,Damian Copeland,2014,WR,Louisville,17131,name_school,name_school,482901,0.0
+00-0038843,Jacob Copeland,2023,WR,Maryland; Florida,4360233,espn_id,espn_id,4360233,0.0
+00-0037410,Jashaun Corbin,2022,RB,Florida State,4372519,espn_id,espn_id,4372519,4.3
+00-0027565,Jack Corcoran,2010,RB,Rutgers,,name_school,name_school,191165,0.0
+00-0028815,DeMarco Cosby,2011,TE,Central Missouri,14843,none,none,,0.0
+00-0026716,Quan Cosby,2009,WR,Texas,12562,name_school,name_school,175767,12.9
+00-0038651,Chase Cota,2023,WR,Oregon; UCLA,4367186,espn_id,espn_id,4367186,0.0
+00-0026435,Anthony Cotrone,2008,RB,Maine,,none,none,,0.0
+00-0032095,Brandon Cottom,2015,TE,Purdue,2576403,name_school,name_school,514189,0.0
+00-0035901,Jeff Cotton,2020,WR,Idaho,4282647,none,none,,0.0
+00-0035835,Nathan Cottrell,2020,RB,Georgia Tech,3917812,espn_id,espn_id,3917812,0.30000000000000004
+00-0037132,Britain Covey,2022,WR,Utah,3926231,espn_id,espn_id,3926231,18.6
+00-0035427,Jeremy Cox,2020,FB,Old Dominion,3914534,espn_id,espn_id,3914534,0.0
+00-0026033,Mike Cox,2008,FB,Georgia Tech,11747,name_school,name_school,161191,42.8
+00-0026878,Tom Crabtree,2009,TE,Miami (Ohio),13102,name_school,name_school,157466,25.900000000000002
+00-0034054,River Cracraft,2017,WR,Washington State,3052056,name_school,name_school,550624,5.4
+00-0029490,Jared Crank,2012,RB,Purdue,15579,name_school,name_school,237325,0.0
+00-0028885,Lennon Creer,2012,RB,Louisiana Tech; Tennessee,15192,name_school,name_school,236002,0.0
+00-0035448,Damarea Crockett,2019,RB,Missouri,4035102,espn_id,espn_id,4035102,0.7000000000000001
+00-0033353,Montay Crockett,2017,WR,Georgia Southern,2973973,name_school,name_school,532946,0.0
+00-0031826,John Crockett,2015,RB,North Dakota State,2986739,none,none,,2.1
+00-0034819,Josh Crockett,2018,WR,Central Oklahoma,4350798,none,none,,0.0
+00-0029835,Dominique Croom,2013,WR,Central Arkansas,16311,none,none,,0.0
+00-0033627,Jason Croom,2017,TE,Tennessee,2972240,name_school,name_school,532069,49.900000000000006
+00-0038740,Jalen Cropper,2023,WR,Fresno State,4426990,espn_id,espn_id,4426990,0.0
+00-0032745,Alan Cross,2016,TE,Memphis,2586700,name_school,name_school,518907,29.5
+00-0026039,Julius Crosslin,2008,FB,Oklahoma State,,name_school,name_school,135622,0.0
+00-0030656,Isaiah Crowell,2014,RB,Alabama State; Georgia,17133,none,gap_window,512836,465.30000000000007
+00-0030230,Andy Cruse,2013,WR,Miami (Ohio),16553,name_school,name_school,385210,0.0
+00-0027265,Victor Cruz,2010,WR,UMass Amherst,13553,none,none,,543.0999999999999
+00-0025919,Omar Cuff,2008,RB,Delaware,,none,none,,0.0
+00-0033696,Sean Culkin,2017,TE,Missouri,2971426,name_school,name_school,531373,5.6000000000000005
+00-0027321,Jeff Cumberland,2010,TE,Illinois,13555,name_school,name_school,189229,89.7
+00-0029795,Benny Cunningham,2013,RB,Middle Tennessee State,16055,name_school,name_school,480588,235.8
+00-0031462,Jerome Cunningham,2014,TE,Southern Connecticut State,2476373,none,none,,13.9
+00-0038911,Malik Cunningham,2023,WR,Louisville,4240069,espn_id,espn_id,4240069,0.1
+00-0029745,Sederrik Cunningham,2013,WR,Furman,15780,none,none,,0.0
+00-0027520,Dominique Curry,2010,WR,California (PA); University of Cheyney,13806,none,none,,0.0
+00-0035153,Jamal Custis,2019,WR,Syracuse,3124013,espn_id,espn_id,3124013,0.0
+00-0036456,Dominique Dafney,2020,TE,Indiana State,4036129,espn_id,espn_id,4036129,16.0
+00-0026544,Chase Daniel,2009,QB,Missouri,12471,name_school,name_school,177296,3.1
+00-0027409,Alex Daniels,2010,RB,Cincinnati,13826,none,espn_xwalk,176124,0.0
+00-0033258,Darrell Daniels,2017,TE,Washington,3052166,name_school,name_school,550319,7.0
+00-0033384,LeShun Daniels,2017,RB,Iowa,3040143,name_school,name_school,545373,1.4000000000000001
+00-0030860,Orleans Darkwa,2014,RB,Tulane,17331,name_school,name_school,505548,71.80000000000001
+00-0031635,Andre Davis,2015,WR,University of South Florida,2577480,name_school,name_school,514744,0.0
+00-0028307,Drew Davis,2011,WR,Oregon,14478,name_school,name_school,238460,59.6
+00-0028957,Austin Davis,2012,QB,Southern Mississippi,15187,name_school,name_school,237729,107.64000000000001
+00-0026650,Britt Davis,2009,WR,Northern Illinois,12969,name_school,name_school,157507,0.0
+00-0036451,Connor Davis,2020,TE,Stony Brook,2968282,none,none,,0.0
+00-0035101,Davion Davis,2019,WR,Sam Houston State,3933568,none,none,,2.7
+00-0028863,Dominique Davis,2012,QB,East Carolina; Boston College; Fort Scott CC,2266158,none,espn_xwalk,236575,3.3600000000000003
+00-0035154,Felton Davis,2019,WR,Michigan State,3929817,espn_id,espn_id,3929817,0.0
+00-0030692,Jace Davis,2014,WR,Northern Colorado,17137,none,none,,0.0
+00-0034499,Jawill Davis,2018,WR,Bethune-Cookman College,3066147,none,none,,8.0
+00-0033760,Justin Davis,2017,RB,USC,3043216,name_school,name_school,546418,2.0
+00-0037380,Kaden Davis,2022,WR,NW Missouri State University,5065495,none,none,,0.0
+00-0037563,Malik Davis,2022,RB,Florida,4240603,espn_id,espn_id,4240603,34.400000000000006
+00-0035978,Quartney Davis,2021,WR,Texas A&M,4035221,espn_id,espn_id,4035221,0.0
+00-0034034,Rashard Davis,2017,WR,James Madison,3049329,none,none,,2.6
+00-0033815,Reggie Davis,2017,WR,Georgia,3043134,name_school,name_school,546328,0.0
+00-0038902,Shaquan Davis,2023,WR,South Carolina State,4579752,none,none,,0.0
+00-0032080,Titus Davis,2015,WR,Central Michigan,2574420,name_school,name_school,512956,0.0
+00-0027172,Tristan Davis,2009,RB,Auburn,13168,name_school,name_school,160013,0.0
+00-0034654,Dalyn Dawkins,2018,RB,Colorado State,3052449,name_school,name_school,550169,2.6
+00-0029868,Skye Dawson,2013,WR,TCU,16337,name_school,name_school,481286,4.7
+00-0028294,Dan DePalma,2011,WR,West Chester State University; Shepherd,14479,none,none,,0.0
+00-0038476,Tommy DeVito,2023,QB,Illinois; Syracuse,4240391,espn_id,espn_id,4240391,107.02
+00-0026103,Tyson DeVree,2008,TE,Colorado; Western Michigan,11789,none,espn_xwalk,148054,0.0
+00-0030026,Alex Debniak,2013,RB,Stanford,16453,none,none,,0.0
+00-0028218,Mark Dell,2011,WR,Michigan State,14376,name_school,name_school,238801,0.0
+00-0038705,Emari Demercado,2023,RB,TCU,4362478,espn_id,espn_id,4362478,186.3
+00-0029722,Jeff Demps,2012,RB,Florida,15749,name_school,name_school,381277,6.5
+00-0038447,Dontay Demus Jr.,2023,WR,Maryland,4372039,espn_id,espn_id,4372039,0.0
+00-0031140,Anthony Denham,2014,TE,Utah; East Los Angeles College,17392,none,espn_xwalk,516267,0.0
+00-0027162,Clarence Denmark,2009,WR,Univ of Arkansas at Monticello; Troy; Mississippi Delta CC,,none,none,,0.0
+00-0027925,James Develin,2010,FB,Brown,13940,none,none,,0.0
+00-0028453,Pat Devlin,2011,QB,Delaware,14240,none,espn_xwalk,188680,0.0
+00-0028581,Patrick DiMarco,2011,RB,South Carolina,14332,name_school,name_school,243368,12.9
+00-0034795,Garrett Dickerson,2018,TE,Northwestern,3116132,espn_id,espn_id,3116132,0.0
+00-0027341,Richard Dickson,2010,TE,LSU,,name_school,name_school,183526,0.0
+00-0033474,Gehrig Dieter,2017,WR,Alabama; Bowling Green; SMU,2980460,none,espn_xwalk,536143,3.2
+00-0032370,Reggie Diggs,2016,WR,Richmond,2969036,none,none,,0.0
+00-0035102,Brandon Dillon,2019,TE,Marian,4411192,none,none,,1.6
+00-0035813,Derrick Dillon,2020,WR,LSU (Shreveport),3843469,espn_id,espn_id,3843469,0.0
+00-0030898,Chase Dixon,2014,TE,Central Arkansas,16988,none,none,,0.0
+00-0037042,Dai'Jean Dixon,2022,WR,Nicholls State,4250864,none,none,,0.0
+00-0035450,Johnnie Dixon,2019,WR,Ohio State,3121413,espn_id,espn_id,3121413,0.0
+00-0029772,Seth Doege,2013,QB,Texas Tech,16182,name_school,name_school,377942,0.0
+00-0035394,Jake Dolegala,2019,QB,CCSU,3921586,none,none,,0.0
+00-0026849,Herb Donaldson,2009,RB,Western Illinois,12494,none,none,,0.0
+00-0033990,Steve Donatell,2017,TE,Western Kentucky; Wake Forest,2970133,name_school,name_school,530336,0.0
+00-0028838,Larry Donnell,2012,TE,Grambling State,15707,none,none,,159.4
+00-0035500,Greg Dortch,2019,WR,Wake Forest,4037235,espn_id,espn_id,4037235,6.9
+00-0035120,Keelan Doss,2019,WR,UC Davis,3120980,none,none,,24.3
+00-0031011,Lee Doss,2014,WR,Southern,17354,none,none,,0.0
+00-0038862,Elijah Dotson,2023,RB,Northern Colorado,4248909,none,none,,3.9000000000000004
+00-0029361,David Douglas,2012,WR,Arizona,15528,name_school,name_school,378107,0.0
+00-0036139,Rico Dowdle,2020,RB,South Carolina,4038815,espn_id,espn_id,4038815,2.4000000000000004
+00-0030181,Jack Doyle,2013,TE,Western Kentucky,16504,name_school,name_school,474860,73.89999999999999
+00-0028202,Shaun Draughn,2011,RB,North Carolina,14518,name_school,name_school,183629,73.3
+00-0037564,Dontario Drummond,2022,WR,Mississippi,4567240,espn_id,espn_id,4567240,0.0
+00-0038953,Dylan Drummond,2023,WR,Eastern Michigan,4363551,espn_id,espn_id,4363551,11.2
+00-0035325,Jonathan Duhart,2019,WR,Old Dominion,3123226,espn_id,espn_id,3123226,0.0
+00-0033409,Austin Duke,2017,WR,Charlotte,3050138,name_school,name_school,551921,0.0
+00-0035021,Ashton Dulin,2019,WR,Malone,4061956,none,none,,58.6
+00-0029004,Lance Dunbar,2012,RB,North Texas,15369,name_school,name_school,385054,92.30000000000001
+00-0034072,Steven Dunbar,2018,WR,Houston,3126197,espn_id,espn_id,3126197,0.0
+00-0035010,Eric Dungey,2019,QB,Syracuse,3916447,espn_id,espn_id,3916447,0.0
+00-0029913,Reggie Dunn,2013,WR,Utah,16059,name_school,name_school,503041,0.0
+00-0033517,Travin Dural,2017,WR,LSU,2976557,name_school,name_school,534444,0.0
+00-0038734,David Durden,2023,WR,University of West Florida,4370374,none,none,,0.0
+00-0034073,Ross Dwelley,2018,TE,San Diego,3120303,none,none,,89.0
+00-0032008,Donteea Dye,2015,WR,Heidelberg College,3894952,none,none,,30.200000000000003
+00-0029358,Nate Eachus,2012,FB,Colgate,15548,none,none,,4.7
+00-0032705,Ed Eagan,2016,WR,Northwestern State (LA),2974590,none,none,,0.0
+00-0037210,Jerrion Ealy,2022,RB,Mississippi,4426330,espn_id,espn_id,4426330,0.0
+00-0035353,Nick Easley,2019,WR,Iowa; Iowa Western CC,4240591,espn_id,espn_id,4240591,0.0
+00-0033838,Trey Edmunds,2017,RB,Maryland; Virginia Tech,2970090,name_school,name_school,530531,30.8
+00-0034184,Gus Edwards,2018,RB,Rutgers; Miami,3051926,name_school,name_school,550049,310.6
+00-0032001,Ben Edwards,2015,WR,Richmond,2507340,none,none,,1.9
+00-0032082,Jahwan Edwards,2015,RB,Ball State,2577845,name_school,name_school,511399,0.0
+00-0029227,Pat Edwards,2012,WR,Houston,15474,name_school,name_school,378259,9.600000000000001
+00-0033699,Austin Ekeler,2017,RB,Western State,3068267,none,none,,584.7
+00-0035823,Ben Ellefson,2020,TE,North Dakota State,3930900,none,none,,9.6
+00-0029055,Kevin Elliott,2012,WR,Florida A&M,15327,none,none,,20.8
+00-0032864,Alex Ellis,2016,TE,Tennessee,2577731,name_school,name_school,512454,4.1
+00-0035396,Jordan Ellis,2019,RB,Virginia,3124022,espn_id,espn_id,3124022,0.0
+00-0026854,Keith Eloi,2009,WR,Nebraska-Omaha,,none,none,,0.0
+EME675714,Emeka Emezie,2022,WR,N.C. State,4240120,espn_id,espn_id,4240120,0.0
+00-0036797,B.J. Emmons,2021,RB,Florida Atlantic; Hutchinson CC; Alabama,4040967,espn_id,espn_id,4040967,0.0
+00-0032543,Alex Erickson,2016,WR,Wisconsin,2977800,name_school,name_school,534809,89.60000000000001
+00-0034611,Donnie Ernsberger,2018,TE,Western Michigan,3129455,espn_id,espn_id,3129455,0.0
+00-0025884,Allen Ervin,2008,RB,Lambuth,,none,none,,0.0
+00-0033454,Brisly Estime,2017,WR,Syracuse,3039738,name_school,name_school,545269,0.0
+00-0037454,Drew Estrada,2022,WR,Baylor; Dartmouth,4030947,espn_id,espn_id,4030947,0.0
+00-0033687,Amba Etta-Tawo,2017,WR,Syracuse,2976215,name_school,name_school,534252,0.0
+00-0036766,Nick Eubanks,2021,TE,Michigan,4046520,espn_id,espn_id,4046520,0.0
+00-0028645,Darren Evans,2011,RB,Virginia Tech,14685,name_school,name_school,236826,0.0
+EVA297676,Jerod Evans,2017,QB,Virginia Tech; Trinity Valley CC,,name_school,name_school,556465,0.0
+00-0034876,Christopher Ezeala,2018,RB,,4339834,none,none,,0.0
+00-0028220,Mario Fannin,2011,RB,Auburn,14382,name_school,name_school,189729,0.0
+00-0038735,Princeton Fant,2023,TE,Tennessee,4242442,espn_id,espn_id,4242442,0.0
+00-0031746,George Farmer,2015,RB,USC,2570993,name_school,name_school,512842,1.5
+00-0027525,Buddy Farnham,2010,WR,Brown,,none,none,,0.0
+00-0032902,Kenneth Farrow,2016,RB,Houston,2575553,name_school,name_school,512471,37.2
+00-0029883,Joseph Fauria,2013,TE,UCLA; Notre Dame,16330,none,espn_xwalk,385326,104.1
+00-0028518,Jarred Fayson,2011,WR,Illinois,14383,name_school,name_school,186578,0.0
+00-0035825,Tavien Feaster,2021,RB,South Carolina,4035470,espn_id,espn_id,4035470,0.0
+00-0029738,Darren Fells,2014,TE,UC Irvine,15773,none,none,,117.6
+00-0031808,Isiah Ferguson,2015,WR,University of Arkansas at Pine Bluff,2984816,none,none,,0.0
+00-0035090,Jazz Ferguson,2019,WR,Northwestern State (LA); LSU,3843603,espn_id,espn_id,3843603,0.0
+00-0032377,Josh Ferguson,2016,RB,Illinois,2576165,name_school,name_school,515457,40.7
+00-0026546,Rodney Ferguson,2009,RB,New Mexico,,name_school,name_school,160929,0.0
+00-0033799,Tyler Ferguson,2017,QB,Western Kentucky,3040520,name_school,name_school,545637,0.0
+00-0037394,Ethan Fernea,2022,WR,UCLA,4062711,espn_id,espn_id,4062711,0.0
+00-0035883,Maurice Ffrench,2020,WR,Pittsburgh,4036055,espn_id,espn_id,4036055,0.30000000000000004
+00-0034100,Shay Fields,2018,WR,Colorado,3122607,espn_id,espn_id,3122607,0.0
+00-0035803,Chris Finke,2020,WR,Notre Dame,3932429,espn_id,espn_id,3932429,0.0
+00-0025981,J.J. Finley,2008,TE,Oklahoma,11694,none,espn_xwalk,145521,0.0
+00-0033455,Anthony Firkser,2017,TE,Harvard,3049698,none,none,,87.9
+00-0037654,Tucker Fisk,2022,TE,Stanford,4242558,espn_id,espn_id,4242558,12.8
+00-0035471,Nick Fitzgerald,2019,QB,Mississippi State,3087801,name_school,name_school,558337,0.0
+00-0030918,Mike Flacco,2014,TE,University of New Haven,16993,none,none,,0.0
+00-0034101,Matt Flanagan,2018,TE,Pittsburgh; Rutgers,3047488,name_school,name_school,547540,2.4000000000000004
+00-0034225,Dimitri Flowers,2018,RB,Oklahoma,3116375,espn_id,espn_id,3116375,0.0
+00-0038904,Malik Flowers,2023,WR,Montana,4247386,none,none,,0.0
+00-0034531,Quinton Flowers,2018,RB,University of South Florida,3139591,espn_id,espn_id,3139591,0.0
+00-0030711,David Fluellen,2015,RB,Toledo,16994,name_school,name_school,504624,2.1
+00-0033747,Dontez Ford,2017,WR,Pittsburgh,2970410,name_school,name_school,530649,0.0
+00-0029432,Chase Ford,2012,TE,Miami; Kilgore,15647,name_school,name_school,501132,79.1
+00-0034509,Keith Ford,2018,RB,Texas A&M,3052662,name_school,name_school,550492,13.0
+00-0030134,Michael Ford,2013,RB,LSU,16135,name_school,name_school,480240,0.0
+00-0038477,Bryce Ford-Wheaton,2023,WR,West Virginia,4362227,espn_id,espn_id,4362227,6.0
+00-0036692,Miller Forristall,2021,TE,Alabama,4040714,espn_id,espn_id,4040714,0.0
+00-0034932,Austin Fort,2019,TE,Wyoming,3125402,espn_id,espn_id,3125402,0.0
+00-0035547,Joseph Fortson,2019,TE,Valdosta State; Erie CC,4408854,none,none,,21.7
+00-0026796,Arian Foster,2009,RB,Tennessee,12497,name_school,name_school,161068,753.9000000000001
+00-0032577,D.J. Foster,2016,RB,Arizona State,2978124,name_school,name_school,534754,35.800000000000004
+00-0030935,Donte Foster,2014,WR,Ohio,17062,name_school,name_school,504593,0.0
+00-0026004,Jayson Foster,2008,WR,Georgia Southern,,none,none,,0.0
+00-0034510,Robert Foster,2018,WR,Alabama,3054845,name_school,name_school,551293,117.1
+00-0037506,Cole Fotheringham,2022,TE,Utah,4361008,espn_id,espn_id,4361008,1.6
+00-0030670,Bennie Fowler,2014,WR,Michigan State,16995,name_school,name_school,481703,73.8
+00-0032174,Deshon Foxx,2015,WR,Connecticut,2576608,name_school,name_school,512100,0.0
+FRA070446,Bruce Francis,2009,WR,Temple,,name_school,name_school,175638,0.0
+00-0028295,Collin Franklin,2011,TE,Iowa State; College of the Canyons,14480,none,espn_xwalk,235878,0.0
+00-0034705,John Franklin,2018,WR,Florida Atlantic,4035496,espn_id,espn_id,4035496,1.1
+00-0036825,Feleipe Franks,2021,TE,Arkansas,4034948,espn_id,espn_id,4034948,-1.4
+00-0034532,Jordan Franks,2018,TE,UCF,3128439,espn_id,espn_id,3128439,5.7
+00-0032488,Mose Frazier,2016,WR,Memphis,2977874,name_school,name_school,534842,0.0
+00-0026969,Devin Frischknecht,2009,TE,Washington State,,name_school,name_school,232048,0.0
+00-0032012,Isaac Fruechte,2015,WR,Minnesota; University of Rochester,2970698,name_school,name_school,530719,0.0
+00-0035987,Aaron Fuller,2020,WR,Washington,4039000,espn_id,espn_id,4039000,0.0
+00-0029103,Jeff Fuller,2012,WR,Texas A&M,15348,name_school,name_school,378013,0.0
+00-0030012,Matt Furstenburg,2013,TE,Maryland,16358,name_school,name_school,377696,0.0
+00-0031228,Taylor Gabriel,2014,WR,Abilene Christian,17437,none,none,,297.2
+00-0034660,Rico Gafford,2018,WR,Wyoming; Iowa Western CC,4048717,espn_id,espn_id,4048717,14.600000000000001
+00-0036787,Bailey Gaither,2022,WR,San Jose State,3921681,espn_id,espn_id,3921681,0.0
+00-0028406,Tommy Gallarda,2011,TE,Boise State,14246,name_school,name_school,188323,1.7000000000000002
+00-0027644,Joel Gamble,2009,RB,University of Shippensburg,,none,none,,0.0
+00-0026896,Ed Gant,2009,WR,North Alabama,13134,none,none,,0.0
+00-0025831,Horace Gant,2008,WR,Saint Olaf College,,none,none,,0.0
+00-0037507,Chase Garbers,2022,QB,California,4242408,espn_id,espn_id,4242408,0.0
+00-0031671,Beau Gardner,2015,TE,Northern Arizona,2974931,none,none,,0.0
+00-0031996,Manasseh Garner,2015,TE,Pittsburgh,2515609,name_school,name_school,503395,0.0
+00-0032995,Keyarris Garrett,2016,WR,Tulsa,2575381,name_school,name_school,514158,0.0
+00-0026726,Michael Ray Garvin,2009,WR,Florida State,,none,none,,0.0
+00-0030039,Kendall Gaskins,2013,RB,Richmond,16066,none,none,,18.700000000000003
+00-0038954,Izaiah Gathings,2023,WR,Middle Tennessee State; Gardner-Webb,4365981,espn_id,espn_id,4365981,0.0
+00-0027283,Riar Geer,2010,TE,Colorado,,name_school,name_school,177825,0.0
+00-0037483,Kaylon Geiger,2022,WR,Texas Tech; Navarro,4427267,espn_id,espn_id,4427267,0.0
+00-0033633,Tanner Gentry,2017,WR,Wyoming,3043841,name_school,name_school,546491,6.5
+00-0025992,Samuel Giguere,2008,WR,,11634,none,none,,0.0
+00-0026460,Lavarus Giles,2008,RB,Jackson State University,,none,none,,0.0
+00-0030454,Alex Gillett,2013,WR,Eastern Michigan,16605,name_school,name_school,482077,0.0
+00-0036187,Reggie Gilliam,2020,RB,Toledo,4039505,espn_id,espn_id,4039505,36.099999999999994
+00-0028646,David Gilreath,2011,WR,Wisconsin,14681,name_school,name_school,236739,0.7000000000000001
+00-0038758,Noah Gindorff,2023,TE,North Dakota State,4248546,none,none,,0.0
+00-0038496,Xavier Gipson,2023,WR,Stephen F. Austin State,4427278,none,none,,81.7
+00-0029169,Chris Givens,2012,WR,Miami (Ohio),15420,name_school,name_school,240842,0.0
+00-0031651,Andrew Gleichert,2015,TE,Michigan State,2515408,name_school,name_school,503194,0.0
+00-0029336,Brittan Golden,2012,WR,West Texas State,15564,none,none,,17.6
+00-0031747,Antwan Goodley,2015,WR,Baylor,2512996,name_school,name_school,502261,0.0
+00-0027585,Richard Goodman,2010,WR,Florida State,13568,name_school,name_school,173649,7.5
+00-0037120,Tyler Goodson,2022,RB,Iowa,4429676,espn_id,espn_id,4429676,62.50000000000001
+00-0028221,D'Andre Goodwin,2011,WR,Washington,14393,name_school,name_school,184365,0.0
+00-0034640,DeAndre Goolsby,2018,TE,Florida,3115251,name_school,name_school,559555,0.0
+00-0035988,Anthony Gordon,2021,QB,Washington State,4055171,espn_id,espn_id,4055171,0.0
+00-0029664,Josh Gordon,2012,WR,Utah; Baylor,15705,name_school,name_school,480730,527.1999999999999
+00-0035715,Derrick Gore,2019,RB,Louisiana-Monroe,3925346,espn_id,espn_id,3925346,56.1
+00-0038957,Alfonzo Graham,2023,RB,Morgan State,4892333,none,none,,0.0
+00-0028469,Cameron Graham,2011,TE,Louisville,14593,name_school,name_school,382083,0.0
+00-0034788,Jaeden Graham,2018,TE,Yale,3118954,none,none,,35.4
+00-0030233,Ray Graham,2013,RB,Pittsburgh,16497,name_school,name_school,482843,3.0
+00-0027490,Bakari Grant,2010,WR,UC Davis,,none,none,,0.0
+00-0034307,Janarion Grant,2018,WR,Rutgers,3047490,name_school,name_school,547542,0.0
+00-0031731,Corey Grant,2015,RB,Auburn; Alabama,2515934,name_school,name_school,504030,81.30000000000001
+00-0034010,Alex Gray,2017,TE,,4227184,none,none,,0.0
+00-0033769,Deante' Gray,2017,WR,TCU,2971543,name_school,name_school,531230,0.0
+00-0034141,Devin Gray,2018,WR,Cincinnati,4037481,espn_id,espn_id,4037481,0.0
+00-0029104,Jonas Gray,2012,RB,Notre Dame,15364,name_school,name_school,385332,72.9
+00-0029878,MarQueis Gray,2013,TE,Minnesota,16323,name_school,name_school,381929,30.7
+00-0033215,Cyril Grayson,2017,WR,LSU,4217370,none,none,,1.3
+00-0034748,Davon Grayson,2019,WR,East Carolina,3059719,name_school,name_school,552937,0.0
+00-0032672,Aaron Green,2016,RB,TCU; Nebraska,2570994,none,espn_xwalk,512843,0.0
+00-0035852,Farrod Green,2020,TE,Mississippi State,3930097,espn_id,espn_id,3930097,0.0
+00-0029396,Jared Green,2012,WR,Southern; Virginia,15514,name_school,name_school,236795,0.0
+00-0035782,Juwan Green,2020,WR,Albany,4366710,none,none,,0.0
+00-0037455,Seth Green,2022,TE,Houston; Minnesota,4034772,espn_id,espn_id,4034772,0.0
+00-0029229,Stephfon Green,2012,RB,Penn State,15471,name_school,name_school,243281,0.0
+00-0033748,Tion Green,2017,RB,Cincinnati,2979825,name_school,name_school,535728,31.900000000000002
+00-0025860,BenJarvus Green-Ellis,2008,RB,Mississippi; Indiana,11754,none,espn_xwalk,145975,278.0
+00-0031323,Kevin Greene,2014,TE,USC,17460,none,none,,0.0
+GRE666310,Rashaun Greer,2010,WR,Colorado State,,name_school,name_school,176406,0.0
+00-0033259,Trey Griffey,2018,WR,Arizona,2971233,name_school,name_school,530827,0.0
+00-0033095,Garrett Griffin,2016,TE,Air Force,2987440,name_school,name_school,538421,1.4
+00-0028377,John Griffin,2012,RB,UMass Amherst,14724,none,none,,0.0
+00-0029857,Ryan Griffin,2013,QB,Tulane,16140,name_school,name_school,383463,0.0
+00-0035981,Nakia Griffin-Stewart,2020,TE,Pittsburgh,3930035,espn_id,espn_id,3930035,0.0
+00-0028455,Nic Grigsby,2011,RB,Arizona,4078287,name_school,name_school,232109,0.0
+00-0031035,Xavier Grimble,2014,TE,USC,17348,name_school,name_school,500255,34.8
+00-0029510,Jonathan Grimes,2012,RB,William & Mary,15632,none,none,,58.1
+00-0032634,David Grinnage,2017,TE,N.C. State,2970038,name_school,name_school,530502,12.100000000000001
+00-0026562,Tyler Grisham,2009,WR,Clemson,12886,name_school,name_school,176665,2.4000000000000004
+GRI824841,Torrey Grissett,2011,WR,Campbell University,,none,none,,0.0
+00-0032347,Darion Griswold,2016,TE,Arkansas State,2572850,name_school,name_school,515871,0.0
+00-0027419,Chris Gronkowski,2010,RB,Arizona; Maryland,13574,name_school,name_school,183702,20.3
+00-0032499,Glenn Gronkowski,2016,FB,Kansas State,2977698,name_school,name_school,534613,0.0
+00-0036521,Garrett Groshek,2021,RB,Wisconsin,4035767,espn_id,espn_id,4035767,0.0
+00-0037650,Jarrett Guarantano,2022,QB,Washington State,4035167,espn_id,espn_id,4035167,0.0
+00-0036454,Pete Guerrerio,2020,RB,Monmouth,,none,none,,0.0
+00-0036489,Nick Guggemos,2021,TE,University of St. Thomas,3957439,none,none,,0.0
+00-0036136,Stephen Guidry,2020,WR,Mississippi State; Hinds CC,4362706,espn_id,espn_id,4362706,0.0
+00-0028389,Ben Guidugli,2011,TE,Cincinnati,14631,name_school,name_school,187854,0.0
+00-0028596,Tori Gurley,2011,WR,South Carolina,14601,name_school,name_school,483207,2.5
+00-0027398,Trent Guy,2010,WR,Louisville,,name_school,name_school,169652,0.0
+00-0035414,Jalen Guyton,2019,WR,North Texas; Trinity Valley CC,3932430,espn_id,espn_id,3932430,194.3
+00-0027456,Johnathan Haggerty,2010,WR,Southwestern Oklahoma State University,13744,none,none,,0.0
+00-0037456,Troy Hairston,2022,RB,Central Michigan,4274040,none,none,,6.9
+00-0029006,Saalim Hakim,2012,WR,Palomar College; Tarleton State,15397,none,none,,-0.30000000000000004
+00-0025917,Bruce Hall,2008,RB,Mississippi; Troy; Wake Forest,,none,multi_school,146031,0.0
+00-0027188,Chad Hall,2010,WR,Air Force,13188,none,espn_xwalk,175929,43.7
+00-0026135,D.J. Hall,2008,WR,Alabama,,name_school,name_school,164559,0.0
+00-0035043,Darrin Hall,2019,RB,Pittsburgh,3895788,espn_id,espn_id,3895788,0.0
+00-0035070,Emanuel Hall,2019,WR,Missouri,3924318,espn_id,espn_id,3924318,0.0
+00-0038714,Hassan Hall,2023,RB,Georgia Tech; Louisville,4360805,espn_id,espn_id,4360805,0.0
+00-0033094,Marvin Hall,2016,WR,Washington,2578369,name_school,name_school,513050,44.9
+00-0027347,Max Hall,2010,QB,BYU; Arizona State,13576,none,espn_xwalk,160307,2.3000000000000007
+00-0031846,Rannell Hall,2015,WR,UCF,2581464,name_school,name_school,518250,0.0
+00-0032918,C.J. Ham,2016,FB,Augustana (SD),4012556,none,none,,41.400000000000006
+00-0026121,Lynell Hamilton,2008,RB,San Diego State,11698,name_school,name_school,147793,34.3
+00-0031749,Ray Hamilton,2015,TE,Iowa,2582456,name_school,name_school,518412,0.0
+00-0028223,Jamel Hamler,2011,WR,Fresno State,14397,name_school,name_school,189878,0.0
+00-0031732,Connor Hamlett,2015,TE,Oregon State,2517011,name_school,name_school,504780,8.7
+00-0030805,Je'Ron Hamm,2014,TE,Louisiana-Monroe,17165,name_school,name_school,505209,3.3
+00-0030154,Frankie Hammond,2013,WR,Florida,16260,name_school,name_school,381280,8.5
+00-0035826,Josh Hammond,2020,WR,Florida,4034944,espn_id,espn_id,4034944,0.0
+00-0034027,De'Quan Hampton,2021,WR,USC; Long Beach City College; LAHC,3912558,espn_id,espn_id,3912558,0.0
+00-0028980,Jewel Hampton,2012,RB,Southern Illinois; Iowa,15220,none,espn_xwalk,381740,0.0
+00-0025970,Caleb Hanie,2008,QB,Colorado State,11540,name_school,name_school,160036,0.54
+00-0029019,Darius Hanks,2012,WR,Alabama,15320,name_school,name_school,237204,0.0
+00-0032747,Russell Hansbrough,2016,RB,Missouri,2971435,name_school,name_school,531382,0.0
+00-0036685,Tre Harbison,2021,RB,Charlotte,4039467,espn_id,espn_id,4039467,0.0
+00-0028843,Andre Hardy,2014,TE,California State-Fullerton,14872,none,none,,0.0
+00-0036768,JaQuan Hardy,2021,RB,Tiffin,4069817,none,none,,8.9
+00-0028958,Cory Harkey,2012,TE,UCLA,15226,name_school,name_school,380730,60.9
+00-0037334,Mike Harley Jr.,2022,WR,Miami,4240625,espn_id,espn_id,4240625,0.0
+00-0027504,Jason Harmon,2010,WR,Florida Atlantic,,name_school,name_school,170771,0.0
+00-0031854,Chris Harper,2015,WR,California,2978196,name_school,name_school,535265,27.900000000000002
+00-0026025,Rod Harper,2009,WR,Murray State,,none,none,,0.0
+00-0035805,Chase Harrell,2020,TE,Arkansas,3880416,espn_id,espn_id,3880416,0.0
+00-0027602,Graham Harrell,2010,QB,Texas Tech,12475,name_school,name_school,160425,-1.5
+00-0031830,Alonzo Harris,2015,RB,Louisiana-Lafayette,2574010,name_school,name_school,512325,1.9000000000000001
+00-0035848,De'Michael Harris,2020,WR,Southern Mississippi,4374496,espn_id,espn_id,4374496,22.5
+00-0030155,Demetrius Harris,2013,TE,Wisconsin-Milwaukee; Mineral Area CC,16318,none,none,,25.4
+00-0028409,DuJuan Harris,2011,RB,Troy,14255,name_school,name_school,233693,37.0
+00-0031450,Josh Harris,2014,RB,Wake Forest,2467210,name_school,name_school,481643,1.6
+00-0038926,Keilahn Harris,2023,WR,Oklahoma Baptist University,5125342,none,none,,0.0
+00-0026836,Kenneth Harris,2009,WR,Georgia,4685970,name_school,name_school,160066,0.0
+00-0028627,Marcus Harris,2011,WR,Murray State,14688,none,none,,0.0
+00-0032362,Maurice Harris,2016,WR,California,2576868,name_school,name_school,517011,90.2
+00-0032029,R.J. Harris,2015,WR,New Hampshire,2507284,none,none,,0.0
+00-0030439,Mark Harrison,2013,WR,Rutgers,16141,name_school,name_school,483119,0.0
+00-0038844,Tre'Shaun Harrison,2023,WR,Oregon State; Florida State,4363046,espn_id,espn_id,4363046,0.0
+00-0035022,Penny Hart,2019,WR,Georgia State,3917546,espn_id,espn_id,3917546,16.1
+00-0028647,Mike Hartline,2011,QB,Kentucky,,name_school,name_school,188612,0.0
+00-0035215,Deonte Harty,2019,WR,Assumption,4411193,none,none,,182.3
+00-0027198,Brandyn Harvey,2010,WR,Villanova,13582,none,none,,0.0
+00-0028211,Mario Harvey,2012,FB,Marshall,14257,none,none,,0.0
+00-0030182,Travis Harvey,2014,WR,Florida A&M,16563,none,none,,0.0
+00-0031750,Nick Harwell,2015,WR,Kansas,2516768,name_school,name_school,504562,0.0
+00-0028242,Joe Hastings,2011,WR,Washburn,14258,none,none,,0.0
+00-0035806,JaMycal Hasty,2020,RB,Baylor,3928925,espn_id,espn_id,3928925,152.6
+00-0033441,Keon Hatcher,2017,WR,Arkansas,2980061,name_school,name_school,535877,1.8
+00-0036746,Jake Hausmann,2021,TE,Ohio State,4040617,espn_id,espn_id,4040617,0.0
+00-0027918,Andrew Hawkins,2011,WR,Toledo,13958,none,espn_xwalk,166990,215.3
+00-0030447,Charles Hawkins,2013,WR,Southern,16602,none,none,,0.0
+00-0036827,Javian Hawkins,2021,RB,Louisville,4360802,espn_id,espn_id,4360802,0.0
+00-0026472,C.J. Hawthorne,2008,WR,Hawaii,,name_school,name_school,184057,0.0
+00-0031493,Jarryd Hayne,2015,RB,,3423412,none,none,,13.9
+00-0026026,Joey Haynos,2008,TE,Maryland,11635,name_school,name_school,156731,57.400000000000006
+00-0036782,Damon Hazelton,2021,WR,Missouri,4047728,espn_id,espn_id,4047728,0.0
+00-0028584,Vidal Hazelton,2011,WR,Cincinnati,14337,name_school,name_school,183226,0.0
+00-0032073,Jake Heaps,2016,QB,Miami; Kansas; BYU,2512235,none,espn_xwalk,501563,0.0
+00-0038465,Malik Heath,2023,WR,Mississippi; Mississippi State,4689334,espn_id,espn_id,4689334,79.8
+00-0038760,Griffin Hebert,2023,WR,Louisiana Tech,4239691,espn_id,espn_id,4239691,0.0
+00-0026787,Kole Heckendorf,2009,WR,North Dakota State,,none,none,,0.0
+00-0031800,Taylor Heinicke,2015,QB,Old Dominion,2565969,name_school,name_school,513949,0.6000000000000001
+00-0029534,Cooper Helfet,2012,TE,Duke; Johns Hopkins University; Santa Rosa,15670,none,espn_xwalk,501058,42.5
+00-0035428,Daniel Helm,2019,TE,Duke,3115359,name_school,name_school,559747,0.9
+00-0037569,Peyton Hendershot,2022,TE,Indiana,4258248,espn_id,espn_id,4258248,57.400000000000006
+00-0034206,Quadree Henderson,2018,WR,Pittsburgh,3895789,espn_id,espn_id,3895789,0.0
+00-0037494,Thomas Hennigan,2022,WR,Appalachian State,4241004,espn_id,espn_id,4241004,0.0
+00-0031831,Mitchell Henry,2015,TE,Western Kentucky,2573419,name_school,name_school,515726,0.0
+00-0035031,Malik Henry,2019,WR,West Georgia,3917200,espn_id,espn_id,3917200,0.0
+00-0037362,Ra'Shaun Henry,2022,WR,Virginia,4032625,espn_id,espn_id,4032625,0.0
+00-0035025,Hale Hentges,2019,TE,Alabama,3925348,espn_id,espn_id,3925348,24.3
+00-0030204,Greg Herd,2014,WR,Eastern Washington,16474,none,none,,0.0
+00-0035109,Cole Herdman,2019,TE,Purdue,3116195,espn_id,espn_id,3116195,0.0
+00-0029242,Brad Herman,2012,TE,Iowa,15472,name_school,name_school,381745,0.0
+00-0030920,Javontee Herndon,2014,WR,Arkansas,17005,name_school,name_school,504070,44.8
+00-0035572,Parker Hesse,2019,TE,Iowa,3144991,none,none,,9.3
+00-0030780,Ryan Hewitt,2014,TE,Stanford,17169,name_school,name_school,482589,39.8
+00-0035454,Karan Higdon,2019,RB,Michigan,3929927,espn_id,espn_id,3929927,0.0
+00-0028522,Mike Higgins,2011,TE,Nebraska-Omaha,14400,none,none,,2.0999999999999996
+00-0033315,Cole Hikutini,2017,TE,Louisville; City College (SF); Sacramento State,2968204,none,espn_xwalk,529568,3.5
+00-0032101,Austin Hill,2015,WR,Arizona,2516901,name_school,name_school,504671,0.0
+00-0032298,Bronson Hill,2015,RB,Eastern Michigan,2574474,name_school,name_school,512990,0.9000000000000001
+00-0026809,Darius Hill,2009,TE,Ball State,12540,name_school,name_school,157762,0.0
+00-0030216,Josh Hill,2013,TE,Idaho State; Boise State,16143,none,none,,117.2
+00-0038720,Julian Hill,2023,TE,Campbell University,4365395,none,none,,61.8
+00-0034237,Khalid Hill,2018,RB,Michigan,3045222,name_school,name_school,546728,0.0
+00-0030320,Michael Hill,2013,RB,Missouri Western,16074,none,none,,6.6000000000000005
+00-0026838,P.J. Hill,2009,RB,Wisconsin,,name_school,name_school,180057,0.0
+00-0033357,Taysom Hill,2017,TE,BYU,2468609,name_school,name_school,482594,135.76
+00-0034253,Dontrell Hilliard,2018,RB,Tulane,3126246,espn_id,espn_id,3126246,61.6
+00-0035013,Jon Hilliman,2019,RB,Rutgers,3122799,espn_id,espn_id,3122799,8.200000000000001
+00-0035489,Wes Hills,2019,RB,Slippery Rock; Delaware,3060919,none,none,,16.2
+00-0028915,Justin Hilton,2012,WR,Indiana State,15250,none,none,,0.0
+00-0029993,Quentin Hines,2013,RB,Akron,16400,name_school,name_school,382141,0.0
+00-0035864,Kendall Hinton,2020,WR,Wake Forest,3700815,espn_id,espn_id,3700815,92.16
+00-0034854,KhaDarel Hodge,2018,WR,Prairie View A&M; Hinds CC; Alcorn State,3047876,none,none,,44.3
+00-0027617,Shay Hodge,2010,WR,Mississippi,,name_school,name_school,191213,0.0
+00-0037164,Curtis Hodges,2022,TE,Arizona State,4242896,espn_id,espn_id,4242896,0.0
+00-0035577,Devlin Hodges,2019,QB,Samford,3127051,none,none,,51.32000000000001
+00-0028597,Jon Hoese,2011,FB,Minnesota,14585,name_school,name_school,243350,0.0
+00-0028237,Chris Hogan,2011,WR,Monmouth; Penn State,14402,none,none,,18.3
+00-0033604,Krishawn Hogan,2017,WR,Marian; Walsh,4198679,none,none,,1.4
+00-0035807,Josh Hokit,2020,RB,Fresno State,4049391,espn_id,espn_id,4049391,0.0
+00-0031252,Caleb Holley,2014,WR,East Central,17448,none,none,,0.0
+00-0035104,Alexander Hollins,2019,WR,Eastern Illinois,4249496,none,none,,6.6000000000000005
+00-0033386,Cody Hollister,2017,WR,Arkansas,3115443,name_school,name_school,559632,3.3
+00-0033387,Jacob Hollister,2017,TE,Wyoming; Arizona Western,3125404,espn_id,espn_id,3125404,111.80000000000001
+00-0028263,Andre Holmes,2011,WR,Hillsdale,14403,none,none,,77.19999999999999
+00-0031884,Gabe Holmes,2015,TE,Purdue,2468368,name_school,name_school,482359,0.0
+00-0035725,Valentine Holmes,2019,RB,,4421390,none,none,,0.0
+00-0032935,Johnny Holton,2016,WR,Cincinnati; College of DuPage,3056906,name_school,name_school,552223,52.5
+00-0032986,J.P. Holtz,2016,TE,Pittsburgh,2970262,name_school,name_school,530441,0.0
+00-0035442,Elijah Holyfield,2019,RB,Georgia,4035006,espn_id,espn_id,4035006,0.0
+00-0028751,Chris Hopkins,2011,TE,Toledo,14770,none,espn_xwalk,162026,0.0
+00-0027308,Jeremy Horne,2010,WR,UMass Amherst; Syracuse,13506,none,espn_xwalk,175915,0.5
+00-0035562,Jesper Horsted,2019,TE,Princeton,3940587,none,none,,38.800000000000004
+00-0030865,Gator Hoskins,2014,TE,Marshall,17173,none,espn_xwalk,503264,5.1
+00-0037570,Dennis Houston,2022,WR,Western Illinois,4572786,none,none,,3.6
+00-0030685,Stephen Houston,2016,RB,Indiana,17174,none,espn_xwalk,513021,0.0
+00-0033261,Bug Howard,2017,WR,North Carolina,3039720,name_school,name_school,545251,0.0
+00-0034449,Buddy Howell,2018,RB,Florida Atlantic,3122716,espn_id,espn_id,3122716,8.7
+00-0037631,J.J. Howland,2022,TE,Yale,4248470,none,none,,0.0
+00-0031861,Julian Howsare,2015,FB,University of Clarion; Penn,3124451,none,none,,0.0
+00-0026625,Brian Hoyer,2009,QB,Michigan State,12477,name_school,name_school,160772,20.84
+00-0032815,Chris Hubert,2016,WR,Fayetteville State University,2986501,none,none,,0.0
+00-0034613,Tanner Hudson,2018,TE,Southern Arkansas; Memphis,3050481,none,none,,11.7
+00-0036173,Tommy Hudson,2020,TE,Arizona State,3675550,espn_id,espn_id,3675550,6.1
+00-0033195,Jacob Huesman,2016,RB,Chattanooga State Technical CC,2567767,none,none,,0.0
+00-0026819,Kareem Huggins,2009,RB,Hofstra,13059,none,none,,2.8
+00-0026100,Nate Hughes,2008,WR,Alcorn State,11798,none,none,,18.0
+00-0028345,Robert Hughes,2011,RB,Notre Dame,14266,name_school,name_school,237399,3.4000000000000004
+00-0035406,Lil'Jordan Humphrey,2019,WR,Texas,4039057,espn_id,espn_id,4039057,63.50000000000001
+00-0032009,Adam Humphries,2015,WR,Clemson,2576491,name_school,name_school,511206,320.7
+00-0031743,Akeem Hunt,2015,RB,Purdue,2576408,name_school,name_school,514194,45.7
+00-0036829,Caleb Huntley,2021,RB,Ball State,4244732,espn_id,espn_id,4244732,44.9
+00-0035993,Tyler Huntley,2020,QB,Utah,4035671,espn_id,espn_id,4035671,135.56
+00-0030821,Allen Hurns,2014,WR,Miami,17177,name_school,name_school,501138,480.5
+00-0036104,John Hurst,2020,WR,West Georgia,4683123,none,none,,0.0
+00-0034922,Ishmael Hyman,2019,WR,James Madison,3039968,none,none,,5.4
+00-0028492,Henry Hynoski,2011,FB,Pittsburgh,2268575,name_school,name_school,235973,45.8
+00-0038656,Mohamed Ibrahim,2023,RB,Minnesota,4240750,espn_id,espn_id,4240750,0.0
+00-0034614,Godwin Igwebuike,2018,RB,Northwestern,3045238,none,none,,0.0
+00-0029440,Emil Igwenagu,2012,TE,UMass Amherst,15600,none,none,,0.0
+00-0036496,Josh Imatorbhebhe,2021,WR,Illinois,4035689,espn_id,espn_id,4035689,0.0
+00-0035125,Alec Ingold,2019,FB,Wisconsin,3917668,espn_id,espn_id,3917668,72.1
+ING700275,Kendrick Ings,2015,WR,,3936996,none,none,,0.0
+00-0028411,Dontrelle Inman,2014,WR,Virginia,14269,none,espn_xwalk,236790,290.4
+00-0035341,Trenton Irwin,2019,WR,Stanford,3931391,espn_id,espn_id,3931391,6.9
+00-0034087,Steve Ishmael,2018,WR,Syracuse,3123992,espn_id,espn_id,3123992,0.0
+ISL177981,Carlin Isles,2013,RB,Ashland,16678,none,none,,0.0
+00-0035074,Thomas Ives,2019,WR,Colgate,3909300,none,none,,0.0
+00-0027531,Chris Ivory,2010,RB,Tiffin; Washington State,13587,name_school,name_school,189077,180.9
+00-0034864,Blake Jackson,2018,WR,Mary Hardin-Baylor,2975813,none,none,,0.0
+00-0037221,Calvin Jackson,2022,WR,Washington State; Independence Comm. College,4373470,espn_id,espn_id,4373470,0.0
+00-0036493,Deon Jackson,2021,RB,Duke,4240455,espn_id,espn_id,4240455,97.6
+00-0032636,Don Jackson,2016,RB,Nevada; Iowa Western CC,3042945,none,espn_xwalk,546279,3.2
+00-0038181,Lucky Jackson,2023,WR,Western Kentucky,3915802,espn_id,espn_id,3915802,0.0
+00-0029511,Jerrell Jackson,2012,WR,Missouri,15628,name_school,name_school,381370,0.0
+00-0038969,Kearis Jackson,2023,WR,Georgia,4361778,espn_id,espn_id,4361778,0.0
+00-0028853,Marcus Jackson,2012,WR,Lamar,15161,none,none,,0.0
+00-0027401,Rashawn Jackson,2010,RB,Virginia,13590,name_school,name_school,177406,0.0
+00-0038891,Shedrick Jackson,2023,WR,Auburn,4361332,espn_id,espn_id,4361332,15.9
+00-0035934,Trishton Jackson,2020,WR,Syracuse,4046715,espn_id,espn_id,4046715,0.0
+00-0035356,Tyree Jackson,2021,TE,Buffalo,3916564,espn_id,espn_id,3916564,11.2
+00-0036721,Warren Jackson,2021,WR,Colorado State,4256040,espn_id,espn_id,4256040,0.0
+00-0030034,Chuck Jacobs,2013,WR,Utah State,16462,name_school,name_school,518070,0.0
+00-0030806,Nic Jacobs,2014,TE,McNeese State; LSU,17181,none,multi_school,504189,11.2
+00-0037022,Michael Jacobson,2021,TE,Iowa State,3911895,none,none,,0.0
+00-0027470,Brandon James,2010,WR,Florida,13747,name_school,name_school,186583,10.0
+00-0027467,Javarris James,2010,RB,Miami,13748,name_school,name_school,183687,60.5
+00-0038821,Rakim Jarrett,2023,WR,Maryland,4429006,espn_id,espn_id,4429006,31.4
+00-0033658,Blake Jarwin,2017,TE,Oklahoma State,2991767,name_school,name_school,540257,161.2
+00-0028542,Lestar Jean,2011,WR,Florida Atlantic,14570,name_school,name_school,187308,34.6
+00-0035443,Damion Jeanpiere,2019,WR,Nicholls State,3929698,none,none,,0.0
+00-0026414,Darnell Jenkins,2008,WR,Miami,,name_school,name_school,146476,0.0
+00-0038498,E.J. Jenkins,2023,TE,Georgia Tech; South Carolina; St. Francis PA,4248557,espn_id,espn_id,4248557,7.7
+00-0030370,Greg Jenkins,2013,WR,Alabama State; Mississippi Gulf Coast CC; Troy,16520,none,none,,0.0
+00-0027167,Chris Jennings,2009,RB,Arizona; Arizona Western,13166,none,espn_xwalk,193510,42.6
+00-0031972,Darius Jennings,2015,WR,Virginia,2577808,name_school,name_school,511362,25.700000000000003
+00-0030822,Marcel Jensen,2014,TE,Fresno State,17183,name_school,name_school,484089,1.8
+00-0035991,Rysen John,2020,TE,Simon Fraser,4045062,none,none,,0.0
+00-0035474,Anthony Johnson,2019,WR,Buffalo; Iowa Western CC; Butler County JC,4049301,espn_id,espn_id,4049301,0.0
+00-0029729,Austin Johnson,2013,FB,Tennessee,15765,none,espn_xwalk,378233,26.6
+00-0033496,B.J. Johnson,2017,WR,Georgia Southern,2567879,name_school,name_school,516910,0.0
+00-0037382,Brandon Johnson,2022,WR,UCF; Tennessee,4035198,espn_id,espn_id,4035198,91.50000000000001
+00-0036810,Cade Johnson,2021,WR,South Dakota State,4031033,none,none,,4.1
+00-0038805,Cephus Johnson III,2023,WR,Southeastern Louisiana; South Alabama,4249400,espn_id,espn_id,4249400,0.0
+00-0035628,D'Ernest Johnson,2019,RB,University of South Florida,3139602,espn_id,espn_id,3139602,140.3
+00-0029435,Damaris Johnson,2012,WR,Tulsa,15624,name_school,name_school,383771,127.19999999999999
+00-0029778,Darius Johnson,2013,WR,SMU,16196,name_school,name_school,483241,47.0
+00-0030236,Dennis Johnson,2013,RB,Arkansas,16495,name_school,name_school,382633,30.900000000000002
+00-0032996,Devon Johnson,2016,RB,Marshall,2979206,name_school,name_school,535473,0.0
+00-0026584,Ian Johnson,2009,RB,Boise State,,name_school,name_school,170016,0.0
+00-0035726,Jakob Johnson,2019,RB,Tennessee,3115349,none,none,,27.3
+00-0032325,Jamel Johnson,2015,WR,Alabama State,2517630,none,espn_xwalk,505258,0.0
+00-0025913,James Johnson,2008,RB,Kansas State; Blinn College,11760,name_school,name_school,192033,13.600000000000001
+00-0026799,Jeremiah Johnson,2009,RB,Oregon,12504,name_school,name_school,145028,20.9
+00-0026598,Jerome Johnson,2010,RB,Nevada; West Los Angeles College,12804,none,none,,0.0
+00-0028370,Jerrod Johnson,2013,QB,Texas A&M,14275,none,espn_xwalk,191668,0.0
+JOH382488,Johnathon Johnson,2020,WR,Missouri,3924325,espn_id,espn_id,3924325,0.0
+00-0037460,Johnny Johnson III,2022,WR,Oregon,4242504,espn_id,espn_id,4242504,0.0
+00-0035417,Jon'Vea Johnson,2019,WR,Toledo,3126095,espn_id,espn_id,3126095,0.0
+00-0036799,Josh Johnson,2021,RB,Louisiana-Monroe,4390717,espn_id,espn_id,4390717,0.0
+00-0037442,Josh Johnson,2022,WR,Tulsa,4361739,espn_id,espn_id,4361739,0.0
+00-0035092,Justin Johnson,2019,TE,Mississippi State,3917292,espn_id,espn_id,3917292,0.0
+00-0036040,Juwan Johnson,2020,TE,Oregon; Penn State,3929645,espn_id,espn_id,3929645,195.60000000000002
+00-0033714,Keeon Johnson,2017,WR,Virginia,3048701,name_school,name_school,548066,0.0
+00-0031885,Gus Johnson,2015,RB,Stephen F. Austin State,2568174,none,none,,0.0
+00-0032980,Marcus Johnson,2016,WR,Texas,2971718,name_school,name_school,531077,31.5
+00-0029186,Nick Johnson,2012,WR,Henderson State University,15446,none,none,,0.0
+00-0027328,Stafon Johnson,2010,RB,USC,,name_school,name_school,183229,0.0
+00-0026874,Taurus Johnson,2009,WR,University of South Florida,,name_school,name_school,173163,0.0
+00-0027310,Tervaris Johnson,2010,RB,Miami,,name_school,name_school,183689,0.0
+00-0035457,Tyron Johnson,2019,WR,Oklahoma State,3894912,espn_id,espn_id,3894912,83.1
+00-0028841,Will Johnson,2012,RB,West Virginia,14870,name_school,name_school,238909,63.6
+00-0037641,Willie Johnson,2022,WR,Marshall,4043606,espn_id,espn_id,4043606,0.0
+00-0032707,Andy Jones,2016,WR,Jacksonville,2982761,none,none,,25.0
+00-0032963,Cayleb Jones,2016,WR,Arizona,2971719,name_school,name_school,531078,0.0
+JON157260,Chandler Jones,2014,WR,San Jose State,17188,name_school,name_school,480908,0.0
+00-0035553,Charles Jones,2019,TE,Tulane,3126263,espn_id,espn_id,3126263,1.5
+00-0028762,Derrick Jones,2011,WR,California (PA),,none,none,,0.0
+00-0028994,Dominique Jones,2012,TE,Shepherd,15383,none,espn_xwalk,481795,7.2
+00-0027518,Donald Jones,2010,WR,Youngstown State; Lackawanna JC,13597,none,none,,207.0
+00-0029513,Dwight Jones,2012,WR,North Carolina,15641,name_school,name_school,237134,0.0
+00-0034560,J.J. Jones,2018,WR,West Georgia; Itawamba JC,4329471,none,none,,1.3
+00-0033003,Jamaal Jones,2017,WR,Montana,3045565,none,none,,0.0
+00-0030686,Justin Jones,2014,TE,East Carolina,17189,name_school,name_school,482976,0.0
+JON520593,Khalil Jones,2009,WR,Miami,,name_school,name_school,161114,0.0
+00-0026841,Michael Jones,2009,WR,Arizona State,,name_school,name_school,160309,0.0
+00-0025946,Nate Jones,2008,WR,Texas,11881,name_school,name_school,162405,0.0
+00-0038480,Ryan Jones,2023,TE,East Carolina; Oklahoma,4241387,espn_id,espn_id,4241387,0.0
+00-0030807,Seantavius Jones,2014,WR,Valdosta State,17191,none,none,,0.0
+00-0032728,Tevin Jones,2016,WR,Memphis,2586703,name_school,name_school,518910,0.0
+00-0036497,Tim Jones,2021,WR,Southern Mississippi,4245131,espn_id,espn_id,4245131,25.3
+00-0035860,Tony Jones,2020,RB,Notre Dame,4046676,espn_id,espn_id,4046676,33.800000000000004
+00-0036078,Xavier Jones,2020,RB,SMU,3916209,espn_id,espn_id,3916209,0.0
+00-0036047,Travis Jonsen,2020,WR,Montana State,3886836,none,none,,0.0
+00-0030823,Reggie Jordan,2014,TE,Missouri Western,17192,none,none,,0.0
+00-0031106,Henry Josey,2014,RB,Missouri,17010,name_school,name_school,501823,0.0
+00-0033800,Akeem Judd,2017,RB,Mississippi,3128756,espn_id,espn_id,3128756,0.0
+00-0027298,Kevin Jurovich,2010,WR,San Jose State,,name_school,name_school,162264,0.0
+00-0037031,Nikola Kalinic,2022,TE,York (Canada),4916349,none,none,,0.0
+00-0036779,Hunter Kampmoyer,2021,TE,Oregon,4038952,espn_id,espn_id,4038952,0.0
+00-0034478,Chad Kanoff,2018,QB,Princeton,3050022,none,none,,0.0
+00-0026078,Kolo Kapanui,2008,TE,West Texas State,,none,none,,0.0
+00-0037501,Kevin Kassis,2022,WR,Montana State,4047518,none,none,,0.0
+00-0030040,Brandon Kaufman,2013,WR,Eastern Washington,16200,none,none,,0.0
+00-0029159,Jermaine Kearse,2012,WR,Washington,15428,name_school,name_school,379413,186.57999999999998
+00-0028986,Case Keenum,2012,QB,Houston,15168,name_school,name_school,191981,126.50000000000001
+00-0034192,Nick Keizer,2018,TE,Grand Valley,4329472,none,none,,10.3
+00-0032371,Rob Kelley,2016,RB,Tulane,2575408,name_school,name_school,514773,176.60000000000002
+00-0029009,Donavon Kemp,2012,WR,Texas-El Paso,15303,name_school,name_school,237044,0.0
+00-0033481,Marcus Kemp,2017,WR,Hawaii,3046399,name_school,name_school,547195,1.7000000000000002
+00-0035544,Tom Kennedy,2019,WR,Bryant,3126997,none,none,,18.4
+00-0032375,Joe Kerridge,2016,FB,Michigan,2576236,name_school,name_school,511698,1.3
+00-0026826,Eric Kettani,2011,FB,Navy,13062,none,espn_xwalk,182927,0.0
+00-0034710,Darvin Kidsy,2018,WR,Texas Southern; North Texas,3051650,none,espn_xwalk,549907,1.8
+00-0036000,Adrian Killins Jr.,2020,RB,UCF,4042112,espn_id,espn_id,4042112,0.0
+00-0028822,Caleb King,2011,RB,Georgia,,name_school,name_school,241217,0.0
+00-0032500,Chris King,2016,WR,Duquesne,2978523,none,none,,0.0
+00-0037201,D'Eriq King,2022,QB,Miami; Houston,4039300,espn_id,espn_id,4039300,0.0
+00-0029041,G.J. Kinne,2013,QB,Tulsa,15299,name_school,name_school,236717,0.0
+00-0025802,Noriaki Kinoshita,2008,WR,,,none,none,,0.0
+00-0036176,Mason Kinsey,2020,WR,Berry College,4057082,none,none,,1.3
+00-0028475,James Kirkendoll,2011,WR,Texas,14574,name_school,name_school,236718,0.0
+00-0037553,Jontre Kirklin,2023,WR,LSU,4242209,espn_id,espn_id,4242209,0.0
+00-0034317,Keith Kirkwood,2018,WR,Temple,3046401,name_school,name_school,547197,48.2
+00-0033607,Trevor Knight,2017,QB,Texas A&M; Oklahoma,2976593,name_school,name_school,534449,0.0
+00-0037157,Bam Knight,2022,RB,N.C. State,4427728,espn_id,espn_id,4427728,62.1
+00-0038806,Malik Knowles,2023,WR,Kansas State,4373077,espn_id,espn_id,4373077,0.0
+00-0037495,Bryant Koback,2022,RB,Toledo,4240781,espn_id,espn_id,4240781,0.0
+00-0027352,Max Komar,2010,WR,Idaho,13602,name_school,name_school,185032,21.700000000000003
+00-0035935,J.J. Koski,2020,WR,Cal Poly (San Luis Obispo),3910287,none,none,,0.0
+00-0030659,Jonathan Krause,2014,WR,Vanderbilt,17194,name_school,name_school,500863,3.1
+00-0032523,Henry Krieger-Coble,2016,TE,Iowa,3144999,espn_id,espn_id,3144999,2.3
+00-0037539,Lucas Krull,2022,TE,Pittsburgh,4360231,espn_id,espn_id,4360231,57.7
+00-0026406,Scott Kuhn,2008,TE,Louisville,,name_school,name_school,169575,0.0
+00-0031787,Jake Kumerow,2015,WR,Wisconsin-Whitewater; Illinois,3085107,none,gap_window,505112,0.0
+00-0031744,Matt LaCosse,2015,TE,Illinois,2576179,name_school,name_school,515471,5.2
+00-0036808,Bruno Labelle,2021,TE,Cincinnati,4037485,espn_id,espn_id,4037485,0.0
+00-0031145,Travis Labhart,2014,WR,Texas A&M,17395,name_school,name_school,517474,0.0
+00-0034593,Chris Lacy,2018,WR,Oklahoma State,3122430,espn_id,espn_id,3122430,9.0
+00-0035342,Patrick Laird,2019,RB,California,3127211,espn_id,espn_id,3127211,95.3
+00-0033021,Jake Lampman,2016,WR,Ferris State,3057850,none,none,,0.0
+00-0038762,Matt Landers,2023,WR,Arkansas; Georgia; Toledo,4259550,espn_id,espn_id,4259550,0.0
+00-0029619,Jorvorskie Lane,2012,FB,Texas A&M,12510,none,espn_xwalk,177381,45.300000000000004
+00-0030868,Ryan Lankford,2014,WR,Illinois,17195,name_school,name_school,500492,0.0
+00-0031706,Paul Lasike,2015,FB,BYU,2970515,name_school,name_school,530624,2.1
+00-0031813,Zach Laskey,2015,FB,Georgia Tech,2576901,name_school,name_school,513703,0.0
+00-0037420,Kwamie Lassiter II,2022,WR,Kansas,4035912,espn_id,espn_id,4035912,1.2
+00-0026048,Keon Lattimore,2008,RB,Maryland,,name_school,name_school,145823,0.0
+00-0026132,Matt Lawrence,2008,RB,UMass Amherst; Connecticut,11801,none,espn_xwalk,150873,1.4
+00-0031009,Rashad Lawrence,2014,WR,Northwestern,17349,name_school,name_school,500414,0.0
+00-0030304,Javone Lawson,2013,WR,Louisiana-Lafayette,16203,name_school,name_school,481323,0.0
+00-0034521,Allen Lazard,2018,WR,Iowa State,3128390,espn_id,espn_id,3128390,202.3
+00-0036117,Benny LeMay,2021,RB,Charlotte,4045702,espn_id,espn_id,4045702,0.0
+00-0032349,Marcus Leak,2016,WR,Maryland,2577081,name_school,name_school,517318,0.0
+00-0035868,Javon Leake,2020,RB,Maryland,4241940,espn_id,espn_id,4241940,0.0
+00-0032559,Jay Lee,2016,WR,Baylor,2577051,name_school,name_school,517290,0.0
+00-0031922,Khari Lee,2015,TE,Bowie State,3144062,none,none,,1.7000000000000002
+00-0026081,Lance Leggett,2008,WR,Miami,,name_school,name_school,161118,0.0
+00-0030239,Alec Lemon,2013,WR,Syracuse,16503,name_school,name_school,483218,0.0
+00-0031788,Matt Lengel,2015,TE,Eastern Kentucky,2470916,none,none,,10.2
+00-0033992,Lance Lenoir,2017,WR,Western Illinois,3049249,none,none,,0.0
+00-0030135,Josh Lenz,2013,WR,Iowa State,16147,name_school,name_school,480693,0.0
+00-0029755,Brian Leonhardt,2013,TE,Bemidji State University,16265,none,none,,16.9
+00-0031801,Jordan Leslie,2015,WR,BYU; Texas-El Paso,2511952,none,espn_xwalk,500691,3.6
+00-0034196,Andre Levrone,2018,WR,Virginia,3048682,name_school,name_school,548047,0.0
+00-0036092,Brian Lewerke,2021,QB,Michigan State,3929824,espn_id,espn_id,3929824,0.0
+00-0028974,Lance Lewis,2013,WR,East Carolina; West Hills Community College; East Mississippi JC,15741,none,espn_xwalk,500782,0.0
+00-0033402,Malcolm Lewis,2017,WR,Miami,2969967,name_school,name_school,530403,0.0
+00-0032659,Roger Lewis,2016,WR,Bowling Green,3125745,espn_id,espn_id,3125745,118.3
+00-0027253,Thad Lewis,2010,QB,Duke,13606,name_prefix,name_prefix,191344,10.46
+00-0032881,Tommylee Lewis,2016,WR,Northern Illinois,2574918,name_school,name_school,511603,58.7
+00-0034038,Justice Liggins,2018,WR,Stephen F. Austin State,3050824,none,none,,0.0
+00-0032318,Dan Light,2015,TE,Fordham,2568667,none,none,,0.0
+00-0027331,Dominique Lindsay,2010,RB,East Carolina,,name_school,name_school,178008,0.0
+00-0034109,Phillip Lindsay,2018,RB,Colorado,3052117,name_school,name_school,550277,486.5
+00-0038763,Tyjon Lindsey,2023,WR,Oregon State; Nebraska,4240801,espn_id,espn_id,4240801,0.0
+00-0029931,Zach Line,2013,FB,SMU,16366,name_school,name_school,380301,36.3
+00-0035887,Kalija Lipscomb,2020,WR,Vanderbilt,4035277,espn_id,espn_id,4035277,0.0
+00-0026455,Brad Listorti,2008,TE,UMass Amherst,,none,none,,0.0
+00-0025922,Rafael Little,2008,RB,Kentucky,,name_school,name_school,161306,0.0
+00-0034291,Chase Litton,2018,QB,Marshall,3931782,espn_id,espn_id,3931782,0.0
+00-0028456,Phillip Livas,2011,WR,Louisiana Tech,,name_school,name_school,237582,0.0
+00-0030846,Seth Lobato,2014,QB,Northern Colorado,17074,none,none,,0.0
+00-0030783,Colin Lockett,2014,WR,San Diego State,17200,name_school,name_school,481158,0.0
+00-0028442,Ricardo Lockette,2011,WR,Fort Valley State College; Wallace State CC AL (J.C.),14280,none,none,,31.5
+00-0035475,DaMarkus Lodge,2019,WR,Mississippi,3930064,espn_id,espn_id,3930064,0.0
+LOG757974,Tony Logan,2012,WR,Maryland,15754,name_school,name_school,236794,0.0
+00-0032035,Deon Long,2015,WR,Maryland; Iowa Western CC; New Mexico,2514423,none,espn_xwalk,502918,0.0
+00-0025934,Lance Long,2008,WR,Mississippi State; Toledo,11644,name_school,name_school,155576,37.7
+00-0026611,Tyler Lorenzen,2009,TE,Connecticut; Palomar College,,none,multi_school,169130,0.0
+00-0031476,Corbin Louks,2012,WR,Nevada,15753,name_school,name_school,233025,0.0
+LOV131275,Josh Love,2021,QB,San Jose State,3921685,espn_id,espn_id,3921685,0.0
+00-0035161,John Lovett,2019,FB,Princeton,3118906,none,none,,0.6000000000000001
+00-0037234,John Lovett,2022,RB,Penn State,4259180,espn_id,espn_id,4259180,0.0
+00-0031121,Marcus Lucas,2014,TE,Missouri,17382,name_school,name_school,501564,0.0
+00-0031998,Donatella Luckett,2015,WR,Harding University,3165703,none,none,,0.0
+00-0038738,Hunter Luepke,2023,RB,North Dakota State,4383396,none,none,,76.6
+00-0038913,Johnny Lumpkin,2023,TE,Louisiana-Lafayette; Hutchinson CC,4363098,espn_id,espn_id,4363098,0.0
+00-0026029,Kregg Lumpkin,2008,RB,Georgia,11766,name_school,name_school,146665,9.3
+00-0031973,Luke Lundy,2015,RB,University of Ottawa (Kans.),3894935,none,none,,0.0
+00-0038502,T.J. Luther,2023,WR,Gardner-Webb; Wofford,4370162,none,none,,0.0
+00-0031802,Gavin Lutman,2015,WR,Pittsburg State (KS),2613214,none,none,,0.0
+00-0033802,KeVonn Mabon,2017,WR,Ball State,2972052,name_school,name_school,531551,0.0
+00-0036059,Tyler Mabry,2020,TE,Maryland,3916587,espn_id,espn_id,3916587,7.7
+00-0035869,Austin Mack,2020,WR,Ohio State,4040623,espn_id,espn_id,4040623,16.1
+00-0032472,Tre Madden,2016,FB,USC,2577245,name_school,name_school,513331,14.3
+00-0028574,Mossis Madu,2011,RB,Oklahoma,14419,name_school,name_school,188945,22.700000000000003
+00-0028543,Jeff Maehl,2011,WR,Oregon,14590,name_school,name_school,246192,16.7
+00-0031768,Terrence Magee,2015,RB,LSU,2577283,name_school,name_school,517209,2.9000000000000004
+00-0028486,Ryan Mahaffey,2011,RB,Northern Iowa,14284,none,none,,1.5
+00-0026572,Marcus Mailei,2009,FB,Weber State,12513,none,none,,0.0
+00-0030958,Ben Malena,2014,RB,Texas A&M,17319,name_school,name_school,501038,0.0
+00-0032650,Ryan Malleck,2017,TE,Virginia Tech,2577892,name_school,name_school,515567,1.3
+00-0027182,Martell Mallett,2010,RB,University of Arkansas at Pine Bluff,,none,none,,0.0
+00-0038928,Xavier Malone,2023,WR,Henderson State University; Booneville JC (MS),5143863,none,none,,0.0
+00-0027567,Steve Maneri,2010,TE,Temple,13863,name_school,name_school,189965,11.200000000000001
+00-0031484,Chris Manhertz,2015,TE,Canisius College,4071345,none,none,,5.7
+00-0036706,CJ Marable,2021,RB,Coastal Carolina,4036485,espn_id,espn_id,4036485,0.0
+00-0026688,Brennan Marion,2009,WR,Tulsa; De Anza College,,none,multi_school,237457,0.0
+00-0035817,Kyle Markway,2020,TE,South Carolina,3924367,espn_id,espn_id,3924367,0.0
+00-0031818,Bradley Marquez,2015,WR,Texas Tech,2577645,name_school,name_school,515796,28.700000000000003
+00-0032964,Byron Marshall,2016,RB,Oregon,2971289,name_school,name_school,530877,31.1
+00-0029977,Cameron Marshall,2013,RB,Arizona State,16370,name_school,name_school,480364,0.0
+00-0032694,Jalin Marshall,2016,WR,Ohio State,3051400,name_school,name_school,549819,40.2
+00-0035209,Marcus Marshall,2019,RB,James Madison; Georgia Tech,3917814,espn_id,espn_id,3917814,0.0
+00-0026753,Charly Martin,2009,WR,West Texas State,12813,none,none,,1.6
+00-0037524,Tay Martin,2022,WR,Oklahoma State,4245144,espn_id,espn_id,4245144,11.9
+00-0034708,Robert Martin,2018,RB,Rutgers,3127374,espn_id,espn_id,3127374,0.0
+00-0029364,Joe Martinek,2012,RB,Rutgers; Pearl River,15509,name_school,name_school,238832,0.0
+00-0030737,Freddie Martino,2014,WR,North Greenville College,17205,none,none,,28.200000000000003
+00-0037525,Jordan Mason,2022,RB,Georgia Tech,4360569,espn_id,espn_id,4360569,191.5
+00-0027445,Jeron Mastrud,2010,TE,Kansas State,13698,name_school,name_school,192038,1.8
+00-0033691,I'Tavius Mathers,2017,RB,Middle Tennessee State,2980384,name_school,name_school,536203,0.0
+00-0027365,Greg Mathews,2010,WR,Michigan,,name_school,name_school,191444,0.0
+00-0030738,Jeff Mathews,2014,QB,Cornell,17206,none,none,,0.0
+00-0032817,Mitch Mathews,2016,WR,BYU,2474890,name_school,name_school,487641,0.0
+00-0028702,Chris Matthews,2014,WR,Kentucky; LAHC,14285,none,espn_xwalk,482788,34.1
+00-0038726,Jesse Matthews,2023,WR,San Diego State,4379569,espn_id,espn_id,4379569,0.0
+00-0026665,John Matthews,2009,WR,San Diego,12999,none,none,,0.0
+00-0030727,Jacob Maxwell,2014,TE,Louisiana-Lafayette,17207,name_school,name_school,481325,0.0
+00-0032653,K.J. Maye,2016,WR,Minnesota,2970712,name_school,name_school,530733,0.0
+00-0030144,Miguel Maysonet,2013,RB,Stony Brook,16204,none,none,,0.0
+00-0037450,Tyreik McAllister,2022,WR,Charleston,4589248,none,none,,1.1
+00-0026076,Shaheer McBride,2008,WR,Delaware State,,none,none,,0.0
+00-0032937,Max McCaffrey,2016,WR,Duke,2969896,name_school,name_school,530275,1.4
+00-0033773,Riley McCarron,2017,WR,Iowa,2988624,name_school,name_school,539219,0.0
+00-0028765,James McCluskey,2011,FB,Boston College,,name_school,name_school,187966,0.0
+00-0037509,Sincere McCormick,2022,RB,Texas-San Antonio,4430104,espn_id,espn_id,4430104,27.200000000000003
+00-0027306,Jamie McCoy,2010,TE,Texas A&M,13610,name_school,name_school,177382,0.0
+00-0036582,Nate McCrary,2021,RB,Saginaw Valley State,4820592,none,none,,-0.1
+00-0037055,Lance McCutcheon,2022,WR,Montana State,4247812,none,none,,0.0
+00-0034735,Codey McElroy,2019,TE,Oklahoma State,3951441,none,none,,4.0
+00-0032475,Tanner McEvoy,2016,WR,Wisconsin; South Carolina; Arizona Western,2577684,none,espn_xwalk,515835,49.019999999999996
+00-0033042,M.J. McFarland,2016,TE,Texas-El Paso,2577567,none,espn_xwalk,511279,0.0
+00-0031924,Mike McFarland,2015,TE,University of South Florida,2577494,name_school,name_school,514758,0.0
+00-0027510,Chris McGaha,2010,WR,Arizona State,,name_school,name_school,175834,0.0
+00-0028766,Eddie McGee,2011,WR,Illinois,14804,name_school,name_school,189244,0.0
+00-0032997,Jake McGee,2016,TE,Florida,2512657,name_school,name_school,501194,0.0
+00-0030419,Matt McGloin,2013,QB,Penn State,16593,name_school,name_school,386880,93.72
+00-0037172,Kyric McGowan,2022,WR,Georgia Tech; Northwestern,4242270,espn_id,espn_id,4242270,0.0
+00-0035658,Taj McGowan,2019,RB,UCF,3914267,espn_id,espn_id,3914267,0.0
+00-0029391,Sean McGrath,2012,TE,Henderson State University; Eastern Illinois,15515,none,none,,68.2
+00-0029757,Sam McGuffie,2013,WR,Rice,16293,name_school,name_school,381774,0.0
+00-0032351,Mekale McKay,2016,WR,Cincinnati; Arkansas,2980068,name_school,name_school,535884,0.0
+00-0036032,Sean McKeon,2020,TE,Michigan,4036275,espn_id,espn_id,4036275,15.799999999999999
+00-0034322,Pharoah McKever,2018,TE,Florida International; N.C. State,3051719,name_school,name_school,549943,0.0
+00-0036750,Javon McKinley,2021,WR,Notre Dame,4046686,espn_id,espn_id,4046686,0.0
+00-0032602,J.D. McKissic,2016,RB,Arkansas State,2572861,name_school,name_school,515882,101.9
+00-0034949,Kelvin McKnight,2019,WR,Samford,3915575,none,none,,0.0
+00-0036531,Isaiah McKoy,2021,WR,Kent State,4362352,espn_id,espn_id,4362352,0.0
+00-0038794,Jaleel McLaughlin,2023,RB,Youngstown State,4722893,none,none,,234.6
+00-0027589,Shawnbrey McNeal,2010,RB,SMU,,name_school,name_school,236060,0.0
+00-0031487,Douglas McNeil,2014,WR,Bowie State,2273426,none,none,,0.0
+00-0028651,Mike McNeill,2011,TE,Nebraska,14637,name_school,name_school,189588,8.6
+00-0027254,Brandon McRae,2010,WR,Mississippi State,,name_school,name_school,177001,0.0
+00-0032679,Paul McRoberts,2016,WR,Southeast Missouri State,2975817,none,none,,1.6
+00-0028798,Richard Medlin,2011,RB,Fayetteville State University,14825,none,none,,0.0
+00-0029517,Davin Meggett,2012,RB,Maryland,15617,name_school,name_school,382051,0.0
+00-0035367,Carson Meier,2019,TE,Oklahoma,3116384,espn_id,espn_id,3116384,0.0
+00-0031912,Cameron Meredith,2015,WR,Illinois State,2520698,none,none,,202.48000000000002
+00-0035844,Kirk Merritt,2020,WR,Arkansas State,3915145,espn_id,espn_id,3915145,2.3
+00-0038965,Ellis Merriweather,2023,RB,UMass Amherst; Garden City CC,4685016,espn_id,espn_id,4685016,0.0
+00-0034960,Jakobi Meyers,2019,WR,N.C. State,3916433,espn_id,espn_id,3916433,390.72
+00-0032609,Marken Michel,2019,WR,UMass Amherst,2591718,none,espn_xwalk,520781,0.0
+00-0033006,Jaydon Mickens,2016,WR,Washington,2978308,name_school,name_school,535324,31.7
+00-0037448,Dre Miller,2022,WR,Maine; Husson College,4071091,none,none,,0.0
+00-0028889,Anthony Miller,2012,TE,California,15739,name_school,name_school,380707,0.0
+00-0026712,Brit Miller,2009,FB,Illinois,12897,none,none,,8.5
+00-0034524,Dorren Miller,2018,WR,Carson Newman; Georgia Military,4260053,none,none,,0.0
+00-0028415,Kyle Miller,2012,TE,Mount Union College,14289,none,none,,0.0
+00-0027423,Lonyae Miller,2010,RB,Fresno State,13615,name_school,name_school,189887,0.0
+00-0032352,Michael Miller,2016,TE,Taylor University,4010885,none,none,,0.0
+00-0026536,Nick Miller,2009,WR,Southern Utah State; Scottsdale CC,12953,none,none,,14.8
+00-0038824,Ryan Miller,2023,WR,Furman,4369466,none,none,,48.199999999999996
+00-0029885,Steven Miller,2013,RB,Appalachian State,16094,none,none,,0.0
+00-0038678,Jordan Mims,2023,RB,Fresno State,4243004,espn_id,espn_id,4243004,26.1
+00-0027367,Brandon Minor,2010,RB,Michigan,,name_school,name_school,196784,0.0
+00-0034901,Bryant Mitchell,2019,WR,Northwestern State (LA); Southwestern College (CA),3050661,none,none,,0.0
+00-0038454,Keaton Mitchell,2023,RB,East Carolina,4596334,espn_id,espn_id,4596334,132.10000000000002
+00-0036815,Myron Mitchell,2021,WR,Alabama,4570106,espn_id,espn_id,4570106,0.0
+00-0036773,Osirus Mitchell,2021,WR,Mississippi State,4035386,espn_id,espn_id,4035386,0.0
+00-0034081,Steven Mitchell,2018,WR,USC,3043225,name_school,name_school,546427,16.7
+00-0037340,Zaire Mitchell-Paden,2022,TE,Florida Atlantic,4876006,espn_id,espn_id,4876006,0.0
+00-0033373,Taquan Mizzell,2017,RB,Virginia,3048680,name_school,name_school,548045,23.4
+00-0035114,Sean Modster,2019,WR,Boise State,3127588,espn_id,espn_id,3127588,0.0
+00-0029995,T.J. Moe,2013,WR,Missouri,16374,name_school,name_school,481531,0.0
+00-0029740,Ifeanyi Momah,2014,TE,Boston College,15775,none,espn_xwalk,236595,7.0
+00-0032283,Kevin Monangai,2015,RB,Villanova,2565602,none,none,,0.0
+00-0036022,Steven Montez,2020,QB,Colorado,3915436,espn_id,espn_id,3915436,0.0
+00-0035045,D.J. Montgomery,2019,WR,Austin Peay; Holmes County JC,4249030,none,none,,6.6
+00-0028876,Collin Mooney,2012,RB,Army,15130,none,espn_xwalk,182796,11.1
+00-0036696,Briley Moore,2021,TE,Kansas State; Northern Iowa,4030915,espn_id,espn_id,4030915,0.0
+00-0029823,Dan Moore,2013,RB,Montana,16344,none,none,,0.0
+00-0026620,Devin Moore,2009,RB,Wyoming,12515,name_school,name_school,161370,-2.2
+00-0026123,Evan Moore,2008,TE,Stanford,11870,name_school,name_school,145102,80.0
+00-0035505,Jalin Moore,2019,RB,Appalachian State,3123675,espn_id,espn_id,3123675,0.0
+00-0035432,Jason Moore,2019,WR,Findlay,4069806,none,none,,14.900000000000002
+00-0036125,Jaylon Moore,2020,WR,Tennessee-Martin,3909416,none,none,,0.0
+00-0034294,J.D. Moore,2018,FB,LSU,3042728,name_school,name_school,545889,0.0
+00-0028918,Kashif Moore,2012,WR,Connecticut,15180,name_school,name_school,237709,0.0
+00-0029234,Kellen Moore,2012,QB,Boise State,14882,name_school,name_school,232560,0.0
+00-0026520,Kestahn Moore,2009,RB,Florida,,name_school,name_school,173452,0.0
+00-0027356,Marlon Moore,2010,WR,Fresno State,13616,name_school,name_school,170086,50.9
+00-0026588,Nick Moore,2009,WR,Toledo,,name_school,name_school,157880,0.0
+00-0033407,Drew Morgan,2017,WR,Arkansas,3046438,name_school,name_school,547232,0.0
+00-0028532,Joseph Morgan,2011,WR,Walsh; Illinois,14424,none,gap_window,189245,66.0
+00-0035399,Stanley Morgan,2019,WR,Nebraska,3699902,espn_id,espn_id,3699902,8.2
+00-0038744,Tanner Morgan,2023,QB,Minnesota,4240756,espn_id,espn_id,4240756,0.0
+00-0026693,Phillip Morris,2009,WR,South Carolina State,,none,none,,0.0
+00-0036590,Quintin Morris,2021,TE,Bowling Green,4244049,espn_id,espn_id,4244049,31.0
+00-0033062,Romar Morris,2016,RB,North Carolina,2577106,name_school,name_school,516335,0.0
+00-0030825,Stephen Morris,2014,QB,Miami,17220,name_school,name_school,501142,0.0
+00-0028992,Dale Moss,2012,WR,South Dakota State,15255,none,none,,0.0
+00-0036023,Thaddeus Moss,2020,TE,LSU; N.C. State,4036189,espn_id,espn_id,4036189,0.0
+00-0031687,Raheem Mostert,2015,RB,Purdue,2576414,name_school,name_school,514200,1.6
+00-0027436,Jeff Moturi,2010,WR,Texas-El Paso,,name_school,name_school,184416,0.0
+00-0029108,Derek Moye,2012,WR,Penn State,15329,name_school,name_school,243284,10.0
+00-0033319,Nick Mullens,2017,QB,Southern Mississippi,3059989,name_school,name_school,552880,123.17999999999999
+00-0026008,Matthew Mulligan,2008,TE,Maine; Husson College,11708,none,none,,1.2
+00-0033246,Johnny Mundt,2017,TE,Oregon,3052096,name_school,name_school,550664,8.1
+00-0028476,O.J. Murdock,2011,WR,Fort Hays,,none,none,,0.0
+00-0031165,Jake Murphy,2014,TE,Utah,17393,name_school,name_school,516277,0.0
+00-0028416,Richard Murphy,2011,RB,LSU,14294,name_school,name_school,183542,9.200000000000001
+00-0031816,Tyler Murphy,2015,WR,Boston College; Florida,2516059,name_school,name_school,503970,2.6
+00-0030343,Will Murphy,2013,WR,Oregon,2330107,name_school,name_school,480180,0.0
+00-0038999,Jordan Murray,2023,TE,Hawaii,4368172,espn_id,espn_id,4368172,0.0
+00-0035345,Chris Myarick,2019,TE,Temple,3138744,espn_id,espn_id,3138744,10.7
+00-0026655,Rob Myers,2009,TE,Utah State,12546,name_school,name_school,170200,0.0
+00-0035908,Gabe Nabers,2020,FB,Florida State,4035611,espn_id,espn_id,4035611,25.7
+00-0030961,Jordan Najvar,2014,TE,Baylor,17310,name_school,name_school,482569,0.0
+00-0034597,Ryan Nall,2018,RB,Oregon State,3127335,espn_id,espn_id,3127335,21.5
+00-0027201,Dimitri Nance,2010,RB,Arizona State,13619,name_school,name_school,183321,15.5
+00-0033266,JoJo Natson,2017,WR,Akron; Utah State,2971830,none,espn_xwalk,531268,5.300000000000001
+00-0030756,Rajion Neal,2014,RB,Tennessee,17221,name_school,name_school,504322,0.0
+00-0032039,Connor Neighbors,2015,FB,LSU,2516223,name_school,name_school,504175,0.0
+00-0027322,David Nelson,2010,WR,Florida,13621,name_school,name_school,173455,246.20000000000002
+00-0028508,Joshua Nesbitt,2011,QB,Georgia Tech,14562,name_school,name_school,236253,0.0
+00-0028417,Jamar Newsome,2011,WR,UCF,14295,name_school,name_school,184729,12.3
+00-0034565,Detrez Newsome,2018,RB,Western Carolina,3117131,none,none,,8.8
+00-0038484,Joseph Ngata,2023,WR,Clemson,4426426,espn_id,espn_id,4426426,0.0
+00-0028856,Adam Nissley,2012,TE,UCF,15143,name_school,name_school,237365,0.0
+00-0030741,Roosevelt Nix,2015,FB,Kent State,17223,none,none,,20.7
+00-0029183,Danny Noble,2012,TE,Toledo,15416,name_school,name_school,237878,14.3
+00-0032681,Marquez North,2016,WR,Tennessee,3044716,name_school,name_school,546536,0.0
+00-0026739,Jordan Norwood,2009,WR,Penn State,12587,name_school,name_school,174273,55.8
+00-0026497,Terrence Nunn,2009,WR,Nebraska,,name_school,name_school,162714,0.0
+00-0030240,Uzoma Nwachukwu,2013,WR,Texas A&M,16502,name_school,name_school,483059,0.0
+00-0032932,Ryan O'Malley,2016,TE,Penn,2566643,none,none,,0.0
+00-0032838,Cedric O'Neal,2016,RB,Valdosta State,3016887,none,none,,0.0
+00-0038145,Thomas Odukoya,2022,TE,Eastern Michigan,4363554,espn_id,espn_id,4363554,0.0
+00-0029866,Emmanuel Ogbuehi,2013,TE,Georgia State,16347,none,none,,0.0
+00-0026780,Kevin Ogletree,2009,WR,Virginia,12588,name_school,name_school,177408,53.300000000000004
+00-0033854,Dare Ogunbowale,2017,RB,Wisconsin,2983509,name_school,name_school,537577,75.3
+00-0029492,Jamize Olawale,2012,RB,North Texas,15653,name_school,name_school,505245,32.7
+00-0031277,Branden Oliver,2014,RB,Buffalo,17452,name_school,name_school,482259,180.3
+00-0036033,Sewo Olonilua,2020,RB,TCU,4038539,espn_id,espn_id,4038539,0.0
+00-0035645,Gunner Olszewski,2019,WR,Bemidji State University,4424106,none,none,,36.9
+00-0028395,Schuylar Oordt,2011,TE,Northern Iowa,,none,none,,0.0
+00-0030429,Toben Opurum,2013,RB,Kansas,16598,name_school,name_school,480802,0.0
+00-0033240,Scott Orndoff,2017,TE,Pittsburgh,3045163,name_school,name_school,546669,0.0
+00-0033374,Ricky Ortiz,2017,RB,Oregon State,2978244,name_school,name_school,535204,5.8999999999999995
+00-0023803,Robert Ortiz,2009,WR,San Diego State,,none,gap_window,135346,0.0
+00-0026722,Greg Orton,2011,WR,Purdue,12589,none,espn_xwalk,173705,0.0
+00-0029951,Ryan Otten,2013,TE,San Jose State,16156,name_school,name_school,383243,0.0
+00-0027287,Nathan Overbay,2010,TE,Eastern Washington,13785,none,none,,0.0
+00-0028905,Chris Owusu,2012,WR,Stanford,15230,name_school,name_school,380479,55.9
+00-0033411,Francis Owusu,2018,WR,Stanford,3043278,name_school,name_school,546474,0.0
+00-0035184,Devine Ozigbo,2019,RB,Nebraska,3699935,espn_id,espn_id,3699935,22.7
+00-0029098,Eric Page,2013,WR,Toledo,15385,name_school,name_school,481227,12.200000000000001
+00-0027202,Michael Palmer,2010,TE,Clemson,13629,name_school,name_school,192171,51.3
+00-0028906,Nathan Palmer,2012,WR,Northern Illinois,15189,name_school,name_school,237688,0.6
+00-0029952,Tobais Palmer,2013,WR,N.C. State; Georgia Military,16447,none,espn_xwalk,381568,0.0
+00-0030171,Chris Pantale,2013,TE,Boston College,16210,name_school,name_school,380831,0.0
+00-0035329,Donald Parham,2019,TE,Stetson,3912092,none,none,,102.9
+00-0037386,Dylan Parham,2022,TE,N.C. State,4036164,espn_id,espn_id,4036164,0.0
+00-0036034,Aaron Parker,2020,WR,Rhode Island,4032749,none,none,,0.0
+00-0032089,Brian Parker,2015,TE,Albany,2508328,none,none,,1.6
+00-0027450,Preston Parker,2010,WR,North Alabama; Florida State,13703,name_school,name_school,183766,122.7
+00-0032645,Dennis Parks,2016,WR,Rice,2981483,name_school,name_school,536497,0.0
+00-0033251,Zach Pascal,2017,WR,Old Dominion,2978109,name_school,name_school,534739,202.10000000000002
+00-0035760,Jacques Patrick,2020,RB,Florida State,3693033,espn_id,espn_id,3693033,1.2000000000000002
+00-0033375,Tim Patrick,2017,WR,Utah; Grossmont,3134353,espn_id,espn_id,3134353,98.0
+00-0034698,Damoun Patterson,2018,WR,Youngstown State,3125383,espn_id,espn_id,3125383,0.0
+00-0036755,Jaret Patterson,2021,RB,Buffalo,4362452,espn_id,espn_id,4362452,63.7
+00-0033705,Andre Patton,2017,WR,Rutgers,3047504,name_school,name_school,547556,11.600000000000001
+00-0030839,Solomon Patton,2014,WR,Florida,17228,name_school,name_school,501539,1.9000000000000001
+00-0027215,Logan Paulsen,2010,TE,UCLA,13726,name_school,name_school,175602,95.6
+00-0030729,Andrew Peacock,2014,WR,Appalachian State,17025,none,none,,0.0
+00-0033983,Colby Pearson,2017,WR,BYU,3053805,name_school,name_school,551050,0.0
+00-0038468,Henry Pearson,2023,TE,Appalachian State,4360794,espn_id,espn_id,4360794,0.0
+00-0036107,Josh Pearson,2020,WR,Jacksonville State,4368796,none,none,,0.0
+00-0036674,Josh Pederson,2023,TE,Louisiana-Monroe,4036595,espn_id,espn_id,4036595,0.0
+00-0032813,Elijhaa Penny,2016,FB,Idaho; Cerritos College,2575965,none,espn_xwalk,517182,47.7
+00-0034737,Luis Perez,2018,QB,Texas A&M-Commerce,4290778,none,none,,0.0
+00-0030758,Justin Perillo,2014,TE,Maine,17231,none,none,,34.7
+00-0035939,Bryce Perkins,2020,QB,Virginia,3675812,espn_id,espn_id,3675812,15.440000000000001
+00-0032599,Josh Perkins,2016,TE,Washington,2578377,name_school,name_school,513058,24.9
+00-0030759,LaDarius Perkins,2014,RB,Mississippi State,17232,name_school,name_school,483149,0.0
+00-0026589,Vinny Perretta,2009,WR,Boise State,,name_school,name_school,170020,0.0
+00-0027931,Ryan Perrilloux,2011,QB,Jacksonville State,13960,none,espn_xwalk,176394,0.0
+00-0037068,E.J. Perry,2022,QB,Brown,4239936,espn_id,espn_id,4239936,0.0
+00-0031209,Senorise Perry,2014,RB,Louisville,17421,name_school,name_school,500375,0.9
+00-0037182,Ricky Person,2022,RB,N.C. State,4361655,espn_id,espn_id,4361655,0.0
+00-0026555,Eric Peterman,2009,WR,Northwestern,,name_school,name_school,169284,0.0
+00-0028868,Deangelo Peterson,2012,TE,LSU,15148,name_school,name_school,378569,0.0
+00-0037724,La'Michael Pettway,2023,TE,Iowa State,3916911,espn_id,espn_id,3916911,0.0
+00-0034512,Cam Phillips,2018,WR,Virginia Tech,3124079,espn_id,espn_id,3124079,1.9
+00-0036069,Scottie Phillips,2020,RB,Mississippi; Jones County JC,4362878,espn_id,espn_id,4362878,6.800000000000001
+00-0032100,Shakim Phillips,2015,WR,Boston College,2512378,name_school,name_school,501663,0.0
+00-0036817,Whop Philyor,2021,WR,Indiana,4258235,espn_id,espn_id,4258235,0.0
+00-0028509,Zack Pianalto,2011,TE,North Carolina,14567,name_school,name_school,231973,8.0
+00-0036208,Artavis Pierce,2020,RB,Oregon State,4042808,espn_id,espn_id,4042808,9.4
+00-0031660,Casey Pierce,2015,TE,Kent State,2516722,name_school,name_school,504517,0.0
+00-0037556,Chris Pierce,2022,TE,Vanderbilt,4242661,espn_id,espn_id,4242661,0.0
+00-0034103,De'Mornay Pierson-El,2019,WR,Nebraska,3121398,espn_id,espn_id,3121398,0.0
+00-0037443,Kalil Pimpleton,2022,WR,Central Michigan,4240866,espn_id,espn_id,4240866,0.0
+00-0031834,Larry Pinkard,2015,WR,Old Dominion,2512892,none,none,,1.5
+00-0035787,Jared Pinkney,2020,TE,Vanderbilt,3915772,espn_id,espn_id,3915772,0.0
+00-0038427,Thyrick Pitts,2023,WR,Delaware,4248099,none,none,,0.0
+00-0027927,Caz Piurowski,2011,TE,Florida State,,name_school,name_school,183768,0.0
+00-0026657,Chris Pizzotti,2009,QB,Harvard,,none,none,,0.0
+00-0036449,Sandro Platzgummer,2020,RB,,4683485,none,none,,0.0
+00-0038137,Drew Plitt,2023,QB,Ball State,4039210,espn_id,espn_id,4039210,0.0
+00-0035035,Shawn Poindexter,2019,WR,Arizona,4039604,espn_id,espn_id,4039604,0.0
+00-0036583,Tony Poljan,2021,TE,Virginia,4039271,espn_id,espn_id,4039271,0.0
+00-0029438,Chris Polk,2012,RB,Washington,14889,name_school,name_school,379206,88.69999999999999
+00-0037183,Makai Polk,2022,WR,Mississippi State,4430325,espn_id,espn_id,4430325,0.0
+00-0029149,Royce Pollard,2012,WR,Hawaii,15421,name_school,name_school,246282,0.0
+00-0029401,Tauren Poole,2012,RB,Tennessee,14893,name_school,name_school,378231,-2.0
+00-0033164,Troymaine Pope,2016,RB,Jacksonville State,2983319,none,none,,5.9
+00-0027437,Quinn Porter,2010,RB,Stillman College,13764,none,none,,0.0
+00-0028446,Josh Portis,2011,QB,California (PA),14299,none,espn_xwalk,169623,0.0
+00-0026658,Zach Potter,2009,TE,Nebraska,13011,none,none,,22.7
+00-0032656,Darius Powe,2016,WR,California,2978216,name_school,name_school,535178,3.3
+00-0034646,Brandon Powell,2018,WR,Florida,3115255,name_school,name_school,559559,53.900000000000006
+POW227556,Damond Powell,2015,WR,Iowa,3040141,name_school,name_school,545371,0.0
+00-0028736,William Powell,2011,RB,Kansas State; Navarro,14432,name_school,name_school,481497,53.9
+00-0032178,Kyle Prater,2016,WR,Northwestern,2510612,name_school,name_school,500254,0.0
+00-0030718,Quron Pratt,2014,WR,Rutgers,17029,name_school,name_school,483130,0.0
+00-0036727,Adam Prentice,2021,FB,South Carolina,3929914,espn_id,espn_id,3929914,12.3
+00-0029463,De'Andre Presley,2012,WR,Appalachian State,15629,none,none,,-0.2
+00-0026723,Chris Pressley,2009,FB,Wisconsin,12930,name_school,name_school,160485,7.7
+00-0032611,Jhurrell Pressley,2016,RB,New Mexico,2974212,none,espn_xwalk,533220,0.0
+00-0028362,Michael Preston,2011,WR,Heidelberg College,14610,none,none,,31.6
+00-0037400,D'vonte Price,2022,RB,Florida International,4244651,espn_id,espn_id,4244651,0.0
+00-0033332,Josiah Price,2018,TE,Michigan State,2979554,name_school,name_school,535580,0.0
+00-0038518,Deneric Prince,2023,RB,Tulsa; Texas A&M,4372526,espn_id,espn_id,4372526,0.0
+00-0037233,Gerrit Prince,2022,TE,UAB,4374361,espn_id,espn_id,4374361,0.0
+00-0034297,Byron Pringle,2018,WR,Kansas State,4036416,espn_id,espn_id,4036416,76.0
+00-0036818,Blake Proehl,2021,WR,East Carolina,4239406,espn_id,espn_id,4239406,0.0
+00-0027173,Julius Pruitt,2009,WR,Ouachita Baptist University,13169,none,none,,0.0
+00-0037422,Kendric Pryor,2022,WR,Wisconsin,4035776,espn_id,espn_id,4035776,1.9
+00-0029953,Lonnie Pryor,2013,RB,Florida State,16372,name_school,name_school,480765,0.0
+00-0028825,Terrelle Pryor,2011,WR,Ohio State,14851,name_school,name_school,379070,170.02
+00-0026396,Maurice Purify,2008,WR,Nebraska; City College (SF),11831,name_school,name_school,189594,0.0
+00-0026804,Ryan Purvis,2009,TE,Boston College,12551,name_school,name_school,160252,8.8
+00-0036453,Paul Quessenberry,2020,TE,Navy,2575891,none,none,,0.0
+00-0033268,Brandon Radcliff,2017,RB,Louisville,2970183,name_school,name_school,530360,0.0
+00-0034193,Kevin Rader,2019,TE,Youngstown State,3049290,none,none,,2.8
+00-0028668,Raymond Radway,2011,WR,Abilene Christian,14727,none,none,,0.0
+00-0036523,Trey Ragas,2021,RB,Louisiana-Lafayette,4040728,espn_id,espn_id,4040728,3.5
+00-0034927,T.J. Rahming,2019,WR,Duke,3917787,espn_id,espn_id,3917787,0.0
+00-0036837,John Raine,2021,TE,Northwestern,4040771,espn_id,espn_id,4040771,0.0
+00-0029384,Bobby Rainey,2012,RB,Western Kentucky,15501,name_school,name_school,241755,221.3
+00-0036774,Nick Ralston,2021,FB,Louisiana-Lafayette,3893625,espn_id,espn_id,3893625,0.0
+00-0037366,Charleston Rambo,2023,WR,Miami; Oklahoma,4241397,espn_id,espn_id,4241397,0.0
+00-0029933,Bradley Randle,2013,RB,UNLV,16438,name_school,name_school,481347,0.0
+00-0025841,Louis Rankin,2008,RB,Washington,11575,name_school,name_school,145202,9.9
+00-0038156,Clint Ratkovich,2022,RB,Northern Illinois,4031140,espn_id,espn_id,4031140,0.0
+00-0035520,Anthony Ratliff-Williams,2019,WR,North Carolina,3895828,espn_id,espn_id,3895828,0.0
+00-0031897,Thomas Rawls,2015,RB,Central Michigan; Michigan,2576237,name_school,name_school,511699,235.20000000000002
+00-0035058,Dax Raymond,2019,TE,Utah State,3932963,espn_id,espn_id,3932963,0.0
+00-0032464,Kalif Raymond,2016,WR,Holy Cross,2973405,none,none,,2.1
+00-0026017,Paul Raymond,2008,WR,Brown,,none,none,,0.0
+00-0031123,Darrin Reaves,2014,RB,UAB,17397,name_school,name_school,518058,15.9
+00-0031008,Silas Redd,2014,RB,USC; Penn State,17352,none,espn_xwalk,503340,32.2
+00-0034647,Teo Redding,2018,WR,Bowling Green,3045763,name_school,name_school,547071,0.0
+00-0026566,Isaac Redman,2009,RB,Bowie State,12898,none,none,,140.60000000000002
+00-0026393,Marcel Reece,2008,FB,Washington; El Camino; Chaffey College,11717,none,espn_xwalk,184383,96.5
+00-0028934,Bert Reed,2012,WR,Florida State,15259,name_school,name_school,238384,0.0
+00-0030743,Bernard Reedy,2014,WR,Toledo,17032,name_school,name_school,504646,0.0
+00-0033620,Brandon Reilly,2017,WR,Nebraska,2974328,name_school,name_school,533297,0.0
+00-0026567,Mike Reilly,2009,QB,Central Washington University; Washington State,,none,none,,0.0
+00-0028267,Allen Reisner,2011,TE,Iowa,14433,name_school,name_school,236650,12.8
+00-0038519,Nikko Remigio,2023,WR,Fresno State,4372716,espn_id,espn_id,4372716,11.0
+00-0031803,Blake Renaud,2015,RB,Boise State,2573314,none,none,,0.0
+00-0030673,Bryn Renner,2015,QB,North Carolina,17033,name_school,name_school,480234,0.0
+00-0028238,Konrad Reuland,2011,TE,Stanford; Notre Dame,14434,name_school,name_school,193156,21.0
+00-0036474,Sammis Reyes,2021,TE,Loyola University; Tulane,3148929,none,none,,0.0
+00-0025951,Darius Reynaud,2008,RB,West Virginia,11933,name_school,name_school,159840,0.0
+00-0028795,Chase Reynolds,2011,RB,Montana,14820,none,none,,0.0
+00-0035567,Craig Reynolds,2019,RB,Kutztown,4421446,none,none,,36.900000000000006
+00-0027388,Aaron Rhea,2009,WR,Stephen F. Austin State,,none,none,,0.0
+00-0033376,Patrick Ricard,2017,RB,Maine,2975417,none,none,,35.9
+00-0035956,Giovanni Ricci,2020,TE,Western Michigan,3916749,espn_id,espn_id,3916749,18.0
+00-0031429,Jerry Rice,2014,WR,UNLV,17499,name_school,name_school,480543,0.0
+00-0033025,Jalen Richard,2016,RB,Southern Mississippi,2972091,name_school,name_school,531791,362.20000000000005
+00-0035491,A.J. Richardson,2019,WR,Boise State,3124369,espn_id,espn_id,3124369,0.0
+00-0030162,Rico Richardson,2013,WR,Jackson State University,16273,none,none,,0.0
+00-0037424,Justin Rigg,2022,TE,Kentucky,4035065,espn_id,espn_id,4035065,0.0
+00-0026860,Eron Riley,2009,WR,Duke,13112,name_school,name_school,172905,0.0
+00-0037557,Ronnie Rivers,2022,RB,Fresno State,4243003,espn_id,espn_id,4243003,48.400000000000006
+00-0029843,Cordell Roberson,2013,WR,Stephen F. Austin State,16343,none,none,,0.0
+00-0037574,Jaquarii Roberson,2022,WR,Wake Forest,4240429,espn_id,espn_id,4240429,0.0
+00-0037604,Reggie Roberson Jr.,2022,WR,SMU,4241888,espn_id,espn_id,4241888,0.0
+00-0034784,Austin Roberts,2018,TE,UCLA,3134314,espn_id,espn_id,3134314,0.0
+00-0031166,Seth Roberts,2014,WR,West Alabama; Pearl River,17402,none,none,,223.7
+00-0027368,Antonio Robinson,2010,WR,Nicholls State,,none,none,,0.0
+00-0032524,Jamal Robinson,2016,WR,Louisiana-Lafayette,2574024,name_school,name_school,512339,0.0
+00-0027166,James Robinson,2009,WR,Butler County CC,,none,none,,0.0
+00-0035831,James Robinson,2020,RB,Illinois State,4052042,none,none,,512.9
+00-0034057,Jevoni Robinson,2017,TE,Barry University,3007919,none,none,,0.0
+00-0030348,Khiry Robinson,2013,RB,West Texas State; Blinn College,16530,none,none,,165.4
+00-0028892,Gerell Robinson,2012,TE,Arizona State,15214,name_school,name_school,380388,0.0
+00-0028852,James Rodgers,2012,WR,Oregon State,15131,name_school,name_school,236710,0.0
+00-0029956,Jordan Rodgers,2013,QB,Vanderbilt,16158,name_school,name_school,500561,0.0
+00-0026623,Tyler Roehl,2009,RB,North Dakota State,,none,none,,0.0
+00-0037168,Armani Rogers,2022,TE,Ohio; UNLV,4056052,espn_id,espn_id,4056052,14.0
+00-0032355,Chester Rogers,2016,WR,Grambling State,2983209,none,none,,221.6
+00-0030043,Da'Rick Rogers,2013,WR,Tennessee Technological Univ; Tennessee,16159,none,espn_xwalk,504329,45.2
+00-0033739,Darreus Rogers,2017,WR,USC,2971617,name_school,name_school,531009,0.0
+00-0031782,Eli Rogers,2015,WR,Louisville,2576643,name_school,name_school,511635,164.9
+00-0030202,Eric Rogers,2016,WR,California Lutheran University,16480,none,none,,0.0
+00-0028919,Taveon Rogers,2012,WR,New Mexico State,15251,name_school,name_school,500843,0.0
+00-0027220,Naaman Roosevelt,2010,WR,Buffalo,13637,name_school,name_school,188873,70.9
+00-0029059,Nelson Rosario,2012,TE,UCLA,15352,name_school,name_school,380727,0.0
+00-0036819,A.J. Rose,2021,RB,Kentucky,4035068,none,none,,0.0
+00-0034667,Devin Ross,2018,WR,Colorado,3052122,name_school,name_school,550282,0.0
+ROS598758,Draylen Ross,2011,TE,North Texas,,none,none,,0.0
+00-0033412,Fred Ross,2017,WR,Mississippi State; Oklahoma State,3044857,name_school,name_school,546622,0.0
+00-0028249,Jeremy Ross,2011,WR,California,14500,name_school,name_school,188428,34.7
+00-0037216,Justyn Ross,2022,WR,Clemson,4360306,espn_id,espn_id,4360306,11.3
+00-0030187,Rashad Ross,2013,WR,Arizona State; Butte College,16566,name_school,name_school,516993,44.400000000000006
+00-0034016,Josh Rounds,2017,RB,Tulane,2972140,name_school,name_school,532180,0.0
+00-0038150,Nathan Rourke,2023,QB,Ohio,4244688,espn_id,espn_id,4244688,0.0
+00-0035789,Chris Rowland,2020,WR,Tennessee State,4052137,none,none,,0.0
+00-0025851,Micah Rucker,2008,WR,Eastern Illinois,,none,none,,0.0
+00-0033717,Travis Rudolph,2017,WR,Florida State,3122935,espn_id,espn_id,3122935,18.1
+00-0033662,Cooper Rush,2017,QB,Central Michigan; Tarrant County JC,2972515,name_school,name_school,531455,1.3800000000000001
+00-0032550,Alonzo Russell,2016,WR,Toledo,2980238,name_school,name_school,536086,0.0
+00-0038488,Brady Russell,2023,RB,Colorado,4243176,espn_id,espn_id,4243176,0.0
+00-0038455,Sean Ryan,2023,WR,Rutgers; West Virginia; Temple,4360972,espn_id,espn_id,4360972,0.0
+00-0033843,Shakeir Ryan,2017,WR,Northwestern State (LA),3050670,none,none,,0.0
+00-0034955,Brett Rypien,2019,QB,Boise State,3722362,espn_id,espn_id,3722362,11.3
+00-0028602,Brandon Saine,2011,RB,Ohio State,14587,name_school,name_school,235805,22.1
+SAL776196,Tavonn Salter,2019,WR,Middle Tennessee State,4243977,espn_id,espn_id,4243977,0.0
+00-0025827,Lorne Sam,2008,WR,Texas-El Paso,,name_school,name_school,136666,0.0
+00-0029036,Jabin Sambrano,2012,WR,Montana,15378,none,none,,0.0
+00-0029828,Lanear Sampson,2013,WR,Baylor,16287,name_school,name_school,379879,0.0
+00-0037355,Braylon Sanders,2022,WR,Mississippi,4259908,espn_id,espn_id,4259908,1.7000000000000002
+00-0028352,Dane Sanzenbacher,2011,WR,Ohio State,14304,name_school,name_school,235808,86.0
+00-0036698,Mekhi Sargent,2021,RB,Iowa,4379504,espn_id,espn_id,4379504,1.1
+00-0036910,C.J. Saunders,2021,WR,Ohio State,4040627,espn_id,espn_id,4040627,3.1
+00-0028270,Weslye Saunders,2011,TE,South Carolina,14306,name_school,name_school,243311,25.0
+00-0026453,Dantrell Savage,2008,RB,Oklahoma State; Mississippi Gulf Coast CC,11868,name_school,name_school,188975,23.900000000000002
+00-0031864,Wes Saxton,2015,TE,South Alabama; Itawamba JC,2972765,name_school,name_school,532169,0.0
+00-0038896,Jacob Saylors,2023,RB,East Tennessee State,4383429,none,none,,1.1
+00-0035119,Charles Scarff,2019,TE,Delaware,3127376,espn_id,espn_id,3127376,0.0
+00-0032582,Steven Scheu,2016,TE,Vanderbilt,2577793,name_school,name_school,511347,0.0
+00-0031783,Ross Scheuerman,2015,WR,Lafayette College,2568756,none,none,,0.0
+00-0030510,Adam Schiltz,2013,TE,Emporia State University,16637,none,none,,0.0
+00-0035587,Spencer Schnell,2019,WR,Illinois State,3126075,none,none,,0.0
+00-0035960,Dalton Schoen,2021,WR,Kansas State,3916124,espn_id,espn_id,3916124,0.0
+00-0034340,Christian Scotland-Williamson,2018,TE,,4338875,none,none,,0.0
+00-0033706,Artavis Scott,2017,WR,Clemson,3122839,espn_id,espn_id,3122839,0.0
+00-0034243,Caleb Scott,2018,WR,Vanderbilt,3122167,espn_id,espn_id,3122167,0.0
+00-0032621,Rashawn Scott,2016,WR,Miami,2579623,name_school,name_school,517589,0.0
+00-0034256,Da'Mari Scott,2018,WR,Fresno State,3056577,name_school,name_school,552062,4.7
+00-0037629,Jared Scott,2022,TE,Idaho State; Jacksonville State; Prairie View A&M,4240346,espn_id,espn_id,4240346,0.0
+00-0029957,Matt Scott,2013,QB,Arizona,16161,name_school,name_school,378126,0.0
+00-0038440,Zavier Scott,2023,RB,Maine,4257364,espn_id,espn_id,4257364,39.2
+00-0033639,Jhajuan Seales,2017,WR,Oklahoma State,2977745,name_school,name_school,534660,0.0
+00-0033611,Ricky Seals-Jones,2017,TE,Texas A&M,3051806,name_school,name_school,549866,183.3
+00-0035478,Isaiah Searight,2019,TE,Fordham,3909346,none,none,,0.0
+00-0037020,Bernhard Seikovits,2021,TE,,4832523,none,none,,0.0
+00-0032006,Tim Semisch,2015,TE,Northern Illinois,2574931,name_school,name_school,514242,0.0
+00-0029486,Tray Session,2012,WR,Nevada,15578,name_school,name_school,241907,0.0
+00-0032537,Canaan Severin,2016,WR,Virginia,2979681,name_school,name_school,535618,0.0
+00-0036471,Mathew Sexton,2023,WR,Eastern Michigan,4039339,espn_id,espn_id,4039339,0.0
+00-0037545,Rashid Shaheed,2022,WR,Weber State,4032473,none,none,,339.90000000000003
+00-0037609,Aaron Shampklin,2022,RB,Harvard,4248068,none,none,,1.7000000000000002
+00-0032839,Hunter Sharp,2016,WR,Utah State; Antelope Valley Junior College,3125354,espn_id,espn_id,3125354,16.4
+00-0038679,Tyrell Shavers,2023,WR,San Diego State; Mississippi State; Alabama,4241476,espn_id,espn_id,4241476,59.4
+00-0030661,Connor Shaw,2014,QB,South Carolina,17247,name_school,name_school,504292,3.9800000000000004
+00-0029734,James Shaw,2013,WR,Jacksonville State,15770,none,none,,0.0
+00-0030662,Kenny Shaw,2014,WR,Florida State,17248,name_school,name_school,501535,0.0
+00-0026769,Kory Sheets,2009,RB,Purdue,12521,name_school,name_school,161035,0.5
+00-0033334,R.J. Shelton,2017,WR,Michigan State,3052632,name_school,name_school,550476,0.0
+00-0038920,John Shenker,2023,TE,Auburn,4242526,espn_id,espn_id,4242526,1.7000000000000002
+00-0030147,Russell Shepard,2013,WR,LSU,16227,name_school,name_school,480205,22.1
+00-0035181,Darrius Shepherd,2019,WR,North Dakota State,3120588,none,none,,10.700000000000001
+00-0030018,Gerrard Sheppard,2013,WR,Towson State,16413,none,none,,0.0
+00-0034487,Trent Sherfield,2018,WR,Vanderbilt,3122168,espn_id,espn_id,3122168,68.0
+00-0025916,Dezmond Sherrod,2008,TE,Mississippi State,,name_school,name_school,146873,0.0
+00-0032328,Ronnie Shields,2016,TE,Kentucky,2516203,name_school,name_school,504155,0.0
+00-0031710,Jaxon Shipley,2015,WR,Texas,2577578,name_school,name_school,511290,0.0
+00-0032625,Brandon Shippen,2016,WR,Temple,2976250,name_school,name_school,534342,0.0
+00-0033622,Daikiel Shorts,2017,WR,West Virginia,3042428,name_school,name_school,546045,0.0
+00-0035163,Kyle Shurmur,2019,QB,Vanderbilt,3915776,espn_id,espn_id,3915776,0.0
+00-0035359,David Sills,2019,WR,West Virginia,3871102,espn_id,espn_id,3871102,3.7
+00-0026843,Jack Simmons,2009,TE,Minnesota,,name_school,name_school,160790,0.0
+00-0033035,Jalen Simmons,2016,RB,South Carolina State,2580343,none,none,,0.0
+SIM183243,Jamarko Simmons,2011,WR,Western Michigan,,none,gap_window,160922,0.0
+00-0036070,Tyler Simmons,2020,TE,Georgia,4035018,espn_id,espn_id,4035018,0.0
+00-0035701,Marcus Simms,2019,WR,West Virginia,4039244,espn_id,espn_id,4039244,0.0
+00-0029151,Matt Simms,2013,QB,Tennessee; Louisville; El Camino,15407,none,espn_xwalk,238915,11.700000000000001
+00-0026885,Matt Simon,2009,WR,Northern Illinois,,name_school,name_school,157537,0.0
+00-0031167,Scott Simonson,2014,TE,Assumption,17391,none,none,,2.0
+00-0025997,Chad Simpson,2008,RB,Morgan State; University of South Florida,11654,none,espn_xwalk,161658,47.8
+00-0038809,Ben Sims,2023,TE,Baylor,4373030,espn_id,espn_id,4373030,26.299999999999997
+00-0033193,Blake Sims,2016,RB,Alabama,2515957,name_school,name_school,504052,0.0
+00-0034104,Cam Sims,2018,WR,Alabama,3115314,name_school,name_school,559702,90.9
+00-0030554,Quentin Sims,2013,WR,Tennessee-Martin,16625,none,espn_xwalk,377760,0.0
+00-0034928,Steven Sims,2019,WR,Kansas,3917960,espn_id,espn_id,3917960,170.8
+00-0031711,Gannon Sinclair,2015,TE,Missouri State,3048976,none,none,,0.0
+00-0036052,Reid Sinnett,2020,QB,San Diego,3926936,none,none,,0.0
+00-0028728,Steve Skelton,2011,TE,Fordham,14502,none,none,,0.0
+00-0027848,Cody Slate,2010,TE,Marshall,,name_school,name_school,184184,0.0
+00-0031150,Nathan Slaughter,2014,WR,West Texas State,17403,none,none,,0.0
+00-0031819,Tyler Slavin,2016,WR,New Mexico Highlands Univ.,2516911,none,espn_xwalk,504681,0.0
+SLO281988,Taylor Sloat,2014,TE,UC Davis,2519441,none,none,,0.0
+00-0033672,Kyle Sloter,2017,QB,Northern Colorado,2972092,none,espn_xwalk,531792,0.0
+00-0027390,Ray Small,2010,WR,Ohio State,,name_school,name_school,188315,0.0
+00-0034330,Jordan Smallwood,2018,WR,Oklahoma,3052671,name_school,name_school,550501,0.0
+00-0037475,Stone Smartt,2022,TE,Old Dominion,4250764,espn_id,espn_id,4250764,73.0
+00-0027346,Alfonso Smith,2010,RB,Kentucky,13642,name_school,name_school,178759,25.4
+00-0030968,Keith Smith,2014,FB,San Jose State,17315,none,none,,5.5
+00-0028353,Andre Smith,2011,TE,Virginia Tech,14308,name_school,name_school,189397,0.0
+00-0026855,Antone Smith,2009,RB,Florida State,13158,name_school,name_school,173661,-0.30000000000000004
+00-0028706,Armond Smith,2011,RB,Union College (KY); Hutchinson CC; Shorter College,14761,none,none,,0.7
+00-0036775,Brandon Smith,2021,WR,Iowa,4240577,espn_id,espn_id,4240577,0.0
+00-0026113,Clifton Smith,2008,RB,Fresno State,11816,name_school,name_school,147224,19.5
+00-0033413,De'Veon Smith,2017,RB,Michigan,3045199,name_school,name_school,546705,5.7
+00-0032090,Dreamius Smith,2015,RB,West Virginia,2577239,name_school,name_school,513325,0.0
+00-0028689,Greg Smith,2011,TE,Texas,14742,name_school,name_school,183448,0.0
+00-0028842,Hayden Smith,2012,TE,Metropolitan State College; New York Instit. of Technology,14871,none,none,,2.6
+00-0035121,Jaylen Smith,2019,WR,Louisville,3916418,espn_id,espn_id,3916418,0.0
+00-0035510,Jeff Smith,2019,WR,Boston College,3929118,espn_id,espn_id,3929118,55.10000000000001
+00-0030746,Jerome Smith,2014,RB,Syracuse,17256,name_school,name_school,503810,0.0
+00-0031320,Kevin Smith,2015,WR,Washington,17257,name_school,name_school,499814,7.3
+SMI559120,Orwin Smith,2013,RB,Georgia Tech,16675,name_school,name_school,483025,0.0
+00-0026443,Paul Smith,2008,QB,Tulsa,,name_school,name_school,147935,0.0
+00-0031900,Rod Smith,2015,RB,Ohio State,2512197,name_school,name_school,501528,95.9
+00-0029934,Rodney Smith,2013,WR,Florida State,16373,name_school,name_school,480779,0.0
+00-0035957,Rodney Smith,2020,RB,Minnesota,3116074,espn_id,espn_id,3116074,46.3
+00-0033719,Shane Smith,2017,FB,San Jose State,2981212,name_school,name_school,536375,0.0
+00-0026032,Taj Smith,2008,WR,Syracuse; Bakersfield College,11783,none,espn_xwalk,183812,6.0
+SMI739116,Terrance Smith,2010,WR,South Carolina State,,none,none,,0.0
+00-0032358,Tevaun Smith,2016,WR,Iowa,2979507,name_school,name_school,535831,0.0
+00-0034631,Vyncint Smith,2018,WR,Limestone,3155188,none,none,,73.10000000000001
+00-0038359,Xavier Smith,2023,WR,Florida A&M,4386544,none,none,,54.5
+00-0028604,Shaky Smithson,2011,WR,Utah,14600,name_school,name_school,482340,0.0
+00-0030663,Willie Snead,2014,WR,Ball State,17258,name_school,name_school,511422,374.9
+00-0026399,Olaniyi Sobomehin,2008,RB,Portland State; Oregon State,11593,none,none,,0.8
+00-0036540,Dylan Soehner,2021,TE,Iowa State,4035559,espn_id,espn_id,4035559,0.0
+00-0035436,Matt Sokol,2019,TE,Michigan State,3121378,espn_id,espn_id,3121378,0.0
+00-0032668,Joe Sommers,2016,TE,Wisconsin Oshkosh,3150065,none,none,,0.0
+00-0029091,Bradley Sowell,2012,TE,Mississippi,15284,none,espn_xwalk,235276,0.0
+00-0030175,Ryan Spadola,2013,WR,Lehigh University,16230,none,none,,0.0
+00-0028656,Chad Spann,2011,RB,Northern Illinois,14675,name_school,name_school,237698,0.0
+00-0032022,Harold Spears,2015,TE,New Hampshire,2507292,none,none,,0.0
+00-0031319,Diontae Spencer,2019,WR,McNeese State,17463,none,none,,21.9
+00-0028477,Owen Spencer,2011,WR,N.C. State,14536,name_school,name_school,189571,0.0
+00-0026757,Kory Sperry,2009,TE,Colorado State,12553,name_school,name_school,160050,27.6
+00-0032685,Nelson Spruce,2016,WR,Colorado,2576952,name_school,name_school,511433,0.0
+00-0031679,Joshua Stangby,2015,WR,University of Ottawa (Kans.),3893002,none,none,,0.0
+00-0034311,Johnny Stanton,2018,RB,UNLV,3040499,name_school,name_school,545618,0.0
+00-0032614,Joel Stave,2016,QB,Wisconsin,2576446,name_school,name_school,514230,0.0
+00-0027564,Curtis Steele,2010,RB,Memphis,,name_school,name_school,187074,0.0
+STE364345,Frank Stephens,2018,WR,Northern Colorado,4029385,none,none,,0.0
+00-0038741,John Stephens Jr.,2023,TE,Louisiana-Lafayette; TCU,4362489,espn_id,espn_id,4362489,0.0
+00-0029133,Nick Stephens,2013,QB,Tarleton State,15269,none,espn_xwalk,189984,0.0
+00-0037486,Jerreth Sterns,2022,WR,Western Kentucky; Houston Baptist University,4383723,espn_id,espn_id,4383723,0.0
+00-0029768,Eric Stevens,2013,RB,California,16294,name_school,name_school,380703,0.0
+00-0025903,Carl Stewart,2008,FB,Auburn,,name_school,name_school,146393,0.0
+00-0032755,Dez Stewart,2016,WR,Ohio Dominican College,4002656,none,none,,0.0
+00-0029441,Jeremy Stewart,2012,RB,Stanford,15572,name_school,name_school,237191,41.300000000000004
+00-0030796,Josh Stewart,2014,WR,Oklahoma State,17261,name_school,name_school,511258,0.0
+00-0034890,Justin Stockton,2018,RB,Texas Tech,3139485,espn_id,espn_id,3139485,0.0
+00-0036741,Jack Stoll,2021,TE,Nebraska,4034862,espn_id,espn_id,4034862,38.3
+00-0030272,Jake Stoneburner,2013,TE,Ohio State,16493,name_school,name_school,377883,21.7
+00-0036526,Dillon Stoner,2021,WR,Oklahoma State,4038460,espn_id,espn_id,4038460,0.0
+00-0029129,Rod Streater,2012,WR,Temple; Alfred University,15391,name_school,name_school,500979,313.3
+00-0035752,Chris Streveler,2020,QB,South Dakota; Minnesota,3040206,none,espn_xwalk,545477,18.74
+00-0026977,Andy Strickland,2009,WR,Wofford,,none,none,,0.0
+00-0033417,Damore'ea Stringfellow,2017,WR,Mississippi,3052182,name_school,name_school,550549,0.0
+00-0037139,Carson Strong,2022,QB,Nevada,4361435,espn_id,espn_id,4361435,0.0
+00-0025843,Darrell Strong,2008,TE,Pittsburgh,,name_school,name_school,163212,0.0
+00-0027572,Trey Stross,2010,WR,Iowa,,name_school,name_school,169341,0.0
+00-0025864,Jonathan Stupar,2008,TE,Virginia,11784,name_school,name_school,145932,32.0
+00-0029999,Zach Sudfeld,2013,TE,Nevada,16418,name_school,name_school,242036,24.8
+00-0029339,Chris Summers,2012,WR,Liberty,15524,none,none,,0.0
+00-0033613,James Summers,2017,RB,East Carolina,2970017,name_school,name_school,530434,0.0
+00-0028987,Phillip Supernaw,2012,TE,Ouachita Baptist University,15257,none,none,,6.0
+00-0030666,Darryl Surgent,2014,WR,Louisiana-Lafayette,17263,name_school,name_school,505188,0.0
+00-0036753,Sage Surratt,2021,WR,Wake Forest,4240432,espn_id,espn_id,4240432,0.0
+00-0026790,Tyrell Sutton,2009,RB,Northwestern,12523,name_school,name_school,169286,45.1
+00-0033004,Chris Swain,2016,RB,Navy,2970472,name_school,name_school,530583,0.0
+00-0026525,Nate Swift,2009,WR,Nebraska,,name_school,name_school,162718,0.0
+SWI554193,James Swinton,2009,WR,Auburn,,name_school,name_school,160029,0.0
+00-0030854,Erik Swoope,2014,TE,Miami,17091,none,none,,50.7
+00-0033742,Tyrone Swoopes,2017,TE,Texas,3046705,name_school,name_school,547338,4.800000000000001
+00-0028229,Austin Sylvester,2011,RB,Washington,14449,name_school,name_school,232020,0.0
+00-0029015,Andrew Szczerba,2012,TE,Penn State,15331,name_school,name_school,243290,0.0
+00-0035735,Jordan Ta'amu,2020,QB,Mississippi; New Mexico Military Institute,4242418,espn_id,espn_id,4242418,0.0
+00-0026557,Will Ta'ufo'ou,2009,FB,California,12850,name_school,name_school,168816,0.0
+00-0032021,Jack Tabb,2015,TE,North Carolina,2577113,name_school,name_school,516342,0.0
+00-0029367,Julian Talley,2013,WR,UMass Amherst,15518,none,none,,0.0
+00-0027616,Andy Tanner,2010,WR,Midwestern State,13872,none,none,,0.0
+00-0028613,Phillip Tanner,2011,RB,Middle Tennessee State,14625,name_school,name_school,184827,45.2
+00-0029623,Alex Tanney,2012,QB,Monmouth College,15693,none,none,,0.0
+00-0028511,Vai Taua,2011,RB,Nevada,14535,name_school,name_school,188447,0.0
+00-0038828,Tanner Taula,2023,TE,Illinois State,4248052,none,none,,0.0
+00-0036140,Charlie Taumoepeau,2020,TE,Portland State,3910630,none,none,,0.0
+00-0028592,Brad Taylor,2011,TE,Baylor,,name_school,name_school,189318,0.0
+00-0036096,J.J. Taylor,2020,RB,Arizona,4039607,espn_id,espn_id,4039607,33.6
+00-0031697,Jordan Taylor,2015,WR,Rice,2515662,name_school,name_school,503448,74.10000000000001
+TAY476625,Kent Taylor,2017,TE,Texas-El Paso,2980119,name_school,name_school,535931,0.0
+00-0028606,Kerry Taylor,2011,WR,Arizona State,14561,name_school,name_school,231852,50.900000000000006
+00-0027176,Larry Taylor,2010,WR,Connecticut,,none,gap_window,161694,0.0
+00-0038673,Leonard Taylor,2023,TE,Cincinnati,4360082,espn_id,espn_id,4360082,0.0
+00-0035480,Malik Taylor,2019,WR,Ferris State,4408988,none,none,,21.9
+00-0035973,Patrick Taylor,2020,RB,Memphis,4039358,espn_id,espn_id,4039358,23.000000000000004
+00-0027496,Rendrick Taylor,2010,RB,Clemson,,name_school,name_school,176678,0.0
+00-0037111,Master Teague,2022,RB,Ohio State,4361354,espn_id,espn_id,4361354,0.0
+00-0030035,Adam Thielen,2013,WR,Minnesota State,16460,none,none,,69.0
+00-0026577,Marcus Thigpen,2012,WR,Indiana,12524,none,espn_xwalk,160617,46.8
+00-0030651,Eric Thomas,2014,WR,Troy,17092,name_school,name_school,106739,0.0
+00-0033664,Jahad Thomas,2017,RB,Temple,3051315,name_school,name_school,549766,0.0
+00-0033846,Justin Thomas,2017,WR,Georgia Tech,2971471,name_school,name_school,531104,0.0
+00-0029856,Lamaar Thomas,2013,WR,New Mexico,16113,name_school,name_school,381988,5.1
+00-0032740,Lawrence Thomas,2016,FB,Michigan State,2576280,name_school,name_school,512724,10.4
+00-0033755,Noel Thomas,2017,WR,Connecticut,3045194,name_school,name_school,546700,0.0
+00-0034221,Roc Thomas,2018,RB,Jacksonville State; Auburn,3121583,espn_id,espn_id,3121583,7.1000000000000005
+00-0038810,Thayer Thomas,2023,WR,N.C. State,4240121,espn_id,espn_id,4240121,0.0
+00-0037487,Deven Thompkins,2022,WR,Utah State,4374187,espn_id,espn_id,4374187,52.4
+00-0030000,Kenbrell Thompkins,2013,WR,Cincinnati; El Camino; Palomar College,16381,none,espn_xwalk,502349,183.8
+00-0038680,Bryan Thompson,2023,WR,Arizona State; Utah,4243261,espn_id,espn_id,4243261,0.0
+00-0033855,Chris Thompson,2017,WR,Florida,3054970,name_school,name_school,551334,13.4
+00-0035164,Cody Thompson,2019,WR,Toledo,3126115,espn_id,espn_id,3126115,0.0
+00-0033720,Colin Thompson,2017,TE,Temple,2980120,name_school,name_school,535932,0.0
+00-0029388,Deonte Thompson,2012,WR,Florida,15503,name_school,name_school,235224,29.700000000000003
+00-0031510,Dylan Thompson,2015,QB,South Carolina,2516344,name_school,name_school,504295,0.0
+00-0031275,Ian Thompson,2014,TE,Louisiana-Lafayette,17454,name_school,name_school,481332,0.0
+00-0030647,Jordan Thompson,2014,TE,Ohio,16705,name_school,name_school,385169,0.0
+00-0030705,Juwan Thompson,2014,RB,Duke,17045,name_school,name_school,501071,76.2
+00-0033143,Kendal Thompson,2016,WR,Utah,2577473,name_school,name_school,514737,0.0
+00-0034200,Mark Thompson,2018,RB,Florida,4057659,espn_id,espn_id,4057659,0.0
+00-0038910,SaRodorick Thompson Jr.,2023,RB,Texas Tech,4362162,espn_id,espn_id,4362162,0.0
+00-0035438,Trevion Thompson,2019,WR,Clemson,3122838,espn_id,espn_id,3122838,0.0
+00-0033762,Lenard Tillery,2017,RB,Southern,2974712,none,none,,0.0
+00-0038839,Mitchell Tinsley,2023,WR,Penn State; Western Kentucky,4690070,espn_id,espn_id,4690070,31.6
+00-0030855,Zurlon Tipton,2014,RB,Central Michigan,17094,name_school,name_school,482048,33.3
+00-0036005,Noah Togiai,2020,TE,Oregon State,3930298,espn_id,espn_id,3930298,0.0
+00-0036931,Travis Toivonen,2021,WR,North Dakota,4047529,none,none,,0.0
+00-0026069,Mike Tolbert,2008,FB,Coastal Carolina,11658,none,none,,296.90000000000003
+00-0028548,Terrence Toliver,2011,WR,LSU,14571,name_school,name_school,232438,0.0
+00-0034489,Jalen Tolliver,2018,WR,Univ of Arkansas at Monticello,4329491,none,none,,6.7
+00-0028595,Scott Tolzien,2011,QB,Wisconsin,14353,name_school,name_school,188112,34.18
+00-0031690,Eric Tomlinson,2015,TE,Texas-El Paso,2511973,name_school,name_school,500711,26.1
+00-0027412,Manase Tonga,2010,FB,BYU,13803,none,espn_xwalk,487664,6.0
+00-0037112,Jake Tonges,2022,TE,California,4259147,espn_id,espn_id,4259147,0.0
+00-0033757,Robert Tonyan,2017,TE,Indiana State,2975674,none,none,,43.7
+00-0033238,Alek Torgersen,2017,QB,Penn,3049779,none,none,,0.0
+00-0027257,Keith Toston,2010,RB,Oklahoma State,13653,name_school,name_school,192244,24.8
+00-0031965,Abou Toure,2015,RB,Tennessee-Martin,2971811,none,none,,0.0
+00-0031332,Fitzgerald Toussaint,2014,RB,Michigan,17465,name_school,name_school,481443,25.2
+00-0027428,Nick Tow-Arnett,2010,TE,Minnesota,,name_school,name_school,178784,0.0
+00-0033623,Keith Towbridge,2017,TE,Louisville,3040071,name_school,name_school,545580,0.0
+00-0027897,Derrick Townsel,2010,WR,Murray State,13920,none,none,,0.0
+00-0036841,Austin Trammell,2021,WR,Rice,4244856,espn_id,espn_id,4244856,10.2
+00-0032319,Ross Travis,2015,TE,Penn State,3936647,none,none,,19.1
+00-0033043,Austin Traylor,2016,TE,Wisconsin,2576449,name_school,name_school,514233,18.0
+00-0032724,Bryce Treggs,2016,WR,California,2978219,name_school,name_school,535181,25.200000000000003
+00-0038840,Brycen Tremayne,2023,WR,Stanford,4360763,espn_id,espn_id,4360763,30.8
+00-0027246,Joe Tronzo,2010,RB,Louisville,,name_school,name_school,183506,0.0
+00-0033149,Nick Truesdell,2017,TE,Grand Rapids CC,2309428,none,none,,0.0
+00-0036597,Carl Tucker,2021,TE,Alabama,3895833,espn_id,espn_id,3895833,0.0
+00-0032832,Marcus Tucker,2016,WR,Northern Michigan University,4012737,none,none,,0.0
+00-0030150,Matthew Tucker,2013,RB,TCU,16236,name_school,name_school,481296,0.0
+00-0038951,Sean Tucker,2023,RB,Syracuse,4430871,espn_id,espn_id,4430871,165.3
+00-0027429,Verran Tucker,2010,WR,California; El Camino,13656,name_school,name_school,381767,23.4
+00-0030024,Jeff Tuel,2013,QB,Washington State,16237,name_school,name_school,482620,12.059999999999999
+00-0029161,Lavasier Tuinei,2012,WR,Oregon,15440,name_school,name_school,482524,0.0
+00-0027905,Will Tukuafu,2010,FB,Oregon; Scottsdale CC; Mesa CC,13913,none,none,,0.0
+00-0036527,DJ Turner,2021,WR,Pittsburgh; Maryland,4036211,espn_id,espn_id,4036211,2.6
+00-0034201,De'Lance Turner,2018,RB,Alcorn State,3928461,none,none,,4.699999999999999
+00-0034867,Malik Turner,2018,WR,Illinois,3115928,espn_id,espn_id,3115928,49.5
+00-0032841,Paul Turner,2016,WR,Louisiana Tech,2577286,name_school,name_school,517212,21.6
+00-0035494,Xavier Turner,2019,RB,Tarleton State,3119996,none,none,,0.0
+00-0037801,KaVontae Turpin,2022,WR,TCU,3676833,espn_id,espn_id,3676833,167.5
+00-0032045,Andrew Turzilli,2015,WR,Rutgers; Kansas,2513916,name_school,name_school,502760,4.5
+00-0032004,Will Tye,2015,TE,Stony Brook; Florida,2512523,none,none,,205.70000000000002
+00-0029190,Marc Tyler,2012,RB,USC,15410,name_school,name_school,236614,0.0
+00-0028984,Brian Tyms,2012,WR,Florida A&M; Tallahassee CC,15252,none,none,,22.400000000000002
+00-0032230,Ify Umodu,2015,WR,Northern Arizona,2506632,none,none,,0.0
+00-0027851,Harvey Unga,2010,RB,BYU,13916,name_school,name_school,177224,0.0
+00-0032737,Soma Vainuku,2016,FB,USC,2510605,name_school,name_school,500247,0.0
+00-0038727,Xazavian Valladay,2023,RB,Arizona State; Wyoming,4240350,espn_id,espn_id,4240350,0.0
+00-0032508,Hakeem Valles,2016,TE,Monmouth,2567213,none,none,,3.1
+00-0038489,Ben VanSumeren,2023,RB,Michigan State; Michigan,4372070,espn_id,espn_id,4372070,1.0
+00-0032689,Jason Vander Laan,2016,TE,Ferris State,3057863,none,none,,0.0
+00-0031526,Tyler Varga,2015,FB,Yale; Western Ontario,2969294,none,none,,3.0
+00-0036776,T.J. Vasher,2021,WR,Texas Tech,4043158,espn_id,espn_id,4043158,0.0
+00-0030970,Dustin Vaughan,2014,QB,West Texas State,17337,none,none,,0.0
+00-0026644,Josh Vaughan,2009,RB,Richmond,13938,none,none,,9.100000000000001
+00-0030614,Rahsaan Vaughn,2013,WR,Oregon,16664,name_school,name_school,511465,0.0
+00-0036495,Tyler Vaughns,2021,WR,USC,4035692,espn_id,espn_id,4035692,0.0
+00-0034669,Jordan Veasy,2018,WR,California,4035853,espn_id,espn_id,4035853,0.0
+00-0029063,Matt Veldman,2012,TE,North Dakota State,15318,none,none,,0.0
+00-0030467,Justin Veltung,2013,WR,Idaho,16607,name_school,name_school,487752,0.0
+00-0029761,Conner Vernon,2013,WR,Duke,16248,name_school,name_school,482761,0.0
+00-0035819,Ben Victor,2020,WR,Ohio State,4040628,espn_id,espn_id,4040628,0.0
+00-0034007,Darius Victor,2017,RB,Towson State,3049987,none,none,,0.0
+00-0037387,Jalen Virgil,2022,WR,Appalachian State; UMass Amherst,4036448,espn_id,espn_id,4036448,15.5
+VIT313230,Mark Vital,2021,TE,Baylor,4066292,none,none,,0.0
+VOG669650,Brian Vogler,2015,TE,Alabama,2512214,name_school,name_school,501545,0.0
+00-0038456,Travis Vokolek,2023,TE,Nebraska; Rutgers,4259324,espn_id,espn_id,4259324,0.0
+00-0034491,Andrew Vollert,2018,TE,Weber State,4032479,none,none,,0.0
+00-0035728,Christian Wade,2019,RB,,4420894,none,none,,0.0
+00-0035374,Michael Walker,2019,WR,Boston College,3915296,espn_id,espn_id,3915296,3.5
+00-0033275,PJ Walker,2017,QB,Temple,3051308,name_school,name_school,549759,0.0
+00-0026973,Sean Walker,2009,WR,Vanderbilt,,name_school,name_school,161427,0.0
+00-0030352,Ty Walker,2013,WR,Illinois State,16539,none,none,,0.0
+00-0033137,Eric Wallace,2016,TE,Seattle University; DePaul University,2326150,none,none,,0.0
+00-0027358,Roberto Wallace,2010,WR,San Diego State,13661,name_school,name_school,174118,12.2
+00-0035187,Austin Walter,2019,RB,Rice,3123857,espn_id,espn_id,3123857,23.0
+00-0027595,Bryan Walters,2010,WR,Cornell,13662,none,none,,5.7
+00-0030798,Eric Ward,2014,WR,Texas Tech,17277,name_school,name_school,481867,0.0
+00-0033733,Greg Ward,2017,WR,Houston,3040035,name_school,name_school,545552,59.900000000000006
+00-0035924,Jonathan Ward,2020,RB,Central Michigan,4039274,espn_id,espn_id,4039274,23.0
+00-0036019,JoJo Ward,2020,WR,Hawaii,4373937,espn_id,espn_id,4373937,0.0
+00-0031682,Terron Ward,2015,RB,Oregon State,2577023,name_school,name_school,517264,64.3
+00-0035716,Aca'Cedric Ware,2019,RB,USC,3912551,espn_id,espn_id,3912551,0.0
+00-0034315,Chris Warren,2018,RB,Texas,3929855,espn_id,espn_id,3929855,0.0
+00-0037228,Jaylen Warren,2022,RB,Oklahoma State,4569987,espn_id,espn_id,4569987,413.8
+00-0036006,Mike Warren,2020,RB,Cincinnati,4239083,espn_id,espn_id,4239083,0.0
+00-0038930,Carlos Washington,2023,RB,Southeastern Louisiana,4248425,none,none,,0.0
+00-0030897,Corey Washington,2014,WR,Newberry; Georgia Military,17279,none,none,,16.2
+00-0030971,L'Damian Washington,2014,WR,Missouri,17307,name_school,name_school,481541,0.0
+00-0030856,Tony Washington,2014,WR,Appalachian State,17048,none,none,,2.7
+00-0035769,Scotty Washington,2020,TE,Wake Forest,3919557,espn_id,espn_id,3919557,0.0
+00-0033146,David Watford,2016,WR,Hampton,2577807,none,espn_xwalk,511361,0.0
+00-0036676,Austin Watkins Jr.,2021,WR,UAB,4363409,espn_id,espn_id,4363409,0.0
+00-0031793,Terrell Watson,2015,RB,Azusa Pacific,2581598,none,none,,11.100000000000001
+00-0030985,Trey Watts,2014,RB,Tulsa,17282,name_school,name_school,484063,7.800000000000001
+00-0038472,Duece Watts,2023,WR,Tulane; Jones County JC,4685037,espn_id,espn_id,4685037,0.0
+00-0038728,Jared Wayne,2023,WR,Pittsburgh,4430681,espn_id,espn_id,4430681,4.0
+00-0034633,Jester Weah,2018,WR,Pittsburgh,3045164,name_school,name_school,546670,0.0
+00-0028426,Martell Webb,2011,TE,Michigan,14316,name_school,name_school,242235,0.0
+00-0037185,Raleigh Webb,2022,WR,The Citadel,4032247,none,none,,0.0
+00-0034596,Ralph Webb,2018,RB,Vanderbilt,3051762,name_school,name_school,549984,0.0
+00-0030276,R.J. Webb,2013,WR,Furman,16540,none,none,,0.0
+00-0028308,Raymond Webber,2011,WR,University of Arkansas at Pine Bluff,14455,none,none,,0.0
+00-0028230,Adam Weber,2011,QB,Minnesota,14456,name_school,name_school,188157,0.0
+00-0035621,Nsimba Webster,2019,WR,Eastern Washington,3119317,none,none,,0.0
+00-0036804,Connor Wedington,2021,WR,Stanford,4242545,espn_id,espn_id,4242545,0.0
+00-0031875,Brandon Wegher,2015,RB,Morningside College; Iowa; Oklahoma; Iowa Western CC,2465679,none,espn_xwalk,480436,0.0
+00-0025837,Russ Weil,2008,RB,Illinois,,name_school,name_school,160520,0.0
+00-0029237,Austin Wells,2012,TE,Northern Iowa,15483,none,none,,0.0
+00-0034575,David Wells,2018,TE,San Diego State,3047536,name_school,name_school,547588,0.0
+00-0035018,Alex Wesley,2019,WR,Northern Colorado,3121110,none,none,,0.0
+00-0035126,Antoine Wesley,2019,WR,Texas Tech,4043161,espn_id,espn_id,4043161,57.8
+00-0030668,Charcandrick West,2014,RB,Abilene Christian; Louisiana Tech,17284,none,none,,226.9
+00-0027441,Chastin West,2010,WR,Fresno State,13775,name_school,name_school,170091,41.3
+00-0026053,Joe West,2008,WR,Texas-El Paso,,name_school,name_school,136850,0.0
+00-0032185,Tevin Westbrook,2015,TE,Florida,2578588,name_school,name_school,512209,0.0
+00-0036182,Nick Westbrook-Ikhine,2020,WR,Indiana,3929785,espn_id,espn_id,3929785,198.6
+00-0037343,Isaiah Weston,2022,WR,Northern Iowa,4030926,none,none,,0.0
+00-0029033,Griff Whalen,2012,WR,Stanford,15360,name_school,name_school,380494,66.2
+00-0026410,Ernie Wheelwright,2008,WR,Minnesota,,none,none,,0.0
+00-0027477,Blair White,2010,WR,Michigan State,13776,name_school,name_school,176335,101.5
+00-0035891,Cody White,2020,WR,Michigan State,4241983,espn_id,espn_id,4241983,9.5
+00-0031511,DeAndrew White,2015,WR,Alabama,2515962,name_school,name_school,504057,7.2
+00-0030274,Myles White,2013,WR,Louisiana Tech; Michigan State; Northwest Mississippi CC,16569,none,espn_xwalk,536315,37.400000000000006
+00-0035376,Papi White,2019,WR,Ohio,3126080,espn_id,espn_id,3126080,0.0
+00-0035019,Reggie White Jr.,2019,WR,Monmouth,3121225,none,none,,0.0
+00-0033379,Tim White,2017,WR,Arizona State; College of the Canyons,3915403,espn_id,espn_id,3915403,2.4000000000000004
+00-0037357,ZaQuandre White,2022,RB,South Carolina,4240032,espn_id,espn_id,4240032,0.0
+00-0031757,Lucky Whitehead,2015,WR,Florida Atlantic; Dean JC,3052735,name_school,name_school,550871,32.3
+00-0038710,Blake Whiteheart,2023,TE,Wake Forest,4362018,espn_id,espn_id,4362018,19.5
+00-0033641,Kermit Whitfield,2017,WR,Florida State,3045379,name_school,name_school,546816,0.0
+00-0030785,Nikita Whitlock,2014,FB,Wake Forest,17288,none,none,,0.0
+00-0033449,Isaac Whitney,2017,WR,USC,3894883,espn_id,espn_id,3894883,0.0
+00-0029731,Fozzy Whittaker,2012,RB,Texas,15755,none,espn_xwalk,232197,93.9
+00-0032562,Cole Wick,2016,TE,Incarnate Word,2982151,none,none,,3.8
+00-0028399,Eddie Wide,2011,RB,Utah,,name_school,name_school,233034,0.0
+00-0036122,Nate Wieting,2020,TE,Iowa,3894852,espn_id,espn_id,3894852,0.0
+00-0035771,Mitchell Wilcox,2020,TE,University of South Florida,3923392,espn_id,espn_id,3923392,41.5
+00-0030786,James Wilder Jr.,2014,RB,Florida State,17289,name_school,name_school,517388,0.0
+00-0032593,Brandon Wilds,2016,RB,South Carolina,2577692,name_school,name_school,517466,8.2
+00-0036183,Kristian Wilkerson,2020,WR,Southeast Missouri State,3910176,none,none,,20.2
+00-0035077,Manny Wilkins,2019,QB,Arizona State,3128814,espn_id,espn_id,3128814,0.0
+00-0036734,Pooka Williams Jr.,2021,RB,Kansas,4360326,espn_id,espn_id,4360326,0.0
+00-0036188,Antonio Williams,2020,RB,North Carolina,4040629,espn_id,espn_id,4040629,21.3
+00-0026974,Bobby Williams,2010,WR,North Alabama,,none,none,,0.0
+00-0029793,Brandon Williams,2013,TE,Oregon; Joliet Junior College,16313,none,espn_xwalk,504772,8.4
+00-0032583,Bryce Williams,2016,TE,East Carolina; Marshall,2981998,name_school,name_school,536612,0.0
+00-0032945,Duke Williams,2019,WR,Auburn; Mississippi Gulf Coast CC,3115315,none,espn_xwalk,559703,34.6
+00-0030874,Damien Williams,2014,RB,Oklahoma; Arizona Western,17359,name_school,name_school,534462,196.4
+00-0034035,Daniel Williams,2017,WR,Jackson State University,3060347,none,none,,0.0
+00-0034301,Darrel Williams,2018,RB,LSU,3115375,name_school,name_school,559594,138.39999999999998
+00-0030944,Dominique Williams,2014,RB,Wagner,17097,none,none,,0.0
+00-0032915,Dom Williams,2016,WR,Washington State,2578446,name_school,name_school,513120,0.0
+00-0025926,Edward Williams,2008,WR,Lane College,,none,none,,0.0
+00-0032287,Ed Williams,2015,WR,Fort Hays; Toledo,2469745,none,none,,0.0
+00-0030622,Fred Williams,2014,WR,St. Cloud State University,16683,none,none,,0.0
+00-0026864,Isaiah Williams,2010,WR,Maryland,13117,name_school,name_school,177962,0.0
+00-0034113,Jimmy Williams,2018,WR,East Carolina,3059733,name_school,name_school,552951,0.0
+00-0033348,Jarveon Williams,2017,RB,Texas-San Antonio,3040644,name_school,name_school,545736,0.0
+00-0027596,Jeremy Williams,2010,WR,Tulane,,name_school,name_school,177115,0.0
+00-0034894,Julian Williams,2018,WR,Florida International,3921645,espn_id,espn_id,3921645,0.0
+00-0032250,Kasen Williams,2015,WR,Washington,2578394,name_school,name_school,513075,19.7
+00-0027214,Keiland Williams,2010,RB,LSU,13727,name_school,name_school,183554,170.9
+00-0028288,LaQuan Williams,2011,WR,Maryland,14537,name_school,name_school,192069,8.600000000000001
+00-0028232,Marshall Williams,2011,WR,Wake Forest,,name_school,name_school,189268,0.0
+00-0029848,Nick Williams,2013,WR,Connecticut,16345,name_school,name_school,487887,51.4
+00-0026792,Pat Williams,2009,WR,Colorado,13027,name_school,name_school,161690,0.0
+00-0035350,Preston Williams,2019,WR,Colorado State,3915399,espn_id,espn_id,3915399,179.4
+00-0037451,Rod Williams,2022,TE,Tennessee-Martin,,none,none,,0.0
+00-0027349,Stephen Williams,2010,WR,Toledo,13490,name_school,name_school,169493,19.1
+00-0031531,Trey Williams,2015,RB,Texas A&M,2972282,name_school,name_school,532121,1.2000000000000002
+00-0036457,Ty'Son Williams,2020,RB,BYU,3895827,espn_id,espn_id,3895827,43.400000000000006
+00-0032160,Tyrell Williams,2015,WR,Western Oregon,2587819,none,none,,371.70000000000005
+00-0026691,Chris Williams,2009,WR,New Mexico State,12934,name_school,name_school,179364,0.0
+00-0032739,Wendall Williams,2016,WR,Cumberland College,3933497,none,none,,11.5
+00-0032876,Jordan Williams-Lambert,2016,WR,Ball State,2972065,name_school,name_school,531765,0.0
+00-0029464,Mike Willie,2012,WR,Arizona State,15652,name_school,name_school,504717,0.0
+00-0034258,Derrick Willies,2018,WR,Texas Tech; Trinity University Texas; Iowa,3040137,name_school,name_school,545367,9.100000000000001
+00-0035401,Damion Willis,2019,WR,Troy; East Mississippi JC,4241723,espn_id,espn_id,4241723,17.200000000000003
+00-0037028,Ryan Willis,2021,QB,Virginia Tech,3917958,espn_id,espn_id,3917958,0.0
+00-0026865,Drew Willy,2009,QB,Buffalo,,name_school,name_school,170700,0.0
+00-0030669,Albert Wilson,2014,WR,Georgia State,17051,name_school,name_school,501428,218.60000000000002
+00-0030007,Cody Wilson,2013,WR,Central Michigan,16423,name_school,name_school,482042,0.0
+00-0038797,Emanuel Wilson,2023,RB,Fort Valley State College,4887558,none,none,,205.3
+00-0030973,Evan Wilson,2014,TE,Illinois,17316,name_school,name_school,500505,0.0
+00-0030632,Greg Wilson,2013,WR,Fordham,16679,none,none,,0.0
+00-0034115,Jeff Wilson,2018,RB,North Texas,3122976,espn_id,espn_id,3122976,233.60000000000002
+00-0033434,Bobo Wilson,2017,WR,Florida State,3045380,name_school,name_school,546817,25.299999999999997
+00-0039023,Joel Wilson,2023,TE,Central Michigan,4362570,espn_id,espn_id,4362570,0.0
+00-0026505,John Parker Wilson,2009,QB,Alabama,12480,name_school,name_school,169602,0.0
+00-0034621,Shaun Wilson,2018,RB,Duke,3116563,espn_id,espn_id,3116563,6.4
+00-0033208,Travis Wilson,2017,TE,Utah,2971668,name_school,name_school,531051,0.0
+00-0027923,Rod Windsor,2010,WR,Western New Mexico University; Garden City CC,13941,none,none,,0.0
+00-0029791,Ronnie Wingo,2013,RB,Arkansas,16242,name_school,name_school,482681,1.6
+00-0038385,Dresser Winn,2023,QB,Tennessee-Martin,4250970,none,none,,0.0
+00-0030247,George Winn,2013,RB,Cincinnati,16488,name_school,name_school,377977,7.4
+00-0038883,Isaiah Winstead,2023,WR,East Carolina; Toledo; Norfolk State,4247942,espn_id,espn_id,4247942,0.0
+00-0036080,Easop Winston,2021,WR,Washington State,4245174,espn_id,espn_id,4245174,1.5
+00-0031459,Glenn Winston,2014,RB,Northwood; Michigan State,2310051,none,espn_xwalk,381910,-2.8
+00-0028335,Ryan Winterswyk,2011,TE,Boise State,,none,none,,0.0
+00-0036129,Eli Wolf,2020,TE,Georgia,3915400,espn_id,espn_id,3915400,0.0
+00-0034672,Ethan Wolf,2018,TE,Tennessee,3115360,name_school,name_school,559748,0.0
+00-0034899,John Wolford,2019,QB,Wake Forest,3124092,espn_id,espn_id,3124092,10.94
+00-0030248,Cierre Wood,2013,RB,Notre Dame,16496,name_school,name_school,480250,1.6
+00-0026019,Danny Woodhead,2008,RB,Chadron State,11788,none,none,,183.70000000000002
+00-0032658,Josh Woodrum,2016,QB,Liberty,2575214,none,none,,0.0
+WOR632160,Justin Worley,2015,QB,Tennessee,2577701,name_school,name_school,512424,0.0
+00-0031932,Chandler Worthy,2015,WR,Troy,2581319,name_school,name_school,517985,4.4
+00-0031772,Cam Worthy,2015,WR,East Carolina; Yuba College,3059735,name_school,name_school,552953,0.0
+00-0032887,J.J. Worton,2015,WR,UCF,2575035,name_school,name_school,516039,0.0
+00-0036754,Brock Wright,2021,TE,Notre Dame,4242392,espn_id,espn_id,4242392,127.4
+00-0037368,Derek Wright,2022,WR,Utah State,4569995,espn_id,espn_id,4569995,0.0
+00-0036142,Isaiah Wright,2020,WR,Temple,4044121,espn_id,espn_id,4044121,48.3
+00-0030266,Jeremy Wright,2013,RB,Louisville,16555,name_school,name_school,482912,0.0
+00-0038458,Owen Wright,2023,RB,Monmouth; William & Mary,4249616,none,none,,0.6000000000000001
+00-0021349,Rodney Wright,2009,WR,Fresno State,,none,none,,0.0
+00-0035097,Terry Wright,2019,WR,Purdue,4260393,espn_id,espn_id,4260393,0.0
+00-0029910,Timothy Wright,2013,TE,Rutgers,16285,name_school,name_school,382178,257.7
+00-0037436,Jalen Wydermyer,2022,TE,Texas A&M,4428952,espn_id,espn_id,4428952,0.0
+00-0031684,Shane Wynn,2015,WR,Indiana,2578322,name_school,name_school,513039,3.4000000000000004
+00-0036510,Kenny Yeboah,2021,TE,Mississippi,4044144,espn_id,espn_id,4044144,10.4
+00-0034319,Deon Yelder,2018,TE,Western Kentucky,3059766,name_school,name_school,552779,18.6
+00-0025955,Albert Young,2008,RB,Iowa,11940,name_school,name_school,146012,11.3
+00-0026852,Darrel Young,2009,FB,Villanova,13097,none,none,,48.10000000000001
+00-0037409,Michael Young Jr.,2022,WR,Cincinnati; Notre Dame,4258604,espn_id,espn_id,4258604,0.0
+00-0034725,Ryan Yurachek,2018,RB,Marshall,3139447,espn_id,espn_id,3139447,0.0
+00-0035208,Olamide Zaccheaus,2019,WR,Virginia,3917914,espn_id,espn_id,3917914,163.70000000000002
+00-0028489,Terrell Zachery,2011,WR,Auburn,,name_school,name_school,189742,0.0
+00-0031665,Zach Zenner,2015,RB,South Dakota State,2521161,none,none,,110.69999999999999
+00-0029962,Mike Zimmer,2014,RB,Illinois State,16169,none,none,,0.0
+00-0030260,Michael Zordich,2013,FB,Penn State,16444,name_school,name_school,386897,0.0
+00-0036100,Isaiah Zuber,2020,WR,Mississippi State; Kansas State,3916129,espn_id,espn_id,3916129,7.0
+00-0034052,Brandon Zylstra,2018,WR,Concordia College; Augustana (SD),4294520,none,none,,28.5
+00-0036534,Shane Zylstra,2021,TE,Minnesota State,4608362,none,none,,47.4

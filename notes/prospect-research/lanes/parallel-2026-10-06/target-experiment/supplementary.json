@@ -1,0 +1,7777 @@
+{
+ "addendum_sha256": "2e7606a5e00cd56dc85465daf8937e85f7e70c405564e5cf2cfcfc229c714956",
+ "population_sha256": "cb7ba4c90ae89aee8d0c1b7a868999979ce32277e2791f7a518e7150b03b7371",
+ "store_sha256": "85d9801d4f2ec3f750af80e62f13f2b20615c508b1ce85fc27fd132981afa9c0",
+ "versions": {
+  "numpy": "2.4.4",
+  "pandas": "3.0.2",
+  "scipy": "1.17.1",
+  "sklearn": "1.8.0"
+ },
+ "p75": {
+  "F1": 0.0,
+  "F2": 6.249999999999986,
+  "F3": 0.0
+ },
+ "base": {
+  "F1": {
+   "h1": {
+    "est": 0.00040313639229079545,
+    "lo": -0.005578285477969546,
+    "hi": 0.0061709761739071785,
+    "share_gt0": 0.5315
+   },
+   "h2": {
+    "est": -0.005827256073231535,
+    "lo": -0.018467366496640266,
+    "hi": 0.006119217265446557,
+    "share_gt0": 0.229
+   }
+  },
+  "F2": {
+   "h1": {
+    "est": 0.0014010300697003774,
+    "lo": -0.00514106640998429,
+    "hi": 0.008563944973697907,
+    "share_gt0": 0.636
+   },
+   "h2": {
+    "est": -5.4406955970573434e-05,
+    "lo": -0.015319242689005341,
+    "hi": 0.013430089403114522,
+    "share_gt0": 0.5125
+   }
+  },
+  "F3": {
+   "h1": {
+    "est": 0.006034853962558327,
+    "lo": -0.001214637975913137,
+    "hi": 0.01285711090799155,
+    "share_gt0": 0.9155
+   },
+   "h2": {
+    "est": 0.0031405496423025417,
+    "lo": -0.00781597970599894,
+    "hi": 0.014200565109184729,
+    "share_gt0": 0.687
+   }
+  }
+ },
+ "T1": {
+  "F1": {
+   "emb1_published": {
+    "Elite": {
+     "rating_floor": 95,
+     "n": 48,
+     "p_vor3_gt0": 0.7083,
+     "median_vor3": 117.35,
+     "mean_vor3": 161.7688,
+     "share_above_p75": 0.7083,
+     "pick_range": [
+      2,
+      55
+     ],
+     "by_pos": {
+      "QB": {
+       "n": 0,
+       "p_vor3_gt0": null
+      },
+      "RB": {
+       "n": 17,
+       "p_vor3_gt0": 0.8235
+      },
+      "WR": {
+       "n": 31,
+       "p_vor3_gt0": 0.6452
+      },
+      "TE": {
+       "n": 0,
+       "p_vor3_gt0": null
+      }
+     }
+    },
+    "Strong": {
+     "rating_floor": 85,
+     "n": 97,
+     "p_vor3_gt0": 0.6495,
+     "median_vor3": 32.4,
+     "mean_vor3": 86.4771,
+     "share_above_p75": 0.6495,
+     "pick_range": [
+      1,
+      102
+     ],
+     "by_pos": {
+      "QB": {
+       "n": 9,
+       "p_vor3_gt0": 0.6667
+      },
+      "RB": {
+       "n": 47,
+       "p_vor3_gt0": 0.6596
+      },
+      "WR": {
+       "n": 36,
+       "p_vor3_gt0": 0.6389
+      },
+      "TE": {
+       "n": 5,
+       "p_vor3_gt0": 0.6
+      }
+     }
+    },
+    "Solid": {
+     "rating_floor": 65,
+     "n": 185,
+     "p_vor3_gt0": 0.427,
+     "median_vor3": 0.0,
+     "mean_vor3": 41.1202,
+     "share_above_p75": 0.427,
+     "pick_range": [
+      2,
+      116
+     ],
+     "by_pos": {
+      "QB": {
+       "n": 19,
+       "p_vor3_gt0": 0.3158
+      },
+      "RB": {
+       "n": 20,
+       "p_vor3_gt0": 0.65
+      },
+      "WR": {
+       "n": 98,
+       "p_vor3_gt0": 0.449
+      },
+      "TE": {
+       "n": 48,
+       "p_vor3_gt0": 0.3333
+      }
+     }
+    },
+    "Dart": {
+     "rating_floor": 35,
+     "n": 289,
+     "p_vor3_gt0": 0.1522,
+     "median_vor3": 0.0,
+     "mean_vor3": 12.83,
+     "share_above_p75": 0.1522,
+     "pick_range": [
+      8,
+      224
+     ],
+     "by_pos": {
+      "QB": {
+       "n": 25,
+       "p_vor3_gt0": 0.2
+      },
+      "RB": {
+       "n": 88,
+       "p_vor3_gt0": 0.25
+      },
+      "WR": {
+       "n": 134,
+       "p_vor3_gt0": 0.097
+      },
+      "TE": {
+       "n": 42,
+       "p_vor3_gt0": 0.0952
+      }
+     }
+    },
+    "Long shot": {
+     "rating_floor": 0,
+     "n": 329,
+     "p_vor3_gt0": 0.0608,
+     "median_vor3": 0.0,
+     "mean_vor3": 4.9209,
+     "share_above_p75": 0.0608,
+     "pick_range": [
+      57,
+      262
+     ],
+     "by_pos": {
+      "QB": {
+       "n": 85,
+       "p_vor3_gt0": 0.0353
+      },
+      "RB": {
+       "n": 82,
+       "p_vor3_gt0": 0.0976
+      },
+      "WR": {
+       "n": 87,
+       "p_vor3_gt0": 0.092
+      },
+      "TE": {
+       "n": 75,
+       "p_vor3_gt0": 0.0133
+      }
+     }
+    }
+   },
+   "emb1_vs_frozen_tier_table_diffs": {},
+   "emb1_reproduces_frozen_tier_table": true,
+   "emb3": {
+    "Elite": {
+     "rating_floor": 95,
+     "n": 48,
+     "p_vor3_gt0": 0.7708,
+     "median_vor3": 130.6,
+     "mean_vor3": 166.6583,
+     "share_above_p75": 0.7708,
+     "pick_range": [
+      2,
+      67
+     ],
+     "by_pos": {
+      "QB": {
+       "n": 0,
+       "p_vor3_gt0": null
+      },
+      "RB": {
+       "n": 22,
+       "p_vor3_gt0": 0.7727
+      },
+      "WR": {
+       "n": 26,
+       "p_vor3_gt0": 0.7692
+      },
+      "TE": {
+       "n": 0,
+       "p_vor3_gt0": null
+      }
+     }
+    },
+    "Strong": {
+     "rating_floor": 85,
+     "n": 97,
+     "p_vor3_gt0": 0.6289,
+     "median_vor3": 32.4,
+     "mean_vor3": 80.4087,
+     "share_above_p75": 0.6289,
+     "pick_range": [
+      1,
+      93
+     ],
+     "by_pos": {
+      "QB": {
+       "n": 9,
+       "p_vor3_gt0": 0.6667
+      },
+      "RB": {
+       "n": 43,
+       "p_vor3_gt0": 0.6512
+      },
+      "WR": {
+       "n": 40,
+       "p_vor3_gt0": 0.625
+      },
+      "TE": {
+       "n": 5,
+       "p_vor3_gt0": 0.4
+      }
+     }
+    },
+    "Solid": {
+     "rating_floor": 65,
+     "n": 185,
+     "p_vor3_gt0": 0.427,
+     "median_vor3": 0.0,
+     "mean_vor3": 42.0162,
+     "share_above_p75": 0.427,
+     "pick_range": [
+      2,
+      106
+     ],
+     "by_pos": {
+      "QB": {
+       "n": 17,
+       "p_vor3_gt0": 0.3529
+      },
+      "RB": {
+       "n": 19,
+       "p_vor3_gt0": 0.6316
+      },
+      "WR": {
+       "n": 97,
+       "p_vor3_gt0": 0.433
+      },
+      "TE": {
+       "n": 52,
+       "p_vor3_gt0": 0.3654
+      }
+     }
+    },
+    "Dart": {
+     "rating_floor": 35,
+     "n": 287,
+     "p_vor3_gt0": 0.1603,
+     "median_vor3": 0.0,
+     "mean_vor3": 15.2911,
+     "share_above_p75": 0.1603,
+     "pick_range": [
+      6,
+      224
+     ],
+     "by_pos": {
+      "QB": {
+       "n": 23,
+       "p_vor3_gt0": 0.2174
+      },
+      "RB": {
+       "n": 81,
+       "p_vor3_gt0": 0.2593
+      },
+      "WR": {
+       "n": 153,
+       "p_vor3_gt0": 0.1176
+      },
+      "TE": {
+       "n": 30,
+       "p_vor3_gt0": 0.0667
+      }
+     }
+    },
+    "Long shot": {
+     "rating_floor": 0,
+     "n": 331,
+     "p_vor3_gt0": 0.0514,
+     "median_vor3": 0.0,
+     "mean_vor3": 3.4032,
+     "share_above_p75": 0.0514,
+     "pick_range": [
+      22,
+      262
+     ],
+     "by_pos": {
+      "QB": {
+       "n": 89,
+       "p_vor3_gt0": 0.0337
+      },
+      "RB": {
+       "n": 89,
+       "p_vor3_gt0": 0.1124
+      },
+      "WR": {
+       "n": 70,
+       "p_vor3_gt0": 0.0429
+      },
+      "TE": {
+       "n": 83,
+       "p_vor3_gt0": 0.012
+      }
+     }
+    }
+   },
+   "rows_changing_tier_emb1_to_emb3": 139,
+   "crosstab_emb1_rows_emb3_cols": {
+    "Dart": {
+     "Dart": 245,
+     "Elite": 0,
+     "Long shot": 30,
+     "Solid": 14,
+     "Strong": 0
+    },
+    "Elite": {
+     "Dart": 0,
+     "Elite": 36,
+     "Long shot": 0,
+     "Solid": 0,
+     "Strong": 12
+    },
+    "Long shot": {
+     "Dart": 33,
+     "Elite": 0,
+     "Long shot": 296,
+     "Solid": 0,
+     "Strong": 0
+    },
+    "Solid": {
+     "Dart": 9,
+     "Elite": 0,
+     "Long shot": 5,
+     "Solid": 159,
+     "Strong": 12
+    },
+    "Strong": {
+     "Dart": 0,
+     "Elite": 12,
+     "Long shot": 0,
+     "Solid": 12,
+     "Strong": 73
+    }
+   }
+  },
+  "F2": {
+   "emb1_published": {
+    "Elite": {
+     "rating_floor": 95,
+     "n": 47,
+     "p_vor3_gt0": 0.7872,
+     "median_vor3": 123.4,
+     "mean_vor3": 158.5366,
+     "share_above_p75": 0.766,
+     "pick_range": [
+      1,
+      55
+     ],
+     "by_pos": {
+      "QB": {
+       "n": 10,
+       "p_vor3_gt0": 1.0
+      },
+      "RB": {
+       "n": 17,
+       "p_vor3_gt0": 0.8235
+      },
+      "WR": {
+       "n": 20,
+       "p_vor3_gt0": 0.65
+      },
+      "TE": {
+       "n": 0,
+       "p_vor3_gt0": null
+      }
+     }
+    },
+    "Strong": {
+     "rating_floor": 85,
+     "n": 95,
+     "p_vor3_gt0": 0.6842,
+     "median_vor3": 62.26,
+     "mean_vor3": 112.6667,
+     "share_above_p75": 0.6737,
+     "pick_range": [
+      2,
+      89
+     ],
+     "by_pos": {
+      "QB": {
+       "n": 20,
+       "p_vor3_gt0": 0.5
+      },
+      "RB": {
+       "n": 42,
+       "p_vor3_gt0": 0.7381
+      },
+      "WR": {
+       "n": 28,
+       "p_vor3_gt0": 0.75
+      },
+      "TE": {
+       "n": 5,
+       "p_vor3_gt0": 0.6
+      }
+     }
+    },
+    "Solid": {
+     "rating_floor": 65,
+     "n": 190,
+     "p_vor3_gt0": 0.4158,
+     "median_vor3": 0.0,
+     "mean_vor3": 45.4501,
+     "share_above_p75": 0.4053,
+     "pick_range": [
+      4,
+      111
+     ],
+     "by_pos": {
+      "QB": {
+       "n": 25,
+       "p_vor3_gt0": 0.24
+      },
+      "RB": {
+       "n": 25,
+       "p_vor3_gt0": 0.52
+      },
+      "WR": {
+       "n": 114,
+       "p_vor3_gt0": 0.4474
+      },
+      "TE": {
+       "n": 26,
+       "p_vor3_gt0": 0.3462
+      }
+     }
+    },
+    "Dart": {
+     "rating_floor": 35,
+     "n": 286,
+     "p_vor3_gt0": 0.1678,
+     "median_vor3": 0.0,
+     "mean_vor3": 12.9841,
+     "share_above_p75": 0.1608,
+     "pick_range": [
+      43,
+      224
+     ],
+     "by_pos": {
+      "QB": {
+       "n": 16,
+       "p_vor3_gt0": 0.0
+      },
+      "RB": {
+       "n": 86,
+       "p_vor3_gt0": 0.2558
+      },
+      "WR": {
+       "n": 120,
+       "p_vor3_gt0": 0.125
+      },
+      "TE": {
+       "n": 64,
+       "p_vor3_gt0": 0.1719
+      }
+     }
+    },
+    "Long shot": {
+     "rating_floor": 0,
+     "n": 330,
+     "p_vor3_gt0": 0.0697,
+     "median_vor3": 0.0,
+     "mean_vor3": 6.9913,
+     "share_above_p75": 0.0636,
+     "pick_range": [
+      57,
+      262
+     ],
+     "by_pos": {
+      "QB": {
+       "n": 67,
+       "p_vor3_gt0": 0.0896
+      },
+      "RB": {
+       "n": 84,
+       "p_vor3_gt0": 0.0952
+      },
+      "WR": {
+       "n": 104,
+       "p_vor3_gt0": 0.0769
+      },
+      "TE": {
+       "n": 75,
+       "p_vor3_gt0": 0.0133
+      }
+     }
+    }
+   },
+   "emb1_vs_frozen_tier_table_diffs": {},
+   "emb1_reproduces_frozen_tier_table": true,
+   "emb3": {
+    "Elite": {
+     "rating_floor": 95,
+     "n": 47,
+     "p_vor3_gt0": 0.8936,
+     "median_vor3": 160.5,
+     "mean_vor3": 188.18,
+     "share_above_p75": 0.8936,
+     "pick_range": [
+      1,
+      67
+     ],
+     "by_pos": {
+      "QB": {
+       "n": 12,
+       "p_vor3_gt0": 1.0
+      },
+      "RB": {
+       "n": 20,
+       "p_vor3_gt0": 0.8
+      },
+      "WR": {
+       "n": 15,
+       "p_vor3_gt0": 0.9333
+      },
+      "TE": {
+       "n": 0,
+       "p_vor3_gt0": null
+      }
+     }
+    },
+    "Strong": {
+     "rating_floor": 85,
+     "n": 97,
+     "p_vor3_gt0": 0.5979,
+     "median_vor3": 39.6,
+     "mean_vor3": 90.4468,
+     "share_above_p75": 0.5773,
+     "pick_range": [
+      2,
+      88
+     ],
+     "by_pos": {
+      "QB": {
+       "n": 20,
+       "p_vor3_gt0": 0.45
+      },
+      "RB": {
+       "n": 39,
+       "p_vor3_gt0": 0.6923
+      },
+      "WR": {
+       "n": 33,
+       "p_vor3_gt0": 0.6061
+      },
+      "TE": {
+       "n": 5,
+       "p_vor3_gt0": 0.4
+      }
+     }
+    },
+    "Solid": {
+     "rating_floor": 65,
+     "n": 188,
+     "p_vor3_gt0": 0.4521,
+     "median_vor3": 0.0,
+     "mean_vor3": 49.7886,
+     "share_above_p75": 0.4415,
+     "pick_range": [
+      4,
+      106
+     ],
+     "by_pos": {
+      "QB": {
+       "n": 20,
+       "p_vor3_gt0": 0.2
+      },
+      "RB": {
+       "n": 25,
+       "p_vor3_gt0": 0.56
+      },
+      "WR": {
+       "n": 114,
+       "p_vor3_gt0": 0.4649
+      },
+      "TE": {
+       "n": 29,
+       "p_vor3_gt0": 0.4828
+      }
+     }
+    },
+    "Dart": {
+     "rating_floor": 35,
+     "n": 283,
+     "p_vor3_gt0": 0.1519,
+     "median_vor3": 0.0,
+     "mean_vor3": 12.3938,
+     "share_above_p75": 0.1449,
+     "pick_range": [
+      39,
+      224
+     ],
+     "by_pos": {
+      "QB": {
+       "n": 14,
+       "p_vor3_gt0": 0.0714
+      },
+      "RB": {
+       "n": 79,
+       "p_vor3_gt0": 0.2658
+      },
+      "WR": {
+       "n": 137,
+       "p_vor3_gt0": 0.1022
+      },
+      "TE": {
+       "n": 53,
+       "p_vor3_gt0": 0.1321
+      }
+     }
+    },
+    "Long shot": {
+     "rating_floor": 0,
+     "n": 333,
+     "p_vor3_gt0": 0.0721,
+     "median_vor3": 0.0,
+     "mean_vor3": 6.9825,
+     "share_above_p75": 0.0661,
+     "pick_range": [
+      57,
+      262
+     ],
+     "by_pos": {
+      "QB": {
+       "n": 72,
+       "p_vor3_gt0": 0.0833
+      },
+      "RB": {
+       "n": 91,
+       "p_vor3_gt0": 0.1099
+      },
+      "WR": {
+       "n": 87,
+       "p_vor3_gt0": 0.0805
+      },
+      "TE": {
+       "n": 83,
+       "p_vor3_gt0": 0.012
+      }
+     }
+    }
+   },
+   "rows_changing_tier_emb1_to_emb3": 123,
+   "crosstab_emb1_rows_emb3_cols": {
+    "Dart": {
+     "Dart": 250,
+     "Elite": 0,
+     "Long shot": 20,
+     "Solid": 16,
+     "Strong": 0
+    },
+    "Elite": {
+     "Dart": 0,
+     "Elite": 33,
+     "Long shot": 0,
+     "Solid": 0,
+     "Strong": 14
+    },
+    "Long shot": {
+     "Dart": 23,
+     "Elite": 0,
+     "Long shot": 307,
+     "Solid": 0,
+     "Strong": 0
+    },
+    "Solid": {
+     "Dart": 10,
+     "Elite": 2,
+     "Long shot": 6,
+     "Solid": 162,
+     "Strong": 10
+    },
+    "Strong": {
+     "Dart": 0,
+     "Elite": 12,
+     "Long shot": 0,
+     "Solid": 10,
+     "Strong": 73
+    }
+   }
+  },
+  "F3": {
+   "emb1_published": {
+    "Elite": {
+     "rating_floor": 95,
+     "n": 46,
+     "p_vor3_gt0": 0.7174,
+     "median_vor3": 71.75,
+     "mean_vor3": 128.6996,
+     "share_above_p75": 0.7174,
+     "pick_range": [
+      1,
+      55
+     ],
+     "by_pos": {
+      "QB": {
+       "n": 2,
+       "p_vor3_gt0": 0.5
+      },
+      "RB": {
+       "n": 19,
+       "p_vor3_gt0": 0.7895
+      },
+      "WR": {
+       "n": 21,
+       "p_vor3_gt0": 0.619
+      },
+      "TE": {
+       "n": 4,
+       "p_vor3_gt0": 1.0
+      }
+     }
+    },
+    "Strong": {
+     "rating_floor": 85,
+     "n": 97,
+     "p_vor3_gt0": 0.6495,
+     "median_vor3": 50.1,
+     "mean_vor3": 97.0664,
+     "share_above_p75": 0.6495,
+     "pick_range": [
+      1,
+      90
+     ],
+     "by_pos": {
+      "QB": {
+       "n": 7,
+       "p_vor3_gt0": 0.7143
+      },
+      "RB": {
+       "n": 44,
+       "p_vor3_gt0": 0.6364
+      },
+      "WR": {
+       "n": 32,
+       "p_vor3_gt0": 0.625
+      },
+      "TE": {
+       "n": 14,
+       "p_vor3_gt0": 0.7143
+      }
+     }
+    },
+    "Solid": {
+     "rating_floor": 65,
+     "n": 188,
+     "p_vor3_gt0": 0.3989,
+     "median_vor3": 0.0,
+     "mean_vor3": 36.7537,
+     "share_above_p75": 0.3989,
+     "pick_range": [
+      2,
+      137
+     ],
+     "by_pos": {
+      "QB": {
+       "n": 15,
+       "p_vor3_gt0": 0.3333
+      },
+      "RB": {
+       "n": 19,
+       "p_vor3_gt0": 0.5263
+      },
+      "WR": {
+       "n": 101,
+       "p_vor3_gt0": 0.4653
+      },
+      "TE": {
+       "n": 53,
+       "p_vor3_gt0": 0.2453
+      }
+     }
+    },
+    "Dart": {
+     "rating_floor": 35,
+     "n": 284,
+     "p_vor3_gt0": 0.1655,
+     "median_vor3": 0.0,
+     "mean_vor3": 15.2472,
+     "share_above_p75": 0.1655,
+     "pick_range": [
+      3,
+      224
+     ],
+     "by_pos": {
+      "QB": {
+       "n": 29,
+       "p_vor3_gt0": 0.2069
+      },
+      "RB": {
+       "n": 88,
+       "p_vor3_gt0": 0.25
+      },
+      "WR": {
+       "n": 130,
+       "p_vor3_gt0": 0.1308
+      },
+      "TE": {
+       "n": 37,
+       "p_vor3_gt0": 0.0541
+      }
+     }
+    },
+    "Long shot": {
+     "rating_floor": 0,
+     "n": 333,
+     "p_vor3_gt0": 0.0601,
+     "median_vor3": 0.0,
+     "mean_vor3": 4.8066,
+     "share_above_p75": 0.0601,
+     "pick_range": [
+      57,
+      262
+     ],
+     "by_pos": {
+      "QB": {
+       "n": 85,
+       "p_vor3_gt0": 0.0353
+      },
+      "RB": {
+       "n": 84,
+       "p_vor3_gt0": 0.0952
+      },
+      "WR": {
+       "n": 102,
+       "p_vor3_gt0": 0.0686
+      },
+      "TE": {
+       "n": 62,
+       "p_vor3_gt0": 0.0323
+      }
+     }
+    }
+   },
+   "emb3": {
+    "Elite": {
+     "rating_floor": 95,
+     "n": 46,
+     "p_vor3_gt0": 0.8261,
+     "median_vor3": 117.61,
+     "mean_vor3": 162.0226,
+     "share_above_p75": 0.8261,
+     "pick_range": [
+      1,
+      67
+     ],
+     "by_pos": {
+      "QB": {
+       "n": 3,
+       "p_vor3_gt0": 0.6667
+      },
+      "RB": {
+       "n": 24,
+       "p_vor3_gt0": 0.7917
+      },
+      "WR": {
+       "n": 15,
+       "p_vor3_gt0": 0.9333
+      },
+      "TE": {
+       "n": 4,
+       "p_vor3_gt0": 0.75
+      }
+     }
+    },
+    "Strong": {
+     "rating_floor": 85,
+     "n": 96,
+     "p_vor3_gt0": 0.6146,
+     "median_vor3": 38.14,
+     "mean_vor3": 78.059,
+     "share_above_p75": 0.6146,
+     "pick_range": [
+      1,
+      88
+     ],
+     "by_pos": {
+      "QB": {
+       "n": 6,
+       "p_vor3_gt0": 0.6667
+      },
+      "RB": {
+       "n": 40,
+       "p_vor3_gt0": 0.6
+      },
+      "WR": {
+       "n": 37,
+       "p_vor3_gt0": 0.5676
+      },
+      "TE": {
+       "n": 13,
+       "p_vor3_gt0": 0.7692
+      }
+     }
+    },
+    "Solid": {
+     "rating_floor": 65,
+     "n": 190,
+     "p_vor3_gt0": 0.4,
+     "median_vor3": 0.0,
+     "mean_vor3": 40.0415,
+     "share_above_p75": 0.4,
+     "pick_range": [
+      2,
+      136
+     ],
+     "by_pos": {
+      "QB": {
+       "n": 14,
+       "p_vor3_gt0": 0.3571
+      },
+      "RB": {
+       "n": 19,
+       "p_vor3_gt0": 0.5789
+      },
+      "WR": {
+       "n": 105,
+       "p_vor3_gt0": 0.4476
+      },
+      "TE": {
+       "n": 52,
+       "p_vor3_gt0": 0.25
+      }
+     }
+    },
+    "Dart": {
+     "rating_floor": 35,
+     "n": 284,
+     "p_vor3_gt0": 0.1549,
+     "median_vor3": 0.0,
+     "mean_vor3": 15.0067,
+     "share_above_p75": 0.1549,
+     "pick_range": [
+      6,
+      224
+     ],
+     "by_pos": {
+      "QB": {
+       "n": 26,
+       "p_vor3_gt0": 0.2308
+      },
+      "RB": {
+       "n": 80,
+       "p_vor3_gt0": 0.2375
+      },
+      "WR": {
+       "n": 142,
+       "p_vor3_gt0": 0.1127
+      },
+      "TE": {
+       "n": 36,
+       "p_vor3_gt0": 0.0833
+      }
+     }
+    },
+    "Long shot": {
+     "rating_floor": 0,
+     "n": 332,
+     "p_vor3_gt0": 0.0633,
+     "median_vor3": 0.0,
+     "mean_vor3": 4.0953,
+     "share_above_p75": 0.0633,
+     "pick_range": [
+      22,
+      262
+     ],
+     "by_pos": {
+      "QB": {
+       "n": 89,
+       "p_vor3_gt0": 0.0337
+      },
+      "RB": {
+       "n": 91,
+       "p_vor3_gt0": 0.1099
+      },
+      "WR": {
+       "n": 87,
+       "p_vor3_gt0": 0.069
+      },
+      "TE": {
+       "n": 65,
+       "p_vor3_gt0": 0.0308
+      }
+     }
+    }
+   },
+   "rows_changing_tier_emb1_to_emb3": 135,
+   "crosstab_emb1_rows_emb3_cols": {
+    "Dart": {
+     "Dart": 242,
+     "Elite": 0,
+     "Long shot": 25,
+     "Solid": 17,
+     "Strong": 0
+    },
+    "Elite": {
+     "Dart": 0,
+     "Elite": 31,
+     "Long shot": 0,
+     "Solid": 1,
+     "Strong": 14
+    },
+    "Long shot": {
+     "Dart": 27,
+     "Elite": 0,
+     "Long shot": 306,
+     "Solid": 0,
+     "Strong": 0
+    },
+    "Solid": {
+     "Dart": 15,
+     "Elite": 0,
+     "Long shot": 1,
+     "Solid": 162,
+     "Strong": 10
+    },
+    "Strong": {
+     "Dart": 0,
+     "Elite": 15,
+     "Long shot": 0,
+     "Solid": 10,
+     "Strong": 72
+    }
+   }
+  }
+ },
+ "S3": {
+  "F1": {
+   "occurrence_two_part": {
+    "n": 948,
+    "mean_p": 0.2453,
+    "obs_rate": 0.2532,
+    "brier": 0.1445,
+    "logloss": 0.5079,
+    "auc": 0.8214,
+    "cal_slope": 0.4443,
+    "cal_intercept_with_slope": -0.4636,
+    "citl": 0.071
+   },
+   "occurrence_pos_base_rate": {
+    "n": 948,
+    "mean_p": 0.2339,
+    "obs_rate": 0.2532,
+    "brier": 0.1848,
+    "logloss": 0.5533,
+    "auc": 0.6082,
+    "cal_slope": 1.3361,
+    "cal_intercept_with_slope": 0.4947,
+    "citl": 0.106
+   },
+   "brier_ratio_two_part_over_base": {
+    "est": 0.7817,
+    "lo": 0.7366,
+    "hi": 0.8322
+   },
+   "occurrence_reliability": [
+    {
+     "mean_p": 0.0,
+     "obs": 0.021,
+     "n": 95,
+     "p_min": 0.0,
+     "p_max": 0.0
+    },
+    {
+     "mean_p": 0.0,
+     "obs": 0.032,
+     "n": 95,
+     "p_min": 0.0,
+     "p_max": 0.0
+    },
+    {
+     "mean_p": 0.04,
+     "obs": 0.084,
+     "n": 95,
+     "p_min": 0.0,
+     "p_max": 0.056
+    },
+    {
+     "mean_p": 0.071,
+     "obs": 0.106,
+     "n": 94,
+     "p_min": 0.056,
+     "p_max": 0.093
+    },
+    {
+     "mean_p": 0.109,
+     "obs": 0.179,
+     "n": 95,
+     "p_min": 0.097,
+     "p_max": 0.14
+    },
+    {
+     "mean_p": 0.167,
+     "obs": 0.168,
+     "n": 95,
+     "p_min": 0.14,
+     "p_max": 0.186
+    },
+    {
+     "mean_p": 0.22,
+     "obs": 0.202,
+     "n": 94,
+     "p_min": 0.186,
+     "p_max": 0.267
+    },
+    {
+     "mean_p": 0.385,
+     "obs": 0.484,
+     "n": 95,
+     "p_min": 0.269,
+     "p_max": 0.5
+    },
+    {
+     "mean_p": 0.562,
+     "obs": 0.558,
+     "n": 95,
+     "p_min": 0.5,
+     "p_max": 0.7
+    },
+    {
+     "mean_p": 0.899,
+     "obs": 0.695,
+     "n": 95,
+     "p_min": 0.7,
+     "p_max": 1.0
+    }
+   ],
+   "occurrence_by_pos": {
+    "QB": {
+     "n": 138,
+     "mean_p": 0.1896,
+     "obs_rate": 0.1449,
+     "brier": 0.1105,
+     "logloss": 0.4029,
+     "auc": 0.8235,
+     "cal_slope": 0.3958,
+     "cal_intercept_with_slope": -0.8454,
+     "citl": -0.7143
+    },
+    "RB": {
+     "n": 254,
+     "mean_p": 0.2688,
+     "obs_rate": 0.3465,
+     "brier": 0.1666,
+     "logloss": 0.5502,
+     "auc": 0.8067,
+     "cal_slope": 0.6153,
+     "cal_intercept_with_slope": 0.1849,
+     "citl": 0.64
+    },
+    "WR": {
+     "n": 386,
+     "mean_p": 0.2702,
+     "obs_rate": 0.2798,
+     "brier": 0.1623,
+     "logloss": 0.5721,
+     "auc": 0.8008,
+     "cal_slope": 0.3841,
+     "cal_intercept_with_slope": -0.5467,
+     "citl": 0.076
+    },
+    "TE": {
+     "n": 170,
+     "mean_p": 0.1992,
+     "obs_rate": 0.1412,
+     "brier": 0.0985,
+     "logloss": 0.3842,
+     "auc": 0.872,
+     "cal_slope": 0.4396,
+     "cal_intercept_with_slope": -1.1586,
+     "citl": -0.7554
+    }
+   },
+   "top_decile_by_pos": {
+    "QB": {
+     "mean_p": 0.8524,
+     "obs": 0.5,
+     "n": 14
+    },
+    "RB": {
+     "mean_p": 0.8837,
+     "obs": 0.84,
+     "n": 25
+    },
+    "WR": {
+     "mean_p": 0.9296,
+     "obs": 0.6923,
+     "n": 39
+    },
+    "TE": {
+     "mean_p": 0.8768,
+     "obs": 0.6111,
+     "n": 18
+    }
+   },
+   "magnitude_c0": {
+    "deciles": [
+     {
+      "mean_pred": 0.0,
+      "mean_obs": 0.969,
+      "n": 95,
+      "share_pos": 0.021
+     },
+     {
+      "mean_pred": 0.0,
+      "mean_obs": 2.556,
+      "n": 95,
+      "share_pos": 0.032
+     },
+     {
+      "mean_pred": 1.377,
+      "mean_obs": 6.68,
+      "n": 95,
+      "share_pos": 0.074
+     },
+     {
+      "mean_pred": 4.149,
+      "mean_obs": 8.626,
+      "n": 94,
+      "share_pos": 0.117
+     },
+     {
+      "mean_pred": 7.177,
+      "mean_obs": 18.276,
+      "n": 95,
+      "share_pos": 0.158
+     },
+     {
+      "mean_pred": 10.172,
+      "mean_obs": 11.175,
+      "n": 95,
+      "share_pos": 0.147
+     },
+     {
+      "mean_pred": 16.423,
+      "mean_obs": 18.634,
+      "n": 94,
+      "share_pos": 0.255
+     },
+     {
+      "mean_pred": 30.809,
+      "mean_obs": 42.708,
+      "n": 95,
+      "share_pos": 0.442
+     },
+     {
+      "mean_pred": 61.024,
+      "mean_obs": 58.619,
+      "n": 95,
+      "share_pos": 0.558
+     },
+     {
+      "mean_pred": 133.311,
+      "mean_obs": 138.225,
+      "n": 95,
+      "share_pos": 0.726
+     }
+    ],
+    "sum_pred_over_sum_obs": {
+     "est": 0.863,
+     "lo": 0.7566,
+     "hi": 0.992
+    },
+    "mae": 32.8067
+   },
+   "magnitude_h1": {
+    "deciles": [
+     {
+      "mean_pred": 0.0,
+      "mean_obs": 0.969,
+      "n": 95,
+      "share_pos": 0.021
+     },
+     {
+      "mean_pred": 0.0,
+      "mean_obs": 2.556,
+      "n": 95,
+      "share_pos": 0.032
+     },
+     {
+      "mean_pred": 1.623,
+      "mean_obs": 5.654,
+      "n": 95,
+      "share_pos": 0.084
+     },
+     {
+      "mean_pred": 3.66,
+      "mean_obs": 9.467,
+      "n": 94,
+      "share_pos": 0.096
+     },
+     {
+      "mean_pred": 6.46,
+      "mean_obs": 14.381,
+      "n": 95,
+      "share_pos": 0.158
+     },
+     {
+      "mean_pred": 10.366,
+      "mean_obs": 17.897,
+      "n": 95,
+      "share_pos": 0.179
+     },
+     {
+      "mean_pred": 16.395,
+      "mean_obs": 13.855,
+      "n": 94,
+      "share_pos": 0.213
+     },
+     {
+      "mean_pred": 32.988,
+      "mean_obs": 49.772,
+      "n": 95,
+      "share_pos": 0.495
+     },
+     {
+      "mean_pred": 61.47,
+      "mean_obs": 57.338,
+      "n": 95,
+      "share_pos": 0.516
+     },
+     {
+      "mean_pred": 136.822,
+      "mean_obs": 134.539,
+      "n": 95,
+      "share_pos": 0.737
+     }
+    ],
+    "sum_pred_over_sum_obs": {
+     "est": 0.8804,
+     "lo": 0.7761,
+     "hi": 1.0057
+    },
+    "mae": 33.0169
+   }
+  },
+  "F2": {
+   "occurrence_two_part": {
+    "n": 948,
+    "mean_p": 0.2547,
+    "obs_rate": 0.2658,
+    "brier": 0.1465,
+    "logloss": 0.5365,
+    "auc": 0.8205,
+    "cal_slope": 0.4075,
+    "cal_intercept_with_slope": -0.4916,
+    "citl": 0.1026
+   },
+   "occurrence_pos_base_rate": {
+    "n": 948,
+    "mean_p": 0.2423,
+    "obs_rate": 0.2658,
+    "brier": 0.1928,
+    "logloss": 0.5723,
+    "auc": 0.587,
+    "cal_slope": 1.2442,
+    "cal_intercept_with_slope": 0.4005,
+    "citl": 0.1258
+   },
+   "brier_ratio_two_part_over_base": {
+    "est": 0.7596,
+    "lo": 0.7103,
+    "hi": 0.8186
+   },
+   "occurrence_reliability": [
+    {
+     "mean_p": 0.0,
+     "obs": 0.032,
+     "n": 95,
+     "p_min": 0.0,
+     "p_max": 0.0
+    },
+    {
+     "mean_p": 0.002,
+     "obs": 0.053,
+     "n": 95,
+     "p_min": 0.0,
+     "p_max": 0.031
+    },
+    {
+     "mean_p": 0.044,
+     "obs": 0.084,
+     "n": 95,
+     "p_min": 0.031,
+     "p_max": 0.059
+    },
+    {
+     "mean_p": 0.074,
+     "obs": 0.106,
+     "n": 94,
+     "p_min": 0.059,
+     "p_max": 0.097
+    },
+    {
+     "mean_p": 0.114,
+     "obs": 0.189,
+     "n": 95,
+     "p_min": 0.097,
+     "p_max": 0.14
+    },
+    {
+     "mean_p": 0.17,
+     "obs": 0.168,
+     "n": 95,
+     "p_min": 0.143,
+     "p_max": 0.189
+    },
+    {
+     "mean_p": 0.222,
+     "obs": 0.202,
+     "n": 94,
+     "p_min": 0.189,
+     "p_max": 0.269
+    },
+    {
+     "mean_p": 0.398,
+     "obs": 0.484,
+     "n": 95,
+     "p_min": 0.273,
+     "p_max": 0.5
+    },
+    {
+     "mean_p": 0.581,
+     "obs": 0.642,
+     "n": 95,
+     "p_min": 0.5,
+     "p_max": 0.75
+    },
+    {
+     "mean_p": 0.939,
+     "obs": 0.695,
+     "n": 95,
+     "p_min": 0.75,
+     "p_max": 1.0
+    }
+   ],
+   "occurrence_by_pos": {
+    "QB": {
+     "n": 138,
+     "mean_p": 0.2541,
+     "obs_rate": 0.2319,
+     "brier": 0.1243,
+     "logloss": 0.599,
+     "auc": 0.8374,
+     "cal_slope": 0.3148,
+     "cal_intercept_with_slope": -0.7547,
+     "citl": -0.4384
+    },
+    "RB": {
+     "n": 254,
+     "mean_p": 0.2688,
+     "obs_rate": 0.3465,
+     "brier": 0.1666,
+     "logloss": 0.5502,
+     "auc": 0.8067,
+     "cal_slope": 0.6153,
+     "cal_intercept_with_slope": 0.1849,
+     "citl": 0.64
+    },
+    "WR": {
+     "n": 386,
+     "mean_p": 0.2702,
+     "obs_rate": 0.2798,
+     "brier": 0.1623,
+     "logloss": 0.5721,
+     "auc": 0.8008,
+     "cal_slope": 0.3841,
+     "cal_intercept_with_slope": -0.5467,
+     "citl": 0.076
+    },
+    "TE": {
+     "n": 170,
+     "mean_p": 0.1992,
+     "obs_rate": 0.1412,
+     "brier": 0.0985,
+     "logloss": 0.3842,
+     "auc": 0.872,
+     "cal_slope": 0.4396,
+     "cal_intercept_with_slope": -1.1586,
+     "citl": -0.7554
+    }
+   },
+   "top_decile_by_pos": {
+    "QB": {
+     "mean_p": 0.9638,
+     "obs": 0.7083,
+     "n": 24
+    },
+    "RB": {
+     "mean_p": 0.9581,
+     "obs": 0.7647,
+     "n": 17
+    },
+    "WR": {
+     "mean_p": 0.9343,
+     "obs": 0.6842,
+     "n": 38
+    },
+    "TE": {
+     "mean_p": 0.9021,
+     "obs": 0.6667,
+     "n": 15
+    }
+   },
+   "magnitude_c0": {
+    "deciles": [
+     {
+      "mean_pred": 0.0,
+      "mean_obs": 5.675,
+      "n": 95,
+      "share_pos": 0.032
+     },
+     {
+      "mean_pred": 0.023,
+      "mean_obs": 5.595,
+      "n": 95,
+      "share_pos": 0.063
+     },
+     {
+      "mean_pred": 1.906,
+      "mean_obs": 6.179,
+      "n": 95,
+      "share_pos": 0.063
+     },
+     {
+      "mean_pred": 4.79,
+      "mean_obs": 12.4,
+      "n": 94,
+      "share_pos": 0.128
+     },
+     {
+      "mean_pred": 8.04,
+      "mean_obs": 10.588,
+      "n": 95,
+      "share_pos": 0.168
+     },
+     {
+      "mean_pred": 11.384,
+      "mean_obs": 18.199,
+      "n": 95,
+      "share_pos": 0.189
+     },
+     {
+      "mean_pred": 20.141,
+      "mean_obs": 20.081,
+      "n": 94,
+      "share_pos": 0.255
+     },
+     {
+      "mean_pred": 38.269,
+      "mean_obs": 59.92,
+      "n": 95,
+      "share_pos": 0.474
+     },
+     {
+      "mean_pred": 72.116,
+      "mean_obs": 69.758,
+      "n": 95,
+      "share_pos": 0.537
+     },
+     {
+      "mean_pred": 145.964,
+      "mean_obs": 137.322,
+      "n": 95,
+      "share_pos": 0.747
+     }
+    ],
+    "sum_pred_over_sum_obs": {
+     "est": 0.8755,
+     "lo": 0.779,
+     "hi": 0.9877
+    },
+    "mae": 36.5477
+   },
+   "magnitude_h1": {
+    "deciles": [
+     {
+      "mean_pred": 0.0,
+      "mean_obs": 5.675,
+      "n": 95,
+      "share_pos": 0.032
+     },
+     {
+      "mean_pred": 0.055,
+      "mean_obs": 4.823,
+      "n": 95,
+      "share_pos": 0.053
+     },
+     {
+      "mean_pred": 2.225,
+      "mean_obs": 5.953,
+      "n": 95,
+      "share_pos": 0.074
+     },
+     {
+      "mean_pred": 4.232,
+      "mean_obs": 8.503,
+      "n": 94,
+      "share_pos": 0.106
+     },
+     {
+      "mean_pred": 7.234,
+      "mean_obs": 12.993,
+      "n": 95,
+      "share_pos": 0.158
+     },
+     {
+      "mean_pred": 11.301,
+      "mean_obs": 15.911,
+      "n": 95,
+      "share_pos": 0.158
+     },
+     {
+      "mean_pred": 18.515,
+      "mean_obs": 16.469,
+      "n": 94,
+      "share_pos": 0.234
+     },
+     {
+      "mean_pred": 40.469,
+      "mean_obs": 68.12,
+      "n": 95,
+      "share_pos": 0.537
+     },
+     {
+      "mean_pred": 73.021,
+      "mean_obs": 61.511,
+      "n": 95,
+      "share_pos": 0.537
+     },
+     {
+      "mean_pred": 150.491,
+      "mean_obs": 145.681,
+      "n": 95,
+      "share_pos": 0.768
+     }
+    ],
+    "sum_pred_over_sum_obs": {
+     "est": 0.8898,
+     "lo": 0.7982,
+     "hi": 0.9972
+    },
+    "mae": 36.6554
+   }
+  },
+  "F3": {
+   "occurrence_two_part": {
+    "n": 948,
+    "mean_p": 0.2501,
+    "obs_rate": 0.2511,
+    "brier": 0.1465,
+    "logloss": 0.5209,
+    "auc": 0.8134,
+    "cal_slope": 0.412,
+    "cal_intercept_with_slope": -0.5494,
+    "citl": 0.0073
+   },
+   "occurrence_pos_base_rate": {
+    "n": 948,
+    "mean_p": 0.2383,
+    "obs_rate": 0.2511,
+    "brier": 0.1855,
+    "logloss": 0.556,
+    "auc": 0.5866,
+    "cal_slope": 1.2528,
+    "cal_intercept_with_slope": 0.359,
+    "citl": 0.0698
+   },
+   "brier_ratio_two_part_over_base": {
+    "est": 0.7896,
+    "lo": 0.7511,
+    "hi": 0.8319
+   },
+   "occurrence_reliability": [
+    {
+     "mean_p": 0.0,
+     "obs": 0.032,
+     "n": 95,
+     "p_min": 0.0,
+     "p_max": 0.0
+    },
+    {
+     "mean_p": 0.0,
+     "obs": 0.032,
+     "n": 95,
+     "p_min": 0.0,
+     "p_max": 0.0
+    },
+    {
+     "mean_p": 0.045,
+     "obs": 0.105,
+     "n": 95,
+     "p_min": 0.012,
+     "p_max": 0.063
+    },
+    {
+     "mean_p": 0.075,
+     "obs": 0.074,
+     "n": 94,
+     "p_min": 0.063,
+     "p_max": 0.097
+    },
+    {
+     "mean_p": 0.11,
+     "obs": 0.147,
+     "n": 95,
+     "p_min": 0.097,
+     "p_max": 0.136
+    },
+    {
+     "mean_p": 0.164,
+     "obs": 0.211,
+     "n": 95,
+     "p_min": 0.136,
+     "p_max": 0.186
+    },
+    {
+     "mean_p": 0.244,
+     "obs": 0.255,
+     "n": 94,
+     "p_min": 0.188,
+     "p_max": 0.31
+    },
+    {
+     "mean_p": 0.399,
+     "obs": 0.463,
+     "n": 95,
+     "p_min": 0.31,
+     "p_max": 0.48
+    },
+    {
+     "mean_p": 0.554,
+     "obs": 0.484,
+     "n": 95,
+     "p_min": 0.48,
+     "p_max": 0.684
+    },
+    {
+     "mean_p": 0.907,
+     "obs": 0.705,
+     "n": 95,
+     "p_min": 0.684,
+     "p_max": 1.0
+    }
+   ],
+   "occurrence_by_pos": {
+    "QB": {
+     "n": 138,
+     "mean_p": 0.1896,
+     "obs_rate": 0.1449,
+     "brier": 0.1105,
+     "logloss": 0.4029,
+     "auc": 0.8235,
+     "cal_slope": 0.3958,
+     "cal_intercept_with_slope": -0.8454,
+     "citl": -0.7143
+    },
+    "RB": {
+     "n": 254,
+     "mean_p": 0.2606,
+     "obs_rate": 0.3268,
+     "brier": 0.1647,
+     "logloss": 0.5427,
+     "auc": 0.8052,
+     "cal_slope": 0.5913,
+     "cal_intercept_with_slope": 0.071,
+     "citl": 0.5542
+    },
+    "WR": {
+     "n": 386,
+     "mean_p": 0.2634,
+     "obs_rate": 0.2694,
+     "brier": 0.1618,
+     "logloss": 0.5808,
+     "auc": 0.7979,
+     "cal_slope": 0.357,
+     "cal_intercept_with_slope": -0.6191,
+     "citl": 0.047
+    },
+    "TE": {
+     "n": 170,
+     "mean_p": 0.2534,
+     "obs_rate": 0.1824,
+     "brier": 0.1135,
+     "logloss": 0.4479,
+     "auc": 0.855,
+     "cal_slope": 0.4086,
+     "cal_intercept_with_slope": -1.1645,
+     "citl": -0.8485
+    }
+   },
+   "top_decile_by_pos": {
+    "QB": {
+     "mean_p": 0.8324,
+     "obs": 0.5,
+     "n": 16
+    },
+    "RB": {
+     "mean_p": 0.8767,
+     "obs": 0.84,
+     "n": 25
+    },
+    "WR": {
+     "mean_p": 0.937,
+     "obs": 0.7059,
+     "n": 34
+    },
+    "TE": {
+     "mean_p": 0.9421,
+     "obs": 0.7143,
+     "n": 21
+    }
+   },
+   "magnitude_c0": {
+    "deciles": [
+     {
+      "mean_pred": 0.0,
+      "mean_obs": 1.113,
+      "n": 95,
+      "share_pos": 0.032
+     },
+     {
+      "mean_pred": 0.0,
+      "mean_obs": 2.419,
+      "n": 95,
+      "share_pos": 0.032
+     },
+     {
+      "mean_pred": 1.721,
+      "mean_obs": 9.518,
+      "n": 95,
+      "share_pos": 0.105
+     },
+     {
+      "mean_pred": 4.033,
+      "mean_obs": 9.367,
+      "n": 94,
+      "share_pos": 0.096
+     },
+     {
+      "mean_pred": 6.683,
+      "mean_obs": 11.503,
+      "n": 95,
+      "share_pos": 0.116
+     },
+     {
+      "mean_pred": 9.321,
+      "mean_obs": 16.006,
+      "n": 95,
+      "share_pos": 0.189
+     },
+     {
+      "mean_pred": 19.365,
+      "mean_obs": 20.823,
+      "n": 94,
+      "share_pos": 0.277
+     },
+     {
+      "mean_pred": 32.088,
+      "mean_obs": 36.0,
+      "n": 95,
+      "share_pos": 0.389
+     },
+     {
+      "mean_pred": 62.302,
+      "mean_obs": 68.581,
+      "n": 95,
+      "share_pos": 0.547
+     },
+     {
+      "mean_pred": 129.294,
+      "mean_obs": 121.578,
+      "n": 95,
+      "share_pos": 0.726
+     }
+    ],
+    "sum_pred_over_sum_obs": {
+     "est": 0.892,
+     "lo": 0.7804,
+     "hi": 1.0281
+    },
+    "mae": 32.3562
+   },
+   "magnitude_h1": {
+    "deciles": [
+     {
+      "mean_pred": 0.0,
+      "mean_obs": 1.113,
+      "n": 95,
+      "share_pos": 0.032
+     },
+     {
+      "mean_pred": 0.0,
+      "mean_obs": 2.419,
+      "n": 95,
+      "share_pos": 0.032
+     },
+     {
+      "mean_pred": 1.817,
+      "mean_obs": 3.2,
+      "n": 95,
+      "share_pos": 0.063
+     },
+     {
+      "mean_pred": 3.74,
+      "mean_obs": 9.03,
+      "n": 94,
+      "share_pos": 0.117
+     },
+     {
+      "mean_pred": 6.498,
+      "mean_obs": 16.635,
+      "n": 95,
+      "share_pos": 0.147
+     },
+     {
+      "mean_pred": 10.003,
+      "mean_obs": 17.463,
+      "n": 95,
+      "share_pos": 0.179
+     },
+     {
+      "mean_pred": 19.331,
+      "mean_obs": 19.061,
+      "n": 94,
+      "share_pos": 0.266
+     },
+     {
+      "mean_pred": 33.328,
+      "mean_obs": 44.57,
+      "n": 95,
+      "share_pos": 0.453
+     },
+     {
+      "mean_pred": 62.634,
+      "mean_obs": 62.074,
+      "n": 95,
+      "share_pos": 0.505
+     },
+     {
+      "mean_pred": 132.627,
+      "mean_obs": 121.321,
+      "n": 95,
+      "share_pos": 0.716
+     }
+    ],
+    "sum_pred_over_sum_obs": {
+     "est": 0.9095,
+     "lo": 0.7993,
+     "hi": 1.0427
+    },
+    "mae": 32.4428
+   }
+  }
+ },
+ "S2": {
+  "F1": {
+   "h2_nested_minus_c0": {
+    "est": -0.0011788819936675576,
+    "lo": -0.015439085688131926,
+    "hi": 0.012872497677392404,
+    "share_gt0": 0.457
+   },
+   "h2_nested_minus_rowloo": {
+    "est": 0.004648374079563977,
+    "lo": -0.003823652051363108,
+    "hi": 0.016027622403728736,
+    "share_gt0": 0.7525
+   },
+   "metrics_h2_nested": {
+    "sp": {
+     "est": 0.5103648659030763,
+     "lo": 0.48384489464031916,
+     "hi": 0.5360154479895294
+    },
+    "ndcg": {
+     "est": 0.6836123285027758,
+     "lo": 0.6334346692732888,
+     "hi": 0.7291195247839632
+    },
+    "prec": {
+     "est": 0.5659722222222222,
+     "lo": 0.5208333333333334,
+     "hi": 0.611111111111111
+    },
+    "sp_QB": {
+     "est": 0.46132702428402494,
+     "lo": 0.27459271905717847,
+     "hi": 0.6030477788154631
+    },
+    "sp_RB": {
+     "est": 0.576719865582939,
+     "lo": 0.489749999393639,
+     "hi": 0.6488934280071863
+    },
+    "sp_WR": {
+     "est": 0.522013577539164,
+     "lo": 0.4679930913568266,
+     "hi": 0.5772084322137297
+    },
+    "sp_TE": {
+     "est": 0.42632715147206796,
+     "lo": 0.32358830237688013,
+     "hi": 0.5273375271828089
+    },
+    "mae": {
+     "est": 33.71880259503879,
+     "lo": 30.509403872986812,
+     "hi": 37.10632899676867
+    }
+   }
+  },
+  "F2": {
+   "h2_nested_minus_c0": {
+    "est": 0.004735597373635575,
+    "lo": -0.011528530332317337,
+    "hi": 0.02025990482602155,
+    "share_gt0": 0.694
+   },
+   "h2_nested_minus_rowloo": {
+    "est": 0.004790004329606148,
+    "lo": -0.004508151551485778,
+    "hi": 0.019843522049673334,
+    "share_gt0": 0.6675
+   },
+   "metrics_h2_nested": {
+    "sp": {
+     "est": 0.5159736157107774,
+     "lo": 0.4825107061046641,
+     "hi": 0.5459679935948639
+    },
+    "ndcg": {
+     "est": 0.6641151801222676,
+     "lo": 0.6223567142682338,
+     "hi": 0.7034455130683714
+    },
+    "prec": {
+     "est": 0.5694444444444444,
+     "lo": 0.5243055555555556,
+     "hi": 0.6145833333333333
+    },
+    "sp_QB": {
+     "est": 0.5340241160436097,
+     "lo": 0.374347755698937,
+     "hi": 0.6620636411108823
+    },
+    "sp_RB": {
+     "est": 0.576719865582939,
+     "lo": 0.489749999393639,
+     "hi": 0.6488934280071863
+    },
+    "sp_WR": {
+     "est": 0.522013577539164,
+     "lo": 0.4679930913568266,
+     "hi": 0.5772084322137297
+    },
+    "sp_TE": {
+     "est": 0.42632715147206796,
+     "lo": 0.32358830237688013,
+     "hi": 0.5273375271828089
+    },
+    "mae": {
+     "est": 37.50021104330648,
+     "lo": 33.94395614760319,
+     "hi": 40.98682176282657
+    }
+   }
+  },
+  "F3": {
+   "h2_nested_minus_c0": {
+    "est": 0.005817526582316097,
+    "lo": -0.005349982904203542,
+    "hi": 0.01780486025401305,
+    "share_gt0": 0.7945
+   },
+   "h2_nested_minus_rowloo": {
+    "est": 0.0026769769400135555,
+    "lo": -0.00376860040600289,
+    "hi": 0.010968101000445254,
+    "share_gt0": 0.694
+   },
+   "metrics_h2_nested": {
+    "sp": {
+     "est": 0.5036975651974444,
+     "lo": 0.4803310141837817,
+     "hi": 0.5294008896145562
+    },
+    "ndcg": {
+     "est": 0.6675897625665307,
+     "lo": 0.6165775338344276,
+     "hi": 0.719355900695289
+    },
+    "prec": {
+     "est": 0.5555555555555555,
+     "lo": 0.5243055555555555,
+     "hi": 0.5868055555555555
+    },
+    "sp_QB": {
+     "est": 0.46132702428402494,
+     "lo": 0.27459271905717847,
+     "hi": 0.6030477788154631
+    },
+    "sp_RB": {
+     "est": 0.5571351318411261,
+     "lo": 0.47255288861855504,
+     "hi": 0.6293781984235475
+    },
+    "sp_WR": {
+     "est": 0.5188195425041447,
+     "lo": 0.4609937354357398,
+     "hi": 0.5773540273102725
+    },
+    "sp_TE": {
+     "est": 0.47987026888544504,
+     "lo": 0.42259434634813625,
+     "hi": 0.538145132360832
+    },
+    "mae": {
+     "est": 33.274671477838574,
+     "lo": 30.07543626380711,
+     "hi": 36.70106961796349
+    }
+   }
+  },
+  "category": "REJECTED",
+  "alphas": [
+   {
+    "ycol": "vor3_F1",
+    "pos": "QB",
+    "folds": 11,
+    "nested_fallbacks": 3,
+    "nested_median": 100.0,
+    "rowloo_median": 10000.0,
+    "same_alpha": 2,
+    "inner_val_rows_median": 32.0
+   },
+   {
+    "ycol": "vor3_F1",
+    "pos": "RB",
+    "folds": 12,
+    "nested_fallbacks": 3,
+    "nested_median": 10000.0,
+    "rowloo_median": 316.2278,
+    "same_alpha": 2,
+    "inner_val_rows_median": 74.0
+   },
+   {
+    "ycol": "vor3_F1",
+    "pos": "TE",
+    "folds": 12,
+    "nested_fallbacks": 3,
+    "nested_median": 10000.0,
+    "rowloo_median": 10000.0,
+    "same_alpha": 7,
+    "inner_val_rows_median": 47.5
+   },
+   {
+    "ycol": "vor3_F1",
+    "pos": "WR",
+    "folds": 12,
+    "nested_fallbacks": 3,
+    "nested_median": 177.8279,
+    "rowloo_median": 316.2278,
+    "same_alpha": 4,
+    "inner_val_rows_median": 112.5
+   },
+   {
+    "ycol": "vor3_F2",
+    "pos": "QB",
+    "folds": 11,
+    "nested_fallbacks": 3,
+    "nested_median": 177.8279,
+    "rowloo_median": 10000.0,
+    "same_alpha": 3,
+    "inner_val_rows_median": 32.0
+   },
+   {
+    "ycol": "vor3_F2",
+    "pos": "RB",
+    "folds": 12,
+    "nested_fallbacks": 3,
+    "nested_median": 10000.0,
+    "rowloo_median": 316.2278,
+    "same_alpha": 2,
+    "inner_val_rows_median": 74.0
+   },
+   {
+    "ycol": "vor3_F2",
+    "pos": "TE",
+    "folds": 12,
+    "nested_fallbacks": 3,
+    "nested_median": 10000.0,
+    "rowloo_median": 10000.0,
+    "same_alpha": 7,
+    "inner_val_rows_median": 47.5
+   },
+   {
+    "ycol": "vor3_F2",
+    "pos": "WR",
+    "folds": 12,
+    "nested_fallbacks": 3,
+    "nested_median": 177.8279,
+    "rowloo_median": 316.2278,
+    "same_alpha": 4,
+    "inner_val_rows_median": 112.5
+   },
+   {
+    "ycol": "vor3_F3",
+    "pos": "QB",
+    "folds": 11,
+    "nested_fallbacks": 3,
+    "nested_median": 100.0,
+    "rowloo_median": 10000.0,
+    "same_alpha": 2,
+    "inner_val_rows_median": 32.0
+   },
+   {
+    "ycol": "vor3_F3",
+    "pos": "RB",
+    "folds": 12,
+    "nested_fallbacks": 3,
+    "nested_median": 10000.0,
+    "rowloo_median": 316.2278,
+    "same_alpha": 2,
+    "inner_val_rows_median": 74.0
+   },
+   {
+    "ycol": "vor3_F3",
+    "pos": "TE",
+    "folds": 12,
+    "nested_fallbacks": 3,
+    "nested_median": 10000.0,
+    "rowloo_median": 10000.0,
+    "same_alpha": 7,
+    "inner_val_rows_median": 47.5
+   },
+   {
+    "ycol": "vor3_F3",
+    "pos": "WR",
+    "folds": 12,
+    "nested_fallbacks": 3,
+    "nested_median": 316.2278,
+    "rowloo_median": 316.2278,
+    "same_alpha": 3,
+    "inner_val_rows_median": 112.5
+   }
+  ]
+ },
+ "S4": {
+  "feats_untouched_2020_23": {
+   "h1": {
+    "category": "NOT SUPPORTED",
+    "F1": {
+     "est": 0.001407357208932189,
+     "lo": -0.013078740617316648,
+     "hi": 0.017698939388152493,
+     "share_gt0": 0.6025
+    },
+    "F2": {
+     "est": 0.005841239546492058,
+     "lo": -0.013950757384809817,
+     "hi": 0.02461155683653668,
+     "share_gt0": 0.698
+    },
+    "F3": {
+     "est": 0.018140856303934333,
+     "lo": 0.00979746950310624,
+     "hi": 0.025458691167831074,
+     "share_gt0": 1.0
+    }
+   },
+   "h2": {
+    "category": "REJECTED",
+    "F1": {
+     "est": -0.010343449878803562,
+     "lo": -0.03731795629320803,
+     "hi": 0.016631056535600902,
+     "share_gt0": 0.265
+    },
+    "F2": {
+     "est": 0.0007529452842301165,
+     "lo": -0.03394259906659511,
+     "hi": 0.033242755330545784,
+     "share_gt0": 0.574
+    },
+    "F3": {
+     "est": 0.007036269817316282,
+     "lo": -0.011751307691179547,
+     "hi": 0.03130207091076531,
+     "share_gt0": 0.7015
+    }
+   }
+  },
+  "feats_dev_2012_19": {
+   "h1": {
+    "category": "REJECTED",
+    "F1": {
+     "est": -9.89740160299013e-05,
+     "lo": -0.004734245266407296,
+     "hi": 0.004862413307518918,
+     "share_gt0": 0.4845
+    },
+    "F2": {
+     "est": -0.0008190746686954631,
+     "lo": -0.005823802476848503,
+     "hi": 0.004545266380021012,
+     "share_gt0": 0.3875
+    },
+    "F3": {
+     "est": -1.8147208129676295e-05,
+     "lo": -0.008149393956617366,
+     "hi": 0.00785741639098577,
+     "share_gt0": 0.5005
+    }
+   },
+   "h2": {
+    "category": "REJECTED",
+    "F1": {
+     "est": -0.003569159170445521,
+     "lo": -0.016190302255948214,
+     "hi": 0.008920733433788162,
+     "share_gt0": 0.3385
+    },
+    "F2": {
+     "est": -0.0004580830760709184,
+     "lo": -0.012375535901450053,
+     "hi": 0.010862762295631814,
+     "share_gt0": 0.491
+    },
+    "F3": {
+     "est": 0.0011926895547956715,
+     "lo": -0.011444027861667427,
+     "hi": 0.013803535958110054,
+     "share_gt0": 0.5695
+    }
+   }
+  },
+  "drop_2012": {
+   "h1": {
+    "category": "NOT SUPPORTED",
+    "F1": {
+     "est": 0.0015698369623042324,
+     "lo": -0.004592798577290227,
+     "hi": 0.007629597426798187,
+     "share_gt0": 0.655
+    },
+    "F2": {
+     "est": 0.002460951261742561,
+     "lo": -0.0047855521209817595,
+     "hi": 0.009773154902936858,
+     "share_gt0": 0.7045
+    },
+    "F3": {
+     "est": 0.008797304145043911,
+     "lo": 0.002582301820044794,
+     "hi": 0.014898056108938743,
+     "share_gt0": 0.9905
+    }
+   },
+   "h2": {
+    "category": "REJECTED",
+    "F1": {
+     "est": -0.0027219804214268757,
+     "lo": -0.015462281922777595,
+     "hi": 0.009603383517431693,
+     "share_gt0": 0.366
+    },
+    "F2": {
+     "est": 0.002758205250087424,
+     "lo": -0.012590434968503591,
+     "hi": 0.015910654470098342,
+     "share_gt0": 0.6405
+    },
+    "F3": {
+     "est": 0.006745883287933094,
+     "lo": -0.0030783122620503334,
+     "hi": 0.017558190398915145,
+     "share_gt0": 0.861
+    }
+   }
+  },
+  "drop_2013": {
+   "h1": {
+    "category": "NOT SUPPORTED",
+    "F1": {
+     "est": 0.0005109206135950693,
+     "lo": -0.005824550444341616,
+     "hi": 0.006792958482007542,
+     "share_gt0": 0.532
+    },
+    "F2": {
+     "est": 4.276762510113158e-05,
+     "lo": -0.006696113208633172,
+     "hi": 0.007335807710945005,
+     "share_gt0": 0.481
+    },
+    "F3": {
+     "est": 0.007076846058205461,
+     "lo": -0.0005868089800641033,
+     "hi": 0.014257357594842564,
+     "share_gt0": 0.9345
+    }
+   },
+   "h2": {
+    "category": "REJECTED",
+    "F1": {
+     "est": -0.007277109130389855,
+     "lo": -0.020474223716882237,
+     "hi": 0.0061246949562649014,
+     "share_gt0": 0.1825
+    },
+    "F2": {
+     "est": -0.00018063210379568796,
+     "lo": -0.01601263510321291,
+     "hi": 0.014261461519418282,
+     "share_gt0": 0.5095
+    },
+    "F3": {
+     "est": 0.001916153796077927,
+     "lo": -0.00944227236080621,
+     "hi": 0.01388318589163703,
+     "share_gt0": 0.591
+    }
+   }
+  },
+  "drop_2014": {
+   "h1": {
+    "category": "NOT SUPPORTED",
+    "F1": {
+     "est": 0.0001977960464842635,
+     "lo": -0.006191175199888544,
+     "hi": 0.006491508706478281,
+     "share_gt0": 0.4915
+    },
+    "F2": {
+     "est": 0.0007474436293921285,
+     "lo": -0.006330477446787179,
+     "hi": 0.008320267922728124,
+     "share_gt0": 0.554
+    },
+    "F3": {
+     "est": 0.0062753059824399715,
+     "lo": -0.0012863388819868106,
+     "hi": 0.013799080591656793,
+     "share_gt0": 0.901
+    }
+   },
+   "h2": {
+    "category": "REJECTED",
+    "F1": {
+     "est": -0.007899568675462638,
+     "lo": -0.020644232024703044,
+     "hi": 0.005159405128755843,
+     "share_gt0": 0.154
+    },
+    "F2": {
+     "est": -0.001307595094522652,
+     "lo": -0.016957059820486387,
+     "hi": 0.013096557744736937,
+     "share_gt0": 0.459
+    },
+    "F3": {
+     "est": 0.0002690068609397144,
+     "lo": -0.010116638527733398,
+     "hi": 0.011276473827029045,
+     "share_gt0": 0.5035
+    }
+   }
+  },
+  "drop_2015": {
+   "h1": {
+    "category": "NOT SUPPORTED",
+    "F1": {
+     "est": 0.0007974902700774116,
+     "lo": -0.0055340214879475635,
+     "hi": 0.007183338222266871,
+     "share_gt0": 0.5595
+    },
+    "F2": {
+     "est": 0.001824962479829495,
+     "lo": -0.005449543586287561,
+     "hi": 0.00924954514871502,
+     "share_gt0": 0.643
+    },
+    "F3": {
+     "est": 0.0062477964679597394,
+     "lo": -0.0013271244498032704,
+     "hi": 0.013791648248617025,
+     "share_gt0": 0.8995
+    }
+   },
+   "h2": {
+    "category": "REJECTED",
+    "F1": {
+     "est": -0.008892807215940757,
+     "lo": -0.021297145390091685,
+     "hi": 0.0037289767604525527,
+     "share_gt0": 0.1145
+    },
+    "F2": {
+     "est": -0.0022830809843455324,
+     "lo": -0.01755764093047527,
+     "hi": 0.01165577367735844,
+     "share_gt0": 0.417
+    },
+    "F3": {
+     "est": 0.0013619470349872048,
+     "lo": -0.009774972581435509,
+     "hi": 0.012951623132594481,
+     "share_gt0": 0.572
+    }
+   }
+  },
+  "drop_2016": {
+   "h1": {
+    "category": "NOT SUPPORTED",
+    "F1": {
+     "est": 0.0011370140561713067,
+     "lo": -0.005091283462067781,
+     "hi": 0.007352329639660234,
+     "share_gt0": 0.6
+    },
+    "F2": {
+     "est": 0.0019829525195991186,
+     "lo": -0.005164854886159786,
+     "hi": 0.009490320851548158,
+     "share_gt0": 0.6625
+    },
+    "F3": {
+     "est": 0.007925575478317959,
+     "lo": 0.0007827063189879728,
+     "hi": 0.014624193130395301,
+     "share_gt0": 0.965
+    }
+   },
+   "h2": {
+    "category": "REJECTED",
+    "F1": {
+     "est": -0.003933480529676034,
+     "lo": -0.017417530723665368,
+     "hi": 0.008907662061045468,
+     "share_gt0": 0.318
+    },
+    "F2": {
+     "est": 0.0025382811697946843,
+     "lo": -0.012734334045849992,
+     "hi": 0.015900359964754758,
+     "share_gt0": 0.6315
+    },
+    "F3": {
+     "est": 0.004628431258836597,
+     "lo": -0.0069610125040551986,
+     "hi": 0.016509860100460582,
+     "share_gt0": 0.748
+    }
+   }
+  },
+  "drop_2017": {
+   "h1": {
+    "category": "REJECTED",
+    "F1": {
+     "est": -0.00020131665794598746,
+     "lo": -0.006627160863770927,
+     "hi": 0.006166232695948875,
+     "share_gt0": 0.4545
+    },
+    "F2": {
+     "est": 0.002777200626650812,
+     "lo": -0.004153766378614489,
+     "hi": 0.009836126916674902,
+     "share_gt0": 0.7335
+    },
+    "F3": {
+     "est": 0.005069093835219383,
+     "lo": -0.002672132278539696,
+     "hi": 0.012331217217863148,
+     "share_gt0": 0.8615
+    }
+   },
+   "h2": {
+    "category": "REJECTED",
+    "F1": {
+     "est": -0.006715758019701964,
+     "lo": -0.020367742807727164,
+     "hi": 0.006840323914580371,
+     "share_gt0": 0.2005
+    },
+    "F2": {
+     "est": -0.001883663833263968,
+     "lo": -0.017134179067953732,
+     "hi": 0.012792078561885674,
+     "share_gt0": 0.43
+    },
+    "F3": {
+     "est": 0.003337630502661514,
+     "lo": -0.008483427003710398,
+     "hi": 0.015511239463068673,
+     "share_gt0": 0.68
+    }
+   }
+  },
+  "drop_2018": {
+   "h1": {
+    "category": "REJECTED",
+    "F1": {
+     "est": -0.0009935954005634144,
+     "lo": -0.0068521701204186675,
+     "hi": 0.004973992445167591,
+     "share_gt0": 0.373
+    },
+    "F2": {
+     "est": 0.0013611313134447654,
+     "lo": -0.00582978677157553,
+     "hi": 0.008900487665762596,
+     "share_gt0": 0.6105
+    },
+    "F3": {
+     "est": 0.004747400537863625,
+     "lo": -0.0028589090504044,
+     "hi": 0.011907636583355929,
+     "share_gt0": 0.8505
+    }
+   },
+   "h2": {
+    "category": "REJECTED",
+    "F1": {
+     "est": -0.004515920452537226,
+     "lo": -0.018161370814299572,
+     "hi": 0.008534345978433442,
+     "share_gt0": 0.28
+    },
+    "F2": {
+     "est": 0.0004023054502112438,
+     "lo": -0.015334334699067698,
+     "hi": 0.014826633697445397,
+     "share_gt0": 0.5345
+    },
+    "F3": {
+     "est": 0.004423729000299122,
+     "lo": -0.0071796547675772,
+     "hi": 0.016436445603474455,
+     "share_gt0": 0.728
+    }
+   }
+  },
+  "drop_2019": {
+   "h1": {
+    "category": "NOT SUPPORTED",
+    "F1": {
+     "est": 0.0005721164542548976,
+     "lo": -0.005903003832307742,
+     "hi": 0.00675137891197461,
+     "share_gt0": 0.5465
+    },
+    "F2": {
+     "est": 0.0016254527297672537,
+     "lo": -0.005636979239700898,
+     "hi": 0.009160273782191848,
+     "share_gt0": 0.634
+    },
+    "F3": {
+     "est": 0.006541691865007839,
+     "lo": -0.0014674093711181415,
+     "hi": 0.01378489132262318,
+     "share_gt0": 0.9135
+    }
+   },
+   "h2": {
+    "category": "REJECTED",
+    "F1": {
+     "est": -0.006303676433652211,
+     "lo": -0.01952492151311974,
+     "hi": 0.0071818631031373035,
+     "share_gt0": 0.2145
+    },
+    "F2": {
+     "est": -0.00018549286912984813,
+     "lo": -0.015885890513713186,
+     "hi": 0.014222812579609294,
+     "share_gt0": 0.5015
+    },
+    "F3": {
+     "est": 0.003858240914871974,
+     "lo": -0.007740730926552145,
+     "hi": 0.015984394582363448,
+     "share_gt0": 0.702
+    }
+   }
+  },
+  "drop_2020": {
+   "h1": {
+    "category": "REJECTED",
+    "F1": {
+     "est": -0.0010973540039796346,
+     "lo": -0.0070361992704700334,
+     "hi": 0.004659196919707346,
+     "share_gt0": 0.3565
+    },
+    "F2": {
+     "est": -0.0006022792804850175,
+     "lo": -0.006865119189789293,
+     "hi": 0.006028974915028025,
+     "share_gt0": 0.423
+    },
+    "F3": {
+     "est": 0.004369753537628332,
+     "lo": -0.0029972499805430166,
+     "hi": 0.011155706319308394,
+     "share_gt0": 0.8285
+    }
+   },
+   "h2": {
+    "category": "REJECTED",
+    "F1": {
+     "est": -0.0065463439308226816,
+     "lo": -0.019794946769816996,
+     "hi": 0.006955080344900464,
+     "share_gt0": 0.203
+    },
+    "F2": {
+     "est": -0.00015137302508809838,
+     "lo": -0.015855968973297534,
+     "hi": 0.014288687905139093,
+     "share_gt0": 0.5035
+    },
+    "F3": {
+     "est": 0.003751318979383628,
+     "lo": -0.007807709979582855,
+     "hi": 0.01589910992300255,
+     "share_gt0": 0.697
+    }
+   }
+  },
+  "drop_2021": {
+   "h1": {
+    "category": "REJECTED",
+    "F1": {
+     "est": -0.001384775326483986,
+     "lo": -0.007058887971552306,
+     "hi": 0.004104579040277189,
+     "share_gt0": 0.319
+    },
+    "F2": {
+     "est": -0.0010292334313202756,
+     "lo": -0.006969277508562027,
+     "hi": 0.0050640750035788745,
+     "share_gt0": 0.3765
+    },
+    "F3": {
+     "est": 0.00396694170815822,
+     "lo": -0.003117099699711047,
+     "hi": 0.010440181107100759,
+     "share_gt0": 0.8135
+    }
+   },
+   "h2": {
+    "category": "REJECTED",
+    "F1": {
+     "est": -0.00919149778088265,
+     "lo": -0.021097738413832622,
+     "hi": 0.002694068563973953,
+     "share_gt0": 0.099
+    },
+    "F2": {
+     "est": -0.0028809004088802825,
+     "lo": -0.017922251859598216,
+     "hi": 0.010546288649162365,
+     "share_gt0": 0.386
+    },
+    "F3": {
+     "est": -0.0009719151162708918,
+     "lo": -0.01046806599134301,
+     "hi": 0.00856489630428633,
+     "share_gt0": 0.438
+    }
+   }
+  },
+  "drop_2022": {
+   "h1": {
+    "category": "NOT SUPPORTED",
+    "F1": {
+     "est": 0.0023367323903983176,
+     "lo": -0.002845749033779888,
+     "hi": 0.007935689591594266,
+     "share_gt0": 0.7495
+    },
+    "F2": {
+     "est": 0.0028382228219848604,
+     "lo": -0.003691587585153037,
+     "hi": 0.009922329868584823,
+     "share_gt0": 0.751
+    },
+    "F3": {
+     "est": 0.005715210893629822,
+     "lo": -0.002154871876923046,
+     "hi": 0.013350428825230475,
+     "share_gt0": 0.8815
+    }
+   },
+   "h2": {
+    "category": "REJECTED",
+    "F1": {
+     "est": -0.0045622883227334965,
+     "lo": -0.017759633355759752,
+     "hi": 0.008203078627308394,
+     "share_gt0": 0.299
+    },
+    "F2": {
+     "est": -0.0036829856105201216,
+     "lo": -0.01826290093421492,
+     "hi": 0.009227911177216816,
+     "share_gt0": 0.3485
+    },
+    "F3": {
+     "est": 0.00312877845841969,
+     "lo": -0.008501161096072442,
+     "hi": 0.015642644793673412,
+     "share_gt0": 0.6755
+    }
+   }
+  },
+  "drop_2023": {
+   "h1": {
+    "category": "NOT SUPPORTED",
+    "F1": {
+     "est": 0.001392771303177069,
+     "lo": -0.0045460110762707276,
+     "hi": 0.007573076999407967,
+     "share_gt0": 0.635
+    },
+    "F2": {
+     "est": 0.0027827885406976945,
+     "lo": -0.0037490216268066257,
+     "hi": 0.009922108432880026,
+     "share_gt0": 0.746
+    },
+    "F3": {
+     "est": 0.005685327041225657,
+     "lo": -0.00218040864170499,
+     "hi": 0.013323873804381436,
+     "share_gt0": 0.8805
+    }
+   },
+   "h2": {
+    "category": "REJECTED",
+    "F1": {
+     "est": -0.001366641965552029,
+     "lo": -0.01220700538505443,
+     "hi": 0.009767610209712596,
+     "share_gt0": 0.4205
+    },
+    "F2": {
+     "est": 0.006204048587805958,
+     "lo": -0.004595165786415745,
+     "hi": 0.016847220145227892,
+     "share_gt0": 0.8235
+    },
+    "F3": {
+     "est": 0.005237390729490926,
+     "lo": -0.005812695064931597,
+     "hi": 0.0172369461534646,
+     "share_gt0": 0.781
+    }
+   }
+  }
+ },
+ "S6": {
+  "F1": {
+   "per_class": {
+    "2020": {
+     "xc0": 0.6086,
+     "xc0d": 0.6086,
+     "k0": 0.5219,
+     "c0": 0.5215,
+     "n": 62
+    },
+    "2021": {
+     "xc0": 0.4175,
+     "xc0d": 0.471,
+     "k0": 0.5349,
+     "c0": 0.474,
+     "n": 57
+    },
+    "2022": {
+     "xc0": 0.5163,
+     "xc0d": 0.6042,
+     "k0": 0.4737,
+     "c0": 0.4958,
+     "n": 63
+    },
+    "2023": {
+     "xc0": 0.4757,
+     "xc0d": 0.4481,
+     "k0": 0.4146,
+     "c0": 0.5458,
+     "n": 71
+    }
+   },
+   "xc0_minus_k0pre_2021_23": {
+    "est": -0.004585605115482579,
+    "lo": -0.06407426109325227,
+    "hi": 0.05490305086228712
+   },
+   "xc0_jackknife_drop_class": {
+    "2021": 0.0518,
+    "2022": -0.0282,
+    "2023": -0.0374
+   },
+   "xc0d_minus_k0pre_2021_23": {
+    "est": 0.03335764661071942,
+    "lo": -0.03143010711031544,
+    "hi": 0.09814540033175428
+   },
+   "xc0d_jackknife_drop_class": {
+    "2021": 0.082,
+    "2022": -0.0152,
+    "2023": 0.0333
+   },
+   "cost_of_unknown_slot_2021_23": {
+    "xc0": -0.0354,
+    "xc0d": 0.0025
+   }
+  },
+  "F2": {
+   "per_class": {
+    "2020": {
+     "xc0": 0.6679,
+     "xc0d": 0.6679,
+     "k0": 0.5392,
+     "c0": 0.5827,
+     "n": 62
+    },
+    "2021": {
+     "xc0": 0.4366,
+     "xc0d": 0.5149,
+     "k0": 0.5565,
+     "c0": 0.4781,
+     "n": 57
+    },
+    "2022": {
+     "xc0": 0.4319,
+     "xc0d": 0.4893,
+     "k0": 0.4573,
+     "c0": 0.3871,
+     "n": 63
+    },
+    "2023": {
+     "xc0": 0.4797,
+     "xc0d": 0.4469,
+     "k0": 0.4554,
+     "c0": 0.5522,
+     "n": 71
+    }
+   },
+   "xc0_minus_k0pre_2021_23": {
+    "est": -0.040339724088411945,
+    "lo": -0.08839178323492529,
+    "hi": 0.00771233505810139
+   },
+   "xc0_jackknife_drop_class": {
+    "2021": -0.0006,
+    "2022": -0.0478,
+    "2023": -0.0726
+   },
+   "xc0d_minus_k0pre_2021_23": {
+    "est": -0.006065236695290725,
+    "lo": -0.030619358647215045,
+    "hi": 0.018488885256633596
+   },
+   "xc0d_jackknife_drop_class": {
+    "2021": 0.0117,
+    "2022": -0.0251,
+    "2023": -0.0048
+   },
+   "cost_of_unknown_slot_2021_23": {
+    "xc0": -0.0231,
+    "xc0d": 0.0112
+   }
+  },
+  "F3": {
+   "per_class": {
+    "2020": {
+     "xc0": 0.5964,
+     "xc0d": 0.5964,
+     "k0": 0.508,
+     "c0": 0.5219,
+     "n": 62
+    },
+    "2021": {
+     "xc0": 0.4327,
+     "xc0d": 0.5046,
+     "k0": 0.5375,
+     "c0": 0.4541,
+     "n": 57
+    },
+    "2022": {
+     "xc0": 0.5058,
+     "xc0d": 0.6068,
+     "k0": 0.414,
+     "c0": 0.4711,
+     "n": 63
+    },
+    "2023": {
+     "xc0": 0.4857,
+     "xc0d": 0.4654,
+     "k0": 0.45,
+     "c0": 0.5297,
+     "n": 71
+    }
+   },
+   "xc0_minus_k0pre_2021_23": {
+    "est": 0.007581622308417228,
+    "lo": -0.05797844082403882,
+    "hi": 0.07314168544087328
+   },
+   "xc0_jackknife_drop_class": {
+    "2021": 0.0638,
+    "2022": -0.0346,
+    "2023": -0.0065
+   },
+   "xc0d_minus_k0pre_2021_23": {
+    "est": 0.058406769546962146,
+    "lo": -0.016849676566310406,
+    "hi": 0.1336632156602347
+   },
+   "xc0d_jackknife_drop_class": {
+    "2021": 0.1041,
+    "2022": -0.0088,
+    "2023": 0.0799
+   },
+   "cost_of_unknown_slot_2021_23": {
+    "xc0": -0.0102,
+    "xc0d": 0.0406
+   }
+  },
+  "usable": {
+   "F1": {
+    "xc0": true,
+    "xc0d": true
+   },
+   "F2": {
+    "xc0": true,
+    "xc0d": true
+   },
+   "F3": {
+    "xc0": true,
+    "xc0d": true
+   }
+  }
+ },
+ "S5": {
+  "wide_rule": "drafted QB/RB/WR/TE, classes 2024-2026, pick <= 64, not already listed",
+  "members": [
+   {
+    "name": "Christian McCaffrey",
+    "class": 2017,
+    "panel": "frozen_panel",
+    "found": true,
+    "pos": "RB",
+    "pick": 8,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 234.2,
+     "c0": 147.7333,
+     "h1": 178.0333,
+     "occ": 1.0,
+     "h2": 152.3608,
+     "rating_published": 99.3671,
+     "tier_published": "Elite",
+     "rating_emb3": 97.6266,
+     "tier_emb3": "Elite",
+     "rating_h1": 98.8397,
+     "rating_h2": 97.8376,
+     "vor3": 665.6,
+     "frozen_rating_C0": 99.3671
+    },
+    "F2": {
+     "c0_emb1": 234.2,
+     "c0": 147.7333,
+     "h1": 178.0333,
+     "occ": 1.0,
+     "h2": 152.3608,
+     "rating_published": 99.2616,
+     "tier_published": "Elite",
+     "rating_emb3": 96.6772,
+     "tier_emb3": "Elite",
+     "rating_h1": 98.1013,
+     "rating_h2": 96.8882,
+     "vor3": 665.6,
+     "frozen_rating_C0": 99.2616
+    },
+    "F3": {
+     "c0_emb1": 225.72,
+     "c0": 144.9111,
+     "h1": 174.3944,
+     "occ": 1.0,
+     "h2": 149.5401,
+     "rating_published": 99.3671,
+     "tier_published": "Elite",
+     "rating_emb3": 97.943,
+     "tier_emb3": "Elite",
+     "rating_h1": 98.8397,
+     "rating_h2": 97.943,
+     "vor3": 653.0
+    }
+   },
+   {
+    "name": "Saquon Barkley",
+    "class": 2018,
+    "panel": "frozen_panel",
+    "found": true,
+    "pos": "RB",
+    "pick": 2,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 309.62,
+     "c0": 183.75,
+     "h1": 183.75,
+     "occ": 1.0,
+     "h2": 185.3109,
+     "rating_published": 99.789,
+     "tier_published": "Elite",
+     "rating_emb3": 99.2089,
+     "tier_emb3": "Elite",
+     "rating_h1": 99.5253,
+     "rating_h2": 98.9979,
+     "vor3": 345.3,
+     "frozen_rating_C0": 99.789
+    },
+    "F2": {
+     "c0_emb1": 309.62,
+     "c0": 183.75,
+     "h1": 183.75,
+     "occ": 1.0,
+     "h2": 185.3109,
+     "rating_published": 99.789,
+     "tier_published": "Elite",
+     "rating_emb3": 98.365,
+     "tier_emb3": "Elite",
+     "rating_h1": 98.7869,
+     "rating_h2": 98.154,
+     "vor3": 345.3,
+     "frozen_rating_C0": 99.789
+    },
+    "F3": {
+     "c0_emb1": 302.26,
+     "c0": 176.15,
+     "h1": 178.2,
+     "occ": 1.0,
+     "h2": 177.6883,
+     "rating_published": 99.789,
+     "tier_published": "Elite",
+     "rating_emb3": 99.2089,
+     "tier_emb3": "Elite",
+     "rating_h1": 99.2089,
+     "rating_h2": 98.9979,
+     "vor3": 340.4
+    }
+   },
+   {
+    "name": "Justin Jefferson",
+    "class": 2020,
+    "panel": "frozen_panel",
+    "found": true,
+    "pos": "WR",
+    "pick": 22,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 107.495,
+     "c0": 93.7941,
+     "h1": 78.3717,
+     "occ": 0.5385,
+     "h2": 103.6385,
+     "rating_published": 92.5633,
+     "tier_published": "Strong",
+     "rating_emb3": 90.7173,
+     "tier_emb3": "Strong",
+     "rating_h1": 88.8713,
+     "rating_h2": 90.8755,
+     "vor3": 538.76,
+     "frozen_rating_C0": 92.5633
+    },
+    "F2": {
+     "c0_emb1": 107.495,
+     "c0": 93.7941,
+     "h1": 78.3717,
+     "occ": 0.5385,
+     "h2": 103.6486,
+     "rating_published": 91.403,
+     "tier_published": "Strong",
+     "rating_emb3": 88.6076,
+     "tier_emb3": "Strong",
+     "rating_h1": 86.5506,
+     "rating_h2": 89.1878,
+     "vor3": 538.76,
+     "frozen_rating_C0": 91.403
+    },
+    "F3": {
+     "c0_emb1": 97.615,
+     "c0": 85.6294,
+     "h1": 75.7974,
+     "occ": 0.5385,
+     "h2": 94.9092,
+     "rating_published": 91.403,
+     "tier_published": "Strong",
+     "rating_emb3": 89.4515,
+     "tier_emb3": "Strong",
+     "rating_h1": 88.1329,
+     "rating_h2": 89.9262,
+     "vor3": 509.7
+    }
+   },
+   {
+    "name": "CeeDee Lamb",
+    "class": 2020,
+    "panel": "frozen_panel",
+    "found": true,
+    "pos": "WR",
+    "pick": 17,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 107.495,
+     "c0": 93.7941,
+     "h1": 116.4379,
+     "occ": 0.8,
+     "h2": 109.1101,
+     "rating_published": 92.5633,
+     "tier_published": "Strong",
+     "rating_emb3": 90.7173,
+     "tier_emb3": "Strong",
+     "rating_h1": 93.9346,
+     "rating_h2": 92.3523,
+     "vor3": 311.6,
+     "frozen_rating_C0": 92.5633
+    },
+    "F2": {
+     "c0_emb1": 107.495,
+     "c0": 93.7941,
+     "h1": 116.4379,
+     "occ": 0.8,
+     "h2": 109.1235,
+     "rating_published": 91.403,
+     "tier_published": "Strong",
+     "rating_emb3": 88.6076,
+     "tier_emb3": "Strong",
+     "rating_h1": 92.0359,
+     "rating_h2": 90.8755,
+     "vor3": 311.6,
+     "frozen_rating_C0": 91.403
+    },
+    "F3": {
+     "c0_emb1": 97.615,
+     "c0": 85.6294,
+     "h1": 93.8444,
+     "occ": 0.6667,
+     "h2": 99.5589,
+     "rating_published": 91.403,
+     "tier_published": "Strong",
+     "rating_emb3": 89.4515,
+     "tier_emb3": "Strong",
+     "rating_h1": 90.2954,
+     "rating_h2": 90.8755,
+     "vor3": 282.54
+    }
+   },
+   {
+    "name": "Jonathan Taylor",
+    "class": 2020,
+    "panel": "frozen_panel",
+    "found": true,
+    "pos": "RB",
+    "pick": 41,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 100.08,
+     "c0": 109.6918,
+     "h1": 125.67,
+     "occ": 0.7143,
+     "h2": 116.6126,
+     "rating_published": 91.192,
+     "tier_published": "Strong",
+     "rating_emb3": 93.038,
+     "tier_emb3": "Strong",
+     "rating_h1": 95.0949,
+     "rating_h2": 93.4072,
+     "vor3": 335.7,
+     "frozen_rating_C0": 91.192
+    },
+    "F2": {
+     "c0_emb1": 100.08,
+     "c0": 109.6918,
+     "h1": 125.67,
+     "occ": 0.7143,
+     "h2": 116.6126,
+     "rating_published": 89.3987,
+     "tier_published": "Strong",
+     "rating_emb3": 91.5612,
+     "tier_emb3": "Strong",
+     "rating_h1": 93.6181,
+     "rating_h2": 92.0359,
+     "vor3": 335.7,
+     "frozen_rating_C0": 89.3987
+    },
+    "F3": {
+     "c0_emb1": 97.2133,
+     "c0": 106.3981,
+     "h1": 122.5236,
+     "occ": 0.7143,
+     "h2": 113.2035,
+     "rating_published": 90.77,
+     "tier_published": "Strong",
+     "rating_emb3": 92.7743,
+     "tier_emb3": "Strong",
+     "rating_h1": 95.5169,
+     "rating_h2": 93.6181,
+     "vor3": 333.7
+    }
+   },
+   {
+    "name": "Ja'Marr Chase",
+    "class": 2021,
+    "panel": "frozen_panel",
+    "found": true,
+    "pos": "WR",
+    "pick": 5,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 122.2016,
+     "c0": 118.4818,
+     "h1": 152.1476,
+     "occ": 1.0,
+     "h2": 130.9717,
+     "rating_published": 95.7278,
+     "tier_published": "Elite",
+     "rating_emb3": 94.5148,
+     "tier_emb3": "Strong",
+     "rating_h1": 97.7848,
+     "rating_h2": 95.8333,
+     "vor3": 371.36,
+     "frozen_rating_C0": 95.7278
+    },
+    "F2": {
+     "c0_emb1": 122.2016,
+     "c0": 118.4818,
+     "h1": 152.1476,
+     "occ": 1.0,
+     "h2": 130.9841,
+     "rating_published": 94.673,
+     "tier_published": "Strong",
+     "rating_emb3": 93.2489,
+     "tier_emb3": "Strong",
+     "rating_h1": 96.9409,
+     "rating_h2": 94.884,
+     "vor3": 371.36,
+     "frozen_rating_C0": 94.673
+    },
+    "F3": {
+     "c0_emb1": 111.0114,
+     "c0": 108.5273,
+     "h1": 146.425,
+     "occ": 1.0,
+     "h2": 119.9729,
+     "rating_published": 94.884,
+     "tier_published": "Strong",
+     "rating_emb3": 93.5654,
+     "tier_emb3": "Strong",
+     "rating_h1": 97.7848,
+     "rating_h2": 95.3059,
+     "vor3": 351.06
+    }
+   },
+   {
+    "name": "Bijan Robinson",
+    "class": 2023,
+    "panel": "frozen_panel",
+    "found": true,
+    "pos": "RB",
+    "pick": 8,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 309.62,
+     "c0": 309.62,
+     "h1": 309.62,
+     "occ": 1.0,
+     "h2": 312.9709,
+     "rating_published": 99.789,
+     "tier_published": "Elite",
+     "rating_emb3": 99.7363,
+     "tier_emb3": "Elite",
+     "rating_h1": 99.7363,
+     "rating_h2": 99.7363,
+     "vor3": 540.0,
+     "frozen_rating_C0": 99.789
+    },
+    "F2": {
+     "c0_emb1": 309.62,
+     "c0": 309.62,
+     "h1": 309.62,
+     "occ": 1.0,
+     "h2": 312.9675,
+     "rating_published": 99.789,
+     "tier_published": "Elite",
+     "rating_emb3": 99.7363,
+     "tier_emb3": "Elite",
+     "rating_h1": 99.7363,
+     "rating_h2": 99.7363,
+     "vor3": 540.0,
+     "frozen_rating_C0": 99.789
+    },
+    "F3": {
+     "c0_emb1": 302.26,
+     "c0": 302.26,
+     "h1": 302.26,
+     "occ": 1.0,
+     "h2": 305.248,
+     "rating_published": 99.789,
+     "tier_published": "Elite",
+     "rating_emb3": 99.7363,
+     "tier_emb3": "Elite",
+     "rating_h1": 99.7363,
+     "rating_h2": 99.7363,
+     "vor3": 522.2
+    }
+   },
+   {
+    "name": "Trent Richardson",
+    "class": 2012,
+    "panel": "frozen_panel",
+    "found": true,
+    "pos": "RB",
+    "pick": 3,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 152.2875,
+     "c0": 187.1364,
+     "h1": 205.85,
+     "occ": 1.0,
+     "h2": 197.7279,
+     "rating_published": 98.365,
+     "tier_published": "Elite",
+     "rating_emb3": 99.4726,
+     "tier_emb3": "Elite",
+     "rating_h1": 99.6308,
+     "rating_h2": 99.4198,
+     "vor3": 111.3,
+     "frozen_rating_C0": 98.365
+    },
+    "F2": {
+     "c0_emb1": 152.2875,
+     "c0": 187.1364,
+     "h1": 205.85,
+     "occ": 1.0,
+     "h2": 197.7279,
+     "rating_published": 97.4156,
+     "tier_published": "Elite",
+     "rating_emb3": 98.6287,
+     "tier_emb3": "Elite",
+     "rating_h1": 98.9979,
+     "rating_h2": 98.7869,
+     "vor3": 111.3,
+     "frozen_rating_C0": 97.4156
+    },
+    "F3": {
+     "c0_emb1": 149.4875,
+     "c0": 185.1818,
+     "h1": 203.7,
+     "occ": 1.0,
+     "h2": 196.5921,
+     "rating_published": 98.5759,
+     "tier_published": "Elite",
+     "rating_emb3": 99.4726,
+     "tier_emb3": "Elite",
+     "rating_h1": 99.6308,
+     "rating_h2": 99.4198,
+     "vor3": 108.3
+    }
+   },
+   {
+    "name": "Corey Davis",
+    "class": 2017,
+    "panel": "frozen_panel",
+    "found": true,
+    "pos": "WR",
+    "pick": 5,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 149.8625,
+     "c0": 171.2714,
+     "h1": 173.64,
+     "occ": 1.0,
+     "h2": 180.8359,
+     "rating_published": 98.154,
+     "tier_published": "Elite",
+     "rating_emb3": 98.6814,
+     "tier_emb3": "Elite",
+     "rating_h1": 98.154,
+     "rating_h2": 98.8924,
+     "vor3": 44.8,
+     "frozen_rating_C0": 98.154
+    },
+    "F2": {
+     "c0_emb1": 149.8625,
+     "c0": 171.2714,
+     "h1": 173.64,
+     "occ": 1.0,
+     "h2": 180.8369,
+     "rating_published": 97.2046,
+     "tier_published": "Elite",
+     "rating_emb3": 97.8376,
+     "tier_emb3": "Elite",
+     "rating_h1": 97.4156,
+     "rating_h2": 98.0485,
+     "vor3": 44.8,
+     "frozen_rating_C0": 97.2046
+    },
+    "F3": {
+     "c0_emb1": 137.3375,
+     "c0": 156.9571,
+     "h1": 159.34,
+     "occ": 1.0,
+     "h2": 165.5511,
+     "rating_published": 97.8376,
+     "tier_published": "Elite",
+     "rating_emb3": 98.6814,
+     "tier_emb3": "Elite",
+     "rating_h1": 98.154,
+     "rating_h2": 98.4705,
+     "vor3": 41.8
+    }
+   },
+   {
+    "name": "John Ross",
+    "class": 2017,
+    "panel": "frozen_panel",
+    "found": true,
+    "pos": "WR",
+    "pick": 9,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 149.8625,
+     "c0": 171.2714,
+     "h1": 173.64,
+     "occ": 1.0,
+     "h2": 174.2299,
+     "rating_published": 98.154,
+     "tier_published": "Elite",
+     "rating_emb3": 98.6814,
+     "tier_emb3": "Elite",
+     "rating_h1": 98.154,
+     "rating_h2": 98.4705,
+     "vor3": 0.0,
+     "frozen_rating_C0": 98.154
+    },
+    "F2": {
+     "c0_emb1": 149.8625,
+     "c0": 171.2714,
+     "h1": 173.64,
+     "occ": 1.0,
+     "h2": 174.2348,
+     "rating_published": 97.2046,
+     "tier_published": "Elite",
+     "rating_emb3": 97.8376,
+     "tier_emb3": "Elite",
+     "rating_h1": 97.4156,
+     "rating_h2": 97.6266,
+     "vor3": 0.0,
+     "frozen_rating_C0": 97.2046
+    },
+    "F3": {
+     "c0_emb1": 137.3375,
+     "c0": 156.9571,
+     "h1": 159.34,
+     "occ": 1.0,
+     "h2": 159.6358,
+     "rating_published": 97.8376,
+     "tier_published": "Elite",
+     "rating_emb3": 98.6814,
+     "tier_emb3": "Elite",
+     "rating_h1": 98.154,
+     "rating_h2": 98.154,
+     "vor3": 0.0
+    }
+   },
+   {
+    "name": "N'Keal Harry",
+    "class": 2019,
+    "panel": "frozen_panel",
+    "found": true,
+    "pos": "WR",
+    "pick": 32,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 54.8765,
+     "c0": 55.6376,
+     "h1": 58.8281,
+     "occ": 0.5,
+     "h2": 66.3383,
+     "rating_published": 82.4895,
+     "tier_published": "Solid",
+     "rating_emb3": 83.7553,
+     "tier_emb3": "Solid",
+     "rating_h1": 84.7574,
+     "rating_h2": 85.9177,
+     "vor3": 0.0,
+     "frozen_rating_C0": 82.4895
+    },
+    "F2": {
+     "c0_emb1": 54.8961,
+     "c0": 55.6614,
+     "h1": 58.8519,
+     "occ": 0.5,
+     "h2": 66.3772,
+     "rating_published": 79.6414,
+     "tier_published": "Solid",
+     "rating_emb3": 81.2236,
+     "tier_emb3": "Solid",
+     "rating_h1": 81.5928,
+     "rating_h2": 83.4916,
+     "vor3": 0.0,
+     "frozen_rating_C0": 79.6414
+    },
+    "F3": {
+     "c0_emb1": 50.4075,
+     "c0": 50.88,
+     "h1": 56.98,
+     "occ": 0.5,
+     "h2": 60.5085,
+     "rating_published": 81.1181,
+     "tier_published": "Solid",
+     "rating_emb3": 81.962,
+     "tier_emb3": "Solid",
+     "rating_h1": 84.4409,
+     "rating_h2": 84.1245,
+     "vor3": 0.0
+    }
+   },
+   {
+    "name": "Jalen Reagor",
+    "class": 2020,
+    "panel": "frozen_panel",
+    "found": true,
+    "pos": "WR",
+    "pick": 21,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 107.495,
+     "c0": 93.7941,
+     "h1": 78.3717,
+     "occ": 0.5385,
+     "h2": 104.8216,
+     "rating_published": 92.5633,
+     "tier_published": "Strong",
+     "rating_emb3": 90.7173,
+     "tier_emb3": "Strong",
+     "rating_h1": 88.8713,
+     "rating_h2": 91.2975,
+     "vor3": 0.0,
+     "frozen_rating_C0": 92.5633
+    },
+    "F2": {
+     "c0_emb1": 107.495,
+     "c0": 93.7941,
+     "h1": 78.3717,
+     "occ": 0.5385,
+     "h2": 104.8351,
+     "rating_published": 91.403,
+     "tier_published": "Strong",
+     "rating_emb3": 88.6076,
+     "tier_emb3": "Strong",
+     "rating_h1": 86.5506,
+     "rating_h2": 89.7152,
+     "vor3": 0.0,
+     "frozen_rating_C0": 91.403
+    },
+    "F3": {
+     "c0_emb1": 97.615,
+     "c0": 85.6294,
+     "h1": 75.7974,
+     "occ": 0.5385,
+     "h2": 95.8507,
+     "rating_published": 91.403,
+     "tier_published": "Strong",
+     "rating_emb3": 89.4515,
+     "tier_emb3": "Strong",
+     "rating_h1": 88.1329,
+     "rating_h2": 90.0316,
+     "vor3": 0.0
+    }
+   },
+   {
+    "name": "Kadarius Toney",
+    "class": 2021,
+    "panel": "frozen_panel",
+    "found": true,
+    "pos": "WR",
+    "pick": 20,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 122.2016,
+     "c0": 106.5368,
+     "h1": 121.7181,
+     "occ": 0.8,
+     "h2": 98.2824,
+     "rating_published": 95.7278,
+     "tier_published": "Elite",
+     "rating_emb3": 92.1941,
+     "tier_emb3": "Strong",
+     "rating_h1": 94.8312,
+     "rating_h2": 90.2426,
+     "vor3": 0.0,
+     "frozen_rating_C0": 95.7278
+    },
+    "F2": {
+     "c0_emb1": 122.2016,
+     "c0": 106.5368,
+     "h1": 121.7181,
+     "occ": 0.8,
+     "h2": 98.2774,
+     "rating_published": 94.673,
+     "tier_published": "Strong",
+     "rating_emb3": 90.6118,
+     "tier_emb3": "Strong",
+     "rating_h1": 93.2489,
+     "rating_h2": 88.1329,
+     "vor3": 0.0,
+     "frozen_rating_C0": 94.673
+    },
+    "F3": {
+     "c0_emb1": 111.0114,
+     "c0": 97.3895,
+     "h1": 97.6167,
+     "occ": 0.6667,
+     "h2": 89.8208,
+     "rating_published": 94.884,
+     "tier_published": "Strong",
+     "rating_emb3": 91.0338,
+     "tier_emb3": "Strong",
+     "rating_h1": 91.0865,
+     "rating_h2": 88.8713,
+     "vor3": 0.0
+    }
+   },
+   {
+    "name": "Zach Wilson",
+    "class": 2021,
+    "panel": "frozen_panel",
+    "found": true,
+    "pos": "QB",
+    "pick": 2,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 31.8674,
+     "c0": 31.1513,
+     "h1": 36.5052,
+     "occ": 0.625,
+     "h2": 35.3085,
+     "rating_published": 76.3186,
+     "tier_published": "Solid",
+     "rating_emb3": 75.8966,
+     "tier_emb3": "Solid",
+     "rating_h1": 77.3207,
+     "rating_h2": 74.8418,
+     "vor3": 0.0,
+     "frozen_rating_C0": 76.3186
+    },
+    "F2": {
+     "c0_emb1": 113.1117,
+     "c0": 102.7978,
+     "h1": 147.9875,
+     "occ": 1.0,
+     "h2": 109.2591,
+     "rating_published": 93.1435,
+     "tier_published": "Strong",
+     "rating_emb3": 89.7679,
+     "tier_emb3": "Strong",
+     "rating_h1": 96.1498,
+     "rating_h2": 90.981,
+     "vor3": 0.0,
+     "frozen_rating_C0": 93.1435
+    },
+    "F3": {
+     "c0_emb1": 31.8674,
+     "c0": 31.1513,
+     "h1": 36.5052,
+     "occ": 0.625,
+     "h2": 35.3085,
+     "rating_published": 75.5802,
+     "tier_published": "Solid",
+     "rating_emb3": 75.5802,
+     "tier_emb3": "Solid",
+     "rating_h1": 76.8987,
+     "rating_h2": 75.1582,
+     "vor3": 0.0
+    }
+   },
+   {
+    "name": "Eric Ebron",
+    "class": 2014,
+    "panel": "frozen_panel",
+    "found": true,
+    "pos": "TE",
+    "pick": 10,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 76.2,
+     "c0": 85.38,
+     "h1": 89.625,
+     "occ": 1.0,
+     "h2": 93.0338,
+     "rating_published": 88.5549,
+     "tier_published": "Strong",
+     "rating_emb3": 89.557,
+     "tier_emb3": "Strong",
+     "rating_h1": 90.6118,
+     "rating_h2": 90.1371,
+     "vor3": 0.0,
+     "frozen_rating_C0": 88.5549
+    },
+    "F2": {
+     "c0_emb1": 76.2,
+     "c0": 85.38,
+     "h1": 89.625,
+     "occ": 1.0,
+     "h2": 93.0338,
+     "rating_published": 86.3397,
+     "tier_published": "Strong",
+     "rating_emb3": 87.2363,
+     "tier_emb3": "Strong",
+     "rating_h1": 88.5021,
+     "rating_h2": 88.0274,
+     "vor3": 0.0,
+     "frozen_rating_C0": 86.3397
+    },
+    "F3": {
+     "c0_emb1": 140.6,
+     "c0": 140.6,
+     "h1": 140.6,
+     "occ": 1.0,
+     "h2": 146.348,
+     "rating_published": 98.0485,
+     "tier_published": "Elite",
+     "rating_emb3": 97.5211,
+     "tier_emb3": "Elite",
+     "rating_h1": 97.6266,
+     "rating_h2": 97.7321,
+     "vor3": 20.7
+    }
+   },
+   {
+    "name": "Tyreek Hill",
+    "class": 2016,
+    "panel": "frozen_panel",
+    "found": true,
+    "pos": "WR",
+    "pick": 165,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 4.6475,
+     "c0": 5.9343,
+     "h1": 6.8604,
+     "occ": 0.1429,
+     "h2": 11.7691,
+     "rating_published": 37.3418,
+     "tier_published": "Dart",
+     "rating_emb3": 41.0338,
+     "tier_emb3": "Dart",
+     "rating_h1": 46.4135,
+     "rating_h2": 53.5338,
+     "vor3": 343.9,
+     "frozen_rating_C0": 37.3418
+    },
+    "F2": {
+     "c0_emb1": 4.6624,
+     "c0": 5.9547,
+     "h1": 6.8782,
+     "occ": 0.1429,
+     "h2": 11.7994,
+     "rating_published": 35.3376,
+     "tier_published": "Dart",
+     "rating_emb3": 38.1857,
+     "tier_emb3": "Dart",
+     "rating_h1": 44.6203,
+     "rating_h2": 49.9473,
+     "vor3": 344.9,
+     "frozen_rating_C0": 35.3376
+    },
+    "F3": {
+     "c0_emb1": 4.0684,
+     "c0": 5.2955,
+     "h1": 5.9407,
+     "occ": 0.1429,
+     "h2": 11.0122,
+     "rating_published": 36.7089,
+     "tier_published": "Dart",
+     "rating_emb3": 39.8734,
+     "tier_emb3": "Dart",
+     "rating_h1": 43.4599,
+     "rating_h2": 52.057,
+     "vor3": 331.7
+    }
+   },
+   {
+    "name": "Cooper Kupp",
+    "class": 2017,
+    "panel": "frozen_panel",
+    "found": true,
+    "pos": "WR",
+    "pick": 69,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 25.5844,
+     "c0": 33.42,
+     "h1": 39.7994,
+     "occ": 0.4,
+     "h2": 29.2109,
+     "rating_published": 70.8333,
+     "tier_published": "Solid",
+     "rating_emb3": 77.4262,
+     "tier_emb3": "Solid",
+     "rating_h1": 78.27,
+     "rating_h2": 72.6266,
+     "vor3": 167.1,
+     "frozen_rating_C0": 70.8333
+    },
+    "F2": {
+     "c0_emb1": 25.5844,
+     "c0": 33.42,
+     "h1": 39.7994,
+     "occ": 0.4,
+     "h2": 29.205,
+     "rating_published": 67.6688,
+     "tier_published": "Solid",
+     "rating_emb3": 74.2616,
+     "tier_emb3": "Solid",
+     "rating_h1": 75.0,
+     "rating_h2": 69.673,
+     "vor3": 167.1,
+     "frozen_rating_C0": 67.6688
+    },
+    "F3": {
+     "c0_emb1": 21.5478,
+     "c0": 25.8047,
+     "h1": 35.2497,
+     "occ": 0.4,
+     "h2": 21.9268,
+     "rating_published": 64.8207,
+     "tier_published": "Dart",
+     "rating_emb3": 69.7785,
+     "tier_emb3": "Solid",
+     "rating_h1": 76.1076,
+     "rating_h2": 65.4536,
+     "vor3": 162.1
+    }
+   },
+   {
+    "name": "George Kittle",
+    "class": 2017,
+    "panel": "frozen_panel",
+    "found": true,
+    "pos": "TE",
+    "pick": 146,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 1.884,
+     "c0": 2.4789,
+     "h1": 2.1829,
+     "occ": 0.0526,
+     "h2": 1.8581,
+     "rating_published": 24.6308,
+     "tier_published": "Long shot",
+     "rating_emb3": 28.6392,
+     "tier_emb3": "Long shot",
+     "rating_h1": 27.057,
+     "rating_h2": 29.3776,
+     "vor3": 210.1,
+     "frozen_rating_C0": 24.6308
+    },
+    "F2": {
+     "c0_emb1": 1.884,
+     "c0": 2.4789,
+     "h1": 2.1829,
+     "occ": 0.0526,
+     "h2": 1.8581,
+     "rating_published": 22.3101,
+     "tier_published": "Long shot",
+     "rating_emb3": 26.846,
+     "tier_emb3": "Long shot",
+     "rating_h1": 24.5253,
+     "rating_h2": 27.2679,
+     "vor3": 210.1,
+     "frozen_rating_C0": 22.3101
+    },
+    "F3": {
+     "c0_emb1": 3.048,
+     "c0": 4.0105,
+     "h1": 5.7375,
+     "occ": 0.0833,
+     "h2": 3.1436,
+     "rating_published": 26.2131,
+     "tier_published": "Long shot",
+     "rating_emb3": 35.2848,
+     "tier_emb3": "Dart",
+     "rating_h1": 42.9852,
+     "rating_h2": 32.1203,
+     "vor3": 296.9
+    }
+   },
+   {
+    "name": "Austin Ekeler",
+    "class": 2017,
+    "panel": "frozen_panel",
+    "found": false
+   },
+   {
+    "name": "Mark Andrews",
+    "class": 2018,
+    "panel": "frozen_panel",
+    "found": true,
+    "pos": "TE",
+    "pick": 86,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 17.469,
+     "c0": 19.22,
+     "h1": 17.6405,
+     "occ": 0.2174,
+     "h2": 18.8616,
+     "rating_published": 65.6118,
+     "tier_published": "Solid",
+     "rating_emb3": 66.9831,
+     "tier_emb3": "Solid",
+     "rating_h1": 66.5612,
+     "rating_h2": 64.2932,
+     "vor3": 90.9,
+     "frozen_rating_C0": 65.6118
+    },
+    "F2": {
+     "c0_emb1": 17.469,
+     "c0": 19.22,
+     "h1": 17.6405,
+     "occ": 0.2174,
+     "h2": 18.8616,
+     "rating_published": 62.7637,
+     "tier_published": "Dart",
+     "rating_emb3": 64.0295,
+     "tier_emb3": "Dart",
+     "rating_h1": 64.8734,
+     "rating_h2": 60.7068,
+     "vor3": 90.9,
+     "frozen_rating_C0": 62.7637
+    },
+    "F3": {
+     "c0_emb1": 25.6966,
+     "c0": 27.6733,
+     "h1": 27.8306,
+     "occ": 0.3333,
+     "h2": 27.2383,
+     "rating_published": 68.5654,
+     "tier_published": "Solid",
+     "rating_emb3": 72.5738,
+     "tier_emb3": "Solid",
+     "rating_h1": 71.519,
+     "rating_h2": 69.884,
+     "vor3": 154.8
+    }
+   },
+   {
+    "name": "Amon-Ra St. Brown",
+    "class": 2021,
+    "panel": "frozen_panel",
+    "found": true,
+    "pos": "WR",
+    "pick": 112,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 11.2882,
+     "c0": 10.9386,
+     "h1": 11.4842,
+     "occ": 0.1558,
+     "h2": 23.0474,
+     "rating_published": 53.7975,
+     "tier_published": "Dart",
+     "rating_emb3": 56.0127,
+     "tier_emb3": "Dart",
+     "rating_h1": 57.7532,
+     "rating_h2": 68.7236,
+     "vor3": 387.44,
+     "frozen_rating_C0": 53.7975
+    },
+    "F2": {
+     "c0_emb1": 11.2987,
+     "c0": 10.9504,
+     "h1": 11.4971,
+     "occ": 0.1558,
+     "h2": 23.075,
+     "rating_published": 50.9494,
+     "tier_published": "Dart",
+     "rating_emb3": 53.481,
+     "tier_emb3": "Dart",
+     "rating_h1": 55.4325,
+     "rating_h2": 65.4536,
+     "vor3": 387.44,
+     "frozen_rating_C0": 50.9494
+    },
+    "F3": {
+     "c0_emb1": 9.9171,
+     "c0": 9.6162,
+     "h1": 10.0868,
+     "occ": 0.1558,
+     "h2": 20.6855,
+     "rating_published": 51.4768,
+     "tier_published": "Dart",
+     "rating_emb3": 55.4852,
+     "tier_emb3": "Dart",
+     "rating_h1": 55.6435,
+     "rating_h2": 63.6603,
+     "vor3": 367.14
+    }
+   },
+   {
+    "name": "Kyren Williams",
+    "class": 2022,
+    "panel": "frozen_panel",
+    "found": true,
+    "pos": "RB",
+    "pick": 164,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 12.3174,
+     "c0": 12.1377,
+     "h1": 10.0559,
+     "occ": 0.1395,
+     "h2": 27.438,
+     "rating_published": 58.7025,
+     "tier_published": "Dart",
+     "rating_emb3": 60.9705,
+     "tier_emb3": "Dart",
+     "rating_h1": 54.4831,
+     "rating_h2": 71.8882,
+     "vor3": 244.0,
+     "frozen_rating_C0": 58.7025
+    },
+    "F2": {
+     "c0_emb1": 12.3174,
+     "c0": 12.1377,
+     "h1": 10.0559,
+     "occ": 0.1395,
+     "h2": 27.4417,
+     "rating_published": 55.8544,
+     "tier_published": "Dart",
+     "rating_emb3": 58.0169,
+     "tier_emb3": "Dart",
+     "rating_h1": 52.1624,
+     "rating_h2": 68.5127,
+     "vor3": 244.0,
+     "frozen_rating_C0": 55.8544
+    },
+    "F3": {
+     "c0_emb1": 11.3836,
+     "c0": 11.2198,
+     "h1": 10.2419,
+     "occ": 0.1395,
+     "h2": 25.9928,
+     "rating_published": 57.8059,
+     "tier_published": "Dart",
+     "rating_emb3": 59.7046,
+     "tier_emb3": "Dart",
+     "rating_h1": 56.2764,
+     "rating_h2": 68.8291,
+     "vor3": 235.9
+    }
+   },
+   {
+    "name": "Brock Purdy",
+    "class": 2022,
+    "panel": "frozen_panel",
+    "found": true,
+    "pos": "QB",
+    "pick": 262,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 0.0,
+     "c0": 0.0,
+     "h1": 0.0,
+     "occ": 0.0,
+     "h2": 0.0,
+     "rating_published": 9.1772,
+     "tier_published": "Long shot",
+     "rating_emb3": 10.1266,
+     "tier_emb3": "Long shot",
+     "rating_h1": 10.1266,
+     "rating_h2": 11.9198,
+     "vor3": 25.24,
+     "frozen_rating_C0": 9.1772
+    },
+    "F2": {
+     "c0_emb1": 0.0,
+     "c0": 0.0,
+     "h1": 0.0,
+     "occ": 0.0,
+     "h2": 5.4352,
+     "rating_published": 8.9662,
+     "tier_published": "Long shot",
+     "rating_emb3": 9.5464,
+     "tier_emb3": "Long shot",
+     "rating_h1": 9.5464,
+     "rating_h2": 35.2848,
+     "vor3": 187.94,
+     "frozen_rating_C0": 8.9662
+    },
+    "F3": {
+     "c0_emb1": 0.0,
+     "c0": 0.0,
+     "h1": 0.0,
+     "occ": 0.0,
+     "h2": 0.0,
+     "rating_published": 9.0717,
+     "tier_published": "Long shot",
+     "rating_emb3": 10.0211,
+     "tier_emb3": "Long shot",
+     "rating_h1": 10.0211,
+     "rating_h2": 11.8671,
+     "vor3": 25.24
+    }
+   },
+   {
+    "name": "Puka Nacua",
+    "class": 2023,
+    "panel": "frozen_panel",
+    "found": true,
+    "pos": "WR",
+    "pick": 177,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 3.4791,
+     "c0": 3.8844,
+     "h1": 4.6559,
+     "occ": 0.0976,
+     "h2": 0.0,
+     "rating_published": 28.7447,
+     "tier_published": "Long shot",
+     "rating_emb3": 35.443,
+     "tier_emb3": "Dart",
+     "rating_h1": 38.8713,
+     "rating_h2": 11.9198,
+     "vor3": 446.54,
+     "frozen_rating_C0": 28.7447
+    },
+    "F2": {
+     "c0_emb1": 3.5013,
+     "c0": 3.896,
+     "h1": 4.6698,
+     "occ": 0.0976,
+     "h2": 0.0,
+     "rating_published": 27.7954,
+     "tier_published": "Long shot",
+     "rating_emb3": 33.6498,
+     "tier_emb3": "Long shot",
+     "rating_h1": 36.3397,
+     "rating_h2": 11.1287,
+     "vor3": 446.54,
+     "frozen_rating_C0": 27.7954
+    },
+    "F3": {
+     "c0_emb1": 2.7386,
+     "c0": 3.0888,
+     "h1": 3.7023,
+     "occ": 0.0976,
+     "h2": 0.0,
+     "rating_published": 24.789,
+     "tier_published": "Long shot",
+     "rating_emb3": 27.2152,
+     "tier_emb3": "Long shot",
+     "rating_h1": 35.8122,
+     "rating_h2": 11.8671,
+     "vor3": 430.8
+    }
+   },
+   {
+    "name": "Tyler Boyd",
+    "class": 2016,
+    "panel": "frozen_panel",
+    "found": true,
+    "pos": "WR",
+    "pick": 55,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 45.179,
+     "c0": 28.7448,
+     "h1": 35.1175,
+     "occ": 0.3667,
+     "h2": 47.9673,
+     "rating_published": 79.6941,
+     "tier_published": "Solid",
+     "rating_emb3": 73.8924,
+     "tier_emb3": "Solid",
+     "rating_h1": 76.4241,
+     "rating_h2": 80.327,
+     "vor3": 82.3,
+     "frozen_rating_C0": 79.6941
+    },
+    "F2": {
+     "c0_emb1": 45.2046,
+     "c0": 28.7448,
+     "h1": 35.1633,
+     "occ": 0.3667,
+     "h2": 47.9877,
+     "rating_published": 76.4241,
+     "tier_published": "Solid",
+     "rating_emb3": 71.2553,
+     "tier_emb3": "Solid",
+     "rating_h1": 73.9979,
+     "rating_h2": 77.1624,
+     "vor3": 82.3,
+     "frozen_rating_C0": 76.4241
+    },
+    "F3": {
+     "c0_emb1": 40.7579,
+     "c0": 25.1114,
+     "h1": 33.5467,
+     "occ": 0.3333,
+     "h2": 42.8511,
+     "rating_published": 78.7447,
+     "tier_published": "Solid",
+     "rating_emb3": 69.1456,
+     "tier_emb3": "Solid",
+     "rating_h1": 75.3692,
+     "rating_h2": 78.9557,
+     "vor3": 79.3
+    }
+   },
+   {
+    "name": "Devin Singletary",
+    "class": 2019,
+    "panel": "frozen_panel",
+    "found": true,
+    "pos": "RB",
+    "pick": 74,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 80.415,
+     "c0": 66.0,
+     "h1": 62.8571,
+     "occ": 0.5333,
+     "h2": 67.6086,
+     "rating_published": 89.2932,
+     "tier_published": "Strong",
+     "rating_emb3": 87.4473,
+     "tier_emb3": "Strong",
+     "rating_h1": 86.1814,
+     "rating_h2": 86.5506,
+     "vor3": 53.6,
+     "frozen_rating_C0": 89.2932
+    },
+    "F2": {
+     "c0_emb1": 80.415,
+     "c0": 66.0,
+     "h1": 62.8571,
+     "occ": 0.5333,
+     "h2": 67.6086,
+     "rating_published": 86.9726,
+     "tier_published": "Strong",
+     "rating_emb3": 85.0211,
+     "tier_emb3": "Strong",
+     "rating_h1": 83.2278,
+     "rating_h2": 84.23,
+     "vor3": 53.6,
+     "frozen_rating_C0": 86.9726
+    },
+    "F3": {
+     "c0_emb1": 76.6864,
+     "c0": 62.688,
+     "h1": 57.9941,
+     "occ": 0.5,
+     "h2": 64.2201,
+     "rating_published": 88.2384,
+     "tier_published": "Strong",
+     "rating_emb3": 86.1814,
+     "tier_emb3": "Strong",
+     "rating_h1": 84.5992,
+     "rating_h2": 85.6013,
+     "vor3": 50.1
+    }
+   },
+   {
+    "name": "Darrell Henderson",
+    "class": 2019,
+    "panel": "frozen_panel",
+    "found": true,
+    "pos": "RB",
+    "pick": 70,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 80.415,
+     "c0": 66.0,
+     "h1": 63.4615,
+     "occ": 0.5385,
+     "h2": 67.7406,
+     "rating_published": 89.2932,
+     "tier_published": "Strong",
+     "rating_emb3": 87.4473,
+     "tier_emb3": "Strong",
+     "rating_h1": 86.3924,
+     "rating_h2": 86.6561,
+     "vor3": 16.8,
+     "frozen_rating_C0": 89.2932
+    },
+    "F2": {
+     "c0_emb1": 80.415,
+     "c0": 66.0,
+     "h1": 63.4615,
+     "occ": 0.5385,
+     "h2": 67.7406,
+     "rating_published": 86.9726,
+     "tier_published": "Strong",
+     "rating_emb3": 85.0211,
+     "tier_emb3": "Strong",
+     "rating_h1": 83.4388,
+     "rating_h2": 84.3354,
+     "vor3": 16.8,
+     "frozen_rating_C0": 86.9726
+    },
+    "F3": {
+     "c0_emb1": 76.6864,
+     "c0": 62.688,
+     "h1": 62.4552,
+     "occ": 0.5385,
+     "h2": 64.3528,
+     "rating_published": 88.2384,
+     "tier_published": "Strong",
+     "rating_emb3": 86.1814,
+     "tier_emb3": "Strong",
+     "rating_h1": 86.2869,
+     "rating_h2": 85.7068,
+     "vor3": 14.8
+    }
+   },
+   {
+    "name": "Michael Pittman",
+    "class": 2020,
+    "panel": "frozen_panel",
+    "found": true,
+    "pos": "WR",
+    "pick": 34,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 62.411,
+     "c0": 57.8751,
+     "h1": 58.3174,
+     "occ": 0.5111,
+     "h2": 52.1978,
+     "rating_published": 85.9177,
+     "tier_published": "Strong",
+     "rating_emb3": 85.0738,
+     "tier_emb3": "Strong",
+     "rating_h1": 84.3354,
+     "rating_h2": 81.6983,
+     "vor3": 167.0,
+     "frozen_rating_C0": 85.9177
+    },
+    "F2": {
+     "c0_emb1": 62.4277,
+     "c0": 57.8973,
+     "h1": 58.3386,
+     "occ": 0.5111,
+     "h2": 52.2182,
+     "rating_published": 83.597,
+     "tier_published": "Solid",
+     "rating_emb3": 82.5422,
+     "tier_emb3": "Solid",
+     "rating_h1": 81.1709,
+     "rating_h2": 78.8502,
+     "vor3": 167.0,
+     "frozen_rating_C0": 83.597
+    },
+    "F3": {
+     "c0_emb1": 57.2123,
+     "c0": 53.1902,
+     "h1": 53.3816,
+     "occ": 0.4889,
+     "h2": 47.7722,
+     "rating_published": 84.5464,
+     "tier_published": "Solid",
+     "rating_emb3": 83.597,
+     "tier_emb3": "Solid",
+     "rating_h1": 82.9114,
+     "rating_h2": 80.4325,
+     "vor3": 149.14
+    }
+   },
+   {
+    "name": "Cole Kmet",
+    "class": 2020,
+    "panel": "frozen_panel",
+    "found": true,
+    "pos": "TE",
+    "pick": 43,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 20.6,
+     "c0": 20.6,
+     "h1": 47.4273,
+     "occ": 0.6667,
+     "h2": 20.6472,
+     "rating_published": 67.6688,
+     "tier_published": "Solid",
+     "rating_emb3": 68.1962,
+     "tier_emb3": "Solid",
+     "rating_h1": 80.9599,
+     "rating_h2": 66.6139,
+     "vor3": 5.3,
+     "frozen_rating_C0": 67.6688
+    },
+    "F2": {
+     "c0_emb1": 20.6,
+     "c0": 20.6,
+     "h1": 47.4273,
+     "occ": 0.6667,
+     "h2": 20.6472,
+     "rating_published": 64.6097,
+     "tier_published": "Dart",
+     "rating_emb3": 65.1371,
+     "tier_emb3": "Solid",
+     "rating_h1": 77.6899,
+     "rating_h2": 63.1329,
+     "vor3": 5.3,
+     "frozen_rating_C0": 64.6097
+    },
+    "F3": {
+     "c0_emb1": 38.5,
+     "c0": 38.5,
+     "h1": 67.0836,
+     "occ": 0.75,
+     "h2": 38.5834,
+     "rating_published": 78.4283,
+     "tier_published": "Solid",
+     "rating_emb3": 78.6392,
+     "tier_emb3": "Solid",
+     "rating_h1": 86.7616,
+     "rating_h2": 76.846,
+     "vor3": 22.0
+    }
+   },
+   {
+    "name": "Patrick Mahomes",
+    "class": 2017,
+    "panel": "frozen_panel",
+    "found": true,
+    "pos": "QB",
+    "pick": 10,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 6.4,
+     "c0": 6.4,
+     "h1": 8.6034,
+     "occ": 0.4,
+     "h2": 5.8154,
+     "rating_published": 40.7173,
+     "tier_published": "Dart",
+     "rating_emb3": 41.8776,
+     "tier_emb3": "Dart",
+     "rating_h1": 50.8439,
+     "rating_h2": 38.5549,
+     "vor3": 151.76,
+     "frozen_rating_C0": 40.7173
+    },
+    "F2": {
+     "c0_emb1": 49.1292,
+     "c0": 53.2233,
+     "h1": 69.5173,
+     "occ": 0.5333,
+     "h2": 51.4711,
+     "rating_published": 77.3207,
+     "tier_published": "Solid",
+     "rating_emb3": 79.3249,
+     "tier_emb3": "Solid",
+     "rating_h1": 85.1793,
+     "rating_h2": 78.3228,
+     "vor3": 272.08,
+     "frozen_rating_C0": 77.3207
+    },
+    "F3": {
+     "c0_emb1": 6.4,
+     "c0": 6.4,
+     "h1": 8.6034,
+     "occ": 0.4,
+     "h2": 5.8154,
+     "rating_published": 42.9325,
+     "tier_published": "Dart",
+     "rating_emb3": 43.5654,
+     "tier_emb3": "Dart",
+     "rating_h1": 51.1603,
+     "rating_h2": 39.3987,
+     "vor3": 151.76
+    }
+   },
+   {
+    "name": "Josh Allen",
+    "class": 2018,
+    "panel": "frozen_panel",
+    "found": true,
+    "pos": "QB",
+    "pick": 7,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 29.7954,
+     "c0": 6.4,
+     "h1": 12.1882,
+     "occ": 0.5667,
+     "h2": 6.0507,
+     "rating_published": 75.1582,
+     "tier_published": "Solid",
+     "rating_emb3": 41.8776,
+     "tier_emb3": "Dart",
+     "rating_h1": 58.597,
+     "rating_h2": 39.6097,
+     "vor3": 111.08,
+     "frozen_rating_C0": 75.1582
+    },
+    "F2": {
+     "c0_emb1": 101.6754,
+     "c0": 88.296,
+     "h1": 81.033,
+     "occ": 0.6889,
+     "h2": 87.3493,
+     "rating_published": 89.9262,
+     "tier_published": "Strong",
+     "rating_emb3": 87.9219,
+     "tier_emb3": "Strong",
+     "rating_h1": 87.0781,
+     "rating_h2": 87.1835,
+     "vor3": 257.96,
+     "frozen_rating_C0": 89.9262
+    },
+    "F3": {
+     "c0_emb1": 29.7954,
+     "c0": 6.4,
+     "h1": 12.1882,
+     "occ": 0.5667,
+     "h2": 6.0507,
+     "rating_published": 73.9979,
+     "tier_published": "Solid",
+     "rating_emb3": 43.5654,
+     "tier_emb3": "Dart",
+     "rating_h1": 59.8629,
+     "rating_h2": 40.2426,
+     "vor3": 111.08
+    }
+   },
+   {
+    "name": "Lamar Jackson",
+    "class": 2018,
+    "panel": "frozen_panel",
+    "found": true,
+    "pos": "QB",
+    "pick": 32,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 4.8073,
+     "c0": 5.5663,
+     "h1": 6.1453,
+     "occ": 0.2857,
+     "h2": 5.4106,
+     "rating_published": 37.9219,
+     "tier_published": "Dart",
+     "rating_emb3": 40.3481,
+     "tier_emb3": "Dart",
+     "rating_h1": 43.3017,
+     "rating_h2": 37.6055,
+     "vor3": 174.92,
+     "frozen_rating_C0": 37.9219
+    },
+    "F2": {
+     "c0_emb1": 50.485,
+     "c0": 53.2233,
+     "h1": 62.0922,
+     "occ": 0.5333,
+     "h2": 52.5167,
+     "rating_published": 77.7954,
+     "tier_published": "Solid",
+     "rating_emb3": 79.3249,
+     "tier_emb3": "Solid",
+     "rating_h1": 82.6477,
+     "rating_h2": 79.3776,
+     "vor3": 317.8,
+     "frozen_rating_C0": 77.7954
+    },
+    "F3": {
+     "c0_emb1": 4.8073,
+     "c0": 5.5663,
+     "h1": 6.1453,
+     "occ": 0.2857,
+     "h2": 5.4106,
+     "rating_published": 37.5,
+     "tier_published": "Dart",
+     "rating_emb3": 41.192,
+     "tier_emb3": "Dart",
+     "rating_h1": 44.5675,
+     "rating_h2": 38.4494,
+     "vor3": 174.92
+    }
+   },
+   {
+    "name": "Justin Fields",
+    "class": 2021,
+    "panel": "frozen_panel",
+    "found": true,
+    "pos": "QB",
+    "pick": 11,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 31.8674,
+     "c0": 31.1513,
+     "h1": 29.2042,
+     "occ": 0.5,
+     "h2": 39.5676,
+     "rating_published": 76.3186,
+     "tier_published": "Solid",
+     "rating_emb3": 75.8966,
+     "tier_emb3": "Solid",
+     "rating_h1": 72.8903,
+     "rating_h2": 77.5844,
+     "vor3": 14.72,
+     "frozen_rating_C0": 76.3186
+    },
+    "F2": {
+     "c0_emb1": 93.5086,
+     "c0": 93.5086,
+     "h1": 81.3931,
+     "occ": 0.55,
+     "h2": 102.287,
+     "rating_published": 88.6603,
+     "tier_published": "Strong",
+     "rating_emb3": 88.2384,
+     "tier_emb3": "Strong",
+     "rating_h1": 87.3418,
+     "rating_h2": 88.8713,
+     "vor3": 144.44,
+     "frozen_rating_C0": 88.6603
+    },
+    "F3": {
+     "c0_emb1": 31.8674,
+     "c0": 31.1513,
+     "h1": 29.2042,
+     "occ": 0.5,
+     "h2": 39.5676,
+     "rating_published": 75.5802,
+     "tier_published": "Solid",
+     "rating_emb3": 75.5802,
+     "tier_emb3": "Solid",
+     "rating_h1": 73.5232,
+     "rating_h2": 77.3734,
+     "vor3": 14.72
+    }
+   },
+   {
+    "name": "Jeremiyah Love",
+    "class": 2026,
+    "panel": "love",
+    "found": true,
+    "pos": "RB",
+    "pick": 3,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 347.6286,
+     "c0": 347.6286,
+     "h1": 347.6286,
+     "occ": 1.0,
+     "h2": 349.585,
+     "rating_published": 99.8945,
+     "tier_published": "Elite",
+     "rating_emb3": 99.789,
+     "tier_emb3": "Elite",
+     "rating_h1": 99.789,
+     "rating_h2": 99.789,
+     "frozen_rating_C0": 99.8945
+    },
+    "F2": {
+     "c0_emb1": 347.6286,
+     "c0": 347.6286,
+     "h1": 347.6286,
+     "occ": 1.0,
+     "h2": 349.5825,
+     "rating_published": 99.8945,
+     "tier_published": "Elite",
+     "rating_emb3": 99.789,
+     "tier_emb3": "Elite",
+     "rating_h1": 99.789,
+     "rating_h2": 99.789,
+     "frozen_rating_C0": 99.8945
+    },
+    "F3": {
+     "c0_emb1": 338.9167,
+     "c0": 338.9167,
+     "h1": 338.9167,
+     "occ": 1.0,
+     "h2": 340.8885,
+     "rating_published": 99.8945,
+     "tier_published": "Elite",
+     "rating_emb3": 99.789,
+     "tier_emb3": "Elite",
+     "rating_h1": 99.789,
+     "rating_h2": 99.789
+    }
+   },
+   {
+    "name": "Eli Stowers",
+    "class": 2026,
+    "panel": "frozen_panel",
+    "found": true,
+    "pos": "TE",
+    "pick": 54,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 15.8255,
+     "c0": 15.8255,
+     "h1": 13.2067,
+     "occ": 0.2264,
+     "h2": 15.9554,
+     "rating_published": 64.4515,
+     "tier_published": "Dart",
+     "rating_emb3": 65.4008,
+     "tier_emb3": "Solid",
+     "rating_h1": 61.7089,
+     "rating_h2": 60.1266,
+     "frozen_rating_C0": 64.4515
+    },
+    "F2": {
+     "c0_emb1": 15.8255,
+     "c0": 15.8255,
+     "h1": 13.2067,
+     "occ": 0.2264,
+     "h2": 15.9554,
+     "rating_published": 61.6034,
+     "tier_published": "Dart",
+     "rating_emb3": 62.2363,
+     "tier_emb3": "Dart",
+     "rating_h1": 59.4937,
+     "rating_h2": 56.6456,
+     "frozen_rating_C0": 61.6034
+    },
+    "F3": {
+     "c0_emb1": 26.4776,
+     "c0": 26.4776,
+     "h1": 25.6266,
+     "occ": 0.3095,
+     "h2": 26.6168,
+     "rating_published": 70.4641,
+     "tier_published": "Solid",
+     "rating_emb3": 70.8861,
+     "tier_emb3": "Solid",
+     "rating_h1": 68.6709,
+     "rating_h2": 69.3038
+    }
+   },
+   {
+    "name": "Kenyon Sadiq",
+    "class": 2026,
+    "panel": "frozen_panel",
+    "found": true,
+    "pos": "TE",
+    "pick": 16,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 35.6,
+     "c0": 35.6,
+     "h1": 44.869,
+     "occ": 0.7692,
+     "h2": 36.0058,
+     "rating_published": 77.8481,
+     "tier_published": "Solid",
+     "rating_emb3": 77.7426,
+     "tier_emb3": "Solid",
+     "rating_h1": 79.7468,
+     "rating_h2": 75.211,
+     "frozen_rating_C0": 77.8481
+    },
+    "F2": {
+     "c0_emb1": 35.6,
+     "c0": 35.6,
+     "h1": 44.869,
+     "occ": 0.7692,
+     "h2": 36.0058,
+     "rating_published": 74.2616,
+     "tier_published": "Solid",
+     "rating_emb3": 74.6835,
+     "tier_emb3": "Solid",
+     "rating_h1": 76.3713,
+     "rating_h2": 72.0464,
+     "frozen_rating_C0": 74.2616
+    },
+    "F3": {
+     "c0_emb1": 67.2381,
+     "c0": 67.2381,
+     "h1": 78.1938,
+     "occ": 0.9444,
+     "h2": 67.6984,
+     "rating_published": 86.6034,
+     "tier_published": "Strong",
+     "rating_emb3": 86.4979,
+     "tier_emb3": "Strong",
+     "rating_h1": 88.3966,
+     "rating_h2": 86.4979
+    }
+   },
+   {
+    "name": "Caleb Williams",
+    "class": 2024,
+    "panel": "wide",
+    "found": true,
+    "pos": "QB",
+    "pick": 1,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 60.9636,
+     "c0": 67.06,
+     "h1": 67.06,
+     "occ": 0.7,
+     "h2": 74.4562,
+     "rating_published": 85.5485,
+     "tier_published": "Strong",
+     "rating_emb3": 87.7637,
+     "tier_emb3": "Strong",
+     "rating_h1": 87.6582,
+     "rating_h2": 88.3966,
+     "partial_vor_through_2025_immature": 33.0
+    },
+    "F2": {
+     "c0_emb1": 195.4891,
+     "c0": 212.618,
+     "h1": 212.618,
+     "occ": 1.0,
+     "h2": 223.5634,
+     "rating_published": 98.5232,
+     "tier_published": "Elite",
+     "rating_emb3": 99.2616,
+     "tier_emb3": "Elite",
+     "rating_h1": 99.2616,
+     "rating_h2": 99.2616,
+     "partial_vor_through_2025_immature": 177.36
+    },
+    "F3": {
+     "c0_emb1": 60.9636,
+     "c0": 67.06,
+     "h1": 67.06,
+     "occ": 0.7,
+     "h2": 74.4562,
+     "rating_published": 85.7595,
+     "tier_published": "Strong",
+     "rating_emb3": 86.4979,
+     "tier_emb3": "Strong",
+     "rating_h1": 86.7089,
+     "rating_h2": 87.6582,
+     "partial_vor_through_2025_immature": 33.0
+    }
+   },
+   {
+    "name": "Jayden Daniels",
+    "class": 2024,
+    "panel": "wide",
+    "found": true,
+    "pos": "QB",
+    "pick": 2,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 26.0775,
+     "c0": 28.1909,
+     "h1": 29.3814,
+     "occ": 0.5,
+     "h2": 44.1079,
+     "rating_published": 71.4135,
+     "tier_published": "Solid",
+     "rating_emb3": 73.2068,
+     "tier_emb3": "Solid",
+     "rating_h1": 72.9958,
+     "rating_h2": 79.1139,
+     "partial_vor_through_2025_immature": 70.42
+    },
+    "F2": {
+     "c0_emb1": 94.6758,
+     "c0": 98.0155,
+     "h1": 123.2194,
+     "occ": 0.8,
+     "h2": 144.3486,
+     "rating_published": 88.9241,
+     "tier_published": "Strong",
+     "rating_emb3": 89.0295,
+     "tier_emb3": "Strong",
+     "rating_h1": 93.3544,
+     "rating_h2": 95.6751,
+     "partial_vor_through_2025_immature": 172.5
+    },
+    "F3": {
+     "c0_emb1": 26.0775,
+     "c0": 28.1909,
+     "h1": 29.3814,
+     "occ": 0.5,
+     "h2": 44.1079,
+     "rating_published": 70.1477,
+     "tier_published": "Solid",
+     "rating_emb3": 73.4177,
+     "tier_emb3": "Solid",
+     "rating_h1": 73.7342,
+     "rating_h2": 79.2194,
+     "partial_vor_through_2025_immature": 70.42
+    }
+   },
+   {
+    "name": "Drake Maye",
+    "class": 2024,
+    "panel": "wide",
+    "found": true,
+    "pos": "QB",
+    "pick": 3,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 26.0775,
+     "c0": 28.1909,
+     "h1": 29.3814,
+     "occ": 0.5,
+     "h2": 38.4819,
+     "rating_published": 71.4135,
+     "tier_published": "Solid",
+     "rating_emb3": 73.2068,
+     "tier_emb3": "Solid",
+     "rating_h1": 72.9958,
+     "rating_h2": 76.6878,
+     "partial_vor_through_2025_immature": 66.28
+    },
+    "F2": {
+     "c0_emb1": 94.6758,
+     "c0": 98.0155,
+     "h1": 102.6829,
+     "occ": 0.6667,
+     "h2": 110.9556,
+     "rating_published": 88.9241,
+     "tier_published": "Strong",
+     "rating_emb3": 89.0295,
+     "tier_emb3": "Strong",
+     "rating_h1": 89.557,
+     "rating_h2": 91.1392,
+     "partial_vor_through_2025_immature": 143.42
+    },
+    "F3": {
+     "c0_emb1": 26.0775,
+     "c0": 28.1909,
+     "h1": 29.3814,
+     "occ": 0.5,
+     "h2": 38.4819,
+     "rating_published": 70.1477,
+     "tier_published": "Solid",
+     "rating_emb3": 73.4177,
+     "tier_emb3": "Solid",
+     "rating_h1": 73.7342,
+     "rating_h2": 76.7932,
+     "partial_vor_through_2025_immature": 66.28
+    }
+   },
+   {
+    "name": "Marvin Harrison Jr.",
+    "class": 2024,
+    "panel": "wide",
+    "found": true,
+    "pos": "WR",
+    "pick": 4,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 237.1667,
+     "c0": 237.1667,
+     "h1": 237.1667,
+     "occ": 1.0,
+     "h2": 246.8075,
+     "rating_published": 99.4726,
+     "tier_published": "Elite",
+     "rating_emb3": 99.6835,
+     "tier_emb3": "Elite",
+     "rating_h1": 99.6835,
+     "rating_h2": 99.6835,
+     "partial_vor_through_2025_immature": 51.6
+    },
+    "F2": {
+     "c0_emb1": 237.1667,
+     "c0": 237.1667,
+     "h1": 237.1667,
+     "occ": 1.0,
+     "h2": 246.8157,
+     "rating_published": 99.3671,
+     "tier_published": "Elite",
+     "rating_emb3": 99.4726,
+     "tier_emb3": "Elite",
+     "rating_h1": 99.4726,
+     "rating_h2": 99.4726,
+     "partial_vor_through_2025_immature": 51.6
+    },
+    "F3": {
+     "c0_emb1": 218.1,
+     "c0": 218.1,
+     "h1": 218.1,
+     "occ": 1.0,
+     "h2": 226.9033,
+     "rating_published": 99.2616,
+     "tier_published": "Elite",
+     "rating_emb3": 99.6835,
+     "tier_emb3": "Elite",
+     "rating_h1": 99.6835,
+     "rating_h2": 99.5781,
+     "partial_vor_through_2025_immature": 44.5
+    }
+   },
+   {
+    "name": "Malik Nabers",
+    "class": 2024,
+    "panel": "wide",
+    "found": true,
+    "pos": "WR",
+    "pick": 6,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 179.94,
+     "c0": 179.94,
+     "h1": 181.3483,
+     "occ": 1.0,
+     "h2": 161.374,
+     "rating_published": 99.0506,
+     "tier_published": "Elite",
+     "rating_emb3": 99.1561,
+     "tier_emb3": "Elite",
+     "rating_h1": 99.4726,
+     "rating_h2": 98.1013,
+     "partial_vor_through_2025_immature": 128.7
+    },
+    "F2": {
+     "c0_emb1": 179.94,
+     "c0": 179.94,
+     "h1": 181.3483,
+     "occ": 1.0,
+     "h2": 161.316,
+     "rating_published": 98.2068,
+     "tier_published": "Elite",
+     "rating_emb3": 98.3122,
+     "tier_emb3": "Elite",
+     "rating_h1": 98.7342,
+     "rating_h2": 97.2574,
+     "partial_vor_through_2025_immature": 128.7
+    },
+    "F3": {
+     "c0_emb1": 168.78,
+     "c0": 168.78,
+     "h1": 171.4593,
+     "occ": 1.0,
+     "h2": 151.9607,
+     "rating_published": 98.8397,
+     "tier_published": "Elite",
+     "rating_emb3": 98.8397,
+     "tier_emb3": "Elite",
+     "rating_h1": 98.4177,
+     "rating_h2": 97.9958,
+     "partial_vor_through_2025_immature": 121.6
+    }
+   },
+   {
+    "name": "Michael Penix",
+    "class": 2024,
+    "panel": "wide",
+    "found": true,
+    "pos": "QB",
+    "pick": 8,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 26.0775,
+     "c0": 28.1909,
+     "h1": 29.3814,
+     "occ": 0.5,
+     "h2": 21.3322,
+     "rating_published": 71.4135,
+     "tier_published": "Solid",
+     "rating_emb3": 73.2068,
+     "tier_emb3": "Solid",
+     "rating_h1": 72.9958,
+     "rating_h2": 67.2996,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F2": {
+     "c0_emb1": 94.6758,
+     "c0": 98.0155,
+     "h1": 83.4298,
+     "occ": 0.5417,
+     "h2": 91.6144,
+     "rating_published": 88.9241,
+     "tier_published": "Strong",
+     "rating_emb3": 89.0295,
+     "tier_emb3": "Strong",
+     "rating_h1": 87.4473,
+     "rating_h2": 87.7637,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F3": {
+     "c0_emb1": 26.0775,
+     "c0": 28.1909,
+     "h1": 29.3814,
+     "occ": 0.5,
+     "h2": 21.3322,
+     "rating_published": 70.1477,
+     "tier_published": "Solid",
+     "rating_emb3": 73.4177,
+     "tier_emb3": "Solid",
+     "rating_h1": 73.7342,
+     "rating_h2": 64.0295,
+     "partial_vor_through_2025_immature": 0.0
+    }
+   },
+   {
+    "name": "Rome Odunze",
+    "class": 2024,
+    "panel": "wide",
+    "found": true,
+    "pos": "WR",
+    "pick": 9,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 136.26,
+     "c0": 127.364,
+     "h1": 132.9887,
+     "occ": 0.7333,
+     "h2": 126.3163,
+     "rating_published": 97.4684,
+     "tier_published": "Elite",
+     "rating_emb3": 96.4135,
+     "tier_emb3": "Elite",
+     "rating_h1": 96.4135,
+     "rating_h2": 94.8312,
+     "partial_vor_through_2025_immature": 7.7
+    },
+    "F2": {
+     "c0_emb1": 136.26,
+     "c0": 127.364,
+     "h1": 132.9887,
+     "occ": 0.7333,
+     "h2": 126.3147,
+     "rating_published": 96.519,
+     "tier_published": "Elite",
+     "rating_emb3": 95.3586,
+     "tier_emb3": "Elite",
+     "rating_h1": 95.3586,
+     "rating_h2": 93.7764,
+     "partial_vor_through_2025_immature": 7.7
+    },
+    "F3": {
+     "c0_emb1": 124.1957,
+     "c0": 115.904,
+     "h1": 114.3062,
+     "occ": 0.6667,
+     "h2": 114.6451,
+     "rating_published": 97.2574,
+     "tier_published": "Elite",
+     "rating_emb3": 95.6751,
+     "tier_emb3": "Elite",
+     "rating_h1": 94.5148,
+     "rating_h2": 94.0928,
+     "partial_vor_through_2025_immature": 1.5
+    }
+   },
+   {
+    "name": "J.J. McCarthy",
+    "class": 2024,
+    "panel": "wide",
+    "found": true,
+    "pos": "QB",
+    "pick": 10,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 26.0775,
+     "c0": 28.1909,
+     "h1": 29.3814,
+     "occ": 0.5,
+     "h2": 26.7845,
+     "rating_published": 71.4135,
+     "tier_published": "Solid",
+     "rating_emb3": 73.2068,
+     "tier_emb3": "Solid",
+     "rating_h1": 72.9958,
+     "rating_h2": 71.519,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F2": {
+     "c0_emb1": 94.6758,
+     "c0": 98.0155,
+     "h1": 83.4298,
+     "occ": 0.5417,
+     "h2": 94.842,
+     "rating_published": 88.9241,
+     "tier_published": "Strong",
+     "rating_emb3": 89.0295,
+     "tier_emb3": "Strong",
+     "rating_h1": 87.4473,
+     "rating_h2": 88.0802,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F3": {
+     "c0_emb1": 26.0775,
+     "c0": 28.1909,
+     "h1": 29.3814,
+     "occ": 0.5,
+     "h2": 26.7845,
+     "rating_published": 70.1477,
+     "tier_published": "Solid",
+     "rating_emb3": 73.4177,
+     "tier_emb3": "Solid",
+     "rating_h1": 73.7342,
+     "rating_h2": 69.4093,
+     "partial_vor_through_2025_immature": 0.0
+    }
+   },
+   {
+    "name": "Bo Nix",
+    "class": 2024,
+    "panel": "wide",
+    "found": true,
+    "pos": "QB",
+    "pick": 12,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 26.0775,
+     "c0": 28.1909,
+     "h1": 29.3814,
+     "occ": 0.5,
+     "h2": 27.8379,
+     "rating_published": 71.4135,
+     "tier_published": "Solid",
+     "rating_emb3": 73.2068,
+     "tier_emb3": "Solid",
+     "rating_h1": 72.9958,
+     "rating_h2": 72.0464,
+     "partial_vor_through_2025_immature": 50.96
+    },
+    "F2": {
+     "c0_emb1": 94.6758,
+     "c0": 98.0155,
+     "h1": 83.4298,
+     "occ": 0.5417,
+     "h2": 113.4135,
+     "rating_published": 88.9241,
+     "tier_published": "Strong",
+     "rating_emb3": 89.0295,
+     "tier_emb3": "Strong",
+     "rating_h1": 87.4473,
+     "rating_h2": 91.5612,
+     "partial_vor_through_2025_immature": 236.18
+    },
+    "F3": {
+     "c0_emb1": 26.0775,
+     "c0": 28.1909,
+     "h1": 29.3814,
+     "occ": 0.5,
+     "h2": 27.8379,
+     "rating_published": 70.1477,
+     "tier_published": "Solid",
+     "rating_emb3": 73.4177,
+     "tier_emb3": "Solid",
+     "rating_h1": 73.7342,
+     "rating_h2": 70.7806,
+     "partial_vor_through_2025_immature": 50.96
+    }
+   },
+   {
+    "name": "Brock Bowers",
+    "class": 2024,
+    "panel": "wide",
+    "found": true,
+    "pos": "TE",
+    "pick": 13,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 35.6,
+     "c0": 36.8737,
+     "h1": 46.257,
+     "occ": 0.8182,
+     "h2": 36.8735,
+     "rating_published": 77.8481,
+     "tier_published": "Solid",
+     "rating_emb3": 77.8481,
+     "tier_emb3": "Solid",
+     "rating_h1": 80.0633,
+     "rating_h2": 75.5274,
+     "partial_vor_through_2025_immature": 162.1
+    },
+    "F2": {
+     "c0_emb1": 35.6,
+     "c0": 36.8737,
+     "h1": 46.257,
+     "occ": 0.8182,
+     "h2": 36.8735,
+     "rating_published": 74.2616,
+     "tier_published": "Solid",
+     "rating_emb3": 74.8945,
+     "tier_emb3": "Solid",
+     "rating_h1": 76.6878,
+     "rating_h2": 72.3629,
+     "partial_vor_through_2025_immature": 162.1
+    },
+    "F3": {
+     "c0_emb1": 67.2381,
+     "c0": 70.2765,
+     "h1": 79.0149,
+     "occ": 0.9722,
+     "h2": 70.2696,
+     "rating_published": 86.6034,
+     "tier_published": "Strong",
+     "rating_emb3": 87.0253,
+     "tier_emb3": "Strong",
+     "rating_h1": 88.3966,
+     "rating_h2": 86.7089,
+     "partial_vor_through_2025_immature": 233.5
+    }
+   },
+   {
+    "name": "Brian Thomas",
+    "class": 2024,
+    "panel": "wide",
+    "found": true,
+    "pos": "WR",
+    "pick": 23,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 122.3015,
+     "c0": 121.2219,
+     "h1": 115.4034,
+     "occ": 0.6364,
+     "h2": 99.7363,
+     "rating_published": 95.9916,
+     "tier_published": "Elite",
+     "rating_emb3": 95.3586,
+     "tier_emb3": "Elite",
+     "rating_h1": 93.1435,
+     "rating_h2": 90.2954,
+     "partial_vor_through_2025_immature": 139.5
+    },
+    "F2": {
+     "c0_emb1": 122.3015,
+     "c0": 121.2219,
+     "h1": 115.4034,
+     "occ": 0.6364,
+     "h2": 99.6782,
+     "rating_published": 94.9367,
+     "tier_published": "Strong",
+     "rating_emb3": 94.0928,
+     "tier_emb3": "Strong",
+     "rating_h1": 91.2447,
+     "rating_h2": 88.2911,
+     "partial_vor_through_2025_immature": 139.5
+    },
+    "F3": {
+     "c0_emb1": 111.2272,
+     "c0": 109.3819,
+     "h1": 109.1105,
+     "occ": 0.6364,
+     "h2": 90.0504,
+     "rating_published": 95.1477,
+     "tier_published": "Elite",
+     "rating_emb3": 93.9873,
+     "tier_emb3": "Strong",
+     "rating_h1": 93.6709,
+     "rating_h2": 89.0295,
+     "partial_vor_through_2025_immature": 132.0
+    }
+   },
+   {
+    "name": "Xavier Worthy",
+    "class": 2024,
+    "panel": "wide",
+    "found": true,
+    "pos": "WR",
+    "pick": 28,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 112.0833,
+     "c0": 112.0833,
+     "h1": 73.5556,
+     "occ": 0.5556,
+     "h2": 122.6794,
+     "rating_published": 94.1983,
+     "tier_published": "Strong",
+     "rating_emb3": 93.5654,
+     "tier_emb3": "Strong",
+     "rating_h1": 88.3966,
+     "rating_h2": 94.7257,
+     "partial_vor_through_2025_immature": 42.3
+    },
+    "F2": {
+     "c0_emb1": 112.0833,
+     "c0": 112.0833,
+     "h1": 73.5556,
+     "occ": 0.5556,
+     "h2": 122.6876,
+     "rating_published": 93.038,
+     "tier_published": "Strong",
+     "rating_emb3": 92.0886,
+     "tier_emb3": "Strong",
+     "rating_h1": 85.9705,
+     "rating_h2": 93.4599,
+     "partial_vor_through_2025_immature": 42.3
+    },
+    "F3": {
+     "c0_emb1": 102.7667,
+     "c0": 102.7667,
+     "h1": 64.2778,
+     "occ": 0.5556,
+     "h2": 112.3919,
+     "rating_published": 92.7215,
+     "tier_published": "Strong",
+     "rating_emb3": 91.9831,
+     "tier_emb3": "Strong",
+     "rating_h1": 86.6034,
+     "rating_h2": 93.3544,
+     "partial_vor_through_2025_immature": 35.2
+    }
+   },
+   {
+    "name": "Ricky Pearsall",
+    "class": 2024,
+    "panel": "wide",
+    "found": true,
+    "pos": "WR",
+    "pick": 31,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 55.4877,
+     "c0": 58.8994,
+     "h1": 67.4204,
+     "occ": 0.5357,
+     "h2": 50.8273,
+     "rating_published": 82.9114,
+     "tier_published": "Solid",
+     "rating_emb3": 85.5485,
+     "tier_emb3": "Strong",
+     "rating_h1": 87.8692,
+     "rating_h2": 81.1181,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F2": {
+     "c0_emb1": 55.4998,
+     "c0": 58.9133,
+     "h1": 67.4204,
+     "occ": 0.5357,
+     "h2": 50.8361,
+     "rating_published": 80.0633,
+     "tier_published": "Solid",
+     "rating_emb3": 83.0169,
+     "tier_emb3": "Solid",
+     "rating_h1": 85.0211,
+     "rating_h2": 77.9536,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F3": {
+     "c0_emb1": 49.9651,
+     "c0": 53.3531,
+     "h1": 57.8489,
+     "occ": 0.5,
+     "h2": 45.8059,
+     "rating_published": 80.2743,
+     "tier_published": "Solid",
+     "rating_emb3": 83.9662,
+     "tier_emb3": "Solid",
+     "rating_h1": 84.4937,
+     "rating_h2": 80.0633,
+     "partial_vor_through_2025_immature": 0.0
+    }
+   },
+   {
+    "name": "Xavier Legette",
+    "class": 2024,
+    "panel": "wide",
+    "found": true,
+    "pos": "WR",
+    "pick": 32,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 55.4877,
+     "c0": 58.8994,
+     "h1": 67.4204,
+     "occ": 0.5357,
+     "h2": 49.3467,
+     "rating_published": 82.9114,
+     "tier_published": "Solid",
+     "rating_emb3": 85.5485,
+     "tier_emb3": "Strong",
+     "rating_h1": 87.8692,
+     "rating_h2": 80.8017,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F2": {
+     "c0_emb1": 55.4998,
+     "c0": 58.9133,
+     "h1": 67.4204,
+     "occ": 0.5357,
+     "h2": 49.3514,
+     "rating_published": 80.0633,
+     "tier_published": "Solid",
+     "rating_emb3": 83.0169,
+     "tier_emb3": "Solid",
+     "rating_h1": 85.0211,
+     "rating_h2": 77.6371,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F3": {
+     "c0_emb1": 49.9651,
+     "c0": 53.3531,
+     "h1": 57.8489,
+     "occ": 0.5,
+     "h2": 44.6013,
+     "rating_published": 80.2743,
+     "tier_published": "Solid",
+     "rating_emb3": 83.9662,
+     "tier_emb3": "Solid",
+     "rating_h1": 84.4937,
+     "rating_h2": 79.5359,
+     "partial_vor_through_2025_immature": 0.0
+    }
+   },
+   {
+    "name": "Keon Coleman",
+    "class": 2024,
+    "panel": "wide",
+    "found": true,
+    "pos": "WR",
+    "pick": 33,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 55.4877,
+     "c0": 58.8994,
+     "h1": 67.4204,
+     "occ": 0.5357,
+     "h2": 63.3646,
+     "rating_published": 82.9114,
+     "tier_published": "Solid",
+     "rating_emb3": 85.5485,
+     "tier_emb3": "Strong",
+     "rating_h1": 87.8692,
+     "rating_h2": 85.2321,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F2": {
+     "c0_emb1": 55.4998,
+     "c0": 58.9133,
+     "h1": 67.4204,
+     "occ": 0.5357,
+     "h2": 63.3884,
+     "rating_published": 80.0633,
+     "tier_published": "Solid",
+     "rating_emb3": 83.0169,
+     "tier_emb3": "Solid",
+     "rating_h1": 85.0211,
+     "rating_h2": 82.7004,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F3": {
+     "c0_emb1": 49.9651,
+     "c0": 53.3531,
+     "h1": 57.8489,
+     "occ": 0.5,
+     "h2": 57.5629,
+     "rating_published": 80.2743,
+     "tier_published": "Solid",
+     "rating_emb3": 83.9662,
+     "tier_emb3": "Solid",
+     "rating_h1": 84.4937,
+     "rating_h2": 83.5443,
+     "partial_vor_through_2025_immature": 0.0
+    }
+   },
+   {
+    "name": "Ladd McConkey",
+    "class": 2024,
+    "panel": "wide",
+    "found": true,
+    "pos": "WR",
+    "pick": 34,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 55.4877,
+     "c0": 58.8994,
+     "h1": 67.4204,
+     "occ": 0.5357,
+     "h2": 62.1726,
+     "rating_published": 82.9114,
+     "tier_published": "Solid",
+     "rating_emb3": 85.5485,
+     "tier_emb3": "Strong",
+     "rating_h1": 87.8692,
+     "rating_h2": 85.0211,
+     "partial_vor_through_2025_immature": 138.5
+    },
+    "F2": {
+     "c0_emb1": 55.4998,
+     "c0": 58.9133,
+     "h1": 67.4204,
+     "occ": 0.5357,
+     "h2": 62.1872,
+     "rating_published": 80.0633,
+     "tier_published": "Solid",
+     "rating_emb3": 83.0169,
+     "tier_emb3": "Solid",
+     "rating_h1": 85.0211,
+     "rating_h2": 82.4895,
+     "partial_vor_through_2025_immature": 138.5
+    },
+    "F3": {
+     "c0_emb1": 49.9651,
+     "c0": 53.3531,
+     "h1": 57.8489,
+     "occ": 0.5,
+     "h2": 56.5026,
+     "rating_published": 80.2743,
+     "tier_published": "Solid",
+     "rating_emb3": 83.9662,
+     "tier_emb3": "Solid",
+     "rating_h1": 84.4937,
+     "rating_h2": 83.4388,
+     "partial_vor_through_2025_immature": 125.2
+    }
+   },
+   {
+    "name": "Ja'Lynn Polk",
+    "class": 2024,
+    "panel": "wide",
+    "found": true,
+    "pos": "WR",
+    "pick": 37,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 55.4877,
+     "c0": 58.8994,
+     "h1": 64.0571,
+     "occ": 0.5357,
+     "h2": 51.8493,
+     "rating_published": 82.9114,
+     "tier_published": "Solid",
+     "rating_emb3": 85.5485,
+     "tier_emb3": "Strong",
+     "rating_h1": 86.8143,
+     "rating_h2": 81.5401,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F2": {
+     "c0_emb1": 55.4998,
+     "c0": 58.9133,
+     "h1": 64.075,
+     "occ": 0.5357,
+     "h2": 51.8632,
+     "rating_published": 80.0633,
+     "tier_published": "Solid",
+     "rating_emb3": 83.0169,
+     "tier_emb3": "Solid",
+     "rating_h1": 83.8608,
+     "rating_h2": 78.5865,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F3": {
+     "c0_emb1": 49.9651,
+     "c0": 53.3531,
+     "h1": 57.8489,
+     "occ": 0.5,
+     "h2": 46.7893,
+     "rating_published": 80.2743,
+     "tier_published": "Solid",
+     "rating_emb3": 83.9662,
+     "tier_emb3": "Solid",
+     "rating_h1": 84.4937,
+     "rating_h2": 80.3797,
+     "partial_vor_through_2025_immature": 0.0
+    }
+   },
+   {
+    "name": "Jonathon Brooks",
+    "class": 2024,
+    "panel": "wide",
+    "found": true,
+    "pos": "RB",
+    "pick": 46,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 112.8384,
+     "c0": 105.1765,
+     "h1": 114.3159,
+     "occ": 0.7826,
+     "h2": 107.3584,
+     "rating_published": 94.3038,
+     "tier_published": "Strong",
+     "rating_emb3": 92.0886,
+     "tier_emb3": "Strong",
+     "rating_h1": 93.038,
+     "rating_h2": 91.9831,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F2": {
+     "c0_emb1": 112.8384,
+     "c0": 105.1765,
+     "h1": 114.3159,
+     "occ": 0.7826,
+     "h2": 107.3584,
+     "rating_published": 93.038,
+     "tier_published": "Strong",
+     "rating_emb3": 90.5063,
+     "tier_emb3": "Strong",
+     "rating_h1": 91.1392,
+     "rating_h2": 90.5063,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F3": {
+     "c0_emb1": 108.6624,
+     "c0": 101.6809,
+     "h1": 108.8826,
+     "occ": 0.7391,
+     "h2": 103.5631,
+     "rating_published": 94.0928,
+     "tier_published": "Strong",
+     "rating_emb3": 91.4557,
+     "tier_emb3": "Strong",
+     "rating_h1": 93.6709,
+     "rating_h2": 91.8776,
+     "partial_vor_through_2025_immature": 0.0
+    }
+   },
+   {
+    "name": "Adonai Mitchell",
+    "class": 2024,
+    "panel": "wide",
+    "found": true,
+    "pos": "WR",
+    "pick": 52,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 55.4877,
+     "c0": 58.8994,
+     "h1": 52.3133,
+     "occ": 0.4375,
+     "h2": 62.7843,
+     "rating_published": 82.9114,
+     "tier_published": "Solid",
+     "rating_emb3": 85.5485,
+     "tier_emb3": "Strong",
+     "rating_h1": 81.7511,
+     "rating_h2": 85.1266,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F2": {
+     "c0_emb1": 55.4998,
+     "c0": 58.9133,
+     "h1": 52.3279,
+     "occ": 0.4375,
+     "h2": 62.8081,
+     "rating_published": 80.0633,
+     "tier_published": "Solid",
+     "rating_emb3": 83.0169,
+     "tier_emb3": "Solid",
+     "rating_h1": 78.481,
+     "rating_h2": 82.5949,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F3": {
+     "c0_emb1": 49.9651,
+     "c0": 53.3531,
+     "h1": 49.9604,
+     "occ": 0.4318,
+     "h2": 57.0636,
+     "rating_published": 80.2743,
+     "tier_published": "Solid",
+     "rating_emb3": 83.9662,
+     "tier_emb3": "Solid",
+     "rating_h1": 81.4346,
+     "rating_h2": 83.4388,
+     "partial_vor_through_2025_immature": 0.0
+    }
+   },
+   {
+    "name": "Ben Sinnott",
+    "class": 2024,
+    "panel": "wide",
+    "found": true,
+    "pos": "TE",
+    "pick": 53,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 15.8255,
+     "c0": 14.9909,
+     "h1": 12.2905,
+     "occ": 0.2174,
+     "h2": 15.0071,
+     "rating_published": 64.4515,
+     "tier_published": "Dart",
+     "rating_emb3": 64.557,
+     "tier_emb3": "Dart",
+     "rating_h1": 59.2827,
+     "rating_h2": 58.7553,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F2": {
+     "c0_emb1": 15.8255,
+     "c0": 14.9909,
+     "h1": 12.2905,
+     "occ": 0.2174,
+     "h2": 15.0071,
+     "rating_published": 61.6034,
+     "tier_published": "Dart",
+     "rating_emb3": 61.6034,
+     "tier_emb3": "Dart",
+     "rating_h1": 56.962,
+     "rating_h2": 55.4852,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F3": {
+     "c0_emb1": 26.4776,
+     "c0": 24.7071,
+     "h1": 25.1558,
+     "occ": 0.3095,
+     "h2": 24.6917,
+     "rating_published": 70.4641,
+     "tier_published": "Solid",
+     "rating_emb3": 68.3544,
+     "tier_emb3": "Solid",
+     "rating_h1": 68.2489,
+     "rating_h2": 67.7215,
+     "partial_vor_through_2025_immature": 0.0
+    }
+   },
+   {
+    "name": "Cam Ward",
+    "class": 2025,
+    "panel": "wide",
+    "found": true,
+    "pos": "QB",
+    "pick": 1,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 60.9636,
+     "c0": 67.06,
+     "h1": 67.06,
+     "occ": 0.7,
+     "h2": 67.0714,
+     "rating_published": 85.5485,
+     "tier_published": "Strong",
+     "rating_emb3": 87.7637,
+     "tier_emb3": "Strong",
+     "rating_h1": 87.6582,
+     "rating_h2": 86.3924,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F2": {
+     "c0_emb1": 195.4891,
+     "c0": 212.618,
+     "h1": 212.618,
+     "occ": 1.0,
+     "h2": 211.5405,
+     "rating_published": 98.5232,
+     "tier_published": "Elite",
+     "rating_emb3": 99.2616,
+     "tier_emb3": "Elite",
+     "rating_h1": 99.2616,
+     "rating_h2": 99.0506,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F3": {
+     "c0_emb1": 60.9636,
+     "c0": 67.06,
+     "h1": 67.06,
+     "occ": 0.7,
+     "h2": 67.0714,
+     "rating_published": 85.7595,
+     "tier_published": "Strong",
+     "rating_emb3": 86.4979,
+     "tier_emb3": "Strong",
+     "rating_h1": 86.7089,
+     "rating_h2": 86.4979,
+     "partial_vor_through_2025_immature": 0.0
+    }
+   },
+   {
+    "name": "Travis Hunter",
+    "class": 2025,
+    "panel": "wide",
+    "found": true,
+    "pos": "WR",
+    "pick": 2,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 237.1667,
+     "c0": 237.1667,
+     "h1": 237.1667,
+     "occ": 1.0,
+     "h2": 247.8904,
+     "rating_published": 99.4726,
+     "tier_published": "Elite",
+     "rating_emb3": 99.6835,
+     "tier_emb3": "Elite",
+     "rating_h1": 99.6835,
+     "rating_h2": 99.6835,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F2": {
+     "c0_emb1": 237.1667,
+     "c0": 237.1667,
+     "h1": 237.1667,
+     "occ": 1.0,
+     "h2": 247.9063,
+     "rating_published": 99.3671,
+     "tier_published": "Elite",
+     "rating_emb3": 99.4726,
+     "tier_emb3": "Elite",
+     "rating_h1": 99.4726,
+     "rating_h2": 99.4726,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F3": {
+     "c0_emb1": 218.1,
+     "c0": 218.1,
+     "h1": 218.1,
+     "occ": 1.0,
+     "h2": 227.855,
+     "rating_published": 99.2616,
+     "tier_published": "Elite",
+     "rating_emb3": 99.6835,
+     "tier_emb3": "Elite",
+     "rating_h1": 99.6835,
+     "rating_h2": 99.5781,
+     "partial_vor_through_2025_immature": 0.0
+    }
+   },
+   {
+    "name": "Ashton Jeanty",
+    "class": 2025,
+    "panel": "wide",
+    "found": true,
+    "pos": "RB",
+    "pick": 6,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 347.6286,
+     "c0": 309.62,
+     "h1": 309.62,
+     "occ": 1.0,
+     "h2": 316.1901,
+     "rating_published": 99.8945,
+     "tier_published": "Elite",
+     "rating_emb3": 99.7363,
+     "tier_emb3": "Elite",
+     "rating_h1": 99.7363,
+     "rating_h2": 99.789,
+     "partial_vor_through_2025_immature": 109.4
+    },
+    "F2": {
+     "c0_emb1": 347.6286,
+     "c0": 309.62,
+     "h1": 309.62,
+     "occ": 1.0,
+     "h2": 316.1918,
+     "rating_published": 99.8945,
+     "tier_published": "Elite",
+     "rating_emb3": 99.7363,
+     "tier_emb3": "Elite",
+     "rating_h1": 99.7363,
+     "rating_h2": 99.789,
+     "partial_vor_through_2025_immature": 109.4
+    },
+    "F3": {
+     "c0_emb1": 338.9167,
+     "c0": 302.26,
+     "h1": 302.26,
+     "occ": 1.0,
+     "h2": 308.7049,
+     "rating_published": 99.8945,
+     "tier_published": "Elite",
+     "rating_emb3": 99.7363,
+     "tier_emb3": "Elite",
+     "rating_h1": 99.7363,
+     "rating_h2": 99.789,
+     "partial_vor_through_2025_immature": 99.7
+    }
+   },
+   {
+    "name": "Tetairoa McMillan",
+    "class": 2025,
+    "panel": "wide",
+    "found": true,
+    "pos": "WR",
+    "pick": 8,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 136.26,
+     "c0": 136.26,
+     "h1": 148.6131,
+     "occ": 0.8333,
+     "h2": 150.2853,
+     "rating_published": 97.4684,
+     "tier_published": "Elite",
+     "rating_emb3": 96.6245,
+     "tier_emb3": "Elite",
+     "rating_h1": 97.0464,
+     "rating_h2": 97.5738,
+     "partial_vor_through_2025_immature": 75.0
+    },
+    "F2": {
+     "c0_emb1": 136.26,
+     "c0": 136.26,
+     "h1": 148.6131,
+     "occ": 0.8333,
+     "h2": 150.2961,
+     "rating_published": 96.519,
+     "tier_published": "Elite",
+     "rating_emb3": 95.6751,
+     "tier_emb3": "Elite",
+     "rating_h1": 96.2025,
+     "rating_h2": 96.6245,
+     "partial_vor_through_2025_immature": 75.0
+    },
+    "F3": {
+     "c0_emb1": 124.1957,
+     "c0": 124.1957,
+     "h1": 140.0204,
+     "occ": 0.8333,
+     "h2": 136.8339,
+     "rating_published": 97.2574,
+     "tier_published": "Elite",
+     "rating_emb3": 96.097,
+     "tier_emb3": "Elite",
+     "rating_h1": 97.5738,
+     "rating_h2": 96.519,
+     "partial_vor_through_2025_immature": 68.8
+    }
+   },
+   {
+    "name": "Colston Loveland",
+    "class": 2025,
+    "panel": "wide",
+    "found": true,
+    "pos": "TE",
+    "pick": 10,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 35.6,
+     "c0": 36.8737,
+     "h1": 47.2699,
+     "occ": 0.8182,
+     "h2": 36.956,
+     "rating_published": 77.8481,
+     "tier_published": "Solid",
+     "rating_emb3": 77.8481,
+     "tier_emb3": "Solid",
+     "rating_h1": 80.9072,
+     "rating_h2": 75.6329,
+     "partial_vor_through_2025_immature": 33.7
+    },
+    "F2": {
+     "c0_emb1": 35.6,
+     "c0": 36.8737,
+     "h1": 47.2699,
+     "occ": 0.8182,
+     "h2": 36.956,
+     "rating_published": 74.2616,
+     "tier_published": "Solid",
+     "rating_emb3": 74.8945,
+     "tier_emb3": "Solid",
+     "rating_h1": 77.6371,
+     "rating_h2": 72.3629,
+     "partial_vor_through_2025_immature": 33.7
+    },
+    "F3": {
+     "c0_emb1": 67.2381,
+     "c0": 70.2765,
+     "h1": 82.5744,
+     "occ": 1.0,
+     "h2": 70.3545,
+     "rating_published": 86.6034,
+     "tier_published": "Strong",
+     "rating_emb3": 87.0253,
+     "tier_emb3": "Strong",
+     "rating_h1": 88.7131,
+     "rating_h2": 87.0253,
+     "partial_vor_through_2025_immature": 48.5
+    }
+   },
+   {
+    "name": "Tyler Warren",
+    "class": 2025,
+    "panel": "wide",
+    "found": true,
+    "pos": "TE",
+    "pick": 14,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 35.6,
+     "c0": 36.8737,
+     "h1": 47.2699,
+     "occ": 0.8182,
+     "h2": 36.772,
+     "rating_published": 77.8481,
+     "tier_published": "Solid",
+     "rating_emb3": 77.8481,
+     "tier_emb3": "Solid",
+     "rating_h1": 80.9072,
+     "rating_h2": 75.5274,
+     "partial_vor_through_2025_immature": 57.1
+    },
+    "F2": {
+     "c0_emb1": 35.6,
+     "c0": 36.8737,
+     "h1": 47.2699,
+     "occ": 0.8182,
+     "h2": 36.772,
+     "rating_published": 74.2616,
+     "tier_published": "Solid",
+     "rating_emb3": 74.8945,
+     "tier_emb3": "Solid",
+     "rating_h1": 77.6371,
+     "rating_h2": 72.3629,
+     "partial_vor_through_2025_immature": 57.1
+    },
+    "F3": {
+     "c0_emb1": 67.2381,
+     "c0": 70.2765,
+     "h1": 79.5161,
+     "occ": 0.963,
+     "h2": 70.2052,
+     "rating_published": 86.6034,
+     "tier_published": "Strong",
+     "rating_emb3": 87.0253,
+     "tier_emb3": "Strong",
+     "rating_h1": 88.3966,
+     "rating_h2": 86.6034,
+     "partial_vor_through_2025_immature": 80.9
+    }
+   },
+   {
+    "name": "Emeka Egbuka",
+    "class": 2025,
+    "panel": "wide",
+    "found": true,
+    "pos": "WR",
+    "pick": 19,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 122.3015,
+     "c0": 110.971,
+     "h1": 110.3983,
+     "occ": 0.619,
+     "h2": 110.0382,
+     "rating_published": 95.9916,
+     "tier_published": "Elite",
+     "rating_emb3": 93.5654,
+     "tier_emb3": "Strong",
+     "rating_h1": 92.5105,
+     "rating_h2": 92.4051,
+     "partial_vor_through_2025_immature": 57.3
+    },
+    "F2": {
+     "c0_emb1": 122.3015,
+     "c0": 110.971,
+     "h1": 110.3983,
+     "occ": 0.619,
+     "h2": 110.0394,
+     "rating_published": 94.9367,
+     "tier_published": "Strong",
+     "rating_emb3": 92.0886,
+     "tier_emb3": "Strong",
+     "rating_h1": 90.5063,
+     "rating_h2": 91.0338,
+     "partial_vor_through_2025_immature": 57.3
+    },
+    "F3": {
+     "c0_emb1": 111.2272,
+     "c0": 100.4697,
+     "h1": 99.2872,
+     "occ": 0.5909,
+     "h2": 99.4198,
+     "rating_published": 95.1477,
+     "tier_published": "Elite",
+     "rating_emb3": 91.4557,
+     "tier_emb3": "Strong",
+     "rating_h1": 91.1392,
+     "rating_h2": 90.8228,
+     "partial_vor_through_2025_immature": 51.1
+    }
+   },
+   {
+    "name": "Omarion Hampton",
+    "class": 2025,
+    "panel": "wide",
+    "found": true,
+    "pos": "RB",
+    "pick": 22,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 216.48,
+     "c0": 190.826,
+     "h1": 190.826,
+     "occ": 1.0,
+     "h2": 203.3669,
+     "rating_published": 99.2616,
+     "tier_published": "Elite",
+     "rating_emb3": 99.6835,
+     "tier_emb3": "Elite",
+     "rating_h1": 99.5781,
+     "rating_h2": 99.4726,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F2": {
+     "c0_emb1": 216.48,
+     "c0": 190.826,
+     "h1": 190.826,
+     "occ": 1.0,
+     "h2": 203.364,
+     "rating_published": 98.9451,
+     "tier_published": "Elite",
+     "rating_emb3": 98.9451,
+     "tier_emb3": "Elite",
+     "rating_h1": 98.8397,
+     "rating_h2": 98.8397,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F3": {
+     "c0_emb1": 211.5943,
+     "c0": 185.6733,
+     "h1": 185.6733,
+     "occ": 1.0,
+     "h2": 197.7549,
+     "rating_published": 99.2616,
+     "tier_published": "Elite",
+     "rating_emb3": 99.6835,
+     "tier_emb3": "Elite",
+     "rating_h1": 99.5781,
+     "rating_h2": 99.4726,
+     "partial_vor_through_2025_immature": 0.0
+    }
+   },
+   {
+    "name": "Matthew Golden",
+    "class": 2025,
+    "panel": "wide",
+    "found": true,
+    "pos": "WR",
+    "pick": 23,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 122.3015,
+     "c0": 110.971,
+     "h1": 110.3983,
+     "occ": 0.619,
+     "h2": 117.4608,
+     "rating_published": 95.9916,
+     "tier_published": "Elite",
+     "rating_emb3": 93.5654,
+     "tier_emb3": "Strong",
+     "rating_h1": 92.5105,
+     "rating_h2": 93.6709,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F2": {
+     "c0_emb1": 122.3015,
+     "c0": 110.971,
+     "h1": 110.3983,
+     "occ": 0.619,
+     "h2": 117.4718,
+     "rating_published": 94.9367,
+     "tier_published": "Strong",
+     "rating_emb3": 92.0886,
+     "tier_emb3": "Strong",
+     "rating_h1": 90.5063,
+     "rating_h2": 92.2996,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F3": {
+     "c0_emb1": 111.2272,
+     "c0": 100.4697,
+     "h1": 99.2872,
+     "occ": 0.5909,
+     "h2": 106.4908,
+     "rating_published": 95.1477,
+     "tier_published": "Elite",
+     "rating_emb3": 91.4557,
+     "tier_emb3": "Strong",
+     "rating_h1": 91.1392,
+     "rating_h2": 92.1941,
+     "partial_vor_through_2025_immature": 0.0
+    }
+   },
+   {
+    "name": "Jaxson Dart",
+    "class": 2025,
+    "panel": "wide",
+    "found": true,
+    "pos": "QB",
+    "pick": 25,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 15.5754,
+     "c0": 16.4829,
+     "h1": 16.0262,
+     "occ": 0.2727,
+     "h2": 21.3083,
+     "rating_published": 64.135,
+     "tier_published": "Dart",
+     "rating_emb3": 65.5063,
+     "tier_emb3": "Solid",
+     "rating_h1": 65.4008,
+     "rating_h2": 67.2996,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F2": {
+     "c0_emb1": 56.8424,
+     "c0": 60.395,
+     "h1": 70.6136,
+     "occ": 0.5,
+     "h2": 78.5809,
+     "rating_published": 81.1181,
+     "tier_published": "Solid",
+     "rating_emb3": 83.0169,
+     "tier_emb3": "Solid",
+     "rating_h1": 85.7595,
+     "rating_h2": 86.3924,
+     "partial_vor_through_2025_immature": 30.04
+    },
+    "F3": {
+     "c0_emb1": 15.5754,
+     "c0": 16.4829,
+     "h1": 16.0262,
+     "occ": 0.2727,
+     "h2": 21.3083,
+     "rating_published": 61.1814,
+     "tier_published": "Dart",
+     "rating_emb3": 62.8692,
+     "tier_emb3": "Dart",
+     "rating_h1": 62.9747,
+     "rating_h2": 63.9241,
+     "partial_vor_through_2025_immature": 0.0
+    }
+   },
+   {
+    "name": "Jayden Higgins",
+    "class": 2025,
+    "panel": "wide",
+    "found": true,
+    "pos": "WR",
+    "pick": 34,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 55.4877,
+     "c0": 55.8544,
+     "h1": 62.4226,
+     "occ": 0.5517,
+     "h2": 63.7356,
+     "rating_published": 82.9114,
+     "tier_published": "Solid",
+     "rating_emb3": 84.1772,
+     "tier_emb3": "Solid",
+     "rating_h1": 85.865,
+     "rating_h2": 85.3376,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F2": {
+     "c0_emb1": 55.4998,
+     "c0": 55.8671,
+     "h1": 62.4368,
+     "occ": 0.5517,
+     "h2": 63.7545,
+     "rating_published": 80.0633,
+     "tier_published": "Solid",
+     "rating_emb3": 81.6456,
+     "tier_emb3": "Solid",
+     "rating_h1": 82.8059,
+     "rating_h2": 82.8059,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F3": {
+     "c0_emb1": 49.9651,
+     "c0": 50.2823,
+     "h1": 55.4416,
+     "occ": 0.5172,
+     "h2": 57.3803,
+     "rating_published": 80.2743,
+     "tier_published": "Solid",
+     "rating_emb3": 80.9072,
+     "tier_emb3": "Solid",
+     "rating_h1": 84.3882,
+     "rating_h2": 83.5443,
+     "partial_vor_through_2025_immature": 0.0
+    }
+   },
+   {
+    "name": "Quinshon Judkins",
+    "class": 2025,
+    "panel": "wide",
+    "found": true,
+    "pos": "RB",
+    "pick": 36,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 112.8384,
+     "c0": 112.8384,
+     "h1": 121.0913,
+     "occ": 0.8,
+     "h2": 111.2006,
+     "rating_published": 94.3038,
+     "tier_published": "Strong",
+     "rating_emb3": 93.6709,
+     "tier_emb3": "Strong",
+     "rating_h1": 94.7257,
+     "rating_h2": 92.5105,
+     "partial_vor_through_2025_immature": 34.1
+    },
+    "F2": {
+     "c0_emb1": 112.8384,
+     "c0": 112.8384,
+     "h1": 121.0913,
+     "occ": 0.8,
+     "h2": 111.2012,
+     "rating_published": 93.038,
+     "tier_published": "Strong",
+     "rating_emb3": 92.0886,
+     "tier_emb3": "Strong",
+     "rating_h1": 93.1435,
+     "rating_h2": 91.1392,
+     "partial_vor_through_2025_immature": 34.1
+    },
+    "F3": {
+     "c0_emb1": 108.6624,
+     "c0": 108.6624,
+     "h1": 114.5941,
+     "occ": 0.76,
+     "h2": 106.9746,
+     "rating_published": 94.0928,
+     "tier_published": "Strong",
+     "rating_emb3": 93.9873,
+     "tier_emb3": "Strong",
+     "rating_h1": 94.5148,
+     "rating_h2": 92.1941,
+     "partial_vor_through_2025_immature": 24.4
+    }
+   },
+   {
+    "name": "TreVeyon Henderson",
+    "class": 2025,
+    "panel": "wide",
+    "found": true,
+    "pos": "RB",
+    "pick": 38,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 112.8384,
+     "c0": 112.8384,
+     "h1": 121.0913,
+     "occ": 0.8,
+     "h2": 111.9406,
+     "rating_published": 94.3038,
+     "tier_published": "Strong",
+     "rating_emb3": 93.6709,
+     "tier_emb3": "Strong",
+     "rating_h1": 94.7257,
+     "rating_h2": 92.616,
+     "partial_vor_through_2025_immature": 70.5
+    },
+    "F2": {
+     "c0_emb1": 112.8384,
+     "c0": 112.8384,
+     "h1": 121.0913,
+     "occ": 0.8,
+     "h2": 111.9333,
+     "rating_published": 93.038,
+     "tier_published": "Strong",
+     "rating_emb3": 92.0886,
+     "tier_emb3": "Strong",
+     "rating_h1": 93.1435,
+     "rating_h2": 91.2447,
+     "partial_vor_through_2025_immature": 70.5
+    },
+    "F3": {
+     "c0_emb1": 108.6624,
+     "c0": 108.6624,
+     "h1": 114.5941,
+     "occ": 0.76,
+     "h2": 107.4908,
+     "rating_published": 94.0928,
+     "tier_published": "Strong",
+     "rating_emb3": 93.9873,
+     "tier_emb3": "Strong",
+     "rating_h1": 94.5148,
+     "rating_h2": 92.2996,
+     "partial_vor_through_2025_immature": 60.8
+    }
+   },
+   {
+    "name": "Luther Burden",
+    "class": 2025,
+    "panel": "wide",
+    "found": true,
+    "pos": "WR",
+    "pick": 39,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 55.4877,
+     "c0": 55.8544,
+     "h1": 62.4226,
+     "occ": 0.5517,
+     "h2": 67.4995,
+     "rating_published": 82.9114,
+     "tier_published": "Solid",
+     "rating_emb3": 84.1772,
+     "tier_emb3": "Solid",
+     "rating_h1": 85.865,
+     "rating_h2": 86.3924,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F2": {
+     "c0_emb1": 55.4998,
+     "c0": 55.8671,
+     "h1": 62.4368,
+     "occ": 0.5517,
+     "h2": 67.5229,
+     "rating_published": 80.0633,
+     "tier_published": "Solid",
+     "rating_emb3": 81.6456,
+     "tier_emb3": "Solid",
+     "rating_h1": 82.8059,
+     "rating_h2": 84.0717,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F3": {
+     "c0_emb1": 49.9651,
+     "c0": 50.2823,
+     "h1": 55.4416,
+     "occ": 0.5172,
+     "h2": 60.8849,
+     "rating_published": 80.2743,
+     "tier_published": "Solid",
+     "rating_emb3": 80.9072,
+     "tier_emb3": "Solid",
+     "rating_h1": 84.3882,
+     "rating_h2": 84.2827,
+     "partial_vor_through_2025_immature": 0.0
+    }
+   },
+   {
+    "name": "Tyler Shough",
+    "class": 2025,
+    "panel": "wide",
+    "found": true,
+    "pos": "QB",
+    "pick": 40,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 12.5711,
+     "c0": 12.5711,
+     "h1": 7.6486,
+     "occ": 0.1429,
+     "h2": 14.5773,
+     "rating_published": 59.1772,
+     "tier_published": "Dart",
+     "rating_emb3": 61.4979,
+     "tier_emb3": "Dart",
+     "rating_h1": 48.4177,
+     "rating_h2": 57.7004,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F2": {
+     "c0_emb1": 42.7143,
+     "c0": 42.7143,
+     "h1": 54.9217,
+     "occ": 0.3889,
+     "h2": 51.2705,
+     "rating_published": 76.0549,
+     "tier_published": "Solid",
+     "rating_emb3": 76.4768,
+     "tier_emb3": "Solid",
+     "rating_h1": 79.0084,
+     "rating_h2": 78.27,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F3": {
+     "c0_emb1": 12.5711,
+     "c0": 12.5711,
+     "h1": 7.6486,
+     "occ": 0.1429,
+     "h2": 14.5773,
+     "rating_published": 59.2827,
+     "tier_published": "Dart",
+     "rating_emb3": 61.1814,
+     "tier_emb3": "Dart",
+     "rating_h1": 48.2068,
+     "rating_h2": 57.0675,
+     "partial_vor_through_2025_immature": 0.0
+    }
+   },
+   {
+    "name": "Mason Taylor",
+    "class": 2025,
+    "panel": "wide",
+    "found": true,
+    "pos": "TE",
+    "pick": 42,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 35.6,
+     "c0": 36.8737,
+     "h1": 43.3307,
+     "occ": 0.75,
+     "h2": 36.9271,
+     "rating_published": 77.8481,
+     "tier_published": "Solid",
+     "rating_emb3": 77.8481,
+     "tier_emb3": "Solid",
+     "rating_h1": 78.7975,
+     "rating_h2": 75.5274,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F2": {
+     "c0_emb1": 35.6,
+     "c0": 36.8737,
+     "h1": 43.3307,
+     "occ": 0.75,
+     "h2": 36.9271,
+     "rating_published": 74.2616,
+     "tier_published": "Solid",
+     "rating_emb3": 74.8945,
+     "tier_emb3": "Solid",
+     "rating_h1": 75.4219,
+     "rating_h2": 72.3629,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F3": {
+     "c0_emb1": 67.2381,
+     "c0": 70.2765,
+     "h1": 68.812,
+     "occ": 0.8333,
+     "h2": 70.2866,
+     "rating_published": 86.6034,
+     "tier_published": "Strong",
+     "rating_emb3": 87.0253,
+     "tier_emb3": "Strong",
+     "rating_h1": 87.2363,
+     "rating_h2": 86.8143,
+     "partial_vor_through_2025_immature": 0.0
+    }
+   },
+   {
+    "name": "Terrance Ferguson",
+    "class": 2025,
+    "panel": "wide",
+    "found": true,
+    "pos": "TE",
+    "pick": 46,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 15.8255,
+     "c0": 16.7915,
+     "h1": 14.4436,
+     "occ": 0.25,
+     "h2": 16.7793,
+     "rating_published": 64.4515,
+     "tier_published": "Dart",
+     "rating_emb3": 65.8228,
+     "tier_emb3": "Solid",
+     "rating_h1": 64.2405,
+     "rating_h2": 61.3924,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F2": {
+     "c0_emb1": 15.8255,
+     "c0": 16.7915,
+     "h1": 14.4436,
+     "occ": 0.25,
+     "h2": 16.7793,
+     "rating_published": 61.6034,
+     "tier_published": "Dart",
+     "rating_emb3": 62.8692,
+     "tier_emb3": "Dart",
+     "rating_h1": 62.1308,
+     "rating_h2": 57.8059,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F3": {
+     "c0_emb1": 26.4776,
+     "c0": 29.4812,
+     "h1": 25.8045,
+     "occ": 0.3125,
+     "h2": 29.3995,
+     "rating_published": 70.4641,
+     "tier_published": "Solid",
+     "rating_emb3": 74.3671,
+     "tier_emb3": "Solid",
+     "rating_h1": 68.6709,
+     "rating_h2": 71.6245,
+     "partial_vor_through_2025_immature": 0.0
+    }
+   },
+   {
+    "name": "Elijah Arroyo",
+    "class": 2025,
+    "panel": "wide",
+    "found": true,
+    "pos": "TE",
+    "pick": 50,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 15.8255,
+     "c0": 16.7915,
+     "h1": 14.4436,
+     "occ": 0.25,
+     "h2": 16.704,
+     "rating_published": 64.4515,
+     "tier_published": "Dart",
+     "rating_emb3": 65.8228,
+     "tier_emb3": "Solid",
+     "rating_h1": 64.2405,
+     "rating_h2": 61.3924,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F2": {
+     "c0_emb1": 15.8255,
+     "c0": 16.7915,
+     "h1": 14.4436,
+     "occ": 0.25,
+     "h2": 16.704,
+     "rating_published": 61.6034,
+     "tier_published": "Dart",
+     "rating_emb3": 62.8692,
+     "tier_emb3": "Dart",
+     "rating_h1": 62.1308,
+     "rating_h2": 57.8059,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F3": {
+     "c0_emb1": 26.4776,
+     "c0": 29.4812,
+     "h1": 25.8045,
+     "occ": 0.3125,
+     "h2": 29.3427,
+     "rating_published": 70.4641,
+     "tier_published": "Solid",
+     "rating_emb3": 74.3671,
+     "tier_emb3": "Solid",
+     "rating_h1": 68.6709,
+     "rating_h2": 71.6245,
+     "partial_vor_through_2025_immature": 0.0
+    }
+   },
+   {
+    "name": "Tre Harris",
+    "class": 2025,
+    "panel": "wide",
+    "found": true,
+    "pos": "WR",
+    "pick": 55,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 55.4877,
+     "c0": 55.8544,
+     "h1": 50.2849,
+     "occ": 0.4444,
+     "h2": 49.8589,
+     "rating_published": 82.9114,
+     "tier_published": "Solid",
+     "rating_emb3": 84.1772,
+     "tier_emb3": "Solid",
+     "rating_h1": 81.3291,
+     "rating_h2": 80.9072,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F2": {
+     "c0_emb1": 55.4998,
+     "c0": 55.8671,
+     "h1": 50.2963,
+     "occ": 0.4444,
+     "h2": 49.8682,
+     "rating_published": 80.0633,
+     "tier_published": "Solid",
+     "rating_emb3": 81.6456,
+     "tier_emb3": "Solid",
+     "rating_h1": 78.0591,
+     "rating_h2": 77.7426,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F3": {
+     "c0_emb1": 49.9651,
+     "c0": 50.2823,
+     "h1": 46.8944,
+     "occ": 0.4375,
+     "h2": 44.617,
+     "rating_published": 80.2743,
+     "tier_published": "Solid",
+     "rating_emb3": 80.9072,
+     "tier_emb3": "Solid",
+     "rating_h1": 80.2743,
+     "rating_h2": 79.5359,
+     "partial_vor_through_2025_immature": 0.0
+    }
+   },
+   {
+    "name": "Jack Bech",
+    "class": 2025,
+    "panel": "wide",
+    "found": true,
+    "pos": "WR",
+    "pick": 58,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 55.4877,
+     "c0": 55.8544,
+     "h1": 50.2849,
+     "occ": 0.4444,
+     "h2": 18.4796,
+     "rating_published": 82.9114,
+     "tier_published": "Solid",
+     "rating_emb3": 84.1772,
+     "tier_emb3": "Solid",
+     "rating_h1": 81.3291,
+     "rating_h2": 63.6076,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F2": {
+     "c0_emb1": 55.4998,
+     "c0": 55.8671,
+     "h1": 50.2963,
+     "occ": 0.4444,
+     "h2": 18.4305,
+     "rating_published": 80.0633,
+     "tier_published": "Solid",
+     "rating_emb3": 81.6456,
+     "tier_emb3": "Solid",
+     "rating_h1": 78.0591,
+     "rating_h2": 59.7046,
+     "partial_vor_through_2025_immature": 0.0
+    },
+    "F3": {
+     "c0_emb1": 49.9651,
+     "c0": 50.2823,
+     "h1": 46.8944,
+     "occ": 0.4375,
+     "h2": 16.4256,
+     "rating_published": 80.2743,
+     "tier_published": "Solid",
+     "rating_emb3": 80.9072,
+     "tier_emb3": "Solid",
+     "rating_h1": 80.2743,
+     "rating_h2": 59.3882,
+     "partial_vor_through_2025_immature": 0.0
+    }
+   },
+   {
+    "name": "RJ Harvey",
+    "class": 2025,
+    "panel": "wide",
+    "found": true,
+    "pos": "RB",
+    "pick": 60,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 86.0595,
+     "c0": 82.045,
+     "h1": 90.0003,
+     "occ": 0.5946,
+     "h2": 89.4164,
+     "rating_published": 90.2954,
+     "tier_published": "Strong",
+     "rating_emb3": 89.346,
+     "tier_emb3": "Strong",
+     "rating_h1": 90.7173,
+     "rating_h2": 89.6624,
+     "partial_vor_through_2025_immature": 70.9
+    },
+    "F2": {
+     "c0_emb1": 86.0851,
+     "c0": 82.0728,
+     "h1": 90.0003,
+     "occ": 0.5946,
+     "h2": 89.438,
+     "rating_published": 88.0802,
+     "tier_published": "Strong",
+     "rating_emb3": 86.9198,
+     "tier_emb3": "Strong",
+     "rating_h1": 88.6076,
+     "rating_h2": 87.5527,
+     "partial_vor_through_2025_immature": 70.9
+    },
+    "F3": {
+     "c0_emb1": 81.7774,
+     "c0": 78.2415,
+     "h1": 89.1575,
+     "occ": 0.5946,
+     "h2": 85.4065,
+     "rating_published": 89.2405,
+     "tier_published": "Strong",
+     "rating_emb3": 88.2911,
+     "tier_emb3": "Strong",
+     "rating_h1": 89.7679,
+     "rating_h2": 88.8186,
+     "partial_vor_through_2025_immature": 61.2
+    }
+   },
+   {
+    "name": "Fernando Mendoza",
+    "class": 2026,
+    "panel": "wide",
+    "found": true,
+    "pos": "QB",
+    "pick": 1,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 60.9636,
+     "c0": 60.9636,
+     "h1": 60.9636,
+     "occ": 0.6364,
+     "h2": 61.1791,
+     "rating_published": 85.5485,
+     "tier_published": "Strong",
+     "rating_emb3": 85.5485,
+     "tier_emb3": "Strong",
+     "rating_h1": 85.7595,
+     "rating_h2": 84.7046
+    },
+    "F2": {
+     "c0_emb1": 195.4891,
+     "c0": 195.4891,
+     "h1": 195.4891,
+     "occ": 1.0,
+     "h2": 198.539,
+     "rating_published": 98.5232,
+     "tier_published": "Elite",
+     "rating_emb3": 99.0506,
+     "tier_emb3": "Elite",
+     "rating_h1": 98.9451,
+     "rating_h2": 98.8397
+    },
+    "F3": {
+     "c0_emb1": 60.9636,
+     "c0": 60.9636,
+     "h1": 60.9636,
+     "occ": 0.6364,
+     "h2": 61.1791,
+     "rating_published": 85.7595,
+     "tier_published": "Strong",
+     "rating_emb3": 85.7595,
+     "tier_emb3": "Strong",
+     "rating_h1": 85.443,
+     "rating_h2": 84.3882
+    }
+   },
+   {
+    "name": "Carnell Tate",
+    "class": 2026,
+    "panel": "wide",
+    "found": true,
+    "pos": "WR",
+    "pick": 4,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 237.1667,
+     "c0": 237.1667,
+     "h1": 237.1667,
+     "occ": 1.0,
+     "h2": 247.128,
+     "rating_published": 99.4726,
+     "tier_published": "Elite",
+     "rating_emb3": 99.6835,
+     "tier_emb3": "Elite",
+     "rating_h1": 99.6835,
+     "rating_h2": 99.6835
+    },
+    "F2": {
+     "c0_emb1": 237.1667,
+     "c0": 237.1667,
+     "h1": 237.1667,
+     "occ": 1.0,
+     "h2": 247.137,
+     "rating_published": 99.3671,
+     "tier_published": "Elite",
+     "rating_emb3": 99.4726,
+     "tier_emb3": "Elite",
+     "rating_h1": 99.4726,
+     "rating_h2": 99.4726
+    },
+    "F3": {
+     "c0_emb1": 218.1,
+     "c0": 218.1,
+     "h1": 218.1,
+     "occ": 1.0,
+     "h2": 227.3272,
+     "rating_published": 99.2616,
+     "tier_published": "Elite",
+     "rating_emb3": 99.6835,
+     "tier_emb3": "Elite",
+     "rating_h1": 99.6835,
+     "rating_h2": 99.5781
+    }
+   },
+   {
+    "name": "Jordyn Tyson",
+    "class": 2026,
+    "panel": "wide",
+    "found": true,
+    "pos": "WR",
+    "pick": 8,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 136.26,
+     "c0": 136.26,
+     "h1": 149.7365,
+     "occ": 0.8333,
+     "h2": 131.6004,
+     "rating_published": 97.4684,
+     "tier_published": "Elite",
+     "rating_emb3": 96.6245,
+     "tier_emb3": "Elite",
+     "rating_h1": 97.0464,
+     "rating_h2": 95.8861
+    },
+    "F2": {
+     "c0_emb1": 136.26,
+     "c0": 136.26,
+     "h1": 149.7365,
+     "occ": 0.8333,
+     "h2": 131.6022,
+     "rating_published": 96.519,
+     "tier_published": "Elite",
+     "rating_emb3": 95.6751,
+     "tier_emb3": "Elite",
+     "rating_h1": 96.2025,
+     "rating_h2": 94.9367
+    },
+    "F3": {
+     "c0_emb1": 124.1957,
+     "c0": 124.1957,
+     "h1": 140.8602,
+     "occ": 0.8333,
+     "h2": 119.842,
+     "rating_published": 97.2574,
+     "tier_published": "Elite",
+     "rating_emb3": 96.097,
+     "tier_emb3": "Elite",
+     "rating_h1": 97.6793,
+     "rating_h2": 95.2532
+    }
+   },
+   {
+    "name": "Ty Simpson",
+    "class": 2026,
+    "panel": "wide",
+    "found": true,
+    "pos": "QB",
+    "pick": 13,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 22.5768,
+     "c0": 22.5768,
+     "h1": 25.7706,
+     "occ": 0.4667,
+     "h2": 19.2264,
+     "rating_published": 68.9873,
+     "tier_published": "Solid",
+     "rating_emb3": 69.9367,
+     "tier_emb3": "Solid",
+     "rating_h1": 71.6245,
+     "rating_h2": 64.8734
+    },
+    "F2": {
+     "c0_emb1": 82.0647,
+     "c0": 82.0647,
+     "h1": 79.7264,
+     "occ": 0.5385,
+     "h2": 76.8328,
+     "rating_published": 87.5527,
+     "tier_published": "Strong",
+     "rating_emb3": 86.9198,
+     "tier_emb3": "Strong",
+     "rating_h1": 87.0253,
+     "rating_h2": 86.3924
+    },
+    "F3": {
+     "c0_emb1": 22.5768,
+     "c0": 22.5768,
+     "h1": 25.7706,
+     "occ": 0.4667,
+     "h2": 19.2264,
+     "rating_published": 65.5063,
+     "tier_published": "Solid",
+     "rating_emb3": 67.0886,
+     "tier_emb3": "Solid",
+     "rating_h1": 68.6709,
+     "rating_h2": 62.0253
+    }
+   },
+   {
+    "name": "Makai Lemon",
+    "class": 2026,
+    "panel": "wide",
+    "found": true,
+    "pos": "WR",
+    "pick": 20,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 122.3015,
+     "c0": 122.3015,
+     "h1": 122.185,
+     "occ": 0.68,
+     "h2": 132.0677,
+     "rating_published": 95.9916,
+     "tier_published": "Elite",
+     "rating_emb3": 95.7806,
+     "tier_emb3": "Elite",
+     "rating_h1": 94.9367,
+     "rating_h2": 96.097
+    },
+    "F2": {
+     "c0_emb1": 122.3015,
+     "c0": 122.3015,
+     "h1": 122.185,
+     "occ": 0.68,
+     "h2": 132.0768,
+     "rating_published": 94.9367,
+     "tier_published": "Strong",
+     "rating_emb3": 94.5148,
+     "tier_emb3": "Strong",
+     "rating_h1": 93.3544,
+     "rating_h2": 95.1477
+    },
+    "F3": {
+     "c0_emb1": 111.2272,
+     "c0": 111.2272,
+     "h1": 110.5211,
+     "occ": 0.6538,
+     "h2": 120.2913,
+     "rating_published": 95.1477,
+     "tier_published": "Elite",
+     "rating_emb3": 94.8312,
+     "tier_emb3": "Strong",
+     "rating_h1": 93.7764,
+     "rating_h2": 95.4641
+    }
+   },
+   {
+    "name": "KC Concepcion",
+    "class": 2026,
+    "panel": "wide",
+    "found": true,
+    "pos": "WR",
+    "pick": 24,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 122.3015,
+     "c0": 122.3015,
+     "h1": 122.185,
+     "occ": 0.68,
+     "h2": 127.7677,
+     "rating_published": 95.9916,
+     "tier_published": "Elite",
+     "rating_emb3": 95.7806,
+     "tier_emb3": "Elite",
+     "rating_h1": 94.9367,
+     "rating_h2": 95.1477
+    },
+    "F2": {
+     "c0_emb1": 122.3015,
+     "c0": 122.3015,
+     "h1": 122.185,
+     "occ": 0.68,
+     "h2": 127.7715,
+     "rating_published": 94.9367,
+     "tier_published": "Strong",
+     "rating_emb3": 94.5148,
+     "tier_emb3": "Strong",
+     "rating_h1": 93.3544,
+     "rating_h2": 94.1983
+    },
+    "F3": {
+     "c0_emb1": 111.2272,
+     "c0": 111.2272,
+     "h1": 110.5211,
+     "occ": 0.6538,
+     "h2": 116.2036,
+     "rating_published": 95.1477,
+     "tier_published": "Elite",
+     "rating_emb3": 94.8312,
+     "tier_emb3": "Strong",
+     "rating_h1": 93.7764,
+     "rating_h2": 94.0928
+    }
+   },
+   {
+    "name": "Omar Cooper",
+    "class": 2026,
+    "panel": "wide",
+    "found": true,
+    "pos": "WR",
+    "pick": 30,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 55.4877,
+     "c0": 55.4877,
+     "h1": 59.9087,
+     "occ": 0.5333,
+     "h2": 60.685,
+     "rating_published": 82.9114,
+     "tier_published": "Solid",
+     "rating_emb3": 83.2278,
+     "tier_emb3": "Solid",
+     "rating_h1": 85.5485,
+     "rating_h2": 84.4937
+    },
+    "F2": {
+     "c0_emb1": 55.4998,
+     "c0": 55.4998,
+     "h1": 59.9217,
+     "occ": 0.5333,
+     "h2": 60.7001,
+     "rating_published": 80.0633,
+     "tier_published": "Solid",
+     "rating_emb3": 80.6962,
+     "tier_emb3": "Solid",
+     "rating_h1": 82.384,
+     "rating_h2": 81.962
+    },
+    "F3": {
+     "c0_emb1": 49.9651,
+     "c0": 49.9651,
+     "h1": 53.111,
+     "occ": 0.5,
+     "h2": 54.8909,
+     "rating_published": 80.2743,
+     "tier_published": "Solid",
+     "rating_emb3": 80.9072,
+     "tier_emb3": "Solid",
+     "rating_h1": 82.4895,
+     "rating_h2": 83.0169
+    }
+   },
+   {
+    "name": "Jadarian Price",
+    "class": 2026,
+    "panel": "wide",
+    "found": true,
+    "pos": "RB",
+    "pick": 32,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 112.8384,
+     "c0": 112.8384,
+     "h1": 119.8075,
+     "occ": 0.8,
+     "h2": 103.243,
+     "rating_published": 94.3038,
+     "tier_published": "Strong",
+     "rating_emb3": 93.6709,
+     "tier_emb3": "Strong",
+     "rating_h1": 94.0928,
+     "rating_h2": 90.7173
+    },
+    "F2": {
+     "c0_emb1": 112.8384,
+     "c0": 112.8384,
+     "h1": 119.8075,
+     "occ": 0.8,
+     "h2": 103.2444,
+     "rating_published": 93.038,
+     "tier_published": "Strong",
+     "rating_emb3": 92.0886,
+     "tier_emb3": "Strong",
+     "rating_h1": 92.5105,
+     "rating_h2": 89.0295
+    },
+    "F3": {
+     "c0_emb1": 108.6624,
+     "c0": 108.6624,
+     "h1": 112.9668,
+     "occ": 0.76,
+     "h2": 99.5802,
+     "rating_published": 94.0928,
+     "tier_published": "Strong",
+     "rating_emb3": 93.9873,
+     "tier_emb3": "Strong",
+     "rating_h1": 93.8819,
+     "rating_h2": 90.9283
+    }
+   },
+   {
+    "name": "De'Zhaun Stribling",
+    "class": 2026,
+    "panel": "wide",
+    "found": true,
+    "pos": "WR",
+    "pick": 33,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 55.4877,
+     "c0": 55.4877,
+     "h1": 59.9087,
+     "occ": 0.5333,
+     "h2": 51.1009,
+     "rating_published": 82.9114,
+     "tier_published": "Solid",
+     "rating_emb3": 83.2278,
+     "tier_emb3": "Solid",
+     "rating_h1": 85.5485,
+     "rating_h2": 81.2236
+    },
+    "F2": {
+     "c0_emb1": 55.4998,
+     "c0": 55.4998,
+     "h1": 59.9217,
+     "occ": 0.5333,
+     "h2": 51.1082,
+     "rating_published": 80.0633,
+     "tier_published": "Solid",
+     "rating_emb3": 80.6962,
+     "tier_emb3": "Solid",
+     "rating_h1": 82.384,
+     "rating_h2": 78.0591
+    },
+    "F3": {
+     "c0_emb1": 49.9651,
+     "c0": 49.9651,
+     "h1": 53.111,
+     "occ": 0.5,
+     "h2": 45.9637,
+     "rating_published": 80.2743,
+     "tier_published": "Solid",
+     "rating_emb3": 80.9072,
+     "tier_emb3": "Solid",
+     "rating_h1": 82.4895,
+     "rating_h2": 80.1688
+    }
+   },
+   {
+    "name": "Denzel Boston",
+    "class": 2026,
+    "panel": "wide",
+    "found": true,
+    "pos": "WR",
+    "pick": 39,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 55.4877,
+     "c0": 55.4877,
+     "h1": 59.9087,
+     "occ": 0.5333,
+     "h2": 48.7265,
+     "rating_published": 82.9114,
+     "tier_published": "Solid",
+     "rating_emb3": 83.2278,
+     "tier_emb3": "Solid",
+     "rating_h1": 85.5485,
+     "rating_h2": 80.4852
+    },
+    "F2": {
+     "c0_emb1": 55.4998,
+     "c0": 55.4998,
+     "h1": 59.9217,
+     "occ": 0.5333,
+     "h2": 48.7339,
+     "rating_published": 80.0633,
+     "tier_published": "Solid",
+     "rating_emb3": 80.6962,
+     "tier_emb3": "Solid",
+     "rating_h1": 82.384,
+     "rating_h2": 77.3207
+    },
+    "F3": {
+     "c0_emb1": 49.9651,
+     "c0": 49.9651,
+     "h1": 53.111,
+     "occ": 0.5,
+     "h2": 43.8037,
+     "rating_published": 80.2743,
+     "tier_published": "Solid",
+     "rating_emb3": 80.9072,
+     "tier_emb3": "Solid",
+     "rating_h1": 82.4895,
+     "rating_h2": 79.2194
+    }
+   },
+   {
+    "name": "Germie Bernard",
+    "class": 2026,
+    "panel": "wide",
+    "found": true,
+    "pos": "WR",
+    "pick": 47,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 55.4877,
+     "c0": 55.4877,
+     "h1": 56.1644,
+     "occ": 0.5,
+     "h2": 50.2049,
+     "rating_published": 82.9114,
+     "tier_published": "Solid",
+     "rating_emb3": 83.2278,
+     "tier_emb3": "Solid",
+     "rating_h1": 83.6498,
+     "rating_h2": 80.9072
+    },
+    "F2": {
+     "c0_emb1": 55.4998,
+     "c0": 55.4998,
+     "h1": 56.1766,
+     "occ": 0.5,
+     "h2": 50.2185,
+     "rating_published": 80.0633,
+     "tier_published": "Solid",
+     "rating_emb3": 80.6962,
+     "tier_emb3": "Solid",
+     "rating_h1": 80.3797,
+     "rating_h2": 77.7426
+    },
+    "F3": {
+     "c0_emb1": 49.9651,
+     "c0": 49.9651,
+     "h1": 49.0255,
+     "occ": 0.4615,
+     "h2": 45.0902,
+     "rating_published": 80.2743,
+     "tier_published": "Solid",
+     "rating_emb3": 80.9072,
+     "tier_emb3": "Solid",
+     "rating_h1": 80.3797,
+     "rating_h2": 79.8523
+    }
+   },
+   {
+    "name": "Nate Boerkircher",
+    "class": 2026,
+    "panel": "wide",
+    "found": true,
+    "pos": "TE",
+    "pick": 56,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 15.8255,
+     "c0": 15.8255,
+     "h1": 13.2067,
+     "occ": 0.2264,
+     "h2": 15.5682,
+     "rating_published": 64.4515,
+     "tier_published": "Dart",
+     "rating_emb3": 65.4008,
+     "tier_emb3": "Solid",
+     "rating_h1": 61.7089,
+     "rating_h2": 59.2827
+    },
+    "F2": {
+     "c0_emb1": 15.8255,
+     "c0": 15.8255,
+     "h1": 13.2067,
+     "occ": 0.2264,
+     "h2": 15.5682,
+     "rating_published": 61.6034,
+     "tier_published": "Dart",
+     "rating_emb3": 62.2363,
+     "tier_emb3": "Dart",
+     "rating_h1": 59.4937,
+     "rating_h2": 55.9072
+    },
+    "F3": {
+     "c0_emb1": 26.4776,
+     "c0": 26.4776,
+     "h1": 25.6266,
+     "occ": 0.3095,
+     "h2": 26.098,
+     "rating_published": 70.4641,
+     "tier_published": "Solid",
+     "rating_emb3": 70.8861,
+     "tier_emb3": "Solid",
+     "rating_h1": 68.6709,
+     "rating_h2": 68.8819
+    }
+   },
+   {
+    "name": "Marlin Klein",
+    "class": 2026,
+    "panel": "wide",
+    "found": true,
+    "pos": "TE",
+    "pick": 59,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 15.8255,
+     "c0": 15.8255,
+     "h1": 13.2067,
+     "occ": 0.2264,
+     "h2": 15.8882,
+     "rating_published": 64.4515,
+     "tier_published": "Dart",
+     "rating_emb3": 65.4008,
+     "tier_emb3": "Solid",
+     "rating_h1": 61.7089,
+     "rating_h2": 60.0211
+    },
+    "F2": {
+     "c0_emb1": 15.8255,
+     "c0": 15.8255,
+     "h1": 13.2067,
+     "occ": 0.2264,
+     "h2": 15.8882,
+     "rating_published": 61.6034,
+     "tier_published": "Dart",
+     "rating_emb3": 62.2363,
+     "tier_emb3": "Dart",
+     "rating_h1": 59.4937,
+     "rating_h2": 56.5401
+    },
+    "F3": {
+     "c0_emb1": 26.4776,
+     "c0": 26.4776,
+     "h1": 25.6266,
+     "occ": 0.3095,
+     "h2": 26.4456,
+     "rating_published": 70.4641,
+     "tier_published": "Solid",
+     "rating_emb3": 70.8861,
+     "tier_emb3": "Solid",
+     "rating_h1": 68.6709,
+     "rating_h2": 69.1983
+    }
+   },
+   {
+    "name": "Max Klare",
+    "class": 2026,
+    "panel": "wide",
+    "found": true,
+    "pos": "TE",
+    "pick": 61,
+    "udfa": false,
+    "F1": {
+     "c0_emb1": 15.8255,
+     "c0": 15.8255,
+     "h1": 13.2067,
+     "occ": 0.2264,
+     "h2": 15.8433,
+     "rating_published": 64.4515,
+     "tier_published": "Dart",
+     "rating_emb3": 65.4008,
+     "tier_emb3": "Solid",
+     "rating_h1": 61.7089,
+     "rating_h2": 59.9156
+    },
+    "F2": {
+     "c0_emb1": 15.8255,
+     "c0": 15.8255,
+     "h1": 13.2067,
+     "occ": 0.2264,
+     "h2": 15.8433,
+     "rating_published": 61.6034,
+     "tier_published": "Dart",
+     "rating_emb3": 62.2363,
+     "tier_emb3": "Dart",
+     "rating_h1": 59.4937,
+     "rating_h2": 56.4346
+    },
+    "F3": {
+     "c0_emb1": 26.4776,
+     "c0": 26.4776,
+     "h1": 25.6266,
+     "occ": 0.3095,
+     "h2": 26.495,
+     "rating_published": 70.4641,
+     "tier_published": "Solid",
+     "rating_emb3": 70.8861,
+     "tier_emb3": "Solid",
+     "rating_h1": 68.6709,
+     "rating_h2": 69.3038
+    }
+   }
+  ],
+  "n": {
+   "love": 1,
+   "frozen_panel": 35,
+   "wide": 55
+  },
+  "published_rating_vs_frozen": {
+   "compared": 70,
+   "max_abs_diff": 0.0
+  }
+ },
+ "robustness": {
+  "H1": {
+   "prereg": "NOT SUPPORTED",
+   "fragile": false,
+   "accepted_in": [],
+   "other_category_in": {
+    "S4 feats_dev_2012_19": "REJECTED",
+    "S4 drop_2017": "REJECTED",
+    "S4 drop_2018": "REJECTED",
+    "S4 drop_2020": "REJECTED",
+    "S4 drop_2021": "REJECTED"
+   }
+  },
+  "H2": {
+   "prereg": "REJECTED",
+   "fragile": false,
+   "accepted_in": [],
+   "other_category_in": {}
+  },
+  "H3": {
+   "prereg": "USABLE (descriptive, 3 classes)",
+   "fragile": false,
+   "scope": "F1, F2, F3"
+  }
+ },
+ "store_sha256_after": "85d9801d4f2ec3f750af80e62f13f2b20615c508b1ce85fc27fd132981afa9c0"
+}
