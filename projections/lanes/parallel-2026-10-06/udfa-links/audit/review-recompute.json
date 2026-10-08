@@ -1,0 +1,1453 @@
+{
+ "reviewer_extras": {
+  "D_exact_dob_linked_by_games_classes_to_2023": {
+   "0": "66/120=55.0",
+   "1-16": "213/295=72.2",
+   "17-48": "263/353=74.5",
+   "49+": "434/495=87.7"
+  },
+  "D_linked_0_games_by_class": {
+   "2008-2011": 39,
+   "2012-2015": 34,
+   "2016-2019": 36,
+   "2020-2023": 11,
+   "2024-2026": 102
+  },
+  "U_conf_missing_by_class": {
+   "2008-2011": "365/387=94.3",
+   "2012-2015": "393/482=81.5",
+   "2016-2019": "243/503=48.3",
+   "2020-2023": "7/395=1.8"
+  },
+  "U_conf_missing_by_games": {
+   "0": "625/910=68.7",
+   "1-16": "253/489=51.7",
+   "17-48": "92/242=38.0",
+   "49+": "38/126=30.2"
+  },
+  "U_exact_dob_linked_by_class_x_games": {
+   "2008-2011|0": "147/170=86.5",
+   "2008-2011|1-16": "71/88=80.7",
+   "2008-2011|17-48": "37/45=82.2",
+   "2008-2011|49+": "20/25=80.0",
+   "2012-2015|0": "59/222=26.6",
+   "2012-2015|1-16": "34/105=32.4",
+   "2012-2015|17-48": "21/59=35.6",
+   "2012-2015|49+": "23/39=59.0",
+   "2016-2019|0": "35/220=15.9",
+   "2016-2019|1-16": "62/132=47.0",
+   "2016-2019|17-48": "55/68=80.9",
+   "2016-2019|49+": "33/41=80.5",
+   "2020-2023|0": "180/201=89.6",
+   "2020-2023|1-16": "107/114=93.9",
+   "2020-2023|17-48": "52/53=98.1",
+   "2020-2023|49+": "8/8=100.0"
+  },
+  "U_unlinked_by_class_x_games": {
+   "2008-2011|0": "41/211=19.4",
+   "2008-2011|1-16": "12/100=12.0",
+   "2008-2011|17-48": "4/49=8.2",
+   "2008-2011|49+": "2/27=7.4",
+   "2012-2015|0": "25/247=10.1",
+   "2012-2015|1-16": "18/123=14.6",
+   "2012-2015|17-48": "7/66=10.6",
+   "2012-2015|49+": "7/46=15.2",
+   "2016-2019|0": "21/241=8.7",
+   "2016-2019|1-16": "11/143=7.7",
+   "2016-2019|17-48": "6/74=8.1",
+   "2016-2019|49+": "4/45=8.9",
+   "2020-2023|0": "10/211=4.7",
+   "2020-2023|1-16": "9/123=7.3",
+   "2020-2023|17-48": "0/53=0.0",
+   "2020-2023|49+": "0/8=0.0"
+  },
+  "rule_conflict_pattern": [
+   {
+    "distinct_teams": true,
+    "dob_on_exactly_one": true,
+    "fits_all": true,
+    "name": "Joe Anderson",
+    "sequential": true
+   },
+   {
+    "distinct_teams": true,
+    "dob_on_exactly_one": true,
+    "fits_all": true,
+    "name": "Phil Bates",
+    "sequential": true
+   },
+   {
+    "distinct_teams": true,
+    "dob_on_exactly_one": true,
+    "fits_all": true,
+    "name": "McLeod Bethel-Thompson",
+    "sequential": true
+   },
+   {
+    "distinct_teams": true,
+    "dob_on_exactly_one": false,
+    "fits_all": false,
+    "name": "Isaiah Crowell",
+    "sequential": true
+   },
+   {
+    "distinct_teams": true,
+    "dob_on_exactly_one": true,
+    "fits_all": true,
+    "name": "Dominique Davis",
+    "sequential": true
+   },
+   {
+    "distinct_teams": true,
+    "dob_on_exactly_one": false,
+    "fits_all": false,
+    "name": "Nic Jacobs",
+    "sequential": true
+   },
+   {
+    "distinct_teams": true,
+    "dob_on_exactly_one": true,
+    "fits_all": true,
+    "name": "Jake Kumerow",
+    "sequential": true
+   },
+   {
+    "distinct_teams": false,
+    "dob_on_exactly_one": true,
+    "fits_all": false,
+    "name": "JoJo Natson",
+    "sequential": false
+   },
+   {
+    "distinct_teams": false,
+    "dob_on_exactly_one": true,
+    "fits_all": false,
+    "name": "Manase Tonga",
+    "sequential": false
+   },
+   {
+    "distinct_teams": false,
+    "dob_on_exactly_one": true,
+    "fits_all": false,
+    "name": "Myles White",
+    "sequential": true
+   }
+  ],
+  "rule_conflict_pattern_counts": {
+   "distinct_teams": 7,
+   "dob_on_exactly_one": 8,
+   "fits_all": 5,
+   "sequential": 8
+  }
+ },
+ "s1_coverage": {
+  "D": {
+   "base": 1417,
+   "base_pct": 92.9,
+   "base_with_feature": 1417,
+   "feature": 1428,
+   "feature_pct": 93.6,
+   "fresh": 1418,
+   "fresh_pct": 93.0,
+   "identity": 1506,
+   "identity_pct": 98.8,
+   "n": 1525,
+   "new_links": 89,
+   "new_with_feature": 11
+  },
+  "U": {
+   "base": 1197,
+   "base_pct": 67.7,
+   "base_with_feature": 1197,
+   "feature": 1287,
+   "feature_pct": 72.8,
+   "fresh": 1218,
+   "fresh_pct": 68.9,
+   "identity": 1590,
+   "identity_pct": 90.0,
+   "n": 1767,
+   "new_links": 393,
+   "new_with_feature": 90
+  }
+ },
+ "s2_collisions_p23": 0,
+ "s2_identity_id_dups": 0,
+ "s2_lio": {
+  "D": {
+   "by_method": {
+    "name_school": 682
+   },
+   "correct": 682,
+   "found": 682,
+   "n": 690,
+   "wrong": []
+  },
+  "U": {
+   "by_method": {
+    "name_school": 404
+   },
+   "correct": 403,
+   "found": 404,
+   "n": 458,
+   "wrong": [
+    {
+     "got": 4372721,
+     "key": "00-0038685",
+     "method": "name_school",
+     "truth": 3149687
+    }
+   ]
+  }
+ },
+ "s2_methods_csv": {
+  "D": {
+   "dob_name": 4,
+   "espn_id": 690,
+   "name_prefix": 1,
+   "name_school": 726,
+   "unlinked": 19,
+   "xwalk": 27,
+   "xwalk+dob_name": 57,
+   "xwalk+gap_window": 1
+  },
+  "U": {
+   "dob_name": 19,
+   "dob_name+gap_window": 3,
+   "dob_name+multi_school+gap_window": 3,
+   "espn_id": 458,
+   "multi_school+gap_window": 1,
+   "name_prefix": 1,
+   "name_school": 738,
+   "unlinked": 177,
+   "xwalk": 162,
+   "xwalk+dob_name": 152,
+   "xwalk+dob_name+gap_window": 22,
+   "xwalk+dob_name+multi_school+gap_window": 13,
+   "xwalk+gap_window": 4,
+   "xwalk+multi_school": 2,
+   "xwalk+multi_school+gap_window": 12
+  }
+ },
+ "s2_methods_match_p23": true,
+ "s2_r1_disagree": {
+  "espn_id": [],
+  "name_prefix": [],
+  "name_school": [
+   {
+    "base": 530818,
+    "key": "00-0030299",
+    "name": "Dan Buckner",
+    "xw": 377926
+   }
+  ]
+ },
+ "s2_rule_conflicts": [
+  {
+   "cause": "rule_conflict",
+   "ids": {
+    "237552": {
+     "dob": [
+      "1988-11-21T08:00Z"
+     ],
+     "rules": [
+      "dob_name",
+      "gap_window"
+     ],
+     "seasons": [
+      2007
+     ],
+     "teams": [
+      "2348"
+     ]
+    },
+    "489006": {
+     "dob": [],
+     "rules": [
+      "xwalk"
+     ],
+     "seasons": [
+      2009
+     ],
+     "teams": [
+      "2640"
+     ]
+    }
+   },
+   "key": "00-0029494",
+   "linked": false,
+   "name": "Joe Anderson",
+   "t0": 2012
+  },
+  {
+   "cause": "rule_conflict",
+   "ids": {
+    "235698": {
+     "dob": [
+      "1989-09-20T07:00Z"
+     ],
+     "rules": [
+      "dob_name"
+     ],
+     "seasons": [
+      2007,
+      2008
+     ],
+     "teams": [
+      "66"
+     ]
+    },
+    "489456": {
+     "dob": [],
+     "rules": [
+      "xwalk",
+      "multi_school",
+      "gap_window"
+     ],
+     "seasons": [
+      2010,
+      2011
+     ],
+     "teams": [
+      "195"
+     ]
+    }
+   },
+   "key": "BAT138483",
+   "linked": false,
+   "name": "Phil Bates",
+   "t0": 2012
+  },
+  {
+   "cause": "rule_conflict",
+   "ids": {
+    "192265": {
+     "dob": [
+      "1988-07-03T07:00Z"
+     ],
+     "rules": [
+      "dob_name"
+     ],
+     "seasons": [
+      2007
+     ],
+     "teams": [
+      "26"
+     ]
+    },
+    "477950": {
+     "dob": [],
+     "rules": [
+      "xwalk"
+     ],
+     "seasons": [
+      2009,
+      2010
+     ],
+     "teams": [
+      "16"
+     ]
+    }
+   },
+   "key": "00-0028359",
+   "linked": false,
+   "name": "McLeod Bethel-Thompson",
+   "t0": 2011
+  },
+  {
+   "cause": "rule_conflict",
+   "ids": {
+    "512836": {
+     "dob": [],
+     "rules": [
+      "gap_window"
+     ],
+     "seasons": [
+      2011
+     ],
+     "teams": [
+      "61"
+     ]
+    },
+    "536398": {
+     "dob": [],
+     "rules": [
+      "xwalk"
+     ],
+     "seasons": [
+      2013
+     ],
+     "teams": [
+      "2011"
+     ]
+    }
+   },
+   "key": "00-0030656",
+   "linked": false,
+   "name": "Isaiah Crowell",
+   "t0": 2014
+  },
+  {
+   "cause": "rule_conflict",
+   "ids": {
+    "236575": {
+     "dob": [
+      "1989-07-17T07:00Z"
+     ],
+     "rules": [
+      "xwalk",
+      "dob_name"
+     ],
+     "seasons": [
+      2008
+     ],
+     "teams": [
+      "103"
+     ]
+    },
+    "500941": {
+     "dob": [],
+     "rules": [
+      "multi_school"
+     ],
+     "seasons": [
+      2010,
+      2011
+     ],
+     "teams": [
+      "151"
+     ]
+    }
+   },
+   "key": "00-0028863",
+   "linked": false,
+   "name": "Dominique Davis",
+   "t0": 2012
+  },
+  {
+   "cause": "rule_conflict",
+   "ids": {
+    "504189": {
+     "dob": [],
+     "rules": [
+      "multi_school",
+      "gap_window"
+     ],
+     "seasons": [
+      2012
+     ],
+     "teams": [
+      "99"
+     ]
+    },
+    "548774": {
+     "dob": [],
+     "rules": [
+      "xwalk"
+     ],
+     "seasons": [
+      2013
+     ],
+     "teams": [
+      "2377"
+     ]
+    }
+   },
+   "key": "00-0030806",
+   "linked": false,
+   "name": "Nic Jacobs",
+   "t0": 2014
+  },
+  {
+   "cause": "rule_conflict",
+   "ids": {
+    "505112": {
+     "dob": [],
+     "rules": [
+      "gap_window"
+     ],
+     "seasons": [
+      2011
+     ],
+     "teams": [
+      "356"
+     ]
+    },
+    "558147": {
+     "dob": [
+      "1992-02-17T08:00Z"
+     ],
+     "rules": [
+      "xwalk",
+      "dob_name"
+     ],
+     "seasons": [
+      2014
+     ],
+     "teams": [
+      "3193"
+     ]
+    }
+   },
+   "key": "00-0031787",
+   "linked": false,
+   "name": "Jake Kumerow",
+   "t0": 2015
+  },
+  {
+   "cause": "rule_conflict",
+   "ids": {
+    "3125355": {
+     "dob": [],
+     "rules": [
+      "multi_school",
+      "gap_window"
+     ],
+     "seasons": [
+      2014,
+      2016
+     ],
+     "teams": [
+      "2006",
+      "328"
+     ]
+    },
+    "531268": {
+     "dob": [
+      "1994-02-01T08:00Z"
+     ],
+     "rules": [
+      "xwalk",
+      "dob_name"
+     ],
+     "seasons": [
+      2012,
+      2013,
+      2016
+     ],
+     "teams": [
+      "2006",
+      "328"
+     ]
+    }
+   },
+   "key": "00-0033266",
+   "linked": false,
+   "name": "JoJo Natson",
+   "t0": 2017
+  },
+  {
+   "cause": "rule_conflict",
+   "ids": {
+    "134674": {
+     "dob": [
+      "1984-02-28T08:00Z"
+     ],
+     "rules": [
+      "dob_name"
+     ],
+     "seasons": [
+      2005,
+      2006,
+      2007,
+      2009
+     ],
+     "teams": [
+      "252"
+     ]
+    },
+    "487664": {
+     "dob": [],
+     "rules": [
+      "xwalk"
+     ],
+     "seasons": [
+      2009
+     ],
+     "teams": [
+      "252"
+     ]
+    }
+   },
+   "key": "00-0027412",
+   "linked": false,
+   "name": "Manase Tonga",
+   "t0": 2010
+  },
+  {
+   "cause": "rule_conflict",
+   "ids": {
+    "381923": {
+     "dob": [
+      "1990-03-30T08:00Z"
+     ],
+     "rules": [
+      "dob_name"
+     ],
+     "seasons": [
+      2009,
+      2011
+     ],
+     "teams": [
+      "127",
+      "2348"
+     ]
+    },
+    "536315": {
+     "dob": [],
+     "rules": [
+      "xwalk",
+      "multi_school"
+     ],
+     "seasons": [
+      2012
+     ],
+     "teams": [
+      "2348"
+     ]
+    }
+   },
+   "key": "00-0030274",
+   "linked": false,
+   "name": "Myles White",
+   "t0": 2013
+  }
+ ],
+ "s2_rule_on_id_known": {
+  "dob_name": {
+   "accepted": 1020,
+   "agree": 1020,
+   "disagree": [],
+   "n": 1148
+  },
+  "gap_window": {
+   "accepted": 1097,
+   "agree": 1097,
+   "disagree": [],
+   "n": 1148
+  },
+  "multi_school": {
+   "accepted": 67,
+   "agree": 67,
+   "disagree": [],
+   "n": 1148
+  },
+  "xwalk": {
+   "accepted": 1146,
+   "agree": 1146,
+   "disagree": [],
+   "n": 1148
+  }
+ },
+ "s2_unlinked_causes_rule_conflict": {
+  "U": 10
+ },
+ "s3_bias": {
+  "D": {
+   "cls": {
+    "2008-2011": {
+     "n": 334,
+     "nofeat": 34,
+     "nofeat_pct": 10.2,
+     "unlinked": 10,
+     "unlinked_pct": 3.0
+    },
+    "2012-2015": {
+     "n": 313,
+     "nofeat": 22,
+     "nofeat_pct": 7.0,
+     "unlinked": 4,
+     "unlinked_pct": 1.3
+    },
+    "2016-2019": {
+     "n": 323,
+     "nofeat": 20,
+     "nofeat_pct": 6.2,
+     "unlinked": 4,
+     "unlinked_pct": 1.2
+    },
+    "2020-2023": {
+     "n": 312,
+     "nofeat": 13,
+     "nofeat_pct": 4.2,
+     "unlinked": 1,
+     "unlinked_pct": 0.3
+    },
+    "2024-2026": {
+     "n": 243,
+     "nofeat": 8,
+     "nofeat_pct": 3.3,
+     "unlinked": 0,
+     "unlinked_pct": 0.0
+    }
+   },
+   "combine": {
+    "False": {
+     "n": 204,
+     "nofeat": 42,
+     "nofeat_pct": 20.6,
+     "unlinked": 7,
+     "unlinked_pct": 3.4
+    },
+    "True": {
+     "n": 1321,
+     "nofeat": 55,
+     "nofeat_pct": 4.2,
+     "unlinked": 12,
+     "unlinked_pct": 0.9
+    }
+   },
+   "conf": {
+    "D2-lower": {
+     "n": 9,
+     "nofeat": 8,
+     "nofeat_pct": 88.9,
+     "unlinked": 5,
+     "unlinked_pct": 55.6
+    },
+    "FCS": {
+     "n": 51,
+     "nofeat": 46,
+     "nofeat_pct": 90.2,
+     "unlinked": 1,
+     "unlinked_pct": 2.0
+    },
+    "G5": {
+     "n": 155,
+     "nofeat": 0,
+     "nofeat_pct": 0.0,
+     "unlinked": 0,
+     "unlinked_pct": 0.0
+    },
+    "Independent": {
+     "n": 37,
+     "nofeat": 0,
+     "nofeat_pct": 0.0,
+     "unlinked": 0,
+     "unlinked_pct": 0.0
+    },
+    "P5": {
+     "n": 793,
+     "nofeat": 1,
+     "nofeat_pct": 0.1,
+     "unlinked": 1,
+     "unlinked_pct": 0.1
+    },
+    "missing": {
+     "n": 480,
+     "nofeat": 42,
+     "nofeat_pct": 8.8,
+     "unlinked": 12,
+     "unlinked_pct": 2.5
+    }
+   },
+   "games_mean_linked": 39.7,
+   "games_mean_unlinked": 38.5,
+   "gb": {
+    "0": {
+     "n": 224,
+     "nofeat": 15,
+     "nofeat_pct": 6.7,
+     "unlinked": 2,
+     "unlinked_pct": 0.9
+    },
+    "1-16": {
+     "n": 385,
+     "nofeat": 24,
+     "nofeat_pct": 6.2,
+     "unlinked": 5,
+     "unlinked_pct": 1.3
+    },
+    "17-48": {
+     "n": 416,
+     "nofeat": 29,
+     "nofeat_pct": 7.0,
+     "unlinked": 7,
+     "unlinked_pct": 1.7
+    },
+    "49+": {
+     "n": 500,
+     "nofeat": 29,
+     "nofeat_pct": 5.8,
+     "unlinked": 5,
+     "unlinked_pct": 1.0
+    }
+   },
+   "n": 1525,
+   "nofeat": 97,
+   "pfr_known": {
+    "False": {
+     "n": 6,
+     "nofeat": 0,
+     "nofeat_pct": 0.0,
+     "unlinked": 0,
+     "unlinked_pct": 0.0
+    },
+    "True": {
+     "n": 1519,
+     "nofeat": 97,
+     "nofeat_pct": 6.4,
+     "unlinked": 19,
+     "unlinked_pct": 1.3
+    }
+   },
+   "pos": {
+    "QB": {
+     "n": 222,
+     "nofeat": 12,
+     "nofeat_pct": 5.4,
+     "unlinked": 2,
+     "unlinked_pct": 0.9
+    },
+    "RB": {
+     "n": 400,
+     "nofeat": 22,
+     "nofeat_pct": 5.5,
+     "unlinked": 3,
+     "unlinked_pct": 0.8
+    },
+    "TE": {
+     "n": 287,
+     "nofeat": 18,
+     "nofeat_pct": 6.3,
+     "unlinked": 4,
+     "unlinked_pct": 1.4
+    },
+    "WR": {
+     "n": 616,
+     "nofeat": 45,
+     "nofeat_pct": 7.3,
+     "unlinked": 10,
+     "unlinked_pct": 1.6
+    }
+   },
+   "ppr_mean_feature": 350.0,
+   "ppr_mean_linked": 343.7,
+   "ppr_mean_nofeature": 238.1,
+   "ppr_mean_unlinked": 277.0,
+   "ppr_median_linked": 105.1,
+   "ppr_median_unlinked": 134.1,
+   "rec": {
+    "multi": {
+     "n": 81,
+     "nofeat": 5,
+     "nofeat_pct": 6.2,
+     "unlinked": 1,
+     "unlinked_pct": 1.2
+    },
+    "none": {
+     "n": 229,
+     "nofeat": 58,
+     "nofeat_pct": 25.3,
+     "unlinked": 14,
+     "unlinked_pct": 6.1
+    },
+    "one": {
+     "n": 1215,
+     "nofeat": 34,
+     "nofeat_pct": 2.8,
+     "unlinked": 4,
+     "unlinked_pct": 0.3
+    }
+   },
+   "stars_unique_linked": {
+    "mean": 3.6,
+    "n": 1085
+   },
+   "stars_unique_unlinked": {
+    "mean": 3.67,
+    "n": 3
+   },
+   "unlinked": 19,
+   "unlinked_by_class_cause": {
+    "player_not_in_ps|2016-2019": 1,
+    "school_not_in_ps:absent|2008-2011": 1,
+    "school_not_in_ps:fcs_lines|2008-2011": 4,
+    "school_not_in_ps:fcs_lines|2012-2015": 1,
+    "window_other|2008-2011": 1,
+    "xwalk_reject:end|2008-2011": 1,
+    "xwalk_reject:no_rows|2008-2011": 3,
+    "xwalk_reject:no_rows|2012-2015": 3,
+    "xwalk_reject:no_rows|2016-2019": 3,
+    "xwalk_reject:no_rows|2020-2023": 1
+   },
+   "unlinked_by_conf_cause": {
+    "player_not_in_ps|missing": 1,
+    "school_not_in_ps:absent|missing": 1,
+    "school_not_in_ps:fcs_lines|missing": 5,
+    "window_other|missing": 1,
+    "xwalk_reject:end|P5": 1,
+    "xwalk_reject:no_rows|D2-lower": 5,
+    "xwalk_reject:no_rows|FCS": 1,
+    "xwalk_reject:no_rows|missing": 4
+   },
+   "unlinked_conf": {
+    "D2-lower": 5,
+    "FCS": 1,
+    "P5": 1,
+    "missing": 12
+   },
+   "unlinked_names": [
+    "Adam Shaheen (Ashland, D2-lower, xwalk_reject:no_rows)",
+    "Bernard Scott (Abilene Christian, missing, school_not_in_ps:fcs_lines)",
+    "Brad Sorensen (Southern Utah, FCS, xwalk_reject:no_rows)",
+    "Cecil Shorts (Mount Union, D2-lower, xwalk_reject:no_rows)",
+    "Clyde Gates (Abilene Christian, missing, school_not_in_ps:fcs_lines)",
+    "Daryl Richardson (Abilene Christian, missing, school_not_in_ps:fcs_lines)",
+    "David Moore (East Central (OK), D2-lower, xwalk_reject:no_rows)",
+    "Jeff Janis (Saginaw Valley St., missing, xwalk_reject:no_rows)",
+    "John Brown (Pittsburg St., D2-lower, xwalk_reject:no_rows)",
+    "Johnny Knox (Abilene Christian, missing, school_not_in_ps:fcs_lines)",
+    "Keith Null (West Texas A&M, missing, school_not_in_ps:fcs_lines)",
+    "Kyle Williams (Arizona St., P5, xwalk_reject:end)",
+    "Moritz Boehringer (, missing, xwalk_reject:no_rows)",
+    "Pierre Garcon (Mount Union, missing, xwalk_reject:no_rows)",
+    "Rico Gathers (Baylor, missing, player_not_in_ps)",
+    "Stephen Burton (Long Beach CC, missing, school_not_in_ps:absent)",
+    "Xavier Omon (NW Missouri St., missing, xwalk_reject:no_rows)",
+    "Zach Davidson (Central Missouri St., D2-lower, xwalk_reject:no_rows)",
+    "Zach Miller (Nebraska-Omaha, missing, window_other)"
+   ],
+   "unlinked_played_1plus": 17,
+   "unlinked_ppr_100plus": 10,
+   "unlinked_ppr_100plus_names": [
+    "Adam Shaheen (Ashland; Pittsburgh-Johnstown, xwalk_reject:no_rows, ppr 146.9)",
+    "Bernard Scott (Abilene Christian; Blinn College; Central Arkansas; Southeastern Oklahoma State, school_not_in_ps:fcs_lines, ppr 183.4)",
+    "Cecil Shorts (Mount Union College, xwalk_reject:no_rows, ppr 619.3)",
+    "Daryl Richardson (Abilene Christian; Cisco Junior College, school_not_in_ps:fcs_lines, ppr 134.1)",
+    "David Moore (East Central, xwalk_reject:no_rows, ppr 387.6)",
+    "John Brown (Pittsburg State (KS); Coffeyville CC; Mars Hill, xwalk_reject:no_rows, ppr 999.8)",
+    "Johnny Knox (Abilene Christian; Tyler JC, school_not_in_ps:fcs_lines, ppr 428.6)",
+    "Kyle Williams (Arizona State, xwalk_reject:end, ppr 136.0)",
+    "Pierre Garcon (Mount Union College; Norwich University, xwalk_reject:no_rows, ppr 1644.8)",
+    "Zach Miller (Nebraska-Omaha; Nebraska, window_other, ppr 400.3)"
+   ]
+  },
+  "U": {
+   "cls": {
+    "2008-2011": {
+     "n": 387,
+     "nofeat": 107,
+     "nofeat_pct": 27.6,
+     "unlinked": 59,
+     "unlinked_pct": 15.2
+    },
+    "2012-2015": {
+     "n": 482,
+     "nofeat": 161,
+     "nofeat_pct": 33.4,
+     "unlinked": 57,
+     "unlinked_pct": 11.8
+    },
+    "2016-2019": {
+     "n": 503,
+     "nofeat": 130,
+     "nofeat_pct": 25.8,
+     "unlinked": 42,
+     "unlinked_pct": 8.3
+    },
+    "2020-2023": {
+     "n": 395,
+     "nofeat": 82,
+     "nofeat_pct": 20.8,
+     "unlinked": 19,
+     "unlinked_pct": 4.8
+    }
+   },
+   "combine": {
+    "False": {
+     "n": 1325,
+     "nofeat": 444,
+     "nofeat_pct": 33.5,
+     "unlinked": 169,
+     "unlinked_pct": 12.8
+    },
+    "True": {
+     "n": 442,
+     "nofeat": 36,
+     "nofeat_pct": 8.1,
+     "unlinked": 8,
+     "unlinked_pct": 1.8
+    }
+   },
+   "conf": {
+    "D2-lower": {
+     "n": 61,
+     "nofeat": 58,
+     "nofeat_pct": 95.1,
+     "unlinked": 40,
+     "unlinked_pct": 65.6
+    },
+    "FCS": {
+     "n": 126,
+     "nofeat": 112,
+     "nofeat_pct": 88.9,
+     "unlinked": 4,
+     "unlinked_pct": 3.2
+    },
+    "G5": {
+     "n": 189,
+     "nofeat": 7,
+     "nofeat_pct": 3.7,
+     "unlinked": 2,
+     "unlinked_pct": 1.1
+    },
+    "Independent": {
+     "n": 13,
+     "nofeat": 3,
+     "nofeat_pct": 23.1,
+     "unlinked": 0,
+     "unlinked_pct": 0.0
+    },
+    "P5": {
+     "n": 370,
+     "nofeat": 8,
+     "nofeat_pct": 2.2,
+     "unlinked": 3,
+     "unlinked_pct": 0.8
+    },
+    "missing": {
+     "n": 1008,
+     "nofeat": 292,
+     "nofeat_pct": 29.0,
+     "unlinked": 128,
+     "unlinked_pct": 12.7
+    }
+   },
+   "games_mean_linked": 11.2,
+   "games_mean_unlinked": 10.9,
+   "gb": {
+    "0": {
+     "n": 910,
+     "nofeat": 251,
+     "nofeat_pct": 27.6,
+     "unlinked": 97,
+     "unlinked_pct": 10.7
+    },
+    "1-16": {
+     "n": 489,
+     "nofeat": 128,
+     "nofeat_pct": 26.2,
+     "unlinked": 50,
+     "unlinked_pct": 10.2
+    },
+    "17-48": {
+     "n": 242,
+     "nofeat": 64,
+     "nofeat_pct": 26.4,
+     "unlinked": 17,
+     "unlinked_pct": 7.0
+    },
+    "49+": {
+     "n": 126,
+     "nofeat": 37,
+     "nofeat_pct": 29.4,
+     "unlinked": 13,
+     "unlinked_pct": 10.3
+    }
+   },
+   "n": 1767,
+   "nofeat": 480,
+   "pfr_known": {
+    "False": {
+     "n": 203,
+     "nofeat": 79,
+     "nofeat_pct": 38.9,
+     "unlinked": 38,
+     "unlinked_pct": 18.7
+    },
+    "True": {
+     "n": 1564,
+     "nofeat": 401,
+     "nofeat_pct": 25.6,
+     "unlinked": 139,
+     "unlinked_pct": 8.9
+    }
+   },
+   "pos": {
+    "QB": {
+     "n": 109,
+     "nofeat": 24,
+     "nofeat_pct": 22.0,
+     "unlinked": 9,
+     "unlinked_pct": 8.3
+    },
+    "RB": {
+     "n": 465,
+     "nofeat": 107,
+     "nofeat_pct": 23.0,
+     "unlinked": 33,
+     "unlinked_pct": 7.1
+    },
+    "TE": {
+     "n": 380,
+     "nofeat": 119,
+     "nofeat_pct": 31.3,
+     "unlinked": 49,
+     "unlinked_pct": 12.9
+    },
+    "WR": {
+     "n": 813,
+     "nofeat": 230,
+     "nofeat_pct": 28.3,
+     "unlinked": 86,
+     "unlinked_pct": 10.6
+    }
+   },
+   "ppr_mean_feature": 50.3,
+   "ppr_mean_linked": 51.7,
+   "ppr_mean_nofeature": 53.9,
+   "ppr_mean_unlinked": 47.9,
+   "ppr_median_linked": 0.0,
+   "ppr_median_unlinked": 0.0,
+   "rec": {
+    "multi": {
+     "n": 73,
+     "nofeat": 4,
+     "nofeat_pct": 5.5,
+     "unlinked": 0,
+     "unlinked_pct": 0.0
+    },
+    "none": {
+     "n": 639,
+     "nofeat": 381,
+     "nofeat_pct": 59.6,
+     "unlinked": 160,
+     "unlinked_pct": 25.0
+    },
+    "one": {
+     "n": 1055,
+     "nofeat": 95,
+     "nofeat_pct": 9.0,
+     "unlinked": 17,
+     "unlinked_pct": 1.6
+    }
+   },
+   "stars_unique_linked": {
+    "mean": 3.14,
+    "n": 975
+   },
+   "stars_unique_unlinked": {
+    "mean": 2.86,
+    "n": 14
+   },
+   "unlinked": 177,
+   "unlinked_by_class_cause": {
+    "no_college|2008-2011": 2,
+    "no_college|2012-2015": 2,
+    "no_college|2016-2019": 4,
+    "no_college|2020-2023": 2,
+    "player_not_in_ps|2008-2011": 9,
+    "player_not_in_ps|2012-2015": 2,
+    "player_not_in_ps|2016-2019": 2,
+    "player_not_in_ps|2020-2023": 5,
+    "rule_conflict|2008-2011": 2,
+    "rule_conflict|2012-2015": 7,
+    "rule_conflict|2016-2019": 1,
+    "school_not_in_ps:absent|2008-2011": 18,
+    "school_not_in_ps:absent|2012-2015": 16,
+    "school_not_in_ps:absent|2016-2019": 6,
+    "school_not_in_ps:absent|2020-2023": 1,
+    "school_not_in_ps:fcs_lines|2008-2011": 16,
+    "school_not_in_ps:fcs_lines|2012-2015": 3,
+    "school_not_in_ps:fcs_lines|2016-2019": 3,
+    "school_not_in_ps:fcs_lines|2020-2023": 3,
+    "window_other|2008-2011": 3,
+    "window_other|2016-2019": 2,
+    "xwalk_reject:name|2012-2015": 2,
+    "xwalk_reject:name|2016-2019": 2,
+    "xwalk_reject:no_rows|2008-2011": 9,
+    "xwalk_reject:no_rows|2012-2015": 25,
+    "xwalk_reject:no_rows|2016-2019": 22,
+    "xwalk_reject:no_rows|2020-2023": 8
+   },
+   "unlinked_by_conf_cause": {
+    "no_college|missing": 10,
+    "player_not_in_ps|D2-lower": 2,
+    "player_not_in_ps|G5": 1,
+    "player_not_in_ps|P5": 3,
+    "player_not_in_ps|missing": 12,
+    "rule_conflict|D2-lower": 1,
+    "rule_conflict|FCS": 2,
+    "rule_conflict|G5": 1,
+    "rule_conflict|missing": 6,
+    "school_not_in_ps:absent|D2-lower": 8,
+    "school_not_in_ps:absent|missing": 33,
+    "school_not_in_ps:fcs_lines|D2-lower": 3,
+    "school_not_in_ps:fcs_lines|FCS": 2,
+    "school_not_in_ps:fcs_lines|missing": 20,
+    "window_other|missing": 5,
+    "xwalk_reject:name|missing": 4,
+    "xwalk_reject:no_rows|D2-lower": 26,
+    "xwalk_reject:no_rows|missing": 38
+   },
+   "unlinked_conf": {
+    "D2-lower": 40,
+    "FCS": 4,
+    "G5": 2,
+    "P5": 3,
+    "missing": 128
+   },
+   "unlinked_names": null,
+   "unlinked_played_1plus": 80,
+   "unlinked_ppr_100plus": 16,
+   "unlinked_ppr_100plus_names": [
+    "Adam Thielen (Minnesota State, school_not_in_ps:absent, ppr 1971.5)",
+    "Andre Holmes (Hillsdale, school_not_in_ps:absent, ppr 392.4)",
+    "Anthony Armstrong (West Texas State, school_not_in_ps:absent, ppr 182.5)",
+    "C.J. Ham (Augustana (SD), xwalk_reject:no_rows, ppr 210.0)",
+    "Craig Reynolds (Kutztown, xwalk_reject:no_rows, ppr 120.6)",
+    "Dan Arnold (Wisconsin-Platteville, xwalk_reject:no_rows, ppr 260.8)",
+    "Danny Woodhead (Chadron State, xwalk_reject:no_rows, ppr 983.6)",
+    "Darren Fells (UC Irvine, school_not_in_ps:absent, ppr 405.6)",
+    "Demetrius Harris (Wisconsin-Milwaukee; Mineral Area CC, xwalk_reject:no_rows, ppr 220.9)",
+    "Derek Carrier (Beloit College, school_not_in_ps:absent, ppr 132.8)",
+    "Isaac Redman (Bowie State, player_not_in_ps, ppr 237.6)",
+    "Isaiah Crowell (Alabama State; Georgia, rule_conflict, ppr 749.5)",
+    "Khiry Robinson (West Texas State; Blinn College, xwalk_reject:no_rows, ppr 165.6)",
+    "Mo Alie-Cox (Virginia Commonwealth Univ., school_not_in_ps:absent, ppr 376.0)",
+    "Seth Roberts (West Alabama; Pearl River, xwalk_reject:no_rows, ppr 488.3)",
+    "Tanner Hudson (Southern Arkansas; Memphis, xwalk_reject:no_rows, ppr 201.4)"
+   ]
+  }
+ },
+ "s4_dob": {
+  "D": {
+   "any_dob_by_class": {
+    "2008-2011": {
+     "n": 324,
+     "pct": 89.2,
+     "present": 289
+    },
+    "2012-2015": {
+     "n": 309,
+     "pct": 46.3,
+     "present": 143
+    },
+    "2016-2019": {
+     "n": 319,
+     "pct": 82.8,
+     "present": 264
+    },
+    "2020-2023": {
+     "n": 311,
+     "pct": 98.7,
+     "present": 307
+    },
+    "2024-2026": {
+     "n": 243,
+     "pct": 99.2,
+     "present": 241
+    }
+   },
+   "base": {
+    "conflict": 24,
+    "exact": 1150,
+    "none": 237,
+    "within1": 6
+   },
+   "exact_by_class": {
+    "2008-2011": {
+     "exact": 277,
+     "n": 324,
+     "pct": 85.5
+    },
+    "2012-2015": {
+     "exact": 141,
+     "n": 309,
+     "pct": 45.6
+    },
+    "2016-2019": {
+     "exact": 258,
+     "n": 319,
+     "pct": 80.9
+    },
+    "2020-2023": {
+     "exact": 300,
+     "n": 311,
+     "pct": 96.5
+    },
+    "2024-2026": {
+     "exact": 235,
+     "n": 243,
+     "pct": 96.7
+    }
+   },
+   "exact_by_games": {
+    "0": {
+     "exact": 165,
+     "n": 222,
+     "pct": 74.3
+    },
+    "1-16": {
+     "exact": 296,
+     "n": 380,
+     "pct": 77.9
+    },
+    "17-48": {
+     "exact": 316,
+     "n": 409,
+     "pct": 77.3
+    },
+    "49+": {
+     "exact": 434,
+     "n": 495,
+     "pct": 87.7
+    }
+   },
+   "exact_linked": {
+    "exact": 1211,
+    "n": 1506,
+    "pct": 80.4
+   },
+   "new": {
+    "conflict": 3,
+    "exact": 61,
+    "none": 25
+   },
+   "new_dob_name_no_xwalk": 4,
+   "new_dob_name_only": 4,
+   "new_method_has_dob_name": 61,
+   "no_link": 19
+  },
+  "U": {
+   "any_dob_by_class": {
+    "2008-2011": {
+     "n": 328,
+     "pct": 88.1,
+     "present": 289
+    },
+    "2012-2015": {
+     "n": 425,
+     "pct": 34.1,
+     "present": 145
+    },
+    "2016-2019": {
+     "n": 461,
+     "pct": 42.3,
+     "present": 195
+    },
+    "2020-2023": {
+     "n": 376,
+     "pct": 94.4,
+     "present": 355
+    }
+   },
+   "base": {
+    "conflict": 29,
+    "exact": 732,
+    "none": 433,
+    "within1": 3
+   },
+   "exact_by_class": {
+    "2008-2011": {
+     "exact": 275,
+     "n": 328,
+     "pct": 83.8
+    },
+    "2012-2015": {
+     "exact": 137,
+     "n": 425,
+     "pct": 32.2
+    },
+    "2016-2019": {
+     "exact": 185,
+     "n": 461,
+     "pct": 40.1
+    },
+    "2020-2023": {
+     "exact": 347,
+     "n": 376,
+     "pct": 92.3
+    }
+   },
+   "exact_by_games": {
+    "0": {
+     "exact": 421,
+     "n": 813,
+     "pct": 51.8
+    },
+    "1-16": {
+     "exact": 274,
+     "n": 439,
+     "pct": 62.4
+    },
+    "17-48": {
+     "exact": 165,
+     "n": 225,
+     "pct": 73.3
+    },
+    "49+": {
+     "exact": 84,
+     "n": 113,
+     "pct": 74.3
+    }
+   },
+   "exact_linked": {
+    "exact": 944,
+    "n": 1590,
+    "pct": 59.4
+   },
+   "new": {
+    "conflict": 8,
+    "exact": 212,
+    "none": 173
+   },
+   "new_dob_name_no_xwalk": 25,
+   "new_dob_name_only": 19,
+   "new_method_has_dob_name": 212,
+   "no_link": 177
+  }
+ },
+ "s4_flags_csv": {
+  "dob_conflict": 64,
+  "dob_within1": 9
+ },
+ "s4_flags_p23": {
+  "dob_conflict": 64,
+  "dob_within1": 9
+ },
+ "s5_causes_csv": {
+  "D": {
+   "identity_no_stats:fcs": 75,
+   "identity_no_stats:roster_box": 3,
+   "player_not_in_ps": 1,
+   "school_not_in_ps:absent": 1,
+   "school_not_in_ps:fcs_lines": 5,
+   "window_other": 1,
+   "xwalk_reject:end": 1,
+   "xwalk_reject:no_rows": 10
+  },
+  "U": {
+   "identity_no_stats:fcs": 265,
+   "identity_no_stats:roster_box": 38,
+   "no_college": 10,
+   "player_not_in_ps": 18,
+   "rule_conflict": 10,
+   "school_not_in_ps:absent": 41,
+   "school_not_in_ps:fcs_lines": 25,
+   "window_other": 5,
+   "xwalk_reject:name": 4,
+   "xwalk_reject:no_rows": 64
+  }
+ },
+ "s5_causes_match_p23": true,
+ "s6_fcs_p23": {
+  "fcs_bad": [],
+  "fcs_files": 22,
+  "run": "20261004T144240-26c1527e"
+ },
+ "s6_parity_p23": {
+  "d_keys": 1520,
+  "mismatch": 0
+ },
+ "s6_sha": {
+  "audit/codex-recount.json": "2b62d1fd3340f444f6c41bb9d915d935f246aa91f03d42b96471f9982fd09197",
+  "audit/links.csv": "c6abdc18b19ecfde858aa212214d6c0d4294c589006261228987b177c202df8e",
+  "audit/phase23.json": "5a5dd1ab30cf715ad7fe80c8011029087c6a86f868aab531ac7cc4d06513e839",
+  "udfa_links.py": "613a554df15892adc59f1fcc1f10ab86762c058ac15fe0876f2168d3712cfa44"
+ },
+ "s6_xwalk_sha_p23": "eab2eccd774823e1a84a190c3b05a82eca8864649c8e690f275e42b17c559431",
+ "store_sha_after": "85d9801d4f2ec3f750af80e62f13f2b20615c508b1ce85fc27fd132981afa9c0",
+ "store_sha_before": "85d9801d4f2ec3f750af80e62f13f2b20615c508b1ce85fc27fd132981afa9c0",
+ "store_sha_ok": true
+}

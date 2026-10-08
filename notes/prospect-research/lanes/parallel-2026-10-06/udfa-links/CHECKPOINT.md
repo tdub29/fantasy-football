@@ -52,3 +52,32 @@ Lane outputs from here (distinct names, superseding the draft): code `projection
 
 - 2026-10-07 ~10:30Z: phase 1 DONE. `tmp/udfa_r2.sqlite` sha256 re-verified 85d9801d... Reuse crosswalk `tmp/reuse/espn_nfl_college_xwalk.parquet` sha256 eab2eccd774823e1a84a190c3b05a82eca8864649c8e690f275e42b17c559431 (= packages lane R4 snapshot, 3,432 rows). PID 46672 has exited; its `out/audit.json` + `out/udfa_links.csv` (02:15 local) were computed on the CONTAMINATED copy (players.parquet re-fetched), so they are compared, never cited as the result. New evidence found: `cfb_roster.date_of_birth` (ISO, 80-95% filled 2004-08, ~10-30% later) vs `nfl_player.birth_date` gives an outcome-free corroborating key; validated on id-known links before any use.
 - Next: phase 2+3 script `udfa_links.py` (baseline, cause taxonomy, resolver with collision and DOB-conflict guards, named-case self-check).
+
+## Coordinator check (2026-10-08, c5d39d02)
+
+- Phase 2+3 DONE: `udfa_links.py` run 2026-10-07 10:18, exit 0, named_ok, provenance_ok, collisions 0,
+  rule_conflicts 10 (`$JOB/915dc2f8/tmp/run23.log`, `audit/phase23.json`, `audit/links.csv`). udfa_r2.sqlite sha256
+  re-verified 85d9801d... today. Coverage identity: D 1506/1525, U 1590/1767 (base 1417 and 1197).
+- Deterministic recount reserved to Codex: `CODEX-UDFA-RECOUNT-HANDOFF.md`.
+- Coordinator owns: bias reading, cause taxonomy judgment, `udfa-link-results.md`, independent review.
+  Note from capital-sources: cfb_roster DOB presence is an outcome leak as a FEATURE; here DOB is a link key only,
+  so the write-up must state that DOB-linked rows skew drafted and check U links by DOB separately.
+
+## Results write-up (2026-10-08, c5d39d02 subagent)
+
+- DONE: `udfa-link-results.md` (coverage, methods, 10 rule conflicts, bias, DOB caution, cause taxonomy,
+  provenance, limits). Read-only on `audit/*`, `run23.log` and `udfa_r2.sqlite` (immutable; sha256 85d9801d...
+  identical before and after). No rerun, no code edit, no commit. Excluded and unopened: `prospect.sqlite`,
+  `tmp/udfa.sqlite`, `out/`.
+- Bias: unlinked rows track school level and era, not NFL outcome. U unlinked 65.6% D2-lower (40/61) vs 0.8% P5;
+  15.2% 2008-11 vs 4.8% 2020-23; flat across NFL games buckets overall, but within 2008-11 unlinked falls 19.4%
+  (41/211) at 0 games to 7.4% (2/27) at 49+ (revised 2026-10-08, review finding 4).
+- DOB: inside U, exact DOB on linked rows rises with NFL games (51.8% at 0 games to 74.3% at 49+), so link method
+  and DOB presence stay join keys only, never features.
+- Next fix: transfer re-key merge reaches 7 of the 10 conflicts (hand check); Natson, Tonga and Myles White look
+  like same-school duplicate ids and need a separate check (revised 2026-10-08, review finding 3). Then
+  xwalk_reject:no_rows (U 64) only if identity-only rows are needed.
+- Next step: check link precision by NFL games bucket; precision was checked only on the 1148 ESPN-id rows
+  (revised 2026-10-08, review).
+- Open: [bias] tables come from an unsaved session pass; one verifier recompute before any decision uses them.
+- Hygiene: scratch pickle `$JOB/915dc2f8/tmp/c5d39d02_bias_frame.pkl` was outside the write set; deleted.

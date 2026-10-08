@@ -1,0 +1,2014 @@
+{
+  "created_at": "2026-10-08T16:45:45.020756+00:00",
+  "scope": "Deterministic recount only, no identity/model judgment",
+  "input_hashes": {
+    "links.csv": "c6abdc18b19ecfde858aa212214d6c0d4294c589006261228987b177c202df8e",
+    "phase23.json": "5a5dd1ab30cf715ad7fe80c8011029087c6a86f868aab531ac7cc4d06513e839"
+  },
+  "checks": {
+    "population": {
+      "pass_": true,
+      "actual": {
+        "D": {
+          "n": 1525,
+          "base": 1417,
+          "identity": 1506,
+          "feature": 1428,
+          "fresh": 1418
+        },
+        "U": {
+          "n": 1767,
+          "base": 1197,
+          "identity": 1590,
+          "feature": 1287,
+          "fresh": 1218
+        }
+      }
+    },
+    "coverage": {
+      "pass_": true,
+      "cells_checked": 55,
+      "mismatches": []
+    },
+    "methods": {
+      "pass_": true,
+      "actual": {
+        "D": {
+          "name_school": 726,
+          "xwalk+dob_name": 57,
+          "xwalk": 27,
+          "name_prefix": 1,
+          "dob_name": 4,
+          "unlinked": 19,
+          "xwalk+gap_window": 1,
+          "espn_id": 690
+        },
+        "U": {
+          "name_school": 738,
+          "xwalk+gap_window": 4,
+          "xwalk+dob_name": 152,
+          "espn_id": 458,
+          "xwalk+dob_name+gap_window": 22,
+          "xwalk": 162,
+          "unlinked": 177,
+          "xwalk+multi_school+gap_window": 12,
+          "multi_school+gap_window": 1,
+          "dob_name": 19,
+          "xwalk+dob_name+multi_school+gap_window": 13,
+          "dob_name+multi_school+gap_window": 3,
+          "xwalk+multi_school": 2,
+          "name_prefix": 1,
+          "dob_name+gap_window": 3
+        }
+      },
+      "expected": {
+        "D": {
+          "name_school": 726,
+          "espn_id": 690,
+          "xwalk+dob_name": 57,
+          "xwalk": 27,
+          "unlinked": 19,
+          "dob_name": 4,
+          "name_prefix": 1,
+          "xwalk+gap_window": 1
+        },
+        "U": {
+          "name_school": 738,
+          "espn_id": 458,
+          "unlinked": 177,
+          "xwalk": 162,
+          "xwalk+dob_name": 152,
+          "xwalk+dob_name+gap_window": 22,
+          "dob_name": 19,
+          "xwalk+dob_name+multi_school+gap_window": 13,
+          "xwalk+multi_school+gap_window": 12,
+          "xwalk+gap_window": 4,
+          "dob_name+multi_school+gap_window": 3,
+          "dob_name+gap_window": 3,
+          "xwalk+multi_school": 2,
+          "multi_school+gap_window": 1,
+          "name_prefix": 1
+        }
+      }
+    },
+    "nonbase_collisions": {
+      "pass_": true,
+      "duplicate_groups": [],
+      "reported_count": 0
+    },
+    "unlinked": {
+      "pass_": true,
+      "counts": {
+        "D": 19,
+        "U": 177
+      },
+      "rows": {
+        "D": [
+          {
+            "pop": "D",
+            "key": "00-0026319",
+            "gsis_id": "00-0026319",
+            "name": "Xavier Omon",
+            "pos": "RB",
+            "season": "2008"
+          },
+          {
+            "pop": "D",
+            "key": "00-0026345",
+            "gsis_id": "00-0026345",
+            "name": "Pierre Garcon",
+            "pos": "WR",
+            "season": "2008"
+          },
+          {
+            "pop": "D",
+            "key": "00-0026913",
+            "gsis_id": "00-0026913",
+            "name": "Johnny Knox",
+            "pos": "WR",
+            "season": "2009"
+          },
+          {
+            "pop": "D",
+            "key": "00-0027125",
+            "gsis_id": "00-0027125",
+            "name": "Zach Miller",
+            "pos": "TE",
+            "season": "2009"
+          },
+          {
+            "pop": "D",
+            "key": "00-0027131",
+            "gsis_id": "00-0027131",
+            "name": "Keith Null",
+            "pos": "QB",
+            "season": "2009"
+          },
+          {
+            "pop": "D",
+            "key": "00-0026941",
+            "gsis_id": "00-0026941",
+            "name": "Bernard Scott",
+            "pos": "RB",
+            "season": "2009"
+          },
+          {
+            "pop": "D",
+            "key": "00-0027608",
+            "gsis_id": "00-0027608",
+            "name": "Kyle Williams",
+            "pos": "WR",
+            "season": "2010"
+          },
+          {
+            "pop": "D",
+            "key": "00-0028049",
+            "gsis_id": "00-0028049",
+            "name": "Clyde Gates",
+            "pos": "WR",
+            "season": "2011"
+          },
+          {
+            "pop": "D",
+            "key": "00-0028052",
+            "gsis_id": "00-0028052",
+            "name": "Cecil Shorts",
+            "pos": "WR",
+            "season": "2011"
+          },
+          {
+            "pop": "D",
+            "key": "00-0028174",
+            "gsis_id": "00-0028174",
+            "name": "Stephen Burton",
+            "pos": "WR",
+            "season": "2011"
+          },
+          {
+            "pop": "D",
+            "key": "00-0029612",
+            "gsis_id": "00-0029612",
+            "name": "Daryl Richardson",
+            "pos": "RB",
+            "season": "2012"
+          },
+          {
+            "pop": "D",
+            "key": "00-0030292",
+            "gsis_id": "00-0030292",
+            "name": "Brad Sorensen",
+            "pos": "QB",
+            "season": "2013"
+          },
+          {
+            "pop": "D",
+            "key": "00-0031051",
+            "gsis_id": "00-0031051",
+            "name": "John Brown",
+            "pos": "WR",
+            "season": "2014"
+          },
+          {
+            "pop": "D",
+            "key": "00-0031001",
+            "gsis_id": "00-0031001",
+            "name": "Jeff Janis",
+            "pos": "WR",
+            "season": "2014"
+          },
+          {
+            "pop": "D",
+            "key": "00-0032341",
+            "gsis_id": "00-0032341",
+            "name": "Moritz Boehringer",
+            "pos": "WR",
+            "season": "2016"
+          },
+          {
+            "pop": "D",
+            "key": "00-0033054",
+            "gsis_id": "00-0033054",
+            "name": "Rico Gathers",
+            "pos": "TE",
+            "season": "2016"
+          },
+          {
+            "pop": "D",
+            "key": "00-0033896",
+            "gsis_id": "00-0033896",
+            "name": "Adam Shaheen",
+            "pos": "TE",
+            "season": "2017"
+          },
+          {
+            "pop": "D",
+            "key": "00-0033589",
+            "gsis_id": "00-0033589",
+            "name": "David Moore",
+            "pos": "WR",
+            "season": "2017"
+          },
+          {
+            "pop": "D",
+            "key": "00-0036640",
+            "gsis_id": "00-0036640",
+            "name": "Zach Davidson",
+            "pos": "TE",
+            "season": "2021"
+          }
+        ],
+        "U": [
+          {
+            "pop": "U",
+            "key": "00-0026540",
+            "gsis_id": "00-0026540",
+            "name": "Robert Agnone",
+            "pos": "TE",
+            "season": "2009"
+          },
+          {
+            "pop": "U",
+            "key": "00-0029798",
+            "gsis_id": "00-0029798",
+            "name": "C.J. Akins",
+            "pos": "WR",
+            "season": "2013"
+          },
+          {
+            "pop": "U",
+            "key": "00-0033217",
+            "gsis_id": "00-0033217",
+            "name": "Mo Alie-Cox",
+            "pos": "TE",
+            "season": "2017"
+          },
+          {
+            "pop": "U",
+            "key": "00-0026022",
+            "gsis_id": "00-0026022",
+            "name": "Jake Allen",
+            "pos": "WR",
+            "season": "2008"
+          },
+          {
+            "pop": "U",
+            "key": "00-0030914",
+            "gsis_id": "00-0030914",
+            "name": "Torrence Allen",
+            "pos": "WR",
+            "season": "2014"
+          },
+          {
+            "pop": "U",
+            "key": "00-0029494",
+            "gsis_id": "00-0029494",
+            "name": "Joe Anderson",
+            "pos": "WR",
+            "season": "2012"
+          },
+          {
+            "pop": "U",
+            "key": "00-0026465",
+            "gsis_id": "00-0026465",
+            "name": "Anthony Armstrong",
+            "pos": "WR",
+            "season": "2008"
+          },
+          {
+            "pop": "U",
+            "key": "00-0034011",
+            "gsis_id": "00-0034011",
+            "name": "Dan Arnold",
+            "pos": "TE",
+            "season": "2017"
+          },
+          {
+            "pop": "U",
+            "key": "00-0026037",
+            "gsis_id": "00-0026037",
+            "name": "Drew Atchison",
+            "pos": "TE",
+            "season": "2008"
+          },
+          {
+            "pop": "U",
+            "key": "00-0031645",
+            "gsis_id": "00-0031645",
+            "name": "Rasheed Bailey",
+            "pos": "WR",
+            "season": "2015"
+          },
+          {
+            "pop": "U",
+            "key": "BAT138483",
+            "gsis_id": "BAT138483",
+            "name": "Phil Bates",
+            "pos": "WR",
+            "season": "2012"
+          },
+          {
+            "pop": "U",
+            "key": "00-0028234",
+            "gsis_id": "00-0028234",
+            "name": "Tyler Beiler",
+            "pos": "WR",
+            "season": "2011"
+          },
+          {
+            "pop": "U",
+            "key": "00-0034930",
+            "gsis_id": "00-0034930",
+            "name": "Trinity Benson",
+            "pos": "WR",
+            "season": "2019"
+          },
+          {
+            "pop": "U",
+            "key": "00-0037580",
+            "gsis_id": "00-0037580",
+            "name": "Jared Bernhardt",
+            "pos": "WR",
+            "season": "2022"
+          },
+          {
+            "pop": "U",
+            "key": "00-0028359",
+            "gsis_id": "00-0028359",
+            "name": "McLeod Bethel-Thompson",
+            "pos": "QB",
+            "season": "2011"
+          },
+          {
+            "pop": "U",
+            "key": "00-0029495",
+            "gsis_id": "00-0029495",
+            "name": "Matt Blanchard",
+            "pos": "QB",
+            "season": "2012"
+          },
+          {
+            "pop": "U",
+            "key": "00-0029601",
+            "gsis_id": "00-0029601",
+            "name": "Brandon Bostick",
+            "pos": "TE",
+            "season": "2012"
+          },
+          {
+            "pop": "U",
+            "key": "00-0028435",
+            "gsis_id": "00-0028435",
+            "name": "Dorson Boyce",
+            "pos": "RB",
+            "season": "2012"
+          },
+          {
+            "pop": "U",
+            "key": "00-0023588",
+            "gsis_id": "00-0023588",
+            "name": "Larry Brackins",
+            "pos": "WR",
+            "season": "2008"
+          },
+          {
+            "pop": "U",
+            "key": "00-0028755",
+            "gsis_id": "00-0028755",
+            "name": "Mason Brodine",
+            "pos": "TE",
+            "season": "2011"
+          },
+          {
+            "pop": "U",
+            "key": "00-0032831",
+            "gsis_id": "00-0032831",
+            "name": "Brandon Brown-Dukes",
+            "pos": "RB",
+            "season": "2016"
+          },
+          {
+            "pop": "U",
+            "key": "00-0027207",
+            "gsis_id": "00-0027207",
+            "name": "Tim Buckley",
+            "pos": "WR",
+            "season": "2010"
+          },
+          {
+            "pop": "U",
+            "key": "00-0029224",
+            "gsis_id": "00-0029224",
+            "name": "Troy Burrell",
+            "pos": "WR",
+            "season": "2012"
+          },
+          {
+            "pop": "U",
+            "key": "00-0034313",
+            "gsis_id": "00-0034313",
+            "name": "Paul Butler",
+            "pos": "TE",
+            "season": "2018"
+          },
+          {
+            "pop": "U",
+            "key": "00-0032630",
+            "gsis_id": "00-0032630",
+            "name": "Joe Callahan",
+            "pos": "QB",
+            "season": "2016"
+          },
+          {
+            "pop": "U",
+            "key": "00-0029119",
+            "gsis_id": "00-0029119",
+            "name": "Derek Carrier",
+            "pos": "TE",
+            "season": "2012"
+          },
+          {
+            "pop": "U",
+            "key": "00-0035756",
+            "gsis_id": "00-0035756",
+            "name": "Darion Clark",
+            "pos": "TE",
+            "season": "2020"
+          },
+          {
+            "pop": "U",
+            "key": "00-0029680",
+            "gsis_id": "00-0029680",
+            "name": "Marques Clark",
+            "pos": "WR",
+            "season": "2012"
+          },
+          {
+            "pop": "U",
+            "key": "00-0035838",
+            "gsis_id": "00-0035838",
+            "name": "Matt Cole",
+            "pos": "WR",
+            "season": "2020"
+          },
+          {
+            "pop": "U",
+            "key": "00-0029971",
+            "gsis_id": "00-0029971",
+            "name": "Jasper Collins",
+            "pos": "WR",
+            "season": "2013"
+          },
+          {
+            "pop": "U",
+            "key": "00-0028815",
+            "gsis_id": "00-0028815",
+            "name": "DeMarco Cosby",
+            "pos": "TE",
+            "season": "2011"
+          },
+          {
+            "pop": "U",
+            "key": "00-0034819",
+            "gsis_id": "00-0034819",
+            "name": "Josh Crockett",
+            "pos": "WR",
+            "season": "2018"
+          },
+          {
+            "pop": "U",
+            "key": "00-0030656",
+            "gsis_id": "00-0030656",
+            "name": "Isaiah Crowell",
+            "pos": "RB",
+            "season": "2014"
+          },
+          {
+            "pop": "U",
+            "key": "00-0031462",
+            "gsis_id": "00-0031462",
+            "name": "Jerome Cunningham",
+            "pos": "TE",
+            "season": "2014"
+          },
+          {
+            "pop": "U",
+            "key": "00-0027520",
+            "gsis_id": "00-0027520",
+            "name": "Dominique Curry",
+            "pos": "WR",
+            "season": "2010"
+          },
+          {
+            "pop": "U",
+            "key": "00-0028863",
+            "gsis_id": "00-0028863",
+            "name": "Dominique Davis",
+            "pos": "QB",
+            "season": "2012"
+          },
+          {
+            "pop": "U",
+            "key": "00-0037380",
+            "gsis_id": "00-0037380",
+            "name": "Kaden Davis",
+            "pos": "WR",
+            "season": "2022"
+          },
+          {
+            "pop": "U",
+            "key": "00-0028294",
+            "gsis_id": "00-0028294",
+            "name": "Dan DePalma",
+            "pos": "WR",
+            "season": "2011"
+          },
+          {
+            "pop": "U",
+            "key": "00-0027162",
+            "gsis_id": "00-0027162",
+            "name": "Clarence Denmark",
+            "pos": "WR",
+            "season": "2009"
+          },
+          {
+            "pop": "U",
+            "key": "00-0027925",
+            "gsis_id": "00-0027925",
+            "name": "James Develin",
+            "pos": "RB",
+            "season": "2010"
+          },
+          {
+            "pop": "U",
+            "key": "00-0032008",
+            "gsis_id": "00-0032008",
+            "name": "Donteea Dye",
+            "pos": "WR",
+            "season": "2015"
+          },
+          {
+            "pop": "U",
+            "key": "00-0026854",
+            "gsis_id": "00-0026854",
+            "name": "Keith Eloi",
+            "pos": "WR",
+            "season": "2009"
+          },
+          {
+            "pop": "U",
+            "key": "00-0025884",
+            "gsis_id": "00-0025884",
+            "name": "Allen Ervin",
+            "pos": "RB",
+            "season": "2008"
+          },
+          {
+            "pop": "U",
+            "key": "00-0034876",
+            "gsis_id": "00-0034876",
+            "name": "Christopher Ezeala",
+            "pos": "RB",
+            "season": "2018"
+          },
+          {
+            "pop": "U",
+            "key": "00-0027525",
+            "gsis_id": "00-0027525",
+            "name": "Buddy Farnham",
+            "pos": "WR",
+            "season": "2010"
+          },
+          {
+            "pop": "U",
+            "key": "00-0029738",
+            "gsis_id": "00-0029738",
+            "name": "Darren Fells",
+            "pos": "TE",
+            "season": "2014"
+          },
+          {
+            "pop": "U",
+            "key": "00-0030918",
+            "gsis_id": "00-0030918",
+            "name": "Mike Flacco",
+            "pos": "TE",
+            "season": "2014"
+          },
+          {
+            "pop": "U",
+            "key": "00-0035547",
+            "gsis_id": "00-0035547",
+            "name": "Joseph Fortson",
+            "pos": "TE",
+            "season": "2019"
+          },
+          {
+            "pop": "U",
+            "key": "00-0027644",
+            "gsis_id": "00-0027644",
+            "name": "Joel Gamble",
+            "pos": "RB",
+            "season": "2009"
+          },
+          {
+            "pop": "U",
+            "key": "00-0026896",
+            "gsis_id": "00-0026896",
+            "name": "Ed Gant",
+            "pos": "WR",
+            "season": "2009"
+          },
+          {
+            "pop": "U",
+            "key": "00-0025831",
+            "gsis_id": "00-0025831",
+            "name": "Horace Gant",
+            "pos": "WR",
+            "season": "2008"
+          },
+          {
+            "pop": "U",
+            "key": "00-0025992",
+            "gsis_id": "00-0025992",
+            "name": "Samuel Giguere",
+            "pos": "WR",
+            "season": "2008"
+          },
+          {
+            "pop": "U",
+            "key": "00-0026460",
+            "gsis_id": "00-0026460",
+            "name": "Lavarus Giles",
+            "pos": "RB",
+            "season": "2008"
+          },
+          {
+            "pop": "U",
+            "key": "00-0029336",
+            "gsis_id": "00-0029336",
+            "name": "Brittan Golden",
+            "pos": "WR",
+            "season": "2012"
+          },
+          {
+            "pop": "U",
+            "key": "00-0027490",
+            "gsis_id": "00-0027490",
+            "name": "Bakari Grant",
+            "pos": "WR",
+            "season": "2010"
+          },
+          {
+            "pop": "U",
+            "key": "00-0034010",
+            "gsis_id": "00-0034010",
+            "name": "Alex Gray",
+            "pos": "TE",
+            "season": "2017"
+          },
+          {
+            "pop": "U",
+            "key": "00-0033215",
+            "gsis_id": "00-0033215",
+            "name": "Cyril Grayson",
+            "pos": "WR",
+            "season": "2017"
+          },
+          {
+            "pop": "U",
+            "key": "GRI824841",
+            "gsis_id": "GRI824841",
+            "name": "Torrey Grissett",
+            "pos": "WR",
+            "season": "2011"
+          },
+          {
+            "pop": "U",
+            "key": "00-0036454",
+            "gsis_id": "00-0036454",
+            "name": "Pete Guerrerio",
+            "pos": "RB",
+            "season": "2020"
+          },
+          {
+            "pop": "U",
+            "key": "00-0036489",
+            "gsis_id": "00-0036489",
+            "name": "Nick Guggemos",
+            "pos": "TE",
+            "season": "2021"
+          },
+          {
+            "pop": "U",
+            "key": "00-0027456",
+            "gsis_id": "00-0027456",
+            "name": "Johnathan Haggerty",
+            "pos": "WR",
+            "season": "2010"
+          },
+          {
+            "pop": "U",
+            "key": "00-0029006",
+            "gsis_id": "00-0029006",
+            "name": "Saalim Hakim",
+            "pos": "WR",
+            "season": "2012"
+          },
+          {
+            "pop": "U",
+            "key": "00-0032918",
+            "gsis_id": "00-0032918",
+            "name": "C.J. Ham",
+            "pos": "RB",
+            "season": "2016"
+          },
+          {
+            "pop": "U",
+            "key": "00-0028843",
+            "gsis_id": "00-0028843",
+            "name": "Andre Hardy",
+            "pos": "TE",
+            "season": "2014"
+          },
+          {
+            "pop": "U",
+            "key": "00-0036768",
+            "gsis_id": "00-0036768",
+            "name": "JaQuan Hardy",
+            "pos": "RB",
+            "season": "2021"
+          },
+          {
+            "pop": "U",
+            "key": "00-0030155",
+            "gsis_id": "00-0030155",
+            "name": "Demetrius Harris",
+            "pos": "TE",
+            "season": "2013"
+          },
+          {
+            "pop": "U",
+            "key": "00-0028242",
+            "gsis_id": "00-0028242",
+            "name": "Joe Hastings",
+            "pos": "WR",
+            "season": "2011"
+          },
+          {
+            "pop": "U",
+            "key": "00-0031493",
+            "gsis_id": "00-0031493",
+            "name": "Jarryd Hayne",
+            "pos": "RB",
+            "season": "2015"
+          },
+          {
+            "pop": "U",
+            "key": "00-0028522",
+            "gsis_id": "00-0028522",
+            "name": "Mike Higgins",
+            "pos": "TE",
+            "season": "2011"
+          },
+          {
+            "pop": "U",
+            "key": "00-0030320",
+            "gsis_id": "00-0030320",
+            "name": "Michael Hill",
+            "pos": "RB",
+            "season": "2013"
+          },
+          {
+            "pop": "U",
+            "key": "00-0033604",
+            "gsis_id": "00-0033604",
+            "name": "Krishawn Hogan",
+            "pos": "WR",
+            "season": "2017"
+          },
+          {
+            "pop": "U",
+            "key": "00-0031252",
+            "gsis_id": "00-0031252",
+            "name": "Caleb Holley",
+            "pos": "WR",
+            "season": "2014"
+          },
+          {
+            "pop": "U",
+            "key": "00-0028263",
+            "gsis_id": "00-0028263",
+            "name": "Andre Holmes",
+            "pos": "WR",
+            "season": "2011"
+          },
+          {
+            "pop": "U",
+            "key": "00-0035725",
+            "gsis_id": "00-0035725",
+            "name": "Valentine Holmes",
+            "pos": "RB",
+            "season": "2019"
+          },
+          {
+            "pop": "U",
+            "key": "00-0030865",
+            "gsis_id": "00-0030865",
+            "name": "Gator Hoskins",
+            "pos": "TE",
+            "season": "2014"
+          },
+          {
+            "pop": "U",
+            "key": "00-0031861",
+            "gsis_id": "00-0031861",
+            "name": "Julian Howsare",
+            "pos": "RB",
+            "season": "2015"
+          },
+          {
+            "pop": "U",
+            "key": "00-0032815",
+            "gsis_id": "00-0032815",
+            "name": "Chris Hubert",
+            "pos": "WR",
+            "season": "2016"
+          },
+          {
+            "pop": "U",
+            "key": "00-0034613",
+            "gsis_id": "00-0034613",
+            "name": "Tanner Hudson",
+            "pos": "TE",
+            "season": "2018"
+          },
+          {
+            "pop": "U",
+            "key": "00-0036104",
+            "gsis_id": "00-0036104",
+            "name": "John Hurst",
+            "pos": "WR",
+            "season": "2020"
+          },
+          {
+            "pop": "U",
+            "key": "ING700275",
+            "gsis_id": "ING700275",
+            "name": "Kendrick Ings",
+            "pos": "WR",
+            "season": "2015"
+          },
+          {
+            "pop": "U",
+            "key": "ISL177981",
+            "gsis_id": "ISL177981",
+            "name": "Carlin Isles",
+            "pos": "RB",
+            "season": "2013"
+          },
+          {
+            "pop": "U",
+            "key": "00-0030806",
+            "gsis_id": "00-0030806",
+            "name": "Nic Jacobs",
+            "pos": "TE",
+            "season": "2014"
+          },
+          {
+            "pop": "U",
+            "key": "00-0037022",
+            "gsis_id": "00-0037022",
+            "name": "Michael Jacobson",
+            "pos": "TE",
+            "season": "2021"
+          },
+          {
+            "pop": "U",
+            "key": "00-0029186",
+            "gsis_id": "00-0029186",
+            "name": "Nick Johnson",
+            "pos": "WR",
+            "season": "2012"
+          },
+          {
+            "pop": "U",
+            "key": "00-0034560",
+            "gsis_id": "00-0034560",
+            "name": "J.J. Jones",
+            "pos": "WR",
+            "season": "2018"
+          },
+          {
+            "pop": "U",
+            "key": "00-0030807",
+            "gsis_id": "00-0030807",
+            "name": "Seantavius Jones",
+            "pos": "WR",
+            "season": "2014"
+          },
+          {
+            "pop": "U",
+            "key": "00-0030823",
+            "gsis_id": "00-0030823",
+            "name": "Reggie Jordan",
+            "pos": "TE",
+            "season": "2014"
+          },
+          {
+            "pop": "U",
+            "key": "00-0037031",
+            "gsis_id": "00-0037031",
+            "name": "Nikola Kalinic",
+            "pos": "TE",
+            "season": "2022"
+          },
+          {
+            "pop": "U",
+            "key": "00-0034478",
+            "gsis_id": "00-0034478",
+            "name": "Chad Kanoff",
+            "pos": "QB",
+            "season": "2018"
+          },
+          {
+            "pop": "U",
+            "key": "00-0026078",
+            "gsis_id": "00-0026078",
+            "name": "Kolo Kapanui",
+            "pos": "TE",
+            "season": "2008"
+          },
+          {
+            "pop": "U",
+            "key": "00-0034192",
+            "gsis_id": "00-0034192",
+            "name": "Nick Keizer",
+            "pos": "TE",
+            "season": "2018"
+          },
+          {
+            "pop": "U",
+            "key": "00-0025802",
+            "gsis_id": "00-0025802",
+            "name": "Noriaki Kinoshita",
+            "pos": "WR",
+            "season": "2008"
+          },
+          {
+            "pop": "U",
+            "key": "00-0031787",
+            "gsis_id": "00-0031787",
+            "name": "Jake Kumerow",
+            "pos": "WR",
+            "season": "2015"
+          },
+          {
+            "pop": "U",
+            "key": "00-0033021",
+            "gsis_id": "00-0033021",
+            "name": "Jake Lampman",
+            "pos": "WR",
+            "season": "2016"
+          },
+          {
+            "pop": "U",
+            "key": "00-0029755",
+            "gsis_id": "00-0029755",
+            "name": "Brian Leonhardt",
+            "pos": "TE",
+            "season": "2013"
+          },
+          {
+            "pop": "U",
+            "key": "00-0028442",
+            "gsis_id": "00-0028442",
+            "name": "Ricardo Lockette",
+            "pos": "WR",
+            "season": "2011"
+          },
+          {
+            "pop": "U",
+            "key": "00-0031973",
+            "gsis_id": "00-0031973",
+            "name": "Luke Lundy",
+            "pos": "RB",
+            "season": "2015"
+          },
+          {
+            "pop": "U",
+            "key": "00-0031802",
+            "gsis_id": "00-0031802",
+            "name": "Gavin Lutman",
+            "pos": "WR",
+            "season": "2015"
+          },
+          {
+            "pop": "U",
+            "key": "00-0027182",
+            "gsis_id": "00-0027182",
+            "name": "Martell Mallett",
+            "pos": "RB",
+            "season": "2010"
+          },
+          {
+            "pop": "U",
+            "key": "00-0038928",
+            "gsis_id": "00-0038928",
+            "name": "Xavier Malone",
+            "pos": "WR",
+            "season": "2023"
+          },
+          {
+            "pop": "U",
+            "key": "00-0031484",
+            "gsis_id": "00-0031484",
+            "name": "Chris Manhertz",
+            "pos": "TE",
+            "season": "2015"
+          },
+          {
+            "pop": "U",
+            "key": "00-0026753",
+            "gsis_id": "00-0026753",
+            "name": "Charly Martin",
+            "pos": "WR",
+            "season": "2009"
+          },
+          {
+            "pop": "U",
+            "key": "00-0030737",
+            "gsis_id": "00-0030737",
+            "name": "Freddie Martino",
+            "pos": "WR",
+            "season": "2014"
+          },
+          {
+            "pop": "U",
+            "key": "00-0037450",
+            "gsis_id": "00-0037450",
+            "name": "Tyreik McAllister",
+            "pos": "WR",
+            "season": "2022"
+          },
+          {
+            "pop": "U",
+            "key": "00-0026076",
+            "gsis_id": "00-0026076",
+            "name": "Shaheer McBride",
+            "pos": "WR",
+            "season": "2008"
+          },
+          {
+            "pop": "U",
+            "key": "00-0036582",
+            "gsis_id": "00-0036582",
+            "name": "Nate McCrary",
+            "pos": "RB",
+            "season": "2021"
+          },
+          {
+            "pop": "U",
+            "key": "00-0034735",
+            "gsis_id": "00-0034735",
+            "name": "Codey McElroy",
+            "pos": "TE",
+            "season": "2019"
+          },
+          {
+            "pop": "U",
+            "key": "00-0028798",
+            "gsis_id": "00-0028798",
+            "name": "Richard Medlin",
+            "pos": "RB",
+            "season": "2011"
+          },
+          {
+            "pop": "U",
+            "key": "00-0034524",
+            "gsis_id": "00-0034524",
+            "name": "Dorren Miller",
+            "pos": "WR",
+            "season": "2018"
+          },
+          {
+            "pop": "U",
+            "key": "00-0028415",
+            "gsis_id": "00-0028415",
+            "name": "Kyle Miller",
+            "pos": "TE",
+            "season": "2012"
+          },
+          {
+            "pop": "U",
+            "key": "00-0032352",
+            "gsis_id": "00-0032352",
+            "name": "Michael Miller",
+            "pos": "TE",
+            "season": "2016"
+          },
+          {
+            "pop": "U",
+            "key": "00-0028532",
+            "gsis_id": "00-0028532",
+            "name": "Joseph Morgan",
+            "pos": "WR",
+            "season": "2011"
+          },
+          {
+            "pop": "U",
+            "key": "00-0026693",
+            "gsis_id": "00-0026693",
+            "name": "Phillip Morris",
+            "pos": "WR",
+            "season": "2009"
+          },
+          {
+            "pop": "U",
+            "key": "00-0033266",
+            "gsis_id": "00-0033266",
+            "name": "JoJo Natson",
+            "pos": "WR",
+            "season": "2017"
+          },
+          {
+            "pop": "U",
+            "key": "00-0032838",
+            "gsis_id": "00-0032838",
+            "name": "Cedric O'Neal",
+            "pos": "RB",
+            "season": "2016"
+          },
+          {
+            "pop": "U",
+            "key": "00-0035645",
+            "gsis_id": "00-0035645",
+            "name": "Gunner Olszewski",
+            "pos": "WR",
+            "season": "2019"
+          },
+          {
+            "pop": "U",
+            "key": "00-0026657",
+            "gsis_id": "00-0026657",
+            "name": "Chris Pizzotti",
+            "pos": "QB",
+            "season": "2009"
+          },
+          {
+            "pop": "U",
+            "key": "00-0036449",
+            "gsis_id": "00-0036449",
+            "name": "Sandro Platzgummer",
+            "pos": "RB",
+            "season": "2020"
+          },
+          {
+            "pop": "U",
+            "key": "00-0027437",
+            "gsis_id": "00-0027437",
+            "name": "Quinn Porter",
+            "pos": "RB",
+            "season": "2010"
+          },
+          {
+            "pop": "U",
+            "key": "00-0032611",
+            "gsis_id": "00-0032611",
+            "name": "Jhurrell Pressley",
+            "pos": "RB",
+            "season": "2016"
+          },
+          {
+            "pop": "U",
+            "key": "00-0028362",
+            "gsis_id": "00-0028362",
+            "name": "Michael Preston",
+            "pos": "WR",
+            "season": "2011"
+          },
+          {
+            "pop": "U",
+            "key": "00-0027173",
+            "gsis_id": "00-0027173",
+            "name": "Julius Pruitt",
+            "pos": "WR",
+            "season": "2009"
+          },
+          {
+            "pop": "U",
+            "key": "00-0028668",
+            "gsis_id": "00-0028668",
+            "name": "Raymond Radway",
+            "pos": "WR",
+            "season": "2011"
+          },
+          {
+            "pop": "U",
+            "key": "00-0026017",
+            "gsis_id": "00-0026017",
+            "name": "Paul Raymond",
+            "pos": "WR",
+            "season": "2008"
+          },
+          {
+            "pop": "U",
+            "key": "00-0026566",
+            "gsis_id": "00-0026566",
+            "name": "Isaac Redman",
+            "pos": "RB",
+            "season": "2009"
+          },
+          {
+            "pop": "U",
+            "key": "00-0026567",
+            "gsis_id": "00-0026567",
+            "name": "Mike Reilly",
+            "pos": "QB",
+            "season": "2009"
+          },
+          {
+            "pop": "U",
+            "key": "00-0036474",
+            "gsis_id": "00-0036474",
+            "name": "Sammis Reyes",
+            "pos": "TE",
+            "season": "2021"
+          },
+          {
+            "pop": "U",
+            "key": "00-0035567",
+            "gsis_id": "00-0035567",
+            "name": "Craig Reynolds",
+            "pos": "RB",
+            "season": "2019"
+          },
+          {
+            "pop": "U",
+            "key": "00-0027388",
+            "gsis_id": "00-0027388",
+            "name": "Aaron Rhea",
+            "pos": "WR",
+            "season": "2009"
+          },
+          {
+            "pop": "U",
+            "key": "00-0031166",
+            "gsis_id": "00-0031166",
+            "name": "Seth Roberts",
+            "pos": "WR",
+            "season": "2014"
+          },
+          {
+            "pop": "U",
+            "key": "00-0027368",
+            "gsis_id": "00-0027368",
+            "name": "Antonio Robinson",
+            "pos": "WR",
+            "season": "2010"
+          },
+          {
+            "pop": "U",
+            "key": "00-0027166",
+            "gsis_id": "00-0027166",
+            "name": "James Robinson",
+            "pos": "WR",
+            "season": "2009"
+          },
+          {
+            "pop": "U",
+            "key": "00-0034057",
+            "gsis_id": "00-0034057",
+            "name": "Jevoni Robinson",
+            "pos": "TE",
+            "season": "2017"
+          },
+          {
+            "pop": "U",
+            "key": "00-0030348",
+            "gsis_id": "00-0030348",
+            "name": "Khiry Robinson",
+            "pos": "RB",
+            "season": "2013"
+          },
+          {
+            "pop": "U",
+            "key": "00-0026623",
+            "gsis_id": "00-0026623",
+            "name": "Tyler Roehl",
+            "pos": "RB",
+            "season": "2009"
+          },
+          {
+            "pop": "U",
+            "key": "00-0030202",
+            "gsis_id": "00-0030202",
+            "name": "Eric Rogers",
+            "pos": "WR",
+            "season": "2016"
+          },
+          {
+            "pop": "U",
+            "key": "00-0030510",
+            "gsis_id": "00-0030510",
+            "name": "Adam Schiltz",
+            "pos": "TE",
+            "season": "2013"
+          },
+          {
+            "pop": "U",
+            "key": "00-0034340",
+            "gsis_id": "00-0034340",
+            "name": "Christian Scotland-Williamson",
+            "pos": "TE",
+            "season": "2018"
+          },
+          {
+            "pop": "U",
+            "key": "00-0037020",
+            "gsis_id": "00-0037020",
+            "name": "Bernhard Seikovits",
+            "pos": "TE",
+            "season": "2021"
+          },
+          {
+            "pop": "U",
+            "key": "00-0031167",
+            "gsis_id": "00-0031167",
+            "name": "Scott Simonson",
+            "pos": "TE",
+            "season": "2014"
+          },
+          {
+            "pop": "U",
+            "key": "00-0031150",
+            "gsis_id": "00-0031150",
+            "name": "Nathan Slaughter",
+            "pos": "WR",
+            "season": "2014"
+          },
+          {
+            "pop": "U",
+            "key": "00-0028706",
+            "gsis_id": "00-0028706",
+            "name": "Armond Smith",
+            "pos": "RB",
+            "season": "2011"
+          },
+          {
+            "pop": "U",
+            "key": "00-0028842",
+            "gsis_id": "00-0028842",
+            "name": "Hayden Smith",
+            "pos": "TE",
+            "season": "2012"
+          },
+          {
+            "pop": "U",
+            "key": "SMI739116",
+            "gsis_id": "SMI739116",
+            "name": "Terrance Smith",
+            "pos": "WR",
+            "season": "2010"
+          },
+          {
+            "pop": "U",
+            "key": "00-0031679",
+            "gsis_id": "00-0031679",
+            "name": "Joshua Stangby",
+            "pos": "WR",
+            "season": "2015"
+          },
+          {
+            "pop": "U",
+            "key": "00-0032755",
+            "gsis_id": "00-0032755",
+            "name": "Dez Stewart",
+            "pos": "WR",
+            "season": "2016"
+          },
+          {
+            "pop": "U",
+            "key": "00-0028987",
+            "gsis_id": "00-0028987",
+            "name": "Phillip Supernaw",
+            "pos": "TE",
+            "season": "2012"
+          },
+          {
+            "pop": "U",
+            "key": "00-0030854",
+            "gsis_id": "00-0030854",
+            "name": "Erik Swoope",
+            "pos": "TE",
+            "season": "2014"
+          },
+          {
+            "pop": "U",
+            "key": "00-0027616",
+            "gsis_id": "00-0027616",
+            "name": "Andy Tanner",
+            "pos": "WR",
+            "season": "2010"
+          },
+          {
+            "pop": "U",
+            "key": "00-0029623",
+            "gsis_id": "00-0029623",
+            "name": "Alex Tanney",
+            "pos": "QB",
+            "season": "2012"
+          },
+          {
+            "pop": "U",
+            "key": "00-0035480",
+            "gsis_id": "00-0035480",
+            "name": "Malik Taylor",
+            "pos": "WR",
+            "season": "2019"
+          },
+          {
+            "pop": "U",
+            "key": "00-0030035",
+            "gsis_id": "00-0030035",
+            "name": "Adam Thielen",
+            "pos": "WR",
+            "season": "2013"
+          },
+          {
+            "pop": "U",
+            "key": "00-0034489",
+            "gsis_id": "00-0034489",
+            "name": "Jalen Tolliver",
+            "pos": "WR",
+            "season": "2018"
+          },
+          {
+            "pop": "U",
+            "key": "00-0027412",
+            "gsis_id": "00-0027412",
+            "name": "Manase Tonga",
+            "pos": "RB",
+            "season": "2010"
+          },
+          {
+            "pop": "U",
+            "key": "00-0032319",
+            "gsis_id": "00-0032319",
+            "name": "Ross Travis",
+            "pos": "TE",
+            "season": "2015"
+          },
+          {
+            "pop": "U",
+            "key": "00-0033149",
+            "gsis_id": "00-0033149",
+            "name": "Nick Truesdell",
+            "pos": "TE",
+            "season": "2017"
+          },
+          {
+            "pop": "U",
+            "key": "00-0032832",
+            "gsis_id": "00-0032832",
+            "name": "Marcus Tucker",
+            "pos": "WR",
+            "season": "2016"
+          },
+          {
+            "pop": "U",
+            "key": "00-0035494",
+            "gsis_id": "00-0035494",
+            "name": "Xavier Turner",
+            "pos": "RB",
+            "season": "2019"
+          },
+          {
+            "pop": "U",
+            "key": "00-0032689",
+            "gsis_id": "00-0032689",
+            "name": "Jason Vander Laan",
+            "pos": "TE",
+            "season": "2016"
+          },
+          {
+            "pop": "U",
+            "key": "00-0030970",
+            "gsis_id": "00-0030970",
+            "name": "Dustin Vaughan",
+            "pos": "QB",
+            "season": "2014"
+          },
+          {
+            "pop": "U",
+            "key": "VIT313230",
+            "gsis_id": "VIT313230",
+            "name": "Mark Vital",
+            "pos": "TE",
+            "season": "2021"
+          },
+          {
+            "pop": "U",
+            "key": "00-0035728",
+            "gsis_id": "00-0035728",
+            "name": "Christian Wade",
+            "pos": "RB",
+            "season": "2019"
+          },
+          {
+            "pop": "U",
+            "key": "00-0030352",
+            "gsis_id": "00-0030352",
+            "name": "Ty Walker",
+            "pos": "WR",
+            "season": "2013"
+          },
+          {
+            "pop": "U",
+            "key": "00-0033137",
+            "gsis_id": "00-0033137",
+            "name": "Eric Wallace",
+            "pos": "TE",
+            "season": "2016"
+          },
+          {
+            "pop": "U",
+            "key": "00-0030897",
+            "gsis_id": "00-0030897",
+            "name": "Corey Washington",
+            "pos": "WR",
+            "season": "2014"
+          },
+          {
+            "pop": "U",
+            "key": "00-0026410",
+            "gsis_id": "00-0026410",
+            "name": "Ernie Wheelwright",
+            "pos": "WR",
+            "season": "2008"
+          },
+          {
+            "pop": "U",
+            "key": "00-0030274",
+            "gsis_id": "00-0030274",
+            "name": "Myles White",
+            "pos": "WR",
+            "season": "2013"
+          },
+          {
+            "pop": "U",
+            "key": "00-0025926",
+            "gsis_id": "00-0025926",
+            "name": "Edward Williams",
+            "pos": "WR",
+            "season": "2008"
+          },
+          {
+            "pop": "U",
+            "key": "00-0032287",
+            "gsis_id": "00-0032287",
+            "name": "Ed Williams",
+            "pos": "WR",
+            "season": "2015"
+          },
+          {
+            "pop": "U",
+            "key": "00-0037451",
+            "gsis_id": "00-0037451",
+            "name": "Rod Williams",
+            "pos": "TE",
+            "season": "2022"
+          },
+          {
+            "pop": "U",
+            "key": "00-0032739",
+            "gsis_id": "00-0032739",
+            "name": "Wendall Williams",
+            "pos": "WR",
+            "season": "2016"
+          },
+          {
+            "pop": "U",
+            "key": "00-0027923",
+            "gsis_id": "00-0027923",
+            "name": "Rod Windsor",
+            "pos": "WR",
+            "season": "2010"
+          },
+          {
+            "pop": "U",
+            "key": "00-0028335",
+            "gsis_id": "00-0028335",
+            "name": "Ryan Winterswyk",
+            "pos": "TE",
+            "season": "2011"
+          },
+          {
+            "pop": "U",
+            "key": "00-0026019",
+            "gsis_id": "00-0026019",
+            "name": "Danny Woodhead",
+            "pos": "RB",
+            "season": "2008"
+          },
+          {
+            "pop": "U",
+            "key": "00-0021349",
+            "gsis_id": "00-0021349",
+            "name": "Rodney Wright",
+            "pos": "WR",
+            "season": "2009"
+          },
+          {
+            "pop": "U",
+            "key": "00-0034052",
+            "gsis_id": "00-0034052",
+            "name": "Brandon Zylstra",
+            "pos": "WR",
+            "season": "2018"
+          },
+          {
+            "pop": "U",
+            "key": "00-0036534",
+            "gsis_id": "00-0036534",
+            "name": "Shane Zylstra",
+            "pos": "TE",
+            "season": "2021"
+          }
+        ]
+      }
+    },
+    "rule_conflicts": {
+      "pass_": true,
+      "actual": [
+        {
+          "key": "00-0029494",
+          "name": "Joe Anderson",
+          "ids": {
+            "xwalk": 489006,
+            "dob_name": 237552,
+            "gap_window": 237552
+          }
+        },
+        {
+          "key": "BAT138483",
+          "name": "Phil Bates",
+          "ids": {
+            "xwalk": 489456,
+            "dob_name": 235698,
+            "multi_school": 489456,
+            "gap_window": 489456
+          }
+        },
+        {
+          "key": "00-0028359",
+          "name": "McLeod Bethel-Thompson",
+          "ids": {
+            "xwalk": 477950,
+            "dob_name": 192265
+          }
+        },
+        {
+          "key": "00-0030656",
+          "name": "Isaiah Crowell",
+          "ids": {
+            "xwalk": 536398,
+            "gap_window": 512836
+          }
+        },
+        {
+          "key": "00-0028863",
+          "name": "Dominique Davis",
+          "ids": {
+            "xwalk": 236575,
+            "dob_name": 236575,
+            "multi_school": 500941
+          }
+        },
+        {
+          "key": "00-0030806",
+          "name": "Nic Jacobs",
+          "ids": {
+            "xwalk": 548774,
+            "multi_school": 504189,
+            "gap_window": 504189
+          }
+        },
+        {
+          "key": "00-0031787",
+          "name": "Jake Kumerow",
+          "ids": {
+            "xwalk": 558147,
+            "dob_name": 558147,
+            "gap_window": 505112
+          }
+        },
+        {
+          "key": "00-0033266",
+          "name": "JoJo Natson",
+          "ids": {
+            "xwalk": 531268,
+            "dob_name": 531268,
+            "multi_school": 3125355,
+            "gap_window": 3125355
+          }
+        },
+        {
+          "key": "00-0027412",
+          "name": "Manase Tonga",
+          "ids": {
+            "xwalk": 487664,
+            "dob_name": 134674
+          }
+        },
+        {
+          "key": "00-0030274",
+          "name": "Myles White",
+          "ids": {
+            "xwalk": 536315,
+            "dob_name": 381923,
+            "multi_school": 536315
+          }
+        }
+      ],
+      "expected": [
+        {
+          "key": "00-0029494",
+          "name": "Joe Anderson",
+          "ids": {
+            "xwalk": 489006,
+            "dob_name": 237552,
+            "gap_window": 237552
+          }
+        },
+        {
+          "key": "BAT138483",
+          "name": "Phil Bates",
+          "ids": {
+            "xwalk": 489456,
+            "dob_name": 235698,
+            "multi_school": 489456,
+            "gap_window": 489456
+          }
+        },
+        {
+          "key": "00-0028359",
+          "name": "McLeod Bethel-Thompson",
+          "ids": {
+            "xwalk": 477950,
+            "dob_name": 192265
+          }
+        },
+        {
+          "key": "00-0030656",
+          "name": "Isaiah Crowell",
+          "ids": {
+            "xwalk": 536398,
+            "gap_window": 512836
+          }
+        },
+        {
+          "key": "00-0028863",
+          "name": "Dominique Davis",
+          "ids": {
+            "xwalk": 236575,
+            "dob_name": 236575,
+            "multi_school": 500941
+          }
+        },
+        {
+          "key": "00-0030806",
+          "name": "Nic Jacobs",
+          "ids": {
+            "xwalk": 548774,
+            "multi_school": 504189,
+            "gap_window": 504189
+          }
+        },
+        {
+          "key": "00-0031787",
+          "name": "Jake Kumerow",
+          "ids": {
+            "xwalk": 558147,
+            "dob_name": 558147,
+            "gap_window": 505112
+          }
+        },
+        {
+          "key": "00-0033266",
+          "name": "JoJo Natson",
+          "ids": {
+            "xwalk": 531268,
+            "dob_name": 531268,
+            "multi_school": 3125355,
+            "gap_window": 3125355
+          }
+        },
+        {
+          "key": "00-0027412",
+          "name": "Manase Tonga",
+          "ids": {
+            "xwalk": 487664,
+            "dob_name": 134674
+          }
+        },
+        {
+          "key": "00-0030274",
+          "name": "Myles White",
+          "ids": {
+            "xwalk": 536315,
+            "dob_name": 381923,
+            "multi_school": 536315
+          }
+        }
+      ],
+      "rows": [
+        {
+          "pop": "U",
+          "key": "00-0029494",
+          "gsis_id": "00-0029494",
+          "name": "Joe Anderson",
+          "pos": "WR",
+          "season": "2012",
+          "rule_ids": {
+            "xwalk": 489006,
+            "dob_name": 237552,
+            "gap_window": 237552
+          }
+        },
+        {
+          "pop": "U",
+          "key": "BAT138483",
+          "gsis_id": "BAT138483",
+          "name": "Phil Bates",
+          "pos": "WR",
+          "season": "2012",
+          "rule_ids": {
+            "xwalk": 489456,
+            "dob_name": 235698,
+            "multi_school": 489456,
+            "gap_window": 489456
+          }
+        },
+        {
+          "pop": "U",
+          "key": "00-0028359",
+          "gsis_id": "00-0028359",
+          "name": "McLeod Bethel-Thompson",
+          "pos": "QB",
+          "season": "2011",
+          "rule_ids": {
+            "xwalk": 477950,
+            "dob_name": 192265
+          }
+        },
+        {
+          "pop": "U",
+          "key": "00-0030656",
+          "gsis_id": "00-0030656",
+          "name": "Isaiah Crowell",
+          "pos": "RB",
+          "season": "2014",
+          "rule_ids": {
+            "xwalk": 536398,
+            "gap_window": 512836
+          }
+        },
+        {
+          "pop": "U",
+          "key": "00-0028863",
+          "gsis_id": "00-0028863",
+          "name": "Dominique Davis",
+          "pos": "QB",
+          "season": "2012",
+          "rule_ids": {
+            "xwalk": 236575,
+            "dob_name": 236575,
+            "multi_school": 500941
+          }
+        },
+        {
+          "pop": "U",
+          "key": "00-0030806",
+          "gsis_id": "00-0030806",
+          "name": "Nic Jacobs",
+          "pos": "TE",
+          "season": "2014",
+          "rule_ids": {
+            "xwalk": 548774,
+            "multi_school": 504189,
+            "gap_window": 504189
+          }
+        },
+        {
+          "pop": "U",
+          "key": "00-0031787",
+          "gsis_id": "00-0031787",
+          "name": "Jake Kumerow",
+          "pos": "WR",
+          "season": "2015",
+          "rule_ids": {
+            "xwalk": 558147,
+            "dob_name": 558147,
+            "gap_window": 505112
+          }
+        },
+        {
+          "pop": "U",
+          "key": "00-0033266",
+          "gsis_id": "00-0033266",
+          "name": "JoJo Natson",
+          "pos": "WR",
+          "season": "2017",
+          "rule_ids": {
+            "xwalk": 531268,
+            "dob_name": 531268,
+            "multi_school": 3125355,
+            "gap_window": 3125355
+          }
+        },
+        {
+          "pop": "U",
+          "key": "00-0027412",
+          "gsis_id": "00-0027412",
+          "name": "Manase Tonga",
+          "pos": "RB",
+          "season": "2010",
+          "rule_ids": {
+            "xwalk": 487664,
+            "dob_name": 134674
+          }
+        },
+        {
+          "pop": "U",
+          "key": "00-0030274",
+          "gsis_id": "00-0030274",
+          "name": "Myles White",
+          "pos": "WR",
+          "season": "2013",
+          "rule_ids": {
+            "xwalk": 536315,
+            "dob_name": 381923,
+            "multi_school": 536315
+          }
+        }
+      ]
+    },
+    "store_parity": {
+      "pass_": true,
+      "csv_rows": 1525,
+      "csv_unique_keys": 1520,
+      "store_unique_keys": 1520,
+      "only_csv": [],
+      "only_store": [],
+      "mismatches": [],
+      "note": "Compare to shipped player_link baseline, not raw draft-pick source; duplicate CSV keys keep final occurrence."
+    },
+    "immutable_copy": {
+      "pass_": true,
+      "before": "85d9801d4f2ec3f750af80e62f13f2b20615c508b1ce85fc27fd132981afa9c0",
+      "after": "85d9801d4f2ec3f750af80e62f13f2b20615c508b1ce85fc27fd132981afa9c0",
+      "expected": "85d9801d4f2ec3f750af80e62f13f2b20615c508b1ce85fc27fd132981afa9c0"
+    }
+  },
+  "passed": true
+}
