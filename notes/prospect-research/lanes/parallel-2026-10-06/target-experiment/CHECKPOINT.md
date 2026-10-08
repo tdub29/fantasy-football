@@ -103,3 +103,25 @@ A4 command (log in the job tmp dir, output `supplementary.json` in this folder):
 
 Next: when it finishes, write `supplementary.md` and `ledger.md`, then P5 (one independent judge, max effort,
 verdict verbatim in `judge-2026-10-07.md`). If the run dies, record it in the ledger before any rerun.
+
+## A4 written (2026-10-08)
+
+Integrity re-checked before writing: addendum sha 2e7606a5... and supplementary.py sha 00507436... match the A3
+record; store copy 85d9801d unchanged before and after A4. No rerun; every number is read from `supplementary.json`.
+
+- `supplementary.md`: A4 results by check (D1 to D8, S2 to S6, T1), each with rule, number and verdict.
+- `ledger.md`: every claim in `results.md` and this checkpoint, marked kept, revised or withdrawn. Withdrawn: the
+  H2 QB note and the `all_seasons_complete` flag (definition error). Revised: H2 numbers (verdict kept), the
+  "overconfident at the top" wording (slope 0.4443), "above p75" meaning, XC0 scope F1, F2, F3 with a F2 caveat.
+  (revised 2026-10-08) The calibration wording is now "overconfident at both ends" (judge finding 8, ledger R9).
+- Verdicts after A4: H1 NOT SUPPORTED, H2 REJECTED, H3 USABLE (descriptive, 3 classes), F1 to F3 with the K0
+  format caveat. None FRAGILE.
+
+## P5 judge (2026-10-08)
+
+`judge-2026-10-07.md`: SOUND WITH CORRECTIONS, 12 findings. Applied 2026-10-08 in `results.md`, `ledger.md`
+(rows citing "Judge 2026-10-08", R26 and C14 added, R18 WITHDRAWN) and `supplementary.md` (lines marked
+"revised 2026-10-08"). No number recomputed; no overall prospect rating; XC0 not adopted pending the NFLMDD
+rights check and an independent high judge.
+
+Next: P5 independent judge (one agent, max effort), verdict saved verbatim as `judge-2026-10-07.md`.
