@@ -18,7 +18,7 @@ COLS = {"date_of_birth": "date_of_birth is not null and trim(date_of_birth) <> '
 def main():
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     db = os.environ.get("PROSPECT_DB") or sys.exit("set PROSPECT_DB to a scratch COPY of the prospect DB")
-    c = sqlite3.connect(f"file:{db}?mode=ro", uri=True)
+    c = sqlite3.connect(f"file:{db}?immutable=1", uri=True)
     run = c.execute("select max(run_id) from player_link").fetchone()[0]
     flags = ", ".join(f"max(case when {e} then 1 else 0 end) {k}" for k, e in COLS.items())
     c.execute(f"""create temp table r as select cast(athlete_id as integer) a, season s, {flags}

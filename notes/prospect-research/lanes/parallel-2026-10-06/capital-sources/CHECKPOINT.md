@@ -125,3 +125,75 @@ grade, fantasy consensus rank, real draft slot.
 Finish WF 2021-2026 rerun, then `cbs` and bounded `espn 2018 2019`, eval against `nfl_draft_pick` with
 PROSPECT_DB on the scratch copy, `--smoke` from a fresh `CAPITAL_SCRATCH`. Then `forecaster-spec.md`,
 `results.md`/`results.json`, one independent review, commit lane paths only.
+
+## Resume 3 (2026-10-08, session job c5d39d02, inline continuation)
+
+- Found done: WF 2021-2026 rerun finished (`5b948640\tmp\wf_rerun.log`: 2021 117, 2022 109, 2023 96, 2024 103,
+  2025 101, 2026 98 rows, EXIT 0). `forecaster-spec.md` already written (138 lines); not redone.
+- Not yet done: `cbs`, bounded `espn 2018 2019`, eval, `--smoke` from fresh scratch, results.md/results.json.
+- New scratch for this resume: `C:\Users\TrevorWhite\.claude\jobs\c5d39d02\tmp\capital\` (DB copy plus loader
+  cache copied from `5b948640\tmp\capital`).
+- Next step: copy cache, `CAPITAL_SCRATCH=<c5d39d02 tmp>\capital python -I capital_wayback.py cbs`, then
+  `... espn 2018 2019`, then eval with PROSPECT_DB on the c5d39d02 DB copy.
+- 2026-10-08 step: DB scratch copy `c5d39d02\tmp\capital\db\prospect.sqlite`, sha256
+  `85d9801d4f2ec3f750af80e62f13f2b20615c508b1ce85fc27fd132981afa9c0`, identical for master before copy, master
+  after copy and the copy (master opened once, read only by `cp`; never again). Loader cache (cdx 48, raw 60,
+  `wf_predraft.csv` sha256 `52ef97ea...a9fb`) copied to `c5d39d02\tmp\capital\data` = CAPITAL_SCRATCH. Selftest ok.
+  Next: `cbs` load (running), then `espn 2018 2019`.
+- 2026-10-08 step done: `cbs` loaded (2013 RB 25; 2014 and 2015 4x25; 2016 QB 45 full list, TE 25, RB and WR 0;
+  2017 4x25). The 2016 RB and WR `print_rows=9999` captures are a different table: no Rank and no Proj. Round
+  column (round cell "--"), so they carry no capital signal and are recorded as 0 rows, not parsed. 2017 pages
+  are real 25-row boards, not stubs.
+- 2026-10-08 step done: `espn 2018 2019` (bounded, Wayback only, no ESPN server call). 2018 pages carry no
+  `draftYear` key, so the loader now falls back to the page title year (fix plus selftest line in
+  `capital_wayback.py`). Rows: 2018 QB 16, TE 19 (no pre-draft RB or WR capture); 2019 QB 13, RB 25, TE 22,
+  WR 25. Only page 1 per position exists pre-draft. Logs: `c5d39d02\tmp\capital\{cbs,espn}_load.log`.
+  Next: eval with PROSPECT_DB on the c5d39d02 copy.
+- 2026-10-08 step done: eval, PROSPECT_DB = c5d39d02 copy (sha256 unchanged after), output
+  `c5d39d02\tmp\capital\eval.csv` (152 rows, sha256 3b44d1d5e0d9a6f7...). Smoke from an empty
+  CAPITAL_SCRATCH (`c5d39d02\tmp\capital\smoke_fresh`): wf 32 rows sha b650de1b7c846826, espn 25 rows sha
+  dc1b2fd2b6ed3ded, both ok. Next: results.md and results.json in this folder.
+- 2026-10-08 step done: `results.md` and `results.json` written in this folder (aggregate metrics only). Phase 3
+  loaders done, phase 4 spec done (unfitted), phase 5 deliverable written. Key: WF 2012-2026 mean rho 0.722,
+  coverage 0.833; paired WF vs NFLMDD 2020-2026 0.694 vs 0.796 (NFLMDD higher in 7 of 7; single classes, no interval, vintage and consensus confounded); WF vs CBS 2013-2017
+  0.772 vs 0.772.
+- Next step: independent review of phases 2-5 (coordinator assigns; the doer does not run it), then commit lane
+  paths only. Nothing committed by this session.
+
+## Review corrections applied (2026-10-08)
+
+Source: review-2026-10-08.md, ACCEPT WITH CORRECTIONS (not edited). Nothing committed.
+
+- 8: capital_wayback.py evaluate and forecaster_leak_check.py open the DB as `?immutable=1` (was `?mode=ro`, which left a
+  stale -shm and 0 byte -wal beside the scratch copy at 09:53).
+- 10: NFLMDD `days_before` computed from the capture stamp: 7, 3, 2, 22, 1, 3, 3 for 2020-2026.
+- 11: selftest asserts the title fallback (2018), key beats title (2019), and load("espn", 2018) skips a draftYear 2019 page.
+- 7: fallback (initial plus surname plus position) refused when its pick is already claimed by an exact-name row on the
+  same board, or when `same_first` says the first names cannot be one person (catches Darrel Williams to David Williams,
+  whose real player is not on the board). New column `fallback_dropped`: WF 3, NFLMDD 8, all 11 reviewer-listed false hits.
+  Nickname hits kept (Pat Mahomes, Cam Ward, Chig Okonkwo, KC Concepcion, Mike Strachan). Selftest ok.
+  Rerun: `CAPITAL_SCRATCH=$T/data PROSPECT_DB=$T/db/prospect.sqlite python -I capital_wayback.py eval > $T/eval_v3.csv`
+  (T = C:/Users/TrevorWhite/.claude/jobs/c5d39d02/tmp/capital). 152 rows, sha256
+  c3aa151367a7259d9a811ffda1b4356bfb1383419a0afd2e864f89499faa8a0c. DB copy sha256 unchanged (85d9801d...a9c0).
+  eval_v2.csv (claimed-pick guard only) is an intermediate, superseded.
+  Moved: WF pooled 0.833 / 0.722 / 0.669 to 0.832 / 0.721 / 0.668; WF 2020 ALL 0.764 to 0.758; WF 2018 ALL 0.792 to
+  0.788; paired WF vs NFLMDD 0.694 / 0.796 to 0.699 / 0.811 (gap 0.102 to 0.112, still 0 of 7). Unchanged: CBS, ESPN,
+  NFLMDD pooled, WF vs CBS, WF vs ESPN.
+- results.json regenerated from eval_v3.csv (keeps the old eval sha as eval_csv_sha256_before_review_fixes).
+- 1, 2, 3, 9: results.md reading, comparability note, CBS wording and coverage limits rewritten; corrections table added.
+- 4: line above amended.
+- 5, 6: forecaster-spec.md coverage years and population timing caveat.
+
+Next step: coordinator re-review of the corrections, then commit. The doer does not judge.
+
+## Pause state (2026-10-08, coordinator safe pause)
+
+- Corrections done: 1 through 11, all. Open: none.
+- After the corrections, three literal dash occurrences (en and em dash in the parser, en dash in the selftest) in
+  capital_wayback.py became `\u2013` and `\u2014` escapes, which behave the same. Selftest ok; an eval rerun reproduces eval_v3.csv
+  byte for byte (sha256 c3aa1513...8a0c).
+- Eval state: eval_v3.csv is final, and results.json and results.md are built from it. No eval or fetch is running.
+- Dash check: no en or em dash in CHECKPOINT.md, results.md, results.json, forecaster-spec.md or either lane .py file.
+- Exact next step: the coordinator re-reviews the corrections against review-2026-10-08.md (the doer does not judge),
+  then commits the lane paths. Nothing has been committed.
+- Re-review fixes (rereview-2026-10-08.md, 4 of 4, 2026-10-08): forecaster-spec population wording, results.md nickname-miss note, paired dict first-wins (capital_wayback.py:391, reversed like :374), this file's dash count; selftest ok, eval_v3.csv sha unchanged (c3aa1513...8a0c), no eval rerun, nothing committed.

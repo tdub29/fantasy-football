@@ -16,6 +16,7 @@ scratch as a private research cache. The repo holds this code and aggregate prov
     python capital_wayback.py eval                     # coverage and accuracy vs nfl_draft_pick (PROSPECT_DB)
 """
 import csv
+import difflib
 import gzip
 import hashlib
 import html
@@ -105,7 +106,7 @@ def days(stamp, y):
 
 def wf_round(t):
     """(lo, hi, top): round range with 8 meaning undrafted, top = pick cap for "Top-N"; None if unreadable."""
-    s = t.lower().replace(" ", "").replace("–", "-").replace("—", "-")  # 2021+ pages use an en dash
+    s = t.lower().replace(" ", "").replace("\u2013", "-").replace("\u2014", "-")  # 2021+ pages use an en dash
     if re.search(r"first-?overall|^no\.?1(=|$)", s):
         return 1, 1, 1
     if "second-overall" in s:
@@ -173,7 +174,8 @@ def parse_espn(raw):
     if i < 0:
         return None, None, None, []
     ba, _ = json.JSONDecoder().raw_decode(raw, i + len('"bestAvailable":'))
-    dy = re.search(r'"draftYear":(\d{4})', raw)
+    # 2018 pages carry no draftYear key; their class is in the title ("NFL Draft 2018 Best Remaining Players")
+    dy = re.search(r'"draftYear":(\d{4})', raw) or re.search(r"<title>NFL Draft (\d{4}) ", raw)
     pos = {p["id"]: p["abbreviation"] for p in ba.get("positions", [])}
     rows = []
     for a in ba.get("athletes", []):
@@ -259,6 +261,14 @@ def norm(name):
     return " ".join(w for w in s.split() if w not in ("jr", "sr", "ii", "iii", "iv", "v"))
 
 
+def same_first(a, b):
+    """Could first names a and b be one person? Nickname (Pat/Patrick), typo (Risard/Rishard) or initials (KC/Kevin),
+    not a different name that shares an initial (Darrel/David)."""
+    # ponytail: string heuristic, add a nickname table if a real pair fails it
+    a, b = sorted((a, b), key=len)
+    return (len(a) <= 2 and a[0] == b[0]) or a[:3] == b[:3] or difflib.SequenceMatcher(None, a, b).ratio() >= 0.5
+
+
 def spearman(xs, ys):
     def rank(v):
         o = sorted(range(len(v)), key=lambda i: v[i])
@@ -291,7 +301,7 @@ def proj_pick(r):
     return ((lo - 1) * 32 + hi * 32) / 2
 
 
-EVAL_COLS = ["source", "year", "pos", "board_n", "matched_drafted", "fallback_matches", "drafted_at_pos", "coverage",
+EVAL_COLS = ["source", "year", "pos", "board_n", "matched_drafted", "fallback_matches", "fallback_dropped", "drafted_at_pos", "coverage",
              "ambiguous", "days_before", "rho_signal_pick", "rho_signal_pick_noflag", "rho_posrank_pick", "round_hit",
              "n_common", "rho_other", "captures"]
 PAIRS = (("wf", "cbs"), ("wf", "espn"), ("wf", "nfmdd"), ("espn", "nfmdd"))
@@ -314,12 +324,13 @@ def evaluate():
     """Coverage of the real draft and Spearman of board signal against actual pick, per source, class and position
     (plus ALL), among board players matched to ONE drafted QB/RB/WR/TE: drafted-only conditioning. Paired rows
     (source "a+b") score two boards on the same drafted players. Match: exact normalized name in the class, else
-    first initial plus last name plus position when that is unique."""
+    first initial plus last name plus position when that is unique AND no exact-name row on the same board claims
+    that pick (review 2026-10-08: Hunter Bryant matched Harrison Bryant, J.J. Taylor matched Jonathan Taylor)."""
     db = os.environ.get("PROSPECT_DB")
     if not db:
         sys.exit("set PROSPECT_DB to a scratch COPY of the prospect DB")
-    con = sqlite3.connect(f"file:{db}?mode=ro", uri=True)
-    picks, alt, drafted = {}, {}, {}
+    con = sqlite3.connect(f"file:{db}?immutable=1", uri=True)
+    picks, alt, drafted, first = {}, {}, {}, {}
     for season, rnd, pick, name, pos in con.execute(
             "select season, round, pick, pfr_player_name, position from nfl_draft_pick where season between 2012 and 2026"):
         w = norm(name).split()
@@ -327,6 +338,7 @@ def evaluate():
             continue
         picks.setdefault((season, " ".join(w)), []).append((pick, rnd))
         alt.setdefault((season, w[0][0], w[-1], pos), []).append((pick, rnd))
+        first[(season, pick)] = w[0]
         drafted[(season, pos)] = drafted.get((season, pos), 0) + 1
     boards = {}
     for src in ("wf", "cbs", "espn"):
@@ -334,16 +346,24 @@ def evaluate():
         if f.exists():
             boards[src] = list(csv.DictReader(f.open(encoding="utf-8")))
     if NFMDD.exists():
-        boards["nfmdd"] = [dict(r, ovr_rank=r["rank"]) for r in csv.DictReader(NFMDD.open(encoding="utf-8"))]
+        boards["nfmdd"] = [dict(r, ovr_rank=r["rank"], days_before=days(f"{r['capture'][:4]}-{r['capture'][4:6]}-{r['capture'][6:8]}",
+                                                                   int(r["year"])))
+                           for r in csv.DictReader(NFMDD.open(encoding="utf-8"))]
     groups = {}
     for src, rows in boards.items():
+        claimed = {(int(r["year"]), h[0][0]) for r in rows for h in [picks.get((int(r["year"]), norm(r["name"])), [])]
+                   if len(h) == 1}
         for r in rows:
             # Board position = the position page (QB1 -> QB), else the listed one: WF lists "RB/FB" and the odd "225"
             y, pos, w = int(r["year"]), (r.get("page") or r.get("pos") or "")[:2].upper(), norm(r["name"]).split()
             hit = picks.get((y, " ".join(w)), [])
             r["_fb"] = not hit
+            r["_fb_drop"] = False
             if not hit and w:
                 hit = alt.get((y, w[0][0], w[-1], pos), [])
+                if len(hit) == 1 and ((y, hit[0][0]) in claimed  # the real player is on this board: not him
+                                      or not same_first(w[0], first[(y, hit[0][0])])):
+                    hit, r["_fb_drop"] = [], True
             r["_hit"] = hit[0] if len(hit) == 1 else None
             r["_ambig"] = len(hit) > 1
             if pos in POS:
@@ -358,7 +378,8 @@ def evaluate():
         nd = sum(drafted.get((y, p), 0) for p in POS) if pos == "ALL" else drafted.get((y, pos), 0)
         caps = sorted({r["capture"] for r in rs if r.get("capture")}) or [""]
         out.append(dict(source=src, year=y, pos=pos, board_n=len(rs), matched_drafted=len(m),
-                        fallback_matches=sum(r["_fb"] for r in m), drafted_at_pos=nd,
+                        fallback_matches=sum(r["_fb"] for r in m), fallback_dropped=sum(r["_fb_drop"] for r in rs),
+                        drafted_at_pos=nd,
                         coverage=round(len(m) / nd, 3) if nd else None, ambiguous=sum(r["_ambig"] for r in rs),
                         days_before=min((int(r["days_before"]) for r in rs if r.get("days_before") not in (None, "")), default=None),
                         rho_signal_pick=spearman([a for a, _, _ in pr], [b for _, b, _ in pr]),
@@ -367,7 +388,7 @@ def evaluate():
                         round_hit=round(sum(rh) / len(rh), 3) if rh else None, captures=f"{caps[0]}..{caps[-1]}"))
     for a, b in PAIRS:
         for y in sorted({k[1] for k in groups if k[0] == a} & {k[1] for k in groups if k[0] == b}):
-            sa, sb = ({r["_hit"][0]: signal(s, r) for r in groups[(s, y, "ALL")] if r["_hit"] and signal(s, r) is not None}
+            sa, sb = ({r["_hit"][0]: signal(s, r) for r in reversed(groups[(s, y, "ALL")]) if r["_hit"] and signal(s, r) is not None}
                       for s in (a, b))
             common = sorted(set(sa) & set(sb))
             if len(common) >= 5:
@@ -381,7 +402,7 @@ def selftest():
     assert wf_round("First Overall Pick") == (1, 1, 1) and wf_round("No. 1=Overall Pick") == (1, 1, 1)
     assert wf_round("Second-overall pick") == (1, 1, 2) and wf_round("Top-20 pick") == (1, 1, 20)
     assert wf_round("Top 25") == (1, 1, 25) and wf_round("2-4") == (2, 4, None) and wf_round("6-FA") == (6, 8, None)
-    assert wf_round("FA") == (8, 8, None) and wf_round("3") == (3, 3, None) and wf_round("5–7") == (5, 7, None)
+    assert wf_round("FA") == (8, 8, None) and wf_round("3") == (3, 3, None) and wf_round("5\u20137") == (5, 7, None)
     assert wf_round("54-6") is None and wf_round("4-2") is None and wf_round("No") is None
     page = ("<ol><li> <img src='x.gif'>\n<b> Robert Griffin*, III QB, Baylor </b> <b> <br> Height: 6-2. <br> "
             "Projected Round (2012): Second-overall pick. </b> <br> <li> <b> Kirk Cousins, Michigan State </b> "
@@ -413,7 +434,20 @@ def selftest():
     dy, pi, pc, rs = parse_espn(espn)
     assert (dy, pi, pc) == (2019, 1, 15) and rs == [dict(src_id="103504", name="Nick Bosa", pos="DE", school="Ohio State",
                                                          pos_rank=1, ovr_rank=1, grade=95)], rs
+    assert parse_espn("<title>NFL Draft 2018 Best Remaining Players</title>" + espn.replace('"draftYear":2019,', ""))[0] == 2018
+    assert parse_espn("<title>NFL Draft 2018 Best Remaining Players</title>" + espn)[0] == 2019  # key beats title
+    g = globals()
+    saved = g["pages"], g["fetch"]
+    g["pages"], g["fetch"] = (lambda s, y: {"QB1": [("20180401000000", "u")]}), (lambda ts, u: (espn, "x"))
+    try:  # a page whose class differs from the requested year is skipped, never loaded
+        rs, prov = load("espn", 2018)
+        assert rs == [] and prov[0]["skipped"] == "draftYear 2019", prov
+    finally:
+        g["pages"], g["fetch"] = saved
     assert norm("D.J. Moore") == "dj moore" and norm("Robert Griffin III") == "robert griffin"
+    assert all(same_first(a, b) for a, b in [("pat", "patrick"), ("risard", "rishard"), ("kc", "kevin"),
+                                              ("mike", "michael"), ("tajh", "tahj"), ("xaiver", "xavier")])
+    assert not any(same_first(a, b) for a, b in [("darrel", "david"), ("hunter", "harrison"), ("ayden", "antonio")])
     assert spearman([1, 2, 3, 4, 5], [5, 6, 7, 8, 20]) == 1.0 and spearman([1, 2, 3, 4, 5], [5, 4, 3, 2, 1]) == -1.0
     assert in_range(dict(top_cap="10"), 7, 1) and not in_range(dict(top_cap="", round_lo="2", round_hi="3"), 40, 1)
     assert in_range(dict(top_cap="", round_lo="2", round_hi="3"), 70, 3) and not in_range(dict(round_lo="8", round_hi="8"), 250, 7)

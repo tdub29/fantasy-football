@@ -7,7 +7,7 @@ film, medicals, interviews and team intel that college stat lines do not.
 
 ## 1. Where it is allowed to be used
 
-Boards now exist for every mature class (WalterFootball 2012-2024, CBS 2014-2016, ESPN 2018-2026 behind a
+Boards now exist for every mature class (WalterFootball 2012-2026, CBS 2013-2017, ESPN 2018-2019 loaded, later ESPN classes behind a
 rights gate, NFLMDD 2020-2026 from the coordinator). The forecaster is a gap filler only:
 
 - players on no board (the long tail that becomes most UDFAs and some day-3 picks);
@@ -36,8 +36,10 @@ nothing measurable over slot (H2 rejected), and this forecaster predicts the slo
 ## 3. Population (fixed now, before any fit)
 
 - Class D candidates: QB, RB, WR, TE athletes whose last roster season in `cfb_roster` is D-1. Leaving after
-  D-1 is known before the draft (declared early entrant or exhausted eligibility), so this is not
-  look-ahead. Players who return for another season appear in season D and are correctly excluded.
+  D-1 is only partly known before the draft (declared early entrants); in a backtest it is read from the season D
+  roster. Players who return for another season appear in season D and are correctly excluded.
+  Absence from the season D roster is observed after the draft, so this population is valid for backtests only;
+  real-time scoring needs the declaration or early-entry list.
 - Usage screen, no outcome input: combine invitee, or career rushes plus targets >= 50 through D-1, or career
   pass attempts >= 100 through D-1 (`cfb_usage`, `cfb_passing`). Report per class the share of drafted
   players the screen keeps; a drafted player outside it is scored with climatology and counted as a miss.
