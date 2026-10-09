@@ -6217,6 +6217,11 @@ td.gm-swing { white-space: nowrap; }
 }
 table.data.prm-table .name-cell { flex-direction: column; align-items: flex-start; gap: 0; min-width: 150px; }
 .prm-school { font-size: 0.72rem; }
+.prm-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+.prm-logo { width: 40px; height: 40px; object-fit: contain; flex: none; }
+.prm-head-main { flex: 1 1 200px; min-width: 0; }
+.prm-head-rank { font-weight: 800; font-size: 1.05rem; }
+.prm-head-facts { overflow-wrap: anywhere; }
 .prm-line, .prm-out, .prm-comps { margin-top: 8px; }
 .adv-stat-value .rating-track { margin-left: 2px; }
 

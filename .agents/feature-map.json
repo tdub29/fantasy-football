@@ -706,6 +706,21 @@
       "notes": "College players have no Sleeper id, so viewProspects hands playerModal the PROSPECT_MODEL.college record and the card renders collegeProspectBlock. The card must lead with what differs by player (talent, tier, College % from college stats alone) and state the draft-only round curve once as the position reference. Focus lands on the close button."
     },
     {
+      "id": "prospect-card-header",
+      "name": "Prospects: college card header shows school logo, positional rank in class, size with build label",
+      "path": [
+        { "press": "Escape" },
+        { "sleepMs": 200 },
+        { "eval": "location.hash='#prospects/WR'" },
+        { "sleepMs": 600 },
+        { "eval": "document.querySelector('#main table.prm-table tbody tr .player-name-button').click()" },
+        { "sleepMs": 400 }
+      ],
+      "selector": ".modal .prm-head",
+      "assert": "(() => { const hd = document.querySelector('.modal .prm-head'); if (!hd) return false; const t = hd.textContent; return /WR\\d+ of \\d+ in the \\d{4} class/.test(t) && /\\d'\\d+\" \\d+ lb, /.test(t) && !!hd.querySelector('img.prm-logo') && hd.scrollWidth <= hd.clientWidth + 1; })()",
+      "notes": "Header labels are percentiles against drafted players at the position (size from window.PROSPECT, production from PROSPECT_MODEL.nfl); ESPN roster size and logo from college-bio.js. No age today: there is no public birth-date source."
+    },
+    {
       "id": "prospects-college-card-keyboard",
       "name": "Prospects: college card opens from the keyboard, Escape closes it and returns focus",
       "path": [

@@ -38,7 +38,7 @@ const { collegeProspectBlock, viewProspects, pmPct } = new Function(...Object.ke
 // Every college player at every position and class gets a card, from his own record.
 for (const r of M.college) {
   const t = text(collegeProspectBlock(r));
-  assert.match(t, new RegExp(`first eligible for the ${r.cls} draft`), `${r.n}: eligibility`);
+  assert.match(t, new RegExp(`first eligible for the ${r.cls} draft`, 'i'), `${r.n}: eligibility`);
   assert(t.includes(pmPct(r.tp)), `${r.n}: his own college-only hit chance`);
   assert(!/Sleeper/.test(t), `${r.n}: no Sleeper identity on a college card`);
 }
@@ -126,3 +126,18 @@ assert.match(app, /\(college \? \[\] : activeExpertSources\(\)\)/);
 assert.match(app, /college \? null : playerInfoBlock\(name, sleeper\)/);   // no namesake video intel
 
 console.log('prospect-cards.test.js: all assertions passed');
+
+// Card header: logo, positional rank in class, size with a build label, archetype, draft age.
+require(path.join(__dirname, '..', 'data', 'college-bio.js'));
+require(path.join(__dirname, '..', 'data', 'prospect.js'));
+for (const p of ['QB', 'RB', 'WR']) {
+  const r = M.college.find(x => x.p === p && x.cls === 2027 && window.COLLEGE_BIO.players[x.cid]);
+  const card = collegeProspectBlock(r);
+  const head = find(card, n => n.attrs.class === 'prm-head')[0];
+  assert(head, `${p} card has no header`);
+  const t = text(head);
+  assert.match(t, new RegExp(`${p}[0-9]+ of [0-9]+ in the 2027 class`), t);
+  assert.match(t, /\d'\d+" \d+ lb, /, t);
+  assert(find(head, n => n.tag === 'img').length, `${p} header lost the school logo`);
+  assert(!/age today/.test(t) && !/NaN|undefined/.test(t), t);
+}
