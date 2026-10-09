@@ -31,3 +31,5 @@
 .acct-espn-linked .acct-note { margin-top: 4px; }
 .acct-dialog :focus-visible, .acct-btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 @media (max-width: 400px) { .acct-dialog { padding: 16px; } .acct-row input, .acct-row button { flex-basis: 100%; } .acct-meta { grid-template-columns: 1fr; } .acct-meta dd { margin-bottom: 6px; } }
+.acct-users { list-style: none; margin: 0 0 12px; padding: 0; display: grid; gap: 6px; font-size: 0.88rem; }
+.acct-users li { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 44px; overflow-wrap: anywhere; }

@@ -179,15 +179,37 @@
     return { version: 2, user, season, week, leagues, schedule, failed, syncedAt: now };
   }
 
+  // Linked Sleeper users fold into one view: their leagues join the login's
+  // (the login's copy wins a shared league), with is_me set for whichever
+  // linked user owns the team. A linked user that fails is listed, not fatal.
+  async function loadMerged(get, userId, extras, now) {
+    const data = await loadAccount(get, userId, now);
+    for (const x of extras) {
+      try {
+        const more = await loadAccount(get, x.user_id, now);
+        for (const l of more.leagues) if (!data.leagues.some(y => y.id === l.id)) {
+          data.leagues.push({ ...l, linked_user: more.user.username });
+          data.schedule.leagues[l.id] = more.schedule.leagues[l.id];
+        }
+        data.failed.push(...more.failed);
+      } catch (e) {
+        if (e && e.name === 'AbortError') throw e;
+        data.failed.push({ id: `user:${x.user_id}`, name: `Linked user ${x.username}`, kind: e.kind || 'network' });
+      }
+    }
+    return data;
+  }
+
   function createAccounts({ storage, fetchFn, now = () => Date.now(), onData = () => {}, onStatus = () => {} }) {
     const read = k => { try { return JSON.parse(storage.getItem(k) || 'null'); } catch { return null; } };
     const write = (k, v) => { try { storage.setItem(k, JSON.stringify(v)); return true; } catch { return false; } };
-    const saved = read(ACCOUNT_KEY);
-    const active = saved && saved.user_id ? saved : null;
+    const { extras: savedExtras = [], ...saved } = read(ACCOUNT_KEY) || {};
+    const active = saved.user_id ? saved : null;
     const cached = active && read(snapKey(active.user_id, active.season));
     const snap = cached && cached.version === 2 && String(cached.user?.user_id) === String(active.user_id)
       && cached.season === active.season && Array.isArray(cached.leagues) ? cached : null;
-    const S = { active, snap, status: snap ? 'stale' : 'idle', error: null, gen: 0, ctrl: null, pending: null, input: '', nextTryAt: 0 };
+    const S = { active, extras: active ? savedExtras : [], snap, status: snap ? 'stale' : 'idle', error: null, gen: 0, ctrl: null, pending: null, input: '', nextTryAt: 0 };
+    const remember = () => write(ACCOUNT_KEY, S.extras.length ? { ...S.active, extras: S.extras } : S.active);
     const set = (status, error = null) => { S.status = status; S.error = error; onStatus(S); };
     function begin() {
       S.ctrl?.abort();
@@ -195,12 +217,13 @@
       S.pending = null;
       return { gen: ++S.gen, get: makeGet(fetchFn, { signal: S.ctrl.signal }) };
     }
-    function accept(data) {
+    function accept(data, extras) {
       S.active = { ...data.user, season: data.season };
+      S.extras = extras;
       S.nextTryAt = 0;
       data.syncedAt = now();
       S.snap = data;
-      const remembered = write(ACCOUNT_KEY, S.active);
+      const remembered = remember();
       S.remembered = remembered;
       write(snapKey(data.user.user_id, data.season), data);
       onData(data);
@@ -214,7 +237,7 @@
       set('error', e instanceof SleeperError ? e : new SleeperError('network', e.message));
       return null;
     }
-    function connect(input) {
+    function connect(input, extras = []) {
       const username = String(input || '').trim().replace(/^@/, '');
       if (S.pending && S.input === username) return S.pending;
       const { gen, get } = begin();
@@ -222,9 +245,9 @@
       set('loading');
       const task = (async () => {
         const user = await resolveUser(get, username);
-        const data = await loadAccount(get, user.user_id, now());
+        const data = await loadMerged(get, user.user_id, extras, now());
         if (gen !== S.gen) return null;
-        return accept(data);
+        return accept(data, extras);
       })().catch(e => failed(e, gen)).finally(() => { if (S.pending === task) S.pending = null; });
       S.pending = task;
       return task;
@@ -234,7 +257,7 @@
       S.remembered = true;
       if (S.active) try { storage.removeItem(snapKey(S.active.user_id, S.active.season)); } catch {}
       try { storage.removeItem(ACCOUNT_KEY); } catch {}
-      S.active = null; S.snap = null;
+      S.active = null; S.snap = null; S.extras = [];
       onData(null);
       set('idle');
     }
@@ -243,16 +266,41 @@
       if (S.pending) return S.pending;
       if (!force && now() < S.nextTryAt) return Promise.resolve(S.snap);
       if (!force && S.snap && now() - S.snap.syncedAt < STALE_MS) return Promise.resolve(S.snap);
-      const uid = S.active.user_id;
+      const uid = S.active.user_id, extras = S.extras;
       const { gen, get } = begin();
       S.input = '';
       set('loading');
-      const task = loadAccount(get, uid, now()).then(data => gen === S.gen ? accept(data) : null)
+      const task = loadMerged(get, uid, extras, now()).then(data => gen === S.gen ? accept(data, extras) : null)
         .catch(e => failed(e, gen)).finally(() => { if (S.pending === task) S.pending = null; });
       S.pending = task;
       return task;
     }
-    return { S, connect, disconnect, refresh };
+    function link(input) {
+      if (!S.active) return Promise.resolve(null);
+      const { gen, get } = begin();
+      S.input = '';
+      set('loading');
+      const task = (async () => {
+        const u = await resolveUser(get, input);
+        if (u.user_id === S.active.user_id || S.extras.some(x => x.user_id === u.user_id)) throw new SleeperError('linked', `${u.username} is already linked`);
+        if (S.extras.length >= 7) throw new SleeperError('linked', 'Up to 7 extra Sleeper users can be linked');
+        const extras = [...S.extras, { user_id: u.user_id, username: u.username }];
+        const data = await loadMerged(get, S.active.user_id, extras, now());
+        return gen === S.gen ? accept(data, extras) : null;
+      })().catch(e => failed(e, gen)).finally(() => { if (S.pending === task) S.pending = null; });
+      S.pending = task;
+      return task;
+    }
+    // Replace the linked users and pull again; an in-flight pull used the old list.
+    function setExtras(list) {
+      if (!S.active) return Promise.resolve(null);
+      S.extras = list.map(x => ({ user_id: String(x.user_id), username: String(x.username) }));
+      remember();
+      S.ctrl?.abort(); S.pending = null;
+      return refresh({ force: true });
+    }
+    const unlink = userId => setExtras(S.extras.filter(x => x.user_id !== String(userId)));
+    return { S, connect, disconnect, refresh, link, unlink, setExtras };
   }
 
   function applyGlobals(win, acct, snap) {
@@ -275,6 +323,7 @@
     network: () => 'Could not reach Sleeper. Check the connection, then retry.',
     http: e => `Sleeper answered with an error (${e.message}). Retry later.`,
     no_leagues: e => `${e.message}.`,
+    linked: e => `${e.message}.`,
   };
 
   function boot(win) {
@@ -315,6 +364,43 @@
         if (unknown.size && !l.missing.includes(message)) l.missing.push(message);
       }
     }
+    // Synced login: one profile per Cloudflare Access identity on the hosted
+    // bundle (Fantasy Football/cloudflare/functions/ff/api/profile.js).
+    // profileState: undefined = no sync here (file://, local server), else the
+    // last list read or saved as JSON.
+    let profileState;
+    async function profile(method, body) {
+      if (!/^https?:$/.test(win.location.protocol)) return undefined;
+      const ctrl = new AbortController(), t = win.setTimeout(() => ctrl.abort(), 10000);
+      try {
+        const r = await win.fetch('/ff/api/profile', { method, cache: 'no-store', credentials: 'same-origin', signal: ctrl.signal,
+          keepalive: method !== 'GET', headers: body ? { 'content-type': 'application/json' } : undefined, body: body ? JSON.stringify(body) : undefined });
+        return r.ok && /json/.test(r.headers.get('content-type') || '') ? await r.json() : undefined;
+      } catch { return undefined; } finally { win.clearTimeout(t); }
+    }
+    function saveProfile() {
+      if (profileState === undefined || !A.S.active) return;
+      const sleeper = [{ user_id: A.S.active.user_id, username: A.S.active.username }, ...A.S.extras];
+      if (JSON.stringify(sleeper) === profileState) return;
+      profileState = JSON.stringify(sleeper);
+      profile('PUT', { sleeper });
+    }
+    // The profile wins over this browser's account, so every device shows the same login.
+    async function loadProfile() {
+      const p = await profile('GET');
+      if (p === undefined) return;
+      const list = p?.sleeper || [];
+      profileState = JSON.stringify(list);
+      if (!list.length) { if (A.S.active) saveProfile(); else openPanel(); return; }
+      const [primary, ...extras] = list;
+      if (A.S.active?.user_id !== primary.user_id) A.connect(primary.user_id, extras);
+      else if (JSON.stringify(A.S.extras) !== JSON.stringify(extras)) A.setExtras(extras);
+      renderPanel();
+    }
+    async function signOut() {
+      if (profileState !== undefined) { await profile('DELETE'); profileState = '[]'; }
+      A.disconnect();
+    }
     let inputValue = '';
     let espnValue = '';
     let dialog = null;
@@ -330,9 +416,14 @@
       const espnOpen = body.querySelector('.acct-espn')?.open;
       body.replaceChildren();
       const built = win.BUILD_INFO && win.BUILD_INFO.files && win.BUILD_INFO.files['leagues.js'];
+      const synced = profileState !== undefined;
       body.append(el('p', { class: 'acct-now' }, a
-        ? ['Showing public Sleeper data for ', el('strong', {}, a.username), '.']
-        : 'Connect Sleeper or link a public ESPN league below.'));
+        ? ['Signed in as ', el('strong', {}, a.username), '.']
+        : `Create your login with your Sleeper username.${synced ? ' It signs you in on every device you open this on.' : ''}`));
+      if (a) body.append(el('ul', { class: 'acct-users' },
+        el('li', {}, el('strong', {}, a.username), ' (your login)'),
+        S.extras.map(x => el('li', {}, x.username, ' ',
+          el('button', { type: 'button', class: 'ghost', disabled: S.status === 'loading', onclick: () => { A.unlink(x.user_id); saveProfile(); } }, 'Remove')))));
       const meta = el('dl', { class: 'acct-meta' });
       if (a) {
         meta.append(el('dt', {}, 'Last Sleeper sync'), el('dd', { class: 'tnum' }, snap ? `${new Date(snap.syncedAt).toLocaleString()} (${ago(Date.now() - snap.syncedAt)})` : 'not yet'));
@@ -351,15 +442,21 @@
       body.append(el('p', { class: `acct-status${S.status === 'error' ? ' err' : ''}`, role: 'status', 'aria-live': 'polite' }, msg));
       const input = el('input', { id: 'acct-user', type: 'text', name: 'sleeper-username', autocomplete: 'off', autocapitalize: 'off',
         spellcheck: 'false', value: inputValue, required: true, maxlength: '40', placeholder: 'username', 'aria-describedby': 'acct-note' });
-      const form = el('form', { class: 'acct-form', onsubmit: e => { e.preventDefault(); inputValue = input.value; A.connect(input.value); } },
-        el('label', { for: 'acct-user' }, a ? 'Switch to another Sleeper username' : 'Sleeper username'),
+      const form = el('form', { class: 'acct-form', onsubmit: e => {
+        e.preventDefault(); inputValue = input.value;
+        (a ? A.link : A.connect)(input.value).then(r => {
+          const box = r && a && dialog.querySelector('#acct-user');
+          if (box) { box.value = ''; renderPanel(); }
+        });
+      } },
+        el('label', { for: 'acct-user' }, a ? 'Add another Sleeper user' : 'Sleeper username'),
         el('div', { class: 'acct-row' }, input,
-          el('button', { type: 'submit', class: 'primary', disabled: S.status === 'loading' }, a ? 'Switch account' : 'Connect Sleeper')));
+          el('button', { type: 'submit', class: 'primary', disabled: S.status === 'loading' }, a ? 'Add user' : 'Create login')));
       body.append(form,
-        el('p', { id: 'acct-note', class: 'acct-note' }, 'Public Sleeper data only. A username does not verify account ownership. No password needed.'));
+        el('p', { id: 'acct-note', class: 'acct-note' }, `${a ? 'Their leagues join yours in one view. ' : ''}Public Sleeper data only. A username does not verify account ownership. No password needed.`));
       if (a) body.append(el('div', { class: 'acct-actions' },
         el('button', { type: 'button', disabled: S.status === 'loading', onclick: () => { A.refresh({ force: true }); E.refresh(true); } }, 'Refresh now'),
-        el('button', { type: 'button', onclick: () => A.disconnect() }, 'Disconnect')));
+        el('button', { type: 'button', onclick: signOut }, synced ? 'Sign out everywhere' : 'Sign out')));
       body.append(el('p', { class: 'acct-note' }, 'Refreshes on each visit, after 15 minutes on focus, and every 30 minutes while visible. A closed app refreshes next time you open it.'));
       const espnInput = el('input', { id:'acct-espn-link', type:'text', value:espnValue, required:true, placeholder:'ESPN league URL or ID', autocomplete:'off', 'aria-describedby':'acct-espn-note' });
       const section = el('details', { class:'acct-espn', open:espnOpen || E?.preview || E?.error },
@@ -430,6 +527,7 @@
         configure(snap);
         applyGlobals(win, A.S.active, snap);
         E?.merge(win);
+        saveProfile();
         doc.title = `The Fantasy Hub${A.S.active ? `, ${A.S.active.username}` : ''}`;
         if (win.__app && oldId !== win.MY_USER_ID && A.S.remembered !== false) {
           win.history.replaceState(null, '', '#dashboard');
@@ -466,7 +564,7 @@
     applyGlobals(win, A.S.active, A.S.snap);
     E.merge(win);
     doc.title = `The Fantasy Hub${A.S.active ? `, ${A.S.active.username}` : ''}`;
-    win.addEventListener('DOMContentLoaded', () => { A.refresh({ force: true }); E.refresh(true); });
+    win.addEventListener('DOMContentLoaded', () => { A.refresh({ force: true }); E.refresh(true); loadProfile(); });
     const maybe = () => { if (doc.visibilityState === 'visible') { A.refresh(); E.refresh(); } };
     doc.addEventListener('visibilitychange', maybe);
     win.addEventListener('focus', maybe);

@@ -24,6 +24,7 @@ const url = process.env.FF_TEST_URL || 'http://localhost:8793';
     await page.route(`${url}/**`, async route => {
       const pathname = new URL(route.request().url()).pathname;
       const file = path.join(__dirname, '..', pathname === '/' ? 'index.html' : pathname);
+      if (!fs.existsSync(file)) return route.fulfill({ status: 404, body: 'not found' });
       const ext = path.extname(file);
       const contentType = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.png': 'image/png' }[ext] || 'application/octet-stream';
       await route.fulfill({ body: fs.readFileSync(file), contentType });
@@ -61,18 +62,19 @@ const url = process.env.FF_TEST_URL || 'http://localhost:8793';
       if (path.startsWith('/user/') && !path.includes('/leagues/')) {
         const who = path.split('/')[2];
         if (who === 'missing') return reply(null);
-        const uid = ['beta', '200'].includes(who) ? '200' : who === 'none' || who === '300' ? '300' :
+        const uid = ['beta', '200'].includes(who) ? '200' : who === 'none' || who === '300' ? '300' : who === 'gamma' || who === '400' ? '400' :
           who === 'tdub1329' || who === fixtures.window.MY_USER_ID ? fixtures.window.MY_USER_ID : '100';
-        return reply({ user_id: uid, username: uid === '100' ? (rename ? 'alpha-renamed' : 'alpha') : uid === '200' ? 'beta' : 'none', display_name: uid === '100' ? 'Alpha' : uid === '200' ? 'Beta' : 'None' });
+        return reply({ user_id: uid, username: uid === '100' ? (rename ? 'alpha-renamed' : 'alpha') : uid === '200' ? 'beta' : uid === '400' ? 'gamma' : 'none', display_name: uid === '100' ? 'Alpha' : uid === '200' ? 'Beta' : 'None' });
       }
       if (path.includes('/leagues/nfl/')) return reply(path.includes('/300/') ? [] : [{
-        league_id: 'shared', name: 'Shared fixture league', season, total_rosters: league.rosters.length,
+        league_id: path.includes('/400/') ? 'gamma-lg' : 'shared', name: 'Shared fixture league', season, total_rosters: league.rosters.length,
         roster_positions: league.roster_positions, scoring_settings: league.scoring,
         settings: { type: 2, playoff_week_start: 3, playoff_teams: 4 },
       }]);
-      if (path.endsWith('/users')) return reply(league.rosters.map((r, i) => ({ user_id: i === 0 ? '100' : i === 1 ? '200' : `other-${i}`, display_name: i === 0 ? 'Alpha team' : i === 1 ? 'Beta team' : r.owner_name })));
+      const first = path.includes('gamma-lg') ? '400' : '100';
+      if (path.endsWith('/users')) return reply(league.rosters.map((r, i) => ({ user_id: i === 0 ? first : i === 1 ? '200' : `other-${i}`, display_name: i === 0 ? 'Alpha team' : i === 1 ? 'Beta team' : r.owner_name })));
       if (path.endsWith('/rosters')) return reply(league.rosters.map((r, i) => ({ ...r,
-        owner_id: i === 0 ? '100' : i === 1 ? '200' : `other-${i}`,
+        owner_id: i === 0 ? first : i === 1 ? '200' : `other-${i}`,
         players: changed && i === 0 ? [] : r.players,
         settings: { wins: changed && i === 0 ? 9 : r.wins, losses: r.losses, fpts: r.fpts },
       })));
@@ -111,7 +113,7 @@ const url = process.env.FF_TEST_URL || 'http://localhost:8793';
     await page.waitForFunction(id => window.FF_ACCOUNT && LEAGUES.some(l => l.id === id), espnId);
     await page.evaluate(() => FF_ACCOUNT.openPanel());
     await page.locator('#acct-user').fill('missing');
-    await page.locator('.acct-dialog').getByRole('button', {name:'Connect Sleeper',exact:true}).click();
+    await page.locator('.acct-dialog').getByRole('button', {name:'Create login',exact:true}).click();
     await page.waitForFunction(() => FF_ACCOUNT.S.error?.kind === 'not_found');
     assert.match(await page.locator('.acct-status').innerText(), /Check the spelling/);
     // Two overlapping requests, with the old username lookup released last.
@@ -170,6 +172,31 @@ const url = process.env.FF_TEST_URL || 'http://localhost:8793';
     assert.equal(await page.evaluate(id => LEAGUES.some(l => l.id === id && l.account_source === 'imported'), espnId), true, 'unlink restores the built-in snapshot on refresh');
     await connect('beta');
     assert.equal(await page.evaluate(id => LEAGUES.some(l => l.id === id), espnId), false, 'other accounts never receive Trevor imported league');
+    // Synced login: the profile picks the login on load, linked users merge into one view.
+    let stored = { sleeper: [{ user_id: '100', username: 'alpha' }, { user_id: '400', username: 'gamma' }] };
+    await page.route(`${url}/ff/api/profile`, route => {
+      const m = route.request().method();
+      if (m === 'PUT') stored = JSON.parse(route.request().postData());
+      if (m === 'DELETE') stored = null;
+      return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(m === 'GET' ? stored : { ok: true }) });
+    });
+    const until = async (fn, arg) => { for (;;) { try { if (await page.evaluate(fn, arg)) return; } catch {} await page.waitForTimeout(100); } };
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await until(() => FF_ACCOUNT.active?.user_id === '100' && FF_ACCOUNT.S.status === 'ok' && LEAGUES.some(l => l.id === 'gamma-lg'));
+    assert.equal(await page.evaluate(() => LEAGUES.find(l => l.id === 'gamma-lg').rosters.find(r => r.is_me).owner_id), '400', 'linked user owns their team in the merged view');
+    assert.equal(await page.evaluate(() => LEAGUES.filter(l => l.id === 'shared').length), 1);
+    await page.evaluate(() => FF_ACCOUNT.openPanel());
+    await page.locator('#acct-user').fill('beta');
+    await page.locator('.acct-dialog').getByRole('button', { name: 'Add user', exact: true }).click();
+    await until(() => FF_ACCOUNT.S.extras.length === 2 && FF_ACCOUNT.S.status === 'ok');
+    assert.deepEqual(stored.sleeper.map(u => u.user_id), ['100', '400', '200'], 'adding a user saves the profile');
+    await page.locator('.acct-users li', { hasText: 'gamma' }).getByRole('button', { name: 'Remove', exact: true }).click();
+    await until(() => FF_ACCOUNT.S.status === 'ok' && !LEAGUES.some(l => l.id === 'gamma-lg'));
+    assert.deepEqual(stored.sleeper.map(u => u.user_id), ['100', '200'], 'removing a user saves the profile');
+    await page.locator('.acct-dialog').getByRole('button', { name: 'Sign out everywhere', exact: true }).click();
+    await until(() => !FF_ACCOUNT.active && document.querySelector('.acct-dialog')?.open);
+    assert.equal(stored, null, 'sign out clears the synced login');
+    assert.ok(await page.locator('.acct-dialog').getByRole('button', { name: 'Create login', exact: true }).isVisible(), 'no login opens sign-up');
     assert.deepEqual(errors, [], 'account flows produce no app runtime errors');
     console.log('account-lifecycle: ok (race, isolation, refresh, ESPN link/persist/unlink, phone/desktop)');
   } catch (e) { console.error(e); throw e; }

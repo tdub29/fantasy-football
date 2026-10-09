@@ -18037,7 +18037,7 @@
           a.active ? `${a.active.username} has no available NFL leagues${a.S.snap ? ` for ${a.S.snap.season}` : ''}.` :
           'Connect your public Sleeper username to see your teams, standings and league tools.'),
         a.S.error ? h('p', { class: 'acct-status err', role: 'status' }, a.S.error.message) : null,
-        h('button', { class: 'primary', type: 'button', onclick: () => a.openPanel() }, a.active ? 'Account and refresh' : 'Connect Sleeper'),
+        h('button', { class: 'primary', type: 'button', onclick: () => a.openPanel() }, a.active ? 'Account and refresh' : 'Create login'),
         !a.active ? h('button', { type: 'button', onclick: () => a.openPanel('espn') }, 'Link ESPN league') : null,
         h('p', { class: 'muted' }, 'Shared player rankings remain available in the navigation.')));
       return;
