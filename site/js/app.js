@@ -2425,9 +2425,13 @@
         const fv = dyn ? startingStrength(me, lg, 4, true) : null;
         const ss = lg.projection_unavailable ? {} : rosterSurplusShortage(getRosterPlayers(me), lg);
         const needs = ['QB','RB','WR','TE'].map(p => ({ p, s: ss[p]?.surplus ?? 0 })).filter(x => x.s <= -1).sort((a, b) => a.s - b.s);
-        const rec = me.wins == null || me.losses == null ? 'Unavailable' : `${me.wins}-${me.losses}${me.ties ? '-' + me.ties : ''}`;
+        const winPct = r => ((r.wins ?? 0) + (r.ties ?? 0) / 2) / Math.max(1, (r.wins ?? 0) + (r.losses ?? 0) + (r.ties ?? 0));
+        // ponytail: place is win % then points for; league tiebreakers beyond PF are not modeled.
+        const place = 1 + lg.rosters.filter(r => winPct(r) > winPct(me) || (winPct(r) === winPct(me) && (r.fpts ?? 0) > (me.fpts ?? 0))).length;
+        const rec = me.wins == null || me.losses == null ? 'Unavailable' : `${me.wins}-${me.losses}${me.ties ? '-' + me.ties : ''} · ${place}${place % 100 >= 11 && place % 100 <= 13 ? 'th' : ['th','st','nd','rd'][place % 10] || 'th'}`;
         const format = lg.platform === 'espn' || lg.type === 0 ? 'Redraft' : lg.is_superflex ? 'Superflex' : lg.is_idp ? 'IDP' : '1QB';
-        return { lg, me, rank, pv, fv, dyn, format, stance: dyn ? rosterStance(me, lg) : null, need: lg.projection_unavailable ? 'Unavailable' : needs.map(n => n.p).join('/') || '·', rec };
+        const odds = { playoff: h('td', { class:'right tnum' }, '…'), title: h('td', { class:'right tnum' }, '…'), first: h('td', { class:'right tnum' }, '…') };
+        return { lg, me, rank, pv, fv, dyn, format, stance: dyn ? rosterStance(me, lg) : null, need: lg.projection_unavailable ? 'Unavailable' : needs.map(n => n.p).join('/') || '·', rec, odds };
       });
       main.appendChild(h('div', { class:'card leagues-table-card' },
         h('table', { class:'data leagues-table fit-num' },
@@ -2436,6 +2440,9 @@
             h('th', { class:'right', title:'Lineup rank: your best legal starting lineup against the league, picks excluded. The roster Snapshot also shows roster value rank, picks included.' }, 'Rank'),
             h('th', { class:'right', title:'Present Value: your best LEGAL starting lineup today (positions respected, taxi/IR/Out benched). Dynasty rows are KTC asset value (PV); redraft rows are season value over replacement (VOR), a different unit, so compare the rank, not the number.' }, 'PV / VOR'),
             h('th', { class:'right', title:'Future Value: the same lineup 4 years out, each player aged by his position curve, with owned picks folded in once they convert. A converted pick is discounted in its rookie year (0.75x, ramping to parity) because dynasty value prices a whole career, not one season.' }, 'FV'),
+            h('th', { class:'right', title:'Chance to make the playoffs, simulated on the real schedule and median games. Same numbers as the league Standings.' }, 'Playoff'),
+            h('th', { class:'right', title:'Chance to win the title.' }, 'Champ'),
+            h('th', { class:'right', title:'Chance your own pick lands 1.01 under the rookie-order rule of this league. Dynasty leagues only.' }, '1.01'),
             h('th', null, 'Stance'), h('th', null, 'Biggest Need'), h('th', null, ''))),
           h('tbody', null, ...rowsData.map(d => h('tr', { style:{ cursor:'pointer' }, onclick:()=>navigate(`#league/${d.lg.id}`) },
             h('td', null, h('div', { class:'name-cell' },
@@ -2451,6 +2458,7 @@
               d.pv == null ? 'Unavailable' : fmt.decimal(d.pv, 0),
               d.dyn || d.pv == null ? null : h('span', { class:'badge unit-vor' }, 'VOR')),
             h('td', { class:'right tnum', style:{ color:'var(--fg-3)' }, title: d.dyn ? null : 'Redraft league, no future value.' }, d.dyn ? fmt.decimal(d.fv, 0) : '·'),
+            d.odds.playoff, d.odds.title, d.odds.first,
             h('td', null, d.dyn
               ? h('span', { class:`badge stance-${d.stance}`, style:{ color: stanceTone[d.stance] } }, STANCE_LABEL[d.stance] || d.stance || 'Unavailable')
               : h('span', { class:'muted', title:'Redraft league, no rebuild or contend stance.' }, '·')),
@@ -2460,6 +2468,17 @@
           ))),
         )
       ));
+      // ponytail: the sims (Max PF included) are the slow part, so the table paints first and
+      // each league fills on its own tick. oddsFor caches, so the league pages reuse them.
+      rowsData.forEach(d => setTimeout(() => {
+        const f = d.lg.projection_unavailable ? { ok: false, reason: 'Projections unavailable.' } : standingsForecast(d.lg);
+        const o = f.ok && f.rows.get(d.me.roster_id);
+        for (const [k, el] of Object.entries(d.odds)) {
+          const show = o && (k !== 'first' || f.rookie);
+          el.textContent = show ? forecastPct(o[k]) : '·';
+          el.title = show ? '' : f.ok ? 'No rookie-order rule modeled here.' : f.reason || 'No forecast.';
+        }
+      }));
     }
     if (hiddenLgs.length) main.appendChild(h('p', { class:'source-note' }, 'Hidden: ',
       ...hiddenLgs.map(lg => h('button', { class:'ghost', title:'Show this league again', onclick:() => toggleLeagueHidden(lg) }, `${lg.name.trim()} ↺`))));
