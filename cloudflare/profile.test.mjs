@@ -27,7 +27,13 @@ assert.equal(await identity(req(await token(good, 'nope')), certs, now), null, '
 assert.equal(await identity(new Request('https://x/'), certs, now), null, 'no token');
 
 assert.deepEqual(clean({ sleeper: [{ user_id: '726629031964975104', username: 'tdub1329' }, { user_id: '726629031964975104', username: 'tdub1329' }] }),
-  { sleeper: [{ user_id: '726629031964975104', username: 'tdub1329' }] }, 'dedupes');
+  { sleeper: [{ user_id: '726629031964975104', username: 'tdub1329' }], espn: [] }, 'dedupes');
+const me = [{ user_id: '1', username: 'u' }], lgs = n => Array.from({ length: n }, (_, i) => ({ league_id: String(100 + i), season: 2026, team_id: 3 }));
+assert.deepEqual(clean({ sleeper: me, espn: lgs(1) }).espn, [{ league_id: '100', season: '2026', team_id: '3' }], 'espn kept as strings');
+assert.equal(clean({ sleeper: me, espn: lgs(9) }), null, 'max 8 espn leagues');
+assert.equal(clean({ sleeper: me, espn: [{ league_id: '1x', season: '2026', team_id: '1' }] }), null, 'numeric espn ids');
+assert.equal(clean({ sleeper: me, espn: {} }), null, 'espn must be a list');
+assert(JSON.stringify({ sleeper: Array(8).fill({ user_id: '9'.repeat(24), username: 'x'.repeat(40) }), espn: lgs(8) }).length < 4096, 'a full profile fits');
 assert.equal(clean({ sleeper: [] }), null);
 assert.equal(clean({ sleeper: [{ user_id: '1; drop', username: 'x' }] }), null);
 assert.equal(clean({ sleeper: Array.from({ length: 9 }, (_, i) => ({ user_id: String(i + 1), username: `u${i}` })) }), null);

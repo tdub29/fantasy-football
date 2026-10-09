@@ -142,6 +142,23 @@
         links.push({ ...preview.config, teamId:Number(teamId), snapshot }); save(links); preview = null; onChange(); status();
       } catch(e) { error = e.message; status(); }
     }
+    // The synced profile's list wins: drop leagues it no longer has, fetch the ones
+    // this browser lacks. onChange waits for the end so nothing saves a half list.
+    // ponytail: a fetch that fails here drops that league from the profile on the
+    // next save; add a retry if ESPN proves flaky.
+    async function adopt(entries) {
+      const scope = key(), want = new Map(entries.map(e => [String(e.league_id), e]));
+      save(read().filter(l => want.has(l.id)));
+      for (const [id, e] of want) {
+        if (read().some(l => l.id === id)) continue;
+        try {
+          const raw = await fetchLeague({ id, season: String(e.season) }, null);
+          if (scope !== key()) return;
+          if (!read().some(l => l.id === id)) save([...read(), { id, season: String(e.season), teamId: Number(e.team_id), snapshot: normalize(raw, e.team_id) }]);
+        } catch {}
+      }
+      onChange(); status();
+    }
     function unlink(id) { pending.get(id)?.abort(); save(read().filter(l => l.id !== id)); onChange(); status(); }
     async function refresh(force = false) {
       const scope = key(), rev = revision;
@@ -168,7 +185,7 @@
         win.FANTASY_SCHEDULE.leagues[l.id] = structuredClone(item.snapshot.schedule);
       }
     }
-    return { inspect, link, unlink, refresh, merge, reset, get links() { return read(); }, get preview() { return preview; }, get error() { return error; }, get busy() { return busy; } };
+    return { inspect, link, unlink, refresh, adopt, merge, reset, get links() { return read(); }, get preview() { return preview; }, get error() { return error; }, get busy() { return busy; } };
   }
   window.FF_ESPN = { create };
 })();

@@ -369,7 +369,8 @@
     // bundle (Fantasy Football/cloudflare/functions/ff/api/profile.js).
     // profileState: undefined = no sync here (file://, local server), else the
     // last list read or saved as JSON.
-    let profileState;
+    let profileState, espnSync = null;
+    const espnEntries = () => (E?.links || []).map(l => ({ league_id: l.id, season: String(l.season), team_id: String(l.teamId) }));
     async function profile(method, body) {
       if (!/^https?:$/.test(win.location.protocol)) return undefined;
       const ctrl = new AbortController(), t = win.setTimeout(() => ctrl.abort(), 10000);
@@ -380,22 +381,30 @@
       } catch { return undefined; } finally { win.clearTimeout(t); }
     }
     function saveProfile() {
-      if (profileState === undefined || !A.S.active) return;
-      const sleeper = [{ user_id: A.S.active.user_id, username: A.S.active.username }, ...A.S.extras];
-      if (JSON.stringify(sleeper) === profileState) return;
-      profileState = JSON.stringify(sleeper);
-      profile('PUT', { sleeper });
+      if (profileState === undefined || !A.S.active || espnSync) return;
+      const body = { sleeper: [{ user_id: A.S.active.user_id, username: A.S.active.username }, ...A.S.extras], espn: espnEntries() };
+      if (JSON.stringify(body) === profileState) return;
+      profileState = JSON.stringify(body);
+      profile('PUT', body);
     }
     // The profile wins over this browser's account, so every device shows the same login.
     async function loadProfile() {
       const p = await profile('GET');
       if (p === undefined) return;
       const list = p?.sleeper || [];
-      profileState = JSON.stringify(list);
+      profileState = JSON.stringify({ sleeper: list, espn: p?.espn || [] });
       if (!list.length) { if (A.S.active) saveProfile(); else openPanel(); return; }
       const [primary, ...extras] = list;
       if (A.S.active?.user_id !== primary.user_id) A.connect(primary.user_id, extras);
-      else if (JSON.stringify(A.S.extras) !== JSON.stringify(extras)) A.setExtras(extras);
+      else {
+        // ESPN links follow the profile too. A profile saved before ESPN sync has
+        // no list, so this browser's links fill it instead. espnSync holds saves
+        // until the adopted leagues land, so no half list overwrites the profile.
+        if (Array.isArray(p.espn)) espnSync = E.adopt(p.espn);
+        if (JSON.stringify(A.S.extras) !== JSON.stringify(extras)) A.setExtras(extras);
+        await espnSync; espnSync = null;
+        saveProfile();
+      }
       renderPanel();
     }
     async function signOut() {
@@ -544,7 +553,7 @@
       season:() => A.S.snap?.season || win.WEEKLY_RANKINGS?.season || new Date().getFullYear(),
       sharedSeason:() => win.WEEKLY_RANKINGS?.season,
       onStatus:renderPanel,
-      onChange:() => { configure(A.S.snap); applyGlobals(win, A.S.active, A.S.snap); E.merge(win); win.dispatchEvent(new win.CustomEvent('ff-account-data')); },
+      onChange:() => { configure(A.S.snap); applyGlobals(win, A.S.active, A.S.snap); E.merge(win); saveProfile(); win.dispatchEvent(new win.CustomEvent('ff-account-data')); },
     });
     // Only Trevor's stable ID may migrate the legacy personal keys. Never read
     // these unscoped keys for another user, even in one of the same leagues.

@@ -4,8 +4,8 @@
 // with a Sleeper username follows the person to every device they open the app
 // on. Stored in the bundle's D1 database (binding DB) in its own table.
 //
-//   GET    -> 200 {sleeper:[{user_id, username}], updated_at} or null
-//   PUT    {sleeper:[...]} -> 200 {ok, updated_at}
+//   GET    -> 200 {sleeper:[{user_id, username}], espn:[{league_id, season, team_id}], updated_at} or null
+//   PUT    {sleeper:[...], espn:[...]} -> 200 {ok, updated_at}   (espn optional)
 //   DELETE -> 200 {ok}
 //
 // Identity comes from the Access JWT, verified here rather than trusted from a
@@ -58,7 +58,15 @@ export function clean(body) {
     if (!/^\d{1,24}$/.test(user_id) || !/^[A-Za-z0-9_.-]{1,40}$/.test(username)) return null;
     if (!out.some(x => x.user_id === user_id)) out.push({ user_id, username });
   }
-  return { sleeper: out };
+  const espn = body.espn === undefined ? [] : body.espn;
+  if (!Array.isArray(espn) || espn.length > MAX_USERS) return null;
+  const leagues = [];
+  for (const l of espn) {
+    const league_id = String(l?.league_id ?? ''), season = String(l?.season ?? ''), team_id = String(l?.team_id ?? '');
+    if (!/^\d{1,12}$/.test(league_id) || !/^20\d{2}$/.test(season) || !/^\d{1,4}$/.test(team_id)) return null;
+    if (!leagues.some(x => x.league_id === league_id)) leagues.push({ league_id, season, team_id });
+  }
+  return { sleeper: out, espn: leagues };
 }
 
 async function table(db) {
@@ -82,7 +90,7 @@ export async function onRequest({ request, env }) {
     if (text.length > 4096) return json({ error: 'Profile too large' }, 413);
     let profile;
     try { profile = clean(JSON.parse(text)); } catch { profile = null; }
-    if (!profile) return json({ error: `Expected {sleeper:[{user_id, username}]}, 1 to ${MAX_USERS} users` }, 400);
+    if (!profile) return json({ error: `Expected {sleeper:[{user_id, username}], espn:[{league_id, season, team_id}]}, 1 to ${MAX_USERS} users, up to ${MAX_USERS} leagues` }, 400);
     const updated_at = new Date().toISOString();
     await env.DB.prepare(`INSERT INTO ff_profiles (email, data, updated_at) VALUES (?, ?, ?)
       ON CONFLICT(email) DO UPDATE SET data = excluded.data, updated_at = excluded.updated_at`)
