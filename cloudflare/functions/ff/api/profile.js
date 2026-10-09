@@ -14,8 +14,11 @@
 // functions root by .agents/scripts/deploy-phone-apps.ps1.
 
 const TEAM = 'https://damp-breeze-a843.cloudflareaccess.com';
+// The trevor-apps Access application, read from its login redirect on 2026-10-09.
+// Pinning it stops a token minted by another app in the team being replayed here.
+const AUD = '523ac8bb413c7b6afea53c172776babeb24183f245144278f9b7cc17f4a883a3';
 const MAX_USERS = 8;
-let certs = null;
+let certs = [], certsAt = 0;
 
 const json = (body, status = 200) => new Response(JSON.stringify(body), {
   status, headers: { 'content-type': 'application/json', 'cache-control': 'no-store' },
@@ -23,7 +26,7 @@ const json = (body, status = 200) => new Response(JSON.stringify(body), {
 const b64 = s => Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g, '/') + '='.repeat((4 - s.length % 4) % 4)), c => c.charCodeAt(0));
 const part = s => JSON.parse(new TextDecoder().decode(b64(s)));
 
-export async function identity(request, fetchFn = fetch, now = Date.now()) {
+export async function identity(request, fetchFn = fetch, now = Date.now(), aud = AUD) {
   const cookie = (request.headers.get('cookie') || '').match(/(?:^|;\s*)CF_Authorization=([^;]+)/);
   const token = request.headers.get('cf-access-jwt-assertion') || cookie?.[1];
   if (!token) return null;
@@ -31,9 +34,12 @@ export async function identity(request, fetchFn = fetch, now = Date.now()) {
     const [h, p, s] = token.split('.');
     const header = part(h), payload = part(p);
     if (header.alg !== 'RS256' || payload.iss !== TEAM || !(payload.exp * 1000 > now) || !payload.email) return null;
-    let jwk = certs?.find(k => k.kid === header.kid);
-    if (!jwk) {   // keys rotate; refetch once on an unknown kid
-      certs = (await (await fetchFn(`${TEAM}/cdn-cgi/access/certs`)).json()).keys || [];
+    if (![].concat(payload.aud).includes(aud)) return null;
+    let jwk = certs.find(k => k.kid === header.kid);
+    if (!jwk && now - certsAt > 60000) {   // keys rotate; refetch at most once a minute
+      certsAt = now;
+      const keys = (await (await fetchFn(`${TEAM}/cdn-cgi/access/certs`)).json()).keys;
+      if (Array.isArray(keys) && keys.length) certs = keys;
       jwk = certs.find(k => k.kid === header.kid);
     }
     if (!jwk) return null;

@@ -14,11 +14,12 @@ async function token(payload, kid = 'k1') {
   return `${head}.${body}.${Buffer.from(sig).toString('base64url')}`;
 }
 const req = (t, viaCookie) => new Request('https://x/ff/api/profile', { headers: viaCookie ? { cookie: `a=1; CF_Authorization=${t}` } : { 'cf-access-jwt-assertion': t } });
-const now = Date.now(), good = { iss: TEAM, email: 'Me@Example.com', exp: now / 1000 + 60 };
+const now = Date.now(), good = { iss: TEAM, aud: ['523ac8bb413c7b6afea53c172776babeb24183f245144278f9b7cc17f4a883a3'], email: 'Me@Example.com', exp: now / 1000 + 60 };
 
 assert.equal(await identity(req(await token(good)), certs, now), 'me@example.com');
 assert.equal(await identity(req(await token(good), true), certs, now), 'me@example.com', 'cookie works');
 assert.equal(await identity(req(await token({ ...good, iss: 'https://evil.cloudflareaccess.com' })), certs, now), null, 'other team');
+assert.equal(await identity(req(await token({ ...good, aud: ['another-app'] })), certs, now), null, 'other Access app');
 assert.equal(await identity(req(await token({ ...good, exp: now / 1000 - 1 })), certs, now), null, 'expired');
 const t = await token(good), [h, , s] = t.split('.');
 assert.equal(await identity(req(`${h}.${enc({ ...good, email: 'other@x.com' })}.${s}`), certs, now), null, 'tampered payload');
