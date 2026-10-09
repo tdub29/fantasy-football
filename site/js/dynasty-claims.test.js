@@ -50,7 +50,9 @@ for (const pos of ['QB', 'RB', 'WR', 'TE']) {
   const f = free.filter(p => p.pos === pos).sort((a, b) => pts(b) - pts(a));
   bestFree[pos] = f[0] ? pts(f[0]) : 0;
 }
-near(bestFree.QB, 196, 45, 'best free-agent QB points');
+// One-sided: only a fall inverts the doctrine. A dropped starter (Malik Willis, 257,
+// cut in taco 2026-10-09; next best free QB 97) pushes it up until the waiver run.
+assert(bestFree.QB >= 196 - 45, `best free-agent QB points: got ${bestFree.QB}, doctrine floor is 151`);
 assert(bestFree.QB > 150,
   `best free QB fell to ${bestFree.QB}: "keep exactly one QB" assumes a startable QB is free`);
 assert(bestFree.TE > bestFree.RB,

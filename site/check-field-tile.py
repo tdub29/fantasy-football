@@ -97,6 +97,8 @@ def main() -> int:
         problems.append(f"hash row at y={min(hash_rows)} overlaps the numeral band, which ends at y=52")
 
     problems += phone_problems(s, nums)
+    if not re.search(r"body \{\s*background: var\(--dither\), var\(--grad-turf\);[^}]*isolation: isolate;", s):
+        problems.append("body lost isolation: isolate; html's own background then lets body's turf cover the field")
 
     if problems:
         print("FAIL: the turf field is broken")

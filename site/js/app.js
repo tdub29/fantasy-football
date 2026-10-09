@@ -701,6 +701,7 @@
           wins: s.wins || 0, losses: s.losses || 0, ties: s.ties || 0,
           fpts: (s.fpts || 0) + (s.fpts_decimal || 0) / 100,
           fpts_against: (s.fpts_against || 0) + (s.fpts_against_decimal || 0) / 100,
+          ppts: s.ppts == null ? null : s.ppts + (s.ppts_decimal || 0) / 100,
           waiver_budget_used: s.waiver_budget_used || 0, waiver_position: s.waiver_position,
           opponent_roster_id: L.opp[r.roster_id] ?? null });
       }
@@ -2907,9 +2908,10 @@
     const sortState = { key:'pv', dir:'desc' };
     const sortBar = h('div', { class:'standings-sort', role:'group', 'aria-label':'Sort standings' });
     // Redraft has no future lineup, so "future" would sort by the same number.
+    const projMaxPf = forecast.ok && [...forecast.rows.values()].every(f => Number.isFinite(f.maxPf));
     const sortOptions = [
       ...(lgDynasty ? [['pv', 'Strength now'], ['fv', 'Future strength']] : [['pv', 'Strength']]),
-      ['record', 'Record'], ...(forecast.ok ? [['projected', 'Projected wins'], ['playoff', 'Playoff chance'], ...(forecast.byes ? [['bye', 'Bye chance']] : [])] : []), ['pf', 'Points for'], ['diff', 'Point differential'], ['pa', 'Points against'],
+      ['record', 'Record'], ...(forecast.ok ? [['projected', 'Projected wins'], ['playoff', 'Playoff chance'], ...(forecast.byes ? [['bye', 'Bye chance']] : []), ['title', 'Champ chance'], ...(forecast.rookie ? [['first', '1.01 chance']] : []), ...(projMaxPf ? [['projMaxPf', 'Projected Max PF']] : [])] : []), ['pf', 'Points for'], ...(lg.rosters.some(x => Number.isFinite(x.ppts)) ? [['maxPf', 'Max PF']] : []), ['diff', 'Point differential'], ['pa', 'Points against'],
     ];
     const sortSelect = h('select', { 'aria-label':'Sort teams by' }, ...sortOptions.map(([key, label]) =>
       h('option', { value:key, selected:key === sortState.key ? '' : null }, label)));
@@ -2971,6 +2973,10 @@
           projected:forecast.rows?.get(r.roster_id)?.expW,
           playoff:forecast.rows?.get(r.roster_id)?.playoff,
           bye:forecast.rows?.get(r.roster_id)?.bye,
+          title:forecast.rows?.get(r.roster_id)?.title,
+          first:forecast.rows?.get(r.roster_id)?.first,
+          projMaxPf:projMaxPf ? forecast.rows.get(r.roster_id).maxPf : 0,
+          maxPf:r.ppts ?? 0,
           record:((r.wins ?? 0) + ((r.ties ?? 0) * 0.5)) / Math.max(1, (r.wins ?? 0) + (r.losses ?? 0) + (r.ties ?? 0)),
           pf:r.fpts ?? 0,
           pa:r.fpts_against ?? 0,
@@ -2996,6 +3002,9 @@
             r.fpts != null ? h('span', { class:'seg ytd', title:'Points scored, season to date' },
               h('span', { class:'tnum ytd-val' }, fmt.decimal(r.fpts, 0)),
               h('span', { class:'ytd-lab' }, 'PF')) : null,
+            Number.isFinite(r.ppts) ? h('span', { class:'seg ytd', title:'Max PF: points from the best possible lineup each week, bench included, season to date' },
+              h('span', { class:'tnum ytd-val' }, fmt.decimal(r.ppts, 0)),
+              h('span', { class:'ytd-lab' }, 'MAX PF')) : null,
             r.fpts_against != null ? h('span', { class:'seg ytd', title:'Points allowed, season to date' },
               h('span', { class:'tnum ytd-val' }, fmt.decimal(r.fpts_against, 0)),
               h('span', { class:'ytd-lab' }, 'PA')) : null,
@@ -3026,8 +3035,11 @@
         h('div', { class:'standings-forecast', 'aria-label':'Season forecast' },
           ...[['Projected W-L-T', forecast.ok ? (() => { const f = forecast.rows.get(r.roster_id); return [f.expW, f.expL, f.expT].map(x => x.toFixed(1)).join('-'); })() : 'Unavailable'],
             ['Playoff %', forecast.ok ? forecastPct(forecast.rows.get(r.roster_id).playoff) : 'Unavailable'],
-            ['Bye %', forecast.ok ? (forecast.byes ? forecastPct(forecast.rows.get(r.roster_id).bye) : 'N/A') : 'Unavailable']].map(([label, value]) =>
-              h('div', null, h('span', { class:'forecast-label' }, label), h('span', { class:'forecast-value tnum' }, value))))
+            ['Bye %', forecast.ok ? (forecast.byes ? forecastPct(forecast.rows.get(r.roster_id).bye) : 'N/A') : 'Unavailable'],
+            ['Champ %', forecast.ok ? forecastPct(forecast.rows.get(r.roster_id).title) : 'Unavailable', 'Chance to win the title, same simulated seasons as Playoff %.'],
+            ...(projMaxPf ? [['Proj Max PF', fmt.decimal(forecast.rows.get(r.roster_id).maxPf, 0), 'Projected final Max PF: season-to-date Max PF plus the best possible lineup from the whole roster, bench included, in every remaining simulated week, scaled to the actual Max PF pace of this league so far (mean of the simulated seasons).']] : []),
+            ...(lgDynasty ? [['1.01 %', !forecast.ok ? 'Unavailable' : forecast.rookie ? forecastPct(forecast.rows.get(r.roster_id).first) : 'n/a', rookieOrderNote(lg, r, forecast.ok && forecast.rookie)]] : [])].map(([label, value, title]) =>
+              h('div', { title }, h('span', { class:'forecast-label' }, label), h('span', { class:'forecast-value tnum' }, value))))
       );
       standings.appendChild(strengthRow);
     });
@@ -12660,7 +12672,7 @@
     if (ODDS_CACHE.has(key)) return ODDS_CACHE.get(key);
     const me = (lg.rosters || []).find(r => r.is_me);
     const wi = (whatIf.length && me) ? { [me.roster_id]: { add: whatIf, drop: [] } } : null;
-    const res = championshipOdds(lg, { sims, src, whatIf: wi });
+    const res = championshipOdds(lg, { sims, src, whatIf: wi, withMaxPf: true });
     ODDS_CACHE.set(key, res);
     return res;
   }
@@ -13041,7 +13053,7 @@
         weekly: weekly?.get(pid) || null,
         startOut: weekly?.has(pid) ? 0 : startOut,
         questionable: yearsOut ? false : st === 'Questionable',
-        mult: 1, bye: 0, outUntil: 0, v: mean, key: 0, e: 0,
+        mult: 1, bye: 0, outUntil: 0, v: mean, key: 0, e: 0, got: 0, mv: 0, stamp: 0,
       });
     }
     for (const r of (rookies || [])) {
@@ -13052,7 +13064,7 @@
         sd: mean * (SIM.cv[r.pos] != null ? SIM.cv[r.pos] : 0.55),
         hazard: injuryHazard(r.pos, 22 + Math.max(0, yearsOut - 1)),
         startOut: 0, questionable: false,
-        mult: 1, bye: 0, outUntil: 0, v: mean, key: 0, e: 0,
+        mult: 1, bye: 0, outUntil: 0, v: mean, key: 0, e: 0, got: 0, mv: 0, stamp: 0,
       });
     }
     // The order every simulated week's lineup is set in.
@@ -13082,9 +13094,12 @@
   // One team's week: decide availability, set the lineup on the PROJECTION
   // (`mean`, what a manager can know), then sample what those starters actually
   // did. Bench outcomes are never drawn, so a body who does not start is worth
-  // only the weeks he fills in for someone out.
+  // only the weeks he fills in for someone out. Pass `max` to also get the
+  // week's Max PF in max.pts: every available body scored (a bench player gets
+  // the same draw he would have had starting), best legal lineup in hindsight.
   // `teamKey` keys the fantasy team's own week shock.
-  function simWeek(pool, slots, week, sim, teamKey, firstWeek = 1) {
+  let simWeekStamp = 0;   // marks this call's starters for the Max PF pass
+  function simWeek(pool, slots, week, sim, teamKey, firstWeek = 1, max = null) {
     const avail = [], at = 8 * week + 8;   // this week's draw slots
     for (const a of pool) {
       if (a.weekly && a.weekly[week - 1] == null) continue;
@@ -13125,10 +13140,22 @@
       const qb = linked && linked.get(s);
       const c = qb ? SIM.stackCorr[s.pos] : 0;
       const noise = qb ? c * qb.e + Math.sqrt(1 - c * c) * s.e : s.e;
-      total += Math.max(0, s.v + noise * s.sd * s.mult);
+      s.got = Math.max(0, s.v + noise * s.sd * s.mult);
+      total += s.got;
     }
     // Correlated fantasy-team week shock: game scripts, weather, blowouts.
-    return Math.max(0, total * (1 + simNormal(teamKey, sim, at + 5) * SIM.teamShockCv));
+    const shock = Math.max(0, 1 + simNormal(teamKey, sim, at + 5) * SIM.teamShockCv);
+    if (max) {
+      const stamp = ++simWeekStamp;
+      for (const s of lineup) s.stamp = stamp;
+      for (const a of avail) a.mv = a.stamp === stamp ? a.got : Math.max(0, a.v + simNormal(a.key, sim, at + 3) * a.sd * a.mult);
+      avail.sort((a, b) => b.mv - a.mv);
+      // ponytail: greedy fill (best score first, dedicated slot before flex) is
+      // optimal for QB/RB/WR/TE/K/DEF plus FLEX/SUPER_FLEX; exotic slot mixes may undershoot.
+      const best = (slots.length ? fillLineup(avail, slots, true) : avail.slice(0, 9)).reduce((t, a) => t + a.mv, 0);
+      max.pts = Math.max(total, best) * shock;
+    }
+    return total * shock;
   }
 
   // Fallback schedule: each week pair the teams up at random. championshipOdds
@@ -13358,7 +13385,15 @@
   // rest-of-season lines in redraft (what its lineup and verdict read), the
   // league-scored season blend in dynasty. The Trade Lab, the Trade Finder and
   // trade-sim.js all take the default, so they price one trade the same way.
-  function championshipOdds(lg, { sims = 4000, src = null, whatIf = null, seed = 20260807, yearsOut = 0, strengthRanks = null, champions = null } = {}) {
+  // Rookie-draft 1.01 rule per league (Trevor confirmed 2026-09-30, docs/FRAMEWORKS.md).
+  // Keyed by this season's Sleeper id, so roll the ids forward with LEAGUES in
+  // build_site_data.py. Any other dynasty league gets the record default, labelled as such.
+  const ROOKIE_ORDER = { '1314860638501076992': 'maxpf', '1341184676601028608': 'lottery' };
+  const LOTTERY_WEIGHTS = [0.4, 0.3, 0.2, 0.1];
+  function rookieOrderRule(lg) {
+    return isDynastyLeague(lg) ? (ROOKIE_ORDER[String(lg.id)] || 'record') : null;
+  }
+  function championshipOdds(lg, { sims = 4000, src = null, whatIf = null, seed = 20260807, yearsOut = 0, strengthRanks = null, champions = null, withMaxPf = false } = {}) {
     const rosters = lg.rosters || [];
     const n = rosters.length;
     if (!n) return [];
@@ -13377,7 +13412,7 @@
       const base = { ...r, players: keep, taxi: [], reserve: [] };
       return simPool(base, lg, src, wi?.add, yearsOut, extraPoints.get(r.roster_id));
     });
-    const stat = rosters.map(() => ({ playoff: 0, bye: 0, final: 0, title: 0, wins: 0, ties: 0, pts: 0 }));
+    const stat = rosters.map(() => ({ playoff: 0, bye: 0, final: 0, title: 0, first: 0, wins: 0, ties: 0, pts: 0, maxPf: 0 }));
     const rnd = mulberry32(seed);   // the fallback random schedule only
     // A converted pick is named by its label, which two rosters can share.
     pools.forEach((pool, i) => { for (const a of pool) a.key = simKey(seed, a.pid.startsWith('pick:') ? `${rosters[i].roster_id}:${a.pid}` : a.pid); });
@@ -13394,6 +13429,18 @@
     const games = rosters.reduce((s, r) => s + (r.wins || 0) + (r.losses || 0) + (r.ties || 0), 0);
     const played = weeksIn && games === n * weeksIn * (median ? 2 : 1) ? weeksIn : 0;
     const first = played + 1;
+    // Max PF = accrued Max PF plus every remaining week's hindsight-best lineup.
+    // The projections behind those lineups run under real scoring (2026 W4: 121 a
+    // week projected against 154 actual in The League), so the simulated weeks are
+    // scaled to the league's own Max PF pace once the sims are in (maxPfScale).
+    // Left raw, a played week counted about 1.4 simulated ones in the 1.01 race.
+    // Opt-in: the bench pass nearly doubles a run, and only standings show it.
+    // Without accrued ppts on every roster the rule cannot be modeled, so no number.
+    const hasMaxPf = withMaxPf && !yearsOut && (!played || rosters.every(r => Number.isFinite(r.ppts)));
+    const mx = rosters.map(() => ({ pts: 0 })), outs = [], futs = [];
+    let rookie = rookieOrderRule(lg);
+    if (rookie === 'maxpf' && !hasMaxPf) rookie = null;
+    if (rookie === 'lottery' && n - cfg.teams !== LOTTERY_WEIGHTS.length) rookie = null;
     const idxOf = new Map(rosters.map((r, i) => [r.roster_id, i]));
     const pairsByWeek = [];
     for (let w = first; w <= cfg.regularWeeks && !yearsOut; w++) {
@@ -13411,11 +13458,12 @@
       const wins = rosters.map(r => played ? (r.wins || 0) + (r.ties || 0) / 2 : 0);
       const ties = rosters.map(r => played ? (r.ties || 0) : 0);
       const pts = rosters.map(r => played ? (r.fpts || 0) : 0);
+      const maxFut = rosters.map(() => 0);
       const against = rosters.map(r => played ? (r.fpts_against || 0) : 0);
       for (const pool of pools) rollSeason(pool, s, played);
       for (let w = first; w <= cfg.regularWeeks; w++) {
-        const scores = pools.map((p, i) => simWeek(p, slots, w, s, teamKeys[i], first));
-        for (let i = 0; i < n; i++) pts[i] += scores[i];
+        const scores = pools.map((p, i) => simWeek(p, slots, w, s, teamKeys[i], first, hasMaxPf ? mx[i] : null));
+        for (let i = 0; i < n; i++) { pts[i] += scores[i]; if (hasMaxPf) maxFut[i] += mx[i].pts; }
         for (const [a, b] of (pairsByWeek[w] || randomPairing(n, rnd))) {
           against[a] += scores[b]; against[b] += scores[a];
           if (scores[a] > scores[b]) wins[a]++; else if (scores[b] > scores[a]) wins[b]++;
@@ -13436,8 +13484,12 @@
       const seeded = Array.from({ length: n }, (_, i) => i)
         .sort((a, b) => (wins[b] - wins[a]) || (pts[b] - pts[a]) || (against[b] - against[a]) || (coin[b] - coin[a]));
       const field = seeded.slice(0, cfg.teams);
-      for (let i = 0; i < n; i++) { stat[i].wins += wins[i]; stat[i].ties += ties[i]; stat[i].pts += pts[i]; }
+      for (let i = 0; i < n; i++) { stat[i].wins += wins[i]; stat[i].ties += ties[i]; stat[i].pts += pts[i]; if (hasMaxPf) stat[i].maxPf += maxFut[i]; }
       for (const i of field) stat[i].playoff++;
+      // 1.01 goes to a non-playoff team (playoff order is not overridden).
+      const out = seeded.slice(cfg.teams);
+      if (rookie === 'lottery') out.reverse().forEach((i, k) => { stat[i].first += LOTTERY_WEIGHTS[k]; });
+      else if (rookie === 'maxpf') { outs.push(out); futs.push(maxFut); } else if (rookie && out.length) stat[out[out.length - 1]].first++;
 
       // Bracket: byes to the seeds above the nearest power of two, then re-seeded
       // single elimination, one week per round.
@@ -13470,15 +13522,23 @@
       if (champions) champions.push(rosters[alive[0]].roster_id);
     }
 
+    const left = cfg.regularWeeks - played;
+    const simPace = stat.reduce((t, x) => t + x.maxPf, 0) / sims / n / Math.max(1, left);
+    // ponytail: preseason has no pace to match, so it runs unscaled (and short).
+    const maxPfScale = hasMaxPf && played && left && simPace > 0
+      ? rosters.reduce((t, r) => t + r.ppts, 0) / n / played / simPace : 1;
+    const maxPf = (i, fut) => (played ? rosters[i].ppts : 0) + maxPfScale * fut;
+    outs.forEach((out, k) => { if (out.length) stat[out.reduce((a, b) => maxPf(b, futs[k][b]) < maxPf(a, futs[k][a]) ? b : a)].first++; });
     const res = rosters.map((r, i) => ({
       roster: r, rosterId: r.roster_id, teamName: r.team_name, isMe: !!r.is_me,
       playoff: stat[i].playoff / sims, bye: stat[i].bye / sims,
-      final: stat[i].final / sims, title: stat[i].title / sims,
+      final: stat[i].final / sims, title: stat[i].title / sims, first: rookie ? stat[i].first / sims : null,
       expWins: stat[i].wins / sims, expTies: stat[i].ties / sims, expPts: stat[i].pts / sims,
+      expMaxPf: hasMaxPf ? maxPf(i, stat[i].maxPf / sims) : null,
     })).sort((a, b) => b.title - a.title);
     // What the run assumed, for the standings forecast's honesty checks. An array
     // property, so every existing caller that maps/sorts the rows is unaffected.
-    res.meta = { sims, src, played, first, regularWeeks: cfg.regularWeeks, median, teams: cfg.teams,
+    res.meta = { sims, src, played, first, rookie, maxPfScale, regularWeeks: cfg.regularWeeks, median, teams: cfg.teams,
       byes: (1 << Math.ceil(Math.log2(cfg.teams))) - cfg.teams,
       scheduledWeeks: pairsByWeek.filter(Boolean).length };
     return res;
@@ -13505,9 +13565,24 @@
       const ties = o.expTies;
       rows.set(o.rosterId, { expW: o.expWins - ties / 2,
         expL: fw.regularWeeks * fw.perWeek - o.expWins - ties / 2, expT: ties,
-        playoff: o.playoff, bye: meta.byes ? o.bye : null });
+        playoff: o.playoff, bye: meta.byes ? o.bye : null, title: o.title, first: o.first, maxPf: o.expMaxPf });
     }
-    return { ...fw, sims, src, byes: meta.byes, rows };
+    return { ...fw, sims, src, byes: meta.byes, rookie: meta.rookie, rows };
+  }
+  // Tooltip for the 1.01 column: the rule, its unconfirmed parts, and who holds the pick.
+  function rookieOrderNote(lg, r, modeled) {
+    const rule = rookieOrderRule(lg);
+    const base = {
+      maxpf: 'League rule: lowest Max PF among non-playoff teams picks first. Max PF here is accrued potential points plus the best possible lineup, bench included, in every remaining simulated week, scaled to the actual Max PF pace of the league. Playoff spots come from the real schedule and median games. Ties and IR handling unconfirmed.',
+      lottery: 'League rule: bottom-four 40/30/20/10 lottery. Assumes the four non-playoff teams, weighted worst record first; weight assignment unconfirmed.',
+      record: 'No rookie-order rule on file for this league. Assumes worst record among non-playoff teams, then lowest points for.',
+    }[rule];
+    const why = modeled ? '' : rule === 'maxpf' ? ' Not shown: Max PF is missing from this data.'
+      : rule === 'lottery' ? ' Not shown: the lottery needs exactly four non-playoff teams.' : '';
+    const next = String(Number(lg.season) + 1);
+    const tp = (lg.traded_picks || []).find(p => String(p.season) === next && p.round === 1 && p.roster_id === r.roster_id && p.owner_id !== r.roster_id);
+    const holder = tp && (lg.rosters.find(x => x.roster_id === tp.owner_id)?.team_name || `Roster ${tp.owner_id}`);
+    return `${base}${why}${holder ? ` This team's ${next} R1 belongs to ${holder}.` : ''}`;
   }
   function forecastPct(p) {
     if (!Number.isFinite(p)) return 'Unavailable';

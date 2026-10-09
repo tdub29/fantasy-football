@@ -316,6 +316,8 @@ for name, lid, buy_in in LEAGUES:
             "ties":   s.get("ties", 0),
             "fpts":   s.get("fpts", 0) + (s.get("fpts_decimal", 0)/100.0),
             "fpts_against": s.get("fpts_against", 0) + (s.get("fpts_against_decimal", 0)/100.0),
+            # Max PF (Sleeper "potential points"): The League's rookie draft orders by it.
+            "ppts": None if s.get("ppts") is None else s["ppts"] + (s.get("ppts_decimal", 0)/100.0),
             # FAAB spent to date. Sleeper reports what was USED, not what is left,
             # so the league budget has to come along too or the number is unreadable.
             # Dropped until 2026-09-17, which is why the waiver panel could show the

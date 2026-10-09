@@ -3399,6 +3399,10 @@ tr.dragging { opacity: 0.55; background: var(--bg-3) !important; }
 body {
   background: var(--dither), var(--grad-turf);
   background-attachment: fixed;
+  /* html has its own background, so body paints this turf as an ordinary block,
+     on top of the z-index:-1 field and logo layers. Isolating body puts those
+     layers back between its turf and its content; without it the field ships flat green. */
+  isolation: isolate;
 }
 /* Halftone dot mesh plus yardline chalk, the two textures the reference uses on
    its field. Fixed and non-interactive so it never scrolls under a sticky
@@ -6250,7 +6254,7 @@ table.data.prm-table .name-cell { flex-direction: column; align-items: flex-star
 
 /* Forecast remains a single aligned row of labeled values on phones. */
 .standings-forecast-help, .sos-method { font-size: .8rem; margin: 8px 0; }
-.standings-forecast { grid-column: 2 / -1; display: grid; grid-template-columns: minmax(0, 1.5fr) repeat(2, minmax(0, 1fr)); gap: 8px; border-top: 1px solid var(--fg-3); padding-top: 8px; }
+.standings-forecast { grid-column: 2 / -1; display: grid; grid-auto-flow: column; grid-template-columns: minmax(0, 1.5fr); grid-auto-columns: minmax(0, 1fr); gap: 8px; border-top: 1px solid var(--fg-3); padding-top: 8px; }
 .standings-forecast > div { min-width: 0; display: flex; flex-direction: column; align-items: flex-end; }
 .forecast-label { font-size: .65rem; color: var(--fg-2); }
 .forecast-value { font-size: .85rem; font-weight: 800; overflow-wrap: anywhere; }
