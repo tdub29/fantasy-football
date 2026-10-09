@@ -112,6 +112,51 @@ together** via `invalidateRankIndex()`:
 
 If you add another league-derived cache, add it to `invalidateRankIndex`.
 
+### Public Sleeper account selection
+
+`site/js/account.js` runs before the app and supplies `LEAGUES`, `MY_USER_ID`
+and `FANTASY_SCHEDULE` for the chosen public username. This is a read-only
+selector, with no credentials or ownership verification. No selection means
+empty account views, while shared rankings stay available.
+
+The remembered selection uses stable Sleeper user ID. Snapshots are versioned
+and keyed by user ID and NFL season; each contains league IDs, lineup rules and
+scoring settings. All app storage keys pass through `FF_ACCOUNT.storageKey`.
+Marks retain their league-and-player keys inside the account namespace. Only
+the build owner's stable ID can migrate his older unscoped personal keys.
+Account changes abort requests and reload to discard the previous account's
+memory. A generation guard also rejects late responses.
+
+Account data refreshes on each visit, after 15 minutes on focus, every 30
+minutes while visible, and manually. Failed automatic refreshes have a
+one-minute cooldown; requests retry at most twice and time out after 12
+seconds. Leagues and matchup weeks load with bounded concurrency. A closed
+app catches up when opened; browser timers do not run while it is closed.
+This static app needs no per-user server job. Shared source builds keep their
+own freshness timestamps and are not duplicated by the account loader.
+
+The owner's same-season imported ESPN league remains a separately dated
+snapshot. Sleeper refreshes never claim to refresh ESPN, and other accounts
+never receive that league. Missing optional data is listed explicitly; unknown
+buy-ins do not produce dollar-weighted results, and missing draft/pick feeds
+do not manufacture an owned-picks slate.
+
+`site/js/espn-account.js` links public ESPN football league URLs or numeric
+IDs after the viewer selects a team. Direct browser requests omit credentials;
+private leagues require making the league public in ESPN. No password, cookie
+collection or public proxy is used. Links persist under the stable Sleeper ID,
+or a separate disconnected browser persona. Selecting Sleeper never adopts
+the disconnected persona's leagues. Up to eight links refresh with the same
+visit/focus/manual/visible cadence, one ESPN league request at a time.
+
+Linked ESPN snapshots replace an imported league with the same ID. Unlinking
+also records a per-persona exclusion so the build's imported snapshot does not
+reappear on refresh. Rosters resolve against the existing shared player data;
+unmatched names and unsupported lineup/scoring rules stay explicit. Original
+ESPN scoring, schedule settings and status are retained. The shared weekly
+model cannot represent arbitrary ESPN scoring, and ESPN playoff forecasts are
+unavailable; those limitations are separate from current records and rosters.
+
 ## The recursion break (CRITICAL — do not undo)
 
 Picks are valued by their exact Sleeper draft slot when published. Unknown

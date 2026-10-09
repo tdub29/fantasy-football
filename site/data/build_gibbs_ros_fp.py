@@ -239,13 +239,16 @@ def main_week(output: pathlib.Path) -> int:
     flex = one_expert(api("FLX", week=week), "FLX")
     flex_rank = {(r["player"], r["team"]): i for i, r in
                  enumerate(sorted(flex, key=lambda r: r["rank"]), 1)}
-    # Scoring: he titles this board PPR ("Week 3 - FLEX Top-100 ... (PPR)", X,
-    # 2026-09-24), and that post IS this board. FantasyPros files the same
-    # order under half-PPR, and FantasyPros' own PPR board for him is a
-    # different, staler list (TE untouched since 9/22), so it is not used. His
-    # label wins for RB/WR/TE; QB is not on the flex post and stays as filed.
-    # QBs catch nothing, so the half/PPR distinction does not touch them.
-    scoring = {p: "ppr" for p in positions}
+    # Scoring, re-audited 2026-10-08: RB, WR and TE are HALF-PPR. His week 4
+    # cards are headed half-PPR, and his week 5 X cards (no header) match this
+    # HALF board exactly (RB 22/22, WR 20/20) and his separate FantasyPros PPR
+    # board only 4/22 and 7/20. That PPR board is his too, but it is a separate
+    # opinion, not a stale copy (TE PPR and HALF saved in the same second still
+    # agree on only 15 of 34), and his cards follow HALF, so it is not used;
+    # build_gibbs_ppr.py converts this
+    # one and the site stars it. QB: HALF and PPR are the same 32 in the same
+    # order under one stamp, and QBs catch nothing, so QB is labelled PPR.
+    scoring = {p: ("ppr" if p == "QB" else "half_ppr") for p in positions}
     src = {
         "source": "Jacob Gibbs (@jagibbs_23)",
         "board": "week",
@@ -256,11 +259,12 @@ def main_week(output: pathlib.Path) -> int:
             f"His own week {week} board on FantasyPros (expert {EXPERT_ID}), "
             f"pulled per position with filters={EXPERT_ID}:{EXPERT_ID} and "
             f"accepted only when total_experts=1. It is the board he posts: his "
-            f"2026-09-24 X post \"Week 3 - FLEX Top-100 Fantasy Football Rankings "
-            f"(PPR)\" matched it 94 of 100 exact, the rest being later edits. He "
-            f"titles it PPR, so RB, WR and TE are labelled PPR; FantasyPros "
-            f"files the same order under half-PPR, and his 9/22 early-look cards "
-            f"said half-PPR. Position stamps: "
+            f"week 5 X cards (2026-10-08) matched it exactly. RB, WR and TE are "
+            f"his HALF-PPR ranks (FantasyPros files them as half-PPR and his "
+            f"week 4 cards say half-PPR); the site shows a PPR conversion. QB "
+            f"is identical on his PPR board. Superseded claim: his 9/24 flex "
+            f"post titled PPR matched it 94 of 100, but his separate PPR board "
+            f"now differs. Position stamps: "
             + ", ".join(f"{p} {s}" for p, s in stamps.items() if s) + "."),
         "positions": positions,
     }

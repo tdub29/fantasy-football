@@ -1314,7 +1314,13 @@ window.LEAGUES = [
         "owner_id": 8,
         "previous_owner_id": 10
       }
-    ]
+    ],
+    "last_scored_leg": 4,
+    "playoff_seed_type": 0,
+    "playoff_round_type": 0,
+    "start_week": 1,
+    "league_average_match": 1,
+    "divisions": 0
   },
   {
     "id": "1389722402430136320",
@@ -2118,7 +2124,13 @@ window.LEAGUES = [
         }
       }
     ],
-    "traded_picks": []
+    "traded_picks": [],
+    "last_scored_leg": 4,
+    "playoff_seed_type": 1,
+    "playoff_round_type": 0,
+    "start_week": 1,
+    "league_average_match": 0,
+    "divisions": 2
   },
   {
     "id": "1314860638501076992",
@@ -3369,7 +3381,13 @@ window.LEAGUES = [
         "owner_id": 7,
         "previous_owner_id": 9
       }
-    ]
+    ],
+    "last_scored_leg": 4,
+    "playoff_seed_type": 0,
+    "playoff_round_type": 0,
+    "start_week": 1,
+    "league_average_match": 1,
+    "divisions": 0
   },
   {
     "id": "1312276370583220224",
@@ -4586,7 +4604,13 @@ window.LEAGUES = [
         "owner_id": 10,
         "previous_owner_id": 5
       }
-    ]
+    ],
+    "last_scored_leg": 4,
+    "playoff_seed_type": 0,
+    "playoff_round_type": 0,
+    "start_week": 1,
+    "league_average_match": 0,
+    "divisions": 2
   },
   {
     "id": "1532688686",

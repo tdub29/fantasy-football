@@ -26,6 +26,7 @@ STEPS = [
     ("raw Sleeper dump + leagues", SITE_DATA / "fetch_sleeper.py",        True),
     ("KTC dynasty rankings",       SITE_DATA / "build_ktc.py",            True),
     ("site data (players/leagues)", SITE_DATA / "build_site_data.py",     True),
+    ("draft-capital ratings",       PROJ / "build_capital_ratings.py",    True),
     ("trade partner history",       SITE_DATA / "build_trade_history.py", True),
     # Pull this season's claims and the projection each claimant saw, then
     # publish them. Skipping the pull froze 2026 at week 1.
@@ -43,6 +44,9 @@ STEPS = [
     ("score defense",              PROJ / "score_defense.py",             True),
     ("weekly rankings",            PROJ / "build_weekly_rankings.py",     True),
     ("FantasyPros expert boards",  PROJ / "build_fantasypros_experts.py", True),
+    # Six-source weekly ranks + points (Draft Sharks, CBS, FFToday, FFC, StartWho,
+    # FantasyData) and their spread, for the player card. Current week only.
+    ("Alexandria six-source weekly board", PROJ / "build_alexandria.py", True),
     # His weekly board, from FantasyPros (filters=1576:1576). It replaced the
     # CBS scrape on 2026-09-24: his "Week 3 FLEX Top-100 (PPR)" post on X
     # matched this board 94/100 exact while CBS sat a mean 11 flex spots off.
@@ -132,8 +136,8 @@ STEPS = [
 TRACKED = [
     "ktc.js", "players.js", "leagues.js", "projections.js", "categories.js",
     "environment.js", "sos.js", "sos-grid.js", "sleeper-idp.js", "player-info.js",
-    "jacob-gibbs.js", "expert-rankings.js", "fantasypros-experts.js",
-    "idp-dvp.js", "kickers.js", "gibbs-week.js", "gibbs-ros.js", "gibbs-ppr.js", "advanced.js", "prospect.js", "prospect-model.js", "contracts.js", "weather.js", "defense.js", "usage-weekly.js", "idp-advanced.js", "weekly-rankings.js", "sleeper-market.js", "faab.js", "trade-history.js", "context.js", "history.js",
+    "jacob-gibbs.js", "expert-rankings.js", "fantasypros-experts.js", "alexandria.js",
+    "idp-dvp.js", "kickers.js", "gibbs-week.js", "gibbs-ros.js", "gibbs-ppr.js", "advanced.js", "prospect.js", "prospect-model.js", "capital-ratings.js", "contracts.js", "weather.js", "defense.js", "usage-weekly.js", "idp-advanced.js", "weekly-rankings.js", "sleeper-market.js", "faab.js", "trade-history.js", "context.js", "history.js",
 ]
 
 def run(label, script, timeout=600, args=()):

@@ -187,6 +187,12 @@ def build_payload(schedule, history_rows, live_rows, season, through_week, sourc
             "method": "pooled fantasy points divided by pooled games",
         },
         "teams": teams_sorted,
+        # Only a complete 17-game schedule proves its single bye.
+        "bye_weeks": {
+            team: sorted(set(range(1, 19)) - {g["week"] for g in schedule[team]["schedule"]})
+            for team in teams_sorted
+            if len({g["week"] for g in schedule[team]["schedule"]}) == 17
+        },
         "grid": grid,
     }
 

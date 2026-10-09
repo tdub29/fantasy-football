@@ -56,6 +56,7 @@
   }
   function standingDefaultDir(key) { return key === 'pa' ? 'asc' : 'desc'; }
 
+  const accountKey = key => window.FF_ACCOUNT?.storageKey(key) || key;
   // Persistent settings
   const SETTINGS_KEY = 'ff-site-settings-v2';
   const defaults = {
@@ -67,10 +68,10 @@
     retiredGibbsHalfCol: false, // one-shot migration marker, see ensureExpertColDefaults
   };
   function loadSettings() {
-    try { return Object.assign({}, defaults, JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}')); }
+    try { return Object.assign({}, defaults, JSON.parse(localStorage.getItem(accountKey(SETTINGS_KEY)) || '{}')); }
     catch { return Object.assign({}, defaults); }
   }
-  function saveSettings() { localStorage.setItem(SETTINGS_KEY, JSON.stringify(state.settings)); }
+  function saveSettings() { try { localStorage.setItem(accountKey(SETTINGS_KEY), JSON.stringify(state.settings)); } catch {} }
 
   // Toast notification
   function toast(msg, kind='info') {
@@ -601,6 +602,7 @@
   // to the end of the feed. One map per last week, `_rosPts` holds them.
   let _rosPts = null;
   function rosPointsByPid(lg = null) {
+    if (lg?.projection_unavailable) return new Map();
     const last = lg ? playoffSettings(lg).lastWeek : Infinity;
     _rosPts = _rosPts || new Map();
     if (_rosPts.has(last)) return _rosPts.get(last);
@@ -712,7 +714,7 @@
   // or every feature assert would chase live rosters.
   const LIVE_KEY = 'ff-live-sleeper', LIVE_TTL_MS = 30 * 60 * 1000;
   function liveRefresh() {
-    if (navigator.webdriver) return;
+    if (window.FF_ACCOUNT || navigator.webdriver) return;
     const leagues = (window.LEAGUES || []).filter(lg => lg.platform !== 'espn');
     const apply = live => {
       if (!applyLive(live, window.WEEKLY_RANKINGS, window.PLAYERS || {}, leagues)) return false;
@@ -721,13 +723,13 @@
       return true;
     };
     let cached = null;
-    try { cached = JSON.parse(localStorage.getItem(LIVE_KEY) || 'null'); } catch {}
+    try { cached = JSON.parse(localStorage.getItem(accountKey(LIVE_KEY)) || 'null'); } catch {}
     const built = Date.parse(window.BUILD_INFO?.files?.['leagues.js'] || '') || 0;
     if (cached && cached.at > built) apply(cached);
     if (cached && Date.now() - cached.at < LIVE_TTL_MS) return;
     const get = u => fetch(u).then(r => { if (!r.ok) throw new Error(`Sleeper ${r.status}: ${u}`); return r.json(); });
     fetchLive(get, leagues.map(lg => lg.id), Date.now()).then(live => {
-      try { localStorage.setItem(LIVE_KEY, JSON.stringify(live)); } catch {}
+      try { localStorage.setItem(accountKey(LIVE_KEY), JSON.stringify(live)); } catch {}
       if (apply(live)) { const y = window.scrollY; route(); window.scrollTo(0, y); }
     }).catch(e => console.warn('Live Sleeper pull failed; odds are on the build.', e));
   }
@@ -1252,7 +1254,7 @@
       h('img', { class:'logo', src:'img/logo-192.png', alt:'', width:44, height:44 }),
       h('div', null,
         h('div', { class:'name' }, 'The Fantasy Hub'),
-        h('div', { class:'sub' }, 'tdub1329 · 2026'),
+        window.FF_ACCOUNT ? window.FF_ACCOUNT.sidebarNode() : h('div', { class:'sub' }, `${window.MY_USERNAME || 'Sleeper'} · ${CURRENT_SEASON}`),
       ),
       // Mobile close button (only visible <960px when expanded)
       h('button', {
@@ -1436,9 +1438,32 @@
   }
   // KeepTradeCut's own codes. build_ktc.py maps them now; this covers an older
   // ktc.js and any row whose team falls back to the ranked entry.
-  const KTC_TEAM = { SFO:'SF', NOS:'NO', KCC:'KC', JAC:'JAX', GBP:'GB', TBB:'TB', LVR:'LV', NEP:'NE' };
-  function teamChip(team) {
-    return h('span', { class:'team-chip' }, KTC_TEAM[team] || team || 'FA');
+  // Plus the PFF-style codes (ARZ, BLT, CLV, HST), nflverse's LA and WSH.
+  const KTC_TEAM = { SFO:'SF', NOS:'NO', KCC:'KC', JAC:'JAX', GBP:'GB', TBB:'TB', LVR:'LV', NEP:'NE',
+    ARZ:'ARI', BLT:'BAL', CLV:'CLE', HST:'HOU', LA:'LAR', WSH:'WAS' };
+  // Relocated franchises keep their old code as text (a 2019 OAK row is OAK) and
+  // borrow the franchise's current logo: Sleeper's CDN hosts no historical marks.
+  const TEAM_MOVED = { OAK:'LV', SD:'LAC', STL:'LAR' };
+  const NFL_TEAMS = new Set(('ARI ATL BAL BUF CAR CHI CIN CLE DAL DEN DET GB HOU IND JAX KC '
+    + 'LAC LAR LV MIA MIN NE NO NYG NYJ PHI PIT SEA SF TB TEN WAS').split(' '));
+  // { text, code }: code is the Sleeper logo key, null for FA or anything unrecognised,
+  // which gets text only. Never used for fantasy teams.
+  function nflTeam(team) {
+    const raw = String(team ?? '').trim(), up = raw.toUpperCase();
+    if (!raw || up === 'FA') return { text:'FA', code:null };
+    const code = KTC_TEAM[up] || TEAM_MOVED[up] || up;
+    return NFL_TEAMS.has(code) ? { text: TEAM_MOVED[up] ? up : code, code } : { text: raw, code: null };
+  }
+  // The one NFL team renderer. The logo is decorative beside its own abbreviation,
+  // so alt is empty; it is sized up front (no shift), lazy, and a failed load removes
+  // the image rather than retrying.
+  function teamChip(team, compact = false) {
+    const t = nflTeam(team);
+    return h('span', { class: `team-chip${t.code ? ' has-logo' : ''}${compact ? ' team-chip-compact' : ''}` },
+      t.code ? h('img', { class:'team-logo', alt:'', width:14, height:14, loading:'lazy', decoding:'async',
+        src:`https://sleepercdn.com/images/team_logos/nfl/${t.code.toLowerCase()}.png`,
+        onerror:(e) => e.target.remove() }) : null,
+      t.text);
   }
   function rookieBadge(p) {
     return p.rookie ? h('span', { class:'badge rookie' }, 'Rookie') : null;
@@ -1466,16 +1491,16 @@
     return { count: ps.length, tiers, text: `${ps.length} in ${tiers} tiers` };
   }
 
-  // Gibbs's REST OF SEASON positional board, straight from his X posts.
-  // Separate from JACOB_GIBBS_RANKINGS, which is his OVERALL draft board: this
-  // one is per-position, has no tiers, and he refreshes it weekly. His
-  // FantasyPros board lagged this by a day when it was captured, and the
-  // positional ROS boards never appear there at all.
+  // Gibbs's REST OF SEASON positional board, now pulled from his own
+  // FantasyPros board (expert 1576), the source of his X cards. Separate from
+  // JACOB_GIBBS_RANKINGS, which is his OVERALL draft board: this one is
+  // per-position, has no tiers, and he refreshes it weekly.
   //
-  // Every rank on the site is PPR. GIBBS_WEEK is his week board, which he posts
-  // titled PPR, so it shows as is. His ROS board is half-PPR (his cards say
-  // so), so the table shows GIBBS_PPR_ROS, converted by build_gibbs_ppr.py,
-  // under a starred header. One lookup serves every board.
+  // Every rank on the site is PPR. Both his boards are half-PPR (re-audited
+  // 2026-10-08: his week cards match his FantasyPros half board, not his PPR
+  // one), so the table shows GIBBS_PPR_WEEK and GIBBS_PPR_ROS, converted by
+  // build_gibbs_ppr.py, under starred headers. GIBBS_WEEK stays the source of
+  // the week's metadata and opponent. One lookup serves every board.
   const _gibbsIdx = new Map();
   function gibbsBoardRank(board, sleeperId) {
     const data = window[board];
@@ -1489,7 +1514,8 @@
     }
     return _gibbsIdx.get(board).get(String(sleeperId)) || null;
   }
-  const gibbsWeekRank = (id) => gibbsBoardRank('GIBBS_WEEK', id);
+  const gibbsWeekRank = (id) => gibbsBoardRank('GIBBS_PPR_WEEK', id);
+  const gibbsWeekHalfRank = (id) => gibbsBoardRank('GIBBS_WEEK', id);
   const gibbsRosPprRank = (id) => gibbsBoardRank('GIBBS_PPR_ROS', id);
 
   function expertSources() {
@@ -1620,13 +1646,14 @@
     const myRosters = [];
     for (const lg of window.LEAGUES || []) {
       const me = lg.rosters.find(r => r.is_me);
-      if (!me) continue;
+      if (!me || lg.projection_unavailable) continue;
       myRosters.push({ league: lg, roster: me });
     }
 
     if (tab === 'overview') {
       main.appendChild(h('h2', { class:'page-title', style:{ fontSize:'1.2rem', marginTop:'8px' } }, 'My Leagues'));
       leaguesComparison(main);
+      if ((window.LEAGUES || []).some(l => l.projection_unavailable)) main.appendChild(h('p', { class:'source-note' }, 'Leagues with unsupported scoring retain their rosters and current records. They are excluded from the grade heatmap and modeled comparisons.'));
     }
 
     const cornerstones = [];
@@ -2377,18 +2404,18 @@
     const mine = (window.LEAGUES || []).map(lg => { const me = lg.rosters.find(r => r.is_me); return me ? { lg, me } : null; }).filter(Boolean);
     if (mine.length) {
       const rowsData = mine.map(({ lg, me }) => {
-        const rank = lineupRankInLeague(lg, me.roster_id);
-        const pv = startingStrength(me, lg);
+        const rank = lg.projection_unavailable ? null : lineupRankInLeague(lg, me.roster_id);
+        const pv = lg.projection_unavailable ? null : startingStrength(me, lg);
         // Redraft has no year-4 lineup to project, so FV and stance stay blank
         // rather than rendering a number that prices a career the manager
         // never keeps. Skipping the call also skips the aging model entirely.
         const dyn = isDynastyLeague(lg);
         const fv = dyn ? startingStrength(me, lg, 4, true) : null;
-        const ss = rosterSurplusShortage(getRosterPlayers(me), lg);
+        const ss = lg.projection_unavailable ? {} : rosterSurplusShortage(getRosterPlayers(me), lg);
         const needs = ['QB','RB','WR','TE'].map(p => ({ p, s: ss[p]?.surplus ?? 0 })).filter(x => x.s <= -1).sort((a, b) => a.s - b.s);
-        const rec = `${me.wins || 0}-${me.losses || 0}${me.ties ? '-' + me.ties : ''}`;
+        const rec = me.wins == null || me.losses == null ? 'Unavailable' : `${me.wins}-${me.losses}${me.ties ? '-' + me.ties : ''}`;
         const format = lg.platform === 'espn' || lg.type === 0 ? 'Redraft' : lg.is_superflex ? 'Superflex' : lg.is_idp ? 'IDP' : '1QB';
-        return { lg, me, rank, pv, fv, dyn, format, stance: dyn ? rosterStance(me, lg) : null, need: needs.map(n => n.p).join('/') || '·', rec };
+        return { lg, me, rank, pv, fv, dyn, format, stance: dyn ? rosterStance(me, lg) : null, need: lg.projection_unavailable ? 'Unavailable' : needs.map(n => n.p).join('/') || '·', rec };
       });
       main.appendChild(h('div', { class:'card leagues-table-card' },
         h('table', { class:'data leagues-table fit-num' },
@@ -2405,17 +2432,17 @@
             )),
             h('td', { class:'tip' }, `${d.format} · ${d.lg.total_rosters}tm`),
             h('td', { class:'right tnum' }, d.rec),
-            h('td', { class:'right tnum', style:{ fontWeight:700, color: d.rank <= Math.ceil(d.lg.total_rosters*0.3) ? 'var(--green)' : d.rank > Math.ceil(d.lg.total_rosters*0.6) ? 'var(--red)' : 'var(--fg-1)' } }, `#${d.rank}`),
+            h('td', { class:'right tnum', style:{ fontWeight:700, color: d.rank == null ? 'var(--fg-3)' : d.rank <= Math.ceil(d.lg.total_rosters*0.3) ? 'var(--green)' : d.rank > Math.ceil(d.lg.total_rosters*0.6) ? 'var(--red)' : 'var(--fg-1)' } }, d.rank == null ? 'Unavailable' : `#${d.rank}`),
             h('td', { class:'right tnum', title: d.dyn
               ? 'Dynasty PV: KTC asset value of your best legal starting lineup.'
               : 'Redraft PV: season value over replacement of your best legal starting lineup. A different unit from the dynasty rows, so compare the rank, not the number.' },
-              fmt.decimal(d.pv, 0),
-              d.dyn ? null : h('span', { class:'badge unit-vor' }, 'VOR')),
+              d.pv == null ? 'Unavailable' : fmt.decimal(d.pv, 0),
+              d.dyn || d.pv == null ? null : h('span', { class:'badge unit-vor' }, 'VOR')),
             h('td', { class:'right tnum', style:{ color:'var(--fg-3)' }, title: d.dyn ? null : 'Redraft league, no future value.' }, d.dyn ? fmt.decimal(d.fv, 0) : '·'),
             h('td', null, d.dyn
-              ? h('span', { class:`badge stance-${d.stance}`, style:{ color: stanceTone[d.stance] } }, STANCE_LABEL[d.stance] || d.stance)
+              ? h('span', { class:`badge stance-${d.stance}`, style:{ color: stanceTone[d.stance] } }, STANCE_LABEL[d.stance] || d.stance || 'Unavailable')
               : h('span', { class:'muted', title:'Redraft league, no rebuild or contend stance.' }, '·')),
-            h('td', { style:{ color: d.need === '·' ? 'var(--green)' : 'var(--red)', fontWeight:600 } }, d.need),
+            h('td', { style:{ color: d.need === 'Unavailable' ? 'var(--fg-3)' : d.need === '·' ? 'var(--green)' : 'var(--red)', fontWeight:600 } }, d.need),
           ))),
         )
       ));
@@ -2501,7 +2528,7 @@
   function leagueScorePoints(stats, league) {
     if (!stats || !Object.keys(stats).length) return null;
     const sc = league?.scoring || {};
-    const g = (k, dflt) => (sc[k] != null ? sc[k] : dflt);
+    const g = (k, dflt) => (sc[k] != null ? sc[k] : window.FF_ACCOUNT && league?.scoring ? 0 : dflt);
     const w = {
       pass_yd: g('pass_yd', 0.04), pass_td: g('pass_td', 4), pass_int: g('pass_int', -1),
       rush_yd: g('rush_yd', 0.1), rush_td: g('rush_td', 6),
@@ -2717,6 +2744,8 @@
   const _stanceCache = new Map();
   function rosterStance(roster, league) {
     if (!roster || !league) return 'mid';
+    // Unsupported scoring zeroes every lineup, so rank order would be roster order.
+    if (league.projection_unavailable) return null;
     const cacheKey = `${league.id}::${roster.roster_id}`;
     if (_stanceCache.has(cacheKey)) return _stanceCache.get(cacheKey);
     const scored = (league.rosters || []).map(r => ({
@@ -2752,6 +2781,9 @@
       { label:'My Leagues', hash:'#dashboard' },
       { label: lg.short_name || lg.name },
     ]));
+    if (lg.account_source === 'linked' && lg.import_limitations?.length) main.appendChild(h('details', { class:'source-note' },
+      h('summary', null, lg.projection_unavailable ? 'ESPN coverage: league-scored analysis unavailable' : 'ESPN coverage'),
+      h('p', null, lg.import_limitations.join('. ') + '.')));
 
     const formatTag = lg.type === 0 ? 'REDRAFT' : (lg.is_superflex ? 'SUPERFLEX' : (lg.is_idp ? 'IDP' : '1QB'));
     const formatRule = lg.is_superflex
@@ -2806,6 +2838,19 @@
     main.appendChild(leagueTabBar);
 
     if (tab === 'standings') {
+    if (lg.projection_unavailable) {
+      main.appendChild(h('h2', { class:'section-title' }, 'Current Standings'));
+      main.appendChild(h('div', { class:'table-wrap card' }, h('table', { class:'data' },
+        h('thead', null, h('tr', null, ...['Team','Record','PF','PA'].map(label => h('th', null, label)))),
+        h('tbody', null, ...lg.rosters.slice().sort((a,b) => (a.wins == null || a.losses == null) - (b.wins == null || b.losses == null) || ((b.wins || 0) + (b.ties || 0) / 2) - ((a.wins || 0) + (a.ties || 0) / 2) || (b.fpts ?? -Infinity) - (a.fpts ?? -Infinity)).map(r => h('tr', null,
+          h('td', null, h('a', { href:`#roster/${lg.id}/${r.roster_id}/roster` }, r.team_name)),
+          h('td', { class:'tnum' }, r.wins == null || r.losses == null ? 'Unavailable' : `${r.wins}-${r.losses}${r.ties ? '-' + r.ties : ''}`),
+          h('td', { class:'tnum' }, r.fpts == null ? 'Unavailable' : fmt.decimal(r.fpts, 1)), h('td', { class:'tnum' }, r.fpts_against == null ? 'Unavailable' : fmt.decimal(r.fpts_against, 1))
+        )))
+      )));
+      main.appendChild(h('p', { class:'source-note' }, 'Sorted by wins plus half of ties, then points for; missing records last. Commissioner seeding rules may differ. Strength grades, projected record, playoff odds, bye odds and schedule difficulty are unavailable for this scoring setup.'));
+      return;
+    }
     // Standings / Strength rankings
     const lgDynasty = isDynastyLeague(lg);
     main.appendChild(h('h2', { class:'page-title standings-heading' }, 'Team Strength Rankings'));
@@ -2858,12 +2903,13 @@
     // caption that explains the panel belongs inside it rather than floating on
     // the turf above it.
     const standings = h('div', { class:'card standings-list' });
+    const forecast = standingsForecast(lg);
     const sortState = { key:'pv', dir:'desc' };
     const sortBar = h('div', { class:'standings-sort', role:'group', 'aria-label':'Sort standings' });
     // Redraft has no future lineup, so "future" would sort by the same number.
     const sortOptions = [
       ...(lgDynasty ? [['pv', 'Strength now'], ['fv', 'Future strength']] : [['pv', 'Strength']]),
-      ['record', 'Record'], ['pf', 'Points for'], ['diff', 'Point differential'], ['pa', 'Points against'],
+      ['record', 'Record'], ...(forecast.ok ? [['projected', 'Projected wins'], ['playoff', 'Playoff chance'], ...(forecast.byes ? [['bye', 'Bye chance']] : [])] : []), ['pf', 'Points for'], ['diff', 'Point differential'], ['pa', 'Points against'],
     ];
     const sortSelect = h('select', { 'aria-label':'Sort teams by' }, ...sortOptions.map(([key, label]) =>
       h('option', { value:key, selected:key === sortState.key ? '' : null }, label)));
@@ -2884,6 +2930,11 @@
       lgDynasty
         ? `Starting-lineup value projected ${trajLabels[0]} to ${trajLabels[TRAJ_YEARS-1]} (position-aware aging, best-K re-picked each year, owned picks fold in once they convert). Year 1 = PV, year 5 = FV.`
         : 'Best legal starting lineup today (positions respected, taxi/IR/Out benched). Redraft, so there is no multi-year projection.'));
+    standings.appendChild(h('details', { class:'standings-forecast-help' },
+      h('summary', null, forecast.ok ? `Season forecast: W${forecast.firstRemaining}-${forecast.regularWeeks} · assumptions` : `Season forecast unavailable: ${forecast.reason}`),
+      h('p', { class:'tip' }, forecast.ok
+        ? `${forecast.sims.toLocaleString()} simulated seasons, seed 20260807. Completed W1-${forecast.completed} results preserved. Expected final W-L-T shown as fractional means; ties count half a win for seeding. Record, then points for, higher points against, and a seeded coin flip for exact ties. ${forecast.teams} playoff places, ${forecast.byes} first-round byes. ${forecast.median ? 'Includes the league median game each week. ' : ''}Same ${forecast.src === 'blend' ? 'league-scored season blend' : 'weekly ROS'} model as Projections, known weekly absences/byes (unfilled slots score zero) plus simulated injuries, player-season uncertainty and team/stack correlations. Forecast estimates are not historically calibrated probabilities. Roster changes and commissioner overrides are not modeled. Monte Carlo error alone is up to about 2 percentage points at 95% confidence. Weekly source: ${window.WEEKLY_RANKINGS?.liveWeek || window.WEEKLY_RANKINGS?.currentWeek || '?'}; roster/source freshness is in the data panel.`
+        : 'No numeric forecast is shown when rules, records, matchups or weekly lineup coverage are unsupported.')));
     computed.forEach((row, i) => {
       const r = row.r, s = row.s, st = row.st;
       const isMe = r.is_me;
@@ -2917,6 +2968,9 @@
           strengthRank:i + 1,
           pv:st,
           fv:row.fv,
+          projected:forecast.rows?.get(r.roster_id)?.expW,
+          playoff:forecast.rows?.get(r.roster_id)?.playoff,
+          bye:forecast.rows?.get(r.roster_id)?.bye,
           record:((r.wins ?? 0) + ((r.ties ?? 0) * 0.5)) / Math.max(1, (r.wins ?? 0) + (r.losses ?? 0) + (r.ties ?? 0)),
           pf:r.fpts ?? 0,
           pa:r.fpts_against ?? 0,
@@ -2968,7 +3022,12 @@
           lgDynasty ? (() => { const fv = row.fv, d = st > 0 ? (fv - st) / st * 100 : 0; const c = d >= 2 ? 'var(--green)' : d <= -8 ? 'var(--amber)' : 'var(--fg-2)'; return h('div', { class:'delta', style:{ color: c }, title:`FV: starting-lineup value in ${trajLabels[TRAJ_YEARS-1]} (same scale as the ${trajLabels[TRAJ_YEARS-1].slice(2)} bar)` }, `FV ${fmt.decimal(fv, 0)} · ${d >= 0 ? '+' : ''}${d.toFixed(0)}%`); })() : null,
           lgDynasty ? h('div', { class:'arch', style:{ color: tColor } }, tLabel) : null,
         ),
-        lgDynasty ? h('div', { class:'str-traj' }, spark) : null
+        lgDynasty ? h('div', { class:'str-traj' }, spark) : null,
+        h('div', { class:'standings-forecast', 'aria-label':'Season forecast' },
+          ...[['Projected W-L-T', forecast.ok ? (() => { const f = forecast.rows.get(r.roster_id); return [f.expW, f.expL, f.expT].map(x => x.toFixed(1)).join('-'); })() : 'Unavailable'],
+            ['Playoff %', forecast.ok ? forecastPct(forecast.rows.get(r.roster_id).playoff) : 'Unavailable'],
+            ['Bye %', forecast.ok ? (forecast.byes ? forecastPct(forecast.rows.get(r.roster_id).bye) : 'N/A') : 'Unavailable']].map(([label, value]) =>
+              h('div', null, h('span', { class:'forecast-label' }, label), h('span', { class:'forecast-value tnum' }, value))))
       );
       standings.appendChild(strengthRow);
     });
@@ -3087,7 +3146,8 @@
     const projO = new Map(), projD = new Map();
     for (const p of (window.OFFENSE_PROJ?.offense?.players || [])) if (p.id) projO.set(p.id, p);
     for (const p of (window.OFFENSE_PROJ?.defense?.players || [])) if (p.id) projD.set(p.id, p);
-    const hasProj = projO.size || projD.size;
+    // Baked points use one fixed rule set; a league whose scoring we cannot read gets none.
+    const hasProj = !lg.projection_unavailable && (projO.size || projD.size);
     const projPointsFor = (pid, src) => {
       if (!pid) return null;
       const rec = projO.get(pid) || projD.get(pid);
@@ -3100,7 +3160,7 @@
       { pos:'ALL', cat:'ALL', team:'ALL', scopes:null, q:'',
         sort:lg.type === 0 ? 'weekly-sleeper' : 'rank', dir:lg.type === 0 ? 'desc' : 'asc',
         proj:'blend', view:lg.type === 0 ? 'weekly' : 'stats' },
-      JSON.parse(localStorage.getItem(lsKey) || '{}')
+      JSON.parse(localStorage.getItem(accountKey(lsKey)) || '{}')
     );
     if (!Array.isArray(filter.scopes)) filter.scopes = [filter.scope || 'all'];
     delete filter.scope;
@@ -3109,8 +3169,13 @@
     if (!leagueDynasty && filter.sort === 'value') {
       filter.sort = 'weekly-sleeper'; filter.dir = 'desc';
     }
+    // Weekly, ROS, Sleeper-weeks and SOS print PPR projections this league's
+    // scoring cannot use, so an unsupported league gets the Stats table only.
+    if (lg.projection_unavailable && filter.view !== 'stats') {
+      filter.view = 'stats'; filter.sort = 'rank'; filter.dir = 'asc';
+    }
     const teamOfP = (p) => (window.PLAYERS[p._sleeperId] || {}).team || p.team || null;
-    const persist = () => { try { localStorage.setItem(lsKey, JSON.stringify(filter)); } catch {} };
+    const persist = () => { try { localStorage.setItem(accountKey(lsKey), JSON.stringify(filter)); } catch {} };
 
     // No title here: the active Players tab above already names the view, and on
     // a phone a second plaque costs 41px of the screen to say it twice.
@@ -3133,6 +3198,7 @@
       ['ros','ROS','weekly-ros','asc'],
       ['sleeper-weeks','Sleeper weeks',`sw:${currentWeek}`,'desc'], ['sos','SOS',`wk:${currentWeek}`,'desc'],
     ]) {
+      if (lg.projection_unavailable && key !== 'stats') continue;
       viewBtns.appendChild(h('button', {
         class:`toggle ${filter.view===key?'active':''}`,
         'aria-pressed':filter.view===key ? 'true' : 'false',
@@ -3320,8 +3386,11 @@
           && !trackedExperts.some(expert => expert.key === String(filter.sort).slice(9))) {
         filter.sort = 'weekly-sleeper'; filter.dir = 'desc'; persist();
       }
-      // Sort.
-      const dir = filter.dir === 'desc' ? -1 : 1;
+      // Keep unavailable projection sorts as a render fallback, not a saved preference change.
+      const projectionSortUnavailable = !hasProj && ['proj', 'vor', 'gap', 'ppslp'].includes(filter.sort);
+      const sortKey = projectionSortUnavailable ? 'rank' : filter.sort;
+      const sortDir = projectionSortUnavailable ? 'asc' : filter.dir;
+      const dir = sortDir === 'desc' ? -1 : 1;
       const cmp = (a, b) => {
         let av, bv;
         if (filter.sort === 'weekly-vegas' || filter.sort === 'weekly-sleeper'
@@ -3391,7 +3460,7 @@
           const rk = (p) => (src && expertRankOf(src, p.name, p._sleeperId)) ?? 9999;
           av = rk(a); bv = rk(b); return (av - bv) * dir; // asc = better rank first
         }
-        switch (filter.sort) {
+        switch (sortKey) {
           // dir is -1 for desc, so (av - bv) * dir puts the highest first on the first
           // click. These used (bv - av) * dir, flipping twice: Value ↓ listed 12.5 first.
           case 'value': av = tierValue(a, lg); bv = tierValue(b, lg); return (av - bv) * dir;
@@ -3410,10 +3479,10 @@
       const rows = sorted.slice(0, limit);
 
       const sortHdr = (key, label, opts={}) => {
-        const isActive = filter.sort === key;
-        const arrow = isActive ? (filter.dir === 'desc' ? ' ↓' : ' ↑') : '';
+        const isActive = sortKey === key;
+        const arrow = isActive ? (sortDir === 'desc' ? ' ↓' : ' ↑') : '';
         const activate = () => {
-          if (filter.sort === key) filter.dir = filter.dir === 'asc' ? 'desc' : 'asc';
+          if (sortKey === key) { filter.sort = key; filter.dir = sortDir === 'asc' ? 'desc' : 'asc'; }
           else {
             filter.sort = key;
             filter.dir = (key === 'rank' || key === 'age' || key === 'pos' || key === 'name'
@@ -3434,7 +3503,7 @@
           class: `clickable${isActive ? ' sort-active' : ''}${opts.right ? ' right' : ''}${opts.center ? ' center' : ''}`,
           style: opts.style,
           title: opts.title,
-          tabindex:'0', 'aria-sort':isActive ? (filter.dir === 'desc' ? 'descending' : 'ascending') : 'none',
+          tabindex:'0', 'aria-sort':isActive ? (sortDir === 'desc' ? 'descending' : 'ascending') : 'none',
           onclick:activate,
           onkeydown:(event) => {
             if (event.key !== 'Enter' && event.key !== ' ') return;
@@ -3532,12 +3601,13 @@
       // He has no rest-of-season board today. Render the column only when one
       // exists, so it appears by itself the week he starts publishing.
       const hasGibbsRos = ((weeklyData.coverage || {}).gibbsRosPlayers || 0) > 0;
-      // His X board is a separate, fresher source than his FantasyPros feed.
+      // His ROS board, from his own FantasyPros board (build_gibbs_ros_fp.py).
       const gibbsRosPosted = window.GIBBS_ROS ? window.GIBBS_ROS.postedAt : null;
       // Hidden when it is another week's board: a refresh that failed on a
       // Tuesday would otherwise show week 3 ranks beside week 4 projections.
       const gibbsWeekPosted = window.GIBBS_WEEK
         && (window.GIBBS_WEEK.week == null || window.GIBBS_WEEK.week === currentWeek)
+        && window.GIBBS_PPR_WEEK?.week === window.GIBBS_WEEK.week
         ? window.GIBBS_WEEK.postedAt : null;
       const gibbsRosThrough = window.GIBBS_ROS ? window.GIBBS_ROS.rosUpdatedThrough : null;
       const gibbsWeekUpdated = window.GIBBS_WEEK?.updatedLabel || null;
@@ -3565,7 +3635,7 @@
         const wxFlag = wx && wx.flag;
         const wxTitle = wxFlag ? ` Weather: ${Math.round(wx.temp_f)}°F, wind ${Math.round(wx.wind_mph)} mph (gusts ${Math.round(wx.gust_mph)}), ${Math.round(wx.precip_prob || 0)}% precip.` : '';
         return h('td', { class:'center weekly-opp', title: title + wxTitle, style:{ color:defRankColor(rank, n) } },
-          h('div', { class:'weekly-opp-team' }, game.opp),
+          h('div', { class:'weekly-opp-team' }, teamChip(game.opp, true)),
           h('div', { class:'weekly-opp-rank' }, rank != null ? `#${rank}` : '·'),
           wxFlag ? h('div', { class:'weekly-opp-wx' }, wxFlag.toUpperCase()) : null);
       };
@@ -3610,10 +3680,11 @@
             // say is whether it was converted.
             gibbsRosPosted && window.GIBBS_PPR_ROS && isRosView ? sortHdr('weekly-gibbs-x', 'Gibbs*', { right:true,
               title:`* = PPR converted by this site from Jacob Gibbs's half-PPR rest-of-season board (his FantasyPros board, expert 1576, the one his ROS cards label half-PPR). His order sets the value slots, then each player gets +0.5 per projected catch and the list is re-sorted within position, so a player who catches nothing never rises on his own. His unconverted half-PPR rank is in each cell's tooltip. Board ${gibbsRosPosted}${gibbsRosThrough ? `, updates through ${gibbsRosThrough}` : ''}.` }) : null,
-            gibbsWeekPosted && !isRosView ? sortHdr('weekly-gibbs-wk', 'Gibbs', { right:true,
-              title:`Jacob Gibbs's own board for this week, the start/sit list; `
-                + `the ROS view answers a different question. `
-                + `Pulled ${gibbsWeekPosted}${gibbsWeekUpdated ? ` (${gibbsWeekUpdated})` : ''} from his FantasyPros board, the one he posts to X as his PPR flex ranks; `
+            gibbsWeekPosted && !isRosView ? sortHdr('weekly-gibbs-wk', 'Gibbs*', { right:true,
+              title:`* = PPR converted by this site from Jacob Gibbs's half-PPR week board, the start/sit list he posts to X `
+                + `(his FantasyPros board, expert 1576). His order sets the value slots, then each RB, WR and TE gets +0.5 per projected catch `
+                + `and the list is re-sorted within position; QBs keep his order. His unconverted half-PPR rank is in each cell's tooltip. `
+                + `Pulled ${gibbsWeekPosted}${gibbsWeekUpdated ? ` (${gibbsWeekUpdated})` : ''}; `
                 + `${gibbsWeekDepth} players ranked. A blank means he has not ranked that player, not that nobody rosters him.` }) : null,
               ...(isRosView ? [] : VEGAS_COMPONENTS).map(c => sortHdr(`wc:${c.k}`, c.label, { right:true,
                 title:`Expected ${c.label} behind the Vegas points column. Greyed when that stat had no market line and was filled from Sleeper.` })),
@@ -3680,12 +3751,16 @@
                 // Against the PPR ROS* rank, so both sides are PPR.
                 const ros = gibbsRosPprRank(p._sleeperId);
                 const moved = ros && ros.pos === g.pos ? ros.rank - g.rank : null;
+                const half = gibbsWeekHalfRank(p._sleeperId);
                 return h('td', { class:'right tnum', title:
-                  `${g.pos}${g.rank} on his week board`
-                  + (g.flexRank ? `, #${g.flexRank} overall among flex starters` : '') + '.'
-                  + (g.opp ? ` Opponent ${g.opp}.` : '')
-                  + (moved ? ` He has him ${Math.abs(moved)} spot${Math.abs(moved) === 1 ? '' : 's'} `
-                      + `${moved > 0 ? 'higher' : 'lower'} this week than on his rest-of-season board.` : '') },
+                  (g.pos === 'QB' ? `${g.pos}${g.rank} on his week board (QBs are not converted).`
+                    : `${g.pos}${g.rank} in PPR, converted from his half-PPR week board, where he is `
+                      + `${g.pos}${g.halfRank} (${g.rec} projected catches).`)
+                  + (g.noProjection ? ' No projection, so he holds the slot Gibbs gave him.' : '')
+                  + (half?.flexRank ? ` #${half.flexRank} on his half-PPR flex list.` : '')
+                  + (half?.opp ? ` Opponent ${half.opp}.` : '')
+                  + (moved ? ` ${Math.abs(moved)} spot${Math.abs(moved) === 1 ? '' : 's'} `
+                      + `${moved > 0 ? 'higher' : 'lower'} than on the converted rest-of-season board; both are this site's PPR conversions, so part of the gap can come from the catch projections.` : '') },
                   `${g.pos}${g.rank}`,
                   moved ? h('span', { class: moved > 0 ? 'delta-up' : 'delta-down',
                     style:{ marginLeft:'4px', fontSize:'11px' } },
@@ -3732,7 +3807,7 @@
                 if (!g) return h('td', { class:'center muted', style:{ fontSize:'9px' } }, 'BYE');
                 const e = teamEnv(g.opp), v = e ? e.implied_pa : null;
                 return h('td', { class:'center', title: `Wk${w} ${g.home ? 'vs ' : '@ '}${g.opp}: opponent D allows ${v ?? '?'} pts/g (#${e ? e.pa_rank : '?'} of 32)`, style:{ color: defColor(g.opp), lineHeight:1.05 } },
-                  h('div', { style:{ fontWeight:700 } }, g.opp),
+                  h('div', { style:{ fontWeight:700 } }, teamChip(g.opp, true)),
                   h('div', { style:{ fontSize:'9px', opacity:.85 } }, v != null ? fmt.decimal(v, 0) : ''));
               }));
           })));
@@ -3833,9 +3908,9 @@
     const fkey = `tier-sheet-timeline-filter::${lg.id}`;
     const filter = Object.assign(
       { trade:true, waiver:true, free_agent:true, draft:true, mineOnly:false },
-      JSON.parse(localStorage.getItem(fkey) || '{}')
+      JSON.parse(localStorage.getItem(accountKey(fkey)) || '{}')
     );
-    const persistF = () => { try { localStorage.setItem(fkey, JSON.stringify(filter)); } catch {} };
+    const persistF = () => { try { localStorage.setItem(accountKey(fkey), JSON.stringify(filter)); } catch {} };
 
     const header = h('div', { style:{ display:'flex', alignItems:'baseline', justifyContent:'space-between', marginTop:'8px', gap:'12px', flexWrap:'wrap' } },
       h('h2', { class:'page-title', style:{ fontSize:'1.2rem', margin:0 } }, 'Transactions'),
@@ -3865,7 +3940,7 @@
     const ckey = `tier-sheet-timeline::${lg.id}`;
     let cached = null;
     try {
-      const raw = localStorage.getItem(ckey);
+      const raw = localStorage.getItem(accountKey(ckey));
       if (raw) {
         const parsed = JSON.parse(raw);
         if (Date.now() - parsed.fetchedAt < 30 * 60 * 1000) cached = parsed;
@@ -3968,7 +4043,7 @@
         h('span', { style:{ borderLeft:'1px solid var(--border)', height:'18px', margin:'0 6px' } }),
         pill('mineOnly',   'My moves only'),
         h('button', { class:'ghost on-turf', style:{ padding:'4px 10px', fontSize:'0.72rem', marginLeft:'auto' }, onclick:() => {
-          try { localStorage.removeItem(ckey); } catch {}
+          try { localStorage.removeItem(accountKey(ckey)); } catch {}
           cached = null;
           renderLeagueTimeline(main, lg);
         }}, '↻ Refresh'),
@@ -4135,7 +4210,7 @@
       render(cached.txs);
     } else {
       fetchAll().then(txs => {
-        try { localStorage.setItem(ckey, JSON.stringify({ fetchedAt: Date.now(), txs })); } catch {}
+        try { localStorage.setItem(accountKey(ckey), JSON.stringify({ fetchedAt: Date.now(), txs })); } catch {}
         cached = { fetchedAt: Date.now(), txs };
         render(txs);
       }).catch(err => {
@@ -4407,6 +4482,14 @@
     for (const k of Object.keys(byPos)) {
       byPos[k].sort((a, b) => lineupOrder(b) - lineupOrder(a));
     }
+    // The points lineup uses the shared legal filler, including when a feed
+    // puts FLEX before a dedicated position. K/DEF have no Blueprint grade.
+    const redraftSlots = dynasty ? [] : offenseStartingSlots(league).filter(s => !['K','DEF'].includes(s.pos));
+    const redraftLineup = dynasty ? [] : fillLineup(
+      Object.values(byPos).flat().map(p => ({ p, pos: projPosGroup(p.sleeper?.pos), v: lineupOrder(p) })),
+      redraftSlots, false, true);
+    let redraftIndex = 0;
+    const redraftUsage = {}, dedicatedUsage = {};
     // For IDP positions, fall back to all rostered (no rank discrimination)
     if (league.is_idp) {
       for (const idpPos of ['LB','DB','DL']) {
@@ -4508,6 +4591,18 @@
         idpFlexCount++;
       } else continue;
 
+      if (!dynasty && ['QB','RB','WR','TE','FLEX','SUPER_FLEX'].includes(slot)) {
+        pick = redraftLineup[redraftIndex++]?.p || null;
+        const pos = pick ? projPosGroup(pick.sleeper?.pos) : null;
+        valueTier = pos ? (redraftUsage[pos] || 0) + 1 : 1;
+        if (pos) redraftUsage[pos] = valueTier;
+        if (['QB','RB','WR','TE'].includes(slot)) {
+          const i = dedicatedUsage[slot] || 0;
+          label = `${slot}${i + 1}`;
+          refVal = redraftBoard.byPos[slot]?.[i]?.pts || 0;
+          dedicatedUsage[slot] = i + 1;
+        }
+      }
       const pickPid = pick?.sleeper?.id ?? pick?.ranked?._sleeperId ?? pick?.ranked?.sleeperId;
       let myVal = pick ? tierValue(pick.ranked, league, null, valueTier) : 0;
       if (!dynasty && pickPid != null) {
@@ -4557,6 +4652,18 @@
     const matching = slotResult.slots.filter(s => s.slot.startsWith(posPrefix));
     if (!matching.length) return 0;
     return Math.round((matching.reduce((s, x) => s + x.grade, 0) / matching.length) * 10) / 10;
+  }
+  // Starters above replacement, off the SAME slot rows the Starters table draws.
+  // Above = prints +1 or better in the VOR column. No VOR on an occupied slot is
+  // unavailable, not zero; an empty slot counts in the total and never above.
+  function slotVorCount(slots) {
+    let above = 0, unavailable = 0, empty = 0;
+    for (const s of slots) {
+      if (s.player === '(empty)') empty++;
+      else if (!Number.isFinite(s.vor)) unavailable++;
+      else if (Math.round(s.vor) > 0) above++;
+    }
+    return { above, unavailable, empty, total: slots.length };
   }
   function redraftBenchRaw(rosterPlayers, lg) {
     const starters = new Set(gradeLineupSlots(rosterPlayers, lg).slots.map(s => s.pid).filter(Boolean));
@@ -4627,7 +4734,7 @@
     if (!lg) return { years: {}, totalAcquired: 0, totalLost: 0 };
     // Only consider entries with a season; defensive against any contamination.
     const picks = (lg.traded_picks || []).filter(p => p && p.season);
-    const draftRounds = (lg.drafts && lg.drafts[0]?.settings?.rounds) || 4;
+    const draftRounds = (lg.drafts && lg.drafts[0]?.settings?.rounds) || (window.FF_ACCOUNT ? 0 : 4);
     const currentSeason = String(new Date().getFullYear());
     // Show only seasons relevant for trading: current year + next year. Most
     // leagues don't allow trading picks 2+ years out yet. If the current
@@ -4861,7 +4968,7 @@
           r.is_me ? h('span', { class:'page-eyebrow-tag', style:{ background:'rgba(45,212,191,.18)', color:'var(--cat-cornerstone)' } }, 'YOU') : null
         ),
         h('h1', { class:'page-title' }, r.team_name),
-        h('p', { class:'page-sub' }, `${r.owner_name} · ${lg.name} · ${lg.total_rosters}-team ${lg.is_superflex ? 'SF' : '1QB'} · PPR`)
+        h('p', { class:'page-sub' }, `${r.owner_name} · ${lg.name} · ${lg.total_rosters}-team ${lg.is_superflex ? 'SF' : '1QB'} · ${Number(lg.scoring?.rec || 0) === 1 ? 'PPR' : Number(lg.scoring?.rec || 0) === 0.5 ? 'Half PPR' : Number(lg.scoring?.rec || 0) === 0 ? 'Non-PPR' : 'Custom scoring'}`)
       ),
       h('div', { class:'page-actions' },
         h('a', { href:`#trade/${lg.id}` }, h('button', { class:'ghost' }, 'Trade Lab ⇄')),
@@ -4886,6 +4993,32 @@
     ));
 
     const rosterDynasty = isDynastyLeague(lg);
+    if (lg.projection_unavailable) {
+      main.appendChild(h('div', { class:'card', role:'status' },
+        h('h2', { class:'card-title' }, 'League-scored analysis unavailable'),
+        h('p', { class:'tip' }, 'This scoring setup is not covered by the shared projection model. Starter comparisons, grades and trade advice are unavailable; your linked roster is shown below.')
+      ));
+      const sections = [
+        ['Starters', r.starters || []],
+        ['Bench', (r.players || []).filter(pid => !(r.starters || []).includes(pid) && !(r.reserve || []).includes(pid) && !(r.taxi || []).includes(pid))],
+        ['IR / Reserve', r.reserve || []], ['Taxi', r.taxi || []],
+      ];
+      for (const [label, ids] of sections) {
+        if (!ids.length) continue;
+        main.appendChild(h('h2', { class:'section-title' }, label));
+        main.appendChild(h('div', { class:'table-wrap card' }, h('table', { class:'data' },
+          h('thead', null, h('tr', null, ...['Player','Pos','Team'].map(title => h('th', null, title)))),
+          h('tbody', null, ...ids.map(pid => {
+            const p = window.PLAYERS[pid];
+            return h('tr', null,
+              h('td', null, p ? h('button', { class:'ghost', onclick:()=>openPlayerDetail(p.name, pid) }, p.name) : `Unknown ${pid}`),
+              h('td', null, p ? posChip(p.pos) : 'Unavailable'), h('td', null, p ? teamChip(p.team) : 'Unavailable'));
+          }))
+        )));
+      }
+      if (lg.import_unmatched?.length) main.appendChild(h('p', { class:'source-note' }, `Unmatched roster entries: ${lg.import_unmatched.join(', ')}.`));
+      return;
+    }
     const s = computeRosterStrength(r, lg);
     const myRank = rankInLeague(lg, r.roster_id);
     const lineupRank = lineupRankInLeague(lg, r.roster_id);
@@ -4898,7 +5031,9 @@
     const dcSummary = getDraftCapitalSummary(r, leagueId);
     const draftPicksCount = 8 + dcSummary.totalAcquired - dcSummary.totalLost;
     const outlook = classifyTwoYearOutlook(valueTier, valueArchetype, draftPicksCount);
-    const slotResult = gradeLineupSlots(rp, lg);
+    const startable = new Set(startableIds(r));
+    const lineupPlayers = rosterDynasty ? rp : rp.filter(p => startable.has(String(p.pid)) && !isSidelined(p.pid));
+    const slotResult = gradeLineupSlots(lineupPlayers, lg);
     const grades = {
       QB: rosterDynasty ? gradePosition(rp, 'QB', lg) : gradePositionFromSlots(slotResult, 'QB'),
       RB: rosterDynasty ? gradePosition(rp, 'RB', lg) : gradePositionFromSlots(slotResult, 'RB'),
@@ -4931,7 +5066,6 @@
                        : 'var(--red)';
     main.appendChild(h('div', { class:'blueprint-row' },
       h('div', { class:`br-tier vt-${valueTier.tier.toLowerCase()}` },
-        h('div', { class:'br-eyebrow' }, 'Roster Value Tier'),
         h('div', { class:'br-tier-value' }, valueTier.tier),
         h('div', { class:'br-tier-desc' }, valueTier.desc),
         h('div', { class:'br-arch-line' },
@@ -4942,7 +5076,7 @@
           rosterDynasty ? h('span', { class:'br-arch', title: outlook.desc }, h('span', { class:'br-arch-tag' }, outlook.tag), ' outlook') : null,
         ),
       ),
-      h('div', { class:'br-stat' },
+      h('div', { class:'br-stat br-stat-value' },
         h('div', { class:'br-stat-num tnum' }, fmt.decimal(s.total,1)),
         h('div', { class:'br-eyebrow' }, rosterDynasty ? 'Roster value, picks included' : 'Roster value'),
         h('div', { class:'br-stat-sub', title:'Every rostered asset summed, future picks included.' },
@@ -4997,16 +5131,13 @@
             h('div', { class:'br-stat-sub' }, 'Premier + building blocks'),
           )
         // Redraft has no premier/building-block split to count. What matters is
-        // how many of this week's starting slots are filled by a player who
-        // actually beats the waiver wire.
+        // how many slots in the best legal ROS lineup beat the waiver wire.
         : (() => {
-            const slots = offenseStartingSlots(lg).length;
-            const above = getRosterPlayers(r)
-              .filter(pp => (vorByPid(pp._sleeperId, lg, 'blend') || 0) > 0).length;
-            return h('div', { class:'br-stat' },
-              h('div', { class:'br-stat-num tnum' }, `${Math.min(above, slots)} / ${slots}`),
+            const c = slotVorCount(slotResult.slots);
+            return h('div', { class:'br-stat', title:'Best legal rest-of-season lineup: graded slots whose VOR in the Starters table is +1 or better. K and DEF are not graded.' },
+              h('div', { class:'br-stat-num tnum' }, `${c.above} / ${c.total}`),
               h('div', { class:'br-eyebrow' }, 'Starters above replacement'),
-              h('div', { class:'br-stat-sub' }, 'Slots beating the waiver wire'),
+              h('div', { class:'br-stat-sub' }, c.unavailable ? `${c.unavailable} with no projection · ROS` : 'Best legal ROS lineup · excludes K/DEF'),
             );
           })(),
       h('div', { class:'br-stat br-stat-grade' },
@@ -6713,7 +6844,7 @@
               shape === 'floor' ? 'FLOOR' : 'SWING') : null,
             k.staleWeeks > 1 ? h('span', { class: 'badge' }, 'STALE') : null),
           h('td', null, teamChip(k.team)),
-          h('td', null, h('span', { class: 'tip' }, `${k.home ? 'vs' : '@'} ${k.opp}`)),
+          h('td', null, h('span', { class: 'tip' }, `${k.home ? 'vs' : '@'} `, teamChip(k.opp, true))),
           h('td', { class: 'sr-num tnum', title: 'Vegas implied team total, the single best input' },
             k.impliedTotal != null ? fmt.decimal(k.impliedTotal, 1) : '·'),
           h('td', { class: 'sr-num tnum' }, fmt.decimal(k.exp, 1)),
@@ -6996,7 +7127,7 @@
       } }, '↑ Import Settings'),
       h('button', { class:'ghost', style:{ color:'var(--red)' }, onclick: () => {
         if (!confirm('Reset all settings to defaults? This removes custom sources and toggles.')) return;
-        localStorage.removeItem(SETTINGS_KEY);
+        localStorage.removeItem(accountKey(SETTINGS_KEY));
         state.settings = loadSettings();
         ensureSourceDefaults(); ensureExpertColDefaults(); saveSettings(); invalidateRankIndex(); viewSources();
         toast('Settings reset', 'success');
@@ -7600,7 +7731,7 @@
   async function loadTradePartnerHistory(lg) {
     const ckey = `tier-sheet-partners-v5::${lg.id}`;
     try {
-      const raw = JSON.parse(localStorage.getItem(ckey) || 'null');
+      const raw = JSON.parse(localStorage.getItem(accountKey(ckey)) || 'null');
       if (raw && Date.now() - raw.fetchedAt < PARTNER_TTL) {
         return raw.data;
       }
@@ -7731,7 +7862,7 @@
         trades: e.trades.sort((a, b) => b.at - a.at) }))
         .sort((a, b) => b.n - a.n || b.last - a.last),
     };
-    try { localStorage.setItem(ckey, JSON.stringify({ fetchedAt: Date.now(), data })); } catch {}
+    try { localStorage.setItem(accountKey(ckey), JSON.stringify({ fetchedAt: Date.now(), data })); } catch {}
     return data;
   }
 
@@ -7776,6 +7907,7 @@
   }
 
   function fantasySos(lg) {
+    if (lg?.projection_unavailable) return null;
     const key = String(lg.id);
     if (_sosCache.has(key)) return _sosCache.get(key);
     const sched = (window.FANTASY_SCHEDULE?.leagues || {})[key];
@@ -7863,13 +7995,11 @@
     const cap = Math.max(...d.rows.map(r => r.remaining || 0), 1);
     const card = h('div', { class:'card sos-panel' },
       h('div', { class:'card-title' }, 'Schedule difficulty (opponent projected points)'),
-      h('p', { class:'tip sos-note' },
-        `Average projected points of the managers you still play, weeks ${d.curWeek} to ${d.lastWeek}. `
-        + `Each opponent is scored on his own best legal lineup that week, so a week where his players `
-        + `are on bye counts as the bench body he would actually start, not as a free win.`
-        + ` Opponent bye cost is gross production unavailable from starters on teams you still face, `
-        + `charged at each starter's per-game average. LEFT already includes their bench replacements.`
-        + (d.medianScoring ? ' This league also scores against the league median, so the opponent is only half of each week.' : '')),
+      h('p', { class:'tip sos-note' }, `W${d.curWeek}-${d.lastWeek} remaining opponents. Higher projected points = harder.`),
+      h('details', { class:'sos-method' }, h('summary', null, 'How difficulty is measured'),
+        h('p', { class:'tip' }, 'Average of each opponent’s best legal weekly lineup, including bench replacements for players on bye. LEFT is remaining opponents; PLAYED is completed opponents. OPP BYE is gross starter production unavailable before replacement.'
+          + (d.medianScoring ? ' The median game is additional to the head-to-head opponent.' : '') + ' Weekly projection freshness is shown in the data panel.')),
+
     );
     const list = h('div', { class:'sos-rows' });
     for (const r of d.rows) {
@@ -8700,6 +8830,14 @@
     ));
 
     const sideARoster = lg.rosters.find(r => r.roster_id === TRADE_STATE.sideA.rosterId);
+    if (lg.projection_unavailable) {
+      main.appendChild(h('div', { class:'card' },
+        h('h2', { class:'card-title' }, 'Trade analysis unavailable'),
+        h('p', { class:'tip' }, 'This league scoring setup is not covered by the shared projection model.'),
+        h('a', { href:`#league/${lg.id}` }, 'Back to league')
+      ));
+      return;
+    }
     const sideBRoster = lg.rosters.find(r => r.roster_id === TRADE_STATE.sideB.rosterId);
 
     // Refs we'll mutate after initial render.
@@ -9349,6 +9487,7 @@
     // phantom KTC picks into a redraft roster through this function.
     if (!isDynastyLeague(league)) return [];
     const result = [];
+    if ((league.missing || []).some(m => m === 'Drafts' || m === 'Traded picks')) return [];
     const traded = league.traded_picks || [];
     // A season's rookie picks stop being current assets once that draft
     // completes, they've already converted into rostered rookies. Drop any
@@ -9369,7 +9508,7 @@
     for (let y = calYear; y <= calYear + horizon + 2 && seasons.length < horizon; y++) {
       if (!completed.has(String(y))) seasons.push(String(y));
     }
-    const draftRounds = Math.max(4, ...(league.drafts || [])
+    const draftRounds = Math.max(window.FF_ACCOUNT ? 0 : 4, ...(league.drafts || [])
       .filter(d => seasons.includes(String(d.season)))
       .map(d => Number(d.settings?.rounds) || 0));
     const rounds = Array.from({ length: draftRounds }, (_, i) => i + 1);
@@ -10274,6 +10413,12 @@
   function viewWatch() {
     const main = $('#main');
     main.innerHTML = '';
+    if ((window.LEAGUES || []).some(l => l.rosters?.some(r => r.is_me) && l.buy_in == null)) {
+      main.append(h('div', { class: 'page-header' }, h('h1', { class: 'page-title' }, 'Rooting interests')),
+        h('div', { class: 'card' }, h('p', {}, 'Dollar-weighted rooting interests are unavailable. Sleeper does not publish league buy-ins.'),
+          h('p', { class: 'muted' }, 'Your league rosters and weekly player projections are available in each league.')));
+      return;
+    }
     const board = watchBoard();
     const live = board.leagues.filter(l => l.opp);
 
@@ -10424,14 +10569,14 @@
 
   function loadMarks() {
     if (_marks) return _marks;
-    try { _marks = JSON.parse(localStorage.getItem(MARKS_KEY) || '{}'); }
+    try { _marks = JSON.parse(localStorage.getItem(accountKey(MARKS_KEY)) || '{}'); }
     catch { _marks = {}; }
     if (!_marks.target) _marks.target = {};   // `${leagueId}:${pid}` -> {ts, note}
     if (!_marks.block) _marks.block = {};
     return _marks;
   }
   function saveMarks() {
-    try { localStorage.setItem(MARKS_KEY, JSON.stringify(loadMarks())); } catch {}
+    try { localStorage.setItem(accountKey(MARKS_KEY), JSON.stringify(loadMarks())); } catch {}
   }
   const markKey = (leagueId, pid) => `${leagueId}:${pid}`;
   function isMarked(kind, leagueId, pid) {
@@ -10564,8 +10709,8 @@
 
     // ===== Personal to-do list (localStorage, your own items) =====
     const TKEY = 'tier-sheet-todos';
-    const loadTodos = () => { try { return JSON.parse(localStorage.getItem(TKEY) || '[]'); } catch { return []; } };
-    const saveTodos = (t) => { try { localStorage.setItem(TKEY, JSON.stringify(t)); } catch {} };
+    const loadTodos = () => { try { return JSON.parse(localStorage.getItem(accountKey(TKEY)) || '[]'); } catch { return []; } };
+    const saveTodos = (t) => { try { localStorage.setItem(accountKey(TKEY), JSON.stringify(t)); } catch {} };
     let todos = loadTodos();
     const listWrap = h('div', { class:'todo-list' });
     const renderTodos = () => {
@@ -11036,6 +11181,49 @@
         + (idpLg ? `A defender has no weekly feed, so his is the season projection in ${idpLg.short_name || idpLg.name} scoring, per game. ` : '')
         + `Defense-vs-position is ${sos ? sos.season : 'last season'} PPR allowed to ${pos || 'the position'}, `
         + `1 = toughest, 32 = easiest.`));
+  }
+
+  // Six outside weekly boards on one man (window.ALEXANDRIA, build_alexandria.py).
+  // Each source's own positional rank; the spread is how far apart they sit.
+  // A source that did not rank him is absent, not last.
+  function alexandriaView(A, pid) {
+    const p = A && A.players && A.players[String(pid)];
+    if (!p) return null;
+    const ranks = p.r.filter(r => r != null);
+    return {
+      week: A.week, pos: p.pos, spread: p.spread,
+      lo: ranks.length ? Math.min(...ranks) : null, hi: ranks.length ? Math.max(...ranks) : null,
+      cells: A.providers.map((s, i) => ({
+        name: s.id === 'fantasyfootballcalculator-com' ? 'FF Calc' : s.name,
+        label: s.label, rank: p.r[i], pts: p.p[i],
+      })),
+    };
+  }
+
+  function alexandriaBlock(sleeper) {
+    const A = window.ALEXANDRIA;
+    const v = sleeper && alexandriaView(A, sleeper.id);
+    if (!v) return null;
+    const account = window.FF_ACCOUNT?.S?.snap;
+    const cur = account?.week || window.WEEKLY_RANKINGS?.liveWeek || window.WEEKLY_RANKINGS?.currentWeek;
+    const season = account?.season || window.WEEKLY_RANKINGS?.season;
+    const fetched = Date.parse(A.fetched), age = Date.now() - fetched;
+    const stale = (cur && Number(cur) !== Number(v.week)) || (season && Number(season) !== Number(A.season))
+      || !Number.isFinite(age) || age > 7 * 24 * 60 * 60 * 1000;
+    const cell = (label, value, sub, title) => h('div', { class:'tw-cell', title: title || '' },
+      h('div', { class:'tw-val tnum' }, value), h('div', { class:'tw-lab' }, label),
+      h('div', { class:'tw-sub' }, sub));
+    return h('div', { class:'card tw-card alex-card' },
+      h('div', { class:'card-title' }, `Week ${v.week} source ranks`,
+        stale ? h('span', { class:'ctx-stale', title:`Built for ${A.season}, week ${v.week}; active season ${season || "unknown"}, week ${cur || "unknown"}. A board is stale after 7 days or when the season/week differs.` }, 'stale') : null),
+      h('div', { class:'tw-row' },
+        cell('spread', v.spread == null ? '·' : v.spread,
+          v.spread == null ? 'one source' : `${v.pos}${v.lo} to ${v.pos}${v.hi}`,
+          'Worst rank minus best rank across the sources that ranked him.'),
+        ...v.cells.map(c => cell(c.name, c.rank == null ? '·' : `${v.pos}${c.rank}`,
+          c.rank == null ? 'not ranked' : c.pts == null ? '' : `${fmt.decimal(c.pts, 1)} pts`, c.label))),
+      h('p', { class:'tip tw-note' }, `Full PPR, ${A.season}. Updated ${A.fetched ? new Date(A.fetched).toLocaleDateString() : 'date unavailable'}. `,
+        h('a', { href:A.url, target:'_blank', rel:'noopener noreferrer' }, 'Source boards')));
   }
 
   function historyBlock(sleeper) {
@@ -11753,6 +11941,7 @@
           return btns.length ? h('div', { class:'mark-row' }, ...btns) : null;
         })() : null,
         thisWeekBlock(sleeper),
+        alexandriaBlock(sleeper),
         ownerRows.length ? h('div', null,
           // No plate around this band, so no -4px side bleed: it ran out of the box.
           h('div', { class:'card-title', style:{ margin:'-4px 0 6px' } }, 'Owned in your leagues'),
@@ -12092,7 +12281,7 @@
     const M = window.PROSPECT_MODEL;
     if (!M || tr == null) return h('span', { class:'muted' }, '·');
     return h('span', { class:`tier-chip ${PM_TIER_CLS[tr]} prm-tier`,
-      title:`${M.tiers[tr]}: talent score ${M.tier_cut[tr]} or better, a percentile against every drafted player at the position since 2008` },
+      title:`${M.tiers[tr]} college profile: percentile ${M.tier_cut[tr]} or better against drafted players at this position since 2008. Not overall prospect value.` },
       M.tiers[tr]);
   }
   // Five pips for a 0-100 score on a card face (DESIGN.md: countable, no false precision).
@@ -12167,10 +12356,11 @@
     // The tier's track record rides on the tile; the paragraph that restated it with the holdout
     // AUC caveats was cut (Trevor, 2026-10-04). Those caveats stay on the College % column header.
     const tiles = [
-      pmTile('Tier', pmTierChip(r.tr),
-        `Our tier, cut on the talent score.${tierHit && tierHit[1] != null ? ` Past ${M.tiers[r.tr]} ${r.p}s, all drafted, hit ${pmPct(tierHit[1])} of the time (${tierHit[0]} players, out of sample)` : ''}`,
+      pmTile('Draft-capital rating', 'Not available', 'No validated overall or draft-capital rating before the draft'),
+      pmTile('Profile tier', pmTierChip(r.tr),
+        `College profile tier.${tierHit && tierHit[1] != null ? ` Past ${M.tiers[r.tr]} ${r.p}s, all drafted, hit ${pmPct(tierHit[1])} of the time (${tierHit[0]} players, out of sample)` : ''}`,
         tierHit && tierHit[1] != null ? `past hit ${pmPct(tierHit[1])}` : null),
-      pmTile('Talent', h('span', null, `${r.ts} `, pmPips(r.ts)),
+      pmTile('Profile percentile', h('span', null, `${r.ts} `, pmPips(r.ts)),
         `College profile with no draft capital: percentile against every drafted ${r.p} since 2008`,
         `#${rank} of ${peers.length} listed`),
       r.pd != null ? pmTile('Pre-draft', pmPct(r.pd),
@@ -12202,16 +12392,19 @@
     const capOnly = meta.shipped === 'draft';
     const years = (meta.target || '').replace(/^.* in NFL years /, '');
     const title = h('div', { class:'card-title' }, 'Prospect profile');
-    if (me.nocfb) {
-      return h('div', { class:'card adv-card prm-card' }, title,
-        h('div', { class:'tip' }, `No college line on file (the college feed is FBS only). `
-          + `Hit chance from draft capital alone: ${pmPct(me.hp)}. ${meta.target}.`));
-    }
+    const capital = window.CAPITAL_RATINGS;
+    const rating = capital && capital.players[String(sleeper.id)];
+    const capitalTile = (format) => pmTile(`Draft-capital rating (${format === 'F2' ? 'SF' : '1QB'})`,
+      rating && rating[format] != null ? `${rating[format].toFixed(1)}/100` : 'Not available',
+      'Draft slot only, not overall talent or hit probability. Common three-year starter-value target, normalized to a fixed modern 2012-2023 drafted-player benchmark, not historical as-of percentiles. Historical fits embargo three-year labels.',
+      `${capital ? capital.formats[format] : '10-team PPR'}; pick ${me.pk}`);
     const tiles = [
-      pmTile('Tier', pmTierChip(me.tr), 'Our tier, cut on the talent score'),
-      me.ts != null ? pmTile('Talent', h('span', null, `${me.ts} `, pmPips(me.ts)),
+      capitalTile('F1'),
+      me.p === 'QB' ? capitalTile('F2') : null,
+      me.ts != null ? pmTile('Profile percentile', h('span', null, `${me.ts} `, pmPips(me.ts)),
         `College profile with no draft capital: percentile against every drafted ${me.p} since 2008`) : null,
-      pmTile('Hit chance', pmPct(me.hp),
+      me.tr != null ? pmTile('Profile tier', pmTierChip(me.tr), 'College profile tier only, not overall prospect value') : null,
+      pmTile('Model hit estimate', pmPct(me.hp),
         capOnly ? `Draft capital alone. At ${me.p}, college stats did not beat draft slot on the held-out ${meta.holdout || ''} draft classes.`
           : 'College profile plus draft capital',
         capOnly ? `slot only${me.tp != null ? `, college alone ${pmPct(me.tp)}` : ''}` : `talent only ${pmPct(me.tp)}`),
@@ -12237,7 +12430,7 @@
   // Route: #prospects/<ALL|QB|RB|WR|TE>/<all|year>; no class is Future classes, the default.
   // Future classes are college players in an upcoming draft. All classes adds every drafted class
   // the model scored, marked by pick, and those rows open the NFL player card (Trevor, 2026-10-05).
-  const prospectSort = { key:'ts', dir:'desc', q:'' };
+  const prospectSort = { key:'capital', dir:'desc', q:'' };
   function viewProspects(posArg, clsArg) {
     const main = $('#main'); main.innerHTML = '';
     const M = window.PROSPECT_MODEL;
@@ -12283,10 +12476,9 @@
     main.appendChild(breadcrumbs([{ label:'Tools' }, { label:'Prospects' }]));
     main.appendChild(pageHeader({
       eyebrow:'PROSPECT MODEL',
-      title: hist ? 'Prospects, every class' : 'College prospects',
-      sub: (one ? `Hit = ${(meta.target || '').replace(/^Top/, 'top')}. ` : '')
-        + (hist ? `Classes through ${M.season} are drafted NFL players, marked by pick. ` : '')
-        + `Talent is the college profile with no draft capital, as a percentile against every drafted ${posWord} since 2008.`,
+      title: hist ? 'Prospects' : 'College prospects',
+      sub: hist ? 'Draft-capital rating: 10-team PPR, 1QB. College profile is separate.'
+        : 'College profiles. No validated overall rating before the draft.',
     }));
 
     const filterBar = h('div', { class:'filters prm-filters' });
@@ -12310,8 +12502,10 @@
       one ? null : ['p', 'Pos', { asc:true, fit:true }],
       cls === 'all' || cls === 'future' ? ['cls', 'Class', { right:true, asc:true, title:'Draft he went in, or the first one he is eligible for' }] : null,
       hist ? ['pk', 'Pick', { right:true, asc:true, title:'Overall draft pick. Blank: not drafted yet' }] : null,
-      ['ts', 'Talent', { right:true, title:`College profile, no draft capital: percentile vs every drafted ${posWord} since 2008` }],
-      ['tr', 'Tier', { asc:true, fit:true, title:'Our tier, cut on the talent score' }],
+      hist ? ['capital', 'Capital 1QB', { right:true, title:'Draft-capital rating, 0-100 percentile of expected three-year starter value. 10-team PPR, 1QB. Not talent or hit probability; blank before draft or without eligible history.' }] : null,
+      hist && pos === 'QB' ? ['capitalSF', 'Capital SF', { right:true, title:'Draft-capital rating in 10-team PPR superflex; same common three-year target and historical reference.' }] : null,
+      ['ts', 'Profile %ile', { right:true, title:`College profile, no draft capital: percentile vs every drafted ${posWord} since 2008. Not overall talent.` }],
+      ['tr', 'Profile tier', { asc:true, fit:true, title:'College profile tier, not overall prospect value' }],
       all.some(pdOk) ? ['pd', 'Pre-draft', { right:true, title:'Chance he hits, before the draft, counting the chance he goes undrafted, '
         + `compared with players at the same college year${nst && nst.live_n ? `, plus his team's first ${nst.live_n} games this season` : ''}`
         + `${nst && /^S6/.test(nst.model) ? ', rescaled on players who came back for another college season' : ''}`
@@ -12325,6 +12519,7 @@
         { right:true, title:`Hit chance if drafted in ${r}` }]) : []),
     ].filter(Boolean);
     const get = (r, k) => /^r\d$/.test(k) ? (r.r || [])[Number(k[1])] : k.startsWith('st.') ? (r.st || {})[k.slice(3)]
+      : k === 'capital' || k === 'capitalSF' ? (r.id && window.CAPITAL_RATINGS && window.CAPITAL_RATINGS.players[r.id] || {})[k === 'capitalSF' ? 'F2' : 'F1']
       : k === 'pd' ? (pdOk(r) ? r.pd : null) : r[k];
     const fmtCell = (r, k) => {
       const v = get(r, k);
@@ -12337,6 +12532,7 @@
       if (k.startsWith('st.')) return stat.find(s => `st.${s[0]}` === k)[2](v);
       if (k === 'tp' || k === 'pd' || k === 'hp' || /^r\d$/.test(k)) return pmPct(v);
       if (k === 'ba' || k === 'age') return pmNum(1)(v);
+      if (k === 'capital' || k === 'capitalSF') return v == null ? '·' : Number(v).toFixed(1);
       return v == null ? '·' : String(v);
     };
     const card = h('div', { class:'card' });
@@ -12346,7 +12542,7 @@
       card.innerHTML = '';
       const q = (prospectSort.q || '').toLowerCase();
       const rows = q ? all.filter(r => `${r.n} ${r.sch || ''}`.toLowerCase().includes(q)) : all.slice();
-      const { key, dir } = cols.some(c => c[0] === prospectSort.key) ? prospectSort : { key:'ts', dir:'desc' };
+      const { key, dir } = cols.some(c => c[0] === prospectSort.key) ? prospectSort : { key:'n', dir:'asc' };
       const sgn = dir === 'desc' ? -1 : 1;
       rows.sort((a, b) => {
         const x = get(a, key), y = get(b, key);
@@ -12545,7 +12741,7 @@
         h('td', { class: 'tnum', style: { color: 'var(--fg-3)' } }, `W${g.week}`),
         h('td', null,
           h('span', { class: 'muted', style: { fontSize: '10px' } }, g.home ? 'vs ' : '@ '),
-          h('span', { style: { fontWeight: 700, color: defColor(g.opp) } }, g.opp)),
+          h('span', { style: { fontWeight: 700, color: defColor(g.opp) } }, teamChip(g.opp, true))),
         h('td', { class: 'tnum', style: { textAlign: 'right' } }, g.implied_pf ?? '~'),
         h('td', { class: 'tnum', style: { textAlign: 'right', color: 'var(--fg-3)' } }, g.implied_pa ?? '~'),
         h('td', null, h('span', { class: 'muted', style: { fontSize: '9px' } }, g.posted ? 'VEG' : 'proj')));
@@ -12800,9 +12996,11 @@
     const map = projMap('offense'), wk = rosPointsByPid(lg), lines = yearsOut ? null : wk, ros = src === 'ros' ? lines : null;
     const takes = new Set([...SLOT_TAKES.SUPER_FLEX, ...offenseStartingSlots(lg).flatMap(s => SLOT_TAKES[s.pos])]);
     const irSlot = lines && !ros ? new Set((lg.rosters || []).flatMap(r => (r.reserve || []).map(String))) : null;
-    const ids = new Set([...startableIds(roster, { includeStashed: yearsOut > 0 || !!ros }), ...(extraIds || []).map(String)]);
+    const ids = new Set([...startableIds(ros ? { ...roster, reserve: [] } : roster, { includeStashed: yearsOut > 0 }), ...(extraIds || []).map(String)]);
+    const weekly = yearsOut ? null : new Map((window.WEEKLY_RANKINGS?.players || []).map(p => [String(p.id), p.sleeper]));
     const pool = [];
     for (const pid of ids) {
+      if (weekly?.size && !weekly.has(pid)) continue;
       const sp = window.PLAYERS?.[pid] || {};
       // An IR designation means the same as the IR slot: his weekly lines say when he
       // is back, and no line left means the season is over. Only the slot counted, so
@@ -12840,7 +13038,8 @@
         pid, name: p?.name || sp.name || pid, pos, mean, nflTeam: p?.team || sp.team || '',
         sd: mean * (SIM.cv[pos] != null ? SIM.cv[pos] : 0.55),
         hazard: injuryHazard(pos, (sp.age || 25) + yearsOut),
-        startOut,
+        weekly: weekly?.get(pid) || null,
+        startOut: weekly?.has(pid) ? 0 : startOut,
         questionable: yearsOut ? false : st === 'Questionable',
         mult: 1, bye: 0, outUntil: 0, v: mean, key: 0, e: 0,
       });
@@ -12874,7 +13073,7 @@
     const [b0, b1] = SIM.byeWeeks;
     for (const a of pool) {
       a.mult = Math.exp(simNormal(a.key, sim, 0) * SIM.projectionSigma - SIM.projectionSigma * SIM.projectionSigma / 2);
-      a.bye = b0 + Math.floor(simDraw(a.key, sim, 2) * (b1 - b0 + 1));
+      a.bye = a.weekly ? 0 : b0 + Math.floor(simDraw(a.key, sim, 2) * (b1 - b0 + 1));
       a.outUntil = a.startOut && a.startOut + played;
       a.v = a.mean * a.mult;
     }
@@ -12888,6 +13087,7 @@
   function simWeek(pool, slots, week, sim, teamKey, firstWeek = 1) {
     const avail = [], at = 8 * week + 8;   // this week's draw slots
     for (const a of pool) {
+      if (a.weekly && a.weekly[week - 1] == null) continue;
       if (week === a.bye) continue;
       if (week <= a.outUntil) continue;
       if (simDraw(a.key, sim, at) < a.hazard) {
@@ -12953,6 +13153,42 @@
       || window.FANTASY_SCHEDULE?.leagues?.[String(lg.id)]?.playoffStart || 15;
     const rounds = Math.ceil(Math.log2(teams));
     return { teams, startWeek, regularWeeks: startWeek - 1, rounds, lastWeek: startWeek + rounds - 1 };
+  }
+
+  // Only forecast a fully covered regular season under supported rules.
+  function forecastWeeks(lg) {
+    if (lg.forecast_unavailable) return { ok:false, reason:lg.forecast_unavailable };
+    const sched = window.FANTASY_SCHEDULE?.leagues?.[String(lg.id)];
+    const s = lg.settings || {}, rule = k => lg[k] ?? s[k];
+    const playoffStart = rule('playoff_week_start') ?? sched?.playoffStart;
+    const teams = rule('playoff_teams');
+    const median = !!sched?.medianScoring, perWeek = median ? 2 : 1;
+    const out = { ok: false, currentWeek: lg.week, median, perWeek, playoffStart, teams };
+    if (lg.status !== 'in_season') return { ...out, reason: 'Season is not in progress.' };
+    if (!Number.isInteger(playoffStart) || !Number.isInteger(teams) || teams < 2 || teams > (lg.rosters || []).length)
+      return { ...out, reason: 'Playoff rules are missing.' };
+    if (rule('divisions') == null || rule('playoff_seed_type') == null || rule('playoff_round_type') == null || rule('start_week') == null || rule('league_average_match') == null)
+      return { ...out, reason: 'League rule coverage is incomplete.' };
+    if (rule('divisions') > 1 || rule('playoff_seed_type') !== 0 || rule('playoff_round_type') !== 0 || rule('start_week') !== 1 || lg.is_idp)
+      return { ...out, reason: lg.is_idp ? 'IDP scoring is not covered by this season model.' : 'Division or custom seeding/round rules are not supported.' };
+    if (!sched || !!rule('league_average_match') !== median)
+      return { ...out, reason: 'Median-game rules or schedule are missing.' };
+    const regularWeeks = playoffStart - 1, completed = rule('last_scored_leg');
+    if (!Number.isInteger(completed) || completed < 0 || completed > regularWeeks)
+      return { ...out, reason: 'Completed-week coverage is missing.' };
+    const remaining = Array.from({ length: regularWeeks - completed }, (_, i) => completed + i + 1);
+    Object.assign(out, { completed, firstRemaining: completed + 1, regularWeeks, remaining,
+      playoffWeeks: Array.from({ length: Math.ceil(Math.log2(teams)) }, (_, i) => playoffStart + i) });
+    const rosters = lg.rosters || [], ids = rosters.map(r => String(r.roster_id)), idSet = new Set(ids);
+    if (!rosters.every(r => [r.wins, r.losses, r.ties, r.fpts, r.fpts_against].every(Number.isFinite)
+      && r.wins + r.losses + r.ties === completed * perWeek))
+      return { ...out, reason: 'Records do not match the completed weeks.' };
+    const pairsAll = wk => !!wk && ids.every(id => String(wk[id]) !== id && idSet.has(String(wk[id])) && String(wk[wk[id]]) === id);
+    if (!remaining.every(w => pairsAll(sched.weeks?.[w]))) return { ...out, reason: 'Remaining matchups are incomplete.' };
+    const wr = window.WEEKLY_RANKINGS;
+    if (remaining.length && (!wr || Number(wr.season) !== Number(lg.season) || (wr.liveWeek || wr.currentWeek) > completed + 1))
+      return { ...out, reason: 'Weekly projections do not cover the remaining weeks.' };
+    return { ...out, ok: true };
   }
 
   // ---- Multi-year title equity -------------------------------------------
@@ -13134,15 +13370,14 @@
     // week his lines resume (simPool), so a playoff rental reads as one. Leaving
     // him off both counted A.J. Brown (back week 8) out for all of 2026. Taxi
     // bodies do not play this season.
-    const stashed = yearsOut > 0 || src === 'ros';
     const pools = rosters.map(r => {
       const wi = whatIf && whatIf[r.roster_id];
       const drop = new Set((wi?.drop || []).map(String));
-      const keep = startableIds({ ...r, reserve: [] }, { includeStashed: stashed }).filter(p => !drop.has(String(p)));
+      const keep = startableIds({ ...r, reserve: [] }, { includeStashed: yearsOut > 0 }).filter(p => !drop.has(String(p)));
       const base = { ...r, players: keep, taxi: [], reserve: [] };
       return simPool(base, lg, src, wi?.add, yearsOut, extraPoints.get(r.roster_id));
     });
-    const stat = rosters.map(() => ({ playoff: 0, bye: 0, final: 0, title: 0, wins: 0, pts: 0 }));
+    const stat = rosters.map(() => ({ playoff: 0, bye: 0, final: 0, title: 0, wins: 0, ties: 0, pts: 0 }));
     const rnd = mulberry32(seed);   // the fallback random schedule only
     // A converted pick is named by its label, which two rosters can share.
     pools.forEach((pool, i) => { for (const a of pool) a.key = simKey(seed, a.pid.startsWith('pick:') ? `${rosters[i].roster_id}:${a.pid}` : a.pid); });
@@ -13155,7 +13390,7 @@
     // schedule on file falls back to the full replay instead of double counting.
     const sched = window.FANTASY_SCHEDULE?.leagues?.[String(lg.id)];
     const median = !!sched?.medianScoring;
-    const weeksIn = yearsOut || lg.status !== 'in_season' ? 0 : Math.min(cfg.regularWeeks, Math.max(0, (lg.week || 1) - 1));
+    const weeksIn = yearsOut || lg.status !== 'in_season' ? 0 : Math.min(cfg.regularWeeks, Math.max(0, lg.last_scored_leg ?? ((lg.week || 1) - 1)));
     const games = rosters.reduce((s, r) => s + (r.wins || 0) + (r.losses || 0) + (r.ties || 0), 0);
     const played = weeksIn && games === n * weeksIn * (median ? 2 : 1) ? weeksIn : 0;
     const first = played + 1;
@@ -13174,27 +13409,34 @@
 
     for (let s = 0; s < sims; s++) {
       const wins = rosters.map(r => played ? (r.wins || 0) + (r.ties || 0) / 2 : 0);
+      const ties = rosters.map(r => played ? (r.ties || 0) : 0);
       const pts = rosters.map(r => played ? (r.fpts || 0) : 0);
+      const against = rosters.map(r => played ? (r.fpts_against || 0) : 0);
       for (const pool of pools) rollSeason(pool, s, played);
       for (let w = first; w <= cfg.regularWeeks; w++) {
         const scores = pools.map((p, i) => simWeek(p, slots, w, s, teamKeys[i], first));
         for (let i = 0; i < n; i++) pts[i] += scores[i];
         for (const [a, b] of (pairsByWeek[w] || randomPairing(n, rnd))) {
+          against[a] += scores[b]; against[b] += scores[a];
           if (scores[a] > scores[b]) wins[a]++; else if (scores[b] > scores[a]) wins[b]++;
-          else { wins[a] += 0.5; wins[b] += 0.5; }
+          else { wins[a] += 0.5; wins[b] += 0.5; ties[a]++; ties[b]++; }
         }
         // Median leagues also play the field: top half of the week scores a win.
         if (median) {
           const sorted = scores.slice().sort((x, y) => x - y);
           const mid = (sorted[(n - 1) >> 1] + sorted[n >> 1]) / 2;
-          for (let i = 0; i < n; i++) wins[i] += scores[i] > mid ? 1 : scores[i] === mid ? 0.5 : 0;
+          for (let i = 0; i < n; i++) {
+            wins[i] += scores[i] > mid ? 1 : scores[i] === mid ? 0.5 : 0;
+            if (scores[i] === mid) ties[i]++;
+          }
         }
       }
-      // Seed by record, points-for as the tiebreak (Sleeper's default).
+      // Sleeper defaults: record, PF, higher PA, then a coin flip.
+      const coin = teamKeys.map(k => simDraw(k, s, 777));
       const seeded = Array.from({ length: n }, (_, i) => i)
-        .sort((a, b) => (wins[b] - wins[a]) || (pts[b] - pts[a]));
+        .sort((a, b) => (wins[b] - wins[a]) || (pts[b] - pts[a]) || (against[b] - against[a]) || (coin[b] - coin[a]));
       const field = seeded.slice(0, cfg.teams);
-      for (let i = 0; i < n; i++) { stat[i].wins += wins[i]; stat[i].pts += pts[i]; }
+      for (let i = 0; i < n; i++) { stat[i].wins += wins[i]; stat[i].ties += ties[i]; stat[i].pts += pts[i]; }
       for (const i of field) stat[i].playoff++;
 
       // Bracket: byes to the seeds above the nearest power of two, then re-seeded
@@ -13228,12 +13470,50 @@
       if (champions) champions.push(rosters[alive[0]].roster_id);
     }
 
-    return rosters.map((r, i) => ({
+    const res = rosters.map((r, i) => ({
       roster: r, rosterId: r.roster_id, teamName: r.team_name, isMe: !!r.is_me,
       playoff: stat[i].playoff / sims, bye: stat[i].bye / sims,
       final: stat[i].final / sims, title: stat[i].title / sims,
-      expWins: stat[i].wins / sims, expPts: stat[i].pts / sims,
+      expWins: stat[i].wins / sims, expTies: stat[i].ties / sims, expPts: stat[i].pts / sims,
     })).sort((a, b) => b.title - a.title);
+    // What the run assumed, for the standings forecast's honesty checks. An array
+    // property, so every existing caller that maps/sorts the rows is unaffected.
+    res.meta = { sims, src, played, first, regularWeeks: cfg.regularWeeks, median, teams: cfg.teams,
+      byes: (1 << Math.ceil(Math.log2(cfg.teams))) - cfg.teams,
+      scheduledWeeks: pairsByWeek.filter(Boolean).length };
+    return res;
+  }
+
+  // Reuse the same cached run as Projections. Ties remain a separate record term.
+  function standingsForecast(lg, { sims = 4000 } = {}) {
+    const fw = forecastWeeks(lg);
+    if (!fw.ok) return fw;
+    const src = isDynastyLeague(lg) ? 'blend' : 'ros';
+    const slots = offenseStartingSlots(lg);
+    if (fw.remaining.length) for (const r of lg.rosters) {
+      const pool = simPool({ ...r, reserve: [], taxi: r.taxi || [] }, lg, src);
+      const eligible = pool.filter(a => a.weekly && a.weekly.length >= fw.regularWeeks
+        && fw.remaining.some(w => a.weekly[w - 1] != null));
+      if (fillLineup(eligible, slots).length !== slots.length)
+        return { ...fw, ok: false, reason: 'Weekly lineup coverage is incomplete.' };
+    }
+    const res = oddsFor(lg, src, [], sims), meta = res.meta || {};
+    if (meta.played !== fw.completed || meta.teams !== fw.teams)
+      return { ...fw, ok: false, reason: 'Simulation and completed records do not match.' };
+    const rows = new Map();
+    for (const o of res) {
+      const ties = o.expTies;
+      rows.set(o.rosterId, { expW: o.expWins - ties / 2,
+        expL: fw.regularWeeks * fw.perWeek - o.expWins - ties / 2, expT: ties,
+        playoff: o.playoff, bye: meta.byes ? o.bye : null });
+    }
+    return { ...fw, sims, src, byes: meta.byes, rows };
+  }
+  function forecastPct(p) {
+    if (!Number.isFinite(p)) return 'Unavailable';
+    if (p >= 0.995) return '>99%';
+    if (p < 0.005) return '<1%';
+    return `${Math.round(p * 100)}%`;
   }
   function projPosGroup(pos) {
     if (['QB', 'RB', 'WR', 'TE', 'K'].includes(pos)) return pos;
@@ -13247,8 +13527,10 @@
   // (returning null) rather than zeroing keeps rosters comparable across sources:
   // a team whose players PrizePicks doesn't list shouldn't read as terrible.
   function projPoints(p, lg, src) {
+    if (lg?.projection_unavailable) return null;
+    if (window.FF_ACCOUNT && lg?.season && Number(lg.season) !== Number(window.WEEKLY_RANKINGS?.season)) return null;
     const scored = leagueScorePoints(p.stats && p.stats[src], lg);
-    return scored != null ? scored : (p[src] != null ? p[src] : null);
+    return scored != null ? scored : (window.FF_ACCOUNT && lg?.scoring ? null : p[src] != null ? p[src] : null);
   }
 
   function optimalOffense(roster, lg, src) {
@@ -13423,6 +13705,10 @@
       ),
       h('div', { class: 'page-actions' }, leagueSelector(lg.id, (id) => { PROJ_STATE.leagueId = id; navigate(`#projections/${id}`); }))
     ));
+    if (lg.projection_unavailable) {
+      main.appendChild(h('div', { class: 'empty' }, `League-scored projections and title odds are unavailable for ${lg.short_name || lg.name}: its scoring rules are not supported. Rosters and current records still show on the league pages.`));
+      return;
+    }
 
     // unit + source segmented controls
     const segRow = (label, items, active, onPick, mk) => {
@@ -13635,6 +13921,50 @@
     const f = rank / n;   // low rank = allows fewest = tough = red; high = easy = green
     return f <= 0.25 ? 'var(--red)' : f <= 0.5 ? 'var(--amber)' : f <= 0.75 ? 'var(--accent)' : 'var(--green)';
   }
+  // SOS week windows. currentWeek is Sleeper's state week (being played or next
+  // up), so Remaining keeps it and everything before it counts as completed.
+  // Playoffs come from the selected league's playoff_week_start, clamped to W18.
+  let SOS_GRID_WINDOW = 'remaining';
+  let SOS_GRID_LEAGUE = null;
+  const SOS_GRID_CUSTOM = { startWeek:15, lastWeek:17 };
+  function sosWindowWeeks(kind, currentWeek, playoff) {
+    const span = (a, b) => (a <= b ? Array.from({ length: b - a + 1 }, (_, i) => a + i) : []);
+    const wkLabel = (ws) => !ws.length ? 'no weeks' : ws.length === 1 ? `W${ws[0]}` : `W${ws[0]}-${ws[ws.length - 1]}`;
+    let weeks;
+    if (kind === 'full') weeks = span(1, 18);
+    else if (kind === 'playoffs') weeks = span(Math.max(1, playoff.startWeek), Math.min(18, playoff.lastWeek));
+    else weeks = span(Math.max(1, currentWeek || 1), 18);
+    return { kind, weeks, label: wkLabel(weeks) };
+  }
+  // Per team over the window: average opponent DvP rank (higher = easier), games
+  // with a rank, games whose opponent has no rank (unavailable, never 0), byes.
+  // Only a complete schedule proves a bye. Other gaps are unavailable.
+  // Rank 1 = easiest window, ties share.
+  function sosWindowRows(gridPos, teams, weeks, byeWeeks = {}) {
+    const rows = teams.map(t => {
+      const sched = gridPos[t], wk = {};
+      let sum = 0, rated = 0, unrated = 0, byes = 0;
+      for (const g of sched || []) wk[g.week] = g;
+      if (sched) for (const w of weeks) {
+        const g = wk[w];
+        if (!g) { if ((byeWeeks[t] || []).includes(w)) byes++; else unrated++; } else if (Number.isFinite(g.rank) && g.rank >= 1) { sum += g.rank; rated++; } else unrated++;
+      }
+      return { team: t, wk, avg: rated ? sum / rated : null, rated, unrated, byes, noSchedule: !sched, rank: null };
+    });
+    const ranked = rows.filter(r => r.avg != null).sort((a, b) => b.avg - a.avg);
+    ranked.forEach((r, i) => { r.rank = i && ranked[i - 1].avg === r.avg ? ranked[i - 1].rank : i + 1; });
+    return rows;
+  }
+  // key 'avg' or a week number; desc = easiest first; blanks sort last both ways.
+  function sosSortRows(rows, sort) {
+    const val = (r) => sort.key === 'avg' ? r.avg : (r.wk[sort.key] ? r.wk[sort.key].rank : null);
+    return rows.slice().sort((a, b) => {
+      const av = val(a), bv = val(b);
+      if (av == null && bv == null) return a.team < b.team ? -1 : 1;
+      if (av == null) return 1; if (bv == null) return -1;
+      return (sort.dir === 'desc' ? bv - av : av - bv) || (a.team < b.team ? -1 : 1);
+    });
+  }
   // ============================================================
   // Stats Lab - every public advanced stat, one sortable table
   // ============================================================
@@ -13643,10 +13973,10 @@
   // metric is a builder change and this view picks it up untouched.
   const STATS_LAB_KEY = 'ff-stats-lab-v1';
   function statsLabPrefs() {
-    try { return JSON.parse(localStorage.getItem(STATS_LAB_KEY) || '{}') || {}; } catch (_) { return {}; }
+    try { return JSON.parse(localStorage.getItem(accountKey(STATS_LAB_KEY)) || '{}') || {}; } catch (_) { return {}; }
   }
   function saveStatsLabPrefs(prefs) {
-    try { localStorage.setItem(STATS_LAB_KEY, JSON.stringify(prefs)); } catch (_) { /* private mode */ }
+    try { localStorage.setItem(accountKey(STATS_LAB_KEY), JSON.stringify(prefs)); } catch (_) { /* private mode */ }
   }
   function statFmt(v, f) {
     if (v == null || v === '') return '';
@@ -13760,10 +14090,10 @@
   // Named views are their own key so a bad write there cannot cost the live prefs.
   const STATS_VIEWS_KEY = 'ff-stats-lab-views-v1';
   function statsViews() {
-    try { const v = JSON.parse(localStorage.getItem(STATS_VIEWS_KEY) || '[]'); return Array.isArray(v) ? v : []; } catch (_) { return []; }
+    try { const v = JSON.parse(localStorage.getItem(accountKey(STATS_VIEWS_KEY)) || '[]'); return Array.isArray(v) ? v : []; } catch (_) { return []; }
   }
   function saveStatsViews(views) {
-    try { localStorage.setItem(STATS_VIEWS_KEY, JSON.stringify(views)); } catch (_) { /* private mode */ }
+    try { localStorage.setItem(accountKey(STATS_VIEWS_KEY), JSON.stringify(views)); } catch (_) { /* private mode */ }
   }
   // Bio filters read players.js and prospect.js by Sleeper id. An undrafted
   // player counts as round 8, so one min/max pair covers "Day 3 and UDFA".
@@ -15770,12 +16100,27 @@
     if (posArg && G.positions.includes(posArg.toUpperCase())) SOS_GRID_POS = posArg.toUpperCase();
     const pos = SOS_GRID_POS, n = G.n_def, WEEKS = Array.from({ length: 18 }, (_, i) => i + 1);
     const season = (G.basis || {}).current_season || (window.ADVANCED || {}).season;   // every cell opens its game page
+    // Current week: the live Sleeper pull, else the build's Sleeper state; only
+    // when neither is this season, the week after the grid's last completed one.
+    const wr = window.WEEKLY_RANKINGS || {};
+    const curWeek = (Number(wr.season) === Number(season)) && (wr.liveWeek || wr.currentWeek)
+      || ((G.basis || {}).current_through_week || 0) + 1;
+    const leagues = window.LEAGUES || [];
+    const plg = leagues.find(l => l.id === SOS_GRID_LEAGUE) || primaryLeague();
+    const ps = plg?.settings || {};
+    const pStart = plg?.playoff_week_start ?? ps.playoff_week_start ?? window.FANTASY_SCHEDULE?.leagues?.[String(plg?.id)]?.playoffStart;
+    const pTeams = plg?.playoff_teams ?? ps.playoff_teams;
+    const pExplicit = Number.isInteger(pStart) && Number.isInteger(pTeams) && pTeams >= 2 && (plg?.playoff_round_type ?? ps.playoff_round_type) === 0;
+    const pset = pExplicit ? { startWeek:pStart, lastWeek:pStart + Math.ceil(Math.log2(pTeams)) - 1 } : SOS_GRID_CUSTOM;
+    const win = sosWindowWeeks(SOS_GRID_WINDOW, curWeek, pset);
+    const inWin = new Set(win.weeks);
+    const winName = { full: 'Full season', remaining: 'Remaining', playoffs: 'Playoffs' }[win.kind];
 
     main.appendChild(breadcrumbs([{ label: 'Tools' }, { label: 'Strength of Schedule' }]));
     main.appendChild(h('div', { class: 'page-header' }, h('div', null,
       h('div', { class: 'page-eyebrow' }, 'STRENGTH OF SCHEDULE'),
       h('h1', { class: 'page-title' }, 'Season SOS by Position'),
-      h('p', { class: 'page-sub' }, `Each cell is the opponent. Matchup colors use ${G.note || `${G.season} PPR allowed to ${pos}`}. Green = weak D (smash spot), red = elite D (tough). Rank 1 of ${n} = allows fewest.`))));
+      h('p', { class: 'page-sub' }, `Each cell is the opponent and its defense rank vs ${pos}: 1 of ${n} allows the fewest PPR (toughest, red), ${n} the most (easiest, green). Defense data: ${G.season}.`))));
 
     // position tabs
     const tabs = h('div', { class:'sos-position-tabs', role:'group', 'aria-label':'Position' });
@@ -15787,39 +16132,68 @@
     }
     main.appendChild(tabs);
 
-    // per team: week->game map + avg opponent rank (higher = easier schedule)
-    const rowsData = G.teams.map(t => {
-      const wk = {}; let sum = 0, cnt = 0;
-      for (const g of G.grid[pos][t]) { wk[g.week] = g; if (g.rank != null) { sum += g.rank; cnt++; } }
-      return { team: t, wk, avg: cnt ? sum / cnt : null };
-    });
+    // window tabs: the average, rank and SOS sort read only these weeks
+    const wtabs = h('div', { class:'sos-position-tabs', role:'group', 'aria-label':'Weeks counted' });
+    for (const k of ['remaining', 'full', 'playoffs']) {
+      const on = k === win.kind, w = sosWindowWeeks(k, curWeek, pset);
+      wtabs.appendChild(h('button', { class: 'ghost' + (on ? ' active' : ''), 'aria-pressed':String(on),
+        title: `${{ full: 'Full season', remaining: 'Remaining', playoffs: 'Playoffs' }[k]}: ${w.label}`,
+        onclick: () => { SOS_GRID_WINDOW = k; viewSosGrid(pos); } },
+        { full: 'Full', remaining: 'Remaining', playoffs: 'Playoffs' }[k]));
+    }
+    main.appendChild(wtabs);
+    if (win.kind === 'playoffs' && plg) {
+      main.appendChild(leagueSelector(plg.id, (id) => { SOS_GRID_LEAGUE = id; viewSosGrid(pos); }));
+    }
+    if (win.kind === 'playoffs' && !pExplicit) {
+      const controls = h('div', { class:'sos-position-tabs' });
+      for (const [key, label] of [['startWeek', 'First playoff week'], ['lastWeek', 'Last playoff week']]) {
+        const select = h('select', { 'aria-label':label, onchange: e => {
+          SOS_GRID_CUSTOM[key] = Number(e.target.value);
+          if (SOS_GRID_CUSTOM.lastWeek < SOS_GRID_CUSTOM.startWeek) SOS_GRID_CUSTOM.lastWeek = SOS_GRID_CUSTOM.startWeek;
+          viewSosGrid(pos);
+        } }, ...WEEKS.map(w => h('option', { value:w, selected:pset[key] === w ? '' : null }, `W${w}`)));
+        controls.appendChild(h('label', null, label, ' ', select));
+      }
+      main.appendChild(controls);
+    }
+    const winNote = win.kind === 'remaining'
+      ? (!win.weeks.length ? 'no games left after Week 18' : curWeek <= 1 ? `${win.label}, no weeks completed yet` : `${win.label}; ${curWeek === 2 ? 'W1' : `W1-${curWeek - 1}`} completed and not counted`)
+      : win.kind === 'playoffs'
+        ? `${win.label}, ${pExplicit ? `${plg.name} playoffs` : 'custom window; league round settings unavailable or unsupported'}`
+        : `${win.label}, every week`;
+    main.appendChild(h('p', { class: 'tip sos-window-note' }, `${winName}: ${winNote}.`));
+
+    const rowsData = sosSortRows(sosWindowRows(G.grid[pos] || {}, G.teams, win.weeks, G.bye_weeks), SOS_GRID_SORT);
     const gsort = (key) => { if (SOS_GRID_SORT.key === key) SOS_GRID_SORT.dir = SOS_GRID_SORT.dir === 'asc' ? 'desc' : 'asc'; else SOS_GRID_SORT = { key, dir: 'desc' }; viewSosGrid(pos); };
     const garrow = (key) => SOS_GRID_SORT.key === key ? (SOS_GRID_SORT.dir === 'desc' ? '↓' : '↑') : '';
-    const gval = (rd) => SOS_GRID_SORT.key === 'avg' ? rd.avg : (rd.wk[SOS_GRID_SORT.key] ? rd.wk[SOS_GRID_SORT.key].rank : null);
-    rowsData.sort((a, b) => { const av = gval(a), bv = gval(b); if (av == null && bv == null) return 0; if (av == null) return 1; if (bv == null) return -1; return SOS_GRID_SORT.dir === 'desc' ? bv - av : av - bv; });
+    const avgTitle = (rd) => rd.noSchedule ? 'No schedule for this team'
+      : rd.avg == null ? (rd.unrated ? `${rd.unrated} game(s) in ${win.label}, opponent rank unavailable` : `No games in ${win.label}`)
+      : `Avg opponent rank over ${rd.rated} game(s) in ${win.label}` + (rd.byes ? `, ${rd.byes} bye` : '') + (rd.unrated ? `, ${rd.unrated} unrated opponent(s) left out` : '');
 
     const tbl = h('table', { class: 'data data-sticky', style: { fontSize: '11px' } },
       h('thead', null, h('tr', null,
-        h('th', { class: 'right' }, '#'), h('th', null, 'Team'),
-        h('th', { class: 'right clickable', style: { cursor: 'pointer' }, title: 'Sort by avg opponent DvP rank (easiest first)', onclick: () => gsort('avg') }, 'SOS' + garrow('avg')),
-        ...WEEKS.map(w => h('th', { class: 'center clickable', style: { minWidth: '34px', cursor: 'pointer' }, title: `Sort by week ${w} matchup`, onclick: () => gsort(w) }, 'W' + w + garrow(w))))),
-      h('tbody', null, ...rowsData.map((rd, i) => h('tr', null,
-        h('td', { class: 'right tnum muted' }, String(i + 1)),
+        h('th', { class: 'right', title: `SOS rank over ${win.label}, 1 = easiest` }, '#'), h('th', null, 'Team'),
+        h('th', { class: 'right clickable', style: { cursor: 'pointer' }, title: `Average opponent defense rank over ${win.label}, higher = easier. A ranking, not a points forecast. Click to sort.`, onclick: () => gsort('avg') }, 'SOS' + garrow('avg')),
+        ...WEEKS.map(w => h('th', { class: 'center clickable', style: { minWidth: '34px', cursor: 'pointer', opacity: inWin.has(w) ? 1 : .45 }, title: `Sort by week ${w} matchup` + (inWin.has(w) ? '' : ` (outside ${win.label})`), onclick: () => gsort(w) }, 'W' + w + garrow(w))))),
+      h('tbody', null, ...rowsData.map(rd => h('tr', null,
+        h('td', { class: 'right tnum muted' }, rd.rank != null ? String(rd.rank) : '·'),
         h('td', null, teamChip(rd.team)),
-        h('td', { class: 'right tnum', style: { fontWeight: 700 } }, rd.avg != null ? fmt.decimal(rd.avg, 0) : '·'),
+        h('td', { class: 'right tnum', style: { fontWeight: 700 }, title: avgTitle(rd) }, rd.avg != null ? fmt.decimal(rd.avg, 1) : '·'),
         ...WEEKS.map(w => {
-          const g = rd.wk[w];
-          if (!g) return h('td', { class: 'center muted', style: { fontSize: '9px' } }, 'BYE');
-          return h('td', { class: 'center', title: `Wk${w} ${g.home ? 'vs ' : '@ '}${g.opp}: D vs ${pos} #${g.rank ?? '?'}/${n} (${g.fpa ?? '?'} PPR/g allowed)`, style: { color: defRankColor(g.rank, n), lineHeight: 1.05 } },
+          const g = rd.wk[w], out = inWin.has(w) ? null : .4;
+          if (rd.noSchedule) return h('td', { class: 'center muted', title: 'Schedule unavailable' }, '·');
+          if (!g) return h('td', { class: 'center muted', style: { fontSize: '9px', opacity: out } }, (G.bye_weeks?.[rd.team] || []).includes(w) ? 'BYE' : 'n/a');
+          return h('td', { class: 'center', title: `Wk${w} ${g.home ? 'vs ' : '@ '}${g.opp}: ` + (g.rank != null ? `D vs ${pos} #${g.rank}/${n} (${g.fpa ?? '?'} PPR/g allowed)` : `no defense rank vs ${pos}, unavailable`), style: { color: defRankColor(g.rank, n), lineHeight: 1.05, opacity: out } },
             h('a', { class: 'sos-game', href: `#game/${gameIdFor(season, w, rd.team, g.opp, g.home)}` },
-              h('div', { style: { fontWeight: 700 } }, g.opp),
-              h('div', { style: { fontSize: '9px', opacity: .85 } }, g.rank != null ? '#' + g.rank : '')));
+              h('div', { style: { fontWeight: 700 } }, teamChip(g.opp, true)),
+              h('div', { style: { fontSize: '9px', opacity: .85 } }, g.rank != null ? '#' + g.rank : 'n/a')));
         }))
       ))
     );
     main.appendChild(h('div', { style: { overflowX: 'auto' } }, tbl));
     main.appendChild(h('div', { class: 'tip', style: { marginTop: '10px' } },
-      `Defense-vs-position from ${G.season} actual PPR allowed. SOS column = average opponent DvP rank across the schedule (higher = easier season for ${pos}s).`));
+      `Matchup colors: ${G.note || `${G.season} PPR allowed`}. SOS rank #1 = easiest selected window. SOS = average opponent rank over ${win.label}, higher = easier for ${pos}s; byes and unavailable games are left out. This ranks matchups, not expected points. Faded weeks are outside the window.`));
   }
 
   // ============================================================
@@ -16161,6 +16535,7 @@
   const DRAFT_STATUS = { pre_draft:'Pre-draft', drafting:'Drafting', paused:'Paused', complete:'Done' };
   const draftStatusLabel = (st) => DRAFT_STATUS[st] || String(st || '').replace(/_/g, ' ');
   function myDrafts() {
+    if (!window.MY_USER_ID) return Promise.resolve([]);
     if (_myDrafts) return Promise.resolve(_myDrafts);
     if (_myDraftsPromise) return _myDraftsPromise;
     const season = new Date().getFullYear();
@@ -16192,11 +16567,11 @@
     if (m) m.style.paddingBottom = '';
   }
   function parseDraftId(s) { const m = String(s || '').match(/(\d{8,})/); return m ? m[1] : null; }
-  function draftRecent() { try { return JSON.parse(localStorage.getItem(DRAFT_RECENT_KEY) || '[]'); } catch { return []; } }
+  function draftRecent() { try { return JSON.parse(localStorage.getItem(accountKey(DRAFT_RECENT_KEY)) || '[]'); } catch { return []; } }
   function draftRemember(id, label) {
     const list = draftRecent().filter(x => x.id !== id);
     list.unshift({ id, label, at: Date.now() });
-    try { localStorage.setItem(DRAFT_RECENT_KEY, JSON.stringify(list.slice(0, 8))); } catch {}
+    try { localStorage.setItem(accountKey(DRAFT_RECENT_KEY), JSON.stringify(list.slice(0, 8))); } catch {}
   }
 
   // A draft publishes its own lineup shape and scoring type, so it can stand in
@@ -16312,7 +16687,7 @@
   function myRanks() {
     if (_myRanks) return _myRanks;
     try {
-      const raw = JSON.parse(localStorage.getItem(MY_RANKS_KEY) || 'null');
+      const raw = JSON.parse(localStorage.getItem(accountKey(MY_RANKS_KEY)) || 'null');
       if (raw && Array.isArray(raw.order) && raw.order.length) return (_myRanks = raw);
     } catch {}
     return (_myRanks = { order: myRanksSeed(), seededFrom: 'gibbs-ppr', updatedAt: null });
@@ -16323,10 +16698,10 @@
     const seen = new Set(), clean = [];
     for (const pid of order) { const s = String(pid); if (!seen.has(s)) { seen.add(s); clean.push(s); } }
     _myRanks = { order: clean, seededFrom: myRanks().seededFrom, updatedAt: new Date().toISOString() };
-    try { localStorage.setItem(MY_RANKS_KEY, JSON.stringify(_myRanks)); } catch {}
+    try { localStorage.setItem(accountKey(MY_RANKS_KEY), JSON.stringify(_myRanks)); } catch {}
     return _myRanks;
   }
-  function resetMyRanks() { pushMyRanksUndo(); _myRanks = null; try { localStorage.removeItem(MY_RANKS_KEY); } catch {} return myRanks(); }
+  function resetMyRanks() { pushMyRanksUndo(); _myRanks = null; try { localStorage.removeItem(accountKey(MY_RANKS_KEY)); } catch {} return myRanks(); }
   // Curating a 200-player board is a long sequence of small moves, and one bad
   // drag used to be unrecoverable short of resetting the whole thing. Snapshots
   // are just id arrays, so twenty of them cost nothing.
@@ -16577,9 +16952,9 @@
     const view = Object.assign(
       { pos:'ALL', sort:'vor', dir:'desc', proj:'blend', mode:'board', q:'',
         drawer:true, drawerH:420, tab:'avail' },
-      (() => { try { return JSON.parse(localStorage.getItem(fkey) || '{}'); } catch { return {}; } })()
+      (() => { try { return JSON.parse(localStorage.getItem(accountKey(fkey)) || '{}'); } catch { return {}; } })()
     );
-    const persist = () => { try { localStorage.setItem(fkey, JSON.stringify(view)); } catch {} };
+    const persist = () => { try { localStorage.setItem(accountKey(fkey), JSON.stringify(view)); } catch {} };
     // 420px of tray is a third of a laptop and 57% of a phone, and a height set
     // on the desktop follows the same browser profile onto the small screen. Cap
     // it by viewport rather than trusting the stored number.
@@ -17363,7 +17738,7 @@
                 const e = teamEnv(g.opp), v = e ? e.implied_pa : null;
                 return h('td', { class:'center', style:{ color: defColor(g.opp), lineHeight:1.05 },
                   title:`Wk${w} ${g.home ? 'vs ' : '@ '}${g.opp}: opponent D allows ${v != null ? v : '?'} pts/g (#${e ? e.pa_rank : '?'} of 32)` },
-                  h('div', { style:{ fontWeight:700 } }, g.opp),
+                  h('div', { style:{ fontWeight:700 } }, teamChip(g.opp, true)),
                   h('div', { style:{ fontSize:'9px', opacity:.85 } }, v != null ? fmt.decimal(v, 0) : ''));
               }));
           })));
@@ -17652,6 +18027,21 @@
     requestAnimationFrame(() => { wrapDataTables(); collapseFiltersOnPhone(); focusScrollRegions(); });
     const hash = location.hash || '#dashboard';
     const [path, ...rest] = hash.replace(/^#/, '').split('/');
+    if (window.FF_ACCOUNT && !(window.LEAGUES || []).length &&
+        ['dashboard', 'league', 'roster', 'trade', 'compare', 'watch', 'action', 'leagues'].includes(path)) {
+      const main = $('#main'); main.replaceChildren();
+      main.append(h('div', { class: 'page-header' }, h('div', {}, h('h1', { class: 'page-title' }, 'Your Sleeper leagues'))));
+      const a = window.FF_ACCOUNT;
+      main.append(h('div', { class: 'card acct-empty' },
+        h('p', {}, a.S.status === 'loading' ? 'Loading your account from Sleeper...' :
+          a.active ? `${a.active.username} has no available NFL leagues${a.S.snap ? ` for ${a.S.snap.season}` : ''}.` :
+          'Connect your public Sleeper username to see your teams, standings and league tools.'),
+        a.S.error ? h('p', { class: 'acct-status err', role: 'status' }, a.S.error.message) : null,
+        h('button', { class: 'primary', type: 'button', onclick: () => a.openPanel() }, a.active ? 'Account and refresh' : 'Connect Sleeper'),
+        !a.active ? h('button', { type: 'button', onclick: () => a.openPanel('espn') }, 'Link ESPN league') : null,
+        h('p', { class: 'muted' }, 'Shared player rankings remain available in the navigation.')));
+      return;
+    }
     try {
       switch (path) {
         case 'dashboard':  return viewDashboard(rest[0]);
@@ -17828,6 +18218,16 @@
       if (e.key === 'Escape' && document.body.classList.contains('nav-open')) {
         setMobileNav(false, true);
       }
+    });
+    window.addEventListener('ff-account-data', () => {
+      state.settings = loadSettings();
+      invalidateRankIndex();
+      _vorLevelCache.clear(); _rosBoardCache.clear(); _rosRankCache.clear();
+      _sosCache.clear(); ODDS_CACHE.clear(); FINDER_RESULTS.clear();
+      _rosPts = null; _marks = null;
+      _myRanks = null; _myRanksUndo = []; _myDrafts = null; _myDraftsPromise = null;
+      partnerCache.clear(); partnerPending.clear();
+      const y = window.scrollY; route(); window.scrollTo(0, y);
     });
     liveRefresh();
     route();

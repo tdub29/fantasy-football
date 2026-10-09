@@ -1,0 +1,33 @@
+/* Account controls use the existing Backyard palette and plate geometry. */
+.acct-btn { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; width: 100%; margin-top: 5px; text-align: left; min-height: 44px; }
+.acct-name { overflow-wrap: anywhere; min-width: 0; flex: 1; }
+.acct-chip { font-size: 0.7rem; color: var(--fg-2); }
+.acct-btn.warn .acct-chip { color: var(--red); }
+.acct-dialog { width: min(480px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); margin: auto; padding: 20px; overflow-y: auto; border: 2px solid var(--border); border-radius: var(--radius-lg, 8px); background: var(--grad-panel); color: var(--fg-0); box-shadow: var(--shadow-card); }
+.acct-dialog::backdrop { background: rgb(18 19 31 / 65%); }
+.acct-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; }
+.acct-head h2 { margin: 0; font-size: 1.25rem; }
+.acct-x { width: 44px; height: 44px; flex-shrink: 0; }
+.acct-now { overflow-wrap: anywhere; margin: 0 0 16px; }
+.acct-meta { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 12px; font-size: 0.82rem; }
+.acct-meta dt { color: var(--fg-2); }
+.acct-meta dd { margin: 0; overflow-wrap: anywhere; }
+.acct-form { margin-top: 16px; }
+.acct-form label { display: block; margin-bottom: 6px; font-weight: 700; }
+.acct-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.acct-row input { flex: 1 1 180px; width: 0; min-width: 0; font-size: 16px; min-height: 44px; }
+.acct-row button, .acct-actions button, .acct-empty button { min-height: 44px; }
+.acct-note { font-size: 0.82rem; color: var(--fg-2); line-height: 1.5; margin: 12px 0 0; }
+.acct-status { font-size: 0.88rem; overflow-wrap: anywhere; }
+.acct-status:empty { display: none; }
+.acct-status.err { color: var(--red); }
+.acct-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.acct-empty { max-width: 620px; }
+.acct-espn { border-top: 1px solid var(--border); margin-top: 20px; padding-top: 16px; }
+.acct-espn summary { cursor: pointer; font-weight: 700; min-height: 44px; }
+.acct-row select { flex: 1 1 180px; min-width: 0; min-height: 44px; font-size: 16px; }
+.acct-espn-linked { display: flex; align-items: start; gap: 12px; justify-content: space-between; margin-top: 16px; }
+.acct-espn-linked > div { min-width: 0; overflow-wrap: anywhere; }
+.acct-espn-linked .acct-note { margin-top: 4px; }
+.acct-dialog :focus-visible, .acct-btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+@media (max-width: 400px) { .acct-dialog { padding: 16px; } .acct-row input, .acct-row button { flex-basis: 100%; } .acct-meta { grid-template-columns: 1fr; } .acct-meta dd { margin-bottom: 6px; } }

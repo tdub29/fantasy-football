@@ -29,7 +29,7 @@ const cut = (a, b) => {
 // in other parts of the file. Stub the two globals the pick chain needs rather
 // than dragging half the app into the harness — pick VALUES are not under test
 // here (pick-fv.test.js owns those), only what the simulator does with them.
-const H = new Function('window',
+const loadModel = () => new Function('window',
   `${cut('  const CURRENT_SEASON', '  // Position aging curves')}
    function rosterOwnedPicks(rosterId, league, horizon = 2) {
      return (window.__TEST_PICKS && window.__TEST_PICKS[rosterId]) || [];
@@ -37,11 +37,13 @@ const H = new Function('window',
    ${cut('function isDynastyLeague(lg)', '  // The league whose format defines VOR replacement')}
    ${cut('  let _rosPts = null;', '  // Replacement level on the SAME rest-of-season basis')}
    ${cut('function offenseStarterCount', '  // Starting-lineup strength')}
+   ${cut('  const ODDS_CACHE', '  const PROJ_SRC_LABEL')}
    ${cut('function projUnitData()', 'function buildWhatIfTray')}
    return { championshipOdds, titleEquity, simPool, injuryHazard, mulberry32, makeNormal, playoffSettings,
             productionRetention, pickRookiePoints, projectLeagueForward, pickValueBySlot, CURRENT_SEASON,
-            SIM, offenseStartingSlots, startableIds };`
+            SIM, offenseStartingSlots, startableIds, forecastWeeks, standingsForecast };`
 )(ctx.window);
+const H = loadModel();
 
 const lg = ctx.window.LEAGUES.find(l => l.short_name === 'Password is taco');
 const me = lg.rosters.find(r => r.is_me);
@@ -231,3 +233,43 @@ assert(long.equity >= short.equity - 1e-9, 'extending the horizon cannot reduce 
 assert(long.byYear.length > short.byYear.length);
 
 console.log(`title-odds.test.js: all assertions passed (champion mass ${sum.toFixed(6)}, my title ${(before.title * 100).toFixed(1)}%)`);
+
+// Standings contract: one outcome per game, preserved records, fixed qualifiers.
+for (const f of ['weekly-rankings.js', 'schedule.js'])
+  vm.runInNewContext(fs.readFileSync(`${root}/data/${f}`, 'utf8'), ctx);
+const forecastLeague = ctx.window.LEAGUES.find(l => l.short_name === 'Password is taco');
+const F = loadModel();
+const taxiIds = new Set((me.taxi || []).map(String));
+assert(F.simPool(me, lg, 'ros', null).every(a => !taxiIds.has(String(a.pid))),
+  'current-season ROS pools must exclude taxi players even when weekly lines exist');
+const taxiStarter = String(me.starters[0]);
+assert(F.simPool({ ...me, taxi:[...(me.taxi || []), taxiStarter] }, lg, 'ros', null)
+  .every(a => String(a.pid) !== taxiStarter), 'moving an otherwise projected starter to taxi excludes him');
+const fw = F.forecastWeeks(forecastLeague);
+assert.equal(fw.ok, true, fw.reason);
+assert.deepEqual(fw.remaining, [5,6,7,8,9,10,11,12,13,14]);
+const finalOdds = F.championshipOdds(forecastLeague, { sims:64 });
+assert(Math.abs(finalOdds.reduce((a,o) => a + o.playoff,0) - 6) < 1e-9);
+assert(Math.abs(finalOdds.reduce((a,o) => a + o.bye,0) - 2) < 1e-9);
+assert(Math.abs(finalOdds.reduce((a,o) => a + o.expWins,0) - 140) < 1e-9,
+  'head-to-head and median each conserve one win per pair');
+assert(finalOdds.every(o => o.expWins >= o.roster.wins + o.roster.ties / 2));
+const noBye = F.championshipOdds({ ...forecastLeague, playoff_teams:4 }, { sims:16 });
+assert.equal(noBye.reduce((a,o) => a+o.bye,0), 0);
+assert.equal(F.forecastWeeks({ ...forecastLeague, divisions:2 }).ok, false);
+assert.equal(F.forecastWeeks({ ...forecastLeague, last_scored_leg:3 }).ok, false);
+const forecast = F.standingsForecast(forecastLeague, { sims:64 });
+assert.equal(forecast.ok, true, forecast.reason);
+for (const r of forecast.rows.values()) assert(Math.abs(r.expW+r.expL+r.expT-28) < 1e-9);
+console.log('standings forecast invariants passed');
+
+// Final-week seeding: preserve ties, apply higher PA, no false bye in a 2-team field.
+const ended = { ...forecastLeague, id:'completed-fixture', playoff_teams:2, playoff_week_start:3,
+  last_scored_leg:2, rosters:forecastLeague.rosters.slice(0,4).map((r,i) => ({...r,
+    wins:1, losses:1, ties:2, fpts:100, fpts_against:100+i})) };
+ctx.window.FANTASY_SCHEDULE.leagues[ended.id]={medianScoring:true,weeks:{}};
+const completedForecast=F.standingsForecast(ended,{sims:8});
+assert.equal(completedForecast.ok,true,completedForecast.reason);
+assert.deepEqual([...completedForecast.rows].filter(([,r]) => r.playoff === 1).map(([id]) => id).sort(),[3,4]);
+for(const r of completedForecast.rows.values()) assert.deepEqual([r.expW,r.expL,r.expT,r.bye],[1,1,2,null]);
+console.log('completed ties and higher-PA seeding passed');

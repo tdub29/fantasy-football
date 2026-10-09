@@ -37,10 +37,13 @@ assert.match(dirBlock, /key === 'weekly-gibbs-wk'/, 'Gibbs week rank must defaul
 assert.match(app, /sortHdr\('weekly-gibbs-x', 'Gibbs\*'[\s\S]{0,120}converted by this site from Jacob Gibbs's half-PPR/);
 assert.match(app, /if \(filter\.sort === 'weekly-gibbs-x'\) return gibbsRosPprRank/,
   'ROS* must sort on the converted ranks it shows');
-// The view names the period, so the header does not: plain 'Gibbs'.
-assert.match(app, /sortHdr\('weekly-gibbs-wk', 'Gibbs',/, 'week header carries no scoring or period tag');
+// The view names the period, so the header does not. His week board is
+// half-PPR too (re-audited 2026-10-08), so it is starred and converted.
+assert.match(app, /sortHdr\('weekly-gibbs-wk', 'Gibbs\*'[\s\S]{0,120}converted by this site from Jacob Gibbs's half-PPR week board/);
+assert.match(app, /if \(filter\.sort === 'weekly-gibbs-wk'\) return gibbsWeekRank/,
+  'Gibbs* week must sort on the converted ranks it shows');
 assert.doesNotMatch(app, /'Gibbs Wk'|'Gibbs ROS\*'|'FP ROS'/, 'no header repeats the view name');
-assert.doesNotMatch(app, /\(half\)|Gibbs ROS PPR\*|Gibbs Wk PPR\*|GIBBS_PPR_WEEK/,
+assert.doesNotMatch(app, /\(half\)|Gibbs ROS PPR\*|Gibbs Wk PPR\*/,
   'no half column, no second PPR column');
 
 // One lookup, two boards. Two copies of this drifted apart is the thing the
@@ -48,7 +51,7 @@ assert.doesNotMatch(app, /\(half\)|Gibbs ROS PPR\*|Gibbs Wk PPR\*|GIBBS_PPR_WEEK
 assert.match(app, /function gibbsBoardRank\(board, sleeperId\)/,
   'both boards must share one lookup');
 assert.match(app, /const gibbsRosPprRank = \(id\) => gibbsBoardRank\('GIBBS_PPR_ROS', id\)/);
-assert.match(app, /const gibbsWeekRank = \(id\) => gibbsBoardRank\('GIBBS_WEEK', id\)/);
+assert.match(app, /const gibbsWeekRank = \(id\) => gibbsBoardRank\('GIBBS_PPR_WEEK', id\)/);
 
 // The board has to be loaded before any of the above can see it.
 const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
@@ -62,19 +65,38 @@ assert.equal(data.board, 'week');
 // names its week and the column hides when that is not the site's week.
 assert(Number.isInteger(data.week), 'week board must carry its week number');
 assert.match(app, /window\.GIBBS_WEEK\.week === currentWeek/, 'stale week board must hide');
+assert.match(app, /window\.GIBBS_PPR_WEEK\?\.week === window\.GIBBS_WEEK\.week/,
+  'a conversion of another week must hide the column too');
 
-// RB, WR and TE come from his FantasyPros week board, the board he posts to X
-// titled PPR ("Week 3 - FLEX Top-100 ... (PPR)", 2026-09-24, 94/100 exact).
-// His title is the label. The CBS page it replaced sat a mean 11 flex spots
-// off that post, which is why it went.
-for (const pos of ['QB', 'RB', 'WR', 'TE']) {
-  assert.equal(data.formatByPosition[pos], 'ppr', `${pos} is the board he titles PPR`);
+// RB, WR and TE come from his FantasyPros week board, which is HALF-PPR:
+// re-audited 2026-10-08, his week 4 cards say half-PPR and his week 5 cards
+// match this board, not his separate PPR board. The 9/24 flex post titled PPR
+// no longer decides it. QB is identical on both, so it stays PPR.
+assert.equal(data.formatByPosition.QB, 'ppr');
+for (const pos of ['RB', 'WR', 'TE']) {
+  assert.equal(data.formatByPosition[pos], 'half_ppr', `${pos} is his half-PPR board`);
 }
 assert.match(data.provenance, /FantasyPros/);
 assert.match(data.provenance, /filters=1576:1576/);
 assert.match(data.provenance, /total_experts=1/, 'must say it refused consensus');
-assert.match(data.scoringWarning, /QB, RB, TE, WR are his FULL PPR ranks/);
-assert.doesNotMatch(data.scoringWarning, /not a full-PPR board/);
+assert.match(data.scoringWarning, /RB, TE, WR are HALF-PPR/);
+assert.match(data.scoringWarning, /must never be presented as his/);
+
+// The converted board is DERIVED: same players, QBs untouched, same week.
+const ctx = { window: {} };
+require('node:vm').runInNewContext(
+  fs.readFileSync(path.join(__dirname, '..', 'data', 'gibbs-ppr.js'), 'utf8'), ctx);
+const conv = ctx.window.GIBBS_PPR_WEEK;
+assert(conv, 'gibbs-ppr.js must carry GIBBS_PPR_WEEK');
+assert.equal(conv.derived, true);
+assert.match(conv.note, /Not published by him/);
+assert.equal(conv.week, data.week, 'conversion must be of the same week as his board');
+for (const pos of ['QB', 'RB', 'WR', 'TE']) {
+  const ids = (rows) => rows.map((r) => String(r.sleeperId)).sort().join();
+  assert.equal(ids(conv.positions[pos]), ids(data.positions[pos]), `${pos} population must match`);
+}
+assert.equal(conv.positions.QB.map((r) => r.sleeperId).join(), data.positions.QB.map((r) => r.sleeperId).join(),
+  'QBs keep his order');
 
 const depth = Object.values(data.positions).reduce((n, r) => n + r.length, 0);
 assert(depth >= 100, `board should be deep, got ${depth} players`);

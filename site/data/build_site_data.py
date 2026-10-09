@@ -322,6 +322,8 @@ for name, lid, buy_in in LEAGUES:
             # market but not your own money.
             "waiver_budget_used": s.get("waiver_budget_used", 0),
             "waiver_position": s.get("waiver_position"),
+            # Preserve actual division membership; custom seeding is gated in forecasts.
+            "division": s.get("division"),
         })
 
     # Merge in-progress draft picks into rosters. Sleeper only stamps the roster
@@ -370,6 +372,13 @@ for name, lid, buy_in in LEAGUES:
         # The title simulator's bracket and the rest-of-season sum both end at the
         # title game: playoff_week_start plus one week per round.
         "playoff_week_start": settings.get("playoff_week_start"),
+        # Forecast coverage gates read actual completed weeks and league rules.
+        "last_scored_leg": settings.get("last_scored_leg"),
+        "divisions": settings.get("divisions") or 0,
+        "playoff_seed_type": settings.get("playoff_seed_type"),
+        "playoff_round_type": settings.get("playoff_round_type"),
+        "start_week": settings.get("start_week"),
+        "league_average_match": settings.get("league_average_match"),
         "trade_deadline": settings.get("trade_deadline"),
         # Taxi/IR slot counts and the waiver rule gate two dynasty questions the
         # roster arrays alone cannot answer: what a young-asset stash actually

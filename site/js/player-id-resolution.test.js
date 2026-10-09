@@ -42,12 +42,24 @@ assert.equal(sleeperIdForFuzzy('Chigoziem Okonkwo', 'TE'), '8130', 'last-name fa
 const chipStart = app.indexOf('  const KTC_TEAM');
 const chipEnd = app.indexOf('  function rookieBadge', chipStart);
 assert(chipStart >= 0 && chipEnd > chipStart, 'KTC team map missing from teamChip');
-const h = (tag, attrs, text) => text;
+// The chip's text child; the logo img ahead of it is not text.
+const h = (tag, attrs, ...kids) => ({tag, attrs, kids: kids.filter(k => k != null)});
 const teamChip = new Function('h', `${app.slice(chipStart, chipEnd)}; return teamChip;`)(h);
-assert.equal(teamChip('SFO'), 'SF');
-assert.equal(teamChip('NEP'), 'NE');
-assert.equal(teamChip('LAR'), 'LAR');
-assert.equal(teamChip(null), 'FA');
+for (const [raw, text, logo] of [['SFO','SF','sf'], ['NEP','NE','ne'], ['LA','LAR','lar'],
+  ['WSH','WAS','was'], ['ARZ','ARI','ari'], ['OAK','OAK','lv'], ['SD','SD','lac'], ['STL','STL','lar']]) {
+  const chip = teamChip(raw);
+  assert.equal(chip.kids.at(-1), text);
+  assert.equal(chip.kids[0].attrs.src, `https://sleepercdn.com/images/team_logos/nfl/${logo}.png`);
+  assert.equal(chip.kids[0].attrs.alt, '');
+}
+for (const [raw, text] of [[null,'FA'], ['fa','FA'], ['XYZ','XYZ']]) {
+  assert.deepEqual(teamChip(raw).kids, [text]);
+}
+let removed = false;
+const chip = teamChip('LAR');
+chip.kids[0].attrs.onerror({target:{remove(){removed = true;}}});
+assert.ok(removed, 'a failed logo leaves its text and does not retry');
+assert.equal(chip.kids.at(-1), 'LAR');
 
 // And the built data carries no KTC-only code in the first place.
 const sandbox = {};

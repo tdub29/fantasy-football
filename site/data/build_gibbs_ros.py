@@ -103,7 +103,7 @@ def _scoring_warning(by_pos: dict) -> str:
                  key=lambda p: (by_pos[p], p))
     parts = []
     if ppr:
-        parts.append(f"{', '.join(ppr)} are his FULL PPR ranks, the same "
+        parts.append(f"{', '.join(ppr)} {'is' if len(ppr) == 1 else 'are'} his FULL PPR ranks, the same "
                      f"scoring every league here plays.")
     for fmt in sorted({by_pos[p] for p in off}):
         names = ", ".join(p for p in off if by_pos[p] == fmt)
@@ -224,7 +224,7 @@ def self_check() -> int:
               "positions": {"QB": [{"rank": 1, "player": "A", "team": "BUF"}],
                             "RB": [{"rank": 1, "player": "B", "team": "DET"}]}}
     w = build(mixed2, idx)["scoringWarning"]
-    assert "RB are his FULL PPR ranks" in w, w
+    assert "RB is his FULL PPR ranks" in w, w
     assert "QB is NON-PPR" in w, w
     assert "not a full-PPR board" not in w, w
 

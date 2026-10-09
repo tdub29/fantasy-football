@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>The Fantasy Hub, tdub1329</title>
+  <title>The Fantasy Hub</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Jersey+10&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap">
-  <link rel="stylesheet" href="css/styles.css?v=20261004a">
+  <link rel="stylesheet" href="css/styles.css?v=20261008-wrapup">
   <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
+  <link rel="stylesheet" href="css/account.css?v=20261008-wrapup">
   <link rel="icon" type="image/png" sizes="192x192" href="img/logo-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="img/logo-512.png">
   <!-- PWA (additive: installable + offline app-shell; changes no existing behavior) -->
@@ -46,6 +47,7 @@
   <script src="data/advanced.js"></script>
   <script src="data/prospect.js"></script>
   <script src="data/prospect-model.js"></script>
+  <script src="data/capital-ratings.js"></script>
   <script src="data/contracts.js"></script>
   <script src="data/weather.js"></script>
   <script src="data/defense.js"></script>
@@ -57,6 +59,7 @@
   <script src="data/gibbs-ppr.js"></script>
   <script src="data/expert-rankings.js"></script>
   <script src="data/fantasypros-experts.js"></script>
+  <script src="data/alexandria.js"></script>
   <script src="data/kickers.js"></script>
   <script src="data/idp-dvp.js"></script>
   <script src="data/strategy.js"></script>
@@ -67,12 +70,14 @@
        falls back to its PPG series alone when this is absent. -->
   <script src="data/ktc-history.js"></script>
   <script src="data/build-info.js"></script>
-<script src="js/app.js?v=20261004a"></script>
+  <script src="js/espn-account.js?v=20261008-wrapup"></script>
+  <script src="js/account.js?v=20261008-wrapup"></script>
+<script src="js/app.js?v=20261008-wrapup"></script>
   <script>
     // PWA: register the app-shell service worker (additive; safe to fail; no-op on file://).
     if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
       window.addEventListener("load", function () {
-    navigator.serviceWorker.register("sw.js?v=14", { updateViaCache: "none" }).catch(function () {});
+    navigator.serviceWorker.register("sw.js?v=18", { updateViaCache: "none" }).catch(function () {});
       });
     }
   </script>

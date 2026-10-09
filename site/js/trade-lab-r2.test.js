@@ -120,7 +120,11 @@ const weeks = (w, nulls = 0) => Array.from({ length: 9 }, (_, i) => (i >= 3 && i
   const z = H.simPool({ players: ['zIR'], taxi: [], reserve: [] }, lg, 'ros').find(p => p.pid === 'zIR');
   assert(z, 'the rest-of-season simulator must price an IR player who has lines');
   assert.equal(z.mean, 18, `IR player rate must be his per-game line, got ${z && z.mean}`);
-  assert.equal(z.startOut, 2, `IR player absence must come from his lines, got ${z && z.startOut}`);
+  // His weekly array carries the absence week by week (simWeek skips a null week),
+  // so startOut stays 0 rather than restating the same two weeks.
+  assert.deepEqual(z.weekly.map((v, i) => v == null ? i + 1 : 0).filter(Boolean), [4, 5],
+    `IR player absence must come from his lines, got ${z && z.weekly}`);
+  assert.equal(z.startOut, 0, `weekly nulls already hold him out, got startOut ${z && z.startOut}`);
 
   // ---- M: a Finder row never shows a partner loss at the Lab's sim count ------
   // Every shown row re-priced the way the Lab's "Run title odds" prices it: same

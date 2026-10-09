@@ -1,7 +1,7 @@
 /* ========== Reset + tokens ========== */
 *,*::before,*::after { box-sizing: border-box; }
 html, body { margin:0; padding:0; overflow-x: clip; }
-html { font-size: 15px; }
+html { font-size: 15px; background: var(--bg-0); color-scheme: light; }
 
 :root {
   /* ===== Palette "Backyard" (OKLCH) =====
@@ -375,6 +375,11 @@ input[type=checkbox] { accent-color: var(--accent); }
   border: 1px solid var(--border);
   letter-spacing: 0.04em;
 }
+/* A compact logo leads the abbreviation; the text stays, so the logo only speeds
+   the scan. Box is fixed so a slow or failed load never shifts the row. */
+.team-chip.has-logo { display: inline-flex; align-items: center; gap: 3px; white-space: nowrap; vertical-align: middle; }
+.team-logo { flex: none; inline-size: 14px; block-size: 14px; object-fit: contain; }
+.team-chip.team-chip-compact { padding: 0; border: 0; background: transparent; color: inherit; font: inherit; letter-spacing: inherit; }
 
 .badge {
   display: inline-block;
@@ -1333,8 +1338,19 @@ textarea { resize: vertical; min-height: 80px; }
   .blueprint-row > *:nth-child(2) { border-top: none; }
 }
 @media (max-width: 700px) {
-  .blueprint-row { grid-template-columns: 1fr; }
+  .blueprint-row { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; margin-bottom: 12px; }
+  .blueprint-row > * { min-width: 0; padding: 10px 12px; }
   .blueprint-row > * + * { border-top: 1px solid var(--border); }
+  .blueprint-row > .br-tier,
+  .blueprint-row > .br-stat-value { grid-column: 1 / -1; }
+  .blueprint-row > .br-stat-value { border-top: 1px solid var(--border); }
+  .blueprint-row > .br-stat-grade { border-left: 1px solid var(--border); }
+  .br-tier-value { font-size: 1.4rem; line-height: 1.2; }
+  .br-arch-line { margin-top: 6px; gap: 2px 5px; }
+  .br-arch { white-space: normal; }
+  .br-stat-num { font-size: 1.4rem; }
+  .br-eyebrow { font-size: 0.72rem; letter-spacing: 0.04em; }
+  .br-stat-sub { line-height: 1.3; }
 }
 
 /* ========== Positional / Slot Grades ========== */
@@ -2788,7 +2804,7 @@ textarea { resize: vertical; min-height: 80px; }
   .nav-toggle { display: inline-flex; }
   body.nav-open .nav-toggle { visibility: hidden; pointer-events: none; }
   .sidebar-close { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; }
-  .main { padding: max(64px, calc(env(safe-area-inset-top) + 52px)) max(16px, env(safe-area-inset-right)) 48px max(16px, env(safe-area-inset-left)); }
+  .main { padding: max(64px, calc(env(safe-area-inset-top) + 52px)) max(16px, env(safe-area-inset-right)) max(48px, calc(env(safe-area-inset-bottom) + 16px)) max(16px, env(safe-area-inset-left)); }
   .page-header { gap: 12px; }
   /* Bleed the PAGE tab bar to the gutter, not every tab bar on the screen.
      A card's own group tabs inherited the -16px and overhung its 14px padding
@@ -5595,8 +5611,11 @@ table.data.waiver-table td.wb-sub { padding-top: 0; }
 .mark-glyph { font-size: 0.72rem; line-height: 1; }
 /* In a dense table the label is noise; the glyph plus the tooltip carry it. The
    card keeps the words, because that is where a first-time click happens. */
+/* Pinned to the trailing edge of the name cell, so every row's control sits in one
+   column whatever the name or injury chip length, without a new table column. */
 table.data .mark-btn {
-  margin-left: 8px;
+  margin-left: auto;
+  flex: none;
   inline-size: 26px;
   min-inline-size: 26px;
   block-size: 26px;
@@ -5857,25 +5876,24 @@ button:disabled { cursor: wait; opacity: 0.7; }
   }
 }
 
-/* --- Phone: stop squashing the field ------------------------------------ */
-/* Keep the source aspect ratio, which is why this is a fixed px size and not
-   100%: stretching a 2400-wide tile into a 390px screen turns the numerals
-   into slivers. The scale is an exact 0.4 of the 2400x180 source, so glyphs
-   stay in proportion.
-   The size is also what decides HOW MUCH FIELD IS ON SCREEN, and that is the
-   part that bit. At 1600x120 the numerals sit 160px apart and a 390px phone
-   saw exactly two of them, the 40 and the 50, which reads as a broken
-   background rather than a field. At 960x72 they sit 96px apart and a phone
-   sees 30/40/50/40, centred on midfield.
-   960 centred also still covers the whole viewport at this breakpoint (720px),
-   so no-repeat leaves no bare edge. Raising the breakpoint past 960 without
-   raising this width would expose one. Logo layer stays untouched. */
+/* Phone field runs up/down. Swap the decorative layer's dimensions before
+   rotating, so it still covers the viewport. Keep the SVG proportional and
+   at least as long as the screen; content and the midfield logo stay upright. */
 @media (max-width: 720px) {
   body::before {
+    --phone-field-length: max(960px, 100dvh);
+    inset: 50% auto auto 50%;
+    width: 100vh;
+    width: 100dvh;
+    height: 100vw;
+    transform: translate(-50%, -50%) rotate(90deg);
     /* The chalk and stripes take the tile's 960px scale too. At 100% they were
        5% of a 390px screen, a line every 19px, five between numerals 96px
        apart: pinstripes that matched nothing on the field. */
-    background-size: 960px 72px, 960px 72px, 960px 100%, 960px 100%;
+    background-size:
+      var(--phone-field-length) calc(var(--phone-field-length) * 0.075),
+      var(--phone-field-length) calc(var(--phone-field-length) * 0.075),
+      var(--phone-field-length) 100%, var(--phone-field-length) 100%;
     background-position: center 16px, center calc(100% - 16px), center 0, center 0;
     background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
   }
@@ -6229,3 +6247,11 @@ table.data.prm-table .name-cell { flex-direction: column; align-items: flex-star
 .cmdk-row.active { background: var(--grad-gold); color: var(--ink); }
 .cmdk-row.active .cmdk-icon, .cmdk-row.active .cmdk-sub { color: var(--ink); }
 .tab .tab-icon { display: inline-flex; align-items: center; }
+
+/* Forecast remains a single aligned row of labeled values on phones. */
+.standings-forecast-help, .sos-method { font-size: .8rem; margin: 8px 0; }
+.standings-forecast { grid-column: 2 / -1; display: grid; grid-template-columns: minmax(0, 1.5fr) repeat(2, minmax(0, 1fr)); gap: 8px; border-top: 1px solid var(--fg-3); padding-top: 8px; }
+.standings-forecast > div { min-width: 0; display: flex; flex-direction: column; align-items: flex-end; }
+.forecast-label { font-size: .65rem; color: var(--fg-2); }
+.forecast-value { font-size: .85rem; font-weight: 800; overflow-wrap: anywhere; }
+@media (max-width: 600px) { .standings-list .strength-row .standings-forecast { grid-column: 1 / -1; } }

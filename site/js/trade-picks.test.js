@@ -25,9 +25,10 @@ const isDyn = app.slice(app.indexOf('function isDynastyLeague(lg)'), app.indexOf
 const rosterOwnedPicks = new Function(
   'pickValue',
   'draftPickLabel',
+  'window',
   `${isDyn}
 ${app.slice(start, end)}; return rosterOwnedPicks;`,
-)(() => 1, draftPickLabel);
+)(() => 1, draftPickLabel, {});
 
 const league = dataContext.window.LEAGUES.find(item => item.short_name === 'yuH');
 const roster = league.rosters.find(item => item.is_me);
