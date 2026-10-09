@@ -7769,6 +7769,16 @@
   const PARTNER_TTL = 12 * 3600 * 1000;
   const partnerCache = new Map();
   const partnerPending = new Map();
+  // Sleeper user behind this league's "me" roster. A linked user's league
+  // (account.js loadMerged tags linked_user) is theirs, not the login's.
+  // ponytail: a co-owned linked team resolves to its owner_id, which is also the
+  // key Sleeper uses in draft_order and roster ownership, so that is the right id.
+  function leagueUserId(lg) {
+    return (lg?.linked_user && lg.rosters?.find(r => r.is_me)?.owner_id) || window.MY_USER_ID;
+  }
+  function myUserIds() {
+    return [...new Set([window.MY_USER_ID, ...(window.LEAGUES || []).map(leagueUserId)].filter(Boolean).map(String))];
+  }
   function pickTraceKey(season, round, originUid) {
     return originUid ? `${season}|${round}|${originUid}` : null;
   }
@@ -7823,6 +7833,7 @@
     }
 
     const counts = new Map(), names = new Map(), usernames = new Map(), draftOutcomes = new Map();
+    const myUid = String(leagueUserId(lg));
     const seasonPayloads = await Promise.all(seasons.map(async s => {
       const [rosters, users, pages, draftData] = await Promise.all([
         getJSON(`https://api.sleeper.app/v1/league/${s.id}/rosters`),
@@ -7849,7 +7860,7 @@
         if (username && !usernames.has(uid)) usernames.set(uid, username);
       }
       const ownerOf = new Map((rosters || []).map(r => [String(r.roster_id), String(r.owner_id)]));
-      const myRosterId = String((rosters || []).find(r => String(r.owner_id) === String(window.MY_USER_ID))?.roster_id || '');
+      const myRosterId = String((rosters || []).find(r => String(r.owner_id) === myUid)?.roster_id || '');
 
       for (let i = 0; i < completeDrafts.length; i++) {
         const draft = completeDrafts[i];
@@ -7876,7 +7887,6 @@
           if (t.type !== 'trade' || t.status !== 'complete') continue;
           const at = Number(t.status_updated || t.created || 0);
           if (!myRosterId) continue;
-          const myUid = String(window.MY_USER_ID);
           const uids = (t.roster_ids || []).map(rid => ownerOf.get(String(rid))).filter(Boolean).map(String);
           if (!uids.includes(myUid)) continue;
           const forRoster = (assets, rid) => Object.entries(assets || {})
@@ -16670,16 +16680,20 @@
   const DRAFT_STATUS = { pre_draft:'Pre-draft', drafting:'Drafting', paused:'Paused', complete:'Done' };
   const draftStatusLabel = (st) => DRAFT_STATUS[st] || String(st || '').replace(/_/g, ' ');
   function myDrafts() {
-    if (!window.MY_USER_ID) return Promise.resolve([]);
+    const uids = myUserIds();
+    if (!uids.length) return Promise.resolve([]);
     if (_myDrafts) return Promise.resolve(_myDrafts);
     if (_myDraftsPromise) return _myDraftsPromise;
     const season = new Date().getFullYear();
-    _myDraftsPromise = Promise.all([season, season - 1].map(y =>
-      fetch(`https://api.sleeper.app/v1/user/${window.MY_USER_ID}/drafts/nfl/${y}`)
+    _myDraftsPromise = Promise.all(uids.flatMap(uid => [season, season - 1].map(y =>
+      fetch(`https://api.sleeper.app/v1/user/${uid}/drafts/nfl/${y}`)
         .then(r => (r.ok ? r.json() : []))
         .then(list => (list || []).map(x => Object.assign({ _season: y }, x)))
         .catch(() => [])
-    )).then(pairs => (_myDrafts = pairs.flat()));
+    ))).then(pairs => {
+      const seen = new Set();
+      return (_myDrafts = pairs.flat().filter(x => !seen.has(x.draft_id) && seen.add(x.draft_id)));
+    });
     return _myDraftsPromise;
   }
   let _draftTimer = null;
@@ -17076,7 +17090,8 @@
     const teams = s.teams || 12;
     const rounds = s.rounds || 15;
     const totalPicks = teams * rounds;
-    const mySlot = (d.draft_order || {})[window.MY_USER_ID] || null;
+    const meUid = leagueUserId(lg._knownLeague);
+    const mySlot = (d.draft_order || {})[meUid] || null;
     const myPickNos = mySlot ? snakePickNos(mySlot, teams, rounds, s.reversal_round) : [];
     const isMock = !d.league_id;
 
@@ -17110,7 +17125,7 @@
 
     const slotOwner = (slot) => {
       const uid = Object.keys(d.draft_order || {}).find(k => d.draft_order[k] === slot);
-      if (uid && uid === window.MY_USER_ID) return window.MY_USERNAME || 'YOU';
+      if (uid && uid === meUid) return lg._knownLeague?.linked_user || window.MY_USERNAME || 'YOU';
       const known = lg._knownLeague;
       if (known && uid) {
         const r = (known.rosters || []).find(x => x.owner_id === uid);
