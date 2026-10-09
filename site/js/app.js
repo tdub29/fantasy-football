@@ -66,12 +66,22 @@
     weeklyExpertIds: null, // null seeds current tracked experts; [] means none selected
     customSources: [],     // user-added sources, same shape as built-ins
     retiredGibbsHalfCol: false, // one-shot migration marker, see ensureExpertColDefaults
+    hiddenLeagues: [],     // league ids kept out of the sidebar and My Leagues
   };
   function loadSettings() {
     try { return Object.assign({}, defaults, JSON.parse(localStorage.getItem(accountKey(SETTINGS_KEY)) || '{}')); }
     catch { return Object.assign({}, defaults); }
   }
   function saveSettings() { try { localStorage.setItem(accountKey(SETTINGS_KEY), JSON.stringify(state.settings)); } catch {} }
+  // Hiding only declutters navigation: the league page, search and every
+  // cross-league model still see it. ponytail: per-browser, not profile-synced.
+  const isLeagueHidden = lg => state.settings.hiddenLeagues.includes(String(lg.id));
+  function toggleLeagueHidden(lg) {
+    const id = String(lg.id), hidden = state.settings.hiddenLeagues;
+    state.settings.hiddenLeagues = hidden.includes(id) ? hidden.filter(x => x !== id) : [...hidden, id];
+    saveSettings();
+    route();
+  }
 
   // Toast notification
   function toast(msg, kind='info') {
@@ -1284,7 +1294,7 @@
     const appendLeagues = () => {
     // Quick league shortcuts. The active league (if any) gets a "context"
     // sub-list under it with sub-tabs for the workspace.
-    const allLeagues = window.LEAGUES || [];
+    const allLeagues = (window.LEAGUES || []).filter(l => !isLeagueHidden(l) || l.id === activeLgId);
     const leagueGroups = [{ label: 'Leagues', leagues: allLeagues }].filter(g => g.leagues.length);
     for (const group of leagueGroups) {
     sidebar.appendChild(h('div', { class:'nav-section-title' }, group.label));
@@ -2402,7 +2412,8 @@
     const STANCE_LABEL = { tank:'Tank', seller:'Seller', mid:'Mid', buyer:'Buyer', contender:'Contender' };
     const stanceTone = { contender:'var(--green)', buyer:'var(--blue)', mid:'var(--fg-2)', seller:'var(--amber)', tank:'var(--red)' };
     // ===== Cross-league comparison table (the reason this page exists) =====
-    const mine = (window.LEAGUES || []).map(lg => { const me = lg.rosters.find(r => r.is_me); return me ? { lg, me } : null; }).filter(Boolean);
+    const mine = (window.LEAGUES || []).filter(lg => !isLeagueHidden(lg)).map(lg => { const me = lg.rosters.find(r => r.is_me); return me ? { lg, me } : null; }).filter(Boolean);
+    const hiddenLgs = (window.LEAGUES || []).filter(isLeagueHidden);
     if (mine.length) {
       const rowsData = mine.map(({ lg, me }) => {
         const rank = lg.projection_unavailable ? null : lineupRankInLeague(lg, me.roster_id);
@@ -2425,7 +2436,7 @@
             h('th', { class:'right', title:'Lineup rank: your best legal starting lineup against the league, picks excluded. The roster Snapshot also shows roster value rank, picks included.' }, 'Rank'),
             h('th', { class:'right', title:'Present Value: your best LEGAL starting lineup today (positions respected, taxi/IR/Out benched). Dynasty rows are KTC asset value (PV); redraft rows are season value over replacement (VOR), a different unit, so compare the rank, not the number.' }, 'PV / VOR'),
             h('th', { class:'right', title:'Future Value: the same lineup 4 years out, each player aged by his position curve, with owned picks folded in once they convert. A converted pick is discounted in its rookie year (0.75x, ramping to parity) because dynasty value prices a whole career, not one season.' }, 'FV'),
-            h('th', null, 'Stance'), h('th', null, 'Biggest Need'))),
+            h('th', null, 'Stance'), h('th', null, 'Biggest Need'), h('th', null, ''))),
           h('tbody', null, ...rowsData.map(d => h('tr', { style:{ cursor:'pointer' }, onclick:()=>navigate(`#league/${d.lg.id}`) },
             h('td', null, h('div', { class:'name-cell' },
               h('span', { class:'name' }, d.me.team_name),
@@ -2444,10 +2455,14 @@
               ? h('span', { class:`badge stance-${d.stance}`, style:{ color: stanceTone[d.stance] } }, STANCE_LABEL[d.stance] || d.stance || 'Unavailable')
               : h('span', { class:'muted', title:'Redraft league, no rebuild or contend stance.' }, '·')),
             h('td', { style:{ color: d.need === 'Unavailable' ? 'var(--fg-3)' : d.need === '·' ? 'var(--green)' : 'var(--red)', fontWeight:600 } }, d.need),
+            h('td', null, h('button', { class:'ghost', title:`Hide ${d.lg.name} from the sidebar and My Leagues`,
+              onclick:e => { e.stopPropagation(); toggleLeagueHidden(d.lg); } }, 'Hide')),
           ))),
         )
       ));
     }
+    if (hiddenLgs.length) main.appendChild(h('p', { class:'source-note' }, 'Hidden: ',
+      ...hiddenLgs.map(lg => h('button', { class:'ghost', title:'Show this league again', onclick:() => toggleLeagueHidden(lg) }, `${lg.name.trim()} ↺`))));
 
   }
 
@@ -2805,6 +2820,7 @@
       ),
       h('div', { class:'page-actions' },
         me ? h('a', { href:`#roster/${lg.id}/${me.roster_id}` }, h('button', { class:'primary' }, 'My Roster →')) : null,
+        h('button', { class:'ghost', onclick:() => toggleLeagueHidden(lg) }, isLeagueHidden(lg) ? 'Unhide league' : 'Hide league'),
         h('div', { class:'btn-group' },
           // Trade Lab moved into the tab bar beside Standings / Players /
           // Transactions, so it is not also a header button.
