@@ -256,7 +256,13 @@ assert(Math.abs(finalOdds.reduce((a,o) => a + o.expWins,0) - 140) < 1e-9,
 assert(finalOdds.every(o => o.expWins >= o.roster.wins + o.roster.ties / 2));
 const noBye = F.championshipOdds({ ...forecastLeague, playoff_teams:4 }, { sims:16 });
 assert.equal(noBye.reduce((a,o) => a+o.bye,0), 0);
-assert.equal(F.forecastWeeks({ ...forecastLeague, divisions:2 }).ok, false);
+assert.equal(F.forecastWeeks({ ...forecastLeague, divisions:2 }).ok, false, 'divisions without membership stay gated');
+// Sleeper seeds division winners first: a one-team division always makes the field with a bye.
+const divLeague = { ...forecastLeague, divisions:2, playoff_seed_type:1,
+  rosters: forecastLeague.rosters.map((r, i) => ({ ...r, division: i < forecastLeague.rosters.length - 1 ? 1 : 2 })) };
+assert.equal(F.forecastWeeks(divLeague).ok, true, F.forecastWeeks(divLeague).reason);
+const lone = F.championshipOdds(divLeague, { sims:32 }).find(o => o.roster.division === 2);
+assert.deepEqual([lone.playoff, lone.bye], [1, 1]);
 assert.equal(F.forecastWeeks({ ...forecastLeague, last_scored_leg:3 }).ok, false);
 const forecast = F.standingsForecast(forecastLeague, { sims:64 });
 assert.equal(forecast.ok, true, forecast.reason);
