@@ -3,7 +3,10 @@
 Uses the overall study's C0 (position-specific decreasing isotonic regression).
 Historical forecasts embargo three-year outcome labels: class Y trains through
 Y-3. Reference is embargoed 2012-2023 drafted QB/RB/WR/TE predictions, pooled
-across positions on a common VOR target. No pre-draft or UDFA extrapolation.
+across positions on a common VOR target. No UDFA extrapolation. The one pre-draft
+estimate is the 2027 class at its public mock-draft consensus pick (mock-consensus.js),
+written to a separate 'projected' block with projected: true on every entry, so the
+drafted players' ratings are untouched.
 """
 import argparse
 import hashlib
@@ -17,6 +20,8 @@ from sklearn.isotonic import IsotonicRegression
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / 'projections' / 'inputs' / 'capital_training.csv'
 OUT = ROOT / 'site' / 'data' / 'capital-ratings.js'
+MOCK = ROOT / 'site' / 'data' / 'mock-consensus.js'
+PROJECTED_CLASS = 2027
 POSITIONS = ('QB', 'RB', 'WR', 'TE')
 
 
@@ -51,6 +56,14 @@ def build():
                and p['y'] >= 2012]
     rows = pd.DataFrame(records)
     ratings = {str(r['id']): {} for r in records}
+    mock = {'class': None, 'players': {}}
+    if MOCK.exists():
+        raw = MOCK.read_text(encoding='utf-8')
+        mock = json.loads(raw[raw.index('{'):raw.rindex('}') + 1])
+    college = {str(r['cid']): r for r in model['college'] if r['cls'] == PROJECTED_CLASS and r['p'] in POSITIONS}
+    pre = pd.DataFrame([{'id': cid, 'pick': c['pick'], 'pos': college[cid]['p']} for cid, c in mock['players'].items()
+                        if mock['class'] == PROJECTED_CLASS and cid in college], columns=['id', 'pick', 'pos'])
+    projected = {cid: {'pick': mock['players'][cid]['pick'], 'n': mock['players'][cid]['n'], 'projected': True} for cid in pre.id}
     for fmt in ('F1', 'F2'):
         target = 'vor3_' + fmt
         ref_rows = train[train.year.between(2012, 2023)]
@@ -66,6 +79,9 @@ def build():
         for index, value in predictions.dropna().items():
             sid = str(rows.loc[index, 'id'])
             ratings[sid][fmt] = round(float(percentile(reference, value)), 1)
+        # Same embargo rule as a drafted class: 2027 trains through 2024.
+        for index, value in forecast(train[train.year <= PROJECTED_CLASS - 3], pre, target).dropna().items():
+            projected[pre.loc[index, 'id']][fmt] = round(float(percentile(reference, value)), 1)
     result = {
         'label': 'Draft-capital rating', 'model': 'C0, three-year label embargo',
         'reference': 'Fixed modern benchmark: drafted QB/RB/WR/TE classes 2012-2023; not historical as-of percentiles',
@@ -73,9 +89,14 @@ def build():
         'target': 'Three-year value above starter replacement; percentile, not hit probability',
         'sourceHash': hashlib.sha256(SOURCE.read_bytes()).hexdigest(),
         'players': ratings,
+        'projected': {
+            'label': 'Projected draft-capital rating, pre-draft', 'class': PROJECTED_CLASS,
+            'source': f"Median pick across public mock drafts (mock-consensus.js, {mock.get('generated')}); not a draft slot",
+            'players': projected,
+        },
     }
     OUT.write_text('window.CAPITAL_RATINGS = ' + json.dumps(result, separators=(',', ':')) + ';\n', encoding='utf-8')
-    print(f'capital-ratings: {len(ratings)} drafted players; no pre-draft ratings')
+    print(f'capital-ratings: {len(ratings)} drafted players; {len(projected)} projected {PROJECTED_CLASS} prospects')
 
 
 def self_check():

@@ -12488,6 +12488,18 @@
       arch ? h('span', { class:'badge prm-arch', title:`Rule-based from size and college production percentiles against drafted ${r.p}s. A label, not a projection` }, arch) : null);
   }
 
+  // Projected slot from public mock drafts (site/data/build_mock_consensus.py), not from this model.
+  // Round is the median pick over 32, so it ignores compensatory picks.
+  function pmMockTile(r) {
+    const m = window.MOCK_CONSENSUS, c = m && m.class === r.cls && m.players[r.cid];
+    if (!c) return null;
+    const mocks = `${c.n} mock${c.n === 1 ? '' : 's'}`;
+    const names = c.src.map(([id, pk]) => `${(m.sources.find(s => s.id === id) || { name:id }).name} ${pk}`).join(', ');
+    return pmTile('Projected round', `R${Math.min(7, Math.ceil(c.pick / 32))}`,
+      `Projected from public mock drafts, not this model: median pick ${c.pick} across ${mocks}, newest dated ${c.date}. Picks by source: ${names}`,
+      `${c.lo === c.hi ? `pick ${c.lo}` : `picks ${c.lo}-${c.hi}`}, ${mocks}, ${c.date}`);
+  }
+
   function collegeProspectBlock(r) {
     const M = window.PROSPECT_MODEL;
     if (!M || !r) return null;
@@ -12499,6 +12511,7 @@
     // AUC caveats was cut (Trevor, 2026-10-04). Those caveats stay on the College % column header.
     const tiles = [
       pmTile('Draft-capital rating', 'Not available', 'No validated overall or draft-capital rating before the draft'),
+      pmMockTile(r),
       pmTile('Profile tier', pmTierChip(r.tr),
         `College profile tier.${tierHit && tierHit[1] != null ? ` Past ${M.tiers[r.tr]} ${r.p}s, all drafted, hit ${pmPct(tierHit[1])} of the time (${tierHit[0]} players, out of sample)` : ''}`,
         tierHit && tierHit[1] != null ? `past hit ${pmPct(tierHit[1])}` : null),
