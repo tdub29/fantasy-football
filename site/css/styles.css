@@ -6277,4 +6277,8 @@ table.data.prm-table .name-cell { flex-direction: column; align-items: flex-star
   .standings-table td.rank::before { counter-increment: standing; content: counter(standing); }
   .standings-table .team { position: sticky; left: 0; z-index: 1; background: inherit; text-align: left; max-width: 34vw; overflow: hidden; text-overflow: ellipsis; }
   .standings-table tr.you .team { background: oklch(90% 0.17 92); }
+  .standings-table td.trend { padding: 4px 6px; }
+  .standings-table .str-spark { width: 92px; height: 34px; gap: 2px; padding: 2px 3px 0; }
+  .standings-table .str-spark .sp-bar-val { display: none; }
+  .standings-table .str-spark .sp-bar { width: 10px; }
 }

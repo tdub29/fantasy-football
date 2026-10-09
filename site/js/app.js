@@ -2992,7 +2992,7 @@
         ? `${forecast.sims.toLocaleString()} simulated seasons, seed 20260807. Completed W1-${forecast.completed} results preserved. Expected final W-L-T shown as fractional means; ties count half a win for seeding. Record, then points for, higher points against, and a seeded coin flip for exact ties. ${forecast.teams} playoff places, ${forecast.byes} first-round byes. ${forecast.median ? 'Includes the league median game each week. ' : ''}Same ${forecast.src === 'blend' ? 'league-scored season blend' : 'weekly ROS'} model as Projections, known weekly absences/byes (unfilled slots score zero) plus simulated injuries, player-season uncertainty and team/stack correlations. Forecast estimates are not historically calibrated probabilities. Roster changes and commissioner overrides are not modeled. Monte Carlo error alone is up to about 2 percentage points at 95% confidence. Weekly source: ${window.WEEKLY_RANKINGS?.liveWeek || window.WEEKLY_RANKINGS?.currentWeek || '?'}; roster/source freshness is in the data panel.`
         : 'No numeric forecast is shown when rules, records, matchups or weekly lineup coverage are unsupported.')));
     standings.appendChild(h('div', { class:'standings-table-wrap' }, h('table', { class:'standings-table' },
-      h('thead', null, h('tr', null, h('th', null, '#'), h('th', { class:'team' }, 'Team'), ...tableCols.map(([label]) => h('th', null, label)))),
+      h('thead', null, h('tr', null, h('th', null, '#'), h('th', { class:'team' }, 'Team'), lgDynasty ? h('th', { title:'Starting-lineup value, this year to five years out' }, 'Trend') : null, ...tableCols.map(([label]) => h('th', null, label)))),
       tableBody)));
     computed.forEach((row, i) => {
       const r = row.r, s = row.s, st = row.st;
@@ -3101,6 +3101,8 @@
       standings.appendChild(strengthRow);
       tableBody.appendChild(h('tr', { class: isMe ? 'you' : '', dataset: strengthRow.dataset, onclick: () => navigate(`#roster/${lg.id}/${r.roster_id}`) },
         h('td', { class:'rank' }), h('td', { class:'team' }, r.team_name),
+        // Same bars as the card; it has no listeners, so a clone is safe.
+        lgDynasty ? h('td', { class:'trend' }, spark.cloneNode(true)) : null,
         ...tableCols.map(([, value]) => h('td', { class:'tnum' }, value(r, st)))));
     });
     main.appendChild(standings);
