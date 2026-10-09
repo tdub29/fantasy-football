@@ -717,7 +717,7 @@
         { "sleepMs": 400 }
       ],
       "selector": ".modal .prm-head",
-      "assert": "(() => { const hd = document.querySelector('.modal .prm-head'); if (!hd) return false; const t = hd.textContent; return /WR\\d+ of \\d+ in the \\d{4} class/.test(t) && /\\d'\\d+\" \\d+ lb, /.test(t) && !!hd.querySelector('img.prm-logo') && hd.scrollWidth <= hd.clientWidth + 1; })()",
+      "assert": "(() => { const hd = document.querySelector('.modal .prm-head'); if (!hd) return false; const t = hd.textContent; return /WR\\d+ of \\d+ in the \\d{4} class/.test(t) && /\\d'\\d+\" \\d+ lb listed, /.test(t) && !!hd.querySelector('img.prm-logo') && hd.scrollWidth <= hd.clientWidth + 1; })()",
       "notes": "Header labels are percentiles against drafted players at the position (size from window.PROSPECT, production from PROSPECT_MODEL.nfl); ESPN roster size and logo from college-bio.js. No age today: there is no public birth-date source."
     },
     {

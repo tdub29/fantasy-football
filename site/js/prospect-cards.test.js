@@ -137,7 +137,7 @@ for (const p of ['QB', 'RB', 'WR']) {
   assert(head, `${p} card has no header`);
   const t = text(head);
   assert.match(t, new RegExp(`${p}[0-9]+ of [0-9]+ in the 2027 class`), t);
-  assert.match(t, /\d'\d+" \d+ lb, /, t);
+  assert.match(t, /\d'\d+" \d+ lb listed, /, t);
   assert(find(head, n => n.tag === 'img').length, `${p} header lost the school logo`);
   assert(!/age today/.test(t) && !/NaN|undefined/.test(t), t);
 }

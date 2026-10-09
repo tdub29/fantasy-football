@@ -12441,24 +12441,27 @@
   // Card header labels (Trevor, 2026-10-09: read like a scout card in one glance). Every label is a
   // mid-rank percentile against drafted players at the position: size against nflverse combine and
   // roster sizes (window.PROSPECT), production against the model's drafted rows (M.nfl).
-  const pmPctile = (vals, v) => v == null || !vals.length ? null
+  const pmPctile = (vals, v) => !Number.isFinite(v) || !vals.length ? null
     : Math.round(100 * (vals.filter(x => x < v).length + vals.filter(x => x === v).length / 2) / vals.length);
   function pmBuild(p, ht, wt) {
     const pool = Object.values((window.PROSPECT || {}).players || {}).filter(x => x.pos === p && x.draft_round != null);
     const hp = pmPctile(pool.map(x => x.height_in).filter(Number.isFinite), ht);
     const wp = pmPctile(pool.map(x => x.weight_lb).filter(Number.isFinite), wt);
     const word = (q, lo, hi) => q == null ? null : q <= 33 ? lo : q >= 67 ? hi : null;
+    if (hp == null || wp == null) return null;
     const hw = word(hp, 'short', 'tall'), ww = word(wp, 'light', 'heavy');
     return { hp, wp, label: { 'short heavy':'compact', 'tall light':'long' }[`${hw} ${ww}`] || [hw, ww].filter(Boolean).join(', ') || 'average size' };
   }
-  // First matching rule wins; 67 = top third of drafted players at the position. No match, no label.
+  // First matching rule wins; 67 = top third, 33 = bottom third of drafted players at the position.
+  // No match, or no size outside QB, no label.
   const PM_ARCH = {
-    QB: [[s => s.rypg >= 67, 'dual-threat'], [s => s.rypg != null, 'pocket passer']],
+    QB: [[s => s.rypg >= 67, 'dual-threat'], [s => s.rypg <= 33, 'pocket passer']],
     RB: [[(s, b) => s.yptpa >= 67 && b.wp >= 67, 'three-down back'], [s => s.yptpa >= 67, 'receiving back'], [(s, b) => b.wp >= 67, 'power back']],
     WR: [[(s, b) => b.hp >= 67 && b.wp >= 67, 'big-bodied X'], [(s, b) => b.hp <= 33, 'slot build'], [s => s.share >= 67, 'target earner']],
     TE: [[(s, b) => s.yptpa >= 67 && !(b.wp >= 67), 'move TE'], [(s, b) => b.wp >= 67, 'in-line TE']],
   };
   function pmArchetype(r, b) {
+    if (!b && r.p !== 'QB') return null;
     const M = window.PROSPECT_MODEL;
     const drafted = Object.values(M.nfl || {}).filter(x => x.p === r.p && x.st);
     const s = {};
@@ -12470,12 +12473,12 @@
     const bio = window.COLLEGE_BIO || {};
     const logo = bio.schools && bio.schools[r.sch];
     const sz = bio.players && bio.players[r.cid];
-    const b = sz ? pmBuild(r.p, sz.ht, sz.wt) : null;
+    const b = sz && pmBuild(r.p, sz.ht, sz.wt);
     const arch = pmArchetype(r, b);
     const facts = [
       r.sch,
-      sz ? h('span', { title:`ESPN roster listing, which runs above combine measurements. Height ${b.hp}th and weight ${b.wp}th percentile against drafted ${r.p}s` },
-        `${Math.floor(sz.ht / 12)}'${sz.ht % 12}" ${sz.wt} lb, ${b.label}`) : null,
+      b ? h('span', { title:`ESPN roster listing, which runs above combine measurements. Height ${b.hp}th and weight ${b.wp}th percentile against drafted ${r.p}s` },
+        `${Math.floor(sz.ht / 12)}'${sz.ht % 12}" ${sz.wt} lb listed, ${b.label}`) : null,
       r.age != null ? h('span', { title:'Estimated age at the draft he is scored for: the more conservative of leaving after his third or fourth college year. No public birth dates, so no age today' },
         `draft age ${pmNum(1)(r.age)} est.`) : null,
     ].filter(Boolean);
