@@ -2916,9 +2916,28 @@
     const sortSelect = h('select', { 'aria-label':'Sort teams by' }, ...sortOptions.map(([key, label]) =>
       h('option', { value:key, selected:key === sortState.key ? '' : null }, label)));
     const dirButton = h('button', { type:'button', class:'ghost standings-dir' });
+    // Phones get the same teams as a table: one line each, aligned columns,
+    // sideways scroll inside the table only. CSS shows the table or the cards.
+    const fc = id => forecast.rows.get(id);
+    const tableCols = [
+      ['W-L', r => `${r.wins ?? 0}-${r.losses ?? 0}${r.ties ? `-${r.ties}` : ''}`],
+      ['PF', r => fmt.decimal(r.fpts ?? 0, 0)],
+      ...(lg.rosters.some(x => Number.isFinite(x.ppts)) ? [['Max PF', r => Number.isFinite(r.ppts) ? fmt.decimal(r.ppts, 0) : '-']] : []),
+      ...(forecast.ok ? [
+        ['Proj', r => [fc(r.roster_id).expW, fc(r.roster_id).expL].map(x => x.toFixed(1)).join('-')],
+        ['Playoff', r => forecastPct(fc(r.roster_id).playoff)],
+        ...(forecast.byes ? [['Bye', r => forecastPct(fc(r.roster_id).bye)]] : []),
+        ['Champ', r => forecastPct(fc(r.roster_id).title)],
+        ...(projMaxPf ? [['Proj Max', r => fmt.decimal(fc(r.roster_id).maxPf, 0)]] : []),
+        ...(lgDynasty && forecast.rookie ? [['1.01', r => forecastPct(fc(r.roster_id).first)]] : []),
+      ] : []),
+      ['PV', (r, st) => fmt.decimal(st, 1)],
+    ];
+    const tableBody = h('tbody');
     const applyStandingsSort = () => {
       sortStandingRows(standings.querySelectorAll('.strength-row'), sortState.key, sortState.dir)
         .forEach(row => standings.appendChild(row));
+      sortStandingRows(tableBody.children, sortState.key, sortState.dir).forEach(tr => tableBody.appendChild(tr));
       dirButton.textContent = sortState.dir === 'desc' ? 'High first ↓' : 'Low first ↑';
       dirButton.setAttribute('aria-label', `Order ${dirButton.textContent.toLowerCase()}`);
     };
@@ -2937,6 +2956,9 @@
       h('p', { class:'tip' }, forecast.ok
         ? `${forecast.sims.toLocaleString()} simulated seasons, seed 20260807. Completed W1-${forecast.completed} results preserved. Expected final W-L-T shown as fractional means; ties count half a win for seeding. Record, then points for, higher points against, and a seeded coin flip for exact ties. ${forecast.teams} playoff places, ${forecast.byes} first-round byes. ${forecast.median ? 'Includes the league median game each week. ' : ''}Same ${forecast.src === 'blend' ? 'league-scored season blend' : 'weekly ROS'} model as Projections, known weekly absences/byes (unfilled slots score zero) plus simulated injuries, player-season uncertainty and team/stack correlations. Forecast estimates are not historically calibrated probabilities. Roster changes and commissioner overrides are not modeled. Monte Carlo error alone is up to about 2 percentage points at 95% confidence. Weekly source: ${window.WEEKLY_RANKINGS?.liveWeek || window.WEEKLY_RANKINGS?.currentWeek || '?'}; roster/source freshness is in the data panel.`
         : 'No numeric forecast is shown when rules, records, matchups or weekly lineup coverage are unsupported.')));
+    standings.appendChild(h('div', { class:'standings-table-wrap' }, h('table', { class:'standings-table' },
+      h('thead', null, h('tr', null, h('th', null, '#'), h('th', { class:'team' }, 'Team'), ...tableCols.map(([label]) => h('th', null, label)))),
+      tableBody)));
     computed.forEach((row, i) => {
       const r = row.r, s = row.s, st = row.st;
       const isMe = r.is_me;
@@ -3042,6 +3064,9 @@
               h('div', { title }, h('span', { class:'forecast-label' }, label), h('span', { class:'forecast-value tnum' }, value))))
       );
       standings.appendChild(strengthRow);
+      tableBody.appendChild(h('tr', { class: isMe ? 'you' : '', dataset: strengthRow.dataset, onclick: () => navigate(`#roster/${lg.id}/${r.roster_id}`) },
+        h('td', { class:'rank' }), h('td', { class:'team' }, r.team_name),
+        ...tableCols.map(([, value]) => h('td', { class:'tnum' }, value(r, st)))));
     });
     main.appendChild(standings);
     const sp = fantasySosPanel(lg);

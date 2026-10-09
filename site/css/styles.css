@@ -6259,3 +6259,22 @@ table.data.prm-table .name-cell { flex-direction: column; align-items: flex-star
 .forecast-label { font-size: .65rem; color: var(--fg-2); }
 .forecast-value { font-size: .85rem; font-weight: 800; overflow-wrap: anywhere; }
 @media (max-width: 600px) { .standings-list .strength-row .standings-forecast { grid-column: 1 / -1; } }
+
+/* Phone standings: a table, one row per team. Cards stay on wider screens.
+   The rank cell counts rows, so it follows whatever sort is chosen. */
+.standings-table-wrap { display: none; }
+@media (max-width: 600px) {
+  .standings-list .strength-row { display: none; }
+  .standings-table-wrap { display: block; overflow-x: auto; margin: 0 -4px; }
+  .standings-table { border-collapse: collapse; width: 100%; font-size: .8rem; counter-reset: standing; }
+  .standings-table th { font-size: .62rem; text-transform: uppercase; letter-spacing: .04em; color: var(--fg-2); text-align: right; padding: 6px; white-space: nowrap; }
+  .standings-table td { height: 44px; padding: 0 6px; text-align: right; white-space: nowrap; font-weight: 700; color: var(--fg-1); }
+  .standings-table thead tr, .standings-table tbody tr { background: var(--bg-1); }
+  .standings-table tbody tr { cursor: pointer; }
+  .standings-table tbody tr:nth-child(odd) { background: oklch(88% 0.04 285); }
+  .standings-table tbody tr.you { background: var(--grad-gold); }
+  .standings-table .rank { color: var(--fg-3); }
+  .standings-table td.rank::before { counter-increment: standing; content: counter(standing); }
+  .standings-table .team { position: sticky; left: 0; z-index: 1; background: inherit; text-align: left; max-width: 34vw; overflow: hidden; text-overflow: ellipsis; }
+  .standings-table tr.you .team { background: oklch(90% 0.17 92); }
+}
