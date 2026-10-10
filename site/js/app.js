@@ -12489,13 +12489,13 @@
   }
 
   // Projected slot from public mock drafts (site/data/build_mock_consensus.py), not from this model.
-  // Round is the median pick over 32, so it ignores compensatory picks.
+  // Round ends follow Drafttek's comp-pick numbering (R3 ends at 101, R6 at 218), not pick/32.
   function pmMockTile(r) {
     const m = window.MOCK_CONSENSUS, c = m && m.class === r.cls && m.players[r.cid];
     if (!c) return null;
     const mocks = `${c.n} mock${c.n === 1 ? '' : 's'}`;
     const names = c.src.map(([id, pk]) => `${(m.sources.find(s => s.id === id) || { name:id }).name} ${pk}`).join(', ');
-    return pmTile('Projected round', `R${Math.min(7, Math.ceil(c.pick / 32))}`,
+    return pmTile('Projected round', `R${[32, 64, 101, 136, 180, 218].filter(b => c.pick > b).length + 1}`,
       `Projected from public mock drafts, not this model: median pick ${c.pick} across ${mocks}, newest dated ${c.date}. Picks by source: ${names}`,
       `${c.lo === c.hi ? `pick ${c.lo}` : `picks ${c.lo}-${c.hi}`}, ${mocks}, ${c.date}`);
   }
