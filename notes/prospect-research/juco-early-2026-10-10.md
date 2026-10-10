@@ -60,3 +60,13 @@ the full model is a hair worse because draft capital already prices those 8. The
 right, but the evidence is too thin for the charter. Adding age does not help.
 
 Scorer: `scratchpad/juco/juco.py` on the WR agent's runner, results in `juco_results.json`.
+
+## Shipped anyway (owner call, 2026-10-10)
+
+Trevor approved E1 as a definition correction: "prob do the fix if its right in direction". It ships
+outside the charter (80% bootstrap, full model a hair worse), so it is logged here as an override,
+not a pass. `build_prospect_model.py` now carries `transfer = first_season - hs_class >= 2` and
+`early` requires `transfer == 0` in training (`career_features`), `exit_scenario` and the
+next-season exit search, so training and scoring use one definition. Current players get slightly
+more transfer detection than history because `hs_class` also reads the ESPN class label, which is
+reliable only on 2025+ rosters.

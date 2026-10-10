@@ -364,9 +364,9 @@ Each class is scored by a fit on the classes whose outcome window had closed by 
 | RB | top-24, yrs 1-3 | 77 / 20 | draft only, linear (old baseline) | 0.799 | 0.1347 | 0.4294 | 0.66 |
 | RB | | | base rate, walk-forward (no model) | 0.500 | 0.1937 | 0.5763 | |
 | WR | top-24, yrs 1-3 | 124 / 22 | draft only, spline (baseline) | 0.877 | 0.1006 | 0.3254 | 0.63 |
-| WR | top-24, yrs 1-3 | 124 / 22 | talent (no capital) | 0.742 | 0.1315 | 0.4201 | 0.41 |
-| WR | top-24, yrs 1-3 | 124 / 22 | talent + capital | 0.851 | 0.1066 | 0.3412 | 0.61 |
-| WR | top-24, yrs 1-3 | 124 / 22 | monotone LightGBM (challenger) | 0.830 | 0.1194 | 0.3770 | 0.55 |
+| WR | top-24, yrs 1-3 | 124 / 22 | talent (no capital) | 0.744 | 0.1313 | 0.4189 | 0.43 |
+| WR | top-24, yrs 1-3 | 124 / 22 | talent + capital | 0.852 | 0.1067 | 0.3408 | 0.62 |
+| WR | top-24, yrs 1-3 | 124 / 22 | monotone LightGBM (challenger) | 0.833 | 0.1194 | 0.3770 | 0.56 |
 | WR | top-24, yrs 1-3 | 124 / 22 | draft only, linear (old baseline) | 0.875 | 0.0976 | 0.3235 | 0.64 |
 | WR | | | base rate, walk-forward (no model) | 0.500 | 0.1465 | 0.4695 | |
 | TE | top-12, yrs 1-4 | 39 / 6 | draft only, spline (baseline) | 0.904 | 0.0820 | 0.2895 | 0.54 |
@@ -393,9 +393,9 @@ Each class is scored by a fit on the classes whose outcome window had closed by 
 | RB | top-24, yrs 1-3 | 242 / 70 | draft only, linear (old baseline) | 0.825 | 0.1395 | 0.4391 | 0.65 |
 | RB | | | base rate (no model) | 0.500 | 0.2056 | 0.6015 | |
 | WR | top-24, yrs 1-3 | 339 / 52 | draft only, spline (baseline) | 0.803 | 0.1140 | 0.3586 | 0.56 |
-| WR | top-24, yrs 1-3 | 339 / 52 | talent (no capital) | 0.775 | 0.1095 | 0.3609 | 0.44 |
-| WR | top-24, yrs 1-3 | 339 / 52 | talent + capital | 0.831 | 0.1039 | 0.3308 | 0.60 |
-| WR | top-24, yrs 1-3 | 339 / 52 | monotone LightGBM (challenger) | 0.837 | 0.1027 | 0.3310 | 0.60 |
+| WR | top-24, yrs 1-3 | 339 / 52 | talent (no capital) | 0.778 | 0.1085 | 0.3584 | 0.45 |
+| WR | top-24, yrs 1-3 | 339 / 52 | talent + capital | 0.830 | 0.1044 | 0.3321 | 0.59 |
+| WR | top-24, yrs 1-3 | 339 / 52 | monotone LightGBM (challenger) | 0.836 | 0.1035 | 0.3320 | 0.60 |
 | WR | top-24, yrs 1-3 | 339 / 52 | draft only, linear (old baseline) | 0.806 | 0.1176 | 0.3721 | 0.55 |
 | WR | | | base rate (no model) | 0.500 | 0.1299 | 0.4285 | |
 | TE | top-12, yrs 1-4 | 164 / 35 | draft only, spline (baseline) | 0.789 | 0.1362 | 0.4297 | 0.60 |
@@ -413,7 +413,7 @@ Train only on classes whose whole outcome window had been played by the held-out
 |---|---|---|---|---|---|---|---|---|
 | QB | 75 | 0.3255 | 0.3363 | 0.3463 | 0.3281 | 0.857 | 0.860 | **draft only** |
 | RB | 146 | 0.4810 | 0.4658 | 0.4613 | 0.4796 | 0.797 | 0.814 | **draft only** |
-| WR | 200 | 0.3684 | 0.3446 | 0.3467 | 0.3806 | 0.811 | 0.823 | **draft only** |
+| WR | 200 | 0.3684 | 0.3465 | 0.3463 | 0.3806 | 0.811 | 0.820 | **draft only** |
 | TE | 91 | 0.4524 | 0.4521 | 0.4609 | 0.4572 | 0.811 | 0.816 | **draft only** |
 
 Log loss columns. Ship rule: a model replaces the spline draft-only baseline only if it has lower log loss in ALL THREE runs (development leave-one-class-out, embargoed forward, holdout) AND wins in at least 80% of draft-class bootstrap resamples of the development leave-one-class-out predictions.
@@ -424,14 +424,14 @@ Log loss columns. Ship rule: a model replaces the spline draft-only baseline onl
   - LightGBM challenger: 0.3491 holdout, 0.4077 development, 0.3463 forward (not promoted).
 - **RB**: talent + capital vs the spline baseline, log loss gain -0.0014 on the holdout (AUC 0.801 to 0.816), +0.0185 development leave-one-class-out, +0.0153 embargoed forward. Class bootstrap: positive in 97% of resamples (90% interval +0.0028 to +0.0353). Fails: holdout. The hit probability ships from the draft-only model; the talent score still shows, as a profile, not a forecast.
   - LightGBM challenger: 0.4541 holdout, 0.4407 development, 0.4613 forward (not promoted).
-- **WR**: talent + capital vs the spline baseline, log loss gain -0.0158 on the holdout (AUC 0.877 to 0.851), +0.0278 development leave-one-class-out, +0.0238 embargoed forward. Class bootstrap: positive in 100% of resamples (90% interval +0.0108 to +0.0452). Fails: holdout. The hit probability ships from the draft-only model; the talent score still shows, as a profile, not a forecast.
-  - LightGBM challenger: 0.3770 holdout, 0.3310 development, 0.3467 forward (not promoted).
+- **WR**: talent + capital vs the spline baseline, log loss gain -0.0154 on the holdout (AUC 0.877 to 0.852), +0.0266 development leave-one-class-out, +0.0219 embargoed forward. Class bootstrap: positive in 99% of resamples (90% interval +0.0082 to +0.0454). Fails: holdout. The hit probability ships from the draft-only model; the talent score still shows, as a profile, not a forecast.
+  - LightGBM challenger: 0.3770 holdout, 0.3320 development, 0.3463 forward (not promoted).
 - **TE**: talent + capital vs the spline baseline, log loss gain +0.0081 on the holdout (AUC 0.904 to 0.904), +0.0009 development leave-one-class-out, +0.0003 embargoed forward. Class bootstrap: positive in 54% of resamples (90% interval -0.0133 to +0.0139). Fails: bootstrap under 80%. The hit probability ships from the draft-only model; the talent score still shows, as a profile, not a forecast.
   - LightGBM challenger: 0.3007 holdout, 0.4498 development, 0.4609 forward (not promoted).
 
 ### Low-volume check (asserted on every build)
 
-Talent score of a two-season career on a team throwing 16 passes a game (just over the 15 floor, so the shares count), at the best YPTPA and dominator a drafted player at the position posted on a normal passing team, every other feature at the median: RB 71.2, WR 88.6, TE 84.7. The build fails at 90 (top decile).
+Talent score of a two-season career on a team throwing 16 passes a game (just over the 15 floor, so the shares count), at the best YPTPA and dominator a drafted player at the position posted on a normal passing team, every other feature at the median: RB 71.2, WR 89.0, TE 84.7. The build fails at 90 (top decile).
 
 ### Coefficients (final fit on every training class)
 
@@ -442,8 +442,8 @@ Talent score of a two-season career on a team throwing 16 passes a game (just ov
 - RB talent (C=0.1, standardized): `scrim_ypg` +0.626, `ryptpa_final` +0.435, `speed_score` +0.385, `stars` +0.362, `weight` +0.228
 - RB full (C=0.1, standardized) + spline in log pick: `ryptpa_final` +0.381, `scrim_ypg` +0.231, `weight` +0.132, `stars` +0.101, `speed_score` +0.067
 - WR draft only (spline in log pick, curvature penalized at C=0.1), hit chance by pick: 1 91%, 10 59%, 32 35%, 64 20%, 100 12%, 150 6%, 250 1%
-- WR talent (C=0.1, standardized): `ryptpa_career` +0.655, `early` +0.415, `stars` +0.315
-- WR full (C=0.1, standardized) + spline in log pick: `early` +0.364, `ryptpa_career` +0.335, `stars` +0.120
+- WR talent (C=0.1, standardized): `ryptpa_career` +0.670, `early` +0.440, `stars` +0.304
+- WR full (C=0.1, standardized) + spline in log pick: `ryptpa_career` +0.353, `early` +0.350, `stars` +0.122
 - TE draft only (spline in log pick, curvature penalized at C=0.1), hit chance by pick: 1 100%, 10 91%, 32 62%, 64 35%, 100 20%, 150 10%, 250 2%
 - TE talent (C=0.1, standardized): `ryptpa_best` +0.628, `speed_score` +0.357, `power` +0.203
 - TE full (C=0.1, standardized) + spline in log pick: `ryptpa_best` +0.325, `speed_score` +0.165, `power` +0.061
@@ -469,6 +469,6 @@ Each decile holds about a tenth of the position's sample (n per cell = n / 10).
 |---|---|---|---|---|---|
 | QB | 56% (n=16) | 31% (n=32) | 10% (n=39) | 10% (n=40) | 16% (n=31) |
 | RB | 75% (n=32) | 44% (n=64) | 25% (n=80) | 16% (n=80) | 8% (n=63) |
-| WR | 53% (n=47) | 25% (n=92) | 13% (n=116) | 6% (n=116) | 4% (n=92) |
+| WR | 51% (n=47) | 27% (n=92) | 13% (n=116) | 5% (n=116) | 4% (n=92) |
 | TE | 43% (n=21) | 35% (n=40) | 24% (n=51) | 4% (n=51) | 10% (n=40) |
 <!-- METRICS:END -->

@@ -40,7 +40,7 @@ def stage_cols(pos):
 def snapshots(e, ps, age0, con) -> pd.DataFrame:
     """One row per player per completed season k <= exit, features as of k."""
     seasons = ps[["player_id", "season"]].drop_duplicates()
-    s = e[["sid", "player_id", "cpos", "exit", "hs_class", "draft_year", "outcome_year", "hit", "best_ppg", "win", "weight",
+    s = e[["sid", "player_id", "cpos", "exit", "hs_class", "first_season", "draft_year", "outcome_year", "hit", "best_ppg", "win", "weight",
            "stars"]].merge(
         seasons, on="player_id")
     s = s[s.season <= s.exit].copy()
@@ -48,7 +48,7 @@ def snapshots(e, ps, age0, con) -> pd.DataFrame:
     s["sid"] = s.sid + "_" + s.season.astype(int).astype(str)
     subj = s.rename(columns={"cpos": "pos"}).assign(cutoff=s.season.astype(int), dob=pd.NaT,
                                                      draft_year=s.season.astype(int) + 1)
-    f = bpm.career_features(subj[["sid", "player_id", "pos", "cutoff", "draft_year", "dob", "hs_class"]], ps, age0)
+    f = bpm.career_features(subj[["sid", "player_id", "pos", "cutoff", "draft_year", "dob", "hs_class", "first_season"]], ps, age0)
     s = s.merge(f, on="sid", how="left")
     s = s.join(pe.schedule_context(s.assign(cutoff=s.season.astype(int)), ps, con), on="sid")
     s = s.join(pe.usage_quality(s.assign(cutoff=s.season.astype(int)), ps, con), on="sid")

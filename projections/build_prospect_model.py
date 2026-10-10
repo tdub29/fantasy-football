@@ -412,7 +412,10 @@ def career_features(subj: pd.DataFrame, ps: pd.DataFrame, age0: float) -> pd.Dat
     out["rush_ypg_best"] = qb.groupby("sid")["rush_ypg"].max()
     out["starts"] = f.groupby("sid")["started"].sum()
     s = subj.set_index("sid")
-    out["early"] = (out.n_seasons <= 3).astype(float)
+    # A JUCO or FCS transfer reaches FBS 2+ years after his recruit class (a redshirt is 1), so
+    # two FBS seasons are not an early exit for him (notes/prospect-research/juco-early-2026-10-10.md).
+    out["transfer"] = (s.first_season - s.hs_class >= 2).astype(float)
+    out["early"] = ((out.n_seasons <= 3) & out.transfer.eq(0)).astype(float)
     apr25 = pd.to_datetime(s.draft_year.astype(int).astype(str) + "-04-25")
     out["draft_age"] = np.where(s.dob.notna(), age_years(apr25, s.dob), age0 + s.draft_year - s.hs_class - 0.35)
     out.loc[out.n_seasons.isna(), "draft_age"] = np.nan
@@ -792,7 +795,7 @@ def prepare(say=print):
     d["forty"] = d.pfr_player_id.map(cmb["forty"])
     d["cwt"] = d.pfr_player_id.map(cmb["wt"])
     d["dob"] = pd.to_datetime(d.birth_date, errors="coerce")
-    d = d.join(bio[["hs_class", "stars", "ros_weight"]], on="player_id")
+    d = d.join(bio[["hs_class", "first_season", "stars", "ros_weight"]], on="player_id")
     # Combine weight, else his last college roster weight. Never nflverse's current weight:
     # that is measured after the draft, so it would leak into a pre-draft model.
     d["weight"] = d.cwt.fillna(d.ros_weight)
@@ -835,7 +838,8 @@ def low_volume_profile(pos, ypa, dom, age0):
         rows.append({**base, "player_id": 2, "name": "Teammate", "rec": 20, "rec_yds": ypa * n * (1 / dom - 1),
                      "rec_td": 10 * (1 - dom), "pass_att": n, "g_passing": 12})
     subj = pd.DataFrame({"sid": ["lv"], "player_id": pd.array([1], dtype="Int64"), "pos": [pos], "cutoff": [SEASON - 1],
-                         "draft_year": [SEASON], "dob": [pd.NaT], "hs_class": [SEASON - 2]})
+                         "draft_year": [SEASON], "dob": [pd.NaT], "hs_class": [SEASON - 2],
+                         "first_season": [SEASON - 2]})
     return career_features(subj, season_metrics(pd.DataFrame(rows)), age0).set_index("sid").loc["lv"]
 
 
@@ -1184,7 +1188,7 @@ def exit_scenario(s: pd.DataFrame, years: int, age0: float) -> pd.DataFrame:
     fewer seasons, so `early` was 1 for all of them by construction."""
     s = s.copy()
     s["draft_year"] = np.maximum(SEASON + 1, s.hs_class + years)
-    s["early"] = ((s.n_seasons + (s.draft_year - 1 - SEASON)) <= 3).astype(float)
+    s["early"] = (((s.n_seasons + (s.draft_year - 1 - SEASON)) <= 3) & s.transfer.eq(0)).astype(float)
     s["draft_age"] = np.where(s.dob.notna(), age_years(pd.to_datetime(s.draft_year.astype(int).astype(str) + "-04-25"), s.dob),
                               age0 + s.draft_year - s.hs_class - 0.35)
     return s
@@ -1294,7 +1298,7 @@ def predraft_profile(subj, ps, age0, season=SEASON) -> pd.DataFrame:
     made the number jump when a player crossed six games with no new production (review C).
     `cur_start`: he is the passer of record in the current season (`season`), so far.
     `season` is a parameter only so the serving backtest can replay past seasons."""
-    c = subj[["sid", "player_id", "pos", "hs_class", "dob"]].assign(cutoff=season - 1, draft_year=season + 1, dob=pd.NaT)
+    c = subj[["sid", "player_id", "pos", "hs_class", "first_season", "dob"]].assign(cutoff=season - 1, draft_year=season + 1, dob=pd.NaT)
     f = career_features(c, ps, age0).set_index("sid")
     f = f.join(context_features(c.merge(f[["season_final"]], left_on="sid", right_index=True), ps))
     now = ps[ps.season == season].set_index("player_id").started
@@ -1359,7 +1363,7 @@ def predraft_score(s, done, pre, age0, season=SEASON, exits=(3, 4)) -> pd.DataFr
         extra = v.draft_year - season
         v["n_seasons"] = v.n_seasons + extra
         v["n_qual"] = v.n_qual + extra
-        v["early"] = (v.n_seasons <= 3).astype(float)
+        v["early"] = ((v.n_seasons <= 3) & v.transfer.eq(0)).astype(float)
         v["draft_age"] = age0 + v.draft_year - v.hs_class - 0.35
         ok = v.n_qual.notna().to_numpy() & (v.n_qual - extra >= 1).to_numpy()   # a completed qualifying season
         if "starts" in pre["cols"]:
@@ -1622,11 +1626,14 @@ def self_check():
                                     team_games=[5, 5, 5, 5])).set_index(["player_id", "season"])
     assert part.loc[(1, SEASON - 1), "qual"] and not part.loc[(1, SEASON), "qual"], "4 games of the live season never qualify"
     subj = pd.DataFrame({"sid": ["s1"], "player_id": pd.array([1], dtype="Int64"), "pos": ["WR"], "cutoff": [2021],
-                         "draft_year": [2022], "dob": [pd.Timestamp("2001-09-01")], "hs_class": [2020]})
+                         "draft_year": [2022], "dob": [pd.Timestamp("2001-09-01")], "hs_class": [2020],
+                         "first_season": [2020]})
     cf = career_features(subj, m.reset_index(), 18.7).set_index("sid").loc["s1"]
     assert abs(cf.ryptpa_best - 2.5) < 1e-9 and cf.season_final == 2021
     assert abs(cf.breakout_age - 19.0) < 0.01, cf.breakout_age   # 2020 dom 0.275 clears 0.20 at age 19
     assert cf.early == 1.0 and cf.n_seasons == 2
+    juco = career_features(subj.assign(hs_class=2018), m.reset_index(), 18.7).set_index("sid").loc["s1"]
+    assert juco.transfer == 1.0 and juco.early == 0.0, "two FBS seasons after two elsewhere is not early"
     assert abs(cf.draft_age - (pd.Timestamp("2022-04-25") - pd.Timestamp("2001-09-01")).days / 365.25) < 1e-9
     # cutoff hides later seasons: the same player cut at 2020 has no 2021 in his profile.
     cf20 = career_features(subj.assign(cutoff=2020), m.reset_index(), 18.7).set_index("sid").loc["s1"]
@@ -1744,7 +1751,7 @@ def self_check():
     assert lv12.thin.all(), "12 a game is under the floor"
 
     # 7. current players: exit scenarios and censored breakouts.
-    cur = pd.DataFrame({"n_seasons": [2, 4], "hs_class": [SEASON - 1, SEASON - 3], "dob": [pd.NaT, pd.NaT]})
+    cur = pd.DataFrame({"n_seasons": [2, 4], "hs_class": [SEASON - 1, SEASON - 3], "dob": [pd.NaT, pd.NaT], "transfer": [0.0, 0.0]})
     e3, e4 = exit_scenario(cur, 3, 18.7), exit_scenario(cur, 4, 18.7)
     assert e3.early.tolist() == [1.0, 0.0] and e4.early.tolist() == [0.0, 0.0], "a sophomore is early only if he leaves after year 3"
     assert e3.draft_year.tolist() == [SEASON + 2, SEASON + 1] and e4.draft_year.tolist() == [SEASON + 3, SEASON + 1]

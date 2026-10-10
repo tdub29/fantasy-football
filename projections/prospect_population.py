@@ -64,7 +64,7 @@ def exits(ps: pd.DataFrame, bio: pd.DataFrame, con, drafted_year: pd.Series | No
     if drafted_year is not None:   # a drafted player left by his draft, whatever a later roster file says
         cap = drafted_year.reindex(last.index) - 1
         last["exit"] = np.where(cap.notna(), np.minimum(last.exit, cap), last.exit)
-    e = last[last.exit <= LAST_EXIT].join(bio[["ros_pos", "hs_class"]]).join(infer_pos(ps, bio, con))
+    e = last[last.exit <= LAST_EXIT].join(bio[["ros_pos", "hs_class", "first_season"]]).join(infer_pos(ps, bio, con))
     known = e.ros_pos.notna() & e.ros_pos.ne("-")
     e["pos_src"] = np.where(known, "espn", "inferred")
     e["ros_pos"] = e.ros_pos.where(known, e.inf_pos)
@@ -146,7 +146,7 @@ def build(ps, bio, d, t, age0, con, say=print) -> pd.DataFrame:
     e["cutoff"] = e.exit.astype(int)
     e["dob"] = pd.NaT
     e["sid"] = "b" + e.player_id.astype(str)
-    feats = bpm.career_features(e[["sid", "player_id", "cpos", "cutoff", "draft_year", "dob", "hs_class"]]
+    feats = bpm.career_features(e[["sid", "player_id", "cpos", "cutoff", "draft_year", "dob", "hs_class", "first_season"]]
                                 .rename(columns={"cpos": "pos"}), ps, age0)
     e = e.merge(feats, on="sid", how="left")
     # Plausible prospects, the same filter the college board uses: a qualifying season, and for a
