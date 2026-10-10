@@ -26,6 +26,7 @@ STEPS = [
     ("raw Sleeper dump + leagues", SITE_DATA / "fetch_sleeper.py",        True),
     ("KTC dynasty rankings",       SITE_DATA / "build_ktc.py",            True),
     ("site data (players/leagues)", SITE_DATA / "build_site_data.py",     True),
+    ("2027 mock-draft consensus",   SITE_DATA / "build_mock_consensus.py", True),  # feeds the projected capital block
     ("draft-capital ratings",       PROJ / "build_capital_ratings.py",    True),
     ("trade partner history",       SITE_DATA / "build_trade_history.py", True),
     # Pull this season's claims and the projection each claimant saw, then
@@ -137,7 +138,7 @@ TRACKED = [
     "ktc.js", "players.js", "leagues.js", "projections.js", "categories.js",
     "environment.js", "sos.js", "sos-grid.js", "sleeper-idp.js", "player-info.js",
     "jacob-gibbs.js", "expert-rankings.js", "fantasypros-experts.js", "alexandria.js",
-    "idp-dvp.js", "kickers.js", "gibbs-week.js", "gibbs-ros.js", "gibbs-ppr.js", "advanced.js", "prospect.js", "prospect-model.js", "capital-ratings.js", "contracts.js", "weather.js", "defense.js", "usage-weekly.js", "idp-advanced.js", "weekly-rankings.js", "sleeper-market.js", "faab.js", "trade-history.js", "context.js", "history.js",
+    "idp-dvp.js", "kickers.js", "gibbs-week.js", "gibbs-ros.js", "gibbs-ppr.js", "advanced.js", "prospect.js", "prospect-model.js", "capital-ratings.js", "mock-consensus.js", "contracts.js", "weather.js", "defense.js", "usage-weekly.js", "idp-advanced.js", "weekly-rankings.js", "sleeper-market.js", "faab.js", "trade-history.js", "context.js", "history.js",
 ]
 
 def run(label, script, timeout=600, args=()):
