@@ -13177,10 +13177,9 @@
         mean = season / SIM.gamesPlayed;
       }
       const st = sp.injury_status;
-      // ponytail: dynasty keeps the season projection and the designation table;
-      // most of its totals are preseason and never priced the absence (7 of 9 IR
-      // players, 2026-09-25), so it counts once there. Move dynasty onto the lines
-      // too if a dynasty verdict ever reads title odds.
+      // An explicit season source (Projections' picker, later dynasty seasons) keeps
+      // the designation table; most of those totals are preseason and never priced
+      // the absence (7 of 9 IR players, 2026-09-25), so it counts once there.
       // A live designation is this season's news; it says nothing about 2028.
       // Any designation reads its length off the lines when they show one: a 3-week
       // high ankle tagged Out is 3 weeks, not the table's 1. The table is the
@@ -13545,11 +13544,19 @@
   function rookieOrderRule(lg) {
     return isDynastyLeague(lg) ? (ROOKIE_ORDER[String(lg.id)] || 'record') : null;
   }
+  // This season reads the weekly ROS lines in every league. The dynasty blend is
+  // mostly preseason and ran 42% under The League's real Max PF pace (ROS: 13%),
+  // which priced JoeysYIDS's hot start as a bottom-two roster. Later seasons have
+  // no lines, and a dynasty league with none loaded falls back to the blend
+  // rather than simulating empty rosters.
+  function seasonSrc(lg, yearsOut = 0) {
+    return isDynastyLeague(lg) && (yearsOut || !rosPointsByPid(lg).size) ? 'blend' : 'ros';
+  }
   function championshipOdds(lg, { sims = 4000, src = null, whatIf = null, seed = 20260807, yearsOut = 0, strengthRanks = null, champions = null, withMaxPf = false } = {}) {
     const rosters = lg.rosters || [];
     const n = rosters.length;
     if (!n) return [];
-    src = src || (isDynastyLeague(lg) ? 'blend' : 'ros');
+    src = src || seasonSrc(lg, yearsOut);
     const slots = offenseStartingSlots(lg);
     const cfg = playoffSettings(lg);
     const { extraPoints } = projectLeagueForward(lg, yearsOut, whatIf, strengthRanks);
@@ -13705,7 +13712,7 @@
   function standingsForecast(lg, { sims = 4000 } = {}) {
     const fw = forecastWeeks(lg);
     if (!fw.ok) return fw;
-    const src = isDynastyLeague(lg) ? 'blend' : 'ros';
+    const src = seasonSrc(lg);
     const slots = offenseStartingSlots(lg);
     if (fw.remaining.length) for (const r of lg.rosters) {
       const pool = simPool({ ...r, reserve: [], taxi: r.taxi || [] }, lg, src);
