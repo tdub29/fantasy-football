@@ -12537,14 +12537,15 @@
     const peers = M.college.filter(x => x.p === r.p && x.cls === r.cls);
     const rank = peers.filter(x => x.ts > r.ts).length + 1;
     const tierHit = (meta.tier_hit || [])[r.tr];
+    const lad = tierHit && tierHit[2] && meta.ladder ? tierHit[2].map(v => Math.round(v * 100)) : null;
     // The tier's track record rides on the tile; the paragraph that restated it with the holdout
     // AUC caveats was cut (Trevor, 2026-10-04). Those caveats stay on the College % column header.
     const tiles = [
       pmTile('Draft-capital rating', 'Not available', 'No validated overall or draft-capital rating before the draft'),
       pmMockTile(r),
       pmTile('Profile tier', pmTierChip(r.tr),
-        `College profile tier.${tierHit && tierHit[1] != null ? ` Past ${M.tiers[r.tr]} ${r.p}s, all drafted, hit ${pmPct(tierHit[1])} of the time (${tierHit[0]} players, out of sample)` : ''}`,
-        tierHit && tierHit[1] != null ? `past hit ${pmPct(tierHit[1])}` : null),
+        `College profile tier.${tierHit && tierHit[1] != null ? ` Past ${M.tiers[r.tr]} ${r.p}s, all drafted, hit ${pmPct(tierHit[1])} of the time (${tierHit[0]} players, out of sample)` : ''}${lad ? `. Best season in the window: ${r.p}1 (top ${meta.ladder[0]}) ${lad[0]}%, ${r.p}2 (top ${meta.ladder[1]}) ${lad[1]}%, ${r.p}3 (top ${meta.ladder[2]}) ${lad[2]}%. Tiers that came out of order are pooled` : ''}`,
+        lad ? `${r.p}1/2/3 ${lad.join('/')}%` : tierHit && tierHit[1] != null ? `past hit ${pmPct(tierHit[1])}` : null),
       pmTile('Profile percentile', h('span', null, `${r.ts} `, pmPips(r.ts)),
         `College profile with no draft capital: percentile against every drafted ${r.p} since 2008`,
         `#${rank} of ${peers.length} listed`),

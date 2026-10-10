@@ -168,6 +168,8 @@ BLEND: set[str] = set()
 ROUNDS = {"R1": (1, 32), "R2": (33, 64), "R3": (65, 100), "D3": (101, 257)}
 # Our tier names, cut on the talent percentile vs every drafted player at the position.
 TIERS = [("Blue Chip", 90), ("Plus Starter", 70), ("Contributor", 45), ("Project", 20), ("Long Shot", 0)]
+# Bakery-style ladder: share of each tier with a #1/#2/#3 season (WR1/WR2/WR3 = top 12/24/36) inside the window.
+LADDER = (12, 24, 36)
 # nflverse draft_picks school -> the name ESPN's college feed uses (both sides normalized).
 SCHOOL_ALIAS = {"mississippi": "ole miss", "central florida": "ucf", "ala birmingham": "uab", "texas el paso": "utep",
                 "texas san antonio": "utsa", "ut san antonio": "utsa", "miami fl": "miami",
@@ -730,6 +732,18 @@ def tier_of(pct):
     return len(TIERS) - 1
 
 
+def pool_order(rates, ns):
+    """Pool adjacent tiers (best first) until no lower tier shows a higher rate. Small tiers flip on noise;
+    pooling keeps the n-weighted total and the order every reader assumes."""
+    blocks = []
+    for r, n in zip(rates, ns):
+        blocks.append([r * n, n, 1])
+        while len(blocks) > 1 and blocks[-2][0] * blocks[-1][1] < blocks[-1][0] * blocks[-2][1]:
+            hits, n2, k = blocks.pop()
+            blocks[-1][0] += hits; blocks[-1][1] += n2; blocks[-1][2] += k
+    return [h / n for h, n, k in blocks for _ in range(k)]
+
+
 def pctile(ref: np.ndarray, v):
     ref = np.sort(ref[~np.isnan(ref)])
     return float(np.searchsorted(ref, v, side="right") / len(ref) * 100) if len(ref) and not np.isnan(v) else None
@@ -907,6 +921,11 @@ def build(verbose=True):
         res["tier_hit"] = [{"tier": TIERS[i][0], "n": int((tp._tier == i).sum()),
                             "hit": float(tp.hit[tp._tier == i].mean()) if (tp._tier == i).any() else None}
                            for i in range(len(TIERS))]
+        ns = [x["n"] for x in res["tier_hit"]]
+        assert all(ns), f"{pos}: an empty tier"  # percentile cuts of this pool, so never empty
+        res["tier_hit_pooled"] = pool_order([x["hit"] for x in res["tier_hit"]], ns)
+        res["tier_ladder"] = list(zip(*[pool_order([float((tp.best_rank[tp._tier == i] <= k).mean()) for i in range(len(TIERS))], ns)
+                                        for k in LADDER]))
         res["n_linked"] = int(len(tp))
         results[pos] = res
         final[pos] = {"cols": cols, "talent": m_t, "full": m_f, "draft": m_b, "gbm": m_g, "blend": Blend(m_b, m_f), "shipped": shipped,
@@ -1440,7 +1459,9 @@ def write_payload(res, run_id=None):
         top, win = TARGET[pos]
         pos_meta[pos] = {"target": f"Top-{top} {pos} season by PPR points per game ({MIN_GAMES}+ games) in NFL years 1-{win}",
                          "base_rate": round(r["base_rate"]["rate"], 3), "n": r["n_linked"], "shipped": r["shipped"],
-                         "tier_hit": [[x["n"], None if x["hit"] is None else round(x["hit"], 3)] for x in r["tier_hit"]],
+                         "tier_hit": [[x["n"], round(h, 3), [round(v, 3) for v in lad]]
+                                      for x, h, lad in zip(r["tier_hit"], r["tier_hit_pooled"], r["tier_ladder"])],
+                         "ladder": list(LADDER),
                          "holdout": f"{r['hold_classes'][0]}-{r['hold_classes'][1]}",
                          "auc": {k: round(r["hold"][k]["auc"], 3) for k in ("draft", "talent", "full")},
                          "logloss": {k: round(r["hold"][k]["logloss"], 4) for k in ("draft", "talent", "full")},
@@ -1735,6 +1756,8 @@ def self_check():
     # 8. the A10 blend is the logit midpoint and stays inside its two inputs.
     q = blend_p(np.array([0.2, 0.6]), np.array([0.4, 0.6]))
     assert np.allclose(logit(q[:1]), (logit(np.array([0.2])) + logit(np.array([0.4]))) / 2) and abs(q[1] - 0.6) < 1e-12
+    # 6. tier pooling: the out-of-order bottom pair, then the tier above it, merge n-weighted; the top stays.
+    assert np.allclose(pool_order([0.5, 0.2, 0.1, 0.1, 0.16], [10, 10, 40, 40, 31]), [0.5, 0.2] + [12.96 / 111] * 3)
     print("self-check OK")
 
 

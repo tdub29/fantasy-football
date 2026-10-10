@@ -105,7 +105,7 @@ STEPS = [
     # every draftee since 2014 and the current college classes. Self-check first: it is
     # the guard that the talent model never sees draft capital.
     ("prospect model self-check",  PROJ / "build_prospect_model.py",      True, ["--self-check"]),
-    ("college prospect model",     PROJ / "build_prospect_model.py",      True),
+    ("college prospect model",     PROJ / "build_prospect_model.py",      True, [], 1800),  # ~8 min on a full run
     # Card production grades: the drafted-player reference behind the dominator, breakout age
     # and RB YPC grades. Reads prospect-model.js, so it runs after it.
     ("production grades",          PROJ / "build_production_grades.py",   True),
@@ -195,7 +195,7 @@ def main():
         if core_only and not is_core:
             print(f"\n--- skip (non-core): {label}")
             continue
-        results.append(run(label, script, args=args))
+        results.append(run(label, script, timeout=step[4] if len(step) > 4 else 600, args=args))
     info = stamp()
     ok = sum(1 for r in results if r.get("ok"))
     print(f"\n{'='*48}\npipeline done: {ok}/{len(results)} steps ok")
