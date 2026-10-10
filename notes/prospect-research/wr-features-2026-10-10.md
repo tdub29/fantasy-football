@@ -79,3 +79,46 @@ literature; in the W7 pool); RAS (no licensed source).
 
 Scored by a scratch script on a copy of the DB (`PROSPECT_DB` set to the copy, sources unchanged),
 reusing `prospect_experiments.py`'s folds (`oof`, `fold_mask`, `score`, `decide`).
+
+## Results, 2026-10-10 (run after the commit above)
+
+**No candidate passes. `FEATS["WR"]` stays `ryptpa_career, early, stars`. Nothing shipped.**
+
+W0 reproduces the model card: talent dev LOCO 0.3609, 2020+ 0.4201; full LOCO 0.3308, 2020+ 0.3412.
+463 mature WRs, 74 hits; forward = test classes 2013-2023, embargo 3. Draft-only reference: forward
+0.3520, LOCO 0.3586, 2020+ 0.3254.
+
+| ID | Talent fwd | Boot | Talent LOCO | Talent 2020+ | Slope | Full fwd | Full LOCO | Top 10% top-24 | Top 3% top-12 |
+|---|---|---|---|---|---|---|---|---|---|
+| W0 | 0.3935 | | 0.3609 | 0.4201 | 1.02 | 0.3433 | 0.3308 | 53% | 29% |
+| W1 +breakout_age | 0.3989 | 24% | 0.3658 | 0.4174 | 0.89 | 0.3494 | 0.3367 | 51% | 36% |
+| W2 +ryptpa_final | 0.3953 | 38% | 0.3636 | 0.4213 | 0.94 | 0.3477 | 0.3349 | 47% | 21% |
+| W3 +dom_best | 0.3965 | 20% | 0.3667 | 0.4265 | 0.97 | 0.3454 | 0.3363 | 49% | 29% |
+| W4 +weight | 0.3938 | 41% | 0.3653 | 0.4213 | 1.03 | 0.3437 | 0.3350 | 45% | 36% |
+| W5 early_covid | 0.3894 | 65% | 0.3609 (tie) | 0.4094 | 1.17 | 0.3404 | 0.3308 (tie) | 53% | 29% |
+| W6 literature set | 0.3954 | 47% | 0.3733 | 0.4058 | 0.94 | 0.3505 | 0.3456 | 49% | 43% |
+| W7 in-fold select | 0.4110 | 5% | 0.3632 | 0.4336 | 0.75 | 0.3559 | 0.3358 | 45% | 29% |
+| W8 recency weights | 0.3935 | 49% | 0.3661 | 0.4179 | 1.21 | 0.3429 | 0.3375 | 47% | 36% |
+
+The top 10% is 47 players and the top 3% is 14, so one player moves the top 3% column by 7 points.
+Read that column as noise. W8 was not re-run on another set, because no feature candidate passed.
+
+- **W5 is the only lead.** It is better on talent and full, both forward and 2020+. But early_covid
+  equals early on every dev class (no 2020 season exists before the 2020 draft), so LOCO ties by
+  construction and rule 2 cannot pass. Its whole gain is on the seen 2020+ classes, at a 65%
+  bootstrap. The clean test is the 2024 class, after the 2026 season.
+- **W7 overfit.** It chose ryptpa_career, early, power and speed_score in 10 of 23 outer folds and
+  dropped stars, then scored worst forward. Selection overfits about 300 rows with 50 events.
+- **The caller's tail figure did not reproduce.** "Top 3% hits top-12 9% (n=11)" comes out as 4 of 14
+  (29%) under the build's tier method (out-of-sample talent, percentile >= 97).
+- **The tail already matches capital's tail.** The top 10% by talent hits top-24 53%, by draft pick
+  55%, by talent plus capital 51%. Inside the talent top 10%, 20 round-1 picks hit 75% and 8 day-3
+  picks hit 12%. The miss is opportunity that a capital-free score cannot see, not mis-sorted talent.
+- **Exploratory, dev classes only:** `early` counts FBS seasons on file, so JUCO and FCS transfers
+  read as early declares. Four of the 14 top-3% players are such transfers: Gallup, Westbrook,
+  C. Wilson and R. Matthews. Early declares with a real draft age of 22.5 or more (46 players) hit
+  22%, against 28% for younger early declares and 5% for not-early, so the cost is small. The
+  sources have no JUCO field, so this has no fix yet.
+
+Scorer: `scratch/wr_talent.py` in the worktree, not committed. It ran on a DB copy using
+`prospect_experiments` `oof`, `fold_mask`, `score` and `decide`. `--self-check` OK.
