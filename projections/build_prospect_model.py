@@ -313,24 +313,31 @@ def load_recruits(seasons=range(FIRST_CFB, SEASON + 1)) -> pd.DataFrame:
 
 def player_bio(ps: pd.DataFrame, rosters: pd.DataFrame, recruits: pd.DataFrame) -> pd.DataFrame:
     """Per college player id: first season on file (roster or stats), recruit class and stars
-    (joined on name + a school he played for; ESPN's recruit ids do not match CFBD's), latest
-    roster position/size, and DOB where ESPN has one (rare after 2010)."""
-    first = pd.concat([ps[["player_id", "season"]],
-                       rosters[["athlete_id", "season"]].rename(columns={"athlete_id": "player_id"})]
-                      ).groupby("player_id")["season"].min().rename("first_season")
+    (joined on name + a school he played for; ESPN's recruit ids do not match CFBD's), and
+    latest roster position/size."""
+    seen = pd.concat([ps[["player_id", "season"]],
+                      rosters[["athlete_id", "season"]].rename(columns={"athlete_id": "player_id"})]
+                     ).dropna().drop_duplicates().sort_values(["player_id", "season"])
+    # First season = start of his last unbroken run on file. A college career never skips more
+    # than five seasons (redshirt + four + the COVID year spans six). ESPN's 2008 roster files
+    # for LSU and ESPN team id 2026 also list 2016-21 athletes, which dated Nabers, Bech and Brian
+    # Thomas to 2008 and aged them 13 years (breakout at 33.7 and 34.7).
+    hole = seen.groupby("player_id")["season"].diff()
+    first = seen["season"].where(hole.isna() | (hole > 5)).groupby(seen["player_id"]).max().rename("first_season")
     ros = rosters.sort_values("season").dropna(subset=["athlete_id"])
     last = ros.drop_duplicates("athlete_id", keep="last").set_index("athlete_id")
     bio = pd.DataFrame(index=first.index).join(first)
     bio["ros_pos"] = last["position_abbreviation"]
     bio["ros_height"] = last["height"]
     bio["ros_weight"] = last["weight"]
-    bio["ros_dob"] = pd.to_datetime(ros.dropna(subset=["date_of_birth"]).drop_duplicates("athlete_id", keep="last")
-                                    .set_index("athlete_id")["date_of_birth"], errors="coerce", utc=True).dt.tz_localize(None)
-    names = pd.concat([ps[["player_id", "name", "team_id"]],
-                       ros[["athlete_id", "full_name", "team_id"]].rename(columns={"athlete_id": "player_id", "full_name": "name"})])
+    names = pd.concat([ps[["player_id", "name", "team_id", "season"]],
+                       ros[["athlete_id", "full_name", "team_id", "season"]].rename(columns={"athlete_id": "player_id", "full_name": "name"})])
     names["_k"] = names["name"].map(bpp.norm_name)
-    rk = recruits.groupby(["_k", "team_id"]).agg(rclass=("season", "min"), stars=("stars", "max")).reset_index()
-    m = names.drop_duplicates(["player_id", "_k", "team_id"]).merge(rk, on=["_k", "team_id"])
+    rk = recruits.dropna(subset=["_k", "team_id"])[["_k", "team_id", "season", "stars"]].rename(columns={"season": "rclass"})
+    m = names.drop_duplicates(["player_id", "_k", "team_id", "season"]).merge(rk, on=["_k", "team_id"])
+    # Name + school alone gave the 2012 Mike Davis at South Carolina a 2005 Mike Davis recruit
+    # there: a recruit class only counts if he was at that school within its six seasons.
+    m = m[m.season.between(m.rclass, m.rclass + 5)]
     rec = m.groupby("player_id").agg(rclass=("rclass", "min"), stars=("stars", "max"))
     bio = bio.join(rec)
     # ESPN's class label (FR=1 .. SR=4) is reliable on the 2025+ rosters only (checked against
@@ -1185,7 +1192,7 @@ def score_college(ps, bio, final, age0, top_n=60):
     subj["player_id"] = subj.player_id.astype("Int64")
     subj["draft_year"] = np.maximum(SEASON + 1, subj.hs_class + 3)
     subj["cutoff"] = SEASON
-    subj["dob"] = subj.ros_dob
+    subj["dob"] = pd.NaT   # the class-year estimator the drafted pool trains on (prepare)
     subj["sid"] = "c" + subj.player_id.astype(str)
     feats = career_features(subj, ps, age0)
     subj = subj.merge(feats, on="sid", how="left").rename(columns={"ros_weight": "weight"})

@@ -12463,7 +12463,7 @@
   function pmGradeTile(pos, key, label, value, v, title) {
     const g = pmGrade(pos, key, v), G = window.PRODUCTION_GRADES;
     if (!g) return pmTile(label, value, title);
-    return pmTile(label, value, `${title}. Grade ${g.g}: ${pmOrd(g.pct)} percentile against ${g.n} ${pos}s drafted ${G.from}-${G.to}`
+    return pmTile(label, value, `${title}. Grade ${g.g}: ${pmOrd(g.pct)} percentile against ${g.n} ${pos}s drafted ${G.from}-${G.to} with a college line on file`
       + `${PM_LOWER[key] ? ', younger ranks higher' : ''}. Percentile bands: ${PM_GRADE.map(([c, l]) => `${l} ${c}+`).join(', ')}`,
       `${g.g}, ${pmOrd(g.pct)} pct, n=${g.n}`);
   }

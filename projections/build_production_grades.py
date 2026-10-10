@@ -100,10 +100,12 @@ def self_check():
     """The written file against prospect-model.js: every drafted card value since FROM is in its
     own reference (same definition, same rounding), lists are sorted and plausible, QB is empty."""
     g, m = read_js(OUT, "PRODUCTION_GRADES"), read_js(bpm.OUT, "PROSPECT_MODEL")
-    # ba to 36: a few drafted players carry build_prospect_model's age-proxy error (Nabers 33.7,
-    # Bech 34.7). Their cards already show that age; the fix is upstream, not here.
-    span = {"dom": (0, 1), "ba": (16, 36), "ypc": (1, 12)}
+    span = {"dom": (0, 1), "ba": (17, 26), "ypc": (1, 12)}
     assert g["from"] == FROM and g["ref"]["QB"] == {}, "QB has no public production metric"
+    # Every breakout age shipped, drafted and college, on the one class-year clock: a value
+    # outside 17-26 means the first season or recruit class joined to the wrong player.
+    bas = [r["ba"] for r in [*m["nfl"].values(), *m["college"]] if r.get("ba") is not None]
+    assert bas and all(17 <= v <= 26 for v in bas), f"breakout age out of range: {min(bas)}..{max(bas)}"
     for pos, keys in METRICS.items():
         for k in keys:
             ref = g["ref"][pos][k]

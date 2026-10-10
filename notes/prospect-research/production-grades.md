@@ -63,10 +63,9 @@ Comp %, AY/A and rushing tiles, ungraded.
 - **Coverage.** FBS seasons only, 2004 on. 2004 is thin and 2005-2007 miss some games, which only
   touches the oldest careers in a 2010 class. Ages are estimated from the first season on file
   (roster birth dates are mostly gone).
-- **Upstream age-proxy outliers.** A few drafted players (Malik Nabers 33.7, Brian Thomas 33.7,
-  Jack Bech 34.7, Trey Palmer 32.7, Kayshon Boutte 30.7) carry a breakout age past 30 from
-  build_prospect_model's age proxy. Their cards already show that age, so they grade F on breakout
-  age and sit at the old end of the reference. The fix belongs in the age proxy, not here.
+- **Breakout age tops out at A for RB and WR.** Class-year ages come in whole-year steps, so the
+  youngest possible breakout (18.7) is a tie shared by many drafted players and its mid-rank
+  percentile tops out at 89 for RB and 93 for WR: an A, even though an A+ band exists. TE reaches 97.
 - **Small YPC samples are hidden.** Under 100 career carries there is no YPC tile.
 
 ## Rebuild
