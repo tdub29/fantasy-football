@@ -13,7 +13,7 @@
       "id": "sleeper-idp-2026",
       "title": "Sleeper IDP Usage Rankings (2026)",
       "url": "https://sleeper.com/research",
-      "publishedAt": "2026-10-09",
+      "publishedAt": "2026-10-10",
       "format": "idp",
       "defaultEnabled": true,
       "players": [

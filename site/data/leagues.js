@@ -200,7 +200,7 @@ window.LEAGUES = [
           "3198",
           "8144",
           "5846",
-          "2449"
+          "11610"
         ],
         "players": [
           "11603",
@@ -243,6 +243,7 @@ window.LEAGUES = [
           "13319"
         ],
         "reserve": [
+          "7525",
           "9753"
         ],
         "wins": 8,
@@ -319,7 +320,7 @@ window.LEAGUES = [
         "fpts_against": 499.94,
         "ppts": 759.0,
         "waiver_budget_used": 0,
-        "waiver_position": 8,
+        "waiver_position": 7,
         "division": null
       },
       {
@@ -525,7 +526,7 @@ window.LEAGUES = [
         "fpts_against": 640.5,
         "ppts": 696.76,
         "waiver_budget_used": 0,
-        "waiver_position": 10,
+        "waiver_position": 9,
         "division": null
       },
       {
@@ -599,7 +600,7 @@ window.LEAGUES = [
         "fpts_against": 529.48,
         "ppts": 657.36,
         "waiver_budget_used": 22,
-        "waiver_position": 9,
+        "waiver_position": 8,
         "division": null
       },
       {
@@ -841,8 +842,8 @@ window.LEAGUES = [
           "7002"
         ],
         "players": [
+          "10235",
           "11560",
-          "11571",
           "11575",
           "11638",
           "12521",
@@ -891,8 +892,8 @@ window.LEAGUES = [
         "fpts": 581.76,
         "fpts_against": 519.58,
         "ppts": 652.38,
-        "waiver_budget_used": 165,
-        "waiver_position": 7,
+        "waiver_budget_used": 167,
+        "waiver_position": 10,
         "division": null
       }
     ],
@@ -1554,7 +1555,7 @@ window.LEAGUES = [
           "4983",
           "8130",
           "9511",
-          "8132",
+          "4035",
           "2747",
           "MIN"
         ],
@@ -1759,19 +1760,20 @@ window.LEAGUES = [
           "9500",
           "12519",
           "9484",
-          "13264",
+          "12509",
           "11577",
-          "7839",
+          "0",
           "CIN"
         ],
         "players": [
           "10229",
+          "10235",
           "11577",
           "11586",
           "12490",
+          "12509",
           "12519",
           "12545",
-          "13264",
           "13281",
           "13337",
           "13414",
@@ -1779,7 +1781,6 @@ window.LEAGUES = [
           "4034",
           "5859",
           "5947",
-          "7839",
           "9484",
           "9500",
           "CIN"
@@ -1913,15 +1914,16 @@ window.LEAGUES = [
           "11584",
           "8112",
           "11783",
-          "12506",
           "3214",
+          "5927",
           "13279",
           "11533",
-          "LAR"
+          "NYJ"
         ],
         "players": [
           "10222",
           "11533",
+          "11581",
           "11584",
           "11783",
           "12506",
@@ -1933,10 +1935,10 @@ window.LEAGUES = [
           "6804",
           "6813",
           "7567",
+          "7600",
           "8112",
-          "9504",
-          "GB",
-          "LAR"
+          "LAR",
+          "NYJ"
         ],
         "taxi": [],
         "reserve": [
@@ -2348,7 +2350,7 @@ window.LEAGUES = [
         "fpts_against": 663.12,
         "ppts": 774.34,
         "waiver_budget_used": 30,
-        "waiver_position": 7,
+        "waiver_position": 6,
         "division": null
       },
       {
@@ -2362,12 +2364,12 @@ window.LEAGUES = [
           "11564",
           "9224",
           "4034",
-          "6801",
+          "12519",
           "7569",
           "4217",
           "8112",
-          "5872",
-          "12519",
+          "7611",
+          "6801",
           "2133",
           "3257"
         ],
@@ -2424,7 +2426,7 @@ window.LEAGUES = [
         "fpts_against": 674.82,
         "ppts": 925.32,
         "waiver_budget_used": 68,
-        "waiver_position": 6,
+        "waiver_position": 5,
         "division": null
       },
       {
@@ -2437,7 +2439,7 @@ window.LEAGUES = [
         "starters": [
           "12545",
           "9511",
-          "12534",
+          "7021",
           "8167",
           "5846",
           "9484",
@@ -2500,7 +2502,7 @@ window.LEAGUES = [
         "fpts_against": 590.56,
         "ppts": 680.16,
         "waiver_budget_used": 7,
-        "waiver_position": 9,
+        "waiver_position": 8,
         "division": null
       },
       {
@@ -2521,7 +2523,7 @@ window.LEAGUES = [
           "9756",
           "10213",
           "9500",
-          "13477"
+          "11630"
         ],
         "players": [
           "5849",
@@ -2529,7 +2531,6 @@ window.LEAGUES = [
           "11643",
           "11604",
           "13317",
-          "2307",
           "9502",
           "11783",
           "11560",
@@ -2548,6 +2549,7 @@ window.LEAGUES = [
           "13286",
           "10213",
           "12489",
+          "11630",
           "9228",
           "9486",
           "13347",
@@ -2575,8 +2577,8 @@ window.LEAGUES = [
         "fpts": 506.28,
         "fpts_against": 646.9,
         "ppts": 672.99,
-        "waiver_budget_used": 70,
-        "waiver_position": 10,
+        "waiver_budget_used": 76,
+        "waiver_position": 9,
         "division": null
       },
       {
@@ -2699,6 +2701,7 @@ window.LEAGUES = [
           "8148",
           "8151",
           "8228",
+          "9482",
           "9504",
           "96"
         ],
@@ -2716,7 +2719,7 @@ window.LEAGUES = [
         "fpts_against": 535.88,
         "ppts": 785.86,
         "waiver_budget_used": 77,
-        "waiver_position": 4,
+        "waiver_position": 10,
         "division": null
       },
       {
@@ -2840,7 +2843,7 @@ window.LEAGUES = [
         "fpts_against": 624.52,
         "ppts": 562.3,
         "waiver_budget_used": 10,
-        "waiver_position": 5,
+        "waiver_position": 4,
         "division": null
       },
       {
@@ -2972,7 +2975,7 @@ window.LEAGUES = [
         "fpts_against": 640.42,
         "ppts": 679.94,
         "waiver_budget_used": 13,
-        "waiver_position": 8,
+        "waiver_position": 7,
         "division": null
       }
     ],
@@ -3596,6 +3599,7 @@ window.LEAGUES = [
           "11665",
           "8126",
           "12467",
+          "9754",
           "13411",
           "13337",
           "8267",
@@ -3613,6 +3617,7 @@ window.LEAGUES = [
           "11669",
           "12545",
           "10232",
+          "5844",
           "13380",
           "9488",
           "13270",
@@ -3638,7 +3643,9 @@ window.LEAGUES = [
         ],
         "reserve": [
           "10905",
-          "13276"
+          "11687",
+          "13276",
+          "13286"
         ],
         "wins": 4,
         "losses": 0,
@@ -3771,12 +3778,12 @@ window.LEAGUES = [
           "12521",
           "13150",
           "13274",
+          "13294",
           "13379",
           "13477",
           "4070",
           "4968",
           "4983",
-          "5967",
           "5991",
           "6813",
           "6819",
@@ -3842,7 +3849,6 @@ window.LEAGUES = [
           "12522",
           "12568",
           "13269",
-          "13294",
           "13346",
           "13349",
           "13384",
@@ -3854,6 +3860,7 @@ window.LEAGUES = [
           "5012",
           "5816",
           "5947",
+          "5967",
           "6056",
           "6119",
           "6183",
@@ -3865,7 +3872,6 @@ window.LEAGUES = [
         "taxi": [
           "12568",
           "13269",
-          "13294",
           "13346",
           "13349",
           "13384",
@@ -4124,11 +4130,11 @@ window.LEAGUES = [
         "is_me": false,
         "opponent_roster_id": 3,
         "starters": [
-          "4881",
-          "4866",
+          "6797",
+          "4035",
           "12481",
           "6794",
-          "12526",
+          "1479",
           "7553",
           "13279",
           "5872",
@@ -4159,12 +4165,12 @@ window.LEAGUES = [
           "6797",
           "7553",
           "8266",
-          "8280",
-          "9229",
-          "9757"
+          "8280"
         ],
         "taxi": [],
-        "reserve": [],
+        "reserve": [
+          "13353"
+        ],
         "wins": 0,
         "losses": 4,
         "ties": 0,
@@ -4579,6 +4585,13 @@ window.LEAGUES = [
         "previous_owner_id": 7
       },
       {
+        "round": 2,
+        "season": "2027",
+        "roster_id": 4,
+        "owner_id": 3,
+        "previous_owner_id": 4
+      },
+      {
         "round": 1,
         "season": "2026",
         "roster_id": 5,
@@ -4762,10 +4775,10 @@ window.LEAGUES = [
         "starters": [
           "7547",
           "8150",
+          "12481",
           "11620",
           "9487",
           "3163",
-          "8132",
           "JAX",
           "7600",
           "11786"
@@ -5090,8 +5103,8 @@ window.LEAGUES = [
           "8228",
           "9500",
           "11792",
-          "96",
-          "NYJ"
+          "NYJ",
+          "9758"
         ],
         "players": [
           "9509",
@@ -5102,15 +5115,15 @@ window.LEAGUES = [
           "8228",
           "11560",
           "9500",
-          "9754",
           "9753",
           "13281",
           "13414",
           "13337",
           "11792",
           "3321",
-          "96",
-          "NYJ"
+          "NYJ",
+          "5022",
+          "9758"
         ],
         "taxi": [],
         "reserve": [
@@ -5273,7 +5286,7 @@ window.LEAGUES = [
           "11533",
           "4199",
           "6804",
-          "11610"
+          "13264"
         ],
         "players": [
           "6813",
@@ -5291,8 +5304,8 @@ window.LEAGUES = [
           "3634",
           "11610",
           "2505",
-          "12509",
-          "8136"
+          "8136",
+          "13264"
         ],
         "taxi": [],
         "reserve": [
