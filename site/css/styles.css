@@ -541,6 +541,14 @@ table.data .expert-rank-col { width: 76px; white-space: nowrap; }
   animation-timeline: scroll(self inline);
   animation-range: 0 calc(100% - 4px);
 }
+/* The last column carries the fade's 32px as extra end padding, so its content
+   (and the header band) is never under the fade, even where a browser keeps the
+   mask on at full scroll. On the cell, not the scroller: Safari drops a scroll
+   container's end padding from the scroll range. */
+@media (max-width: 900px) {
+  .tbl-scroll > table.data > * > tr > :last-child { padding-inline-end: 40px; }
+}
+.tbl-scroll:has(> table.stats-lab-table) > table.data > * > tr > :last-child { padding-inline-end: 40px; }
 
 /* Tier blocks (rankings page) */
 .tier-block { margin-bottom: 24px; }
@@ -2523,7 +2531,9 @@ textarea { resize: vertical; min-height: 80px; }
 }
 .heatmap-row {
   display: grid;
-  grid-template-columns: 200px repeat(7, 1fr) 80px;
+  /* minmax(0, 1fr), not 1fr: each row is its own grid, and 1fr's auto minimum
+     sized every row's tracks from its own text, so columns drifted row to row. */
+  grid-template-columns: 200px repeat(7, minmax(0, 1fr)) 88px;
   align-items: stretch;
   border-top: 1px solid var(--border);
   cursor: pointer;
@@ -2589,7 +2599,7 @@ textarea { resize: vertical; min-height: 80px; }
 }
 
 @media (max-width: 900px) {
-  .heatmap-row { grid-template-columns: 110px repeat(7, 1fr) 60px; }
+  .heatmap-row { grid-template-columns: 110px repeat(7, minmax(0, 1fr)) 84px; }
   .heatmap-leaguecell { padding: 8px; }
   .heatmap-team { display: none; }
 }
@@ -4969,8 +4979,7 @@ table.data thead th.center, table.data tbody td.center { text-align: center; }
    Opt-in, like `snug`: done globally it wrapped the snug tables' headers,
    pushed Trends into a scroll and widened the 25-column board by 58px.
    `.fit` does the same for a short TEXT column (Pos, Tier) that should not
-   share the name's slack. Desktop only: the phone `.leagues-table` widths are
-   lower specificity and would collapse to 1px under `table-layout:fixed`. */
+   share the name's slack. Desktop only: a phone has no slack to share. */
 @media (min-width: 721px) {
   table.data.fit-num thead th.right, table.data.fit-num tbody td.right,
   table.data.fit-num thead th.fit,   table.data.fit-num tbody td.fit { width: 1px; white-space: nowrap; }
@@ -5834,7 +5843,8 @@ button:disabled { cursor: wait; opacity: 0.7; }
   .tab-bar .tab, .standings-tab-bar .tab, .standings-tab-bar a { flex: 0 0 auto; }
 
   .heatmap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  .heatmap-row { min-width: 500px; }
+  .heatmap-row { min-width: 600px; }
+  .heatmap-head .heatmap-cell, .heatmap-grade { padding-inline: 6px; }
   .heatmap-leaguecell {
     position: sticky;
     inset-inline-start: 0;
@@ -5843,22 +5853,21 @@ button:disabled { cursor: wait; opacity: 0.7; }
   }
   .heatmap-head .heatmap-leaguecell { z-index: 3; background: var(--bg-2); }
 
-  /* Phone overview keeps four comparison columns. Format moves under team name;
-     dynasty-only detail remains available on desktop and each league page. */
+  /* Phone overview drops Format (it moves under the team name), FV, Playoff and
+     Champ; desktop and each league page keep them. The rest sit at their natural
+     width and the table scrolls: fixed-layout percentages only covered the first
+     five columns, so 1.01 through Hide got zero width and printed over each other. */
   .leagues-table th:nth-child(2), .leagues-table td:nth-child(2),
   .leagues-table th:nth-child(6), .leagues-table td:nth-child(6),
   .leagues-table th:nth-child(7), .leagues-table td:nth-child(7),
   .leagues-table th:nth-child(8), .leagues-table td:nth-child(8) { display: none; }
-  table.data.leagues-table { width: 100%; min-width: 0; table-layout: fixed; }
-  .leagues-table th:first-child { width: 46%; }
-  .leagues-table th:nth-child(3) { width: 22%; }
-  .leagues-table th:nth-child(4) { width: 14%; }
-  .leagues-table th:nth-child(5) { width: 18%; }
+  table.data.leagues-table { width: max-content; min-width: 100%; }
   .leagues-table .unit-vor { display: block; width: max-content; margin: 2px 0 0 auto; }
   table.data.leagues-table thead th,
   table.data.leagues-table tbody td { padding: 9px 6px; font-size: 0.78rem; }
   table.data.leagues-table .name-cell {
     min-width: 0;
+    width: 8.5rem;
     flex-direction: column;
     align-items: flex-start;
     gap: 2px;
