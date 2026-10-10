@@ -106,6 +106,10 @@ STEPS = [
     # the guard that the talent model never sees draft capital.
     ("prospect model self-check",  PROJ / "build_prospect_model.py",      True, ["--self-check"]),
     ("college prospect model",     PROJ / "build_prospect_model.py",      True),
+    # Card production grades: the drafted-player reference behind the dominator, breakout age
+    # and RB YPC grades. Reads prospect-model.js, so it runs after it.
+    ("production grades",          PROJ / "build_production_grades.py",   True),
+    ("production grades self-check", PROJ / "build_production_grades.py", True, ["--self-check"]),
     ("game-day weather",           PROJ / "build_game_weather.py",        True),
     ("defense vs position",        PROJ / "build_defense_matchups.py",    True),
     ("weekly usage splits",        PROJ / "build_weekly_splits.py",       True),

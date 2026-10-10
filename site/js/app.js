@@ -12441,8 +12441,35 @@
   // Card header labels (Trevor, 2026-10-09: read like a scout card in one glance). Every label is a
   // mid-rank percentile against drafted players at the position: size against nflverse combine and
   // roster sizes (window.PROSPECT), production against the model's drafted rows (M.nfl).
-  const pmPctile = (vals, v) => !Number.isFinite(v) || !vals.length ? null
-    : Math.round(100 * (vals.filter(x => x < v).length + vals.filter(x => x === v).length / 2) / vals.length);
+  // lower: the metric is better when smaller (breakout age), so beating him means being bigger.
+  const pmPctile = (vals, v, lower = false) => !Number.isFinite(v) || !vals.length ? null
+    : Math.round(100 * (vals.filter(x => lower ? x > v : x < v).length + vals.filter(x => x === v).length / 2) / vals.length);
+  // Production grades (window.PRODUCTION_GRADES, projections/build_production_grades.py): his
+  // percentile against every player drafted at his position since 2010 with a college line, as a
+  // letter. Bands are Dynasty Domain's letter map on the rounded decile (dynasty-domain-bakery.md
+  // 3.1). Only metrics public play-by-play computes ship; the PFF-charted ones are absent, never
+  // zero (notes/prospect-research/production-grades.md).
+  const PM_GRADE = [[95, 'A+'], [85, 'A'], [75, 'B+'], [65, 'B'], [55, 'B-'], [45, 'C+'], [35, 'C'], [25, 'C-'], [15, 'D+'], [5, 'D'], [0, 'F']];
+  const PM_LOWER = { ba:true };
+  const pmOrd = (n) => `${n}${[11, 12, 13].includes(n % 100) ? 'th' : ['th', 'st', 'nd', 'rd'][n % 10] || 'th'}`;
+  function pmGrade(pos, key, v) {
+    const G = window.PRODUCTION_GRADES;
+    const ref = G && G.ref[pos] && G.ref[pos][key];
+    if (!ref || !ref.length || v == null) return null;
+    const pct = pmPctile(ref, v, PM_LOWER[key]);
+    return { pct, n: ref.length, g: PM_GRADE.find(([cut]) => pct >= cut)[1] };
+  }
+  // A stat tile, with its grade underneath wherever a reference exists for it.
+  function pmGradeTile(pos, key, label, value, v, title) {
+    const g = pmGrade(pos, key, v), G = window.PRODUCTION_GRADES;
+    if (!g) return pmTile(label, value, title);
+    return pmTile(label, value, `${title}. Grade ${g.g}: ${pmOrd(g.pct)} percentile against ${g.n} ${pos}s drafted ${G.from}-${G.to} with a college line on file`
+      + `${PM_LOWER[key] ? ', younger ranks higher' : ''}. Percentile bands: ${PM_GRADE.map(([c, l]) => `${l} ${c}+`).join(', ')}`,
+      `${g.g}, ${pmOrd(g.pct)} pct, n=${g.n}`);
+  }
+  const pmYpc = (kind, id) => { const y = (window.PRODUCTION_GRADES || {}).ypc; return y && y[kind][id] != null ? y[kind][id] : null; };
+  const pmYpcTile = (pos, v) => v == null ? null : pmGradeTile(pos, 'ypc', 'YPC', pmNum(1)(v), v,
+    `Career rushing yards per carry, ${window.PRODUCTION_GRADES.min_carries}+ carries`);
   function pmBuild(p, ht, wt) {
     const pool = Object.values((window.PROSPECT || {}).players || {}).filter(x => x.pos === p && x.draft_round != null);
     const hp = pmPctile(pool.map(x => x.height_in).filter(Number.isFinite), ht);
@@ -12525,9 +12552,10 @@
         'Chance he hits counting the chance he goes undrafted, from the pre-draft model in the table notes', 'incl. undrafted') : null,
       pmTile('College %', pmPct(r.tp),'Hit chance from college stats alone, if he is drafted. Its ranking was checked on a holdout; the percentage has no calibration check. Undrafted players are not in the history.'
         + (r.p === 'WR' && meta.shipped === 'draft' ? ` ${PM_WR_EARLY}` : ''), 'if drafted'),
-      r.ba != null ? pmTile('Breakout age', Number(r.ba).toFixed(1),
+      r.ba != null ? pmGradeTile(r.p, 'ba', 'Breakout age', Number(r.ba).toFixed(1), r.ba,
         'Age at his first college season at the dominator line. Profile only, no model uses it') : null,
-      ...pmStatCols(r.p).map(([k, label, f, t]) => r.st && r.st[k] != null ? pmTile(label, f(r.st[k]), t) : null),
+      ...pmStatCols(r.p).map(([k, label, f, t]) => r.st && r.st[k] != null ? pmGradeTile(r.p, k, label, f(r.st[k]), r.st[k], t) : null),
+      pmYpcTile(r.p, pmYpc('college', r.cid)),
       r.st && r.st.stars != null ? pmTile('Recruit', `${r.st.stars}-star`, 'Recruiting stars out of high school') : null,
     ].filter(Boolean);
     return h('div', { class:'card adv-card prm-card' },
@@ -12565,9 +12593,10 @@
         capOnly ? `Draft capital alone. At ${me.p}, college stats did not beat draft slot on the held-out ${meta.holdout || ''} draft classes.`
           : 'College profile plus draft capital',
         capOnly ? `slot only${me.tp != null ? `, college alone ${pmPct(me.tp)}` : ''}` : `talent only ${pmPct(me.tp)}`),
-      me.ba != null ? pmTile('Breakout age', Number(me.ba).toFixed(1),
+      me.ba != null ? pmGradeTile(me.p, 'ba', 'Breakout age', Number(me.ba).toFixed(1), me.ba,
         'Age at his first college season at the dominator line (never broke out: final age plus one)') : null,
-      ...pmStatCols(me.p).map(([k, label, f, t]) => me.st && me.st[k] != null ? pmTile(label, f(me.st[k]), t) : null),
+      ...pmStatCols(me.p).map(([k, label, f, t]) => me.st && me.st[k] != null ? pmGradeTile(me.p, k, label, f(me.st[k]), me.st[k], t) : null),
+      pmYpcTile(me.p, pmYpc('nfl', String(sleeper.id))),
     ].filter(Boolean);
     const out = me.out ? (me.out[0]
       ? `Outcome: hit, best finish ${me.p}${me.out[2]} at ${me.out[1]} PPR points per game in years ${years}.`
