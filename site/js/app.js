@@ -3151,9 +3151,9 @@
         const ns='http://www.w3.org/2000/svg',W=Math.max(320,linePlot.clientWidth||720),H=320,L=48,T=12,B=26,R=Math.min(170,Math.round(W*.32));
         const el=(tag,attrs,...kids)=>{const n=document.createElementNS(ns,tag);for(const k in attrs)n.setAttribute(k,attrs[k]);n.append(...kids);return n;};
         const vals=[...series.values()].flat(),lo0=Math.min(...vals),hi0=Math.max(...vals);
-        // 1/2/2.5/5 steps. Odds start at zero; value fits its own range so the lines separate.
-        const raw=(hi0-(percentage?0:lo0))/4||hi0/4||1,mag=10**Math.floor(Math.log10(raw)),step=[1,2,2.5,5,10].find(m=>m*mag>=raw)*mag;
-        const lo=percentage?0:Math.floor(lo0/step)*step,hi=Math.max(lo+step,Math.ceil(hi0/step)*step);
+        // 1/2/2.5/5 steps over the data's own range, so the axis starts at the lowest line, not at zero.
+        const raw=(hi0-lo0)/4||hi0/4||1,mag=10**Math.floor(Math.log10(raw)),step=[1,2,2.5,5,10].find(m=>m*mag>=raw)*mag;
+        const lo=Math.max(0,Math.floor(lo0/step)*step),hi=Math.max(lo+step,Math.ceil(hi0/step)*step);
         const x=y=>L+y*(W-L-R)/(trajYears-1),yv=v=>T+(1-(v-lo)/(hi-lo))*(H-T-B);
         const tick=v=>percentage?`${+(v*100).toFixed(1)}%`:Math.round(v).toLocaleString();
         const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':`${label} by season for every team`});
