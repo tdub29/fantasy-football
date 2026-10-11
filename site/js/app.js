@@ -12636,11 +12636,10 @@
     // Drafted rows carry their Sleeper id and pick; `cls` is the draft they went in.
     const drafted = hist ? Object.entries(M.nfl).map(([id, r]) => ({ ...r, id, cls:r.y })) : [];
     const all = [...upcoming, ...drafted].filter(r => pick(r.p) && (cls === 'all' || cls === 'future' || r.cls === Number(cls)));
-    // A pre-draft number shows only where a reviewed model serves that player's class, the same
-    // gate the per-class boards used: next class by its stage or pre-draft model, later by `later`.
-    const nst = one && meta.stage && meta.stage.next ? meta.stage : null;   // the reviewed model serving the next class
-    const pdOk = (r) => { const m = M.pos[r.p] || {}; if (r.id) return false;
-      return r.cls === next ? !!((m.stage && m.stage.next) || m.predraft) : !!m.later; };
+    // Capital: drafted rows rate their real slot; college rows rate their mock-consensus pick.
+    const CR = window.CAPITAL_RATINGS || { players:{}, projected:null };
+    const mock = (CR.projected && CR.projected.players) || {};
+    const capOf = (r) => (r.id ? CR.players[r.id] : mock[r.cid]) || {};
     // College players have no Sleeper id, so their card is built from the model record itself.
     // Drafted players open the NFL card, where their model record stays.
     const openRow = (r) => r.id ? openPlayerDetail(r.n, r.id) : document.body.appendChild(playerModal(r.n, null, null, r));
@@ -12649,8 +12648,7 @@
     main.appendChild(pageHeader({
       eyebrow:'PROSPECT MODEL',
       title: hist ? 'Prospects' : 'College prospects',
-      sub: hist ? 'Draft-capital rating: 10-team PPR, 1QB. College profile is separate.'
-        : 'College profiles. No validated overall rating before the draft.',
+      sub: 'Draft-capital rating: 10-team PPR, 1QB. College rows (~) use the mock-draft consensus pick. College profile is separate.',
     }));
 
     const filterBar = h('div', { class:'filters prm-filters' });
@@ -12673,26 +12671,20 @@
       ['n', 'Player', { asc:true }],
       one ? null : ['p', 'Pos', { asc:true, fit:true }],
       cls === 'all' || cls === 'future' ? ['cls', 'Class', { right:true, asc:true, title:'Draft he went in, or the first one he is eligible for' }] : null,
-      hist ? ['pk', 'Pick', { right:true, asc:true, title:'Overall draft pick. Blank: not drafted yet' }] : null,
-      hist ? ['capital', 'Capital 1QB', { right:true, title:'Draft-capital rating, 0-100 percentile of expected three-year starter value. 10-team PPR, 1QB. Not talent or hit probability; blank before draft or without eligible history.' }] : null,
-      hist && pos === 'QB' ? ['capitalSF', 'Capital SF', { right:true, title:'Draft-capital rating in 10-team PPR superflex; same common three-year target and historical reference.' }] : null,
+      ['pk', 'Pick', { right:true, asc:true, title:'Overall draft pick. ~ = median pick across public mock drafts. Blank: no mock yet' }],
+      ['capital', 'Capital 1QB', { right:true, title:'Draft-capital rating, 0-100 percentile of expected three-year starter value. 10-team PPR, 1QB. ~ = projected from the mock-draft consensus pick. Not talent or hit probability.' }],
+      pos === 'QB' ? ['capitalSF', 'Capital SF', { right:true, title:'Draft-capital rating in 10-team PPR superflex; same common three-year target and historical reference.' }] : null,
       ['ts', 'Profile %ile', { right:true, title:`College profile, no draft capital: percentile vs every drafted ${posWord} since 2008. Not overall talent.` }],
       ['tr', 'Profile tier', { asc:true, fit:true, title:'College profile tier, not overall prospect value' }],
-      all.some(pdOk) ? ['pd', 'Pre-draft', { right:true, title:'Chance he hits, before the draft, counting the chance he goes undrafted, '
-        + `compared with players at the same college year${nst && nst.live_n ? `, plus his team's first ${nst.live_n} games this season` : ''}`
-        + `${nst && /^S6/.test(nst.model) ? ', rescaled on players who came back for another college season' : ''}`
-        + `${nst ? ` (${nst.model})` : ''}. Blank where no reviewed model serves his class` }] : null,
       hist ? ['hp', 'Hit %', { right:true, title:'Drafted players: hit chance with his actual draft slot (slot alone where college stats did not beat it). Blank: not drafted yet' }] : null,
-      ['tp', 'College %', { right:true, title:`Hit chance from college stats alone, if drafted. ${one ? pmTrust(pos) || '' : ''}` }],
       pos === 'QB' ? null : ['ba', 'Breakout', { right:true, asc:true, title:'Age at his first college season at the dominator line (blank: not yet). Profile only, no model uses it' }],
-      ['age', 'Draft age', { right:true, asc:true, title:'Estimated age at the draft he is scored for: the more conservative of leaving after his third or fourth college year' }],
       ...stat.map(([k, label, , t]) => [`st.${k}`, label, { right:true, title:t }]),
       ...(!capOnly ? PM_ROUNDS.map((r, i) => [`r${i}`, i < 3 ? `R${i + 1}` : 'Day 3',
         { right:true, title:`Hit chance if drafted in ${r}` }]) : []),
     ].filter(Boolean);
     const get = (r, k) => /^r\d$/.test(k) ? (r.r || [])[Number(k[1])] : k.startsWith('st.') ? (r.st || {})[k.slice(3)]
-      : k === 'capital' || k === 'capitalSF' ? (r.id && window.CAPITAL_RATINGS && window.CAPITAL_RATINGS.players[r.id] || {})[k === 'capitalSF' ? 'F2' : 'F1']
-      : k === 'pd' ? (pdOk(r) ? r.pd : null) : r[k];
+      : k === 'capital' || k === 'capitalSF' ? capOf(r)[k === 'capitalSF' ? 'F2' : 'F1']
+      : k === 'pk' && !r.id ? capOf(r).pick : r[k];
     const fmtCell = (r, k) => {
       const v = get(r, k);
       if (k === 'tr') return pmTierChip(v);
@@ -12702,8 +12694,9 @@
           onclick:(e) => { e.stopPropagation(); openRow(r); } }, v),
         r.sch || r.id ? h('span', { class:'muted prm-school' }, [r.sch, r.id ? `NFL, ${r.y} pick ${r.pk}` : null].filter(Boolean).join(' · ')) : null);
       if (k.startsWith('st.')) return stat.find(s => `st.${s[0]}` === k)[2](v);
-      if (k === 'tp' || k === 'pd' || k === 'hp' || /^r\d$/.test(k)) return pmPct(v);
-      if (k === 'ba' || k === 'age') return pmNum(1)(v);
+      if (k === 'hp' || /^r\d$/.test(k)) return pmPct(v);
+      if (k === 'ba') return pmNum(1)(v);
+      if (v != null && !r.id && (k === 'pk' || k.startsWith('capital'))) return h('span', { class:'muted' }, `~${k === 'pk' ? v : Number(v).toFixed(1)}`);
       if (k === 'capital' || k === 'capitalSF') return v == null ? '·' : Number(v).toFixed(1);
       return v == null ? '·' : String(v);
     };
