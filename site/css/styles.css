@@ -6252,13 +6252,7 @@ td.gm-swing { white-space: nowrap; }
   :is(.gm-rec, .gm-usage) tbody th[scope=row] { white-space: normal; }
 }
 
-/* Prospect model: the card's Prospect profile block and #prospects. Tier names
-   ride the tier-chip plate but are words, not letters, so the chip widens and
-   may wrap inside a narrow stat tile rather than overflow it. */
-.tier-chip.prm-tier {
-  width: auto; height: auto; min-height: 22px; padding: 1px 6px;
-  line-height: 1.2; white-space: normal; text-align: center; font-size: 0.72rem;
-}
+/* Prospect model: the card's Prospect profile block and #prospects. */
 table.data.prm-table .name-cell { flex-direction: column; align-items: flex-start; gap: 0; min-width: 150px; }
 .prm-school { font-size: 0.72rem; }
 /* Card face (Trevor, 2026-10-10, laid out after Dynasty Domain's prospect card): a
