@@ -1078,20 +1078,25 @@
     return 0.25;
   }
 
-  // Value share: this roster's player-only strength as a fraction of the
-  // league-wide total player-only strength. Picks excluded (per Dynasty
-  // Domain's framework, value share measures on-field assets, not stockpile).
-  // Cached per (league, enabled-rankings signature) since standings views
-  // compute it for every roster.
+  // Value share: this roster's whole dynasty value, every rostered player plus
+  // owned picks, as a fraction of the league's (Trevor, 2026-10-10: one share
+  // everywhere). `yearsOut` ages each player on the value curve; a pick keeps its
+  // price, the asset it turns into. Cached per (league, horizon, enabled-rankings
+  // signature) since standings views compute it for every roster.
   const _valueShareCache = new Map();
-  function leagueValueTotals(lg) {
-    const key = `${lg.id}::${JSON.stringify({ s: state.settings.enabledSources, r: state.settings.enabledRankings })}`;
+  function rosterValueAt(roster, lg, yearsOut = 0) {
+    const s = computeRosterStrength(roster, lg);
+    if (!yearsOut) return s.total;
+    return s.rankedPlayers.reduce((t, p) => t + p.value * ageRetention(p.sleeper.age, p.ranked.pos || p.sleeper.pos, yearsOut), s.picksValue);
+  }
+  function leagueValueTotals(lg, yearsOut = 0) {
+    const key = `${lg.id}::${yearsOut}::${JSON.stringify({ s: state.settings.enabledSources, r: state.settings.enabledRankings })}`;
     const hit = _valueShareCache.get(key);
     if (hit) return hit;
     const totals = {};
     let leagueTotal = 0;
     for (const r of lg.rosters) {
-      const t = computePlayerStrength(r, lg).total;
+      const t = rosterValueAt(r, lg, yearsOut);
       totals[r.roster_id] = t;
       leagueTotal += t;
     }
@@ -1099,22 +1104,22 @@
     _valueShareCache.set(key, out);
     return out;
   }
-  function valueShareFor(roster, lg) {
-    const { totals, leagueTotal, baseline } = leagueValueTotals(lg);
+  function valueShareFor(roster, lg, yearsOut = 0) {
+    const { totals, leagueTotal, baseline } = leagueValueTotals(lg, yearsOut);
     const mine = totals[roster.roster_id] || 0;
     const share = leagueTotal > 0 ? mine / leagueTotal : 0;
     return { share, baseline, mine, leagueTotal };
   }
-  // Dynasty Domain bands: baseline = 1/N, contender-lock ~ 1.24× baseline,
-  // rebuild-floor ~ 0.72× baseline. Returns a label + color cue.
+  // Dynasty Domain bands: baseline = 1/N, contender-lock 1.24x baseline,
+  // rebuild-floor 0.72x baseline, scaled to this league's size (strategy.js
+  // writes them out for 12 teams). Returns a label and the one colour every
+  // value-share figure uses.
   function classifyValueShare(share, baseline) {
-    const sf = window.STRATEGY?.share_framework;
-    const contenderLock = sf ? sf.contender_lock : baseline * 1.24;
-    const rebuildFloor  = sf ? sf.rebuild_floor  : baseline * 0.72;
-    if (share >= contenderLock) return { label: 'CONTENDER', tone: 'good',  delta: share - baseline };
-    if (share >= baseline)      return { label: 'ABOVE AVG', tone: 'mild',  delta: share - baseline };
-    if (share >= rebuildFloor)  return { label: 'BELOW AVG', tone: 'mild',  delta: share - baseline };
-    return                            { label: 'REBUILD',   tone: 'bad',   delta: share - baseline };
+    const delta = share - baseline;
+    if (share >= baseline * 1.24) return { label: 'CONTENDER', color: 'var(--green)', delta };
+    if (share >= baseline)        return { label: 'ABOVE AVG', color: 'var(--fg-1)',  delta };
+    if (share >= baseline * 0.72) return { label: 'BELOW AVG', color: 'var(--amber)', delta };
+    return                               { label: 'REBUILD',   color: 'var(--red)',   delta };
   }
 
   function computeRosterStrength(roster, league) {
@@ -2868,10 +2873,10 @@
     main.appendChild(h('h2', { class:'page-title standings-heading' }, 'Team Strength Rankings'));
 
     // Value outlook per team. Sparkline bars + the dedicated line chart both
-    // read this trajectory: projected starting-lineup value for CURRENT_SEASON..+FV_YEARS
+    // read this trajectory: projected starting-lineup value for CURRENT_SEASON..+5
     // (position-aware aging, best-K re-picked each year, owned picks folded in once
-    // they convert). year-0 == PV, last year == FV.
-    const TRAJ_YEARS = FV_YEARS + 1;
+    // they convert). year-0 == PV, year FV_YEARS == FV.
+    const TRAJ_YEARS = 6;
     const trajLabels = [];
     for (let y = 0; y < TRAJ_YEARS; y++) trajLabels.push(String(CURRENT_SEASON + y));
 
@@ -2887,15 +2892,13 @@
       // draft year); PV (year 0) stays player-only.
       const traj = [];
       for (let y = 0; y < trajYears; y++) traj.push(startingStrength(r, lg, y, true));
-      return { r, s, traj, st: traj[0], fv: traj[trajYears - 1] };
+      return { r, s, traj, st: traj[0], fv: traj[Math.min(FV_YEARS, trajYears - 1)] };
     });
     // Share = a roster's starting-lineup value as a fraction of the league total,
     // computed at PV (now) and FV (last bar). Baseline = 1/N. Bands via the same
     // Dynasty Domain classifier used elsewhere.
     const leaguePV = computed.reduce((a, c) => a + c.st, 0) || 1;
-    const leagueFV = computed.reduce((a, c) => a + c.fv, 0) || 1;
     const shareBaseline = 1 / Math.max(1, computed.length);
-    const shareTone = (t) => t === 'good' ? 'var(--green)' : t === 'bad' ? 'var(--red)' : 'var(--fg-2)';
     // Rank by STARTING-lineup strength (best-K), not sum of every rostered player, // total-value rewards hoarding depth and buries a strong-starters/thin team.
     // Redraft has no asset value to rank, so its strength is the season sims' points
     // per remaining week (ROS weekly lines, byes, injuries) whenever the forecast runs.
@@ -2982,7 +2985,7 @@
         ? `${forecast.sims.toLocaleString()} simulated seasons, seed 20260807. Completed W1-${forecast.completed} results preserved. Expected final W-L-T shown as fractional means; ties count half a win for seeding. Record, then points for, higher points against, and a seeded coin flip for exact ties. ${forecast.teams} playoff places, ${forecast.byes} first-round byes. ${forecast.median ? 'Includes the league median game each week. ' : ''}Same ${forecast.src === 'blend' ? 'league-scored season blend' : 'weekly ROS'} model as Projections, known weekly absences/byes (unfilled slots score zero) plus simulated injuries, player-season uncertainty and team/stack correlations. Forecast estimates are not historically calibrated probabilities. Roster changes and commissioner overrides are not modeled. Monte Carlo error alone is up to about 2 percentage points at 95% confidence. Weekly source: ${window.WEEKLY_RANKINGS?.liveWeek || window.WEEKLY_RANKINGS?.currentWeek || '?'}; roster/source freshness is in the data panel.`
         : 'No numeric forecast is shown when rules, records, matchups or weekly lineup coverage are unsupported.')));
     standings.appendChild(h('div', { class:'standings-table-wrap' }, h('p', { class:'standings-swipe' }, 'Swipe sideways for more columns ›'), h('table', { class:'standings-table' },
-      h('thead', null, h('tr', null, h('th', null, '#'), h('th', { class:'team' }, 'Team'), lgDynasty ? h('th', { class:'standings-chart-head', title:`Selected chart metric, now through ${FV_YEARS} years out` }, 'Trend') : null, ...tableCols.map(([label]) => h('th', null, label)))),
+      h('thead', null, h('tr', null, h('th', null, '#'), h('th', { class:'team' }, 'Team'), lgDynasty ? h('th', { class:'standings-chart-head', title:'Selected chart metric, now through five years out' }, 'Trend') : null, ...tableCols.map(([label]) => h('th', null, label)))),
       tableBody)));
     computed.forEach((row, i) => {
       const r = row.r, s = row.s, st = row.st;
@@ -2991,16 +2994,17 @@
       const fnd = s.rankedPlayers.filter(p => p.ranked.category === 'foundational').length;
       const ups = s.rankedPlayers.filter(p => p.ranked.category === 'upside_premier').length;
 
-      // Value share split PV vs FV: starting-lineup value as a fraction of the
-      // league total, now and at the last bar. Each classified into a band.
-      const pvShare = st / leaguePV, fvShare = row.fv / leagueFV;
+      // Value share PV vs FV: dynasty is the whole roster plus picks (valueShareFor),
+      // now and FV_YEARS out; redraft is the lineup's points over replacement.
+      const pvShare = lgDynasty ? valueShareFor(r, lg).share : st / leaguePV;
+      const fvShare = lgDynasty ? valueShareFor(r, lg, FV_YEARS).share : 0;
       const pvCls = classifyValueShare(pvShare, shareBaseline);
       const fvCls = classifyValueShare(fvShare, shareBaseline);
 
       // 3-year trajectory: Δ direction + magnitude drive both the figure and the
       // one-word tag. Rising = accumulating value, Aging = bleeding it.
       const traj = row.traj;
-      const tFirst = traj[0] || 0, tLast = traj[traj.length - 1] || 0;
+      const tFirst = traj[0] || 0, tLast = row.fv || 0; // trajectory label = now vs FV
       const tDelta = tLast - tFirst;
       const tPct = tFirst > 0 ? (tDelta / tFirst) * 100 : 0;
       const tDir = tPct >= 4 ? 'up' : tPct <= -10 ? 'down' : 'flat';
@@ -3009,7 +3013,7 @@
       const spark = h('div', { class:'str-spark', dataset:{rosterId:r.roster_id} }, ...traj.map((v, yi) =>
         h('div', { class:'sp-bar-wrap', title:`${trajLabels[yi]}: ${fmt.decimal(v, 0)}` },
           h('span', { class:'sp-bar-val tnum' }, fmt.decimal(v, 0)),
-          h('div', { class:'sp-bar', style:{ height: trajH(v) + '%', background: tColor, opacity: yi === traj.length - 1 ? 1 : 0.55 } }))));
+          h('div', { class:'sp-bar', style:{ height: trajH(v) + '%', background: tColor, opacity: yi === FV_YEARS ? 1 : 0.55 } }))));
 
       const strengthRow = h('div', {
         class:`strength-row ${isMe?'you':''}`,
@@ -3066,19 +3070,19 @@
             lgDynasty ? h('span', { class:'seg' }, h('span', { class:'dot', style:{ background:'var(--cat-cornerstone)' } }), `${cs} CS`) : null,
             lgDynasty ? h('span', { class:'seg' }, h('span', { class:'dot', style:{ background:'var(--cat-foundational)' } }), `${fnd} FND`) : null,
             lgDynasty ? h('span', { class:'seg' }, h('span', { class:'dot', style:{ background:'var(--cat-upside)' } }), `${ups} UP`) : null,
-            h('span', { class:'seg', title: `PV share: ${(pvShare*100).toFixed(1)}% of league starting ${lgDynasty ? 'value' : 'value over replacement'} now (baseline ${(shareBaseline*100).toFixed(1)}%). ${pvCls.label} band.` },
-              h('span', { class:'tnum', style:{ color: shareTone(pvCls.tone), fontWeight:700 } }, `${(pvShare*100).toFixed(1)}%`),
+            h('span', { class:'seg', title: `PV share: ${(pvShare*100).toFixed(1)}% of league ${lgDynasty ? 'dynasty value, players plus picks,' : 'starting value over replacement'} now (baseline ${(shareBaseline*100).toFixed(1)}%). ${pvCls.label} band.` },
+              h('span', { class:'tnum', style:{ color: pvCls.color, fontWeight:700 } }, `${(pvShare*100).toFixed(1)}%`),
               h('span', { style:{ color:'var(--fg-3)', marginLeft:'4px', fontSize:'0.7rem', textTransform:'uppercase', letterSpacing:'0.04em' } }, 'PV share'),
             ),
-            lgDynasty ? h('span', { class:'seg', title: `FV share: ${(fvShare*100).toFixed(1)}% of league ${trajLabels[TRAJ_YEARS-1]} starting value (baseline ${(shareBaseline*100).toFixed(1)}%). ${fvCls.label} band.` },
-              h('span', { class:'tnum', style:{ color: shareTone(fvCls.tone), fontWeight:700 } }, `${(fvShare*100).toFixed(1)}%`),
+            lgDynasty ? h('span', { class:'seg', title: `FV share: ${(fvShare*100).toFixed(1)}% of league dynasty value in ${trajLabels[FV_YEARS]}, players aged on the value curve plus picks (baseline ${(shareBaseline*100).toFixed(1)}%). ${fvCls.label} band.` },
+              h('span', { class:'tnum', style:{ color: fvCls.color, fontWeight:700 } }, `${(fvShare*100).toFixed(1)}%`),
               h('span', { style:{ color:'var(--fg-3)', marginLeft:'4px', fontSize:'0.7rem', textTransform:'uppercase', letterSpacing:'0.04em' } }, 'FV share'),
             ) : null,
         ),
         h('div', { class:'score-cell' },
           byPts ? h('div', { class:'score', title:'Projected points per remaining week, mean of the simulated seasons' }, fmt.decimal(ppwOf(r.roster_id), 1))
             : h('div', { class:'score', title:'PV: present starting-lineup value (now)' }, fmt.decimal(st,1)),
-          lgDynasty ? (() => { const fv = row.fv, d = st > 0 ? (fv - st) / st * 100 : 0; const c = d >= 2 ? 'var(--green)' : d <= -8 ? 'var(--amber)' : 'var(--fg-2)'; return h('div', { class:'delta', style:{ color: c }, title:`FV: starting-lineup value in ${trajLabels[TRAJ_YEARS-1]} (same scale as the ${trajLabels[TRAJ_YEARS-1].slice(2)} bar)` }, `FV ${fmt.decimal(fv, 0)} · ${d >= 0 ? '+' : ''}${d.toFixed(0)}%`); })() : null,
+          lgDynasty ? (() => { const fv = row.fv, d = st > 0 ? (fv - st) / st * 100 : 0; const c = d >= 2 ? 'var(--green)' : d <= -8 ? 'var(--amber)' : 'var(--fg-2)'; return h('div', { class:'delta', style:{ color: c }, title:`FV: starting-lineup value in ${trajLabels[FV_YEARS]} (same scale as the ${trajLabels[FV_YEARS].slice(2)} bar)` }, `FV ${fmt.decimal(fv, 0)} · ${d >= 0 ? '+' : ''}${d.toFixed(0)}%`); })() : null,
           lgDynasty ? h('div', { class:'arch', style:{ color: tColor } }, tLabel) : null,
         ),
         lgDynasty ? h('div', { class:'str-traj' }, spark) : null,
@@ -3147,7 +3151,7 @@
           spark.style.visibility='visible';
         }
         const trend=standings.querySelector('.standings-chart-head');
-        if(trend){trend.textContent=metrics[metric].label;trend.title=`${metrics[metric].label} by season, now through ${FV_YEARS} years out.`;}
+        if(trend){trend.textContent=metrics[metric].label;trend.title=`${metrics[metric].label} by season, now through five years out.`;}
         note.textContent=`${metrics[metric].label}, ${trajLabels[0]}-${trajLabels[trajYears-1]}. ${percentage?'Scale 0-100%.':'Bars start at zero.'} ${metric==='value'?'Market-value aging scenario, not winning probability.':'Same season simulator as standings and Trade Lab; future years are age/pick scenarios, not known future rosters.'}`;
         sortState.key=metrics[metric].sort;sortState.dir='desc';sortSelect.value=sortState.key;applyStandingsSort();
       };
@@ -4420,9 +4424,10 @@
   // powers per-player charts, per-roster value curves, and the dashboard
   // Present-vs-Future split.
   // FV everywhere (Leagues, Standings, Overview, Blueprint, trade finder) is value
-  // FV_YEARS seasons out (Trevor, 2026-10-10). Curves run now through that year.
+  // FV_YEARS seasons out (Trevor, 2026-10-10). Timelines still run five years out;
+  // FV is the FV_YEARS point inside them.
   const FV_YEARS = 3;
-  const PROJECTION_YEARS = FV_YEARS + 1; // year 0 = current, last year = FV
+  const PROJECTION_YEARS = 5; // 2026..2030 (year 0 = current)
   const CURRENT_SEASON = (() => {
     const m = new Date();
     // Assume drafts/seasons rolled into next year by mid-Feb (Super Bowl over).
@@ -5040,12 +5045,13 @@
         });
         const pickVal = owned.reduce((s, p) => s + (p.value || 0), 0);
         const pickShare = strength.total > 0 ? pickVal / strength.total : 0;
-        const { share: valueShare } = valueShareFor(roster, league);
+        const { share: valueShare, baseline } = valueShareFor(roster, league);
         return {
           future_first_count_27: first27.length,
           late_first_count_27: late27.length,
           pick_value_share: pickShare,
           value_share: valueShare,
+          value_share_lock: baseline * 1.24,
         };
       })(),
 
@@ -5243,7 +5249,7 @@
           `Lineup rank #${lineupRank} of ${lg.total_rosters}`),
       ),
       // ===== Value Share (Dynasty Domain framework) =====
-      // % of total league dynasty value (player-only) you hold. Baseline =
+      // % of total league dynasty value (players plus picks) you hold. Baseline =
       // 1/N. Above 1.24× baseline = contender-lock. Below 0.72× baseline =
       // rebuild territory. Color-coded against those bands.
       (() => {
@@ -5253,14 +5259,12 @@
         const pct = (vs.share * 100).toFixed(1);
         const basePct = (vs.baseline * 100).toFixed(1);
         const deltaPct = (cls.delta * 100);
-        const tone = cls.tone === 'good' ? 'var(--green)'
-                   : cls.tone === 'bad'  ? 'var(--red)'
-                   : 'var(--amber)';
+        const tone = cls.color;
         return h('div', { class:'br-stat' },
           h('div', { class:'br-stat-num tnum', style:{ color: tone } }, `${pct}%`),
           h('div', { class:'br-eyebrow' }, 'Value Share'),
           h('div', { class:'br-stat-sub',
-            title:`Your % of league-wide player-only dynasty value. Baseline ${basePct}%. ${cls.label} band per Dynasty Domain framework.`,
+            title:`Your % of league-wide dynasty value, players plus picks. Baseline ${basePct}%. ${cls.label} band per Dynasty Domain framework.`,
           },
             `${deltaPct >= 0 ? '+' : ''}${deltaPct.toFixed(1)}pp vs base`,
             h('span', { class:'br-stat-chip tnum', style:{ color: tone, marginLeft:'8px' } }, cls.label),

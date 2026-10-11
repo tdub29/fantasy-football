@@ -215,8 +215,8 @@ window.STRATEGY = {
     },
     {
       id: "value-share-contender-lock",
-      when: (ctx) => (ctx.value_share || 0) >= 0.103 && ctx.stance !== 'contend',
-      text: (ctx) => `Your value share is ${(ctx.value_share * 100).toFixed(1)}% (top-2 in league). Per Dynasty Domain framework: you should be contending now, not reloading. Production share lagging value share means you're sitting on assets instead of fielding them.`
+      when: (ctx) => (ctx.value_share || 0) >= (ctx.value_share_lock || 0.103) && ctx.stance !== 'contend',
+      text: (ctx) => `Your value share is ${(ctx.value_share * 100).toFixed(1)}%, past the contender line for this league size. Per Dynasty Domain framework: you should be contending now, not reloading. Production share lagging value share means you're sitting on assets instead of fielding them.`
     },
   ],
 
