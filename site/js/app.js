@@ -1723,38 +1723,11 @@
     // plus a dedicated FLEX column, plus Bench / Draft / Overall.
     heatmap.appendChild(h('div', { class:'heatmap-row heatmap-head' },
       h('div', { class:'heatmap-cell heatmap-leaguecell' }, 'League'),
-      ...['QB','RB','WR','TE','FLEX','Bench','Draft'].map(p => h('div', { class:'heatmap-cell' }, p)),
+      ...GRADE_KEYS.map(p => h('div', { class:'heatmap-cell' }, p)),
       h('div', { class:'heatmap-cell heatmap-overallcell' }, 'Overall'),
     ));
     for (const { league, roster } of myRosters) {
-      const players = getRosterPlayers(roster);
-      const slotResult = gradeLineupSlots(players, league);
-      const g = {
-        QB: gradePositionFromSlots(slotResult, 'QB') || gradePosition(players, 'QB', league),
-        RB: gradePositionFromSlots(slotResult, 'RB') || gradePosition(players, 'RB', league),
-        WR: gradePositionFromSlots(slotResult, 'WR') || gradePosition(players, 'WR', league),
-        TE: gradePositionFromSlots(slotResult, 'TE') || gradePosition(players, 'TE', league),
-        FLEX: gradePositionFromSlots(slotResult, 'FLEX') || gradePositionFromSlots(slotResult, 'SF') || 0,
-        Bench: gradeBench(players, league),
-        Draft: isDynastyLeague(league) ? gradeDraftCapital(roster, league.id) : null,
-      };
-      const overall = slotResult.overall || ((g.QB + g.RB*1.1 + g.WR*1.2 + g.TE*0.8 + g.Bench*0.5 + (g.Draft || 0)*0.4) / 5);
-      const heatCell = (key, val) => {
-        if (val == null) return h('div', {
-          class:'heatmap-cell heatmap-grade',
-          dataset:{ gradeKey:key, grade:'na' },
-          title:'Not used in redraft',
-        }, h('span', { class:'heatmap-num tip' }, 'N/A'));
-        const color = val >= 7.5 ? 'var(--green)' : val >= 5.5 ? 'var(--amber)' : val >= 3.5 ? 'var(--cat-vet)' : 'var(--red)';
-        const pct = Math.max(4, Math.min(100, val*10));
-        const title = !isDynastyLeague(league)
-          ? `${key}: ${val.toFixed(1)}/10. Redraft grade compares rest-of-season points with the matching lineup reference.`
-          : `${key}: ${val.toFixed(1)}/10.`;
-        return h('div', { class:'heatmap-cell heatmap-grade', dataset:{ gradeKey:key, grade:String(val) }, title },
-          h('div', { class:'heatmap-bar', style:{ width: `${pct}%`, background: color } }),
-          h('span', { class:'heatmap-num tnum', style:{ color } }, val.toFixed(1)),
-        );
-      };
+      const { g, overall } = positionGrades(roster, league);
       const overallColor = overall >= 7.5 ? 'var(--green)' : overall >= 5.5 ? 'var(--amber)' : 'var(--red)';
       heatmap.appendChild(h('div', {
         class:'heatmap-row',
@@ -1765,7 +1738,7 @@
           h('div', { class:'heatmap-leaguename' }, league.short_name),
           h('div', { class:'heatmap-team tip' }, roster.team_name + (league.is_superflex ? ' · SF' : league.is_idp ? ' · IDP' : '')),
         ),
-        heatCell('QB', g.QB), heatCell('RB', g.RB), heatCell('WR', g.WR), heatCell('TE', g.TE), heatCell('FLEX', g.FLEX), heatCell('Bench', g.Bench), heatCell('Draft', g.Draft),
+        ...GRADE_KEYS.map(k => heatGradeCell(k, g[k], league)),
         h('div', { class:'heatmap-cell heatmap-overallcell tnum', dataset:{ gradeKey:'Overall', grade:String(overall) }, style:{ color: overallColor } }, overall.toFixed(1)),
       ));
     }
@@ -4794,6 +4767,39 @@
   }
   // Helper: aggregated grade per high-level position group, derived from
   // gradeLineupSlots. Used by the dashboard heatmap.
+  // One grade set per roster, shared by the Overview heatmap and the Trade Lab
+  // needs grid, so a team reads the same number in both places.
+  const GRADE_KEYS = ['QB','RB','WR','TE','FLEX','Bench','Draft'];
+  function positionGrades(roster, league) {
+    const players = getRosterPlayers(roster);
+    const slots = gradeLineupSlots(players, league);
+    const g = {
+      QB: gradePositionFromSlots(slots, 'QB') || gradePosition(players, 'QB', league),
+      RB: gradePositionFromSlots(slots, 'RB') || gradePosition(players, 'RB', league),
+      WR: gradePositionFromSlots(slots, 'WR') || gradePosition(players, 'WR', league),
+      TE: gradePositionFromSlots(slots, 'TE') || gradePosition(players, 'TE', league),
+      FLEX: gradePositionFromSlots(slots, 'FLEX') || gradePositionFromSlots(slots, 'SF') || 0,
+      Bench: gradeBench(players, league),
+      Draft: isDynastyLeague(league) ? gradeDraftCapital(roster, league.id) : null,
+    };
+    const overall = slots.overall || ((g.QB + g.RB*1.1 + g.WR*1.2 + g.TE*0.8 + g.Bench*0.5 + (g.Draft || 0)*0.4) / 5);
+    return { players, slots, g, overall };
+  }
+  const gradeColor = (v) => v >= 7.5 ? 'var(--green)' : v >= 5.5 ? 'var(--amber)' : v >= 3.5 ? 'var(--cat-vet)' : 'var(--red)';
+  // Bar cell sized and tinted by grade. `pop` is an optional hover list; tabindex lets a phone tap open it.
+  function heatGradeCell(key, val, league, pop) {
+    if (val == null) return h('div', { class:'heatmap-cell heatmap-grade', dataset:{ gradeKey:key, grade:'na' }, title:'Not used in redraft' },
+      h('span', { class:'heatmap-num tip' }, 'N/A'));
+    const color = gradeColor(val);
+    const title = pop ? null : !isDynastyLeague(league)
+      ? `${key}: ${val.toFixed(1)}/10. Redraft grade compares rest-of-season points with the matching lineup reference.`
+      : `${key}: ${val.toFixed(1)}/10.`;
+    return h('div', { class:'heatmap-cell heatmap-grade', dataset:{ gradeKey:key, grade:String(val) }, title,
+      tabindex: pop ? '0' : null, onclick: pop ? (e) => e.stopPropagation() : null },
+      h('div', { class:'heatmap-bar', style:{ width:`${Math.max(4, Math.min(100, val*10))}%`, background:color } }),
+      h('span', { class:'heatmap-num tnum', style:{ color } }, val.toFixed(1)),
+      pop);
+  }
   function gradePositionFromSlots(slotResult, posPrefix) {
     const matching = slotResult.slots.filter(s => s.slot.startsWith(posPrefix));
     if (!matching.length) return 0;
@@ -9023,113 +9029,68 @@
     KT.refreshMiddle(lg);
   }
 
-  // League-wide positional needs, quality-weighted: each team's top starters at
-  // a position (blended KTC value via tierValue) vs its starter slots. Rendered
-  // at the bottom of the Trade Lab. Offense only, ranking sources don't cover
-  // IDP. Rows sorted by TE need (neediest first) to answer "who needs a TE?".
+  // Trade Lab needs grid: the Overview heatmap's grades for every team in this
+  // league. Hover (tap on a phone) a cell for that team's top five there.
+  const needsSort = { key:'Overall', dir:-1 };
   function buildTeamNeeds(lg) {
-    const idx = rankIndex();
-    const targets = targetStartersByPos(lg);
-    const POS = ['QB', 'RB', 'WR', 'TE'];
-    const starterN = {};
-    for (const p of POS) starterN[p] = Math.max(1, Math.round(targets[p] || 1));
-    // Redraft: value and rank on rest-of-season points, ties (every body below
-    // the best free one is 0) broken on points, not roster order.
     const dyn = isDynastyLeague(lg);
-
-    const teams = lg.rosters.map(r => {
-      const byPos = { QB: [], RB: [], WR: [], TE: [] };
-      for (const pid of (r.players || [])) {
-        const sp = window.PLAYERS[pid]; if (!sp) continue;
-        const ranked = idx.bySleeperId.get(pid) || idx.byName.get(norm(sp.name));
-        if (!ranked) continue;
-        const pos = ranked.pos || sp.pos;
-        if (!byPos[pos]) continue;
-        byPos[pos].push({ name: sp.name, pid, age: sp.age, value: playerValue(pid, lg),
-          pts: dyn ? 0 : (rosPointsByPid(lg).get(String(pid))?.pts || 0),
-          posRank: dyn ? (ranked.ktcPosRank || ranked._posRank || null) : rosPosRank(pid, lg) });
+    const pts = (pid) => rosPointsByPid(lg).get(String(pid))?.pts || 0;
+    const worth = (pid) => dyn ? playerValue(pid, lg) : pts(pid);
+    const posOf = (p) => p.ranked?.pos || projPosGroup(p.sleeper.pos);
+    const teams = lg.rosters.map(r => ({ r, ...positionGrades(r, lg) }));
+    const row = (p) => {
+      const pos = posOf(p), rank = dyn ? (p.ranked?.ktcPosRank || p.ranked?._posRank) : rosPosRank(p.pid, lg);
+      return h('li', null, h('span', null, p.sleeper.name),
+        h('span', { class:'muted tnum' }, `${rank ? `${pos}${rank} · ` : ''}${dyn ? fmt.decimal(worth(p.pid), 0) : `${Math.round(worth(p.pid))} pts`}`));
+    };
+    const best = (list) => list.slice().sort((a, b) => worth(b.pid) - worth(a.pid)).slice(0, 5);
+    const listFor = (t, key) => {
+      if (['QB','RB','WR','TE'].includes(key)) return best(t.players.filter(p => posOf(p) === key));
+      if (key === 'Bench') {
+        const starting = new Set(t.slots.slots.map(x => x.pid).filter(Boolean));
+        return best(t.players.filter(p => !starting.has(String(p.pid)) && ['QB','RB','WR','TE'].includes(posOf(p))));
       }
-      const posVal = {}, posTop = {}, posPts = {};
-      for (const p of POS) {
-        byPos[p].sort((a, b) => b.value - a.value || b.pts - a.pts);
-        posVal[p] = byPos[p].slice(0, starterN[p]).reduce((s, x) => s + x.value, 0);
-        posPts[p] = byPos[p].slice(0, starterN[p]).reduce((s, x) => s + x.pts, 0);
-        posTop[p] = byPos[p][0] || null;
+      if (key === 'FLEX') {
+        const ids = new Set(t.slots.slots.filter(x => /^(FLEX|SF)/.test(x.slot)).map(x => x.pid));
+        return t.players.filter(p => ids.has(String(p.pid)));
       }
-      return { r, posVal, posTop, posPts };
-    });
-
-    // Rank each position across teams (ascending value = neediest first).
-    const n = teams.length;
-    const label = {};
-    for (const p of POS) {
-      const order = teams.map((t, i) => ({ i, v: t.posVal[p], pts: t.posPts[p] })).sort((a, b) => a.v - b.v || a.pts - b.pts);
-      order.forEach((o, rank) => {
-        const frac = n > 1 ? rank / (n - 1) : 1;
-        let cls = 'ok', txt = 'OK';
-        if (frac < 0.20) { cls = 'need'; txt = 'NEED'; }
-        else if (frac < 0.45) { cls = 'thin'; txt = 'THIN'; }
-        else if (frac >= 0.80) { cls = 'strong'; txt = 'STRONG'; }
-        (label[o.i] = label[o.i] || {})[p] = { frac, cls, txt };
-      });
-    }
-    const COLOR = { need: 'var(--red)', thin: 'var(--amber)', ok: 'var(--fg-2)', strong: 'var(--green)' };
-
-    teams.forEach((t, i) => {
-      let worst = null;
-      for (const p of POS) { const l = label[i][p]; if (!worst || l.frac < worst.frac) worst = { p, ...l }; }
-      t.topNeed = worst;
-    });
-
-    // Biggest TE need = lowest best-TE value; also drives row order.
-    const teByBest = teams.map((t, i) => ({ i, best: t.posTop.TE }))
-      .sort((a, b) => (a.best?.value || 0) - (b.best?.value || 0) || (a.best?.pts || 0) - (b.best?.pts || 0));
-    const neediest = teByBest[0];
-
-    const posCell = (i, p) => {
-      const t = teams[i], l = label[i][p], top = t.posTop[p];
-      return h('td', { style: { textAlign: 'center' } },
-        h('div', { style: { fontWeight: 600 } }, fmt.decimal(t.posVal[p], 0)),
-        h('div', { style: { fontSize: '11px', color: COLOR[l.cls], fontWeight: 700, letterSpacing: '.03em' } }, l.txt),
-        top ? h('div', { class: 'muted', style: { fontSize: '10px' } }, `${top.name}${top.posRank ? ` · ${p}${top.posRank}` : ''}`)
-            : h('div', { class: 'muted', style: { fontSize: '10px' } }, '·')
-      );
+      return null;   // Draft: the grade is the whole story
+    };
+    const pop = (t, key) => {
+      const list = listFor(t, key);
+      if (!list) return null;
+      return h('div', { class:'heatmap-pop', role:'tooltip' },
+        h('div', { class:'heatmap-pop-head' }, `${t.r.team_name}: ${key === 'Bench' ? 'best bench' : key === 'FLEX' ? 'flex starters' : `top ${key}s`}`),
+        list.length ? h('ul', null, ...list.map(row)) : h('div', { class:'muted' }, 'None rostered'));
     };
 
     const wrap = h('div', { style: { marginTop: '26px' } });
     wrap.appendChild(h('div', { class: 'page-eyebrow' }, 'TEAM NEEDS'));
     wrap.appendChild(h('h2', { class: 'page-title', style: { fontSize: '20px', margin: '2px 0 6px' } }, 'Roster Needs by Position'));
     wrap.appendChild(h('p', { class: 'page-sub', style: { marginBottom: '12px' } },
-      'Quality-weighted: each cell is the blended value of a team’s top starters at that spot vs its league slots. Red = biggest gap, sorted by TE need. Offense only (IDP not ranked).'));
-
-    if (neediest && neediest.best) {
-      const t = teams[neediest.i];
-      wrap.appendChild(h('div', { style: { marginBottom: '12px', padding: '10px 12px', borderRadius: 'var(--radius-sm)', background: 'color-mix(in oklab, var(--red) 9%, var(--bg-1))', border: '1px solid color-mix(in oklab, var(--red) 38%, var(--border))' } },
-        h('strong', null, 'Biggest TE need: '),
-        h('span', null, `${t.r.team_name}: best TE ${neediest.best.name}${neediest.best.posRank ? ` (TE${neediest.best.posRank})` : ''}, value ${fmt.decimal(neediest.best.value, 0)}.`)
-      ));
-    }
-
-    const tableWrap = h('div', { class: 'card', style: { padding: 0, overflowX: 'auto' } });
-    tableWrap.appendChild(h('table', { class: 'data snug' },
-      h('thead', null, h('tr', null,
-        h('th', null, 'Team'),
-        ...POS.map(p => h('th', { style: { textAlign: 'center' } }, p)),
-        h('th', null, 'Top Need'),
-      )),
-      h('tbody', null, ...teByBest.map(({ i }) => {
-        const t = teams[i];
-        return h('tr', { style: { background: t.r.is_me ? 'color-mix(in oklab, var(--accent) 8%, transparent)' : 'transparent' } },
-          h('td', null, h('div', { class: 'name-cell' },
-            h('span', { class: 'name' }, t.r.team_name),
-            t.r.is_me ? h('span', { class: 'badge you', style: { marginLeft: '6px' } }, 'YOU') : null,
-          )),
-          ...POS.map(p => posCell(i, p)),
-          h('td', null, h('span', { style: { color: COLOR[t.topNeed.cls], fontWeight: 700 } }, `${t.topNeed.p} · ${t.topNeed.txt}`)),
-        );
-      }))
-    ));
-    wrap.appendChild(tableWrap);
+      'Same 0 to 10 grades as the Overview heatmap. Hover or tap a cell for that team’s top five; click a header to sort.'));
+    const grid = h('div', { class: 'heatmap needs' });
+    wrap.appendChild(grid);
+    const draw = () => {
+      const { key, dir } = needsSort;
+      const v = (t) => key === 'Overall' ? t.overall : (t.g[key] ?? -1);
+      const sorted = teams.slice().sort((a, b) => (v(a) - v(b)) * dir);
+      const head = (k, cls) => h('div', { class:`heatmap-cell clickable${cls ? ` ${cls}` : ''}${k === key ? ' sort-active' : ''}`, tabindex:'0',
+        'aria-sort': k === key ? (dir < 0 ? 'descending' : 'ascending') : 'none',
+        onclick: () => { needsSort.dir = needsSort.key === k ? -needsSort.dir : (k === 'Overall' ? -1 : 1); needsSort.key = k; draw(); },
+        onkeydown: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } } },
+        k + (k === key ? (dir < 0 ? ' ↓' : ' ↑') : ''));
+      grid.replaceChildren(
+        h('div', { class:'heatmap-row heatmap-head' }, h('div', { class:'heatmap-cell heatmap-leaguecell' }, 'Team'),
+          ...GRADE_KEYS.map(k => head(k)), head('Overall', 'heatmap-overallcell')),
+        ...sorted.map(t => h('div', { class:`heatmap-row${t.r.is_me ? ' is-me' : ''}`,
+          onclick: () => navigate(`#roster/${lg.id}/${t.r.roster_id}`) },
+          h('div', { class:'heatmap-cell heatmap-leaguecell' },
+            h('div', { class:'heatmap-leaguename' }, t.r.team_name, t.r.is_me ? h('span', { class:'badge you', style:{ marginLeft:'6px' } }, 'YOU') : null)),
+          ...GRADE_KEYS.map(k => heatGradeCell(k, t.g[k], lg, t.g[k] == null ? null : pop(t, k))),
+          h('div', { class:'heatmap-cell heatmap-overallcell tnum', style:{ color: gradeColor(t.overall) } }, t.overall.toFixed(1)))));
+    };
+    draw();
     return wrap;
   }
 

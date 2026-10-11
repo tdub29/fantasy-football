@@ -2598,6 +2598,30 @@ textarea { resize: vertical; min-height: 80px; }
   font-variant-numeric: tabular-nums;
 }
 
+/* Trade Lab needs grid: same cells as the Overview heatmap plus a hover/tap list.
+   Visible overflow lets the list escape the card, so the head row rounds itself. */
+.heatmap.needs { overflow: visible; }
+.heatmap.needs .heatmap-head .heatmap-cell:first-child { border-top-left-radius: var(--radius); }
+.heatmap.needs .heatmap-head .heatmap-cell:last-child { border-top-right-radius: var(--radius); }
+.heatmap.needs .heatmap-row.is-me { background: color-mix(in oklab, var(--accent) 8%, transparent); }
+.heatmap.needs .heatmap-head .clickable { cursor: pointer; }
+.heatmap.needs .heatmap-head .sort-active { color: var(--fg-0); }
+.heatmap-pop {
+  display: none;
+  position: absolute; top: calc(100% - 4px); left: 50%; transform: translateX(-50%);
+  z-index: 30; min-width: 220px; padding: 8px 10px;
+  background: var(--bg-1); color: var(--fg-1);
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  box-shadow: 0 10px 28px rgb(0 0 0 / 0.28);
+  font-size: 0.78rem; font-weight: 400; text-align: left; cursor: default;
+}
+.heatmap-grade:nth-child(2) > .heatmap-pop { left: 0; transform: none; }
+.heatmap-grade:nth-last-child(-n+3) > .heatmap-pop { left: auto; right: 0; transform: none; }
+.heatmap-grade:hover > .heatmap-pop, .heatmap-grade:focus-within > .heatmap-pop { display: block; }
+.heatmap-pop-head { font-weight: 700; color: var(--fg-0); margin-bottom: 4px; }
+.heatmap-pop ul { list-style: none; margin: 0; padding: 0; }
+.heatmap-pop li { display: flex; justify-content: space-between; gap: 12px; padding: 2px 0; }
+
 @media (max-width: 900px) {
   .heatmap-row { grid-template-columns: 110px repeat(7, minmax(0, 1fr)) 84px; }
   .heatmap-leaguecell { padding: 8px; }
