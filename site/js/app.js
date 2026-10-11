@@ -10630,6 +10630,8 @@
   // A player can only be a target if he is NOT yours, and only blockable if he IS.
   // Deciding that here keeps every call site from re-deriving it.
   function markKindFor(leagueId, pid) {
+    // Sleeper's Inactive: retired or long unsigned. Nothing to trade for.
+    if (window.PLAYERS?.[pid]?.status === 'Inactive') return null;
     const lg = (window.LEAGUES || []).find(l => String(l.id) === String(leagueId));
     if (!lg || !leagueFitsPos(lg, window.PLAYERS?.[pid]?.pos)) return null;
     const mine = lg.rosters.find(r => r.is_me);
@@ -11952,6 +11954,7 @@
             h('div', { class:'row gap-4 wrap', style:{ marginBottom:'12px' } },
               ranked ? posChip(ranked.pos) : sleeper ? posChip(sleeper.pos) : college ? posChip(college.p) : null,
               ranked ? teamChip(ranked.team) : sleeper ? teamChip(sleeper.team) : college ? h('span', { class:'badge' }, college.sch) : null,
+              sleeper?.status === 'Inactive' ? h('span', { class:'badge', title:'Sleeper lists him Inactive: retired or long unsigned' }, 'INACTIVE') : null,
               rookieBadge(ranked || {}),
               uncertainBadge(ranked || {}),
               depBadge(ranked || {}),
