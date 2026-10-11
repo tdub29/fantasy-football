@@ -2510,7 +2510,18 @@
     QB: ['QB'], RB: ['RB'], WR: ['WR'], TE: ['TE'],
     FLEX: ['RB', 'WR', 'TE'], SUPER_FLEX: ['QB', 'RB', 'WR', 'TE'],
     K: ['K'], DEF: ['DEF', 'DST'],
+    LB: ['LB'], DB: ['DB'], DL: ['DL'], IDP_FLEX: ['LB', 'DB', 'DL'],
   };
+  // The slots a simulated week fills: offense plus, in an IDP league, the defender
+  // slots, so yuH's title odds count the points its defenders actually score.
+  function seasonSlots(league) {
+    const slots = offenseStartingSlots(league);
+    for (const s of (league.roster_positions || [])) {
+      if (s === 'LB' || s === 'DB' || s === 'DL') slots.push({ pos: s, flex: false });
+      else if (s === 'IDP_FLEX' || s === 'IDP') slots.push({ pos: 'IDP_FLEX', flex: true });
+    }
+    return slots;
+  }
 
   // Sleeper's `players` array includes taxi and IR bodies, neither of which can
   // be put in a starting lineup. Anything scoring a LINEUP has to filter them
@@ -13158,8 +13169,8 @@
   // with no age curve. Without them every K and DEF slot sat empty for every
   // team, and trading a kicker never moved anyone's title odds.
   function simPool(roster, lg, src, extraIds, yearsOut = 0, rookies = null) {
-    const map = projMap('offense'), wk = rosPointsByPid(lg), lines = yearsOut ? null : wk, ros = src === 'ros' ? lines : null;
-    const takes = new Set([...SLOT_TAKES.SUPER_FLEX, ...offenseStartingSlots(lg).flatMap(s => SLOT_TAKES[s.pos])]);
+    const map = projMap('offense'), dmap = lg.is_idp ? projMap('defense') : null, wk = rosPointsByPid(lg), lines = yearsOut ? null : wk, ros = src === 'ros' ? lines : null;
+    const takes = new Set([...SLOT_TAKES.SUPER_FLEX, ...seasonSlots(lg).flatMap(s => SLOT_TAKES[s.pos])]);
     const irSlot = lines && !ros ? new Set((lg.rosters || []).flatMap(r => (r.reserve || []).map(String))) : null;
     const ids = new Set([...startableIds(ros ? { ...roster, reserve: [] } : roster, { includeStashed: yearsOut > 0 }), ...(extraIds || []).map(String)]);
     const weekly = yearsOut ? null : new Map((window.WEEKLY_RANKINGS?.players || []).map(p => [String(p.id), p.sleeper]));
@@ -13171,16 +13182,20 @@
       // is back, and no line left means the season is over. Only the slot counted, so
       // a full-IR roster carrying an ACL (Achane, 2026-09-29) got the flat 6-week guess
       // and came back in week 10.
-      const p = map.get(pid), ir = irSlot && (irSlot.has(pid) || sp.injury_status === 'IR');
+      // A defender's weekly line is PPR (T.J. Watt reads 1 pt a week), so his points
+      // come from the season projection scored under this league's IDP rules and the
+      // line only says which weeks he plays.
+      const dp = dmap && dmap.get(pid);
+      const p = dp || map.get(pid), ir = irSlot && (irSlot.has(pid) || sp.injury_status === 'IR');
       const kd = !p && wk.get(pid) && ['K', 'DEF'].includes(projPosGroup(wk.get(pid).pos)) ? wk.get(pid) : null;
-      const line = kd || (lines && lines.get(pid)), perGame = !!(ros || kd);
-      const pos = perGame ? line && projPosGroup(line.pos) : p?.pos;
+      const line = kd || (lines && lines.get(pid)), perGame = !dp && !!(ros || kd);
+      const pos = perGame ? line && projPosGroup(line.pos) : dp ? projPosGroup(dp.pos) : p?.pos;
       if (!(perGame ? line : p) || !takes.has(pos) || (ir && !line)) continue;
       let mean;
       if (perGame) mean = line.pts / line.games;
       else {
-        const season0 = projPoints(p, lg, src); if (season0 == null) continue;
-        const season = season0 * productionRetention(p.pos, sp.age, yearsOut);
+        const season0 = projPoints(p, lg, dp && !dp.stats?.[src] ? 'blend' : src); if (season0 == null) continue;
+        const season = season0 * productionRetention(pos, sp.age, yearsOut);
         if (season <= 0) continue;   // aged out of the league entirely
         mean = season / SIM.gamesPlayed;
       }
@@ -13353,8 +13368,8 @@
     if (rule('divisions') == null || rule('playoff_seed_type') == null || rule('playoff_round_type') == null || rule('start_week') == null || rule('league_average_match') == null)
       return { ...out, reason: 'League rule coverage is incomplete.' };
     const divs = rule('divisions');
-    if (![0, 1].includes(rule('playoff_seed_type')) || rule('playoff_round_type') !== 0 || rule('start_week') !== 1 || lg.is_idp)
-      return { ...out, reason: lg.is_idp ? 'IDP scoring is not covered by this season model.' : 'Custom seeding or round rules are not supported.' };
+    if (![0, 1].includes(rule('playoff_seed_type')) || rule('playoff_round_type') !== 0 || rule('start_week') !== 1)
+      return { ...out, reason: 'Custom seeding or round rules are not supported.' };
     if (divs > 1 && (divs > teams || !(lg.rosters || []).every(r => Number.isInteger(r.division) && r.division >= 1 && r.division <= divs)))
       return { ...out, reason: 'Division membership is missing.' };
     if (!sched || !!rule('league_average_match') !== median)
@@ -13568,7 +13583,7 @@
     const n = rosters.length;
     if (!n) return [];
     src = src || seasonSrc(lg, yearsOut);
-    const slots = offenseStartingSlots(lg);
+    const slots = seasonSlots(lg);
     const cfg = playoffSettings(lg);
     const { extraPoints } = projectLeagueForward(lg, yearsOut, whatIf, strengthRanks);
     // An IR-slot player is on both books, his owner's and a receiver's, from the
@@ -13724,7 +13739,7 @@
     const fw = forecastWeeks(lg);
     if (!fw.ok) return fw;
     const src = seasonSrc(lg);
-    const slots = offenseStartingSlots(lg);
+    const slots = seasonSlots(lg);
     if (fw.remaining.length) for (const r of lg.rosters) {
       const pool = simPool({ ...r, reserve: [], taxi: r.taxi || [] }, lg, src);
       const eligible = pool.filter(a => a.weekly && a.weekly.length >= fw.regularWeeks
@@ -14056,7 +14071,7 @@
           }))
         ),
         h('div', { class: 'tip', style: { marginTop: '8px' } },
-          `Best legal lineup for each roster (${(lg.roster_positions || []).filter(s => SLOT_TAKES[s]).join(' / ') || 'league slots'}), scored under this league's own settings. `,
+          `Best legal lineup for each roster (${(lg.roster_positions || []).filter(s => SLOT_TAKES[s] && SLOT_TAKES[s].some(isIdpPos) === isDef).join(' / ') || 'league slots'}), scored under this league's own settings. `,
           `Taxi, IR, and players listed Out or Doubtful are benched.`,
           oddsOn ? ` Title odds: ${PROJ_STATE.odds.toLocaleString()} simulated seasons with per-player projection error, weekly variance, byes, and an injury process. Points rank rosters; ${playoffSettings(lg).teams} of ${lg.total_rosters} make the playoffs and three single-week rounds decide the rest.` : '')));
     }
