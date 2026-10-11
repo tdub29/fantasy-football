@@ -129,14 +129,36 @@ def build_espn_league(config):
     # matchup period. team_id is the roster_id on this platform, so the map keys
     # line up with the Sleeper side without translation.
     espn_period = ((raw.get("status") or {}).get("currentMatchupPeriod")) or 1
-    espn_opponents = {}
+    schedule_settings = settings.get("scheduleSettings") or {}
+    regular_periods = int(schedule_settings.get("matchupPeriodCount") or 0)
+    espn_opponents, espn_weeks, last_scored = {}, {}, 0
     for game in raw.get("schedule") or []:
-        if game.get("matchupPeriodId") != espn_period:
-            continue
+        period = game.get("matchupPeriodId")
         home = (game.get("home") or {}).get("teamId")
         away = (game.get("away") or {}).get("teamId")
-        if home is not None and away is not None:
+        if home is None or away is None or not period:
+            continue
+        # Full regular-season schedule for the season forecast (schedule.js).
+        if period <= regular_periods:
+            pair = espn_weeks.setdefault(str(period), {})
+            pair[str(home)], pair[str(away)] = away, home
+            if game.get("winner") in ("HOME", "AWAY", "TIE"):
+                last_scored = max(last_scored, period)
+        if period == espn_period:
             espn_opponents[home], espn_opponents[away] = away, home
+    # ESPN's playoff rules in the Sleeper settings vocabulary the forecast reads.
+    # Seeding is record then points for; only TOTAL_POINTS_SCORED matches that tiebreak.
+    divisions = schedule_settings.get("divisions") or []
+    division_count = len(divisions) if len(divisions) > 1 else 0
+    playoff_periods = (schedule_settings.get("matchupPeriods") or {}).get(str(regular_periods + 1)) or []
+    playoff_week_start = playoff_periods[0] if playoff_periods else regular_periods + 1
+    one_week_rounds = (schedule_settings.get("playoffMatchupPeriodLength") == 1
+                       and not schedule_settings.get("variablePlayoffMatchupPeriodLength"))
+    forecast_unavailable = None
+    if schedule_settings.get("playoffSeedingRule") != "TOTAL_POINTS_SCORED":
+        forecast_unavailable = "ESPN playoff tiebreaker is not supported by this forecast."
+    elif schedule_settings.get("matchupPeriodLength") != 1:
+        forecast_unavailable = "Multi-week matchups are not supported by this forecast."
     out_rosters, unmatched = [], []
     for team in sorted(raw.get("teams") or [], key=lambda item: item.get("id", 0)):
         member_id = team.get("primaryOwner") or ((team.get("owners") or [None])[0])
@@ -166,6 +188,7 @@ def build_espn_league(config):
             "wins": record.get("wins", 0), "losses": record.get("losses", 0),
             "ties": record.get("ties", 0), "fpts": record.get("pointsFor", 0),
             "fpts_against": record.get("pointsAgainst", 0),
+            "division": (team.get("divisionId") or 0) + 1 if division_count else None,
         })
 
     scoring = {}
@@ -173,7 +196,6 @@ def build_espn_league(config):
         key = ESPN_SCORING.get(item.get("statId"))
         if key and item.get("points") is not None:
             scoring[key] = item["points"]
-    schedule_settings = settings.get("scheduleSettings") or {}
     acquisition = settings.get("acquisitionSettings") or {}
     status = raw.get("status") or {}
     users = [{
@@ -196,6 +218,13 @@ def build_espn_league(config):
         "type": 0, "is_dynasty": False, "platform": "espn", "my_team_id": config["team_id"],
         "external_url": f"https://fantasy.espn.com/football/league?leagueId={league_id}&seasonId={season}",
         "playoff_teams": schedule_settings.get("playoffTeamCount"),
+        "playoff_week_start": playoff_week_start, "divisions": division_count,
+        "playoff_seed_type": 1 if schedule_settings.get("playoffReseed") else 0,
+        "playoff_round_type": 0 if one_week_rounds else 1,
+        "start_week": 1, "league_average_match": 0, "last_scored_leg": last_scored,
+        "forecast_unavailable": forecast_unavailable,
+        # build_fantasy_schedule.py copies this into schedule.js; ESPN is not on Sleeper's API.
+        "fantasy_schedule": {"playoffStart": playoff_week_start, "medianScoring": False, "weeks": espn_weeks},
         "trade_deadline": None, "taxi_slots": 0, "reserve_slots": slot_counts.get(21, 0),
         "waiver_type": acquisition.get("acquisitionType"),
         "waiver_budget": acquisition.get("acquisitionBudget"),
