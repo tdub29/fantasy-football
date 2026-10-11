@@ -12509,6 +12509,28 @@
         : ['share', 'Yds share', pmPct, 'Best-season share of team receiving yards'],
     ];
   }
+  // The table's stat columns: only the college inputs that build each position's profile percentile
+  // (FEATS in build_prospect_model.py). The card keeps the wider pmStatCols. Power conference, early
+  // declare and draft age feed the profile too but are not in the client data.
+  const pmVal = (v) => v == null || !Number.isFinite(+v) ? '·' : pmDec(v);
+  function pmInputCols(pos, hist) {
+    const thin = '. Seasons on teams that threw under 15 passes a game are skipped';
+    const stars = ['stars', 'Stars', pmVal, 'Recruiting stars out of high school'];
+    // College rows have no combine, so the model fills their speed score in: drafted rows only.
+    const ss = hist ? ['ss', 'Speed score', pmVal, 'Combine speed score: weight x 200 / 40 time to the 4th. Drafted players only'] : null;
+    return ({
+      QB: [['comp', 'Comp %', pmPct, 'Final-season completion %'],
+        ['rypg', 'Rush Y/G', pmVal, 'Best rushing yards per game in a season as the passer (sacks excluded)']],
+      RB: [['yptpa', 'Final YPTPA', pmVal, `Final-season receiving yards per team pass attempt${thin}`],
+        ['sypg', 'Scrim Y/G', pmVal, 'Career scrimmage yards per game'],
+        ['wt', 'Weight', pmVal, 'Weight in pounds: combine weight for drafted players, roster weight for college players'], ss, stars],
+      WR: [['yptpa', 'Career YPTPA', pmVal, `Career receiving yards per team pass attempt${thin}`], stars],
+      TE: [['yptpa', 'Best YPTPA', pmVal, `Best-season receiving yards per team pass attempt${thin}`], ss],
+    }[pos] || []).filter(Boolean);
+  }
+  // Weight and speed score live in prospect.js and college-bio.js, the rest on the model row.
+  const pmInputVal = (r, k) => k === 'wt' ? (r.id ? window.PROSPECT?.players?.[r.id]?.weight_lb : window.COLLEGE_BIO?.players?.[r.cid]?.wt)
+    : k === 'ss' ? (r.id ? window.PROSPECT?.players?.[r.id]?.speed_score : null) : (r.st || {})[k];
   function pmComps(cp) {
     if (!cp || !cp.length) return null;
     return h('div', { class:'tip prm-comps' }, 'Profile comps: ',
@@ -12738,7 +12760,7 @@
   // Route: #prospects/<ALL|QB|RB|WR|TE>/<all|year>; no class is Future classes, the default.
   // Future classes are college players in an upcoming draft. All classes adds every drafted class
   // the model scored, marked by pick, and those rows open the NFL player card (Trevor, 2026-10-05).
-  const prospectSort = { key:'sc', dir:'desc', q:'' };
+  const prospectSort = { key:'sc', dir:'desc', q:'', view:'table' };
   function viewProspects(posArg, clsArg) {
     const main = $('#main'); main.innerHTML = '';
     const M = window.PROSPECT_MODEL;
@@ -12793,9 +12815,18 @@
       h('option', { value:'future', selected: cls === 'future' ? '' : null }, 'Future classes'),
       ...years.map(y => h('option', { value:String(y), selected: cls === String(y) ? '' : null }, String(y))));
     filterBar.appendChild(h('div', { class:'group' }, h('label', null, 'Class'), clsSel));
+    const views = [['table', 'Table'], ['scatter', 'Scatter']];
+    const viewBtns = views.map(([v, label]) => h('button', { class:`toggle${prospectSort.view === v ? ' active' : ''}`, 'aria-pressed':String(prospectSort.view === v),
+      onclick:() => {
+        prospectSort.view = v;
+        if (v === 'scatter' && !hist) return go(pos, 'all');   // only drafted classes have an NFL result to plot
+        viewBtns.forEach((b, i) => { b.classList.toggle('active', views[i][0] === v); b.setAttribute('aria-pressed', String(views[i][0] === v)); });
+        render();
+      } }, label));
+    filterBar.appendChild(h('div', { class:'group' }, h('label', null, 'View'), h('div', { class:'toggle-group', role:'group', 'aria-label':'View' }, ...viewBtns)));
     main.appendChild(filterBar);
 
-    const stat = one ? pmStatCols(pos) : [];
+    const stat = one ? pmInputCols(pos, hist) : [];
     const cols = [
       ['n', 'Player', { asc:true }],
       one ? null : ['p', 'Pos', { asc:true, fit:true }],
@@ -12803,13 +12834,14 @@
       hist || cls === 'future' || Number(cls) === next ? ['mp', 'Proj. pick', { right:true, asc:true, title:'Median overall pick across public mock drafts. Only the next class is mocked so far. UFD: next-class player in no mock (the mocks run all seven rounds), so projected undrafted. Blank: class not mocked yet' }] : null,
       hist ? ['pk', 'NFL pick', { right:true, asc:true, title:'Overall pick he actually went at' }] : null,
       ['sc', 'Score', { right:true, title:'One 0-100 prospect score from draft pick plus college profile: his average top-finish chance across both cuts, as a percentile of every drafted player at his position since 2008. College rows use the mock-draft pick, or profile alone if no mock' }],
+      ['ts', 'Profile %ile', { right:true, title:'College profile percentile, 0-100: the no-draft-capital model on his college inputs (the stat columns when one position is picked), ranked among every drafted player at his position since 2008. With the pick, the only other input to the Score' }],
       ...[0, 1].map(i => [`t${i}`, one ? `${pos}${PM_CUTS[pos][i]} %` : ['Elite %', 'Starter %'][i], { right:true,
         title:`Chance of at least one ${one ? `top-${PM_CUTS[pos][i]} ${pos}` : ['top-6 QB or TE, top-12 RB or WR', 'top-12 QB or TE, top-24 RB or WR'][i]} season by PPR points per game (8+ games) in NFL years ${one ? pmWindow(pos) : '1-3 (QB, TE 1-4)'}. Draft pick plus college profile. College rows use the mock-draft pick, or profile alone if no mock` }]),
       hist ? ['best', 'Best finish', { right:true, asc:true, title:'Best PPR points-per-game rank at his position in that window (8+ games). Blank: window still open' }] : null,
       pos === 'QB' ? null : ['ba', 'Breakout age', { right:true, asc:true, title:'Age on Sept 1 of the college season he first hit the dominator line (blank: not yet). From his birth date where one was found; muted numbers are estimates from class year. Profile only, no model uses it' }],
       ...stat.map(([k, label, , t]) => [`st.${k}`, label, { right:true, title:t }]),
     ].filter(Boolean);
-    const get = (r, k) => k.startsWith('st.') ? (r.st || {})[k.slice(3)]
+    const get = (r, k) => k.startsWith('st.') ? pmInputVal(r, k.slice(3))
       : k === 'sc' ? pmScore(r)
       : k === 't0' || k === 't1' ? pmTopChance(r.p, PM_CUTS[r.p][Number(k[1])], pmFitPick(r), r.ts)
       : k === 'best' ? (r.out ? r.out[2] || 999 : null)
@@ -12817,10 +12849,11 @@
     const fmtCell = (r, k) => {
       const v = get(r, k);
       // A real button, so the card opens from the keyboard too; the row click is the mouse shortcut.
-      if (k === 'n') return h('div', { class:'name-cell' },
+      // Capped width with an ellipsis, so the full name, school and pick ride in the title.
+      if (k === 'n') return h('div', { class:'name-cell', title:[v, r.sch, r.id ? `${r.y} pick ${r.pk}` : null].filter(Boolean).join(', ') },
         h('button', { type:'button', class:'name player-name-button',
           onclick:(e) => { e.stopPropagation(); openRow(r); } }, v),
-        r.sch || r.id ? h('span', { class:'muted prm-school' }, [r.sch, r.id ? `NFL, ${r.y} pick ${r.pk}` : null].filter(Boolean).join(' · ')) : null);
+        r.sch ? h('span', { class:'muted prm-school' }, r.sch) : null);
       if (k.startsWith('st.')) return stat.find(s => `st.${s[0]}` === k)[2](v);
       if (k === 'ba') return pmAge(r, v);
       if (k === 'best') return v == null ? '·' : v === 999 ? h('span', { class:'muted' }, 'none') : `${r.p}${v}`;
@@ -12837,6 +12870,7 @@
       card.innerHTML = '';
       const q = (prospectSort.q || '').toLowerCase();
       const rows = q ? all.filter(r => `${r.n} ${r.sch || ''}`.toLowerCase().includes(q)) : all.slice();
+      if (prospectSort.view === 'scatter') { card.appendChild(prospectScatter(rows, openRow, one)); return; }
       const { key, dir } = cols.some(c => c[0] === prospectSort.key) ? prospectSort : { key:'n', dir:'asc' };
       const sgn = dir === 'desc' ? -1 : 1;
       rows.sort((a, b) => {
@@ -12861,7 +12895,8 @@
           onkeydown:(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(); } } },
           label + (on ? (dir === 'desc' ? ' ↓' : ' ↑') : ''));
       };
-      const tbl = h('table', { class:'data prm-table fit-num' },
+      // snug: the table hugs its columns, so fit-num cannot hand every spare pixel to the name.
+      const tbl = h('table', { class:'data prm-table fit-num snug' },
         h('thead', null, h('tr', null, h('th', { class:'right' }, '#'), ...cols.map(sortHdr))),
         h('tbody', null, ...rows.map((r, i) => h('tr', { class:'clickable', onclick:() => openRow(r) },
           h('td', { class:'right tnum' }, String(i + 1)),
@@ -12869,6 +12904,50 @@
       appendTable(card, tbl);
     }
     render();
+  }
+
+  // Replacement PPG per position: the median best PPR points per game (out[1]) of drafted players whose
+  // best finish sat within 3 of the hit line, QB12, RB24, WR24, TE12, the last starter in a 12-team league.
+  // ponytail: 8 to 13 players per position, so it moves a few tenths when a class is added.
+  let pmReplRef = null;
+  function pmRepl(p) {
+    if (!pmReplRef) {
+      pmReplRef = {};
+      for (const P of Object.keys(PM_CUTS)) {
+        const v = Object.values(window.PROSPECT_MODEL.nfl).filter(r => r.p === P && r.out && r.out[2] && Math.abs(r.out[2] - PM_CUTS[P][1]) <= 3)
+          .map(r => r.out[1]).sort((a, b) => a - b);
+        pmReplRef[P] = v.length ? v[v.length >> 1] : null;
+      }
+    }
+    return pmReplRef[p];
+  }
+  // #prospects Scatter: the score against what drafted players went on to do. College players have no
+  // NFL result yet and recent classes have an open window, so both are left off rather than parked on a strip.
+  function prospectScatter(rows, open, one) {
+    const pts = rows.filter(r => r.id && r.out && pmRepl(r.p) != null)
+      .map(r => ({ ...r, _key:r.id, _x:pmScore(r), _y:r.out[1] - pmRepl(r.p) }))
+      .filter(r => Number.isFinite(r._x) && Number.isFinite(r._y));
+    if (pts.length < 3) return h('div', { class:'empty' }, 'Nothing to plot here: college classes have no NFL results yet. Pick All classes to plot the drafted ones.');
+    const ps = Object.keys(PM_CUTS).filter(p => pts.some(r => r.p === p));
+    const el = chartScatter(pts, { key:'_x', label:'Prospect score' }, { key:'_y', label:'PPG over replacement', fmt:'dec1' }, {
+      W:Math.max(300, Math.min(960, ($('#main').clientWidth || 360) - 44)), picks:new Set(), unit:'drafted players',
+      label:(r, short) => short ? chartShort(r.n) : `${r.n} (${r.p}, ${r.y} pick ${r.pk})`,
+      sample:(r) => `${r.out[2] ? `Best ${pmDec(r.out[1])} PPG, ${r.p}${r.out[2]}` : 'No 8-game season'}; replacement ${pmDec(pmRepl(r.p))}`,
+      cls:(r) => `pos-${r.p}`,
+      scope:`Y is his best PPR points per game in NFL years 1-3 (QB, TE 1-4) minus replacement, the median best of players who finished near ${ps.map(p => `${p}${PM_CUTS[p][1]} (${pmDec(pmRepl(p))})`).join(', ')}. `
+        + 'No 8-game season counts as 0 PPG. College players and classes whose window is still open are left off',
+    });
+    const wrap = el.querySelector('.chart-wrap');
+    if (!one) wrap.before(h('div', { class:'prm-legend' }, ...ps.map(p => h('span', { class:`pos-chip ${p}` }, p))));
+    // A mouse click opens the player. On touch the first tap shows the readout and a second tap on the same dot opens him.
+    let ptr = 'mouse', armed = null;
+    wrap.addEventListener('pointerdown', (e) => { ptr = e.pointerType; });
+    wrap.addEventListener('click', (e) => {
+      const m = e.target.closest && e.target.closest('[data-i]');
+      if (m && (ptr === 'mouse' || armed === m)) open(pts[Number(m.dataset.i)]);
+      armed = m;
+    });
+    return el;
   }
 
   // weather.js keys teams by nflverse code, which writes the Rams as LA.
@@ -15812,7 +15891,7 @@
       { x0:PL, x1:W - PR, y0:PT, y1:H - PB }, chartMeasure());
     pts.forEach((p, i) => {
       const cls = o.picks.has(p.r._key) ? 'pt pick' : p.r._mine ? 'pt mine' : 'pt';
-      s += `<circle class="${cls}" data-i="${i}" cx="${X(p.x).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="${cls === 'pt' ? 4.5 : cls === 'pt mine' ? 5 : 6.5}"/>`;
+      s += `<circle class="${cls}${o.cls ? ` ${o.cls(p.r)}` : ''}" data-i="${i}" cx="${X(p.x).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="${cls === 'pt' ? 4.5 : cls === 'pt mine' ? 5 : 6.5}"/>`;
     });
     for (const l of labels) s += `<text class="lbl" x="${l.lx.toFixed(1)}" y="${(l.y + 4).toFixed(1)}" text-anchor="${l.anchor}">${chartEsc(l.text)}</text>`;
     s += '</svg>';
