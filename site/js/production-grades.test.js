@@ -69,10 +69,10 @@ for (const [r, card, ypc] of cards) {
   const g = grades(card), all = text(card) + find(card, n => n.attrs.title).map(n => n.attrs.title).join(' ');
   assert.doesNotMatch(all, PFF, `${r.n}: a PFF metric leaked onto the card`);
   if (r.p === 'QB') { assert(!Object.values(g).some(s => SUB.test(s || '')), `${r.n}: QB graded`); continue; }
-  const want = { Dominator: r.st.dom, 'Breakout year': r.ba, YPC: r.p === 'RB' ? ypc : undefined };
+  const want = { Dominator: r.st.dom, 'Breakout age': r.ba, YPC: r.p === 'RB' ? ypc : undefined };
   for (const [label, v] of Object.entries(want)) {
     if (v == null) { assert(!(label in g), `${r.n}: ${label} shown with no value`); continue; }
-    const key = { Dominator:'dom', 'Breakout year':'ba', YPC:'ypc' }[label];
+    const key = { Dominator:'dom', 'Breakout age':'ba', YPC:'ypc' }[label];
     const m = SUB.exec(g[label] || '');
     assert(m, `${r.n}: ${label} has no grade (${g[label]})`);
     assert.equal(Number(m[2]), G.ref[r.p][key].length, `${r.n}: ${label} sample size`);

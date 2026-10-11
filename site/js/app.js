@@ -512,6 +512,8 @@
   // The league a cross-league figure (VOR, week projection, card value) is scored
   // in: a defender in the IDP league he can start in, everyone else in primaryLeague.
   function contextLeagueFor(pos) {
+    const here = routeLeague();
+    if (here && leagueFitsPos(here, pos)) return here;
     if (!isIdpPos(pos)) return primaryLeague();
     const L = window.LEAGUES || [];
     return L.find(l => l.is_idp && l.rosters.some(r => r.is_me)) || L.find(l => l.is_idp) || primaryLeague();
@@ -2851,12 +2853,6 @@
       h('div', { class:'page-actions' },
         me ? h('a', { href:`#roster/${lg.id}/${me.roster_id}` }, h('button', { class:'primary' }, 'My Roster →')) : null,
         h('button', { class:'ghost', onclick:() => toggleLeagueHidden(lg) }, isLeagueHidden(lg) ? 'Unhide league' : 'Hide league'),
-        me ? h('label', { class:'tank-meter', title:'How hard you are tanking here. What to Look For counts this league at (100 - N)% of its buy-in; 100% drops it.' },
-          'Tankometer',
-          h('input', { type:'range', min:'0', max:'100', step:'5', value:String(tankOf(lg)), 'aria-label':'Tankometer percent',
-            oninput:e => { e.target.nextSibling.textContent = `${e.target.value}%`; },
-            onchange:e => setTank(lg, e.target.value) }),
-          h('span', { class:'tnum' }, `${tankOf(lg)}%`)) : null,
         h('div', { class:'btn-group' },
           // Trade Lab moved into the tab bar beside Standings / Players /
           // Transactions, so it is not also a header button.
@@ -5376,6 +5372,12 @@
     ));
 
     if (tab === 'snapshot') {
+    if (r.is_me) main.appendChild(h('label', { class:'tank-meter', title:'How hard you are tanking here. What to Look For counts this league at (100 - N)% of its buy-in; 100% drops it.' },
+      'Tankometer',
+      h('input', { type:'range', min:'0', max:'100', step:'5', value:String(tankOf(lg)), 'aria-label':'Tankometer percent',
+        oninput:e => { e.target.nextSibling.textContent = `${e.target.value}%`; },
+        onchange:e => setTank(lg, e.target.value) }),
+      h('span', { class:'tnum' }, `${tankOf(lg)}%`)));
     // ===== Per-slot grade circles =====
     // Each starting lineup slot gets its own circular grade. The league's
     // roster_positions drives the slot list (QB1, RB1, RB2, WR1, WR2, TE1,
@@ -12550,22 +12552,17 @@
   }
   const pmYpc = (kind, id) => { const y = (window.PRODUCTION_GRADES || {}).ypc; return y && y[kind][id] != null ? y[kind][id] : null; };
   // Graded rows in card order: breakout age, the position's model stats, then YPC.
-  // Breakout "age" is class year in disguise: no college player has a public birth date, so the
-  // model ages everyone from his first college season (age0 + seasons) and every value lands on
-  // the same few numbers. Show the season it marks; the lowest value in the model is year one.
-  let pmBaZero = null;
-  function pmBaYear(ba) {
-    if (ba == null) return '·';
-    if (pmBaZero == null) {
-      const M = window.PROSPECT_MODEL;
-      pmBaZero = Math.min(...[...M.college, ...Object.values(M.nfl)].map(r => r.ba).filter(v => v != null));
-    }
-    const n = Math.round(ba - pmBaZero);
-    return ['Fr', 'So', 'Jr', 'Sr'][n] || `Yr ${n + 1}`;
-  }
-  const pmGradeRows = (p, ba, st, ypc, baTitle) => [
-    ba != null ? ['ba', 'Breakout year', pmBaYear(ba), ba, baTitle] : null,
-    ...pmStatCols(p).map(([k, label, f, t]) => st && st[k] != null ? [k, label, f(st[k]), st[k], t] : null),
+  // Ages are real where the row carries a birth date (dob: nflverse for drafted players,
+  // projections/college-dob.csv for college ones). Without one they are the class-year estimate,
+  // shown muted with a title that says so.
+  const pmAge = (r, v) => v == null ? '·' : r.dob ? pmNum(1)(v)
+    : h('span', { class:'muted', title:'Estimated from class year: no birth date found for him' }, pmNum(1)(v));
+  const pmDobNote = (r) => r.dob
+    ? `From his birth date, ${r.dob} (${{ wikipedia:'Wikipedia', wikidata:'Wikidata' }[r.dsrc] || 'nflverse'})`
+    : 'No birth date found for him, so estimated from class year';
+  const pmGradeRows = (p, r, ypc, baTitle) => [
+    r.ba != null ? ['ba', 'Breakout age', pmAge(r, r.ba), r.ba, `${baTitle}. ${pmDobNote(r)}`] : null,
+    ...pmStatCols(p).map(([k, label, f, t]) => r.st && r.st[k] != null ? [k, label, f(r.st[k]), r.st[k], t] : null),
     ypc != null ? ['ypc', 'YPC', pmNum(1)(ypc), ypc, `Career rushing yards per carry, ${window.PRODUCTION_GRADES.min_carries}+ carries`] : null,
   ].filter(Boolean);
   // Grades panel: bar and letter from his percentile, coloured on the site's 0-10 grade scale.
@@ -12697,8 +12694,8 @@
       pmCardHead(r, r.cls, peers, `${r.p} · ${r.cls} draft class`,
         [mock ? pmHeroBox('Proj. round', mock.round, mock.sub, mock.title) : null]),
       pmBio([
-        pmBioCell('Draft age', r.age != null ? `${pmNum(1)(r.age)} est.` : null,
-          'Estimated age at the draft he is scored for: the more conservative of leaving after his third or fourth college year. No public birth dates, so no age today'),
+        pmBioCell('Draft age', r.age != null ? pmAge(r, r.age) : null,
+          `Age on draft day of the draft he is scored for: the more conservative of leaving after his third or fourth college year. ${pmDobNote(r)}`),
         sz ? pmBioCell('Height', `${Math.floor(sz.ht / 12)}'${sz.ht % 12}"`, sizeTitle) : null,
         sz ? pmBioCell('Weight', `${sz.wt} lb`, sizeTitle) : null,
         b ? pmBioCell('Build', b.label, sizeTitle) : null,
@@ -12706,8 +12703,8 @@
         mock ? pmBioCell('Mock pick', pmDec(mock.pick), mock.title) : null,
         r.st && r.st.stars != null ? pmBioCell('Recruit', `${r.st.stars}-star`, 'Recruiting stars out of high school') : null,
       ]),
-      pmGrades(r.p, pmGradeRows(r.p, r.ba, r.st, pmYpc('college', r.cid),
-        'College season he first hit the dominator line (Fr = first season). Class year, not age: birth dates are not public for college players. Profile only, no model uses it')),
+      pmGrades(r.p, pmGradeRows(r.p, r, pmYpc('college', r.cid),
+        'Age on Sept 1 of the college season he first hit the dominator line. Profile only, no model uses it')),
       h('div', { class:'tip prm-line' }, `${pmTargetLine(r.p)} First eligible for the ${r.cls} draft.`),
       pmPickLine(r) ? h('div', { class:'tip prm-line' }, pmPickLine(r)) : null,
       r.ln ? h('div', { class:'tip prm-line' }, r.ln) : null,
@@ -12729,8 +12726,8 @@
         me.st && me.st.stars != null ? pmBioCell('Recruit', `${me.st.stars}-star`, 'Recruiting stars out of high school') : null,
       ]),
       pmOutcome(me, meta, years),
-      pmGrades(me.p, pmGradeRows(me.p, me.ba, me.st, pmYpc('nfl', String(sleeper.id)),
-        'College season he first hit the dominator line (Fr = first season; never broke out: one past his final season). Class year, not age: no birth dates for college players')),
+      pmGrades(me.p, pmGradeRows(me.p, me, pmYpc('nfl', String(sleeper.id)),
+        'Age on Sept 1 of the college season he first hit the dominator line (never broke out: a year after his final season)')),
       h('div', { class:'tip prm-line' }, pmTargetLine(me.p)
         + (me.out ? ' His own result is in the fit, so the chance is not a blind forecast.' : '')),
       me.ln ? h('div', { class:'tip prm-line' }, me.ln) : null,
@@ -12809,7 +12806,7 @@
       ...[0, 1].map(i => [`t${i}`, one ? `${pos}${PM_CUTS[pos][i]} %` : ['Elite %', 'Starter %'][i], { right:true,
         title:`Chance of at least one ${one ? `top-${PM_CUTS[pos][i]} ${pos}` : ['top-6 QB or TE, top-12 RB or WR', 'top-12 QB or TE, top-24 RB or WR'][i]} season by PPR points per game (8+ games) in NFL years ${one ? pmWindow(pos) : '1-3 (QB, TE 1-4)'}. Draft pick plus college profile. College rows use the mock-draft pick, or profile alone if no mock` }]),
       hist ? ['best', 'Best finish', { right:true, asc:true, title:'Best PPR points-per-game rank at his position in that window (8+ games). Blank: window still open' }] : null,
-      pos === 'QB' ? null : ['ba', 'Breakout', { right:true, asc:true, title:'College season he first hit the dominator line: Fr, So, Jr, Sr (blank: not yet). Class year, not age, since college birth dates are not public. Profile only, no model uses it' }],
+      pos === 'QB' ? null : ['ba', 'Breakout age', { right:true, asc:true, title:'Age on Sept 1 of the college season he first hit the dominator line (blank: not yet). From his birth date where one was found; muted numbers are estimates from class year. Profile only, no model uses it' }],
       ...stat.map(([k, label, , t]) => [`st.${k}`, label, { right:true, title:t }]),
     ].filter(Boolean);
     const get = (r, k) => k.startsWith('st.') ? (r.st || {})[k.slice(3)]
@@ -12825,7 +12822,7 @@
           onclick:(e) => { e.stopPropagation(); openRow(r); } }, v),
         r.sch || r.id ? h('span', { class:'muted prm-school' }, [r.sch, r.id ? `NFL, ${r.y} pick ${r.pk}` : null].filter(Boolean).join(' · ')) : null);
       if (k.startsWith('st.')) return stat.find(s => `st.${s[0]}` === k)[2](v);
-      if (k === 'ba') return pmBaYear(v);
+      if (k === 'ba') return pmAge(r, v);
       if (k === 'best') return v == null ? '·' : v === 999 ? h('span', { class:'muted' }, 'none') : `${r.p}${v}`;
       if (v != null && !r.id && (k === 't0' || k === 't1')) return h('span', { class:'muted',
         title:pmPick(r) ? `From mock pick ${pmDec(pmPick(r))}` : pmUfd(r) ? 'Projected UFD: scored as the last pick (257) plus college profile' : 'No mock pick yet: college profile alone, if drafted' }, pmPct(v));

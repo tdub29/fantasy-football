@@ -34,7 +34,8 @@ FROM = 2010          # first draft class in the reference
 MIN_CARRIES = 100    # career carries before YPC is a rate and not a handful of runs
 # Card key -> (column in the drafted table, decimals build_prospect_model rounds it to). card()
 # then applies the payload's own clean(), so a tie on the card is a tie in the reference.
-COLS = {"dom": ("dom_best", 3), "ba": ("breakout_age", 1), "ypc": ("ypc", 1)}
+# ba_disp is the breakout age the card shows: on the nflverse birth date where there is one.
+COLS = {"dom": ("dom_best", 3), "ba": ("ba_disp", 1), "ypc": ("ypc", 1)}
 
 
 def card(v, k):
@@ -102,8 +103,8 @@ def self_check():
     g, m = read_js(OUT, "PRODUCTION_GRADES"), read_js(bpm.OUT, "PROSPECT_MODEL")
     span = {"dom": (0, 1), "ba": (17, 26), "ypc": (1, 12)}
     assert g["from"] == FROM and g["ref"]["QB"] == {}, "QB has no public production metric"
-    # Every breakout age shipped, drafted and college, on the one class-year clock: a value
-    # outside 17-26 means the first season or recruit class joined to the wrong player.
+    # Every breakout age shipped, drafted and college, real or class-year estimate: a value
+    # outside 17-26 means a birth date, first season or recruit class joined to the wrong player.
     bas = [r["ba"] for r in [*m["nfl"].values(), *m["college"]] if r.get("ba") is not None]
     assert bas and all(17 <= v <= 26 for v in bas), f"breakout age out of range: {min(bas)}..{max(bas)}"
     for pos, keys in METRICS.items():

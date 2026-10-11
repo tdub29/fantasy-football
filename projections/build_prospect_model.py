@@ -55,6 +55,7 @@ CACHE = pathlib.Path(os.environ.get("NFLVERSE_CACHE") or ROOT / "projections" / 
 CFB = CACHE / "cfb"
 SDV = "https://github.com/sportsdataverse/sportsdataverse-data/releases/download"
 OUT = ROOT / "site" / "data" / "prospect-model.js"
+DOB_CSV = ROOT / "projections" / "college-dob.csv"   # fetch_college_dob.py
 CARD = ROOT / "notes" / "prospect-research" / "model-card.md"
 SLEEPER_DUMP = ROOT / "players-nfl.json"
 
@@ -396,6 +397,7 @@ def career_features(subj: pd.DataFrame, ps: pd.DataFrame, age0: float) -> pd.Dat
     thr = pool.pos.map(BREAKOUT)
     bo = pool[(pool.dom >= thr) & ~pool.thin].drop_duplicates("sid", keep="first").set_index("sid")
     out["breakout_age"] = bo["age"]
+    out["breakout_season"] = bo["season"]
     out["broke_out"] = out.breakout_age.notna().astype(float)
     out["breakout_age"] = out.breakout_age.fillna(out.age_final + 1)
     # QB: passing seasons only.
@@ -420,8 +422,23 @@ def career_features(subj: pd.DataFrame, ps: pd.DataFrame, age0: float) -> pd.Dat
     out["draft_age"] = np.where(s.dob.notna(), age_years(apr25, s.dob), age0 + s.draft_year - s.hs_class - 0.35)
     out.loc[out.n_seasons.isna(), "draft_age"] = np.nan
     qbs = s.pos.eq("QB")
-    out.loc[qbs, ["breakout_age", "broke_out"]] = np.nan
+    out.loc[qbs, ["breakout_age", "broke_out", "breakout_season"]] = np.nan
     return out.reset_index().rename(columns={"index": "sid"})
+
+
+def real_breakout_age(f: pd.DataFrame) -> pd.Series:
+    """Breakout age on a real birth date, for display only (every model keeps the class-year clock).
+    Same rule as career_features: Sept 1 of the breakout season, or of the season after his last
+    one for a career that never got there. NaN with no DOB or no breakout value (QB)."""
+    season = f.breakout_season.fillna(f.season_final + 1).astype("Int64").astype(str)
+    return age_years(pd.to_datetime(season + "-09-01", errors="coerce"), f.dob).where(f.breakout_age.notna())
+
+
+def load_college_dob() -> pd.DataFrame:
+    """Real college birth dates by ESPN id, cached by fetch_college_dob.py; never fetched here."""
+    if not DOB_CSV.exists():
+        return pd.DataFrame({"dob": pd.Series(dtype=str), "source": pd.Series(dtype=str)})
+    return pd.read_csv(DOB_CSV, dtype={"cid": int, "dob": str}).set_index("cid")[["dob", "source"]]
 
 
 # ----------------------------------------------------------------------------- NFL side
@@ -818,6 +835,9 @@ def prepare(say=print):
     feats = career_features(linked.assign(dob=pd.NaT), ps, age0)
     t = linked.merge(feats, on="sid", how="left")
     t = attach_outcomes(t, nfl_outcomes(stats, season_positions()))
+    # Display only: the breakout age the card and the production grades show, on his nflverse
+    # birth date where there is one.
+    t["ba_disp"] = real_breakout_age(t).fillna(t.breakout_age)
     return ps, bio, d, t, age0
 
 
@@ -1165,9 +1185,11 @@ def score_nfl(t, d, final):
             st, line = key_stats(r)
             row = {"n": r.pfr_player_name, "p": pos, "y": int(r.draft_year), "pk": int(r.pick),
                    "ts": round(ts), "tr": tier_of(ts), "hp": round(float(h_p), 3), "tp": round(float(t_p), 3),
-                   "ba": None if pd.isna(r.breakout_age) else round(float(r.breakout_age), 1),
+                   "ba": None if pd.isna(r.ba_disp) else round(float(r.ba_disp), 1),
                    "sch": r.pos_team_final if isinstance(r.pos_team_final, str) else r.college,
                    "st": st, "ln": line, "cp": comp_rows(fin, Xf[i], "full", r.sid), "oos": int(oos is not None)}
+            if pd.notna(r.dob):
+                row["dob"] = r.dob.strftime("%Y-%m-%d")
             if pd.notna(r.hit):
                 row["out"] = [int(r.hit), round(float(r.best_ppg), 1), None if pd.isna(r.best_rank) else int(r.best_rank)]
             out[slp] = row
@@ -1209,6 +1231,7 @@ def score_college(ps, bio, final, age0, top_n=60):
     of two exits: after his third college year or after his fourth. `cls` stays his first
     eligible draft; `ex` says which exit the score assumes."""
     cur = ps[ps.season == SEASON].drop_duplicates("player_id").set_index("player_id")
+    dobs = load_college_dob()
     cand = bio.loc[bio.index.isin(cur.index)].copy()
     cand = cand[cand.ros_pos.isin(POS)]
     subj = cand.reset_index().rename(columns={"index": "player_id", "ros_pos": "pos"})
@@ -1270,6 +1293,10 @@ def score_college(ps, bio, final, age0, top_n=60):
             lat = lat.head(top_n // 2)
         s = pd.concat([nxt.head(top_n), lat])
         X = s[fin["cols"]].to_numpy(float)
+        # Display only, after every score is in: real ages where college-dob.csv has his birth date.
+        s["dob"] = pd.to_datetime(s.player_id.astype(int).map(dobs.dob))
+        s["ba_show"] = real_breakout_age(s).where(s.ba_show.notna()).fillna(s.ba_show)
+        s["draft_age"] = age_years(pd.to_datetime(s.draft_year.astype(int).astype(str) + "-04-25"), s.dob).fillna(s.draft_age)
         for i, (_, r) in enumerate(s.iterrows()):
             scen = []
             for a, b in ROUNDS.values():
@@ -1288,7 +1315,8 @@ def score_college(ps, bio, final, age0, top_n=60):
                          "age": None if pd.isna(r.draft_age) else round(float(r.draft_age), 1),
                          "st": st, "ln": line, "r": scen, "cp": comp_rows(fin, X[i], "talent"),
                          "pd": None if pd.isna(r._pd) else round(float(r._pd), 3),
-                         "pdx": None if pd.isna(r._pdx) else int(r._pdx)})
+                         "pdx": None if pd.isna(r._pdx) else int(r._pdx),
+                         **({"dob": r.dob.strftime("%Y-%m-%d"), "dsrc": dobs.source[int(r.player_id)]} if pd.notna(r.dob) else {})})
     return rows
 
 
@@ -1388,8 +1416,10 @@ FIELDS = {
     "tr": "Tier index into tiers[] (cut on the talent score)",
     "hp": "Hit probability with actual draft capital (shipped model, see pos[].shipped)",
     "tp": "Talent-only hit probability, as if drafted, with no draft capital",
-    "ba": "Breakout age: age at the first college season at the dominator line (drafted and never broke out = final "
-          "age + 1; a current player who has not broken out yet is blank). Ages come from class year for everyone",
+    "ba": "Breakout age: age on Sept 1 of the first college season at the dominator line (drafted and never broke out = "
+          "his age a year after his final season; a current player who has not broken out yet is blank). On his real "
+          "birth date where dob is set, else estimated from class year. Display only: the models use the class-year "
+          "estimate for everyone, the clock current college players are scored on",
     "st": "Key college stats, as posted: dom = best dominator, yptpa = rec yds per team pass att (WR career, TE best, "
           "RB final; the model skips seasons on teams under 15 passes a game), share = best rec yds share, "
           "sypg = career scrimmage yds/game, aya/comp = final passing season, rypg = best QB rush yds/game, starts = 150-att seasons",
@@ -1408,7 +1438,11 @@ FIELDS = {
     "cls": "College only: first eligible draft year",
     "cid": "College only: ESPN college athlete id (the key in the SQLite store, projections/prospect_db.py)",
     "ex": "College only: college years at the exit he is scored at, the more conservative of leaving after year 3 or 4",
-    "age": "College only: projected age at the scored exit's draft (estimated from class, no public DOB)",
+    "age": "College only: age on Apr 25 of the scored exit's draft, on his real birth date where dob is set, else "
+           "estimated from class year",
+    "dob": "Birth date ba and age are computed on (drafted: nflverse players; college: projections/college-dob.csv). "
+           "Absent = both are class-year estimates",
+    "dsrc": "College only: where dob came from (wikipedia infobox or wikidata by ESPN id), see projections/fetch_college_dob.py",
 }
 
 
@@ -1760,6 +1794,10 @@ def self_check():
                                        "age_final": [20.5, 19.7, 21.6]}), 20.4)
     assert cb.breakout_age.tolist() == [19.5, 20.4, 21.6] and cb.ba_show.isna().tolist() == [False, True, True], \
         "no breakout yet: the median, floored at his current age, and shown blank"
+    rb = real_breakout_age(pd.DataFrame({"breakout_season": [2021.0, np.nan, np.nan], "season_final": [2022, 2022, 2021],
+                                         "breakout_age": [19.0, 22.0, np.nan],
+                                         "dob": pd.to_datetime(["2002-09-01", "2000-03-01", "2001-01-01"])}))
+    assert abs(rb[0] - 19.0) < 0.01 and abs(rb[1] - 23.5) < 0.01 and np.isnan(rb[2]),         "real breakout age: Sept 1 of the breakout season, else of the season after his last; QB blank"
     # 8. the A10 blend is the logit midpoint and stays inside its two inputs.
     q = blend_p(np.array([0.2, 0.6]), np.array([0.4, 0.6]))
     assert np.allclose(logit(q[:1]), (logit(np.array([0.2])) + logit(np.array([0.4]))) / 2) and abs(q[1] - 0.6) < 1e-12
