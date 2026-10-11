@@ -1141,15 +1141,19 @@ textarea { resize: vertical; min-height: 80px; }
 .br-tier-desc { color: var(--fg-2); font-size: 0.84rem; line-height: 1.4; }
 
 .br-arch-line {
-  margin-top: 10px;
-  font-size: 0.78rem;
-  color: var(--fg-2);
-  display: flex; flex-wrap: wrap; gap: 4px 6px;
-  align-items: baseline;
+  margin-top: 12px;
+  display: flex; flex-wrap: wrap; gap: 8px;
 }
-.br-arch { white-space: nowrap; cursor: help; }
-.br-arch-tag { color: var(--fg-0); font-weight: 700; letter-spacing: 0.02em; }
-.br-arch-sep { color: var(--fg-3); }
+/* Each archetype is a chip: the kind ("core") as a small eyebrow over the bold tag.
+   column-reverse lifts the trailing " core" text node above the tag. */
+.br-arch {
+  display: inline-flex; flex-direction: column-reverse; gap: 1px;
+  padding: 6px 12px; white-space: nowrap; cursor: help;
+  background: var(--bg-2); border: 2px solid var(--ink); border-radius: var(--radius-sm); box-shadow: var(--well);
+  font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--fg-3);
+}
+.br-arch-tag { font-size: 0.95rem; font-weight: 800; letter-spacing: 0.02em; color: var(--fg-0); }
+.br-arch-sep { display: none; }
 
 .br-eyebrow {
   font-size: 0.66rem;
@@ -1358,8 +1362,9 @@ textarea { resize: vertical; min-height: 80px; }
   .blueprint-row > .br-stat-value { border-top: 1px solid var(--border); }
   .blueprint-row > .br-stat-grade { border-left: 1px solid var(--border); }
   .br-tier-value { font-size: 1.4rem; line-height: 1.2; }
-  .br-arch-line { margin-top: 6px; gap: 2px 5px; }
-  .br-arch { white-space: normal; }
+  .br-arch-line { margin-top: 8px; gap: 6px; }
+  .br-arch { padding: 4px 8px; }
+  .br-arch-tag { font-size: 0.82rem; }
   .br-stat-num { font-size: 1.4rem; }
   .br-eyebrow { font-size: 0.72rem; letter-spacing: 0.04em; }
   .br-stat-sub { line-height: 1.3; }
