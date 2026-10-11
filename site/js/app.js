@@ -3143,31 +3143,41 @@
         odds=rows;
       })().finally(()=>{run=null;}));
       // Every team on one line chart, the same series the Trend bars draw.
-      const linePlot=h('div',{class:'standings-lines-plot'}), lineLegend=h('div',{class:'standings-lines-legend'}), lineTitle=h('div',{class:'card-title'});
-      main.appendChild(h('div',{class:'card standings-lines'},lineTitle,linePlot,lineLegend));
+      const linePlot=h('div',{class:'standings-lines-plot'}), lineTitle=h('div',{class:'card-title'});
+      main.appendChild(h('div',{class:'card standings-lines'},lineTitle,linePlot));
       const lineColor=new Map(computed.map((c,i)=>[c.r.roster_id,c.r.is_me?'var(--gold-deep)':`oklch(62% 0.16 ${Math.round(i*360/computed.length)})`]));
       const drawLines=(series,percentage,format,label)=>{
-        const ns='http://www.w3.org/2000/svg',W=720,H=300,L=56,R=16,T=14,B=28;
+        // Drawn at the plot's real width so 11px text stays 11px on a phone.
+        const ns='http://www.w3.org/2000/svg',W=Math.max(320,linePlot.clientWidth||720),H=320,L=48,T=12,B=26,R=Math.min(170,Math.round(W*.32));
         const el=(tag,attrs,...kids)=>{const n=document.createElementNS(ns,tag);for(const k in attrs)n.setAttribute(k,attrs[k]);n.append(...kids);return n;};
-        const peak=Math.max(...[...series.values()].flat());
-        const top=(percentage?Math.min(1,Math.ceil(peak*20)/20):Math.ceil(peak/100)*100)||1;
-        const x=y=>L+y*(W-L-R)/(trajYears-1),yv=v=>T+(1-Math.max(0,v)/top)*(H-T-B);
+        const vals=[...series.values()].flat(),lo0=Math.min(...vals),hi0=Math.max(...vals);
+        // 1/2/2.5/5 steps. Odds start at zero; value fits its own range so the lines separate.
+        const raw=(hi0-(percentage?0:lo0))/4||hi0/4||1,mag=10**Math.floor(Math.log10(raw)),step=[1,2,2.5,5,10].find(m=>m*mag>=raw)*mag;
+        const lo=percentage?0:Math.floor(lo0/step)*step,hi=Math.max(lo+step,Math.ceil(hi0/step)*step);
+        const x=y=>L+y*(W-L-R)/(trajYears-1),yv=v=>T+(1-(v-lo)/(hi-lo))*(H-T-B);
+        const tick=v=>percentage?`${+(v*100).toFixed(1)}%`:Math.round(v).toLocaleString();
         const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':`${label} by season for every team`});
-        for(const f of [0,.25,.5,.75,1])svg.append(el('line',{x1:L,x2:W-R,y1:yv(top*f),y2:yv(top*f),class:'grid'}),el('text',{x:L-6,y:yv(top*f)+4,'text-anchor':'end'},format(top*f)));
+        for(let i=0,n=Math.round((hi-lo)/step);i<=n;i++){const v=lo+i*step;svg.append(el('line',{x1:L,x2:W-R,y1:yv(v),y2:yv(v),class:'grid'}),el('text',{x:L-6,y:yv(v)+4,'text-anchor':'end'},tick(v)));}
         trajLabels.forEach((t,y)=>svg.append(el('text',{x:x(y),y:H-8,'text-anchor':'middle'},t)));
+        // Series labels at each line's end, nudged apart so none overlap.
+        const ends=computed.map(c=>({c,y:yv(series.get(c.r.roster_id).at(-1))})).sort((a,b)=>a.y-b.y),gap=13;
+        for(let i=1;i<ends.length;i++)ends[i].y=Math.max(ends[i].y,ends[i-1].y+gap);
+        for(let i=ends.length-1;i>=0;i--)ends[i].y=Math.min(ends[i].y,i===ends.length-1?H-B:ends[i+1].y-gap);
+        const labelY=new Map(ends.map(e=>[e.c.r.roster_id,e.y])),maxChars=Math.floor((R-12)/6.5);
         const lines=new Map();
+        const hot=id=>{svg.classList.toggle('focus',id!=null);lines.forEach((g,k)=>g.classList.toggle('hot',k===id));};
         // Yours draws last so it sits on top.
         for(const c of [...computed].sort((a,b)=>a.r.is_me-b.r.is_me)){
-          const d=series.get(c.r.roster_id),color=lineColor.get(c.r.roster_id);
-          const g=el('g',{class:`team-line${c.r.is_me?' you':''}`,stroke:color,fill:color},
-            el('title',{},`${c.r.team_name}: ${d.map((v,y)=>`${trajLabels[y]} ${format(v)}`).join(', ')}`),
+          const id=c.r.roster_id,d=series.get(id),color=lineColor.get(id),name=c.r.team_name;
+          const g=el('g',{class:`team-line${c.r.is_me?' you':''}`,style:`stroke:${color};fill:${color}`},
+            el('title',{},`${name}: ${d.map((v,y)=>`${trajLabels[y]} ${format(v)}`).join(', ')}`),
             el('polyline',{points:d.map((v,y)=>`${x(y)},${yv(v)}`).join(' ')}),
-            ...d.map((v,y)=>el('circle',{cx:x(y),cy:yv(v),r:c.r.is_me?4:3})));
-          svg.append(g);lines.set(c.r.roster_id,g);
+            ...d.map((v,y)=>el('circle',{cx:x(y),cy:yv(v),r:c.r.is_me?4:3})),
+            el('text',{x:x(trajYears-1)+8,y:labelY.get(id)+4,class:'lbl',tabindex:'0',style:`fill:${color}`},name.length>maxChars?`${name.slice(0,maxChars-1)}…`:name));
+          g.addEventListener('mouseenter',()=>hot(id));g.addEventListener('mouseleave',()=>hot(null));
+          g.addEventListener('focusin',()=>hot(id));g.addEventListener('focusout',()=>hot(null));
+          svg.append(g);lines.set(id,g);
         }
-        const hot=id=>{svg.classList.toggle('focus',id!=null);lines.forEach((g,k)=>g.classList.toggle('hot',k===id));};
-        lineLegend.replaceChildren(...computed.map(c=>h('button',{type:'button',class:'lg-item',onmouseenter:()=>hot(c.r.roster_id),onmouseleave:()=>hot(null),onfocus:()=>hot(c.r.roster_id),onblur:()=>hot(null)},
-          h('span',{class:'lg-swatch',style:{background:lineColor.get(c.r.roster_id)}}),c.r.team_name)));
         lineTitle.textContent=`${label}, every team, ${trajLabels[0]}-${trajLabels[trajYears-1]}`;
         linePlot.replaceChildren(svg);
       };

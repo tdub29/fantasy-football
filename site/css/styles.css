@@ -6360,17 +6360,22 @@ table.data.prm-table .name-cell { flex-direction: column; align-items: flex-star
 .standings-swipe { display: none; }
 .standings-table { border-collapse: collapse; width: 100%; font-size: .85rem; }
 .standings-table th { font-size: .62rem; text-transform: uppercase; letter-spacing: .04em; color: var(--fg-2); text-align: right; padding: 6px 8px; white-space: nowrap; }
+/* Every column shrinks to its content; the team column takes the slack, so no
+   column floats in empty space on a wide screen. */
+.standings-table th, .standings-table td { width: 1%; }
 .standings-table td { height: 44px; padding: 0 8px; text-align: right; white-space: nowrap; font-weight: 700; color: var(--fg-1); }
 .standings-table thead tr, .standings-table tbody tr { background: var(--bg-1); }
 .standings-table tbody tr { cursor: pointer; }
 .standings-table tbody tr:nth-child(odd) { background: oklch(88% 0.04 285); }
 .standings-table tbody tr:hover { outline: 2px solid var(--accent); outline-offset: -2px; }
-.standings-table tbody tr.you { background: var(--grad-gold); }
+.standings-table tbody tr.you { background: var(--gold); }
+/* Gradient per cell, so the sticky team cell matches the rest of the row. */
+.standings-table tbody tr.you td { background: var(--grad-gold); }
 .standings-table .rank { color: var(--fg-3); }
-.standings-table .team { position: sticky; left: 0; z-index: 1; background: inherit; text-align: left; max-width: 240px; overflow: hidden; text-overflow: ellipsis; }
-.standings-table tr.you .team { background: oklch(90% 0.17 92); }
+.standings-table .team { position: sticky; left: 0; z-index: 1; background: inherit; text-align: left; width: auto; max-width: 240px; overflow: hidden; text-overflow: ellipsis; }
+.standings-table .standings-chart-head, .standings-table td.trend { text-align: center; }
 .standings-table td.trend { padding: 4px 8px; }
-.standings-table .str-spark { width: 120px; height: 34px; gap: 2px; padding: 2px 3px 0; }
+.standings-table .str-spark { width: 120px; height: 34px; gap: 2px; padding: 2px 3px 0; margin: 0 auto; background: none; border: 0; box-shadow: none; }
 .standings-table .str-spark .sp-bar-val { display: none; }
 .standings-table .str-spark .sp-bar { width: 12px; }
 @media (max-width: 600px) {
@@ -6391,6 +6396,5 @@ table.data.prm-table .name-cell { flex-direction: column; align-items: flex-star
 .standings-lines .team-line polyline { fill: none; stroke-width: 2; stroke-linejoin: round; }
 .standings-lines .team-line.you polyline { stroke-width: 4; }
 .standings-lines svg.focus .team-line:not(.hot) { opacity: .12; }
-.standings-lines-legend { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 8px; }
-.standings-lines .lg-item { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 0 4px; background: none; border: 0; box-shadow: none; color: var(--fg-1); font-size: .8rem; cursor: default; }
-.standings-lines .lg-swatch { width: 14px; height: 4px; border-radius: 2px; }
+.standings-lines .lbl { font-weight: 700; cursor: default; outline: none; }
+.standings-lines .team-line.you .lbl { font-weight: 800; }
