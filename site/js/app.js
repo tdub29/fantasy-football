@@ -10456,7 +10456,7 @@
   // The board itself. Pure over window.LEAGUES + window.WEEKLY_RANKINGS so the
   // math is testable without a DOM.
   function watchBoard() {
-    const leagues = [];
+    const leagues = [], unknown = [];
     const byPid = new Map();
     let week = (window.WEEKLY_RANKINGS || {}).currentWeek || 1;
 
@@ -10465,6 +10465,9 @@
       if (!me) continue;
       const oppId = me.opponent_roster_id;
       const opp = oppId == null ? null : (lg.rosters || []).find(r => r.roster_id === oppId);
+      // Unknown is not $0: a league with no buy-in on file sits out, named under the key,
+      // instead of blanking the board for every other league.
+      if (lg.buy_in == null) { if (opp) unknown.push(lg.short_name || lg.name); continue; }
       const buyIn = Number(lg.buy_in) || 0;
       const lgWeek = Number(lg.week) || week;
       if (lg.week) week = lgWeek;
@@ -10514,15 +10517,15 @@
     split.sort((a, b) => b.gross - a.gross);
 
     const atStake = leagues.reduce((sum, l) => sum + (l.opp ? l.buyIn : 0), 0);
-    return { week, leagues, rooting, hating, split, unpriced, atStake };
+    return { week, leagues, rooting, hating, split, unpriced, atStake, unknown };
   }
 
   function viewWatch() {
     const main = $('#main');
     main.innerHTML = '';
-    if ((window.LEAGUES || []).some(l => l.rosters?.some(r => r.is_me) && l.buy_in == null)) {
+    if (!(window.LEAGUES || []).some(l => l.rosters?.some(r => r.is_me) && l.buy_in != null)) {
       main.append(h('div', { class: 'page-header' }, h('h1', { class: 'page-title' }, 'Rooting interests')),
-        h('div', { class: 'card' }, h('p', {}, 'Dollar-weighted rooting interests are unavailable. Sleeper does not publish league buy-ins.'),
+        h('div', { class: 'card' }, h('p', {}, 'Dollar-weighted rooting interests need a buy-in for at least one league. Sleeper does not publish them.'),
           h('p', { class: 'muted' }, 'Your league rosters and weekly player projections are available in each league.')));
       return;
     }
@@ -10552,6 +10555,7 @@
         h('span', { class:'watch-key-opp' }, `vs ${l.oppName}`),
       ))
     ));
+    if (board.unknown.length) main.appendChild(h('p', { class:'muted' }, `Left out, buy-in unknown: ${board.unknown.join(', ')}.`));
 
     // One shared scale across all three panels, so a bar means the same number
     // of dollars wherever it appears. Per-panel scaling would make the top row
