@@ -36,7 +36,7 @@ const SRC = [
   slice('function playerValue(', '  // Value of a single asset'),
   slice('function isPickKey', '\n  // Team-agnostic player search'),
   slice('function tradeTitleWhatIf', '  // Middle summary builds DOM once'),
-  slice("  // Project a roster's on-field team strength at horizon N.", '  // ROUTE: Action Center'),
+  slice('  // The roster as it looks after a trade', '  // ROUTE: Action Center'),
   slice('function projUnitData()', 'function buildWhatIfTray'),
   slice('  // Trade Finder. Iterates reasonable packages', '  // Last run per league'),
 ].join('\n');
@@ -229,10 +229,10 @@ const shows = (p, send, get) => keysOf(p.send).slice().sort().join() === send.sl
 
   // (g) A loaded row seeds the Trade Lab's title odds with no re-run, so every
   // shown proposal must carry exactly what the Lab's own run prints for its first
-  // season: the Lab's what-if, seed and SIM.tradeSimBudget over its horizon.
-  const labYears = Number(/TITLE_YEARS = dyn \? (\d+) : 1/.exec(app)[1]);
+  // season: the Lab's what-if, seed and current-season sim count (dynasty matches standingsForecast).
+  const labCurrent = Number(/CURRENT_SIMS = dyn \? (\d+) : TITLE_SIMS/.exec(app)[1]);
   const labFirst = (H, lg, dyn, p) => {
-    const run = (whatIf) => H.titleOddsByYear(lg, { years: 1, sims: H.SIM.tradeSimBudget / (dyn ? labYears : 1), whatIf })[0];
+    const run = (whatIf) => H.titleOddsByYear(lg, { years: 1, sims: dyn ? labCurrent : H.SIM.tradeSimBudget, whatIf })[0];
     const base = run(null), after = run(H.tradeTitleWhatIf(1, p.them.roster_id, new Set(p.send.keys), new Set(p.get.keys), lg));
     const side = (rid) => ({ before: base.byRoster.get(rid) || 0, after: after.byRoster.get(rid) || 0,
       ...H.pairedTitleDelta(base.champions, after.champions, rid) });

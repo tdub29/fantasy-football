@@ -1788,13 +1788,13 @@
           h('div', { class:'empire-meta' },
             `${fmt.decimal(empire.pv, 0)} PV`,
             h('span', { class:'sep' }, '·'),
-            `${fmt.decimal(empire.fv, 0)} FV (weighted ${yearLabels.slice(1).join(', ')})`,
+            `${fmt.decimal(empire.fv, 0)} FV (${yearLabels[FV_YEARS]})`,
           ),
         ),
         pvFvBar,
         h('div', { class:'tip', style:{ marginTop:'8px' } },
-          'PV (Present Value) = ' + CURRENT_SEASON + ' projected value. FV (Future Value) = decay-weighted average of ' +
-          (PROJECTION_YEARS - 1) + ' subsequent seasons. Aging curves are position-specific (RBs cliff hard at 27, WRs gentler at 30, QBs longest peak, TEs slow decline).'
+          'PV (Present Value) = ' + CURRENT_SEASON + ' projected value. FV (Future Value) = projected value in ' +
+          (CURRENT_SEASON + FV_YEARS) + ', ' + FV_YEARS + ' seasons out. Aging curves are position-specific (RBs cliff hard at 27, WRs gentler at 30, QBs longest peak, TEs slow decline).'
         ),
       ));
 
@@ -2395,7 +2395,7 @@
         // rather than rendering a number that prices a career the manager
         // never keeps. Skipping the call also skips the aging model entirely.
         const dyn = isDynastyLeague(lg);
-        const fv = dyn ? startingStrength(me, lg, 4, true) : null;
+        const fv = dyn ? startingStrength(me, lg, FV_YEARS, true) : null;
         // Biggest need is the weakest position grade, the same grades the needs grid shows.
         const pg = lg.projection_unavailable ? null : positionGrades(me, lg).g;
         const need = pg && ['QB','RB','WR','TE'].filter(p => pg[p] != null).sort((a, b) => pg[a] - pg[b])[0];
@@ -2413,7 +2413,7 @@
             h('th', null, 'League'), h('th', null, 'Format'), h('th', { class:'right' }, 'Record'),
             h('th', { class:'right', title:'Lineup rank: your best legal starting lineup against the league, picks excluded. The roster Snapshot also shows roster value rank, picks included.' }, 'Rank'),
             h('th', { class:'right', title:'Present Value: your best LEGAL starting lineup today (positions respected, taxi/IR/Out benched). Dynasty rows are KTC asset value (PV); redraft rows are season value over replacement (VOR), a different unit, so compare the rank, not the number.' }, 'PV / VOR'),
-            h('th', { class:'right', title:'Future Value: the same lineup 4 years out, each player aged by his position curve, with owned picks folded in once they convert. A converted pick is discounted in its rookie year (0.75x, ramping to parity) because dynasty value prices a whole career, not one season.' }, 'FV'),
+            h('th', { class:'right', title:`Future Value: the same lineup ${FV_YEARS} years out, each player aged by his position curve, with owned picks folded in once they convert. A converted pick is discounted in its rookie year (0.75x, ramping to parity) because dynasty value prices a whole career, not one season.` }, 'FV'),
             h('th', { class:'right', title:'Chance to make the playoffs, simulated on the real schedule and median games. Same numbers as the league Standings.' }, 'Playoff'),
             h('th', { class:'right', title:'Chance to win the title.' }, 'Champ'),
             h('th', { class:'right', title:'Chance your own pick lands 1.01 under the rookie-order rule of this league. Dynasty leagues only.' }, '1.01'),
@@ -2867,11 +2867,11 @@
     const lgDynasty = isDynastyLeague(lg);
     main.appendChild(h('h2', { class:'page-title standings-heading' }, 'Team Strength Rankings'));
 
-    // 5-year value outlook per team. Sparkline bars + the dedicated line chart both
-    // read this trajectory: projected starting-lineup value for CURRENT_SEASON..+4
+    // Value outlook per team. Sparkline bars + the dedicated line chart both
+    // read this trajectory: projected starting-lineup value for CURRENT_SEASON..+FV_YEARS
     // (position-aware aging, best-K re-picked each year, owned picks folded in once
     // they convert). year-0 == PV, last year == FV.
-    const TRAJ_YEARS = 6;
+    const TRAJ_YEARS = FV_YEARS + 1;
     const trajLabels = [];
     for (let y = 0; y < TRAJ_YEARS; y++) trajLabels.push(String(CURRENT_SEASON + y));
 
@@ -2982,7 +2982,7 @@
         ? `${forecast.sims.toLocaleString()} simulated seasons, seed 20260807. Completed W1-${forecast.completed} results preserved. Expected final W-L-T shown as fractional means; ties count half a win for seeding. Record, then points for, higher points against, and a seeded coin flip for exact ties. ${forecast.teams} playoff places, ${forecast.byes} first-round byes. ${forecast.median ? 'Includes the league median game each week. ' : ''}Same ${forecast.src === 'blend' ? 'league-scored season blend' : 'weekly ROS'} model as Projections, known weekly absences/byes (unfilled slots score zero) plus simulated injuries, player-season uncertainty and team/stack correlations. Forecast estimates are not historically calibrated probabilities. Roster changes and commissioner overrides are not modeled. Monte Carlo error alone is up to about 2 percentage points at 95% confidence. Weekly source: ${window.WEEKLY_RANKINGS?.liveWeek || window.WEEKLY_RANKINGS?.currentWeek || '?'}; roster/source freshness is in the data panel.`
         : 'No numeric forecast is shown when rules, records, matchups or weekly lineup coverage are unsupported.')));
     standings.appendChild(h('div', { class:'standings-table-wrap' }, h('p', { class:'standings-swipe' }, 'Swipe sideways for more columns ›'), h('table', { class:'standings-table' },
-      h('thead', null, h('tr', null, h('th', null, '#'), h('th', { class:'team' }, 'Team'), lgDynasty ? h('th', { class:'standings-chart-head', title:'Selected chart metric, now through five years out' }, 'Trend') : null, ...tableCols.map(([label]) => h('th', null, label)))),
+      h('thead', null, h('tr', null, h('th', null, '#'), h('th', { class:'team' }, 'Team'), lgDynasty ? h('th', { class:'standings-chart-head', title:`Selected chart metric, now through ${FV_YEARS} years out` }, 'Trend') : null, ...tableCols.map(([label]) => h('th', null, label)))),
       tableBody)));
     computed.forEach((row, i) => {
       const r = row.r, s = row.s, st = row.st;
@@ -3147,7 +3147,7 @@
           spark.style.visibility='visible';
         }
         const trend=standings.querySelector('.standings-chart-head');
-        if(trend){trend.textContent=metrics[metric].label;trend.title=`${metrics[metric].label} by season, now through five years out.`;}
+        if(trend){trend.textContent=metrics[metric].label;trend.title=`${metrics[metric].label} by season, now through ${FV_YEARS} years out.`;}
         note.textContent=`${metrics[metric].label}, ${trajLabels[0]}-${trajLabels[trajYears-1]}. ${percentage?'Scale 0-100%.':'Bars start at zero.'} ${metric==='value'?'Market-value aging scenario, not winning probability.':'Same season simulator as standings and Trade Lab; future years are age/pick scenarios, not known future rosters.'}`;
         sortState.key=metrics[metric].sort;sortState.dir='desc';sortSelect.value=sortState.key;applyStandingsSort();
       };
@@ -4419,7 +4419,10 @@
   // multipliers off the player's age + category context. The same engine
   // powers per-player charts, per-roster value curves, and the dashboard
   // Present-vs-Future split.
-  const PROJECTION_YEARS = 5; // 2026..2030 (year 0 = current)
+  // FV everywhere (Leagues, Standings, Overview, Blueprint, trade finder) is value
+  // FV_YEARS seasons out (Trevor, 2026-10-10). Curves run now through that year.
+  const FV_YEARS = 3;
+  const PROJECTION_YEARS = FV_YEARS + 1; // year 0 = current, last year = FV
   const CURRENT_SEASON = (() => {
     const m = new Date();
     // Assume drafts/seasons rolled into next year by mid-Feb (Super Bowl over).
@@ -4506,8 +4509,7 @@
   }
 
   // Aggregate a roster's value over the projection window. Returns an object
-  // with per-year totals plus PV / FV summary (PV = year 0, FV = mean of years
-  // 1..N-1, weighted toward nearer years).
+  // with per-year totals plus PV / FV summary (PV = year 0, FV = year FV_YEARS).
   function rosterValueCurve(rosterPlayers, league, extraAssets) {
     const yrs = PROJECTION_YEARS;
     const totals = new Array(yrs).fill(0);
@@ -4528,16 +4530,7 @@
         bucket[y]  += curve[y];
       }
     }
-    // PV = this year. FV = weighted average of years 1..N-1 (decaying weight
-    // so 2027 counts more than 2030 even in "future").
-    const pv = totals[0];
-    let fvNum = 0, fvDen = 0;
-    for (let y = 1; y < yrs; y++) {
-      const w = Math.pow(0.85, y - 1);
-      fvNum += totals[y] * w;
-      fvDen += w;
-    }
-    const fv = fvDen ? fvNum / fvDen : 0;
+    const pv = totals[0], fv = totals[FV_YEARS];
     return { totals, breakdownByPos, pv, fv, pvShare: pv / (pv + fv || 1) };
   }
   // Highest tierValue at a position across all enabled rankings. Used as the
@@ -13077,7 +13070,7 @@
     // 20 FV, about 5% of a good future lineup, like 1 pt of title odds, 10% of a
     // 10-team fair share. A calibration bet, not a measurement.
     finderFvWeight: 0.05,
-    finderFvYears: 4,
+    finderFvYears: 3, // = FV_YEARS
     // Dynasty ranking: title-odds points charged per unit of KTC I overpay (value
     // sent minus value received, nothing when I do not). 0.1 charges a 25-point
     // overpay, Willis + Metcalf's, 2.5 pts, so a deal that bleeds market value has
