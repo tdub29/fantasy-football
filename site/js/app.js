@@ -853,7 +853,7 @@
     const dyn = isDynastyLeague(league);
     if (dyn) {
       return entry && entry._posRank
-        ? { rank: entry._posRank, label: 'Dynasty position rank (KTC)' } : null;
+        ? { rank: entry._posRank, label: 'Dynasty position rank (consensus)' } : null;
     }
     const pid = entry && (entry._sleeperId != null ? entry._sleeperId : entry.sleeperId);
     const r = pid != null ? rosPosRank(pid, league) : null;
@@ -1728,7 +1728,7 @@
     ));
     for (const { league, roster } of myRosters) {
       const { g, overall } = positionGrades(roster, league);
-      const overallColor = overall >= 7.5 ? 'var(--green)' : overall >= 5.5 ? 'var(--amber)' : 'var(--red)';
+      const overallColor = gradeColor(overall);
       heatmap.appendChild(h('div', {
         class:'heatmap-row',
         dataset:{ leagueId:String(league.id), format:isDynastyLeague(league) ? 'dynasty' : 'redraft' },
@@ -2396,15 +2396,16 @@
         // never keeps. Skipping the call also skips the aging model entirely.
         const dyn = isDynastyLeague(lg);
         const fv = dyn ? startingStrength(me, lg, 4, true) : null;
-        const ss = lg.projection_unavailable ? {} : rosterSurplusShortage(getRosterPlayers(me), lg);
-        const needs = ['QB','RB','WR','TE'].map(p => ({ p, s: ss[p]?.surplus ?? 0 })).filter(x => x.s <= -1).sort((a, b) => a.s - b.s);
+        // Biggest need is the weakest position grade, the same grades the needs grid shows.
+        const pg = lg.projection_unavailable ? null : positionGrades(me, lg).g;
+        const need = pg && ['QB','RB','WR','TE'].filter(p => pg[p] != null).sort((a, b) => pg[a] - pg[b])[0];
         const winPct = r => ((r.wins ?? 0) + (r.ties ?? 0) / 2) / Math.max(1, (r.wins ?? 0) + (r.losses ?? 0) + (r.ties ?? 0));
         // ponytail: place is win % then points for; league tiebreakers beyond PF are not modeled.
         const place = 1 + lg.rosters.filter(r => winPct(r) > winPct(me) || (winPct(r) === winPct(me) && (r.fpts ?? 0) > (me.fpts ?? 0))).length;
         const rec = me.wins == null || me.losses == null ? 'Unavailable' : `${me.wins}-${me.losses}${me.ties ? '-' + me.ties : ''} · ${place}${place % 100 >= 11 && place % 100 <= 13 ? 'th' : ['th','st','nd','rd'][place % 10] || 'th'}`;
         const format = lg.platform === 'espn' || lg.type === 0 ? 'Redraft' : lg.is_superflex ? 'Superflex' : lg.is_idp ? 'IDP' : '1QB';
         const odds = { playoff: h('td', { class:'right tnum' }, '…'), title: h('td', { class:'right tnum' }, '…'), first: h('td', { class:'right tnum' }, '…') };
-        return { lg, me, rank, pv, fv, dyn, format, stance: dyn ? rosterStance(me, lg) : null, need: lg.projection_unavailable ? 'Unavailable' : needs.map(n => n.p).join('/') || '·', rec, odds };
+        return { lg, me, rank, pv, fv, dyn, format, stance: dyn ? rosterStance(me, lg) : null, need, needGrade: need ? pg[need] : null, rec, odds };
       });
       main.appendChild(h('div', { class:'card leagues-table-card' },
         h('table', { class:'data leagues-table fit-num' },
@@ -2435,7 +2436,9 @@
             h('td', null, d.dyn
               ? h('span', { class:`badge stance-${d.stance}`, style:{ color: stanceTone[d.stance] } }, STANCE_LABEL[d.stance] || d.stance || 'Unavailable')
               : h('span', { class:'muted', title:'Redraft league, no rebuild or contend stance.' }, '·')),
-            h('td', { style:{ color: d.need === 'Unavailable' ? 'var(--fg-3)' : d.need === '·' ? 'var(--green)' : 'var(--red)', fontWeight:600 } }, d.need),
+            h('td', { class:'tnum', style:{ color: d.need ? gradeColor(d.needGrade) : 'var(--fg-3)', fontWeight:600 },
+              title: d.need ? `Weakest position grade: ${d.need} ${d.needGrade.toFixed(1)}/10.` : null },
+              d.need ? `${d.need} ${d.needGrade.toFixed(1)}` : 'Unavailable'),
             h('td', null, h('button', { class:'ghost', title:`Hide ${d.lg.name} from the sidebar and My Leagues`,
               onclick:e => { e.stopPropagation(); toggleLeagueHidden(d.lg); } }, 'Hide')),
           ))),
@@ -4402,7 +4405,7 @@
     if (['ELITE','CHAMPIONSHIP'].includes(valueTier.tier) && valueArchetype.tag === 'WIN-NOW') return { tag:'CONTEND', desc:'Window is open, go for it.' };
     // Young and pick-rich at the top of the league is rising, not rebuilding. Printing
     // REBUILD beside an ELITE tier read as the page contradicting itself.
-    if (youngAndPickRich && ['ELITE','CHAMPIONSHIP','CONTENDING'].includes(valueTier.tier)) return { tag:'RISING', desc:'Young core plus 4+ picks: competitive now and still gaining value.' };
+    if (youngAndPickRich && ['ELITE','CHAMPIONSHIP','CONTENDING'].includes(valueTier.tier)) return { tag:'PICK-RICH', desc:'Young core plus 4+ picks: competitive now and still gaining value.' };
     if (valueTier.tier === 'REBUILD' || youngAndPickRich) return { tag:'REBUILD', desc:'Long-term runway; accumulate young talent + picks.' };
     if (valueTier.tier === 'CONTENDING' && valueArchetype.tag !== 'WIN-NOW') return { tag:'RELOAD', desc:'Pivot ready, could swing either direction.' };
     return { tag:'CONTEND', desc:'In position to compete.' };
@@ -4782,8 +4785,16 @@
       Bench: gradeBench(players, league),
       Draft: isDynastyLeague(league) ? gradeDraftCapital(roster, league.id) : null,
     };
-    const overall = slots.overall || ((g.QB + g.RB*1.1 + g.WR*1.2 + g.TE*0.8 + g.Bench*0.5 + (g.Draft || 0)*0.4) / 5);
-    return { players, slots, g, overall };
+    return { players, slots, g, overall: overallGrade(slots, g.Bench, g.Draft, league) };
+  }
+  // One overall grade everywhere (Trevor, 2026-10-10): lineup slots weighted by the points
+  // each slot scores, then 0.75 lineup + 0.15 bench + 0.10 picks. Redraft has no picks, so
+  // lineup and bench keep their 5:1 ratio.
+  function overallGrade(slotResult, bench, draft, lg) {
+    let num = 0, den = 0;
+    for (const s of slotResult.slots) { const w = slotPPG(s.slot, lg); num += s.grade * w; den += w; }
+    const lineup = den ? num / den : 0;
+    return draft != null ? lineup * 0.75 + bench * 0.15 + draft * 0.10 : lineup * (0.75 / 0.90) + bench * (0.15 / 0.90);
   }
   const gradeColor = (v) => v >= 7.5 ? 'var(--green)' : v >= 5.5 ? 'var(--amber)' : v >= 3.5 ? 'var(--cat-vet)' : 'var(--red)';
   // Bar cell sized and tinted by grade. `pop` is an optional hover list; tabindex lets a phone tap open it.
@@ -5193,17 +5204,7 @@
       TE: rosterDynasty ? gradePosition(rp, 'TE', lg) : gradePositionFromSlots(slotResult, 'TE'),
       Bench: gradeBench(rp, lg), Draft: rosterDynasty ? gradeDraftCapital(r, leagueId) : null,
     };
-    const slotWeighted = (() => {
-      let num = 0, den = 0;
-      for (const s of slotResult.slots) {
-        const w = slotPPG(s.slot, lg);
-        num += s.grade * w; den += w;
-      }
-      return den ? num / den : 0;
-    })();
-    const overall = rosterDynasty
-      ? slotWeighted * 0.75 + grades.Bench * 0.15 + grades.Draft * 0.10
-      : slotWeighted * (0.75 / 0.90) + grades.Bench * (0.15 / 0.90);
+    const overall = overallGrade(slotResult, grades.Bench, grades.Draft, lg);
     const buysSells = suggestBuysSells(rp, lg);
     const priorities = topPriorities(rp, lg, valueTier, rosterArchetype);
 
@@ -5212,10 +5213,7 @@
     // Distilled: tier + 3 archetypes + 4 stats collapsed into a single banner.
     // Tier anchors left; three numeric stats sit in tabular columns; the
     // three archetype chips run as a meta-line under the tier label.
-    const overallColor = overall >= 7.5 ? 'var(--green)'
-                       : overall >= 5.5 ? 'var(--amber)'
-                       : overall >= 3.5 ? '#fb923c'
-                       : 'var(--red)';
+    const overallColor = gradeColor(overall);
     main.appendChild(h('div', { class:'blueprint-row' },
       h('div', { class:`br-tier vt-${valueTier.tier.toLowerCase()}` },
         h('div', { class:'br-tier-value' }, valueTier.tier),
@@ -5426,10 +5424,7 @@
       const ratio = ppgs[i] / maxPPG;
       const trackPct = Math.round(25 + ratio * 75);
       const fillPct = Math.max(2, Math.min(100, s.grade * 10));
-      const color = s.grade >= 7.5 ? 'var(--green)'
-                  : s.grade >= 5.5 ? 'var(--amber)'
-                  : s.grade >= 3.5 ? '#fb923c'
-                  : 'var(--red)';
+      const color = gradeColor(s.grade);
       // A signed VOR, where one exists, is the honest number for a slot: it can say
       // this man is BELOW what the waiver wire offers, which a 0-to-10 grade cannot.
       const vorTag = s.vor != null
@@ -5921,7 +5916,7 @@
 
   function gradeCircle(label, grade, weight = 1) {
     const ns = 'http://www.w3.org/2000/svg';
-    const color = grade >= 7.5 ? 'var(--green)' : grade >= 5.5 ? 'var(--amber)' : grade >= 3.5 ? '#fb923c' : 'var(--red)';
+    const color = gradeColor(grade);
     // Scale the SVG by weight so high-impact slots (QB1, RB1) draw the eye.
     // Min 0.55 keeps depth circles legible.
     const scale = Math.max(0.55, Math.min(1.0, weight));
@@ -9039,7 +9034,7 @@
     const posOf = (p) => p.ranked?.pos || projPosGroup(p.sleeper.pos);
     const teams = lg.rosters.map(r => ({ r, ...positionGrades(r, lg) }));
     const row = (p) => {
-      const pos = posOf(p), rank = dyn ? (p.ranked?.ktcPosRank || p.ranked?._posRank) : rosPosRank(p.pid, lg);
+      const pos = posOf(p), rank = dyn ? p.ranked?._posRank : rosPosRank(p.pid, lg);
       return h('li', null, h('span', null, p.sleeper.name),
         h('span', { class:'muted tnum' }, `${rank ? `${pos}${rank} · ` : ''}${dyn ? fmt.decimal(worth(p.pid), 0) : `${Math.round(worth(p.pid))} pts`}`));
     };
