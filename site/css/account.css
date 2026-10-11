@@ -1,7 +1,9 @@
 /* Account controls use the existing Backyard palette and plate geometry. */
 .acct-btn { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; width: 100%; margin-top: 5px; text-align: left; min-height: 44px; }
-.acct-name { overflow-wrap: anywhere; min-width: 0; flex: 1; }
-.acct-chip { font-size: 0.7rem; color: var(--fg-2); }
+/* Name never shrinks below its width (it stacked one letter per line while the
+   chip showed); the chip wraps to its own line instead. */
+.acct-name { flex: 1 0 auto; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.acct-chip { flex: none; font-size: 0.7rem; color: var(--fg-2); }
 .acct-btn.warn .acct-chip { color: var(--red); }
 .acct-dialog { width: min(480px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); margin: auto; padding: 20px; overflow-y: auto; border: 2px solid var(--border); border-radius: var(--radius-lg, 8px); background: var(--grad-panel); color: var(--fg-0); box-shadow: var(--shadow-card); }
 .acct-dialog::backdrop { background: rgb(18 19 31 / 65%); }
