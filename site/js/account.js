@@ -339,8 +339,10 @@
       for (const c of kids.flat()) if (c != null) n.append(c);
       return n;
     };
-    const season = () => A.S.snap?.season || '';
-    const label = () => A.S.active?.display_name || A.S.active?.username || 'Accounts and leagues';
+    const label = () => A.S.active?.display_name || A.S.active?.username || 'Sign in';
+    const avatar = u => u.avatar
+      ? el('img', { class: 'acct-avatar', src: `https://sleepercdn.com/avatars/thumbs/${u.avatar}`, alt: '' })
+      : el('span', { class: 'acct-avatar', 'aria-hidden': 'true' }, (u.display_name || u.username || '?').slice(0, 1).toUpperCase());
     const buildUserId = String(win.MY_USER_ID || '');
     const savedConfig = new Map((win.LEAGUES || []).map(l => [String(l.id), { buy_in: l.buy_in }]));
     const imported = (win.LEAGUES || []).filter(l => l.platform && l.platform !== 'sleeper');
@@ -440,13 +442,19 @@
       const oldEspn = body.querySelector('#acct-espn-link');
       if (oldEspn) espnValue = oldEspn.value;
       const espnOpen = body.querySelector('.acct-espn')?.open;
+      const syncOpen = body.querySelector('.acct-sync')?.open;
       body.replaceChildren();
       const built = win.BUILD_INFO && win.BUILD_INFO.files && win.BUILD_INFO.files['leagues.js'];
       const synced = profileState !== undefined;
-      body.append(el('p', { class: 'acct-now' }, a
-        ? ['Signed in as ', el('strong', {}, a.username), '.']
-        : `Create your login with your Sleeper username.${synced ? ' It signs you in on every device you open this on.' : ''}`));
-      if (a) body.append(el('ul', { class: 'acct-users' },
+      dialog.querySelector('#acct-title').textContent = a ? 'Profile' : 'Create your login';
+      // Signed in, the panel reads as a profile: who you are and your leagues first,
+      // sync details folded away, sign out last.
+      body.append(a
+        ? el('div', { class: 'acct-profile' }, avatar(a),
+          el('div', {}, el('strong', { class: 'acct-display' }, label()),
+            el('p', { class: 'acct-note' }, `@${a.username} on Sleeper${snap ? ` · ${snap.leagues.length} league${snap.leagues.length === 1 ? '' : 's'}` : ''}`)))
+        : el('p', { class: 'acct-now' }, `Create your login with your Sleeper username.${synced ? ' It signs you in on every device you open this on.' : ''}`));
+      if (a) body.append(el('h3', { class: 'acct-h' }, 'Sleeper users'), el('ul', { class: 'acct-users' },
         el('li', {}, el('strong', {}, a.username), ' (your login)'),
         S.extras.map(x => el('li', {}, x.username, ' ',
           el('button', { type: 'button', class: 'ghost', disabled: S.status === 'loading', onclick: () => { A.unlink(x.user_id); saveProfile(); } }, 'Remove')))));
@@ -459,7 +467,6 @@
       const sourceTime = sources['rankings.js'] || sources['ktc.js'];
       if (sourceTime) meta.append(el('dt', {}, 'Shared sources built'), el('dd', { class: 'tnum' }, new Date(sourceTime).toLocaleString()));
       if (snap?.leagues.some(l => l.account_source === 'imported')) meta.append(el('dt', {}, 'Imported ESPN data'), el('dd', {}, built ? `Snapshot built ${new Date(built).toLocaleString()}. Not refreshed by Sleeper.` : 'Saved snapshot. Not refreshed by Sleeper.'));
-      body.append(meta);
       const msg = S.error?.kind === 'storage' ? S.error.message : S.status === 'loading' ? 'Loading from Sleeper...'
         : S.status === 'error' && S.error ? (MESSAGES[S.error.kind] || MESSAGES.network)(S.error)
         : S.status === 'no_leagues' ? 'No Sleeper NFL leagues this season on this account.'
@@ -480,10 +487,11 @@
           el('button', { type: 'submit', class: 'primary', disabled: S.status === 'loading' }, a ? 'Add user' : 'Create login')));
       body.append(form,
         el('p', { id: 'acct-note', class: 'acct-note' }, `${a ? 'Their leagues join yours in one view. ' : ''}Public Sleeper data only. A username does not verify account ownership. No password needed.`));
-      if (a) body.append(el('div', { class: 'acct-actions' },
-        el('button', { type: 'button', disabled: S.status === 'loading', onclick: () => { A.refresh({ force: true }); E.refresh(true); } }, 'Refresh now'),
-        el('button', { type: 'button', onclick: signOut }, synced ? 'Sign out everywhere' : 'Sign out')));
-      body.append(el('p', { class: 'acct-note' }, 'Refreshes on each visit, after 15 minutes on focus, and every 30 minutes while visible. A closed app refreshes next time you open it.'));
+      const sync = el('details', { class: 'acct-sync', open: syncOpen },
+        el('summary', {}, 'Sync details'), meta,
+        a ? el('div', { class: 'acct-actions' },
+          el('button', { type: 'button', disabled: S.status === 'loading', onclick: () => { A.refresh({ force: true }); E.refresh(true); } }, 'Refresh now')) : null,
+        el('p', { class: 'acct-note' }, 'Refreshes on each visit, after 15 minutes on focus, and every 30 minutes while visible. A closed app refreshes next time you open it.'));
       const espnInput = el('input', { id:'acct-espn-link', type:'text', value:espnValue, required:true, placeholder:'ESPN league URL or ID', autocomplete:'off', 'aria-describedby':'acct-espn-note' });
       const section = el('details', { class:'acct-espn', open:espnOpen || E?.preview || E?.error },
         el('summary', {}, 'Link ESPN league'),
@@ -506,7 +514,9 @@
           item.snapshot.league.import_limitations.length ? el('p', { class:'acct-note' }, item.snapshot.league.import_limitations.join('. ')) : null),
         el('button', { type:'button', onclick:() => E.unlink(item.id) }, 'Unlink')));
       if (!a && E?.links.length) section.append(el('button', { type:'button', onclick:() => E.refresh(true) }, 'Refresh ESPN'));
-      body.append(section);
+      body.append(section, sync);
+      if (a) body.append(el('div', { class: 'acct-footer' },
+        el('button', { type: 'button', class: 'ghost acct-signout', onclick: signOut }, synced ? 'Sign out everywhere' : 'Sign out')));
       if (hadFocus) input.focus();
     }
 
@@ -524,7 +534,7 @@
       renderPanel();
       if (!dialog.open) dialog.showModal();
       const f = dialog.querySelector('#acct-user');
-      if (f) f.focus();
+      if (f && !A.S.active) f.focus();
       if (platform === 'espn') { dialog.querySelector('.acct-espn').open = true; dialog.querySelector('#acct-espn-link').focus(); }
     }
 
@@ -540,8 +550,9 @@
       const when = s.active && s.snap ? `, synced ${ago(Date.now() - s.snap.syncedAt)}` : '';
       return el('button', { type: 'button', class: `sub acct-btn${warn ? ' warn' : ''}`, 'aria-haspopup': 'dialog',
         'aria-label': `Accounts and leagues: ${label()}${when}`, title: 'Accounts and leagues', onclick: () => openPanel() },
-        el('span', { class: 'acct-name' }, `${label()}${season() ? ` · ${season()}` : ''}`),
-        el('span', { class: 'acct-chip', 'aria-hidden': 'true' }, s.status === 'loading' ? 'syncing' : warn ? 'check' : 'change'));
+        s.active ? avatar(s.active) : null,
+        el('span', { class: 'acct-name' }, label()),
+        s.status === 'loading' || warn ? el('span', { class: 'acct-chip', 'aria-hidden': 'true' }, s.status === 'loading' ? 'syncing' : 'check') : null);
     }
 
     A = createAccounts({

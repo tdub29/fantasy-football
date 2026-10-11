@@ -2944,8 +2944,9 @@
     const sortSelect = h('select', { 'aria-label':'Sort teams by' }, ...sortOptions.map(([key, label]) =>
       h('option', { value:key, selected:key === sortState.key ? '' : null }, label)));
     const dirButton = h('button', { type:'button', class:'ghost standings-dir' });
-    // Phones get the same teams as a table: one line each, aligned columns,
-    // sideways scroll inside the table only. CSS shows the table or the cards.
+    // Every width gets the teams as a table: one line each, aligned columns,
+    // sideways scroll inside the table only. The cards stay hidden in the DOM
+    // because the sort and the chart read their data.
     const fc = id => forecast.rows.get(id);
     const tableCols = [
       ['W-L', r => `${r.wins ?? 0}-${r.losses ?? 0}${r.ties ? `-${r.ties}` : ''}`],
@@ -2961,6 +2962,12 @@
         ...(lgDynasty && forecast.rookie ? [['1.01', r => forecastPct(fc(r.roster_id).first)]] : []),
       ] : []),
       ['PV', (r, st) => fmt.decimal(st, 1)],
+      ...(lgDynasty ? [['FV', (r, st, x) => fmt.decimal(x.fv, 1)]] : []),
+      [lgDynasty ? 'PV share' : 'Share', (r, st, x) => h('span', { style:{ color:x.pvCls.color } }, `${(x.pvShare*100).toFixed(1)}%`)],
+      ...(lgDynasty ? [
+        ['FV share', (r, st, x) => h('span', { style:{ color:x.fvCls.color } }, `${(x.fvShare*100).toFixed(1)}%`)],
+        ['Outlook', (r, st, x) => h('span', { style:{ color:x.tColor } }, x.tLabel)],
+      ] : []),
     ];
     const tableBody = h('tbody');
     const applyStandingsSort = () => {
@@ -3112,7 +3119,7 @@
         h('td', { class:'rank' }), h('td', { class:'team' }, r.team_name),
         // Same bars as the card; it has no listeners, so a clone is safe.
         lgDynasty ? h('td', { class:'trend' }, spark.cloneNode(true)) : null,
-        ...tableCols.map(([, value]) => h('td', { class:'tnum' }, value(r, st)))));
+        ...tableCols.map(([, value]) => h('td', { class:'tnum' }, value(r, st, { fv: row.fv, pvShare, fvShare, pvCls, fvCls, tLabel, tColor })))));
     });
     main.appendChild(standings);
     if (lgDynasty) {
@@ -3135,6 +3142,35 @@
         }
         odds=rows;
       })().finally(()=>{run=null;}));
+      // Every team on one line chart, the same series the Trend bars draw.
+      const linePlot=h('div',{class:'standings-lines-plot'}), lineLegend=h('div',{class:'standings-lines-legend'}), lineTitle=h('div',{class:'card-title'});
+      main.appendChild(h('div',{class:'card standings-lines'},lineTitle,linePlot,lineLegend));
+      const lineColor=new Map(computed.map((c,i)=>[c.r.roster_id,c.r.is_me?'var(--gold-deep)':`oklch(62% 0.16 ${Math.round(i*360/computed.length)})`]));
+      const drawLines=(series,percentage,format,label)=>{
+        const ns='http://www.w3.org/2000/svg',W=720,H=300,L=56,R=16,T=14,B=28;
+        const el=(tag,attrs,...kids)=>{const n=document.createElementNS(ns,tag);for(const k in attrs)n.setAttribute(k,attrs[k]);n.append(...kids);return n;};
+        const peak=Math.max(...[...series.values()].flat());
+        const top=(percentage?Math.min(1,Math.ceil(peak*20)/20):Math.ceil(peak/100)*100)||1;
+        const x=y=>L+y*(W-L-R)/(trajYears-1),yv=v=>T+(1-Math.max(0,v)/top)*(H-T-B);
+        const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':`${label} by season for every team`});
+        for(const f of [0,.25,.5,.75,1])svg.append(el('line',{x1:L,x2:W-R,y1:yv(top*f),y2:yv(top*f),class:'grid'}),el('text',{x:L-6,y:yv(top*f)+4,'text-anchor':'end'},format(top*f)));
+        trajLabels.forEach((t,y)=>svg.append(el('text',{x:x(y),y:H-8,'text-anchor':'middle'},t)));
+        const lines=new Map();
+        // Yours draws last so it sits on top.
+        for(const c of [...computed].sort((a,b)=>a.r.is_me-b.r.is_me)){
+          const d=series.get(c.r.roster_id),color=lineColor.get(c.r.roster_id);
+          const g=el('g',{class:`team-line${c.r.is_me?' you':''}`,stroke:color,fill:color},
+            el('title',{},`${c.r.team_name}: ${d.map((v,y)=>`${trajLabels[y]} ${format(v)}`).join(', ')}`),
+            el('polyline',{points:d.map((v,y)=>`${x(y)},${yv(v)}`).join(' ')}),
+            ...d.map((v,y)=>el('circle',{cx:x(y),cy:yv(v),r:c.r.is_me?4:3})));
+          svg.append(g);lines.set(c.r.roster_id,g);
+        }
+        const hot=id=>{svg.classList.toggle('focus',id!=null);lines.forEach((g,k)=>g.classList.toggle('hot',k===id));};
+        lineLegend.replaceChildren(...computed.map(c=>h('button',{type:'button',class:'lg-item',onmouseenter:()=>hot(c.r.roster_id),onmouseleave:()=>hot(null),onfocus:()=>hot(c.r.roster_id),onblur:()=>hot(null)},
+          h('span',{class:'lg-swatch',style:{background:lineColor.get(c.r.roster_id)}}),c.r.team_name)));
+        lineTitle.textContent=`${label}, every team, ${trajLabels[0]}-${trajLabels[trajYears-1]}`;
+        linePlot.replaceChildren(svg);
+      };
       const draw=async()=>{
         const metric=selected, percentage=metric==='title'||metric==='playoff'||metric==='bye';
         standings.querySelectorAll('.str-spark').forEach(el=>{el.style.visibility='hidden';});
@@ -3161,6 +3197,7 @@
           [...spark.children].forEach((wrap,y)=>{wrap.title=`${trajLabels[y]} ${metrics[metric].label}: ${format(data[y])}`;wrap.querySelector('.sp-bar-val').textContent=format(data[y]);const bar=wrap.querySelector('.sp-bar');bar.style.height=`${Math.max(0,data[y])/max*100}%`;bar.dataset.valueColor ||= bar.style.background;bar.style.background=metric==='value'?bar.dataset.valueColor:'var(--blue)';});
           spark.style.visibility='visible';
         }
+        drawLines(series,percentage,format,metrics[metric].label);
         const trend=standings.querySelector('.standings-chart-head');
         if(trend){trend.textContent=metrics[metric].label;trend.title=`${metrics[metric].label} by season, now through five years out.`;}
         note.textContent=`${metrics[metric].label}, ${trajLabels[0]}-${trajLabels[trajYears-1]}. ${percentage?'Scale 0-100%.':'Bars start at zero.'} ${metric==='value'?'Market-value aging scenario, not winning probability.':'Same season simulator as standings and Trade Lab; future years are age/pick scenarios, not known future rosters.'}`;

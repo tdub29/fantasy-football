@@ -6353,26 +6353,44 @@ table.data.prm-table .name-cell { flex-direction: column; align-items: flex-star
 .forecast-value { font-size: .85rem; font-weight: 800; overflow-wrap: anywhere; }
 @media (max-width: 600px) { .standings-list .strength-row .standings-forecast { grid-column: 1 / -1; } }
 
-/* Phone standings: a table, one row per team. Cards stay on wider screens.
-   The rank cell counts rows, so it follows whatever sort is chosen. */
-.standings-table-wrap { display: none; }
+/* Standings: a table, one row per team, at every width. The cards stay in the
+   DOM (sort and chart read them) but never show. Rank text comes from the sort. */
+.standings-list .strength-row { display: none; }
+.standings-table-wrap { overflow-x: auto; margin: 0 -4px; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; touch-action: pan-x pan-y; scrollbar-width: thin; }
+.standings-swipe { display: none; }
+.standings-table { border-collapse: collapse; width: 100%; font-size: .85rem; }
+.standings-table th { font-size: .62rem; text-transform: uppercase; letter-spacing: .04em; color: var(--fg-2); text-align: right; padding: 6px 8px; white-space: nowrap; }
+.standings-table td { height: 44px; padding: 0 8px; text-align: right; white-space: nowrap; font-weight: 700; color: var(--fg-1); }
+.standings-table thead tr, .standings-table tbody tr { background: var(--bg-1); }
+.standings-table tbody tr { cursor: pointer; }
+.standings-table tbody tr:nth-child(odd) { background: oklch(88% 0.04 285); }
+.standings-table tbody tr:hover { outline: 2px solid var(--accent); outline-offset: -2px; }
+.standings-table tbody tr.you { background: var(--grad-gold); }
+.standings-table .rank { color: var(--fg-3); }
+.standings-table .team { position: sticky; left: 0; z-index: 1; background: inherit; text-align: left; max-width: 240px; overflow: hidden; text-overflow: ellipsis; }
+.standings-table tr.you .team { background: oklch(90% 0.17 92); }
+.standings-table td.trend { padding: 4px 8px; }
+.standings-table .str-spark { width: 120px; height: 34px; gap: 2px; padding: 2px 3px 0; }
+.standings-table .str-spark .sp-bar-val { display: none; }
+.standings-table .str-spark .sp-bar { width: 12px; }
 @media (max-width: 600px) {
-  .standings-list .strength-row { display: none; }
-  .standings-table-wrap { display: block; overflow-x: auto; margin: 0 -4px; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; touch-action: pan-x pan-y; scrollbar-width: thin; }
-  .standings-swipe { position: sticky; left: 0; margin: 0 0 4px; padding: 0 6px; font-size: .7rem; color: var(--fg-2); }
-  .standings-table { border-collapse: collapse; width: 100%; font-size: .8rem; counter-reset: standing; }
-  .standings-table th { font-size: .62rem; text-transform: uppercase; letter-spacing: .04em; color: var(--fg-2); text-align: right; padding: 6px; white-space: nowrap; }
-  .standings-table td { height: 44px; padding: 0 6px; text-align: right; white-space: nowrap; font-weight: 700; color: var(--fg-1); }
-  .standings-table thead tr, .standings-table tbody tr { background: var(--bg-1); }
-  .standings-table tbody tr { cursor: pointer; }
-  .standings-table tbody tr:nth-child(odd) { background: oklch(88% 0.04 285); }
-  .standings-table tbody tr.you { background: var(--grad-gold); }
-  .standings-table .rank { color: var(--fg-3); }
-  .standings-table td.rank::before { counter-increment: standing; content: counter(standing); }
-  .standings-table .team { position: sticky; left: 0; z-index: 1; background: inherit; text-align: left; max-width: 34vw; overflow: hidden; text-overflow: ellipsis; }
-  .standings-table tr.you .team { background: oklch(90% 0.17 92); }
-  .standings-table td.trend { padding: 4px 6px; }
-  .standings-table .str-spark { width: 92px; height: 34px; gap: 2px; padding: 2px 3px 0; }
-  .standings-table .str-spark .sp-bar-val { display: none; }
+  .standings-swipe { display: block; position: sticky; left: 0; margin: 0 0 4px; padding: 0 6px; font-size: .7rem; color: var(--fg-2); }
+  .standings-table { font-size: .8rem; }
+  .standings-table th { padding: 6px; }
+  .standings-table td { padding: 0 6px; }
+  .standings-table .team { max-width: 34vw; }
+  .standings-table .str-spark { width: 92px; }
   .standings-table .str-spark .sp-bar { width: 10px; }
 }
+
+/* Every team by season: the line version of the Trend bars. */
+.standings-lines { margin-top: 16px; }
+.standings-lines svg { display: block; width: 100%; height: auto; }
+.standings-lines .grid { stroke: var(--fg-3); stroke-opacity: .35; }
+.standings-lines text { font-size: 11px; fill: var(--fg-2); stroke: none; }
+.standings-lines .team-line polyline { fill: none; stroke-width: 2; stroke-linejoin: round; }
+.standings-lines .team-line.you polyline { stroke-width: 4; }
+.standings-lines svg.focus .team-line:not(.hot) { opacity: .12; }
+.standings-lines-legend { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 8px; }
+.standings-lines .lg-item { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 0 4px; background: none; border: 0; box-shadow: none; color: var(--fg-1); font-size: .8rem; cursor: default; }
+.standings-lines .lg-swatch { width: 14px; height: 4px; border-radius: 2px; }

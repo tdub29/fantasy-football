@@ -33,3 +33,14 @@
 @media (max-width: 400px) { .acct-dialog { padding: 16px; } .acct-row input, .acct-row button { flex-basis: 100%; } .acct-meta { grid-template-columns: 1fr; } .acct-meta dd { margin-bottom: 6px; } }
 .acct-users { list-style: none; margin: 0 0 12px; padding: 0; display: grid; gap: 6px; font-size: 0.88rem; }
 .acct-users li { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 44px; overflow-wrap: anywhere; }
+.acct-avatar { width: 56px; height: 56px; border-radius: 50%; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; object-fit: cover; background: var(--bg-2); font-weight: 800; font-size: 1.4rem; }
+.acct-btn .acct-avatar { width: 28px; height: 28px; font-size: .85rem; }
+.acct-profile { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.acct-profile > div { min-width: 0; }
+.acct-profile .acct-note { margin-top: 2px; }
+.acct-display { display: block; font-size: 1.15rem; overflow-wrap: anywhere; }
+.acct-h { margin: 16px 0 6px; font-size: .75rem; text-transform: uppercase; letter-spacing: .04em; color: var(--fg-2); }
+.acct-sync { border-top: 1px solid var(--border); margin-top: 20px; padding-top: 16px; }
+.acct-sync summary { cursor: pointer; font-weight: 700; min-height: 44px; }
+.acct-footer { display: flex; justify-content: flex-end; border-top: 1px solid var(--border); margin-top: 20px; padding-top: 12px; }
+.acct-signout { min-height: 44px; font-size: .82rem; color: var(--fg-2); }
