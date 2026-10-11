@@ -501,7 +501,8 @@
 
   // The league whose format defines VOR replacement in cross-league contexts.
   function primaryLeague() {
-    return (window.LEAGUES || []).find(l => l.rosters.some(r => r.is_me)) || (window.LEAGUES || [])[0] || null;
+    const L = window.LEAGUES || [], mine = l => l.rosters.some(r => r.is_me);
+    return L.find(l => mine(l) && !isLeagueHidden(l)) || L.find(mine) || L[0] || null;
   }
   // IDP positions, Sleeper's aliases included. A defender only exists in a league
   // whose is_idp flag is set; anywhere else he cannot start, so he is no buy, no
