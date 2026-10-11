@@ -5,19 +5,23 @@ done only once it is deployed.
 
 ## Open
 
-7. Breakout: Fr/So/Jr/Sr rejected. Use real birth dates from cfb bio sources (cfbfastR
-   espn_cfb_player / ESPN athlete API, ESPN roster date_of_birth, nflverse birth_date for drafted,
-   anything else key-free) and show real breakout ages; proxy only where no DOB exists, coverage stated.
+(none)
 
 ## Older, still pending
 
-4. Prospects scatter toggle (x = prospect score, y = NFL PPG over replacement).
 5. Refactors: title-odds stance/rank store, Blueprint rank tooltip, valueTrajectory labels, aging
    curve unification.
 6. Chat answer: KTC vs production (KTC prices multi-year value; the model target is a top-finish season).
 
 ## Done
 
+- 2026-10-11: real birth dates for breakout and draft age (college 150/328 from Wikipedia/Wikidata,
+  NFL 902/955 nflverse); the rest muted class-year estimates. ESPN/cfbfastR publishes DOB only after
+  the draft. Trevor: good enough, no further sweep.
+- 2026-10-11: narrow name column, score-input columns, Table | Scatter (score vs NFL PPG over replacement).
+- 2026-10-11: tankometer moved to roster Snapshot; card VOR scores in the viewed league, skips hidden ones.
+- 2026-10-11: redraft forecast runs (empty slot scores 0); ESPN playoff rules (Washington 7/1 bye,
+  Phi Kap 6/2); Max PF dynasty only; profile name stays on one line while syncing.
 - 2026-10-11: no ~ before numbers (score, chance %, mock pick); a mock pick shows one decimal only
   when it is not whole.
 - 2026-10-11: Tankometer slider on each league page (The League preset 90%). What to Look For counts
