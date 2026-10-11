@@ -3171,10 +3171,6 @@
     }
     const sp = fantasySosPanel(lg);
     if (sp) main.appendChild(sp);
-    // IDP leagues get the mirror grid: which offences feed defenders. Returns
-    // null for the other four leagues, so no guard is needed here.
-    const idp = idpMatchupBlock(lg);
-    if (idp) main.appendChild(idp);
     } // end standings tab
 
     if (tab === 'players') renderLeaguePlayers(main, lg);
@@ -16461,6 +16457,10 @@
     main.appendChild(h('div', { style: { overflowX: 'auto' } }, tbl));
     main.appendChild(h('div', { class: 'tip', style: { marginTop: '10px' } },
       `Matchup colors: ${G.note || `${G.season} PPR allowed`}. SOS rank #1 = easiest selected window. SOS = average opponent rank over ${win.label}, higher = easier for ${pos}s; byes and unavailable games are left out. This ranks matchups, not expected points. Faded weeks are outside the window.`));
+    // The defender's mirror of this grid: which offences feed IDP starters, in the
+    // IDP league's own scoring. Null when no league starts defenders.
+    const idp = idpMatchupBlock(contextLeagueFor('LB'));
+    if (idp) main.appendChild(idp);
   }
 
   // ============================================================
