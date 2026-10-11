@@ -5296,7 +5296,7 @@
         h('div', { class:'br-stat-num tnum' }, fmt.decimal(s.total,1)),
         h('div', { class:'br-eyebrow' }, rosterDynasty ? 'Roster value, picks included' : 'Roster value'),
         h('div', { class:'br-stat-sub', title:'Every rostered asset summed, future picks included.' },
-          `Value rank #${myRank} of ${lg.total_rosters}`,
+          'Value rank ', h('b', { class:'tnum' }, `#${myRank}`), ` of ${lg.total_rosters}`,
           (() => {
             // Liquidity: % of dynasty value sitting in future picks. Per
             // Dynasty Domain, >35% means you can't move until next offseason.
@@ -5313,7 +5313,7 @@
           })()
         ),
         h('div', { class:'br-stat-sub', title:'Best legal starting lineup, picks excluded: the rank Dashboard and Standings show.' },
-          `Lineup rank #${lineupRank} of ${lg.total_rosters}`),
+          'Lineup rank ', h('b', { class:'tnum' }, `#${lineupRank}`), ` of ${lg.total_rosters}`),
       ),
       // ===== Value Share (Dynasty Domain framework) =====
       // % of total league dynasty value (players plus picks) you hold. Baseline =

@@ -1162,13 +1162,14 @@ textarea { resize: vertical; min-height: 80px; }
   color: var(--fg-3);
   font-weight: 600;
 }
-.br-stat { display: flex; flex-direction: column; gap: 3px; justify-content: center; }
+.br-stat { display: flex; flex-direction: column; gap: 3px; justify-content: flex-start; }
 .br-stat-num {
   font-size: 1.7rem; font-weight: 800; letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
   line-height: 1.1;
 }
-.br-stat-sub { color: var(--fg-3); font-size: 0.78rem; }
+.br-stat-sub { color: var(--fg-2); font-size: 0.8rem; }
+.br-stat-sub b { color: var(--fg-0); font-weight: 800; font-size: 0.95rem; }
 .br-stat-chip { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; }
 
 /* ============================================================
