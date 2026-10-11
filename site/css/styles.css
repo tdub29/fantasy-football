@@ -1023,6 +1023,8 @@ textarea { resize: vertical; min-height: 80px; }
 
 /* Sticky page actions */
 .page-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.tank-meter { display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--fg-2); }
+.tank-meter input { width: 96px; }
 
 /* Search highlight */
 .hl { background: rgba(var(--amber-rgb),.18); padding: 0 1px; border-radius: 2px; }
@@ -3918,7 +3920,7 @@ body::after {
   pointer-events: none;
   /* Smooth on purpose: a pixelated copy (2026-10-04) showed only as blocky
      fragments between cards and read as a rendering glitch. */
-  background: url("../img/logo-512.png") center / clamp(220px, 34vw, 512px) auto no-repeat; /* 512 = the file, no upscale */
+  background: url("../img/logo-512.png") center / clamp(120px, 11vw, 200px) auto no-repeat; /* about 12% of the field, like a real midfield logo */
   opacity: .09;
   filter: saturate(.72) contrast(.9);
 }
@@ -3927,7 +3929,7 @@ body::after {
   body::before { left: 0; }
   body::after {
     inset: 0;
-    background-size: min(62vw, 280px) auto;
+    background-size: min(28vw, 120px) auto;
     opacity: .075;
   }
 }

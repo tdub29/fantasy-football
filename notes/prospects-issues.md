@@ -5,7 +5,9 @@ done only once it is deployed.
 
 ## Open
 
-(none new)
+7. Breakout: Fr/So/Jr/Sr rejected. Use real birth dates from cfb bio sources (cfbfastR
+   espn_cfb_player / ESPN athlete API, ESPN roster date_of_birth, nflverse birth_date for drafted,
+   anything else key-free) and show real breakout ages; proxy only where no DOB exists, coverage stated.
 
 ## Older, still pending
 
@@ -15,6 +17,14 @@ done only once it is deployed.
 6. Chat answer: KTC vs production (KTC prices multi-year value; the model target is a top-finish season).
 
 ## Done
+
+- 2026-10-11: no ~ before numbers (score, chance %, mock pick); a mock pick shows one decimal only
+  when it is not whole.
+- 2026-10-11: Tankometer slider on each league page (The League preset 90%). What to Look For counts
+  a league at (100 - N)% of its buy-in, both sides; 100% drops it. Fatty Lineup: Trevor hides it.
+- 2026-10-11: midfield logo cut to about 12% of the field; kept upright on desktop (horizontal field,
+  broadcast orientation).
+- 2026-10-11: What to Look For no longer blanks when one league has no buy-in on file.
 
 - 2026-10-11: one 0-100 Prospect score (pick plus profile, percentile vs every drafted player at the
   position since 2008), default sort, beside the two chance columns; also on cards and class rank.

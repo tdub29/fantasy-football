@@ -67,6 +67,7 @@
     customSources: [],     // user-added sources, same shape as built-ins
     retiredGibbsHalfCol: false, // one-shot migration marker, see ensureExpertColDefaults
     hiddenLeagues: [],     // league ids kept out of the sidebar and My Leagues
+    tank: { '1314860638501076992': 90 }, // league id -> tank %, What to Look For counts (100 - N)% of the buy-in
   };
   function loadSettings() {
     try { return Object.assign({}, defaults, JSON.parse(localStorage.getItem(accountKey(SETTINGS_KEY)) || '{}')); }
@@ -76,6 +77,11 @@
   // Hiding only declutters navigation: the league page, search and every
   // cross-league model still see it. ponytail: per-browser, not profile-synced.
   const isLeagueHidden = lg => state.settings.hiddenLeagues.includes(String(lg.id));
+  const tankOf = lg => Math.min(100, Math.max(0, Number((state.settings.tank || {})[String(lg.id)]) || 0));
+  function setTank(lg, v) {
+    state.settings.tank = { ...(state.settings.tank || {}), [String(lg.id)]: Number(v) };
+    saveSettings();
+  }
   function toggleLeagueHidden(lg) {
     const id = String(lg.id), hidden = state.settings.hiddenLeagues;
     state.settings.hiddenLeagues = hidden.includes(id) ? hidden.filter(x => x !== id) : [...hidden, id];
@@ -2845,6 +2851,12 @@
       h('div', { class:'page-actions' },
         me ? h('a', { href:`#roster/${lg.id}/${me.roster_id}` }, h('button', { class:'primary' }, 'My Roster →')) : null,
         h('button', { class:'ghost', onclick:() => toggleLeagueHidden(lg) }, isLeagueHidden(lg) ? 'Unhide league' : 'Hide league'),
+        me ? h('label', { class:'tank-meter', title:'How hard you are tanking here. What to Look For counts this league at (100 - N)% of its buy-in; 100% drops it.' },
+          'Tankometer',
+          h('input', { type:'range', min:'0', max:'100', step:'5', value:String(tankOf(lg)), 'aria-label':'Tankometer percent',
+            oninput:e => { e.target.nextSibling.textContent = `${e.target.value}%`; },
+            onchange:e => setTank(lg, e.target.value) }),
+          h('span', { class:'tnum' }, `${tankOf(lg)}%`)) : null,
         h('div', { class:'btn-group' },
           // Trade Lab moved into the tab bar beside Standings / Players /
           // Transactions, so it is not also a header button.
@@ -10456,7 +10468,7 @@
   // The board itself. Pure over window.LEAGUES + window.WEEKLY_RANKINGS so the
   // math is testable without a DOM.
   function watchBoard() {
-    const leagues = [], unknown = [];
+    const leagues = [], unknown = [], tanking = [];
     const byPid = new Map();
     let week = (window.WEEKLY_RANKINGS || {}).currentWeek || 1;
 
@@ -10468,11 +10480,14 @@
       // Unknown is not $0: a league with no buy-in on file sits out, named under the key,
       // instead of blanking the board for every other league.
       if (lg.buy_in == null) { if (opp) unknown.push(lg.short_name || lg.name); continue; }
-      const buyIn = Number(lg.buy_in) || 0;
+      // Tanking: the whole league fades, my starters and his alike; at 100% it drops off.
+      const tank = tankOf(lg);
+      if (tank >= 100) { if (opp) tanking.push(lg.short_name || lg.name); continue; }
+      const fullBuyIn = Number(lg.buy_in) || 0, buyIn = fullBuyIn * (100 - tank) / 100;
       const lgWeek = Number(lg.week) || week;
       if (lg.week) week = lgWeek;
       leagues.push({
-        id: lg.id, name: lg.short_name || lg.name, buyIn, week: lgWeek,
+        id: lg.id, name: lg.short_name || lg.name, buyIn, fullBuyIn, tank, week: lgWeek,
         color: leagueSwatch(lg.id), me, opp,
         oppName: opp ? (opp.team_name || opp.owner_name) : null,
       });
@@ -10487,7 +10502,7 @@
         const weight = side * buyIn * proj.pts / 100;
         row.entries.push({
           leagueId: lg.id, league: lg.short_name || lg.name, color: leagueSwatch(lg.id),
-          buyIn, side, proj: proj.pts, projSource: proj.source, weight,
+          buyIn, tank, side, proj: proj.pts, projSource: proj.source, weight,
         });
         row.index += weight;
         row.gross += Math.abs(weight);
@@ -10517,7 +10532,7 @@
     split.sort((a, b) => b.gross - a.gross);
 
     const atStake = leagues.reduce((sum, l) => sum + (l.opp ? l.buyIn : 0), 0);
-    return { week, leagues, rooting, hating, split, unpriced, atStake, unknown };
+    return { week, leagues, rooting, hating, split, unpriced, atStake, unknown, tanking };
   }
 
   function viewWatch() {
@@ -10538,7 +10553,7 @@
       sub: live.length
         ? `Week ${board.week}. Every starter across ${live.length} leagues, weighted by what the league costs to play in.`
         : 'No matchups posted yet. Run refresh.ps1 once the week opens.',
-      badge: live.length ? `$${fmt.num(board.atStake)} live` : null,
+      badge: live.length ? `$${fmt.num(Math.round(board.atStake))} live` : null,
     }));
 
     if (!live.length) {
@@ -10551,10 +10566,11 @@
       ...live.map(l => h('a', { class:'watch-key-item', href:`#league/${l.id}`, style:{ '--lg':l.color } },
         h('span', { class:'watch-key-dot' }),
         h('span', { class:'watch-key-name' }, l.name),
-        h('span', { class:'watch-key-buyin tnum' }, `$${l.buyIn}`),
+        h('span', { class:'watch-key-buyin tnum' }, l.tank ? `$${l.fullBuyIn}, ${l.tank}% tank` : `$${l.buyIn}`),
         h('span', { class:'watch-key-opp' }, `vs ${l.oppName}`),
       ))
     ));
+    if (board.tanking.length) main.appendChild(h('p', { class:'muted' }, `Left out, tanking: ${board.tanking.join(', ')}.`));
     if (board.unknown.length) main.appendChild(h('p', { class:'muted' }, `Left out, buy-in unknown: ${board.unknown.join(', ')}.`));
 
     // One shared scale across all three panels, so a bar means the same number
@@ -10590,15 +10606,15 @@
             .map(e => h('span', {
               class: `watch-chip ${e.side > 0 ? 'for' : 'against'}`,
               style: { '--lg': e.color },
-              title: `${e.league}: ${e.side > 0 ? 'starting for you' : 'starting against you'}, $${e.buyIn} buy-in, ${fmt.decimal(e.proj, 1)} projected`,
+              title: `${e.league}: ${e.side > 0 ? 'starting for you' : 'starting against you'}, $${fmt.num(Math.round(e.buyIn))} ${e.tank ? `at ${e.tank}% tank` : 'buy-in'}, ${fmt.decimal(e.proj, 1)} projected`,
             },
               `${e.side > 0 ? '▲' : '▼'} ${e.league} `,
-              h('span', { class:'wc-amt' }, `$${e.buyIn}`)))
+              h('span', { class:'wc-amt' }, `$${fmt.num(Math.round(e.buyIn))}`)))
         ),
         h('span', { class:'watch-proj tnum', title:'Best weekly projection, Vegas where a market exists' }, fmt.decimal(row.proj, 1)),
         h('span', { class:`watch-index tnum ${tone}`,
           title: `${(row.index > 0 ? '+' : '') + fmt.decimal(row.index, 1)}: `
-               + row.entries.map(e => `${e.league} $${e.buyIn} x ${fmt.decimal(e.proj, 1)} ${e.side > 0 ? 'for' : 'against'} you`).join(', ')
+               + row.entries.map(e => `${e.league} $${fmt.num(Math.round(e.buyIn))} x ${fmt.decimal(e.proj, 1)} ${e.side > 0 ? 'for' : 'against'} you`).join(', ')
                + ', divided by 100.' },
           (row.index > 0 ? '+' : '') + fmt.decimal(row.index, 1)),
         h('span', { class:'watch-bar' },
@@ -12400,6 +12416,7 @@
   const PM_CUTS = { QB:[6, 12], TE:[6, 12], RB:[12, 24], WR:[12, 24] };
   const pmPick = (r) => r.y ? r.pk : ((((window.CAPITAL_RATINGS || {}).projected || {}).players || {})[r.cid] || {}).pick;
   // UFD: in the mocked class but in no mock, and the mocks run all seven rounds, so projected undrafted.
+  const pmDec = (v) => Number.isInteger(+v) ? String(+v) : (+v).toFixed(1);
   const pmUfd = (r) => !r.y && !pmPick(r) && r.cls === ((window.CAPITAL_RATINGS || {}).projected || {}).class;
   // The pick the fits score him at: a projected UFD goes in as the last pick of seven rounds.
   const pmFitPick = (r) => pmPick(r) || (pmUfd(r) ? 257 : undefined);
@@ -12609,14 +12626,14 @@
     const score = pmScore(r), mean = pmMean(r.p, pmFitPick(r), r.ts);
     const ranked = peers.map(x => pmMean(x.p, pmFitPick(x), x.ts)).filter(v => v != null);
     const rank = ranked.filter(v => v > mean).length + 1;
-    const how = r.y ? `with pick ${r.pk}` : pk ? `at mock pick ~${Math.round(pk)}` : pmUfd(r) ? 'projected UFD, scored as the last pick (257)' : 'profile alone, if drafted';
+    const how = r.y ? `with pick ${r.pk}` : pk ? `at mock pick ${pmDec(pk)}` : pmUfd(r) ? 'projected UFD, scored as the last pick (257)' : 'profile alone, if drafted';
     return h('div', { class:'prm-head' },
       h('div', { class:'prm-id' },
         logo ? h('img', { class:'prm-logo', src:logo, alt:`${r.sch} logo`, width:40, height:40, loading:'lazy' }) : null,
         h('div', { class:'prm-id-text' },
           h('div', { class:'prm-id-school' }, r.sch || 'School unknown'),
           h('div', { class:'prm-id-sub' }, idSub))),
-      score == null ? null : pmHeroBox('Prospect score', `${r.y ? '' : '~'}${score}`, `of 100, vs every drafted ${r.p} since 2008`,
+      score == null ? null : pmHeroBox('Prospect score', String(score), `of 100, vs every drafted ${r.p} since 2008`,
         `One score from draft pick plus college profile: his average ${r.p}${cuts[0]} / ${r.p}${cuts[1]} chance as a percentile of every drafted ${r.p} since 2008. ${how[0].toUpperCase()}${how.slice(1)}`),
       ...cuts.map((c, i) => mine[i] == null ? null : pmHeroBox(`${r.p}${c} chance`, pmPct(mine[i]), how,
         `Chance of at least one top-${c} ${r.p} season by PPR points per game (8+ games) in NFL years ${pmWindow(r.p)}. One model: draft pick plus college profile`)),
@@ -12686,7 +12703,7 @@
         sz ? pmBioCell('Weight', `${sz.wt} lb`, sizeTitle) : null,
         b ? pmBioCell('Build', b.label, sizeTitle) : null,
         pmBioCell('Archetype', pmArchetype(r, b), `Rule-based from size and college production percentiles against drafted ${r.p}s. A label, not a projection`),
-        mock ? pmBioCell('Mock pick', `~${Math.round(mock.pick)}`, mock.title) : null,
+        mock ? pmBioCell('Mock pick', pmDec(mock.pick), mock.title) : null,
         r.st && r.st.stars != null ? pmBioCell('Recruit', `${r.st.stars}-star`, 'Recruiting stars out of high school') : null,
       ]),
       pmGrades(r.p, pmGradeRows(r.p, r.ba, r.st, pmYpc('college', r.cid),
@@ -12763,7 +12780,7 @@
     main.appendChild(pageHeader({
       eyebrow:'PROSPECT MODEL',
       title: hist ? 'Prospects' : 'College prospects',
-      sub: 'Score: one 0-100 prospect score from draft pick plus college profile, as a percentile of every drafted player at his position since 2008. Then the chance of at least one top-6 or top-12 season at QB and TE, top-12 or top-24 at RB and WR, by PPR points per game in NFL years 1-3 (QB, TE 1-4). One score from draft pick plus college profile, fit on every drafted class since 2008. College rows (~) use the mock-draft consensus pick; a next-class player in no mock is UFD and scored as the last pick; later classes, not mocked yet, use profile alone.',
+      sub: 'Score: one 0-100 prospect score from draft pick plus college profile, as a percentile of every drafted player at his position since 2008. Then the chance of at least one top-6 or top-12 season at QB and TE, top-12 or top-24 at RB and WR, by PPR points per game in NFL years 1-3 (QB, TE 1-4). One score from draft pick plus college profile, fit on every drafted class since 2008. College rows use the mock-draft consensus pick; a next-class player in no mock is UFD and scored as the last pick; later classes, not mocked yet, use profile alone.',
     }));
 
     const filterBar = h('div', { class:'filters prm-filters' });
@@ -12788,9 +12805,9 @@
       cls === 'all' || cls === 'future' ? ['cls', 'Class', { right:true, asc:true, title:'Draft he went in, or the first one he is eligible for' }] : null,
       hist || cls === 'future' || Number(cls) === next ? ['mp', 'Proj. pick', { right:true, asc:true, title:'Median overall pick across public mock drafts. Only the next class is mocked so far. UFD: next-class player in no mock (the mocks run all seven rounds), so projected undrafted. Blank: class not mocked yet' }] : null,
       hist ? ['pk', 'NFL pick', { right:true, asc:true, title:'Overall pick he actually went at' }] : null,
-      ['sc', 'Score', { right:true, title:'One 0-100 prospect score from draft pick plus college profile: his average top-finish chance across both cuts, as a percentile of every drafted player at his position since 2008. ~ = mock-draft pick, or profile alone if no mock' }],
+      ['sc', 'Score', { right:true, title:'One 0-100 prospect score from draft pick plus college profile: his average top-finish chance across both cuts, as a percentile of every drafted player at his position since 2008. College rows use the mock-draft pick, or profile alone if no mock' }],
       ...[0, 1].map(i => [`t${i}`, one ? `${pos}${PM_CUTS[pos][i]} %` : ['Elite %', 'Starter %'][i], { right:true,
-        title:`Chance of at least one ${one ? `top-${PM_CUTS[pos][i]} ${pos}` : ['top-6 QB or TE, top-12 RB or WR', 'top-12 QB or TE, top-24 RB or WR'][i]} season by PPR points per game (8+ games) in NFL years ${one ? pmWindow(pos) : '1-3 (QB, TE 1-4)'}. Draft pick plus college profile. ~ = mock-draft pick, or profile alone if no mock` }]),
+        title:`Chance of at least one ${one ? `top-${PM_CUTS[pos][i]} ${pos}` : ['top-6 QB or TE, top-12 RB or WR', 'top-12 QB or TE, top-24 RB or WR'][i]} season by PPR points per game (8+ games) in NFL years ${one ? pmWindow(pos) : '1-3 (QB, TE 1-4)'}. Draft pick plus college profile. College rows use the mock-draft pick, or profile alone if no mock` }]),
       hist ? ['best', 'Best finish', { right:true, asc:true, title:'Best PPR points-per-game rank at his position in that window (8+ games). Blank: window still open' }] : null,
       pos === 'QB' ? null : ['ba', 'Breakout', { right:true, asc:true, title:'College season he first hit the dominator line: Fr, So, Jr, Sr (blank: not yet). Class year, not age, since college birth dates are not public. Profile only, no model uses it' }],
       ...stat.map(([k, label, , t]) => [`st.${k}`, label, { right:true, title:t }]),
@@ -12811,10 +12828,9 @@
       if (k === 'ba') return pmBaYear(v);
       if (k === 'best') return v == null ? '·' : v === 999 ? h('span', { class:'muted' }, 'none') : `${r.p}${v}`;
       if (v != null && !r.id && (k === 't0' || k === 't1')) return h('span', { class:'muted',
-        title:pmPick(r) ? `From mock pick ${Math.round(pmPick(r))}` : pmUfd(r) ? 'Projected UFD: scored as the last pick (257) plus college profile' : 'No mock pick yet: college profile alone, if drafted' }, `~${pmPct(v)}`);
+        title:pmPick(r) ? `From mock pick ${pmDec(pmPick(r))}` : pmUfd(r) ? 'Projected UFD: scored as the last pick (257) plus college profile' : 'No mock pick yet: college profile alone, if drafted' }, pmPct(v));
       if (k === 't0' || k === 't1') return pmPct(v);
-      if (k === 'sc' && v != null && !r.id) return h('span', { class:'muted' }, `~${v}`);
-      if (k === 'mp') return v == null ? '·' : v === 999 ? h('span', { class:'muted', title:'In no public mock draft: projected undrafted' }, 'UFD') : String(Math.round(v));
+      if (k === 'mp') return v == null ? '·' : v === 999 ? h('span', { class:'muted', title:'In no public mock draft: projected undrafted' }, 'UFD') : pmDec(v);
       return v == null ? '·' : String(v);
     };
     const card = h('div', { class:'card' });
@@ -13024,8 +13040,8 @@
         h('td', null,
           h('span', { class: 'muted', style: { fontSize: '10px' } }, g.home ? 'vs ' : '@ '),
           h('span', { style: { fontWeight: 700, color: defColor(g.opp) } }, teamChip(g.opp, true))),
-        h('td', { class: 'tnum', style: { textAlign: 'right' } }, g.implied_pf ?? '~'),
-        h('td', { class: 'tnum', style: { textAlign: 'right', color: 'var(--fg-3)' } }, g.implied_pa ?? '~'),
+        h('td', { class: 'tnum', style: { textAlign: 'right' } }, g.implied_pf ?? '·'),
+        h('td', { class: 'tnum', style: { textAlign: 'right', color: 'var(--fg-3)' } }, g.implied_pa ?? '·'),
         h('td', null, h('span', { class: 'muted', style: { fontSize: '9px' } }, g.posted ? 'VEG' : 'proj')));
     };
     return h('div', { class: 'card', style: { background: 'var(--bg-2)', marginBottom: '12px' } },
