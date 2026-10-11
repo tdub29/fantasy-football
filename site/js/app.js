@@ -12386,11 +12386,16 @@
   // shown with its holdout accuracy.
   const pmPct = (p) => p == null ? '·' : `${Math.round(p * 100)}%`;
   const pmNum = (d) => (v) => v == null ? '·' : Number(v).toFixed(d);
-  // Chance of at least one top-12 / top-24 PPR-per-game season in the position's window: one
-  // logistic per position and cutoff on log(pick) plus college profile, fit on every drafted class
-  // whose window has closed. On holdout classes it matched or beat pick alone at most cutoffs.
+  // The one prospect target everywhere: chance of at least one PPR-per-game season inside these
+  // finishes at his position in the window (Trevor, 2026-10-11: QB and TE 6 and 12, RB and WR 12 and 24).
+  // The second cut is the model's hit line. One logistic per position and cut on log(pick) plus college
+  // profile, fit on every drafted class whose window has closed; on holdout classes it matched or beat
+  // pick alone at most cuts. College rows use the mock-draft pick, or profile alone with no mock.
   // ponytail: 24 small IRLS fits in the browser on first use. Profile is in-sample for the training
   // classes, so its weight runs a little hot; move the fit into build_prospect_model.py if that matters.
+  const PM_CUTS = { QB:[6, 12], TE:[6, 12], RB:[12, 24], WR:[12, 24] };
+  const pmPick = (r) => r.y ? r.pk : ((((window.CAPITAL_RATINGS || {}).projected || {}).players || {})[r.cid] || {}).pick;
+  const pmWindow = (p) => ((window.PROSPECT_MODEL.pos[p] || {}).target || '').replace(/^.* in NFL years /, '');
   let pmTopFits = null;
   function pmTopChance(p, k, pk, ts) {
     const M = window.PROSPECT_MODEL;
@@ -12416,7 +12421,7 @@
       };
       const done = Object.values(M.nfl).filter(r => r.out && r.ts != null && r.pk);
       pmTopFits = {};
-      for (const P of ['QB', 'RB', 'WR', 'TE']) for (const c of [12, 24]) {
+      for (const P of Object.keys(PM_CUTS)) for (const c of PM_CUTS[P]) {
         const R = done.filter(r => r.p === P), y = R.map(r => r.out[2] && r.out[2] <= c ? 1 : 0);
         pmTopFits[P + c] = { both:fit(R.map(r => [1, Math.log(r.pk), r.ts / 100]), y),
           pick:fit(R.map(r => [1, Math.log(r.pk)]), y), prof:fit(R.map(r => [1, r.ts / 100]), y) };
@@ -12428,9 +12433,8 @@
     const w = x.length === 3 ? f.both : pk ? f.pick : f.prof;
     return 1 / (1 + Math.exp(-x.reduce((s, v, j) => s + v * w[j], 0)));
   }
-  // Five pips for a 0-100 score on a card face (DESIGN.md: countable, no false precision).
-  const pmPips = (score) => h('span', { class:'rating-track', 'aria-hidden':'true' },
-    ...[0, 1, 2, 3, 4].map(i => h('i', { class:`pip${i < Math.round(score / 20) ? ' on' : ''}` })));
+  // Both cuts for one row, high bar first.
+  const pmChances = (r) => (PM_CUTS[r.p] || []).map(c => pmTopChance(r.p, c, pmPick(r), r.ts));
   // The college stats each position's model actually uses: [key, label, format, meaning].
   function pmStatCols(pos) {
     if (pos === 'QB') return [
@@ -12450,12 +12454,6 @@
         : ['share', 'Yds share', pmPct, 'Best-season share of team receiving yards'],
     ];
   }
-  function pmTile(label, value, title, sub) {
-    return h('div', { class:'adv-stat', title },
-      h('div', { class:'adv-stat-label' }, label),
-      h('div', { class:'adv-stat-value tnum' }, value),
-      sub ? h('div', { class:'adv-stat-rank' }, sub) : null);
-  }
   function pmComps(cp) {
     if (!cp || !cp.length) return null;
     return h('div', { class:'tip prm-comps' }, 'Profile comps: ',
@@ -12463,18 +12461,7 @@
         `${n} (${y}, pick ${pk}, best ${Number(ppg).toFixed(1)} PPG, ${hit ? 'hit' : 'miss'})${i < cp.length - 1 ? '; ' : ''}`)));
   }
 
-  // Draft-only positions give every player the same round curve, so it is stated once as a
-  // position reference, never as one player's forecast.
-  const PM_ROUNDS = ['Round 1', 'Round 2', 'Round 3', 'Day 3'];
-  function pmSlotLine(pos, r) {
-    if ((window.PROSPECT_MODEL.pos[pos] || {}).shipped !== 'draft' || !r) return null;
-    return `If drafted (one draft-slot curve for every ${pos}): ${PM_ROUNDS.map((n, i) => `${n} ${pmPct(r[i])}`).join(', ')}`;
-  }
-  // Hand-written from model-card.md "Bottom line"; the WR model is the one carrying the flag.
-  // Untested as a cause until someone refits without it (handoff-wr-early-declare-2026-10-03.md).
-  // Rides on the College % tile tooltip, not a card paragraph (Trevor, 2026-10-06).
-  const PM_WR_EARLY = 'May underrate a four-year WR: the early-declare flag is the model card\'s best, untested explanation '
-    + 'for the 2020-2023 WR miss (four-year WRs hit 5% in 2008-2019, 11% in 2020-2023, probably the COVID extra year).';
+
 
   // Card for a current college player (window.PROSPECT_MODEL.college). No Sleeper id and no
   // draft slot exist yet, so the individual read is the college-only model and its track record.
@@ -12566,25 +12553,36 @@
   const pmBioCell = (label, value, title) => value == null ? null : h('div', { class:'prm-bio-cell', title },
     h('div', { class:'prm-bio-label' }, label), h('div', { class:'prm-bio-value' }, value));
   const pmBio = (cells) => cells.some(Boolean) ? h('div', { class:'prm-bio' }, ...cells) : null;
-  // peers: same position and class, ranked by profile percentile. Drafted rows carry y.
+  // peers: same position and class, ranked by the hit-line chance. Drafted rows carry y.
   function pmCardHead(r, cls, peers, idSub, boxes) {
     const logo = ((window.COLLEGE_BIO || {}).schools || {})[r.sch];
-    const rank = peers.filter(x => x.ts > r.ts).length + 1;
+    const cuts = PM_CUTS[r.p] || [], mine = pmChances(r), pk = pmPick(r);
+    const ranked = peers.map(x => pmChances(x)[1]).filter(v => v != null);
+    const rank = ranked.filter(v => v > mine[1]).length + 1;
+    const how = r.y ? `with pick ${r.pk}` : pk ? `at mock pick ~${Math.round(pk)}` : 'profile alone, if drafted';
     return h('div', { class:'prm-head' },
       h('div', { class:'prm-id' },
         logo ? h('img', { class:'prm-logo', src:logo, alt:`${r.sch} logo`, width:40, height:40, loading:'lazy' }) : null,
         h('div', { class:'prm-id-text' },
           h('div', { class:'prm-id-school' }, r.sch || 'School unknown'),
           h('div', { class:'prm-id-sub' }, idSub))),
-      r.ts != null ? pmHeroBox('Profile', String(r.ts), pmPips(r.ts),
-        `College profile with no draft capital: percentile against every drafted ${r.p} since 2008. Not overall talent`) : null,
-      r.ts != null ? pmHeroBox('Class rank', `${r.p}${rank}`, `of ${peers.length} in the ${cls} class`,
-        `Ranked by college profile percentile among the ${peers.length} ${cls} ${r.p}s ${r.y ? 'drafted' : 'listed'}. Not a consensus or draft rank`) : null,
-      r.tr != null ? pmHeroBox('Tier', h('span', { class:'prm-hero-word' }, window.PROSPECT_MODEL.tiers[r.tr]),
-        window.PROSPECT_MODEL.tier_cut[r.tr] ? `profile ${window.PROSPECT_MODEL.tier_cut[r.tr]}th pctile+` : 'profile under 20th pctile',
-        `${window.PROSPECT_MODEL.tiers[r.tr]} college profile against drafted ${r.p}s since 2008. Not overall prospect value`) : null,
+      ...cuts.map((c, i) => mine[i] == null ? null : pmHeroBox(`${r.p}${c} chance`, pmPct(mine[i]), how,
+        `Chance of at least one top-${c} ${r.p} season by PPR points per game (8+ games) in NFL years ${pmWindow(r.p)}. One model: draft pick plus college profile`)),
+      mine[1] != null ? pmHeroBox('Class rank', `${r.p}${rank}`, `of ${ranked.length} in the ${cls} class`,
+        `Ranked by ${r.p}${cuts[1]} chance among the ${ranked.length} ${cls} ${r.p}s ${r.y ? 'drafted' : 'listed'}. Not a consensus or draft rank`) : null,
       ...boxes);
   }
+  // The same chances at fixed picks, so a college player with no mock still reads against slot.
+  function pmPickLine(r) {
+    const cuts = PM_CUTS[r.p];
+    if (!cuts) return null;
+    return `If drafted, ${r.p}${cuts[0]} / ${r.p}${cuts[1]} chance: ` + [16, 48, 83, 150].map(pk =>
+      `pick ${pk} ${cuts.map(c => pmPct(pmTopChance(r.p, c, pk, r.ts))).join(' / ')}`).join(', ');
+  }
+  const pmTargetLine = (p) => {
+    const cuts = PM_CUTS[p] || [];
+    return `${p}${cuts[0]} / ${p}${cuts[1]} = at least one top-${cuts[0]} / top-${cuts[1]} ${p} season by PPR points per game (8+ games) in NFL years ${pmWindow(p)}.`;
+  };
 
   // Projected slot from public mock drafts (site/data/build_mock_consensus.py), not from this model.
   // Round ends follow Drafttek's comp-pick numbering (R3 ends at 101, R6 at 218), not pick/32.
@@ -12598,31 +12596,11 @@
       title: `Projected from public mock drafts, not this model: median pick ${c.pick} across ${mocks}, newest dated ${c.date}. Picks by source: ${names}` };
   }
 
-  // The profile tier's track record: share of past drafted players in his tier whose best season
-  // in the window reached each rung, with n. `extra` tiles (his own hit numbers) sit beside it.
-  function pmTierStrip(p, tr, extra) {
-    const M = window.PROSPECT_MODEL, meta = M.pos[p] || {};
-    const th = tr != null ? (meta.tier_hit || [])[tr] : null;
-    const tier = tr != null ? M.tiers[tr] : null;
-    const lad = th && th[2] && meta.ladder ? th[2] : null;
-    const rung = (label, v, title) => h('div', { class:'prm-rung', title },
-      h('div', { class:'prm-rung-label' }, label),
-      h('div', { class:'prm-rung-value tnum' }, pmPct(v)),
-      h('div', { class:'seg-meter', 'aria-hidden':'true' }, h('i', { style:{ width:`${Math.round(v * 100)}%` } })));
-    return h('section', { class:'prm-sec' },
-      h('div', { class:'prm-sec-title' }, h('span', null, tier ? `${tier} hit rate` : 'Hit chance'),
-        th ? h('span', { title:`Past ${tier} ${p}s, all drafted, out of sample. Tiers that came out of order are pooled` }, `${th[0]} players`) : null),
-      h('div', { class:'prm-ladder' },
-        ...(lad ? lad.map((v, i) => rung(`${p}${i + 1} (top ${meta.ladder[i]})`, v,
-          `Past ${tier} ${p}s whose best season in the window finished top ${meta.ladder[i]} at ${p}`))
-          : th && th[1] != null ? [rung('Past hit rate', th[1], `Past ${tier} ${p}s who hit`)] : []),
-        ...extra));
-  }
-
   // Did he hit, and how far: his best finish placed on the same rungs as the tier ladder.
   function pmOutcome(me, meta, years) {
     if (!me.out) return null;
-    const [hit, ppg, rank] = me.out, lad = meta.ladder || [];
+    const [, ppg, rank] = me.out, lad = PM_CUTS[me.p] || [];
+    const hit = !!rank && rank <= lad[lad.length - 1];
     const at = rank ? lad.findIndex(t => rank <= t) : -1;
     const tone = hit ? 'hit' : 'miss';
     return h('section', { class:'prm-sec' },
@@ -12632,15 +12610,14 @@
         pmHeroBox('Best finish', rank ? `${me.p}${rank}` : '·', `${Number(ppg).toFixed(1)} PPR points per game`,
           `Best season in NFL years ${years}`),
         h('div', { class:'prm-buckets' },
-          ...lad.map((t, i) => h('span', { class:`prm-bucket${i === at ? ` on ${tone}` : ''}`, title:`Best season top ${t} at ${me.p}` }, `${me.p}${i + 1}`)),
+          ...lad.map((t, i) => h('span', { class:`prm-bucket${i === at ? ` on ${tone}` : ''}`, title:`Best season top ${t} at ${me.p}` }, `Top ${t}`)),
           lad.length ? h('span', { class:`prm-bucket${at < 0 ? ` on ${tone}` : ''}`, title:`Best season outside the top ${lad[lad.length - 1]}` },
-            `Below ${me.p}${lad.length}`) : null)));
+            `Below top ${lad[lad.length - 1]}`) : null)));
   }
 
   function collegeProspectBlock(r) {
     const M = window.PROSPECT_MODEL;
     if (!M || !r) return null;
-    const meta = M.pos[r.p] || {};
     const peers = M.college.filter(x => x.p === r.p && x.cls === r.cls);
     const sz = ((window.COLLEGE_BIO || {}).players || {})[r.cid];
     const b = sz && pmBuild(r.p, sz.ht, sz.wt);
@@ -12662,14 +12639,8 @@
       ]),
       pmGrades(r.p, pmGradeRows(r.p, r.ba, r.st, pmYpc('college', r.cid),
         'Age at his first college season at the dominator line. Profile only, no model uses it')),
-      pmTierStrip(r.p, r.tr, [
-        pmTile('College %', pmPct(r.tp), 'Hit chance from college stats alone, if he is drafted. Its ranking was checked on a holdout; the percentage has no calibration check. Undrafted players are not in the history.'
-          + (r.p === 'WR' && meta.shipped === 'draft' ? ` ${PM_WR_EARLY}` : ''), 'if drafted'),
-        r.pd != null ? pmTile('Pre-draft', pmPct(r.pd),
-          'Chance he hits counting the chance he goes undrafted, from the pre-draft model in the table notes', 'incl. undrafted') : null,
-      ].filter(Boolean)),
-      h('div', { class:'tip prm-line' }, `Hit = ${(meta.target || '').replace(/^Top/, 'top')}. First eligible for the ${r.cls} draft.`),
-      pmSlotLine(r.p, r.r) ? h('div', { class:'tip prm-line' }, pmSlotLine(r.p, r.r)) : null,
+      h('div', { class:'tip prm-line' }, `${pmTargetLine(r.p)} First eligible for the ${r.cls} draft.`),
+      pmPickLine(r) ? h('div', { class:'tip prm-line' }, pmPickLine(r)) : null,
       r.ln ? h('div', { class:'tip prm-line' }, r.ln) : null,
       pmComps(r.cp));
   }
@@ -12679,17 +12650,11 @@
     const me = sleeper && M && M.nfl && M.nfl[String(sleeper.id)];
     if (!me) return null;
     const meta = M.pos[me.p] || {};
-    const capOnly = meta.shipped === 'draft';
-    const years = (meta.target || '').replace(/^.* in NFL years /, '');
-    const capital = window.CAPITAL_RATINGS;
-    const rating = capital && capital.players[String(sleeper.id)];
-    const capBox = (f) => rating && rating[f] != null ? pmHeroBox(`Capital ${f === 'F2' ? 'SF' : '1QB'}`, rating[f].toFixed(1),
-      capital.formats[f] || '10-team PPR',
-      'Draft slot only, not overall talent or hit probability. 0-100. Common three-year starter-value target, normalized to a fixed modern 2012-2023 drafted-player benchmark, not historical as-of percentiles. Historical fits embargo three-year labels.') : null;
-    const peers = Object.values(M.nfl).filter(x => x.p === me.p && x.y === me.y && x.ts != null);
+    const years = pmWindow(me.p);
+    const peers = Object.values(M.nfl).filter(x => x.p === me.p && x.y === me.y);
     return h('div', { class:'card adv-card prm-card' },
       h('div', { class:'card-title' }, 'Prospect profile'),
-      pmCardHead(me, me.y, peers, `${me.p} · drafted ${me.y}, pick ${me.pk}`, [capBox('F1'), me.p === 'QB' ? capBox('F2') : null]),
+      pmCardHead(me, me.y, peers, `${me.p} · drafted ${me.y}, pick ${me.pk}`, []),
       pmBio([
         pmBioCell('Archetype', pmArchetype(me, null), `Rule-based from college production percentiles against drafted ${me.p}s. A label, not a projection`),
         me.st && me.st.stars != null ? pmBioCell('Recruit', `${me.st.stars}-star`, 'Recruiting stars out of high school') : null,
@@ -12697,14 +12662,8 @@
       pmOutcome(me, meta, years),
       pmGrades(me.p, pmGradeRows(me.p, me.ba, me.st, pmYpc('nfl', String(sleeper.id)),
         'Age at his first college season at the dominator line (never broke out: final age plus one)')),
-      pmTierStrip(me.p, me.tr, [
-        pmTile('Model hit estimate', pmPct(me.hp),
-          capOnly ? `Draft capital alone. At ${me.p}, college stats did not beat draft slot on the held-out ${meta.holdout || ''} draft classes.`
-            : 'College profile plus draft capital',
-          capOnly ? `slot only${me.tp != null ? `, college alone ${pmPct(me.tp)}` : ''}` : `talent only ${pmPct(me.tp)}`),
-      ]),
-      h('div', { class:'tip prm-line' }, `Hit = ${(meta.target || '').replace(/^Top/, 'top')}.`
-        + (me.oos ? ` Scored without his ${me.y} draft class in the training data.` : '')),
+      h('div', { class:'tip prm-line' }, pmTargetLine(me.p)
+        + (me.out ? ' His own result is in the fit, so the chance is not a blind forecast.' : '')),
       me.ln ? h('div', { class:'tip prm-line' }, me.ln) : null,
       pmComps(me.cp));
   }
@@ -12713,7 +12672,7 @@
   // Route: #prospects/<ALL|QB|RB|WR|TE>/<all|year>; no class is Future classes, the default.
   // Future classes are college players in an upcoming draft. All classes adds every drafted class
   // the model scored, marked by pick, and those rows open the NFL player card (Trevor, 2026-10-05).
-  const prospectSort = { key:'t24', dir:'desc', q:'' };
+  const prospectSort = { key:'t1', dir:'desc', q:'' };
   function viewProspects(posArg, clsArg) {
     const main = $('#main'); main.innerHTML = '';
     const M = window.PROSPECT_MODEL;
@@ -12732,9 +12691,6 @@
     const hist = cls === 'all';
     const hashFor = (p, c) => `#prospects/${p}${c === 'future' ? '' : `/${c}`}`;
     if (clsArg && clsArg !== 'next' && clsArg !== 'later' && String(clsArg) !== cls) history.replaceState(null, '', hashFor(pos, cls));
-    const meta = one ? (M.pos[pos] || {}) : {};
-    const capOnly = !one || meta.shipped === 'draft';
-    const posWord = one ? pos : 'player at his position';
     // Redraw in place like Players, so the phone filter panel stays open between taps.
     const go = (p, c) => {
       history.pushState(null, '', hashFor(p, c));
@@ -12747,10 +12703,6 @@
     // Drafted rows carry their Sleeper id and pick; `cls` is the draft they went in.
     const drafted = hist ? Object.entries(M.nfl).map(([id, r]) => ({ ...r, id, cls:r.y })) : [];
     const all = [...upcoming, ...drafted].filter(r => pick(r.p) && (cls === 'all' || cls === 'future' || r.cls === Number(cls)));
-    // Capital: drafted rows rate their real slot; college rows rate their mock-consensus pick.
-    const CR = window.CAPITAL_RATINGS || { players:{}, projected:null };
-    const mock = (CR.projected && CR.projected.players) || {};
-    const capOf = (r) => (r.id ? CR.players[r.id] : mock[r.cid]) || {};
     // College players have no Sleeper id, so their card is built from the model record itself.
     // Drafted players open the NFL card, where their model record stays.
     const openRow = (r) => r.id ? openPlayerDetail(r.n, r.id) : document.body.appendChild(playerModal(r.n, null, null, r));
@@ -12759,7 +12711,7 @@
     main.appendChild(pageHeader({
       eyebrow:'PROSPECT MODEL',
       title: hist ? 'Prospects' : 'College prospects',
-      sub: 'Top 12 / Top 24: chance of at least one top-12 or top-24 PPR points-per-game season at his position in NFL years 1-3 (QB, TE 1-4). One score from draft pick plus college profile, fit on every drafted class since 2008. College rows (~) use the mock-draft consensus pick, or profile alone if no mock has him yet.',
+      sub: 'Chance of at least one top-6 or top-12 season at QB and TE, top-12 or top-24 at RB and WR, by PPR points per game in NFL years 1-3 (QB, TE 1-4). One score from draft pick plus college profile, fit on every drafted class since 2008. College rows (~) use the mock-draft consensus pick, or profile alone if no mock has him yet.',
     }));
 
     const filterBar = h('div', { class:'filters prm-filters' });
@@ -12782,20 +12734,18 @@
       ['n', 'Player', { asc:true }],
       one ? null : ['p', 'Pos', { asc:true, fit:true }],
       cls === 'all' || cls === 'future' ? ['cls', 'Class', { right:true, asc:true, title:'Draft he went in, or the first one he is eligible for' }] : null,
-      ['pk', 'Pick', { right:true, asc:true, title:'Overall draft pick. ~ = median pick across public mock drafts. Blank: no mock yet' }],
-      ...[12, 24].map(k => [`t${k}`, one ? `${pos}${k} %` : `Top ${k} %`, { right:true,
-        title:`Chance of at least one top-${k} season at his position by PPR points per game (8+ games) in NFL years ${pos === 'QB' || pos === 'TE' ? '1-4' : one ? '1-3' : '1-3 (QB, TE 1-4)'}. Draft pick plus college profile. ~ = mock-draft pick, or profile alone if drafted` }]),
+      hist || cls === 'future' || Number(cls) === next ? ['mp', 'Proj. pick', { right:true, asc:true, title:'Median overall pick across public mock drafts. Only the next class is mocked so far. Blank: no mock has him' }] : null,
+      hist ? ['pk', 'NFL pick', { right:true, asc:true, title:'Overall pick he actually went at' }] : null,
+      ...[0, 1].map(i => [`t${i}`, one ? `${pos}${PM_CUTS[pos][i]} %` : ['Elite %', 'Starter %'][i], { right:true,
+        title:`Chance of at least one ${one ? `top-${PM_CUTS[pos][i]} ${pos}` : ['top-6 QB or TE, top-12 RB or WR', 'top-12 QB or TE, top-24 RB or WR'][i]} season by PPR points per game (8+ games) in NFL years ${one ? pmWindow(pos) : '1-3 (QB, TE 1-4)'}. Draft pick plus college profile. ~ = mock-draft pick, or profile alone if no mock` }]),
       hist ? ['best', 'Best finish', { right:true, asc:true, title:'Best PPR points-per-game rank at his position in that window (8+ games). Blank: window still open' }] : null,
       pos === 'QB' ? null : ['ba', 'Breakout', { right:true, asc:true, title:'Age at his first college season at the dominator line (blank: not yet). Profile only, no model uses it' }],
       ...stat.map(([k, label, , t]) => [`st.${k}`, label, { right:true, title:t }]),
-      ...(!capOnly ? PM_ROUNDS.map((r, i) => [`r${i}`, i < 3 ? `R${i + 1}` : 'Day 3',
-        { right:true, title:`Hit chance if drafted in ${r}` }]) : []),
     ].filter(Boolean);
-    const pickOf = (r) => r.id ? r.pk : capOf(r).pick;
-    const get = (r, k) => /^r\d$/.test(k) ? (r.r || [])[Number(k[1])] : k.startsWith('st.') ? (r.st || {})[k.slice(3)]
-      : k === 't12' || k === 't24' ? pmTopChance(r.p, Number(k.slice(1)), pickOf(r), r.ts)
+    const get = (r, k) => k.startsWith('st.') ? (r.st || {})[k.slice(3)]
+      : k === 't0' || k === 't1' ? pmTopChance(r.p, PM_CUTS[r.p][Number(k[1])], pmPick(r), r.ts)
       : k === 'best' ? (r.out ? r.out[2] || 999 : null)
-      : k === 'pk' ? pickOf(r) : r[k];
+      : k === 'mp' ? (r.y ? null : pmPick(r)) : r[k];
     const fmtCell = (r, k) => {
       const v = get(r, k);
       // A real button, so the card opens from the keyboard too; the row click is the mouse shortcut.
@@ -12804,13 +12754,12 @@
           onclick:(e) => { e.stopPropagation(); openRow(r); } }, v),
         r.sch || r.id ? h('span', { class:'muted prm-school' }, [r.sch, r.id ? `NFL, ${r.y} pick ${r.pk}` : null].filter(Boolean).join(' · ')) : null);
       if (k.startsWith('st.')) return stat.find(s => `st.${s[0]}` === k)[2](v);
-      if (/^r\d$/.test(k)) return pmPct(v);
       if (k === 'ba') return pmNum(1)(v);
       if (k === 'best') return v == null ? '·' : v === 999 ? h('span', { class:'muted' }, 'none') : `${r.p}${v}`;
-      if (v != null && !r.id && (k === 't12' || k === 't24')) return h('span', { class:'muted',
-        title:capOf(r).pick ? `From mock pick ${capOf(r).pick}` : 'No mock pick yet: college profile alone, if drafted' }, `~${pmPct(v)}`);
-      if (k === 't12' || k === 't24') return pmPct(v);
-      if (v != null && !r.id && k === 'pk') return h('span', { class:'muted' }, `~${v}`);
+      if (v != null && !r.id && (k === 't0' || k === 't1')) return h('span', { class:'muted',
+        title:pmPick(r) ? `From mock pick ${Math.round(pmPick(r))}` : 'No mock pick yet: college profile alone, if drafted' }, `~${pmPct(v)}`);
+      if (k === 't0' || k === 't1') return pmPct(v);
+      if (k === 'mp') return v == null ? '·' : String(Math.round(v));
       return v == null ? '·' : String(v);
     };
     const card = h('div', { class:'card' });

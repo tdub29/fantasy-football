@@ -39,25 +39,21 @@ const { collegeProspectBlock, prospectModelBlock, viewProspects, pmPct } = new F
 for (const r of M.college) {
   const t = text(collegeProspectBlock(r));
   assert.match(t, new RegExp(`first eligible for the ${r.cls} draft`, 'i'), `${r.n}: eligibility`);
-  assert(t.includes(pmPct(r.tp)), `${r.n}: his own college-only hit chance`);
+  assert.match(t, new RegExp(`${r.p}\\d+ chance`), `${r.n}: his own top-finish chances`);
   assert(!/Sleeper/.test(t), `${r.n}: no Sleeper identity on a college card`);
 }
 assert(new Set(M.college.map(r => r.cls)).size >= 2, 'both the next class and later classes are covered');
 
-// The verbose trust paragraph is gone (Trevor, 2026-10-04); the shared curve stays as a one-line
-// position reference and the WR early-declare caveat rides on the College % tooltip (2026-10-06).
+// One target everywhere (Trevor, 2026-10-11): the two top-finish chances, QB and TE at 6 and 12,
+// RB and WR at 12 and 24, plus the same chances at fixed picks. No capital, profile or tier score.
 const titles = (n) => find(n, x => x.attrs && x.attrs.title).map(x => x.attrs.title).join(' ');
-const wr = M.college.filter(r => r.p === 'WR').sort((a, b) => b.ts - a.ts);
-const topCard = collegeProspectBlock(wr[0]);
-const top = text(topCard);
-assert.match(top, /If drafted \(one draft-slot curve for every WR\): Round 1 \d+%, Round 2 \d+%, Round 3 \d+%, Day 3 \d+%/);
-assert.doesNotMatch(top, /no calibration check|Read it as optimistic|Once he is drafted|early-declare/);
-const collegeTile = find(topCard, x => x.attrs.class === 'adv-stat' && text(x).startsWith('College %'))[0];
-assert.match(collegeTile.attrs.title, /early-declare flag/);
-assert.equal((titles(topCard).match(/early-declare/g) || []).length, 1, 'caveat sits on the College % tile only');
-assert.notEqual(pmPct(wr[0].tp), pmPct(wr[wr.length - 1].tp));
-const rbCard = collegeProspectBlock(M.college.find(r => r.p === 'RB'));
-assert.doesNotMatch(text(rbCard) + titles(rbCard), /early-declare/);
+for (const [p, c0, c1] of [['QB', 6, 12], ['TE', 6, 12], ['RB', 12, 24], ['WR', 12, 24]]) {
+  const card = collegeProspectBlock(M.college.find(r => r.p === p));
+  const all = text(card) + titles(card);
+  assert.match(all, new RegExp(`${p}${c0} chance .*${p}${c1} chance`), p);
+  assert.match(all, new RegExp(`If drafted, ${p}${c0} / ${p}${c1} chance: pick 16 \\d+% / \\d+%`), p);
+  assert.doesNotMatch(all, /Capital|Profile %|College %|Pre-draft|hit rate|early-declare/, p);
+}
 
 // Table rows open the right card, by keyboard button or row click, for every position and class
 // filter. The Class select is exactly All classes, Future classes and each upcoming year (Trevor,
@@ -108,7 +104,7 @@ for (const pos of ['ALL', 'QB', 'RB', 'WR', 'TE']) {
     }
     if (hist) {
       const heads = find({ attrs: {}, kids: main.kids }, n => n.tag === 'th').map(text);
-      assert(['Class', 'Pick', 'Hit %'].every(x => heads.some(t => t.startsWith(x))), `${pos} ${mode}: drafted rows are marked`);
+      assert(['Class', 'Proj. pick', 'NFL pick', 'Best finish'].every(x => heads.some(t => t.startsWith(x))), `${pos} ${mode}: drafted rows are marked`);
       assert(find({ attrs: {}, kids: main.kids }, n => /prm-school/.test(n.attrs.class || '') && /^(.* · )?NFL, \d{4} pick \d+$/.test(text(n))).length >= nfl.filter(at).length);
     }
     assert.equal(find({ attrs: {}, kids: main.kids }, n => n.tag === 'table').length, rows.length ? 1 : 0, `${pos} ${mode}: one table`);
@@ -128,7 +124,7 @@ assert.match(app, /college \? null : playerInfoBlock\(name, sleeper\)/);   // no
 console.log('prospect-cards.test.js: all assertions passed');
 
 // Card face (2026-10-10): hero band with logo and class rank, bio cells with listed size,
-// a grades panel of bars and letters, and the tier ladder with its n.
+// a grades panel of bars and letters.
 require(path.join(__dirname, '..', 'data', 'college-bio.js'));
 require(path.join(__dirname, '..', 'data', 'prospect.js'));
 for (const p of ['QB', 'RB', 'WR']) {
@@ -146,7 +142,6 @@ for (const p of ['QB', 'RB', 'WR']) {
   const grades = find(card, n => n.attrs.class === 'prm-grade');
   assert(grades.length >= 3, `${p}: grades panel`);
   assert(grades.every(g => /^[A-F][+-]?$|^·$/.test(text(g.kids[3]))), `${p}: letter per grade row`);
-  assert.match(all, /hit rate \d+ players/, `${p}: tier ladder shows n`);
 }
 
 // Drafted players: hit or miss, best finish, and the rung reached, lit once.
@@ -156,6 +151,7 @@ for (const [id, verdict] of [[sid(o => o[0] && o[2] <= 12), 'Hit'], [sid(o => !o
   assert.equal(text(find(card, n => /prm-verdict/.test(n.attrs.class || ''))[0]), verdict, me.n);
   assert.match(text(card), new RegExp(`Best finish ${me.p}${me.out[2]} `), me.n);
   const lit = find(card, n => /prm-bucket on/.test(n.attrs.class || '')).map(text);
-  assert.deepEqual(lit, [verdict === 'Hit' ? `${me.p}1` : `Below ${me.p}3`], me.n);
+  const cuts = { QB:[6, 12], TE:[6, 12], RB:[12, 24], WR:[12, 24] }[me.p];
+  assert.deepEqual(lit, [verdict === 'Hit' ? `Top ${cuts.find(c => me.out[2] <= c)}` : `Below top ${cuts[1]}`], me.n);
 }
 console.log('prospect-cards.test.js: card face assertions passed');
