@@ -34,13 +34,13 @@ const SRC = [
   slice('function playerValue(', '  // Value of a single asset'),
   slice('function isPickKey', '\n  // Team-agnostic player search'),
   slice('function tradeTitleWhatIf', '  // Middle summary builds DOM once'),
-  slice("  // Project a roster's on-field team strength at horizon N.", '  // ROUTE: Action Center'),
+  slice('function tradedRoster(', '  // ROUTE: Action Center'),
   slice('function projUnitData()', 'function buildWhatIfTray'),
   slice('  // Trade Finder. Iterates reasonable packages', '  // Last run per league'),
 ].join('\n');
 const load = (window, RANKED = []) => new Function('window', 'RANKED', SRC + `
   return { KT, SIM, tradeLineupImpact, simulateRosterStrength, championshipOdds, titleOddsByYear, tradeTitleWhatIf,
-    findTrades, simPool };`)(window, RANKED);
+    findTrades, simPool, titleOddsByYear, projectLeagueForward, pickKey };`)(window, RANKED);
 
 const roster = (id, players, wins = 0, losses = 0) => ({ roster_id: id, team_name: `T${id}`, is_me: id === 1,
   players, taxi: [], reserve: [], wins, losses, ties: 0, fpts: 0 });
@@ -188,6 +188,26 @@ const weeks = (w, nulls = 0) => Array.from({ length: 9 }, (_, i) => (i >= 3 && i
   // Control: a swap that empties nothing still reads as the gain it is.
   const up = DH.simulateRosterStrength(dl, 1, new Set(['mW2']), new Set(['bW']));
   assert(up.delta > 0, `a straight WR upgrade must still read stronger: ${up.before} -> ${up.after}`);
+
+  // Championship ranks and playoff rates use the same season run, not market value.
+  const outlook=DH.titleOddsByYear(dl,{years:6,sims:60});
+  assert.equal(outlook.length,6);
+  assert.equal(outlook[5].season-outlook[0].season,5);
+  for(const y of outlook){
+    assert(Math.abs([...y.byRoster.values()].reduce((a,b)=>a+b,0)-1)<1e-9);
+    for(const [rid,chance]of y.byRoster){
+      assert.equal(y.ranks.get(rid),1+[...y.byRoster.values()].filter(x=>x>chance).length);
+      assert(y.playoff.get(rid)>=chance && y.playoff.get(rid)<=1);
+    }
+  }
+  const picksLeague={...dl,drafts:[{season:'2026',status:'complete',settings:{rounds:4}}]};
+  const pick=DH.pickKey('2028',2,1);
+  const swapPicks=DH.tradeTitleWhatIf(1,2,new Set([pick]),new Set(['bW']),picksLeague);
+  assert.deepEqual(swapPicks[1].spendPicks,[pick]);
+  assert.equal(swapPicks[2].gainPicks[0].originRosterId,1);
+  const forward=DH.projectLeagueForward(picksLeague,2,swapPicks,null).extraPoints;
+  assert(!forward.get(1).some(p=>p.name===pick),'seller cannot keep converted traded pick');
+  assert.equal(forward.get(2).filter(p=>p.name===pick).length,1,'buyer receives exactly one converted pick');
 
   // ---- M: trade-sim.js prices 2026 on the Trade Lab's inputs -----------------
   // The Lab's inputs are every data file index.html loads; the simulator is the

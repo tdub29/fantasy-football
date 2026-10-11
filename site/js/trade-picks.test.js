@@ -30,6 +30,38 @@ const rosterOwnedPicks = new Function(
 ${app.slice(start, end)}; return rosterOwnedPicks;`,
 )(() => 1, draftPickLabel, {});
 
+// Linked accounts need their native future slate even before Sleeper lists
+// next season's draft. The latest configured league draft supplies its rounds.
+const linkedOwnedPicks = new Function(
+  'pickValue', 'draftPickLabel', 'window', 'Date',
+  `${isDyn}\n${app.slice(start, end)}; return rosterOwnedPicks;`,
+)(() => 1, draftPickLabel, { FF_ACCOUNT: {} }, class extends Date { getFullYear() { return 2026; } });
+const taco = dataContext.window.LEAGUES.find(item => item.short_name === 'Password is taco');
+const tacoRoster = taco.rosters.find(item => item.is_me);
+const linkedPicks = linkedOwnedPicks(tacoRoster.roster_id, taco);
+const linkedKeys = new Set(linkedPicks.map(p => `${p.season}:${p.round}:${p.originRosterId}`));
+assert(linkedKeys.has('2027:4:10'), 'linked Taco missing untraded own 2027 fourth');
+assert(linkedKeys.has('2028:2:10'), 'linked Taco missing own 2028 second');
+assert(!linkedPicks.some(p => p.season === '2026'), 'completed Taco picks must stay retired');
+for (const trade of taco.traded_picks.filter(p => ['2027', '2028'].includes(p.season))) {
+  const key = `${trade.season}:${trade.round}:${trade.roster_id}`;
+  if (trade.roster_id === tacoRoster.roster_id && trade.owner_id !== tacoRoster.roster_id)
+    assert(!linkedKeys.has(key), 'linked Taco must not reclaim traded-away picks');
+  if (trade.owner_id === tacoRoster.roster_id)
+    assert(linkedKeys.has(key), 'linked Taco must keep acquired/returned picks');
+}
+assert.equal(linkedKeys.size, linkedPicks.length, 'linked Taco pick keys must remain unique');
+const twoRounds = linkedOwnedPicks(tacoRoster.roster_id, {
+  ...taco, traded_picks: [], drafts: [
+    ...taco.drafts,
+    { season: '2027', status: 'pre_draft', settings: { rounds: 2 } },
+  ],
+});
+assert.equal(twoRounds.length, 4, 'explicit future two-round settings must override prior four rounds');
+assert(twoRounds.every(p => p.round <= 2), 'later seasons inherit latest known round settings');
+assert.equal(linkedOwnedPicks(tacoRoster.roster_id, { ...taco, drafts: [], traded_picks: [] }).length, 0,
+  'unknown linked draft settings must not invent native picks');
+
 const league = dataContext.window.LEAGUES.find(item => item.short_name === 'yuH');
 const roster = league.rosters.find(item => item.is_me);
 const picks = rosterOwnedPicks(roster.roster_id, league);

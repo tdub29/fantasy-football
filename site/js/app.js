@@ -2895,7 +2895,7 @@
     // read this trajectory: projected starting-lineup value for CURRENT_SEASON..+4
     // (position-aware aging, best-K re-picked each year, owned picks folded in once
     // they convert). year-0 == PV, last year == FV.
-    const TRAJ_YEARS = 5;
+    const TRAJ_YEARS = 6;
     const trajLabels = [];
     for (let y = 0; y < TRAJ_YEARS; y++) trajLabels.push(String(CURRENT_SEASON + y));
 
@@ -2926,7 +2926,7 @@
     const forecast = standingsForecast(lg);
     const ppwOf = id => forecast.ok ? forecast.rows.get(id).ppw : null;
     const byPts = !lgDynasty && computed.every(c => Number.isFinite(ppwOf(c.r.roster_id)));
-    computed.sort((a,b) => byPts ? ppwOf(b.r.roster_id) - ppwOf(a.r.roster_id) : b.st - a.st);
+    computed.sort((a,b) => lgDynasty && forecast.ok ? forecast.rows.get(b.r.roster_id).title - forecast.rows.get(a.r.roster_id).title : byPts ? ppwOf(b.r.roster_id) - ppwOf(a.r.roster_id) : b.st - a.st);
     // Common sparkline scale across all teams. Zoom the y-axis to the actual
     // [min,max] across every team-year rather than starting at 0, dynasty
     // value only swings ~5-20% over 3 years, so a 0-based axis flattens the
@@ -2943,12 +2943,12 @@
     // caption that explains the panel belongs inside it rather than floating on
     // the turf above it.
     const standings = h('div', { class:'card standings-list' });
-    const sortState = { key: byPts ? 'ppw' : 'pv', dir:'desc' };
+    const sortState = { key: lgDynasty && forecast.ok ? 'title' : byPts ? 'ppw' : 'pv', dir:'desc' };
     const sortBar = h('div', { class:'standings-sort', role:'group', 'aria-label':'Sort standings' });
     // Redraft has no future lineup, so "future" would sort by the same number.
     const projMaxPf = forecast.ok && [...forecast.rows.values()].every(f => Number.isFinite(f.maxPf));
     const sortOptions = [
-      ...(lgDynasty ? [['pv', 'Strength now'], ['fv', 'Future strength']] : byPts ? [['ppw', 'Strength (proj pts/wk)'], ['pv', 'Lineup value']] : [['pv', 'Strength']]),
+      ...(lgDynasty ? [['pv', 'Lineup market value'], ['fv', 'Future market value']] : byPts ? [['ppw', 'Strength (proj pts/wk)'], ['pv', 'Lineup value']] : [['pv', 'Strength']]),
       ['record', 'Record'], ...(forecast.ok ? [...(lgDynasty && ppwOf(lg.rosters[0].roster_id) != null ? [['ppw', 'Proj pts/wk']] : []), ['projected', 'Projected wins'], ['playoff', 'Playoff chance'], ...(forecast.byes ? [['bye', 'Bye chance']] : []), ['title', 'Champ chance'], ...(forecast.rookie ? [['first', '1.01 chance']] : []), ...(projMaxPf ? [['projMaxPf', 'Projected Max PF']] : [])] : []), ['pf', 'Points for'], ...(lg.rosters.some(x => Number.isFinite(x.ppts)) ? [['maxPf', 'Max PF']] : []), ['diff', 'Point differential'], ['pa', 'Points against'],
     ];
     const sortSelect = h('select', { 'aria-label':'Sort teams by' }, ...sortOptions.map(([key, label]) =>
@@ -2974,9 +2974,18 @@
     ];
     const tableBody = h('tbody');
     const applyStandingsSort = () => {
-      sortStandingRows(standings.querySelectorAll('.strength-row'), sortState.key, sortState.dir)
-        .forEach(row => standings.appendChild(row));
-      sortStandingRows(tableBody.children, sortState.key, sortState.dir).forEach(tr => tableBody.appendChild(tr));
+      const update = (rows, parent) => {
+        const ordered = sortStandingRows(rows, sortState.key, sortState.dir);
+        for (const row of ordered) {
+          const value=Number(row.dataset[sortState.key]);
+          const rank=1+ordered.filter(other=>sortState.dir==='desc' ? Number(other.dataset[sortState.key])>value : Number(other.dataset[sortState.key])<value).length;
+          const cell=row.querySelector('.rank');
+          if(cell)cell.textContent=Number.isFinite(value)?`#${rank}`:'Unavailable';
+          parent.appendChild(row);
+        }
+      };
+      update(standings.querySelectorAll('.strength-row'),standings);
+      update(tableBody.children,tableBody);
       dirButton.textContent = sortState.dir === 'desc' ? 'High first ↓' : 'Low first ↑';
       dirButton.setAttribute('aria-label', `Order ${dirButton.textContent.toLowerCase()}`);
     };
@@ -2988,7 +2997,7 @@
     standings.appendChild(sortBar);
     standings.appendChild(h('p', { class:'tip standings-note' },
       lgDynasty
-        ? `Starting-lineup value projected ${trajLabels[0]} to ${trajLabels[TRAJ_YEARS-1]} (position-aware aging, best-K re-picked each year, owned picks fold in once they convert). Year 1 = PV, year 5 = FV.`
+        ? 'Default rank is championship probability. Choose Charts to compare odds, projected points or dynasty market value. Future seasons are modeled scenarios.'
         : byPts ? 'Strength = projected points per remaining week, mean of the simulated seasons (weekly ROS projections, byes, injuries). Lineup value, the best legal lineup today, is a sort option.'
         : 'Best legal starting lineup today (positions respected, taxi/IR/Out benched). Redraft, so there is no multi-year projection.'));
     standings.appendChild(h('details', { class:'standings-forecast-help' },
@@ -2997,7 +3006,7 @@
         ? `${forecast.sims.toLocaleString()} simulated seasons, seed 20260807. Completed W1-${forecast.completed} results preserved. Expected final W-L-T shown as fractional means; ties count half a win for seeding. Record, then points for, higher points against, and a seeded coin flip for exact ties. ${forecast.teams} playoff places, ${forecast.byes} first-round byes. ${forecast.median ? 'Includes the league median game each week. ' : ''}Same ${forecast.src === 'blend' ? 'league-scored season blend' : 'weekly ROS'} model as Projections, known weekly absences/byes (unfilled slots score zero) plus simulated injuries, player-season uncertainty and team/stack correlations. Forecast estimates are not historically calibrated probabilities. Roster changes and commissioner overrides are not modeled. Monte Carlo error alone is up to about 2 percentage points at 95% confidence. Weekly source: ${window.WEEKLY_RANKINGS?.liveWeek || window.WEEKLY_RANKINGS?.currentWeek || '?'}; roster/source freshness is in the data panel.`
         : 'No numeric forecast is shown when rules, records, matchups or weekly lineup coverage are unsupported.')));
     standings.appendChild(h('div', { class:'standings-table-wrap' }, h('p', { class:'standings-swipe' }, 'Swipe sideways for more columns ›'), h('table', { class:'standings-table' },
-      h('thead', null, h('tr', null, h('th', null, '#'), h('th', { class:'team' }, 'Team'), lgDynasty ? h('th', { title:'Starting-lineup value, this year to five years out' }, 'Trend') : null, ...tableCols.map(([label]) => h('th', null, label)))),
+      h('thead', null, h('tr', null, h('th', null, '#'), h('th', { class:'team' }, 'Team'), lgDynasty ? h('th', { class:'standings-chart-head', title:'Selected chart metric, now through five years out' }, 'Trend') : null, ...tableCols.map(([label]) => h('th', null, label)))),
       tableBody)));
     computed.forEach((row, i) => {
       const r = row.r, s = row.s, st = row.st;
@@ -3021,7 +3030,7 @@
       const tDir = tPct >= 4 ? 'up' : tPct <= -10 ? 'down' : 'flat';
       const tColor = tDir === 'up' ? 'var(--green)' : tDir === 'down' ? 'var(--amber)' : 'var(--blue)';
       const tLabel = tDir === 'up' ? 'RISING' : tDir === 'down' ? 'AGING' : 'STEADY';
-      const spark = h('div', { class:'str-spark' }, ...traj.map((v, yi) =>
+      const spark = h('div', { class:'str-spark', dataset:{rosterId:r.roster_id} }, ...traj.map((v, yi) =>
         h('div', { class:'sp-bar-wrap', title:`${trajLabels[yi]}: ${fmt.decimal(v, 0)}` },
           h('span', { class:'sp-bar-val tnum' }, fmt.decimal(v, 0)),
           h('div', { class:'sp-bar', style:{ height: trajH(v) + '%', background: tColor, opacity: yi === traj.length - 1 ? 1 : 0.55 } }))));
@@ -3029,6 +3038,7 @@
       const strengthRow = h('div', {
         class:`strength-row ${isMe?'you':''}`,
         dataset:{
+          rosterId:r.roster_id,
           strengthRank:i + 1,
           pv:st,
           fv:row.fv,
@@ -3047,7 +3057,7 @@
         },
         onclick:()=>navigate(`#roster/${lg.id}/${r.roster_id}`),
       },
-        h('div', { class:'rank', title: byPts ? 'Strength rank by projected points per week' : 'Strength rank by current starting-lineup value' }, `#${i+1}`),
+        h('div', { class:'rank', title: 'League rank for selected sort metric' }, `#${i+1}`),
         h('div', { class:'team' },
           h('div', { class:'team-name' },
             r.team_name,
@@ -3114,6 +3124,60 @@
         ...tableCols.map(([, value]) => h('td', { class:'tnum' }, value(r, st)))));
     });
     main.appendChild(standings);
+    if (lgDynasty) {
+      const metrics = {value:{label:'Dynasty lineup value',sort:'pv'},title:{label:'Championship odds',sort:'title'},playoff:{label:'Playoff odds',sort:'playoff'},bye:{label:'Bye odds',sort:'bye'},ppw:{label:'Projected pts/week',sort:'ppw'}};
+      const key=accountKey(`standings-chart-metric:${lg.id}`);
+      let selected=forecast.ok?'title':'value', odds=null, run=null;
+      const pointsAvailable=forecast.ok&&[...forecast.rows.values()].every(r=>Number.isFinite(r.ppw));
+      const available=id=>id==='value'||(forecast.ok&&(id!=='ppw'||pointsAvailable)&&(id!=='bye'||forecast.byes>0));
+      try { const saved=localStorage.getItem(key); if(metrics[saved]&&available(saved)) selected=saved; } catch {}
+      const select=h('select',{'aria-label':'Rankings chart metric'},...Object.entries(metrics).map(([id,m])=>h('option',{value:id,selected:id===selected?'':null,disabled:!available(id)?'':null},m.label)));
+      const note=h('p',{class:'tip standings-chart-note',role:'status','aria-live':'polite'});
+      sortBar.appendChild(h('label',{class:'standings-sort-label'},h('span',null,'Charts'),select));
+      standings.insertBefore(note,standings.querySelector('.standings-table-wrap'));
+      const loadOdds=()=>run||(run=(async()=>{
+        const rows=[], steps=titleOddsSteps(lg,{years:trajYears,sims:2500,currentSims:4000});
+        for(let y=0;y<trajYears;y++){
+          await new Promise(resolve=>setTimeout(resolve,0));
+          if(!standings.isConnected) throw new Error('View closed');
+          rows.push(steps.next().value);
+        }
+        odds=rows;
+      })().finally(()=>{run=null;}));
+      const draw=async()=>{
+        const metric=selected, percentage=metric==='title'||metric==='playoff'||metric==='bye';
+        standings.querySelectorAll('.str-spark').forEach(el=>{el.style.visibility='hidden';});
+        sortState.key=metrics[metric].sort;sortState.dir='desc';sortSelect.value=sortState.key;applyStandingsSort();
+        for(const row of standings.querySelectorAll('.strength-row')){
+          const id=Number(row.dataset.rosterId),value=metric==='value'?Number(row.dataset.pv):forecast.rows.get(id)?.[metric];
+          const score=row.querySelector('.score');
+          if(score){score.textContent=Number.isFinite(value)?(percentage?forecastPct(value):fmt.decimal(value,1)):'Unavailable';score.title=metrics[metric].label;}
+          row.querySelectorAll('.score-cell .delta,.score-cell .arch').forEach(el=>{el.hidden=metric!=='value';});
+        }
+        if(metric!=='value'&&!odds){
+          standings.querySelectorAll('.str-spark').forEach(el=>{el.style.visibility='hidden';});
+          note.textContent=`Calculating ${metrics[metric].label.toLowerCase()} by season...`;
+          try {await loadOdds();} catch {if(standings.isConnected&&selected===metric)note.textContent='Could not calculate chart. Select metric again to retry.';return;}
+          if(!standings.isConnected||selected!==metric)return;
+        }
+        const field=metric==='title'?'byRoster':metric;
+        const series=new Map(computed.map(c=>[c.r.roster_id,metric==='value'?c.traj:odds.map(y=>y[field]?.get(c.r.roster_id)??null)]));
+        const values=[...series.values()].flat();
+        if(values.some(v=>!Number.isFinite(v))){note.textContent='Chart unavailable: projection coverage is incomplete.';return;}
+        const max=percentage?1:Math.max(1,...values),format=v=>percentage?`${(v*100).toFixed(1)}%`:fmt.decimal(v,1);
+        for(const spark of standings.querySelectorAll('.str-spark')){
+          const data=series.get(Number(spark.dataset.rosterId));
+          [...spark.children].forEach((wrap,y)=>{wrap.title=`${trajLabels[y]} ${metrics[metric].label}: ${format(data[y])}`;wrap.querySelector('.sp-bar-val').textContent=format(data[y]);const bar=wrap.querySelector('.sp-bar');bar.style.height=`${Math.max(0,data[y])/max*100}%`;bar.dataset.valueColor ||= bar.style.background;bar.style.background=metric==='value'?bar.dataset.valueColor:'var(--blue)';});
+          spark.style.visibility='visible';
+        }
+        const trend=standings.querySelector('.standings-chart-head');
+        if(trend){trend.textContent=metrics[metric].label;trend.title=`${metrics[metric].label} by season, now through five years out.`;}
+        note.textContent=`${metrics[metric].label}, ${trajLabels[0]}-${trajLabels[trajYears-1]}. ${percentage?'Scale 0-100%.':'Bars start at zero.'} ${metric==='value'?'Market-value aging scenario, not winning probability.':'Same season simulator as standings and Trade Lab; future years are age/pick scenarios, not known future rosters.'}`;
+        sortState.key=metrics[metric].sort;sortState.dir='desc';sortSelect.value=sortState.key;applyStandingsSort();
+      };
+      select.onchange=()=>{selected=select.value;try{localStorage.setItem(key,selected);}catch{}draw();};
+      draw();
+    }
     const sp = fantasySosPanel(lg);
     if (sp) main.appendChild(sp);
     // IDP leagues get the mirror grid: which offences feed defenders. Returns
@@ -7595,7 +7659,7 @@
     // own first-season run (same seed, same what-if, SIM.tradeSimBudget split over
     // its horizon), so the row shows exactly what the Lab will. The 800-sim screen
     // alone showed a partner +0.1 that the Lab read -1.2.
-    const labSims = SIM.tradeSimBudget / (dyn ? 3 : 1);
+    const labSims = dyn ? 4000 : SIM.tradeSimBudget;
     const base = run(sims, null);
     const myFvNow = dyn ? projectedTradeStrength(lg, me.roster_id, none, none, Y) : 0;
     const proposals = [];
@@ -9249,39 +9313,6 @@
     };
     setImp(m.lineupA, impA); setImp(m.lineupB, impB);
 
-    // 3-year outlook. For each year horizon, net Δ for each side =
-    // value of pieces RECEIVED (projected forward) − value SENT (projected
-    // forward). Side A receives bSet, sends aSet (and vice versa).
-    // Redraft renders no year rows: there is no next season to age into.
-    const aIsValid = aSet.size > 0 && bSet.size > 0;
-    for (const [yr, n] of m.yearRows) {
-      if (!aIsValid) {
-        yr.aCell.textContent = '·'; yr.bCell.textContent = '·';
-        yr.aSub.textContent  = '';  yr.bSub.textContent  = '';
-        yr.aCell.style.color = 'var(--fg-3)'; yr.bCell.style.color = 'var(--fg-3)';
-        continue;
-      }
-      // Symmetric by construction: at horizon n, A's received-pile value is
-      // exactly B's sent-pile value (it's the same set of assets aged the
-      // same way). So we compute each pile once and assign both perspectives.
-      const aReceives = projectSideValue(bSet, lg, n);
-      const aSends    = projectSideValue(aSet, lg, n);
-      const netA = aReceives - aSends;
-      const netB = aSends - aReceives;
-      yr.aCell.textContent = (netA >= 0 ? '+' : '') + fmt.decimal(netA, 1);
-      yr.bCell.textContent = (netB >= 0 ? '+' : '') + fmt.decimal(netB, 1);
-      yr.aCell.style.color = Math.abs(netA) < 1 ? 'var(--fg-2)' : netA >= 0 ? 'var(--green)' : 'var(--red)';
-      yr.bCell.style.color = Math.abs(netB) < 1 ? 'var(--fg-2)' : netB >= 0 ? 'var(--green)' : 'var(--red)';
-      // Total team strength + rank in the league at year n, post-trade.
-      const ranks = projectedTradeRanks(lg, {
-        rosterId: TRADE_STATE.sideA.rosterId, send: aSet, recv: bSet,
-      }, {
-        rosterId: TRADE_STATE.sideB.rosterId, send: bSet, recv: aSet,
-      }, n);
-      yr.aSub.textContent = `${fmt.decimal(ranks.aTotal, 0)} · #${ranks.aRank}/${ranks.total}`;
-      yr.bSub.textContent = `${fmt.decimal(ranks.bTotal, 0)} · #${ranks.bRank}/${ranks.total}`;
-    }
-
     // Preview vs committed visual
     refs.middle.node.classList.toggle('preview', !!(previewSide && previewKey));
   };
@@ -9600,16 +9631,20 @@
     for (let y = calYear; y <= calYear + horizon + 2 && seasons.length < horizon; y++) {
       if (!completed.has(String(y))) seasons.push(String(y));
     }
-    const draftRounds = Math.max(window.FF_ACCOUNT ? 0 : 4, ...(league.drafts || [])
-      .filter(d => seasons.includes(String(d.season)))
-      .map(d => Number(d.settings?.rounds) || 0));
-    const rounds = Array.from({ length: draftRounds }, (_, i) => i + 1);
+    // Sleeper can list only the completed current draft. Carry its configured
+    // rounds into future seasons; linked accounts otherwise seed zero own picks.
+    const configuredDrafts = (league.drafts || [])
+      .filter(d => Number.isInteger(Number(d.settings?.rounds)) && Number(d.settings.rounds) > 0)
+      .slice().sort((a, b) => Number(b.season) - Number(a.season) || (Number(b.start_time) || 0) - (Number(a.start_time) || 0));
     // Default ownership: each roster owns its own picks across each (season, round)
     // Then apply traded_picks: a pick has roster_id (originator), previous_owner_id,
     // owner_id (current). For each roster, the picks they currently own are:
     //   default own slate, MINUS any default pick where they are previous_owner and not current
     //   PLUS any traded pick where they are current owner.
     for (const season of seasons) {
+      const configured = configuredDrafts.find(d => Number(d.season) <= Number(season));
+      const draftRounds = configured ? Number(configured.settings.rounds) : (window.FF_ACCOUNT ? 0 : 4);
+      const rounds = Array.from({ length: draftRounds }, (_, i) => i + 1);
       for (const round of rounds) {
         // Their own pick (originator = rosterId, season+round)
         // Find traded record for this exact pick
@@ -9720,7 +9755,9 @@
     // Redraft picks do not exist as tradeable assets, so the pick pool is empty
     // there and the Picks card never renders.
     const dyn = isDynastyLeague(lg);
-    const ownedPicks = (roster && dyn) ? rosterOwnedPicks(roster.roster_id, lg) : [];
+    // Sleeper allows the current draft plus three future years, not only two classes.
+    const ownedPicks = (roster && dyn) ? rosterOwnedPicks(roster.roster_id, lg, 4)
+      .filter(p => Number(p.season) <= new Date().getFullYear() + 3) : [];
     const pickByKey = new Map(ownedPicks.map(p => [pickKey(p.season, p.round, p.originRosterId), p]));
 
     // Cached row factory for the pile (called when adding a row to pile).
@@ -9985,6 +10022,14 @@
       [bRosterId]: { drop: players(bSet), add: players(aSet) },
     };
     if (lg) {
+      const picks = set => [...set].filter(isPickKey).map(k => {
+        const p = parsePickKey(k);
+        return {...p,label:draftPickLabel(p.season,p.round,p.originRosterId,lg),value:pickValue(p.season,p.round,p.originRosterId,lg)};
+      });
+      out[aRosterId].spendPicks = [...aSet].filter(isPickKey);
+      out[bRosterId].spendPicks = [...bSet].filter(isPickKey);
+      out[aRosterId].gainPicks = picks(bSet);
+      out[bRosterId].gainPicks = picks(aSet);
       const find = (id) => lg.rosters.find(r => String(r.roster_id) === String(id));
       const a = waiverAdds(lg, find(aRosterId), new Set(players(aSet)), players(bSet));
       out[aRosterId].add.push(...a);
@@ -10053,7 +10098,8 @@
     let baselineOdds = null;
     // Redraft prices one season: rosters do not carry over, so no 2027 row.
     const dyn = isDynastyLeague(lg);
-    const TITLE_YEARS = dyn ? 3 : 1, TITLE_SIMS = SIM.tradeSimBudget / TITLE_YEARS;
+    const TITLE_YEARS = dyn ? 6 : 1, TITLE_SIMS = SIM.tradeSimBudget / (dyn ? 3 : 1);
+    const CURRENT_SIMS = dyn ? 4000 : TITLE_SIMS; // Dynasty current season matches standingsForecast.
     let titleRows = [];
     // Paints one { a, b } per season, each side's { before, after, delta, se }
     // (percentage points, paired SE), and tags the block with the trade it is for.
@@ -10064,9 +10110,12 @@
       const tone = (d, band) => inside(d, band) ? 'var(--fg-2)' : d > 0 ? 'var(--green)' : 'var(--red)';
       const paint = (cell, sub, d) => {
         const band = SIM.titleBandZ * d.se;
-        cell.textContent = `${d.delta >= 0 ? '+' : ''}${d.delta.toFixed(1)}`;
+        cell.textContent = `Champ ${(d.before * 100).toFixed(1)}% → ${(d.after * 100).toFixed(1)}%`;
         cell.style.color = tone(d.delta, band);
-        sub.textContent = `${(d.before * 100).toFixed(1)}% \u2192 ${(d.after * 100).toFixed(1)}% \u00b1${band.toFixed(1)}`;
+        const rank = d.beforeRank == null ? 'Rank: run full outlook' : `Rank #${d.beforeRank} → #${d.afterRank}/${lg.rosters.length} (${d.beforeRank > d.afterRank ? `up ${d.beforeRank-d.afterRank}` : d.beforeRank < d.afterRank ? `down ${d.afterRank-d.beforeRank}` : 'unchanged'})`;
+        const playoff = d.playoffBefore == null ? 'Playoff: run full outlook' : `Playoff ${(d.playoffBefore*100).toFixed(1)}% → ${(d.playoffAfter*100).toFixed(1)}%`;
+        const bye = d.byeBefore == null ? (from==='finder'?'Bye: run full outlook':'Bye: N/A') : `Bye ${(d.byeBefore*100).toFixed(1)}% → ${(d.byeAfter*100).toFixed(1)}%`;
+        sub.textContent = `${rank}\n${playoff}\n${bye}\nTitle Δ ${d.delta>=0?'+':''}${d.delta.toFixed(1)} pp ±${band.toFixed(1)} pp`;
         return band;
       };
       let totA = 0, totB = 0, varA = 0, varB = 0;
@@ -10084,27 +10133,42 @@
       node.dataset.oddsFrom = from;
       out.title = { key, a: totA, b: totB, sigA: !inside(totA, bandA), sigB: !inside(totB, bandB) };
     };
-    const runTitleOdds = h('button', { type:'button', class:'trade-title-run', onclick: () => {
-      const aSet = TRADE_STATE.sideA.picks, bSet = TRADE_STATE.sideB.picks;
+    const runTitleOdds = h('button', { type:'button', class:'trade-title-run', onclick: async () => {
+      const aSet = new Set(TRADE_STATE.sideA.picks), bSet = new Set(TRADE_STATE.sideB.picks);
       if (!aSet.size || !bSet.size) { titleMeta.textContent = 'Add assets to both sides first.'; return; }
       const aRosterId = TRADE_STATE.sideA.rosterId, bRosterId = TRADE_STATE.sideB.rosterId;
+      const coverage = standingsForecast(lg);
+      if (!coverage.ok) { titleMeta.textContent = coverage.reason || 'Scoring or weekly coverage is unavailable.'; return; }
       const whatIf = tradeTitleWhatIf(aRosterId, bRosterId, aSet, bSet, lg);
       const key = tradeOddsKey();
       runTitleOdds.disabled = true;
       runTitleOdds.textContent = 'Running...';
-      titleMeta.textContent = `Simulating ${dyn ? `${TITLE_YEARS} seasons` : `the rest of ${CURRENT_SEASON}`}, ${TITLE_SIMS.toLocaleString()} times each, before and after.`;
-      setTimeout(() => {
+      titleMeta.textContent = `Simulating ${dyn ? `${TITLE_YEARS} seasons` : `the rest of ${CURRENT_SEASON}`}: ${CURRENT_SIMS.toLocaleString()} current-season${dyn ? `, ${TITLE_SIMS.toLocaleString()} per future year` : ''}, before and after.`;
+      await new Promise(resolve => setTimeout(resolve, 0));
         try {
           // Same seeds before and after (common random numbers): the draws
           // match, so the change in a cell is the trade, not simulation noise.
-          if (!baselineOdds) baselineOdds = titleOddsByYear(lg, { years:TITLE_YEARS, sims:TITLE_SIMS });
-          const after = titleOddsByYear(lg, { years:TITLE_YEARS, sims:TITLE_SIMS, whatIf });
+          const opts = {years:TITLE_YEARS,sims:TITLE_SIMS,currentSims:CURRENT_SIMS};
+          const baseSteps = baselineOdds ? null : titleOddsSteps(lg,opts), afterSteps = titleOddsSteps(lg,{...opts,whatIf});
+          const before = [], after = [];
+          for (let k=0;k<TITLE_YEARS;k++) {
+            if (key !== tradeOddsKey() || TRADE_STATE._refs?.middle !== out) { titleMeta.textContent='Trade changed. Run odds again.'; return; }
+            before.push(baselineOdds ? baselineOdds[k] : baseSteps.next().value);
+            after.push(afterSteps.next().value);
+            titleMeta.textContent=`Simulated ${CURRENT_SEASON+k}, ${k+1} of ${TITLE_YEARS} seasons.`;
+            await new Promise(resolve=>setTimeout(resolve,0));
+          }
+          if (key !== tradeOddsKey()) { titleMeta.textContent='Trade changed. Run odds again.'; return; }
+          baselineOdds = before;
           const side = (k, rid) => ({ before: baselineOdds[k].byRoster.get(rid) || 0, after: after[k].byRoster.get(rid) || 0,
+            beforeRank: baselineOdds[k].ranks.get(rid), afterRank: after[k].ranks.get(rid),
+            playoffBefore: baselineOdds[k].playoff.get(rid), playoffAfter: after[k].playoff.get(rid),
+            byeBefore: baselineOdds[k].bye.get(rid), byeAfter: after[k].bye.get(rid),
             ...pairedTitleDelta(baselineOdds[k].champions, after[k].champions, rid) });
           showOdds(key, after.map((_, k) => ({ a: side(k, aRosterId), b: side(k, bRosterId) })), 'lab');
           titleMeta.textContent = dyn
-            ? `Change in title odds, percentage points, per season. ${TITLE_SIMS.toLocaleString()} simulations each. `
-              + 'Later seasons age every roster forward and slot draft picks by the simulated finish, so this is where picks show up. Grey is inside the \u00b1 noise band.'
+            ? 'Title and playoff odds before/after trade, per season. '
+              + `${CURRENT_SIMS.toLocaleString()} current-season sims match standings; ${TITLE_SIMS.toLocaleString()} per future season. Rank is by title probability. Future years are scenarios using age curves and modeled rookie picks, not known future rosters. Grey title changes are inside the noise band.`
             : `Change in ${CURRENT_SEASON} title odds, percentage points. ${TITLE_SIMS.toLocaleString()} simulations of the remaining schedule from the current records. Grey is inside the \u00b1 noise band.`;
           KT.refreshMiddle(lg);
         } catch (err) {
@@ -10112,20 +10176,16 @@
           titleMeta.textContent = 'Could not run title odds. Try again.';
         } finally {
           runTitleOdds.disabled = false;
-          runTitleOdds.textContent = 'Run title odds';
+          runTitleOdds.textContent = dyn ? 'Run five-year odds' : 'Run season odds';
         }
-      }, 0);
-    } }, 'Run title odds');
+    } }, dyn ? 'Run five-year odds' : 'Run season odds');
 
-    // 3-year outlook scaffolding. Each year row shows the net change in
-    // dynasty value for each side, after applying age decay to current
-    // players. Color: green if your side gains net value that year, red
-    // if you lose. Picks float (treated as 1.0× per year).
+    // Each season row shows title odds, playoff odds and championship rank.
     const makeYearRow = (label) => {
       const aCell = h('span', { class:'tnum t3y-delta' }, '·');
       const bCell = h('span', { class:'tnum t3y-delta' }, '·');
-      const aSub  = h('div', { class:'tnum t3y-sub'   }, '');
-      const bSub  = h('div', { class:'tnum t3y-sub'   }, '');
+      const aSub  = h('div', { class:'tnum t3y-sub', style:{whiteSpace:'pre-line'} }, '');
+      const bSub  = h('div', { class:'tnum t3y-sub', style:{whiteSpace:'pre-line'} }, '');
       const row = h('div', { class:'t3y-row' },
         h('span', { class:'t3y-label' }, label),
         h('div', { class:'t3y-cell' }, aCell, aSub),
@@ -10135,24 +10195,23 @@
       return { row, aCell, bCell, aSub, bSub };
     };
     titleRows = Array.from({ length: TITLE_YEARS }, (_, k) => makeYearRow(String(CURRENT_SEASON + k)));
-    const yearRows = dyn ? ['Today', '+1 yr', '+2 yr', '+3 yr', '+4 yr', '+5 yr'].map((l, n) => [makeYearRow(l), n]) : [];
 
     const node = h('div', { class:'trade-middle' },
       h('div', { class:'trade-middle-card' },
-        h('div', { class:'tip' }, 'Total Value'),
+        h('div', { class:'tip' }, dyn ? 'Dynasty Asset Value' : 'Total Value'),
         h('div', { style:{ display:'flex', justifyContent:'space-between', fontSize:'1.1rem', fontWeight:700, marginTop:'4px' } },
           aVal,
           h('span', { style:{color:'var(--fg-3)'} }, '⇄'),
           bVal,
         ),
         h('div', { style:{ marginTop:'14px', textAlign:'center' } },
-          h('div', { class:'tip' }, 'Verdict'),
+          h('div', { class:'tip' }, dyn ? 'Market Value Verdict' : 'Season Impact Verdict'),
           verdict,
           fair,
           premiumNote,
         ),
         h('div', { style:{ marginTop:'14px' } },
-          h('div', { class:'tip', style:{ marginBottom:'4px' } }, 'Post-Trade Strength Δ'),
+          h('div', { class:'tip', style:{ marginBottom:'4px' } }, dyn ? 'Lineup Market Value Δ' : 'Post-Trade Strength Δ'),
           h('div', { style:{ display:'flex', justifyContent:'space-between' } }, deltaA, deltaB),
           strengthNote,
         ),
@@ -10165,7 +10224,7 @@
               h('span', { class:'trade-lineup-side-label' }, 'Side B'), lineupB))
         ),
         h('div', { class:'trade-title-odds t3y' },
-          h('div', { class:'tip', style:{ marginBottom:'4px' } }, dyn ? 'Championship odds by season, change in pts' : `${CURRENT_SEASON} championship odds, change in pts`),
+          h('div', { class:'tip', style:{ marginBottom:'4px' } }, dyn ? 'Five-Year Championship & Playoff Outlook' : `${CURRENT_SEASON} Championship & Playoff Odds`),
           h('div', { class:'t3y-head' },
             h('span', { class:'t3y-label' }, ''),
             h('span', { class:'t3y-cell tip' }, 'Side A'),
@@ -10181,17 +10240,6 @@
           runTitleOdds,
           titleMeta,
         ),
-        dyn ? h('div', { class:'t3y' },
-          h('div', { class:'tip', style:{ marginBottom:'4px' } }, 'Year-by-Year Team Strength Δ'),
-          h('div', { class:'t3y-head' },
-            h('span', { class:'t3y-label' }, ''),
-            h('span', { class:'t3y-cell tip' }, 'Side A'),
-            h('span', { class:'t3y-sep' }, ''),
-            h('span', { class:'t3y-cell tip' }, 'Side B'),
-          ),
-          ...yearRows.map(([r]) => r.row),
-          h('div', { class:'tip t3y-note' }, 'Value received minus value sent in each season, not the lineup change (Post-Trade Strength Δ is that); the line under it is the post-trade lineup strength and league rank. Players age via position curve; picks count 0 until their draft year, then convert as age-22 WR and age forward.')
-        ) : null,
         h('div', { style:{ marginTop:'14px' } },
           h('button', { class:'ghost', style:{ width:'100%' }, onclick: () => {
             TRADE_STATE.sideA.picks = new Set(); TRADE_STATE.sideB.picks = new Set();
@@ -10207,12 +10255,12 @@
       ),
     );
     const out = { node, aVal, bVal, verdict, fair, premiumNote, deltaA, deltaB, strengthNote, lineupA, lineupB,
-      titleA, titleB, titleMeta, runTitleOdds, titleRows, yearRows, title: null,
+      titleA, titleB, titleMeta, runTitleOdds, titleRows, title: null,
       // A Finder row's recheck, on this exact trade: the Lab's first season, same seed and sims.
       seed: ({ key, a, b }) => {
         showOdds(key, [{ a, b }], 'finder');
         titleMeta.textContent = `From the Trade Finder run on this trade: ${dyn ? `${CURRENT_SEASON} only, ` : ''}`
-          + `the Lab's own ${TITLE_SIMS.toLocaleString()} simulations and seed. `
+          + `the Lab's own ${CURRENT_SIMS.toLocaleString()} current-season simulations and seed. `
           + (dyn ? 'Run title odds for the later seasons.' : 'Run title odds to re-run it.')
           + ' Grey is inside the ± noise band.';
       } };
@@ -10247,46 +10295,6 @@
     return v;
   }
 
-  // Project a trade-side ON-FIELD contribution at +N years. This is distinct
-  // from the dynasty trade value shown at the top of the calc: a 2027 R1 pick
-  // is worth real dynasty value today (you can trade it), but it does NOT help
-  // you win the 2026 season, it has no on-field contribution until it converts
-  // to a rookie at the 2027 draft.
-  //
-  // Picks model:
-  //   - N < yearsToDraft  → 0 (future pick, not on the field yet)
-  //   - N ≥ yearsToDraft  → converted to rookie. Modeled as an age-22 WR
-  //                         starting at the pick's value, then aged forward.
-  function projectSideValue(keys, lg, yearsOut) {
-    let total = 0;
-    const curYear = new Date().getFullYear();
-    for (const k of keys) {
-      if (isPickKey(k)) {
-        const { season, round, originRosterId } = parsePickKey(k);
-        const yearsToDraft = Math.max(0, parseInt(season, 10) - curYear);
-        if (yearsOut < yearsToDraft) continue; // not on field yet
-        const v = pickValue(season, round, originRosterId, lg);
-        total += projectAssetValue(v, 22, 'WR', yearsOut - yearsToDraft);
-        continue;
-      }
-      const sleeper = window.PLAYERS[k];
-      if (!sleeper) continue;
-      const ranked = rankIndex().bySleeperId.get(k) || rankIndex().byName.get(norm(sleeper.name));
-      if (!ranked) continue;
-      const v = tierValue(ranked, lg);
-      total += projectAssetValue(v, sleeper.age, ranked.pos, yearsOut);
-    }
-    return total;
-  }
-
-  // Project a roster's on-field team strength at horizon N. This IS
-  // startingStrength (PV at year 0, FV after, picks folded in as aged rookies),
-  // so the trade rows read on the standings' scale and fill a legal lineup. A
-  // hand-rolled top-K used to live here and started two QBs in a 1QB league.
-  function projectedRosterStrength(roster, lg, yearsOut) {
-    return roster ? startingStrength(roster, lg, yearsOut, true) : 0;
-  }
-
   // The roster as it looks after a trade: sent players leave the active list and
   // the taxi/IR lists, received players join the active list. Picks are not
   // players, so they are ignored here.
@@ -10297,7 +10305,7 @@
     return { ...roster, players: [...keep(roster.players), ...recv], taxi: keep(roster.taxi), reserve: keep(roster.reserve) };
   }
 
-  // Same as projectedRosterStrength but with a trade swap applied: remove
+  // Future lineup market value but with a trade swap applied: remove
   // sendKeys (players + picks the side is sending), add receiveKeys (players +
   // picks coming in). Used to compute each side's post-trade strength + rank
   // at each year of the outlook.
@@ -10309,29 +10317,6 @@
     for (const k of sendKeys) if (isPickKey(k)) byKey.delete(k);
     for (const k of receiveKeys) if (isPickKey(k) && !byKey.has(k)) { const { season, round, originRosterId } = parsePickKey(k); byKey.set(k, { season, round, originRosterId, value: price ? price(k) : pickValue(season, round, originRosterId, lg) }); }
     return startingStrength(tradedRoster(roster, sendKeys, receiveKeys), lg, yearsOut, true, [...byKey.values()]);
-  }
-
-  // For each year of the outlook, compute both sides' projected total + rank
-  // among the full league. Side A and Side B get the trade applied; the other
-  // rosters project untouched.
-  function projectedTradeRanks(lg, sideA, sideB, yearsOut) {
-    const scored = lg.rosters.map(r => {
-      let s;
-      if (r.roster_id === sideA.rosterId)      s = projectedTradeStrength(lg, r.roster_id, sideA.send, sideA.recv, yearsOut);
-      else if (r.roster_id === sideB.rosterId) s = projectedTradeStrength(lg, r.roster_id, sideB.send, sideB.recv, yearsOut);
-      else                                      s = projectedRosterStrength(r, lg, yearsOut);
-      return { id: r.roster_id, s };
-    }).sort((a, b) => b.s - a.s);
-    const rankOf = (id) => scored.findIndex(x => x.id === id) + 1;
-    const aRow = scored.find(x => x.id === sideA.rosterId);
-    const bRow = scored.find(x => x.id === sideB.rosterId);
-    return {
-      total: scored.length,
-      aTotal: aRow ? aRow.s : 0,
-      aRank:  aRow ? rankOf(sideA.rosterId) : 0,
-      bTotal: bRow ? bRow.s : 0,
-      bRank:  bRow ? rankOf(sideB.rosterId) : 0,
-    };
   }
 
   function simulateRosterStrength(lg, rosterId, removeIds, addIds) {
@@ -13482,10 +13467,10 @@
         const rank = strengthRanks && strengthRanks.get(p.originRosterId != null ? p.originRosterId : ownerRosterId);
         const val = rank ? pickValueBySlot(p.value, rank, teams) : p.value;
         // A converted rookie then ages like a 22-year-old WR.
-        rookies.push({ name: p.label, pos: 'WR', pts: pickRookiePoints(val) * productionRetention('WR', 22, held) });
+        rookies.push({ name: `pick:${p.season}:${p.round}:${p.originRosterId ?? ownerRosterId}`, pos: 'WR', pts: pickRookiePoints(val) * productionRetention('WR', 22, held) });
       };
       for (const p of rosterOwnedPicks(r.roster_id, lg, Math.max(2, yearsOut + 1))) {
-        if (!spent.has(p.label)) convert(p, r.roster_id);
+        if (!spent.has(p.label) && !spent.has(`pick:${p.season}:${p.round}:${p.originRosterId}`)) convert(p, r.roster_id);
       }
       // Picks acquired in the hypothetical trade. Whoever received them gets to
       // convert them, which is exactly the cost of selling your own.
@@ -13505,19 +13490,22 @@
   // forward model as titleEquity (age the league, slot next year's picks by
   // this year's simulated finish), but it keeps all teams, because a trade has
   // two sides and titleEquity only tracks mine.
-  function titleOddsByYear(lg, { years = 3, sims = 2500, whatIf = null, seed = 20260807 } = {}) {
+  function* titleOddsSteps(lg, { years = 3, sims = 2500, currentSims = sims, whatIf = null, seed = 20260807 } = {}) {
     // Redraft rosters do not carry over, so there is no second season to price.
     if (!isDynastyLeague(lg)) years = 1;
-    const out = [];
     let ranks = null;
     for (let y = 0; y < years; y++) {
       const champions = [];
-      const res = championshipOdds(lg, { sims, whatIf, seed: seed + y * 101, yearsOut: y, strengthRanks: ranks, champions });
+      const res = championshipOdds(lg, { sims:y ? sims : currentSims, whatIf, seed: seed + y * 101, yearsOut: y, strengthRanks: ranks, champions });
       ranks = new Map(res.slice().sort((a, b) => b.expPts - a.expPts).map((o, i) => [o.rosterId, i + 1]));
-      out.push({ season: CURRENT_SEASON + y, byRoster: new Map(res.map(o => [o.rosterId, o.title || 0])), champions });
+      yield { season: CURRENT_SEASON + y, byRoster: new Map(res.map(o => [o.rosterId, o.title || 0])),
+        playoff: new Map(res.map(o => [o.rosterId,o.playoff])),
+        bye: new Map(res.map(o => [o.rosterId,res.meta.byes ? o.bye : null])),
+        ppw: new Map(res.map(o => [o.rosterId,(res.meta.regularWeeks-res.meta.played)>0 ? (o.expPts-(res.meta.played ? o.roster.fpts||0 : 0))/(res.meta.regularWeeks-res.meta.played) : null])),
+        ranks: new Map(res.map(o => [o.rosterId,1+res.filter(other=>other.title>o.title).length])), champions };
     }
-    return out;
   }
+  function titleOddsByYear(lg, options) { return [...titleOddsSteps(lg, options)]; }
 
   // Paired change in one roster's title odds between two runs on one seed: season
   // k of both saw the same draws, so the standard error is the spread of the
@@ -13603,8 +13591,8 @@
     });
     const stat = rosters.map(() => ({ playoff: 0, bye: 0, final: 0, title: 0, first: 0, wins: 0, ties: 0, pts: 0, maxPf: 0 }));
     const rnd = mulberry32(seed);   // the fallback random schedule only
-    // A converted pick is named by its label, which two rosters can share.
-    pools.forEach((pool, i) => { for (const a of pool) a.key = simKey(seed, a.pid.startsWith('pick:') ? `${rosters[i].roster_id}:${a.pid}` : a.pid); });
+    // Origin-keyed rookies retain the same individual draws when traded.
+    pools.forEach(pool => { for (const a of pool) a.key = simKey(seed, a.pid); });
     const teamKeys = rosters.map(r => simKey(seed, `team:${r.roster_id}`));
 
     // The season in progress starts from the real standings. Replaying all 14
