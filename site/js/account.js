@@ -113,6 +113,7 @@
         fpts: (s.fpts || 0) + (s.fpts_decimal || 0) / 100,
         fpts_against: (s.fpts_against || 0) + (s.fpts_against_decimal || 0) / 100,
         ppts: s.ppts == null ? null : s.ppts + (s.ppts_decimal || 0) / 100,
+        division: s.division ?? null,
         waiver_budget_used: s.waiver_budget_used || 0, waiver_position: s.waiver_position,
       };
     });

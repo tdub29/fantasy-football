@@ -2961,10 +2961,11 @@
     const sortState = { key: lgDynasty && forecast.ok ? 'title' : byPts ? 'ppw' : 'pv', dir:'desc' };
     const sortBar = h('div', { class:'standings-sort', role:'group', 'aria-label':'Sort standings' });
     // Redraft has no future lineup, so "future" would sort by the same number.
-    const projMaxPf = forecast.ok && [...forecast.rows.values()].every(f => Number.isFinite(f.maxPf));
+    // Max PF only matters where it sets the rookie draft order, so redraft hides it.
+    const projMaxPf = lgDynasty && forecast.ok && [...forecast.rows.values()].every(f => Number.isFinite(f.maxPf));
     const sortOptions = [
       ...(lgDynasty ? [['pv', 'Lineup market value'], ['fv', 'Future market value']] : byPts ? [['ppw', 'Strength (proj pts/wk)'], ['pv', 'Lineup value']] : [['pv', 'Strength']]),
-      ['record', 'Record'], ...(forecast.ok ? [...(lgDynasty && ppwOf(lg.rosters[0].roster_id) != null ? [['ppw', 'Proj pts/wk']] : []), ['projected', 'Projected wins'], ['playoff', 'Playoff chance'], ...(forecast.byes ? [['bye', 'Bye chance']] : []), ['title', 'Champ chance'], ...(forecast.rookie ? [['first', '1.01 chance']] : []), ...(projMaxPf ? [['projMaxPf', 'Projected Max PF']] : [])] : []), ['pf', 'Points for'], ...(lg.rosters.some(x => Number.isFinite(x.ppts)) ? [['maxPf', 'Max PF']] : []), ['diff', 'Point differential'], ['pa', 'Points against'],
+      ['record', 'Record'], ...(forecast.ok ? [...(lgDynasty && ppwOf(lg.rosters[0].roster_id) != null ? [['ppw', 'Proj pts/wk']] : []), ['projected', 'Projected wins'], ['playoff', 'Playoff chance'], ...(forecast.byes ? [['bye', 'Bye chance']] : []), ['title', 'Champ chance'], ...(forecast.rookie ? [['first', '1.01 chance']] : []), ...(projMaxPf ? [['projMaxPf', 'Projected Max PF']] : [])] : []), ['pf', 'Points for'], ...(lgDynasty && lg.rosters.some(x => Number.isFinite(x.ppts)) ? [['maxPf', 'Max PF']] : []), ['diff', 'Point differential'], ['pa', 'Points against'],
     ];
     const sortSelect = h('select', { 'aria-label':'Sort teams by' }, ...sortOptions.map(([key, label]) =>
       h('option', { value:key, selected:key === sortState.key ? '' : null }, label)));
@@ -2976,7 +2977,7 @@
     const tableCols = [
       ['W-L', r => `${r.wins ?? 0}-${r.losses ?? 0}${r.ties ? `-${r.ties}` : ''}`],
       ['PF', r => fmt.decimal(r.fpts ?? 0, 0)],
-      ...(lg.rosters.some(x => Number.isFinite(x.ppts)) ? [['Max PF', r => Number.isFinite(r.ppts) ? fmt.decimal(r.ppts, 0) : '-']] : []),
+      ...(lgDynasty && lg.rosters.some(x => Number.isFinite(x.ppts)) ? [['Max PF', r => Number.isFinite(r.ppts) ? fmt.decimal(r.ppts, 0) : '-']] : []),
       ...(forecast.ok ? [
         ...(ppwOf(lg.rosters[0].roster_id) != null ? [['Pts/wk', r => fmt.decimal(ppwOf(r.roster_id), 1)]] : []),
         ['Proj', r => [fc(r.roster_id).expW, fc(r.roster_id).expL].map(x => x.toFixed(1)).join('-')],
@@ -3098,7 +3099,7 @@
             r.fpts != null ? h('span', { class:'seg ytd', title:'Points scored, season to date' },
               h('span', { class:'tnum ytd-val' }, fmt.decimal(r.fpts, 0)),
               h('span', { class:'ytd-lab' }, 'PF')) : null,
-            Number.isFinite(r.ppts) ? h('span', { class:'seg ytd', title:'Max PF: points from the best possible lineup each week, bench included, season to date' },
+            lgDynasty && Number.isFinite(r.ppts) ? h('span', { class:'seg ytd', title:'Max PF: points from the best possible lineup each week, bench included, season to date' },
               h('span', { class:'tnum ytd-val' }, fmt.decimal(r.ppts, 0)),
               h('span', { class:'ytd-lab' }, 'MAX PF')) : null,
             r.fpts_against != null ? h('span', { class:'seg ytd', title:'Points allowed, season to date' },
@@ -12958,7 +12959,7 @@
     if (ODDS_CACHE.has(key)) return ODDS_CACHE.get(key);
     const me = (lg.rosters || []).find(r => r.is_me);
     const wi = (whatIf.length && me) ? { [me.roster_id]: { add: whatIf, drop: [] } } : null;
-    const res = championshipOdds(lg, { sims, src, whatIf: wi, withMaxPf: true });
+    const res = championshipOdds(lg, { sims, src, whatIf: wi, withMaxPf: isDynastyLeague(lg) });
     ODDS_CACHE.set(key, res);
     return res;
   }
@@ -13862,11 +13863,16 @@
     if (!fw.ok) return fw;
     const src = seasonSrc(lg);
     const slots = seasonSlots(lg);
+    // A slot the roster itself leaves empty (a redraft team with no kicker) is real
+    // and scores 0, as on the platform. Only a slot a rostered player could fill
+    // but whose weekly lines are missing is a data gap that stops the forecast.
     if (fw.remaining.length) for (const r of lg.rosters) {
       const pool = simPool({ ...r, reserve: [], taxi: r.taxi || [] }, lg, src);
       const eligible = pool.filter(a => a.weekly && a.weekly.length >= fw.regularWeeks
         && fw.remaining.some(w => a.weekly[w - 1] != null));
-      if (fillLineup(eligible, slots).length !== slots.length)
+      const bodies = startableIds({ ...r, reserve: [] }).filter(pid => window.PLAYERS?.[pid])
+        .map(pid => ({ pos: projPosGroup(window.PLAYERS?.[pid]?.pos), v: 0 }));
+      if (fillLineup(eligible, slots).length < fillLineup(bodies, slots).length)
         return { ...fw, ok: false, reason: 'Weekly lineup coverage is incomplete.' };
     }
     const res = oddsFor(lg, src, [], sims), meta = res.meta || {};

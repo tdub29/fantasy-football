@@ -1,4 +1,5 @@
-"""Fetch the full-season fantasy schedule for every Sleeper league.
+"""Fetch the full-season fantasy schedule for every Sleeper league (ESPN leagues
+are copied from the schedule build_site_data.py stores on the league record).
 
 Only the schedule is fetched here. The lineup math stays in app.js so it goes
 through the one lineup filler (fillLineup + offenseStartingSlots); duplicating
@@ -52,8 +53,13 @@ def main():
     out = {"leagues": {}}
     for lg in local_leagues():
         if lg.get("platform") == "espn":
-            # ESPN is not on this API. Skipped loudly, not silently.
-            print(f"skip {lg['name']}: ESPN, no Sleeper schedule endpoint")
+            # ESPN is not on this API; build_site_data.py stores its schedule on the league.
+            sched = lg.get("fantasy_schedule")
+            if not sched:
+                print(f"skip {lg['name']}: ESPN, no schedule on the league record")
+                continue
+            out["leagues"][str(lg["id"])] = {"name": lg["name"], **sched}
+            print(f"{lg['name']}: {len(sched['weeks'])} weeks from ESPN, playoffs start wk{sched['playoffStart']}")
             continue
         lid = str(lg["id"])
         settings = get(f"https://api.sleeper.app/v1/league/{lid}") or {}

@@ -82,12 +82,21 @@
       if (positions.some(p => p === 'K' || p === 'DEF')) limitations.push('Kicker and team-defense projections are not covered');
       if (settings.scoringSettings?.scoringType !== 'H2H_POINTS') limitations.push('Scoring format is unavailable in projections');
       const week = Number(raw.status?.currentMatchupPeriod || raw.scoringPeriodId || 1), weeks = {}, opponents = {};
+      const regularWeeks = Number(schedule.matchupPeriodCount) || 0;
+      let lastScored = 0;
       for (const game of raw.schedule || []) {
         const h = game.home?.teamId, a = game.away?.teamId, w = game.matchupPeriodId;
         if (h == null || a == null || !w) continue;
         const pair = weeks[w] || (weeks[w] = {}); pair[h] = a; pair[a] = h;
         if (Number(w) === week) { opponents[h] = a; opponents[a] = h; }
+        if (w <= regularWeeks && ['HOME', 'AWAY', 'TIE'].includes(game.winner)) lastScored = Math.max(lastScored, w);
       }
+      // ESPN playoff rules in the Sleeper settings vocabulary the forecast reads (same
+      // mapping as build_site_data.py). Seeding is record then points for, so only the
+      // TOTAL_POINTS_SCORED tiebreak matches.
+      const divisionCount = (schedule.divisions || []).length > 1 ? schedule.divisions.length : 0;
+      const forecastBlock = schedule.playoffSeedingRule !== 'TOTAL_POINTS_SCORED' ? 'ESPN playoff tiebreaker is not supported by this forecast.'
+        : Number(schedule.matchupPeriodLength) !== 1 ? 'Multi-week matchups are not supported by this forecast.' : null;
       const members = new Map((raw.members || []).map(m => [m.id, m]));
       const rosters = raw.teams.slice().sort((a,b) => a.id-b.id).map(t => {
         const own = members.get(t.primaryOwner || t.owners?.[0]) || {}, ids = [], starters = [], reserve = [];
@@ -102,12 +111,13 @@
         if (['wins','losses','ties','pointsFor','pointsAgainst'].some(k => !Number.isFinite(record[k]))) limitations.push('Some current records are unavailable');
         return { roster_id:t.id, owner_id:`espn-team-${t.id}`, owner_name:own.displayName || own.firstName || 'ESPN owner', team_name:t.name || t.abbrev || `Team ${t.id}`,
           is_me:Number(t.id) === Number(teamId), opponent_roster_id:opponents[t.id] ?? null, players:ids, starters, reserve, taxi:[],
-          wins:record.wins ?? null, losses:record.losses ?? null, ties:record.ties ?? null, fpts:record.pointsFor ?? null, fpts_against:record.pointsAgainst ?? null };
+          wins:record.wins ?? null, losses:record.losses ?? null, ties:record.ties ?? null, fpts:record.pointsFor ?? null, fpts_against:record.pointsAgainst ?? null,
+          division:divisionCount ? (t.divisionId || 0) + 1 : null };
       });
       if (!rosters.some(r => r.is_me)) throw new Error('Choose a team from this ESPN league.');
       if (unmatched.length) limitations.push(`${unmatched.length} roster entries could not be matched to the shared player data`);
       if (!raw.schedule?.length) limitations.push('Matchup schedule unavailable');
-      limitations.push('ESPN playoff forecasting is unavailable for these league rules');
+      if (forecastBlock) limitations.push('ESPN playoff forecasting is unavailable for these league rules');
       const multiWeek = Object.values(schedule.matchupPeriods || {}).some(w => Array.isArray(w) && w.length > 1);
       if (multiWeek) limitations.push('Multi-week matchup projections are unavailable');
       const firstPlayoff = schedule.matchupPeriods?.[Number(schedule.matchupPeriodCount) + 1]?.[0];
@@ -116,7 +126,10 @@
         status:raw.status?.isActive ? 'in_season' : 'pre_draft', total_rosters:rosters.length, roster_positions:positions,
         scoring, espn_scoring:settings.scoringSettings, is_superflex:positions.includes('SUPER_FLEX'), is_idp:false,
         playoff_teams:schedule.playoffTeamCount, playoff_week_start:Number.isInteger(firstPlayoff) ? firstPlayoff : null,
-        espn_schedule_settings:schedule, espn_status:raw.status, forecast_unavailable:'ESPN playoff rules are not supported by this forecast.',
+        divisions:divisionCount, playoff_seed_type:schedule.playoffReseed ? 1 : 0,
+        playoff_round_type:schedule.playoffMatchupPeriodLength === 1 && !schedule.variablePlayoffMatchupPeriodLength ? 0 : 1,
+        start_week:1, league_average_match:0, last_scored_leg:lastScored,
+        espn_schedule_settings:schedule, espn_status:raw.status, forecast_unavailable:forecastBlock,
         waiver_type:settings.acquisitionSettings?.acquisitionType, waiver_budget:settings.acquisitionSettings?.acquisitionBudget,
         reserve_slots:Number(slots[21]) || 0, taxi_slots:0, trade_deadline:null, drafts:[], traded_picks:[], rosters,
         users:rosters.map(r => ({user_id:r.owner_id,display_name:r.owner_name,team_name:r.team_name})),
@@ -124,7 +137,7 @@
         unsupported_scoring_stats:unsupportedOffense,
         import_unmatched:unmatched, import_limitations:[...new Set(limitations)], missing:[...new Set(limitations)], projection_unavailable:historical || multiWeek || unmatchedOffense || weeklyMismatch || unsupportedOffense.length > 0 || limitations.some(x => /Scoring format|lineup|Roster unavailable/.test(x)),
       };
-      return { league, schedule:{name:league.name,playoffStart:league.playoff_week_start,weeks}, syncedAt:Date.now() };
+      return { league, schedule:{name:league.name,playoffStart:league.playoff_week_start,medianScoring:false,weeks}, syncedAt:Date.now() };
     }
     function reset() { revision++; controller?.abort(); for (const ctrl of pending.values()) ctrl.abort(); controller = null; preview = null; error = ''; busy = false; pending.clear(); }
     async function inspect(input) {
