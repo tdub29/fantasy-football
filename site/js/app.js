@@ -2587,8 +2587,12 @@
   // desc and giving each asset its most-constrained eligible slot first
   // (dedicated before flex) is optimal here because slot eligibility nests:
   // QB ⊂ SUPER_FLEX, and RB/WR/TE ⊂ FLEX ⊂ SUPER_FLEX.
-  // A pick is a rookie of unknown position, so it's eligible anywhere, but it
-  // tries flex slots FIRST, so it can't evict a QB from the only QB slot.
+  // A pick is a rookie of unknown position, so it's eligible anywhere. It only
+  // reserves a seat in the value pass and is seated after every player has
+  // claimed his slot, flex first. Seating it on the spot let a pick that
+  // outranked the QB take the QB slot once the flexes were full, benching a
+  // better QB. Reserving keeps greedy optimal: picks fit any slot, so a player
+  // is legal whenever he has an open eligible slot and the count isn't full.
   // `presorted` lets a caller that already holds assets in the order it wants
   // them started skip the sort. The championship simulator does: its pool is
   // sorted once on the projection, and re-sorting 27 assets on every team-week
@@ -2601,24 +2605,33 @@
     const sorted = presorted ? assets : assets.slice().sort((a, b) => b.v - a.v);
     const n = slots.length;
     const filled = new Array(n).fill(null);
-    let count = 0;
+    let count = 0, picks = 0;
     for (const a of sorted) {
       if (count === n) break;
-      const isPick = a.pos === 'PICK';
+      if (a.pos === 'PICK') { picks++; count++; continue; }
       let best = -1;
-      // Two passes over the slots in roster order. Players take a dedicated slot
-      // before a flex one; picks take a flex slot before a dedicated one. Walking
-      // the slots directly (rather than building and sorting a candidate list per
-      // asset) keeps this allocation-free.
+      // Two passes over the slots in roster order: a dedicated slot before a
+      // flex one. Walking the slots directly (rather than building and sorting
+      // a candidate list per asset) keeps this allocation-free.
       for (let pass = 0; pass < 2 && best < 0; pass++) {
-        const wantFlex = isPick ? pass === 0 : pass === 1;
         for (let i = 0; i < n; i++) {
-          if (filled[i] || slots[i].flex !== wantFlex) continue;
-          if (!isPick && !(SLOT_TAKES[slots[i].pos] || []).includes(a.pos)) continue;
+          if (filled[i] || slots[i].flex !== (pass === 1)) continue;
+          if (!(SLOT_TAKES[slots[i].pos] || []).includes(a.pos)) continue;
           best = i; break;
         }
       }
       if (best >= 0) { filled[best] = a; count++; }
+    }
+    // Seat the reserved picks, best first, in the open slots, flex first.
+    for (const a of sorted) {
+      if (!picks) break;
+      if (a.pos !== 'PICK') continue;
+      picks--;
+      let best = -1;
+      for (let pass = 0; pass < 2 && best < 0; pass++) {
+        for (let i = 0; i < n; i++) if (!filled[i] && slots[i].flex === (pass === 0)) { best = i; break; }
+      }
+      filled[best] = a;
     }
     if (bySlot) return filled;
     const out = [];
@@ -9479,11 +9492,21 @@
     }
     return order;
   }
+  // Only the next draft's projection carries real signal. The ranking leaves
+  // picks out (that breaks the pricing cycle), so a team that looks weak two
+  // years out is about to draft the rookies that fix it, and pricing all its
+  // out-year firsts at 1.01 let those picks project it to first. So the slot
+  // regresses toward the middle: next draft as projected, the one after
+  // halfway, 3+ drafts out at mid.
+  // ponytail: fixed 0/50/100% pull, not fit to how finishes actually churn.
   function originSlot(originRosterId, league, yearsOut) {
-    if (!originRosterId) return Math.ceil((league.total_rosters || 10) / 2);
+    const N = league.total_rosters || 10;
+    if (!originRosterId) return Math.ceil(N / 2);
     const all = originSlotOrder(league, yearsOut || 0);
     const idx = all.findIndex(r => r.id === originRosterId);
-    return idx >= 0 ? idx + 1 : Math.ceil((league.total_rosters || 10) / 2);
+    if (idx < 0) return Math.ceil(N / 2);
+    const pull = Math.min(1, Math.max(0, (yearsOut || 0) - 1) / 2), mid = (1 + N) / 2;
+    return idx + 1 + (mid - idx - 1) * pull;
   }
   function pickYearsOut(season) {
     const cur = new Date().getFullYear();
