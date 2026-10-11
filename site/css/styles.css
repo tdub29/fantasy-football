@@ -6255,8 +6255,17 @@ td.gm-swing { white-space: nowrap; }
 }
 
 /* Prospect model: the card's Prospect profile block and #prospects. */
-table.data.prm-table .name-cell { flex-direction: column; align-items: flex-start; gap: 0; min-width: 150px; }
+/* Name column capped so the score inputs get the width; the full name, school
+   and pick ride in the cell's title. */
+table.data.prm-table .name-cell { flex-direction: column; align-items: flex-start; gap: 0; min-width: 0; max-width: 11rem; }
+table.data.prm-table .name-cell > * { display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 720px) { table.data.prm-table .name-cell { max-width: 7.5rem; } }
 .prm-school { font-size: 0.72rem; }
+.prm-legend { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.chart-svg .pt.pos-QB { fill: var(--red); }
+.chart-svg .pt.pos-RB { fill: var(--green); }
+.chart-svg .pt.pos-WR { fill: var(--blue); }
+.chart-svg .pt.pos-TE { fill: var(--amber); }
 /* Card face (Trevor, 2026-10-10, laid out after Dynasty Domain's prospect card): a
    band hero with the headline numbers, bio cells, a grades panel of bars and
    letters, then the tier's hit ladder. Sections are banded rows inside the one
