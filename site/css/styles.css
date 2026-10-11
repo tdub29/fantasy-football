@@ -6251,13 +6251,67 @@ td.gm-swing { white-space: nowrap; }
 }
 table.data.prm-table .name-cell { flex-direction: column; align-items: flex-start; gap: 0; min-width: 150px; }
 .prm-school { font-size: 0.72rem; }
-.prm-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+/* Card face (Trevor, 2026-10-10, laid out after Dynasty Domain's prospect card): a
+   band hero with the headline numbers, bio cells, a grades panel of bars and
+   letters, then the tier's hit ladder. Sections are banded rows inside the one
+   plate, never cards inside a card. */
+.prm-head {
+  display: flex; flex-wrap: wrap; align-items: stretch;
+  background: var(--grad-band); color: var(--chalk);
+  border: 2px solid var(--ink); border-radius: var(--radius-sm);
+  box-shadow: var(--bevel);
+  margin-bottom: 8px;
+}
+.prm-id { flex: 1 1 180px; display: flex; align-items: center; gap: 10px; padding: 8px 10px; min-width: 0; }
 .prm-logo { width: 40px; height: 40px; object-fit: contain; flex: none; }
-.prm-head-main { flex: 1 1 200px; min-width: 0; }
-.prm-head-rank { font-weight: 800; font-size: 1.05rem; }
-.prm-head-facts { overflow-wrap: anywhere; }
-.prm-line, .prm-out, .prm-comps { margin-top: 8px; }
-.adv-stat-value .rating-track { margin-left: 2px; }
+.prm-id-school { font-family: var(--font-display); font-weight: 800; font-size: 1.15rem; line-height: 1.1; overflow-wrap: anywhere; }
+.prm-id-sub { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; }
+.prm-hero-box { flex: 1 1 84px; padding: 6px 10px; border-left: 2px solid var(--ink); min-width: 0; }
+.prm-hero-label { font-size: 0.62rem; font-weight: 800; letter-spacing: 0.09em; text-transform: uppercase; }
+.prm-hero-value { font-family: var(--font-display); font-weight: 800; font-size: 1.7rem; line-height: 1.1; }
+.prm-hero-word { font-size: 1.15rem; line-height: 1.5; }
+.prm-hero-sub { font-size: 0.68rem; font-weight: 700; }
+.prm-bio { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 6px; }
+.prm-bio-cell { background: var(--bg-2); border-left: 4px solid var(--band-deep); border-radius: 6px; padding: 4px 8px; min-width: 0; }
+.prm-bio-label { font-size: 0.6rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg-3); }
+.prm-bio-value { font-size: 0.9rem; font-weight: 800; overflow-wrap: anywhere; }
+.prm-sec { margin-top: 12px; }
+.prm-sec-title {
+  display: flex; justify-content: space-between; gap: 8px;
+  background: var(--grad-band); color: var(--chalk);
+  border: 2px solid var(--ink); border-radius: var(--radius-sm);
+  padding: 3px 10px; margin-bottom: 8px;
+  font-size: 0.68rem; font-weight: 800; letter-spacing: 0.09em; text-transform: uppercase;
+}
+.prm-grades { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); column-gap: 20px; }
+.prm-grade {
+  display: grid; grid-template-columns: minmax(84px, 1fr) minmax(56px, 1.2fr) 3.4em 2em;
+  align-items: center; gap: 8px; padding: 4px 0; border-bottom: 1px solid var(--bg-3);
+}
+.prm-grade-label { font-size: 0.85rem; font-weight: 700; color: var(--fg-1); }
+.prm-grade-bar { height: 10px; border: 1.5px solid var(--ink); border-radius: 999px; background: oklch(96% 0.01 285); overflow: hidden; }
+.prm-grade-bar > i { display: block; height: 100%; }
+.prm-grade-val { text-align: right; font-weight: 800; }
+.prm-grade-letter { font-family: var(--font-display); font-weight: 800; }
+.prm-ladder { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; align-items: stretch; }
+.prm-rung-label { font-size: 0.72rem; font-weight: 800; color: var(--fg-2); }
+.prm-rung-value { font-family: var(--font-display); font-weight: 800; font-size: 1.6rem; line-height: 1.1; }
+.prm-rung .seg-meter { display: block; }
+.prm-outcome { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.prm-outcome .prm-hero-box { flex: 0 1 auto; border-left: 0; padding: 0; }
+.prm-verdict {
+  font-family: var(--font-display); font-weight: 800; font-size: 1.2rem; text-transform: uppercase;
+  color: var(--chalk); border: 2px solid var(--ink); border-radius: var(--radius-sm);
+  padding: 2px 14px; box-shadow: var(--shadow-1);
+}
+.prm-verdict.hit, .prm-bucket.on.hit { background: var(--green); color: var(--chalk); }
+.prm-verdict.miss, .prm-bucket.on.miss { background: var(--red); color: var(--chalk); }
+.prm-buckets { display: flex; flex-wrap: wrap; gap: 6px; }
+.prm-bucket {
+  border: 2px solid var(--ink); border-radius: 999px; padding: 1px 10px;
+  font-size: 0.75rem; font-weight: 800; background: var(--bg-2); color: var(--fg-3);
+}
+.prm-line, .prm-comps { margin-top: 8px; }
 
 /* --- Pixel scoreboard numerals ------------------------------------------- */
 /* After the Eagles Eric video (notes/design/): one pixel face, Jersey 10, for

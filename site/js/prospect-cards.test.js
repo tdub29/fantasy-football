@@ -25,15 +25,15 @@ const find = (n, pred, out = []) => {
 const main = { kids: [], set innerHTML(_) { this.kids = []; }, appendChild(n) { this.kids.push(n); } };
 const calls = [];
 const env = {
-  h, window, $: () => main, navigate: () => {}, appendTable: (host, tbl) => host.kids.push(tbl),
+  h, window, $: () => main, gradeColor: (v) => `g${Math.floor(v)}`, navigate: () => {}, appendTable: (host, tbl) => host.kids.push(tbl),
   breadcrumbs: () => null, pageHeader: () => null, tabBar: () => null,
   openPlayerDetail: (...a) => calls.push(['nfl', ...a]),
   playerModal: (...a) => { calls.push(['modal', ...a]); return null; },
   document: { body: { appendChild: () => {} } },
   history: { replaceState: (...a) => calls.push(['replace', ...a]) },
 };
-const { collegeProspectBlock, viewProspects, pmPct } = new Function(...Object.keys(env),
-  `${app.slice(start, end)}; return { collegeProspectBlock, viewProspects, pmPct };`)(...Object.values(env));
+const { collegeProspectBlock, prospectModelBlock, viewProspects, pmPct } = new Function(...Object.keys(env),
+  `${app.slice(start, end)}; return { collegeProspectBlock, prospectModelBlock, viewProspects, pmPct };`)(...Object.values(env));
 
 // Every college player at every position and class gets a card, from his own record.
 for (const r of M.college) {
@@ -127,7 +127,8 @@ assert.match(app, /college \? null : playerInfoBlock\(name, sleeper\)/);   // no
 
 console.log('prospect-cards.test.js: all assertions passed');
 
-// Card header: logo, positional rank in class, size with a build label, archetype, draft age.
+// Card face (2026-10-10): hero band with logo and class rank, bio cells with listed size,
+// a grades panel of bars and letters, and the tier ladder with its n.
 require(path.join(__dirname, '..', 'data', 'college-bio.js'));
 require(path.join(__dirname, '..', 'data', 'prospect.js'));
 for (const p of ['QB', 'RB', 'WR']) {
@@ -137,7 +138,24 @@ for (const p of ['QB', 'RB', 'WR']) {
   assert(head, `${p} card has no header`);
   const t = text(head);
   assert.match(t, new RegExp(`${p}[0-9]+ of [0-9]+ in the 2027 class`), t);
-  assert.match(t, /\d'\d+" \d+ lb listed, /, t);
   assert(find(head, n => n.tag === 'img').length, `${p} header lost the school logo`);
-  assert(!/age today/.test(t) && !/NaN|undefined/.test(t), t);
+  const all = text(card);
+  assert.match(all, /Height \d'\d+" +Weight \d+ lb/, all);
+  assert(!/age today/.test(all) && !/NaN|undefined|Infinity/.test(all), all);
+  assert(!/Draft-capital rating/.test(all), `${p}: no empty capital tile on a college card`);
+  const grades = find(card, n => n.attrs.class === 'prm-grade');
+  assert(grades.length >= 3, `${p}: grades panel`);
+  assert(grades.every(g => /^[A-F][+-]?$|^·$/.test(text(g.kids[3]))), `${p}: letter per grade row`);
+  assert.match(all, /hit rate \d+ players/, `${p}: tier ladder shows n`);
 }
+
+// Drafted players: hit or miss, best finish, and the rung reached, lit once.
+const sid = (want) => Object.keys(M.nfl).find(id => M.nfl[id].out && want(M.nfl[id].out));
+for (const [id, verdict] of [[sid(o => o[0] && o[2] <= 12), 'Hit'], [sid(o => !o[0] && o[2] > 40), 'Miss']]) {
+  const me = M.nfl[id], card = prospectModelBlock({ id });
+  assert.equal(text(find(card, n => /prm-verdict/.test(n.attrs.class || ''))[0]), verdict, me.n);
+  assert.match(text(card), new RegExp(`Best finish ${me.p}${me.out[2]} `), me.n);
+  const lit = find(card, n => /prm-bucket on/.test(n.attrs.class || '')).map(text);
+  assert.deepEqual(lit, [verdict === 'Hit' ? `${me.p}1` : `Below ${me.p}3`], me.n);
+}
+console.log('prospect-cards.test.js: card face assertions passed');
