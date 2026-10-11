@@ -73,9 +73,16 @@ def main() -> int:
     # The geometry that the two reported bugs were about.
     # Numerals are 5x7 bitmap rect groups, one <g id='nX'> per numeral centred on X.
     nums = [int(m) for m in re.findall(r"%3Cg id='n(\d+)'", img)]
-    cell_bottoms = [int(y) + 6 for y in re.findall(r"y='(\d+)' width='\d+' height='6'", img)]
-    if cell_bottoms and max(cell_bottoms) > 52:
-        problems.append(f"a numeral cell ends at y={max(cell_bottoms)}, inside the hash band below y=52")
+    # Real field order from a sideline inward: outer hashes, numerals, inner hashes.
+    # Only the bottom tile carries numerals, so they must sit between its two rows.
+    bottom = next((a for a in re.findall(r'url\("(.*?)"\)', img, re.S) if "id='n" in a), "")
+    glyphs = [(int(y), int(y) + int(hh)) for y, hh in re.findall(r"y='(\d+)' width='\d+' height='([46])'", bottom)]
+    hash_rows = sorted({int(m) for m in re.findall(r"y='(\d+)' width='3' height='12'", bottom)})
+    if len(hash_rows) != 2:
+        problems.append(f"expected inner and outer hash rows in the bottom tile, found {len(hash_rows)}: {hash_rows}")
+    elif glyphs and not (hash_rows[0] + 12 < min(g[0] for g in glyphs) and max(g[1] for g in glyphs) < hash_rows[1]):
+        problems.append(f"numerals span y={min(g[0] for g in glyphs)}-{max(g[1] for g in glyphs)}, not between the inner "
+                        f"hashes (y={hash_rows[0]}) and the outer sideline hashes (y={hash_rows[1]})")
     if nums:
         chalk = 120  # one 5-yard segment on the 1-yard = 24px grid
         bisected = [x for x in nums if min(x % chalk, chalk - x % chalk) < 24]
@@ -90,11 +97,6 @@ def main() -> int:
         problems.append("the 5-yard chalk gradient is gone; lines will not run full height")
     if "transparent 4px 5%" not in img:
         problems.append("5-yard chalk spacing must be viewport-relative so zoom keeps one field")
-    hash_rows = sorted({int(m) for m in re.findall(r"y='(\d+)' width='3' height='12'", img)})
-    if len(hash_rows) != 2:
-        problems.append(f"expected 2 hash rows, found {len(hash_rows)}: {hash_rows}")
-    elif min(hash_rows) <= 52:
-        problems.append(f"hash row at y={min(hash_rows)} overlaps the numeral band, which ends at y=52")
 
     problems += phone_problems(s, nums)
     if not re.search(r"body \{\s*background: var\(--dither\), var\(--grad-turf\);[^}]*isolation: isolate;", s):
@@ -106,7 +108,7 @@ def main() -> int:
             print(f"  - {p}")
         return 1
     print(f"field ok: {layers} layers, {len(nums)} numerals clear of chalk, "
-          f"hash rows at y={hash_rows[0]} and y={hash_rows[1]}, numeral band ends y=52")
+          f"numerals between inner hashes y={hash_rows[0]} and sideline hashes y={hash_rows[1]}")
     return 0
 
 
