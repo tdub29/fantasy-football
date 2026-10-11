@@ -23,7 +23,8 @@ const url = process.env.FF_TEST_URL || 'http://localhost:8793';
     page.setDefaultTimeout(60000);
     await page.route(`${url}/**`, async route => {
       const pathname = new URL(route.request().url()).pathname;
-      const file = path.join(__dirname, '..', pathname === '/' ? 'index.html' : pathname);
+      const file = pathname === '/js/account.js' && process.env.ACCOUNT_JS_PATH
+        ? process.env.ACCOUNT_JS_PATH : path.join(__dirname, '..', pathname === '/' ? 'index.html' : pathname);
       if (!fs.existsSync(file)) return route.fulfill({ status: 404, body: 'not found' });
       const ext = path.extname(file);
       const contentType = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.png': 'image/png' }[ext] || 'application/octet-stream';
@@ -44,7 +45,7 @@ const url = process.env.FF_TEST_URL || 'http://localhost:8793';
       await page.getByRole('button', { name:'Link league', exact:true }).click();
       await page.waitForFunction(id => LEAGUES.some(l => l.id === id && l.account_source === 'linked'), espnId);
     };
-    let rename = false, changed = false, partial = false, season = '2026', stateCalls = 0;
+    let rename = false, changed = false, partial = false, season = '2026', stateCalls = 0, failRemotePrimary = false, failedPrimaryReads = 0;
     let releaseSlow;
     const slowGate = new Promise(resolve => { releaseSlow = resolve; });
     const slowStop = setTimeout(() => releaseSlow(), 1500);
@@ -61,6 +62,7 @@ const url = process.env.FF_TEST_URL || 'http://localhost:8793';
       if (path === '/user/slow') { await slowGate; return reply({ user_id: '100', username: 'alpha' }); }
       if (path.startsWith('/user/') && !path.includes('/leagues/')) {
         const who = path.split('/')[2];
+        if (who === '100' && failRemotePrimary) { failedPrimaryReads++; return route.fulfill({status:404,body:'unavailable'}); }
         if (who === 'missing') return reply(null);
         const uid = ['beta', '200'].includes(who) ? '200' : who === 'none' || who === '300' ? '300' : who === 'gamma' || who === '400' ? '400' :
           who === 'tdub1329' || who === fixtures.window.MY_USER_ID ? fixtures.window.MY_USER_ID : '100';
@@ -173,22 +175,44 @@ const url = process.env.FF_TEST_URL || 'http://localhost:8793';
     await connect('beta');
     assert.equal(await page.evaluate(id => LEAGUES.some(l => l.id === id), espnId), false, 'other accounts never receive Trevor imported league');
     // Synced login: the profile picks the login on load, linked users merge into one view.
-    let stored = { sleeper: [{ user_id: '100', username: 'alpha' }, { user_id: '400', username: 'gamma' }] };
+    let stored = { sleeper: [{ user_id: '100', username: 'alpha' }, { user_id: '400', username: 'gamma' }],
+      espn: [{ league_id: espnId, season:'2026', team_id:'9' }] };
+    let failProfileGet = true, failProfilePut = false, failedProfileGets = 0, failedProfilePuts = 0;
     await page.route(`${url}/ff/api/profile`, route => {
       const m = route.request().method();
+      if (m === 'GET' && failProfileGet) { failedProfileGets++; return route.fulfill({status:503,body:'unavailable'}); }
+      if (m === 'PUT' && failProfilePut) { failedProfilePuts++; return route.fulfill({status:503,body:'unavailable'}); }
       if (m === 'PUT') stored = JSON.parse(route.request().postData());
       if (m === 'DELETE') stored = null;
       return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(m === 'GET' ? stored : { ok: true }) });
     });
-    const until = async (fn, arg) => { for (;;) { try { if (await page.evaluate(fn, arg)) return; } catch {} await page.waitForTimeout(100); } };
+    const until = async (fn, arg) => { const deadline = Date.now() + 15000; while (Date.now() < deadline) { try { if (await page.evaluate(fn, arg)) return; } catch {} await page.waitForTimeout(100); } throw new Error('Account state did not recover within 15 seconds'); };
     await page.reload({ waitUntil: 'domcontentloaded' });
+    await until(() => FF_ACCOUNT.active?.user_id === '200' && FF_ACCOUNT.S.status === 'ok');
+    assert.ok(failedProfileGets > 0, 'startup profile failure exercised');
+    failProfileGet = false;
+    failRemotePrimary = true;
+    await page.evaluate(() => window.dispatchEvent(new Event('online')));
+    await until(() => FF_ACCOUNT.S.status === 'error');
+    assert.ok(failedPrimaryReads > 0, 'remote primary lookup failure exercised');
+    assert.equal(stored.sleeper[0].user_id, '100', 'failed hydration cannot overwrite remote identity with old local account');
+    failRemotePrimary = false;
+    await page.evaluate(() => window.dispatchEvent(new Event('online')));
     await until(() => FF_ACCOUNT.active?.user_id === '100' && FF_ACCOUNT.S.status === 'ok' && LEAGUES.some(l => l.id === 'gamma-lg'));
+    await until(id => FF_ACCOUNT.espn.links.some(l => l.id === id), espnId);
+    assert.deepEqual(stored.espn, [{league_id:espnId,season:'2026',team_id:'9'}], 'remote account hydration preserves ESPN links');
     assert.equal(await page.evaluate(() => LEAGUES.find(l => l.id === 'gamma-lg').rosters.find(r => r.is_me).owner_id), '400', 'linked user owns their team in the merged view');
     assert.equal(await page.evaluate(() => LEAGUES.filter(l => l.id === 'shared').length), 1);
     await page.evaluate(() => FF_ACCOUNT.openPanel());
+    failProfilePut = true;
     await page.locator('#acct-user').fill('beta');
     await page.locator('.acct-dialog').getByRole('button', { name: 'Add user', exact: true }).click();
     await until(() => FF_ACCOUNT.S.extras.length === 2 && FF_ACCOUNT.S.status === 'ok');
+    assert.ok(failedProfilePuts > 0, 'failed save exercised');
+    assert.deepEqual(stored.sleeper.map(u => u.user_id), ['100','400'], 'failed PUT does not claim saved profile');
+    failProfilePut = false;
+    await page.evaluate(() => window.dispatchEvent(new Event('online')));
+    for (let i = 0; i < 50 && stored.sleeper.length !== 3; i++) await page.waitForTimeout(100);
     assert.deepEqual(stored.sleeper.map(u => u.user_id), ['100', '400', '200'], 'adding a user saves the profile');
     await page.locator('.acct-users li', { hasText: 'gamma' }).getByRole('button', { name: 'Remove', exact: true }).click();
     await until(() => FF_ACCOUNT.S.status === 'ok' && !LEAGUES.some(l => l.id === 'gamma-lg'));

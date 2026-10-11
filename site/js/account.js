@@ -369,7 +369,7 @@
     // bundle (Fantasy Football/cloudflare/functions/ff/api/profile.js).
     // profileState: undefined = no sync here (file://, local server), else the
     // last list read or saved as JSON.
-    let profileState, espnSync = null;
+    let profileState, espnSync = null, profileLoading = null, profileSaving = null, hydrating = false, profileReady = false, signingOut = false;
     const espnEntries = () => (E?.links || []).map(l => ({ league_id: l.id, season: String(l.season), team_id: String(l.teamId) }));
     async function profile(method, body) {
       if (!/^https?:$/.test(win.location.protocol)) return undefined;
@@ -381,35 +381,51 @@
       } catch { return undefined; } finally { win.clearTimeout(t); }
     }
     function saveProfile() {
-      if (profileState === undefined || !A.S.active || espnSync) return;
-      const body = { sleeper: [{ user_id: A.S.active.user_id, username: A.S.active.username }, ...A.S.extras], espn: espnEntries() };
-      if (JSON.stringify(body) === profileState) return;
-      profileState = JSON.stringify(body);
-      profile('PUT', body);
+      if (!profileReady || !A.S.active || espnSync || hydrating || signingOut) return Promise.resolve();
+      if (profileSaving) return profileSaving;
+      profileSaving = (async () => {
+        while (A.S.active && !hydrating && !espnSync && !signingOut) {
+          const body = { sleeper: [{ user_id: A.S.active.user_id, username: A.S.active.username }, ...A.S.extras], espn: espnEntries() };
+          const serialized = JSON.stringify(body);
+          if (serialized === profileState) break;
+          const result = await profile('PUT', body);
+          if (!result?.ok) break;
+          profileState = serialized;
+        }
+      })().finally(() => { profileSaving = null; });
+      return profileSaving;
     }
     // The profile wins over this browser's account, so every device shows the same login.
-    async function loadProfile() {
-      const p = await profile('GET');
-      if (p === undefined) return;
-      const list = p?.sleeper || [];
-      profileState = JSON.stringify({ sleeper: list, espn: p?.espn || [] });
-      if (!list.length) { if (A.S.active) saveProfile(); else openPanel(); return; }
-      const [primary, ...extras] = list;
-      if (A.S.active?.user_id !== primary.user_id) A.connect(primary.user_id, extras);
-      else {
-        // ESPN links follow the profile too. A profile saved before ESPN sync has
-        // no list, so this browser's links fill it instead. espnSync holds saves
-        // until the adopted leagues land, so no half list overwrites the profile.
-        if (Array.isArray(p.espn)) espnSync = E.adopt(p.espn);
-        if (JSON.stringify(A.S.extras) !== JSON.stringify(extras)) A.setExtras(extras);
-        await espnSync; espnSync = null;
-        saveProfile();
-      }
-      renderPanel();
+    function loadProfile() {
+      if (signingOut) return Promise.resolve();
+      if (profileLoading) return profileLoading;
+      profileLoading = (async () => {
+        const p = await profile('GET');
+        if (p === undefined || signingOut) return;
+        const list = p?.sleeper || [];
+        profileState = JSON.stringify({ sleeper: list, espn: p?.espn || [] });
+        if (!list.length) { profileReady = true; if (A.S.active) await saveProfile(); else openPanel(); return; }
+        const [primary, ...extras] = list;
+        hydrating = true;
+        try {
+          if (A.S.active?.user_id !== primary.user_id) await A.connect(primary.user_id, extras);
+          else if (JSON.stringify(A.S.extras) !== JSON.stringify(extras)) await A.setExtras(extras);
+          if (A.S.active?.user_id !== primary.user_id) return;
+          if (Array.isArray(p.espn)) { espnSync = E.adopt(p.espn); await espnSync; }
+          profileReady = true;
+        } finally { espnSync = null; hydrating = false; }
+        await saveProfile();
+        renderPanel();
+      })().finally(() => { profileLoading = null; });
+      return profileLoading;
     }
     async function signOut() {
+      signingOut = true;
+      await profileSaving;
+      await profileLoading;
       if (profileState !== undefined) { await profile('DELETE'); profileState = '[]'; }
       A.disconnect();
+      signingOut = false;
     }
     let inputValue = '';
     let espnValue = '';
@@ -539,7 +555,7 @@
         E?.merge(win);
         saveProfile();
         doc.title = `The Fantasy Hub${A.S.active ? `, ${A.S.active.username}` : ''}`;
-        if (win.__app && oldId !== win.MY_USER_ID && A.S.remembered !== false) {
+        if (win.__app && oldId !== win.MY_USER_ID && A.S.remembered !== false && !hydrating) {
           win.history.replaceState(null, '', '#dashboard');
           win.location.reload();
           return;
@@ -575,10 +591,11 @@
     E.merge(win);
     doc.title = `The Fantasy Hub${A.S.active ? `, ${A.S.active.username}` : ''}`;
     win.addEventListener('DOMContentLoaded', () => { A.refresh({ force: true }); E.refresh(true); loadProfile(); });
-    const maybe = () => { if (doc.visibilityState === 'visible') { A.refresh(); E.refresh(); } };
+    const retryProfile = () => !profileReady ? loadProfile() : saveProfile();
+    const maybe = () => { if (doc.visibilityState === 'visible') { A.refresh(); E.refresh(); retryProfile(); } };
     doc.addEventListener('visibilitychange', maybe);
     win.addEventListener('focus', maybe);
-    win.addEventListener('online', () => { A.refresh({ force: true }); E.refresh(true); });
+    win.addEventListener('online', () => { A.refresh({ force: true }); E.refresh(true); retryProfile(); });
     win.setInterval(maybe, POLL_MS);
   }
   boot(root);
