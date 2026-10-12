@@ -3593,11 +3593,12 @@ table.data tbody tr.you:hover {
   background: linear-gradient(180deg, oklch(90% 0.17 92), var(--gold));
 }
 table.data tbody tr.you td { color: var(--ink); font-weight: 700; }
-/* Prospects, All classes: future-class rows tinted blue; gold stays the selection colour. */
-table.data tbody tr.prm-future,
-table.data tbody tr.prm-future:nth-child(even) { background: rgba(var(--blue-rgb), .14); }
-table.data tbody tr.prm-future:hover { background: rgba(var(--blue-rgb), .22); }
-table.data tbody tr.prm-future td:first-child { box-shadow: inset 4px 0 0 var(--blue); }
+/* Prospects, All classes: future-class rows carry a neutral dashed edge, not a hue, so blue keeps
+   meaning Foundational / WR and gold stays the selection colour. The legend line names it. */
+table.data tbody tr.prm-future td:first-child,
+.prm-future-key { background-image: linear-gradient(var(--fg-3) 50%, transparent 0); background-size: 3px 6px; background-repeat: repeat-y; }
+.prm-legend { display: flex; align-items: center; gap: 6px; margin: 0 0 6px; font-size: 12px; }
+.prm-future-key { display: inline-block; width: 3px; height: 14px; }
 
 /* --- Law 3 everywhere else --------------------------------------------- */
 .badge.you,
