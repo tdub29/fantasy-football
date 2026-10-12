@@ -12589,12 +12589,30 @@
     ...pmStatCols(p).map(([k, label, f, t]) => r.st && r.st[k] != null ? [k, label, f(r.st[k]), r.st[k], t] : null),
     ypc != null ? ['ypc', 'YPC', pmNum(1)(ypc), ypc, `Career rushing yards per carry, ${window.PRODUCTION_GRADES.min_carries}+ carries`] : null,
   ].filter(Boolean);
+  // Web chart of the graded percentiles: one spoke per stat, rings at 25/50/75, the outer ring is
+  // the best drafted player at his position. Needs three spokes to be a shape, so fewer draws none.
+  function pmRadar(axes) {
+    if (axes.length < 3) return null;
+    const ns = 'http://www.w3.org/2000/svg', S = 220, C = S / 2, R = 66;
+    const el = (tag, attrs, ...kids) => { const n = document.createElementNS(ns, tag); for (const k in attrs) n.setAttribute(k, attrs[k]); n.append(...kids); return n; };
+    const at = (i, f) => { const a = -Math.PI / 2 + i * 2 * Math.PI / axes.length; return [C + Math.cos(a) * R * f, C + Math.sin(a) * R * f]; };
+    const ring = (f) => axes.map((_, i) => at(i, f).map(n => n.toFixed(1)).join(',')).join(' ');
+    return el('svg', { class:'prm-radar', viewBox:`0 0 ${S} ${S}`, role:'img',
+        'aria-label':`Percentile web: ${axes.map(a => `${a.label} ${pmOrd(a.pct)}`).join(', ')}` },
+      ...[0.25, 0.5, 0.75, 1].map(f => el('polygon', { class:'prm-radar-ring', points:ring(f) })),
+      ...axes.map((_, i) => { const [x, y] = at(i, 1); return el('line', { class:'prm-radar-ring', x1:C, y1:C, x2:x, y2:y }); }),
+      el('polygon', { class:'prm-radar-shape', points:axes.map((a, i) => at(i, Math.max(0.04, a.pct / 100)).map(n => n.toFixed(1)).join(',')).join(' ') }),
+      ...axes.map((a, i) => { const [x, y] = at(i, 1.2);
+        return el('text', { class:'prm-radar-label', x:x.toFixed(1), y:(y + 3).toFixed(1),
+          'text-anchor': Math.abs(x - C) < 4 ? 'middle' : x < C ? 'end' : 'start' }, a.label); }));
+  }
   // Grades panel: bar and letter from his percentile, coloured on the site's 0-10 grade scale.
   function pmGrades(p, rows) {
     if (!rows.length) return null;
+    const axes = rows.map(([k, label, , v]) => { const g = pmGrade(p, k, v); return g && { label, pct:g.pct }; }).filter(Boolean);
     return h('section', { class:'prm-sec' },
       h('div', { class:'prm-sec-title' }, h('span', null, 'Grades'), h('span', null, `vs drafted ${p}s`)),
-      h('div', { class:'prm-grades' }, ...rows.map(([k, label, shown, v, t]) => {
+      h('div', { class:'prm-grades-wrap' }, h('div', { class:'prm-grades' }, ...rows.map(([k, label, shown, v, t]) => {
         const g = pmGrade(p, k, v), c = g && gradeColor(g.pct / 10);
         return h('div', { class:'prm-grade', title: g ? `${t}. Grade ${g.g}: ${pmOrd(g.pct)} percentile against ${g.n} ${g.src}`
           + `${PM_LOWER[k] ? ', younger ranks higher' : ''}. Percentile bands: ${PM_GRADE.map(([cut, l]) => `${l} ${cut}+`).join(', ')}` : t },
@@ -12602,7 +12620,7 @@
           h('span', { class:'prm-grade-bar', 'aria-hidden':'true' }, g ? h('i', { style:{ width:`${Math.max(3, g.pct)}%`, background:c } }) : null),
           h('span', { class:'prm-grade-val tnum' }, shown),
           h('span', { class:'prm-grade-letter', style: c ? { color:c } : null }, g ? g.g : '·'));
-      })));
+      })), pmRadar(axes)));
   }
   function pmBuild(p, ht, wt) {
     const pool = Object.values((window.PROSPECT || {}).players || {}).filter(x => x.pos === p && x.draft_round != null);

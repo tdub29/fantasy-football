@@ -6313,6 +6313,13 @@ table.data.prm-table .name-cell > * { display: block; max-width: 100%; overflow:
 .prm-grade-bar > i { display: block; height: 100%; }
 .prm-grade-val { text-align: right; font-weight: 800; }
 .prm-grade-letter { font-family: var(--font-display); font-weight: 800; }
+.prm-grades-wrap { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; }
+.prm-grades-wrap .prm-grades { grid-template-columns: 1fr; }
+.prm-radar { width: 220px; height: 220px; overflow: visible; }
+.prm-radar-ring { fill: none; stroke: var(--ink); stroke-opacity: .22; stroke-width: 1; }
+.prm-radar-shape { fill: rgba(var(--green-rgb), .35); stroke: var(--green); stroke-width: 2; stroke-linejoin: round; }
+.prm-radar-label { font-size: 9.5px; font-weight: 800; fill: var(--fg-2); text-transform: uppercase; letter-spacing: .03em; }
+@media (max-width: 560px) { .prm-grades-wrap { grid-template-columns: 1fr; } .prm-radar { justify-self: center; } }
 .prm-ladder { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; align-items: stretch; }
 .prm-rung-label { font-size: 0.72rem; font-weight: 800; color: var(--fg-2); }
 .prm-rung-value { font-family: var(--font-display); font-weight: 800; font-size: 1.6rem; line-height: 1.1; }
