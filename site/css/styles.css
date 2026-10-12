@@ -6078,6 +6078,9 @@ button:disabled { cursor: wait; opacity: 0.7; }
 .chart-title { font-weight: 800; color: var(--fg-0); font-size: 0.9rem; }
 .chart-wrap { position: relative; min-width: 0; margin-top: 4px; }
 .chart-wrap svg { display: block; width: 100%; height: auto; }
+.chart-zoom { user-select: none; -webkit-user-select: none; }
+.chart-zoom-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 4px 0; font-size: 12px; }
+.chart-zoom-tools .toggle { min-width: 36px; min-height: 32px; }
 .chart-svg text { font-size: 11px; fill: var(--fg-2); font-variant-numeric: tabular-nums; }
 .chart-svg .ax-title { font-weight: 800; fill: var(--fg-1); }
 .chart-svg .grid { stroke: var(--bg-3); stroke-width: 1; }

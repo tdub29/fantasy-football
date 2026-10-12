@@ -13024,25 +13024,103 @@
       .filter(r => Number.isFinite(r._x) && Number.isFinite(r._y));
     if (pts.length < 3) return h('div', { class:'empty' }, 'Nothing to plot here: college classes have no NFL results yet. Pick All classes to plot the drafted ones.');
     const ps = Object.keys(PM_CUTS).filter(p => pts.some(r => r.p === p));
-    const el = chartScatter(pts, { key:'_x', label:'Prospect score' }, { key:'_y', label:'PPG over replacement', fmt:'dec1' }, {
-      W:Math.max(300, Math.min(960, ($('#main').clientWidth || 360) - 44)), picks:new Set(), unit:'drafted players',
+    const W = Math.max(300, Math.min(960, ($('#main').clientWidth || 360) - 44));
+    const stage = h('div', { class:'chart-zoom' });
+    let base = null, view = null, box = null, svg = null, raf = 0;
+    const btn = (label, title, fn) => h('button', { type:'button', class:'toggle', title, 'aria-label':title, onclick:fn }, label);
+    const reset = btn('Reset view', 'Reset zoom', () => { view = null; draw(); });
+    const tools = h('div', { class:'chart-zoom-tools' },
+      btn('+', 'Zoom in', () => zoomAt(1.6, 0.5, 0.5)), btn('\u2212', 'Zoom out', () => zoomAt(1 / 1.6, 0.5, 0.5)), reset,
+      h('span', { class:'muted' }, 'Pinch or Ctrl+scroll to zoom, drag to pan. Zoomed in, every dot turns into a headshot.'));
+    const draw = () => {
+      raf = 0;
+      const el = plot();
+      stage.replaceChildren(el);
+      const wrap = el.querySelector('.chart-wrap');
+      if (wrap) {
+        box = wrap._box; svg = wrap.querySelector('svg');
+        if (!base) base = { x0:box.x0, x1:box.x1, y0:box.y0, y1:box.y1 };
+        if (!one) wrap.before(h('div', { class:'prm-legend' }, ...ps.map(p => h('span', { class:`pos-chip ${p}` }, p))));
+      }
+      reset.disabled = !view;
+      // Unzoomed, one finger scrolls the page; zoomed, it pans the chart. A pinch never zooms the page here.
+      stage.style.touchAction = view ? 'none' : 'pan-y';
+    };
+    const later = () => { if (!raf) raf = requestAnimationFrame(draw); };
+    const slide = (a, w, lo, hi) => { a = Math.min(Math.max(a, lo), hi - w); return [a, a + w]; };
+    const setView = (x0, w, y0, hgt) => {
+      const [a, b] = slide(x0, w, base.x0, base.x1), [c, e] = slide(y0, hgt, base.y0, base.y1);
+      view = { x0:a, x1:b, y0:c, y1:e }; later();
+    };
+    // fx, fy: where the zoom centres, as fractions of the plot box from its left and top.
+    function zoomAt(k, fx, fy) {
+      if (!base) return;
+      const c = view || base, bw = base.x1 - base.x0, bh = base.y1 - base.y0;
+      const w = Math.max(bw / 40, (c.x1 - c.x0) / k), hgt = Math.max(bh / 40, (c.y1 - c.y0) / k);
+      if (w >= bw - 1e-9 && hgt >= bh - 1e-9) { view = null; later(); return; }
+      const cx = c.x0 + fx * (c.x1 - c.x0), cy = c.y1 - fy * (c.y1 - c.y0);
+      setView(cx - fx * w, Math.min(w, bw), cy + fy * hgt - hgt, Math.min(hgt, bh));
+    }
+    const frac = (x, y) => {
+      const r = svg.getBoundingClientRect(), s = r.width / box.W;
+      const f = (v, a, n) => Math.max(0, Math.min(1, (v / s - a) / n));
+      return [f(x - r.left, box.PL, box.W - box.PL - box.PR), f(y - r.top, box.PT, box.H - box.PT - box.PB)];
+    };
+    stage.addEventListener('wheel', (e) => {
+      if (!(e.ctrlKey || e.metaKey) || !svg) return;   // plain scrolling stays the page's
+      e.preventDefault();
+      zoomAt(Math.exp(-e.deltaY * 0.01), ...frac(e.clientX, e.clientY));
+    }, { passive:false });
+    const down = new Map();
+    let moved = 0, pinch = 0;
+    const gap = () => { const [a, b] = [...down.values()]; return Math.hypot(a.x - b.x, a.y - b.y); };
+    stage.addEventListener('pointerdown', (e) => {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      down.set(e.pointerId, { x:e.clientX, y:e.clientY });
+      if (down.size === 1) moved = 0;
+      if (down.size === 2) pinch = gap();
+    });
+    stage.addEventListener('pointermove', (e) => {
+      const p = down.get(e.pointerId);
+      if (!p || !svg) return;
+      const dx = e.clientX - p.x, dy = e.clientY - p.y;
+      p.x = e.clientX; p.y = e.clientY;
+      if (down.size === 2) {
+        const g = gap(), [a, b] = [...down.values()];
+        if (pinch && g) zoomAt(g / pinch, ...frac((a.x + b.x) / 2, (a.y + b.y) / 2));
+        pinch = g; moved += 99;
+        return;
+      }
+      if (!view || (e.pointerType === 'mouse' && !(e.buttons & 1))) return;
+      moved += Math.abs(dx) + Math.abs(dy);
+      if (moved < 6) return;
+      if (!stage.hasPointerCapture(e.pointerId)) stage.setPointerCapture(e.pointerId);
+      const r = svg.getBoundingClientRect(), s = r.width / box.W;
+      const w = view.x1 - view.x0, hgt = view.y1 - view.y0;
+      setView(view.x0 - dx / s / (box.W - box.PL - box.PR) * w, w, view.y0 + dy / s / (box.H - box.PT - box.PB) * hgt, hgt);
+    });
+    for (const ev of ['pointerup', 'pointercancel']) stage.addEventListener(ev, (e) => { down.delete(e.pointerId); if (down.size < 2) pinch = 0; });
+    // A drag or pinch is not a click on whatever dot it ended over.
+    stage.addEventListener('click', (e) => { if (moved >= 6) { e.stopPropagation(); e.preventDefault(); } }, true);
+    const plot = () => chartScatter(pts, { key:'_x', label:'Prospect score' }, { key:'_y', label:'PPG over replacement', fmt:'dec1' }, {
+      W, domain:view, picks:new Set(), unit:'drafted players',
       label:(r, short) => short ? chartShort(r.n) : `${r.n} (${r.p}, ${r.y} pick ${r.pk})`,
       sample:(r) => `${r.out[2] ? `Best ${pmDec(r.out[1])} PPG, ${r.p}${r.out[2]}` : 'No 8-game season'}; replacement ${pmDec(pmRepl(r.p))}`,
       cls:(r) => `pos-${r.p}`, shot:(r) => r.id ? headshotUrl(r.id) : r.cid != null ? collegeShotUrl(r.cid) : null,
       scope:`Y is his best PPR points per game in NFL years 1-3 (QB, TE 1-4) minus replacement, the median best of players who finished near ${ps.map(p => `${p}${PM_CUTS[p][1]} (${pmDec(pmRepl(p))})`).join(', ')}. `
         + 'No 8-game season counts as 0 PPG. College players and classes whose window is still open are left off',
     });
-    const wrap = el.querySelector('.chart-wrap');
-    if (!one) wrap.before(h('div', { class:'prm-legend' }, ...ps.map(p => h('span', { class:`pos-chip ${p}` }, p))));
     // A mouse click opens the player. On touch the first tap shows the readout and a second tap on the same dot opens him.
+    // Armed by index, not node: a zoom redraw replaces the nodes.
     let ptr = 'mouse', armed = null;
-    wrap.addEventListener('pointerdown', (e) => { ptr = e.pointerType; });
-    wrap.addEventListener('click', (e) => {
-      const m = e.target.closest && e.target.closest('[data-i]');
-      if (m && (ptr === 'mouse' || armed === m)) open(pts[Number(m.dataset.i)]);
-      armed = m;
+    stage.addEventListener('pointerdown', (e) => { ptr = e.pointerType; });
+    stage.addEventListener('click', (e) => {
+      const m = e.target.closest && e.target.closest('[data-i]'), i = m ? m.dataset.i : null;
+      if (m && (ptr === 'mouse' || armed === i)) open(pts[Number(i)]);
+      armed = i;
     });
-    return el;
+    draw();
+    return h('div', null, tools, stage);
   }
 
   // weather.js keys teams by nflverse code, which writes the Rams as LA.
@@ -15962,44 +16040,55 @@
     const pts = rows.filter(r => Number.isFinite(r[xc.key]) && Number.isFinite(r[yc.key])).map(r => ({ r, x:r[xc.key], y:r[yc.key] }));
     if (pts.length < 3) return h('div', { class:'muted' }, 'Fewer than three rows have both stats. Loosen a filter or pick other columns.');
     const W = o.W, H = Math.round(Math.max(290, Math.min(490, W * 0.62))), PL = 44, PR = 12, PT = 26, PB = 40;
-    const xt = chartTicks(Math.min(...pts.map(p => p.x)), Math.max(...pts.map(p => p.x)));
-    const yt = chartTicks(Math.min(...pts.map(p => p.y)), Math.max(...pts.map(p => p.y)));
-    const X = (v) => PL + (v - xt[0]) / (xt[xt.length - 1] - xt[0]) * (W - PL - PR);
-    const Y = (v) => PT + (1 - (v - yt[0]) / (yt[yt.length - 1] - yt[0])) * (H - PT - PB);
+    // o.domain is a zoom window in data units, drawn edge to edge; without one the axes round out to nice ticks.
+    const d = o.domain, inD = (v, a, b) => v >= a - 1e-9 && v <= b + 1e-9;
+    let xt = d ? chartTicks(d.x0, d.x1) : chartTicks(Math.min(...pts.map(p => p.x)), Math.max(...pts.map(p => p.x)));
+    let yt = d ? chartTicks(d.y0, d.y1) : chartTicks(Math.min(...pts.map(p => p.y)), Math.max(...pts.map(p => p.y)));
+    const xs0 = xt[1] - xt[0], ys0 = yt[1] - yt[0];
+    const xa = d ? d.x0 : xt[0], xb = d ? d.x1 : xt[xt.length - 1], ya = d ? d.y0 : yt[0], yb = d ? d.y1 : yt[yt.length - 1];
+    if (d) { xt = xt.filter(v => inD(v, xa, xb)); yt = yt.filter(v => inD(v, ya, yb)); }
+    const X = (v) => PL + (v - xa) / (xb - xa) * (W - PL - PR);
+    const Y = (v) => PT + (1 - (v - ya) / (yb - ya)) * (H - PT - PB);
+    const vis = (p) => inD(p.x, xa, xb) && inD(p.y, ya, yb);
     const fit = chartFit(pts);
     let s = `<svg class="chart-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="${chartEsc(`${yc.label} against ${xc.label}, ${pts.length} points`)}">`;
-    for (const v of xt) s += `<line class="grid" x1="${X(v)}" x2="${X(v)}" y1="${PT}" y2="${H - PB}"/><text x="${X(v)}" y="${H - PB + 14}" text-anchor="middle">${chartTickFmt(v, xc.fmt, xt[1] - xt[0])}</text>`;
-    for (const v of yt) s += `<line class="grid" x1="${PL}" x2="${W - PR}" y1="${Y(v)}" y2="${Y(v)}"/><text x="${PL - 5}" y="${Y(v) + 4}" text-anchor="end">${chartTickFmt(v, yc.fmt, yt[1] - yt[0])}</text>`;
+    for (const v of xt) s += `<line class="grid" x1="${X(v)}" x2="${X(v)}" y1="${PT}" y2="${H - PB}"/><text x="${X(v)}" y="${H - PB + 14}" text-anchor="middle">${chartTickFmt(v, xc.fmt, xs0)}</text>`;
+    for (const v of yt) s += `<line class="grid" x1="${PL}" x2="${W - PR}" y1="${Y(v)}" y2="${Y(v)}"/><text x="${PL - 5}" y="${Y(v) + 4}" text-anchor="end">${chartTickFmt(v, yc.fmt, ys0)}</text>`;
     s += `<text class="ax-title" x="${(PL + W - PR) / 2}" y="${H - 6}" text-anchor="middle">${chartEsc(xc.label)}</text>`;
+    if (d) s += `<defs><clipPath id="chart-plot-clip"><rect x="${PL}" y="${PT}" width="${W - PL - PR}" height="${H - PT - PB}"/></clipPath></defs><g clip-path="url(#chart-plot-clip)">`;
     // The Y title reads flat above its axis: rotated text is hard on a phone.
     s += `<text class="ax-title" x="4" y="13">${chartEsc(yc.label)} ↑</text>`;
     if (fit) {
       s += `<line class="avg" x1="${X(fit.mx)}" x2="${X(fit.mx)}" y1="${PT}" y2="${H - PB}"/><line class="avg" x1="${PL}" x2="${W - PR}" y1="${Y(fit.my)}" y2="${Y(fit.my)}"/>`;
       s += `<text class="avg-t" x="${W - PR - 2}" y="${Y(fit.my) - 4}" text-anchor="end">avg</text>`;
       // The trend line, clipped to the plot box.
-      const clipY = (v) => Math.max(yt[0], Math.min(yt[yt.length - 1], v));
-      const xs = [xt[0], xt[xt.length - 1]].map(x => ({ x, y:fit.m * x + fit.b }));
+      const clipY = (v) => Math.max(ya, Math.min(yb, v));
+      const xs = [xa, xb].map(x => ({ x, y:fit.m * x + fit.b }));
       if (fit.m) for (const p of xs) if (p.y !== clipY(p.y)) { p.y = clipY(p.y); p.x = (p.y - fit.b) / fit.m; }
       s += `<line class="trend" x1="${X(xs[0].x)}" y1="${Y(xs[0].y)}" x2="${X(xs[1].x)}" y2="${Y(xs[1].y)}"/>`;
     }
+    if (d) s += '</g>';
     // Picked players and the corners of the cloud get names; the rest on hover.
     const sd = (k) => { const m = pts.reduce((a, p) => a + p[k], 0) / pts.length; return Math.sqrt(pts.reduce((a, p) => a + (p[k] - m) ** 2, 0) / pts.length) || 1; };
     const sx = sd('x'), sy = sd('y'), mx = fit ? fit.mx : 0, my = fit ? fit.my : 0;
-    const order = pts.map((p, i) => ({ i, pick:o.picks.has(p.r._key), far:((p.x - mx) / sx) ** 2 + ((p.y - my) / sy) ** 2 }))
+    const order = pts.map((p, i) => ({ i, pick:o.picks.has(p.r._key), far:((p.x - mx) / sx) ** 2 + ((p.y - my) / sy) ** 2 })).filter(({ i }) => vis(pts[i]))
       .sort((a, b) => (b.pick - a.pick) || (b.far - a.far)).slice(0, W < 480 ? 6 : 12);
     const labels = chartLabels(order.map(({ i }) => ({ i, x:X(pts[i].x), y:Y(pts[i].y), text:o.label(pts[i].r, true) })),
       { x0:PL, x1:W - PR, y0:PT, y1:H - PB }, chartMeasure());
     // Named points draw as the player's headshot ringed in the dot colour, on top of the rest.
+    // Zoomed in to a few dozen points, every one draws as a headshot, still 22px, so overlaps spread apart.
+    const shown = pts.filter(vis).length, every = d && shown <= 60;
     const shot = o.shot || ((r) => r._key ? headshotUrl(r._key) : null), named = new Set(labels.map(l => l.i));
-    if (named.size) s += '<defs><clipPath id="chart-shot-clip" clipPathUnits="objectBoundingBox"><circle cx=".5" cy=".5" r=".5"/></clipPath></defs>';
+    if (named.size || every) s += '<defs><clipPath id="chart-shot-clip" clipPathUnits="objectBoundingBox"><circle cx=".5" cy=".5" r=".5"/></clipPath></defs>';
     const ptCls = (p) => (o.picks.has(p.r._key) ? 'pt pick' : p.r._mine ? 'pt mine' : 'pt') + (o.cls ? ` ${o.cls(p.r)}` : '');
+    const asShot = (p, i) => (named.has(i) || every) && shot(p.r);
     pts.forEach((p, i) => {
-      if (named.has(i) && shot(p.r)) return;
+      if (!vis(p) || asShot(p, i)) return;
       const cls = ptCls(p);
       s += `<circle class="${cls}" data-i="${i}" cx="${X(p.x).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="${cls.startsWith('pt pick') ? 6.5 : cls.startsWith('pt mine') ? 5 : 4.5}"/>`;
     });
     pts.forEach((p, i) => {
-      const src = named.has(i) && shot(p.r);
+      const src = vis(p) && asShot(p, i);
       if (!src) return;
       const cx = X(p.x).toFixed(1), cy = Y(p.y).toFixed(1);
       s += `<g class="pt-shot" data-i="${i}"><circle class="${ptCls(p)}" cx="${cx}" cy="${cy}" r="13"/>`
@@ -16012,6 +16101,7 @@
     const wrap = chartTipWrap(s, (i) => [tipHead(pts[i].r), `${yc.label}: ${statFmt(pts[i].y, yc.fmt)}`, `${xc.label}: ${statFmt(pts[i].x, xc.fmt)}`, o.sample(pts[i].r)].filter(Boolean),
       o.open ? (i) => o.open(pts[i].r) : null);
     wrap.dataset.points = String(pts.length);
+    wrap._box = { W, H, PL, PR, PT, PB, x0:xa, x1:xb, y0:ya, y1:yb };
     return h('div', null,
       h('div', { class:'chart-title' }, `${yc.label} vs ${xc.label}`),
       h('div', { class:'muted' }, `${o.scope}. ${pts.length} ${o.unit}${fit ? `, r = ${fit.r.toFixed(2)}` : ''}. Dashed lines are the average, the solid line the trend.`),
