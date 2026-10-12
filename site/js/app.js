@@ -12968,7 +12968,8 @@
       if (k === 'n') return h('div', { class:'hs-cell' }, playerShot(r, 22), h('div', { class:'name-cell', title:[v, r.sch, r.id ? `${r.y} pick ${r.pk}` : null].filter(Boolean).join(', ') },
         h('button', { type:'button', class:'name player-name-button',
           onclick:(e) => { e.stopPropagation(); openRow(r); } }, v),
-        r.sch ? h('span', { class:'muted prm-school' }, r.sch) : null));
+        r.sch || (hist && !r.id) ? h('span', { class:'muted prm-school' },
+          hist && !r.id ? h('span', { class:'prm-future-tag' }, 'Future') : null, r.sch || '') : null));
       if (k.startsWith('st.')) return stat.find(s => `st.${s[0]}` === k)[2](v);
       if (k === 'ba') return r.p === 'QB' ? h('span', { class:'muted', title:'No QB breakout age: the dominator line is a receiving and rushing share of team offense, which does not measure a passer' }, 'n/a') : pmAge(r, v);
       if (k === 'cb') return v == null ? '·' : h('span', { title:`${pmDec(r.cb[0])} PPR points per game` }, `${r.p}${v}`);
@@ -13017,7 +13018,7 @@
         h('tbody', null, ...rows.map((r, i) => h('tr', { class:`clickable${hist && !r.id ? ' prm-future' : ''}`, title: hist && !r.id ? 'Not drafted yet: college player in a future class' : null, onclick:() => openRow(r) },
           h('td', { class:'right tnum' }, String(i + 1)),
           ...cols.map(([k, , o]) => h('td', { class:`${o.right ? 'right ' : ''}${o.fit ? 'fit ' : ''}tnum` }, fmtCell(r, k)))))));
-      if (hist && rows.some(r => !r.id)) card.appendChild(h('div', { class:'prm-legend muted' }, h('span', { class:'prm-future-key', 'aria-hidden':'true' }), 'Shaded row: not drafted yet, future class'));
+      if (hist && rows.some(r => !r.id)) card.appendChild(h('div', { class:'prm-legend muted' }, h('span', { class:'prm-future-key', 'aria-hidden':'true' }), 'Hatched row tagged Future: not drafted yet'));
       appendTable(card, tbl);
     }
     render();

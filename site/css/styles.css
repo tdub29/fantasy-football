@@ -3623,15 +3623,26 @@ table.data tbody tr.you:hover {
   background: linear-gradient(180deg, oklch(90% 0.17 92), var(--gold));
 }
 table.data tbody tr.you td { color: var(--ink); font-weight: 700; }
-/* Prospects, All classes: future-class rows get a full-row neutral grey wash plus a dashed edge,
-   not a hue, so blue keeps meaning Foundational / WR and gold stays the selection colour.
-   Hover still wins. The legend line names it. */
+/* Prospects, mixed-class views: future-class rows get a full-row slate face with a diagonal hatch,
+   a thick dashed ink edge and a Future tag by the name. No hue, so blue keeps meaning
+   Foundational / WR and gold stays the selection colour. The 16% grey wash it replaces was
+   invisible next to the lavender stripes. Hover still wins. The legend line names it. */
 table.data tbody tr.prm-future:not(:hover),
-.prm-future-key { background-color: color-mix(in srgb, var(--fg-3) 16%, transparent); }
-table.data tbody tr.prm-future td:first-child,
-.prm-future-key { background-image: linear-gradient(var(--fg-3) 50%, transparent 0); background-size: 3px 6px; background-repeat: repeat-y; }
+.prm-future-key {
+  background-color: oklch(80% 0.02 275);
+  background-image: repeating-linear-gradient(135deg, transparent 0 7px, rgba(255,255,255,.38) 7px 11px);
+}
+table.data tbody tr.prm-future td:first-child {
+  background-image: linear-gradient(var(--ink) 55%, transparent 0);
+  background-size: 6px 10px; background-repeat: repeat-y;
+}
+.prm-future-tag {
+  display: inline-block; margin-right: 5px; padding: 0 5px; border: 2px solid var(--ink); border-radius: 4px;
+  background: var(--ink); color: var(--chalk); font-size: 0.62rem; font-weight: 800;
+  letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.3; vertical-align: 1px;
+}
 .prm-legend { display: flex; align-items: center; gap: 6px; margin: 0 0 6px; font-size: 12px; }
-.prm-future-key { display: inline-block; width: 3px; height: 14px; }
+.prm-future-key { display: inline-block; width: 22px; height: 14px; border: 2px solid var(--ink); border-radius: 3px; }
 
 /* --- Law 3 everywhere else --------------------------------------------- */
 .badge.you,

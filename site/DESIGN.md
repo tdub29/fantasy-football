@@ -477,9 +477,11 @@ pinch never zooms the page. Zoomed in, dots become headshots that spread apart t
 
 **Full-bar row highlight.** A highlighted row (a future prospect, the user's own team) fills the
 whole row, not one cell or a left stripe, so it reads at arm's length on a phone. The user's own
-row is gold. A future-class prospect row gets a full-row neutral grey wash plus a dashed edge, not
-a hue, so blue keeps meaning Foundational and gold stays selection, and the legend line names it.
-(`tr.prm-future`, `.prm-future-key`)
+row is gold. A future-class prospect row gets a full-row slate face with a diagonal hatch, a thick
+dashed ink edge and an ink "Future" tag before the school, not a hue, so blue keeps meaning
+Foundational and gold stays selection, and the legend line names it. A plain grey wash was tried
+first and vanished next to the lavender row stripes. (`tr.prm-future`, `.prm-future-tag`,
+`.prm-future-key`)
 
 **Recent-class presets.** Class pickers offer "Last 5 + future" and "Last 10 + future": the latest
 N drafted classes anchored on the newest one, plus every future (not yet drafted) class, whose rows
