@@ -6315,11 +6315,17 @@ table.data.prm-table .name-cell > * { display: block; max-width: 100%; overflow:
   align-items: center; gap: 8px; padding: 4px 0; border-bottom: 1px solid var(--bg-3);
 }
 .prm-grade-label { font-size: 0.85rem; font-weight: 700; color: var(--fg-1); }
-.prm-grade-bar { position: relative; height: 10px; border: 1.5px solid var(--ink); border-radius: 999px; background: oklch(96% 0.01 285); }
-.prm-grade-bar > i { display: block; height: 100%; border-radius: 999px; }
-.prm-grade-bar > b { position: absolute; top: 50%; transform: translate(-50%, -50%); min-width: 22px; height: 22px; padding: 0 3px; box-sizing: border-box;
-  border: 1.5px solid var(--ink); border-radius: 999px; display: grid; place-items: center; font-size: 11px; font-weight: 800; color: #fff; text-shadow: 0 0 2px var(--ink); }
-.prm-grade { min-height: 28px; }
+/* Percentile row: thick fill over a thin track, a tick at the median, the fill ends in a bubble with his percentile. */
+.prm-grade-bar { position: relative; height: 18px;
+  background: linear-gradient(var(--bg-3), var(--bg-3)) 0 50% / 100% 4px no-repeat; }
+.prm-grade-bar::after { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: rgba(255,255,255,.7); }
+.prm-grade-bar > i { display: block; height: 100%; }
+.prm-grade-bar > b { position: absolute; z-index: 1; top: 50%; transform: translate(-50%, -50%); min-width: 24px; height: 24px; padding: 0 3px; box-sizing: border-box;
+  border: 2px solid #fff; border-radius: 999px; display: grid; place-items: center; font-size: 11px; font-weight: 800; color: #fff;
+  text-shadow: 0 0 2px var(--ink); box-shadow: 0 0 0 1px var(--ink); }
+.prm-grade { min-height: 30px; }
+.prm-grade-head { min-height: 0; padding: 0 0 2px; border-bottom: 0; }
+.prm-grade-scale { display: flex; justify-content: space-between; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; color: var(--fg-3); }
 .prm-grade-val { text-align: right; font-weight: 800; }
 .prm-grade-letter { font-family: var(--font-display); font-weight: 800; }
 .prm-grades-wrap { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; }

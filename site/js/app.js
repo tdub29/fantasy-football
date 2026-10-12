@@ -12632,7 +12632,10 @@
     const axes = rows.map(([k, label, , v]) => { const g = pmGrade(p, k, v); return g && { label: PM_LOWER[k] ? 'Early breakout' : label, pct:g.pct }; }).filter(Boolean);
     return h('section', { class:'prm-sec' },
       h('div', { class:'prm-sec-title' }, h('span', null, 'Grades'), h('span', null, `vs drafted ${p}s`)),
-      h('div', { class:'prm-grades-wrap' }, h('div', { class:'prm-grades' }, ...rows.map(([k, label, shown, v, t]) => {
+      h('div', { class:'prm-grades-wrap' }, h('div', { class:'prm-grades' },
+        h('div', { class:'prm-grade prm-grade-head', 'aria-hidden':'true' }, h('span'), h('span', { class:'prm-grade-scale' },
+          h('span', null, 'Poor'), h('span', null, 'Average'), h('span', null, 'Great')), h('span'), h('span')),
+        ...rows.map(([k, label, shown, v, t]) => {
         const g = pmGrade(p, k, v), c = g && gradeColor(g.pct / 10);
         return h('div', { class:'prm-grade', title: g ? `${t}. Grade ${g.g}: ${pmOrd(g.pct)} percentile against ${g.n} ${g.src}`
           + `${PM_LOWER[k] ? ', younger ranks higher' : ''}. Percentile bands: ${PM_GRADE.map(([cut, l]) => `${l} ${cut}+`).join(', ')}` : t },
