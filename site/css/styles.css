@@ -6087,6 +6087,11 @@ button:disabled { cursor: wait; opacity: 0.7; }
 .chart-svg .avg { stroke: var(--fg-3); stroke-width: 1.5; stroke-dasharray: 5 4; fill: none; }
 .chart-svg .avg-t { font-size: 10px; font-weight: 700; fill: var(--fg-3); }
 .chart-svg .trend { stroke: var(--fg-1); stroke-width: 2; opacity: .7; }
+.chart-svg .ref { stroke: var(--ink); stroke-width: 2; stroke-dasharray: 1 4; stroke-linecap: round; }
+.chart-svg .ref-t { font-size: 10px; font-weight: 700; fill: var(--ink); }
+.chart-key { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 4px 0; font-size: 12px; }
+.chart-key > span { display: inline-flex; align-items: center; gap: 5px; }
+.chart-key-sw { width: 22px; height: 10px; flex: none; }
 .chart-svg .pt { fill: var(--band); stroke: var(--ink); stroke-width: 1; cursor: pointer; }
 .chart-svg .pt.mine { fill: var(--gold-deep); }
 .chart-svg .pt.pick { fill: var(--gold); stroke-width: 2; }

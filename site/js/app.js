@@ -13110,6 +13110,8 @@
       scope:`Y is his best PPR points per game in NFL years 1-3 (QB, TE 1-4) minus replacement, the median best of players who finished near ${ps.map(p => `${p}${PM_CUTS[p][1]} (${pmDec(pmRepl(p))})`).join(', ')}. `
         + 'No 8-game season counts as 0 PPG. College players and classes whose window is still open are left off',
       note:'Y: best early-career PPG above a replacement starter. No 8-game season counts as 0. Drafted classes with a closed window only.',
+      yRef:{ v:0, label:'replacement', key:'Dotted: replacement level, 0 on Y',
+        title:'Dotted line at 0: replacement level, the median best PPG of players who finished near the position cutoff. Above it beat a replacement starter' },
     });
     // A mouse click opens the player. On touch the first tap shows the readout and a second tap on the same dot opens him.
     // Armed by index, not node: a zoom redraw replaces the nodes.
@@ -16059,15 +16061,22 @@
     if (d) s += `<defs><clipPath id="chart-plot-clip"><rect x="${PL}" y="${PT}" width="${W - PL - PR}" height="${H - PT - PB}"/></clipPath></defs><g clip-path="url(#chart-plot-clip)">`;
     // The Y title reads flat above its axis: rotated text is hard on a phone.
     s += `<text class="ax-title" x="4" y="13">${chartEsc(yc.label)} ↑</text>`;
+    // Both dashed lines are plain means of the plotted points: X's mean (vertical), Y's mean (horizontal).
+    const ax = fit && statFmt(fit.mx, 'dec1'), ay = fit && statFmt(fit.my, 'dec1');
     if (fit) {
-      s += `<line class="avg" x1="${X(fit.mx)}" x2="${X(fit.mx)}" y1="${PT}" y2="${H - PB}"/><line class="avg" x1="${PL}" x2="${W - PR}" y1="${Y(fit.my)}" y2="${Y(fit.my)}"/>`;
-      s += `<text class="avg-t" x="${W - PR - 2}" y="${Y(fit.my) - 4}" text-anchor="end">avg</text>`;
+      s += `<line class="avg" x1="${X(fit.mx)}" x2="${X(fit.mx)}" y1="${PT}" y2="${H - PB}"><title>Average ${chartEsc(xc.label)} of the ${pts.length} plotted: ${ax}</title></line>`
+        + `<line class="avg" x1="${PL}" x2="${W - PR}" y1="${Y(fit.my)}" y2="${Y(fit.my)}"><title>Average ${chartEsc(yc.label)} of the ${pts.length} plotted: ${ay}</title></line>`;
+      s += `<text class="avg-t" x="${W - PR - 2}" y="${Y(fit.my) - 4}" text-anchor="end">avg${o.note ? ` ${ay}` : ''}</text>`;
+      if (o.note) s += `<text class="avg-t" x="${X(fit.mx) + 4}" y="${PT + 10}">avg ${ax}</text>`;
       // The trend line, clipped to the plot box.
       const clipY = (v) => Math.max(ya, Math.min(yb, v));
       const xs = [xa, xb].map(x => ({ x, y:fit.m * x + fit.b }));
       if (fit.m) for (const p of xs) if (p.y !== clipY(p.y)) { p.y = clipY(p.y); p.x = (p.y - fit.b) / fit.m; }
-      s += `<line class="trend" x1="${X(xs[0].x)}" y1="${Y(xs[0].y)}" x2="${X(xs[1].x)}" y2="${Y(xs[1].y)}"/>`;
+      s += `<line class="trend" x1="${X(xs[0].x)}" y1="${Y(xs[0].y)}" x2="${X(xs[1].x)}" y2="${Y(xs[1].y)}"><title>Trend: least-squares fit of ${chartEsc(yc.label)} on ${chartEsc(xc.label)}</title></line>`;
     }
+    // o.yRef: a fixed reference value on Y (the prospect chart's replacement level, 0), dotted.
+    if (o.yRef && inD(o.yRef.v, ya, yb)) s += `<line class="ref" x1="${PL}" x2="${W - PR}" y1="${Y(o.yRef.v)}" y2="${Y(o.yRef.v)}"><title>${chartEsc(o.yRef.title)}</title></line>`
+      + `<text class="ref-t" x="${PL + 4}" y="${Y(o.yRef.v) - 4}">${chartEsc(o.yRef.label)}</text>`;
     if (d) s += '</g>';
     // Picked players and the corners of the cloud get names; the rest on hover.
     const sd = (k) => { const m = pts.reduce((a, p) => a + p[k], 0) / pts.length; return Math.sqrt(pts.reduce((a, p) => a + (p[k] - m) ** 2, 0) / pts.length) || 1; };
@@ -16108,9 +16117,15 @@
       // o.note: a short caveat line up top, with the full scope folded into a details note below it.
       o.note ? h('div', { class:'muted' }, `${o.note} ${pts.length} ${o.unit} plotted${fit ? `, r = ${fit.r.toFixed(2)}` : ''}.`)
         : h('div', { class:'muted' }, `${o.scope}. ${pts.length} ${o.unit}${fit ? `, r = ${fit.r.toFixed(2)}` : ''}. Dashed lines are the average, the solid line the trend.`),
+      o.note && fit ? h('div', { class:'chart-key muted' }, ...[
+        ['avg', `Dashed: averages of the ${pts.length} plotted, ${xc.label} ${ax} (vertical), ${yc.label} ${ay} (horizontal)`],
+        o.yRef ? ['ref', o.yRef.key] : null, ['trend', 'Solid: trend'],
+      ].filter(Boolean).map(([c, txt]) => h('span', null,
+        h('span', { 'aria-hidden':'true', html:`<svg class="chart-svg chart-key-sw" viewBox="0 0 22 10"><line class="${c}" x1="0" x2="22" y1="5" y2="5"/></svg>` }), txt))) : null,
       o.note ? h('details', { class:'source-note' }, h('summary', null, 'How to read this chart'),
         h('p', null, `${o.scope}.`),
-        h('p', null, `Dashed lines are the average of the ${pts.length} plotted, the solid line the least-squares trend. `
+        h('p', null, `Dashed lines are plain averages of the ${pts.length} plotted on this filter: the vertical one is the average ${xc.label}, the horizontal one the average ${yc.label}. `
+          + `${o.yRef ? `${o.yRef.title}. ` : ''}The solid line is the least-squares trend. `
           + `r is their correlation on this filter, not a validation: drafted players' own results are in the fit that makes the score.`)) : null,
       wrap);
   }
