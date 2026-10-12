@@ -12725,6 +12725,26 @@
             `Below top ${lad[lad.length - 1]}`) : null)));
   }
 
+  // Hit ladder: drafted players (windows closed) whose prospect score sat within 8 of his, and the
+  // share that reached each cut. ponytail: fixed +-8 band, widen if n runs thin at the extremes.
+  function pmLadder(r) {
+    const M = window.PROSPECT_MODEL, s = pmScore(r), cuts = PM_CUTS[r.p];
+    if (s == null || !cuts) return null;
+    const near = Object.values(M.nfl).filter(x => x.p === r.p && x.out && x.pk && x !== r)
+      .filter(x => { const v = pmScore(x); return v != null && Math.abs(v - s) <= 8; });
+    if (near.length < 5) return null;
+    return h('section', { class:'prm-sec' },
+      h('div', { class:'prm-sec-title' }, h('span', null, 'Hit rate'), h('span', null, `${near.length} drafted ${r.p}s scored ${Math.max(0, s - 8)}-${Math.min(100, s + 8)}`)),
+      h('div', { class:'prm-ladder' }, ...cuts.map(c => {
+        const k = near.filter(x => x.out[2] && x.out[2] <= c).length, f = k / near.length;
+        return h('div', { class:'prm-rung', title:`${k} of ${near.length} drafted ${r.p}s with a prospect score within 8 of his had a top-${c} season in NFL years ${pmWindow(r.p)}` },
+          h('div', { class:'prm-rung-label' }, `${r.p}${c}`),
+          h('div', { class:'prm-rung-value tnum' }, pmPct(f)),
+          h('span', { class:'seg-meter' }, h('i', { style:{ width:`${Math.round(f * 100)}%` } })),
+          h('div', { class:'tip' }, `${k} of ${near.length}`));
+      })));
+  }
+
   function collegeProspectBlock(r) {
     const M = window.PROSPECT_MODEL;
     if (!M || !r) return null;
@@ -12749,6 +12769,7 @@
       ]),
       pmGrades(r.p, pmGradeRows(r.p, r, pmYpc('college', r.cid),
         'Age on Sept 1 of the college season he first hit the dominator line. Profile only, no model uses it')),
+      pmLadder(r),
       h('div', { class:'tip prm-line' }, `${pmTargetLine(r.p)} First eligible for the ${r.cls} draft.`),
       pmPickLine(r) ? h('div', { class:'tip prm-line' }, pmPickLine(r)) : null,
       r.ln ? h('div', { class:'tip prm-line' }, r.ln) : null,

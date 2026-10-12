@@ -6291,9 +6291,10 @@ table.data.prm-table .name-cell > * { display: block; max-width: 100%; overflow:
 .prm-hero-value { font-family: var(--font-display); font-weight: 800; font-size: 1.7rem; line-height: 1.1; }
 .prm-hero-word { font-size: 1.15rem; line-height: 1.5; }
 .prm-hero-sub { font-size: 0.68rem; font-weight: 700; }
-.prm-bio { display: grid; grid-template-columns: repeat(auto-fill, minmax(128px, 1fr)); gap: 6px; }
-.prm-bio-cell { background: var(--bg-2); border-left: 4px solid var(--band-deep); border-radius: 6px; padding: 4px 8px; min-width: 0; }
-.prm-bio-label, .prm-bio-value { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* One row of cells; a narrow screen scrolls it sideways rather than wrapping. */
+.prm-bio { display: flex; gap: 6px; overflow-x: auto; }
+.prm-bio-cell { flex: 1 0 auto; background: var(--bg-2); border-left: 4px solid var(--band-deep); border-radius: 6px; padding: 4px 8px; min-width: 0; }
+.prm-bio-label, .prm-bio-value { white-space: nowrap; }
 .prm-bio-label { font-size: 0.6rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg-3); }
 .prm-bio-value { font-size: 0.9rem; font-weight: 800; }
 .prm-sec { margin-top: 12px; }
@@ -6325,7 +6326,8 @@ table.data.prm-table .name-cell > * { display: block; max-width: 100%; overflow:
 .prm-ladder { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; align-items: stretch; }
 .prm-rung-label { font-size: 0.72rem; font-weight: 800; color: var(--fg-2); }
 .prm-rung-value { font-family: var(--font-display); font-weight: 800; font-size: 1.6rem; line-height: 1.1; }
-.prm-rung .seg-meter { display: block; }
+.prm-rung { background: var(--bg-2); border-radius: 6px; padding: 6px 10px; }
+.prm-rung .seg-meter { display: block; margin: 4px 0 2px; }
 .prm-outcome { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
 .prm-outcome .prm-hero-box { flex: 0 1 auto; border-left: 0; padding: 0; }
 .prm-verdict {
