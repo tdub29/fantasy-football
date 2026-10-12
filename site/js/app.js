@@ -12858,9 +12858,14 @@
     // 'next' and 'later' are the old mode routes; they land on the matching class. The old rookies
     // board and any drafted class year land on All classes, where those players now live.
     const cls = clsArg === 'next' ? String(next) : clsArg === 'later' ? String(next + 1)
+      : clsArg === 'last5' || clsArg === 'last10' ? clsArg
       : years.includes(Number(clsArg)) ? String(clsArg)
       : clsArg === 'all' || clsArg === 'rookies' || (clsArg && Number(clsArg) <= M.season) ? 'all' : 'future';
-    const hist = cls === 'all';
+    // last5 / last10: the latest N drafted classes plus every future one. Anchored on the newest class
+    // drafted in the data, not the calendar, so January does not roll it before the draft happens.
+    const hist = cls === 'all' || cls === 'last5' || cls === 'last10';
+    const lastDraft = Math.max(...Object.values(M.nfl).map(r => r.y));
+    const since = cls === 'last5' ? lastDraft - 4 : cls === 'last10' ? lastDraft - 9 : -Infinity;
     const hashFor = (p, c) => `#prospects/${p}${c === 'future' ? '' : `/${c}`}`;
     if (clsArg && clsArg !== 'next' && clsArg !== 'later' && String(clsArg) !== cls) history.replaceState(null, '', hashFor(pos, cls));
     // Redraw in place like Players, so the phone filter panel stays open between taps.
@@ -12873,8 +12878,8 @@
     };
     const pick = (p) => !one || p === pos;
     // Drafted rows carry their Sleeper id and pick; `cls` is the draft they went in.
-    const drafted = hist ? Object.entries(M.nfl).map(([id, r]) => ({ ...r, id, cls:r.y })) : [];
-    const all = [...upcoming, ...drafted].filter(r => pick(r.p) && (cls === 'all' || cls === 'future' || r.cls === Number(cls)));
+    const drafted = hist ? Object.entries(M.nfl).filter(([, r]) => r.y >= since).map(([id, r]) => ({ ...r, id, cls:r.y })) : [];
+    const all = [...upcoming, ...drafted].filter(r => pick(r.p) && (hist || cls === 'future' || r.cls === Number(cls)));
     // College players have no Sleeper id, so their card is built from the model record itself.
     // Drafted players open the NFL card, where their model record stays.
     const openRow = (r) => r.id ? openPlayerDetail(r.n, r.id) : document.body.appendChild(playerModal(r.n, null, null, r));
@@ -12904,6 +12909,8 @@
           onclick:() => go(p, cls) }, p)))));
     const clsSel = h('select', { 'aria-label':'Filter by draft class', onchange:(e) => go(pos, e.target.value) },
       h('option', { value:'all', selected: cls === 'all' ? '' : null }, 'All classes'),
+      ...[['last5', 5], ['last10', 10]].map(([v, n]) => h('option', { value:v, selected: cls === v ? '' : null,
+        title:`${lastDraft - n + 1}-${lastDraft} drafted classes plus every future class` }, `Last ${n} + future`)),
       h('option', { value:'future', selected: cls === 'future' ? '' : null }, 'Future classes'),
       ...years.map(y => h('option', { value:String(y), selected: cls === String(y) ? '' : null }, String(y))));
     filterBar.appendChild(h('div', { class:'group' }, h('label', null, 'Class'), clsSel));
@@ -12922,7 +12929,7 @@
     const cols = [
       ['n', 'Player', { asc:true }],
       one ? null : ['p', 'Pos', { asc:true, fit:true }],
-      cls === 'all' || cls === 'future' ? ['cls', 'Class', { right:true, asc:true, title:'Draft he went in, or the first one he is eligible for' }] : null,
+      hist || cls === 'future' ? ['cls', 'Class', { right:true, asc:true, title:'Draft he went in, or the first one he is eligible for' }] : null,
       hist || cls === 'future' || Number(cls) === next ? ['pk', 'Pick', { right:true, asc:true, title:'Overall pick he actually went at. Italic: projected, the median pick across public mock drafts (only the next class is mocked so far). UFD: next-class player in no mock (the mocks run all seven rounds), so projected undrafted. Blank: class not mocked yet' }] : null,
       ['sc', 'Score', { right:true, title:'One 0-100 prospect score from draft pick plus college profile: his average top-finish chance across both cuts, as a percentile of every drafted player at his position since 2008. College rows use the mock-draft pick, or profile alone if no mock' }],
       ['ts', 'Profile %ile', { right:true, title:'College profile percentile, 0-100: the no-draft-capital model on his college inputs (the stat columns when one position is picked), ranked among every drafted player at his position since 2008. With the pick, the only other input to the Score' }],
