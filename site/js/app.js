@@ -1706,6 +1706,7 @@
         const ranked = sp ? (rankIndex().bySleeperId.get(m.player_id) || rankIndex().byName.get(norm(sp.name))) : null;
         return h('div', { class:'mover-row', onclick: () => sp ? openPlayerDetail(sp.name, m.player_id) : null },
           h('span', { class:'mover-arrow', style:{ color: sign > 0 ? 'var(--green)' : 'var(--red)' } }, sign > 0 ? '↑' : '↓'),
+          headshot(m.player_id, 28),
           h('div', { class:'mover-meta' },
             h('div', { class:'name' }, sp ? sp.name : `Player ${m.player_id}`),
             h('div', { class:'tip' },
@@ -1908,6 +1909,7 @@
           )),
           h('tbody', null, ...watch.map(w => h('tr', { onclick: () => openPlayerDetail(w.p.name, w.p._sleeperId) },
             h('td', null, h('div', { class:'name-cell' },
+              headshot(w.p._sleeperId, 22),
               posChip(w.p.pos),
               h('span', { class:'name' }, w.p.name),
             )),
@@ -1944,7 +1946,7 @@
           const sup = c.league.is_superflex && window.SUPERFLEX_POS_MULT[c.player.pos] > 1;
           return h('tr', { onclick:()=>openPlayerDetail(c.player.name, c.player._sleeperId) },
             h('td', null, h('div', { class:'name-cell' },
-              posChip(c.player.pos), teamChip(c.player.team),
+              headshot(c.player._sleeperId, 22), posChip(c.player.pos), teamChip(c.player.team),
               h('span', { class:'name' }, c.player.name)
             )),
             ...expertCells(c.player.name, c.player._sleeperId),
@@ -2222,6 +2224,7 @@
             myRankCell({ pid:sleeperId, name:p.name, mine:myRank }, reorderable, renderList, (pid) => { focusPid = pid; }),
             h('td', { class:'right tnum', style:{ color:'var(--fg-2)' } }, consensus.get(String(sleeperId)) || '·'),
             h('td', null, h('div', { class:'name-cell' },
+              headshot(sleeperId, 22),
               h('span', { class:'name' }, p.name),
               injuryChip(sleeperId),
               p.rookie ? h('span', { class:'badge rookie', style:{ marginLeft:'4px' } }, 'Rookie') : null,
@@ -2368,6 +2371,7 @@
         h('tbody', null, ...limited.map(({pid,p,ranked,owners}) => {
           return h('tr', { onclick: ()=>openPlayerDetail(p.name, pid) },
             h('td', null, h('div', { class:'name-cell' },
+              headshot(pid, 22),
               h('span', { class:'name' }, p.name),
               p.age ? h('span', { class:'muted' }, ` · ${p.age}`) : null,
             )),
@@ -3743,7 +3747,7 @@
       const idCells = (p, i) => [
         h('td', { class:'right tnum', style:{ color:'var(--fg-3)' } }, String(i + 1)),
         h('td', { class:'right tnum', style:{ fontWeight:700 } }, String(p._overallRank || i+1)),
-        h('td', null, h('div', { class:'name-cell' }, h('span', { class:'name' }, p.name),
+        h('td', null, h('div', { class:'name-cell' }, headshot(p._sleeperId || p.id, 22), h('span', { class:'name' }, p.name),
           p.rookie ? h('span', { class:'badge rookie', style:{ marginLeft:'4px' } }, 'Rookie') : null,
           markButton(lg.id, p._sleeperId || p.id, p.name))),
         h('td', null, h('div', { style:{ display:'flex', alignItems:'center', gap:'6px' } }, posChip(p.pos),
@@ -3751,7 +3755,7 @@
             ? h('span', { class:'tip tnum', title: pr.label }, `${p.pos}${pr.rank}`) : null; })())),
         h('td', null, teamChip(teamOfP(p)), ' ', envChip(teamOf(p._sleeperId) || p.team)),
       ];
-      const weeklyNameCell = (p) => h('td', null, h('div', { class:'name-cell' },
+      const weeklyNameCell = (p) => h('td', null, h('div', { class:'name-cell' }, headshot(p._sleeperId, 22),
         h('button', {
           type:'button', class:'name player-name-button',
           onclick:(event)=>{ event.stopPropagation(); openPlayerDetail(p.name, p._sleeperId); },
@@ -4007,7 +4011,7 @@
             const sm = schedFor(teamOf(p._sleeperId) || p.team);
             return h('tr', { class: o.isMine ? 'you' : '', onclick:() => openPlayerDetail(p.name, p._sleeperId) },
               h('td', { class:'right tnum muted' }, String(i + 1)),
-              h('td', null, h('span', { class:'name' }, p.name)),
+              h('td', null, h('span', { class:'hs-name' }, headshot(p._sleeperId, 20), h('span', { class:'name' }, p.name))),
               h('td', null, posChip(p.pos)),
               h('td', null, teamChip(p.team)),
               h('td', null, o.r ? h('span', { class:'badge sos-owner' + (o.isMine ? ' you' : ''),
@@ -4343,7 +4347,7 @@
         const sidesArr = Object.entries(sides);
         const renderAsset = (a) => a.pick
           ? h('span', { class:'tx-pick' }, a.pick, h('span', { class:'tnum tip', style:{ marginLeft:'6px' } }, fmt.decimal(a.val, 1)))
-          : h('span', { class:'tx-player', onclick:(e) => { e.stopPropagation(); openPlayerDetail(playerName(a.pid), a.pid); } },
+          : h('span', { class:'tx-player', onclick:(e) => { e.stopPropagation(); openPlayerDetail(playerName(a.pid), a.pid); } }, headshot(a.pid, 20),
               playerName(a.pid),
               h('span', { class:'tnum tip', style:{ marginLeft:'6px' } }, fmt.decimal(a.val, 1))
             );
@@ -4392,12 +4396,12 @@
             h('div', { class:'tx-fa-line' },
               adds.length ? h('span', null,
                 h('span', { class:'tip' }, 'add '),
-                ...adds.map(pid => h('span', { class:'tx-player', onclick:(e)=>{e.stopPropagation();openPlayerDetail(playerName(pid),pid);} }, playerName(pid)))
+                ...adds.map(pid => h('span', { class:'tx-player', onclick:(e)=>{e.stopPropagation();openPlayerDetail(playerName(pid),pid);} }, headshot(pid, 20), playerName(pid)))
               ) : null,
               adds.length && drops.length ? h('span', { class:'tip', style:{ margin:'0 8px' } }, '·') : null,
               drops.length ? h('span', null,
                 h('span', { class:'tip' }, 'drop '),
-                ...drops.map(pid => h('span', { class:'tx-player muted', onclick:(e)=>{e.stopPropagation();openPlayerDetail(playerName(pid),pid);} }, playerName(pid)))
+                ...drops.map(pid => h('span', { class:'tx-player muted', onclick:(e)=>{e.stopPropagation();openPlayerDetail(playerName(pid),pid);} }, headshot(pid, 20), playerName(pid)))
               ) : null,
             ),
             h('div', { class:'tip', style:{ marginTop:'4px' } }, fmtDate(item.ts), ` · Week ${t.week}`),
@@ -5257,7 +5261,7 @@
           h('tbody', null, ...ids.map(pid => {
             const p = window.PLAYERS[pid];
             return h('tr', null,
-              h('td', null, p ? h('button', { class:'ghost', onclick:()=>openPlayerDetail(p.name, pid) }, p.name) : `Unknown ${pid}`),
+              h('td', null, p ? h('span', { class:'hs-name' }, headshot(pid, 20), h('button', { class:'ghost', onclick:()=>openPlayerDetail(p.name, pid) }, p.name)) : `Unknown ${pid}`),
               h('td', null, p ? posChip(p.pos) : 'Unavailable'), h('td', null, p ? teamChip(p.team) : 'Unavailable'));
           }))
         )));
@@ -5433,7 +5437,7 @@
         const startedQbs = (lg.roster_positions || []).filter(p => p === 'QB' || p === 'SUPER_FLEX').length;
         out.push({
           slot: `QB${startedQbs + 1}`,
-          player: backupQb.sleeper.name,
+          player: backupQb.sleeper.name, pid: backupQb.sleeper.id,
           myVal: dv(backupQb.ranked),
           refVal: refV,
           grade: refV > 0 ? Math.min(10, Math.round(dv(backupQb.ranked) / refV * 10 * 10) / 10) : 0,
@@ -5446,7 +5450,7 @@
         const refV = nthAtPos('TE', totalTeams);
         out.push({
           slot: 'TE2',
-          player: backupTe.sleeper.name,
+          player: backupTe.sleeper.name, pid: backupTe.sleeper.id,
           myVal: dv(backupTe.ranked),
           refVal: refV,
           grade: refV > 0 ? Math.min(10, Math.round(dv(backupTe.ranked) / refV * 10 * 10) / 10) : 0,
@@ -5469,7 +5473,7 @@
       flexCandidates.forEach((p, i) => {
         const v = dv(p.ranked);
         out.push({
-          slot: `DEP${i + 1}`,
+          slot: `DEP${i + 1}`, pid: p.sleeper.id,
           player: p.sleeper.name,
           vor: signedVor(p.ranked, lg, DEPTH_TIER),
           age: p.sleeper?.age ?? p.ranked?.age ?? null,
@@ -5485,8 +5489,8 @@
     // Find the player attached to each slot for the bar label
     const slotPlayer = (s) => s.player && s.player !== '(empty)' ? s.player : '(empty)';
     const allBars = [
-      ...slotResult.slots.map(s => ({ slot: s.slot, grade: s.grade, fvGrade: s.fvGrade, player: slotPlayer(s), myVal: s.myVal, refVal: s.refVal, vor: s.vor, age: s.age, pts: s.pts, injury: s.injury, isDepth: false })),
-      ...benchDepth.map(s => ({ slot: s.slot, grade: s.grade, player: s.player, myVal: s.myVal, refVal: s.refVal, vor: s.vor, age: s.age, pts: s.pts, isDepth: true })),
+      ...slotResult.slots.map(s => ({ slot: s.slot, grade: s.grade, fvGrade: s.fvGrade, player: slotPlayer(s), myVal: s.myVal, refVal: s.refVal, vor: s.vor, age: s.age, pts: s.pts, injury: s.injury, pid: s.pid, isDepth: false })),
+      ...benchDepth.map(s => ({ slot: s.slot, grade: s.grade, player: s.player, myVal: s.myVal, refVal: s.refVal, vor: s.vor, age: s.age, pts: s.pts, pid: s.pid, isDepth: true })),
       { slot: 'Bench', grade: gradeBench(rp, lg), player: 'roster depth', myVal: null, refVal: null, isDepth: true, isMeta: true },
       // Future picks are not an asset a redraft manager keeps, so the bar and
       // its share of the overall grade both come off there.
@@ -5554,7 +5558,7 @@
         onclick: onClick,
       },
         h('td', { class:'sr-slot' }, s.slot),
-        h('td', { class:'sr-name' }, nameCol,
+        h('td', { class:'sr-name' }, !Array.isArray(s.player) ? headshot(s.pid, 20) : null, nameCol,
           injChip ? h('span', { class:'slot-bar-chips' }, injChip) : null),
         h('td', { class:'sr-pos' }, posRankChip),
         h('td', { class:'sr-num tnum', title: s.pts != null ? 'Projected points, rest of season' : '' },
@@ -5659,7 +5663,7 @@
           ),
           h('div', { class:'lc-top' },
             top3.length
-              ? top3.map(({p,val}) => h('span', { class:'lc-player', onclick:()=>openPlayerDetail(p.sleeper.name, p.sleeper.id) },
+              ? top3.map(({p,val}) => h('span', { class:'lc-player hs-name', onclick:()=>openPlayerDetail(p.sleeper.name, p.sleeper.id) }, headshot(p.sleeper.id, 20),
                   p.sleeper.name,
                   h('span', { class:'lc-pval tnum' }, fmt.decimal(val,0)),
                 ))
@@ -6045,7 +6049,7 @@
     return h('div', { class:'buy-row', onclick: ()=>openPlayerDetail(b.player.name, b.player._sleeperId) },
       h('div', null,
         h('div', { class:'name-cell' },
-          posChip(b.player.pos), teamChip(b.player.team), h('span', { class:'name' }, b.player.name),
+          headshot(b.player._sleeperId, 28), posChip(b.player.pos), teamChip(b.player.team), h('span', { class:'name' }, b.player.name),
         ),
         h('div', { class:'tip' }, b.reason)
       ),
@@ -6569,7 +6573,7 @@
       onclick:()=>openPlayerDetail(p.name, p._sleeperId),
     },
       h('span', { class:'trade-poschip', 'data-pos': p.pos }, p.pos),
-      h('span', { class:'trade-name' }, p.name),
+      headshot(p._sleeperId, 22), h('span', { class:'trade-name' }, p.name),
       h('span', { class:'trade-team' }, p.team || 'FA'),
     );
     for (const sc of scenarios.slice(0, 3)) {
@@ -6905,7 +6909,7 @@
           h('tbody', null, ...list.map(g => h('tr', {
             class: 'clickable', onclick: () => openPlayerDetail(g.name, g.pid),
           },
-            h('td', { class: 'sr-name' }, g.name,
+            h('td', { class: 'sr-name' }, h('span', { class: 'hs-row' }, headshot(g.pid, 22), g.name),
               g.team ? h('span', { class: 'muted' }, ` · ${g.team}`) : null),
             h('td', { class: 'sr-pos' }, posChip(g.pos)),
             h('td', { class: 'sr-num tnum' }, `${g.pos}${g.rank}`),
@@ -7872,7 +7876,7 @@
           h('div', { class: 'tf-deal' }, ...[['Send', p.send.items], ['Get', p.get.items]].flatMap(([dir, items]) => [
             h('span', { class: 'tf-dir' }, dir),
             h('span', { class: 'tf-pieces' }, ...items.map(a => h('span', { class: 'tf-piece' },
-              a.pos === 'PICK' ? h('span', { class: 'badge' }, 'PICK') : posChip(a.pos),
+              a.pos === 'PICK' ? h('span', { class: 'badge' }, 'PICK') : [headshot(a.k, 20), posChip(a.pos)],
               // The value rides inside the name so a wrapped pick label keeps it at its end.
               h('span', { class: 'name' }, a.label, ' ', h('span', { class: 'tnum tf-val' }, fmt.decimal(a.v, 0))))))])),
           h('div', { class: 'tf-why' }, `${dyn ? 'KTC' : 'Value'} ${fmt.decimal(p.sendV, 1)} out, ${fmt.decimal(p.getV, 1)} in `
@@ -8612,7 +8616,7 @@
       const r = waiverSolveBundle(picks.map(x => x.ts), target, maxBid);
       solved = { pids: picks.map(x => x.c.pid), bids: r.bids };
       bundleList.replaceChildren(...picks.map((x, i) => h('div', { class: 'wb-bundle-row' },
-        h('span', { class: 'wb-bundle-name' }, x.c.name),
+        h('span', { class: 'hs-row' }, headshot(x.c.pid, 20), h('span', { class: 'wb-bundle-name' }, x.c.name)),
         h('span', { class: 'tnum' }, `$${r.bids[i]}`),
         h('span', { class: 'tnum wb-bundle-odds' }, pctText(r.odds[i])))));
       bundleSum.replaceChildren(
@@ -8698,6 +8702,7 @@
         h('td', { class: 'sr-slot' }, `${i + 1}`),
         h('td', { class: 'sr-name' },
           h('span', { class:'wb-player-line' },
+            headshot(c.pid, 22),
             h('span', { class:'wb-player-name' }, c.name),
             c.injury ? injuryChip(c.pid) : null),
           h('span', { class:'wb-profile-mobile' }, b?.comps ? `Like ${compLine(b)}` : c.profile,
@@ -8990,10 +8995,13 @@
         return;
       }
       const top = data.partners[0].n;
-      const assets = (ids, picks) => [
-        ...(ids || []).map(id => window.PLAYERS?.[id]?.name || `#${id}`),
-        ...(picks || []).map(pick => historicalPickLabel(pick)),
-      ].join(', ') || 'Nothing listed';
+      const assets = (ids, picks) => {
+        const out = [
+          ...(ids || []).map(id => h('span', { class:'hs-row' }, headshot(id, 20), window.PLAYERS?.[id]?.name || `#${id}`)),
+          ...(picks || []).map(pick => historicalPickLabel(pick)),
+        ];
+        return out.length ? out.flatMap((x, i) => i ? [', ', x] : [x]) : 'Nothing listed';
+      };
       wrap.appendChild(h('div', { class:'partner-rows' }, ...data.partners.slice(0, 8).map(p => {
         const roster = (lg.rosters || []).find(r => String(r.owner_id) === String(p.uid));
         const details = h('details', { class:'partner-history' });
@@ -9122,7 +9130,7 @@
     const teams = lg.rosters.map(r => ({ r, ...positionGrades(r, lg) }));
     const row = (p) => {
       const pos = posOf(p), rank = dyn ? p.ranked?._posRank : rosPosRank(p.pid, lg);
-      return h('li', null, h('span', null, p.sleeper.name),
+      return h('li', null, h('span', { class:'hs-row' }, headshot(p.pid, 20), p.sleeper.name),
         h('span', { class:'muted tnum' }, `${rank ? `${pos}${rank} · ` : ''}${dyn ? fmt.decimal(worth(p.pid), 0) : `${Math.round(worth(p.pid))} pts`}`));
     };
     const best = (list) => list.slice().sort((a, b) => worth(b.pid) - worth(a.pid)).slice(0, 5);
@@ -9767,6 +9775,7 @@
         };
         results.appendChild(h('div', { class:'trade-search-row' },
           h('div', { class:'name-cell' },
+            headshot(key, 22),
             posChip(p.pos || sp?.pos),
             sp?.team ? teamChip(sp.team) : null,
             h('span', { class:'name' }, p.name),
@@ -9843,6 +9852,7 @@
       } else {
         const sleeper = window.PLAYERS[k];
         nameNode = h('div', { class:'name-cell' },
+          headshot(k, 22),
           sleeper ? posChip(sleeper.pos) : null,
           sleeper ? teamChip(sleeper.team) : null,
           h('span', { class:'name' }, sleeper ? sleeper.name : `[${k}]`),
@@ -9916,6 +9926,7 @@
           },
         },
           h('div', { class:'name-cell' },
+            headshot(p.pid, 22),
             p.sleeper ? posChip(p.sleeper.pos) : null,
             p.sleeper ? teamChip(p.sleeper.team) : null,
             h('span', { class:'name' }, p.sleeper ? p.sleeper.name : `[${p.pid}]`),
@@ -10604,7 +10615,7 @@
       return h('div', { class:'watch-row' },
         h('span', { class:'watch-rank tnum' }, String(rank)),
         h('span', { class:'watch-name' },
-          h('span', { class:'watch-player' }, name),
+          h('span', { class:'hs-row' }, headshot(row.pid, 22), h('span', { class:'watch-player' }, name)),
           h('span', { class:'watch-meta' },
             h('span', { class:'watch-pos-team' }, meta || ' '),
             ' · ', h('span', { class:'watch-opp' }, opponent),
@@ -10801,7 +10812,7 @@
         const val = ranked ? tierValue(ranked, r.lg) : null;
         const ros = rosPointsByPid(r.lg).get(String(r.pid))?.pts;
         body.appendChild(h('tr', { class: 'clickable', onclick: () => openPlayerDetail(r.name, r.pid) },
-          h('td', { class: 'sr-name' }, r.name, r.pid ? injuryChip(r.pid) : null),
+          h('td', { class: 'sr-name' }, h('span', { class: 'hs-row' }, headshot(r.pid, 22), r.name, r.pid ? injuryChip(r.pid) : null)),
           h('td', { class: 'sr-pos' }, r.pos ? posChip(r.pos) : null),
           h('td', null, h('span', { class: 'tip' }, r.lg.short_name || r.lg.name)),
           h('td', null, kind === 'target'
@@ -12047,7 +12058,7 @@
       },
         h('button', { class:'close-btn', onclick: close, 'aria-label':'Close' }, '×'),
         h('div', { class:'pm-head' },
-          sleeper ? headshot(sleeper.id, 64) : null,
+          sleeper ? headshot(sleeper.id, 64) : playerShot(college, 64),
           h('div', { class:'pm-head-text' },
             h('h2', { id:titleId, style:{ marginTop:0, marginBottom:'4px' } }, name,
               sleeper ? injuryChip(sleeper.id) : null),
@@ -12900,10 +12911,10 @@
       const v = get(r, k);
       // A real button, so the card opens from the keyboard too; the row click is the mouse shortcut.
       // Capped width with an ellipsis, so the full name, school and pick ride in the title.
-      if (k === 'n') return h('div', { class:'name-cell', title:[v, r.sch, r.id ? `${r.y} pick ${r.pk}` : null].filter(Boolean).join(', ') },
+      if (k === 'n') return h('div', { class:'hs-cell' }, playerShot(r, 22), h('div', { class:'name-cell', title:[v, r.sch, r.id ? `${r.y} pick ${r.pk}` : null].filter(Boolean).join(', ') },
         h('button', { type:'button', class:'name player-name-button',
           onclick:(e) => { e.stopPropagation(); openRow(r); } }, v),
-        r.sch ? h('span', { class:'muted prm-school' }, r.sch) : null);
+        r.sch ? h('span', { class:'muted prm-school' }, r.sch) : null));
       if (k.startsWith('st.')) return stat.find(s => `st.${s[0]}` === k)[2](v);
       if (k === 'ba') return pmAge(r, v);
       if (k === 'best') return v == null ? '·' : v === 999 ? h('span', { class:'muted' }, 'none') : `${r.p}${v}`;
@@ -14136,7 +14147,7 @@
       chips.appendChild(h('button', {
         class: 'whatif-chip', title: `Remove ${p.name} from the what-if`,
         onclick: () => { PROJ_STATE.whatIf = PROJ_STATE.whatIf.filter(x => x !== id); rerender(); },
-      }, `${p.name} `, h('span', { class: 'muted' }, `${p.pos} ${Math.round(projPoints(p, lg, src) || 0)}`), h('span', { class: 'whatif-x' }, '×')));
+      }, headshot(id, 20), `${p.name} `, h('span', { class: 'muted' }, `${p.pos} ${Math.round(projPoints(p, lg, src) || 0)}`), h('span', { class: 'whatif-x' }, '×')));
     }
     if (PROJ_STATE.whatIf.length) {
       chips.appendChild(h('button', { class: 'ghost whatif-clear', onclick: () => { PROJ_STATE.whatIf = []; rerender(); } }, 'Clear'));
@@ -14163,7 +14174,7 @@
         const already = mine.has(String(p.id));
         results.appendChild(h('div', { class: 'trade-search-row' },
           h('div', { class: 'name-cell' },
-            posChip(p.pos), p.team ? teamChip(p.team) : null,
+            headshot(p.id, 22), posChip(p.pos), p.team ? teamChip(p.team) : null,
             h('span', { class: 'name' }, p.name),
             injuryChip(p.id),
             h('span', { class: 'trade-search-owner tip' }, already ? 'already yours' : (owner ? (owner.team_name || owner.owner_name) : 'free agent')),
@@ -14411,7 +14422,7 @@
           const vor = vorForPlayer(p, lg, PROJ_STATE.unit, src);
           return h('tr', p.id ? { onclick: () => openPlayerDetail(p.name, p.id), style: { cursor: 'pointer' } } : {},
             h('td', { class: 'tnum', style: { textAlign: 'right', color: 'var(--fg-3)' } }, String(i + 1)),
-            h('td', null, h('span', { class: 'name' }, p.name)),
+            h('td', null, h('span', { class: 'hs-cell' }, headshot(p.id, 22), h('span', { class: 'name' }, p.name))),
             h('td', null, posChip(p.pos)),
             h('td', { class: 'tnum', style: { color: 'var(--fg-2)' } }, pr ? `${pr.group}${pr.rank}` : '·'),
             h('td', null, teamChip(p.team)),
@@ -14657,7 +14668,7 @@
       h('thead', null, h('tr', null, h('th', { class:'right' }, '#'), h('th', null, rowName), ...cols.map(head))),
       h('tbody', null, ...rows.map((r, i) => h('tr', { class:r._mine ? 'you' : '', onclick:onRow ? () => onRow(r) : null },
         h('td', { class:'right tnum muted' }, String(i + 1)),
-        h('td', { class:'stats-lab-name' }, r._label),
+        h('td', { class:'stats-lab-name' }, h('span', { class:'hs-cell' }, headshot(r._sid, 20), r._label)),
         ...cols.map(c => h('td', { class:`right tnum ${c.tone ? c.tone(r) || '' : ''}` },
           c.show ? c.show(r) : statFmt(c.get(r), c.fmt)))))));
     main.appendChild(statsColumnKey(cols));
@@ -15261,7 +15272,7 @@
       ctl.appendChild(h('label', { class:'stats-lab-toggle' }, 'Team ', h('select', { 'aria-label':'Team', onchange:(e) => set({ team:e.target.value }) },
         ...teams.map(t => h('option', { value:t, selected:t === tm }, t)))));
       const t = F.teams[tm], td = (text, cls) => h('td', { class:`right tnum${cls ? ` ${cls}` : ''}` }, text);
-      for (const [key, title, lab] of [['qb', 'By starting QB', (g) => nm(g.id)], ['pc', 'By playcaller', (g) => g.id]]) {
+      for (const [key, title, lab] of [['qb', 'By starting QB', (g) => h('span', { class:'hs-cell' }, headshot(g.id, 20), nm(g.id))], ['pc', 'By playcaller', (g) => g.id]]) {
         const gs = t[key] || [], rows = ooGroupRows(gs), sm = (g) => g.pl < small ? ' oo-small' : '';
         const sums = [['Games', (g) => String(g.g)], ['Plays', (g) => String(g.pl)], ['EPA/play', (g) => statFmt(ooDiv(g.epa, g.pl), 'dec2')],
           ['PROE', (g) => ooSigned(g.proe, 'pct')]];
@@ -15274,7 +15285,7 @@
           h('tbody', null,
             ...sums.map(([l, f]) => h('tr', { class:'oo-sum' }, h('th', { scope:'row' }, l), ...gs.map(g => h('td', { colspan:'3', class:`right tnum${sm(g)}` }, f(g))))),
             ...rows.map(r => h('tr', { class:'clickable', dataset:{ pid:r.pid }, onclick:() => openPlayerDetail(nm(r.pid), r.pid) },
-              h('th', { scope:'row' }, `${nm(r.pid)} `, h('span', { class:'muted' }, ps(r.pid))),
+              h('th', { scope:'row' }, h('span', { class:'hs-cell' }, headshot(r.pid, 20), `${nm(r.pid)} `, h('span', { class:'muted' }, ps(r.pid)))),
               ...r.cells.flatMap((c, i) => c ? [td(String(c.g), sm(gs[i]).trim()), td(statFmt(c.ppg, 'dec1'), sm(gs[i]).trim()), td(statFmt(c.share, 'pct'), sm(gs[i]).trim())]
                 : [td('', 'muted'), td('', 'muted'), td('', 'muted')])))));
         main.appendChild(h('div', { class:'card oo-card', dataset:{ kind:key } }, h('div', { class:'card-title' }, `${title}, ${tm} ${season}`), h('div', { class:'tbl-scroll' }, tbl)));
@@ -15299,7 +15310,7 @@
     const t = F.teams[pick.tm], v = pick.v, sp = ooSplit(t, v, F.T), offG = isGame ? t.games - v.g : null;
     if (O.sid && O.sid !== pick.pid) ctl.appendChild(h('span', { class:'muted' }, `Your pick has under ${F.minSnaps} snaps for any team in ${season}, so this is ${nm(pick.pid)}.`));
     main.appendChild(h('div', { class:'card oo-head', dataset:{ sid:pick.pid, team:pick.tm, season:String(season), level:F.level } },
-      h('div', { class:'rt-head' }, h('span', { class:'rt-player' }, nm(pick.pid)), teamChip(pick.tm), h('span', { class:'muted' }, `${ps(pick.pid)}, ${season}`),
+      h('div', { class:'rt-head' }, headshot(pick.pid, 36), h('span', { class:'rt-player' }, nm(pick.pid)), teamChip(pick.tm), h('span', { class:'muted' }, `${ps(pick.pid)}, ${season}`),
         isGame ? h('span', { class:'badge oo-level' }, 'Game level') : null),
       h('div', null, isGame ? `${v.g} of ${t.games} games with him (${Math.round(F.gamePct * 100)}%+ of the offensive snaps), ${offG} without. ${v.s} offensive snaps.`
         : `${v.s} team plays with him on the field, ${sp.off.plays} with him off, over ${t.games} games.`),
@@ -16044,7 +16055,7 @@
     return h('div', null,
       h('div', { class:'chart-title' }, `${stat[1]} by week, ${U.season}`),
       h('div', { class:'chart-legend' }, ...lines.map((l, k) => h('span', null,
-        h('span', { class:'chart-swatch', style:{ borderTopColor:CHART_SERIES[k][0], borderTopStyle:CHART_SERIES[k][1] ? 'dashed' : 'solid' } }), o.label(l.r))),
+        h('span', { class:'chart-swatch', style:{ borderTopColor:CHART_SERIES[k][0], borderTopStyle:CHART_SERIES[k][1] ? 'dashed' : 'solid' } }), headshot(l.r._key, 20), o.label(l.r))),
         avg.length > 1 ? h('span', { class:'muted' }, h('span', { class:'chart-swatch chart-swatch-avg' }), `Average of the ${o.poolKeys.length} in the table`) : null),
       wrap);
   }
@@ -16071,7 +16082,7 @@
       h('div', { class:'tbl-scroll' }, h('table', { class:'data stats-compare' },
         h('thead', null, h('tr', null, h('th', null, 'Stat'), ...list.map((r, k) => h('th', { class:'right' },
           h('span', { class:'chart-swatch', style:{ borderTopColor:CHART_SERIES[k][0], borderTopStyle:CHART_SERIES[k][1] ? 'dashed' : 'solid' } }),
-          h('span', { class:'cmp-name' }, o.name(r)), o.team(r) ? teamChip(o.team(r)) : null)))),
+          headshot(r._key, 28), h('span', { class:'cmp-name' }, o.name(r)), o.team(r) ? teamChip(o.team(r)) : null)))),
         h('tbody', null,
           h('tr', { class:'cmp-tally' }, h('th', { scope:'row' }, 'Rows led'), ...lead.map(n => h('td', { class:'right tnum' }, String(n)))),
           ...body))));
@@ -16266,7 +16277,7 @@
       const pickRow = h('div', { class:'stats-lab-row stats-chart-picks' }, add, dl,
         ...picks.map((k, i) => h('span', { class:'stats-lab-chip' },
           h('span', { class:'chart-swatch', style:{ borderTopColor:CHART_SERIES[i][0], borderTopStyle:CHART_SERIES[i][1] ? 'dashed' : 'solid' } }),
-          label(byKey.get(k), true),
+          headshot(k, 20), label(byKey.get(k), true),
           h('button', { type:'button', class:'ghost', 'aria-label':`Remove ${label(byKey.get(k))}`, onclick:() => set({ picks:picks.filter(x => x !== k) }) }, '×'))));
       // No picks yet: the top rows of the table's own sort stand in.
       const chosen = (n) => picks.length ? picks.map(k => byKey.get(k)) : rows.slice(0, n);
@@ -16314,7 +16325,7 @@
           const list = seasons.map(y => window.LOCATION_BY_SEASON[y]);
           out.push(h('div', { class:'stats-lab-row' }, locMetricButtons(role, fill)), standIn(1));
           out.push(h('div', { class:'loc-tiles' }, ...chosen(1).map(r => h('div', { class:'loc-tile', dataset:{ sid:r._key } },
-            h('div', { class:'loc-tile-name' }, `${LOC_TITLE[role]}: ${r._name} `, teamChip(r._team), ` ${seasons.slice().reverse().join('+')}`),
+            h('div', { class:'loc-tile-name' }, headshot(r._key, 28), `${LOC_TITLE[role]}: ${r._name} `, teamChip(r._team), ` ${seasons.slice().reverse().join('+')}`),
             locSum(list, r._key, role) ? locGraphic(list, r._key, role, pos) : h('div', { class:'muted' }, `No ${LOC_UNIT[role]} charted.`)))));
           if (splitOn && (split.weeks || Object.keys(split.sit).length))
             out.push(h('div', { class:'tip' }, 'Maps are whole seasons: the week range and situation filters do not narrow them.'));
@@ -16595,7 +16606,7 @@
         onclick:isTeams ? null : () => openPlayerDetail(r._name, r._key),
       },
         h('td', { class:'right tnum muted' }, String(i + 1)),
-        h('td', { class:'stats-lab-name' }, isTeams ? teamChip(r._team) : r._name),
+        h('td', { class:'stats-lab-name' }, isTeams ? teamChip(r._team) : h('span', { class:'hs-cell' }, headshot(r._key, 20), r._name)),
         isTeams ? null : h('td', null, teamChip(r._team)),
         ...shown.map(c => {
           const v = r[c.key], pr = rank[c.key] ? rank[c.key](v) : null;
@@ -16909,7 +16920,7 @@
           h('thead', null, h('tr', null, h('th', null, 'Player'), ...pcols.map(([k]) => h('th', { class:'right', title:dsc(k) }, lab(k))),
             h('th', { class:'right', title:'Full PPR points per game played.' }, 'PPR/G'))),
           h('tbody', null, ...rows.map(r => h('tr', { class:'clickable', dataset:{ pid:r.sid }, onclick:() => openPlayerDetail(r.p.n, r.sid) },
-            h('th', { scope:'row' }, `${r.p.n} `, h('span', { class:'muted' }, r.p.p)),
+            h('th', { scope:'row' }, h('span', { class:'hs-cell' }, headshot(r.sid, 20), `${r.p.n} `, h('span', { class:'muted' }, r.p.p))),
             ...pcols.map(([k, f]) => h('td', { class:'right tnum' }, show(k, r.p.p) ? statFmt(r.p[k], f) : '')),
             h('td', { class:'right tnum' }, statFmt(r.ppg, 'dec1'))))))));
     });
@@ -16957,7 +16968,7 @@
       tbl('gm-rec', [['Receiver'], ['Tgt', '', true], ['Rec', '', true], ['Yds', '', true], ['Air yds', 'Air yards on every target, caught or not.', true], ['EPA', 'EPA summed over his targets.', true]],
         G.rec.filter(r => Rv(r, 'side') === s).map(r => {
           const m = bySid[Rv(r, 'gsis')];
-          return h('tr', m ? { class:'clickable', onclick:() => openPlayerDetail(m[1], m[0]) } : null, h('th', { scope:'row' }, m ? m[1] : Rv(r, 'name')),
+          return h('tr', m ? { class:'clickable', onclick:() => openPlayerDetail(m[1], m[0]) } : null, h('th', { scope:'row' }, h('span', { class:'hs-cell' }, headshot(m && m[0], 20), m ? m[1] : Rv(r, 'name'))),
             ...['tgt', 'rec', 'yds', 'air'].map(k => h('td', { class:'right tnum' }, String(Rv(r, k)))), h('td', { class:'right tnum' }, statFmt(Rv(r, 'epa'), 'dec2')));
         }))))));
 
@@ -17951,6 +17962,7 @@
           },
             h('div', { class:'draft-cell-top' },
               h('span', { class:'draft-cell-abs' }, p ? `#${no}` : ''),
+              p ? headshot(String(p.player_id), 22) : null,
               h('span', null, `${r}.${idxInRound}`)),
             p ? h('div', { class:'draft-cell-first' }, m.first_name || '') : null,
             p ? h('div', { class:'draft-cell-name' }, m.last_name || '') : null,
@@ -17985,7 +17997,7 @@
           const pts = hit ? projPoints(hit.p, lg, hit.p[view.proj] != null ? view.proj : 'blend') : null;
           const m = p.metadata || {};
           return { name: `${m.first_name || ''} ${m.last_name || ''}`.trim(), pos: m.position || '?',
-            pts: pts || 0, v: pts || 0, pick: p.pick_no, team: m.team, bye: byeOf(m.team) };
+            pts: pts || 0, v: pts || 0, pick: p.pick_no, pid: String(p.player_id), team: m.team, bye: byeOf(m.team) };
         });
         const slots = offenseStartingSlots(lg);
         const bySlot = fillLineup(assets, slots, false, true);
@@ -18034,7 +18046,7 @@
               return h('tr', { class: cls || null },
                 h('td', null, h('strong', null, label(r.slot) + (r.over ? '+' : ''))),
                 h('td', null, a
-                  ? h('span', null, posChip(a.pos), ' ', a.name)
+                  ? h('span', { class:'hs-row' }, headshot(a.pid, 20), posChip(a.pos), a.name)
                   : (r.slot === 'BN' ? 'open seat' : 'empty')),
                 h('td', null, a ? teamChip(a.team) : ''),
                 h('td', { class:'right tnum', style: a && a.bye && byeCount[a.bye] >= 3 ? { color:'var(--amber)' } : null },
@@ -18271,7 +18283,7 @@
             const sm = schedFor(r.team);
             return h('tr', { onclick: () => openPlayerDetail(r.name, r.pid) },
               h('td', { class:'right tnum muted' }, String(i + 1)),
-              h('td', null, h('span', { class:'name' }, r.name)),
+              h('td', null, h('span', { class:'hs-row' }, headshot(r.pid, 20), h('span', { class:'name' }, r.name))),
               h('td', null, posChip(r.pos)),
               h('td', null, teamChip(r.team)),
               h('td', { class:'right tnum' }, r.vor != null ? `${r.vor > 0 ? '+' : ''}${r.vor.toFixed(1)}` : '·'),
@@ -18322,7 +18334,7 @@
               onclick: (e) => { if (!e.target.closest('.my-rank')) openPlayerDetail(r.name, r.pid); } },
               h('td', { class:'right tnum muted' }, String(i + 1)),
               myRankCell(r, reorderable),
-              h('td', null, h('div', { class:'name-cell' }, h('span', { class:'name' }, r.name))),
+              h('td', null, h('div', { class:'name-cell' }, headshot(r.pid, 22), h('span', { class:'name' }, r.name))),
               h('td', null, h('div', { style:{ display:'flex', alignItems:'center', gap:'6px' } },
                 posChip(r.pos), h('span', { class:'tip tnum' }, `${r.grp}${r.posRankAvail}`))),
               h('td', null, h('span', { class:'draft-team-cell' }, teamChip(r.team), envChip(r.team))),
@@ -18704,7 +18716,7 @@
           results.appendChild(h('div', { class:'cmdk-section' }, labels[it.kind] || it.kind));
         }
         const row = h('div', { class:`cmdk-row ${i===activeIdx?'active':''}`, onclick:()=>activate(it) },
-          h('span', { class:'cmdk-icon' }, it.kind === 'route' ? pixelIcon(it.hash, it.icon) : it.icon),
+          h('span', { class:'cmdk-icon' }, it.kind === 'route' ? pixelIcon(it.hash, it.icon) : (headshot(it.pid, 20) || it.icon)),
           h('div', { class:'cmdk-name' }, it.label, h('div', { class:'cmdk-sub' }, it.hint)),
         );
         results.appendChild(row);

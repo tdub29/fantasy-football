@@ -6434,3 +6434,16 @@ table.data.prm-table .name-cell > * { display: block; max-width: 100%; overflow:
 .standings-lines svg.focus .team-line:not(.hot) { opacity: .12; }
 .standings-lines .lbl { font-weight: 700; cursor: default; outline: none; }
 .standings-lines .team-line.you .lbl { font-weight: 800; }
+/* Headshots beside player names across views. */
+.hs-name { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.tx-player .headshot { align-self: center; margin-right: 2px; }
+.sr-name .headshot { vertical-align: middle; margin-right: 6px; }
+.buy-row .name-cell { display: flex; align-items: center; gap: 6px; }
+/* Headshot + name rows (hs-) */
+.hs-row { display: inline-flex; align-items: center; gap: 6px; min-width: 0; vertical-align: middle; }
+.tf-piece .headshot, .draft-cell-top .headshot { align-self: center; }
+/* Player headshot beside a name in table cells and headers. */
+.hs-cell { display: inline-flex; align-items: center; gap: 6px; min-width: 0; vertical-align: middle; white-space: nowrap; }
+.hs-cell > .name-cell { min-width: 0; }
+/* Inline (non-flex) spots: legend, compare header, map tile title. */
+.chart-legend .headshot, .stats-compare thead .headshot, .loc-tile-name .headshot { vertical-align: middle; margin-right: 4px; }
