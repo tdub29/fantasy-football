@@ -12705,6 +12705,20 @@
         `Ranked by prospect score among the ${ranked.length} ${cls} ${r.p}s ${r.y ? 'drafted' : 'listed'}. Not a consensus or draft rank`) : null,
       ...boxes);
   }
+  // Two-way players: draft capital priced a defensive role the model cannot see, and every input
+  // is offense only. No two-way top pick in the 2008+ fit, so no adjustment is validated; show the
+  // role fork as scenarios instead of a silent point estimate. ponytail: hand list, one entry.
+  const PM_TWO_WAY = { 'Travis Hunter|2025': 'CB' };
+  function pmTwoWay(r) {
+    const d = PM_TWO_WAY[`${r.n}|${r.y}`], cuts = PM_CUTS[r.p];
+    if (!d || !cuts) return null;
+    const at = (pk) => cuts.map(c => pmPct(pmTopChance(r.p, c, pk, r.ts))).join(' / ');
+    return h('div', { class:'tip prm-line' }, h('b', null, `Two-way (${r.p}/${d}): role fork, not modeled. `),
+      `His pick also paid for ${d}, and the model sees offense only, so treat the chance above as the full-time ${r.p} case, not a forecast. `
+      + `${r.p}${cuts[0]} / ${r.p}${cuts[1]} chance by scenario: full-time ${r.p} at pick ${r.pk} ${at(r.pk)}; `
+      + `profile alone, no capital ${at(null)}; as if a ${r.p}-only pick 16 ${at(16)} or 48 ${at(48)}. `
+      + `Mostly ${d} or a split snap load: below all of these, no data to size it.`);
+  }
   // The same chances at fixed picks, so a college player with no mock still reads against slot.
   function pmPickLine(r) {
     const cuts = PM_CUTS[r.p];
@@ -12816,6 +12830,7 @@
         pmBioCell('Archetype', pmArchetype(me, null), `Rule-based from college production percentiles against drafted ${me.p}s. A label, not a projection`),
         me.st && me.st.stars != null ? pmBioCell('Recruit', `${me.st.stars}-star`, 'Recruiting stars out of high school') : null,
       ]),
+      pmTwoWay(me),
       pmOutcome(me, meta, years),
       pmGrades(me.p, pmGradeRows(me.p, me, pmYpc('nfl', String(sleeper.id)),
         'Age on Sept 1 of the college season he first hit the dominator line (never broke out: a year after his final season)')),
@@ -12868,8 +12883,16 @@
     main.appendChild(pageHeader({
       eyebrow:'PROSPECT MODEL',
       title: hist ? 'Prospects' : 'College prospects',
-      sub: 'Score: one 0-100 prospect score from draft pick plus college profile, as a percentile of every drafted player at his position since 2008. Then the chance of at least one top-6 or top-12 season at QB and TE, top-12 or top-24 at RB and WR, by PPR points per game in NFL years 1-3 (QB, TE 1-4). One score from draft pick plus college profile, fit on every drafted class since 2008. College rows use the mock-draft consensus pick; a next-class player in no mock is UFD and scored as the last pick; later classes, not mocked yet, use profile alone.',
+      sub: 'Prospect score 0-100 from draft pick plus college profile, with his chance of a top fantasy season early in his NFL career.',
     }));
+    main.appendChild(h('details', { class:'source-note' }, h('summary', null, 'How the score works and what it assumes'),
+      h('p', null, 'Score: his average chance across two finishing lines, as a percentile of every drafted player at his position since 2008. '
+        + 'Lines: at least one top-6 or top-12 season at QB and TE, top-12 or top-24 at RB and WR, by PPR points per game (8+ games) in NFL years 1-3 (QB, TE 1-4). '
+        + 'One fit on every drafted class since 2008, so drafted rows include their own result and are not blind forecasts.'),
+      h('p', null, 'College rows have no real pick, so each uses a stand-in. Next class: the mock-draft consensus pick. '
+        + 'Next class but in no mock: shown as UFD and scored as the last pick. That is an assumption, not a finding; missing from a mock does not mean undrafted, '
+        + 'so those scores lean low. Later classes, not mocked yet: college profile alone.'),
+      h('p', null, 'Inputs are offense only, so two-way players carry a note on their card. QBs have no breakout age.')));
 
     const filterBar = h('div', { class:'filters prm-filters' });
     const search = h('input', { type:'search', placeholder:'Search prospects', value:prospectSort.q, 'aria-label':'Search prospects',
@@ -12907,7 +12930,7 @@
         title:`Chance of at least one ${one ? `top-${PM_CUTS[pos][i]} ${pos}` : ['top-6 QB or TE, top-12 RB or WR', 'top-12 QB or TE, top-24 RB or WR'][i]} season by PPR points per game (8+ games) in NFL years ${one ? pmWindow(pos) : '1-3 (QB, TE 1-4)'}. Draft pick plus college profile. College rows use the mock-draft pick, or profile alone if no mock` }]),
       hist ? ['best', one ? `Best, yrs ${pmWindow(pos)}` : 'Best, early yrs', { right:true, asc:true, title:'Best PPR points-per-game rank at his position in that window (8+ games). Blank: window still open' }] : null,
       hist ? ['cb', 'Career best', { right:true, asc:true, title:'Best PPR points-per-game rank at his position in any NFL season so far (8+ games), late bloomers included. Display only, not part of the hit label' }] : null,
-      pos === 'QB' ? null : ['ba', 'Breakout age', { right:true, asc:true, title:'Age on Sept 1 of the college season he first hit the dominator line (blank: not yet). From his birth date where one was found; muted numbers are estimates from class year. Profile only, no model uses it' }],
+      pos === 'QB' ? null : ['ba', 'Breakout age', { right:true, asc:true, title:'Age on Sept 1 of the college season he first hit the dominator line (blank: not yet; n/a for QBs, which the dominator line does not measure). From his birth date where one was found; muted numbers are estimates from class year. Profile only, no model uses it' }],
       ...stat.map(([k, label, , t]) => [`st.${k}`, label, { right:true, title:t }]),
     ].filter(Boolean);
     const get = (r, k) => k.startsWith('st.') ? pmInputVal(r, k.slice(3))
@@ -12925,7 +12948,7 @@
           onclick:(e) => { e.stopPropagation(); openRow(r); } }, v),
         r.sch ? h('span', { class:'muted prm-school' }, r.sch) : null));
       if (k.startsWith('st.')) return stat.find(s => `st.${s[0]}` === k)[2](v);
-      if (k === 'ba') return pmAge(r, v);
+      if (k === 'ba') return r.p === 'QB' ? h('span', { class:'muted', title:'No QB breakout age: the dominator line is a receiving and rushing share of team offense, which does not measure a passer' }, 'n/a') : pmAge(r, v);
       if (k === 'cb') return v == null ? '·' : h('span', { title:`${pmDec(r.cb[0])} PPR points per game` }, `${r.p}${v}`);
       if (k === 'best') return v == null ? '·' : v === 999 ? h('span', { class:'muted' }, 'none') : `${r.p}${v}`;
       if (v != null && !r.id && (k === 't0' || k === 't1')) return h('span', { class:'muted',
