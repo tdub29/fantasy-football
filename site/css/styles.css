@@ -6291,10 +6291,11 @@ table.data.prm-table .name-cell > * { display: block; max-width: 100%; overflow:
 .prm-hero-value { font-family: var(--font-display); font-weight: 800; font-size: 1.7rem; line-height: 1.1; }
 .prm-hero-word { font-size: 1.15rem; line-height: 1.5; }
 .prm-hero-sub { font-size: 0.68rem; font-weight: 700; }
-.prm-bio { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 6px; }
+.prm-bio { display: grid; grid-template-columns: repeat(auto-fill, minmax(128px, 1fr)); gap: 6px; }
 .prm-bio-cell { background: var(--bg-2); border-left: 4px solid var(--band-deep); border-radius: 6px; padding: 4px 8px; min-width: 0; }
+.prm-bio-label, .prm-bio-value { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .prm-bio-label { font-size: 0.6rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg-3); }
-.prm-bio-value { font-size: 0.9rem; font-weight: 800; overflow-wrap: anywhere; }
+.prm-bio-value { font-size: 0.9rem; font-weight: 800; }
 .prm-sec { margin-top: 12px; }
 .prm-sec-title {
   display: flex; justify-content: space-between; gap: 8px;
