@@ -1093,7 +1093,7 @@ textarea { resize: vertical; min-height: 80px; }
 }
 .lc-player { cursor: pointer; }
 .lc-player:hover { color: var(--accent-hot); }
-.lc-pval { color: var(--fg-3); margin-left: 4px; }
+.lc-pval { color: var(--fg-3); }
 @media (max-width: 720px) {
   .lc-row { grid-template-columns: 44px auto auto; row-gap: 4px; }
   .lc-top { grid-column: 1 / -1; }
@@ -6096,7 +6096,7 @@ button:disabled { cursor: wait; opacity: 0.7; }
 .chart-tip[hidden] { display: none; }
 .chart-tip-head { display: flex; align-items: center; gap: 6px; }
 .chart-svg .pt-shot { cursor: pointer; }
-.chart-svg .pt-shot .pt { stroke-width: 1.5; }
+.chart-svg .pt-shot .pt:not(.pick) { stroke-width: 1.5; }
 .chart-tip strong { color: var(--fg-0); }
 .chart-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-weight: 700; color: var(--fg-1); }
 .chart-swatch { display: inline-block; width: 18px; height: 0; border-top: 3px solid var(--band-deep); vertical-align: middle; margin-right: 5px; }
@@ -6259,7 +6259,7 @@ td.gm-swing { white-space: nowrap; }
   table.data:is(.gm-drives, .gm-rec, .gm-top, .gm-pbp, .gm-usage) :is(thead th, tbody th, tbody td) { padding: 6px 4px; }
   table.data:is(.gm-pbp, .gm-usage) { font-size: 11px; }
   td.gm-desc { min-width: 120px; }
-  :is(.gm-rec, .gm-usage) tbody th[scope=row] { white-space: normal; }
+  :is(.gm-rec, .gm-usage) tbody th[scope=row], :is(.gm-rec, .gm-usage) tbody th[scope=row] .hs-cell { white-space: normal; }
 }
 
 /* Prospect model: the card's Prospect profile block and #prospects. */
@@ -6319,13 +6319,13 @@ table.data.prm-table .name-cell > * { display: block; max-width: 100%; overflow:
 .prm-grade-val { text-align: right; font-weight: 800; }
 .prm-grade-letter { font-family: var(--font-display); font-weight: 800; }
 .prm-grades-wrap { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; }
-.prm-grades-wrap .prm-grades { grid-template-columns: 1fr; }
+.prm-grades-wrap:has(> .prm-radar) .prm-grades { grid-template-columns: 1fr; }
 .prm-radar { width: 290px; max-width: 100%; height: auto; aspect-ratio: 310 / 220; }
 .prm-radar-ring { fill: none; stroke: var(--ink); stroke-opacity: .3; stroke-width: 1; }
 .prm-radar-ring.mid { stroke-opacity: .7; stroke-dasharray: 4 3; }
 .prm-radar-shape { fill: var(--band-deep); fill-opacity: .3; stroke: var(--band-deep); stroke-width: 2; stroke-linejoin: round; }
 .prm-radar-label { font-size: 10.5px; font-weight: 800; fill: var(--fg-2); text-transform: uppercase; letter-spacing: .03em; }
-@media (max-width: 560px) { .prm-grades-wrap { grid-template-columns: 1fr; } .prm-radar { justify-self: center; } }
+@media (max-width: 767px) { .prm-grades-wrap { grid-template-columns: 1fr; } .prm-radar { justify-self: center; } }
 .prm-ladder { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; align-items: stretch; }
 .prm-rung-label { font-size: 0.72rem; font-weight: 800; color: var(--fg-2); }
 .prm-rung-value { font-family: var(--font-display); font-weight: 800; font-size: 1.6rem; line-height: 1.1; }
@@ -6437,7 +6437,7 @@ table.data.prm-table .name-cell > * { display: block; max-width: 100%; overflow:
 /* Headshots beside player names across views. */
 .hs-name { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
 .tx-player .headshot { align-self: center; margin-right: 2px; }
-.sr-name .headshot { vertical-align: middle; margin-right: 6px; }
+.sr-name > .headshot { vertical-align: middle; margin-right: 6px; }
 .buy-row .name-cell { display: flex; align-items: center; gap: 6px; }
 /* Headshot + name rows (hs-) */
 .hs-row { display: inline-flex; align-items: center; gap: 6px; min-width: 0; vertical-align: middle; }
@@ -6446,4 +6446,4 @@ table.data.prm-table .name-cell > * { display: block; max-width: 100%; overflow:
 .hs-cell { display: inline-flex; align-items: center; gap: 6px; min-width: 0; vertical-align: middle; white-space: nowrap; }
 .hs-cell > .name-cell { min-width: 0; }
 /* Inline (non-flex) spots: legend, compare header, map tile title. */
-.chart-legend .headshot, .stats-compare thead .headshot, .loc-tile-name .headshot { vertical-align: middle; margin-right: 4px; }
+.chart-legend .headshot, .stats-compare thead .headshot, .loc-tile-name .headshot, .stats-lab-chip .headshot { vertical-align: middle; margin-right: 4px; }

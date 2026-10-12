@@ -12617,7 +12617,7 @@
     const at = (i, f) => { const a = -Math.PI / 2 + i * 2 * Math.PI / axes.length; return [C + Math.cos(a) * R * f, C + Math.sin(a) * R * f]; };
     const ring = (f) => axes.map((_, i) => at(i, f).map(n => n.toFixed(1)).join(',')).join(' ');
     return el('svg', { class:'prm-radar', viewBox:`-45 0 ${S + 90} ${S}`, role:'img',
-        'aria-label':`Percentile web: ${axes.map(a => `${a.label} ${pmOrd(a.pct)}`).join(', ')}` },
+        'aria-label':`Percentile web, dashed ring is the median drafted player: ${axes.map(a => `${a.label} ${pmOrd(a.pct)}`).join(', ')}` },
       ...[0.25, 0.5, 0.75, 1].map(f => el('polygon', { class:`prm-radar-ring${f === 0.5 ? ' mid' : ''}`, points:ring(f) },
         f === 0.5 ? el('title', {}, 'Median drafted player') : '')),
       ...axes.map((_, i) => { const [x, y] = at(i, 1); return el('line', { class:'prm-radar-ring', x1:C, y1:C, x2:x, y2:y }); }),
@@ -12747,12 +12747,12 @@
   // share that reached each cut. ponytail: fixed +-8 band, widen if n runs thin at the extremes.
   function pmLadder(r) {
     const M = window.PROSPECT_MODEL, s = pmScore(r), cuts = PM_CUTS[r.p];
-    if (s == null || !cuts) return null;
+    if (s == null || !cuts || pmFitPick(r) == null) return null;
     const near = Object.values(M.nfl).filter(x => x.p === r.p && x.out && x.pk && x !== r)
       .filter(x => { const v = pmScore(x); return v != null && Math.abs(v - s) <= 8; });
     if (near.length < 5) return null;
     return h('section', { class:'prm-sec' },
-      h('div', { class:'prm-sec-title' }, h('span', null, 'Hit rate'), h('span', null, `${near.length} drafted ${r.p}s scored ${Math.max(0, s - 8)}-${Math.min(100, s + 8)}`)),
+      h('div', { class:'prm-sec-title' }, h('span', null, 'Hit rate'), h('span', null, `${near.length} ${r.p}s at ${Math.max(0, s - 8)}-${Math.min(100, s + 8)}`)),
       h('div', { class:'prm-ladder' }, ...cuts.map(c => {
         const k = near.filter(x => x.out[2] && x.out[2] <= c).length, f = k / near.length;
         return h('div', { class:'prm-rung', title:`${k} of ${near.length} drafted ${r.p}s with a prospect score within 8 of his had a top-${c} season in NFL years ${pmWindow(r.p)}` },
@@ -12959,7 +12959,7 @@
       // snug: the table hugs its columns, so fit-num cannot hand every spare pixel to the name.
       const tbl = h('table', { class:'data prm-table fit-num snug' },
         h('thead', null, h('tr', null, h('th', { class:'right' }, '#'), ...cols.map(sortHdr))),
-        h('tbody', null, ...rows.map((r, i) => h('tr', { class:`clickable${hist && !r.id ? ' prm-future' : ''}`, onclick:() => openRow(r) },
+        h('tbody', null, ...rows.map((r, i) => h('tr', { class:`clickable${hist && !r.id ? ' prm-future' : ''}`, title: hist && !r.id ? 'Not drafted yet: college player in a future class' : null, onclick:() => openRow(r) },
           h('td', { class:'right tnum' }, String(i + 1)),
           ...cols.map(([k, , o]) => h('td', { class:`${o.right ? 'right ' : ''}${o.fit ? 'fit ' : ''}tnum` }, fmtCell(r, k)))))));
       appendTable(card, tbl);
@@ -15807,10 +15807,10 @@
     for (const c of cands) {
       const w = measure(c.text) + 4;
       for (const side of [1, -1]) {
-        const x0 = side > 0 ? c.x + 7 : c.x - 7 - w;
-        const r = { x0, x1: x0 + w, y0: c.y - lineH / 2, y1: c.y + lineH / 2 };
-        if (r.x0 < box.x0 || r.x1 > box.x1 || r.y0 < box.y0 || r.y1 > box.y1 || placed.some(p => hit(p.r, r))) continue;
-        placed.push({ ...c, r, anchor: side > 0 ? 'start' : 'end', lx: side > 0 ? c.x + 7 : c.x - 7 });
+        const x0 = side > 0 ? c.x + 7 : c.x - 15 - w;
+        const r = { x0, x1: x0 + w + 8, y0: c.y - lineH / 2, y1: c.y + lineH / 2 }, m = { x0: c.x - 13, x1: c.x + 13, y0: c.y - 13, y1: c.y + 13 };
+        if (r.x0 < box.x0 || r.x1 > box.x1 || r.y0 < box.y0 || r.y1 > box.y1 || placed.some(p => hit(p.r, r) || hit(p.m, r) || hit(p.r, m) || hit(p.m, m))) continue;
+        placed.push({ ...c, r, m, anchor: side > 0 ? 'start' : 'end', lx: side > 0 ? c.x + 7 : c.x - 7 });
         break;
       }
     }
