@@ -32,15 +32,22 @@
   // site uses everywhere. A DEF "player" id is its team code, which gets the team
   // logo instead. Decorative (the name sits beside it), so alt is empty, and a
   // player Sleeper has no photo for hides the image rather than showing a broken one.
-  const headshot = (pid, size = 28) => {
-    if (!pid) return null;
+  const headshotUrl = (pid, size = 28) => {
     const id = String(pid);
-    const isDef = /^[A-Z]{2,3}$/.test(id);
-    const src = isDef ? `https://sleepercdn.com/images/team_logos/nfl/${id.toLowerCase()}.png`
+    return /^[A-Z]{2,3}$/.test(id) ? `https://sleepercdn.com/images/team_logos/nfl/${id.toLowerCase()}.png`
       : `https://sleepercdn.com/content/nfl/players/${size > 40 ? '' : 'thumb/'}${id}.jpg`;
-    return h('img', { class:'headshot', src, alt:'', width:size, height:size,
-      loading:'lazy', decoding:'async', onerror:(e) => { e.target.style.visibility = 'hidden'; } });
   };
+  // College players have no Sleeper id; their cid is the ESPN athlete id, so ESPN's college
+  // headshot, cropped square by ESPN's resizer.
+  const collegeShotUrl = (cid, size = 28) => {
+    const px = size > 40 ? 192 : 96;
+    return `https://a.espncdn.com/combiner/i?img=/i/headshots/college-football/players/full/${cid}.png&w=${px}&h=${px}&scale=crop`;
+  };
+  const shotImg = (src, size) => h('img', { class:'headshot', src, alt:'', width:size, height:size,
+    loading:'lazy', decoding:'async', onerror:(e) => { e.target.style.visibility = 'hidden'; } });
+  const headshot = (pid, size = 28) => pid ? shotImg(headshotUrl(pid, size), size) : null;
+  // Any prospect-model row: drafted rows carry the Sleeper id, college rows the ESPN cid.
+  const playerShot = (r, size = 28) => !r ? null : r.id ? headshot(r.id, size) : r.cid != null ? shotImg(collegeShotUrl(r.cid, size), size) : null;
   const fmt = {
     pct: (n) => `${(n*100).toFixed(0)}%`,
     num: (n) => Number(n||0).toLocaleString(),
@@ -12976,7 +12983,7 @@
       W:Math.max(300, Math.min(960, ($('#main').clientWidth || 360) - 44)), picks:new Set(), unit:'drafted players',
       label:(r, short) => short ? chartShort(r.n) : `${r.n} (${r.p}, ${r.y} pick ${r.pk})`,
       sample:(r) => `${r.out[2] ? `Best ${pmDec(r.out[1])} PPG, ${r.p}${r.out[2]}` : 'No 8-game season'}; replacement ${pmDec(pmRepl(r.p))}`,
-      cls:(r) => `pos-${r.p}`,
+      cls:(r) => `pos-${r.p}`, shot:(r) => r.id ? headshotUrl(r.id) : r.cid != null ? collegeShotUrl(r.cid) : null,
       scope:`Y is his best PPR points per game in NFL years 1-3 (QB, TE 1-4) minus replacement, the median best of players who finished near ${ps.map(p => `${p}${PM_CUTS[p][1]} (${pmDec(pmRepl(p))})`).join(', ')}. `
         + 'No 8-game season counts as 0 PPG. College players and classes whose window is still open are left off',
     });
@@ -15886,7 +15893,7 @@
     const show = (el) => {
       const got = lines(Number(el.dataset.i));
       if (!got) return;
-      tip.replaceChildren(...got.map((t, i) => i ? h('div', null, t) : h('strong', null, t)));
+      tip.replaceChildren(...got.map((t, i) => t instanceof Node ? t : i ? h('div', null, t) : h('strong', null, t)));
       tip.hidden = false;
       const wr = wrap.getBoundingClientRect(), er = el.getBoundingClientRect();
       const left = Math.max(0, Math.min(wr.width - tip.offsetWidth, er.left - wr.left + er.width / 2 - tip.offsetWidth / 2));
@@ -15937,13 +15944,27 @@
       .sort((a, b) => (b.pick - a.pick) || (b.far - a.far)).slice(0, W < 480 ? 6 : 12);
     const labels = chartLabels(order.map(({ i }) => ({ i, x:X(pts[i].x), y:Y(pts[i].y), text:o.label(pts[i].r, true) })),
       { x0:PL, x1:W - PR, y0:PT, y1:H - PB }, chartMeasure());
+    // Named points draw as the player's headshot ringed in the dot colour, on top of the rest.
+    const shot = o.shot || ((r) => r._key ? headshotUrl(r._key) : null), named = new Set(labels.map(l => l.i));
+    if (named.size) s += '<defs><clipPath id="chart-shot-clip" clipPathUnits="objectBoundingBox"><circle cx=".5" cy=".5" r=".5"/></clipPath></defs>';
+    const ptCls = (p) => (o.picks.has(p.r._key) ? 'pt pick' : p.r._mine ? 'pt mine' : 'pt') + (o.cls ? ` ${o.cls(p.r)}` : '');
     pts.forEach((p, i) => {
-      const cls = o.picks.has(p.r._key) ? 'pt pick' : p.r._mine ? 'pt mine' : 'pt';
-      s += `<circle class="${cls}${o.cls ? ` ${o.cls(p.r)}` : ''}" data-i="${i}" cx="${X(p.x).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="${cls === 'pt' ? 4.5 : cls === 'pt mine' ? 5 : 6.5}"/>`;
+      if (named.has(i) && shot(p.r)) return;
+      const cls = ptCls(p);
+      s += `<circle class="${cls}" data-i="${i}" cx="${X(p.x).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="${cls.startsWith('pt pick') ? 6.5 : cls.startsWith('pt mine') ? 5 : 4.5}"/>`;
     });
-    for (const l of labels) s += `<text class="lbl" x="${l.lx.toFixed(1)}" y="${(l.y + 4).toFixed(1)}" text-anchor="${l.anchor}">${chartEsc(l.text)}</text>`;
+    pts.forEach((p, i) => {
+      const src = named.has(i) && shot(p.r);
+      if (!src) return;
+      const cx = X(p.x).toFixed(1), cy = Y(p.y).toFixed(1);
+      s += `<g class="pt-shot" data-i="${i}"><circle class="${ptCls(p)}" cx="${cx}" cy="${cy}" r="13"/>`
+        + `<image href="${chartEsc(src)}" x="${(X(p.x) - 11).toFixed(1)}" y="${(Y(p.y) - 11).toFixed(1)}" width="22" height="22" preserveAspectRatio="xMidYMid slice" clip-path="url(#chart-shot-clip)"/></g>`;
+    });
+    // A headshot marker is 13 wide, not 4.5, so its name sits further out.
+    for (const l of labels) s += `<text class="lbl" x="${(l.lx + (shot(pts[l.i].r) ? (l.anchor === 'start' ? 8 : -8) : 0)).toFixed(1)}" y="${(l.y + 4).toFixed(1)}" text-anchor="${l.anchor}">${chartEsc(l.text)}</text>`;
     s += '</svg>';
-    const wrap = chartTipWrap(s, (i) => [o.label(pts[i].r), `${yc.label}: ${statFmt(pts[i].y, yc.fmt)}`, `${xc.label}: ${statFmt(pts[i].x, xc.fmt)}`, o.sample(pts[i].r)].filter(Boolean),
+    const tipHead = (r) => { const src = shot(r); return src ? h('div', { class:'chart-tip-head' }, shotImg(src, 32), h('strong', null, o.label(r))) : o.label(r); };
+    const wrap = chartTipWrap(s, (i) => [tipHead(pts[i].r), `${yc.label}: ${statFmt(pts[i].y, yc.fmt)}`, `${xc.label}: ${statFmt(pts[i].x, xc.fmt)}`, o.sample(pts[i].r)].filter(Boolean),
       o.open ? (i) => o.open(pts[i].r) : null);
     wrap.dataset.points = String(pts.length);
     return h('div', null,

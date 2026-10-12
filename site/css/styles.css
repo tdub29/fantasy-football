@@ -6094,6 +6094,9 @@ button:disabled { cursor: wait; opacity: 0.7; }
 .chart-tip { position: absolute; z-index: 3; pointer-events: none; max-width: 220px; padding: 6px 8px; border: 2px solid var(--ink);
   border-radius: var(--radius-sm); background: var(--bg-1); box-shadow: var(--shadow-1); font-size: 0.75rem; line-height: 1.35; color: var(--fg-1); }
 .chart-tip[hidden] { display: none; }
+.chart-tip-head { display: flex; align-items: center; gap: 6px; }
+.chart-svg .pt-shot { cursor: pointer; }
+.chart-svg .pt-shot .pt { stroke-width: 1.5; }
 .chart-tip strong { color: var(--fg-0); }
 .chart-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-weight: 700; color: var(--fg-1); }
 .chart-swatch { display: inline-block; width: 18px; height: 0; border-top: 3px solid var(--band-deep); vertical-align: middle; margin-right: 5px; }
