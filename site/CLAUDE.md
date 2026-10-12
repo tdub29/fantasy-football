@@ -40,28 +40,26 @@ Match the execution shape to the task - **solo**, **subagents**, a **workflow**,
 
 ## Design Context
 
-This project uses the **Impeccable** design skill. Before doing any UI work, whether new screens, component edits, copy tweaks or redesigns, read these files at the project root:
+This project uses the **Impeccable** design skill. Before any UI work (new screens, component edits, copy tweaks, redesigns) read these files at the project root. This section is a summary; where it disagrees with them, it is stale.
 
-- [PRODUCT.md](PRODUCT.md): strategic context. Register (product), target users, product purpose, brand personality, anti-references, design principles, accessibility.
-- [DESIGN.md](DESIGN.md): visual system. Color palette (Gold, Ink, Turf, Panel, Band, plus the six semantic hues), typography hierarchy, elevation philosophy, component specs, do's and don'ts.
-- [BACKYARD-INVENTORY.md](BACKYARD-INVENTORY.md): the reference world behind the current standard, screen by screen, and the IP boundary. The grammar is takeable; the Backyard Football and NFL marks are not.
+- [DESIGN.md](DESIGN.md): **the standard.** Backyard palette (Gold, Ink, Turf, Panel, Band, plus the six semantic hues), typography, plates and bevels, the selection rule, UI patterns, do's and don'ts. Its "Which file wins" section sets precedence: `css/styles.css` for values, then DESIGN.md, then PRODUCT.md for purpose and audience, then the generated sidecar, then this file.
+- [PRODUCT.md](PRODUCT.md): users (five buy-in leagues), purpose, positioning, truthful model scope, product principles, accessibility.
+- [BACKYARD-INVENTORY.md](BACKYARD-INVENTORY.md): the reference world screen by screen, and the IP boundary. The grammar is takeable; the Backyard Football and NFL marks are not.
 
-Sidecar tokens (tonal ramps, shadows, motion, full HTML/CSS component snippets) live at [.impeccable/design.json](.impeccable/design.json).
+Sidecar tokens live at [.impeccable/design.json](.impeccable/design.json), generated from DESIGN.md and the CSS. Regenerate it; never hand-edit it.
 
 ### TL;DR for new agents
 
-- **Register:** product (this is a tool, not a marketing surface).
-- **North Star:** *The Backyard Tier Sheet*. A dynasty tier sheet rebuilt as a late-90s sports-game interface. Replaced the flat "Tier Sheet, Live" standard on 2026-09-15.
-- **Every surface is an outlined plate.** 2px ink border, a light inner ring, a hard bevel. Raised plates hold content; recessed wells are punched into them.
-- **Nothing is flat.** Vertical gradients come from the six `--grad-*` tokens, never hand-written per component. Shadow offsets are hard, blur is zero.
-- **Selection is a fill swap.** Gold plus ink text for a row, a nav item or a sorted column; folder tabs select by lightening instead, which is what the reference actually does.
-- **The six semantic hues still mean something.** Teal, blue, green, amber, orange and red map to a category or a tier. Gold, ink, turf, lavender and chalk are chrome and may be structural.
-- **Keyboard-first.** Cmd+K is the canonical entry point.
-- **Anti-references:** do not look like Sleeper, ESPN/Yahoo Fantasy, or a generic SaaS purple-gradient landing page.
+- **North Star:** *The Backyard Tier Sheet*. A dynasty tier sheet rebuilt as a late-90s sports-game interface.
+- **Every surface is an outlined plate.** 2px ink border, `--bevel`, hard zero-blur shadows. Gradients come from the six `--grad-*` tokens, never hand-written.
+- **Selection is gold plus ink**, with exactly two exceptions: folder tabs lighten to the panel's lavender face, and What to Look For jump tabs take their panel's meaning color.
+- **The six semantic hues mean something.** Teal, blue, green, amber, orange, red map to a category, a tier, or for/mixed/against. Gold, ink, turf, lavender, chalk are chrome.
+- **Phone and desktop are both real.** Dense summary first; Cmd+K on a keyboard; vertical field and labeled sideways strips on a phone, never a sideways page scroll.
+- **Anti-references:** Sleeper, ESPN/Yahoo Fantasy, generic SaaS gradients.
 
 ### Running Impeccable commands
 
-The skill is installed at `../../.claude/skills/impeccable/`. Common invocations:
+The project pins its own copy at `../.claude/skills/impeccable/` (falls back to `../../.claude/skills/impeccable/`). Run from the repo root; `../.impeccable/config.json` points it at `site`. Common invocations:
 
 - `/impeccable critique [target]`: UX review with heuristic scoring.
 - `/impeccable polish [target]`: final quality pass before shipping.
@@ -69,4 +67,4 @@ The skill is installed at `../../.claude/skills/impeccable/`. Common invocations
 - `/impeccable craft [feature]`: shape and build a new feature end-to-end.
 - `/impeccable live`: visual variant mode in the browser.
 
-Each command auto-loads PRODUCT.md and DESIGN.md, so the context above is always in scope.
+Each command auto-loads PRODUCT.md and DESIGN.md.
