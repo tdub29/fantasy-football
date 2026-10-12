@@ -1,246 +1,701 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-05-07T00:00:00Z",
-  "title": "Design System: Tier Sheet",
+  "generatedAt": "2026-10-12T00:00:00Z",
+  "title": "Design System: Backyard",
   "extensions": {
     "colorMeta": {
-      "cornerstone-violet": {
+      "gold": {
         "role": "primary",
-        "displayName": "Cornerstone Violet",
-        "canonical": "oklch(0.74 0.16 290)",
-        "tonalRamp": ["#1e1535", "#2f2156", "#3f2c78", "#5b21b6", "#7c4dde", "#a78bfa", "#c4b5fd", "#e7defe"]
+        "displayName": "Selection Gold",
+        "canonical": "oklch(86% 0.17 90)",
+        "cssVar": "--gold",
+        "tonalRamp": [
+          "oklch(15% 0.17 90)",
+          "oklch(26% 0.17 90)",
+          "oklch(37% 0.17 90)",
+          "oklch(48% 0.17 90)",
+          "oklch(59% 0.17 90)",
+          "oklch(70% 0.17 90)",
+          "oklch(82% 0.17 90)",
+          "oklch(95% 0.17 90)"
+        ]
       },
-      "foundational-sky": {
-        "role": "secondary",
-        "displayName": "Foundational Sky",
-        "canonical": "oklch(0.74 0.14 245)",
-        "tonalRamp": ["#0c1c33", "#143158", "#1e4a85", "#2965b8", "#4187dc", "#60a5fa", "#93c5fd", "#dbeafe"]
+      "gold-deep": {
+        "role": "primary",
+        "displayName": "Gold Deep",
+        "canonical": "oklch(74% 0.165 82)",
+        "cssVar": "--gold-deep",
+        "tonalRamp": [
+          "oklch(15% 0.165 82)",
+          "oklch(26% 0.165 82)",
+          "oklch(37% 0.165 82)",
+          "oklch(48% 0.165 82)",
+          "oklch(59% 0.165 82)",
+          "oklch(70% 0.165 82)",
+          "oklch(82% 0.165 82)",
+          "oklch(95% 0.165 82)"
+        ]
       },
-      "upside-mint": {
+      "ink": {
+        "role": "neutral",
+        "displayName": "Plate Ink",
+        "canonical": "oklch(18% 0.03 275)",
+        "cssVar": "--ink",
+        "tonalRamp": [
+          "oklch(15% 0.03 275)",
+          "oklch(26% 0.03 275)",
+          "oklch(37% 0.03 275)",
+          "oklch(48% 0.03 275)",
+          "oklch(59% 0.03 275)",
+          "oklch(70% 0.03 275)",
+          "oklch(82% 0.03 275)",
+          "oklch(95% 0.03 275)"
+        ]
+      },
+      "band": {
         "role": "secondary",
-        "displayName": "Upside Mint",
-        "canonical": "oklch(0.78 0.15 162)",
-        "tonalRamp": ["#062b22", "#0a4736", "#0e6850", "#0f8a64", "#15a87a", "#34d399", "#6ee7b7", "#d1fae5"]
+        "displayName": "Periwinkle Band",
+        "canonical": "oklch(58% 0.115 285)",
+        "cssVar": "--band",
+        "tonalRamp": [
+          "oklch(15% 0.115 285)",
+          "oklch(26% 0.115 285)",
+          "oklch(37% 0.115 285)",
+          "oklch(48% 0.115 285)",
+          "oklch(59% 0.115 285)",
+          "oklch(70% 0.115 285)",
+          "oklch(82% 0.115 285)",
+          "oklch(95% 0.115 285)"
+        ]
+      },
+      "band-deep": {
+        "role": "secondary",
+        "displayName": "Band Deep",
+        "canonical": "oklch(46% 0.115 283)",
+        "cssVar": "--band-deep",
+        "tonalRamp": [
+          "oklch(15% 0.115 283)",
+          "oklch(26% 0.115 283)",
+          "oklch(37% 0.115 283)",
+          "oklch(48% 0.115 283)",
+          "oklch(59% 0.115 283)",
+          "oklch(70% 0.115 283)",
+          "oklch(82% 0.115 283)",
+          "oklch(95% 0.115 283)"
+        ]
+      },
+      "panel": {
+        "role": "neutral",
+        "displayName": "Lavender Panel",
+        "canonical": "oklch(93% 0.028 285)",
+        "cssVar": "--bg-1",
+        "tonalRamp": [
+          "oklch(15% 0.028 285)",
+          "oklch(26% 0.028 285)",
+          "oklch(37% 0.028 285)",
+          "oklch(48% 0.028 285)",
+          "oklch(59% 0.028 285)",
+          "oklch(70% 0.028 285)",
+          "oklch(82% 0.028 285)",
+          "oklch(95% 0.028 285)"
+        ]
+      },
+      "panel-alt": {
+        "role": "neutral",
+        "displayName": "Lavender Alt",
+        "canonical": "oklch(87% 0.045 285)",
+        "cssVar": "--bg-2",
+        "tonalRamp": [
+          "oklch(15% 0.045 285)",
+          "oklch(26% 0.045 285)",
+          "oklch(37% 0.045 285)",
+          "oklch(48% 0.045 285)",
+          "oklch(59% 0.045 285)",
+          "oklch(70% 0.045 285)",
+          "oklch(82% 0.045 285)",
+          "oklch(95% 0.045 285)"
+        ]
+      },
+      "periwinkle": {
+        "role": "neutral",
+        "displayName": "Periwinkle Chip",
+        "canonical": "oklch(81% 0.065 285)",
+        "cssVar": "--bg-3",
+        "tonalRamp": [
+          "oklch(15% 0.065 285)",
+          "oklch(26% 0.065 285)",
+          "oklch(37% 0.065 285)",
+          "oklch(48% 0.065 285)",
+          "oklch(59% 0.065 285)",
+          "oklch(70% 0.065 285)",
+          "oklch(82% 0.065 285)",
+          "oklch(95% 0.065 285)"
+        ]
+      },
+      "turf": {
+        "role": "secondary",
+        "displayName": "Turf",
+        "canonical": "oklch(48% 0.13 145)",
+        "cssVar": "--turf",
+        "tonalRamp": [
+          "oklch(15% 0.13 145)",
+          "oklch(26% 0.13 145)",
+          "oklch(37% 0.13 145)",
+          "oklch(48% 0.13 145)",
+          "oklch(59% 0.13 145)",
+          "oklch(70% 0.13 145)",
+          "oklch(82% 0.13 145)",
+          "oklch(95% 0.13 145)"
+        ]
+      },
+      "turf-deep": {
+        "role": "secondary",
+        "displayName": "Turf Deep",
+        "canonical": "oklch(38% 0.12 145)",
+        "cssVar": "--turf-deep",
+        "tonalRamp": [
+          "oklch(15% 0.12 145)",
+          "oklch(26% 0.12 145)",
+          "oklch(37% 0.12 145)",
+          "oklch(48% 0.12 145)",
+          "oklch(59% 0.12 145)",
+          "oklch(70% 0.12 145)",
+          "oklch(82% 0.12 145)",
+          "oklch(95% 0.12 145)"
+        ]
+      },
+      "endzone": {
+        "role": "secondary",
+        "displayName": "Endzone Purple",
+        "canonical": "oklch(34% 0.13 290)",
+        "cssVar": "--endzone",
+        "tonalRamp": [
+          "oklch(15% 0.13 290)",
+          "oklch(26% 0.13 290)",
+          "oklch(37% 0.13 290)",
+          "oklch(48% 0.13 290)",
+          "oklch(59% 0.13 290)",
+          "oklch(70% 0.13 290)",
+          "oklch(82% 0.13 290)",
+          "oklch(95% 0.13 290)"
+        ]
+      },
+      "chalk": {
+        "role": "neutral",
+        "displayName": "Chalk",
+        "canonical": "oklch(99% 0 0)",
+        "cssVar": "--chalk",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(37% 0 0)",
+          "oklch(48% 0 0)",
+          "oklch(59% 0 0)",
+          "oklch(70% 0 0)",
+          "oklch(82% 0 0)",
+          "oklch(99% 0 0)"
+        ]
+      },
+      "navy": {
+        "role": "neutral",
+        "displayName": "Navy Ink",
+        "canonical": "oklch(24% 0.06 275)",
+        "cssVar": "--fg-0",
+        "tonalRamp": [
+          "oklch(15% 0.06 275)",
+          "oklch(26% 0.06 275)",
+          "oklch(37% 0.06 275)",
+          "oklch(48% 0.06 275)",
+          "oklch(59% 0.06 275)",
+          "oklch(70% 0.06 275)",
+          "oklch(82% 0.06 275)",
+          "oklch(95% 0.06 275)"
+        ]
+      },
+      "navy-soft": {
+        "role": "neutral",
+        "displayName": "Navy Body",
+        "canonical": "oklch(30% 0.055 275)",
+        "cssVar": "--fg-1",
+        "tonalRamp": [
+          "oklch(15% 0.055 275)",
+          "oklch(26% 0.055 275)",
+          "oklch(37% 0.055 275)",
+          "oklch(48% 0.055 275)",
+          "oklch(59% 0.055 275)",
+          "oklch(70% 0.055 275)",
+          "oklch(82% 0.055 275)",
+          "oklch(95% 0.055 275)"
+        ]
+      },
+      "label": {
+        "role": "neutral",
+        "displayName": "Label",
+        "canonical": "oklch(40% 0.045 275)",
+        "cssVar": "--fg-2",
+        "tonalRamp": [
+          "oklch(15% 0.045 275)",
+          "oklch(26% 0.045 275)",
+          "oklch(37% 0.045 275)",
+          "oklch(48% 0.045 275)",
+          "oklch(59% 0.045 275)",
+          "oklch(70% 0.045 275)",
+          "oklch(82% 0.045 275)",
+          "oklch(95% 0.045 275)"
+        ]
+      },
+      "caption": {
+        "role": "neutral",
+        "displayName": "Caption",
+        "canonical": "oklch(42% 0.04 275)",
+        "cssVar": "--fg-3",
+        "tonalRamp": [
+          "oklch(15% 0.04 275)",
+          "oklch(26% 0.04 275)",
+          "oklch(37% 0.04 275)",
+          "oklch(48% 0.04 275)",
+          "oklch(59% 0.04 275)",
+          "oklch(70% 0.04 275)",
+          "oklch(82% 0.04 275)",
+          "oklch(95% 0.04 275)"
+        ]
+      },
+      "cornerstone-teal": {
+        "role": "tertiary",
+        "displayName": "Cornerstone Teal",
+        "canonical": "oklch(42% 0.11 192)",
+        "cssVar": "--accent",
+        "tonalRamp": [
+          "oklch(15% 0.11 192)",
+          "oklch(26% 0.11 192)",
+          "oklch(37% 0.11 192)",
+          "oklch(48% 0.11 192)",
+          "oklch(59% 0.11 192)",
+          "oklch(70% 0.11 192)",
+          "oklch(82% 0.11 192)",
+          "oklch(95% 0.11 192)"
+        ]
+      },
+      "foundational-blue": {
+        "role": "tertiary",
+        "displayName": "Foundational Blue",
+        "canonical": "oklch(40% 0.16 265)",
+        "cssVar": "--blue",
+        "tonalRamp": [
+          "oklch(15% 0.16 265)",
+          "oklch(26% 0.16 265)",
+          "oklch(37% 0.16 265)",
+          "oklch(48% 0.16 265)",
+          "oklch(59% 0.16 265)",
+          "oklch(70% 0.16 265)",
+          "oklch(82% 0.16 265)",
+          "oklch(95% 0.16 265)"
+        ]
+      },
+      "upside-green": {
+        "role": "tertiary",
+        "displayName": "Upside Green (also: for you)",
+        "canonical": "oklch(40% 0.13 150)",
+        "cssVar": "--green",
+        "tonalRamp": [
+          "oklch(15% 0.13 150)",
+          "oklch(26% 0.13 150)",
+          "oklch(37% 0.13 150)",
+          "oklch(48% 0.13 150)",
+          "oklch(59% 0.13 150)",
+          "oklch(70% 0.13 150)",
+          "oklch(82% 0.13 150)",
+          "oklch(95% 0.13 150)"
+        ]
       },
       "tier-s-amber": {
         "role": "tertiary",
-        "displayName": "Tier-S Amber",
-        "canonical": "oklch(0.83 0.15 78)",
-        "tonalRamp": ["#3a2a06", "#5a420a", "#7d5a0d", "#a37510", "#cb9112", "#fbbf24", "#fcd34d", "#fef3c7"]
+        "displayName": "Tier-S Amber (also: mixed)",
+        "canonical": "oklch(44% 0.12 75)",
+        "cssVar": "--amber",
+        "tonalRamp": [
+          "oklch(15% 0.12 75)",
+          "oklch(26% 0.12 75)",
+          "oklch(37% 0.12 75)",
+          "oklch(48% 0.12 75)",
+          "oklch(59% 0.12 75)",
+          "oklch(70% 0.12 75)",
+          "oklch(82% 0.12 75)",
+          "oklch(95% 0.12 75)"
+        ]
       },
       "vet-orange": {
         "role": "tertiary",
         "displayName": "Vet Orange",
-        "canonical": "oklch(0.74 0.17 47)",
-        "tonalRamp": ["#3a1d05", "#5e2e08", "#86430e", "#b25813", "#dc6f1c", "#fb923c", "#fdba74", "#ffedd5"]
+        "canonical": "oklch(45% 0.14 50)",
+        "cssVar": "--cat-vet",
+        "tonalRamp": [
+          "oklch(15% 0.14 50)",
+          "oklch(26% 0.14 50)",
+          "oklch(37% 0.14 50)",
+          "oklch(48% 0.14 50)",
+          "oklch(59% 0.14 50)",
+          "oklch(70% 0.14 50)",
+          "oklch(82% 0.14 50)",
+          "oklch(95% 0.14 50)"
+        ]
       },
       "depreciating-red": {
         "role": "tertiary",
-        "displayName": "Depreciating Red",
-        "canonical": "oklch(0.71 0.17 22)",
-        "tonalRamp": ["#3a0c0c", "#5e1414", "#871c1c", "#b32626", "#df3636", "#f87171", "#fca5a5", "#fee2e2"]
+        "displayName": "Depreciating Red (also: against you)",
+        "canonical": "oklch(43% 0.19 25)",
+        "cssVar": "--red",
+        "tonalRamp": [
+          "oklch(15% 0.19 25)",
+          "oklch(26% 0.19 25)",
+          "oklch(37% 0.19 25)",
+          "oklch(48% 0.19 25)",
+          "oklch(59% 0.19 25)",
+          "oklch(70% 0.19 25)",
+          "oklch(82% 0.19 25)",
+          "oklch(95% 0.19 25)"
+        ]
       },
-      "obsidian": {
-        "role": "neutral",
-        "displayName": "Obsidian",
-        "canonical": "oklch(0.16 0.01 270)",
-        "tonalRamp": ["#0b0d12", "#11141b", "#161a23", "#1e2330", "#262d3d", "#3a4258", "#4f5870", "#6b7280"]
+      "led": {
+        "role": "secondary",
+        "displayName": "Scoreboard LED",
+        "canonical": "oklch(84% 0.24 145)",
+        "cssVar": "--led",
+        "tonalRamp": [
+          "oklch(15% 0.24 145)",
+          "oklch(26% 0.24 145)",
+          "oklch(37% 0.24 145)",
+          "oklch(48% 0.24 145)",
+          "oklch(59% 0.24 145)",
+          "oklch(70% 0.24 145)",
+          "oklch(82% 0.24 145)",
+          "oklch(95% 0.24 145)"
+        ]
       },
-      "graphite": {
-        "role": "neutral",
-        "displayName": "Graphite",
-        "canonical": "oklch(0.20 0.01 270)",
-        "tonalRamp": ["#0b0d12", "#11141b", "#161a23", "#1e2330", "#262d3d", "#3a4258", "#4f5870", "#6b7280"]
+      "led-bg": {
+        "role": "secondary",
+        "displayName": "LED Ground",
+        "canonical": "oklch(18% 0.05 145)",
+        "cssVar": "--led-bg",
+        "tonalRamp": [
+          "oklch(15% 0.05 145)",
+          "oklch(26% 0.05 145)",
+          "oklch(37% 0.05 145)",
+          "oklch(48% 0.05 145)",
+          "oklch(59% 0.05 145)",
+          "oklch(70% 0.05 145)",
+          "oklch(82% 0.05 145)",
+          "oklch(95% 0.05 145)"
+        ]
       },
-      "slate": {
-        "role": "neutral",
-        "displayName": "Slate",
-        "canonical": "oklch(0.24 0.01 265)",
-        "tonalRamp": ["#0b0d12", "#11141b", "#161a23", "#1e2330", "#262d3d", "#3a4258", "#4f5870", "#6b7280"]
+      "wood": {
+        "role": "secondary",
+        "displayName": "Pip Wood",
+        "canonical": "oklch(44% 0.075 60)",
+        "cssVar": "--wood",
+        "tonalRamp": [
+          "oklch(15% 0.075 60)",
+          "oklch(26% 0.075 60)",
+          "oklch(37% 0.075 60)",
+          "oklch(48% 0.075 60)",
+          "oklch(59% 0.075 60)",
+          "oklch(70% 0.075 60)",
+          "oklch(82% 0.075 60)",
+          "oklch(95% 0.075 60)"
+        ]
       },
-      "pewter": {
-        "role": "neutral",
-        "displayName": "Pewter",
-        "canonical": "oklch(0.28 0.012 265)",
-        "tonalRamp": ["#0b0d12", "#11141b", "#161a23", "#1e2330", "#262d3d", "#3a4258", "#4f5870", "#6b7280"]
-      },
-      "edge": {
-        "role": "neutral",
-        "displayName": "Edge",
-        "canonical": "oklch(0.32 0.015 265)",
-        "tonalRamp": ["#11141b", "#161a23", "#1e2330", "#262d3d", "#3a4258", "#4f5870", "#6b7280", "#9ca3af"]
-      },
-      "edge-hot": {
-        "role": "neutral",
-        "displayName": "Edge Hot",
-        "canonical": "oklch(0.39 0.02 260)",
-        "tonalRamp": ["#161a23", "#1e2330", "#262d3d", "#3a4258", "#4f5870", "#6b7280", "#9ca3af", "#d4d8e0"]
-      },
-      "porcelain": {
-        "role": "neutral",
-        "displayName": "Porcelain",
-        "canonical": "oklch(0.97 0.005 270)",
-        "tonalRamp": ["#11141b", "#262d3d", "#4f5870", "#6b7280", "#9ca3af", "#d4d8e0", "#e9ebf0", "#f3f4f6"]
-      },
-      "bone": {
-        "role": "neutral",
-        "displayName": "Bone",
-        "canonical": "oklch(0.87 0.005 270)",
-        "tonalRamp": ["#1e2330", "#3a4258", "#6b7280", "#9ca3af", "#bcc1cb", "#d4d8e0", "#e9ebf0", "#f3f4f6"]
-      },
-      "fog": {
-        "role": "neutral",
-        "displayName": "Fog",
-        "canonical": "oklch(0.69 0.01 270)",
-        "tonalRamp": ["#262d3d", "#3a4258", "#4f5870", "#6b7280", "#85899a", "#9ca3af", "#bcc1cb", "#d4d8e0"]
-      },
-      "ash": {
-        "role": "neutral",
-        "displayName": "Ash",
-        "canonical": "oklch(0.52 0.01 270)",
-        "tonalRamp": ["#1e2330", "#262d3d", "#3a4258", "#4f5870", "#6b7280", "#85899a", "#9ca3af", "#bcc1cb"]
+      "metal": {
+        "role": "secondary",
+        "displayName": "Brushed Metal",
+        "canonical": "oklch(78% 0.015 250)",
+        "cssVar": "--metal",
+        "tonalRamp": [
+          "oklch(15% 0.015 250)",
+          "oklch(26% 0.015 250)",
+          "oklch(37% 0.015 250)",
+          "oklch(48% 0.015 250)",
+          "oklch(59% 0.015 250)",
+          "oklch(70% 0.015 250)",
+          "oklch(82% 0.015 250)",
+          "oklch(95% 0.015 250)"
+        ]
       }
     },
     "typographyMeta": {
-      "page-title": { "displayName": "Page Title", "purpose": "One per page; defines the route. Top-left of every screen." },
-      "card-title": { "displayName": "Card Title", "purpose": "Uppercase header on every card or panel; the constant rhythm element across screens." },
-      "body": { "displayName": "Body", "purpose": "Paragraph copy and table cell text. Single sans family, no decorative variants." },
-      "numeric": { "displayName": "Numeric", "purpose": "Scores, ranks, percentages, grades. Always tabular-nums for vertical alignment." },
-      "micro-label": { "displayName": "Micro Label", "purpose": "Uppercase metadata: column headers, nav-section titles, stat-pill labels." }
+      "page-title": {
+        "displayName": "Page Title",
+        "purpose": "Baloo 2 800, title case, gold fill with a 2px ink stroke and hard drop shadow, on a band-gradient pill plaque. One per route; stroked text is only page and section titles."
+      },
+      "card-title": {
+        "displayName": "Card Title",
+        "purpose": "Baloo 2 800, uppercase, chalk on a band plate (or a meaning-colored plate). Every card header."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Nunito 400 to 600 for paragraphs and table cells, 65 to 75ch."
+      },
+      "numeric": {
+        "displayName": "Numeric",
+        "purpose": "Tabular figures always. Jersey 10 pixel face only for scoreboard numbers (strength score, card number band, LED panel)."
+      },
+      "micro-label": {
+        "displayName": "Micro Label",
+        "purpose": "Small caps voice for column heads and stat labels; never competes with the value."
+      }
     },
     "shadows": [
-      { "name": "surface-lift", "value": "0 1px 0 rgba(255,255,255,0.04) inset, 0 1px 2px rgba(0,0,0,0.3)", "purpose": "Sticky table headers and the brand-logo lozenge. Functional float, never decorative." },
-      { "name": "hover-lift", "value": "0 4px 12px rgba(0,0,0,0.4)", "purpose": "Reserved for elements you actively pick up: drag handles, popover anchors. Not for rest-state cards." },
-      { "name": "focus-glow", "value": "0 0 0 1px #a78bfa, 0 0 20px rgba(167,139,250,0.18)", "purpose": "Focus-visible state on primary interactive elements. Doubles as keyboard-nav feedback." }
+      {
+        "name": "shadow-1",
+        "value": "0 2px 0 rgba(0,0,0,.28)",
+        "purpose": "Plate drop on every card, button and chip. Hard, zero blur."
+      },
+      {
+        "name": "shadow-2",
+        "value": "0 4px 0 rgba(0,0,0,.32)",
+        "purpose": "Lifted plate: modals and the user's own team row."
+      },
+      {
+        "name": "bevel",
+        "value": "inset 0 0 0 2px rgba(255,255,255,.55), inset 0 1px 0 2px rgba(255,255,255,.75), inset 0 -2px 0 rgba(0,0,0,.16)",
+        "purpose": "Raised stamped-metal edge on every plate."
+      },
+      {
+        "name": "bevel-in",
+        "value": "inset 0 2px 0 rgba(0,0,0,.20), inset 0 -1px 0 rgba(255,255,255,.35)",
+        "purpose": "Recessed edge: inputs, pressed buttons, LED panel."
+      },
+      {
+        "name": "well",
+        "value": "inset 0 0 0 2px rgba(0,0,0,.28), inset 0 3px 4px rgba(0,0,0,.22)",
+        "purpose": "Recessed panel inside a raised plate."
+      },
+      {
+        "name": "shadow-glow",
+        "value": "0 0 0 3px var(--gold), 0 0 0 5px var(--ink)",
+        "purpose": "Focus: gold ring inside an ink ring, visible on turf, lavender and gold."
+      }
     ],
     "motion": [
-      { "name": "ease-fast", "value": "120ms cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "Default transition for hover state changes (background, border, color)." },
-      { "name": "ease-press", "value": "80ms ease-out", "purpose": "Button press translateY tic." },
-      { "name": "ease-bar", "value": "400ms cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "Strength-bar width transition. The only data-driven motion in the system." },
-      { "name": "ease-out-quart", "value": "cubic-bezier(0.25, 1, 0.5, 1)", "purpose": "Default exponential ease-out for any new entrance animation. Never bounce, never elastic." }
+      {
+        "name": "interaction",
+        "value": "80ms to 120ms, linear or default",
+        "purpose": "Hover, press and background swaps. Snap, not easing."
+      },
+      {
+        "name": "press",
+        "value": "translateY(2px) + bevel-in",
+        "purpose": "The one interaction tic: a pressed plate travels down."
+      },
+      {
+        "name": "bar-grow",
+        "value": "240ms to 360ms ease-out",
+        "purpose": "A data bar may grow once on load. No bounce, no overshoot."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "prefers-reduced-motion: reduce",
+        "purpose": "Non-essential animation degrades to instant."
+      }
     ],
     "breakpoints": [
-      { "name": "mobile", "value": "720px" },
-      { "name": "compact", "value": "1100px" },
-      { "name": "max-content", "value": "1400px" }
+      {
+        "name": "wide",
+        "value": "1281px",
+        "purpose": "min-width: the trade calculator middle column turns sticky"
+      },
+      {
+        "name": "compact",
+        "value": "1100px",
+        "purpose": "grids drop a column"
+      },
+      {
+        "name": "strip",
+        "value": "760px",
+        "purpose": "peer panels become a sideways scroll-snap strip with a jump bar"
+      },
+      {
+        "name": "phone",
+        "value": "720px",
+        "purpose": "phone nav, filters toggle, vertical field"
+      },
+      {
+        "name": "key-collapse",
+        "value": "560px",
+        "purpose": "league key folds to one summary line"
+      },
+      {
+        "name": "small-phone",
+        "value": "520px",
+        "purpose": "tightest row grids"
+      }
     ]
   },
   "components": [
     {
-      "name": "Primary Button",
-      "kind": "button",
-      "refersTo": "button-primary",
-      "description": "Single primary action per screen. Reserved for committing trades, importing CSVs, or other unique state changes.",
-      "html": "<button class=\"ds-btn-primary\">Commit Trade</button>",
-      "css": ".ds-btn-primary { background: #5b21b6; color: #f3f4f6; border: 1px solid #a78bfa; border-radius: 6px; padding: 6px 12px; font: 600 0.94rem ui-sans-serif, -apple-system, 'SF Pro Text', 'Inter', sans-serif; cursor: pointer; transition: background 120ms cubic-bezier(0.22, 1, 0.36, 1), transform 80ms ease-out; } .ds-btn-primary:hover { background: #6d28d9; } .ds-btn-primary:active { transform: translateY(1px); } .ds-btn-primary:focus-visible { outline: none; box-shadow: 0 0 0 1px #a78bfa, 0 0 20px rgba(167,139,250,0.18); }"
-    },
-    {
       "name": "Default Button",
       "kind": "button",
       "refersTo": "button-default",
-      "description": "Neutral utility button: cancel, apply filter, export. The workhorse.",
-      "html": "<button class=\"ds-btn-default\">Apply filter</button>",
-      "css": ".ds-btn-default { background: #161a23; color: #f3f4f6; border: 1px solid #262d3d; border-radius: 6px; padding: 6px 12px; font: 400 0.94rem ui-sans-serif, -apple-system, 'SF Pro Text', 'Inter', sans-serif; cursor: pointer; transition: background 120ms cubic-bezier(0.22, 1, 0.36, 1), border-color 120ms cubic-bezier(0.22, 1, 0.36, 1), transform 80ms ease-out; } .ds-btn-default:hover { background: #232938; border-color: #3a4258; } .ds-btn-default:active { transform: translateY(1px); } .ds-btn-default:focus-visible { outline: none; box-shadow: 0 0 0 1px #a78bfa, 0 0 20px rgba(167,139,250,0.18); }"
+      "description": "Lavender plate button; the default for every action.",
+      "html": "<button class=\"ds-btn\">Refresh</button>",
+      "css": ".ds-btn { background: var(--grad-btn, linear-gradient(180deg, #d5d5f0, #bfbfe6)); color: var(--fg-0, #1f2450); border: 2px solid var(--ink, #12131f); box-shadow: var(--bevel), var(--shadow-1, 0 2px 0 rgba(0,0,0,.28)); border-radius: 6px; padding: 6px 12px; font-family: var(--font-body, Nunito, ui-sans-serif, system-ui, sans-serif); font-weight: 700; cursor: pointer; transition: background 120ms, transform 80ms; } .ds-btn:hover { background: var(--bg-hover, #cdcdee); } .ds-btn:active { transform: translateY(2px); box-shadow: var(--bevel-in); } .ds-btn:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--gold, #ffd42a), 0 0 0 5px var(--ink, #12131f); }"
     },
     {
-      "name": "Card",
-      "kind": "card",
-      "refersTo": "card",
-      "description": "Default container. Flat at rest; tonal step from page (Obsidian) up to Graphite is what separates it.",
-      "html": "<div class=\"ds-card\"><h3 class=\"ds-card-title\">League Strength</h3><p>Top-line metrics aggregated across all rosters in the league.</p></div>",
-      "css": ".ds-card { background: #11141b; border: 1px solid #262d3d; border-radius: 10px; padding: 16px; color: #f3f4f6; font: 400 0.94rem/1.5 ui-sans-serif, -apple-system, 'SF Pro Text', 'Inter', sans-serif; font-feature-settings: 'ss01', 'cv11'; } .ds-card-title { margin: 0 0 8px 0; font-size: 0.95rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #d4d8e0; }"
+      "name": "Primary / Selected Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Gold face with ink text. Primary, active and aria-pressed are one visual idea.",
+      "html": "<button class=\"ds-btn-primary\" aria-pressed=\"true\">Compare</button>",
+      "css": ".ds-btn-primary { background: var(--grad-gold, linear-gradient(180deg, #ffd42a, #e0a915)); color: var(--ink, #12131f); border: 2px solid var(--ink, #12131f); box-shadow: var(--bevel), var(--shadow-1, 0 2px 0 rgba(0,0,0,.28)); border-radius: 6px; padding: 6px 12px; font-family: var(--font-body, Nunito, ui-sans-serif, system-ui, sans-serif); font-weight: 800; cursor: pointer; transition: transform 80ms; } .ds-btn-primary:active { transform: translateY(2px); box-shadow: var(--bevel-in); } .ds-btn-primary:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--gold, #ffd42a), 0 0 0 5px var(--ink, #12131f); }"
     },
     {
       "name": "Input",
       "kind": "input",
       "refersTo": "input",
-      "description": "Search and filter input. Slate surface with violet focus ring.",
-      "html": "<input class=\"ds-input\" type=\"search\" placeholder=\"Search players…\" />",
-      "css": ".ds-input { background: #161a23; color: #f3f4f6; border: 1px solid #262d3d; border-radius: 6px; padding: 6px 10px; font: 400 0.94rem ui-sans-serif, -apple-system, 'SF Pro Text', 'Inter', sans-serif; outline: none; min-width: 220px; transition: border-color 120ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 120ms cubic-bezier(0.22, 1, 0.36, 1); } .ds-input::placeholder { color: #6b7280; } .ds-input:focus { border-color: #a78bfa; box-shadow: 0 0 0 3px rgba(167,139,250,0.15); }"
+      "description": "Recessed chalk field, the counterpart to a raised button.",
+      "html": "<input class=\"ds-input\" placeholder=\"Sleeper username\">",
+      "css": ".ds-input { background: var(--chalk, #fff); color: var(--fg-0, #1f2450); border: 2px solid var(--ink, #12131f); border-radius: 6px; box-shadow: var(--bevel-in); padding: 6px 10px; font-family: var(--font-body, Nunito, ui-sans-serif, system-ui, sans-serif); font-weight: 600; } .ds-input:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--gold, #ffd42a), 0 0 0 5px var(--ink, #12131f); }"
     },
     {
-      "name": "Cornerstone Pill",
+      "name": "Card with Band",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Outlined lavender plate with a periwinkle band title in chalk.",
+      "html": "<div class=\"ds-card\"><div class=\"ds-card-title\">Roster Strength</div><p>Win-Now, 3rd of 12.</p></div>",
+      "css": ".ds-card { background: var(--grad-panel, linear-gradient(180deg, #f1f1fc, #e9e9fa)); color: var(--fg-1, #343a6b); border: 2px solid var(--ink, #12131f); box-shadow: var(--bevel), var(--shadow-1, 0 2px 0 rgba(0,0,0,.28)); border-radius: 10px; padding: 14px; font-family: var(--font-body, Nunito, ui-sans-serif, system-ui, sans-serif); } .ds-card-title { margin: -14px -14px 10px; padding: 6px 14px; background: var(--grad-band, linear-gradient(180deg, #7b7bc4, #4f4f96)); color: var(--chalk, #fff); border-bottom: 2px solid var(--ink, #12131f); border-radius: 8px 8px 0 0; font-family: var(--font-display, 'Baloo 2', ui-rounded, system-ui, sans-serif); font-weight: 800; font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; }"
+    },
+    {
+      "name": "Nav Link",
+      "kind": "nav",
+      "description": "Sidebar link; active is gold with ink text.",
+      "html": "<nav class=\"ds-nav\"><a href=\"#\">Dashboard</a><a href=\"#\" class=\"active\">What to Look For</a></nav>",
+      "css": ".ds-nav { display: grid; gap: 4px; width: 220px; font-family: var(--font-body, Nunito, ui-sans-serif, system-ui, sans-serif); } .ds-nav a { padding: 6px 10px; border: 2px solid transparent; border-radius: 6px; color: var(--fg-0, #1f2450); font-weight: 700; text-decoration: none; } .ds-nav a:hover { background: rgba(255,255,255,.45); border-color: var(--ink, #12131f); } .ds-nav a.active { background: var(--grad-gold, linear-gradient(180deg, #ffd42a, #e0a915)); border-color: var(--ink, #12131f); color: var(--ink, #12131f); font-weight: 800; } .ds-nav a:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--gold, #ffd42a), 0 0 0 5px var(--ink, #12131f); }"
+    },
+    {
+      "name": "Category Pill",
       "kind": "chip",
       "refersTo": "pill-cornerstone",
-      "description": "Category pill for Cornerstone-tier players. Same shape used for Foundational, Upside, Mainstay, Vet, and Short-Term Win, with their respective colors.",
-      "html": "<span class=\"ds-pill-cornerstone\"><svg width=\"10\" height=\"10\" viewBox=\"0 0 10 10\" fill=\"currentColor\" aria-hidden=\"true\"><circle cx=\"5\" cy=\"5\" r=\"3\"/></svg>Cornerstone</span>",
-      "css": ".ds-pill-cornerstone { display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border-radius: 999px; font: 600 0.75rem ui-sans-serif, -apple-system, 'SF Pro Text', 'Inter', sans-serif; letter-spacing: 0.02em; color: #a78bfa; border: 1px solid rgba(167,139,250,0.4); background: rgba(167,139,250,0.08); }"
+      "description": "Stamped pill: category hue fill, ink outline, label always shown.",
+      "html": "<span class=\"ds-pill\">Cornerstone</span>",
+      "css": ".ds-pill { display: inline-block; background: var(--accent, #0d767c); color: var(--chalk, #fff); border: 2px solid var(--ink, #12131f); border-radius: 999px; padding: 1px 9px; font-family: var(--font-body, Nunito, ui-sans-serif, system-ui, sans-serif); font-weight: 800; font-size: 0.68rem; letter-spacing: 0.04em; box-shadow: var(--bevel); }"
     },
     {
-      "name": "Tier-S Chip",
+      "name": "Tier Chip",
       "kind": "chip",
       "refersTo": "tier-chip-s",
-      "description": "Tier badge with letter at full opacity — hue is reinforcement only. One variant per tier (S/A/B/C/D).",
-      "html": "<span class=\"ds-tier-chip-s\">S</span>",
-      "css": ".ds-tier-chip-s { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 6px; font: 700 0.78rem ui-sans-serif, -apple-system, 'SF Pro Text', 'Inter', sans-serif; color: #fbbf24; border: 1px solid rgba(251,191,36,0.4); background: rgba(251,191,36,0.1); }"
+      "description": "Square chip, the tier letter is the signal and hue reinforces it.",
+      "html": "<span class=\"ds-tier\">S</span>",
+      "css": ".ds-tier { display: inline-grid; place-items: center; width: 22px; height: 22px; background: var(--amber, #966a10); color: var(--chalk, #fff); border: 2px solid var(--ink, #12131f); border-radius: 4px; font-family: var(--font-body, Nunito, ui-sans-serif, system-ui, sans-serif); font-weight: 900; }"
     },
     {
-      "name": "Sidebar Nav (Active Item)",
-      "kind": "nav",
-      "refersTo": "sidebar",
-      "description": "Active nav link. The system's only inset-stripe affordance — the violet-tinted background plus 2px inset Cornerstone Violet stripe on the left.",
-      "html": "<nav class=\"ds-nav\"><a href=\"#\" class=\"ds-nav-item ds-nav-item--active\">Dashboard</a><a href=\"#\" class=\"ds-nav-item\">Rankings</a><a href=\"#\" class=\"ds-nav-item\">Trade Calculator</a></nav>",
-      "css": ".ds-nav { display: flex; flex-direction: column; gap: 1px; padding: 8px 12px; background: #11141b; min-width: 240px; } .ds-nav-item { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 6px; color: #d4d8e0; text-decoration: none; font: 400 0.94rem ui-sans-serif, -apple-system, 'SF Pro Text', 'Inter', sans-serif; transition: background 120ms cubic-bezier(0.22, 1, 0.36, 1), color 120ms cubic-bezier(0.22, 1, 0.36, 1); } .ds-nav-item:hover { background: #161a23; color: #f3f4f6; } .ds-nav-item--active { background: rgba(167,139,250,0.12); color: #f3f4f6; box-shadow: inset 2px 0 0 #a78bfa; }"
-    },
-    {
-      "name": "Strength Bar",
+      "name": "Folder Tabs",
       "kind": "custom",
-      "refersTo": "strength-row",
-      "description": "Signature component. Encodes the Cornerstone+Foundational pillar pairing as the only data-driven gradient in the system.",
-      "html": "<div class=\"ds-strength-row\"><span class=\"ds-strength-rank\">3</span><div class=\"ds-strength-team\"><span class=\"ds-strength-team-name\">Sample Team</span><span class=\"ds-strength-owner\">tdub1329</span></div><span class=\"ds-strength-score\">68.4</span><div class=\"ds-strength-bar-wrap\"><div class=\"ds-strength-bar\" style=\"width:68%\"></div></div></div>",
-      "css": ".ds-strength-row { display: grid; grid-template-columns: 32px 1fr 80px 1fr; align-items: center; gap: 12px; padding: 10px 12px; background: #11141b; border: 1px solid #262d3d; border-radius: 6px; color: #f3f4f6; font-family: ui-sans-serif, -apple-system, 'SF Pro Text', 'Inter', sans-serif; transition: background 120ms cubic-bezier(0.22, 1, 0.36, 1); } .ds-strength-row:hover { background: #161a23; } .ds-strength-rank { font-size: 1.1rem; font-weight: 700; color: #9ca3af; text-align: center; font-variant-numeric: tabular-nums; } .ds-strength-team { display: flex; flex-direction: column; min-width: 0; } .ds-strength-team-name { font-weight: 600; color: #f3f4f6; } .ds-strength-owner { color: #6b7280; font-size: 0.8rem; } .ds-strength-score { font-size: 1.2rem; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; text-align: right; } .ds-strength-bar-wrap { background: #1e2330; height: 6px; border-radius: 4px; overflow: hidden; } .ds-strength-bar { height: 100%; background: linear-gradient(90deg, #a78bfa, #60a5fa); border-radius: 4px; transition: width 400ms cubic-bezier(0.22, 1, 0.36, 1); }"
+      "description": "Folder exception to gold: the active tab lightens to the panel face.",
+      "html": "<div class=\"ds-tabs\"><button class=\"ds-tab active\">Roster</button><button class=\"ds-tab\">Picks</button></div>",
+      "css": ".ds-tabs { display: flex; gap: 3px; align-items: flex-end; } .ds-tab { background: var(--grad-btn, linear-gradient(180deg, #d5d5f0, #bfbfe6)); color: var(--fg-1, #343a6b); border: 2px solid var(--ink, #12131f); border-bottom: none; border-radius: 6px 6px 0 0; padding: 6px 12px; font-family: var(--font-display, 'Baloo 2', ui-rounded, system-ui, sans-serif); font-size: 0.7rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; } .ds-tab.active { background: linear-gradient(180deg, oklch(97% 0.02 285), var(--bg-1, #e9e9fa)); color: var(--fg-0, #1f2450); padding-bottom: 9px; } .ds-tab:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--gold, #ffd42a), 0 0 0 5px var(--ink, #12131f); }"
     },
     {
-      "name": "Stat Block",
+      "name": "Meaning Jump Tabs",
       "kind": "custom",
-      "refersTo": "stat-num",
-      "description": "Compact KPI on the dashboard. Tabular-nums, no gradient, no hero-metric template flourish.",
-      "html": "<div class=\"ds-stat\"><span class=\"ds-stat-num\">+4.2</span><span class=\"ds-stat-label\">strength delta vs last week</span><span class=\"ds-stat-delta-up\">▲ 1.8</span></div>",
-      "css": ".ds-stat { display: flex; flex-direction: column; gap: 2px; font-family: ui-sans-serif, -apple-system, 'SF Pro Text', 'Inter', sans-serif; color: #f3f4f6; } .ds-stat-num { font-size: 1.7rem; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; line-height: 1; } .ds-stat-label { color: #9ca3af; font-size: 0.85rem; margin-top: 2px; } .ds-stat-delta-up { color: #34d399; font-size: 0.8rem; margin-top: 4px; font-variant-numeric: tabular-nums; }"
+      "description": "Phone jump bar over a sideways strip; active tab takes its panel meaning color.",
+      "html": "<div class=\"ds-jump\"><button class=\"ds-jt root on\">Rooting for 12</button><button class=\"ds-jt split\">Good and bad 4</button><button class=\"ds-jt hate\">Hate watching 9</button><span class=\"ds-swipe\">swipe ›</span></div>",
+      "css": ".ds-jump { display: grid; grid-template-columns: repeat(3, auto); gap: 6px; padding: 8px; background: var(--grad-turf, #3f9f43); font-family: var(--font-body, Nunito, ui-sans-serif, system-ui, sans-serif); } .ds-jt { padding: 5px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 999px; border: 2px solid var(--ink, #12131f); background: var(--bg-1, #e9e9fa); color: var(--fg-1, #343a6b); cursor: pointer; } .ds-jt.on { color: var(--chalk, #fff); text-shadow: 0 1px 0 rgba(0,0,0,.45); } .ds-jt.root.on { background: var(--green, #1a7a54); } .ds-jt.split.on { background: var(--amber, #966a10); } .ds-jt.hate.on { background: var(--red, #a82a22); } .ds-jt:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--gold, #ffd42a), 0 0 0 5px var(--ink, #12131f); } .ds-swipe { grid-column: 1 / -1; justify-self: end; color: var(--chalk, #fff); font-weight: 700; font-size: 0.85rem; }"
     }
   ],
   "narrative": {
-    "northStar": "The Tier Sheet, Live",
-    "overview": "This is what a printed dynasty tier sheet would become if you let it watch your rosters. Surfaces stay close to the page (graphite-on-obsidian, no glassy noise, no decorative gradient), category color is the only flourish, and the only thing that ever moves is data. The reader is an analyst at a console mid-week, not a fan scrolling on the couch. Every screen is a working document; nothing performs.\n\nThe aesthetic explicitly rejects three things: Sleeper's mobile-first cartoon-mascot energy, ESPN/Yahoo's ad-shaped portal clutter, and the generic SaaS purple-gradient hero that signals 'AI-tool landing page.' Cornerstone Violet is a category, not a marketing accent. We do not paint it onto buttons for personality.",
+    "northStar": "The Backyard Tier Sheet",
+    "overview": "A dynasty tier sheet rebuilt as a late-90s sports-game interface. Every surface is a physical plate stamped with a near-black outline, the ground is turf rather than a page, and selection is a gold fill you can see across a room. The reader is still an analyst mid-week, but the console he is sitting at is a Dreamcast, not a terminal.\n\nThe reference world is inventoried screen by screen in [BACKYARD-INVENTORY.md](BACKYARD-INVENTORY.md), including the IP boundary. Read that file before adding a component. This file is the standard; that file is the evidence behind it.\n\nThis replaced the previous \"Tier Sheet, Live\" standard on 2026-09-15, which called for graphite-on-obsidian surfaces, flat-by-default elevation, and no decorative gradients. Those three rules are now reversed on purpose. Anything in the repo still asserting them is stale.",
     "keyCharacteristics": [
-      "Dark by default. The user is at a desk, mid-week, often at night.",
-      "Color is meaning. Every accent maps to a tier or a category. None are decoration.",
-      "Density over generosity. Tight rows, compact pills, monospace numbers, no card padding theatre.",
-      "Chrome disappears. Borders, shadows, and containers earn their place by separating real things.",
-      "Keyboard is the front door. Cmd+K is canonical, not an afterthought."
+      "Light and loud. Turf ground, lavender plates, navy ink, gold selection.",
+      "Every surface is an outlined plate. A 2px near-black edge plus a hard bevel, on everything.",
+      "Nothing is flat. Every fill is a vertical gradient or a texture.",
+      "Selection is a gold fill swap with ink text, with two named exceptions (folder tabs and meaning-colored jump tabs, below). Never a tint, never a stripe, never an underline.",
+      "Ratings are discrete and countable. Five pips or a segmented meter, not a percentage.",
+      "Labels are quiet small caps, values are chunky. The label never competes with the number.",
+      "Chrome is physical. Folder tabs, stamped chips, an LED panel for the freshness readout.",
+      "Phone and desktop are both real. Cmd+K is canonical on a keyboard; thumb reach and swipe on a phone."
     ],
     "rules": [
-      { "name": "The Three-Pillar Rule", "body": "Cornerstone Violet, Foundational Sky, and Upside Mint are not three accents that happen to be close. They are the three category pillars. They appear as a triad together or alone with role-meaning. Never mix in a fourth pillar color.", "section": "colors" },
-      { "name": "The No-Decorative-Color Rule", "body": "If a hue appears on screen, it is communicating a category or a tier. There is no 'we needed something to break up the gray.' Break up the gray with hierarchy and density, not paint.", "section": "colors" },
-      { "name": "The Anti-Gradient Rule", "body": "Two gradients exist in the system: the brand-logo lozenge and the team-strength bar. Both encode the pillar pairing. Do not introduce a third.", "section": "colors" },
-      { "name": "The Tabular Numbers Rule", "body": "Anything quantitative renders in tabular-nums. Stats, scores, pick numbers, percentages, grades, ranks, ages. Non-tabular numbers in a tier sheet are visual chaos.", "section": "typography" },
-      { "name": "The Uppercase-as-Metadata Rule", "body": "ALL CAPS is reserved for labels about the data, never for the data itself. Card titles, column headers, nav sections — yes. Player names, team names, body copy — never.", "section": "typography" },
-      { "name": "The 65–75ch Rule", "body": "Body copy never exceeds 75 characters per line. Long-form prose caps at 65–75ch even if the parent grid is wider.", "section": "typography" },
-      { "name": "The Flat-By-Default Rule", "body": "Cards, rows, and panels at rest have no drop shadow. Their separation is the tonal step. If you reach for box-shadow on a static card, you wanted a tonal step instead.", "section": "elevation" },
-      { "name": "The Functional-Shadow Rule", "body": "Every shadow answers a functional question — am I sticky, am I focused, am I being picked up? Decorative ambient shadows under cards are forbidden.", "section": "elevation" }
+      {
+        "name": "The Gold-Selection Rule",
+        "body": "Gold plus ink text is the selected state for rows, nav, the Cmd+K result, the sorted column, primary and pressed buttons, and the user's own team. A 6% tint of an accent hue was the old answer and it was unreadable on a phone in daylight. Exactly two exceptions, and no others: - **Folder tabs select by lightening.** `.tab` and `.cchart-tab` go to a lighter lavender face with navy text, matching the reference's roster and PLAYERS tabs. The tab is part of the panel below it, so it takes the panel's face, not gold. (`CLAUDE.md` says the same; it agrees with this.) - **Jump tabs over a meaning-colored strip take that meaning's color.** On What to Look For, the phone jump bar's active tab fills with its panel's plate color (green, amber or red, below) and chalk text, so the tab and the plate it scrolls to read as one thing. The tab label always shows. A new selected state that is neither of these is gold.",
+        "section": "colors"
+      },
+      {
+        "name": "The Three-Pillar Rule",
+        "body": "still holds. Cornerstone Teal, Foundational Blue and Upside Green are the three category pillars. They appear as a triad or alone with role meaning. Never a fourth.",
+        "section": "colors"
+      },
+      {
+        "name": "The No-Decorative-Hue Rule",
+        "body": "still holds for the six semantic hues. Lavender, periwinkle, turf, gold, chalk and ink are chrome and may be used structurally. Teal, blue, green, amber, orange and red always mean something: a category, a tier, or, on panels that sort players by whether they help the user, for (green), mixed (amber) and against (red). League identity colors (`--lg`) are data labels that always sit beside the league name; they are not part of the palette.",
+        "section": "colors"
+      },
+      {
+        "name": "The Gradient Rule, inverted",
+        "body": "Every fill is a vertical gradient: panels, buttons, bands, gold, turf. They are defined once as `--grad-panel`, `--grad-btn`, `--grad-band`, `--grad-gold`, `--grad-metal` and `--grad-turf`, and a component uses one of those rather than writing its own. The one standing exception is the lightened folder-tab face, which is written in two places (`.tab.active`, `.cchart-tab.active`) and should become a token the next time either is touched. A bespoke gradient in a component is the thing to avoid now, not gradients themselves.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tabular Numbers Rule",
+        "body": "is unchanged. Anything quantitative renders tabular.",
+        "section": "typography"
+      },
+      {
+        "name": "The Uppercase-as-Metadata Rule",
+        "body": "holds. Page titles are title case, like the reference's \"Main Menu\" and \"Game Summary\"; all caps there is reserved for team wordmarks. Player names, team names and body copy are never uppercase.",
+        "section": "typography"
+      },
+      {
+        "name": "The Stroke-Is-For-Titles Rule",
+        "body": "`-webkit-text-stroke` appears on `.page-title` and `.section-title` and nowhere else. Stroked body text is unreadable at small sizes and stroked labels turn a table into a poster.",
+        "section": "typography"
+      },
+      {
+        "name": "The 65 to 75ch Rule",
+        "body": "is unchanged for body copy.",
+        "section": "typography"
+      },
+      {
+        "name": "The One-Pixel-Face Rule",
+        "body": "Baloo 2, Nunito and Jersey 10 are the three families, which is the ceiling. A second pixel face, or pixel type on body copy, breaks it.",
+        "section": "typography"
+      },
+      {
+        "name": "The No-Blur Rule",
+        "body": "Shadow offsets are hard, with zero blur radius. A blurred shadow is the single tell that gives a retro plate away as a modern card. The only sanctioned blur is the modal scrim. Known violation to fix, not to copy: the trade preview card (`.trade-middle.preview .trade-middle-card`) still has a 28px blurred accent glow.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Press-Travels Rule",
+        "body": "A pressed button moves `translateY(2px)` and swaps to the inset bevel, so it looks physically depressed. This replaces the old 1px nudge and it is the only interaction feel tic in the system. No bounces, no scales, no color flashes.",
+        "section": "elevation"
+      }
     ],
     "dos": [
-      "Do make tabular-nums the default for any column with numbers. Scores, ranks, ages, percentages, grades all line up vertically.",
-      "Do use Cornerstone Violet for 'this is yours' cues across league tables and roster views — the 'you' row tint, the active nav stripe, the focus ring. The user is the violet thread through the data.",
-      "Do pair every tier color with the tier letter (S/A/B/C/D) at full opacity. Color-blind users get the letter; everyone else gets reinforcement.",
-      "Do lean on the tonal ramp (Obsidian → Graphite → Slate → Pewter) for elevation before reaching for a shadow. Shadows are state, not chrome.",
-      "Do keep the brand-mark gradient and the strength-bar gradient as the only gradients in the product. Both encode the Cornerstone+Foundational pillar pairing.",
-      "Do prefer OKLCH when introducing new colors; the existing hex palette is grandfathered.",
-      "Do make Cmd+K discoverable on every page (the small ⌘K chip in the page header)."
+      "**Do** make tabular-nums the default for any column with numbers.",
+      "**Do** use gold plus ink text for every \"this one is selected\" and \"this one is yours\" cue. The user is the gold thread through the data.",
+      "**Do** put a 2px ink border and a bevel on any new surface. A borderless panel does not belong.",
+      "**Do** pair every tier color with the tier letter at full opacity.",
+      "**Do** use one of the six `--grad-*` tokens rather than writing a new gradient in a component.",
+      "**Do** reach for `.rating-track` or `.seg-meter` before printing a bare 0-to-100 score on a card.",
+      "**Do** keep shadow offsets hard and blur at zero.",
+      "**Do** prefer OKLCH for new colors; the hex frontmatter above is the approximation, and `css/styles.css` is the source of truth.",
+      "**Do** keep Cmd+K discoverable on every page."
     ],
     "donts": [
-      "Don't use a colored side-stripe (border-left / border-right > 1px) as a card or list-item accent. The only inset stripe is the active sidebar nav item.",
-      "Don't use gradient text (background-clip: text over a gradient). Emphasis is weight or size, never a multicolor fill.",
-      "Don't apply glassmorphism, backdrop-blur surfaces, or frosted panels.",
-      "Don't introduce a fourth pillar color or invent a 'warning purple' / 'info purple' — Cornerstone Violet is one thing.",
-      "Don't add a hero metric template (big number + small label + supporting stats + gradient flourish).",
-      "Don't add bounce, elastic, spring, or scale-in animations. Ease out exponentially.",
-      "Don't use em dashes anywhere. Use commas, colons, or periods.",
-      "Don't make this look like Sleeper. No mobile-first layouts forcing themselves onto desktop, no mascot iconography.",
-      "Don't make this look like ESPN/Yahoo. No ad-shaped containers, no ticker-tape strips.",
-      "Don't make this look like a generic SaaS landing page. No purple-to-blue marketing gradient hero.",
-      "Don't wrap every section in a container. Most rows don't need one.",
-      "Don't nest cards inside cards. If a section feels like it needs a sub-card, the outer card should be a layout region instead."
+      "**Don't** use a blurred drop shadow on a plate. Hard offsets only.",
+      "**Don't** express selection as an alpha tint, a left stripe, or an underline. Gold fill or nothing.",
+      "**Don't** put `-webkit-text-stroke` on anything except `.page-title` and `.section-title`.",
+      "**Don't** introduce a fourth pillar color, or a \"warning teal\" / \"info teal.\"",
+      "**Don't** apply glassmorphism, backdrop-blur, or frosted panels. A plate is opaque.",
+      "**Don't** add bounce, elastic, spring, or scale-in animations. Interaction feedback (hover, press, background swaps) runs 80 to 120ms; a data bar may grow once on load at 240 to 360ms ease-out. The reference has snap. Known violations to fix, not to copy: `.br-grade-fill` and `.trade-middle-card` use an overshooting cubic-bezier.",
+      "**Don't** use em dashes anywhere. Use commas, colons, or periods.",
+      "**Don't** copy, trace, or approximate anything owned from the reference: the Backyard Football and BFU marks, the kid characters, the NFL shield, any team logo, or the italic \"BACKYARD FOOTBALL\" strip. The grammar is takeable, the assets are not. See [BACKYARD-INVENTORY.md](BACKYARD-INVENTORY.md).",
+      "**Don't** make this look like Sleeper. Retro game chrome is not mascot energy, and the line is that our ornament is hardware and stationery, never a cartoon character.",
+      "**Don't** make this look like ESPN or Yahoo. No ad-shaped containers, no tab-bar overload.",
+      "**Don't** make this look like a generic SaaS landing page.",
+      "**Don't** nest cards inside cards. A plate inside a plate is twice the outline and half the clarity; the outer one should be a layout region with no card chrome.",
+      "**Don't** let a restyle move layout. The features mapped in `.agents/feature-map.json` are the contract, and `verify-app.py` is how you find out."
     ]
   }
 }

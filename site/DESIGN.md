@@ -30,37 +30,37 @@ colors:
   metal: "#c6ced9"
 typography:
   page-title:
-    fontFamily: "ui-sans-serif, -apple-system, 'SF Pro Text', 'Inter', 'Segoe UI', Roboto, sans-serif"
+    fontFamily: "'Baloo 2', 'Arial Rounded MT Bold', ui-rounded, 'Segoe UI', system-ui, sans-serif"
     fontSize: "1.6rem"
-    fontWeight: 700
+    fontWeight: 800
     lineHeight: 1.2
     letterSpacing: "-0.015em"
   card-title:
-    fontFamily: "ui-sans-serif, -apple-system, 'SF Pro Text', 'Inter', 'Segoe UI', Roboto, sans-serif"
-    fontSize: "0.95rem"
-    fontWeight: 600
+    fontFamily: "'Baloo 2', 'Arial Rounded MT Bold', ui-rounded, 'Segoe UI', system-ui, sans-serif"
+    fontSize: "0.72rem"
+    fontWeight: 800
     lineHeight: 1.3
-    letterSpacing: "0.05em"
+    letterSpacing: "0.09em"
   body:
-    fontFamily: "ui-sans-serif, -apple-system, 'SF Pro Text', 'Inter', 'Segoe UI', Roboto, sans-serif"
+    fontFamily: "Nunito, ui-sans-serif, -apple-system, 'Segoe UI', Roboto, sans-serif"
     fontSize: "0.94rem"
     fontWeight: 400
     lineHeight: 1.5
     letterSpacing: "normal"
     fontFeature: "'ss01', 'cv11'"
   numeric:
-    fontFamily: "ui-sans-serif, -apple-system, 'SF Pro Text', 'Inter', 'Segoe UI', Roboto, sans-serif"
+    fontFamily: "Nunito, ui-sans-serif, -apple-system, 'Segoe UI', Roboto, sans-serif"
     fontSize: "1rem"
     fontWeight: 700
     lineHeight: 1
     letterSpacing: "-0.02em"
     fontFeature: "tabular-nums"
   micro-label:
-    fontFamily: "ui-sans-serif, -apple-system, 'SF Pro Text', 'Inter', 'Segoe UI', Roboto, sans-serif"
-    fontSize: "0.75rem"
-    fontWeight: 600
+    fontFamily: "Nunito, ui-sans-serif, -apple-system, 'Segoe UI', Roboto, sans-serif"
+    fontSize: "0.68rem"
+    fontWeight: 700
     lineHeight: 1.2
-    letterSpacing: "0.06em"
+    letterSpacing: "0.07em"
 rounded:
   sm: "6px"
   md: "10px"
@@ -166,6 +166,21 @@ stamped with a near-black outline, the ground is turf rather than a page, and se
 fill you can see across a room. The reader is still an analyst mid-week, but the console he is
 sitting at is a Dreamcast, not a terminal.
 
+### Which file wins
+
+1. **`css/styles.css`** is the source of truth for every value: colors, gradients, shadows, radii,
+   breakpoints, motion. If this file and the CSS disagree on a value, the CSS is right and this file
+   gets fixed.
+2. **This file (`DESIGN.md`)** is the standard: the rules, the named patterns, and which exceptions
+   are allowed. It wins over everything below it.
+3. **[PRODUCT.md](PRODUCT.md)** owns who the users are, what the product is for and its truthful
+   scope. It wins on purpose and audience; this file wins on visuals.
+4. **`.impeccable/design.json`** is generated from this file and the CSS for the Impeccable panel.
+   Regenerate it when either changes; never hand-edit it into disagreement.
+5. **`CLAUDE.md` and `AGENTS.md`** carry short summaries for agents. They are subordinate: where a
+   summary disagrees with this file, the summary is stale. Old names in them (Cornerstone Violet,
+   Obsidian, Flat-By-Default) describe the retired theme.
+
 The reference world is inventoried screen by screen in
 [BACKYARD-INVENTORY.md](BACKYARD-INVENTORY.md), including the IP boundary. Read that file before
 adding a component. This file is the standard; that file is the evidence behind it.
@@ -183,11 +198,13 @@ plate, a bevel and a gold selection are the vocabulary. A purple marketing gradi
 - Light and loud. Turf ground, lavender plates, navy ink, gold selection.
 - Every surface is an outlined plate. A 2px near-black edge plus a hard bevel, on everything.
 - Nothing is flat. Every fill is a vertical gradient or a texture.
-- Selection is a gold fill swap with ink text. Never a tint, never a stripe, never an underline.
+- Selection is a gold fill swap with ink text, with two named exceptions (folder tabs and
+  meaning-colored jump tabs, below). Never a tint, never a stripe, never an underline.
 - Ratings are discrete and countable. Five pips or a segmented meter, not a percentage.
 - Labels are quiet small caps, values are chunky. The label never competes with the number.
 - Chrome is physical. Folder tabs, stamped chips, an LED panel for the freshness readout.
-- Keyboard is still the front door. Cmd+K is canonical.
+- Phone and desktop are both real. Cmd+K is canonical on a keyboard; thumb reach and swipe on a
+  phone.
 
 ## 2. Colors: the Backyard palette
 
@@ -227,8 +244,8 @@ bands, **gold** as selection, and the **six semantic hues** as category and tier
 ### Semantic hues
 
 Cornerstone Teal (#0d767c), Foundational Blue (#2842b0), Upside Green (#1a7a54), Tier-S Amber
-(#966a10), Vet Orange (#9e5418), Depreciating Red (#a82a22). Every one sits between 45% and 62%
-lightness. The old theme ran these at 74% to 84% for a dark ground; at that lightness they are
+(#966a10), Vet Orange (#9e5418), Depreciating Red (#a82a22). In the CSS every one sits between 40%
+and 45% OKLCH lightness. The old theme ran these at 74% to 84% for a dark ground; at that lightness they are
 invisible on lavender, which is why the inversion had to move all six and not just the surfaces.
 
 ### Scoreboard hues
@@ -238,26 +255,42 @@ are chrome, not meaning. They appear in the freshness panel and the rating track
 
 ### Named rules
 
-**The Gold-Selection Rule.** Gold plus ink text is the selected state on every surface in the
-product. There is no second way to say "this one." A 6% tint of an accent hue was the old answer
-and it was unreadable on a phone in daylight, which is where this app is actually used.
+**The Gold-Selection Rule.** Gold plus ink text is the selected state for rows, nav, the Cmd+K
+result, the sorted column, primary and pressed buttons, and the user's own team. A 6% tint of an
+accent hue was the old answer and it was unreadable on a phone in daylight.
+
+Exactly two exceptions, and no others:
+
+- **Folder tabs select by lightening.** `.tab` and `.cchart-tab` go to a lighter lavender face with
+  navy text, matching the reference's roster and PLAYERS tabs. The tab is part of the panel below
+  it, so it takes the panel's face, not gold. (`CLAUDE.md` says the same; it agrees with this.)
+- **Jump tabs over a meaning-colored strip take that meaning's color.** On What to Look For, the
+  phone jump bar's active tab fills with its panel's plate color (green, amber or red, below) and
+  chalk text, so the tab and the plate it scrolls to read as one thing. The tab label always shows.
+
+A new selected state that is neither of these is gold.
 
 **The Three-Pillar Rule** still holds. Cornerstone Teal, Foundational Blue and Upside Green are the
 three category pillars. They appear as a triad or alone with role meaning. Never a fourth.
 
 **The No-Decorative-Hue Rule** still holds for the six semantic hues. Lavender, periwinkle, turf,
 gold, chalk and ink are chrome and may be used structurally. Teal, blue, green, amber, orange and
-red always mean a category or a tier.
+red always mean something: a category, a tier, or, on panels that sort players by whether they help
+the user, for (green), mixed (amber) and against (red). League identity colors (`--lg`) are data
+labels that always sit beside the league name; they are not part of the palette.
 
 **The Gradient Rule, inverted.** Every fill is a vertical gradient: panels, buttons, bands, gold,
 turf. They are defined once as `--grad-panel`, `--grad-btn`, `--grad-band`, `--grad-gold`,
-`--grad-band` and `--grad-turf`, and a component uses one of those rather than writing its own.
+`--grad-metal` and `--grad-turf`, and a component uses one of those rather than writing its own.
+The one standing exception is the lightened folder-tab face, which is written in two places
+(`.tab.active`, `.cchart-tab.active`) and should become a token the next time either is touched.
 A bespoke gradient in a component is the thing to avoid now, not gradients themselves.
 
 ## 3. Typography
 
 **Display font:** Baloo 2 (`--font-display`), rounded and heavy, on page titles, card bands and
-callouts. **Body font:** Nunito (`--font-body`). Weights run heavy (700 to 900). The reference
+callouts. **Body font:** Nunito (`--font-body`). Weights run heavy (700 to 800; Baloo 2 loads 600 to 800
+only, so a 900 renders as 800). The reference
 has no thin type. The frontmatter's system-sans entries above predate both and are fallbacks only.
 
 **Pixel font:** Jersey 10 (`--font-pixel`), and only for the numbers a scoreboard would show: the
@@ -270,13 +303,14 @@ or dense table cells. It has one weight, so `font-synthesis: none`; it ships tab
 (`PIXEL_ICONS` in app.js), one grid and one weight for all of them.
 
 **Character:** the personality now lives partly in the type, which is a change. Page titles are
-gold with a 3px ink stroke via `-webkit-text-stroke` and `paint-order: stroke fill`, uppercase,
-with a hard drop shadow. That is the reference's arced outlined wordmark, done with live text so it
-stays selectable, translatable and responsive.
+gold, title case, with a 2px ink stroke via `-webkit-text-stroke` and a hard drop shadow, sitting
+on a band-gradient pill plaque with a 3px ink border. That is the reference's titles-on-a-plaque,
+done with live text so it stays selectable, translatable and responsive.
 
 ### Hierarchy
 
-- **Page Title** (900, 1.6rem, uppercase, gold fill, 3px ink stroke, hard shadow): one per route.
+- **Page Title** (800, 1.6rem, 1.25rem on phones, title case, gold fill, 2px ink stroke, hard
+  shadow, on a pill plaque): one per route.
 - **Card Title** (800, 0.72rem, uppercase, 0.09em tracking, chalk on a band): every card header.
 - **Body** (400 to 600, 0.94rem, line-height 1.5): paragraph copy and table cell text.
 - **Numeric** (700 to 800, tabular-nums): scores, ranks, percentages, grades.
@@ -286,11 +320,12 @@ stays selectable, translatable and responsive.
 
 **The Tabular Numbers Rule** is unchanged. Anything quantitative renders tabular.
 
-**The Uppercase-as-Metadata Rule** has one new exception: page titles are uppercase, because the
-display lockup requires it. Everything else holds. Player names, team names and body copy are never
+**The Uppercase-as-Metadata Rule** holds. Page titles are title case, like the reference's "Main
+Menu" and "Game Summary"; all caps there is reserved for team wordmarks. Player names, team names and body copy are never
 uppercase.
 
-**The Stroke-Is-For-Titles Rule.** `-webkit-text-stroke` appears on `.page-title` and nowhere else.
+**The Stroke-Is-For-Titles Rule.** `-webkit-text-stroke` appears on `.page-title` and
+`.section-title` and nowhere else.
 Stroked body text is unreadable at small sizes and stroked labels turn a table into a poster.
 
 **The 65 to 75ch Rule** is unchanged for body copy.
@@ -303,8 +338,9 @@ ceiling. A second pixel face, or pixel type on body copy, breaks it.
 **Stamped-by-default.** Every plate carries an outline, a bevel and a hard 2px drop. Depth comes
 from the edge treatment rather than from a tonal ramp or a blurred shadow.
 
-The bevel is the load-bearing part: `inset 0 1px 0 rgba(255,255,255,.72)` on the top edge and
-`inset 0 -2px 0 rgba(0,0,0,.16)` on the bottom, so the surface reads as stamped rather than drawn.
+The bevel is the load-bearing part: `--bevel` is a 2px white inner rim, a brighter top highlight
+and `inset 0 -2px 0 rgba(0,0,0,.16)` on the bottom, so the surface reads as stamped rather than
+drawn. Use the token; the exact stops live in the CSS.
 
 ### Shadow vocabulary
 
@@ -318,8 +354,9 @@ The bevel is the load-bearing part: `inset 0 1px 0 rgba(255,255,255,.72)` on the
 ### Named rules
 
 **The No-Blur Rule.** Shadow offsets are hard, with zero blur radius. A blurred shadow is the
-single tell that gives a retro plate away as a modern card. The only blur left in the product is
-the modal scrim.
+single tell that gives a retro plate away as a modern card. The only sanctioned blur is the modal
+scrim. Known violation to fix, not to copy: the trade preview card
+(`.trade-middle.preview .trade-middle-card`) still has a 28px blurred accent glow.
 
 **The Press-Travels Rule.** A pressed button moves `translateY(2px)` and swaps to the inset bevel,
 so it looks physically depressed. This replaces the old 1px nudge and it is the only interaction
@@ -396,14 +433,66 @@ A percentage is still fine inside a table cell, where precision is the point.
 
 ### Tab Bar
 
-Folder tabs. Each tab is a plate with no bottom border sitting 3px low over a 3px ink bar; the
-active tab rises flush and paints over that bar with a negative bottom margin, so the tab and the
-panel below read as one surface.
+Folder tabs. Each tab is a `--grad-btn` plate with a 2px ink outline and no bottom border, top
+corners rounded. The active tab lightens to the panel's own lavender face (the folder exception to
+gold), which is what joins it to the panel below. The old 3px ink bar under the row was removed on
+purpose: it ran across the turf as a detached black line and forced a scrollbar on a 46px row.
+
+### UI patterns
+
+Shipped patterns that new views reuse rather than reinvent. Each one names where it lives today.
+
+**Dense phone summary.** The page sub is one short line with the count that matters ("Week 6, 5
+leagues, weighted by buy-in."). Longer explanation moves into the collapsible key or help block. On
+a phone, the first screen shows the answer, not the legend.
+
+**Compact buy-in key.** The league key (league color, name, buy-in, opponent) is a `<details>` box:
+open by default above 560px, collapsed on phones to one summary line of colored dots plus "N
+leagues, buy-ins and opponents". Weighting notes and what was left out (tanking, unknown buy-in)
+live inside it. League colors always sit next to the league name. (`.watch-key-box`)
+
+**Sideways panel strip.** At 760px and below, a set of peer panels becomes one horizontal
+scroll-snap strip: panels 88% wide so the next one peeks, each panel's rows scroll on their own
+inside a capped height, `overscroll-behavior-x: contain` so the strip never drags the page. A jump
+bar above it holds one tab per panel with its row count and a "swipe" cue; tapping scrolls the strip,
+scrolling updates the active tab. Wider screens keep the plain grid. (`.watch-panels`,
+`.watch-tabs`)
+
+**Meaning-colored panel badges.** When panels sort players by whether they help or hurt the user,
+the card-title plate takes that meaning: green for rooting for, amber for good and bad, red for hate
+watching. Chalk text, ink outline, and the panel title always present, so color is never the only
+signal. (`.watch-root`, `.watch-split`, `.watch-hate`)
+
+**Help that does not bury the data.** Full methodology goes in an expandable help block next to
+the view. What a reader needs to read the chart correctly stays visible without a tap: caveats
+("drafted rows are not blind forecasts"), what each axis measures, and a key for every reference
+line (average, replacement, trend). A line with no legend is unfinished.
+
+**Zoomable headshot scatter.** Charts with many players support pinch and Ctrl+scroll zoom and
+drag to pan, and always offer visible buttons (+, minus and Reset view, with aria-labels Zoom in,
+Zoom out and Reset zoom), so no gesture is required. Known gap: Reset's spoken name should match its
+visible text. Unzoomed, one finger scrolls the page; zoomed, it pans the chart, and a
+pinch never zooms the page. Zoomed in, dots become headshots that spread apart to avoid overlap.
+(Prospects scatter, `.chart-zoom`)
+
+**Full-bar row highlight.** A highlighted row (a future prospect, the user's own team) fills the
+whole row, not one cell or a left stripe, so it reads at arm's length on a phone. The user's own
+row is gold. A future-class prospect row gets a full-row neutral grey wash plus a dashed edge, not
+a hue, so blue keeps meaning Foundational and gold stays selection, and the legend line names it.
+(`tr.prm-future`, `.prm-future-key`)
+
+**Recent-class presets.** Class pickers offer "Last 5 + future" and "Last 10 + future": the latest
+N drafted classes anchored on the newest one, plus every future (not yet drafted) class, whose rows
+show their stand-in pick in italic. A preset is a filter, not a different model.
+
+**Vertical phone field.** At 720px and below the turf field runs up and down the screen, sized to
+at least the viewport height, with the content and midfield logo upright. Never a sideways page
+scroll; the only horizontal motion on a phone is a labeled strip like the one above.
 
 ### Freshness Panel
 
 The data-freshness footer in the sidebar is the reference's LED dot-matrix panel: an ink-bordered
-recessed plate, near-black green ground with a 4px dot mesh, LED-green monospace uppercase text,
+recessed plate, near-black green ground with a 4px dot mesh, LED-green Jersey 10 pixel text,
 and a glowing status dot. Same element and same click target as before.
 
 ### Cmd+K Palette
@@ -432,11 +521,13 @@ the highlighted result row in gold with ink text.
 - **Don't** use a blurred drop shadow on a plate. Hard offsets only.
 - **Don't** express selection as an alpha tint, a left stripe, or an underline. Gold fill or
   nothing.
-- **Don't** put `-webkit-text-stroke` on anything except `.page-title`.
+- **Don't** put `-webkit-text-stroke` on anything except `.page-title` and `.section-title`.
 - **Don't** introduce a fourth pillar color, or a "warning teal" / "info teal."
 - **Don't** apply glassmorphism, backdrop-blur, or frosted panels. A plate is opaque.
-- **Don't** add bounce, elastic, spring, or scale-in animations. Transitions are 80ms and linear;
-  the reference has snap, not easing.
+- **Don't** add bounce, elastic, spring, or scale-in animations. Interaction feedback (hover,
+  press, background swaps) runs 80 to 120ms; a data bar may grow once on load at 240 to 360ms
+  ease-out. The reference has snap. Known violations to fix, not to copy: `.br-grade-fill` and
+  `.trade-middle-card` use an overshooting cubic-bezier.
 - **Don't** use em dashes anywhere. Use commas, colons, or periods.
 - **Don't** copy, trace, or approximate anything owned from the reference: the Backyard Football
   and BFU marks, the kid characters, the NFL shield, any team logo, or the italic
@@ -448,5 +539,5 @@ the highlighted result row in gold with ink text.
 - **Don't** make this look like a generic SaaS landing page.
 - **Don't** nest cards inside cards. A plate inside a plate is twice the outline and half the
   clarity; the outer one should be a layout region with no card chrome.
-- **Don't** let a restyle move layout. The 26 features in `.agents/feature-map.json` are the
+- **Don't** let a restyle move layout. The features mapped in `.agents/feature-map.json` are the
   contract, and `verify-app.py` is how you find out.
