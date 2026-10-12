@@ -12972,7 +12972,7 @@
         h('tbody', null, ...rows.map((r, i) => h('tr', { class:`clickable${hist && !r.id ? ' prm-future' : ''}`, title: hist && !r.id ? 'Not drafted yet: college player in a future class' : null, onclick:() => openRow(r) },
           h('td', { class:'right tnum' }, String(i + 1)),
           ...cols.map(([k, , o]) => h('td', { class:`${o.right ? 'right ' : ''}${o.fit ? 'fit ' : ''}tnum` }, fmtCell(r, k)))))));
-      if (hist && rows.some(r => !r.id)) card.appendChild(h('div', { class:'prm-legend muted' }, h('span', { class:'prm-future-key', 'aria-hidden':'true' }), 'Dashed edge: not drafted yet, future class'));
+      if (hist && rows.some(r => !r.id)) card.appendChild(h('div', { class:'prm-legend muted' }, h('span', { class:'prm-future-key', 'aria-hidden':'true' }), 'Shaded row: not drafted yet, future class'));
       appendTable(card, tbl);
     }
     render();
