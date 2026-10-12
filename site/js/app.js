@@ -12740,7 +12740,7 @@
       h('div', { class:'prm-sec-title' }, h('span', null, 'NFL outcome'), h('span', null, `NFL years ${years}`)),
       h('div', { class:'prm-outcome' },
         h('span', { class:`prm-verdict ${tone}` }, hit ? 'Hit' : 'Miss'),
-        pmHeroBox('Best finish', rank ? `${me.p}${rank}` : '·', `${Number(ppg).toFixed(1)} PPR points per game`,
+        pmHeroBox(`Best finish, yrs ${years}`, rank ? `${me.p}${rank}` : '·', `${Number(ppg).toFixed(1)} PPR points per game`,
           `Best season in NFL years ${years}`),
         h('div', { class:'prm-buckets' },
           ...lad.map((t, i) => h('span', { class:`prm-bucket${i === at ? ` on ${tone}` : ''}`, title:`Best season top ${t} at ${me.p}` }, `Top ${t}`)),
@@ -12902,7 +12902,7 @@
       ['ts', 'Profile %ile', { right:true, title:'College profile percentile, 0-100: the no-draft-capital model on his college inputs (the stat columns when one position is picked), ranked among every drafted player at his position since 2008. With the pick, the only other input to the Score' }],
       ...[0, 1].map(i => [`t${i}`, one ? `${pos}${PM_CUTS[pos][i]} %` : ['Elite %', 'Starter %'][i], { right:true,
         title:`Chance of at least one ${one ? `top-${PM_CUTS[pos][i]} ${pos}` : ['top-6 QB or TE, top-12 RB or WR', 'top-12 QB or TE, top-24 RB or WR'][i]} season by PPR points per game (8+ games) in NFL years ${one ? pmWindow(pos) : '1-3 (QB, TE 1-4)'}. Draft pick plus college profile. College rows use the mock-draft pick, or profile alone if no mock` }]),
-      hist ? ['best', 'Best finish', { right:true, asc:true, title:'Best PPR points-per-game rank at his position in that window (8+ games). Blank: window still open' }] : null,
+      hist ? ['best', one ? `Best, yrs ${pmWindow(pos)}` : 'Best, early yrs', { right:true, asc:true, title:'Best PPR points-per-game rank at his position in that window (8+ games). Blank: window still open' }] : null,
       pos === 'QB' ? null : ['ba', 'Breakout age', { right:true, asc:true, title:'Age on Sept 1 of the college season he first hit the dominator line (blank: not yet). From his birth date where one was found; muted numbers are estimates from class year. Profile only, no model uses it' }],
       ...stat.map(([k, label, , t]) => [`st.${k}`, label, { right:true, title:t }]),
     ].filter(Boolean);
