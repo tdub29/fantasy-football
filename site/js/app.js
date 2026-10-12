@@ -12892,8 +12892,7 @@
       ['n', 'Player', { asc:true }],
       one ? null : ['p', 'Pos', { asc:true, fit:true }],
       cls === 'all' || cls === 'future' ? ['cls', 'Class', { right:true, asc:true, title:'Draft he went in, or the first one he is eligible for' }] : null,
-      hist || cls === 'future' || Number(cls) === next ? ['mp', 'Proj. pick', { right:true, asc:true, title:'Median overall pick across public mock drafts. Only the next class is mocked so far. UFD: next-class player in no mock (the mocks run all seven rounds), so projected undrafted. Blank: class not mocked yet' }] : null,
-      hist ? ['pk', 'NFL pick', { right:true, asc:true, title:'Overall pick he actually went at' }] : null,
+      hist || cls === 'future' || Number(cls) === next ? ['pk', 'Pick', { right:true, asc:true, title:'Overall pick he actually went at. Italic: projected, the median pick across public mock drafts (only the next class is mocked so far). UFD: next-class player in no mock (the mocks run all seven rounds), so projected undrafted. Blank: class not mocked yet' }] : null,
       ['sc', 'Score', { right:true, title:'One 0-100 prospect score from draft pick plus college profile: his average top-finish chance across both cuts, as a percentile of every drafted player at his position since 2008. College rows use the mock-draft pick, or profile alone if no mock' }],
       ['ts', 'Profile %ile', { right:true, title:'College profile percentile, 0-100: the no-draft-capital model on his college inputs (the stat columns when one position is picked), ranked among every drafted player at his position since 2008. With the pick, the only other input to the Score' }],
       ...[0, 1].map(i => [`t${i}`, one ? `${pos}${PM_CUTS[pos][i]} %` : ['Elite %', 'Starter %'][i], { right:true,
@@ -12906,7 +12905,7 @@
       : k === 'sc' ? pmScore(r)
       : k === 't0' || k === 't1' ? pmTopChance(r.p, PM_CUTS[r.p][Number(k[1])], pmFitPick(r), r.ts)
       : k === 'best' ? (r.out ? r.out[2] || 999 : null)
-      : k === 'mp' ? (r.y ? null : pmUfd(r) ? 999 : pmPick(r)) : r[k];
+      : k === 'pk' ? (r.y ? r.pk : pmUfd(r) ? 999 : pmPick(r)) : r[k];
     const fmtCell = (r, k) => {
       const v = get(r, k);
       // A real button, so the card opens from the keyboard too; the row click is the mouse shortcut.
@@ -12921,7 +12920,7 @@
       if (v != null && !r.id && (k === 't0' || k === 't1')) return h('span', { class:'muted',
         title:pmPick(r) ? `From mock pick ${pmDec(pmPick(r))}` : pmUfd(r) ? 'Projected UFD: scored as the last pick (257) plus college profile' : 'No mock pick yet: college profile alone, if drafted' }, pmPct(v));
       if (k === 't0' || k === 't1') return pmPct(v);
-      if (k === 'mp') return v == null ? '·' : v === 999 ? h('span', { class:'muted', title:'In no public mock draft: projected undrafted' }, 'UFD') : pmDec(v);
+      if (k === 'pk' && !r.y) return v == null ? '·' : v === 999 ? h('em', { class:'muted', title:'In no public mock draft: projected undrafted' }, 'UFD') : h('em', { title:'Projected: median mock-draft pick' }, pmDec(v));
       return v == null ? '·' : String(v);
     };
     const card = h('div', { class:'card' });
