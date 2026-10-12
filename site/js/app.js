@@ -13109,6 +13109,7 @@
       cls:(r) => `pos-${r.p}`, shot:(r) => r.id ? headshotUrl(r.id) : r.cid != null ? collegeShotUrl(r.cid) : null,
       scope:`Y is his best PPR points per game in NFL years 1-3 (QB, TE 1-4) minus replacement, the median best of players who finished near ${ps.map(p => `${p}${PM_CUTS[p][1]} (${pmDec(pmRepl(p))})`).join(', ')}. `
         + 'No 8-game season counts as 0 PPG. College players and classes whose window is still open are left off',
+      note:'Y: best early-career PPG above a replacement starter. No 8-game season counts as 0. Drafted classes with a closed window only.',
     });
     // A mouse click opens the player. On touch the first tap shows the readout and a second tap on the same dot opens him.
     // Armed by index, not node: a zoom redraw replaces the nodes.
@@ -16104,7 +16105,13 @@
     wrap._box = { W, H, PL, PR, PT, PB, x0:xa, x1:xb, y0:ya, y1:yb };
     return h('div', null,
       h('div', { class:'chart-title' }, `${yc.label} vs ${xc.label}`),
-      h('div', { class:'muted' }, `${o.scope}. ${pts.length} ${o.unit}${fit ? `, r = ${fit.r.toFixed(2)}` : ''}. Dashed lines are the average, the solid line the trend.`),
+      // o.note: a short caveat line up top, with the full scope folded into a details note below it.
+      o.note ? h('div', { class:'muted' }, `${o.note} ${pts.length} ${o.unit} plotted${fit ? `, r = ${fit.r.toFixed(2)}` : ''}.`)
+        : h('div', { class:'muted' }, `${o.scope}. ${pts.length} ${o.unit}${fit ? `, r = ${fit.r.toFixed(2)}` : ''}. Dashed lines are the average, the solid line the trend.`),
+      o.note ? h('details', { class:'source-note' }, h('summary', null, 'How to read this chart'),
+        h('p', null, `${o.scope}.`),
+        h('p', null, `Dashed lines are the average of the ${pts.length} plotted, the solid line the least-squares trend. `
+          + `r is their correlation on this filter, not a validation: drafted players' own results are in the fit that makes the score.`)) : null,
       wrap);
   }
 
