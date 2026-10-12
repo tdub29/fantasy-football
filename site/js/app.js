@@ -11049,7 +11049,8 @@
     main.appendChild(h('div', { class:'card' },
       h('div', { class:'tip', style:{ lineHeight:'1.8' } },
         'Synthesized from public dynasty fantasy content:',
-        h('ul', { style:{ margin:'8px 0 0 0', paddingLeft:'18px' } },
+        // grid gap spaces the short links past the 24px target-size minimum (WCAG 2.5.8).
+        h('ul', { style:{ margin:'8px 0 0 0', paddingLeft:'18px', display:'grid', gap:'8px' } },
           h('li', null, h('a', { href:'https://www.fantasypros.com/2026/04/dynasty-fantasy-football-startup-draft-strategy-expert-tips-to-build-a-long-term-contender-2026/', target:'_blank', rel:'noopener' }, 'FantasyPros 2026 Dynasty Startup Strategy')),
           h('li', null, h('a', { href:'https://www.fantasypros.com/2026/05/fantasy-football-rankings-dynasty-trade-value-chart-may-2026-update/', target:'_blank', rel:'noopener' }, 'FantasyPros Dynasty Trade Value Chart, May 2026')),
           h('li', null, h('a', { href:'https://apexfantasyleagues.com/peak-age-nfl-running-back/', target:'_blank', rel:'noopener' }, 'Apex Fantasy: Peak Age for NFL RB')),
@@ -12906,13 +12907,19 @@
       sub: 'Prospect score 0-100 from draft pick plus college profile, with his chance of a top fantasy season early in his NFL career.',
     }));
     main.appendChild(h('details', { class:'source-note' }, h('summary', null, 'How the score works and what it assumes'),
-      h('p', null, 'Score: his average chance across two finishing lines, as a percentile of every drafted player at his position since 2008. '
-        + 'Lines: at least one top-6 or top-12 season at QB and TE, top-12 or top-24 at RB and WR, by PPR points per game (8+ games) in NFL years 1-3 (QB, TE 1-4). '
-        + 'One fit on every drafted class since 2008, so drafted rows include their own result and are not blind forecasts.'),
-      h('p', null, 'College rows have no real pick, so each uses a stand-in. Next class: the mock-draft consensus pick. '
-        + 'Next class but in no mock: shown as UFD and scored as the last pick. That is an assumption, not a finding; missing from a mock does not mean undrafted, '
-        + 'so those scores lean low. Later classes, not mocked yet: college profile alone.'),
-      h('p', null, 'Inputs are offense only, so two-way players carry a note on their card. QBs have no breakout age.')));
+      h('ul', { class:'source-note-list' }, ...[
+        'Score: his average chance across two finishing lines, as a percentile of every drafted player at his position since 2008.',
+        'Lines: at least one top-6 or top-12 season at QB and TE, top-12 or top-24 at RB and WR, by PPR points per game (8+ games) in NFL years 1-3 (QB and TE: 1-4).',
+        'One fit on every drafted class since 2008, so drafted rows include their own result and are not blind forecasts.',
+        'Careers ended off the field (Henry Ruggs) are left out of the fit and the list.',
+      ].map(s => h('li', null, s))),
+      h('p', null, h('strong', null, 'College rows'), ' have no real pick, so each uses a stand-in:'),
+      h('ul', { class:'source-note-list' }, ...[
+        'Next class: the mock-draft consensus pick.',
+        'Next class but in no mock: shown as UFD and scored as the last pick. An assumption, not a finding: missing from a mock does not mean undrafted, so those scores lean low.',
+        'Later classes, not mocked yet: college profile alone.',
+        'Inputs are offense only, so two-way players carry a note on their card. QBs have no breakout age.',
+      ].map(s => h('li', null, s)))));
 
     const filterBar = h('div', { class:'filters prm-filters' });
     const search = h('input', { type:'search', placeholder:'Search prospects', value:prospectSort.q, 'aria-label':'Search prospects',
@@ -13046,6 +13053,10 @@
       .map(r => ({ ...r, _key:r.id, _x:pmScore(r), _y:r.out[1] - pmRepl(r.p) }))
       .filter(r => Number.isFinite(r._x) && Number.isFinite(r._y));
     if (pts.length < 3) return h('div', { class:'empty' }, 'Nothing to plot here: college classes have no NFL results yet. Pick All classes to plot the drafted ones.');
+    // Future-class rows have a score but no NFL result, so they get no height: a rail under the
+    // plot on the same X scale, hollow chalk rings. Inventing a Y (the trend value, say) would
+    // draw a forecast in the same ink as a result.
+    const fut = rows.filter(r => !r.id && Number.isFinite(pmScore(r)));
     const ps = Object.keys(PM_CUTS).filter(p => pts.some(r => r.p === p));
     const W = Math.max(300, Math.min(960, ($('#main').clientWidth || 360) - 44));
     const stage = h('div', { class:'chart-zoom' });
@@ -13064,6 +13075,7 @@
         box = wrap._box; svg = wrap.querySelector('svg');
         if (!base) base = { x0:box.x0, x1:box.x1, y0:box.y0, y1:box.y1 };
         if (!one) wrap.before(h('div', { class:'prm-legend' }, ...ps.map(p => h('span', { class:`pos-chip ${p}` }, p))));
+        if (fut.length) wrap.after(futureRail());
       }
       reset.disabled = !view;
       // Unzoomed, one finger scrolls the page; zoomed, it pans the chart. A pinch never zooms the page here.
@@ -13125,13 +13137,33 @@
     for (const ev of ['pointerup', 'pointercancel']) stage.addEventListener(ev, (e) => { down.delete(e.pointerId); if (down.size < 2) pinch = 0; });
     // A drag or pinch is not a click on whatever dot it ended over.
     stage.addEventListener('click', (e) => { if (moved >= 6) { e.stopPropagation(); e.preventDefault(); } }, true);
+    function futureRail() {
+      const d = view || base, iw = box.W - box.PL - box.PR, R = 5.5, STEP = 2 * R + 2;
+      const X = (v) => box.PL + (v - d.x0) / (d.x1 - d.x0) * iw;
+      // Dot stack: each ring takes the lowest row where it clears the last ring in that row.
+      const ends = [], dots = fut.map((r, i) => ({ r, i, x:X(pmScore(r)) })).filter(o => o.x >= box.PL - 1 && o.x <= box.W - box.PR + 1)
+        .sort((a, b) => a.x - b.x).map(o => { let k = ends.findIndex(e => o.x - e >= STEP); if (k < 0) k = ends.push(-1e9) - 1; ends[k] = o.x; return { ...o, k }; });
+      const H = Math.max(1, ends.length) * STEP + 8, base0 = H - 4 - R;
+      let s = `<svg class="chart-svg prm-rail-svg" viewBox="0 0 ${box.W} ${H}" role="img" aria-label="${chartEsc(`${dots.length} future-class prospects by prospect score`)}">`
+        + `<line class="grid" x1="${box.PL}" x2="${box.W - box.PR}" y1="${H - 1}" y2="${H - 1}"/>`;
+      for (const { r, i, x, k } of dots)
+        s += `<circle class="pt prm-rail-dot pos-${r.p}" data-f="${i}" cx="${x.toFixed(1)}" cy="${(base0 - k * STEP).toFixed(1)}" r="${R}"><title>${chartEsc(`${r.n} (${r.p}, ${r.y} class), score ${Math.round(pmScore(r))}. Not drafted yet`)}</title></circle>`;
+      const el = h('div', { class:'prm-rail' },
+        h('div', { class:'prm-legend' }, h('span', { class:'prm-rail-key', 'aria-hidden':'true' }),
+          `Future class, ${dots.length} not drafted yet: stacked by score only, since no NFL result gives them a height.`),
+        h('div', { html:s + '</svg>' }));
+      el.addEventListener('click', (e) => { const m = e.target.closest && e.target.closest('[data-f]'); if (m) open(fut[Number(m.dataset.f)]); });
+      return el;
+    }
     const plot = () => chartScatter(pts, { key:'_x', label:'Prospect score' }, { key:'_y', label:'PPG over replacement', fmt:'dec1' }, {
       W, domain:view, picks:new Set(), unit:'drafted players',
       label:(r, short) => short ? chartShort(r.n) : `${r.n} (${r.p}, ${r.y} pick ${r.pk})`,
       sample:(r) => `${r.out[2] ? `Best ${pmDec(r.out[1])} PPG, ${r.p}${r.out[2]}` : 'No 8-game season'}; replacement ${pmDec(pmRepl(r.p))}`,
       cls:(r) => `pos-${r.p}`, shot:(r) => r.id ? headshotUrl(r.id) : r.cid != null ? collegeShotUrl(r.cid) : null,
-      scope:`Y is his best PPR points per game in NFL years 1-3 (QB, TE 1-4) minus replacement, the median best of players who finished near ${ps.map(p => `${p}${PM_CUTS[p][1]} (${pmDec(pmRepl(p))})`).join(', ')}. `
-        + 'No 8-game season counts as 0 PPG. College players and classes whose window is still open are left off',
+      how:['Y: his best PPR points per game in NFL years 1-3 (QB and TE: 1-4), minus replacement.',
+        `Replacement: the median best of players who finished near ${ps.map(p => `${p}${PM_CUTS[p][1]} (${pmDec(pmRepl(p))})`).join(', ')}.`,
+        'No 8-game season counts as 0 PPG.',
+        'Left off: college players and classes whose window is still open. Future classes sit on the rail under the chart.'],
       note:'Y: best early-career PPG above a replacement starter. No 8-game season counts as 0. Drafted classes with a closed window only.',
       yRef:{ v:0, label:'replacement', key:'Dotted: replacement level, 0 on Y',
         title:'Dotted line at 0: replacement level, the median best PPG of players who finished near the position cutoff. Above it beat a replacement starter' },
@@ -14588,7 +14620,8 @@
   function defRankColor(rank, n) {
     if (rank == null) return 'var(--fg-3)';
     const f = rank / n;   // low rank = allows fewest = tough = red; high = easy = green
-    return f <= 0.25 ? 'var(--red)' : f <= 0.5 ? 'var(--amber)' : f <= 0.75 ? 'var(--accent)' : 'var(--green)';
+    // Amber and teal were 4.1:1 on the lavender row stripe; the ink-darkened pair clears 4.5.
+    return f <= 0.25 ? 'var(--red)' : f <= 0.5 ? 'color-mix(in oklch, var(--amber), black 18%)' : f <= 0.75 ? 'var(--accent-hot)' : 'var(--green)';
   }
   // SOS week windows. currentWeek is Sleeper's state week (being played or next
   // up), so Remaining keeps it and everything before it counts as completed.
@@ -16146,10 +16179,13 @@
       ].filter(Boolean).map(([c, txt]) => h('span', null,
         h('span', { 'aria-hidden':'true', html:`<svg class="chart-svg chart-key-sw" viewBox="0 0 22 10"><line class="${c}" x1="0" x2="22" y1="5" y2="5"/></svg>` }), txt))) : null,
       o.note ? h('details', { class:'source-note' }, h('summary', null, 'How to read this chart'),
-        h('p', null, `${o.scope}.`),
-        h('p', null, `Dashed lines are plain averages of the ${pts.length} plotted on this filter: the vertical one is the average ${xc.label}, the horizontal one the average ${yc.label}. `
-          + `${o.yRef ? `${o.yRef.title}. ` : ''}The solid line is the least-squares trend. `
-          + `r is their correlation on this filter, not a validation: drafted players' own results are in the fit that makes the score.`)) : null,
+        // One fact per bullet: the old two paragraphs ran six claims together.
+        h('ul', { class:'source-note-list' }, ...[...o.how,
+          `Dashed lines: plain averages of the ${pts.length} plotted. Vertical is the average ${xc.label}, horizontal the average ${yc.label}.`,
+          o.yRef ? `${o.yRef.title}.` : null,
+          'Solid line: the least-squares trend.',
+          `r: their correlation on this filter. Not a validation, since drafted players' own results are in the fit that makes the score.`,
+        ].filter(Boolean).map(s => h('li', null, s)))) : null,
       wrap);
   }
 
@@ -16895,13 +16931,15 @@
         h('td', null, teamChip(rd.team)),
         h('td', { class: 'right tnum', style: { fontWeight: 700 }, title: avgTitle(rd) }, rd.avg != null ? fmt.decimal(rd.avg, 1) : '·'),
         ...WEEKS.map(w => {
-          const g = rd.wk[w], out = inWin.has(w) ? null : .4;
+          // Out-of-window weeks used opacity .4, which put every label under 2:1. They now keep
+          // full-contrast text in neutral ink on a grey wash, so faded still reads as faded.
+          const g = rd.wk[w], out = !inWin.has(w);
           if (rd.noSchedule) return h('td', { class: 'center muted', title: 'Schedule unavailable' }, '·');
-          if (!g) return h('td', { class: 'center muted', style: { fontSize: '9px', opacity: out } }, (G.bye_weeks?.[rd.team] || []).includes(w) ? 'BYE' : 'n/a');
-          return h('td', { class: 'center', title: `Wk${w} ${g.home ? 'vs ' : '@ '}${g.opp}: ` + (g.rank != null ? `D vs ${pos} #${g.rank}/${n} (${g.fpa ?? '?'} PPR/g allowed)` : `no defense rank vs ${pos}, unavailable`), style: { color: defRankColor(g.rank, n), lineHeight: 1.05, opacity: out } },
+          if (!g) return h('td', { class: `center muted sos-cell-note${out ? ' sos-out' : ''}` }, (G.bye_weeks?.[rd.team] || []).includes(w) ? 'BYE' : 'n/a');
+          return h('td', { title: `Wk${w} ${g.home ? 'vs ' : '@ '}${g.opp}: ` + (g.rank != null ? `D vs ${pos} #${g.rank}/${n} (${g.fpa ?? '?'} PPR/g allowed)` : `no defense rank vs ${pos}, unavailable`), class: `center${out ? ' sos-out' : ''}`, style: { color: out ? 'var(--fg-2)' : defRankColor(g.rank, n), lineHeight: 1.05 } },
             h('a', { class: 'sos-game', href: `#game/${gameIdFor(season, w, rd.team, g.opp, g.home)}` },
               h('div', { style: { fontWeight: 700 } }, teamChip(g.opp, true)),
-              h('div', { style: { fontSize: '9px', opacity: .85 } }, g.rank != null ? '#' + g.rank : 'n/a')));
+              h('div', { class: 'sos-cell-note' }, g.rank != null ? '#' + g.rank : 'n/a')));
         }))
       ))
     );

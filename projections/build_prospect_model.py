@@ -90,6 +90,9 @@ LOW_VOLUME_PG = 16.0
 # Draft classes from here on are the holdout: scored walk-forward only, never used to choose a
 # feature, C, knot or floor. Everything tuned is tuned on the classes before it.
 HOLD = 2020
+# Careers ended for reasons that say nothing about football talent. Each one is a miss the model
+# never earned, so it leaves the fit and the page. Ruggs: released after the November 2021 fatal crash.
+NON_FOOTBALL_EXITS = {"00-0036357": "Henry Ruggs III"}
 # The model's YPTPA never divides by fewer than this many team passes a game: the FBS 25th
 # percentile, 2004-2025. Above the floor, shares still ran too hot: at 16 a game the guard above
 # scored 100 (WR), 95 (RB), 99 (TE). The 5th (19.8) and 10th (22.7) percentiles left WR at 97 and
@@ -792,7 +795,8 @@ def prepare(say=print):
     stats = pd.concat([read_src("nfl_player_season", f"stats_player_reg_{y}.parquet")
                        for y in range(FIRST_CLASS, LAST_NFL + 1)], ignore_index=True)
 
-    d = draft[(draft.season >= FIRST_CLASS) & draft.position.isin(POS) & draft.pick.notna()].copy()
+    d = draft[(draft.season >= FIRST_CLASS) & draft.position.isin(POS) & draft.pick.notna()
+              & ~draft.gsis_id.isin(NON_FOOTBALL_EXITS)].copy()
     d = d.merge(players[["gsis_id", "espn_id", "birth_date"]], on="gsis_id", how="left")
     d.index = range(len(d))
     lm = {}

@@ -61,7 +61,7 @@ html { font-size: 15px; background: var(--bg-0); color-scheme: light; }
   --ink: oklch(18% 0.03 275);           /* outline + text on gold */
   --gold: oklch(86% 0.17 90);           /* SELECTION. Top of the gold gradient */
   --gold-deep: oklch(74% 0.165 82);     /* bottom of the gold gradient */
-  --band: oklch(58% 0.115 285);         /* periwinkle header band, white text */
+  --band: oklch(56% 0.115 285);         /* periwinkle header band, white text; 56% so chalk clears 4.5:1 at the top stop */
   --band-deep: oklch(46% 0.115 283);
   --turf: oklch(48% 0.13 145);
   --turf-deep: oklch(38% 0.12 145);
@@ -234,7 +234,7 @@ input[type=checkbox] { accent-color: var(--accent); }
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--fg-3);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   padding: 8px 10px 4px;
 }
 .nav a {
@@ -1016,7 +1016,7 @@ textarea { resize: vertical; min-height: 80px; }
 }
 
 /* Tooltip-ish */
-.tip { color: var(--fg-3); font-size: 0.78rem; }
+.tip { color: var(--fg-3); font-size: 0.8rem; }
 
 /* Tag list */
 .tag-list { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -6509,3 +6509,29 @@ table.data.prm-table .name-cell > * { display: block; max-width: 100%; overflow:
 .hs-cell > .name-cell { min-width: 0; }
 /* Inline (non-flex) spots: legend, compare header, map tile title. */
 .chart-legend .headshot, .stats-compare thead .headshot, .loc-tile-name .headshot, .stats-lab-chip .headshot { vertical-align: middle; margin-right: 4px; }
+
+/* Help notes (.source-note, a <p> or <details>) had no rule, so their dark body text landed
+   straight on the turf at 1.7:1. Every caller now gets the same plate as a card. */
+.source-note {
+  margin: 0 0 14px; padding: 10px 14px; max-width: 72ch;
+  background: var(--grad-panel); color: var(--fg-1);
+  border: var(--plate-edge); border-radius: var(--radius); box-shadow: var(--bevel), var(--shadow-1);
+  font-size: 0.85rem; line-height: 1.5;
+}
+.source-note > summary { cursor: pointer; font-weight: 700; color: var(--fg-0); min-height: 24px; }
+.source-note > p { margin: 8px 0 0; }
+/* SOS grid: rank and BYE labels were 9px at 85% opacity, under 4.5:1 and below a readable size. */
+.sos-cell-note { font-size: 0.75rem; font-weight: 600; }
+td.sos-out { background-color: color-mix(in srgb, var(--fg-3) 14%, transparent); }
+td.sos-out .team-chip { filter: grayscale(1); }
+/* A .tip that is a card's whole body is reading copy, not a caption: 11.7px was under the body floor. */
+.card > .tip { font-size: 0.875rem; }
+/* Impeccable floor: functional text (chips, badges, tags) never under 11px. These ran 10.5px,
+   owner chips 9px and the Future tag 9.3px. 0.75rem = 11.25px. */
+.pos-chip, .team-chip, .badge, .owner-chips .badge, .prm-future-tag { font-size: 0.75rem; }
+/* Prospects scatter: the future-class rail under the plot. Hollow chalk rings, so a forecast never
+   reads as a result. */
+.prm-rail { margin-top: 6px; }
+.chart-svg .pt.prm-rail-dot { fill: var(--chalk); stroke: var(--ink); stroke-width: 2; }
+.prm-rail-key { display: inline-block; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--ink); background: var(--chalk); }
+.source-note-list { margin: 8px 0 0; padding-left: 18px; display: grid; gap: 4px; }

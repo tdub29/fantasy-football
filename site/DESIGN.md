@@ -5,7 +5,7 @@ colors:
   gold: "#ffd42a"
   gold-deep: "#e0a915"
   ink: "#12131f"
-  band: "#7b7bc4"
+  band: "#6e69b5"
   band-deep: "#4f4f96"
   panel: "#e9e9fa"
   panel-alt: "#d5d5f0"
@@ -230,7 +230,7 @@ bands, **gold** as selection, and the **six semantic hues** as category and tier
 - **Panel** (#e9e9fa) is the card and plate face. Light enough that navy ink clears AA on it.
 - **Panel Alt** (#d5d5f0) is the even table row and the default button face.
 - **Periwinkle** (#b9b9e4) is chip backgrounds.
-- **Band** (#7b7bc4, deep #4f4f96) is the header band across a card or a table head, always with
+- **Band** (#6e69b5, deep #4f4f96) is the header band across a card or a table head, always with
   chalk text on it. Every panel in the reference announces itself with one.
 - **Chalk** (#ffffff) is gridlines, yardlines, and text on a band.
 
