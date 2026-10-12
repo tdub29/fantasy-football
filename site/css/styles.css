@@ -3425,7 +3425,37 @@ tr.dragging { opacity: 0.55; background: var(--bg-3) !important; }
 }
 @media (max-width: 520px) {
   .watch-row { grid-template-columns: 1.4rem minmax(0, 1fr) 2.4rem 3.2rem; column-gap: 6px; }
-  .watch-key-opp { display: none; }
+}
+
+/* League key folds behind one summary line; open by default above phone width. */
+.watch-key-box { margin-bottom: 12px; }
+.watch-key-sum { display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--chalk); font-weight: 700; font-size: 0.9rem; text-shadow: 0 1px 0 rgba(0,0,0,.45); }
+.watch-key-dots { display: inline-flex; gap: 3px; }
+.watch-key-box[open] > .watch-key-sum { margin-bottom: 8px; }
+.watch-key-box .watch-key { margin-bottom: 6px; }
+.watch-key-note { margin: 0 0 4px; font-size: 0.85rem; }
+.watch-key-box .watch-key-note { color: var(--chalk); opacity: .9; }
+
+/* Panel plates take their meaning's color: for you green, split amber, against you red. */
+.watch-root > .card-title, .watch-tab.watch-root.on { background: var(--green); }
+.watch-split > .card-title, .watch-tab.watch-split.on { background: var(--amber); }
+.watch-hate > .card-title, .watch-tab.watch-hate.on { background: var(--red); }
+
+.watch-tabs { display: none; }
+@media (max-width: 760px) {
+  .watch-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-bottom: 8px; }
+  .watch-tab { padding: 5px 4px; font-size: 0.8rem; letter-spacing: 0; white-space: nowrap; border-radius: 999px; background: var(--bg-1); color: var(--fg-1); box-shadow: none; }
+  .watch-tab.on { color: var(--chalk); text-shadow: 0 1px 0 rgba(0,0,0,.45); }
+  .watch-tab .watch-panel-count { margin-left: 4px; padding: 0 5px; font-size: 0.75rem; }
+  .watch-swipe { grid-column: 1 / -1; justify-self: end; margin-top: -2px; color: var(--chalk); font-size: 0.8rem; font-weight: 700; }
+  /* Sideways strip: 88% wide panels so the next one peeks, snapped, each scrolling its own rows. */
+  .watch-panels {
+    grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 88%;
+    overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain;
+    align-items: start; gap: 10px; padding-bottom: 4px; scrollbar-width: none;
+  }
+  .watch-panel { scroll-snap-align: start; max-height: 74svh; }
+  .watch-panel .watch-rows { overflow-y: auto; }
 }
 
 /* ==========================================================================

@@ -17,7 +17,8 @@
       if (v == null || v === false) continue;
       if (k === 'class' || k === 'className') el.className = v;
       else if (k === 'dataset') Object.assign(el.dataset, v);
-      else if (k === 'style' && typeof v === 'object') Object.assign(el.style, v);
+      // Custom properties (--lg) need setProperty; Object.assign drops them silently.
+      else if (k === 'style' && typeof v === 'object') for (const [sk, sv] of Object.entries(v)) sk.startsWith('--') ? el.style.setProperty(sk, sv) : (el.style[sk] = sv);
       else if (k.startsWith('on') && typeof v === 'function') el.addEventListener(k.slice(2).toLowerCase(), v);
       else if (k === 'html') el.innerHTML = v;
       else el.setAttribute(k, v);
@@ -10573,7 +10574,7 @@
       eyebrow: 'OVERVIEW',
       title: 'What to Look For',
       sub: live.length
-        ? `Week ${board.week}. Every starter across ${live.length} leagues, weighted by what the league costs to play in.`
+        ? `Week ${board.week}, ${live.length} leagues, weighted by buy-in.`
         : 'No matchups posted yet. Run refresh.ps1 once the week opens.',
       badge: live.length ? `$${fmt.num(Math.round(board.atStake))} live` : null,
     }));
@@ -10583,17 +10584,23 @@
       return;
     }
 
-    // League key: which color is which league, what it costs, who I drew.
-    main.appendChild(h('div', { class:'watch-key' },
+    // League key: which color is which league, what it costs, who I drew. Collapsed to one
+    // line on phones, where five pills plus the sentence took half the first screen.
+    main.appendChild(h('details', { class:'watch-key-box', open: matchMedia('(min-width: 561px)').matches },
+      h('summary', { class:'watch-key-sum' },
+        h('span', { class:'watch-key-dots' }, ...live.map(l => h('span', { class:'watch-key-dot', style:{ '--lg':l.color } }))),
+        `${live.length} leagues, buy-ins and opponents`),
+      h('div', { class:'watch-key' },
       ...live.map(l => h('a', { class:'watch-key-item', href:`#league/${l.id}`, style:{ '--lg':l.color } },
         h('span', { class:'watch-key-dot' }),
         h('span', { class:'watch-key-name' }, l.name),
         h('span', { class:'watch-key-buyin tnum' }, l.tank ? `$${l.fullBuyIn}, ${l.tank}% tank` : `$${l.buyIn}`),
         h('span', { class:'watch-key-opp' }, `vs ${l.oppName}`),
-      ))
+      ))),
+      h('p', { class:'muted watch-key-note' }, 'Every starter in these leagues, weighted by what the league costs to play in.'),
+      board.tanking.length ? h('p', { class:'muted watch-key-note' }, `Left out, tanking: ${board.tanking.join(', ')}.`) : null,
+      board.unknown.length ? h('p', { class:'muted watch-key-note' }, `Left out, buy-in unknown: ${board.unknown.join(', ')}.`) : null,
     ));
-    if (board.tanking.length) main.appendChild(h('p', { class:'muted' }, `Left out, tanking: ${board.tanking.join(', ')}.`));
-    if (board.unknown.length) main.appendChild(h('p', { class:'muted' }, `Left out, buy-in unknown: ${board.unknown.join(', ')}.`));
 
     // One shared scale across all three panels, so a bar means the same number
     // of dollars wherever it appears. Per-panel scaling would make the top row
@@ -10645,7 +10652,7 @@
       );
     };
 
-    const panel = (title, sub, rows, scaleBy, emptyMsg) => h('div', { class:'card watch-panel' },
+    const panel = (kind, title, sub, rows, scaleBy, emptyMsg) => h('div', { class:`card watch-panel watch-${kind}` },
       h('div', { class:'card-title' }, title,
         h('span', { class:'watch-panel-count tnum' }, String(rows.length))),
       h('p', { class:'watch-panel-sub' }, sub),
@@ -10668,14 +10675,22 @@
         : h('div', { class:'tip', style:{ padding:'8px 2px' } }, emptyMsg),
     );
 
-    main.appendChild(h('div', { class:'watch-panels' },
-      panel('Rooting for', 'Only on my teams.',
-        board.rooting, 'index', 'Nobody.'),
-      panel('Good and bad', 'On my team in one, opponent in another.',
-        board.split, 'gross', 'No overlap this week.'),
-      panel('Hate watching', 'Only on opponents.',
-        board.hating, 'index', 'Nobody.'),
-    ));
+    // Phones get the panels as a sideways strip with a jump bar; wider screens keep the grid.
+    const defs = [
+      ['root', 'Rooting for', 'Only on my teams.', board.rooting, 'index', 'Nobody.'],
+      ['split', 'Good and bad', 'On my team in one, opponent in another.', board.split, 'gross', 'No overlap this week.'],
+      ['hate', 'Hate watching', 'Only on opponents.', board.hating, 'index', 'Nobody.'],
+    ];
+    const panels = defs.map(d => panel(...d));
+    const strip = h('div', { class:'watch-panels' }, ...panels);
+    const tabs = defs.map(([kind, title, , rows], i) => h('button', { type:'button', class:`watch-tab watch-${kind}${i ? '' : ' on'}`,
+      onclick: () => strip.scrollTo({ left: panels[i].offsetLeft - panels[0].offsetLeft, behavior:'smooth' }) },
+      title, h('span', { class:'watch-panel-count tnum' }, String(rows.length))));
+    strip.addEventListener('scroll', () => {
+      const i = Math.round(strip.scrollLeft / Math.max(1, panels[1].offsetLeft - panels[0].offsetLeft));
+      tabs.forEach((t, j) => t.classList.toggle('on', j === i));
+    }, { passive:true });
+    main.append(h('div', { class:'watch-tabs' }, ...tabs, h('span', { class:'watch-swipe', 'aria-hidden':'true' }, 'swipe ›')), strip);
 
     if (board.unpriced.length) {
       const names = board.unpriced
