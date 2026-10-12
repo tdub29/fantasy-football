@@ -3593,6 +3593,11 @@ table.data tbody tr.you:hover {
   background: linear-gradient(180deg, oklch(90% 0.17 92), var(--gold));
 }
 table.data tbody tr.you td { color: var(--ink); font-weight: 700; }
+/* Prospects, All classes: future-class rows tinted blue; gold stays the selection colour. */
+table.data tbody tr.prm-future,
+table.data tbody tr.prm-future:nth-child(even) { background: rgba(var(--blue-rgb), .14); }
+table.data tbody tr.prm-future:hover { background: rgba(var(--blue-rgb), .22); }
+table.data tbody tr.prm-future td:first-child { box-shadow: inset 4px 0 0 var(--blue); }
 
 /* --- Law 3 everywhere else --------------------------------------------- */
 .badge.you,

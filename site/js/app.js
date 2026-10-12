@@ -12900,7 +12900,7 @@
       // snug: the table hugs its columns, so fit-num cannot hand every spare pixel to the name.
       const tbl = h('table', { class:'data prm-table fit-num snug' },
         h('thead', null, h('tr', null, h('th', { class:'right' }, '#'), ...cols.map(sortHdr))),
-        h('tbody', null, ...rows.map((r, i) => h('tr', { class:'clickable', onclick:() => openRow(r) },
+        h('tbody', null, ...rows.map((r, i) => h('tr', { class:`clickable${hist && !r.id ? ' prm-future' : ''}`, onclick:() => openRow(r) },
           h('td', { class:'right tnum' }, String(i + 1)),
           ...cols.map(([k, , o]) => h('td', { class:`${o.right ? 'right ' : ''}${o.fit ? 'fit ' : ''}tnum` }, fmtCell(r, k)))))));
       appendTable(card, tbl);
