@@ -12637,7 +12637,9 @@
         return h('div', { class:'prm-grade', title: g ? `${t}. Grade ${g.g}: ${pmOrd(g.pct)} percentile against ${g.n} ${g.src}`
           + `${PM_LOWER[k] ? ', younger ranks higher' : ''}. Percentile bands: ${PM_GRADE.map(([cut, l]) => `${l} ${cut}+`).join(', ')}` : t },
           h('span', { class:'prm-grade-label' }, label),
-          h('span', { class:'prm-grade-bar', 'aria-hidden':'true' }, g ? h('i', { style:{ width:`${Math.max(3, g.pct)}%`, background:c } }) : null),
+          // Savant-style: the fill ends in a bubble carrying his percentile.
+          h('span', { class:'prm-grade-bar', 'aria-hidden':'true' }, g ? [h('i', { style:{ width:`${Math.max(3, g.pct)}%`, background:c } }),
+            h('b', { class:'tnum', style:{ left:`clamp(11px, ${g.pct}%, calc(100% - 11px))`, background:c } }, String(Math.round(g.pct)))] : null),
           h('span', { class:'prm-grade-val tnum' }, shown),
           h('span', { class:'prm-grade-letter', style: c ? { color:c } : null }, g ? g.g : '·'));
       })), pmRadar(axes)));
