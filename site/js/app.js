@@ -12742,6 +12742,9 @@
         h('span', { class:`prm-verdict ${tone}` }, hit ? 'Hit' : 'Miss'),
         pmHeroBox(`Best finish, yrs ${years}`, rank ? `${me.p}${rank}` : '·', `${Number(ppg).toFixed(1)} PPR points per game`,
           `Best season in NFL years ${years}`),
+        // Late bloomers: his career peak, shown only when it beats the scored window. Display only, not a label.
+        me.cb && (!rank || me.cb[1] < rank) ? pmHeroBox('Career best', `${me.p}${me.cb[1]}`, `${pmDec(me.cb[0])} PPR points per game`,
+          'Best season of his NFL career so far, any year. Not part of the hit label') : null,
         h('div', { class:'prm-buckets' },
           ...lad.map((t, i) => h('span', { class:`prm-bucket${i === at ? ` on ${tone}` : ''}`, title:`Best season top ${t} at ${me.p}` }, `Top ${t}`)),
           lad.length ? h('span', { class:`prm-bucket${at < 0 ? ` on ${tone}` : ''}`, title:`Best season outside the top ${lad[lad.length - 1]}` },
@@ -12903,6 +12906,7 @@
       ...[0, 1].map(i => [`t${i}`, one ? `${pos}${PM_CUTS[pos][i]} %` : ['Elite %', 'Starter %'][i], { right:true,
         title:`Chance of at least one ${one ? `top-${PM_CUTS[pos][i]} ${pos}` : ['top-6 QB or TE, top-12 RB or WR', 'top-12 QB or TE, top-24 RB or WR'][i]} season by PPR points per game (8+ games) in NFL years ${one ? pmWindow(pos) : '1-3 (QB, TE 1-4)'}. Draft pick plus college profile. College rows use the mock-draft pick, or profile alone if no mock` }]),
       hist ? ['best', one ? `Best, yrs ${pmWindow(pos)}` : 'Best, early yrs', { right:true, asc:true, title:'Best PPR points-per-game rank at his position in that window (8+ games). Blank: window still open' }] : null,
+      hist ? ['cb', 'Career best', { right:true, asc:true, title:'Best PPR points-per-game rank at his position in any NFL season so far (8+ games), late bloomers included. Display only, not part of the hit label' }] : null,
       pos === 'QB' ? null : ['ba', 'Breakout age', { right:true, asc:true, title:'Age on Sept 1 of the college season he first hit the dominator line (blank: not yet). From his birth date where one was found; muted numbers are estimates from class year. Profile only, no model uses it' }],
       ...stat.map(([k, label, , t]) => [`st.${k}`, label, { right:true, title:t }]),
     ].filter(Boolean);
@@ -12910,6 +12914,7 @@
       : k === 'sc' ? pmScore(r)
       : k === 't0' || k === 't1' ? pmTopChance(r.p, PM_CUTS[r.p][Number(k[1])], pmFitPick(r), r.ts)
       : k === 'best' ? (r.out ? r.out[2] || 999 : null)
+      : k === 'cb' ? (r.cb ? r.cb[1] : null)
       : k === 'pk' ? (r.y ? r.pk : pmUfd(r) ? 999 : pmPick(r)) : r[k];
     const fmtCell = (r, k) => {
       const v = get(r, k);
@@ -12921,6 +12926,7 @@
         r.sch ? h('span', { class:'muted prm-school' }, r.sch) : null));
       if (k.startsWith('st.')) return stat.find(s => `st.${s[0]}` === k)[2](v);
       if (k === 'ba') return pmAge(r, v);
+      if (k === 'cb') return v == null ? '·' : h('span', { title:`${pmDec(r.cb[0])} PPR points per game` }, `${r.p}${v}`);
       if (k === 'best') return v == null ? '·' : v === 999 ? h('span', { class:'muted' }, 'none') : `${r.p}${v}`;
       if (v != null && !r.id && (k === 't0' || k === 't1')) return h('span', { class:'muted',
         title:pmPick(r) ? `From mock pick ${pmDec(pmPick(r))}` : pmUfd(r) ? 'Projected UFD: scored as the last pick (257) plus college profile' : 'No mock pick yet: college profile alone, if drafted' }, pmPct(v));

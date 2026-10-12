@@ -558,14 +558,17 @@ def attach_outcomes(t: pd.DataFrame, seasons: pd.DataFrame) -> pd.DataFrame:
     Each of his seasons is ranked against that season's players listed at his DRAFT position,
     whatever he was listed at himself (a drafted TE playing RB still counts as a TE)."""
     m = t[["sid", "gsis_id", "pos", "draft_year"]].merge(seasons, left_on="gsis_id", right_on="player_id")
-    win = m.pos.map(lambda p: TARGET[p][1])
-    m = m[(m.season >= m.draft_year) & (m.season < m.draft_year + win)].copy()
+    m = m[m.season >= m.draft_year].copy()
     pools = {k: np.sort(g.ppg.to_numpy()) for k, g in seasons.groupby(["season", "spos"])}
     empty = np.array([])
     m["rank"] = [1 + len(p) - np.searchsorted(p, v, side="right")          # 1 + players strictly ahead
                  for p, v in ((pools.get((s, pos), empty), v) for s, pos, v in zip(m.season, m.pos, m.ppg))]
-    g = m.groupby("sid")
     t = t.set_index("sid")
+    # Display only, never a label: best season of his whole career so far, so a late bloomer shows his peak.
+    cg = m.groupby("sid")
+    t["career_ppg"], t["career_rank"] = cg.ppg.max(), cg["rank"].min()
+    m = m[m.season < m.draft_year + m.pos.map(lambda p: TARGET[p][1])]
+    g = m.groupby("sid")
     t["best_ppg"] = g.ppg.max()
     t["best_rank"] = g["rank"].min()
     t["hit"] = (t.best_rank <= t.pos.map(lambda p: TARGET[p][0])).astype(float)
@@ -1192,6 +1195,8 @@ def score_nfl(t, d, final):
                 row["dob"] = r.dob.strftime("%Y-%m-%d")
             if pd.notna(r.hit):
                 row["out"] = [int(r.hit), round(float(r.best_ppg), 1), None if pd.isna(r.best_rank) else int(r.best_rank)]
+            if pd.notna(r.career_rank):
+                row["cb"] = [round(float(r.career_ppg), 1), int(r.career_rank)]
             out[slp] = row
     # Draftees with no college line on file (mostly FCS): capital-only probability, no profile.
     for r in d[d.player_id.isna() & (d.draft_year >= SCORE_FROM)].itertuples():
@@ -1427,6 +1432,7 @@ FIELDS = {
     "cp": "Comps: [name, draft year, pick, best PPR PPG in window, hit 0/1]",
     "oos": "1 = hp/tp are out of sample (the model never saw his class; holdout classes scored walk-forward)",
     "out": "Observed: [hit 0/1, best PPR PPG, best rank among that season's players at his draft position]",
+    "cb": "Career best so far, any NFL season (8+ games): [best PPR PPG, best rank at his draft position]. Display only",
     "r": "College only: hit probability if drafted in [Round 1, Round 2, Round 3, Day 3], at the scored exit",
     "pd": "College only: pre-draft hit probability counting the chance he goes undrafted, from his completed college "
           "seasons and with no exit assumed. Next class: pos[].stage with stage.next (career-stage model, variant in "
