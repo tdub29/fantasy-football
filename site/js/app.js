@@ -12591,15 +12591,17 @@
   ].filter(Boolean);
   // Web chart of the graded percentiles: one spoke per stat, rings at 25/50/75, the outer ring is
   // the best drafted player at his position. Needs three spokes to be a shape, so fewer draws none.
+  // The viewBox pads 45 each side so long labels (DOMINATOR, YDS SHARE) stay inside the svg box.
   function pmRadar(axes) {
     if (axes.length < 3) return null;
     const ns = 'http://www.w3.org/2000/svg', S = 220, C = S / 2, R = 66;
     const el = (tag, attrs, ...kids) => { const n = document.createElementNS(ns, tag); for (const k in attrs) n.setAttribute(k, attrs[k]); n.append(...kids); return n; };
     const at = (i, f) => { const a = -Math.PI / 2 + i * 2 * Math.PI / axes.length; return [C + Math.cos(a) * R * f, C + Math.sin(a) * R * f]; };
     const ring = (f) => axes.map((_, i) => at(i, f).map(n => n.toFixed(1)).join(',')).join(' ');
-    return el('svg', { class:'prm-radar', viewBox:`0 0 ${S} ${S}`, role:'img',
+    return el('svg', { class:'prm-radar', viewBox:`-45 0 ${S + 90} ${S}`, role:'img',
         'aria-label':`Percentile web: ${axes.map(a => `${a.label} ${pmOrd(a.pct)}`).join(', ')}` },
-      ...[0.25, 0.5, 0.75, 1].map(f => el('polygon', { class:'prm-radar-ring', points:ring(f) })),
+      ...[0.25, 0.5, 0.75, 1].map(f => el('polygon', { class:`prm-radar-ring${f === 0.5 ? ' mid' : ''}`, points:ring(f) },
+        f === 0.5 ? el('title', {}, 'Median drafted player') : '')),
       ...axes.map((_, i) => { const [x, y] = at(i, 1); return el('line', { class:'prm-radar-ring', x1:C, y1:C, x2:x, y2:y }); }),
       el('polygon', { class:'prm-radar-shape', points:axes.map((a, i) => at(i, Math.max(0.04, a.pct / 100)).map(n => n.toFixed(1)).join(',')).join(' ') }),
       ...axes.map((a, i) => { const [x, y] = at(i, 1.2);
@@ -12609,7 +12611,7 @@
   // Grades panel: bar and letter from his percentile, coloured on the site's 0-10 grade scale.
   function pmGrades(p, rows) {
     if (!rows.length) return null;
-    const axes = rows.map(([k, label, , v]) => { const g = pmGrade(p, k, v); return g && { label, pct:g.pct }; }).filter(Boolean);
+    const axes = rows.map(([k, label, , v]) => { const g = pmGrade(p, k, v); return g && { label: PM_LOWER[k] ? 'Early breakout' : label, pct:g.pct }; }).filter(Boolean);
     return h('section', { class:'prm-sec' },
       h('div', { class:'prm-sec-title' }, h('span', null, 'Grades'), h('span', null, `vs drafted ${p}s`)),
       h('div', { class:'prm-grades-wrap' }, h('div', { class:'prm-grades' }, ...rows.map(([k, label, shown, v, t]) => {
