@@ -40,7 +40,7 @@ def main() -> int:
     opens = img.count("url(")
     # A well-formed layer is url(" ... ") with the quotes intact.
     well_formed = len(re.findall(r'url\(".*?"\)', img, re.S))
-    layers = well_formed + img.count("repeating-linear-gradient")
+    layers = well_formed + img.count("repeating-linear-gradient") + img.count("var(--inner-hash)")
     problems = []
 
     if opens != well_formed:
@@ -65,7 +65,7 @@ def main() -> int:
 
     sizes = [x.strip() for x in decl("background-size").split(",")]
     repeats = [x.strip() for x in decl("background-repeat").split(",")]
-    if sizes != ["100% 180px", "100% 180px", "100% 100%", "100% 100%"]:
+    if sizes != ["100% 12px", "100% 12px", "100% 180px", "100% 180px", "100% 100%", "100% 100%"]:
         problems.append("field layers must scale once across the viewport; fixed-width tiles repeat when zoomed out")
     if repeats != ["no-repeat"] * layers:
         problems.append("field layers must not repeat; browser zoom otherwise creates multiple fields")
@@ -73,16 +73,23 @@ def main() -> int:
     # The geometry that the two reported bugs were about.
     # Numerals are 5x7 bitmap rect groups, one <g id='nX'> per numeral centred on X.
     nums = [int(m) for m in re.findall(r"%3Cg id='n(\d+)'", img)]
-    # Real field order from a sideline inward: outer hashes, numerals, inner hashes.
-    # Only the bottom tile carries numerals, so they must sit between its two rows.
+    # Real field order from a sideline inward: outer hashes, numerals, then the inner
+    # hashes near midfield. Inner hashes are their own layer at the NFL spots (70'9"
+    # from each sideline on a 160' field); inside the 180px tiles they sat ~170px from
+    # the sideline, far out from where a field puts them.
+    hash_layer = re.search(r"--inner-hash:\s*url\(\"(.*?)\"\)", block, re.S)
+    if img.count("var(--inner-hash)") != 2 or not hash_layer or "y='0' width='3' height='12'" not in hash_layer.group(1):
+        problems.append("the inner-hash layer is gone; both rows need var(--inner-hash)")
+    pos = [x.strip() for x in decl("background-position").split(",")]
+    if pos[:2] != ["0 44.2%", "0 55.8%"]:
+        problems.append(f"inner hashes must sit at 44.2% and 55.8% of the field, found {pos[:2]}")
     bottom = next((a for a in re.findall(r'url\("(.*?)"\)', img, re.S) if "id='n" in a), "")
     glyphs = [(int(y), int(y) + int(hh)) for y, hh in re.findall(r"y='(\d+)' width='\d+' height='([46])'", bottom)]
     hash_rows = sorted({int(m) for m in re.findall(r"y='(\d+)' width='3' height='12'", bottom)})
-    if len(hash_rows) != 2:
-        problems.append(f"expected inner and outer hash rows in the bottom tile, found {len(hash_rows)}: {hash_rows}")
-    elif glyphs and not (hash_rows[0] + 12 < min(g[0] for g in glyphs) and max(g[1] for g in glyphs) < hash_rows[1]):
-        problems.append(f"numerals span y={min(g[0] for g in glyphs)}-{max(g[1] for g in glyphs)}, not between the inner "
-                        f"hashes (y={hash_rows[0]}) and the outer sideline hashes (y={hash_rows[1]})")
+    if len(hash_rows) != 1:
+        problems.append(f"expected only the sideline hash row in the bottom tile, found {len(hash_rows)}: {hash_rows}")
+    elif glyphs and not max(g[1] for g in glyphs) < hash_rows[0]:
+        problems.append(f"numerals reach y={max(g[1] for g in glyphs)}, into the sideline hashes (y={hash_rows[0]})")
     if nums:
         chalk = 120  # one 5-yard segment on the 1-yard = 24px grid
         bisected = [x for x in nums if min(x % chalk, chalk - x % chalk) < 24]
@@ -108,7 +115,7 @@ def main() -> int:
             print(f"  - {p}")
         return 1
     print(f"field ok: {layers} layers, {len(nums)} numerals clear of chalk, "
-          f"numerals between inner hashes y={hash_rows[0]} and sideline hashes y={hash_rows[1]}")
+          f"numerals inside sideline hashes y={hash_rows[0]}, inner hashes at 44.2% and 55.8%")
     return 0
 
 
@@ -127,7 +134,9 @@ def phone_problems(css: str, nums: list[int]) -> list[str]:
     if "rotate(90deg)" not in m.group(1):
         out.append("phone field must rotate to run vertically")
     length = re.search(r"--phone-field-length:\s*max\(([0-9.]+)px,\s*100dvh\)", m.group(1))
-    ratio = re.search(r"calc\(var\(--phone-field-length\)\s*\*\s*([0-9.]+)\)", m.group(1))
+    # The sideline tiles set the scale; the 12px inner-hash rows use a smaller ratio.
+    ratio = max(re.finditer(r"calc\(var\(--phone-field-length\)\s*\*\s*([0-9.]+)\)", m.group(1)),
+                key=lambda r: float(r.group(1)), default=None)
     if not length or not ratio:
         return ["phone field must cover its viewport length and preserve the SVG aspect"]
     w = max(float(length.group(1)), PHONE_H)
