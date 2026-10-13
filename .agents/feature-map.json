@@ -633,7 +633,7 @@
         }
       ],
       "selector": "#main table.prm-table",
-      "assert": "(() => { const M = window.PROSPECT_MODEL; if (!M || !M.pos.WR) return false; const heads = [...document.querySelectorAll('#main table.prm-table thead th')].map(t => t.textContent.trim().replace(/ [↑↓]$/, '')); const rows = [...document.querySelectorAll('#main table.prm-table tbody tr')]; const full = M.pos.WR.shipped !== 'draft'; if (rows.length < 30 || !['Player', 'Profile %ile', 'Profile tier', 'Breakout', 'Career YPTPA'].every(x => heads.includes(x))) return false; if (full !== heads.includes('R1')) return false; const nst = !!(M.pos.WR.stage && M.pos.WR.stage.next); if (nst !== heads.includes('Pre-draft')) return false; if (nst && !rows.every(r => { const v = parseInt(r.children[heads.indexOf('Pre-draft')].textContent, 10); return Number.isFinite(v) && v >= 0 && v <= 100; })) return false; const cell = (r, lab) => parseInt(r.children[heads.indexOf(lab)].textContent, 10); const ts = rows.map(r => cell(r, 'Profile %ile')); const monotone = !full || rows.every(r => cell(r, 'R1') >= cell(r, 'R2') && cell(r, 'R2') >= cell(r, 'R3') && cell(r, 'R3') >= cell(r, 'Day 3')); return monotone && ts.every(v => Number.isFinite(v) && v >= 0 && v <= 100) && !heads.includes('Capital 1QB') && !!rows[0].querySelector('.tier-chip.prm-tier') && document.querySelector('#main select[aria-label=\"Filter by draft class\"]')?.value === String(M.season + 1) && document.querySelector('#main .rankings-pos-toggle .toggle.active')?.textContent === 'WR' && !document.querySelector('#main .prm-modes') && !!document.querySelector('#sidebar a[href=\"#prospects\"]')?.classList.contains('active'); })()",
+      "assert": "(() => { const M = window.PROSPECT_MODEL; if (!M || !M.pos.WR) return false; const heads = [...document.querySelectorAll('#main table.prm-table thead th')].map(t => t.textContent.trim().replace(/ [↑↓]$/, '')); const rows = [...document.querySelectorAll('#main table.prm-table tbody tr')]; if (rows.length < 30 || !['Player', 'Pick', 'Score', 'Profile %ile', 'WR12 %', 'WR24 %', 'Breakout age', 'Career YPTPA'].every(x => heads.includes(x)) || heads.includes('Class')) return false; const cell = (r, lab) => parseInt(r.children[heads.indexOf(lab)].textContent, 10); const pct = v => Number.isFinite(v) && v >= 0 && v <= 100; return rows.every(r => pct(cell(r, 'Profile %ile')) && pct(cell(r, 'Score')) && cell(r, 'WR12 %') <= cell(r, 'WR24 %')) && !!document.querySelector('#main table.prm-table td.cf-good') && !!document.querySelector('#main table.prm-table td.cf-bad') && document.querySelector('#main select[aria-label=\"Filter by draft class\"]')?.value === String(M.season + 1) && document.querySelector('#main .rankings-pos-toggle .toggle.active')?.textContent === 'WR' && !document.querySelector('#main .prm-modes') && !!document.querySelector('#sidebar a[href=\"#prospects\"]')?.classList.contains('active'); })()",
       "notes": "#prospects (viewProspects in app.js) over site/data/prospect-model.js, built by projections/build_prospect_model.py. Upcoming profiles default to name order; a profile percentile is not an overall ranking. Drafted history defaults to the separately labeled capital rating. Where the full model ships (WR today) every row carries Round 1 / 2 / 3 / Day 3 hit chances, and they must fall as the pick gets later: a column that rises with worse capital means the log-pick term flipped sign or the columns were shuffled. Where the career-stage model serves the WR next class (pos.WR.stage.next) a Pre-draft column must show a 0-100% chance on every row, and must be absent otherwise. If a rebuild demotes WR to the draft-only model the R columns must disappear (the scenario is then the same number for every player and is printed once in the notes card), and this case checks that too rather than failing on it. Class is a select over one table, not a set of mode buttons; this case pins the next class so every row is one the Pre-draft model serves. The sidebar's Prospects link must exist and be lit on a #prospects/<pos> sub-route."
     },
     {
@@ -654,7 +654,7 @@
         }
       ],
       "selector": "#main table.prm-table",
-      "assert": "(() => { const M = window.PROSPECT_MODEL; const up = M.college.filter(r => r.p === 'RB' && r.cls > M.season).length; const nfl = Object.values(M.nfl).filter(r => r.p === 'RB').length; const heads = [...document.querySelectorAll('#main table.prm-table thead th')].map(t => t.textContent.trim().replace(/ [↑↓]$/, '')); const rows = [...document.querySelectorAll('#main table.prm-table tbody tr')]; const sel = document.querySelector('#main select[aria-label=\"Filter by draft class\"]'); const marked = [...document.querySelectorAll('#main table.prm-table .prm-school')].filter(s => /NFL, \\d{4} pick \\d+$/.test(s.textContent)).length; return location.hash === '#prospects/RB/all' && nfl >= 50 && rows.length === up + nfl && marked === nfl && !!sel && sel.value === 'all' && [...sel.options].map(o => o.textContent).join('|') === ['All classes', 'Future classes', ...[...new Set(M.college.filter(r => r.cls > M.season).map(r => r.cls))].sort()].join('|') && ['Class', 'Pick', 'Capital 1QB', 'Profile %ile', 'Hit %'].every(x => heads.includes(x)); })()",
+      "assert": "(() => { const M = window.PROSPECT_MODEL; const up = M.college.filter(r => r.p === 'RB' && r.cls > M.season).length; const nfl = Object.values(M.nfl).filter(r => r.p === 'RB').length; const heads = [...document.querySelectorAll('#main table.prm-table thead th')].map(t => t.textContent.trim().replace(/ [↑↓]$/, '')); const rows = [...document.querySelectorAll('#main table.prm-table tbody tr')]; const sel = document.querySelector('#main select[aria-label=\"Filter by draft class\"]'); const marked = [...document.querySelectorAll('#main table.prm-table .name-cell')].filter(s => /, \\d{4} pick \\d+$/.test(s.title)).length; return location.hash === '#prospects/RB/all' && nfl >= 50 && rows.length === up + nfl && marked === nfl && !!sel && sel.value === 'all' && [...sel.options].map(o => o.textContent).join('|') === ['All classes', 'Last 5 + future', 'Last 10 + future', 'Future classes', ...[...new Set(M.college.filter(r => r.cls > M.season).map(r => r.cls))].sort()].join('|') && ['Class', 'Pick', 'Score', 'Profile %ile', 'RB12 %', 'RB24 %', 'Best, yrs 1-3', 'Career best'].every(x => heads.includes(x)); })()",
       "notes": "The Class select is exactly All classes, Future classes and each upcoming year (Trevor, 2026-10-05). All classes is every class the model scored: upcoming college players plus every drafted class in PROSPECT_MODEL.nfl, each drafted row marked 'NFL, <year> pick <n>' under the name, with Class, Pick and Hit % columns; those rows open the NFL player card (player-card-prospect-profile). The retired #prospects/<pos>/rookies route rewrites to #prospects/<pos>/all."
     },
     {
@@ -675,7 +675,7 @@
         }
       ],
       "selector": "#main table.prm-table",
-      "assert": "(() => { const M = window.PROSPECT_MODEL; const heads = [...document.querySelectorAll('#main table.prm-table thead th')].map(t => t.textContent.trim().replace(/ [↑↓]$/, '')); const rows = document.querySelectorAll('#main table.prm-table tbody tr'); const sel = document.querySelector('#main .filters select[aria-label=\"Filter by draft class\"]'); return document.querySelectorAll('#main table.prm-table').length === 1 && rows.length === M.college.filter(r => r.cls > M.season).length && ![...rows].some(r => /NFL, \\d{4} pick/.test(r.textContent)) && !heads.includes('Pick') && heads.includes('Pos') && heads.includes('Class') && sel?.value === 'future' && document.querySelector('#main .rankings-pos-toggle .toggle.active')?.textContent === 'ALL' && !!document.querySelector('#main .filters input[type=\"search\"]'); })()",
+      "assert": "(() => { const M = window.PROSPECT_MODEL; const heads = [...document.querySelectorAll('#main table.prm-table thead th')].map(t => t.textContent.trim().replace(/ [↑↓]$/, '')); const rows = document.querySelectorAll('#main table.prm-table tbody tr'); const sel = document.querySelector('#main .filters select[aria-label=\"Filter by draft class\"]'); return document.querySelectorAll('#main table.prm-table').length === 1 && rows.length === M.college.filter(r => r.cls > M.season).length && ![...document.querySelectorAll('#main table.prm-table .name-cell')].some(s => /, \\d{4} pick \\d+$/.test(s.title)) && ['Pos', 'Class', 'Pick', 'Elite %', 'Starter %'].every(x => heads.includes(x)) && sel?.value === 'future' && document.querySelector('#main .rankings-pos-toggle .toggle.active')?.textContent === 'ALL' && !!document.querySelector('#main .filters input[type=\"search\"]'); })()",
       "notes": "Class is a filter over one Prospects table, like Players (Trevor, 2026-10-04): position toggles with ALL, a Class select, and a name search. The default route is Future classes (Trevor, 2026-10-05): every upcoming college record and no drafted player, so the row count is tied to the payload."
     },
     {
@@ -702,22 +702,34 @@
         }
       ],
       "selector": ".modal .prm-card",
-      "assert": "(() => { const M = window.PROSPECT_MODEL; const name = document.querySelector('#main table.prm-table tbody tr .player-name-button').textContent; const r = M.college.find(x => x.n === name); const m = document.querySelector('.modal[role=\"dialog\"]'); if (!r || !m) return false; const t = m.textContent; const pct = Math.round(r.tp * 100) + '%'; return m.querySelector('h2').textContent.includes(name) && t.includes(r.sch) && t.includes('College %') && t.includes(pct) && t.includes('one draft-slot curve for every WR') && !t.includes('Not matched to a Sleeper player') && document.activeElement === m.querySelector('.close-btn'); })()",
+      "assert": "(() => { const M = window.PROSPECT_MODEL; const name = document.querySelector('#main table.prm-table tbody tr .player-name-button').textContent; const r = M.college.find(x => x.n === name); const m = document.querySelector('.modal[role=\"dialog\"]'); if (!r || !m) return false; const t = m.textContent; return m.querySelector('h2').textContent.includes(name) && t.includes(r.sch) && t.includes('Prospect score') && t.includes('Class rank') && t.includes('If drafted, WR12 / WR24 chance') && t.includes('College prospect at ' + r.sch) && !t.includes('Not matched to a Sleeper player') && document.activeElement === m.querySelector('.close-btn'); })()",
       "notes": "College players have no Sleeper id, so viewProspects hands playerModal the PROSPECT_MODEL.college record and the card renders collegeProspectBlock. The card must lead with what differs by player (talent, tier, College % from college stats alone) and state the draft-only round curve once as the position reference. Focus lands on the close button."
     },
     {
       "id": "prospect-card-header",
       "name": "Prospects: college card header shows school logo, positional rank in class, size with build label",
       "path": [
-        { "press": "Escape" },
-        { "sleepMs": 200 },
-        { "eval": "location.hash='#prospects/WR'" },
-        { "sleepMs": 600 },
-        { "eval": "document.querySelector('#main table.prm-table tbody tr .player-name-button').click()" },
-        { "sleepMs": 400 }
+        {
+          "press": "Escape"
+        },
+        {
+          "sleepMs": 200
+        },
+        {
+          "eval": "location.hash='#prospects/WR'"
+        },
+        {
+          "sleepMs": 600
+        },
+        {
+          "eval": "document.querySelector('#main table.prm-table tbody tr .player-name-button').click()"
+        },
+        {
+          "sleepMs": 400
+        }
       ],
       "selector": ".modal .prm-head",
-      "assert": "(() => { const hd = document.querySelector('.modal .prm-head'); if (!hd) return false; const t = hd.textContent; return /WR\\d+ of \\d+ in the \\d{4} class/.test(t) && /\\d'\\d+\" \\d+ lb listed, /.test(t) && !!hd.querySelector('img.prm-logo') && hd.scrollWidth <= hd.clientWidth + 1; })()",
+      "assert": "(() => { const hd = document.querySelector('.modal .prm-head'); const bio = document.querySelector('.modal .prm-bio'); if (!hd || !bio) return false; const t = hd.textContent, b = bio.textContent; return /WR\\d+\\s*of \\d+ in the \\d{4} class/.test(t) && /Prospect score\\d{1,3}of 100/.test(t) && /\\d'\\d+\"/.test(b) && /\\d+ lb/.test(b) && !!hd.querySelector('img.prm-logo') && hd.scrollWidth <= hd.clientWidth + 1; })()",
       "notes": "Header labels are percentiles against drafted players at the position (size from window.PROSPECT, production from PROSPECT_MODEL.nfl); ESPN roster size and logo from college-bio.js. No age today: there is no public birth-date source."
     },
     {
@@ -799,7 +811,7 @@
         }
       ],
       "selector": ".prm-card",
-      "assert": "(() => { const c = document.querySelector('.prm-card'); const labels = [...c.querySelectorAll('.adv-stat-label')].map(e => e.textContent.trim()); return ['Draft-capital rating (1QB)', 'Profile tier', 'Profile percentile', 'Model hit estimate', 'Breakout age', 'Dominator', 'Final YPTPA'].every(l => labels.includes(l)) && !!c.querySelector('.tier-chip.prm-tier') && !!c.querySelector('.rating-track .pip.on') && /^Outcome: hit/.test(c.querySelector('.prm-out')?.textContent || '') && c.querySelectorAll('.prm-comp').length === 3 && /pick 12/.test(c.textContent); })()",
+      "assert": "(() => { const c = document.querySelector('.prm-card'); if (!c) return false; const grades = [...c.querySelectorAll('.prm-grade-label')].map(e => e.textContent.trim()); return ['Breakout age', 'Dominator', 'Final YPTPA'].every(l => grades.includes(l)) && /drafted 2023, pick 12/.test(c.querySelector('.prm-head')?.textContent || '') && /Prospect score\\d{1,3}of 100/.test(c.querySelector('.prm-head').textContent) && c.querySelector('.prm-verdict')?.textContent === 'Hit' && !!c.querySelector('.prm-bucket.on.hit') && c.querySelectorAll('.prm-comp').length === 3; })()",
       "notes": "prospectModelBlock() in the card's Context tab, right after the draft and athletic profile it extends. Gibbs is chosen because every part is reachable: a 2023 RB sits inside the RB training window (classes through 2023), so his numbers are leave-one-class-out and he has an observed outcome (a hit), and RB is a position where the full model ships, so the hit chance carries a 'talent only' sub-line. Three comps are required; the builder always writes three for a linked draftee. Draft-capital rating is separate from college profile percentile and is not a hit probability."
     },
     {
