@@ -12564,6 +12564,8 @@
       TE: [['yptpa', 'Best YPTPA', pmVal, `Best-season receiving yards per team pass attempt${thin}`], ss],
     }[pos] || []).filter(Boolean);
   }
+  // Prospects table conditional formatting: 1 higher is better, -1 lower is better. Stat columns (st.*) are all higher-better.
+  const CF_DIR = { pk:-1, sc:1, ts:1, t0:1, t1:1, best:-1, cb:-1, ba:-1 };
   // Weight and speed score live in prospect.js and college-bio.js, the rest on the model row.
   const pmInputVal = (r, k) => k === 'wt' ? (r.id ? window.PROSPECT?.players?.[r.id]?.weight_lb : window.COLLEGE_BIO?.players?.[r.cid]?.wt)
     : k === 'ss' ? (r.id ? window.PROSPECT?.players?.[r.id]?.speed_score : null) : (r.st || {})[k];
@@ -13019,13 +13021,37 @@
           onkeydown:(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(); } } },
           label + (on ? (dir === 'desc' ? ' ↓' : ' ↑') : ''));
       };
+      // Conditional formatting: each graded cell is shaded by its mid-rank percentile among the rows
+      // on screen at the same position (cuts and scales differ by position). Green better, red worse,
+      // deeper further from the middle; the middle fifth stays plain. CF_LOW columns are better small.
+      const cfCols = cols.filter(([k]) => k in CF_DIR || k.startsWith('st.')).map(([k]) => k);
+      const cfSorted = {};
+      for (const k of cfCols) for (const r of rows) {
+        const v = k === 'ba' && r.p === 'QB' ? null : get(r, k);
+        if (!Number.isFinite(v)) continue;
+        ((cfSorted[k] ||= {})[r.p] ||= []).push(v);
+      }
+      for (const k in cfSorted) for (const p in cfSorted[k]) cfSorted[k][p].sort((a, b) => a - b);
+      const bisect = (a, v, le) => { let lo = 0, hi = a.length; while (lo < hi) { const m = (lo + hi) >> 1; if (le ? a[m] <= v : a[m] < v) lo = m + 1; else hi = m; } return lo; };
+      const cfAttr = (r, k) => {
+        const a = cfSorted[k]?.[r.p], v = k === 'ba' && r.p === 'QB' ? null : get(r, k);
+        if (!a || a.length < 5 || !Number.isFinite(v)) return null;
+        let p = (bisect(a, v, false) + bisect(a, v, true)) / 2 / a.length;
+        if (CF_DIR[k] === -1) p = 1 - p;
+        const d = p - 0.5;
+        if (Math.abs(d) < 0.1) return null;
+        return { cls: d > 0 ? ' cf-good' : ' cf-bad', style: { '--cf': `${Math.round(Math.abs(d) * 2 * 34)}%` } };
+      };
       // snug: the table hugs its columns, so fit-num cannot hand every spare pixel to the name.
       const tbl = h('table', { class:'data prm-table fit-num snug' },
         h('thead', null, h('tr', null, h('th', { class:'right' }, '#'), ...cols.map(sortHdr))),
         h('tbody', null, ...rows.map((r, i) => h('tr', { class:`clickable${hist && !r.id ? ' prm-future' : ''}`, title: hist && !r.id ? 'Not drafted yet: college player in a future class' : null, onclick:() => openRow(r) },
           h('td', { class:'right tnum' }, String(i + 1)),
-          ...cols.map(([k, , o]) => h('td', { class:`${o.right ? 'right ' : ''}${o.fit ? 'fit ' : ''}tnum` }, fmtCell(r, k)))))));
+          ...cols.map(([k, , o]) => { const cf = cfAttr(r, k);
+            return h('td', { class:`${o.right ? 'right ' : ''}${o.fit ? 'fit ' : ''}tnum${cf ? cf.cls : ''}`, style: cf ? cf.style : null }, fmtCell(r, k)); })))));
       if (hist && rows.some(r => !r.id)) card.appendChild(h('div', { class:'prm-legend muted' }, h('span', { class:'prm-future-key', 'aria-hidden':'true' }), 'Hatched row tagged Future: not drafted yet'));
+      card.appendChild(h('div', { class:'prm-legend muted' }, h('span', { class:'prm-cf-key', 'aria-hidden':'true' }),
+        'Shaded cells: green better, red worse than the others at his position in this list. Pick, finish ranks and breakout age count low as better'));
       appendTable(card, tbl);
     }
     render();

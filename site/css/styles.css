@@ -519,7 +519,8 @@ table.data .expert-rank-col { width: 76px; white-space: nowrap; }
    wrapper" above left every column past ~20 unreachable under body's
    overflow:clip. They scroll in their own box at every width, with the same
    max-height scrollport the phone rule uses so the sticky thead still pins. */
-.tbl-scroll:has(> table.stats-lab-table) {
+.tbl-scroll:has(> table.stats-lab-table),
+.tbl-scroll:has(> table.prm-table) {
   overflow: auto;
   max-height: calc(100dvh - 84px);
 }
@@ -548,7 +549,8 @@ table.data .expert-rank-col { width: 76px; white-space: nowrap; }
 @media (max-width: 900px) {
   .tbl-scroll > table.data > * > tr > :last-child { padding-inline-end: 40px; }
 }
-.tbl-scroll:has(> table.stats-lab-table) > table.data > * > tr > :last-child { padding-inline-end: 40px; }
+.tbl-scroll:has(> table.stats-lab-table) > table.data > * > tr > :last-child,
+.tbl-scroll:has(> table.prm-table) > table.data > * > tr > :last-child { padding-inline-end: 40px; }
 
 /* Tier blocks (rankings page) */
 .tier-block { margin-bottom: 24px; }
@@ -6535,3 +6537,8 @@ td.sos-out .team-chip { filter: grayscale(1); }
 .chart-svg .pt.prm-rail-dot { fill: var(--chalk); stroke: var(--ink); stroke-width: 2; }
 .prm-rail-key { display: inline-block; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--ink); background: var(--chalk); }
 .source-note-list { margin: 8px 0 0; padding-left: 18px; display: grid; gap: 4px; }
+/* Prospects conditional formatting: app.js sets --cf (0-34%) from the cell's percentile at its position. */
+table.data.prm-table td.cf-good { background-color: color-mix(in srgb, var(--green) var(--cf), transparent); }
+table.data.prm-table td.cf-bad { background-color: color-mix(in srgb, var(--red) var(--cf), transparent); }
+.prm-cf-key { display: inline-block; width: 22px; height: 14px; border: 2px solid var(--ink); border-radius: 3px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--red) 34%, transparent), transparent, color-mix(in srgb, var(--green) 34%, transparent)); }
