@@ -10842,7 +10842,7 @@
                 h('button', { class: 'ghost', style: { padding: '2px 10px', fontSize: '12px' } }, 'Trade ⇄'))
             : null),
           h('td', null, h('button', {
-            class: 'todo-x', title: 'Unmark',
+            class: 'todo-x', title: 'Unmark', 'aria-label': `Unmark ${r.name || 'player'}`,
             onclick: (e) => { e.stopPropagation(); toggleMark(kind, r.lg.id, r.pid); route(); },
           }, '×'))));
       }
@@ -10869,7 +10869,7 @@
       h('div', null,
         h('div', { class:'page-eyebrow' }, 'OVERVIEW'),
         h('h1', { class:'page-title' }, 'Action Center'),
-        h('p', { class:'page-sub' }, 'Your own to-do list for the week. Add anything; pull from the suggestions below.')
+        h('p', { class:'page-sub' }, 'Your own to-do list for the week.')
       )
     ));
 
@@ -10882,12 +10882,12 @@
     const renderTodos = () => {
       listWrap.innerHTML = '';
       const sorted = [...todos].sort((a, b) => (a.done - b.done) || (b.ts - a.ts));
-      if (!sorted.length) { listWrap.appendChild(h('div', { class:'tip', style:{ padding:'6px 2px' } }, 'No to-dos yet. Type one above, or add from the suggestions below.')); return; }
+      if (!sorted.length) { listWrap.appendChild(h('div', { class:'tip', style:{ padding:'6px 2px' } }, 'No to-dos yet. Type one above.')); return; }
       for (const t of sorted) {
         listWrap.appendChild(h('div', { class:'todo-row' + (t.done ? ' done' : '') },
-          h('input', { type:'checkbox', checked: t.done ? '' : null, onchange: () => { t.done = !t.done; saveTodos(todos); renderTodos(); } }),
+          h('input', { type:'checkbox', 'aria-label': `Done: ${t.text}`, checked: t.done ? '' : null, onchange: () => { t.done = !t.done; saveTodos(todos); renderTodos(); } }),
           h('span', { class:'todo-text' }, t.text),
-          h('button', { class:'todo-x', title:'Delete', onclick: () => { todos = todos.filter(x => x.id !== t.id); saveTodos(todos); renderTodos(); } }, '×'),
+          h('button', { class:'todo-x', title:'Delete', 'aria-label': `Delete to-do: ${t.text}`, onclick: () => { todos = todos.filter(x => x.id !== t.id); saveTodos(todos); renderTodos(); } }, '×'),
         ));
       }
     };
@@ -10896,7 +10896,7 @@
       todos.push({ id: 't' + Date.now() + Math.round(Math.random() * 1e4), text, done: false, ts: Date.now() });
       saveTodos(todos); renderTodos();
     };
-    const todoInput = h('input', { type:'text', placeholder:'Add a to-do… e.g. "Offer Gibbs for a 2027 1st in yuH"', style:{ flex:1, minWidth:0 },
+    const todoInput = h('input', { type:'text', 'aria-label':'New to-do', placeholder:'Add a to-do… e.g. "Offer Gibbs for a 2027 1st in yuH"', style:{ flex:1, minWidth:0 },
       onkeydown: (e) => { if (e.key === 'Enter') { addTodo(e.target.value); e.target.value = ''; } } });
     main.appendChild(h('div', { class:'card' },
       h('div', { class:'card-title' }, 'My To-Dos'),
