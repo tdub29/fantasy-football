@@ -13306,13 +13306,37 @@
   // Title odds cost a few seconds of Monte Carlo, so they're computed on demand
   // and cached against the exact inputs that produced them. The key includes the
   // what-if set: change the hypothetical, get a fresh number, not a stale one.
-  const ODDS_CACHE = new Map();
+  const ODDS_CACHE = new Map(), ODDS_STORE = 'ff-odds-v1:';
+  // The base run (no what-if) also persists across reloads: 4000 sims with Max PF cost about
+  // 10 s of main thread a league, and the dashboard ran five on every load. The sim is seeded,
+  // so the answer only moves when an input does. The print hashes every input that can change
+  // without a new app version: the league as synced, its players' entries and weekly lines,
+  // and the data build. A new build or a live sync misses; a plain reload hits.
+  function oddsPrint(lg) {
+    const ids = new Set((lg.rosters || []).flatMap(r => r.players || []).map(String)), P = window.PLAYERS || {};
+    const wk = (window.WEEKLY_RANKINGS?.players || []).filter(p => ids.has(String(p.id)));
+    const s = JSON.stringify([lg, [...ids].map(id => P[id] || null), wk, window.BUILD_INFO?.files,
+      document.querySelector('script[src*="js/app.js"]')?.getAttribute('src')]);
+    return `${simKey(1, s)}.${simKey(2, s)}`;
+  }
   function oddsFor(lg, src, whatIf, sims) {
     const key = `${lg.id}|${src}|${sims}|${[...whatIf].sort().join(',')}`;
     if (ODDS_CACHE.has(key)) return ODDS_CACHE.get(key);
     const me = (lg.rosters || []).find(r => r.is_me);
     const wi = (whatIf.length && me) ? { [me.roster_id]: { add: whatIf, drop: [] } } : null;
-    const res = championshipOdds(lg, { sims, src, whatIf: wi, withMaxPf: isDynastyLeague(lg) });
+    let res = null, print = null;
+    if (!wi) try {
+      print = oddsPrint(lg);
+      const hit = JSON.parse(localStorage.getItem(ODDS_STORE + key) || 'null');
+      if (hit && hit.print === print) {
+        res = hit.rows.map(o => ({ ...o, roster: lg.rosters.find(r => r.roster_id === o.rosterId) }));
+        res.meta = hit.meta;
+      }
+    } catch {}
+    if (!res) {
+      res = championshipOdds(lg, { sims, src, whatIf: wi, withMaxPf: isDynastyLeague(lg) });
+      if (print) try { localStorage.setItem(ODDS_STORE + key, JSON.stringify({ print, rows: res.map(({ roster, ...o }) => o), meta: res.meta })); } catch {}
+    }
     ODDS_CACHE.set(key, res);
     return res;
   }
