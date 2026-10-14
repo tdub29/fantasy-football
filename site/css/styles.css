@@ -6527,8 +6527,10 @@ td.sos-out .team-chip { filter: grayscale(1); }
 /* Prospects scatter: the future-class rail under the plot. Hollow chalk rings, so a forecast never
    reads as a result. */
 .prm-rail { margin-top: 6px; }
-.chart-svg .pt.prm-rail-dot { fill: var(--chalk); stroke: var(--ink); stroke-width: 2; }
-.prm-rail-key { display: inline-block; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--ink); background: var(--chalk); }
+.chart-svg .pt.prm-rail-dot { stroke: var(--ink); stroke-width: 1.5; stroke-dasharray: 3 2; }
+.chart-svg .prm-rail-more circle { fill: var(--chalk); stroke: var(--ink); stroke-width: 1.5; }
+.chart-svg .prm-rail-more text { font-size: 10px; font-weight: 700; fill: var(--ink); }
+.prm-rail-key { display: inline-block; width: 12px; height: 12px; border-radius: 50%; border: 1.5px dashed var(--ink); background: var(--chalk); }
 .source-note-list { margin: 8px 0 0; padding-left: 18px; display: grid; gap: 4px; }
 /* Prospects conditional formatting: app.js sets --cf (0-34%) from the cell's percentile at its position. */
 table.data.prm-table td.cf-good { background-color: color-mix(in srgb, var(--green) var(--cf), transparent); }

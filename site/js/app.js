@@ -1168,8 +1168,8 @@
     { hash:'#dashboard',    label:'Dashboard',        icon:'◆',  section:'Overview' },
     { hash:'#action',       label:'Action Center',    icon:'!',  section:'Overview' },
     { hash:'#watch',        label:'What to Look For', icon:'◉',  section:'Tools' },
-    { hash:'#trade',        label:'Trade Calculator', icon:'⇄',  section:'Tools' },
-    { hash:'#sos',          label:'Strength of Sched', icon:'▦',  section:'Tools' },
+    { hash:'#trade',        label:'Trade Lab',        icon:'⇄',  section:'Tools' },
+    { hash:'#sos',          label:'Schedule Strength', icon:'▦',  section:'Tools' },
     { hash:'#games',        label:'Games',            icon:'◐',  section:'Tools' },
     { hash:'#stats',        label:'Stats Lab',        icon:'∑',  section:'Tools' },
     { hash:'#draft',        label:'Draft Room',       icon:'▣',  section:'Tools' },
@@ -5893,7 +5893,7 @@
               TRADE_STATE.leagueId = lg.id;
               TRADE_STATE.sideA = { rosterId: myRoster.roster_id, picks: new Set() };
               TRADE_STATE.sideB = { rosterId: r.roster_id,        picks: new Set() };
-            }}, h('button', { class:'primary' }, 'Open Trade Calculator with This Pairing →'))
+            }}, h('button', { class:'primary' }, 'Open this pairing in the Trade Lab →'))
           )
         ));
       }
@@ -9068,7 +9068,7 @@
     ]));
     main.appendChild(h('div', { class:'page-header' },
       h('div', null,
-        h('h1', { class:'page-title' }, 'Trade Calculator'),
+        h('h1', { class:'page-title' }, 'Trade Lab'),
         h('p', { class:'page-sub' }, isDynastyLeague(lg)
           ? 'Click players or picks to add to the pile. Fairness verdict updates live as you build the offer.'
           : 'Click players to add to the pile. The verdict follows both starting lineups and updates live as you build the offer.')
@@ -13072,8 +13072,8 @@
       .filter(r => Number.isFinite(r._x) && Number.isFinite(r._y));
     if (pts.length < 3) return h('div', { class:'empty' }, 'Nothing to plot here: college classes have no NFL results yet. Pick All classes to plot the drafted ones.');
     // Future-class rows have a score but no NFL result, so they get no height: a rail under the
-    // plot on the same X scale, hollow chalk rings. Inventing a Y (the trend value, say) would
-    // draw a forecast in the same ink as a result.
+    // plot on the same X scale, college headshots in dashed rings. Inventing a Y (the trend value,
+    // say) would draw a forecast in the same ink as a result.
     const fut = rows.filter(r => !r.id && Number.isFinite(pmScore(r)));
     const ps = Object.keys(PM_CUTS).filter(p => pts.some(r => r.p === p));
     const W = Math.max(300, Math.min(960, ($('#main').clientWidth || 360) - 44));
@@ -13156,21 +13156,50 @@
     // A drag or pinch is not a click on whatever dot it ended over.
     stage.addEventListener('click', (e) => { if (moved >= 6) { e.stopPropagation(); e.preventDefault(); } }, true);
     function futureRail() {
-      const d = view || base, iw = box.W - box.PL - box.PR, R = 5.5, STEP = 2 * R + 2;
+      // The rail grows a row instead of shrinking the marker, so every prospect gets the chart's
+      // full headshot: ring 13, photo 22.
+      const d = view || base, iw = box.W - box.PL - box.PR, R = 13, STEP = 2 * R + 2;
       const X = (v) => box.PL + (v - d.x0) / (d.x1 - d.x0) * iw;
-      // Dot stack: each ring takes the lowest row where it clears the last ring in that row.
-      const ends = [], dots = fut.map((r, i) => ({ r, i, x:X(pmScore(r)) })).filter(o => o.x >= box.PL - 1 && o.x <= box.W - box.PR + 1)
-        .sort((a, b) => a.x - b.x).map(o => { let k = ends.findIndex(e => o.x - e >= STEP); if (k < 0) k = ends.push(-1e9) - 1; ends[k] = o.x; return { ...o, k }; });
-      const H = Math.max(1, ends.length) * STEP + 8, base0 = H - 4 - R;
+      // Dot stack: each ring takes the lowest row where it clears the last ring in that row. Stacks
+      // stop at MAX rows; the rest count into a +N above the top ring, and tapping it zooms there.
+      const MAX = 6, more = new Map(), ends = [];
+      let top = null, n = 0;
+      const dots = fut.map((r, i) => ({ r, i, x:X(pmScore(r)) })).filter(o => o.x >= box.PL - 1 && o.x <= box.W - box.PR + 1)
+        .sort((a, b) => a.x - b.x).map(o => {
+          n++;
+          let k = ends.findIndex(e => o.x - e >= STEP);
+          if (k < 0 && ends.length < MAX) k = ends.push(-1e9) - 1;
+          if (k < 0) { more.set(top, (more.get(top) || 0) + 1); return null; }
+          ends[k] = o.x;
+          const dot = { ...o, k };
+          if (k === MAX - 1) top = dot;
+          return dot;
+        }).filter(Boolean);
+      const H = (Math.max(1, ends.length) + (more.size ? 1 : 0)) * STEP + 8, base0 = H - 4 - R;
       let s = `<svg class="chart-svg prm-rail-svg" viewBox="0 0 ${box.W} ${H}" role="img" aria-label="${chartEsc(`${dots.length} future-class prospects by prospect score`)}">`
+        + '<defs><clipPath id="prm-rail-clip" clipPathUnits="objectBoundingBox"><circle cx=".5" cy=".5" r=".5"/></clipPath></defs>'
         + `<line class="grid" x1="${box.PL}" x2="${box.W - box.PR}" y1="${H - 1}" y2="${H - 1}"/>`;
-      for (const { r, i, x, k } of dots)
-        s += `<circle class="pt prm-rail-dot pos-${r.p}" data-f="${i}" cx="${x.toFixed(1)}" cy="${(base0 - k * STEP).toFixed(1)}" r="${R}"><title>${chartEsc(`${r.n} (${r.p}, ${r.y} class), score ${Math.round(pmScore(r))}. Not drafted yet`)}</title></circle>`;
+      for (const { r, i, x, k } of dots) {
+        const cx = Math.min(Math.max(x, R + 1), box.W - R - 1), cy = base0 - k * STEP, src = r.cid != null ? collegeShotUrl(r.cid) : null;
+        s += `<g class="pt-shot" data-f="${i}"><title>${chartEsc(`${r.n} (${r.p}, ${r.y} class), score ${Math.round(pmScore(r))}. Not drafted yet`)}</title>`
+          + `<circle class="pt prm-rail-dot pos-${r.p}" cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${R}"/>`
+          + (src ? `<image href="${chartEsc(src)}" x="${(cx - 11).toFixed(1)}" y="${(cy - 11).toFixed(1)}" width="22" height="22" preserveAspectRatio="xMidYMid slice" clip-path="url(#prm-rail-clip)"/>` : '')
+          + '</g>';
+      }
+      for (const [t, c] of more) {
+        const cx = Math.min(Math.max(t.x, R + 1), box.W - R - 1), cy = base0 - MAX * STEP;
+        s += `<g class="pt-shot prm-rail-more" data-z="${((t.x - box.PL) / iw).toFixed(3)}"><title>${chartEsc(`${c} more at this score. Zoom in to spread them out`)}</title>`
+          + `<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${R}"/><text x="${cx.toFixed(1)}" y="${(cy + 4).toFixed(1)}" text-anchor="middle">+${c}</text></g>`;
+      }
       const el = h('div', { class:'prm-rail' },
         h('div', { class:'prm-legend' }, h('span', { class:'prm-rail-key', 'aria-hidden':'true' }),
-          `Future class, ${dots.length} not drafted yet: stacked by score only, since no NFL result gives them a height.`),
+          `Future class, ${n} not drafted yet: stacked by score only, since no NFL result gives them a height.${more.size ? ' Tap a +N stack to zoom in.' : ''}`),
         h('div', { html:s + '</svg>' }));
-      el.addEventListener('click', (e) => { const m = e.target.closest && e.target.closest('[data-f]'); if (m) open(fut[Number(m.dataset.f)]); });
+      el.addEventListener('click', (e) => {
+        const z = e.target.closest && e.target.closest('[data-z]');
+        if (z) return zoomAt(3, Number(z.dataset.z), 0.5);
+        const m = e.target.closest && e.target.closest('[data-f]'); if (m) open(fut[Number(m.dataset.f)]);
+      });
       return el;
     }
     const plot = () => chartScatter(pts, { key:'_x', label:'Prospect score' }, { key:'_y', label:'PPG over replacement', fmt:'dec1' }, {
