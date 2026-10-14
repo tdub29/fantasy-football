@@ -2468,15 +2468,18 @@
       ));
       // ponytail: the sims (Max PF included) are the slow part, so the table paints first and
       // each league fills on its own tick. oddsFor caches, so the league pages reuse them.
-      rowsData.forEach(d => setTimeout(() => {
-        const f = d.lg.projection_unavailable ? { ok: false, reason: 'Projections unavailable.' } : standingsForecast(d.lg);
+      // One league at a time, each run sliced (championshipOddsAsync), so the page stays live.
+      (async () => { for (const d of rowsData) {
+        let f;
+        try { f = d.lg.projection_unavailable ? { ok: false, reason: 'Projections unavailable.' } : await standingsForecast(d.lg, { async: true }); }
+        catch (e) { console.error(e); f = { ok: false, reason: 'Forecast failed.' }; }
         const o = f.ok && f.rows.get(d.me.roster_id);
         for (const [k, el] of Object.entries(d.odds)) {
           const show = o && (k !== 'first' || f.rookie);
           el.textContent = show ? forecastPct(o[k]) : '·';
           el.title = show ? '' : f.ok ? 'No rookie-order rule modeled here.' : f.reason || 'No forecast.';
         }
-      }));
+      } })();
     }
     if (hiddenLgs.length) main.appendChild(h('p', { class:'source-note' }, 'Hidden: ',
       ...hiddenLgs.map(lg => h('button', { class:'ghost', title:'Show this league again', onclick:() => toggleLeagueHidden(lg) }, `${lg.name.trim()} ↺`))));
@@ -2618,26 +2621,35 @@
   // as null) instead of just the filled assets. The Draft Room needs it to draw
   // an empty QB row in the QB slot rather than inferring which slots are missing
   // by diffing a compacted list, which cannot tell two identical slots apart.
+  // Each position's eligible slot indices, dedicated slots before flex ones, in
+  // roster order. Built once per slots array: the simulator fills about 10 million
+  // lineups a run, and rescanning every slot for every bench body was a third of it.
+  // Keyed on length too, so a slots array still being built never reads stale.
+  const SLOT_ORDER = new WeakMap();
+  function slotOrder(slots) {
+    let o = SLOT_ORDER.get(slots);
+    if (o && o.n === slots.length) return o.m;
+    const m = new Map();
+    for (let pass = 0; pass < 2; pass++) {
+      slots.forEach((s, i) => {
+        if (s.flex !== (pass === 1)) return;
+        for (const pos of SLOT_TAKES[s.pos] || []) (m.get(pos) || m.set(pos, []).get(pos)).push(i);
+      });
+    }
+    SLOT_ORDER.set(slots, { n: slots.length, m });
+    return m;
+  }
   function fillLineup(assets, slots, presorted = false, bySlot = false) {
     const sorted = presorted ? assets : assets.slice().sort((a, b) => b.v - a.v);
-    const n = slots.length;
+    const n = slots.length, order = slotOrder(slots);
     const filled = new Array(n).fill(null);
     let count = 0, picks = 0;
     for (const a of sorted) {
       if (count === n) break;
       if (a.pos === 'PICK') { picks++; count++; continue; }
-      let best = -1;
-      // Two passes over the slots in roster order: a dedicated slot before a
-      // flex one. Walking the slots directly (rather than building and sorting
-      // a candidate list per asset) keeps this allocation-free.
-      for (let pass = 0; pass < 2 && best < 0; pass++) {
-        for (let i = 0; i < n; i++) {
-          if (filled[i] || slots[i].flex !== (pass === 1)) continue;
-          if (!(SLOT_TAKES[slots[i].pos] || []).includes(a.pos)) continue;
-          best = i; break;
-        }
-      }
-      if (best >= 0) { filled[best] = a; count++; }
+      const idx = order.get(a.pos);
+      if (!idx) continue;
+      for (let k = 0; k < idx.length; k++) if (!filled[idx[k]]) { filled[idx[k]] = a; count++; break; }
     }
     // Seat the reserved picks, best first, in the open slots, flex first.
     for (const a of sorted) {
@@ -2943,7 +2955,13 @@
     // Rank by STARTING-lineup strength (best-K), not sum of every rostered player, // total-value rewards hoarding depth and buries a strong-starters/thin team.
     // Redraft has no asset value to rank, so its strength is the season sims' points
     // per remaining week (ROS weekly lines, byes, injuries) whenever the forecast runs.
-    const forecast = standingsForecast(lg);
+    // A cold run paints the table without odds and re-renders once the sims land.
+    let forecast = standingsForecast(lg, { async: true });
+    if (forecast instanceof Promise) {
+      const at = location.hash;
+      forecast.then(() => { if (location.hash === at) viewLeague(leagueId, tabArg); }, e => console.error(e));
+      forecast = { ok: false, reason: 'still simulating, fills in shortly' };
+    }
     const ppwOf = id => forecast.ok ? forecast.rows.get(id).ppw : null;
     const byPts = !lgDynasty && computed.every(c => Number.isFinite(ppwOf(c.r.roster_id)));
     computed.sort((a,b) => lgDynasty && forecast.ok ? forecast.rows.get(b.r.roster_id).title - forecast.rows.get(a.r.roster_id).title : byPts ? ppwOf(b.r.roster_id) - ppwOf(a.r.roster_id) : b.st - a.st);
@@ -13319,7 +13337,9 @@
       document.querySelector('script[src*="js/app.js"]')?.getAttribute('src')]);
     return `${simKey(1, s)}.${simKey(2, s)}`;
   }
-  function oddsFor(lg, src, whatIf, sims) {
+  // `async` runs a miss on championshipOddsAsync and returns a promise; a hit stays sync.
+  // ponytail: a sync caller landing mid async run computes its own copy, add a pending map if that shows up.
+  function oddsFor(lg, src, whatIf, sims, async = false) {
     const key = `${lg.id}|${src}|${sims}|${[...whatIf].sort().join(',')}`;
     if (ODDS_CACHE.has(key)) return ODDS_CACHE.get(key);
     const me = (lg.rosters || []).find(r => r.is_me);
@@ -13333,12 +13353,14 @@
         res.meta = hit.meta;
       }
     } catch {}
-    if (!res) {
-      res = championshipOdds(lg, { sims, src, whatIf: wi, withMaxPf: isDynastyLeague(lg) });
+    const done = res => {
       if (print) try { localStorage.setItem(ODDS_STORE + key, JSON.stringify({ print, rows: res.map(({ roster, ...o }) => o), meta: res.meta })); } catch {}
-    }
-    ODDS_CACHE.set(key, res);
-    return res;
+      ODDS_CACHE.set(key, res);
+      return res;
+    };
+    if (res) { ODDS_CACHE.set(key, res); return res; }
+    const opts = { sims, src, whatIf: wi, withMaxPf: isDynastyLeague(lg) };
+    return async ? championshipOddsAsync(lg, opts).then(done) : done(championshipOdds(lg, opts));
   }
   const PROJ_SRC_LABEL = { blend: 'Blended', pp: 'PrizePicks', sleeper: 'Sleeper', clay: 'Clay' };
   const STAT_LABEL = {
@@ -14078,7 +14100,20 @@
   function seasonSrc(lg, yearsOut = 0) {
     return isDynastyLeague(lg) && (yearsOut || !rosPointsByPid(lg).size) ? 'blend' : 'ros';
   }
-  function championshipOdds(lg, { sims = 4000, src = null, whatIf = null, seed = 20260807, yearsOut = 0, strengthRanks = null, champions = null, withMaxPf = false } = {}) {
+  function championshipOdds(lg, opts) {
+    const run = championshipRun(lg, opts);
+    let r; while (!(r = run.next()).done);
+    return r.value;
+  }
+  // The same run handed back to the browser every ~30 ms. A cold run with Max PF is
+  // 5 to 18 s a league, and blocking that long froze every click on the page.
+  async function championshipOddsAsync(lg, opts) {
+    const run = championshipRun(lg, opts);
+    let r, t = performance.now();
+    while (!(r = run.next()).done) if (performance.now() - t > 30) { await new Promise(res => setTimeout(res)); t = performance.now(); }
+    return r.value;
+  }
+  function* championshipRun(lg, { sims = 4000, src = null, whatIf = null, seed = 20260807, yearsOut = 0, strengthRanks = null, champions = null, withMaxPf = false } = {}) {
     const rosters = lg.rosters || [];
     const n = rosters.length;
     if (!n) return [];
@@ -14140,6 +14175,7 @@
     }
 
     for (let s = 0; s < sims; s++) {
+      if (s % 50 === 49) yield;
       const wins = rosters.map(r => played ? (r.wins || 0) + (r.ties || 0) / 2 : 0);
       const ties = rosters.map(r => played ? (r.ties || 0) : 0);
       const pts = rosters.map(r => played ? (r.fpts || 0) : 0);
@@ -14235,7 +14271,9 @@
   }
 
   // Reuse the same cached run as Projections. Ties remain a separate record term.
-  function standingsForecast(lg, { sims = 4000 } = {}) {
+  // `async: true` returns a promise when the sims still have to run, so a page can
+  // paint first and fill the forecast in without freezing.
+  function standingsForecast(lg, { sims = 4000, async = false } = {}) {
     const fw = forecastWeeks(lg);
     if (!fw.ok) return fw;
     const src = seasonSrc(lg);
@@ -14252,7 +14290,9 @@
       if (fillLineup(eligible, slots).length < fillLineup(bodies, slots).length)
         return { ...fw, ok: false, reason: 'Weekly lineup coverage is incomplete.' };
     }
-    const res = oddsFor(lg, src, [], sims), meta = res.meta || {};
+    const res = oddsFor(lg, src, [], sims, async);
+    if (res instanceof Promise) return res.then(() => standingsForecast(lg, { sims }));
+    const meta = res.meta || {};
     if (meta.played !== fw.completed || meta.teams !== fw.teams)
       return { ...fw, ok: false, reason: 'Simulation and completed records do not match.' };
     const rows = new Map();
