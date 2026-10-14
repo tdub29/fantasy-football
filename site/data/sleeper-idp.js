@@ -13,7 +13,7 @@
       "id": "sleeper-idp-2026",
       "title": "Sleeper IDP Usage Rankings (2026)",
       "url": "https://sleeper.com/research",
-      "publishedAt": "2026-10-10",
+      "publishedAt": "2026-10-13",
       "format": "idp",
       "defaultEnabled": true,
       "players": [
@@ -109,7 +109,7 @@
           "name": "T.J. Watt",
           "pos": "LB",
           "team": "PIT",
-          "age": 31,
+          "age": 32,
           "category": "cornerstone",
           "tier": "B",
           "ktcValue": 5752,
@@ -1473,7 +1473,7 @@
           "name": "James Pearce",
           "pos": "DL",
           "team": "ATL",
-          "age": 22,
+          "age": 23,
           "category": "mainstay",
           "tier": "S",
           "ktcValue": 56,
@@ -1602,7 +1602,7 @@
           "note": "Sleeper: started 4.3%, owned 9.8%. DB39 by usage."
         },
         {
-          "name": "Cam Bynum",
+          "name": "Camryn Bynum",
           "pos": "DB",
           "team": "IND",
           "age": 28,

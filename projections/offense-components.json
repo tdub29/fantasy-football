@@ -71,8 +71,19 @@
     "fum_lost": 3.0,
     "pass_2pt": 1.0
    },
-   "pp_stats": null,
-   "pp_borrowed": []
+   "pp_stats": {
+    "pass_yd": 2895.0,
+    "pass_td": 13.0,
+    "pass_int": 8.0,
+    "rush_yd": 94.0,
+    "rush_td": 1.0
+   },
+   "pp_borrowed": [
+    "pass_td",
+    "pass_int",
+    "rush_yd",
+    "rush_td"
+   ]
   },
   {
    "sleeper_id": "11560",
@@ -871,16 +882,14 @@
     "pass_2pt": 1.0
    },
    "pp_stats": {
-    "pass_yd": 213.5,
-    "rush_yd": 40.5,
-    "pass_td": 27.0,
-    "pass_int": 8.0,
-    "rush_td": 5.0
+    "pass_yd": 3249.5,
+    "rush_yd": 565.98,
+    "pass_td": 24.63,
+    "rush_td": 3.72,
+    "pass_int": 8.0
    },
    "pp_borrowed": [
-    "pass_td",
-    "pass_int",
-    "rush_td"
+    "pass_int"
    ]
   },
   {
@@ -898,15 +907,14 @@
     "pass_2pt": 1.0
    },
    "pp_stats": {
-    "pass_yd": 215.5,
-    "rush_yd": 16.5,
-    "pass_td": 1.5,
-    "pass_int": 13.0,
-    "rush_td": 2.0
+    "pass_yd": 3500.5,
+    "rush_yd": 309.5,
+    "pass_td": 25.2,
+    "rush_td": 1.68,
+    "pass_int": 13.0
    },
    "pp_borrowed": [
-    "pass_int",
-    "rush_td"
+    "pass_int"
    ]
   },
   {
@@ -1008,7 +1016,7 @@
     "pass_yd": 2989.49,
     "rush_yd": 375.5,
     "pass_td": 17.86,
-    "rush_td": 4.3,
+    "rush_td": 4.27,
     "pass_int": 10.0
    },
    "pp_borrowed": [
@@ -1349,7 +1357,7 @@
   {
    "sleeper_id": "829",
    "name": "Andy Dalton",
-   "team": "PHI",
+   "team": null,
    "pos": "QB",
    "sleeper_stats": {
     "pass_yd": 208.0,
@@ -2330,13 +2338,14 @@
     "fum_lost": 1.0
    },
    "pp_stats": {
-    "rush_yd": 697.01,
+    "rush_yd": 36.5,
     "rec_yd": 7.5,
     "rec": 1.5,
-    "rush_td": 5.4,
+    "rush_td": 5.0,
     "rec_td": 1.0
    },
    "pp_borrowed": [
+    "rush_td",
     "rec_td"
    ]
   },
@@ -2393,14 +2402,13 @@
     "fum_lost": 1.0
    },
    "pp_stats": {
-    "rush_yd": 37.5,
+    "rush_yd": 650.5,
     "rec_yd": 10.5,
-    "rush_td": 6.0,
+    "rush_td": 4.76,
     "rec": 23.0,
     "rec_td": 1.0
    },
    "pp_borrowed": [
-    "rush_td",
     "rec",
     "rec_td"
    ]
@@ -2919,7 +2927,7 @@
    "pp_stats": {
     "rush_yd": 16.5,
     "rec_yd": 12.5,
-    "rush_td": 4.08,
+    "rush_td": 8.0,
     "rec": 20.0,
     "rec_td": 1.0
    },
@@ -3061,15 +3069,13 @@
     "rush_2pt": 1.0
    },
    "pp_stats": {
-    "rush_yd": 79.5,
-    "rec_yd": 10.5,
+    "rush_yd": 1075.5,
+    "rec_yd": 350.5,
     "rec": 2,
-    "rush_td": 0.5,
-    "rec_td": 2.0
+    "rush_td": 7.83,
+    "rec_td": 2.67
    },
-   "pp_borrowed": [
-    "rec_td"
-   ]
+   "pp_borrowed": []
   },
   {
    "sleeper_id": "5850",
@@ -3717,16 +3723,14 @@
     "fum_lost": 2.0
    },
    "pp_stats": {
-    "rush_yd": 66.5,
-    "rec_yd": 18.5,
-    "rush_td": 6.0,
-    "rec": 37.0,
-    "rec_td": 2.0
+    "rush_yd": 900.5,
+    "rec_yd": 325.5,
+    "rush_td": 5.3,
+    "rec_td": 2.67,
+    "rec": 37.0
    },
    "pp_borrowed": [
-    "rush_td",
-    "rec",
-    "rec_td"
+    "rec"
    ]
   },
   {
@@ -4070,8 +4074,19 @@
     "rec_td": 1.0,
     "fum_lost": 1.0
    },
-   "pp_stats": null,
-   "pp_borrowed": []
+   "pp_stats": {
+    "rush_td": 6.17,
+    "rush_yd": 264.0,
+    "rec": 11.0,
+    "rec_yd": 78.0,
+    "rec_td": 1.0
+   },
+   "pp_borrowed": [
+    "rush_yd",
+    "rec",
+    "rec_yd",
+    "rec_td"
+   ]
   },
   {
    "sleeper_id": "9757",
@@ -4544,7 +4559,7 @@
   {
    "sleeper_id": "11628",
    "name": "Marvin Harrison",
-   "team": "ARI",
+   "team": "HOU",
    "pos": "WR",
    "sleeper_stats": {
     "rec": 62.0,
@@ -5409,8 +5424,16 @@
     "rec_yd": 567.0,
     "rec_td": 4.0
    },
-   "pp_stats": null,
-   "pp_borrowed": []
+   "pp_stats": {
+    "rec_yd": 421.46,
+    "rec_td": 3.33,
+    "rush_yd": 14.0,
+    "rec": 45.0
+   },
+   "pp_borrowed": [
+    "rush_yd",
+    "rec"
+   ]
   },
   {
    "sleeper_id": "13279",
@@ -5445,8 +5468,16 @@
     "rec_yd": 514.0,
     "rec_td": 3.0
    },
-   "pp_stats": null,
-   "pp_borrowed": []
+   "pp_stats": {
+    "rec_yd": 770.58,
+    "rec_td": 4.55,
+    "rush_yd": 6.0,
+    "rec": 41.0
+   },
+   "pp_borrowed": [
+    "rush_yd",
+    "rec"
+   ]
   },
   {
    "sleeper_id": "13285",
@@ -5856,8 +5887,15 @@
     "rec_yd": 584.0,
     "rec_td": 4.0
    },
-   "pp_stats": null,
-   "pp_borrowed": []
+   "pp_stats": {
+    "rec_yd": 644.97,
+    "rec": 46.0,
+    "rec_td": 4.0
+   },
+   "pp_borrowed": [
+    "rec",
+    "rec_td"
+   ]
   },
   {
    "sleeper_id": "13420",
@@ -5961,7 +5999,7 @@
    },
    "pp_stats": {
     "rec_yd": 5.5,
-    "rec_td": 0.21,
+    "rec_td": 2.29,
     "rec": 10.0
    },
    "pp_borrowed": [
@@ -6046,14 +6084,13 @@
     "rec_td": 4.0
    },
    "pp_stats": {
-    "rec_yd": 46.5,
+    "rec_yd": 749.5,
     "rec": 4.5,
-    "rush_yd": 6.0,
-    "rec_td": 4.0
+    "rec_td": 4.81,
+    "rush_yd": 6.0
    },
    "pp_borrowed": [
-    "rush_yd",
-    "rec_td"
+    "rush_yd"
    ]
   },
   {
@@ -6498,8 +6535,16 @@
     "rec_td": 5.0,
     "rec_2pt": 1.0
    },
-   "pp_stats": null,
-   "pp_borrowed": []
+   "pp_stats": {
+    "rec_yd": 1124.5,
+    "rec_td": 7.3,
+    "rush_yd": 5.0,
+    "rec": 54.0
+   },
+   "pp_borrowed": [
+    "rush_yd",
+    "rec"
+   ]
   },
   {
    "sleeper_id": "5872",
@@ -6773,13 +6818,14 @@
     "rec_td": 4.0
    },
    "pp_stats": {
-    "rec_yd": 725.5,
+    "rec_yd": 34.5,
     "rec": 3.5,
-    "rec_td": 4.34,
-    "rush_yd": 7.0
+    "rush_yd": 7.0,
+    "rec_td": 4.0
    },
    "pp_borrowed": [
-    "rush_yd"
+    "rush_yd",
+    "rec_td"
    ]
   },
   {
@@ -6905,15 +6951,14 @@
     "rec_td": 7.0
    },
    "pp_stats": {
-    "rec_yd": 60.5,
+    "rec_yd": 1055.32,
+    "rec_td": 5.67,
     "rush_yd": 6.0,
-    "rec": 80.0,
-    "rec_td": 7.0
+    "rec": 80.0
    },
    "pp_borrowed": [
     "rush_yd",
-    "rec",
-    "rec_td"
+    "rec"
    ]
   },
   {
@@ -6990,8 +7035,8 @@
    "pp_stats": {
     "rec_yd": 1323.02,
     "rec": 6.5,
-    "rush_yd": 11.5,
-    "rec_td": 10.12
+    "rec_td": 10.12,
+    "rush_yd": 11.5
    },
    "pp_borrowed": []
   },
@@ -7436,7 +7481,7 @@
   {
    "sleeper_id": "8200",
    "name": "Kevin Austin",
-   "team": "NO",
+   "team": null,
    "pos": "WR",
    "sleeper_stats": {
     "rush_yd": 1.0,
