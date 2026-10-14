@@ -27,6 +27,8 @@
       if (c == null || c === false) continue;
       el.appendChild(c.nodeType ? c : document.createTextNode(String(c)));
     }
+    // A placeholder vanishes once typed into, so a field labelled only by it gets a real name.
+    if (el.placeholder && !el.hasAttribute('aria-label')) el.setAttribute('aria-label', el.placeholder.split('\n')[0].replace(/…$/, ''));
     return el;
   };
   // Player headshot from Sleeper's public CDN, keyed by the same Sleeper id the
@@ -1763,7 +1765,7 @@
         h('div', { class:'heatmap-cell heatmap-overallcell tnum', dataset:{ gradeKey:'Overall', grade:String(overall) }, style:{ color: overallColor } }, overall.toFixed(1)),
       ));
     }
-    main.appendChild(heatmap);
+    main.appendChild(gridRoles(heatmap, 'Positional grades by league'));
     } // end overview tab (heatmap)
 
     if (tab === 'trajectory') {
@@ -4898,6 +4900,16 @@
     return draft != null ? lineup * 0.75 + bench * 0.15 + draft * 0.10 : lineup * (0.75 / 0.90) + bench * (0.15 / 0.90);
   }
   const gradeColor = (v) => v >= 7.5 ? 'var(--green)' : v >= 5.5 ? 'var(--amber)' : v >= 3.5 ? 'var(--cat-vet)' : 'var(--red)';
+  // The heatmap is a div grid, so screen readers get table roles: header row, team/league
+  // cell names its row. tabindex lets a keyboard scroll it where it overflows on a phone.
+  function gridRoles(grid, label) {
+    Object.entries({ role:'table', 'aria-label':label, tabindex:'0' }).forEach(([k, v]) => grid.setAttribute(k, v));
+    grid.querySelectorAll('.heatmap-row').forEach((row, i) => {
+      row.setAttribute('role', 'row');
+      [...row.children].forEach((c, j) => c.setAttribute('role', i === 0 ? 'columnheader' : j === 0 ? 'rowheader' : 'cell'));
+    });
+    return grid;
+  }
   // Bar cell sized and tinted by grade. `pop` is an optional hover list; tabindex lets a phone tap open it.
   function heatGradeCell(key, val, league, pop) {
     if (val == null) return h('div', { class:'heatmap-cell heatmap-grade', dataset:{ gradeKey:key, grade:'na' }, title:'Not used in redraft' },
@@ -9193,6 +9205,7 @@
             h('div', { class:'heatmap-leaguename' }, t.r.team_name, t.r.is_me ? h('span', { class:'badge you', style:{ marginLeft:'6px' } }, 'YOU') : null)),
           ...GRADE_KEYS.map(k => heatGradeCell(k, t.g[k], lg, t.g[k] == null ? null : pop(t, k))),
           h('div', { class:'heatmap-cell heatmap-overallcell tnum', style:{ color: gradeColor(t.overall) } }, t.overall.toFixed(1)))));
+      gridRoles(grid, 'Positional grades by team');
     };
     draw();
     return wrap;
@@ -15470,6 +15483,10 @@
       + `Arrow width is targets; color is the metric's percentile among players at his position with ${RT_POOL_MIN}+ targets that season (${LOC_LEGEND}). `
       + `A rate needs ${RT_ROUTE_MIN}+ targets on the route or it reads DNQ. Out is quick out plus deep out. `
       + `Not here: separation, route win rate and routes run by route (so route share, TPRR and YPRR by route), which need every route charted and only paid vendors chart that.`));
+    main.appendChild(statsColumnKey([['tgt', 'Targets: passes thrown his way.'], ['Y/Tgt', 'Receiving yards per target.'],
+      ['aDOT', 'Average depth of target: air yards per target.'], ['EPA/tgt', 'Expected points added per target.'],
+      ['DNQ', `Did not qualify: under ${RT_ROUTE_MIN} targets on the route, too few to rank.`],
+      ['TPRR', 'Targets per route run.'], ['YPRR', 'Yards per route run.']].map(([label, desc]) => ({ label, desc }))));
   }
 
   // The player card's link: tile A becomes this player, on his newest tree.
@@ -16957,7 +16974,8 @@
     const main = $('#main'); main.innerHTML = '';
     const G = window.SOS_GRID;
     if (!G) { main.appendChild(h('div', { class: 'empty' }, 'sos-grid.js not loaded, run build_sos_grid.py.')); return; }
-    if (posArg && G.positions.includes(posArg.toUpperCase())) SOS_GRID_POS = posArg.toUpperCase();
+    const badPos = posArg && !G.positions.includes(posArg.toUpperCase()) ? posArg : null;
+    if (posArg && !badPos) SOS_GRID_POS = posArg.toUpperCase();
     const pos = SOS_GRID_POS, n = G.n_def, WEEKS = Array.from({ length: 18 }, (_, i) => i + 1);
     const season = (G.basis || {}).current_season || (window.ADVANCED || {}).season;   // every cell opens its game page
     // Current week: the live Sleeper pull, else the build's Sleeper state; only
@@ -16980,6 +16998,7 @@
     main.appendChild(h('div', { class: 'page-header' }, h('div', null,
       h('h1', { class: 'page-title' }, 'Season SOS by Position'),
       h('p', { class: 'page-sub' }, `Each cell is the opponent and its defense rank vs ${pos}: 1 of ${n} allows the fewest PPR (toughest, red), ${n} the most (easiest, green). Defense data: ${G.season}.`))));
+    if (badPos) main.appendChild(h('div', { class:'tip', role:'status' }, `"${badPos}" is not a position here, so this shows ${pos}. Pick one of ${G.positions.join(', ')}.`));
 
     // position tabs
     const tabs = h('div', { class:'sos-position-tabs', role:'group', 'aria-label':'Position' });
@@ -17052,7 +17071,7 @@
         }))
       ))
     );
-    main.appendChild(h('div', { style: { overflowX: 'auto' } }, tbl));
+    main.appendChild(h('div', { style: { overflowX: 'auto' }, role:'region', 'aria-label':'Matchup grid, scrolls sideways', tabindex:'0' }, tbl));
     main.appendChild(h('div', { class: 'tip', style: { marginTop: '10px' } },
       `Matchup colors: ${G.note || `${G.season} PPR allowed`}. SOS rank #1 = easiest selected window. SOS = average opponent rank over ${win.label}, higher = easier for ${pos}s; byes and unavailable games are left out. This ranks matchups, not expected points. Faded weeks are outside the window.`));
     // The defender's mirror of this grid: which offences feed IDP starters, in the
@@ -18555,7 +18574,9 @@
       }
       if (focused) { searchBox.focus(); try { searchBox.setSelectionRange(caret, caret); } catch {} }
 
+      const sortLabels = {};
       const sortHdr = (key, label, opts = {}) => {
+        sortLabels[key] = label;
         const active = view.sort === key;
         const arrow = active ? (view.dir === 'desc' ? ' ↓' : ' ↑') : '';
         return h('th', {
@@ -18691,8 +18712,8 @@
       // The tray bar carries whichever summary matches the open tab.
       drawerSub.textContent = view.tab === 'avail'
         ? `${shown.length} available${shown.length > list.length ? `, top ${list.length} shown` : ''}`
-          + ` · sorted by ${String(view.sort).replace('xr:', '')}`
-          + ` · ADP ${adp ? adpKey.replace('adp_', '') : 'loading'}`
+          + ` · sorted by ${sortLabels[view.sort] || String(view.sort).replace('xr:', '')}`
+          + ` · ADP ${adp ? adpKey.replace('adp_', '').replace(/_/g, ' ').replace(/(ppr|qb|idp|std)\b/g, s => s.toUpperCase()) : 'loading'}`
         : teamSummary;
       applyDrawer();
       const refocus = focusPid;
