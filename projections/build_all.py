@@ -37,8 +37,8 @@ STEPS = [
     ("player info (contracts)",    SITE_DATA / "build_player_info.py",    True),
     # (Jacob Gibbs ranks are a manual import — build_jacob_gibbs.py takes an input
     #  file arg, so it's not part of the automated rebuild.)
-    # opens a real headed Chrome for ~15s on purpose -- headless gets a DataDome 403.
-    ("PrizePicks weekly board",    PROJ / "grab_prizepicks_browser.py",   True),
+    # PrizePicks weekly board left the pipeline 2026-10-14: DataDome blocked most
+    # grabs, and a stale board fed last week's lines into this week.
     ("season props (9-book market)", PROJ / "fetch_season_props.py",      True),
     ("offense components",         PROJ / "build_offense_components.py",  True),
     ("score offense",              PROJ / "score_offense.py",             True),

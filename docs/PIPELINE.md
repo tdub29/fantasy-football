@@ -51,7 +51,7 @@ trap lives here.
   grab leaves the previous board on disk untouched and `build_all.py` reports 15/16 rather
   than pretending, which is the intended behaviour.
 - **The PrizePicks browser dump is scripted now**: `projections/grab_prizepicks_browser.py`,
-  in the pipeline. It opens a real **headed** Chrome for ~15s, lets DataDome's script set its
+  run by hand only: it left `build_all.py` 2026-10-14 after failing most runs. It opens a real **headed** Chrome for ~15s, lets DataDome's script set its
   cookie, then fetches the JSON:API from inside the page and pipes it to `fetch_prizepicks.py`.
   **Do not "optimize" it to headless**: verified 2026-08-18 that the identical code headless
   gets a `geo.captcha-delivery.com` 403 while headed returns 200 / 1351 rows. The visible

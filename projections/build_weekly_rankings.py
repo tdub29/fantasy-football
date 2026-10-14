@@ -222,41 +222,6 @@ def bettingpros_props(season, week):
     return props
 
 
-# PrizePicks weekly singles. A flat pick-em line with no price, so there is no vig
-# to remove and market_mean does not apply: the line IS the mean, shaded a few
-# percent toward the house. That makes it strictly worse than a devigged
-# BettingPros consensus and strictly better than a Sleeper model number, so it
-# sits between them. Never devig one of these against anything.
-PRIZEPICKS_WEEKLY = pathlib.Path(__file__).parent / "prizepicks-nfl-weekly-lines.json"
-PRIZEPICKS_MARKETS = {
-    "Pass Yards": "pass_yd", "Pass TDs": "pass_td", "INT": "pass_int",
-    "Rush Yards": "rush_yd", "Rush TDs": "rush_td",
-    "Receiving Yards": "rec_yd", "Rec TDs": "rec_td", "Receptions": "rec",
-}
-
-
-def prizepicks_stats(players):
-    """pid -> {stat: line} from the PrizePicks weekly board, offense singles only."""
-    if not PRIZEPICKS_WEEKLY.exists():
-        return {}
-    rows = json.loads(PRIZEPICKS_WEEKLY.read_text(encoding="utf-8")).get("players") or []
-    index = player_name_index(players)
-    out = {}
-    for row in rows:
-        name = row.get("player") or ""
-        # A combo prop names two players and prices neither one alone.
-        if "+" in name:
-            continue
-        pid = resolve_player(index, players, name, row.get("pos"), row.get("team"))
-        if not pid:
-            continue
-        stats = {PRIZEPICKS_MARKETS[k]: v for k, v in (row.get("lines") or {}).items()
-                 if k in PRIZEPICKS_MARKETS and v is not None}
-        if stats:
-            out.setdefault(pid, {}).update(stats)
-    return out
-
-
 def vegas_projection(props, players, sleeper_stats, week, pp_stats=None):
     index = player_name_index(players)
     market_stats = {}
@@ -561,10 +526,9 @@ def main():
 
     print(f"BettingPros props: week {current_week}")
     props = bettingpros_props(season, current_week)
-    pp_stats = prizepicks_stats(players)
     vegas, vegas_borrowed, vegas_borrowed_share, vegas_components = vegas_projection(
-        props, players, stats, current_week, pp_stats)
-    print(f"  {len(props)} props, {len(pp_stats)} players on the PrizePicks board, "
+        props, players, stats, current_week)
+    print(f"  {len(props)} props, "
           f"{len(vegas)} player point projections")
 
     try:
@@ -666,7 +630,7 @@ def main():
         },
         "coverage": {
             "sleeperPlayers": len(output_players), "bettingProsProps": len(props),
-            "vegasPlayers": len(vegas), "prizePicksPlayers": len(pp_stats),
+            "vegasPlayers": len(vegas),
             "ecrPlayers": len(ecr), "gibbsPlayers": len(gibbs),
             "rosPlayers": len(ros), "gibbsRosPlayers": len(gibbs_ros),
             "ecr": ecr_meta, "gibbs": gibbs_meta, "ros": ros_meta, "gibbsRos": gibbs_ros_meta,
