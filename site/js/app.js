@@ -1264,7 +1264,6 @@
   function pageHeader({ eyebrow, title, sub, actions, badge }) {
     return h('div', { class:'page-header' },
       h('div', null,
-        eyebrow ? h('div', { class:'page-eyebrow' }, eyebrow) : null,
         h('h1', { class:'page-title' }, title, badge ? h('span', { class:'page-title-badge' }, badge) : null),
         sub ? h('p', { class:'page-sub' }, sub) : null
       ),
@@ -1663,7 +1662,6 @@
 
     main.appendChild(h('div', { class:'page-header' },
       h('div', null,
-        h('div', { class:'page-eyebrow' }, 'OVERVIEW'),
         h('h1', { class:'page-title' }, 'Dashboard'),
         h('p', { class:'page-sub' }, 'All leagues, roster strength, and weekly decisions in one place.')
       )
@@ -2071,7 +2069,6 @@
     main.innerHTML = '';
     main.appendChild(h('div', { class:'page-header' },
       h('div', null,
-        h('div', { class:'page-eyebrow' }, 'PLAYERS'),
         h('h1', { class:'page-title' }, 'My Rankings'),
         h('p', { class:'page-sub' }, 'Your saved player order, seeded from Gibbs full-PPR. Edit ranks here without starting a draft.')
       ),
@@ -2294,7 +2291,6 @@
     main.innerHTML = '';
     main.appendChild(h('div', { class:'page-header' },
       h('div', null,
-        h('div', { class:'page-eyebrow' }, 'PLAYERS'),
         h('h1', { class:'page-title' }, 'All Players'),
         h('p', { class:'page-sub' }, 'Searchable Sleeper player database, overlaid with your enabled rankings.')
       )
@@ -5382,16 +5378,16 @@
         h('div', { class:'br-grade-bar' },
           h('div', { class:'br-grade-fill', style:{ width: Math.max(2, overall*10) + '%', background: overallColor } }),
         ),
+        r.is_me && tab === 'snapshot' ? h('label', { class:'tank-meter', title:'How hard you are tanking here. What to Look For counts this league at (100 - N)% of its buy-in; 100% drops it.' },
+          'Tankometer',
+          h('input', { type:'range', min:'0', max:'100', step:'5', value:String(tankOf(lg)), 'aria-label':'Tankometer percent',
+            oninput:e => { e.target.nextSibling.textContent = `${e.target.value}%`; },
+            onchange:e => setTank(lg, e.target.value) }),
+          h('span', { class:'tnum' }, `${tankOf(lg)}%`)) : null,
       ),
     ));
 
     if (tab === 'snapshot') {
-    if (r.is_me) main.appendChild(h('label', { class:'tank-meter', title:'How hard you are tanking here. What to Look For counts this league at (100 - N)% of its buy-in; 100% drops it.' },
-      'Tankometer',
-      h('input', { type:'range', min:'0', max:'100', step:'5', value:String(tankOf(lg)), 'aria-label':'Tankometer percent',
-        oninput:e => { e.target.nextSibling.textContent = `${e.target.value}%`; },
-        onchange:e => setTank(lg, e.target.value) }),
-      h('span', { class:'tnum' }, `${tankOf(lg)}%`)));
     // ===== Per-slot grade circles =====
     // Each starting lineup slot gets its own circular grade. The league's
     // roster_positions drives the slot list (QB1, RB1, RB2, WR1, WR2, TE1,
@@ -7247,11 +7243,11 @@
     if ((D.unmappedScoringKeys || []).length) {
       // A scoring rule with no stat behind it scores zero here, and saying so is
       // the difference between a caveat and a quiet error.
-      wrap.appendChild(h('p', { class: 'tip faab-note' },
-        `${D.unmappedScoringKeys.join(', ')} `
-        + `${D.unmappedScoringKeys.length === 1 ? 'is a scoring rule' : 'are scoring rules'} `
-        + 'in this league with no matching stat in the source, so they contribute '
-        + 'nothing to these numbers. Fumble recoveries are the notable gap.'));
+      const statName = k => ({ idp_fum_rec: 'fumble recoveries', idp_fum_ret_yd: 'fumble return yards' })[k]
+        || k.replace(/^idp_/, '').replace(/_/g, ' ');
+      wrap.appendChild(h('p', { class: 'tip faab-note on-turf' },
+        `This league scores ${D.unmappedScoringKeys.map(statName).join(', ')}, which the source does not track, `
+        + 'so they add nothing to these numbers.'));
     }
     return wrap;
   }
@@ -7261,7 +7257,6 @@
     main.innerHTML = '';
     main.appendChild(h('div', { class:'page-header' },
       h('div', null,
-        h('div', { class:'page-eyebrow' }, 'REFERENCE'),
         h('h1', { class:'page-title' }, 'Sources'),
         h('p', { class:'page-sub' }, 'Choose which analysts inform your aggregated rankings. Toggle individual videos within each source.')
       )
@@ -8992,7 +8987,9 @@
       wrap.appendChild(h('div', { class:'card-title' }, 'Who you trade with'));
       if (!data.partners.length) {
         wrap.appendChild(h('div', { class:'tip' },
-          `No completed trades of yours in ${data.seasons.length} season(s) of this league.`));
+          data.seasons.length
+            ? `No completed trades of yours in ${data.seasons.length} season${data.seasons.length === 1 ? '' : 's'} of this league.`
+            : 'No trades yet. Build one above.'));
         return;
       }
       const top = data.partners[0].n;
@@ -9071,7 +9068,6 @@
     ]));
     main.appendChild(h('div', { class:'page-header' },
       h('div', null,
-        h('div', { class:'page-eyebrow' }, 'TRADE LAB'),
         h('h1', { class:'page-title' }, 'Trade Calculator'),
         h('p', { class:'page-sub' }, isDynastyLeague(lg)
           ? 'Click players or picks to add to the pile. Fairness verdict updates live as you build the offer.'
@@ -9156,7 +9152,6 @@
     };
 
     const wrap = h('div', { style: { marginTop: '26px' } });
-    wrap.appendChild(h('div', { class: 'page-eyebrow' }, 'TEAM NEEDS'));
     wrap.appendChild(h('h2', { class: 'page-title', style: { fontSize: '20px', margin: '2px 0 6px' } }, 'Roster Needs by Position'));
     wrap.appendChild(h('p', { class: 'page-sub', style: { marginBottom: '12px' } },
       'Same 0 to 10 grades as the Overview heatmap. Hover or tap a cell for that team’s top five; click a header to sort.'));
@@ -10867,7 +10862,6 @@
     main.innerHTML = '';
     main.appendChild(h('div', { class:'page-header' },
       h('div', null,
-        h('div', { class:'page-eyebrow' }, 'OVERVIEW'),
         h('h1', { class:'page-title' }, 'Action Center'),
         h('p', { class:'page-sub' }, 'Your own to-do list for the week.')
       )
@@ -10920,7 +10914,6 @@
     main.innerHTML = '';
     main.appendChild(h('div', { class:'page-header' },
       h('div', null,
-        h('div', { class:'page-eyebrow' }, 'REFERENCE'),
         h('h1', { class:'page-title' }, 'Framework'),
         h('p', { class:'page-sub' }, 'The dynasty rules this site evaluates against your rosters. Distilled from public dynasty content. Sources at the bottom.')
       )
@@ -11072,7 +11065,6 @@
     main.innerHTML = '';
     main.appendChild(h('div', { class:'page-header' },
       h('div', null,
-        h('div', { class:'page-eyebrow' }, 'REFERENCE'),
         h('h1', { class:'page-title' }, 'About'),
         h('p', { class:'page-sub' }, 'How this site computes rankings and team strength.')
       )
@@ -14426,7 +14418,6 @@
     main.appendChild(breadcrumbs([{ label: 'Tools' }, { label: 'Projections' }]));
     main.appendChild(h('div', { class: 'page-header' },
       h('div', null,
-        h('div', { class: 'page-eyebrow' }, 'PROJECTIONS'),
         h('h1', { class: 'page-title' }, 'Player Projections'),
         h('p', { class: 'page-sub' }, 'Season fantasy points + projected stat lines. Offense: PrizePicks / Sleeper / Blended. Defense: Clay / Sleeper / Blended (Vegas has no tackle market).')
       ),
@@ -16894,7 +16885,6 @@
 
     main.appendChild(breadcrumbs([{ label: 'Tools' }, { label: 'Strength of Schedule' }]));
     main.appendChild(h('div', { class: 'page-header' }, h('div', null,
-      h('div', { class: 'page-eyebrow' }, 'STRENGTH OF SCHEDULE'),
       h('h1', { class: 'page-title' }, 'Season SOS by Position'),
       h('p', { class: 'page-sub' }, `Each cell is the opponent and its defense rank vs ${pos}: 1 of ${n} allows the fewest PPR (toughest, red), ${n} the most (easiest, green). Defense data: ${G.season}.`))));
 
@@ -17158,7 +17148,7 @@
             h('td', { class:'right tnum' }, statFmt(r.ppg, 'dec1'))))))));
     });
     main.appendChild(h('div', { class:'gm-pair' }, ...cards));
-    main.appendChild(h('div', { class:'tip gm-foot' },
+    main.appendChild(h('div', { class:'tip gm-foot on-turf' },
       `Season to date from nflverse play-by-play, FTN charting and PFR pressure. #N ranks the 32 teams from highest (#1) to lowest. Route% is an estimate: public route data ends in 2025. Skill players are ${away} and ${home} players with 20%+ of the snaps or 4+ targets and carries.`));
   }
 
@@ -17226,7 +17216,7 @@
     main.appendChild(h('div', { class:'card gm-card' }, h('div', { class:'card-title' }, 'Play-by-play'),
       tbl('gm-pbp', [['Situation'], ['Play'], ['EPA', 'Expected points added by the offense.', true],
         ['WP', 'The offense\'s win probability before the snap.', true], ['WPA', 'Win probability points the offense gained on the play.', true]], rows)));
-    main.appendChild(h('div', { class:'tip gm-foot' }, `nflverse play-by-play: EPA and win probability from nflfastR's models. WP and WPA are the offense's.`));
+    main.appendChild(h('div', { class:'tip gm-foot on-turf' }, `nflverse play-by-play: EPA and win probability from nflfastR's models. WP and WPA are the offense's.`));
   }
 
   function viewGame(id, tab) {
@@ -17861,7 +17851,7 @@
     }
 
     // Above the drawer: the board only. Everything you act on lives in the tray.
-    const kpis   = h('div', { class:'kpi-row' });
+    const kpis   = h('div', { class:'kpi-row on-turf' });
     // The clock KPI is built once and re-appended by paint(), because paint()
     // clears the row and a node rebuilt every second would drop the tabular
     // digits' width animation and re-trigger layout for the whole row.
@@ -18863,7 +18853,8 @@
     } catch (err) {
       console.error('Render error', err);
       $('#main').innerHTML = '';
-      $('#main').appendChild(h('div', { class:'empty' }, `Error rendering view: ${err.message}`));
+      $('#main').appendChild(h('div', { class:'empty' }, 'This page failed to load. ',
+        h('button', { class:'ghost', onclick: () => location.reload() }, 'Reload')));
     }
   }
 

@@ -79,11 +79,9 @@ html { font-size: 15px; background: var(--bg-0); color-scheme: light; }
   --grad-gold: linear-gradient(180deg, var(--gold), var(--gold-deep));
   --grad-band: linear-gradient(180deg, var(--band), var(--band-deep));
   --grad-metal: linear-gradient(180deg, oklch(88% 0.012 250), var(--metal-deep));
-  /* Four hard bands, not a blend: the 16-bit way to shade a field, so the
-     ground stays "not flat" while reading as pixel art. */
-  --grad-turf: linear-gradient(180deg,
-    var(--turf) 0 25%, oklch(44.7% 0.127 145) 25% 50%,
-    oklch(41.3% 0.123 145) 50% 75%, var(--turf-deep) 75%);
+  /* One turf tone. Yard-aligned mowing stripes belong to the field layer,
+     not broad horizontal color bands behind the page. */
+  --grad-turf: linear-gradient(var(--turf), var(--turf));
   /* 2px checker, the dither the reference uses where a modern UI would blur. */
   --dither: conic-gradient(rgba(0,0,0,.06) 25%, transparent 0 50%, rgba(0,0,0,.06) 0 75%, transparent 0) 0 0 / 4px 4px;
 
@@ -259,7 +257,7 @@ input[type=checkbox] { accent-color: var(--accent); }
   flex-wrap: wrap;
 }
 .page-title { font-size: 1.6rem; margin: 0; letter-spacing: -0.015em; }
-.page-sub { color: var(--fg-2); margin: 4px 0 0; font-size: 0.95rem; }
+.page-sub { color: var(--fg-2); margin: 4px 0 0; font-size: 0.95rem; max-width: 70ch; }
 
 /* ========== Cards ========== */
 .card {
@@ -479,7 +477,7 @@ table.data .expert-rank-col { width: 76px; white-space: nowrap; }
   text-align: left;
 }
 .player-name-button:hover { background: transparent; color: var(--accent-hot); }
-.player-name-button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.player-name-button:focus-visible { outline: 2px solid transparent; box-shadow: var(--shadow-glow); }
 .weekly-rankings-table thead th,
 .sleeper-weeks-table thead th { white-space: nowrap; }
 .weekly-rankings-table .weekly-opp { min-width: 54px; line-height: 1.05; }
@@ -1020,8 +1018,8 @@ textarea { resize: vertical; min-height: 80px; }
 
 /* Sticky page actions */
 .page-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-.tank-meter { display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--fg-2); }
-.tank-meter input { width: 96px; }
+.tank-meter { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 12px; font-size: 0.8rem; font-weight: 700; color: var(--fg-0); }
+.tank-meter input { width: 96px; max-width: 100%; min-height: 32px; accent-color: var(--accent); }
 
 /* Search highlight */
 .hl { background: rgba(var(--amber-rgb),.18); padding: 0 1px; border-radius: 2px; }
@@ -1035,13 +1033,6 @@ textarea { resize: vertical; min-height: 80px; }
   display: flex; align-items: center; gap: 10px;
   text-transform: uppercase;
   color: var(--fg-1);
-}
-.section-title::before {
-  content: '';
-  display: inline-block;
-  width: 3px; height: 18px;
-  background: var(--accent); /* solid, the only 2 gradients are brand mark + strength bar */
-  border-radius: 2px;
 }
 
 /* ========== Lineup Composition rows ========== */
@@ -1294,7 +1285,8 @@ textarea { resize: vertical; min-height: 80px; }
   transition: color 120ms;
 }
 .data th.clickable:hover { color: var(--accent-hot); }
-.data th.clickable:focus-visible { outline: 2px solid var(--accent); outline-offset: -3px; }
+/* Inset so the scroll wrapper cannot clip it: ink at the edge, gold inside it. */
+.data th.clickable:focus-visible { outline: 3px solid var(--gold); outline-offset: -5px; box-shadow: inset 0 0 0 2px var(--ink); }
 .data th.sort-active {
   color: var(--accent-hot);
 }
@@ -2277,7 +2269,7 @@ textarea { resize: vertical; min-height: 80px; }
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 16px;
-  transition: border-color 200ms ease, box-shadow 200ms ease, transform 200ms cubic-bezier(0.22,1.4,0.36,1);
+  transition: border-color 100ms ease, box-shadow 100ms ease, transform 100ms cubic-bezier(0.2,0,0,1);
 }
 .trade-middle.preview .trade-middle-card {
   border-color: var(--accent);
@@ -2553,7 +2545,7 @@ textarea { resize: vertical; min-height: 80px; }
 .heatmap > .heatmap-row:nth-child(2) { animation-delay: 50ms; }
 .heatmap > .heatmap-row:nth-child(3) { animation-delay: 110ms; }
 .heatmap > .heatmap-row:nth-child(4) { animation-delay: 165ms; }
-@media (prefers-reduced-motion: reduce) { .heatmap-row { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .heatmap-row { animation: none; } .heatmap-bar { transition: none; } }
 @keyframes heatRowIn {
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -2612,9 +2604,9 @@ textarea { resize: vertical; min-height: 80px; }
 .heatmap.needs { overflow: visible; }
 .heatmap.needs .heatmap-head .heatmap-cell:first-child { border-top-left-radius: var(--radius); }
 .heatmap.needs .heatmap-head .heatmap-cell:last-child { border-top-right-radius: var(--radius); }
-.heatmap.needs .heatmap-row.is-me { background: color-mix(in oklab, var(--accent) 8%, transparent); }
+.heatmap.needs .heatmap-row.is-me { background: var(--grad-gold); color: var(--ink); }
 .heatmap.needs .heatmap-head .clickable { cursor: pointer; }
-.heatmap.needs .heatmap-head .sort-active { color: var(--fg-0); }
+.heatmap.needs .heatmap-head .sort-active { background: var(--grad-gold); color: var(--ink); }
 .heatmap-pop {
   display: none;
   position: absolute; top: calc(100% - 4px); left: 50%; transform: translateX(-50%);
@@ -2897,6 +2889,7 @@ textarea { resize: vertical; min-height: 80px; }
 .t3y-head { align-items: end; }
 .t3y-head .t3y-cell { font-size: 0.7rem; display: block; text-align: right; }
 .t3y-label {
+  font-variant-numeric: tabular-nums;
   color: var(--fg-3);
   font-size: 0.72rem;
   font-weight: 600;
@@ -3125,7 +3118,7 @@ textarea { resize: vertical; min-height: 80px; }
   display: flex; align-items: baseline; justify-content: space-between; gap: 4px;
   color: var(--fg-3); font-size: 0.6rem; font-variant-numeric: tabular-nums;
 }
-.draft-cell-abs { color: color-mix(in oklab, var(--fg-3) 65%, transparent); }
+.draft-cell-abs { color: var(--ink); }
 /* Two-line name, the way Sleeper does it: at 108px wide "Christian McCaffrey"
    on one line is an ellipsis, and the last name is the half you read. */
 .draft-cell-first {
@@ -3137,7 +3130,7 @@ textarea { resize: vertical; min-height: 80px; }
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .draft-cell-arrow { margin-top: auto; color: var(--fg-3); font-size: 0.72rem; }
-.draft-cell-meta { color: var(--c); font-weight: 600; font-size: 0.62rem; }
+.draft-cell-meta { color: var(--ink); font-weight: 600; font-size: 0.62rem; }
 .draft-cell.QB { --c: var(--red); }
 .draft-cell.RB { --c: var(--green); }
 .draft-cell.WR { --c: var(--blue); }
@@ -3152,8 +3145,8 @@ textarea { resize: vertical; min-height: 80px; }
   position: fixed; left: 240px; right: 0; bottom: 0; z-index: 40;
   display: flex; flex-direction: column;
   background: var(--bg-1);
-  border-top: 1px solid var(--border-hot);
-  box-shadow: 0 -10px 28px rgba(0, 0, 0, 0.45);
+  border-top: 2px solid var(--ink);
+  box-shadow: 0 -4px 0 rgba(0,0,0,.32);
 }
 .draft-drawer-handle {
   display: flex; align-items: center; gap: 12px;
@@ -3188,7 +3181,6 @@ textarea { resize: vertical; min-height: 80px; }
 .my-rank.grabbable {
   cursor: grab; user-select: none; touch-action: none;
   background: color-mix(in oklab, var(--accent) 7%, transparent);
-  border-left: 2px solid color-mix(in oklab, var(--accent) 45%, transparent);
 }
 .my-rank.grabbable:hover { background: color-mix(in oklab, var(--accent) 16%, transparent); }
 .my-rank.grabbable:active { cursor: grabbing; }
@@ -3366,9 +3358,8 @@ tr.dragging { opacity: 0.55; background: var(--bg-3) !important; }
 .watch-player {
   font-weight: 700;
   font-size: 0.86rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 .watch-meta { color: var(--fg-3); font-size: 0.72rem; }
 .watch-opp { color: var(--fg-2); font-weight: 700; }
@@ -3597,7 +3588,9 @@ table.data thead th {
 }
 table.data thead th.sortable:hover { color: var(--gold); }
 table.data thead th.sorted,
-table.data thead th.sort-active {
+table.data thead th.sort-active,
+table.data thead th[aria-sort="ascending"],
+table.data thead th[aria-sort="descending"] {
   background: var(--grad-gold);
   color: var(--ink);
   text-shadow: none;
@@ -3768,7 +3761,6 @@ table.data tbody tr.prm-future td:first-child {
   padding: 7px 9px;
 }
 .data-fresh:hover { color: var(--chalk); }
-.data-fresh-dot { box-shadow: 0 0 6px currentColor; }
 
 /* --- Law 4: discrete, countable ratings -------------------------------- */
 /* Five-slot icon track, the attribute rows from Meet the Players. Any 0-100
@@ -3947,8 +3939,8 @@ body::before {
      goal line. Only the bottom sideline carries numerals; the top one sat
      behind every page header. Mow stripes are hard-edged and strong enough
      to read. */
-  /* Inner hashes sit where the NFL puts them: 70'9" in from each sideline on a
-     160' field, so 44.2% and 55.8% of the field's height. They are their own
+  /* College hashes: 60 feet from each sideline on a 160-foot field,
+     leaving 40 feet between their inward edges. They are their own
      layer because the sideline tiles are a fixed 180px and drew them about
      170px in, far out toward the sideline. */
   --inner-hash: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='2400' height='12' shape-rendering='crispEdges'%3E%3Cg fill='white' fill-opacity='0.16'%3E%3Crect x='24' y='0' width='3' height='12'/%3E%3Crect x='48' y='0' width='3' height='12'/%3E%3Crect x='72' y='0' width='3' height='12'/%3E%3Crect x='96' y='0' width='3' height='12'/%3E%3Crect x='144' y='0' width='3' height='12'/%3E%3Crect x='168' y='0' width='3' height='12'/%3E%3Crect x='192' y='0' width='3' height='12'/%3E%3Crect x='216' y='0' width='3' height='12'/%3E%3Crect x='264' y='0' width='3' height='12'/%3E%3Crect x='288' y='0' width='3' height='12'/%3E%3Crect x='312' y='0' width='3' height='12'/%3E%3Crect x='336' y='0' width='3' height='12'/%3E%3Crect x='384' y='0' width='3' height='12'/%3E%3Crect x='408' y='0' width='3' height='12'/%3E%3Crect x='432' y='0' width='3' height='12'/%3E%3Crect x='456' y='0' width='3' height='12'/%3E%3Crect x='504' y='0' width='3' height='12'/%3E%3Crect x='528' y='0' width='3' height='12'/%3E%3Crect x='552' y='0' width='3' height='12'/%3E%3Crect x='576' y='0' width='3' height='12'/%3E%3Crect x='624' y='0' width='3' height='12'/%3E%3Crect x='648' y='0' width='3' height='12'/%3E%3Crect x='672' y='0' width='3' height='12'/%3E%3Crect x='696' y='0' width='3' height='12'/%3E%3Crect x='744' y='0' width='3' height='12'/%3E%3Crect x='768' y='0' width='3' height='12'/%3E%3Crect x='792' y='0' width='3' height='12'/%3E%3Crect x='816' y='0' width='3' height='12'/%3E%3Crect x='864' y='0' width='3' height='12'/%3E%3Crect x='888' y='0' width='3' height='12'/%3E%3Crect x='912' y='0' width='3' height='12'/%3E%3Crect x='936' y='0' width='3' height='12'/%3E%3Crect x='984' y='0' width='3' height='12'/%3E%3Crect x='1008' y='0' width='3' height='12'/%3E%3Crect x='1032' y='0' width='3' height='12'/%3E%3Crect x='1056' y='0' width='3' height='12'/%3E%3Crect x='1104' y='0' width='3' height='12'/%3E%3Crect x='1128' y='0' width='3' height='12'/%3E%3Crect x='1152' y='0' width='3' height='12'/%3E%3Crect x='1176' y='0' width='3' height='12'/%3E%3Crect x='1224' y='0' width='3' height='12'/%3E%3Crect x='1248' y='0' width='3' height='12'/%3E%3Crect x='1272' y='0' width='3' height='12'/%3E%3Crect x='1296' y='0' width='3' height='12'/%3E%3Crect x='1344' y='0' width='3' height='12'/%3E%3Crect x='1368' y='0' width='3' height='12'/%3E%3Crect x='1392' y='0' width='3' height='12'/%3E%3Crect x='1416' y='0' width='3' height='12'/%3E%3Crect x='1464' y='0' width='3' height='12'/%3E%3Crect x='1488' y='0' width='3' height='12'/%3E%3Crect x='1512' y='0' width='3' height='12'/%3E%3Crect x='1536' y='0' width='3' height='12'/%3E%3Crect x='1584' y='0' width='3' height='12'/%3E%3Crect x='1608' y='0' width='3' height='12'/%3E%3Crect x='1632' y='0' width='3' height='12'/%3E%3Crect x='1656' y='0' width='3' height='12'/%3E%3Crect x='1704' y='0' width='3' height='12'/%3E%3Crect x='1728' y='0' width='3' height='12'/%3E%3Crect x='1752' y='0' width='3' height='12'/%3E%3Crect x='1776' y='0' width='3' height='12'/%3E%3Crect x='1824' y='0' width='3' height='12'/%3E%3Crect x='1848' y='0' width='3' height='12'/%3E%3Crect x='1872' y='0' width='3' height='12'/%3E%3Crect x='1896' y='0' width='3' height='12'/%3E%3Crect x='1944' y='0' width='3' height='12'/%3E%3Crect x='1968' y='0' width='3' height='12'/%3E%3Crect x='1992' y='0' width='3' height='12'/%3E%3Crect x='2016' y='0' width='3' height='12'/%3E%3Crect x='2064' y='0' width='3' height='12'/%3E%3Crect x='2088' y='0' width='3' height='12'/%3E%3Crect x='2112' y='0' width='3' height='12'/%3E%3Crect x='2136' y='0' width='3' height='12'/%3E%3Crect x='2184' y='0' width='3' height='12'/%3E%3Crect x='2208' y='0' width='3' height='12'/%3E%3Crect x='2232' y='0' width='3' height='12'/%3E%3Crect x='2256' y='0' width='3' height='12'/%3E%3Crect x='2304' y='0' width='3' height='12'/%3E%3Crect x='2328' y='0' width='3' height='12'/%3E%3Crect x='2352' y='0' width='3' height='12'/%3E%3Crect x='2376' y='0' width='3' height='12'/%3E%3C/g%3E%3C/svg%3E");
@@ -3960,7 +3952,7 @@ body::before {
     repeating-linear-gradient(90deg, rgba(255,255,255,.05) 0 5%, rgba(0,0,0,.075) 5% 10%);
   left: 240px;
   background-size: 100% 12px, 100% 12px, 100% 180px, 100% 180px, 100% 100%, 100% 100%;
-  background-position: 0 44.2%, 0 55.8%, 0 24px, 0 calc(100% - 24px), 0 0, 0 0;
+  background-position: 0 calc(37.5% - 7.5px), 0 calc(62.5% + 7.5px), 0 24px, 0 calc(100% - 24px), 0 0, 0 0;
   background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat;
 }
 
@@ -4002,6 +3994,8 @@ body::after {
   font-weight: 700;
 }
 .crumb-link:hover, .page-header .page-actions > a:hover { color: var(--gold); }
+/* The exit link is a lavender button face, not turf text, so it keeps ink. */
+.page-header .page-actions > a.btn-exit, .page-header .page-actions > a.btn-exit:hover { color: var(--ink); text-shadow: none; }
 .crumb-sep { color: rgba(255,255,255,.6); }
 
 /* --- Position and tier chips: stamped and legible ----------------------- */
@@ -4077,17 +4071,10 @@ body::after {
      third copy and the only one that costs its own row. */
   .crumbs { display: none; }
 
-  /* One nowrap scroll row instead of four stacked full-width buttons. */
+  /* Compact buttons that wrap to a second row: not four stacked full-width
+     buttons, and not a hidden sideways scroller that cuts the last one off. */
   .page-header { gap: 8px; flex-direction: column; align-items: stretch; }
-  .page-actions {
-    width: 100%;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    padding-bottom: 2px;
-  }
-  .page-actions::-webkit-scrollbar { display: none; }
+  .page-actions { width: 100%; flex-wrap: wrap; }
   .page-actions > a, .page-actions > button { flex: 0 0 auto; white-space: nowrap; }
 
   /* The format tag rides the eyebrow line, which also carries the sub text. */
@@ -6001,7 +5988,7 @@ button:disabled { cursor: wait; opacity: 0.7; }
       var(--phone-field-length) calc(var(--phone-field-length) * 0.075),
       var(--phone-field-length) calc(var(--phone-field-length) * 0.075),
       var(--phone-field-length) 100%, var(--phone-field-length) 100%;
-    background-position: center 44.2%, center 55.8%, center 16px, center calc(100% - 16px), center 0, center 0;
+    background-position: center calc(37.5% - var(--phone-field-length) * 0.003125), center calc(62.5% + var(--phone-field-length) * 0.003125), center 16px, center calc(100% - 16px), center 0, center 0;
     background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat;
   }
 }
@@ -6011,7 +5998,7 @@ button:disabled { cursor: wait; opacity: 0.7; }
 .stats-lab-filters { gap: 12px; font-size: 0.8rem; padding: 10px 12px; }
 .stats-lab-search { min-width: 0; width: 180px; max-width: 100%; }
 .stats-lab-toggle { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
-.stats-lab-table { font-size: 12px; }
+.stats-lab-table { font-size: 0.8rem; }
 .stats-lab-table th { white-space: nowrap; }
 .stats-lab-table tbody tr { cursor: pointer; }
 .stats-lab-name { white-space: nowrap; font-weight: 600; }
@@ -6057,6 +6044,7 @@ button:disabled { cursor: wait; opacity: 0.7; }
 /* The whole label is the tap target, so the phone 44px input floor would only
    stretch the box and smear its bevel into a stray dash. */
 .stats-lab-col input[type=checkbox], .stats-lab-toggle input[type=checkbox] { flex: none; min-height: 0; box-shadow: none; }
+.stats-lab-col input[type=checkbox]:focus-visible, .stats-lab-toggle input[type=checkbox]:focus-visible { box-shadow: var(--shadow-glow); }
 .stats-lab-tools :is(input:not([type=checkbox]), select) { padding: 4px 8px; }
 .stats-lab-col-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; }
 .stats-lab-view .stats-lab-col-name { flex: 1 1 auto; }
@@ -6098,7 +6086,7 @@ button:disabled { cursor: wait; opacity: 0.7; }
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .adv-stat-value { font-size: 1rem; font-weight: 700; }
 .adv-stat-rank { font-size: 0.62rem; color: var(--fg-3); }
-.adv-log { font-size: 12px; }
+.adv-log { font-size: 0.8rem; }
 .adv-log-views { margin: 0 0 8px; }
 /* Injury history: one disclosure per season, the two newest open. */
 .inj-season { margin-top: 6px; }
@@ -6301,7 +6289,7 @@ td.gm-desc { white-space: normal; min-width: 200px; line-height: 1.35; }
 .gm-td > span { background: var(--green); }
 .gm-fg > span { background: var(--amber); }
 .gm-to > span { background: var(--red); }
-.gm-foot { margin-top: 12px; }
+.gm-foot { margin-top: 12px; max-width: 70ch; }
 .gm-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 12px; }
 a.gm-tile { display: flex; flex-direction: column; gap: 4px; color: var(--fg-1); }
 a.gm-tile:hover { text-decoration: none; background: var(--grad-gold); color: var(--ink); }
@@ -6528,7 +6516,7 @@ table.data.prm-table .name-cell > * { display: block; max-width: 100%; overflow:
 .source-note > summary { cursor: pointer; font-weight: 700; color: var(--fg-0); min-height: 24px; }
 .source-note > p { margin: 8px 0 0; }
 /* SOS grid: rank and BYE labels were 9px at 85% opacity, under 4.5:1 and below a readable size. */
-.sos-cell-note { font-size: 0.75rem; font-weight: 600; }
+.sos-cell-note { font-size: 0.75rem; font-weight: 600; color: var(--fg-0); }
 td.sos-out { background-color: color-mix(in srgb, var(--fg-3) 14%, transparent); }
 td.sos-out .team-chip { filter: grayscale(1); }
 /* A .tip that is a card's whole body is reading copy, not a caption: 11.7px was under the body floor. */
@@ -6547,3 +6535,14 @@ table.data.prm-table td.cf-good { background-color: color-mix(in srgb, var(--gre
 table.data.prm-table td.cf-bad { background-color: color-mix(in srgb, var(--red) var(--cf), transparent); }
 .prm-cf-key { display: inline-block; width: 22px; height: 14px; border: 2px solid var(--ink); border-radius: 3px;
   background: linear-gradient(90deg, color-mix(in srgb, var(--red) 34%, transparent), transparent, color-mix(in srgb, var(--green) 34%, transparent)); }
+
+/* Draft-room KPIs sit on turf: the plate rules give them ink, turf needs chalk. */
+.on-turf .mini-kpi-num, .on-turf .mini-kpi-label { color: var(--chalk); }
+.faab-note, .trade-finder-note { max-width: 70ch; }
+
+/* Phone hit areas: the audit measured these rows and toggles under 44px. */
+@media (pointer: coarse) {
+  .watch-key-sum, details.card > summary { min-height: 44px; }
+  .watch-key-item, .trade-pool-row { min-height: 44px; align-items: center; }
+  a.sos-game { display: flex; flex-direction: column; justify-content: center; min-height: 44px; }
+}

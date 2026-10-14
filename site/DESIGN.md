@@ -223,8 +223,8 @@ bands, **gold** as selection, and the **six semantic hues** as category and tier
 ### Surfaces
 
 - **Turf** (#3f9f43, deep #2c7a31) is the page ground, drawn as pixel art since 2026-10-04 (after
-  the Eagles Eric video, `notes/design/`): four hard vertical bands instead of a blend, a 2px
-  checker dither, hard mow stripes, chalk yardlines, and 5x7 bitmap yard numerals with a pixel
+  the Eagles Eric video, `notes/design/`): one uniform turf tone across the field width, a 2px
+  checker dither, alternating 5-yard mow stripes, chalk yardlines, and 5x7 bitmap yard numerals with a pixel
   arrow toward the nearer goal line, on the bottom sideline only (the top row sat behind every
   page header). `site/check-field-tile.py` guards the geometry.
 - **Panel** (#e9e9fa) is the card and plate face. Light enough that navy ink clears AA on it.

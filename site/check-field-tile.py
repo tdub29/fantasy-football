@@ -74,15 +74,15 @@ def main() -> int:
     # Numerals are 5x7 bitmap rect groups, one <g id='nX'> per numeral centred on X.
     nums = [int(m) for m in re.findall(r"%3Cg id='n(\d+)'", img)]
     # Real field order from a sideline inward: outer hashes, numerals, then the inner
-    # hashes near midfield. Inner hashes are their own layer at the NFL spots (70'9"
-    # from each sideline on a 160' field); inside the 180px tiles they sat ~170px from
+    # hashes near midfield. College inward edges are 60 feet from each sideline
+    # on a 160-foot field; inside the 180px tiles they sat ~170px from
     # the sideline, far out from where a field puts them.
     hash_layer = re.search(r"--inner-hash:\s*url\(\"(.*?)\"\)", block, re.S)
     if img.count("var(--inner-hash)") != 2 or not hash_layer or "y='0' width='3' height='12'" not in hash_layer.group(1):
         problems.append("the inner-hash layer is gone; both rows need var(--inner-hash)")
     pos = [x.strip() for x in decl("background-position").split(",")]
-    if pos[:2] != ["0 44.2%", "0 55.8%"]:
-        problems.append(f"inner hashes must sit at 44.2% and 55.8% of the field, found {pos[:2]}")
+    if pos[:2] != ["0 calc(37.5% - 7.5px)", "0 calc(62.5% + 7.5px)"]:
+        problems.append(f"college hash inward edges must sit at 37.5% and 62.5%, found {pos[:2]}")
     bottom = next((a for a in re.findall(r'url\("(.*?)"\)', img, re.S) if "id='n" in a), "")
     glyphs = [(int(y), int(y) + int(hh)) for y, hh in re.findall(r"y='(\d+)' width='\d+' height='([46])'", bottom)]
     hash_rows = sorted({int(m) for m in re.findall(r"y='(\d+)' width='3' height='12'", bottom)})
@@ -115,7 +115,7 @@ def main() -> int:
             print(f"  - {p}")
         return 1
     print(f"field ok: {layers} layers, {len(nums)} numerals clear of chalk, "
-          f"numerals inside sideline hashes y={hash_rows[0]}, inner hashes at 44.2% and 55.8%")
+          f"numerals inside sideline hashes y={hash_rows[0]}, college hash gap 40/160 of field width")
     return 0
 
 
