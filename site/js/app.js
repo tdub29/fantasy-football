@@ -31,6 +31,12 @@
     if (el.placeholder && !el.hasAttribute('aria-label')) el.setAttribute('aria-label', el.placeholder.split('\n')[0].replace(/…$/, ''));
     return el;
   };
+  // A data file that failed to load reads as plain words and a Reload. The rebuild
+  // command a developer needs goes to the console, not the page.
+  const noData = (what, build, cls = 'empty') => {
+    if (build) console.warn(`${what}: run ${build}`);
+    return h('div', { class:cls, role:'status' }, `${what} didn't load. `, h('button', { class:'ghost', onclick: () => location.reload() }, 'Reload'));
+  };
   // Player headshot from Sleeper's public CDN, keyed by the same Sleeper id the
   // site uses everywhere. A DEF "player" id is its team code, which gets the team
   // logo instead. Decorative (the name sits beside it), so alt is empty, and a
@@ -10950,7 +10956,7 @@
       )
     ));
     if (!window.STRATEGY) {
-      main.appendChild(h('div', { class:'empty' }, 'Strategy data not loaded.'));
+      main.appendChild(noData('Strategy data'));
       return;
     }
     const S = window.STRATEGY;
@@ -12333,7 +12339,7 @@
               h('td', { title:H.practice[p] }, INJ_PRACTICE[H.practice[p]] || H.practice[p]),
               h('td', { class:'inj-name', title:H.injury[inj] }, H.injury[inj].replace(/^Not injury related\s*-+\s*/i, 'Not injury: '))))))))),
         h('div', { class:'tip' }, 'Weekly NFL injury reports. A player on injured reserve is off the report, so IR weeks are not listed.'));
-    }).catch(() => card.replaceChildren(title(), h('div', { class:'muted' }, 'injury-history.js did not load. Run projections/build_injury_history.py.')));
+    }).catch(() => card.replaceChildren(title(), noData('Injury history', 'projections/build_injury_history.py', 'muted')));
     return card;
   }
 
@@ -12889,7 +12895,7 @@
   function viewProspects(posArg, clsArg) {
     const main = $('#main'); main.innerHTML = '';
     const M = window.PROSPECT_MODEL;
-    if (!M) { main.appendChild(h('div', { class:'empty' }, 'prospect-model.js not loaded. Run projections/build_prospect_model.py.')); return; }
+    if (!M) { main.appendChild(noData('The prospect model', 'projections/build_prospect_model.py')); return; }
     const POSL = ['QB', 'RB', 'WR', 'TE'];
     const pos = POSL.includes(posArg) ? posArg : 'ALL';
     const one = pos !== 'ALL';
@@ -14514,7 +14520,7 @@
             || leagues.find(l => l.rosters.some(r => r.is_me)) || leagues[0];
     if (!lg) { main.appendChild(h('div', { class: 'empty' }, 'No league.')); return; }
     PROJ_STATE.leagueId = lg.id;
-    if (!window.OFFENSE_PROJ) { main.appendChild(h('div', { class: 'empty' }, 'projections.js not loaded, run score_offense.py + score_defense.py.')); return; }
+    if (!window.OFFENSE_PROJ) { main.appendChild(noData('Projections', 'score_offense.py + score_defense.py')); return; }
 
     const data = projUnitData();
     if (!data.sources.includes(PROJ_STATE.source)) PROJ_STATE.source = data.default || data.sources[0];
@@ -14971,7 +14977,7 @@
 
   function statsDefense(main, prefs) {
     const D = window.DEFENSE;
-    if (!D) { main.appendChild(h('div', { class:'empty' }, 'defense.js not loaded. Run projections/build_defense_matchups.py.')); return; }
+    if (!D) { main.appendChild(noData('Defense matchups', 'projections/build_defense_matchups.py')); return; }
     const slice = prefs.defSlice === 'prior' ? 'prior' : 'cur';
     main.appendChild(h('div', { class:'card stats-lab-filters' },
       h('label', { class:'stats-lab-toggle' }, 'Sample ',
@@ -15004,7 +15010,7 @@
 
   function statsTrends(main, prefs) {
     const U = window.USAGE_WEEKLY;
-    if (!U) { main.appendChild(h('div', { class:'empty' }, 'usage-weekly.js not loaded. Run projections/build_weekly_splits.py.')); return; }
+    if (!U) { main.appendChild(noData('Weekly usage', 'projections/build_weekly_splits.py')); return; }
     const F = U.fields, ix = (k) => F.indexOf(k);
     const mine = new Set();
     for (const lg of window.LEAGUES || []) {
@@ -15062,7 +15068,7 @@
 
   function statsIdp(main, prefs) {
     const I = window.IDP_ADVANCED;
-    if (!I) { main.appendChild(h('div', { class:'empty' }, 'idp-advanced.js not loaded. Run projections/build_idp_advanced.py.')); return; }
+    if (!I) { main.appendChild(noData('IDP stats', 'projections/build_idp_advanced.py')); return; }
     const grp = ['DL', 'LB', 'DB'].includes(prefs.idpPos) ? prefs.idpPos : 'LB';
     const minSnap = prefs.idpMinSnap ?? 0.3;
     const mine = new Set();
@@ -15108,7 +15114,7 @@
       const msg = h('div', { class:'empty' }, `Loading ${season} coverage...`);
       main.appendChild(msg);
       loadCoverageSeason(season).then(() => { if (msg.isConnected) viewStats('Coverage'); })
-        .catch(() => { msg.textContent = `coverage-${season}.js did not load. Run projections/build_coverage_splits.py.`; });
+        .catch(() => { msg.replaceWith(noData(`${season} coverage`, 'projections/build_coverage_splits.py')); });
       return;
     }
     const pos = COV_POS.includes(prefs.covPos) ? prefs.covPos : 'WR';
@@ -15457,7 +15463,7 @@
       return;
     }
     const have = SEASONS.filter(got), pub = have.filter(y => got(y).published), later = have.filter(y => !got(y).published);
-    if (!pub.length) { main.appendChild(h('div', { class:'empty' }, 'No targeted routes on the page. Run projections/build_coverage_splits.py.')); return; }
+    if (!pub.length) { main.appendChild((console.warn('No published routes: run projections/build_coverage_splits.py'), h('div', { class:'empty' }, 'No targeted routes posted yet.'))); return; }
     const span = pub.length > 1 ? `${pub[0]} to ${pub[pub.length - 1]}` : String(pub[0]), newest = pub[pub.length - 1], N = got(newest);
     const topWr = Object.keys(N.targetedRoutes).filter(s => (N.players[s] || {}).p === 'WR').sort((a, b) => rtTotal(N, N.players[b]) - rtTotal(N, N.players[a]));
     const R = prefs.routes = Object.assign({ cmp:'share' }, prefs.routes);
@@ -15556,7 +15562,7 @@
       const msg = h('div', { class:'empty' }, `Loading ${season} on/off...`);
       main.appendChild(msg);
       loadOnOffSeason(season).then(() => { if (msg.isConnected) rerender(); })
-        .catch(() => { msg.textContent = `onoff-${season}.js did not load. Run projections/build_onoff.py.`; });
+        .catch(() => { msg.replaceWith(noData(`${season} on/off splits`, 'projections/build_onoff.py')); });
       return;
     }
     const N = F.names, nm = (pid) => (N[pid] || [pid])[0], ps = (pid) => (N[pid] || [])[1] || '';
@@ -16632,7 +16638,7 @@
         out.push(chartBar(rows, c, { W, top, picks:pickSet, label, sample, open, scope, unit }));
       } else if (chart.type === 'line') {
         const U = window.USAGE_WEEKLY;
-        if (!U) out.push(h('div', { class:'muted' }, 'usage-weekly.js not loaded. Run projections/build_weekly_splits.py.'));
+        if (!U) out.push(noData('Weekly usage', 'projections/build_weekly_splits.py', 'muted'));
         else {
           const stat = CHART_LINE_STATS.find(s => s[0] === chart.line) || CHART_LINE_STATS.find(s => s[0] === D.line);
           out.push(h('div', { class:'stats-lab-row' }, h('label', { class:'stats-lab-toggle' }, 'Stat ',
@@ -16652,7 +16658,7 @@
           const msg = h('div', { class:'muted' }, `Loading ${need.join(', ')} field maps...`);
           out.push(msg);
           Promise.all(need.map(loadLocationSeason)).then(() => { if (msg.isConnected) fill(); })
-            .catch(() => { msg.textContent = 'location-YYYY.js did not load. Run projections/build_location_splits.py.'; });
+            .catch(() => { msg.replaceWith(noData('Field maps', 'projections/build_location_splits.py', 'muted')); });
         } else {
           const list = seasons.map(y => window.LOCATION_BY_SEASON[y]);
           out.push(h('div', { class:'stats-lab-row' }, locMetricButtons(role, fill)), standIn(1));
@@ -16680,7 +16686,7 @@
   function viewStats(posArg, sub) {
     const main = $('#main'); main.innerHTML = '';
     const CUR = window.ADVANCED;
-    if (!CUR) { main.appendChild(h('div', { class:'empty' }, 'advanced.js not loaded. Run projections/build_nflverse_suite.py.')); return; }
+    if (!CUR) { main.appendChild(noData('Advanced stats', 'projections/build_nflverse_suite.py')); return; }
     const POS = ['QB', 'RB', 'WR', 'TE', 'Teams', 'Coverage', 'Routes', 'OnOff', 'Defense', 'Trends', 'IDP'];
     const prefs = statsLabPrefs();
     const SEASONS = [CUR.season, CUR.season - 1, CUR.season - 2];
@@ -16965,7 +16971,7 @@
         : `Loading ${season} coverage shells...`);
       main.appendChild(note);
       if (!cov) loadCoverageSeason(season).then(() => { if (note.isConnected) viewStats('Teams'); })
-        .catch(() => { note.textContent = `coverage-${season}.js did not load. Run projections/build_coverage_splits.py.`; });
+        .catch(() => { note.replaceWith(noData(`${season} coverage`, 'projections/build_coverage_splits.py')); });
     }
     saveStatsLabPrefs(prefs);
   }
@@ -16973,7 +16979,7 @@
   function viewSosGrid(posArg) {
     const main = $('#main'); main.innerHTML = '';
     const G = window.SOS_GRID;
-    if (!G) { main.appendChild(h('div', { class: 'empty' }, 'sos-grid.js not loaded, run build_sos_grid.py.')); return; }
+    if (!G) { main.appendChild(noData('The schedule grid', 'build_sos_grid.py')); return; }
     const badPos = posArg && !G.positions.includes(posArg.toUpperCase()) ? posArg : null;
     if (posArg && !badPos) SOS_GRID_POS = posArg.toUpperCase();
     const pos = SOS_GRID_POS, n = G.n_def, WEEKS = Array.from({ length: 18 }, (_, i) => i + 1);
@@ -17338,7 +17344,7 @@
     const crumbs = (label) => main.appendChild(breadcrumbs([{ label:'Tools' }, { label:'Games', hash:'#games' }, { label }]));
     if (!m || !window.ADVANCED) {
       crumbs('Game');
-      main.appendChild(h('div', { class:'empty' }, window.ADVANCED ? `"${id || ''}" is not a game id. They read like 2026_03_DAL_NYG.` : 'advanced.js not loaded.'));
+      main.appendChild(h('div', { class:'empty' }, window.ADVANCED ? `"${id || ''}" is not a game id. They read like 2026_03_DAL_NYG.` : noData('Advanced stats', 'projections/build_nflverse_suite.py')));
       return;
     }
     const season = Number(m[1]), week = Number(m[2]), away = gameTeam(m[3]), home = gameTeam(m[4]), now = gameNow();
@@ -17369,7 +17375,7 @@
     const wk = gameLoad(`games-${season}-w${gameWk(week)}.js`, () => gameWeek(season, week), again);
     if (wk === null) { host.appendChild(h('div', { class:'empty' }, 'Loading the play-by-play...')); return; }
     const W = wk && gameWeek(season, week), G = W && W.games[id];
-    if (!G) { host.appendChild(h('div', { class:'empty' }, `games-${season}-w${gameWk(week)}.js has no ${id}. Run projections/build_game_pages.py.`)); return; }
+    if (!G) { host.appendChild((console.warn(`games-${season}-w${gameWk(week)}.js has no ${id}: run projections/build_game_pages.py`), h('div', { class:'empty' }, 'No play-by-play for this game yet.'))); return; }
     gamePostgame(host, G, W, id);
   }
 
@@ -17382,7 +17388,7 @@
     main.appendChild(pageHeader({ eyebrow:'GAMES', title:`Week ${week || ''} games`,
       sub:'Pregame: both teams side by side and the biggest edges. Postgame: drive chart, play-by-play with EPA and win probability, and every target.' }));
     const games = (W && W.games || []).slice().sort((a, b) => String(a.kickoff).localeCompare(String(b.kickoff)));
-    if (!games.length) main.appendChild(h('div', { class:'empty' }, 'weather.js has no games this week. Run projections/build_game_weather.py.'));
+    if (!games.length) main.appendChild(h('div', { class:'empty' }, 'No games posted for this week yet.'));
     main.appendChild(h('div', { class:'gm-list' }, ...games.map(g => {
       const fin = IX && IX.games[g.game_id], away = gameTeam(g.away), home = gameTeam(g.home);
       const line = [g.spread_line == null ? null : g.spread_line === 0 ? 'Pick em' : `${g.spread_line > 0 ? home : away} by ${Math.abs(g.spread_line)}`,
