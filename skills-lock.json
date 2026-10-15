@@ -1,10 +1,5 @@
 {
   "skills": {
-    "test-audit": {
-      "computedHash": "e7fdd5cdd713046395c05deb005831e01a4d752b44bd2a06b4865a178c4e4220",
-      "source": "openclaw/openclaw",
-      "sourceType": "github"
-    },
     "ai-writing-detection": {
       "computedHash": "bb2eb759461cff1812d62002f2d2a9744e022ba857600a128213eed5af33bf7a",
       "source": "local/self",
@@ -171,6 +166,11 @@
       "source": "local/book-to-skill",
       "sourceType": "local"
     },
+    "league-week": {
+      "computedHash": "62b794d381b32ec6fbfc2b3b4321019127555bd550f41638f6f60e3eab311146",
+      "source": "local/self",
+      "sourceType": "local"
+    },
     "loopy": {
       "source": "Forward-Future/loop-library",
       "sourceType": "github",
@@ -247,6 +247,11 @@
       "computedHash": "808fc5717aa88ad65efff312b11c186294d3e6ee301afb584e2f86599b137787",
       "skillPath": ".agents/skills/systematic-debugging/SKILL.md",
       "source": "obra/superpowers",
+      "sourceType": "github"
+    },
+    "test-audit": {
+      "computedHash": "e7fdd5cdd713046395c05deb005831e01a4d752b44bd2a06b4865a178c4e4220",
+      "source": "openclaw/openclaw",
       "sourceType": "github"
     },
     "tetlock-superforecasting": {
