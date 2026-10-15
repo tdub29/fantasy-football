@@ -6547,3 +6547,25 @@ table.data.prm-table td.cf-bad { background-color: color-mix(in srgb, var(--red)
   .watch-key-item, .trade-pool-row { min-height: 44px; align-items: center; }
   a.sos-game { display: flex; flex-direction: column; justify-content: center; min-height: 44px; }
 }
+
+/* Search trigger: Cmd+K was keyboard-only, so a phone could never open it. */
+.cmdk-trigger { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 44px; margin: 0 0 6px; text-align: left; }
+.cmdk-trigger .kbd { margin-left: auto; }
+@media (hover: none) { .cmdk-trigger .kbd { display: none; } }
+
+/* Cue above any strip that scrolls sideways on a phone (focusScrollRegions adds it). */
+.swipe-cue { margin: 0 0 4px; font-size: 0.94rem; color: var(--fg-2); }
+
+/* Phone type floor, 14px (harden.md). max() leaves anything already bigger than
+   its parent alone. The draft grid drops fields instead of shrinking type, and
+   the play list flows with the page instead of trapping scroll in a box. */
+@media (max-width: 720px) {
+  #main :is(td, tbody th, dt, dd, code, button, summary, label, .tip, .muted, .badge, .pill, .team-chip, .pos-chip, .rt-chip, .rank-up, .rank-down,
+    .sos-cell-note, .gm-when, .gm-desc, .tab-label, .stats-lab-tool-title, .stats-lab-col-name, .page-eyebrow, .page-sub, .rt-title,
+    .card-title, .chart-title, .mini-kpi-label, .loc-line) { font-size: max(0.94rem, 1em); }
+  #main th { font-size: max(0.8rem, 1em); }
+  .draft-head-slot, .draft-cell-abs, .draft-cell-first, .draft-cell-meta { display: none; }
+  .draft-cell, .draft-cell-top, .draft-head-name { font-size: 0.94rem; }
+  .draft-cell { min-height: 0; }
+  .tbl-scroll.gm-pbp-wrap { max-height: none; }
+}

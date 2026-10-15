@@ -1304,6 +1304,10 @@
       }, '×')
     ));
 
+    // Cmd+K was keyboard-only, so a phone could never reach it.
+    sidebar.appendChild(h('button', { class:'cmdk-trigger', type:'button', onclick: () => { setMobileNav(false); openCmdK(); } },
+      pixelIcon('⌕', '⌕'), h('span', null, 'Search'), h('span', { class:'kbd' }, /Mac|iPhone|iPad/.test(navigator.platform) ? '⌘K' : 'Ctrl K')));
+
     // Determine which league is currently in context (for highlighting + pinning)
     const hash = location.hash || '#dashboard';
     let activeLgId = null;
@@ -7242,7 +7246,7 @@
           h('th', { class: 'right', title: 'Points above or below the median offence' }, 'vs med'),
           h('th', { class: 'right', title: 'Games in the pooled sample' }, 'G'),
           h('th', { class: 'right', title: 'Prior season only' }, 'Prior'),
-          h('th', null, `Wk ${wk} defense facing them`))),
+          h('th', null, `Wk ${wk} opposing D`))),
         h('tbody', null, ...rows.map((r, i) => {
           // Who plays this offence this week, i.e. whose defenders benefit.
           const facing = [...oppOf.entries()]
@@ -14629,7 +14633,7 @@
               oddsOn ? h('td', { class: 'right tnum', style: { color: 'var(--fg-2)' } }, o ? `${(o.playoff * 100).toFixed(0)}%` : '·') : null,
               oddsOn && wi.length ? h('td', { class: 'right tnum' + (dt > 0.05 ? ' delta-up' : dt < -0.05 ? ' delta-down' : '') },
                 dt == null ? '·' : `${dt > 0 ? '+' : ''}${dt.toFixed(1)}`) : null,
-              h('td', { class: 'muted', style: { fontSize: '11px' } }, t.picks.slice(0, 3).map(c => `${c.name} ${Math.round(c.pts)}`).join(', ')),
+              h('td', { class: 'muted' }, t.picks.slice(0, 3).map(c => `${c.name} ${Math.round(c.pts)}`).join(', ')),
             );
           }))
         ),
@@ -17000,7 +17004,7 @@
     const inWin = new Set(win.weeks);
     const winName = { full: 'Full season', remaining: 'Remaining', playoffs: 'Playoffs' }[win.kind];
 
-    main.appendChild(breadcrumbs([{ label: 'Tools' }, { label: 'Strength of Schedule' }]));
+    main.appendChild(breadcrumbs([{ label: 'Tools' }, { label: 'Schedule Strength' }]));
     main.appendChild(h('div', { class: 'page-header' }, h('div', null,
       h('h1', { class: 'page-title' }, 'Season SOS by Position'),
       h('p', { class: 'page-sub' }, `Each cell is the opponent and its defense rank vs ${pos}: 1 of ${n} allows the fewest PPR (toughest, red), ${n} the most (easiest, green). Defense data: ${G.season}.`))));
@@ -17055,7 +17059,7 @@
       : rd.avg == null ? (rd.unrated ? `${rd.unrated} game(s) in ${win.label}, opponent rank unavailable` : `No games in ${win.label}`)
       : `Avg opponent rank over ${rd.rated} game(s) in ${win.label}` + (rd.byes ? `, ${rd.byes} bye` : '') + (rd.unrated ? `, ${rd.unrated} unrated opponent(s) left out` : '');
 
-    const tbl = h('table', { class: 'data data-sticky', style: { fontSize: '11px' } },
+    const tbl = h('table', { class: 'data data-sticky' },
       h('thead', null, h('tr', null,
         h('th', { class: 'right', title: `SOS rank over ${win.label}, 1 = easiest` }, '#'), h('th', null, 'Team'),
         h('th', { class: 'right clickable', style: { cursor: 'pointer' }, title: `Average opponent defense rank over ${win.label}, higher = easier. A ranking, not a points forecast. Click to sort.`, onclick: () => gsort('avg') }, 'SOS' + garrow('avg')),
@@ -17077,7 +17081,7 @@
         }))
       ))
     );
-    main.appendChild(h('div', { style: { overflowX: 'auto' }, role:'region', 'aria-label':'Matchup grid, scrolls sideways', tabindex:'0' }, tbl));
+    main.appendChild(h('div', { class:'tbl-scroll' }, tbl));
     main.appendChild(h('div', { class: 'tip', style: { marginTop: '10px' } },
       `Matchup colors: ${G.note || `${G.season} PPR allowed`}. SOS rank #1 = easiest selected window. SOS = average opponent rank over ${win.label}, higher = easier for ${pos}s; byes and unavailable games are left out. This ranks matchups, not expected points. Faded weeks are outside the window.`));
     // The defender's mirror of this grid: which offences feed IDP starters, in the
@@ -17279,7 +17283,7 @@
       h('thead', null, h('tr', null, ...head.map(([l, t, r]) => h('th', { class:r ? 'right' : null, title:t || null }, l)))), h('tbody', null, ...rows)));
 
     // Top ten plays by win probability swing, credited to the side it helped.
-    main.appendChild(h('div', { class:'card gm-card' }, h('div', { class:'card-title' }, 'Top 10 plays by win probability added'),
+    main.appendChild(h('div', { class:'card gm-card' }, h('div', { class:'card-title' }, 'Top 10 swing plays'),
       tbl('gm-top', [['When'], ['Swing', 'Win probability points gained by the team the play helped.', true], ['Play']],
         G.top.map(i => { const r = G.plays[i], w = P(r, 'wpa'), t = side(w >= 0 ? P(r, 'side') : 1 - P(r, 'side'));
           return h('tr', null, h('td', { class:'tnum gm-when' }, when(r)), h('td', { class:'right tnum gm-swing' }, h('strong', null, `${t} ${pctPts(Math.abs(w))}%`)),
@@ -17799,7 +17803,7 @@
         h('div', { class:'card-title' }, 'Recent'),
         h('div', { class:'nav', style:{ marginTop:'6px' } },
           ...recent.map(r => h('a', { href:`#draft/${r.id}` },
-            h('span', { class:'icon' }, '▣'),
+            h('span', { class:'icon' }, pixelIcon('#draft', '▣')),
             h('span', { class:'nav-label' }, r.label),
           )),
         ),
@@ -17820,7 +17824,7 @@
       for (const d of out) {
         const s = d.settings || {};
         nav.appendChild(h('a', { href:`#draft/${d.draft_id}` },
-          h('span', { class:'icon' }, d.status === 'complete' ? '○' : '◉'),
+          h('span', { class:'icon' }, d.status === 'complete' ? pixelIcon('◇', '○') : pixelIcon('◆', '◉')),
           h('span', { class:'nav-label' }, `${(d.metadata || {}).name || d.draft_id} · ${d._season}`),
           h('span', { class:'nav-tag' }, `${s.teams || '?'}T ${draftStatusLabel(d.status)}`),
         ));
@@ -18866,16 +18870,23 @@
   // scroll it. Only when it really overflows: a blanket tabindex would pad the
   // tab order with dozens of stops that go nowhere.
   function focusScrollRegions() {
-    for (const el of document.querySelectorAll('#main [class*="scroll"], #main .trade-pool, #main .card')) {
+    const phone = window.matchMedia(PHONE_Q).matches;
+    for (const el of document.querySelectorAll('#main [class*="scroll"], #main .trade-pool, #main .card, #main .heatmap')) {
       const style = getComputedStyle(el);
       const scrolls = /auto|scroll/.test(style.overflowY + style.overflowX);
-      const overflows = el.scrollHeight > el.clientHeight + 2 || el.scrollWidth > el.clientWidth + 2;
+      const sideways = el.scrollWidth > el.clientWidth + 2;
+      const overflows = el.scrollHeight > el.clientHeight + 2 || sideways;
+      // A sideways strip on a phone says so above itself; standings carries its own cue.
+      const cue = el.previousElementSibling?.classList.contains('swipe-cue') ? el.previousElementSibling : null;
+      const wantCue = scrolls && sideways && phone && !el.querySelector('.standings-swipe');
+      if (wantCue && !cue) el.before(h('p', { class:'swipe-cue', 'aria-hidden':'true' }, 'Swipe sideways for more ›'));
+      else if (!wantCue && cue) cue.remove();
       if (scrolls && overflows) {
         if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
         if (!el.hasAttribute('role')) el.setAttribute('role', 'region');
         if (!el.hasAttribute('aria-label')) {
-          const title = el.querySelector('.card-title, caption, thead th');
-          el.setAttribute('aria-label', `${(title?.textContent || 'Content').trim()}, scrollable`);
+          const title = el.querySelector('.card-title, caption') || el.closest('.card')?.querySelector('.card-title') || document.querySelector('#main h1');
+          el.setAttribute('aria-label', `${(title?.textContent || 'Table').trim()}, scrolls ${sideways ? 'sideways' : 'down'}`);
         }
       } else if (el.getAttribute('role') === 'region' && el.getAttribute('tabindex') === '0') {
         // It stopped overflowing (a filter narrowed it), so stop advertising it.
@@ -18996,7 +19007,7 @@
     for (const lg of window.LEAGUES || []) {
       items.push({ kind:'league', label:lg.name, hint:`League · ${lg.is_superflex?'SF':lg.is_idp?'IDP':'1QB'}`, icon:'⚑', hash:`#league/${lg.id}` });
       for (const r of lg.rosters) {
-        items.push({ kind:'roster', label:r.team_name, hint:`${r.owner_name} · ${lg.short_name}${r.is_me?' · YOU':''}`, icon:r.is_me?'★':'○', hash:`#roster/${lg.id}/${r.roster_id}` });
+        items.push({ kind:'roster', label:r.team_name, hint:`${r.owner_name} · ${lg.short_name}${r.is_me?' · YOU':''}`, icon:r.is_me?'★':'◇', hash:`#roster/${lg.id}/${r.roster_id}` });
       }
     }
     for (const p of idx.all) {
@@ -19060,7 +19071,7 @@
           results.appendChild(h('div', { class:'cmdk-section' }, labels[it.kind] || it.kind));
         }
         const row = h('div', { class:`cmdk-row ${i===activeIdx?'active':''}`, onclick:()=>activate(it) },
-          h('span', { class:'cmdk-icon' }, it.kind === 'route' ? pixelIcon(it.hash, it.icon) : (headshot(it.pid, 20) || it.icon)),
+          h('span', { class:'cmdk-icon' }, it.kind === 'route' ? pixelIcon(it.hash, it.icon) : (headshot(it.pid, 20) || pixelIcon(it.icon, it.icon))),
           h('div', { class:'cmdk-name' }, it.label, h('div', { class:'cmdk-sub' }, it.hint)),
         );
         results.appendChild(row);
