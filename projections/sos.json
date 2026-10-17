@@ -929,8 +929,8 @@
    "games": 17,
    "off_sos": 23.12,
    "def_sos": 22.76,
-   "actual_pf": 26.0,
-   "actual_pa": 21.93,
+   "actual_pf": 26.14,
+   "actual_pa": 22.07,
    "posted_games": 7,
    "schedule": [
     {
@@ -978,8 +978,8 @@
      "opp": "WAS",
      "home": true,
      "posted": true,
-     "implied_pf": 29.0,
-     "implied_pa": 21.5
+     "implied_pf": 30.0,
+     "implied_pa": 22.5
     },
     {
      "week": 7,
@@ -1379,8 +1379,8 @@
    "games": 17,
    "off_sos": 23.15,
    "def_sos": 23.42,
-   "actual_pf": 22.94,
-   "actual_pa": 24.6,
+   "actual_pf": 23.01,
+   "actual_pa": 24.66,
    "posted_games": 16,
    "schedule": [
     {
@@ -1428,8 +1428,8 @@
      "opp": "SF",
      "home": false,
      "posted": true,
-     "implied_pf": 21.5,
-     "implied_pa": 29.0
+     "implied_pf": 22.5,
+     "implied_pa": 30.0
     },
     {
      "week": 8,

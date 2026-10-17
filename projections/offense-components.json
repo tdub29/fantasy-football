@@ -72,7 +72,7 @@
     "pass_2pt": 1.0
    },
    "pp_stats": {
-    "pass_yd": 2895.0,
+    "pass_yd": 2929.02,
     "pass_td": 13.0,
     "pass_int": 8.0,
     "rush_yd": 94.0,
@@ -882,14 +882,16 @@
     "pass_2pt": 1.0
    },
    "pp_stats": {
-    "pass_yd": 3249.5,
-    "rush_yd": 565.98,
-    "pass_td": 24.63,
-    "rush_td": 3.72,
-    "pass_int": 8.0
+    "pass_yd": 213.5,
+    "rush_yd": 40.5,
+    "pass_td": 27.0,
+    "pass_int": 8.0,
+    "rush_td": 5.0
    },
    "pp_borrowed": [
-    "pass_int"
+    "pass_td",
+    "pass_int",
+    "rush_td"
    ]
   },
   {
@@ -907,14 +909,15 @@
     "pass_2pt": 1.0
    },
    "pp_stats": {
-    "pass_yd": 3500.5,
-    "rush_yd": 309.5,
-    "pass_td": 25.2,
-    "rush_td": 1.68,
-    "pass_int": 13.0
+    "pass_yd": 215.5,
+    "rush_yd": 16.5,
+    "pass_td": 1.5,
+    "pass_int": 13.0,
+    "rush_td": 2.0
    },
    "pp_borrowed": [
-    "pass_int"
+    "pass_int",
+    "rush_td"
    ]
   },
   {
@@ -1016,7 +1019,7 @@
     "pass_yd": 2989.49,
     "rush_yd": 375.5,
     "pass_td": 17.86,
-    "rush_td": 4.27,
+    "rush_td": 4.3,
     "pass_int": 10.0
    },
    "pp_borrowed": [
@@ -1183,14 +1186,16 @@
     "pass_2pt": 1.0
    },
    "pp_stats": {
-    "pass_yd": 3188.75,
-    "rush_yd": 400.5,
-    "pass_td": 22.54,
-    "rush_td": 8.36,
-    "pass_int": 8.0
+    "pass_yd": 206.5,
+    "rush_yd": 29.5,
+    "pass_td": 21.0,
+    "pass_int": 8.0,
+    "rush_td": 9.0
    },
    "pp_borrowed": [
-    "pass_int"
+    "pass_td",
+    "pass_int",
+    "rush_td"
    ]
   },
   {
@@ -1536,7 +1541,7 @@
   {
    "sleeper_id": "11199",
    "name": "Emari Demercado",
-   "team": null,
+   "team": "DAL",
    "pos": "RB",
    "sleeper_stats": {
     "rush_yd": 171.0,
@@ -1651,7 +1656,7 @@
   {
    "sleeper_id": "11569",
    "name": "Jarquez Hunter",
-   "team": "MIA",
+   "team": "NO",
    "pos": "RB",
    "sleeper_stats": {
     "rush_yd": 63.0,
@@ -1768,7 +1773,7 @@
   {
    "sleeper_id": "11579",
    "name": "Audric Estime",
-   "team": "MIN",
+   "team": "CLE",
    "pos": "RB",
    "sleeper_stats": {
     "rush_yd": 119.0,
@@ -2104,7 +2109,7 @@
    "pp_stats": {
     "rush_yd": 28.5,
     "rec_yd": 10.5,
-    "rush_td": 7.71,
+    "rush_td": 7.13,
     "rec": 19.0,
     "rec_td": 1.0
    },
@@ -2116,7 +2121,7 @@
   {
    "sleeper_id": "12476",
    "name": "Devin Neal",
-   "team": null,
+   "team": "WAS",
    "pos": "RB",
    "sleeper_stats": {
     "rush_yd": 160.0,
@@ -2338,14 +2343,13 @@
     "fum_lost": 1.0
    },
    "pp_stats": {
-    "rush_yd": 36.5,
+    "rush_yd": 697.01,
     "rec_yd": 7.5,
     "rec": 1.5,
-    "rush_td": 5.0,
+    "rush_td": 5.4,
     "rec_td": 1.0
    },
    "pp_borrowed": [
-    "rush_td",
     "rec_td"
    ]
   },
@@ -2533,13 +2537,14 @@
     "fum_lost": 1.0
    },
    "pp_stats": {
-    "rush_yd": 773.92,
+    "rush_yd": 37.5,
     "rec_yd": 16.5,
-    "rush_td": 5.84,
+    "rush_td": 5.0,
     "rec": 47.0,
     "rec_td": 2.0
    },
    "pp_borrowed": [
+    "rush_td",
     "rec",
     "rec_td"
    ]
@@ -3116,10 +3121,10 @@
     "fum_lost": 1.0
    },
    "pp_stats": {
-    "rush_yd": 823.82,
+    "rush_yd": 63.5,
     "rec_yd": 11.5,
     "rec": 2,
-    "rush_td": 7.63,
+    "rush_td": 0.5,
     "rec_td": 1.0
    },
    "pp_borrowed": [
@@ -3723,14 +3728,16 @@
     "fum_lost": 2.0
    },
    "pp_stats": {
-    "rush_yd": 900.5,
-    "rec_yd": 325.5,
-    "rush_td": 5.3,
-    "rec_td": 2.67,
-    "rec": 37.0
+    "rush_yd": 66.5,
+    "rec_yd": 18.5,
+    "rush_td": 6.0,
+    "rec": 37.0,
+    "rec_td": 2.0
    },
    "pp_borrowed": [
-    "rec"
+    "rush_td",
+    "rec",
+    "rec_td"
    ]
   },
   {
@@ -5468,16 +5475,8 @@
     "rec_yd": 514.0,
     "rec_td": 3.0
    },
-   "pp_stats": {
-    "rec_yd": 770.58,
-    "rec_td": 4.55,
-    "rush_yd": 6.0,
-    "rec": 41.0
-   },
-   "pp_borrowed": [
-    "rush_yd",
-    "rec"
-   ]
+   "pp_stats": null,
+   "pp_borrowed": []
   },
   {
    "sleeper_id": "13285",
@@ -5999,7 +5998,7 @@
    },
    "pp_stats": {
     "rec_yd": 5.5,
-    "rec_td": 2.29,
+    "rec_td": 0.85,
     "rec": 10.0
    },
    "pp_borrowed": [
@@ -6096,7 +6095,7 @@
   {
    "sleeper_id": "2750",
    "name": "DeAndre Carter",
-   "team": null,
+   "team": "DET",
    "pos": "WR",
    "sleeper_stats": {
     "rush_yd": 11.0,
@@ -6560,14 +6559,15 @@
     "fum_lost": 1.0
    },
    "pp_stats": {
-    "rec_yd": 618.56,
+    "rec_yd": 33.5,
     "rush_yd": 5.5,
     "rec": 3,
-    "rec_td": 4.67,
-    "rush_td": 1.0
+    "rush_td": 1.0,
+    "rec_td": 4.0
    },
    "pp_borrowed": [
-    "rush_td"
+    "rush_td",
+    "rec_td"
    ]
   },
   {
@@ -6867,7 +6867,7 @@
   {
    "sleeper_id": "6957",
    "name": "James Proche",
-   "team": "CLE",
+   "team": null,
    "pos": "WR",
    "sleeper_stats": {
     "rush_yd": 6.0
@@ -6878,7 +6878,7 @@
   {
    "sleeper_id": "6960",
    "name": "Tyler Johnson",
-   "team": "NYJ",
+   "team": null,
    "pos": "WR",
    "sleeper_stats": {
     "rec": 3.0,
@@ -7481,7 +7481,7 @@
   {
    "sleeper_id": "8200",
    "name": "Kevin Austin",
-   "team": null,
+   "team": "NO",
    "pos": "WR",
    "sleeper_stats": {
     "rush_yd": 1.0,
@@ -8106,7 +8106,7 @@
   {
    "sleeper_id": "11820",
    "name": "Devin Culp",
-   "team": "TB",
+   "team": "CLE",
    "pos": "TE",
    "sleeper_stats": {
     "rec": 4.0,

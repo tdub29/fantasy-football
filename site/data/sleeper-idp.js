@@ -13,7 +13,7 @@
       "id": "sleeper-idp-2026",
       "title": "Sleeper IDP Usage Rankings (2026)",
       "url": "https://sleeper.com/research",
-      "publishedAt": "2026-10-13",
+      "publishedAt": "2026-10-16",
       "format": "idp",
       "defaultEnabled": true,
       "players": [
@@ -1602,7 +1602,7 @@
           "note": "Sleeper: started 4.3%, owned 9.8%. DB39 by usage."
         },
         {
-          "name": "Camryn Bynum",
+          "name": "Cam Bynum",
           "pos": "DB",
           "team": "IND",
           "age": 28,
