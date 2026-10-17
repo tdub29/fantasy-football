@@ -100,6 +100,7 @@
   }
   function toggleLeagueHidden(lg) {
     const id = String(lg.id), hidden = state.settings.hiddenLeagues;
+    if (!hidden.includes(id) && !confirm(`Hide ${lg.name.trim()}? It leaves the menu and My Leagues. Show it again from Profile.`)) return;
     state.settings.hiddenLeagues = hidden.includes(id) ? hidden.filter(x => x !== id) : [...hidden, id];
     saveSettings();
     if (isLeagueHidden(lg)) toast(`${lg.name.trim()} hidden. Show it again from Profile, top of the menu.`);
@@ -4109,6 +4110,11 @@
             );
           }))
         );
+      }
+      // A D/ST row is the team, so its Team column repeats the name.
+      if (filter.pos === 'DEF') {
+        const ix = [...tbl.querySelectorAll('thead th')].findIndex(th => /^(Team|Tm)$/.test(th.textContent.trim()));
+        if (ix >= 0) for (const tr of tbl.querySelectorAll('tr')) tr.children[ix]?.remove();
       }
       tableWrap.appendChild(h('div', { class:weeklyView ? 'rankings-table-scroll' : '', style:{ overflowX:'auto' } }, tbl));
       if (weeklyTable) {
