@@ -2461,6 +2461,50 @@
         "width": 390,
         "height": 844
       }
+    },
+    {
+      "id": "hidden-leagues",
+      "name": "Hidden leagues findable from the menu and Profile",
+      "path": [
+        {
+          "eval": "location.hash='#league/'+LEAGUES[0].id"
+        },
+        {
+          "sleepMs": 500
+        },
+        {
+          "eval": "[...document.querySelectorAll('#main button')].find(b=>b.textContent==='Hide league').click()"
+        },
+        {
+          "sleepMs": 300
+        },
+        {
+          "eval": "location.hash='#dashboard'"
+        },
+        {
+          "sleepMs": 500
+        },
+        {
+          "eval": "window.__hidLink=document.querySelector('#sidebar a.nav-hidden')?.textContent||''"
+        },
+        {
+          "click": "#sidebar a.nav-hidden"
+        },
+        {
+          "sleepMs": 300
+        },
+        {
+          "eval": "window.__hidRow=document.querySelector('dialog.acct-dialog[open] #acct-hidden + p + ul li')?.textContent||''"
+        },
+        {
+          "eval": "document.querySelector('#acct-hidden + p + ul button').click()"
+        },
+        {
+          "sleepMs": 300
+        }
+      ],
+      "assert": "/^1 hidden league$/.test(window.__hidLink) && window.__hidRow.includes(LEAGUES[0].name.trim()) && !document.querySelector('#sidebar a.nav-hidden') && !document.querySelector('#acct-hidden') && FF_LEAGUE_VIS.hidden().length===0",
+      "notes": "Hide a league, find it from the sidebar link, show it again from Profile. Ends with nothing hidden so later features see every league."
     }
   ],
   "ignore": [

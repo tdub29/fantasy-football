@@ -2766,6 +2766,7 @@ textarea { resize: vertical; min-height: 80px; }
 }
 .nav-sub a:hover { background: var(--bg-2); color: var(--fg-0); }
 .nav-sub a.active { color: var(--accent-hot); background: rgba(var(--accent-rgb),.06); }
+.nav a.nav-hidden { color: var(--fg-2); font-size: 0.85rem; }
 .nav-sub .sub-bullet { color: var(--fg-3); width: 10px; text-align: center; }
 
 /* ============================================================

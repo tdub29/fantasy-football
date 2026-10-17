@@ -459,6 +459,11 @@
         el('li', {}, el('strong', {}, a.username), ' (your login)'),
         S.extras.map(x => el('li', {}, x.username, ' ',
           el('button', { type: 'button', class: 'ghost', disabled: S.status === 'loading', onclick: () => { A.unlink(x.user_id); saveProfile(); } }, 'Remove')))));
+      const hidden = win.FF_LEAGUE_VIS?.hidden() || [];
+      if (hidden.length) body.append(el('h3', { class: 'acct-h', id: 'acct-hidden' }, 'Hidden leagues'),
+        el('p', { class: 'acct-note' }, 'Kept out of the menu and My Leagues. Their pages and search still work.'),
+        el('ul', { class: 'acct-users' }, hidden.map(lg => el('li', {}, lg.name.trim(), ' ',
+          el('button', { type: 'button', class: 'ghost', onclick: () => { win.FF_LEAGUE_VIS.show(lg); renderPanel(); } }, 'Show')))));
       const meta = el('dl', { class: 'acct-meta' });
       if (a) {
         meta.append(el('dt', {}, 'Last Sleeper sync'), el('dd', { class: 'tnum' }, snap ? `${new Date(snap.syncedAt).toLocaleString()} (${ago(Date.now() - snap.syncedAt)})` : 'not yet'));
@@ -537,6 +542,7 @@
       const f = dialog.querySelector('#acct-user');
       if (f && !A.S.active) f.focus();
       if (platform === 'espn') { dialog.querySelector('.acct-espn').open = true; dialog.querySelector('#acct-espn-link').focus(); }
+      if (platform === 'hidden') dialog.querySelector('#acct-hidden + p + ul button')?.focus();
     }
 
     function onStatus() {

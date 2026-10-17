@@ -102,8 +102,14 @@
     const id = String(lg.id), hidden = state.settings.hiddenLeagues;
     state.settings.hiddenLeagues = hidden.includes(id) ? hidden.filter(x => x !== id) : [...hidden, id];
     saveSettings();
+    if (isLeagueHidden(lg)) toast(`${lg.name.trim()} hidden. Show it again from Profile, top of the menu.`);
     route();
   }
+  // The profile panel (account.js) lists hidden leagues so they stay findable.
+  window.FF_LEAGUE_VIS = {
+    hidden: () => (window.LEAGUES || []).filter(isLeagueHidden),
+    show: lg => { if (isLeagueHidden(lg)) toggleLeagueHidden(lg); },
+  };
 
   // Toast notification
   function toast(msg, kind='info') {
@@ -1328,7 +1334,8 @@
     // Quick league shortcuts. The active league (if any) gets a "context"
     // sub-list under it with sub-tabs for the workspace.
     const allLeagues = (window.LEAGUES || []).filter(l => !isLeagueHidden(l) || l.id === activeLgId);
-    const leagueGroups = [{ label: 'Leagues', leagues: allLeagues }].filter(g => g.leagues.length);
+    const hiddenN = (window.LEAGUES || []).length - allLeagues.length;
+    const leagueGroups = [{ label: 'Leagues', leagues: allLeagues }].filter(g => g.leagues.length || hiddenN);
     for (const group of leagueGroups) {
     sidebar.appendChild(h('div', { class:'nav-section-title' }, group.label));
     const lnav = h('div', { class:'nav' });
@@ -1387,6 +1394,9 @@
         lnav.appendChild(sub);
       }
     }
+    if (hiddenN) lnav.appendChild(h('a', { href:'#dashboard', class:'nav-hidden',
+      onclick: e => { if (!window.FF_ACCOUNT) return; e.preventDefault(); setMobileNav(false); window.FF_ACCOUNT.openPanel('hidden'); } },
+      h('span', { class:'nav-label' }, `${hiddenN} hidden league${hiddenN === 1 ? '' : 's'}`)));
     sidebar.appendChild(lnav);
     }
     };
