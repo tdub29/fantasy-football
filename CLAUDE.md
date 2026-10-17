@@ -191,7 +191,7 @@ Full pipeline detail, and the evidence behind every trap below, is in
   asserts on DOM nodes, not painted pixels, so neither catches it. The check also asserts the
   geometry: numerals clear of the chalk lines, hash rows below the glyph band.
 - **`python ../.agents/scripts/verify-app.py "Fantasy Football"` before claiming any UI change works.**
-  It drives all 23 mapped features headlessly and exits 1 on a failure or a console error. A new
+  It drives every mapped feature headlessly and exits 1 on a failure or a console error. A new
   view ships with its entry in `.agents/feature-map.json`, in the same change.
 - **"Refresh the data" always means `python projections/build_all.py`, the full run, never `--core`.**
   A partial refresh leaves one fresh column beside stale ones and on a phone they look identical.
