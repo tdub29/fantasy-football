@@ -55,7 +55,7 @@
       "band": {
         "role": "secondary",
         "displayName": "Periwinkle Band",
-        "canonical": "oklch(58% 0.115 285)",
+        "canonical": "oklch(56% 0.115 285)",
         "cssVar": "--band",
         "tonalRamp": [
           "oklch(15% 0.115 285)",
@@ -662,7 +662,7 @@
       },
       {
         "name": "The No-Blur Rule",
-        "body": "Shadow offsets are hard, with zero blur radius. A blurred shadow is the single tell that gives a retro plate away as a modern card. The only sanctioned blur is the modal scrim. Known violation to fix, not to copy: the trade preview card (`.trade-middle.preview .trade-middle-card`) still has a 28px blurred accent glow.",
+        "body": "Shadow offsets are hard, with zero blur radius. A blurred shadow is the single tell that gives a retro plate away as a modern card. The only sanctioned blur is the modal scrim.",
         "section": "elevation"
       },
       {
@@ -688,7 +688,7 @@
       "**Don't** put `-webkit-text-stroke` on anything except `.page-title` and `.section-title`.",
       "**Don't** introduce a fourth pillar color, or a \"warning teal\" / \"info teal.\"",
       "**Don't** apply glassmorphism, backdrop-blur, or frosted panels. A plate is opaque.",
-      "**Don't** add bounce, elastic, spring, or scale-in animations. Interaction feedback (hover, press, background swaps) runs 80 to 120ms; a data bar may grow once on load at 240 to 360ms ease-out. The reference has snap. Known violations to fix, not to copy: `.br-grade-fill` and `.trade-middle-card` use an overshooting cubic-bezier.",
+      "**Don't** add bounce, elastic, spring, or scale-in animations. Interaction feedback (hover, press, background swaps) runs 80 to 120ms; a data bar may grow once on load at 240 to 360ms ease-out. The reference has snap.",
       "**Don't** use em dashes anywhere. Use commas, colons, or periods.",
       "**Don't** copy, trace, or approximate anything owned from the reference: the Backyard Football and BFU marks, the kid characters, the NFL shield, any team logo, or the italic \"BACKYARD FOOTBALL\" strip. The grammar is takeable, the assets are not. See [BACKYARD-INVENTORY.md](BACKYARD-INVENTORY.md).",
       "**Don't** make this look like Sleeper. Retro game chrome is not mascot energy, and the line is that our ornament is hardware and stationery, never a cartoon character.",

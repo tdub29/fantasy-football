@@ -355,8 +355,7 @@ drawn. Use the token; the exact stops live in the CSS.
 
 **The No-Blur Rule.** Shadow offsets are hard, with zero blur radius. A blurred shadow is the
 single tell that gives a retro plate away as a modern card. The only sanctioned blur is the modal
-scrim. Known violation to fix, not to copy: the trade preview card
-(`.trade-middle.preview .trade-middle-card`) still has a 28px blurred accent glow.
+scrim.
 
 **The Press-Travels Rule.** A pressed button moves `translateY(2px)` and swaps to the inset bevel,
 so it looks physically depressed. This replaces the old 1px nudge and it is the only interaction
@@ -470,8 +469,7 @@ line (average, replacement, trend). A line with no legend is unfinished.
 
 **Zoomable headshot scatter.** Charts with many players support pinch and Ctrl+scroll zoom and
 drag to pan, and always offer visible buttons (+, minus and Reset view, with aria-labels Zoom in,
-Zoom out and Reset zoom), so no gesture is required. Known gap: Reset's spoken name should match its
-visible text. Unzoomed, one finger scrolls the page; zoomed, it pans the chart, and a
+Zoom out and Reset view), so no gesture is required. Unzoomed, one finger scrolls the page; zoomed, it pans the chart, and a
 pinch never zooms the page. Zoomed in, dots become headshots that spread apart to avoid overlap.
 (Prospects scatter, `.chart-zoom`)
 
@@ -528,8 +526,7 @@ the highlighted result row in gold with ink text.
 - **Don't** apply glassmorphism, backdrop-blur, or frosted panels. A plate is opaque.
 - **Don't** add bounce, elastic, spring, or scale-in animations. Interaction feedback (hover,
   press, background swaps) runs 80 to 120ms; a data bar may grow once on load at 240 to 360ms
-  ease-out. The reference has snap. Known violations to fix, not to copy: `.br-grade-fill` and
-  `.trade-middle-card` use an overshooting cubic-bezier.
+  ease-out. The reference has snap.
 - **Don't** use em dashes anywhere. Use commas, colons, or periods.
 - **Don't** copy, trace, or approximate anything owned from the reference: the Backyard Football
   and BFU marks, the kid characters, the NFL shield, any team logo, or the italic

@@ -13131,7 +13131,7 @@
     const stage = h('div', { class:'chart-zoom' });
     let base = null, view = null, box = null, svg = null, raf = 0;
     const btn = (label, title, fn) => h('button', { type:'button', class:'toggle', title, 'aria-label':title, onclick:fn }, label);
-    const reset = btn('Reset view', 'Reset zoom', () => { view = null; draw(); });
+    const reset = btn('Reset view', 'Reset view', () => { view = null; draw(); });
     const tools = h('div', { class:'chart-zoom-tools' },
       btn('+', 'Zoom in', () => zoomAt(1.6, 0.5, 0.5)), btn('\u2212', 'Zoom out', () => zoomAt(1 / 1.6, 0.5, 0.5)), reset,
       h('span', { class:'muted' }, 'Pinch or Ctrl+scroll to zoom, drag to pan. Zoomed in, every dot turns into a headshot.'));
