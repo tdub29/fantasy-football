@@ -5,6 +5,16 @@
 
 A static vanilla JavaScript web application and Python data pipeline for dynasty fantasy football roster evaluation, multi-year aging projections, and Monte Carlo trade simulations.
 
+## App preview
+
+![Dynasty league hub and roster analysis interface](docs/images/fantasy-football-01.webp)
+
+The league hub brings roster evaluation and multi-year projections into one view.
+
+![Dynasty trade simulator comparing packages and championship odds](docs/images/fantasy-football-02.webp)
+
+Trade Finder compares candidate deals and simulated title-odds changes for both teams. These previews show the work in progress described above.
+
 ## Local Preview
 
 The frontend in `site/` is a static single-page application with no npm build step:
