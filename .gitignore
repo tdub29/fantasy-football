@@ -103,3 +103,18 @@ projections/prospect-db/
 *.bak
 *.err
 /transcript-*.txt
+
+# Local workspace state is not public project source.
+/.agents/
+/.claude/
+/.codex/
+/.cursor/
+/.impeccable/
+/.vscode/
+/.mcp.json
+/skills-lock.json
+**/AGENTS.md
+**/CLAUDE.md
+*.bak
+*.err
+tmp_*
