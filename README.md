@@ -1,7 +1,6 @@
 # Fantasy Football Dynasty Hub (Work in Progress)
 
-> **Warning: Work in Progress**
-> This repository is an active work in progress. It is built around three live Sleeper dynasty leagues (1QB, Superflex, and IDP) and is being refactored to separate league-specific snapshot data from a reusable public demo dataset.
+> **Work in progress:** Current data covers three Sleeper dynasty leagues (1QB, Superflex, and IDP). A reusable demo dataset is planned.
 
 A static vanilla JavaScript web application and Python data pipeline for dynasty fantasy football roster evaluation, multi-year aging projections, and Monte Carlo trade simulations.
 
@@ -13,7 +12,7 @@ The league hub brings roster evaluation and multi-year projections into one view
 
 ![Dynasty trade simulator comparing packages and championship odds](docs/images/fantasy-football-02.webp)
 
-Trade Finder compares candidate deals and simulated title-odds changes for both teams. These previews show the work in progress described above.
+Trade Finder compares candidate deals and simulated title-odds changes for both teams.
 
 ## Local Preview
 
@@ -27,9 +26,20 @@ Then open `http://localhost:8000` in a browser.
 
 ## Repository Layout
 
-- `site/`: Vanilla JavaScript single-page app (`index.html`, `js/app.js`, `css/`), hash router, and static data bundles in `site/data/`.
-- `projections/`: Python data builders and `build_all.py` pipeline that pull public rankings, nflverse stats, and Sleeper league feeds to generate `site/data/*.js`.
-- `docs/`: Architecture notes (`ARCHITECTURE.md`) and dynasty valuation methodology (`FRAMEWORKS.md`).
+| Directory | Contents |
+| --- | --- |
+| [site/](site/) | Static app, generated data bundles, and JavaScript tests. |
+| [projections/](projections/) | Data builders, model inputs, and evaluation scripts. |
+| [historical/](historical/README.md) | Historical source datasets and reproducible feature builders. |
+| [Leagues/](Leagues/) | Sleeper league snapshots and roster-cache builder. |
+| [notes/](notes/README.md) | Model evidence, experiment results, and FAAB analysis inputs. |
+| [docs/](docs/README.md) | Architecture, valuation methodology, and refresh instructions. |
+| [cloudflare/](cloudflare/) | Optional account-profile API. |
+
+The checked-in data supports local preview. Rebuilding every feed also needs the
+optional inputs described in [the pipeline guide](docs/PIPELINE.md). Historical
+data is retained because current builders read it; it is not part of the static
+page download.
 
 ## Implemented vs. In-Progress Scope
 

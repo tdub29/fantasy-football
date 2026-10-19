@@ -1,7 +1,0 @@
-node : node:internal/assert/utils:77
-At C:\Users\TrevorWhite\Downloads\Big Projects\Fantasy Football\refresh.ps1:69 char:3
-+   node "site/js/$t.test.js" *> $null
-+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : NotSpecified: (node:internal/assert/utils:77:String) [], RemoteException
-    + FullyQualifiedErrorId : NativeCommandError
- 
