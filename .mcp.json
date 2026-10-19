@@ -83,11 +83,6 @@
         "BROWSERBASE_PROJECT_ID": "${BROWSERBASE_PROJECT_ID}"
       }
     },
-    "codebase-memory": {
-      "type": "stdio",
-      "command": "C:/Users/TrevorWhite/tools/codebase-memory-mcp/codebase-memory-mcp.exe",
-      "args": []
-    },
     "ponytail": {
       "command": "node",
       "args": [
@@ -103,14 +98,6 @@
         "-y",
         "@modelcontextprotocol/server-filesystem",
         "C:/Users/TrevorWhite/Downloads/Big Projects/Fantasy Football"
-      ],
-      "type": "stdio"
-    },
-    "caveman-shrink-codebase-memory": {
-      "command": "node",
-      "args": [
-        "C:/Users/TrevorWhite/Downloads/Big Projects/.agents/vendor/JuliusBrussee-caveman/src/mcp-servers/caveman-shrink/index.js",
-        "C:/Users/TrevorWhite/tools/codebase-memory-mcp/codebase-memory-mcp.exe"
       ],
       "type": "stdio"
     }
