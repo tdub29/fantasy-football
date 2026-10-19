@@ -1,60 +1,36 @@
-# Fantasy Football
+# Fantasy Football Dynasty Hub (Work in Progress)
 
-A single-page dynasty fantasy football tier sheet that overlays Domain Dynasty's player categories (Cornerstone, Foundational, Upside Premier) on top of live Sleeper rosters, KeepTradeCut market values, and aggregated YouTuber rankings.
+> **Warning: Work in Progress**
+> This repository is an active work in progress. It is built around three live Sleeper dynasty leagues (1QB, Superflex, and IDP) and is being refactored to separate league-specific snapshot data from a reusable public demo dataset.
 
-## Run it
+A static vanilla JavaScript web application and Python data pipeline for dynasty fantasy football roster evaluation, multi-year aging projections, and Monte Carlo trade simulations.
 
-```bash
-cd site
-python -m http.server 8000
-```
+## Local Preview
 
-Visit http://localhost:8000
-
-## What's in here
-
-- `site/` — the static SPA. Vanilla JS, no build step. Hash-based routing.
-  - `index.html` — shell
-  - `css/styles.css` — full stylesheet, dark Tier-Sheet aesthetic
-  - `js/app.js` — full SPA logic
-  - `data/` — generated data files + Python build scripts
-  - `PRODUCT.md`, `DESIGN.md`, `CLAUDE.md` — design system + product context
-- `projections/` — scoring pipeline: `python projections/build_all.py` builds `site/data/projections.js` + SoS + environment feeds
-- `historical/` — nflverse-style historical data
-- `Leagues/` — raw Sleeper league API data (one folder per league)
-- `transcripts/` — cleaned auto-transcripts of recent Dynasty Domain ranking videos
-- `players-nfl.json` — full Sleeper player dictionary (auto-fetched)
-- `cornerstone-rankings-2026.md` — initial Domain rankings notes
-- `transcript-*.txt` — original full transcripts
-
-## Refreshing data
+The frontend in `site/` is a static single-page application with no npm build step:
 
 ```bash
-# from project root
-curl -s "https://api.sleeper.app/v1/players/nfl" -o players-nfl.json
-python Leagues/build_league_folders.py
-python site/data/build_site_data.py
-python site/data/build_ktc.py
+python -m http.server 8000 --directory site
 ```
 
-## Architecture
+Then open `http://localhost:8000` in a browser.
 
-- **Vanilla JS, no framework, no build step.** Hash-based routing (`#dashboard`, `#league/:id`, `#roster/:leagueId/:rosterId`, `#trade`, `#compare/:leagueId/:rA/:rB`, `#sources`, `#about`).
-- **Multi-source rankings aggregation.** Each enabled "ranking" contributes a per-player rank position; players are sorted by average source rank, ties broken by tier value.
-- **Format-aware valuation.** Superflex applies a 1.40x multiplier to QB tier values; IDP applies 1.10x to LB.
-- **Surplus/shortage trade matching.** League-aware target slot counts (FLEX distributed across RB/WR/TE) drive the "is this player startable league-wide?" check, which feeds Ideal Trade Partners and Trade Strategy.
-- **localStorage persistence** for source toggles + custom sources.
-- **Sleeper public API** is the only live data dependency (read-only, no auth).
-- **KeepTradeCut HTML scraper** for public dynasty market values.
+## Repository Layout
 
-## Features
+- `site/`: Vanilla JavaScript single-page app (`index.html`, `js/app.js`, `css/`), hash router, and static data bundles in `site/data/`.
+- `projections/`: Python data builders and `build_all.py` pipeline that pull public rankings, nflverse stats, and Sleeper league feeds to generate `site/data/*.js`.
+- `docs/`: Architecture notes (`ARCHITECTURE.md`) and dynasty valuation methodology (`FRAMEWORKS.md`).
 
-- **Dashboard** with Empire asset visual (cornerstones / foundational / upside as colored cells), auto-generated Insights strip, KPI cards, Sleeper Market trending adds/drops, position grade heatmap.
-- **Player Rankings** — flat 1 to N list aggregated across enabled sources, owned %, started %, DEPTH badge auto-detection.
-- **All Players** — searchable Sleeper player DB with ownership overlay.
-- **League view** with team strength rankings, cornerstones leaderboard, format banner.
-- **Roster Blueprint** (Domain Team Blueprint inspired): roster value tier, archetypes, 2-year outlook, positional grades (within-position normalized), lineup composition (startable / need / surplus per position), top priorities, market gauge, buys/sells with intensity, trade strategy (downtier / uptier / pivot), ideal trade partners (outlook-aware), positional age tracker, roster by position with depth dividers, draft capital.
-- **Trade Calculator** with fairness verdict + post-trade strength delta.
-- **Compare Rosters** — head-to-head positional + cornerstone diff.
-- **YouTuber Sources** management with CSV import + settings export/import.
-- **Cmd+K palette** — fuzzy jump anywhere via keyboard.
+## Implemented vs. In-Progress Scope
+
+- **Implemented in code:** Roster comparison tables, KeepTradeCut market value integration, multi-source ranking aggregation (with half-PPR to full-PPR conversion), five-year aging curves, and Monte Carlo championship equity simulations (`site/js/trade-sim.js`).
+- **Work in progress:** Replacing hardcoded Sleeper league snapshots with a clean sample dataset for standalone public use, and modeling exact league-specific draft-lottery and Max PF draft-order rules in `originSlot` (currently approximated by starter strength).
+
+## Data Sources and Limitations
+
+- **External feeds:** Data generation scripts read public endpoints from the Sleeper API, KeepTradeCut, FantasyPros, and nflverse. Upstream schemas and availability can change without notice.
+- **Manual inputs:** Certain analyst tier boards require local CSV inputs that are not fetched automatically by `projections/build_all.py`.
+
+## License
+
+[MIT](LICENSE)
