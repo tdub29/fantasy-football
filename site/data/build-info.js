@@ -1,5 +1,5 @@
 window.BUILD_INFO = {
-  "generated": "2026-10-20T06:14:57",
+  "generated": "2026-10-20T15:06:18",
   "files": {
     "ktc.js": "2026-10-20T06:07:12",
     "players.js": "2026-10-20T06:07:17",

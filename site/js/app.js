@@ -13003,7 +13003,7 @@
   // peers: same position and class, ranked by the prospect score. Drafted rows carry y.
   function pmCardHead(r, cls, peers, idSub, boxes) {
     const logo = ((window.COLLEGE_BIO || {}).schools || {})[r.sch];
-    const cuts = PM_CUTS[r.p] || [], mine = pmChances(r), pk = pmPick(r);
+    const cuts = PM_CUTS[r.p] || [], mine = pmFitPick(r) ? pmChances(r) : [], pk = pmPick(r);
     const score = pmScore(r), mean = pmMean(r.p, pmFitPick(r), r.ts);
     const ranked = peers.map(x => pmMean(x.p, pmFitPick(x), x.ts)).filter(v => v != null);
     const rank = ranked.filter(v => v > mean).length + 1;
@@ -13265,7 +13265,7 @@
     ].filter(Boolean);
     const get = (r, k) => k.startsWith('st.') ? pmInputVal(r, k.slice(3))
       : k === 'sc' ? pmScore(r)
-      : k === 't0' || k === 't1' ? pmTopChance(r.p, PM_CUTS[r.p][Number(k[1])], pmFitPick(r), r.ts)
+      : k === 't0' || k === 't1' ? (pmFitPick(r) ? pmTopChance(r.p, PM_CUTS[r.p][Number(k[1])], pmFitPick(r), r.ts) : null)
       : k === 'best' ? (r.out ? r.out[2] || 999 : null)
       : k === 'cb' ? (r.cb ? r.cb[1] : null)
       : k === 'pk' ? (r.y ? r.pk : pmUfd(r) ? 999 : pmPick(r)) : r[k];
@@ -13283,8 +13283,8 @@
       if (k === 'cb') return v == null ? '·' : h('span', { title:`${pmDec(r.cb[0])} PPR points per game` }, `${r.p}${v}`);
       if (k === 'best') return v == null ? '·' : v === 999 ? h('span', { class:'muted' }, 'none') : `${r.p}${v}`;
       if (v != null && !r.id && (k === 't0' || k === 't1')) return h('span', { class:'muted',
-        title:pmPick(r) ? `From mock pick ${pmDec(pmPick(r))}` : pmUfd(r) ? 'Projected UFD: scored as the last pick (257) plus college profile' : 'No mock pick yet: college profile alone, if drafted' }, pmPct(v));
-      if (k === 't0' || k === 't1') return pmPct(v);
+        title:pmPick(r) ? `From mock pick ${pmDec(pmPick(r))}` : 'Projected UFD: scored as the last pick (257) plus college profile' }, pmPct(v));
+      if (k === 't0' || k === 't1') return v == null ? h('span', { class:'muted', title:'No mock draft yet: draft capital required for hit probability. Open card for pick scenarios' }, '·') : pmPct(v);
       if (k === 'pk' && !r.y) return v == null ? '·' : v === 999 ? h('em', { class:'muted', title:'In no public mock draft: projected undrafted' }, 'UFD') : h('em', { title:'Projected: median mock-draft pick' }, pmDec(v));
       return v == null ? '·' : String(v);
     };
