@@ -6353,8 +6353,11 @@ table.data tbody :is(td, th).oo-small, table.data tbody tr.oo-small :is(td, th),
 .oo-gs :is(thead th[rowspan], tbody th[scope=row]) { position: sticky; left: 0; z-index: 1; box-shadow: 2px 0 0 var(--chalk); }
 .oo-gs tbody th[scope=row] { background: inherit; }
 @media (max-width: 480px) {
-  /* Five narrow columns fit a 390px card without a sideways scroll. */
-  :is(.oo-team, .oo-gs) :is(thead th, tbody th, tbody td) { padding: 6px 5px; }
+  /* Five narrow columns fit a 390px card without a sideways scroll. table.data
+     outranks the base table.data cell padding; the team table never scrolls, so
+     its last column drops the swipe fade's 40px end padding. */
+  table.data:is(.oo-team, .oo-gs) :is(thead th, tbody th, tbody td) { padding: 6px 5px; }
+  .tbl-scroll > table.data.oo-team > * > tr > :last-child { padding-inline-end: 5px; }
   table.data.oo-team { min-width: 0; }
   .oo-team th[scope=row] { white-space: normal; }
 }
@@ -6400,6 +6403,8 @@ td.gm-swing { white-space: nowrap; }
   table.data:is(.gm-drives, .gm-rec, .gm-top, .gm-pbp, .gm-usage) :is(thead th, tbody th, tbody td) { padding: 6px 4px; }
   table.data:is(.gm-pbp, .gm-usage) { font-size: 11px; }
   td.gm-desc { min-width: 120px; }
+  /* These fit the card, so the last column skips the swipe fade's 40px end padding. */
+  .tbl-scroll > table.data:is(.gm-drives, .gm-top, .gm-pbp) > * > tr > :last-child { padding-inline-end: 4px; }
   :is(.gm-rec, .gm-usage) tbody th[scope=row], :is(.gm-rec, .gm-usage) tbody th[scope=row] .hs-cell { white-space: normal; }
 }
 
