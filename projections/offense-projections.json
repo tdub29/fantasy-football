@@ -48,14 +48,14 @@
      "rush_2pt": 1.0
     },
     "blend": {
+     "pass_int": 10.0,
+     "fum_lost": 3.0,
      "rush_td": 10.7,
      "pass_2pt": 1.0,
+     "pass_td": 25.9,
      "rush_2pt": 1.0,
      "pass_yd": 3644.4,
-     "pass_int": 10.0,
-     "rush_yd": 517.8,
-     "pass_td": 25.9,
-     "fum_lost": 3.0
+     "rush_yd": 517.8
     }
    }
   },
@@ -88,13 +88,13 @@
      "rush_2pt": 1.0
     },
     "blend": {
-     "rush_td": 12.2,
-     "rec": 63.0,
-     "rec_yd": 503.2,
-     "rush_2pt": 1.0,
      "fum_lost": 1.0,
-     "rush_yd": 1231.3,
-     "rec_td": 3.4
+     "rush_td": 12.2,
+     "rush_2pt": 1.0,
+     "rec_yd": 503.2,
+     "rec": 63.0,
+     "rec_td": 3.4,
+     "rush_yd": 1231.3
     }
    }
   },
@@ -127,13 +127,52 @@
      "pass_2pt": 1.0
     },
     "blend": {
+     "pass_int": 11.0,
+     "fum_lost": 3.0,
      "rush_td": 3.8,
      "pass_2pt": 1.0,
-     "pass_yd": 3815.0,
-     "pass_int": 11.0,
-     "rush_yd": 419.7,
      "pass_td": 27.8,
-     "fum_lost": 3.0
+     "pass_yd": 3815.0,
+     "rush_yd": 419.7
+    }
+   }
+  },
+  {
+   "id": "4881",
+   "name": "Lamar Jackson",
+   "pos": "QB",
+   "team": "BAL",
+   "pp": 299.4,
+   "sleeper": 326.0,
+   "blend": 312.7,
+   "pp_borrowed": [
+    "pass_int"
+   ],
+   "stats": {
+    "pp": {
+     "pass_yd": 3249.5,
+     "rush_yd": 565.98,
+     "pass_td": 24.63,
+     "rush_td": 3.72,
+     "pass_int": 8.0
+    },
+    "sleeper": {
+     "pass_yd": 3380.0,
+     "pass_td": 27.0,
+     "pass_int": 8.0,
+     "rush_yd": 668.0,
+     "rush_td": 5.0,
+     "fum_lost": 4.0,
+     "pass_2pt": 1.0
+    },
+    "blend": {
+     "pass_int": 8.0,
+     "fum_lost": 4.0,
+     "rush_td": 4.4,
+     "pass_2pt": 1.0,
+     "pass_td": 25.8,
+     "pass_yd": 3314.8,
+     "rush_yd": 617.0
     }
    }
   },
@@ -166,13 +205,13 @@
      "pass_2pt": 1.0
     },
     "blend": {
+     "pass_int": 12.0,
+     "fum_lost": 3.0,
      "rush_td": 5.3,
      "pass_2pt": 1.0,
-     "pass_yd": 3766.2,
-     "pass_int": 12.0,
-     "rush_yd": 319.2,
      "pass_td": 25.8,
-     "fum_lost": 3.0
+     "pass_yd": 3766.2,
+     "rush_yd": 319.2
     }
    }
   },
@@ -206,13 +245,13 @@
      "pass_2pt": 2.0
     },
     "blend": {
+     "pass_int": 10.0,
+     "fum_lost": 3.0,
      "rush_td": 2.0,
      "pass_2pt": 2.0,
-     "pass_yd": 3983.9,
-     "pass_int": 10.0,
-     "rush_yd": 73.2,
      "pass_td": 32.9,
-     "fum_lost": 3.0
+     "pass_yd": 3983.9,
+     "rush_yd": 73.2
     }
    }
   },
@@ -245,13 +284,13 @@
      "pass_2pt": 1.0
     },
     "blend": {
+     "pass_int": 9.0,
+     "fum_lost": 3.0,
      "rush_td": 5.3,
      "pass_2pt": 1.0,
-     "pass_yd": 3263.8,
-     "pass_int": 9.0,
-     "rush_yd": 617.8,
      "pass_td": 21.2,
-     "fum_lost": 3.0
+     "pass_yd": 3263.8,
+     "rush_yd": 617.8
     }
    }
   },
@@ -284,13 +323,13 @@
      "pass_2pt": 1.0
     },
     "blend": {
+     "pass_int": 10.0,
+     "fum_lost": 3.0,
      "rush_td": 2.8,
      "pass_2pt": 1.0,
-     "pass_yd": 3654.8,
-     "pass_int": 10.0,
-     "rush_yd": 373.8,
      "pass_td": 26.3,
-     "fum_lost": 3.0
+     "pass_yd": 3654.8,
+     "rush_yd": 373.8
     }
    }
   },
@@ -323,13 +362,13 @@
      "pass_2pt": 1.0
     },
     "blend": {
+     "pass_int": 10.0,
+     "fum_lost": 3.0,
      "rush_td": 2.8,
      "pass_2pt": 1.0,
-     "pass_yd": 3758.7,
-     "pass_int": 10.0,
-     "rush_yd": 319.2,
      "pass_td": 25.8,
-     "fum_lost": 3.0
+     "pass_yd": 3758.7,
+     "rush_yd": 319.2
     }
    }
   },
@@ -360,13 +399,13 @@
      "rush_2pt": 1.0
     },
     "blend": {
-     "rush_td": 8.9,
-     "rec": 34.5,
-     "rec_yd": 554.9,
-     "rush_2pt": 1.0,
      "fum_lost": 2.0,
-     "rush_yd": 1263.1,
-     "rec_td": 3.3
+     "rush_td": 8.9,
+     "rush_2pt": 1.0,
+     "rec_yd": 554.9,
+     "rec": 34.5,
+     "rec_td": 3.3,
+     "rush_yd": 1263.1
     }
    }
   },
@@ -399,13 +438,13 @@
      "pass_2pt": 2.0
     },
     "blend": {
+     "pass_int": 13.0,
+     "fum_lost": 3.0,
      "rush_td": 3.3,
      "pass_2pt": 2.0,
-     "pass_yd": 3825.2,
-     "pass_int": 13.0,
-     "rush_yd": 128.2,
      "pass_td": 28.8,
-     "fum_lost": 3.0
+     "pass_yd": 3825.2,
+     "rush_yd": 128.2
     }
    }
   },
@@ -438,13 +477,13 @@
      "pass_2pt": 2.0
     },
     "blend": {
+     "pass_int": 13.0,
+     "fum_lost": 2.0,
      "rush_td": 1.3,
      "pass_2pt": 2.0,
-     "pass_yd": 4125.9,
-     "pass_int": 13.0,
-     "rush_yd": 80.2,
      "pass_td": 29.2,
-     "fum_lost": 2.0
+     "pass_yd": 4125.9,
+     "rush_yd": 80.2
     }
    }
   },
@@ -475,12 +514,12 @@
      "rec_2pt": 1.0
     },
     "blend": {
-     "rec": 106.0,
-     "rec_yd": 1243.4,
-     "rec_2pt": 1.0,
      "fum_lost": 1.0,
-     "rush_yd": 14.2,
-     "rec_td": 8.9
+     "rec_2pt": 1.0,
+     "rec_yd": 1243.4,
+     "rec": 106.0,
+     "rec_td": 8.9,
+     "rush_yd": 14.2
     }
    }
   },
@@ -514,13 +553,13 @@
      "pass_2pt": 2.0
     },
     "blend": {
+     "pass_int": 10.0,
+     "fum_lost": 3.0,
      "rush_td": 0.8,
      "pass_2pt": 2.0,
-     "pass_yd": 4105.2,
-     "pass_int": 10.0,
-     "rush_yd": 53.0,
      "pass_td": 29.9,
-     "fum_lost": 3.0
+     "pass_yd": 4105.2,
+     "rush_yd": 53.0
     }
    }
   },
@@ -555,13 +594,13 @@
      "pass_2pt": 1.0
     },
     "blend": {
+     "pass_int": 12.0,
+     "fum_lost": 2.0,
      "rush_td": 1.0,
      "pass_2pt": 1.0,
-     "pass_yd": 3805.8,
-     "pass_int": 12.0,
-     "rush_yd": 202.0,
      "pass_td": 27.2,
-     "fum_lost": 2.0
+     "pass_yd": 3805.8,
+     "rush_yd": 202.0
     }
    }
   },
@@ -593,12 +632,12 @@
      "pass_2pt": 2.0
     },
     "blend": {
-     "pass_2pt": 2.0,
-     "pass_yd": 3941.8,
      "pass_int": 11.0,
-     "rush_yd": 19.0,
+     "fum_lost": 2.0,
+     "pass_2pt": 2.0,
      "pass_td": 31.2,
-     "fum_lost": 2.0
+     "pass_yd": 3941.8,
+     "rush_yd": 19.0
     }
    }
   },
@@ -631,13 +670,52 @@
      "pass_2pt": 1.0
     },
     "blend": {
+     "pass_int": 12.0,
+     "fum_lost": 3.0,
      "rush_td": 3.8,
      "pass_2pt": 1.0,
-     "pass_yd": 3634.6,
-     "pass_int": 12.0,
-     "rush_yd": 173.8,
      "pass_td": 25.2,
-     "fum_lost": 3.0
+     "pass_yd": 3634.6,
+     "rush_yd": 173.8
+    }
+   }
+  },
+  {
+   "id": "4892",
+   "name": "Baker Mayfield",
+   "pos": "QB",
+   "team": "TB",
+   "pp": 268.8,
+   "sleeper": 274.9,
+   "blend": 271.9,
+   "pp_borrowed": [
+    "pass_int"
+   ],
+   "stats": {
+    "pp": {
+     "pass_yd": 3500.5,
+     "rush_yd": 309.5,
+     "pass_td": 25.2,
+     "rush_td": 1.68,
+     "pass_int": 13.0
+    },
+    "sleeper": {
+     "pass_yd": 3682.0,
+     "pass_td": 26.0,
+     "pass_int": 13.0,
+     "rush_yd": 306.0,
+     "rush_td": 2.0,
+     "fum_lost": 4.0,
+     "pass_2pt": 1.0
+    },
+    "blend": {
+     "pass_int": 13.0,
+     "fum_lost": 4.0,
+     "rush_td": 1.8,
+     "pass_2pt": 1.0,
+     "pass_td": 25.6,
+     "pass_yd": 3591.2,
+     "rush_yd": 307.8
     }
    }
   },
@@ -670,13 +748,13 @@
      "pass_2pt": 1.0
     },
     "blend": {
+     "pass_int": 10.0,
+     "fum_lost": 3.0,
      "rush_td": 1.8,
      "pass_2pt": 1.0,
-     "pass_yd": 3639.8,
-     "pass_int": 10.0,
-     "rush_yd": 188.2,
      "pass_td": 26.3,
-     "fum_lost": 3.0
+     "pass_yd": 3639.8,
+     "rush_yd": 188.2
     }
    }
   },
@@ -708,12 +786,12 @@
      "rec_2pt": 1.0
     },
     "blend": {
-     "rec": 96.0,
-     "rec_yd": 1217.2,
-     "rec_2pt": 1.0,
      "fum_lost": 1.0,
-     "rush_yd": 16.0,
-     "rec_td": 7.8
+     "rec_2pt": 1.0,
+     "rec_yd": 1217.2,
+     "rec": 96.0,
+     "rec_td": 7.8,
+     "rush_yd": 16.0
     }
    }
   },
@@ -722,9 +800,9 @@
    "name": "Kyler Murray",
    "pos": "QB",
    "team": "MIN",
-   "pp": 245.8,
+   "pp": 245.7,
    "sleeper": 283.1,
-   "blend": 264.5,
+   "blend": 264.4,
    "pp_borrowed": [
     "pass_int"
    ],
@@ -733,7 +811,7 @@
      "pass_yd": 2989.49,
      "rush_yd": 375.5,
      "pass_td": 17.86,
-     "rush_td": 4.54,
+     "rush_td": 4.52,
      "pass_int": 10.0
     },
     "sleeper": {
@@ -746,13 +824,13 @@
      "pass_2pt": 1.0
     },
     "blend": {
+     "pass_int": 10.0,
+     "fum_lost": 3.0,
      "rush_td": 3.8,
      "pass_2pt": 1.0,
-     "pass_yd": 3254.2,
-     "pass_int": 10.0,
-     "rush_yd": 439.2,
      "pass_td": 19.9,
-     "fum_lost": 3.0
+     "pass_yd": 3254.2,
+     "rush_yd": 439.2
     }
    }
   },
@@ -782,12 +860,12 @@
      "fum_lost": 2.0
     },
     "blend": {
-     "rush_td": 7.8,
-     "rec": 37.5,
-     "rec_yd": 590.2,
      "fum_lost": 2.0,
-     "rush_yd": 966.8,
-     "rec_td": 4.2
+     "rush_td": 7.8,
+     "rec_yd": 590.2,
+     "rec": 37.5,
+     "rec_td": 4.2,
+     "rush_yd": 966.8
     }
    }
   },
@@ -822,13 +900,13 @@
      "pass_2pt": 1.0
     },
     "blend": {
+     "pass_int": 12.0,
+     "fum_lost": 3.0,
      "rush_td": 2.0,
      "pass_2pt": 1.0,
-     "pass_yd": 3694.5,
-     "pass_int": 12.0,
-     "rush_yd": 157.0,
      "pass_td": 24.8,
-     "fum_lost": 3.0
+     "pass_yd": 3694.5,
+     "rush_yd": 157.0
     }
    }
   },
@@ -860,12 +938,12 @@
      "fum_lost": 2.0
     },
     "blend": {
-     "rush_td": 4.5,
-     "pass_yd": 2898.8,
      "pass_int": 9.0,
-     "rush_yd": 629.6,
+     "fum_lost": 2.0,
+     "rush_td": 4.5,
      "pass_td": 15.8,
-     "fum_lost": 2.0
+     "pass_yd": 2898.8,
+     "rush_yd": 629.6
     }
    }
   },
@@ -895,13 +973,13 @@
      "rec_2pt": 1.0
     },
     "blend": {
-     "rush_td": 0.7,
-     "rec": 57.0,
-     "rec_yd": 1362.2,
-     "rec_2pt": 1.0,
      "fum_lost": 1.0,
-     "rush_yd": 64.8,
-     "rec_td": 9.2
+     "rec_2pt": 1.0,
+     "rush_td": 0.7,
+     "rec_yd": 1362.2,
+     "rec": 57.0,
+     "rec_td": 9.2,
+     "rush_yd": 64.8
     }
    }
   },
@@ -930,12 +1008,12 @@
      "rec_2pt": 1.0
     },
     "blend": {
-     "rec": 57.8,
-     "rec_yd": 1334.0,
-     "rec_2pt": 1.0,
      "fum_lost": 1.0,
-     "rush_yd": 13.8,
-     "rec_td": 10.6
+     "rec_2pt": 1.0,
+     "rec_yd": 1334.0,
+     "rec": 57.8,
+     "rec_td": 10.6,
+     "rush_yd": 13.8
     }
    }
   },
@@ -968,13 +1046,13 @@
      "rush_2pt": 1.0
     },
     "blend": {
-     "rush_td": 10.6,
-     "rec": 31.0,
-     "rec_yd": 271.8,
-     "rush_2pt": 1.0,
      "fum_lost": 2.0,
-     "rush_yd": 1234.0,
-     "rec_td": 1.8
+     "rush_td": 10.6,
+     "rush_2pt": 1.0,
+     "rec_yd": 271.8,
+     "rec": 31.0,
+     "rec_td": 1.8,
+     "rush_yd": 1234.0
     }
    }
   },
@@ -1007,13 +1085,13 @@
      "pass_2pt": 1.0
     },
     "blend": {
+     "pass_int": 12.0,
+     "fum_lost": 3.0,
      "rush_td": 3.8,
      "pass_2pt": 1.0,
-     "pass_yd": 3552.0,
-     "pass_int": 12.0,
-     "rush_yd": 178.8,
      "pass_td": 21.4,
-     "fum_lost": 3.0
+     "pass_yd": 3552.0,
+     "rush_yd": 178.8
     }
    }
   },
@@ -1044,11 +1122,11 @@
      "rec_2pt": 1.0
     },
     "blend": {
-     "rec": 84.0,
-     "rec_yd": 1203.6,
      "rec_2pt": 1.0,
-     "rush_yd": 18.0,
-     "rec_td": 7.3
+     "rec_yd": 1203.6,
+     "rec": 84.0,
+     "rec_td": 7.3,
+     "rush_yd": 18.0
     }
    }
   },
@@ -1081,13 +1159,13 @@
      "pass_2pt": 1.0
     },
     "blend": {
+     "pass_int": 12.0,
+     "fum_lost": 3.0,
      "rush_td": 1.8,
      "pass_2pt": 1.0,
-     "pass_yd": 3571.8,
-     "pass_int": 12.0,
-     "rush_yd": 200.2,
      "pass_td": 22.4,
-     "fum_lost": 3.0
+     "pass_yd": 3571.8,
+     "rush_yd": 200.2
     }
    }
   },
@@ -1120,13 +1198,13 @@
      "rush_2pt": 1.0
     },
     "blend": {
-     "rush_td": 12.3,
-     "rec": 17.0,
-     "rec_yd": 146.2,
-     "rush_2pt": 1.0,
      "fum_lost": 2.0,
-     "rush_yd": 1319.3,
-     "rec_td": 0.8
+     "rush_td": 12.3,
+     "rush_2pt": 1.0,
+     "rec_yd": 146.2,
+     "rec": 17.0,
+     "rec_td": 0.8,
+     "rush_yd": 1319.3
     }
    }
   },
@@ -1157,12 +1235,12 @@
      "rec_2pt": 1.0
     },
     "blend": {
-     "rec": 52.8,
-     "rec_yd": 1324.2,
-     "rec_2pt": 1.0,
      "fum_lost": 1.0,
-     "rush_yd": 33.0,
-     "rec_td": 8.2
+     "rec_2pt": 1.0,
+     "rec_yd": 1324.2,
+     "rec": 52.8,
+     "rec_td": 8.2,
+     "rush_yd": 33.0
     }
    }
   },
@@ -1193,54 +1271,13 @@
      "rush_2pt": 1.0
     },
     "blend": {
-     "rush_td": 11.2,
-     "rec": 19.2,
-     "rec_yd": 147.2,
-     "rush_2pt": 1.0,
      "fum_lost": 2.0,
-     "rush_yd": 1290.2,
-     "rec_td": 1.3
-    }
-   }
-  },
-  {
-   "id": "4881",
-   "name": "Lamar Jackson",
-   "pos": "QB",
-   "team": "BAL",
-   "pp": 142.6,
-   "sleeper": 326.0,
-   "blend": 234.3,
-   "pp_borrowed": [
-    "pass_td",
-    "pass_int",
-    "rush_td"
-   ],
-   "stats": {
-    "pp": {
-     "pass_yd": 213.5,
-     "rush_yd": 40.5,
-     "pass_td": 27.0,
-     "pass_int": 8.0,
-     "rush_td": 5.0
-    },
-    "sleeper": {
-     "pass_yd": 3380.0,
-     "pass_td": 27.0,
-     "pass_int": 8.0,
-     "rush_yd": 668.0,
-     "rush_td": 5.0,
-     "fum_lost": 4.0,
-     "pass_2pt": 1.0
-    },
-    "blend": {
-     "rush_td": 5.0,
-     "pass_2pt": 1.0,
-     "pass_yd": 1796.8,
-     "pass_int": 8.0,
-     "rush_yd": 354.2,
-     "pass_td": 27.0,
-     "fum_lost": 4.0
+     "rush_td": 11.2,
+     "rush_2pt": 1.0,
+     "rec_yd": 147.2,
+     "rec": 19.2,
+     "rec_td": 1.3,
+     "rush_yd": 1290.2
     }
    }
   },
@@ -1273,13 +1310,50 @@
      "pass_2pt": 1.0
     },
     "blend": {
+     "pass_int": 11.0,
+     "fum_lost": 3.0,
      "rush_td": 2.8,
      "pass_2pt": 1.0,
-     "pass_yd": 3038.8,
-     "pass_int": 11.0,
-     "rush_yd": 234.8,
      "pass_td": 20.3,
-     "fum_lost": 3.0
+     "pass_yd": 3038.8,
+     "rush_yd": 234.8
+    }
+   }
+  },
+  {
+   "id": "4866",
+   "name": "Saquon Barkley",
+   "pos": "RB",
+   "team": "PHI",
+   "pp": 207.6,
+   "sleeper": 246.7,
+   "blend": 227.1,
+   "pp_borrowed": [],
+   "stats": {
+    "pp": {
+     "rush_yd": 1075.5,
+     "rec_yd": 350.5,
+     "rec": 2,
+     "rush_td": 7.83,
+     "rec_td": 2.67
+    },
+    "sleeper": {
+     "rush_yd": 1220.0,
+     "rush_td": 8.0,
+     "rec": 37.0,
+     "rec_yd": 277.0,
+     "rec_td": 2.0,
+     "fum_lost": 1.0,
+     "rush_2pt": 1.0
+    },
+    "blend": {
+     "fum_lost": 1.0,
+     "rush_td": 7.9,
+     "rush_2pt": 1.0,
+     "rec_yd": 313.8,
+     "rec": 19.5,
+     "rec_td": 2.3,
+     "rush_yd": 1147.8
     }
    }
   },
@@ -1311,12 +1385,12 @@
      "rec_2pt": 1.0
     },
     "blend": {
-     "rec": 92.0,
-     "rec_yd": 955.2,
-     "rec_2pt": 1.0,
      "fum_lost": 1.0,
-     "rush_yd": 16.0,
-     "rec_td": 6.2
+     "rec_2pt": 1.0,
+     "rec_yd": 955.2,
+     "rec": 92.0,
+     "rec_td": 6.2,
+     "rush_yd": 16.0
     }
    }
   },
@@ -1351,13 +1425,13 @@
      "pass_2pt": 1.0
     },
     "blend": {
+     "pass_int": 8.0,
+     "fum_lost": 3.0,
      "rush_td": 9.0,
      "pass_2pt": 1.0,
-     "pass_yd": 1766.2,
-     "pass_int": 8.0,
-     "rush_yd": 272.2,
      "pass_td": 21.0,
-     "fum_lost": 3.0
+     "pass_yd": 1766.2,
+     "rush_yd": 272.2
     }
    }
   },
@@ -1387,12 +1461,12 @@
      "fum_lost": 2.0
     },
     "blend": {
-     "rush_td": 7.8,
-     "rec": 26.5,
-     "rec_yd": 357.2,
      "fum_lost": 2.0,
-     "rush_yd": 1049.2,
-     "rec_td": 2.3
+     "rush_td": 7.8,
+     "rec_yd": 357.2,
+     "rec": 26.5,
+     "rec_td": 2.3,
+     "rush_yd": 1049.2
     }
    }
   },
@@ -1423,12 +1497,12 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "rush_td": 0.7,
-     "rec": 81.0,
-     "rec_yd": 1046.8,
      "fum_lost": 1.0,
-     "rush_yd": 41.8,
-     "rec_td": 5.8
+     "rush_td": 0.7,
+     "rec_yd": 1046.8,
+     "rec": 81.0,
+     "rec_td": 5.8,
+     "rush_yd": 41.8
     }
    }
   },
@@ -1458,10 +1532,10 @@
      "rec_td": 7.0
     },
     "blend": {
-     "rec": 80.0,
      "rec_yd": 1060.7,
-     "rush_yd": 6.0,
-     "rec_td": 6.3
+     "rec": 80.0,
+     "rec_td": 6.3,
+     "rush_yd": 6.0
     }
    }
   },
@@ -1494,13 +1568,13 @@
      "pass_2pt": 1.0
     },
     "blend": {
+     "pass_int": 11.0,
+     "fum_lost": 3.0,
      "rush_td": 3.1,
      "pass_2pt": 1.0,
-     "pass_yd": 3286.8,
-     "pass_int": 11.0,
-     "rush_yd": 99.8,
      "pass_td": 19.3,
-     "fum_lost": 3.0
+     "pass_yd": 3286.8,
+     "rush_yd": 99.8
     }
    }
   },
@@ -1530,12 +1604,12 @@
      "fum_lost": 2.0
     },
     "blend": {
-     "rush_td": 7.2,
-     "rec": 30.2,
-     "rec_yd": 383.2,
      "fum_lost": 2.0,
-     "rush_yd": 902.1,
-     "rec_td": 3.3
+     "rush_td": 7.2,
+     "rec_yd": 383.2,
+     "rec": 30.2,
+     "rec_td": 3.3,
+     "rush_yd": 902.1
     }
    }
   },
@@ -1565,10 +1639,10 @@
      "rec_td": 7.0
     },
     "blend": {
-     "rec": 81.0,
      "rec_yd": 972.3,
-     "rush_yd": 12.0,
-     "rec_td": 6.4
+     "rec": 81.0,
+     "rec_td": 6.4,
+     "rush_yd": 12.0
     }
    }
   },
@@ -1601,13 +1675,13 @@
      "pass_2pt": 1.0
     },
     "blend": {
+     "pass_int": 13.0,
+     "fum_lost": 4.0,
      "rush_td": 1.8,
      "pass_2pt": 1.0,
-     "pass_yd": 3389.5,
-     "pass_int": 13.0,
-     "rush_yd": 96.8,
      "pass_td": 19.3,
-     "fum_lost": 4.0
+     "pass_yd": 3389.5,
+     "rush_yd": 96.8
     }
    }
   },
@@ -1639,12 +1713,12 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "rush_td": 8.3,
-     "rec": 20.0,
-     "rec_yd": 285.8,
      "fum_lost": 1.0,
-     "rush_yd": 1051.9,
-     "rec_td": 2.0
+     "rush_td": 8.3,
+     "rec_yd": 285.8,
+     "rec": 20.0,
+     "rec_td": 2.0,
+     "rush_yd": 1051.9
     }
    }
   },
@@ -1674,10 +1748,47 @@
      "rec_td": 7.0
     },
     "blend": {
-     "rec": 77.0,
      "rec_yd": 963.8,
-     "rush_yd": 18.0,
-     "rec_td": 6.3
+     "rec": 77.0,
+     "rec_td": 6.3,
+     "rush_yd": 18.0
+    }
+   }
+  },
+  {
+   "id": "8155",
+   "name": "Breece Hall",
+   "pos": "RB",
+   "team": "NYJ",
+   "pp": 207.4,
+   "sleeper": 211.0,
+   "blend": 209.2,
+   "pp_borrowed": [
+    "rec"
+   ],
+   "stats": {
+    "pp": {
+     "rush_yd": 900.5,
+     "rec_yd": 325.5,
+     "rush_td": 5.3,
+     "rec_td": 2.67,
+     "rec": 37.0
+    },
+    "sleeper": {
+     "rush_yd": 986.0,
+     "rush_td": 6.0,
+     "rec": 37.0,
+     "rec_yd": 314.0,
+     "rec_td": 2.0,
+     "fum_lost": 2.0
+    },
+    "blend": {
+     "fum_lost": 2.0,
+     "rush_td": 5.7,
+     "rec_yd": 319.8,
+     "rec": 37.0,
+     "rec_td": 2.3,
+     "rush_yd": 943.2
     }
    }
   },
@@ -1706,10 +1817,10 @@
      "rec_td": 7.0
     },
     "blend": {
-     "rec": 48.2,
      "rec_yd": 1163.2,
-     "rush_yd": 6.0,
-     "rec_td": 7.2
+     "rec": 48.2,
+     "rec_td": 7.2,
+     "rush_yd": 6.0
     }
    }
   },
@@ -1737,10 +1848,10 @@
      "rec_2pt": 1.0
     },
     "blend": {
-     "rec_2pt": 1.0,
-     "rec_yd": 912.0,
      "rec": 70.0,
-     "rec_td": 7.3
+     "rec_2pt": 1.0,
+     "rec_td": 7.3,
+     "rec_yd": 912.0
     }
    }
   },
@@ -1770,11 +1881,11 @@
      "rec_2pt": 1.0
     },
     "blend": {
-     "rec": 47.2,
-     "rec_yd": 1125.7,
      "rec_2pt": 1.0,
-     "rush_yd": 6.0,
-     "rec_td": 7.1
+     "rec_yd": 1125.7,
+     "rec": 47.2,
+     "rec_td": 7.1,
+     "rush_yd": 6.0
     }
    }
   },
@@ -1807,12 +1918,12 @@
      "fum_lost": 2.0
     },
     "blend": {
-     "rush_td": 8.9,
-     "rec": 32.0,
-     "rec_yd": 115.8,
      "fum_lost": 2.0,
-     "rush_yd": 963.4,
-     "rec_td": 2.0
+     "rush_td": 8.9,
+     "rec_yd": 115.8,
+     "rec": 32.0,
+     "rec_td": 2.0,
+     "rush_yd": 963.4
     }
    }
   },
@@ -1844,12 +1955,12 @@
      "fum_lost": 2.0
     },
     "blend": {
-     "rush_td": 8.0,
-     "rec": 25.0,
-     "rec_yd": 187.2,
      "fum_lost": 2.0,
-     "rush_yd": 989.6,
-     "rec_td": 2.0
+     "rush_td": 8.0,
+     "rec_yd": 187.2,
+     "rec": 25.0,
+     "rec_td": 2.0,
+     "rush_yd": 989.6
     }
    }
   },
@@ -1880,10 +1991,10 @@
     },
     "blend": {
      "rush_td": 0.7,
-     "rec": 60.0,
      "rec_yd": 947.2,
-     "rush_yd": 39.2,
-     "rec_td": 6.3
+     "rec": 60.0,
+     "rec_td": 6.3,
+     "rush_yd": 39.2
     }
    }
   },
@@ -1915,12 +2026,12 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "rush_td": 6.2,
-     "rec": 42.0,
-     "rec_yd": 275.8,
      "fum_lost": 1.0,
-     "rush_yd": 845.2,
-     "rec_td": 1.3
+     "rush_td": 6.2,
+     "rec_yd": 275.8,
+     "rec": 42.0,
+     "rec_td": 1.3,
+     "rush_yd": 845.2
     }
    }
   },
@@ -1949,10 +2060,10 @@
      "rec_td": 7.0
     },
     "blend": {
-     "rec": 72.0,
      "rec_yd": 871.7,
-     "rush_yd": 30.8,
-     "rec_td": 5.8
+     "rec": 72.0,
+     "rec_td": 5.8,
+     "rush_yd": 30.8
     }
    }
   },
@@ -1982,12 +2093,45 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "rush_td": 8.3,
-     "rec": 20.2,
-     "rec_yd": 235.2,
      "fum_lost": 1.0,
-     "rush_yd": 982.4,
-     "rec_td": 0.8
+     "rush_td": 8.3,
+     "rec_yd": 235.2,
+     "rec": 20.2,
+     "rec_td": 0.8,
+     "rush_yd": 982.4
+    }
+   }
+  },
+  {
+   "id": "12518",
+   "name": "Tyler Warren",
+   "pos": "TE",
+   "team": "IND",
+   "pp": 189.0,
+   "sleeper": 201.1,
+   "blend": 195.1,
+   "pp_borrowed": [
+    "rush_yd",
+    "rec"
+   ],
+   "stats": {
+    "pp": {
+     "rec_yd": 760.5,
+     "rec_td": 4.67,
+     "rush_yd": 19.0,
+     "rec": 83.0
+    },
+    "sleeper": {
+     "rush_yd": 19.0,
+     "rec": 83.0,
+     "rec_yd": 862.0,
+     "rec_td": 5.0
+    },
+    "blend": {
+     "rec_yd": 811.2,
+     "rec": 83.0,
+     "rec_td": 4.8,
+     "rush_yd": 19.0
     }
    }
   },
@@ -2017,42 +2161,85 @@
      "rec_2pt": 1.0
     },
     "blend": {
-     "rec": 42.2,
-     "rec_yd": 1108.0,
      "rec_2pt": 1.0,
-     "rush_yd": 6.0,
-     "rec_td": 6.7
+     "rec_yd": 1108.0,
+     "rec": 42.2,
+     "rec_td": 6.7,
+     "rush_yd": 6.0
     }
    }
   },
   {
-   "id": "2133",
-   "name": "Davante Adams",
-   "pos": "WR",
-   "team": "LAR",
-   "pp": 196.2,
-   "sleeper": 192.5,
-   "blend": 194.3,
+   "id": "13287",
+   "name": "Jeremiyah Love",
+   "pos": "RB",
+   "team": "ARI",
+   "pp": 173.1,
+   "sleeper": 211.8,
+   "blend": 192.4,
    "pp_borrowed": [
-    "rec"
+    "rec",
+    "rec_td"
    ],
    "stats": {
     "pp": {
-     "rec_yd": 771.94,
-     "rec_td": 9.34,
-     "rec": 63.0
+     "rush_yd": 773.92,
+     "rec_yd": 16.5,
+     "rush_td": 5.84,
+     "rec": 47.0,
+     "rec_td": 2.0
     },
     "sleeper": {
-     "rec": 63.0,
-     "rec_yd": 795.0,
-     "rec_td": 8.0,
+     "rush_yd": 897.0,
+     "rush_td": 5.0,
+     "rec": 47.0,
+     "rec_yd": 351.0,
+     "rec_td": 2.0,
+     "fum_lost": 1.0
+    },
+    "blend": {
+     "fum_lost": 1.0,
+     "rush_td": 5.4,
+     "rec_yd": 183.8,
+     "rec": 47.0,
+     "rec_td": 2.0,
+     "rush_yd": 835.5
+    }
+   }
+  },
+  {
+   "id": "10229",
+   "name": "Rashee Rice",
+   "pos": "WR",
+   "team": "KC",
+   "pp": 154.8,
+   "sleeper": 229.3,
+   "blend": 192.1,
+   "pp_borrowed": [
+    "rush_yd"
+   ],
+   "stats": {
+    "pp": {
+     "rec_yd": 975.5,
+     "rec": 5,
+     "rec_td": 8.22,
+     "rush_yd": 29.0
+    },
+    "sleeper": {
+     "rush_yd": 29.0,
+     "rec": 88.0,
+     "rec_yd": 964.0,
+     "rec_td": 7.0,
+     "fum_lost": 1.0,
      "rec_2pt": 1.0
     },
     "blend": {
+     "fum_lost": 1.0,
      "rec_2pt": 1.0,
-     "rec_yd": 783.5,
-     "rec": 63.0,
-     "rec_td": 8.7
+     "rec_yd": 969.8,
+     "rec": 46.5,
+     "rec_td": 7.6,
+     "rush_yd": 29.0
     }
    }
   },
@@ -2082,11 +2269,11 @@
      "rec_2pt": 1.0
     },
     "blend": {
-     "rec": 44.0,
-     "rec_yd": 1076.2,
      "rec_2pt": 1.0,
-     "rush_yd": 6.0,
-     "rec_td": 6.4
+     "rec_yd": 1076.2,
+     "rec": 44.0,
+     "rec_td": 6.4,
+     "rush_yd": 6.0
     }
    }
   },
@@ -2117,12 +2304,12 @@
      "pass_2pt": 1.0
     },
     "blend": {
-     "pass_2pt": 1.0,
-     "pass_yd": 2887.9,
      "pass_int": 7.0,
-     "rush_yd": 30.2,
+     "fum_lost": 2.0,
+     "pass_2pt": 1.0,
      "pass_td": 19.6,
-     "fum_lost": 2.0
+     "pass_yd": 2887.9,
+     "rush_yd": 30.2
     }
    }
   },
@@ -2153,11 +2340,11 @@
      "rec_2pt": 1.0
     },
     "blend": {
-     "rec": 54.0,
-     "rec_yd": 964.8,
      "rec_2pt": 1.0,
-     "rush_yd": 5.0,
-     "rec_td": 6.2
+     "rec_yd": 964.8,
+     "rec": 54.0,
+     "rec_td": 6.2,
+     "rush_yd": 5.0
     }
    }
   },
@@ -2190,12 +2377,12 @@
      "fum_lost": 4.0
     },
     "blend": {
-     "rush_td": 1.0,
-     "pass_yd": 2986.2,
      "pass_int": 14.0,
-     "rush_yd": 81.8,
+     "fum_lost": 4.0,
+     "rush_td": 1.0,
      "pass_td": 18.3,
-     "fum_lost": 4.0
+     "pass_yd": 2986.2,
+     "rush_yd": 81.8
     }
    }
   },
@@ -2229,13 +2416,13 @@
      "pass_2pt": 1.0
     },
     "blend": {
+     "pass_int": 11.0,
+     "fum_lost": 3.0,
      "rush_td": 3.1,
      "pass_2pt": 1.0,
-     "pass_yd": 2409.3,
-     "pass_int": 11.0,
-     "rush_yd": 234.0,
      "pass_td": 15.7,
-     "fum_lost": 3.0
+     "pass_yd": 2409.3,
+     "rush_yd": 234.0
     }
    }
   },
@@ -2262,10 +2449,10 @@
      "rec_2pt": 1.0
     },
     "blend": {
-     "rec": 51.2,
-     "rec_yd": 961.9,
-     "rec_2pt": 1.0,
      "fum_lost": 1.0,
+     "rec_2pt": 1.0,
+     "rec_yd": 961.9,
+     "rec": 51.2,
      "rec_td": 6.8
     }
    }
@@ -2296,11 +2483,11 @@
      "rec_2pt": 1.0
     },
     "blend": {
-     "rec": 45.8,
-     "rec_yd": 1036.9,
      "rec_2pt": 1.0,
-     "rush_yd": 17.0,
-     "rec_td": 5.9
+     "rec_yd": 1036.9,
+     "rec": 45.8,
+     "rec_td": 5.9,
+     "rush_yd": 17.0
     }
    }
   },
@@ -2333,12 +2520,47 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "rush_td": 6.9,
-     "rec": 37.0,
-     "rec_yd": 141.8,
      "fum_lost": 1.0,
-     "rush_yd": 901.2,
-     "rec_td": 1.0
+     "rush_td": 6.9,
+     "rec_yd": 141.8,
+     "rec": 37.0,
+     "rec_td": 1.0,
+     "rush_yd": 901.2
+    }
+   }
+  },
+  {
+   "id": "4983",
+   "name": "DJ Moore",
+   "pos": "WR",
+   "team": "BUF",
+   "pp": 186.2,
+   "sleeper": 179.0,
+   "blend": 182.6,
+   "pp_borrowed": [
+    "rush_yd",
+    "rec"
+   ],
+   "stats": {
+    "pp": {
+     "rec_yd": 829.29,
+     "rec_td": 6.23,
+     "rush_yd": 29.0,
+     "rec": 63.0
+    },
+    "sleeper": {
+     "rush_yd": 29.0,
+     "rec": 63.0,
+     "rec_yd": 851.0,
+     "rec_td": 5.0,
+     "fum_lost": 1.0
+    },
+    "blend": {
+     "fum_lost": 1.0,
+     "rec_yd": 840.1,
+     "rec": 63.0,
+     "rec_td": 5.6,
+     "rush_yd": 29.0
     }
    }
   },
@@ -2368,10 +2590,10 @@
      "rec_td": 6.0
     },
     "blend": {
-     "rec": 76.0,
      "rec_yd": 733.8,
-     "rush_yd": 3.0,
-     "rec_td": 5.4
+     "rec": 76.0,
+     "rec_td": 5.4,
+     "rush_yd": 3.0
     }
    }
   },
@@ -2401,11 +2623,11 @@
      "rec_2pt": 1.0
     },
     "blend": {
-     "rec": 39.5,
-     "rec_yd": 963.3,
      "rec_2pt": 1.0,
-     "rush_yd": 6.0,
-     "rec_td": 7.4
+     "rec_yd": 963.3,
+     "rec": 39.5,
+     "rec_td": 7.4,
+     "rush_yd": 6.0
     }
    }
   },
@@ -2435,11 +2657,11 @@
      "rec_2pt": 1.0
     },
     "blend": {
-     "rec": 40.8,
-     "rec_yd": 1012.2,
      "rec_2pt": 1.0,
-     "rush_yd": 6.0,
-     "rec_td": 6.3
+     "rec_yd": 1012.2,
+     "rec": 40.8,
+     "rec_td": 6.3,
+     "rush_yd": 6.0
     }
    }
   },
@@ -2468,10 +2690,10 @@
      "rec_td": 6.0
     },
     "blend": {
-     "rec": 44.5,
      "rec_yd": 1013.4,
-     "rush_yd": 16.0,
-     "rec_td": 5.6
+     "rec": 44.5,
+     "rec_td": 5.6,
+     "rush_yd": 16.0
     }
    }
   },
@@ -2501,10 +2723,10 @@
      "rec_td": 6.0
     },
     "blend": {
-     "rec": 62.0,
      "rec_yd": 821.8,
-     "rush_yd": 10.0,
-     "rec_td": 5.8
+     "rec": 62.0,
+     "rec_td": 5.8,
+     "rush_yd": 10.0
     }
    }
   },
@@ -2537,13 +2759,13 @@
      "rush_2pt": 1.0
     },
     "blend": {
-     "rush_td": 8.1,
-     "rec": 23.0,
-     "rec_yd": 218.8,
-     "rush_2pt": 1.0,
      "fum_lost": 1.0,
-     "rush_yd": 807.2,
-     "rec_td": 0.8
+     "rush_td": 8.1,
+     "rush_2pt": 1.0,
+     "rec_yd": 218.8,
+     "rec": 23.0,
+     "rec_td": 0.8,
+     "rush_yd": 807.2
     }
    }
   },
@@ -2572,37 +2794,10 @@
      "rec_td": 7.0
     },
     "blend": {
-     "rec": 40.5,
      "rec_yd": 962.7,
-     "rush_yd": 21.0,
-     "rec_td": 6.8
-    }
-   }
-  },
-  {
-   "id": "4983",
-   "name": "DJ Moore",
-   "pos": "WR",
-   "team": "BUF",
-   "pp": null,
-   "sleeper": 179.0,
-   "blend": 179.0,
-   "pp_borrowed": [],
-   "stats": {
-    "pp": {},
-    "sleeper": {
-     "rush_yd": 29.0,
-     "rec": 63.0,
-     "rec_yd": 851.0,
-     "rec_td": 5.0,
-     "fum_lost": 1.0
-    },
-    "blend": {
-     "fum_lost": 1.0,
-     "rec_td": 5.0,
-     "rush_yd": 29.0,
-     "rec": 63.0,
-     "rec_yd": 851.0
+     "rec": 40.5,
+     "rec_td": 6.8,
+     "rush_yd": 21.0
     }
    }
   },
@@ -2635,12 +2830,12 @@
      "fum_lost": 2.0
     },
     "blend": {
-     "rush_td": 5.6,
-     "rec": 36.0,
-     "rec_yd": 143.8,
      "fum_lost": 2.0,
-     "rush_yd": 843.0,
-     "rec_td": 2.0
+     "rush_td": 5.6,
+     "rec_yd": 143.8,
+     "rec": 36.0,
+     "rec_td": 2.0,
+     "rush_yd": 843.0
     }
    }
   },
@@ -2670,10 +2865,10 @@
      "rec_td": 5.0
     },
     "blend": {
-     "rec": 65.0,
      "rec_yd": 791.6,
-     "rush_yd": 10.0,
-     "rec_td": 4.6
+     "rec": 65.0,
+     "rec_td": 4.6,
+     "rush_yd": 10.0
     }
    }
   },
@@ -2702,10 +2897,47 @@
      "rec_td": 6.0
     },
     "blend": {
-     "rec": 39.0,
      "rec_yd": 965.8,
-     "rush_yd": 7.0,
-     "rec_td": 5.9
+     "rec": 39.0,
+     "rec_td": 5.9,
+     "rush_yd": 7.0
+    }
+   }
+  },
+  {
+   "id": "5892",
+   "name": "David Montgomery",
+   "pos": "RB",
+   "team": "HOU",
+   "pp": 137.3,
+   "sleeper": 206.1,
+   "blend": 171.7,
+   "pp_borrowed": [
+    "rec_td"
+   ],
+   "stats": {
+    "pp": {
+     "rush_yd": 823.82,
+     "rec_yd": 11.5,
+     "rec": 2,
+     "rush_td": 7.63,
+     "rec_td": 1.0
+    },
+    "sleeper": {
+     "rush_yd": 986.0,
+     "rush_td": 8.0,
+     "rec": 32.0,
+     "rec_yd": 235.0,
+     "rec_td": 1.0,
+     "fum_lost": 1.0
+    },
+    "blend": {
+     "fum_lost": 1.0,
+     "rush_td": 7.8,
+     "rec_yd": 123.2,
+     "rec": 17.0,
+     "rec_td": 1.0,
+     "rush_yd": 904.9
     }
    }
   },
@@ -2732,9 +2964,9 @@
      "rec_td": 5.0
     },
     "blend": {
-     "rec_yd": 752.8,
      "rec": 66.0,
-     "rec_td": 4.9
+     "rec_td": 4.9,
+     "rec_yd": 752.8
     }
    }
   },
@@ -2763,10 +2995,10 @@
      "rec_td": 6.0
     },
     "blend": {
-     "rec": 44.2,
      "rec_yd": 887.8,
-     "rush_yd": 4.0,
-     "rec_td": 6.0
+     "rec": 44.2,
+     "rec_td": 6.0,
+     "rush_yd": 4.0
     }
    }
   },
@@ -2800,13 +3032,13 @@
      "pass_2pt": 1.0
     },
     "blend": {
+     "pass_int": 12.0,
+     "fum_lost": 3.0,
      "rush_td": 6.0,
      "pass_2pt": 1.0,
-     "pass_yd": 1790.2,
-     "pass_int": 12.0,
-     "rush_yd": 284.2,
      "pass_td": 11.5,
-     "fum_lost": 3.0
+     "pass_yd": 1790.2,
+     "rush_yd": 284.2
     }
    }
   },
@@ -2836,10 +3068,10 @@
      "rec_td": 4.0
     },
     "blend": {
-     "rec": 71.0,
      "rec_yd": 719.1,
-     "rush_yd": 16.0,
-     "rec_td": 3.8
+     "rec": 71.0,
+     "rec_td": 3.8,
+     "rush_yd": 16.0
     }
    }
   },
@@ -2869,11 +3101,11 @@
      "rec_2pt": 1.0
     },
     "blend": {
-     "rec": 38.2,
-     "rec_yd": 865.2,
      "rec_2pt": 1.0,
-     "rush_yd": 58.0,
-     "rec_td": 5.8
+     "rec_yd": 865.2,
+     "rec": 38.2,
+     "rec_td": 5.8,
+     "rush_yd": 58.0
     }
    }
   },
@@ -2903,10 +3135,47 @@
      "rec_td": 5.0
     },
     "blend": {
-     "rec": 64.0,
      "rec_yd": 691.2,
-     "rush_yd": 21.0,
-     "rec_td": 5.1
+     "rec": 64.0,
+     "rec_td": 5.1,
+     "rush_yd": 21.0
+    }
+   }
+  },
+  {
+   "id": "12512",
+   "name": "Quinshon Judkins",
+   "pos": "RB",
+   "team": "CLE",
+   "pp": 135.0,
+   "sleeper": 196.0,
+   "blend": 165.5,
+   "pp_borrowed": [
+    "rec_td"
+   ],
+   "stats": {
+    "pp": {
+     "rush_yd": 864.81,
+     "rec_yd": 9.5,
+     "rec": 2,
+     "rush_td": 6.59,
+     "rec_td": 1.0
+    },
+    "sleeper": {
+     "rush_yd": 1012.0,
+     "rush_td": 6.0,
+     "rec": 32.0,
+     "rec_yd": 228.0,
+     "rec_td": 1.0,
+     "fum_lost": 1.0
+    },
+    "blend": {
+     "fum_lost": 1.0,
+     "rush_td": 6.3,
+     "rec_yd": 118.8,
+     "rec": 17.0,
+     "rec_td": 1.0,
+     "rush_yd": 938.4
     }
    }
   },
@@ -2935,10 +3204,10 @@
      "rec_td": 7.0
     },
     "blend": {
-     "rec": 33.5,
      "rec_yd": 897.4,
-     "rush_yd": 14.0,
-     "rec_td": 6.6
+     "rec": 33.5,
+     "rec_td": 6.6,
+     "rush_yd": 14.0
     }
    }
   },
@@ -2968,10 +3237,10 @@
      "rec_td": 4.0
     },
     "blend": {
-     "rec": 71.0,
      "rec_yd": 686.2,
-     "rush_yd": 10.0,
-     "rec_td": 3.8
+     "rec": 71.0,
+     "rec_td": 3.8,
+     "rush_yd": 10.0
     }
    }
   },
@@ -3000,10 +3269,10 @@
      "rec_td": 7.0
     },
     "blend": {
-     "rec": 35.2,
      "rec_yd": 888.6,
-     "rush_yd": 6.0,
-     "rec_td": 6.5
+     "rec": 35.2,
+     "rec_td": 6.5,
+     "rush_yd": 6.0
     }
    }
   },
@@ -3033,10 +3302,10 @@
      "rec_td": 5.0
     },
     "blend": {
-     "rec": 60.0,
      "rec_yd": 721.3,
-     "rush_yd": 22.0,
-     "rec_td": 4.8
+     "rec": 60.0,
+     "rec_td": 4.8,
+     "rush_yd": 22.0
     }
    }
   },
@@ -3066,10 +3335,10 @@
      "rec_td": 5.0
     },
     "blend": {
-     "rec": 59.0,
      "rec_yd": 732.2,
-     "rush_yd": 6.0,
-     "rec_td": 4.8
+     "rec": 59.0,
+     "rec_td": 4.8,
+     "rush_yd": 6.0
     }
    }
   },
@@ -3103,12 +3372,12 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "rush_td": 1.0,
-     "rec": 55.0,
-     "rec_yd": 672.2,
      "fum_lost": 1.0,
-     "rush_yd": 90.0,
-     "rec_td": 4.1
+     "rush_td": 1.0,
+     "rec_yd": 672.2,
+     "rec": 55.0,
+     "rec_td": 4.1,
+     "rush_yd": 90.0
     }
    }
   },
@@ -3141,46 +3410,12 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "rush_td": 5.7,
-     "rec": 32.0,
-     "rec_yd": 121.2,
      "fum_lost": 1.0,
-     "rush_yd": 766.8,
-     "rec_td": 1.0
-    }
-   }
-  },
-  {
-   "id": "12518",
-   "name": "Tyler Warren",
-   "pos": "TE",
-   "team": "IND",
-   "pp": 119.2,
-   "sleeper": 201.1,
-   "blend": 160.2,
-   "pp_borrowed": [
-    "rush_yd",
-    "rec",
-    "rec_td"
-   ],
-   "stats": {
-    "pp": {
-     "rec_yd": 42.5,
-     "rush_yd": 19.0,
-     "rec": 83.0,
-     "rec_td": 5.0
-    },
-    "sleeper": {
-     "rush_yd": 19.0,
-     "rec": 83.0,
-     "rec_yd": 862.0,
-     "rec_td": 5.0
-    },
-    "blend": {
-     "rec": 83.0,
-     "rec_yd": 452.2,
-     "rush_yd": 19.0,
-     "rec_td": 5.0
+     "rush_td": 5.7,
+     "rec_yd": 121.2,
+     "rec": 32.0,
+     "rec_td": 1.0,
+     "rush_yd": 766.8
     }
    }
   },
@@ -3189,9 +3424,9 @@
    "name": "Michael Penix",
    "pos": "QB",
    "team": "ATL",
-   "pp": 176.6,
+   "pp": 176.2,
    "sleeper": 143.2,
-   "blend": 159.9,
+   "blend": 159.7,
    "pp_borrowed": [
     "pass_td",
     "pass_int",
@@ -3200,7 +3435,7 @@
    ],
    "stats": {
     "pp": {
-     "pass_yd": 2929.02,
+     "pass_yd": 2920.72,
      "pass_td": 13.0,
      "pass_int": 8.0,
      "rush_yd": 94.0,
@@ -3216,13 +3451,13 @@
      "pass_2pt": 1.0
     },
     "blend": {
+     "pass_int": 8.0,
+     "fum_lost": 3.0,
      "rush_td": 1.0,
      "pass_2pt": 1.0,
-     "pass_yd": 2561.5,
-     "pass_int": 8.0,
-     "rush_yd": 94.0,
      "pass_td": 13.0,
-     "fum_lost": 3.0
+     "pass_yd": 2557.4,
+     "rush_yd": 94.0
     }
    }
   },
@@ -3255,12 +3490,12 @@
      "fum_lost": 2.0
     },
     "blend": {
-     "rush_td": 6.0,
-     "rec": 29.5,
-     "rec_yd": 221.8,
      "fum_lost": 2.0,
-     "rush_yd": 613.2,
-     "rec_td": 2.0
+     "rush_td": 6.0,
+     "rec_yd": 221.8,
+     "rec": 29.5,
+     "rec_td": 2.0,
+     "rush_yd": 613.2
     }
    }
   },
@@ -3292,40 +3527,11 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "rec": 70.0,
-     "rec_yd": 444.2,
      "fum_lost": 1.0,
-     "rush_yd": 83.0,
-     "rec_td": 6.0
-    }
-   }
-  },
-  {
-   "id": "8121",
-   "name": "Romeo Doubs",
-   "pos": "WR",
-   "team": "NE",
-   "pp": 150.6,
-   "sleeper": 161.2,
-   "blend": 155.9,
-   "pp_borrowed": [
-    "rec"
-   ],
-   "stats": {
-    "pp": {
-     "rec_yd": 649.5,
-     "rec_td": 4.78,
-     "rec": 57.0
-    },
-    "sleeper": {
-     "rec": 57.0,
-     "rec_yd": 742.0,
-     "rec_td": 5.0
-    },
-    "blend": {
-     "rec_yd": 695.8,
-     "rec": 57.0,
-     "rec_td": 4.9
+     "rec_yd": 444.2,
+     "rec": 70.0,
+     "rec_td": 6.0,
+     "rush_yd": 83.0
     }
    }
   },
@@ -3353,10 +3559,10 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "fum_lost": 1.0,
-     "rec_yd": 570.5,
      "rec": 70.0,
-     "rec_td": 4.9
+     "fum_lost": 1.0,
+     "rec_td": 4.9,
+     "rec_yd": 570.5
     }
    }
   },
@@ -3383,9 +3589,41 @@
      "rec_td": 4.0
     },
     "blend": {
-     "rec_yd": 646.5,
      "rec": 66.0,
-     "rec_td": 4.2
+     "rec_td": 4.2,
+     "rec_yd": 646.5
+    }
+   }
+  },
+  {
+   "id": "2133",
+   "name": "Davante Adams",
+   "pos": "WR",
+   "team": "LAR",
+   "pp": 115.5,
+   "sleeper": 192.5,
+   "blend": 154.0,
+   "pp_borrowed": [
+    "rec",
+    "rec_td"
+   ],
+   "stats": {
+    "pp": {
+     "rec_yd": 45.5,
+     "rec": 63.0,
+     "rec_td": 8.0
+    },
+    "sleeper": {
+     "rec": 63.0,
+     "rec_yd": 795.0,
+     "rec_td": 8.0,
+     "rec_2pt": 1.0
+    },
+    "blend": {
+     "rec": 63.0,
+     "rec_2pt": 1.0,
+     "rec_td": 8.0,
+     "rec_yd": 420.2
     }
    }
   },
@@ -3418,119 +3656,44 @@
      "fum_lost": 3.0
     },
     "blend": {
-     "rush_td": 1.0,
-     "pass_yd": 2475.2,
      "pass_int": 7.0,
-     "rush_yd": 59.8,
+     "fum_lost": 3.0,
+     "rush_td": 1.0,
      "pass_td": 13.2,
-     "fum_lost": 3.0
+     "pass_yd": 2475.2,
+     "rush_yd": 59.8
     }
    }
   },
   {
-   "id": "8408",
-   "name": "Jordan Mason",
-   "pos": "RB",
-   "team": "MIN",
-   "pp": null,
-   "sleeper": 153.7,
-   "blend": 153.7,
-   "pp_borrowed": [],
-   "stats": {
-    "pp": {},
-    "sleeper": {
-     "rush_yd": 797.0,
-     "rush_td": 6.0,
-     "rec": 20.0,
-     "rec_yd": 140.0,
-     "rec_td": 1.0,
-     "fum_lost": 1.0
-    },
-    "blend": {
-     "fum_lost": 1.0,
-     "rush_td": 6.0,
-     "rec_td": 1.0,
-     "rush_yd": 797.0,
-     "rec": 20.0,
-     "rec_yd": 140.0
-    }
-   }
-  },
-  {
-   "id": "13287",
-   "name": "Jeremiyah Love",
-   "pos": "RB",
-   "team": "ARI",
-   "pp": 94.4,
-   "sleeper": 211.8,
-   "blend": 153.1,
-   "pp_borrowed": [
-    "rush_td",
-    "rec",
-    "rec_td"
-   ],
-   "stats": {
-    "pp": {
-     "rush_yd": 37.5,
-     "rec_yd": 16.5,
-     "rush_td": 5.0,
-     "rec": 47.0,
-     "rec_td": 2.0
-    },
-    "sleeper": {
-     "rush_yd": 897.0,
-     "rush_td": 5.0,
-     "rec": 47.0,
-     "rec_yd": 351.0,
-     "rec_td": 2.0,
-     "fum_lost": 1.0
-    },
-    "blend": {
-     "rush_td": 5.0,
-     "rec": 47.0,
-     "rec_yd": 183.8,
-     "fum_lost": 1.0,
-     "rush_yd": 467.2,
-     "rec_td": 2.0
-    }
-   }
-  },
-  {
-   "id": "8155",
-   "name": "Breece Hall",
-   "pos": "RB",
-   "team": "NYJ",
-   "pp": 93.5,
-   "sleeper": 211.0,
+   "id": "8142",
+   "name": "Alec Pierce",
+   "pos": "WR",
+   "team": "IND",
+   "pp": 126.5,
+   "sleeper": 177.9,
    "blend": 152.2,
    "pp_borrowed": [
-    "rush_td",
-    "rec",
-    "rec_td"
+    "rush_yd"
    ],
    "stats": {
     "pp": {
-     "rush_yd": 66.5,
-     "rec_yd": 18.5,
-     "rush_td": 6.0,
-     "rec": 37.0,
-     "rec_td": 2.0
+     "rec_yd": 896.37,
+     "rec": 3,
+     "rec_td": 5.52,
+     "rush_yd": 7.0
     },
     "sleeper": {
-     "rush_yd": 986.0,
-     "rush_td": 6.0,
-     "rec": 37.0,
-     "rec_yd": 314.0,
-     "rec_td": 2.0,
-     "fum_lost": 2.0
+     "rush_yd": 7.0,
+     "rec": 54.0,
+     "rec_yd": 872.0,
+     "rec_td": 6.0
     },
     "blend": {
-     "rush_td": 6.0,
-     "rec": 37.0,
-     "rec_yd": 166.2,
-     "fum_lost": 2.0,
-     "rush_yd": 526.2,
-     "rec_td": 2.0
+     "rec_yd": 884.2,
+     "rec": 28.5,
+     "rec_td": 5.8,
+     "rush_yd": 7.0
     }
    }
   },
@@ -3563,12 +3726,12 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "rush_td": 4.3,
-     "rec": 38.0,
-     "rec_yd": 142.8,
      "fum_lost": 1.0,
-     "rush_yd": 689.2,
-     "rec_td": 1.0
+     "rush_td": 4.3,
+     "rec_yd": 142.8,
+     "rec": 38.0,
+     "rec_td": 1.0,
+     "rush_yd": 689.2
     }
    }
   },
@@ -3593,9 +3756,9 @@
      "rec_td": 6.0
     },
     "blend": {
-     "rec_yd": 851.9,
      "rec": 32.5,
-     "rec_td": 5.6
+     "rec_td": 5.6,
+     "rec_yd": 851.9
     }
    }
   },
@@ -3624,10 +3787,10 @@
      "rec_td": 7.0
     },
     "blend": {
-     "rec": 32.2,
      "rec_yd": 805.7,
-     "rush_yd": 17.0,
-     "rec_td": 5.8
+     "rec": 32.2,
+     "rec_td": 5.8,
+     "rush_yd": 17.0
     }
    }
   },
@@ -3654,9 +3817,9 @@
      "rec_td": 5.0
     },
     "blend": {
-     "rec_yd": 590.2,
      "rec": 63.0,
-     "rec_td": 4.3
+     "rec_td": 4.3,
+     "rec_yd": 590.2
     }
    }
   },
@@ -3689,50 +3852,49 @@
     },
     "blend": {
      "rush_td": 5.7,
-     "rec": 26.0,
      "rec_yd": 96.8,
-     "rush_yd": 703.8,
-     "rec_td": 1.0
+     "rec": 26.0,
+     "rec_td": 1.0,
+     "rush_yd": 703.8
     }
    }
   },
   {
-   "id": "4892",
-   "name": "Baker Mayfield",
-   "pos": "QB",
-   "team": "TB",
-   "pp": 15.3,
-   "sleeper": 274.9,
-   "blend": 145.1,
+   "id": "8408",
+   "name": "Jordan Mason",
+   "pos": "RB",
+   "team": "MIN",
+   "pp": 135.6,
+   "sleeper": 153.7,
+   "blend": 144.6,
    "pp_borrowed": [
-    "pass_int",
-    "rush_td"
+    "rec",
+    "rec_yd",
+    "rec_td"
    ],
    "stats": {
     "pp": {
-     "pass_yd": 215.5,
-     "rush_yd": 16.5,
-     "pass_td": 1.5,
-     "pass_int": 13.0,
-     "rush_td": 2.0
+     "rush_yd": 663.98,
+     "rush_td": 4.87,
+     "rec": 20.0,
+     "rec_yd": 140.0,
+     "rec_td": 1.0
     },
     "sleeper": {
-     "pass_yd": 3682.0,
-     "pass_td": 26.0,
-     "pass_int": 13.0,
-     "rush_yd": 306.0,
-     "rush_td": 2.0,
-     "fum_lost": 4.0,
-     "pass_2pt": 1.0
+     "rush_yd": 797.0,
+     "rush_td": 6.0,
+     "rec": 20.0,
+     "rec_yd": 140.0,
+     "rec_td": 1.0,
+     "fum_lost": 1.0
     },
     "blend": {
-     "rush_td": 2.0,
-     "pass_2pt": 1.0,
-     "pass_yd": 1948.8,
-     "pass_int": 13.0,
-     "rush_yd": 161.2,
-     "pass_td": 13.8,
-     "fum_lost": 4.0
+     "fum_lost": 1.0,
+     "rush_td": 5.4,
+     "rec_yd": 140.0,
+     "rec": 20.0,
+     "rec_td": 1.0,
+     "rush_yd": 730.5
     }
    }
   },
@@ -3757,9 +3919,9 @@
      "rec_td": 6.0
     },
     "blend": {
-     "rec_yd": 755.6,
      "rec": 31.2,
-     "rec_td": 6.2
+     "rec_td": 6.2,
+     "rec_yd": 755.6
     }
    }
   },
@@ -3786,9 +3948,9 @@
      "rec_td": 5.0
     },
     "blend": {
-     "rec_yd": 577.8,
      "rec": 58.0,
-     "rec_td": 4.7
+     "rec_td": 4.7,
+     "rec_yd": 577.8
     }
    }
   },
@@ -3797,16 +3959,16 @@
    "name": "Kirk Cousins",
    "pos": "QB",
    "team": "LV",
-   "pp": 246.2,
+   "pp": 244.9,
    "sleeper": 39.2,
-   "blend": 142.7,
+   "blend": 142.1,
    "pp_borrowed": [
     "pass_int",
     "rush_yd"
    ],
    "stats": {
     "pp": {
-     "pass_td": 24.27,
+     "pass_td": 23.95,
      "pass_yd": 3787.78,
      "pass_int": 3.0,
      "rush_yd": 6.0
@@ -3819,48 +3981,11 @@
      "fum_lost": 2.0
     },
     "blend": {
-     "pass_yd": 2213.4,
      "pass_int": 3.0,
-     "rush_yd": 6.0,
-     "pass_td": 14.6,
-     "fum_lost": 2.0
-    }
-   }
-  },
-  {
-   "id": "10229",
-   "name": "Rashee Rice",
-   "pos": "WR",
-   "team": "KC",
-   "pp": 55.1,
-   "sleeper": 229.3,
-   "blend": 142.2,
-   "pp_borrowed": [
-    "rush_yd",
-    "rec_td"
-   ],
-   "stats": {
-    "pp": {
-     "rec_yd": 52.5,
-     "rec": 5,
-     "rush_yd": 29.0,
-     "rec_td": 7.0
-    },
-    "sleeper": {
-     "rush_yd": 29.0,
-     "rec": 88.0,
-     "rec_yd": 964.0,
-     "rec_td": 7.0,
-     "fum_lost": 1.0,
-     "rec_2pt": 1.0
-    },
-    "blend": {
-     "rec": 46.5,
-     "rec_yd": 508.2,
-     "rec_2pt": 1.0,
-     "fum_lost": 1.0,
-     "rush_yd": 29.0,
-     "rec_td": 7.0
+     "fum_lost": 2.0,
+     "pass_td": 14.5,
+     "pass_yd": 2213.4,
+     "rush_yd": 6.0
     }
    }
   },
@@ -3889,10 +4014,10 @@
      "rec_td": 5.0
     },
     "blend": {
-     "rec": 39.0,
      "rec_yd": 707.2,
-     "rush_yd": 25.0,
-     "rec_td": 5.0
+     "rec": 39.0,
+     "rec_td": 5.0,
+     "rush_yd": 25.0
     }
    }
   },
@@ -3921,10 +4046,10 @@
      "rec_td": 4.0
     },
     "blend": {
-     "rec": 37.0,
      "rec_yd": 772.2,
-     "rush_yd": 13.0,
-     "rec_td": 4.3
+     "rec": 37.0,
+     "rec_td": 4.3,
+     "rush_yd": 13.0
     }
    }
   },
@@ -3956,12 +4081,12 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "rush_td": 5.2,
-     "rec": 18.2,
-     "rec_yd": 133.8,
      "fum_lost": 1.0,
-     "rush_yd": 728.5,
-     "rec_td": 1.0
+     "rush_td": 5.2,
+     "rec_yd": 133.8,
+     "rec": 18.2,
+     "rec_td": 1.0,
+     "rush_yd": 728.5
     }
    }
   },
@@ -3993,12 +4118,12 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "rush_td": 6.0,
-     "rec": 16.0,
-     "rec_yd": 115.8,
      "fum_lost": 1.0,
-     "rush_yd": 718.2,
-     "rec_td": 1.0
+     "rush_td": 6.0,
+     "rec_yd": 115.8,
+     "rec": 16.0,
+     "rec_td": 1.0,
+     "rush_yd": 718.2
     }
    }
   },
@@ -4023,9 +4148,9 @@
      "rec_td": 5.0
     },
     "blend": {
-     "rec_yd": 737.2,
      "rec": 35.5,
-     "rec_td": 5.2
+     "rec_td": 5.2,
+     "rec_yd": 737.2
     }
    }
   },
@@ -4053,9 +4178,47 @@
      "rec_td": 4.0
     },
     "blend": {
-     "rec_yd": 545.8,
      "rec": 61.0,
-     "rec_td": 4.0
+     "rec_td": 4.0,
+     "rec_yd": 545.8
+    }
+   }
+  },
+  {
+   "id": "12534",
+   "name": "Kyle Monangai",
+   "pos": "RB",
+   "team": "CHI",
+   "pp": 123.7,
+   "sleeper": 154.6,
+   "blend": 139.2,
+   "pp_borrowed": [
+    "rec",
+    "rec_td"
+   ],
+   "stats": {
+    "pp": {
+     "rush_yd": 650.5,
+     "rec_yd": 10.5,
+     "rush_td": 4.76,
+     "rec": 23.0,
+     "rec_td": 1.0
+    },
+    "sleeper": {
+     "rush_yd": 751.0,
+     "rush_td": 6.0,
+     "rec": 23.0,
+     "rec_yd": 165.0,
+     "rec_td": 1.0,
+     "fum_lost": 1.0
+    },
+    "blend": {
+     "fum_lost": 1.0,
+     "rush_td": 5.4,
+     "rec_yd": 87.8,
+     "rec": 23.0,
+     "rec_td": 1.0,
+     "rush_yd": 700.8
     }
    }
   },
@@ -4080,9 +4243,9 @@
      "rec_td": 6.0
     },
     "blend": {
-     "rec_yd": 708.4,
      "rec": 33.0,
-     "rec_td": 5.9
+     "rec_td": 5.9,
+     "rec_yd": 708.4
     }
    }
   },
@@ -4114,12 +4277,12 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "rush_td": 5.1,
-     "rec": 14.8,
-     "rec_yd": 98.2,
      "fum_lost": 1.0,
-     "rush_yd": 784.8,
-     "rec_td": 1.0
+     "rush_td": 5.1,
+     "rec_yd": 98.2,
+     "rec": 14.8,
+     "rec_td": 1.0,
+     "rush_yd": 784.8
     }
    }
   },
@@ -4146,9 +4309,9 @@
      "rec_td": 4.0
     },
     "blend": {
-     "rec_yd": 593.8,
      "rec": 56.0,
-     "rec_td": 3.8
+     "rec_td": 3.8,
+     "rec_yd": 593.8
     }
    }
   },
@@ -4177,10 +4340,10 @@
      "rec_td": 5.0
     },
     "blend": {
-     "rec": 36.0,
      "rec_yd": 709.9,
-     "rush_yd": 6.0,
-     "rec_td": 4.9
+     "rec": 36.0,
+     "rec_td": 4.9,
+     "rush_yd": 6.0
     }
    }
   },
@@ -4213,12 +4376,12 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "rush_td": 4.8,
-     "rec": 22.0,
-     "rec_yd": 82.2,
      "fum_lost": 1.0,
-     "rush_yd": 729.1,
-     "rec_td": 1.0
+     "rush_td": 4.8,
+     "rec_yd": 82.2,
+     "rec": 22.0,
+     "rec_td": 1.0,
+     "rush_yd": 729.1
     }
    }
   },
@@ -4250,51 +4413,12 @@
      "fum_lost": 2.0
     },
     "blend": {
-     "rush_td": 5.1,
-     "rec": 19.5,
-     "rec_yd": 142.8,
      "fum_lost": 2.0,
-     "rush_yd": 683.1,
-     "rec_td": 1.0
-    }
-   }
-  },
-  {
-   "id": "4866",
-   "name": "Saquon Barkley",
-   "pos": "RB",
-   "team": "PHI",
-   "pp": 26.0,
-   "sleeper": 246.7,
-   "blend": 136.3,
-   "pp_borrowed": [
-    "rec_td"
-   ],
-   "stats": {
-    "pp": {
-     "rush_yd": 79.5,
-     "rec_yd": 10.5,
-     "rec": 2,
-     "rush_td": 0.5,
-     "rec_td": 2.0
-    },
-    "sleeper": {
-     "rush_yd": 1220.0,
-     "rush_td": 8.0,
-     "rec": 37.0,
-     "rec_yd": 277.0,
-     "rec_td": 2.0,
-     "fum_lost": 1.0,
-     "rush_2pt": 1.0
-    },
-    "blend": {
-     "rush_td": 4.2,
+     "rush_td": 5.1,
+     "rec_yd": 142.8,
      "rec": 19.5,
-     "rec_yd": 143.8,
-     "rush_2pt": 1.0,
-     "fum_lost": 1.0,
-     "rush_yd": 649.8,
-     "rec_td": 2.0
+     "rec_td": 1.0,
+     "rush_yd": 683.1
     }
    }
   },
@@ -4323,10 +4447,10 @@
      "rec_td": 5.0
     },
     "blend": {
-     "rec": 31.0,
      "rec_yd": 711.2,
-     "rush_yd": 51.0,
-     "rec_td": 4.8
+     "rec": 31.0,
+     "rec_td": 4.8,
+     "rush_yd": 51.0
     }
    }
   },
@@ -4351,9 +4475,9 @@
      "rec_td": 5.0
     },
     "blend": {
-     "rec_yd": 694.8,
      "rec": 37.0,
-     "rec_td": 4.8
+     "rec_td": 4.8,
+     "rec_yd": 694.8
     }
    }
   },
@@ -4382,10 +4506,10 @@
      "rec_td": 5.0
     },
     "blend": {
-     "rec": 31.0,
      "rec_yd": 696.0,
-     "rush_yd": 11.0,
-     "rec_td": 5.3
+     "rec": 31.0,
+     "rec_td": 5.3,
+     "rush_yd": 11.0
     }
    }
   },
@@ -4414,10 +4538,10 @@
      "rec_td": 4.0
     },
     "blend": {
-     "rec": 34.2,
      "rec_yd": 718.2,
-     "rush_yd": 6.0,
-     "rec_td": 4.4
+     "rec": 34.2,
+     "rec_td": 4.4,
+     "rush_yd": 6.0
     }
    }
   },
@@ -4448,11 +4572,11 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "rush_td": 5.9,
-     "rec": 15.0,
      "fum_lost": 1.0,
-     "rush_yd": 728.2,
-     "rec_yd": 106.0
+     "rush_td": 5.9,
+     "rec_yd": 106.0,
+     "rec": 15.0,
+     "rush_yd": 728.2
     }
    }
   },
@@ -4486,13 +4610,13 @@
      "rush_2pt": 1.0
     },
     "blend": {
-     "rush_td": 6.0,
-     "rec": 19.0,
-     "rec_yd": 149.2,
-     "rush_2pt": 1.0,
      "fum_lost": 1.0,
-     "rush_yd": 495.8,
-     "rec_td": 2.0
+     "rush_td": 6.0,
+     "rush_2pt": 1.0,
+     "rec_yd": 149.2,
+     "rec": 19.0,
+     "rec_td": 2.0,
+     "rush_yd": 495.8
     }
    }
   },
@@ -4520,9 +4644,9 @@
      "rec_td": 4.0
     },
     "blend": {
-     "rec_yd": 614.5,
      "rec": 46.0,
-     "rec_td": 4.0
+     "rec_td": 4.0,
+     "rec_yd": 614.5
     }
    }
   },
@@ -4545,9 +4669,42 @@
     },
     "blend": {
      "rec_td": 4.0,
-     "rush_yd": 19.0,
      "rec": 46.0,
-     "rec_yd": 587.0
+     "rec_yd": 587.0,
+     "rush_yd": 19.0
+    }
+   }
+  },
+  {
+   "id": "13281",
+   "name": "Jordyn Tyson",
+   "pos": "WR",
+   "team": "NO",
+   "pp": 146.0,
+   "sleeper": 111.0,
+   "blend": 128.5,
+   "pp_borrowed": [
+    "rush_yd",
+    "rec"
+   ],
+   "stats": {
+    "pp": {
+     "rec_yd": 770.58,
+     "rec_td": 4.55,
+     "rush_yd": 6.0,
+     "rec": 41.0
+    },
+    "sleeper": {
+     "rush_yd": 6.0,
+     "rec": 41.0,
+     "rec_yd": 514.0,
+     "rec_td": 3.0
+    },
+    "blend": {
+     "rec_yd": 642.3,
+     "rec": 41.0,
+     "rec_td": 3.8,
+     "rush_yd": 6.0
     }
    }
   },
@@ -4577,48 +4734,47 @@
      "rec_td": 3.0
     },
     "blend": {
-     "rec": 46.0,
      "rec_yd": 583.7,
-     "rush_yd": 37.0,
-     "rec_td": 3.3
+     "rec": 46.0,
+     "rec_td": 3.3,
+     "rush_yd": 37.0
     }
    }
   },
   {
-   "id": "12533",
-   "name": "Jacory Croskey-Merritt",
-   "pos": "RB",
-   "team": "WAS",
-   "pp": 127.7,
-   "sleeper": 127.9,
-   "blend": 127.8,
+   "id": "5872",
+   "name": "Deebo Samuel",
+   "pos": "WR",
+   "team": "SF",
+   "pp": 99.4,
+   "sleeper": 155.7,
+   "blend": 127.5,
    "pp_borrowed": [
-    "rec",
-    "rec_td"
+    "rush_td"
    ],
    "stats": {
     "pp": {
-     "rush_yd": 607.09,
-     "rec_yd": 2.5,
-     "rush_td": 6.95,
-     "rec": 19.0,
-     "rec_td": 1.0
+     "rec_yd": 618.56,
+     "rush_yd": 5.5,
+     "rec": 3,
+     "rec_td": 4.67,
+     "rush_td": 1.0
     },
     "sleeper": {
-     "rush_yd": 614.0,
-     "rush_td": 5.0,
-     "rec": 19.0,
-     "rec_yd": 135.0,
-     "rec_td": 1.0,
+     "rush_yd": 89.0,
+     "rush_td": 1.0,
+     "rec": 56.0,
+     "rec_yd": 628.0,
+     "rec_td": 4.0,
      "fum_lost": 1.0
     },
     "blend": {
-     "rush_td": 6.0,
-     "rec": 19.0,
-     "rec_yd": 68.8,
      "fum_lost": 1.0,
-     "rush_yd": 610.5,
-     "rec_td": 1.0
+     "rush_td": 1.0,
+     "rec_yd": 623.3,
+     "rec": 29.5,
+     "rec_td": 4.3,
+     "rush_yd": 47.2
     }
    }
   },
@@ -4647,10 +4803,10 @@
      "rec_td": 5.0
     },
     "blend": {
-     "rec": 32.2,
      "rec_yd": 676.8,
-     "rush_yd": 6.0,
-     "rec_td": 4.3
+     "rec": 32.2,
+     "rec_td": 4.3,
+     "rush_yd": 6.0
     }
    }
   },
@@ -4679,10 +4835,40 @@
      "rec_td": 6.0
     },
     "blend": {
-     "rec": 32.0,
      "rec_yd": 576.8,
-     "rush_yd": 12.0,
-     "rec_td": 5.9
+     "rec": 32.0,
+     "rec_td": 5.9,
+     "rush_yd": 12.0
+    }
+   }
+  },
+  {
+   "id": "8121",
+   "name": "Romeo Doubs",
+   "pos": "WR",
+   "team": "NE",
+   "pp": 91.0,
+   "sleeper": 161.2,
+   "blend": 126.1,
+   "pp_borrowed": [
+    "rec",
+    "rec_td"
+   ],
+   "stats": {
+    "pp": {
+     "rec_yd": 39.5,
+     "rec": 57.0,
+     "rec_td": 5.0
+    },
+    "sleeper": {
+     "rec": 57.0,
+     "rec_yd": 742.0,
+     "rec_td": 5.0
+    },
+    "blend": {
+     "rec": 57.0,
+     "rec_td": 5.0,
+     "rec_yd": 390.8
     }
    }
   },
@@ -4711,10 +4897,10 @@
      "rec_td": 5.0
     },
     "blend": {
-     "rec": 31.2,
      "rec_yd": 676.6,
-     "rush_yd": 10.0,
-     "rec_td": 4.3
+     "rec": 31.2,
+     "rec_td": 4.3,
+     "rush_yd": 10.0
     }
    }
   },
@@ -4739,47 +4925,9 @@
      "rec_td": 5.0
     },
     "blend": {
-     "rec_yd": 638.8,
      "rec": 33.2,
-     "rec_td": 4.4
-    }
-   }
-  },
-  {
-   "id": "12512",
-   "name": "Quinshon Judkins",
-   "pos": "RB",
-   "team": "CLE",
-   "pp": 49.7,
-   "sleeper": 196.0,
-   "blend": 122.8,
-   "pp_borrowed": [
-    "rush_td",
-    "rec_td"
-   ],
-   "stats": {
-    "pp": {
-     "rush_yd": 47.5,
-     "rec_yd": 9.5,
-     "rec": 2,
-     "rush_td": 6.0,
-     "rec_td": 1.0
-    },
-    "sleeper": {
-     "rush_yd": 1012.0,
-     "rush_td": 6.0,
-     "rec": 32.0,
-     "rec_yd": 228.0,
-     "rec_td": 1.0,
-     "fum_lost": 1.0
-    },
-    "blend": {
-     "rush_td": 6.0,
-     "rec": 17.0,
-     "rec_yd": 118.8,
-     "fum_lost": 1.0,
-     "rush_yd": 529.8,
-     "rec_td": 1.0
+     "rec_td": 4.4,
+     "rec_yd": 638.8
     }
    }
   },
@@ -4807,11 +4955,11 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "rec": 30.5,
-     "rec_yd": 655.2,
      "fum_lost": 1.0,
-     "rush_yd": 31.8,
-     "rec_td": 3.8
+     "rec_yd": 655.2,
+     "rec": 30.5,
+     "rec_td": 3.8,
+     "rush_yd": 31.8
     }
    }
   },
@@ -4820,9 +4968,9 @@
    "name": "Kenny Gainwell",
    "pos": "RB",
    "team": "TB",
-   "pp": 89.4,
+   "pp": 87.1,
    "sleeper": 152.3,
-   "blend": 120.9,
+   "blend": 119.7,
    "pp_borrowed": [
     "rec",
     "rec_td"
@@ -4831,7 +4979,7 @@
     "pp": {
      "rush_yd": 26.5,
      "rec_yd": 12.5,
-     "rush_td": 4.42,
+     "rush_td": 4.04,
      "rec": 47.0,
      "rec_td": 2.0
     },
@@ -4844,12 +4992,12 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "rush_td": 3.7,
-     "rec": 47.0,
-     "rec_yd": 183.8,
      "fum_lost": 1.0,
-     "rush_yd": 222.2,
-     "rec_td": 2.0
+     "rush_td": 3.5,
+     "rec_yd": 183.8,
+     "rec": 47.0,
+     "rec_td": 2.0,
+     "rush_yd": 222.2
     }
    }
   },
@@ -4879,10 +5027,10 @@
      "rec_td": 4.0
     },
     "blend": {
-     "rec": 45.0,
      "rec_yd": 494.2,
-     "rush_yd": 14.0,
-     "rec_td": 3.7
+     "rec": 45.0,
+     "rec_td": 3.7,
+     "rush_yd": 14.0
     }
    }
   },
@@ -4907,9 +5055,9 @@
      "rec_td": 4.0
     },
     "blend": {
-     "rec_yd": 577.2,
      "rec": 34.5,
-     "rec_td": 3.8
+     "rec_td": 3.8,
+     "rec_yd": 577.2
     }
    }
   },
@@ -4934,9 +5082,9 @@
      "rec_td": 4.0
     },
     "blend": {
-     "rec_yd": 574.1,
      "rec": 34.8,
-     "rec_td": 3.8
+     "rec_td": 3.8,
+     "rec_yd": 574.1
     }
    }
   },
@@ -4969,12 +5117,12 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "rush_td": 7.0,
-     "rec": 10.2,
-     "rec_yd": 73.2,
      "fum_lost": 1.0,
-     "rush_yd": 486.2,
-     "rec_td": 1.0
+     "rush_td": 7.0,
+     "rec_yd": 73.2,
+     "rec": 10.2,
+     "rec_td": 1.0,
+     "rush_yd": 486.2
     }
    }
   },
@@ -4999,9 +5147,9 @@
      "rec_td": 4.0
     },
     "blend": {
-     "rec_yd": 579.8,
      "rec": 28.2,
-     "rec_td": 4.4
+     "rec_td": 4.4,
+     "rec_yd": 579.8
     }
    }
   },
@@ -5010,9 +5158,9 @@
    "name": "RJ Harvey",
    "pos": "RB",
    "team": "DEN",
-   "pp": 80.8,
+   "pp": 80.6,
    "sleeper": 144.1,
-   "blend": 112.4,
+   "blend": 112.3,
    "pp_borrowed": [
     "rec",
     "rec_td"
@@ -5021,7 +5169,7 @@
     "pp": {
      "rush_yd": 27.5,
      "rec_yd": 19.5,
-     "rush_td": 4.51,
+     "rush_td": 4.48,
      "rec": 37.0,
      "rec_td": 2.0
     },
@@ -5034,88 +5182,12 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "rush_td": 3.8,
-     "rec": 37.0,
+     "fum_lost": 1.0,
+     "rush_td": 3.7,
      "rec_yd": 147.8,
-     "fum_lost": 1.0,
-     "rush_yd": 271.2,
-     "rec_td": 2.0
-    }
-   }
-  },
-  {
-   "id": "5892",
-   "name": "David Montgomery",
-   "pos": "RB",
-   "team": "HOU",
-   "pp": 18.5,
-   "sleeper": 206.1,
-   "blend": 112.3,
-   "pp_borrowed": [
-    "rec_td"
-   ],
-   "stats": {
-    "pp": {
-     "rush_yd": 63.5,
-     "rec_yd": 11.5,
-     "rec": 2,
-     "rush_td": 0.5,
-     "rec_td": 1.0
-    },
-    "sleeper": {
-     "rush_yd": 986.0,
-     "rush_td": 8.0,
-     "rec": 32.0,
-     "rec_yd": 235.0,
-     "rec_td": 1.0,
-     "fum_lost": 1.0
-    },
-    "blend": {
-     "rush_td": 4.2,
-     "rec": 17.0,
-     "rec_yd": 123.2,
-     "fum_lost": 1.0,
-     "rush_yd": 524.8,
-     "rec_td": 1.0
-    }
-   }
-  },
-  {
-   "id": "12534",
-   "name": "Kyle Monangai",
-   "pos": "RB",
-   "team": "CHI",
-   "pp": 69.8,
-   "sleeper": 154.6,
-   "blend": 112.2,
-   "pp_borrowed": [
-    "rush_td",
-    "rec",
-    "rec_td"
-   ],
-   "stats": {
-    "pp": {
-     "rush_yd": 37.5,
-     "rec_yd": 10.5,
-     "rush_td": 6.0,
-     "rec": 23.0,
-     "rec_td": 1.0
-    },
-    "sleeper": {
-     "rush_yd": 751.0,
-     "rush_td": 6.0,
-     "rec": 23.0,
-     "rec_yd": 165.0,
-     "rec_td": 1.0,
-     "fum_lost": 1.0
-    },
-    "blend": {
-     "rush_td": 6.0,
-     "rec": 23.0,
-     "rec_yd": 87.8,
-     "fum_lost": 1.0,
-     "rush_yd": 394.2,
-     "rec_td": 1.0
+     "rec": 37.0,
+     "rec_td": 2.0,
+     "rush_yd": 271.2
     }
    }
   },
@@ -5143,9 +5215,9 @@
      "rec_td": 4.0
     },
     "blend": {
-     "rec_yd": 319.8,
      "rec": 56.0,
-     "rec_td": 4.0
+     "rec_td": 4.0,
+     "rec_yd": 319.8
     }
    }
   },
@@ -5169,12 +5241,12 @@
      "fum_lost": 1.0
     },
     "blend": {
+     "rec": 21.0,
      "fum_lost": 1.0,
      "rush_td": 3.0,
      "rec_td": 1.0,
-     "rush_yd": 528.0,
-     "rec": 21.0,
-     "rec_yd": 155.0
+     "rec_yd": 155.0,
+     "rush_yd": 528.0
     }
    }
   },
@@ -5206,70 +5278,12 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "rush_td": 3.8,
-     "rec": 18.2,
-     "rec_yd": 131.8,
      "fum_lost": 1.0,
-     "rush_yd": 520.4,
-     "rec_td": 1.0
-    }
-   }
-  },
-  {
-   "id": "13281",
-   "name": "Jordyn Tyson",
-   "pos": "WR",
-   "team": "NO",
-   "pp": null,
-   "sleeper": 111.0,
-   "blend": 111.0,
-   "pp_borrowed": [],
-   "stats": {
-    "pp": {},
-    "sleeper": {
-     "rush_yd": 6.0,
-     "rec": 41.0,
-     "rec_yd": 514.0,
-     "rec_td": 3.0
-    },
-    "blend": {
-     "rec_td": 3.0,
-     "rush_yd": 6.0,
-     "rec": 41.0,
-     "rec_yd": 514.0
-    }
-   }
-  },
-  {
-   "id": "8142",
-   "name": "Alec Pierce",
-   "pos": "WR",
-   "team": "IND",
-   "pp": 44.0,
-   "sleeper": 177.9,
-   "blend": 111.0,
-   "pp_borrowed": [
-    "rush_yd",
-    "rec_td"
-   ],
-   "stats": {
-    "pp": {
-     "rec_yd": 43.5,
-     "rec": 3,
-     "rush_yd": 7.0,
-     "rec_td": 6.0
-    },
-    "sleeper": {
-     "rush_yd": 7.0,
-     "rec": 54.0,
-     "rec_yd": 872.0,
-     "rec_td": 6.0
-    },
-    "blend": {
-     "rec": 28.5,
-     "rec_yd": 457.8,
-     "rush_yd": 7.0,
-     "rec_td": 6.0
+     "rush_td": 3.8,
+     "rec_yd": 131.8,
+     "rec": 18.2,
+     "rec_td": 1.0,
+     "rush_yd": 520.4
     }
    }
   },
@@ -5303,12 +5317,12 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "rush_td": 4.0,
-     "rec": 34.0,
-     "rec_yd": 126.2,
      "fum_lost": 1.0,
-     "rush_yd": 352.8,
-     "rec_td": 1.0
+     "rush_td": 4.0,
+     "rec_yd": 126.2,
+     "rec": 34.0,
+     "rec_td": 1.0,
+     "rush_yd": 352.8
     }
    }
   },
@@ -5338,11 +5352,11 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "rec": 23.5,
-     "rec_yd": 613.2,
      "fum_lost": 1.0,
-     "rush_yd": 46.0,
-     "rec_td": 3.7
+     "rec_yd": 613.2,
+     "rec": 23.5,
+     "rec_td": 3.7,
+     "rush_yd": 46.0
     }
    }
   },
@@ -5370,9 +5384,9 @@
      "rec_td": 3.0
     },
     "blend": {
-     "rec_yd": 449.8,
      "rec": 47.0,
-     "rec_td": 3.0
+     "rec_td": 3.0,
+     "rec_yd": 449.8
     }
    }
   },
@@ -5406,12 +5420,12 @@
      "fum_lost": 2.0
     },
     "blend": {
-     "rush_td": 5.0,
-     "rec": 24.0,
-     "rec_yd": 92.2,
      "fum_lost": 2.0,
-     "rush_yd": 402.8,
-     "rec_td": 1.0
+     "rush_td": 5.0,
+     "rec_yd": 92.2,
+     "rec": 24.0,
+     "rec_td": 1.0,
+     "rush_yd": 402.8
     }
    }
   },
@@ -5444,12 +5458,12 @@
      "fum_lost": 2.0
     },
     "blend": {
-     "rush_td": 2.0,
-     "pass_yd": 1425.3,
      "pass_int": 6.0,
-     "rush_yd": 76.8,
+     "fum_lost": 2.0,
+     "rush_td": 2.0,
      "pass_td": 9.6,
-     "fum_lost": 2.0
+     "pass_yd": 1425.3,
+     "rush_yd": 76.8
     }
    }
   },
@@ -5495,9 +5509,9 @@
     },
     "blend": {
      "rec_td": 4.0,
-     "rush_yd": 6.0,
      "rec": 35.0,
-     "rec_yd": 453.0
+     "rec_yd": 453.0,
+     "rush_yd": 6.0
     }
    }
   },
@@ -5526,10 +5540,10 @@
      "rec_td": 3.0
     },
     "blend": {
-     "rec": 27.8,
      "rec_yd": 557.3,
-     "rush_yd": 13.0,
-     "rec_td": 3.3
+     "rec": 27.8,
+     "rec_td": 3.3,
+     "rush_yd": 13.0
     }
    }
   },
@@ -5562,12 +5576,12 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "rush_td": 3.0,
-     "rec": 18.0,
-     "rec_yd": 132.2,
      "fum_lost": 1.0,
-     "rush_yd": 471.8,
-     "rec_td": 1.0
+     "rush_td": 3.0,
+     "rec_yd": 132.2,
+     "rec": 18.0,
+     "rec_td": 1.0,
+     "rush_yd": 471.8
     }
    }
   },
@@ -5597,10 +5611,10 @@
      "rec_td": 4.0
     },
     "blend": {
-     "rec": 36.2,
      "rec_yd": 403.2,
-     "rush_yd": 7.0,
-     "rec_td": 4.0
+     "rec": 36.2,
+     "rec_td": 4.0,
+     "rush_yd": 7.0
     }
    }
   },
@@ -5627,9 +5641,9 @@
      "rec_td": 4.0
     },
     "blend": {
-     "rec_yd": 550.8,
      "rec": 22.0,
-     "rec_td": 4.0
+     "rec_td": 4.0,
+     "rec_yd": 550.8
     }
    }
   },
@@ -5657,9 +5671,9 @@
      "rec_td": 3.0
     },
     "blend": {
-     "rec_yd": 462.7,
      "rec": 36.0,
-     "rec_td": 3.0
+     "rec_td": 3.0,
+     "rec_yd": 462.7
     }
    }
   },
@@ -5684,9 +5698,9 @@
      "rec_td": 4.0
     },
     "blend": {
-     "rec_yd": 479.8,
      "rec": 27.0,
-     "rec_td": 3.8
+     "rec_td": 3.8,
+     "rec_yd": 479.8
     }
    }
   },
@@ -5709,9 +5723,9 @@
     },
     "blend": {
      "rec_td": 3.0,
-     "rush_yd": 13.0,
      "rec": 36.0,
-     "rec_yd": 426.0
+     "rec_yd": 426.0,
+     "rush_yd": 13.0
     }
    }
   },
@@ -5739,9 +5753,9 @@
      "rec_td": 4.0
     },
     "blend": {
-     "rec_yd": 267.2,
      "rec": 47.0,
-     "rec_td": 4.0
+     "rec_td": 4.0,
+     "rec_yd": 267.2
     }
    }
   },
@@ -5770,10 +5784,10 @@
      "rec_td": 3.0
     },
     "blend": {
-     "rec": 22.8,
      "rec_yd": 538.7,
-     "rush_yd": 5.0,
-     "rec_td": 3.3
+     "rec": 22.8,
+     "rec_td": 3.3,
+     "rush_yd": 5.0
     }
    }
   },
@@ -5797,12 +5811,12 @@
      "fum_lost": 2.0
     },
     "blend": {
-     "pass_yd": 1433.0,
-     "rush_td": 2.0,
      "pass_int": 5.0,
      "rush_yd": 88.0,
+     "fum_lost": 2.0,
+     "rush_td": 2.0,
      "pass_td": 7.0,
-     "fum_lost": 2.0
+     "pass_yd": 1433.0
     }
    }
   },
@@ -5825,47 +5839,9 @@
     },
     "blend": {
      "rec_td": 3.0,
-     "rush_yd": 21.0,
      "rec": 35.0,
-     "rec_yd": 415.0
-    }
-   }
-  },
-  {
-   "id": "5872",
-   "name": "Deebo Samuel",
-   "pos": "WR",
-   "team": "SF",
-   "pp": 36.9,
-   "sleeper": 155.7,
-   "blend": 96.3,
-   "pp_borrowed": [
-    "rush_td",
-    "rec_td"
-   ],
-   "stats": {
-    "pp": {
-     "rec_yd": 33.5,
-     "rush_yd": 5.5,
-     "rec": 3,
-     "rush_td": 1.0,
-     "rec_td": 4.0
-    },
-    "sleeper": {
-     "rush_yd": 89.0,
-     "rush_td": 1.0,
-     "rec": 56.0,
-     "rec_yd": 628.0,
-     "rec_td": 4.0,
-     "fum_lost": 1.0
-    },
-    "blend": {
-     "rush_td": 1.0,
-     "rec": 29.5,
-     "rec_yd": 330.8,
-     "fum_lost": 1.0,
-     "rush_yd": 47.2,
-     "rec_td": 4.0
+     "rec_yd": 415.0,
+     "rush_yd": 21.0
     }
    }
   },
@@ -5896,10 +5872,10 @@
      "rec_td": 3.0
     },
     "blend": {
-     "rec": 47.0,
      "rec_yd": 289.8,
-     "rush_yd": 13.0,
-     "rec_td": 3.0
+     "rec": 47.0,
+     "rec_td": 3.0,
+     "rush_yd": 13.0
     }
    }
   },
@@ -5924,9 +5900,9 @@
      "rec_td": 3.0
     },
     "blend": {
-     "rec_yd": 469.2,
      "rec": 28.0,
-     "rec_td": 3.3
+     "rec_td": 3.3,
+     "rec_yd": 469.2
     }
    }
   },
@@ -5956,10 +5932,10 @@
      "rec_td": 3.0
     },
     "blend": {
-     "rec": 36.0,
      "rec_yd": 405.6,
-     "rush_yd": 10.0,
-     "rec_td": 2.8
+     "rec": 36.0,
+     "rec_td": 2.8,
+     "rush_yd": 10.0
     }
    }
   },
@@ -5987,6 +5963,45 @@
    }
   },
   {
+   "id": "12533",
+   "name": "Jacory Croskey-Merritt",
+   "pos": "RB",
+   "team": "WAS",
+   "pp": 60.6,
+   "sleeper": 127.9,
+   "blend": 94.2,
+   "pp_borrowed": [
+    "rush_td",
+    "rec",
+    "rec_td"
+   ],
+   "stats": {
+    "pp": {
+     "rush_yd": 53.5,
+     "rec_yd": 2.5,
+     "rush_td": 5.0,
+     "rec": 19.0,
+     "rec_td": 1.0
+    },
+    "sleeper": {
+     "rush_yd": 614.0,
+     "rush_td": 5.0,
+     "rec": 19.0,
+     "rec_yd": 135.0,
+     "rec_td": 1.0,
+     "fum_lost": 1.0
+    },
+    "blend": {
+     "fum_lost": 1.0,
+     "rush_td": 5.0,
+     "rec_yd": 68.8,
+     "rec": 19.0,
+     "rec_td": 1.0,
+     "rush_yd": 333.8
+    }
+   }
+  },
+  {
    "id": "3321",
    "name": "Tyreek Hill",
    "pos": "WR",
@@ -6005,9 +6020,9 @@
     },
     "blend": {
      "rec_td": 3.0,
-     "rush_yd": 5.0,
      "rec": 33.0,
-     "rec_yd": 422.0
+     "rec_yd": 422.0,
+     "rush_yd": 5.0
     }
    }
   },
@@ -6031,12 +6046,12 @@
      "pass_2pt": 3.0
     },
     "blend": {
-     "pass_yd": 1499.0,
      "pass_int": 6.0,
      "rush_yd": 30.0,
-     "pass_td": 9.0,
      "fum_lost": 3.0,
-     "pass_2pt": 3.0
+     "pass_2pt": 3.0,
+     "pass_td": 9.0,
+     "pass_yd": 1499.0
     }
    }
   },
@@ -6061,9 +6076,9 @@
      "rec_td": 3.0
     },
     "blend": {
-     "rec_yd": 451.8,
      "rec": 30.0,
-     "rec_td": 2.8
+     "rec_td": 2.8,
+     "rec_yd": 451.8
     }
    }
   },
@@ -6086,9 +6101,9 @@
     },
     "blend": {
      "rec_td": 3.0,
-     "rush_yd": 9.0,
      "rec": 31.0,
-     "rec_yd": 421.0
+     "rec_yd": 421.0,
+     "rush_yd": 9.0
     }
    }
   },
@@ -6119,11 +6134,11 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "rush_td": 6.0,
-     "rec": 7.8,
      "fum_lost": 1.0,
-     "rush_yd": 376.2,
-     "rec_yd": 107.0
+     "rush_td": 6.0,
+     "rec_yd": 107.0,
+     "rec": 7.8,
+     "rush_yd": 376.2
     }
    }
   },
@@ -6153,10 +6168,10 @@
      "rec_td": 2.0
     },
     "blend": {
-     "rec": 27.0,
      "rec_yd": 463.8,
-     "rush_yd": 6.0,
-     "rec_td": 2.7
+     "rec": 27.0,
+     "rec_td": 2.7,
+     "rush_yd": 6.0
     }
    }
   },
@@ -6179,11 +6194,11 @@
      "fum_lost": 1.0
     },
     "blend": {
+     "rec": 38.0,
      "fum_lost": 1.0,
      "rec_td": 2.0,
-     "rush_yd": 30.0,
-     "rec": 38.0,
-     "rec_yd": 384.0
+     "rec_yd": 384.0,
+     "rush_yd": 30.0
     }
    }
   },
@@ -6217,10 +6232,10 @@
     },
     "blend": {
      "rush_td": 1.0,
-     "rec": 30.2,
      "rec_yd": 276.2,
-     "rush_yd": 14.0,
-     "rec_td": 4.0
+     "rec": 30.2,
+     "rec_td": 4.0,
+     "rush_yd": 14.0
     }
    }
   },
@@ -6244,12 +6259,12 @@
      "fum_lost": 1.0
     },
     "blend": {
+     "rec": 23.0,
      "fum_lost": 1.0,
      "rush_td": 2.0,
      "rec_td": 1.0,
-     "rush_yd": 321.0,
-     "rec": 23.0,
-     "rec_yd": 176.0
+     "rec_yd": 176.0,
+     "rush_yd": 321.0
     }
    }
   },
@@ -6280,10 +6295,10 @@
      "rec_td": 3.0
     },
     "blend": {
-     "rec": 42.0,
      "rec_yd": 268.8,
-     "rush_yd": 10.0,
-     "rec_td": 3.0
+     "rec": 42.0,
+     "rec_td": 3.0,
+     "rush_yd": 10.0
     }
    }
   },
@@ -6317,10 +6332,10 @@
     },
     "blend": {
      "rush_td": 1.0,
-     "rec": 25.8,
      "rec_yd": 252.8,
-     "rush_yd": 121.0,
-     "rec_td": 3.0
+     "rec": 25.8,
+     "rec_td": 3.0,
+     "rush_yd": 121.0
     }
    }
   },
@@ -6343,9 +6358,9 @@
     },
     "blend": {
      "rec_td": 3.0,
-     "rush_yd": 9.0,
      "rec": 28.0,
-     "rec_yd": 402.0
+     "rec_yd": 402.0,
+     "rush_yd": 9.0
     }
    }
   },
@@ -6373,9 +6388,9 @@
      "rec_td": 3.0
     },
     "blend": {
-     "rec_yd": 239.2,
      "rec": 44.0,
-     "rec_td": 3.0
+     "rec_td": 3.0,
+     "rec_yd": 239.2
     }
    }
   },
@@ -6398,9 +6413,9 @@
     },
     "blend": {
      "rec_td": 3.0,
-     "rush_yd": 13.0,
      "rec": 29.0,
-     "rec_yd": 375.0
+     "rec_yd": 375.0,
+     "rush_yd": 13.0
     }
    }
   },
@@ -6429,10 +6444,10 @@
      "rec_td": 3.0
     },
     "blend": {
-     "rec": 21.2,
      "rec_yd": 432.2,
-     "rush_yd": 7.0,
-     "rec_td": 3.2
+     "rec": 21.2,
+     "rec_td": 3.2,
+     "rush_yd": 7.0
     }
    }
   },
@@ -6463,10 +6478,10 @@
      "rec_td": 3.0
     },
     "blend": {
-     "rec": 38.0,
      "rec_yd": 255.8,
-     "rush_yd": 7.0,
-     "rec_td": 3.0
+     "rec": 38.0,
+     "rec_td": 3.0,
+     "rush_yd": 7.0
     }
    }
   },
@@ -6489,9 +6504,9 @@
     },
     "blend": {
      "rec_td": 3.0,
-     "rush_yd": 5.0,
      "rec": 31.0,
-     "rec_yd": 319.0
+     "rec_yd": 319.0,
+     "rush_yd": 5.0
     }
    }
   },
@@ -6542,9 +6557,9 @@
      "rec_td": 4.0
     },
     "blend": {
-     "rec_yd": 216.8,
      "rec": 35.0,
-     "rec_td": 4.0
+     "rec_td": 4.0,
+     "rec_yd": 216.8
     }
    }
   },
@@ -6574,10 +6589,10 @@
      "rec_td": 4.0
     },
     "blend": {
-     "rec": 23.0,
      "rec_yd": 292.2,
-     "rush_yd": 33.0,
-     "rec_td": 4.0
+     "rec": 23.0,
+     "rec_td": 4.0,
+     "rush_yd": 33.0
     }
    }
   },
@@ -6605,9 +6620,9 @@
      "rec_td": 2.0
     },
     "blend": {
-     "rec_yd": 363.2,
      "rec": 31.0,
-     "rec_td": 2.0
+     "rec_td": 2.0,
+     "rec_yd": 363.2
     }
    }
   },
@@ -6616,9 +6631,9 @@
    "name": "Mike Washington",
    "pos": "RB",
    "team": "LV",
-   "pp": 60.0,
+   "pp": 59.4,
    "sleeper": 97.5,
-   "blend": 78.8,
+   "blend": 78.5,
    "pp_borrowed": [
     "rec",
     "rec_yd",
@@ -6627,7 +6642,7 @@
    "stats": {
     "pp": {
      "rush_yd": 18.5,
-     "rush_td": 4.08,
+     "rush_td": 3.98,
      "rec": 16.0,
      "rec_yd": 117.0,
      "rec_td": 1.0
@@ -6641,10 +6656,10 @@
     },
     "blend": {
      "rush_td": 3.5,
-     "rec": 16.0,
      "rec_yd": 117.0,
-     "rush_yd": 238.2,
-     "rec_td": 1.0
+     "rec": 16.0,
+     "rec_td": 1.0,
+     "rush_yd": 238.2
     }
    }
   },
@@ -6698,10 +6713,10 @@
      "rec_td": 3.0
     },
     "blend": {
-     "rec": 35.0,
      "rec_yd": 238.8,
-     "rush_yd": 10.0,
-     "rec_td": 3.0
+     "rec": 35.0,
+     "rec_td": 3.0,
+     "rush_yd": 10.0
     }
    }
   },
@@ -6724,9 +6739,9 @@
     },
     "blend": {
      "rec_td": 2.0,
-     "rush_yd": 9.0,
      "rec": 30.0,
-     "rec_yd": 350.0
+     "rec_yd": 350.0,
+     "rush_yd": 9.0
     }
    }
   },
@@ -6761,12 +6776,12 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "rush_td": 4.6,
-     "rec": 11.0,
-     "rec_yd": 78.0,
      "fum_lost": 1.0,
-     "rush_yd": 264.0,
-     "rec_td": 1.0
+     "rush_td": 4.6,
+     "rec_yd": 78.0,
+     "rec": 11.0,
+     "rec_td": 1.0,
+     "rush_yd": 264.0
     }
    }
   },
@@ -6844,9 +6859,9 @@
    "name": "Woody Marks",
    "pos": "RB",
    "team": "HOU",
-   "pp": 68.3,
+   "pp": 68.4,
    "sleeper": 83.8,
-   "blend": 76.0,
+   "blend": 76.1,
    "pp_borrowed": [
     "rec",
     "rec_td"
@@ -6855,7 +6870,7 @@
     "pp": {
      "rush_yd": 28.5,
      "rec_yd": 10.5,
-     "rush_td": 6.57,
+     "rush_td": 6.58,
      "rec": 19.0,
      "rec_td": 1.0
     },
@@ -6868,12 +6883,12 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "rush_td": 4.3,
-     "rec": 19.0,
-     "rec_yd": 73.8,
      "fum_lost": 1.0,
-     "rush_yd": 189.8,
-     "rec_td": 1.0
+     "rush_td": 4.3,
+     "rec_yd": 73.8,
+     "rec": 19.0,
+     "rec_td": 1.0,
+     "rush_yd": 189.8
     }
    }
   },
@@ -6904,11 +6919,11 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "rush_td": 3.3,
-     "rec": 10.0,
      "fum_lost": 1.0,
-     "rush_yd": 381.8,
-     "rec_yd": 73.0
+     "rush_td": 3.3,
+     "rec_yd": 73.0,
+     "rec": 10.0,
+     "rush_yd": 381.8
     }
    }
   },
@@ -6931,9 +6946,9 @@
     },
     "blend": {
      "rec_td": 2.0,
-     "rush_yd": 3.0,
      "rec": 25.0,
-     "rec_yd": 361.0
+     "rec_yd": 361.0,
+     "rush_yd": 3.0
     }
    }
   },
@@ -6963,10 +6978,10 @@
      "rec_td": 2.0
     },
     "blend": {
-     "rec": 14.2,
      "rec_yd": 457.8,
-     "rush_yd": 8.0,
-     "rec_td": 2.0
+     "rec": 14.2,
+     "rec_td": 2.0,
+     "rush_yd": 8.0
     }
    }
   },
@@ -7019,10 +7034,10 @@
      "rec_td": 4.0
     },
     "blend": {
-     "rec": 21.0,
      "rec_yd": 262.8,
-     "rush_yd": 6.0,
-     "rec_td": 4.0
+     "rec": 21.0,
+     "rec_td": 4.0,
+     "rush_yd": 6.0
     }
    }
   },
@@ -7046,12 +7061,12 @@
      "fum_lost": 1.0
     },
     "blend": {
+     "rec": 21.0,
      "fum_lost": 1.0,
      "rush_td": 1.0,
      "rec_td": 2.0,
-     "rush_yd": 77.0,
-     "rec": 21.0,
-     "rec_yd": 268.0
+     "rec_yd": 268.0,
+     "rush_yd": 77.0
     }
    }
   },
@@ -7085,12 +7100,12 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "rush_td": 3.0,
-     "rec": 18.0,
-     "rec_yd": 71.8,
      "fum_lost": 1.0,
-     "rush_yd": 228.8,
-     "rec_td": 1.0
+     "rush_td": 3.0,
+     "rec_yd": 71.8,
+     "rec": 18.0,
+     "rec_td": 1.0,
+     "rush_yd": 228.8
     }
    }
   },
@@ -7118,6 +7133,46 @@
    }
   },
   {
+   "id": "13345",
+   "name": "Jonah Coleman",
+   "pos": "RB",
+   "team": "DEN",
+   "pp": 76.8,
+   "sleeper": 63.9,
+   "blend": 70.3,
+   "pp_borrowed": [
+    "rush_yd",
+    "rec",
+    "rec_yd",
+    "rec_td"
+   ],
+   "stats": {
+    "pp": {
+     "rush_td": 3.82,
+     "rush_yd": 304.0,
+     "rec": 10.0,
+     "rec_yd": 75.0,
+     "rec_td": 1.0
+    },
+    "sleeper": {
+     "rush_yd": 304.0,
+     "rush_td": 2.0,
+     "rec": 10.0,
+     "rec_yd": 75.0,
+     "rec_td": 1.0,
+     "fum_lost": 1.0
+    },
+    "blend": {
+     "fum_lost": 1.0,
+     "rush_td": 2.9,
+     "rec_yd": 75.0,
+     "rec": 10.0,
+     "rec_td": 1.0,
+     "rush_yd": 304.0
+    }
+   }
+  },
+  {
    "id": "9494",
    "name": "Marvin Mims",
    "pos": "WR",
@@ -7136,11 +7191,11 @@
      "fum_lost": 1.0
     },
     "blend": {
+     "rec": 27.0,
      "fum_lost": 1.0,
      "rec_td": 2.0,
-     "rush_yd": 36.0,
-     "rec": 27.0,
-     "rec_yd": 293.0
+     "rec_yd": 293.0,
+     "rush_yd": 36.0
     }
    }
   },
@@ -7168,9 +7223,9 @@
      "rec_td": 3.0
     },
     "blend": {
-     "rec_yd": 193.8,
      "rec": 32.0,
-     "rec_td": 3.0
+     "rec_td": 3.0,
+     "rec_yd": 193.8
     }
    }
   },
@@ -7203,12 +7258,12 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "rush_td": 2.0,
-     "rec": 18.8,
-     "rec_yd": 132.2,
      "fum_lost": 1.0,
-     "rush_yd": 202.8,
-     "rec_td": 1.0
+     "rush_td": 2.0,
+     "rec_yd": 132.2,
+     "rec": 18.8,
+     "rec_td": 1.0,
+     "rush_yd": 202.8
     }
    }
   },
@@ -7236,9 +7291,9 @@
      "rec_td": 3.0
     },
     "blend": {
-     "rec_yd": 178.8,
      "rec": 33.0,
-     "rec_td": 3.0
+     "rec_td": 3.0,
+     "rec_yd": 178.8
     }
    }
   },
@@ -7294,12 +7349,12 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "rush_td": 4.0,
-     "rec": 20.0,
-     "rec_yd": 78.8,
      "fum_lost": 1.0,
-     "rush_yd": 100.8,
-     "rec_td": 1.0
+     "rush_td": 4.0,
+     "rec_yd": 78.8,
+     "rec": 20.0,
+     "rec_td": 1.0,
+     "rush_yd": 100.8
     }
    }
   },
@@ -7321,39 +7376,10 @@
      "rec_yd": 68.0
     },
     "blend": {
-     "rush_yd": 313.0,
-     "rec": 9.0,
      "rec_yd": 68.0,
-     "rush_td": 3.0
-    }
-   }
-  },
-  {
-   "id": "13345",
-   "name": "Jonah Coleman",
-   "pos": "RB",
-   "team": "DEN",
-   "pp": null,
-   "sleeper": 63.9,
-   "blend": 63.9,
-   "pp_borrowed": [],
-   "stats": {
-    "pp": {},
-    "sleeper": {
-     "rush_yd": 304.0,
-     "rush_td": 2.0,
-     "rec": 10.0,
-     "rec_yd": 75.0,
-     "rec_td": 1.0,
-     "fum_lost": 1.0
-    },
-    "blend": {
-     "fum_lost": 1.0,
-     "rush_td": 2.0,
-     "rec_td": 1.0,
-     "rush_yd": 304.0,
-     "rec": 10.0,
-     "rec_yd": 75.0
+     "rec": 9.0,
+     "rush_td": 3.0,
+     "rush_yd": 313.0
     }
    }
   },
@@ -7380,9 +7406,9 @@
      "rec_td": 3.0
     },
     "blend": {
-     "rec_yd": 236.8,
      "rec": 22.2,
-     "rec_td": 3.0
+     "rec_td": 3.0,
+     "rec_yd": 236.8
     }
    }
   },
@@ -7406,12 +7432,12 @@
      "fum_lost": 1.0
     },
     "blend": {
+     "rec": 12.0,
      "fum_lost": 1.0,
      "rush_td": 2.0,
      "rec_td": 1.0,
-     "rush_yd": 270.0,
-     "rec": 12.0,
-     "rec_yd": 87.0
+     "rec_yd": 87.0,
+     "rush_yd": 270.0
     }
    }
   },
@@ -7434,9 +7460,9 @@
     },
     "blend": {
      "rec_td": 2.0,
-     "rush_yd": 5.0,
      "rec": 22.0,
-     "rec_yd": 291.0
+     "rec_yd": 291.0,
+     "rush_yd": 5.0
     }
    }
   },
@@ -7487,9 +7513,9 @@
      "rec_td": 3.0
     },
     "blend": {
-     "rec_yd": 160.2,
      "rec": 29.0,
-     "rec_td": 3.0
+     "rec_td": 3.0,
+     "rec_yd": 160.2
     }
    }
   },
@@ -7512,9 +7538,9 @@
     },
     "blend": {
      "rec_td": 2.0,
-     "rush_yd": 19.0,
      "rec": 22.0,
-     "rec_yd": 269.0
+     "rec_yd": 269.0,
+     "rush_yd": 19.0
     }
    }
   },
@@ -7560,9 +7586,9 @@
     },
     "blend": {
      "rec_td": 2.0,
-     "rush_yd": 4.0,
      "rec": 22.0,
-     "rec_yd": 270.0
+     "rec_yd": 270.0,
+     "rush_yd": 4.0
     }
    }
   },
@@ -7592,10 +7618,10 @@
      "rec_td": 3.0
     },
     "blend": {
-     "rec": 19.0,
      "rec_yd": 227.8,
-     "rush_yd": 9.0,
-     "rec_td": 3.0
+     "rec": 19.0,
+     "rec_td": 3.0,
+     "rush_yd": 9.0
     }
    }
   },
@@ -7640,10 +7666,10 @@
      "rec_yd": 94.0
     },
     "blend": {
-     "rush_yd": 261.0,
-     "rec": 13.0,
      "rec_yd": 94.0,
-     "rush_td": 2.0
+     "rec": 13.0,
+     "rush_td": 2.0,
+     "rush_yd": 261.0
     }
    }
   },
@@ -7665,10 +7691,10 @@
      "rec_yd": 97.0
     },
     "blend": {
-     "rush_yd": 243.0,
-     "rec": 14.0,
      "rec_yd": 97.0,
-     "rush_td": 2.0
+     "rec": 14.0,
+     "rush_td": 2.0,
+     "rush_yd": 243.0
     }
    }
   },
@@ -7699,10 +7725,10 @@
      "rec_td": 2.0
     },
     "blend": {
-     "rec": 30.0,
      "rec_yd": 166.8,
-     "rush_yd": 12.0,
-     "rec_td": 2.0
+     "rec": 30.0,
+     "rec_td": 2.0,
+     "rush_yd": 12.0
     }
    }
   },
@@ -7729,9 +7755,9 @@
      "rec_td": 3.0
     },
     "blend": {
-     "rec_yd": 233.2,
      "rec": 18.5,
-     "rec_td": 3.0
+     "rec_td": 3.0,
+     "rec_yd": 233.2
     }
    }
   },
@@ -7762,10 +7788,10 @@
      "rec_td": 2.0
     },
     "blend": {
-     "rec": 28.0,
      "rec_yd": 182.8,
-     "rush_yd": 13.0,
-     "rec_td": 2.0
+     "rec": 28.0,
+     "rec_td": 2.0,
+     "rush_yd": 13.0
     }
    }
   },
@@ -7788,9 +7814,9 @@
     },
     "blend": {
      "rec_td": 2.0,
-     "rush_yd": 22.0,
      "rec": 21.0,
-     "rec_yd": 244.0
+     "rec_yd": 244.0,
+     "rush_yd": 22.0
     }
    }
   },
@@ -7817,9 +7843,9 @@
      "rec_td": 3.0
     },
     "blend": {
-     "rec_yd": 200.8,
      "rec": 21.2,
-     "rec_td": 3.0
+     "rec_td": 3.0,
+     "rec_yd": 200.8
     }
    }
   },
@@ -7847,40 +7873,6 @@
    }
   },
   {
-   "id": "8132",
-   "name": "Tyler Allgeier",
-   "pos": "RB",
-   "team": "ARI",
-   "pp": 38.3,
-   "sleeper": 77.2,
-   "blend": 57.8,
-   "pp_borrowed": [
-    "rec"
-   ],
-   "stats": {
-    "pp": {
-     "rush_yd": 34.5,
-     "rec_yd": 7.5,
-     "rush_td": 4.19,
-     "rec": 9.0
-    },
-    "sleeper": {
-     "rush_yd": 460.0,
-     "rush_td": 3.0,
-     "rec": 9.0,
-     "rec_yd": 62.0,
-     "fum_lost": 1.0
-    },
-    "blend": {
-     "rush_td": 3.6,
-     "rec": 9.0,
-     "fum_lost": 1.0,
-     "rush_yd": 247.2,
-     "rec_yd": 34.8
-    }
-   }
-  },
-  {
    "id": "13435",
    "name": "Joe Royer",
    "pos": "TE",
@@ -7900,6 +7892,40 @@
      "rec_td": 2.0,
      "rec": 23.0,
      "rec_yd": 228.0
+    }
+   }
+  },
+  {
+   "id": "8132",
+   "name": "Tyler Allgeier",
+   "pos": "RB",
+   "team": "ARI",
+   "pp": 37.7,
+   "sleeper": 77.2,
+   "blend": 57.5,
+   "pp_borrowed": [
+    "rec"
+   ],
+   "stats": {
+    "pp": {
+     "rush_yd": 34.5,
+     "rec_yd": 7.5,
+     "rush_td": 4.09,
+     "rec": 9.0
+    },
+    "sleeper": {
+     "rush_yd": 460.0,
+     "rush_td": 3.0,
+     "rec": 9.0,
+     "rec_yd": 62.0,
+     "fum_lost": 1.0
+    },
+    "blend": {
+     "fum_lost": 1.0,
+     "rush_td": 3.5,
+     "rec_yd": 34.8,
+     "rec": 9.0,
+     "rush_yd": 247.2
     }
    }
   },
@@ -7927,9 +7953,9 @@
      "rec_td": 2.0
     },
     "blend": {
-     "rec_yd": 184.8,
      "rec": 27.0,
-     "rec_td": 2.0
+     "rec_td": 2.0,
+     "rec_yd": 184.8
     }
    }
   },
@@ -7953,12 +7979,12 @@
      "fum_lost": 1.0
     },
     "blend": {
+     "rec": 11.0,
      "fum_lost": 1.0,
      "rush_td": 2.0,
      "rec_td": 1.0,
-     "rush_yd": 220.0,
-     "rec": 11.0,
-     "rec_yd": 82.0
+     "rec_yd": 82.0,
+     "rush_yd": 220.0
     }
    }
   },
@@ -8003,10 +8029,10 @@
      "rec_yd": 67.0
     },
     "blend": {
-     "rush_yd": 289.0,
-     "rec": 9.0,
      "rec_yd": 67.0,
-     "rush_td": 2.0
+     "rec": 9.0,
+     "rush_td": 2.0,
+     "rush_yd": 289.0
     }
    }
   },
@@ -8036,10 +8062,10 @@
      "rec_td": 3.0
     },
     "blend": {
-     "rec": 16.8,
      "rec_yd": 208.8,
-     "rush_yd": 10.0,
-     "rec_td": 3.0
+     "rec": 16.8,
+     "rec_td": 3.0,
+     "rush_yd": 10.0
     }
    }
   },
@@ -8061,10 +8087,10 @@
      "rec_yd": 86.0
     },
     "blend": {
-     "rush_yd": 249.0,
-     "rec": 11.0,
      "rec_yd": 86.0,
-     "rush_td": 2.0
+     "rec": 11.0,
+     "rush_td": 2.0,
+     "rush_yd": 249.0
     }
    }
   },
@@ -8094,9 +8120,9 @@
     },
     "blend": {
      "rush_td": 3.6,
+     "rec_yd": 39.8,
      "rec": 11.0,
-     "rush_yd": 199.8,
-     "rec_yd": 39.8
+     "rush_yd": 199.8
     }
    }
   },
@@ -8127,10 +8153,10 @@
      "rec_td": 2.0
     },
     "blend": {
-     "rec": 26.0,
      "rec_yd": 166.8,
-     "rush_yd": 16.0,
-     "rec_td": 2.0
+     "rec": 26.0,
+     "rec_td": 2.0,
+     "rush_yd": 16.0
     }
    }
   },
@@ -8153,11 +8179,11 @@
      "rec_td": 1.0
     },
     "blend": {
+     "rec": 18.0,
      "rush_td": 1.0,
      "rec_td": 1.0,
-     "rush_yd": 135.0,
-     "rec": 18.0,
-     "rec_yd": 127.0
+     "rec_yd": 127.0,
+     "rush_yd": 135.0
     }
    }
   },
@@ -8203,11 +8229,11 @@
      "rec_td": 1.0
     },
     "blend": {
+     "rec": 17.0,
      "rush_td": 1.0,
      "rec_td": 1.0,
-     "rush_yd": 137.0,
-     "rec": 17.0,
-     "rec_yd": 131.0
+     "rec_yd": 131.0,
+     "rush_yd": 137.0
     }
    }
   },
@@ -8231,12 +8257,12 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "pass_yd": 778.0,
-     "rush_td": 1.0,
      "pass_int": 4.0,
      "rush_yd": 38.0,
+     "fum_lost": 1.0,
+     "rush_td": 1.0,
      "pass_td": 5.0,
-     "fum_lost": 1.0
+     "pass_yd": 778.0
     }
    }
   },
@@ -8267,10 +8293,10 @@
      "rec_td": 2.0
     },
     "blend": {
-     "rec": 25.0,
      "rec_yd": 159.8,
-     "rush_yd": 3.0,
-     "rec_td": 2.0
+     "rec": 25.0,
+     "rec_td": 2.0,
+     "rush_yd": 3.0
     }
    }
   },
@@ -8327,10 +8353,10 @@
     },
     "blend": {
      "rush_td": 1.0,
-     "rec": 24.0,
      "rec_yd": 95.2,
-     "rush_yd": 77.2,
-     "rec_td": 1.0
+     "rec": 24.0,
+     "rec_td": 1.0,
+     "rush_yd": 77.2
     }
    }
   },
@@ -8362,9 +8388,9 @@
     },
     "blend": {
      "rush_td": 2.0,
+     "rec_yd": 91.0,
      "rec": 13.0,
-     "rush_yd": 191.8,
-     "rec_yd": 91.0
+     "rush_yd": 191.8
     }
    }
   },
@@ -8394,10 +8420,10 @@
      "rec_td": 2.0
     },
     "blend": {
-     "rec": 17.2,
      "rec_yd": 199.8,
-     "rush_yd": 38.0,
-     "rec_td": 2.0
+     "rec": 17.2,
+     "rec_td": 2.0,
+     "rush_yd": 38.0
     }
    }
   },
@@ -8420,11 +8446,11 @@
      "fum_lost": 1.0
     },
     "blend": {
+     "rec": 8.0,
      "fum_lost": 1.0,
      "rush_td": 2.0,
-     "rush_yd": 288.0,
-     "rec": 8.0,
-     "rec_yd": 57.0
+     "rec_yd": 57.0,
+     "rush_yd": 288.0
     }
    }
   },
@@ -8455,10 +8481,10 @@
      "rec_td": 2.0
     },
     "blend": {
-     "rec": 24.0,
      "rec_yd": 153.2,
-     "rush_yd": 10.0,
-     "rec_td": 2.0
+     "rec": 24.0,
+     "rec_td": 2.0,
+     "rush_yd": 10.0
     }
    }
   },
@@ -8489,10 +8515,10 @@
      "rec_td": 2.0
     },
     "blend": {
-     "rec": 24.0,
      "rec_yd": 148.8,
-     "rush_yd": 14.0,
-     "rec_td": 2.0
+     "rec": 24.0,
+     "rec_td": 2.0,
+     "rush_yd": 14.0
     }
    }
   },
@@ -8526,10 +8552,10 @@
     },
     "blend": {
      "rush_td": 2.0,
-     "rec": 14.0,
      "rec_yd": 55.2,
-     "rush_yd": 146.2,
-     "rec_td": 1.0
+     "rec": 14.0,
+     "rec_td": 1.0,
+     "rush_yd": 146.2
     }
    }
   },
@@ -8552,9 +8578,9 @@
     },
     "blend": {
      "rec_td": 2.0,
-     "rush_yd": 11.0,
      "rec": 17.0,
-     "rec_yd": 218.0
+     "rec_yd": 218.0,
+     "rush_yd": 11.0
     }
    }
   },
@@ -8584,10 +8610,10 @@
      "rec_td": 2.0
     },
     "blend": {
-     "rec": 16.0,
      "rec_yd": 197.2,
-     "rush_yd": 34.0,
-     "rec_td": 2.0
+     "rec": 16.0,
+     "rec_td": 2.0,
+     "rush_yd": 34.0
     }
    }
   },
@@ -8622,10 +8648,10 @@
     },
     "blend": {
      "rush_td": 1.0,
-     "rec": 17.0,
      "rec_yd": 119.0,
-     "rush_yd": 90.8,
-     "rec_td": 1.0
+     "rec": 17.0,
+     "rec_td": 1.0,
+     "rush_yd": 90.8
     }
    }
   },
@@ -8648,9 +8674,9 @@
     },
     "blend": {
      "rec_td": 2.0,
-     "rush_yd": 3.0,
      "rec": 16.0,
-     "rec_yd": 213.0
+     "rec_yd": 213.0,
+     "rush_yd": 3.0
     }
    }
   },
@@ -8682,11 +8708,11 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "rush_td": 3.0,
-     "rec": 8.0,
      "fum_lost": 1.0,
-     "rush_yd": 181.2,
-     "rec_yd": 59.0
+     "rush_td": 3.0,
+     "rec_yd": 59.0,
+     "rec": 8.0,
+     "rush_yd": 181.2
     }
    }
   },
@@ -8720,12 +8746,12 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "rush_td": 2.0,
-     "rec": 12.0,
-     "rec_yd": 46.8,
      "fum_lost": 1.0,
-     "rush_yd": 151.8,
-     "rec_td": 1.0
+     "rush_td": 2.0,
+     "rec_yd": 46.8,
+     "rec": 12.0,
+     "rec_td": 1.0,
+     "rush_yd": 151.8
     }
    }
   },
@@ -8748,9 +8774,9 @@
     },
     "blend": {
      "rec_td": 1.0,
-     "rush_yd": 8.0,
      "rec": 20.0,
-     "rec_yd": 220.0
+     "rec_yd": 220.0,
+     "rush_yd": 8.0
     }
    }
   },
@@ -8773,11 +8799,11 @@
      "fum_lost": 1.0
     },
     "blend": {
+     "rec": 21.0,
      "fum_lost": 1.0,
      "rec_td": 1.0,
-     "rush_yd": 16.0,
-     "rec": 21.0,
-     "rec_yd": 215.0
+     "rec_yd": 215.0,
+     "rush_yd": 16.0
     }
    }
   },
@@ -8805,9 +8831,9 @@
      "rec_td": 2.0
     },
     "blend": {
-     "rec_yd": 121.2,
      "rec": 24.0,
-     "rec_td": 2.0
+     "rec_td": 2.0,
+     "rec_yd": 121.2
     }
    }
   },
@@ -8835,9 +8861,9 @@
      "rec_td": 2.0
     },
     "blend": {
-     "rec_yd": 160.2,
      "rec": 20.0,
-     "rec_td": 2.0
+     "rec_td": 2.0,
+     "rec_yd": 160.2
     }
    }
   },
@@ -8865,9 +8891,9 @@
      "rec_td": 2.0
     },
     "blend": {
-     "rec_yd": 127.2,
      "rec": 23.0,
-     "rec_td": 2.0
+     "rec_td": 2.0,
+     "rec_yd": 127.2
     }
    }
   },
@@ -8894,9 +8920,9 @@
      "rec_td": 2.0
     },
     "blend": {
-     "rec_yd": 183.8,
      "rec": 16.8,
-     "rec_td": 2.0
+     "rec_td": 2.0,
+     "rec_yd": 183.8
     }
    }
   },
@@ -8923,9 +8949,9 @@
      "rec_td": 2.0
     },
     "blend": {
-     "rec_yd": 175.2,
      "rec": 17.8,
-     "rec_td": 2.0
+     "rec_td": 2.0,
+     "rec_yd": 175.2
     }
    }
   },
@@ -8948,9 +8974,9 @@
     },
     "blend": {
      "rec_td": 1.0,
-     "rush_yd": 9.0,
      "rec": 19.0,
-     "rec_yd": 205.0
+     "rec_yd": 205.0,
+     "rush_yd": 9.0
     }
    }
   },
@@ -8973,11 +8999,11 @@
      "fum_lost": 1.0
     },
     "blend": {
+     "rec": 8.0,
      "fum_lost": 1.0,
      "rush_td": 2.0,
-     "rush_yd": 220.0,
-     "rec": 8.0,
-     "rec_yd": 59.0
+     "rec_yd": 59.0,
+     "rush_yd": 220.0
     }
    }
   },
@@ -9005,9 +9031,9 @@
      "rec_td": 2.0
     },
     "blend": {
-     "rec_yd": 128.8,
      "rec": 20.0,
-     "rec_td": 2.0
+     "rec_td": 2.0,
+     "rec_yd": 128.8
     }
    }
   },
@@ -9029,10 +9055,10 @@
      "rec_yd": 38.0
     },
     "blend": {
-     "rush_yd": 223.0,
-     "rec": 6.0,
      "rec_yd": 38.0,
-     "rush_td": 2.0
+     "rec": 6.0,
+     "rush_td": 2.0,
+     "rush_yd": 223.0
     }
    }
   },
@@ -9063,9 +9089,9 @@
     },
     "blend": {
      "rush_td": 2.0,
+     "rec_yd": 53.8,
      "rec": 14.0,
-     "rush_yd": 113.8,
-     "rec_yd": 53.8
+     "rush_yd": 113.8
     }
    }
   },
@@ -9134,8 +9160,8 @@
     },
     "blend": {
      "rec_td": 1.0,
-     "rec_2pt": 6.0,
      "rec": 11.0,
+     "rec_2pt": 6.0,
      "rec_yd": 114.0
     }
    }
@@ -9182,9 +9208,9 @@
     },
     "blend": {
      "rec_td": 1.0,
-     "rush_yd": 6.0,
      "rec": 15.0,
-     "rec_yd": 177.0
+     "rec_yd": 177.0,
+     "rush_yd": 6.0
     }
    }
   },
@@ -9229,10 +9255,10 @@
      "rec_yd": 87.0
     },
     "blend": {
-     "rush_yd": 120.0,
-     "rec": 12.0,
      "rec_yd": 87.0,
-     "rush_td": 1.0
+     "rec": 12.0,
+     "rush_td": 1.0,
+     "rush_yd": 120.0
     }
    }
   },
@@ -9263,9 +9289,9 @@
     },
     "blend": {
      "rush_td": 2.0,
+     "rec_yd": 36.2,
      "rec": 10.0,
-     "rush_yd": 128.8,
-     "rec_yd": 36.2
+     "rush_yd": 128.8
     }
    }
   },
@@ -9288,9 +9314,9 @@
     },
     "blend": {
      "rec_td": 1.0,
-     "rush_yd": 10.0,
      "rec": 14.0,
-     "rec_yd": 174.0
+     "rec_yd": 174.0,
+     "rush_yd": 10.0
     }
    }
   },
@@ -9320,10 +9346,10 @@
      "rec_td": 2.0
     },
     "blend": {
-     "rec": 11.5,
      "rec_yd": 142.8,
-     "rush_yd": 6.0,
-     "rec_td": 2.0
+     "rec": 11.5,
+     "rec_td": 2.0,
+     "rush_yd": 6.0
     }
    }
   },
@@ -9346,9 +9372,9 @@
     },
     "blend": {
      "rec_td": 1.0,
-     "rush_yd": 14.0,
      "rec": 14.0,
-     "rec_yd": 163.0
+     "rec_yd": 163.0,
+     "rush_yd": 14.0
     }
    }
   },
@@ -9393,10 +9419,10 @@
      "rec_yd": 49.0
     },
     "blend": {
-     "rush_yd": 184.0,
-     "rec": 7.0,
      "rec_yd": 49.0,
-     "rush_td": 1.0
+     "rec": 7.0,
+     "rush_td": 1.0,
+     "rush_yd": 184.0
     }
    }
   },
@@ -9418,10 +9444,10 @@
      "rec_yd": 58.0
     },
     "blend": {
-     "rush_yd": 164.0,
-     "rec": 8.0,
      "rec_yd": 58.0,
-     "rush_td": 1.0
+     "rec": 8.0,
+     "rush_td": 1.0,
+     "rush_yd": 164.0
     }
    }
   },
@@ -9465,9 +9491,9 @@
     },
     "blend": {
      "rec_td": 1.0,
-     "rush_yd": 6.0,
      "rec": 13.0,
-     "rec_yd": 159.0
+     "rec_yd": 159.0,
+     "rush_yd": 6.0
     }
    }
   },
@@ -9490,9 +9516,9 @@
     },
     "blend": {
      "rec_td": 1.0,
-     "rush_yd": 16.0,
      "rec": 12.0,
-     "rec_yd": 152.0
+     "rec_yd": 152.0,
+     "rush_yd": 16.0
     }
    }
   },
@@ -9516,12 +9542,12 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "pass_yd": 363.0,
-     "rush_td": 1.0,
      "pass_int": 2.0,
      "rush_yd": 102.0,
+     "fum_lost": 1.0,
+     "rush_td": 1.0,
      "pass_td": 2.0,
-     "fum_lost": 1.0
+     "pass_yd": 363.0
     }
    }
   },
@@ -9567,9 +9593,9 @@
     },
     "blend": {
      "rec_td": 1.0,
-     "rush_yd": 6.0,
      "rec": 13.0,
-     "rec_yd": 143.0
+     "rec_yd": 143.0,
+     "rush_yd": 6.0
     }
    }
   },
@@ -9591,10 +9617,10 @@
      "rec_yd": 73.0
     },
     "blend": {
-     "rush_yd": 105.0,
-     "rec": 10.0,
      "rec_yd": 73.0,
-     "rush_td": 1.0
+     "rec": 10.0,
+     "rush_td": 1.0,
+     "rush_yd": 105.0
     }
    }
   },
@@ -9662,10 +9688,10 @@
      "rec_yd": 59.0
     },
     "blend": {
-     "rush_yd": 124.0,
-     "rec": 9.0,
      "rec_yd": 59.0,
-     "rush_td": 1.0
+     "rec": 9.0,
+     "rush_td": 1.0,
+     "rush_yd": 124.0
     }
    }
   },
@@ -9688,9 +9714,9 @@
     },
     "blend": {
      "rec_td": 1.0,
-     "rush_yd": 2.0,
      "rec": 14.0,
-     "rec_yd": 130.0
+     "rec_yd": 130.0,
+     "rush_yd": 2.0
     }
    }
   },
@@ -9827,10 +9853,10 @@
      "rec_yd": 36.0
     },
     "blend": {
-     "rush_yd": 174.0,
-     "rec": 5.0,
      "rec_yd": 36.0,
-     "rush_td": 1.0
+     "rec": 5.0,
+     "rush_td": 1.0,
+     "rush_yd": 174.0
     }
    }
   },
@@ -9853,9 +9879,9 @@
     },
     "blend": {
      "rec_td": 1.0,
-     "rush_yd": 42.0,
      "rec": 10.0,
-     "rec_yd": 118.0
+     "rec_yd": 118.0,
+     "rush_yd": 42.0
     }
    }
   },
@@ -9878,11 +9904,11 @@
      "fum_lost": 1.0
     },
     "blend": {
+     "rec": 7.0,
      "fum_lost": 1.0,
      "rush_td": 1.0,
-     "rush_yd": 160.0,
-     "rec": 7.0,
-     "rec_yd": 49.0
+     "rec_yd": 49.0,
+     "rush_yd": 160.0
     }
    }
   },
@@ -9956,9 +9982,9 @@
      "rec_td": 1.0
     },
     "blend": {
-     "rec_yd": 87.2,
      "rec": 17.0,
-     "rec_td": 1.0
+     "rec_td": 1.0,
+     "rec_yd": 87.2
     }
    }
   },
@@ -10073,9 +10099,9 @@
     },
     "blend": {
      "rec_td": 1.0,
-     "rush_yd": 4.0,
      "rec": 10.0,
-     "rec_yd": 148.0
+     "rec_yd": 148.0,
+     "rush_yd": 4.0
     }
    }
   },
@@ -10126,9 +10152,9 @@
      "rec_td": 1.0
     },
     "blend": {
-     "rec_yd": 97.2,
      "rec": 15.0,
-     "rec_td": 1.0
+     "rec_td": 1.0,
+     "rec_yd": 97.2
     }
    }
   },
@@ -10150,10 +10176,10 @@
      "rec_yd": 37.0
     },
     "blend": {
-     "rush_yd": 160.0,
-     "rec": 5.0,
      "rec_yd": 37.0,
-     "rush_td": 1.0
+     "rec": 5.0,
+     "rush_td": 1.0,
+     "rush_yd": 160.0
     }
    }
   },
@@ -10175,10 +10201,10 @@
      "rec_yd": 64.0
     },
     "blend": {
-     "rush_yd": 82.0,
-     "rec": 10.0,
      "rec_yd": 64.0,
-     "rush_td": 1.0
+     "rec": 10.0,
+     "rush_td": 1.0,
+     "rush_yd": 82.0
     }
    }
   },
@@ -10209,10 +10235,10 @@
      "rec_td": 1.0
     },
     "blend": {
-     "rec": 16.0,
      "rec_yd": 84.8,
-     "rush_yd": 2.0,
-     "rec_td": 1.0
+     "rec": 16.0,
+     "rec_td": 1.0,
+     "rush_yd": 2.0
     }
    }
   },
@@ -10234,10 +10260,10 @@
      "rec_yd": 40.0
     },
     "blend": {
-     "rush_yd": 144.0,
-     "rec": 6.0,
      "rec_yd": 40.0,
-     "rush_td": 1.0
+     "rec": 6.0,
+     "rush_td": 1.0,
+     "rush_yd": 144.0
     }
    }
   },
@@ -10261,12 +10287,12 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "pass_yd": 335.0,
-     "rush_td": 1.0,
      "pass_int": 2.0,
      "rush_yd": 69.0,
+     "fum_lost": 1.0,
+     "rush_td": 1.0,
      "pass_td": 2.0,
-     "fum_lost": 1.0
+     "pass_yd": 335.0
     }
    }
   },
@@ -10289,9 +10315,9 @@
     },
     "blend": {
      "rec_td": 1.0,
-     "rush_yd": 18.0,
      "rec": 10.0,
-     "rec_yd": 124.0
+     "rec_yd": 124.0,
+     "rush_yd": 18.0
     }
    }
   },
@@ -10336,10 +10362,10 @@
      "rec_yd": 58.0
     },
     "blend": {
-     "rush_yd": 103.0,
-     "rec": 8.0,
      "rec_yd": 58.0,
-     "rush_td": 1.0
+     "rec": 8.0,
+     "rush_td": 1.0,
+     "rush_yd": 103.0
     }
    }
   },
@@ -10384,10 +10410,10 @@
      "rec_yd": 43.0
     },
     "blend": {
-     "rush_yd": 137.0,
-     "rec": 6.0,
      "rec_yd": 43.0,
-     "rush_td": 1.0
+     "rec": 6.0,
+     "rush_td": 1.0,
+     "rush_yd": 137.0
     }
    }
   },
@@ -10464,10 +10490,10 @@
      "rec_td": 1.0
     },
     "blend": {
-     "rec": 15.0,
      "rec_yd": 75.8,
-     "rush_yd": 10.0,
-     "rec_td": 1.0
+     "rec": 15.0,
+     "rec_td": 1.0,
+     "rush_yd": 10.0
     }
    }
   },
@@ -10495,9 +10521,9 @@
      "rec_td": 1.0
     },
     "blend": {
-     "rec_yd": 85.2,
      "rec": 15.0,
-     "rec_td": 1.0
+     "rec_td": 1.0,
+     "rec_yd": 85.2
     }
    }
   },
@@ -10543,9 +10569,9 @@
     },
     "blend": {
      "rec_td": 1.0,
-     "rush_yd": 6.0,
      "rec": 10.0,
-     "rec_yd": 126.0
+     "rec_yd": 126.0,
+     "rush_yd": 6.0
     }
    }
   },
@@ -10590,10 +10616,10 @@
      "rush_yd": 8.0
     },
     "blend": {
-     "pass_yd": 448.0,
-     "rush_yd": 8.0,
+     "pass_int": 2.0,
      "pass_td": 3.0,
-     "pass_int": 2.0
+     "rush_yd": 8.0,
+     "pass_yd": 448.0
     }
    }
   },
@@ -10638,10 +10664,10 @@
      "rush_yd": 22.0
     },
     "blend": {
-     "pass_yd": 394.0,
-     "rush_yd": 22.0,
+     "pass_int": 2.0,
      "pass_td": 3.0,
-     "pass_int": 2.0
+     "rush_yd": 22.0,
+     "pass_yd": 394.0
     }
    }
   },
@@ -10710,11 +10736,11 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "pass_yd": 447.0,
      "pass_int": 2.0,
      "rush_yd": 13.0,
+     "fum_lost": 1.0,
      "pass_td": 3.0,
-     "fum_lost": 1.0
+     "pass_yd": 447.0
     }
    }
   },
@@ -10736,10 +10762,10 @@
      "rec_yd": 33.0
     },
     "blend": {
-     "rush_yd": 127.0,
-     "rec": 5.0,
      "rec_yd": 33.0,
-     "rush_td": 1.0
+     "rec": 5.0,
+     "rush_td": 1.0,
+     "rush_yd": 127.0
     }
    }
   },
@@ -10785,9 +10811,9 @@
     },
     "blend": {
      "rec_td": 1.0,
-     "rush_yd": 6.0,
      "rec": 8.0,
-     "rec_yd": 123.0
+     "rec_yd": 123.0,
+     "rush_yd": 6.0
     }
    }
   },
@@ -10810,9 +10836,9 @@
     },
     "blend": {
      "rec_td": 1.0,
-     "rush_yd": 6.0,
      "rec": 9.0,
-     "rec_yd": 113.0
+     "rec_yd": 113.0,
+     "rush_yd": 6.0
     }
    }
   },
@@ -10835,11 +10861,11 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "pass_yd": 423.0,
      "pass_int": 2.0,
      "rush_yd": 18.0,
+     "fum_lost": 1.0,
      "pass_td": 3.0,
-     "fum_lost": 1.0
+     "pass_yd": 423.0
     }
    }
   },
@@ -10867,9 +10893,9 @@
      "rec_td": 1.0
     },
     "blend": {
-     "rec_yd": 67.2,
      "rec": 14.0,
-     "rec_td": 1.0
+     "rec_td": 1.0,
+     "rec_yd": 67.2
     }
    }
   },
@@ -10891,10 +10917,10 @@
      "rec_yd": 46.0
     },
     "blend": {
-     "rush_yd": 97.0,
-     "rec": 6.0,
      "rec_yd": 46.0,
-     "rush_td": 1.0
+     "rec": 6.0,
+     "rush_td": 1.0,
+     "rush_yd": 97.0
     }
    }
   },
@@ -10916,10 +10942,10 @@
      "rec_yd": 36.0
     },
     "blend": {
-     "rush_yd": 117.0,
-     "rec": 5.0,
      "rec_yd": 36.0,
-     "rush_td": 1.0
+     "rec": 5.0,
+     "rush_td": 1.0,
+     "rush_yd": 117.0
     }
    }
   },
@@ -10970,9 +10996,9 @@
      "rec_td": 1.0
     },
     "blend": {
-     "rec_yd": 70.8,
      "rec": 13.0,
-     "rec_td": 1.0
+     "rec_td": 1.0,
+     "rec_yd": 70.8
     }
    }
   },
@@ -10995,9 +11021,9 @@
     },
     "blend": {
      "rec_td": 1.0,
-     "rush_yd": 6.0,
      "rec": 8.0,
-     "rec_yd": 114.0
+     "rec_yd": 114.0,
+     "rush_yd": 6.0
     }
    }
   },
@@ -11048,9 +11074,9 @@
      "rec_td": 1.0
     },
     "blend": {
-     "rec_yd": 68.8,
      "rec": 13.0,
-     "rec_td": 1.0
+     "rec_td": 1.0,
+     "rec_yd": 68.8
     }
    }
   },
@@ -11078,9 +11104,9 @@
      "rec_td": 1.0
     },
     "blend": {
-     "rec_yd": 66.8,
      "rec": 13.0,
-     "rec_td": 1.0
+     "rec_td": 1.0,
+     "rec_yd": 66.8
     }
    }
   },
@@ -11148,10 +11174,10 @@
      "rec_yd": 30.0
     },
     "blend": {
-     "rush_yd": 125.0,
-     "rec": 4.0,
      "rec_yd": 30.0,
-     "rush_td": 1.0
+     "rec": 4.0,
+     "rush_td": 1.0,
+     "rush_yd": 125.0
     }
    }
   },
@@ -11173,10 +11199,10 @@
      "rec_yd": 31.0
     },
     "blend": {
-     "rush_yd": 122.0,
-     "rec": 4.0,
      "rec_yd": 31.0,
-     "rush_td": 1.0
+     "rec": 4.0,
+     "rush_td": 1.0,
+     "rush_yd": 122.0
     }
    }
   },
@@ -11222,11 +11248,11 @@
      "fum_lost": 1.0
     },
     "blend": {
+     "rec": 4.0,
      "fum_lost": 1.0,
      "rush_td": 1.0,
-     "rush_yd": 138.0,
-     "rec": 4.0,
-     "rec_yd": 30.0
+     "rec_yd": 30.0,
+     "rush_yd": 138.0
     }
    }
   },
@@ -11248,10 +11274,10 @@
      "rec_yd": 22.0
     },
     "blend": {
-     "rush_yd": 132.0,
-     "rec": 3.0,
      "rec_yd": 22.0,
-     "rush_td": 1.0
+     "rec": 3.0,
+     "rush_td": 1.0,
+     "rush_yd": 132.0
     }
    }
   },
@@ -11273,10 +11299,10 @@
      "rec_yd": 22.0
     },
     "blend": {
-     "rush_yd": 130.0,
-     "rec": 3.0,
      "rec_yd": 22.0,
-     "rush_td": 1.0
+     "rec": 3.0,
+     "rush_td": 1.0,
+     "rush_yd": 130.0
     }
    }
   },
@@ -11303,9 +11329,9 @@
      "rec_td": 1.0
     },
     "blend": {
-     "rec_yd": 98.2,
      "rec": 8.2,
-     "rec_td": 1.0
+     "rec_td": 1.0,
+     "rec_yd": 98.2
     }
    }
   },
@@ -11328,9 +11354,9 @@
     },
     "blend": {
      "rec_td": 1.0,
-     "rush_yd": 16.0,
      "rec": 7.0,
-     "rec_yd": 95.0
+     "rec_yd": 95.0,
+     "rush_yd": 16.0
     }
    }
   },
@@ -11358,9 +11384,9 @@
      "rec_td": 1.0
     },
     "blend": {
-     "rec_yd": 60.8,
      "rec": 12.0,
-     "rec_td": 1.0
+     "rec_td": 1.0,
+     "rec_yd": 60.8
     }
    }
   },
@@ -11382,10 +11408,10 @@
      "rush_yd": 20.0
     },
     "blend": {
-     "pass_yd": 400.0,
-     "rush_yd": 20.0,
+     "pass_int": 2.0,
      "pass_td": 2.0,
-     "pass_int": 2.0
+     "rush_yd": 20.0,
+     "pass_yd": 400.0
     }
    }
   },
@@ -11431,9 +11457,9 @@
     },
     "blend": {
      "rec_td": 1.0,
-     "rush_yd": 6.0,
      "rec": 8.0,
-     "rec_yd": 87.0
+     "rec_yd": 87.0,
+     "rush_yd": 6.0
     }
    }
   },
@@ -11456,9 +11482,9 @@
     },
     "blend": {
      "rec_td": 1.0,
-     "rush_yd": 2.0,
      "rec": 8.0,
-     "rec_yd": 91.0
+     "rec_yd": 91.0,
+     "rush_yd": 2.0
     }
    }
   },
@@ -11480,10 +11506,10 @@
      "rec_yd": 22.0
     },
     "blend": {
-     "rush_yd": 120.0,
-     "rec": 3.0,
      "rec_yd": 22.0,
-     "rush_td": 1.0
+     "rec": 3.0,
+     "rush_td": 1.0,
+     "rush_yd": 120.0
     }
    }
   },
@@ -11514,10 +11540,10 @@
      "rec_td": 1.0
     },
     "blend": {
-     "rec": 9.0,
      "rec_yd": 70.2,
-     "rush_yd": 11.0,
-     "rec_td": 1.0
+     "rec": 9.0,
+     "rec_td": 1.0,
+     "rush_yd": 11.0
     }
    }
   },
@@ -11545,9 +11571,9 @@
      "rec_td": 1.0
     },
     "blend": {
-     "rec_yd": 58.2,
      "rec": 11.0,
-     "rec_td": 1.0
+     "rec_td": 1.0,
+     "rec_yd": 58.2
     }
    }
   },
@@ -11569,10 +11595,10 @@
      "rec_yd": 17.0
     },
     "blend": {
-     "rush_yd": 119.0,
-     "rec": 3.0,
      "rec_yd": 17.0,
-     "rush_td": 1.0
+     "rec": 3.0,
+     "rush_td": 1.0,
+     "rush_yd": 119.0
     }
    }
   },
@@ -11595,11 +11621,11 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "pass_yd": 410.0,
      "pass_int": 2.0,
      "rush_yd": 21.0,
+     "fum_lost": 1.0,
      "pass_td": 2.0,
-     "fum_lost": 1.0
+     "pass_yd": 410.0
     }
    }
   },
@@ -11627,9 +11653,9 @@
      "rec_td": 1.0
     },
     "blend": {
-     "rec_yd": 74.2,
      "rec": 9.0,
-     "rec_td": 1.0
+     "rec_td": 1.0,
+     "rec_yd": 74.2
     }
    }
   },
@@ -11657,9 +11683,9 @@
      "rec_td": 1.0
     },
     "blend": {
-     "rec_yd": 53.8,
      "rec": 11.0,
-     "rec_td": 1.0
+     "rec_td": 1.0,
+     "rec_yd": 53.8
     }
    }
   },
@@ -11686,9 +11712,9 @@
      "rec_td": 1.0
     },
     "blend": {
-     "rec_yd": 62.8,
      "rec": 10.0,
-     "rec_td": 1.0
+     "rec_td": 1.0,
+     "rec_yd": 62.8
     }
    }
   },
@@ -11711,11 +11737,11 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "pass_yd": 398.0,
      "pass_int": 2.0,
      "rush_yd": 21.0,
+     "fum_lost": 1.0,
      "pass_td": 2.0,
-     "fum_lost": 1.0
+     "pass_yd": 398.0
     }
    }
   },
@@ -11738,11 +11764,11 @@
      "rush_td": 1.0
     },
     "blend": {
-     "pass_yd": 193.0,
-     "rush_td": 1.0,
      "pass_int": 1.0,
      "rush_yd": 46.0,
-     "pass_td": 1.0
+     "rush_td": 1.0,
+     "pass_td": 1.0,
+     "pass_yd": 193.0
     }
    }
   },
@@ -11773,11 +11799,11 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "rec": 6.8,
-     "rec_yd": 73.8,
      "fum_lost": 1.0,
-     "rush_yd": 18.0,
-     "rec_td": 1.0
+     "rec_yd": 73.8,
+     "rec": 6.8,
+     "rec_td": 1.0,
+     "rush_yd": 18.0
     }
    }
   },
@@ -11799,10 +11825,10 @@
      "rec_yd": 22.0
     },
     "blend": {
-     "rush_yd": 92.0,
-     "rec": 3.0,
      "rec_yd": 22.0,
-     "rush_td": 1.0
+     "rec": 3.0,
+     "rush_td": 1.0,
+     "rush_yd": 92.0
     }
    }
   },
@@ -11829,9 +11855,9 @@
      "rec_td": 1.0
     },
     "blend": {
-     "rec_yd": 70.8,
      "rec": 7.2,
-     "rec_td": 1.0
+     "rec_td": 1.0,
+     "rec_yd": 70.8
     }
    }
   },
@@ -11861,10 +11887,10 @@
      "rec_td": 1.0
     },
     "blend": {
-     "rec": 5.8,
      "rec_yd": 76.2,
-     "rush_yd": 6.0,
-     "rec_td": 1.0
+     "rec": 5.8,
+     "rec_td": 1.0,
+     "rush_yd": 6.0
     }
    }
   },
@@ -11885,9 +11911,9 @@
      "rec_yd": 80.0
     },
     "blend": {
-     "rush_yd": 9.0,
      "rec": 11.0,
-     "rec_yd": 80.0
+     "rec_yd": 80.0,
+     "rush_yd": 9.0
     }
    }
   },
@@ -11917,9 +11943,9 @@
     },
     "blend": {
      "rush_td": 1.0,
+     "rec_yd": 18.8,
      "rec": 2.8,
-     "rush_yd": 77.8,
-     "rec_yd": 18.8
+     "rush_yd": 77.8
     }
    }
   },
@@ -11946,9 +11972,9 @@
      "rec_td": 1.0
     },
     "blend": {
-     "rec_yd": 58.8,
      "rec": 6.2,
-     "rec_td": 1.0
+     "rec_td": 1.0,
+     "rec_yd": 58.8
     }
    }
   },
@@ -12012,10 +12038,10 @@
      "rec_yd": 33.0
     },
     "blend": {
-     "rush_yd": 14.0,
-     "rec": 4.0,
      "rec_yd": 33.0,
-     "rush_td": 1.0
+     "rec": 4.0,
+     "rush_td": 1.0,
+     "rush_yd": 14.0
     }
    }
   },
@@ -12037,10 +12063,10 @@
      "rush_yd": 43.0
     },
     "blend": {
-     "pass_yd": 183.0,
-     "rush_yd": 43.0,
+     "pass_int": 1.0,
      "pass_td": 1.0,
-     "pass_int": 1.0
+     "rush_yd": 43.0,
+     "pass_yd": 183.0
     }
    }
   },
@@ -12062,10 +12088,10 @@
      "rush_yd": 43.0
     },
     "blend": {
-     "pass_yd": 164.0,
-     "rush_yd": 43.0,
+     "pass_int": 1.0,
      "pass_td": 1.0,
-     "pass_int": 1.0
+     "rush_yd": 43.0,
+     "pass_yd": 164.0
     }
    }
   },
@@ -12129,10 +12155,10 @@
      "rush_yd": 21.0
     },
     "blend": {
-     "pass_yd": 213.0,
-     "rush_yd": 21.0,
+     "pass_int": 1.0,
      "pass_td": 1.0,
-     "pass_int": 1.0
+     "rush_yd": 21.0,
+     "pass_yd": 213.0
     }
    }
   },
@@ -12154,10 +12180,10 @@
      "rush_yd": 19.0
     },
     "blend": {
-     "pass_yd": 218.0,
-     "rush_yd": 19.0,
+     "pass_int": 1.0,
      "pass_td": 1.0,
-     "pass_int": 1.0
+     "rush_yd": 19.0,
+     "pass_yd": 218.0
     }
    }
   },
@@ -12199,9 +12225,9 @@
      "rec_yd": 52.0
     },
     "blend": {
-     "rush_yd": 30.0,
      "rec": 5.0,
-     "rec_yd": 52.0
+     "rec_yd": 52.0,
+     "rush_yd": 30.0
     }
    }
   },
@@ -12223,10 +12249,10 @@
      "rush_yd": 26.0
     },
     "blend": {
-     "pass_yd": 188.0,
-     "rush_yd": 26.0,
+     "pass_int": 1.0,
      "pass_td": 1.0,
-     "pass_int": 1.0
+     "rush_yd": 26.0,
+     "pass_yd": 188.0
     }
    }
   },
@@ -12248,10 +12274,10 @@
      "rush_yd": 13.0
     },
     "blend": {
-     "pass_yd": 214.0,
-     "rush_yd": 13.0,
+     "pass_int": 1.0,
      "pass_td": 1.0,
-     "pass_int": 1.0
+     "rush_yd": 13.0,
+     "pass_yd": 214.0
     }
    }
   },
@@ -12273,10 +12299,10 @@
      "rush_yd": 17.0
     },
     "blend": {
-     "pass_yd": 205.0,
-     "rush_yd": 17.0,
+     "pass_int": 1.0,
      "pass_td": 1.0,
-     "pass_int": 1.0
+     "rush_yd": 17.0,
+     "pass_yd": 205.0
     }
    }
   },
@@ -12298,10 +12324,10 @@
      "rush_yd": 16.0
     },
     "blend": {
-     "pass_yd": 202.0,
-     "rush_yd": 16.0,
+     "pass_int": 1.0,
      "pass_td": 1.0,
-     "pass_int": 1.0
+     "rush_yd": 16.0,
+     "pass_yd": 202.0
     }
    }
   },
@@ -12323,10 +12349,10 @@
      "rush_yd": 24.0
     },
     "blend": {
-     "pass_yd": 182.0,
-     "rush_yd": 24.0,
+     "pass_int": 1.0,
      "pass_td": 1.0,
-     "pass_int": 1.0
+     "rush_yd": 24.0,
+     "pass_yd": 182.0
     }
    }
   },
@@ -12348,10 +12374,10 @@
      "rush_yd": 15.0
     },
     "blend": {
-     "pass_yd": 205.0,
-     "rush_yd": 15.0,
+     "pass_int": 1.0,
      "pass_td": 1.0,
-     "pass_int": 1.0
+     "rush_yd": 15.0,
+     "pass_yd": 205.0
     }
    }
   },
@@ -12373,10 +12399,10 @@
      "rush_yd": 17.0
     },
     "blend": {
-     "pass_yd": 195.0,
-     "rush_yd": 17.0,
+     "pass_int": 1.0,
      "pass_td": 1.0,
-     "pass_int": 1.0
+     "rush_yd": 17.0,
+     "pass_yd": 195.0
     }
    }
   },
@@ -12398,10 +12424,10 @@
      "rush_yd": 22.0
     },
     "blend": {
-     "pass_yd": 183.0,
-     "rush_yd": 22.0,
+     "pass_int": 1.0,
      "pass_td": 1.0,
-     "pass_int": 1.0
+     "rush_yd": 22.0,
+     "pass_yd": 183.0
     }
    }
   },
@@ -12422,9 +12448,9 @@
      "rec_yd": 33.0
     },
     "blend": {
-     "rush_yd": 42.0,
      "rec": 5.0,
-     "rec_yd": 33.0
+     "rec_yd": 33.0,
+     "rush_yd": 42.0
     }
    }
   },
@@ -12446,10 +12472,10 @@
      "rush_yd": 16.0
     },
     "blend": {
-     "pass_yd": 195.0,
-     "rush_yd": 16.0,
+     "pass_int": 1.0,
      "pass_td": 1.0,
-     "pass_int": 1.0
+     "rush_yd": 16.0,
+     "pass_yd": 195.0
     }
    }
   },
@@ -12471,10 +12497,10 @@
      "rush_yd": 13.0
     },
     "blend": {
-     "pass_yd": 202.0,
-     "rush_yd": 13.0,
+     "pass_int": 1.0,
      "pass_td": 1.0,
-     "pass_int": 1.0
+     "rush_yd": 13.0,
+     "pass_yd": 202.0
     }
    }
   },
@@ -12496,10 +12522,10 @@
      "rush_yd": 16.0
     },
     "blend": {
-     "pass_yd": 195.0,
-     "rush_yd": 16.0,
+     "pass_int": 1.0,
      "pass_td": 1.0,
-     "pass_int": 1.0
+     "rush_yd": 16.0,
+     "pass_yd": 195.0
     }
    }
   },
@@ -12521,10 +12547,10 @@
      "rush_yd": 16.0
     },
     "blend": {
-     "pass_yd": 196.0,
-     "rush_yd": 16.0,
+     "pass_int": 1.0,
      "pass_td": 1.0,
-     "pass_int": 1.0
+     "rush_yd": 16.0,
+     "pass_yd": 196.0
     }
    }
   },
@@ -12546,10 +12572,10 @@
      "rush_yd": 16.0
     },
     "blend": {
-     "pass_yd": 195.0,
-     "rush_yd": 16.0,
+     "pass_int": 1.0,
      "pass_td": 1.0,
-     "pass_int": 1.0
+     "rush_yd": 16.0,
+     "pass_yd": 195.0
     }
    }
   },
@@ -12579,10 +12605,10 @@
      "rush_yd": 6.0
     },
     "blend": {
-     "pass_yd": 218.8,
      "pass_int": 1.0,
-     "rush_yd": 7.2,
-     "pass_td": 1.0
+     "pass_td": 1.0,
+     "pass_yd": 218.8,
+     "rush_yd": 7.2
     }
    }
   },
@@ -12604,10 +12630,10 @@
      "rush_yd": 16.0
     },
     "blend": {
-     "pass_yd": 195.0,
-     "rush_yd": 16.0,
+     "pass_int": 1.0,
      "pass_td": 1.0,
-     "pass_int": 1.0
+     "rush_yd": 16.0,
+     "pass_yd": 195.0
     }
    }
   },
@@ -12629,10 +12655,10 @@
      "rush_yd": 15.0
     },
     "blend": {
-     "pass_yd": 198.0,
-     "rush_yd": 15.0,
+     "pass_int": 1.0,
      "pass_td": 1.0,
-     "pass_int": 1.0
+     "rush_yd": 15.0,
+     "pass_yd": 198.0
     }
    }
   },
@@ -12654,10 +12680,10 @@
      "rush_yd": 6.0
     },
     "blend": {
-     "pass_yd": 218.0,
-     "rush_yd": 6.0,
+     "pass_int": 1.0,
      "pass_td": 1.0,
-     "pass_int": 1.0
+     "rush_yd": 6.0,
+     "pass_yd": 218.0
     }
    }
   },
@@ -12679,10 +12705,10 @@
      "rush_yd": 13.0
     },
     "blend": {
-     "pass_yd": 198.0,
-     "rush_yd": 13.0,
+     "pass_int": 1.0,
      "pass_td": 1.0,
-     "pass_int": 1.0
+     "rush_yd": 13.0,
+     "pass_yd": 198.0
     }
    }
   },
@@ -12704,10 +12730,10 @@
      "rush_yd": 6.0
     },
     "blend": {
-     "pass_yd": 211.0,
-     "rush_yd": 6.0,
+     "pass_int": 1.0,
      "pass_td": 1.0,
-     "pass_int": 1.0
+     "rush_yd": 6.0,
+     "pass_yd": 211.0
     }
    }
   },
@@ -12729,10 +12755,10 @@
      "rush_yd": 12.0
     },
     "blend": {
-     "pass_yd": 195.0,
-     "rush_yd": 12.0,
+     "pass_int": 1.0,
      "pass_td": 1.0,
-     "pass_int": 1.0
+     "rush_yd": 12.0,
+     "pass_yd": 195.0
     }
    }
   },
@@ -12754,10 +12780,10 @@
      "rush_yd": 6.0
     },
     "blend": {
-     "pass_yd": 211.0,
-     "rush_yd": 6.0,
+     "pass_int": 1.0,
      "pass_td": 1.0,
-     "pass_int": 1.0
+     "rush_yd": 6.0,
+     "pass_yd": 211.0
     }
    }
   },
@@ -12779,10 +12805,10 @@
      "rush_yd": 13.0
     },
     "blend": {
-     "pass_yd": 189.0,
-     "rush_yd": 13.0,
+     "pass_int": 1.0,
      "pass_td": 1.0,
-     "pass_int": 1.0
+     "rush_yd": 13.0,
+     "pass_yd": 189.0
     }
    }
   },
@@ -12804,10 +12830,10 @@
      "rush_yd": 15.0
     },
     "blend": {
-     "pass_yd": 186.0,
-     "rush_yd": 15.0,
+     "pass_int": 1.0,
      "pass_td": 1.0,
-     "pass_int": 1.0
+     "rush_yd": 15.0,
+     "pass_yd": 186.0
     }
    }
   },
@@ -12828,9 +12854,9 @@
      "rec_yd": 29.0
     },
     "blend": {
-     "rush_yd": 50.0,
      "rec": 4.0,
-     "rec_yd": 29.0
+     "rec_yd": 29.0,
+     "rush_yd": 50.0
     }
    }
   },
@@ -12838,7 +12864,7 @@
    "id": "829",
    "name": "Andy Dalton",
    "pos": "QB",
-   "team": null,
+   "team": "ATL",
    "pp": null,
    "sleeper": 11.8,
    "blend": 11.8,
@@ -12852,10 +12878,10 @@
      "rush_yd": 5.0
     },
     "blend": {
-     "pass_yd": 208.0,
-     "rush_yd": 5.0,
+     "pass_int": 1.0,
      "pass_td": 1.0,
-     "pass_int": 1.0
+     "rush_yd": 5.0,
+     "pass_yd": 208.0
     }
    }
   },
@@ -12903,10 +12929,10 @@
      "rush_yd": 6.0
     },
     "blend": {
-     "pass_yd": 202.0,
-     "rush_yd": 6.0,
+     "pass_int": 1.0,
      "pass_td": 1.0,
-     "pass_int": 1.0
+     "rush_yd": 6.0,
+     "pass_yd": 202.0
     }
    }
   },
@@ -12928,10 +12954,10 @@
      "rush_yd": 5.0
     },
     "blend": {
-     "pass_yd": 202.0,
-     "rush_yd": 5.0,
+     "pass_int": 1.0,
      "pass_td": 1.0,
-     "pass_int": 1.0
+     "rush_yd": 5.0,
+     "pass_yd": 202.0
     }
    }
   },
@@ -12953,10 +12979,10 @@
      "rush_yd": 13.0
     },
     "blend": {
-     "pass_yd": 176.0,
-     "rush_yd": 13.0,
+     "pass_int": 1.0,
      "pass_td": 1.0,
-     "pass_int": 1.0
+     "rush_yd": 13.0,
+     "pass_yd": 176.0
     }
    }
   },
@@ -12977,9 +13003,9 @@
      "rec_yd": 19.0
     },
     "blend": {
-     "rush_yd": 63.0,
      "rec": 3.0,
-     "rec_yd": 19.0
+     "rec_yd": 19.0,
+     "rush_yd": 63.0
     }
    }
   },
@@ -13000,9 +13026,9 @@
      "pass_int": 1.0
     },
     "blend": {
-     "pass_yd": 194.0,
+     "pass_int": 1.0,
      "pass_td": 1.0,
-     "pass_int": 1.0
+     "pass_yd": 194.0
     }
    }
   },
@@ -13023,9 +13049,9 @@
      "rec_yd": 62.0
     },
     "blend": {
-     "rush_yd": 5.0,
      "rec": 4.0,
-     "rec_yd": 62.0
+     "rec_yd": 62.0,
+     "rush_yd": 5.0
     }
    }
   },
@@ -13046,9 +13072,9 @@
      "rec_yd": 22.0
     },
     "blend": {
-     "rush_yd": 49.0,
      "rec": 3.0,
-     "rec_yd": 22.0
+     "rec_yd": 22.0,
+     "rush_yd": 49.0
     }
    }
   },
@@ -13069,9 +13095,9 @@
      "rec_yd": 52.0
     },
     "blend": {
-     "rush_yd": 6.0,
      "rec": 4.0,
-     "rec_yd": 52.0
+     "rec_yd": 52.0,
+     "rush_yd": 6.0
     }
    }
   },
@@ -13113,9 +13139,9 @@
      "rec_yd": 13.0
     },
     "blend": {
-     "rush_yd": 63.0,
      "rec": 2.0,
-     "rec_yd": 13.0
+     "rec_yd": 13.0,
+     "rush_yd": 63.0
     }
    }
   },
@@ -13157,9 +13183,9 @@
      "rec_yd": 35.0
     },
     "blend": {
-     "rush_yd": 20.0,
      "rec": 4.0,
-     "rec_yd": 35.0
+     "rec_yd": 35.0,
+     "rush_yd": 20.0
     }
    }
   },
@@ -13180,9 +13206,9 @@
      "rec_yd": 22.0
     },
     "blend": {
-     "rush_yd": 42.0,
      "rec": 3.0,
-     "rec_yd": 22.0
+     "rec_yd": 22.0,
+     "rush_yd": 42.0
     }
    }
   },
@@ -13203,9 +13229,9 @@
      "rec_yd": 22.0
     },
     "blend": {
-     "rush_yd": 41.0,
      "rec": 3.0,
-     "rec_yd": 22.0
+     "rec_yd": 22.0,
+     "rush_yd": 41.0
     }
    }
   },
@@ -13226,9 +13252,9 @@
      "rec_yd": 14.0
     },
     "blend": {
-     "rush_yd": 59.0,
      "rec": 2.0,
-     "rec_yd": 14.0
+     "rec_yd": 14.0,
+     "rush_yd": 59.0
     }
    }
   },
@@ -13312,9 +13338,9 @@
      "rec_yd": 28.0
     },
     "blend": {
-     "rush_yd": 24.0,
      "rec": 4.0,
-     "rec_yd": 28.0
+     "rec_yd": 28.0,
+     "rush_yd": 24.0
     }
    }
   },
@@ -13356,9 +13382,9 @@
      "rec_yd": 33.0
     },
     "blend": {
-     "rush_yd": 7.0,
      "rec": 5.0,
-     "rec_yd": 33.0
+     "rec_yd": 33.0,
+     "rush_yd": 7.0
     }
    }
   },
@@ -13378,8 +13404,8 @@
     },
     "sleeper": {},
     "blend": {
-     "pass_yd": 207.5,
-     "rush_yd": 6.5
+     "rush_yd": 6.5,
+     "pass_yd": 207.5
     }
    }
   },
@@ -13442,9 +13468,9 @@
      "rec_yd": 18.0
     },
     "blend": {
-     "rush_yd": 46.0,
      "rec": 2.0,
-     "rec_yd": 18.0
+     "rec_yd": 18.0,
+     "rush_yd": 46.0
     }
    }
   },
@@ -13465,9 +13491,9 @@
      "rec_yd": 28.0
     },
     "blend": {
-     "rush_yd": 16.0,
      "rec": 4.0,
-     "rec_yd": 28.0
+     "rec_yd": 28.0,
+     "rush_yd": 16.0
     }
    }
   },
@@ -13488,9 +13514,9 @@
      "rec_yd": 22.0
     },
     "blend": {
-     "rush_yd": 29.0,
      "rec": 3.0,
-     "rec_yd": 22.0
+     "rec_yd": 22.0,
+     "rush_yd": 29.0
     }
    }
   },
@@ -13668,9 +13694,9 @@
      "rec_yd": 14.0
     },
     "blend": {
-     "rush_yd": 42.0,
      "rec": 2.0,
-     "rec_yd": 14.0
+     "rec_yd": 14.0,
+     "rush_yd": 42.0
     }
    }
   },
@@ -13691,9 +13717,9 @@
      "rec_yd": 15.0
     },
     "blend": {
-     "rush_yd": 40.0,
      "rec": 2.0,
-     "rec_yd": 15.0
+     "rec_yd": 15.0,
+     "rush_yd": 40.0
     }
    }
   },
@@ -13714,9 +13740,9 @@
      "rec_yd": 14.0
     },
     "blend": {
-     "rush_yd": 41.0,
      "rec": 2.0,
-     "rec_yd": 14.0
+     "rec_yd": 14.0,
+     "rush_yd": 41.0
     }
    }
   },
@@ -13800,9 +13826,9 @@
      "rec_yd": 37.0
     },
     "blend": {
-     "rush_yd": 6.0,
      "rec": 3.0,
-     "rec_yd": 37.0
+     "rec_yd": 37.0,
+     "rush_yd": 6.0
     }
    }
   },
@@ -13884,9 +13910,9 @@
      "rec_yd": 20.0
     },
     "blend": {
-     "rush_yd": 21.0,
      "rec": 3.0,
-     "rec_yd": 20.0
+     "rec_yd": 20.0,
+     "rush_yd": 21.0
     }
    }
   },
@@ -13907,9 +13933,9 @@
      "rec_yd": 35.0
     },
     "blend": {
-     "rush_yd": 6.0,
      "rec": 3.0,
-     "rec_yd": 35.0
+     "rec_yd": 35.0,
+     "rush_yd": 6.0
     }
    }
   },
@@ -13930,9 +13956,9 @@
      "rec_yd": 35.0
     },
     "blend": {
-     "rush_yd": 6.0,
      "rec": 3.0,
-     "rec_yd": 35.0
+     "rec_yd": 35.0,
+     "rush_yd": 6.0
     }
    }
   },
@@ -13953,9 +13979,9 @@
      "rec_yd": 20.0
     },
     "blend": {
-     "rush_yd": 28.0,
      "rec": 2.0,
-     "rec_yd": 20.0
+     "rec_yd": 20.0,
+     "rush_yd": 28.0
     }
    }
   },
@@ -13997,9 +14023,9 @@
      "rec_yd": 15.0
     },
     "blend": {
-     "rush_yd": 32.0,
      "rec": 2.0,
-     "rec_yd": 15.0
+     "rec_yd": 15.0,
+     "rush_yd": 32.0
     }
    }
   },
@@ -14209,9 +14235,9 @@
      "rec_yd": 34.0
     },
     "blend": {
-     "rush_yd": 1.0,
      "rec": 3.0,
-     "rec_yd": 34.0
+     "rec_yd": 34.0,
+     "rush_yd": 1.0
     }
    }
   },
@@ -14253,9 +14279,9 @@
      "rec_yd": 6.0
     },
     "blend": {
-     "rush_yd": 46.0,
      "rec": 1.0,
-     "rec_yd": 6.0
+     "rec_yd": 6.0,
+     "rush_yd": 46.0
     }
    }
   },
@@ -14402,9 +14428,9 @@
      "rec_yd": 15.0
     },
     "blend": {
-     "rush_yd": 21.0,
      "rec": 2.0,
-     "rec_yd": 15.0
+     "rec_yd": 15.0,
+     "rush_yd": 21.0
     }
    }
   },
@@ -14425,9 +14451,9 @@
      "rec_yd": 16.0
     },
     "blend": {
-     "rush_yd": 20.0,
      "rec": 2.0,
-     "rec_yd": 16.0
+     "rec_yd": 16.0,
+     "rush_yd": 20.0
     }
    }
   },
@@ -14448,9 +14474,9 @@
      "rec_yd": 16.0
     },
     "blend": {
-     "rush_yd": 20.0,
      "rec": 2.0,
-     "rec_yd": 16.0
+     "rec_yd": 16.0,
+     "rush_yd": 20.0
     }
    }
   },
@@ -14471,9 +14497,9 @@
      "rec_yd": 16.0
     },
     "blend": {
-     "rush_yd": 20.0,
      "rec": 2.0,
-     "rec_yd": 16.0
+     "rec_yd": 16.0,
+     "rush_yd": 20.0
     }
    }
   },
@@ -14536,9 +14562,9 @@
      "rec_yd": 27.0
     },
     "blend": {
-     "rush_yd": 6.0,
      "rec": 2.0,
-     "rec_yd": 27.0
+     "rec_yd": 27.0,
+     "rush_yd": 6.0
     }
    }
   },
@@ -14559,9 +14585,9 @@
      "rec_yd": 16.0
     },
     "blend": {
-     "rush_yd": 16.0,
      "rec": 2.0,
-     "rec_yd": 16.0
+     "rec_yd": 16.0,
+     "rush_yd": 16.0
     }
    }
   },
@@ -14582,9 +14608,9 @@
      "rec_yd": 6.0
     },
     "blend": {
-     "rush_yd": 36.0,
      "rec": 1.0,
-     "rec_yd": 6.0
+     "rec_yd": 6.0,
+     "rush_yd": 36.0
     }
    }
   },
@@ -14605,9 +14631,9 @@
      "rec_yd": 15.0
     },
     "blend": {
-     "rush_yd": 16.0,
      "rec": 2.0,
-     "rec_yd": 15.0
+     "rec_yd": 15.0,
+     "rush_yd": 16.0
     }
    }
   },
@@ -14628,9 +14654,9 @@
      "rec_yd": 10.0
     },
     "blend": {
-     "rush_yd": 21.0,
      "rec": 2.0,
-     "rec_yd": 10.0
+     "rec_yd": 10.0,
+     "rush_yd": 21.0
     }
    }
   },
@@ -14651,9 +14677,9 @@
      "rec_yd": 23.0
     },
     "blend": {
-     "rush_yd": 6.0,
      "rec": 2.0,
-     "rec_yd": 23.0
+     "rec_yd": 23.0,
+     "rush_yd": 6.0
     }
    }
   },
@@ -14674,9 +14700,9 @@
      "rec_yd": 15.0
     },
     "blend": {
-     "rush_yd": 13.0,
      "rec": 2.0,
-     "rec_yd": 15.0
+     "rec_yd": 15.0,
+     "rush_yd": 13.0
     }
    }
   },
@@ -14697,9 +14723,9 @@
      "rec_yd": 15.0
     },
     "blend": {
-     "rush_yd": 13.0,
      "rec": 2.0,
-     "rec_yd": 15.0
+     "rec_yd": 15.0,
+     "rush_yd": 13.0
     }
    }
   },
@@ -14741,9 +14767,9 @@
      "rec_yd": 22.0
     },
     "blend": {
-     "rush_yd": 6.0,
      "rec": 2.0,
-     "rec_yd": 22.0
+     "rec_yd": 22.0,
+     "rush_yd": 6.0
     }
    }
   },
@@ -14785,9 +14811,9 @@
      "rec_yd": 25.0
     },
     "blend": {
-     "rush_yd": 1.0,
      "rec": 2.0,
-     "rec_yd": 25.0
+     "rec_yd": 25.0,
+     "rush_yd": 1.0
     }
    }
   },
@@ -14829,9 +14855,9 @@
      "rec_yd": 16.0
     },
     "blend": {
-     "rush_yd": 8.0,
      "rec": 2.0,
-     "rec_yd": 16.0
+     "rec_yd": 16.0,
+     "rush_yd": 8.0
     }
    }
   },
@@ -14873,9 +14899,9 @@
      "rec_yd": 5.0
     },
     "blend": {
-     "rush_yd": 28.0,
      "rec": 1.0,
-     "rec_yd": 5.0
+     "rec_yd": 5.0,
+     "rush_yd": 28.0
     }
    }
   },
@@ -14896,9 +14922,9 @@
      "rec_yd": 15.0
     },
     "blend": {
-     "rush_yd": 8.0,
      "rec": 2.0,
-     "rec_yd": 15.0
+     "rec_yd": 15.0,
+     "rush_yd": 8.0
     }
    }
   },
@@ -14919,9 +14945,9 @@
      "rec_yd": 6.0
     },
     "blend": {
-     "rush_yd": 27.0,
      "rec": 1.0,
-     "rec_yd": 6.0
+     "rec_yd": 6.0,
+     "rush_yd": 27.0
     }
    }
   },
@@ -14970,9 +14996,9 @@
      "rec_yd": 23.0
     },
     "blend": {
-     "rush_yd": 6.0,
      "rec": 2.0,
-     "rec_yd": 16.8
+     "rec_yd": 16.8,
+     "rush_yd": 6.0
     }
    }
   },
@@ -14993,9 +15019,9 @@
      "rec_yd": 15.0
     },
     "blend": {
-     "rush_yd": 7.0,
      "rec": 2.0,
-     "rec_yd": 15.0
+     "rec_yd": 15.0,
+     "rush_yd": 7.0
     }
    }
   },
@@ -15106,9 +15132,9 @@
      "rec_yd": 7.0
     },
     "blend": {
-     "rush_yd": 14.2,
      "rec": 2.0,
-     "rec_yd": 6.8
+     "rec_yd": 6.8,
+     "rush_yd": 14.2
     }
    }
   },
@@ -15129,9 +15155,9 @@
      "rec_yd": 20.0
     },
     "blend": {
-     "rush_yd": 1.0,
      "rec": 2.0,
-     "rec_yd": 20.0
+     "rec_yd": 20.0,
+     "rush_yd": 1.0
     }
    }
   },
@@ -15152,9 +15178,9 @@
      "rec_yd": 16.0
     },
     "blend": {
-     "rush_yd": 4.0,
      "rec": 2.0,
-     "rec_yd": 16.0
+     "rec_yd": 16.0,
+     "rush_yd": 4.0
     }
    }
   },
@@ -15175,9 +15201,9 @@
      "rec_yd": 5.0
     },
     "blend": {
-     "rush_yd": 25.0,
      "rec": 1.0,
-     "rec_yd": 5.0
+     "rec_yd": 5.0,
+     "rush_yd": 25.0
     }
    }
   },
@@ -15198,9 +15224,9 @@
      "rec_yd": 19.0
     },
     "blend": {
-     "rush_yd": 1.0,
      "rec": 2.0,
-     "rec_yd": 19.0
+     "rec_yd": 19.0,
+     "rush_yd": 1.0
     }
    }
   },
@@ -15347,9 +15373,9 @@
      "rec_yd": 15.0
     },
     "blend": {
-     "rush_yd": 4.0,
      "rec": 2.0,
-     "rec_yd": 15.0
+     "rec_yd": 15.0,
+     "rush_yd": 4.0
     }
    }
   },
@@ -15391,9 +15417,9 @@
      "rec_yd": 15.0
     },
     "blend": {
-     "rush_yd": 3.0,
      "rec": 2.0,
-     "rec_yd": 15.0
+     "rec_yd": 15.0,
+     "rush_yd": 3.0
     }
    }
   },
@@ -15414,9 +15440,9 @@
      "rec_yd": 5.0
     },
     "blend": {
-     "rush_yd": 21.0,
      "rec": 1.0,
-     "rec_yd": 5.0
+     "rec_yd": 5.0,
+     "rush_yd": 21.0
     }
    }
   },
@@ -15463,9 +15489,9 @@
      "rec_yd": 16.0
     },
     "blend": {
-     "rush_yd": 6.0,
      "rec": 1.0,
-     "rec_yd": 16.0
+     "rec_yd": 16.0,
+     "rush_yd": 6.0
     }
    }
   },
@@ -15486,9 +15512,9 @@
      "rec_yd": 14.0
     },
     "blend": {
-     "rush_yd": 6.0,
      "rec": 1.0,
-     "rec_yd": 14.0
+     "rec_yd": 14.0,
+     "rush_yd": 6.0
     }
    }
   },
@@ -15509,9 +15535,9 @@
      "rec_yd": 14.0
     },
     "blend": {
-     "rush_yd": 6.0,
      "rec": 1.0,
-     "rec_yd": 14.0
+     "rec_yd": 14.0,
+     "rush_yd": 6.0
     }
    }
   },
@@ -15582,10 +15608,10 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "fum_lost": 1.0,
-     "rush_yd": 6.0,
      "rec": 1.0,
-     "rec_yd": 17.8
+     "fum_lost": 1.0,
+     "rec_yd": 17.8,
+     "rush_yd": 6.0
     }
    }
   },
@@ -15730,9 +15756,9 @@
      "rec_yd": 7.0
     },
     "blend": {
-     "rush_yd": 2.0,
      "rec": 1.0,
-     "rec_yd": 7.0
+     "rec_yd": 7.0,
+     "rush_yd": 2.0
     }
    }
   },
@@ -15754,10 +15780,10 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "rush_yd": 11.0,
+     "fum_lost": 1.0,
      "rec": 1.0,
      "rec_yd": 17.0,
-     "fum_lost": 1.0
+     "rush_yd": 11.0
     }
    }
   },
@@ -15971,8 +15997,8 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "rush_yd": 11.0,
-     "fum_lost": 1.0
+     "fum_lost": 1.0,
+     "rush_yd": 11.0
     }
    }
   },
@@ -15992,8 +16018,8 @@
      "fum_lost": 1.0
     },
     "blend": {
-     "rush_yd": 6.0,
-     "fum_lost": 1.0
+     "fum_lost": 1.0,
+     "rush_yd": 6.0
     }
    }
   }
