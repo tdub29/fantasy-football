@@ -83,3 +83,38 @@ site/_shots/
 .claude/worktrees/
 # Prospect model SQLite store, rebuilt by projections/prospect_db.py ingest (~150 MB)
 projections/prospect-db/
+
+# Local development harnesses and browser state are not public project source.
+/.agents/
+/.claude/
+/.codex/
+/.cursor/
+/.impeccable/
+/.mcp.json
+/.ignore
+/AGENTS.md
+/CLAUDE.md*
+/skills-lock.json
+/.chrome-*/
+/chrome-profile-*/
+**/CHECKPOINT*.md
+**/checkpoint*.md
+**/*handoff*.md
+*.bak
+*.err
+/transcript-*.txt
+
+# Local workspace state is not public project source.
+/.agents/
+/.claude/
+/.codex/
+/.cursor/
+/.impeccable/
+/.vscode/
+/.mcp.json
+/skills-lock.json
+**/AGENTS.md
+**/CLAUDE.md
+*.bak
+*.err
+tmp_*
