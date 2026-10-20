@@ -119,6 +119,8 @@ STEPS = [
     # rosters the suite just refreshed; the self-check decodes it back to the source.
     ("injury history",             PROJ / "build_injury_history.py",      True),
     ("injury history vs source",   PROJ / "build_injury_history.py",      True, ["--self-check"]),
+    # Trade chart injury markers: snap-count absences of 4+ games tied to a report listing.
+    ("major injuries",             PROJ / "build_major_injuries.py",      True),
     ("IDP advanced",               PROJ / "build_idp_advanced.py",        True),
     ("IDP defense-vs-position",    PROJ / "build_idp_dvp.py",             True),
     # The kicker board is modelled in a SEPARATE repo and written back into

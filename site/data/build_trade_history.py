@@ -66,7 +66,8 @@ def chain_for(league_id: str):
             f"league_{current}.json",
             f"https://api.sleeper.app/v1/league/{current}",
         )
-        chain.append({"id": current, "season": str(meta.get("season", ""))})
+        chain.append({"id": current, "season": str(meta.get("season", "")),
+                      "sf": "SUPER_FLEX" in (meta.get("roster_positions") or [])})
         current = str(meta.get("previous_league_id") or "")
     return chain
 
@@ -211,7 +212,10 @@ def build_league(chain, raw, draft_picks):
             "uid": uid, "name": names.get(uid, uid), "username": usernames.get(uid, ""), **entry,
         })
     partners.sort(key=lambda row: (-row["n"], -row["last"]))
-    return {"seasons": [s["season"] for s in chain], "partners": partners}
+    # Seasons played superflex, so a trade's value chart reads the KTC board the
+    # league used THEN: The League was 1QB in 2024 whatever it is now.
+    return {"seasons": [s["season"] for s in chain], "partners": partners,
+            "superflex": [s["season"] for s in chain if s.get("sf")]}
 
 
 def main():

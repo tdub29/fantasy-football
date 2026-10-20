@@ -8009,6 +8009,223 @@
     return `${base} (${spot ? `${spot} → ` : ''}${pick.outcome.playerName})`;
   }
 
+  // Value chart under a past trade: KTC value of every asset in it, from a year
+  // before the trade to now, on the board the league used THAT season. Opened from
+  // the trade row, never drawn at first paint. Side is the colour (got #36884d vs
+  // sent --red, deutan dE 11.5 through the dataviz validator; the app's --green
+  // against --red is 5.8 and fails), so a player within a side is told by his dash.
+  const TCHART_DASH = ['', '7 4', '1.5 4', '10 3 2 3'];
+  const TCHART_SIDES = { got: 'You got', sent: 'You sent' };
+  const ktcDate = d => +new Date(2000 + +d.slice(0, 2), +d.slice(2, 4) - 1, +d.slice(4, 6));
+  const longDate = ms => new Date(ms).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+  const kNum = v => v == null ? '·' : Math.round(v).toLocaleString('en-US');
+
+  // Last sample at or before `at`; nothing before a series starts or long after it ends.
+  function valueAt(pts, at) {
+    if (!pts.length || at < pts[0].t || at > pts[pts.length - 1].t + 10 * 864e5) return null;
+    let lo = 0, hi = pts.length - 1;
+    while (lo < hi) { const mid = (lo + hi + 1) >> 1; if (pts[mid].t <= at) lo = mid; else hi = mid - 1; }
+    return pts[lo].v;
+  }
+
+  function tradeChartSeries(t, sf) {
+    const board = { is_superflex: sf }, from = t.at - 365 * 864e5;
+    const series = [], missing = [], seen = { got: 0, sent: 0 };
+    const add = (side, label, name, sid, start, short) => {
+      const pts = (ktcValueSeries(name, board) || []).map(p => ({ t: ktcDate(p.d), v: p.v }))
+        .filter(p => p.t >= Math.max(from, start || 0));
+      if (pts.length < 2) { missing.push(label); return; }
+      series.push({ side, label, short: short || name.split(' ').slice(1).join(' ') || name, sid, pts,
+        pick: start ? short.replace(/^.* /, `${new Date(start).getFullYear()} `) : null,
+        dash: TCHART_DASH[seen[side]++ % TCHART_DASH.length] });
+    };
+    for (const side of ['got', 'sent']) {
+      for (const id of t[side] || []) {
+        const name = window.PLAYERS?.[id]?.name || `#${id}`;
+        add(side, name, name, id);
+      }
+      for (const pick of t[`${side}Picks`] || []) {
+        const who = pick.outcome?.playerName;
+        // ponytail: KTC drops a pick once it is used, so a used pick is drawn as the
+        // player taken with it, from May 1 of that draft year (the NFL draft has named
+        // him by then). A pick not yet used has no series KTC keys by round alone.
+        // The pick's outcome carries a name, not an id, so the injury markers look him up.
+        const sid = who && Object.keys(window.PLAYERS || {}).find(id => norm(window.PLAYERS[id].name) === norm(who));
+        if (who) add(side, who, who, sid || null, +new Date(+pick.season, 4, 1),
+          `${who.split(' ').slice(1).join(' ') || who} R${pick.round}`);
+        else missing.push(historicalPickLabel(pick));
+      }
+    }
+    // Side totals sum whatever on that side has a value on each date, so a drafted
+    // pick joins the total when its player does.
+    const totals = ['got', 'sent'].map(side => {
+      const own = series.filter(s => s.side === side);
+      if (!own.length) return null;
+      const grid = [...new Set(own.flatMap(s => s.pts.map(p => p.t)))].sort((a, b) => a - b);
+      const pts = grid.map(at => ({ t: at, v: own.reduce((sum, s) => sum + (valueAt(s.pts, at) || 0), 0) }));
+      // No side change % once anything on it had no value at the trade (a drafted pick, or a
+      // trade older than KTC's 2023-03-10 history): a partial "then" against a full "now" lies.
+      return { side, label: TCHART_SIDES[side], short: TCHART_SIDES[side], pts, dash: '',
+        pick: own.some(s => valueAt(s.pts, t.at) == null) };
+    }).filter(Boolean);
+    return { series, totals, missing };
+  }
+
+  function tradeValueChart(t, sf, sfNow) {
+    const { series, totals, missing } = tradeChartSeries(t, sf);
+    const wrap = h('div', { class:'tchart-wrap' });
+    if (!series.length) {
+      wrap.appendChild(h('div', { class:'tip' }, 'KTC has no value history for anything in this trade.'));
+      return wrap;
+    }
+    const board = sf ? 'Superflex' : '1QB';
+    const inj = window.MAJOR_INJURIES?.players || {};
+    const t0 = Math.min(...series.map(s => s.pts[0].t)), t1 = Math.max(...series.map(s => s.pts[s.pts.length - 1].t));
+    const injuries = series.flatMap(s => (inj[s.sid] || []).map(([d, missed, part, out]) => {
+      const at = +new Date(+String(d).slice(0, 4), +String(d).slice(4, 6) - 1, +String(d).slice(6, 8));
+      return { s, at, missed, part, out };
+    })).filter(i => i.at >= t0 && i.at <= t1).sort((a, b) => a.at - b.at);
+    injuries.forEach((i, n) => { i.n = n + 1; });
+
+    let mode = 'players';
+    const tabs = h('div', { class:'cchart-tabs' });
+    const plate = h('div', { class:'tchart' });
+    const head = h('div', { class:'tchart-head' },
+      h('span', { class:'cchart-unit' }, `KTC ${board} value`),
+      sf !== sfNow ? h('span', { class:'tchart-board' }, `League was ${board} in ${t.season}`) : null);
+    const plot = h('div', { class:'tchart-plot' });
+    const tip = h('div', { class:'tchart-tip', hidden:true });
+    plate.append(head, plot);
+    for (const [key, label] of [['players', 'Players'], ['sides', 'Each side']]) {
+      tabs.appendChild(h('button', { type:'button', class:'cchart-tab', dataset:{ key },
+        onclick: () => { mode = key; draw(); } }, label));
+    }
+
+    let geo = null;
+    function draw() {
+      for (const b of tabs.children) b.classList.toggle('active', b.dataset.key === mode);
+      const lines = mode === 'sides' ? totals : series;
+      const W = Math.max(200, Math.floor(plot.clientWidth || 320)), H = W < 520 ? 196 : 236;
+      const PL = 30, PR = 10, PT = 24, PB = 34;
+      const peak = Math.max(...lines.flatMap(s => s.pts.map(p => p.v)), 1);
+      const step = peak <= 4000 ? 1000 : peak <= 10000 ? 2500 : peak <= 20000 ? 5000 : 10000;
+      const vmax = Math.ceil(peak / step) * step;
+      const x = at => PL + (at - t0) / Math.max(t1 - t0, 1) * (W - PL - PR);
+      const y = v => PT + (1 - v / vmax) * (H - PT - PB);
+      const col = s => `var(--tchart-${s.side})`;
+      const parts = [];
+      for (let v = 0; v <= vmax; v += step) {
+        parts.push(`<line x1="${PL}" x2="${W - PR}" y1="${y(v)}" y2="${y(v)}" class="tchart-grid"/>`,
+          `<text x="${PL - 5}" y="${y(v) + 3.5}" text-anchor="end" class="tchart-lab">${v ? `${v / 1000}k` : '0'}</text>`);
+      }
+      for (let yr = new Date(t0).getFullYear() + 1; yr <= new Date(t1).getFullYear(); yr++) {
+        const xx = x(+new Date(yr, 0, 1));
+        parts.push(`<line x1="${xx}" x2="${xx}" y1="${PT}" y2="${H - PB}" class="tchart-grid"/>`,
+          `<text x="${xx}" y="${H - 4}" text-anchor="middle" class="tchart-lab">${yr}</text>`);
+      }
+      for (const i of injuries) {
+        const xx = x(i.at);
+        parts.push(`<line x1="${xx}" x2="${xx}" y1="${PT}" y2="${H - PB}" stroke="${col(i.s)}" class="tchart-injline"/>`,
+          `<g class="tchart-badge"><circle cx="${xx}" cy="${H - PB + 10}" r="7.5" stroke="${col(i.s)}"/>`
+          + `<text x="${xx}" y="${H - PB + 13.5}" text-anchor="middle">${i.n}</text></g>`);
+      }
+      const tx = x(t.at);
+      parts.push(`<line x1="${tx}" x2="${tx}" y1="${PT - 4}" y2="${H - PB}" class="tchart-tradeline"/>`);
+      for (const s of lines) {
+        const d = s.pts.map((p, k) => `${k ? 'L' : 'M'}${x(p.t).toFixed(1)},${y(p.v).toFixed(1)}`).join('');
+        parts.push(`<path d="${d}" stroke="${col(s)}" ${s.dash ? `stroke-dasharray="${s.dash}"` : ''} class="tchart-line"/>`);
+      }
+      for (const s of lines) {
+        const at = valueAt(s.pts, t.at), last = s.pts[s.pts.length - 1];
+        if (at != null) parts.push(`<circle cx="${tx}" cy="${y(at)}" r="4.5" fill="${col(s)}" class="tchart-dot"/>`);
+        parts.push(`<circle cx="${x(last.t)}" cy="${y(last.v)}" r="3.5" fill="${col(s)}" class="tchart-dot"/>`);
+      }
+      const fx = Math.min(Math.max(tx, PL + 30), W - PR - 30);
+      parts.push(`<g class="tchart-flag"><rect x="${fx - 29}" y="2" width="58" height="17" rx="4"/>`
+        + `<text x="${fx}" y="14.5" text-anchor="middle">TRADED</text></g>`,
+        `<line class="tchart-cross" x1="0" x2="0" y1="${PT}" y2="${H - PB}" visibility="hidden"/>`);
+      plot.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${
+        `KTC ${board} value of ${series.length} asset${series.length === 1 ? '' : 's'}, ${longDate(t0)} to ${longDate(t1)}, traded ${longDate(t.at)}`}">${parts.join('')}</svg>`;
+      plot.appendChild(tip);
+      geo = { lines, x, W, PL, PR, t0, t1 };
+    }
+
+    // Crosshair and readout, on hover and on a finger drag alike.
+    const hover = (ev) => {
+      if (!geo) return;
+      const r = plot.getBoundingClientRect(), px = ev.clientX - r.left;
+      if (px < geo.PL || px > geo.W - geo.PR) { tip.hidden = true; return; }
+      const at = geo.t0 + (px - geo.PL) / (geo.W - geo.PL - geo.PR) * (geo.t1 - geo.t0);
+      const cross = plot.querySelector('.tchart-cross');
+      cross.setAttribute('x1', px); cross.setAttribute('x2', px); cross.setAttribute('visibility', 'visible');
+      tip.innerHTML = '';
+      tip.appendChild(h('div', { class:'tchart-tip-date' }, longDate(at)));
+      for (const s of geo.lines) {
+        tip.appendChild(h('div', { class:'tchart-tip-row' },
+          h('span', { class:`tchart-key tchart-${s.side}`, html: tchartSwatch(s) }),
+          h('span', null, s.short), h('b', { class:'tnum' }, kNum(valueAt(s.pts, at)))));
+      }
+      tip.hidden = false;
+      const below = geo.W < 520;
+      tip.classList.toggle('below', below);
+      tip.style.left = below ? '' : `${px + 12 + tip.offsetWidth > geo.W ? px - 12 - tip.offsetWidth : px + 12}px`;
+    };
+    const leave = () => { tip.hidden = true; plot.querySelector('.tchart-cross')?.setAttribute('visibility', 'hidden'); };
+    plot.addEventListener('pointermove', hover);
+    plot.addEventListener('pointerdown', hover);
+    plot.addEventListener('pointerleave', leave);
+
+    // The table is the readout a phone can always see, and identity never rides on colour alone.
+    const table = h('table', { class:'tchart-table' },
+      h('thead', null, h('tr', null, h('th', null, 'Asset'), h('th', null, 'Then'), h('th', null, 'Now'), h('th', null, 'Change'))));
+    const tbody = h('tbody');
+    const row = (s, cls) => {
+      const a = valueAt(s.pts, t.at), n = s.pts[s.pts.length - 1].v;
+      const pct = a && !s.pick ? Math.round((n - a) / a * 100) : null;
+      return h('tr', { class: cls || '' },
+        // A phone table abbreviates the first name rather than wrap "Tank / Bigsby" over two lines.
+        h('td', null, h('span', { class:`tchart-key tchart-${s.side}`, html: tchartSwatch(s) }),
+          h('span', { class:'tchart-full' }, s.label),
+          h('span', { class:'tchart-abbr' }, s.sid !== undefined && / /.test(s.label) ? s.label.replace(/^(\S)\S* /, '$1. ') : s.label),
+          typeof s.pick === 'string' ? h('span', { class:'tchart-pick' }, `${s.pick} pick`) : null),
+        h('td', { class:'tnum' }, kNum(a)), h('td', { class:'tnum' }, kNum(n)),
+        h('td', { class:`tnum tchart-delta ${pct > 0 ? 'up' : pct < 0 ? 'down' : ''}` },
+          pct == null ? '·' : `${pct > 0 ? '▲' : pct < 0 ? '▼' : ''}${Math.abs(pct)}%`));
+    };
+    for (const side of ['got', 'sent']) {
+      const own = series.filter(s => s.side === side);
+      if (!own.length) continue;
+      tbody.appendChild(h('tr', { class:'tchart-group' }, h('td', { colspan:'4' }, TCHART_SIDES[side])));
+      own.forEach(s => tbody.appendChild(row(s)));
+      const tot = totals.find(x => x.side === side);
+      if (own.length > 1 && tot) tbody.appendChild(row({ ...tot, label: 'Side total' }, 'tchart-total'));
+    }
+    table.appendChild(tbody);
+
+    const notes = h('div', { class:'tchart-notes' });
+    if (injuries.length) notes.appendChild(h('ol', { class:'tchart-injuries' }, ...injuries.map(i =>
+      h('li', null, h('span', { class:`tchart-num tchart-${i.s.side}` }, String(i.n)),
+        `${i.s.label}: ${i.part || 'Injury'} in his last game on ${longDate(i.at)}, then missed ${i.missed} games${i.out ? ' and has not played since' : ''}.`))));
+    if (series.some(s => s.pick)) notes.appendChild(h('div', { class:'tchart-note' },
+      'A used pick is drawn as the player taken with it, from May 1 of that draft year, and joins its side total then. A side with one has no change %, because the pick had no KTC value at the trade.'));
+    if (missing.length) notes.appendChild(h('div', { class:'tchart-note' },
+      `No KTC history for ${missing.join(', ')}. KTC stops tracking a pick once it is used.`));
+
+    wrap.append(tabs, plate, table, notes);
+    requestAnimationFrame(draw);
+    let lastW = 0;
+    const ro = new ResizeObserver(() => { const w = plot.clientWidth; if (w && w !== lastW) { lastW = w; draw(); } });
+    ro.observe(plot);
+    wrap._stop = () => ro.disconnect();
+    return wrap;
+  }
+
+  // A line sample in the series' own colour and dash, for the table and the readout.
+  function tchartSwatch(s) {
+    return `<svg width="18" height="10" aria-hidden="true"><line x1="1.5" x2="16.5" y1="5" y2="5" stroke="currentColor" `
+      + `stroke-width="2.5" stroke-linecap="round" ${s.dash ? `stroke-dasharray="${s.dash}"` : ''}/></svg>`;
+  }
+
   async function tradePartnerHistory(lg) {
     if (partnerCache.has(lg.id)) return partnerCache.get(lg.id);
     const seeded = window.TRADE_HISTORY?.leagues?.[String(lg.id)];
@@ -8029,7 +8246,7 @@
   }
 
   async function loadTradePartnerHistory(lg) {
-    const ckey = `tier-sheet-partners-v5::${lg.id}`;
+    const ckey = `tier-sheet-partners-v6::${lg.id}`;
     try {
       const raw = JSON.parse(localStorage.getItem(accountKey(ckey)) || 'null');
       if (raw && Date.now() - raw.fetchedAt < PARTNER_TTL) {
@@ -8046,7 +8263,7 @@
     for (let i = 0; i < 10 && id && id !== '0'; i++) {
       const meta = await getJSON(`https://api.sleeper.app/v1/league/${id}`);
       if (!meta) break;
-      seasons.push({ id, season: meta.season });
+      seasons.push({ id, season: meta.season, sf: (meta.roster_positions || []).includes('SUPER_FLEX') });
       id = meta.previous_league_id;
     }
 
@@ -8157,6 +8374,7 @@
 
     const data = {
       seasons: seasons.map(s => s.season),
+      superflex: seasons.filter(s => s.sf).map(s => s.season),
       partners: Array.from(counts, ([uid, e]) => ({
         uid, name: names.get(uid) || uid, username: usernames.get(uid) || '', ...e,
         trades: e.trades.sort((a, b) => b.at - a.at) }))
@@ -9077,10 +9295,26 @@
         }, `Load ${p.name} in calculator`));
         for (const t of p.trades || []) {
           const date = t.at ? new Date(t.at).toLocaleDateString('en-US', { month:'short', day:'numeric' }) : '';
+          // Superflex then, not now: an older seeded file without the list falls back to today's format.
+          const sf = data.superflex ? data.superflex.includes(String(t.season)) : !!lg.is_superflex;
+          const slot = h('div', { class:'tchart-slot' });
+          const toggle = h('button', { type:'button', class:'ghost tchart-toggle', 'aria-expanded':'false',
+            onclick: async () => {
+              const open = toggle.getAttribute('aria-expanded') !== 'true';
+              toggle.setAttribute('aria-expanded', String(open));
+              toggle.textContent = open ? 'Hide value chart' : 'Value chart';
+              slot.firstChild?._stop?.();
+              slot.innerHTML = '';
+              if (!open) return;
+              // Injury markers are optional: the chart draws without them if the file fails.
+              await loadSeasonScript('major-injuries.js', () => window.MAJOR_INJURIES).catch(() => {});
+              if (toggle.getAttribute('aria-expanded') === 'true') slot.appendChild(tradeValueChart(t, sf, !!lg.is_superflex));
+            } }, 'Value chart');
           history.appendChild(h('div', { class:'partner-trade' },
             h('div', { class:'partner-trade-when' }, [t.season, t.week ? `W${t.week}` : '', date].filter(Boolean).join(' · ')),
             h('div', null, h('b', null, 'You got: '), assets(t.got, t.gotPicks)),
             h('div', null, h('b', null, 'You sent: '), assets(t.sent, t.sentPicks)),
+            toggle, slot,
           ));
         }
         if (!(p.trades || []).length) history.appendChild(h('div', { class:'tip' }, 'No transaction details available.'));
