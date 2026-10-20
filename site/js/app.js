@@ -2449,10 +2449,12 @@
         const place = 1 + lg.rosters.filter(r => winPct(r) > winPct(me) || (winPct(r) === winPct(me) && (r.fpts ?? 0) > (me.fpts ?? 0))).length;
         const rec = me.wins == null || me.losses == null ? 'Unavailable' : `${me.wins}-${me.losses}${me.ties ? '-' + me.ties : ''} · ${place}${place % 100 >= 11 && place % 100 <= 13 ? 'th' : ['th','st','nd','rd'][place % 10] || 'th'}`;
         const format = lg.platform === 'espn' || lg.type === 0 ? 'Redraft' : lg.is_superflex ? 'Superflex' : lg.is_idp ? 'IDP' : '1QB';
-        const odds = { playoff: h('td', { class:'right tnum' }, '…'), title: h('td', { class:'right tnum' }, '…'), first: h('td', { class:'right tnum' }, '…') };
+        const odds = Object.fromEntries(['playoff', 'title', 'bye', 'record', 'ppw', 'first']
+          .map(key => [key, h('td', { class:'right tnum' }, '…')]));
         return { lg, me, rank, pv, fv, dyn, format, stance: dyn ? rosterStance(me, lg) : null, need, needGrade: need ? pg[need] : null, rec, odds };
       });
-      main.appendChild(h('div', { class:'card leagues-table-card' },
+      main.appendChild(h('p', { class:'leagues-table-hint' }, 'Scroll sideways for championship, playoff and bye odds, projected record and points.'));
+      main.appendChild(h('div', { class:'card leagues-table-card', role:'region', 'aria-label':'My leagues comparison, scroll for season forecasts', tabindex:'0' },
         h('table', { class:'data leagues-table fit-num' },
           h('thead', null, h('tr', null,
             h('th', null, 'League'), h('th', null, 'Format'), h('th', { class:'right' }, 'Record'),
@@ -2461,6 +2463,9 @@
             h('th', { class:'right', title:`Future Value: the same lineup ${FV_YEARS} years out, each player aged by his position curve, with owned picks folded in once they convert. A converted pick is discounted in its rookie year (0.75x, ramping to parity) because dynasty value prices a whole career, not one season.` }, 'FV'),
             h('th', { class:'right', title:'Chance to make the playoffs, simulated on the real schedule and median games. Same numbers as the league Standings.' }, 'Playoff'),
             h('th', { class:'right', title:'Chance to win the title.' }, 'Champ'),
+            h('th', { class:'right', title:'Chance to earn a first-round playoff bye. N/A when this league has no byes.' }, 'Bye'),
+            h('th', { class:'right', title:'Expected final regular-season wins, losses and ties, including completed games and league median games. Same simulation as Standings.' }, 'Proj W-L-T'),
+            h('th', { class:'right', title:'Projected points per remaining week from the same season simulation as Standings.' }, 'Pts/wk'),
             h('th', { class:'right', title:'Chance your own pick lands 1.01 under the rookie-order rule of this league. Dynasty leagues only.' }, '1.01'),
             h('th', null, 'Stance'), h('th', null, 'Biggest Need'), h('th', null, ''))),
           h('tbody', null, ...rowsData.map(d => h('tr', { style:{ cursor:'pointer' }, onclick:()=>navigate(`#league/${d.lg.id}`) },
@@ -2477,7 +2482,7 @@
               d.pv == null ? 'Unavailable' : fmt.decimal(d.pv, 0),
               d.dyn || d.pv == null ? null : h('span', { class:'badge unit-vor' }, 'VOR')),
             h('td', { class:'right tnum', style:{ color:'var(--fg-3)' }, title: d.dyn ? null : 'Redraft league, no future value.' }, d.dyn ? fmt.decimal(d.fv, 0) : '·'),
-            d.odds.playoff, d.odds.title, d.odds.first,
+            d.odds.playoff, d.odds.title, d.odds.bye, d.odds.record, d.odds.ppw, d.odds.first,
             h('td', null, d.dyn
               ? h('span', { class:`badge stance-${d.stance}`, style:{ color: stanceTone[d.stance] } }, STANCE_LABEL[d.stance] || d.stance || 'Unavailable')
               : h('span', { class:'muted', title:'Redraft league, no rebuild or contend stance.' }, '·')),
@@ -2498,9 +2503,16 @@
         catch (e) { console.error(e); f = { ok: false, reason: 'Forecast failed.' }; }
         const o = f.ok && f.rows.get(d.me.roster_id);
         for (const [k, el] of Object.entries(d.odds)) {
-          const show = o && (k !== 'first' || f.rookie);
-          el.textContent = show ? forecastPct(o[k]) : '·';
-          el.title = show ? '' : f.ok ? 'No rookie-order rule modeled here.' : f.reason || 'No forecast.';
+          const notApplicable = o && ((k === 'first' && !rookieOrderRule(d.lg)) || (k === 'bye' && !f.byes));
+          let value = 'Unavailable';
+          if (notApplicable) value = 'N/A';
+          else if (o && k === 'record' && [o.expW, o.expL, o.expT].every(Number.isFinite))
+            value = [o.expW, o.expL, o.expT].map(x => x.toFixed(1)).join('-');
+          else if (o && k === 'ppw' && Number.isFinite(o.ppw)) value = fmt.decimal(o.ppw, 1);
+          else if (o && ['playoff', 'title', 'bye', 'first'].includes(k)) value = forecastPct(o[k]);
+          el.textContent = value;
+          el.title = notApplicable ? (k === 'bye' ? 'This league has no playoff byes.' : 'No rookie-order rule modeled here.')
+            : value === 'Unavailable' ? f.reason || 'Forecast data unavailable for this metric.' : '';
         }
       } })();
     }

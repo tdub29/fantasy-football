@@ -712,6 +712,8 @@ table.data .expert-rank-col { width: 76px; white-space: nowrap; }
 .league-card .badges { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
 
 .leagues-table-card { padding: 0; overflow-x: auto; }
+.leagues-table-hint { margin: 0 0 6px; font-size: 0.8rem; color: var(--chalk); }
+.leagues-table :is(th, td).right { white-space: nowrap; }
 table.data.leagues-table thead th { padding: 16px 18px; font-size: 0.85rem; }
 table.data.leagues-table tbody td { padding: 18px; font-size: 1rem; }
 table.data.leagues-table .name-cell .name { font-size: 1.1rem; }
@@ -6025,14 +6027,9 @@ button:disabled { cursor: wait; opacity: 0.7; }
   }
   .heatmap-head .heatmap-leaguecell { z-index: 3; background: var(--bg-2); }
 
-  /* Phone overview drops Format (it moves under the team name), FV, Playoff and
-     Champ; desktop and each league page keep them. The rest sit at their natural
-     width and the table scrolls: fixed-layout percentages only covered the first
-     five columns, so 1.01 through Hide got zero width and printed over each other. */
-  .leagues-table th:nth-child(2), .leagues-table td:nth-child(2),
-  .leagues-table th:nth-child(6), .leagues-table td:nth-child(6),
-  .leagues-table th:nth-child(7), .leagues-table td:nth-child(7),
-  .leagues-table th:nth-child(8), .leagues-table td:nth-child(8) { display: none; }
+  /* Only Format is redundant with the team subtitle. Keep every forecast column
+     in the sideways scroll instead of hiding the useful numbers on phones. */
+  .leagues-table th:nth-child(2), .leagues-table td:nth-child(2) { display: none; }
   table.data.leagues-table { width: max-content; min-width: 100%; }
   .leagues-table .unit-vor { display: block; width: max-content; margin: 2px 0 0 auto; }
   table.data.leagues-table thead th,
