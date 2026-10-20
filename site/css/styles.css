@@ -6665,3 +6665,13 @@ table.data.prm-table td.cf-bad { background-color: color-mix(in srgb, var(--red)
   .draft-cell { min-height: 0; }
   .tbl-scroll.gm-pbp-wrap { max-height: none; }
 }
+
+/* Demo mode (?demo): one small fixed plate so no screenshot passes the fictional league off as real. */
+.demo-badge {
+  position: fixed; right: 12px; bottom: 12px; z-index: 90;
+  padding: 4px 10px; border: var(--plate-edge); border-radius: var(--radius);
+  background: var(--grad-gold); color: var(--ink); box-shadow: var(--bevel), 2px 2px 0 var(--ink);
+  font: 800 0.8rem/1.2 var(--font-display); text-decoration: none;
+}
+/* The demo never syncs and exists on no platform: no sync warning, no dead Sleeper link. */
+.demo-mode .acct-chip, .demo-mode a[href*="sleeper.com/leagues/"] { display: none; }

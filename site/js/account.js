@@ -375,7 +375,7 @@
     let profileState, espnSync = null, profileLoading = null, profileSaving = null, hydrating = false, profileReady = false, signingOut = false;
     const espnEntries = () => (E?.links || []).map(l => ({ league_id: l.id, season: String(l.season), team_id: String(l.teamId) }));
     async function profile(method, body) {
-      if (!/^https?:$/.test(win.location.protocol)) return undefined;
+      if (!/^https?:$/.test(win.location.protocol) || win.DEMO_MODE) return undefined;
       const ctrl = new AbortController(), t = win.setTimeout(() => ctrl.abort(), 10000);
       try {
         const r = await win.fetch('/ff/api/profile', { method, cache: 'no-store', credentials: 'same-origin', signal: ctrl.signal,
@@ -608,12 +608,13 @@
     applyGlobals(win, A.S.active, A.S.snap);
     E.merge(win);
     doc.title = `The Fantasy Hub${A.S.active ? `, ${A.S.active.username}` : ''}`;
-    win.addEventListener('DOMContentLoaded', () => { A.refresh({ force: true }); E.refresh(true); loadProfile(); });
+    // Demo mode (js/demo.js) is a fixed offline league: nothing to refresh, no profile to sync.
+    win.addEventListener('DOMContentLoaded', () => { if (win.DEMO_MODE) return; A.refresh({ force: true }); E.refresh(true); loadProfile(); });
     const retryProfile = () => !profileReady ? loadProfile() : saveProfile();
-    const maybe = () => { if (doc.visibilityState === 'visible') { A.refresh(); E.refresh(); retryProfile(); } };
+    const maybe = () => { if (doc.visibilityState === 'visible' && !win.DEMO_MODE) { A.refresh(); E.refresh(); retryProfile(); } };
     doc.addEventListener('visibilitychange', maybe);
     win.addEventListener('focus', maybe);
-    win.addEventListener('online', () => { A.refresh({ force: true }); E.refresh(true); retryProfile(); });
+    win.addEventListener('online', () => { if (win.DEMO_MODE) return; A.refresh({ force: true }); E.refresh(true); retryProfile(); });
     win.setInterval(maybe, POLL_MS);
   }
   boot(root);
