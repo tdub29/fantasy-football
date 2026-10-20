@@ -12551,8 +12551,8 @@
   // Both cuts for one row, high bar first.
   const pmChances = (r) => (PM_CUTS[r.p] || []).map(c => pmTopChance(r.p, c, pmFitPick(r), r.ts));
   // The one prospect score, 0-100: his average chance across both cuts, as a percentile of every
-  // drafted player at his position since 2008 scored with his actual pick. Same fits as the chance
-  // columns, so pick and profile carry the weight they earned there; it is not a third model.
+  // drafted player at his position since 2008 scored on the same model (with pick when pick is
+  // available, profile-only when unmocked so future-class prospects are compared apples-to-apples).
   const pmMean = (p, pk, ts) => {
     const v = (PM_CUTS[p] || []).map(c => pmTopChance(p, c, pk, ts));
     return v.length && !v.includes(null) ? (v[0] + v[1]) / 2 : null;
@@ -12562,14 +12562,18 @@
     const M = window.PROSPECT_MODEL;
     if (!M) return null;
     if (!pmScoreRef) {
-      pmScoreRef = {};
+      pmScoreRef = { both: {}, prof: {} };
       for (const x of Object.values(M.nfl)) if (x.pk) {
-        const m = pmMean(x.p, x.pk, x.ts);
-        if (m != null) (pmScoreRef[x.p] = pmScoreRef[x.p] || []).push(m);
+        const mb = pmMean(x.p, x.pk, x.ts);
+        if (mb != null) (pmScoreRef.both[x.p] = pmScoreRef.both[x.p] || []).push(mb);
+        const mp = pmMean(x.p, undefined, x.ts);
+        if (mp != null) (pmScoreRef.prof[x.p] = pmScoreRef.prof[x.p] || []).push(mp);
       }
-      Object.values(pmScoreRef).forEach(a => a.sort((a1, b1) => a1 - b1));
+      Object.values(pmScoreRef.both).forEach(a => a.sort((a1, b1) => a1 - b1));
+      Object.values(pmScoreRef.prof).forEach(a => a.sort((a1, b1) => a1 - b1));
     }
-    const m = pmMean(r.p, pmFitPick(r), r.ts), ref = pmScoreRef[r.p];
+    const pk = pmFitPick(r);
+    const m = pmMean(r.p, pk, r.ts), ref = (pk ? pmScoreRef.both : pmScoreRef.prof)[r.p];
     if (m == null || !ref) return null;
     let i = 0, j = ref.length;
     while (i < j) { const k = (i + j) >> 1; if (ref[k] < m) i = k + 1; else j = k; }
@@ -12866,7 +12870,7 @@
         [mock ? pmHeroBox('Proj. round', mock.round, mock.sub, mock.title) : null]),
       pmBio([
         pmBioCell('Draft age', r.age != null ? pmAge(r, r.age) : null,
-          `Age on draft day of the draft he is scored for: the more conservative of leaving after his third or fourth college year. ${pmDobNote(r)}`),
+          `Age on draft day of his first eligible draft (${r.cls}). ${pmDobNote(r)}`),
         sz ? pmBioCell('Height', `${Math.floor(sz.ht / 12)}'${sz.ht % 12}"`, sizeTitle) : null,
         sz ? pmBioCell('Weight', `${sz.wt} lb`, sizeTitle) : null,
         b ? pmBioCell('Build', b.label, sizeTitle) : null,

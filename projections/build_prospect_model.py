@@ -1236,9 +1236,9 @@ def censor_breakout(s: pd.DataFrame, med: float) -> pd.DataFrame:
 
 
 def score_college(ps, bio, final, age0, top_n=60):
-    """Every current college QB/RB/WR/TE, profiled as of now and scored at the more conservative
-    of two exits: after his third college year or after his fourth. `cls` stays his first
-    eligible draft; `ex` says which exit the score assumes."""
+    """Every current college QB/RB/WR/TE, profiled as of now and scored at his first eligible
+    draft (`cls`, after year 3 or the next draft if already 3+ years out of high school). `ex`
+    says how many college years that exit spans."""
     cur = ps[ps.season == SEASON].drop_duplicates("player_id").set_index("player_id")
     dobs = load_college_dob()
     cand = bio.loc[bio.index.isin(cur.index)].copy()
@@ -1272,12 +1272,8 @@ def score_college(ps, bio, final, age0, top_n=60):
             s = censor_breakout(s, float(np.nanmedian(fin["train"].breakout_age)))
         else:
             s["ba_show"] = np.nan
-        sc = {n: exit_scenario(s, n, age0) for n in (3, 4)}
-        tp = {n: pd.Series(fin["talent"].predict_proba(v[fin["cols"]].to_numpy(float))[:, 1], index=s.index)
-              for n, v in sc.items()}
-        pick4 = tp[4] <= tp[3]
-        s = pd.concat([sc[3][~pick4], sc[4][pick4]])
-        s["_tp"] = np.minimum(tp[3], tp[4]).reindex(s.index)
+        s = exit_scenario(s, 3, age0)
+        s["_tp"] = fin["talent"].predict_proba(s[fin["cols"]].to_numpy(float))[:, 1]
         s["_pd"], s["_pdx"] = np.nan, np.nan
         pre = fin.get("predraft")
         if pre:
@@ -1447,7 +1443,7 @@ FIELDS = {
     "pdx": "College only: the draft year pd assumes (the lower of leaving after this season or, for a junior, one more)",
     "cls": "College only: first eligible draft year",
     "cid": "College only: ESPN college athlete id (the key in the SQLite store, projections/prospect_db.py)",
-    "ex": "College only: college years at the exit he is scored at, the more conservative of leaving after year 3 or 4",
+    "ex": "College only: college years at his first eligible draft exit",
     "age": "College only: age on Apr 25 of the scored exit's draft, on his real birth date where dob is set, else "
            "estimated from class year",
     "dob": "Birth date ba and age are computed on (drafted: nflverse players; college: projections/college-dob.csv). "
