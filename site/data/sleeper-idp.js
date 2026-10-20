@@ -13,7 +13,7 @@
       "id": "sleeper-idp-2026",
       "title": "Sleeper IDP Usage Rankings (2026)",
       "url": "https://sleeper.com/research",
-      "publishedAt": "2026-10-16",
+      "publishedAt": "2026-10-19",
       "format": "idp",
       "defaultEnabled": true,
       "players": [
@@ -1242,7 +1242,7 @@
           "name": "Dee Winters",
           "pos": "LB",
           "team": "DAL",
-          "age": 25,
+          "age": 26,
           "category": "foundational",
           "tier": "D",
           "ktcValue": 408,

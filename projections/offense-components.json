@@ -46,7 +46,7 @@
   {
    "sleeper_id": "11557",
    "name": "Joe Milton",
-   "team": "DAL",
+   "team": "PHI",
    "pos": "QB",
    "sleeper_stats": {
     "pass_yd": 195.0,
@@ -227,7 +227,7 @@
    },
    "pp_stats": {
     "pass_td": 24.27,
-    "pass_yd": 192.5,
+    "pass_yd": 3787.78,
     "pass_int": 3.0,
     "rush_yd": 6.0
    },
@@ -1019,7 +1019,7 @@
     "pass_yd": 2989.49,
     "rush_yd": 375.5,
     "pass_td": 17.86,
-    "rush_td": 4.3,
+    "rush_td": 4.54,
     "pass_int": 10.0
    },
    "pp_borrowed": [
@@ -1044,7 +1044,7 @@
     "pass_yd": 3287.52,
     "rush_yd": 8.5,
     "pass_td": 19.67,
-    "rush_td": 3.88,
+    "rush_td": 4.11,
     "pass_int": 11.0
    },
    "pp_borrowed": [
@@ -2109,7 +2109,7 @@
    "pp_stats": {
     "rush_yd": 28.5,
     "rec_yd": 10.5,
-    "rush_td": 7.13,
+    "rush_td": 6.57,
     "rec": 19.0,
     "rec_td": 1.0
    },
@@ -2173,7 +2173,7 @@
    "pp_stats": {
     "rush_yd": 27.5,
     "rec_yd": 19.5,
-    "rush_td": 4.23,
+    "rush_td": 4.51,
     "rec": 37.0,
     "rec_td": 2.0
    },
@@ -2273,13 +2273,14 @@
     "fum_lost": 1.0
    },
    "pp_stats": {
-    "rush_yd": 864.81,
+    "rush_yd": 47.5,
     "rec_yd": 9.5,
     "rec": 2,
-    "rush_td": 6.59,
+    "rush_td": 6.0,
     "rec_td": 1.0
    },
    "pp_borrowed": [
+    "rush_td",
     "rec_td"
    ]
   },
@@ -2406,13 +2407,14 @@
     "fum_lost": 1.0
    },
    "pp_stats": {
-    "rush_yd": 650.5,
+    "rush_yd": 37.5,
     "rec_yd": 10.5,
-    "rush_td": 4.76,
+    "rush_td": 6.0,
     "rec": 23.0,
     "rec_td": 1.0
    },
    "pp_borrowed": [
+    "rush_td",
     "rec",
     "rec_td"
    ]
@@ -2593,7 +2595,7 @@
    },
    "pp_stats": {
     "rush_yd": 18.5,
-    "rush_td": 3.82,
+    "rush_td": 4.08,
     "rec": 16.0,
     "rec_yd": 117.0,
     "rec_td": 1.0
@@ -2932,7 +2934,7 @@
    "pp_stats": {
     "rush_yd": 16.5,
     "rec_yd": 12.5,
-    "rush_td": 8.0,
+    "rush_td": 6.91,
     "rec": 20.0,
     "rec_td": 1.0
    },
@@ -3074,13 +3076,15 @@
     "rush_2pt": 1.0
    },
    "pp_stats": {
-    "rush_yd": 1075.5,
-    "rec_yd": 350.5,
+    "rush_yd": 79.5,
+    "rec_yd": 10.5,
     "rec": 2,
-    "rush_td": 7.83,
-    "rec_td": 2.67
+    "rush_td": 0.5,
+    "rec_td": 2.0
    },
-   "pp_borrowed": []
+   "pp_borrowed": [
+    "rec_td"
+   ]
   },
   {
    "sleeper_id": "5850",
@@ -3438,7 +3442,7 @@
    "pp_stats": {
     "rush_yd": 26.5,
     "rec_yd": 12.5,
-    "rush_td": 4.66,
+    "rush_td": 4.42,
     "rec": 47.0,
     "rec_td": 2.0
    },
@@ -3572,7 +3576,7 @@
    "pp_stats": {
     "rush_yd": 34.5,
     "rec_yd": 7.5,
-    "rush_td": 4.22,
+    "rush_td": 4.19,
     "rec": 9.0
    },
    "pp_borrowed": [
@@ -4209,13 +4213,14 @@
     "rec_2pt": 1.0
    },
    "pp_stats": {
-    "rec_yd": 975.5,
+    "rec_yd": 52.5,
     "rec": 5,
-    "rec_td": 8.22,
-    "rush_yd": 29.0
+    "rush_yd": 29.0,
+    "rec_td": 7.0
    },
    "pp_borrowed": [
-    "rush_yd"
+    "rush_yd",
+    "rec_td"
    ]
   },
   {
@@ -5998,7 +6003,7 @@
    },
    "pp_stats": {
     "rec_yd": 5.5,
-    "rec_td": 0.85,
+    "rec_td": 0.98,
     "rec": 10.0
    },
    "pp_borrowed": [
@@ -6395,16 +6400,8 @@
     "rec_td": 5.0,
     "fum_lost": 1.0
    },
-   "pp_stats": {
-    "rec_yd": 829.29,
-    "rec_td": 6.23,
-    "rush_yd": 29.0,
-    "rec": 63.0
-   },
-   "pp_borrowed": [
-    "rush_yd",
-    "rec"
-   ]
+   "pp_stats": null,
+   "pp_borrowed": []
   },
   {
    "sleeper_id": "4992",
@@ -6439,7 +6436,7 @@
   {
    "sleeper_id": "5086",
    "name": "Marquez Valdes-Scantling",
-   "team": "LAC",
+   "team": null,
    "pos": "WR",
    "sleeper_stats": {
     "rush_yd": 6.0,
@@ -6644,7 +6641,7 @@
   {
    "sleeper_id": "6149",
    "name": "Darius Slayton",
-   "team": "IND",
+   "team": null,
    "pos": "WR",
    "sleeper_stats": {
     "rec": 26.0,
@@ -8269,14 +8266,15 @@
     "rec_td": 5.0
    },
    "pp_stats": {
-    "rec_yd": 760.5,
-    "rec_td": 4.67,
+    "rec_yd": 42.5,
     "rush_yd": 19.0,
-    "rec": 83.0
+    "rec": 83.0,
+    "rec_td": 5.0
    },
    "pp_borrowed": [
     "rush_yd",
-    "rec"
+    "rec",
+    "rec_td"
    ]
   },
   {
