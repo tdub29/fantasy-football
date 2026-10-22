@@ -1,5 +1,5 @@
 window.BUILD_INFO = {
-  "generated": "2026-10-20T15:06:18",
+  "generated": "2026-10-22T14:12:28",
   "files": {
     "ktc.js": "2026-10-20T06:07:12",
     "players.js": "2026-10-20T06:07:17",
@@ -17,9 +17,9 @@ window.BUILD_INFO = {
     "alexandria.js": "2026-10-20T06:08:47",
     "idp-dvp.js": "2026-10-20T06:14:38",
     "kickers.js": "2026-10-20T06:14:50",
-    "gibbs-week.js": "2026-10-19T20:47:35",
-    "gibbs-ros.js": "2026-10-20T06:08:49",
-    "gibbs-ppr.js": "2026-10-19T20:48:09",
+    "gibbs-week.js": "2026-10-21T07:57:23",
+    "gibbs-ros.js": "2026-10-21T07:57:36",
+    "gibbs-ppr.js": "2026-10-21T07:58:24",
     "advanced.js": "2026-10-20T06:09:32",
     "prospect.js": "2026-10-20T06:11:02",
     "prospect-model.js": "2026-10-20T06:13:31",
@@ -30,7 +30,7 @@ window.BUILD_INFO = {
     "defense.js": "2026-10-20T06:14:05",
     "usage-weekly.js": "2026-10-20T06:14:08",
     "idp-advanced.js": "2026-10-20T06:14:36",
-    "weekly-rankings.js": "2026-10-20T06:08:38",
+    "weekly-rankings.js": "2026-10-22T14:12:27",
     "sleeper-market.js": "2026-10-20T06:07:14",
     "faab.js": "2026-10-20T06:08:06",
     "trade-history.js": "2026-10-20T06:07:36",

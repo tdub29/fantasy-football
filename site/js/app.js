@@ -3836,10 +3836,11 @@
         const v = stats ? stats[c.k] : null;
         if (v == null) return h('td', { class:'right tnum' }, emptyValue());
         const filled = (weekly.vegasBorrowed || []).includes(c.k);
+        const source = weekly.vegasStatSources?.[c.k] || (filled ? 'Sleeper' : 'BettingPros');
         return h('td', { class:'right tnum', style: filled ? { color:'var(--fg-3)' } : null,
           title: filled
-            ? `${c.label} ${fmt.decimal(v, c.dp)} filled from Sleeper, no BettingPros market for it.`
-            : `${c.label} ${fmt.decimal(v, c.dp)} from a priced BettingPros line.` },
+            ? `${c.label} ${fmt.decimal(v, c.dp)} filled from Sleeper, no current market component.`
+            : `${c.label} ${fmt.decimal(v, c.dp)} from ${source === 'PrizePicks' ? 'a standard PrizePicks line' : 'a price-adjusted BettingPros line'}.` },
           fmt.decimal(v, c.dp));
       };
       const pointCell = (value, title) => h('td', { class:'right tnum', title },
@@ -3929,7 +3930,7 @@
               sortHdr('weekly-sleeper', 'Sleeper pts', { right:true, title:'Sleeper weekly team defense projection.' }),
               sortHdr('def-oppImplied', 'Opp implied', { right:true, title:`Opponent's Vegas implied points for week ${currentWeek}. Lower is better for a defense.` }),
             ] : [
-              isRosView ? null : sortHdr('weekly-vegas', 'Vegas pts', { right:true, title:'Week PPR projection from price-adjusted BettingPros player props. Missing scoring components are filled from Sleeper.' }),
+              isRosView ? null : sortHdr('weekly-vegas', 'Vegas pts', { right:true, title:'Week full-PPR estimate from price-adjusted BettingPros props, then standard PrizePicks yardage/reception lines, then Sleeper fills. Component tooltips name each source.' }),
               isRosView ? null : sortHdr('weekly-sleeper', 'Sleeper pts', { right:true, title:'Sleeper weekly PPR projection.' }),
               isRosView ? null : sortHdr('weekly-vsdelta', 'V−S', { right:true, title:`Vegas minus Sleeper for week ${currentWeek}. Green = the market projects him above the model, red = below. Blank when either side has no number; blanks sort last both ways. An asterisk means most of the Vegas projection was filled in from Sleeper, so that delta is the model against itself, not market signal.` }),
               isRosView ? null : sortHdr('weekly-ecr', 'FP ECR', { right:true, title:'FantasyPros weekly PPR expert consensus positional rank.' }),
@@ -3973,8 +3974,10 @@
                 pointCell(weekly.sleeper?.[currentWeek - 1], `Sleeper week ${currentWeek} team defense projection`),
                 pointCell(defOppImplied(p), 'Opponent Vegas implied points (from the kicker model lines). Blank when no line.'),
               ] : [
-                isRosView ? null : pointCell(weekly.vegas, weekly.vegasBorrowed?.length
-                  ? `Market stats plus Sleeper fills: ${weekly.vegasBorrowed.join(', ')}` : 'BettingPros market projection'),
+                isRosView ? null : pointCell(weekly.vegas,
+                  `${weeklyData.sources?.vegas || 'Market full-PPR estimate'}`
+                  + `${weekly.vegasBorrowed?.length ? ` Sleeper fills: ${weekly.vegasBorrowed.join(', ')}.` : ''}`
+                  + `${weekly.prizepicksFantasy != null ? ` PrizePicks posted full-PPR fantasy-score line: ${fmt.decimal(weekly.prizepicksFantasy, 1)}.` : ''}`),
                 isRosView ? null : pointCell(weekly.sleeper?.[currentWeek - 1], `Sleeper week ${currentWeek} PPR projection`),
                 isRosView ? null : (() => {
                   const d = vsDelta(weekly);

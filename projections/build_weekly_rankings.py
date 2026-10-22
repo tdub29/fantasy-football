@@ -14,6 +14,7 @@ import csv
 import datetime
 import io
 import json
+import math
 import os
 import pathlib
 import re
@@ -31,6 +32,9 @@ HERE = pathlib.Path(__file__).parent
 ROOT = HERE.parent
 OUT = ROOT / "site" / "data" / "weekly-rankings.js"
 PLAYERS_PATH = ROOT / "players-nfl.json"
+PRIZEPICKS_PATH = HERE / "prizepicks-nfl-weekly-lines.json"
+PRIZEPICKS_STATS = {"Pass Yards": "pass_yd", "Rush Yards": "rush_yd",
+                   "Receiving Yards": "rec_yd", "Receptions": "rec"}
 # K and DEF are here because two leagues START them (Washington and Phi Kap
 # both roster a K and a DEF slot), and Sleeper projects both: measured
 # 2026-09-16, week 3 carried 34 kickers and 32 defenses with pts_ppr. Leaving
@@ -222,7 +226,93 @@ def bettingpros_props(season, week):
     return props
 
 
-def vegas_projection(props, players, sleeper_stats, week, pp_stats=None):
+def prizepicks_weekly(players, games, from_file=None):
+    """Import a full-game board; never carry a prior game's props into this week."""
+    path = pathlib.Path(from_file) if from_file else PRIZEPICKS_PATH
+    if not path.exists():
+        return {}, {}, {"available": False, "players": 0}
+    doc = json.loads(path.read_text(encoding="utf-8-sig"))
+    if from_file:
+        included = {(r["type"], r["id"]): r.get("attributes", {})
+                    for r in doc.get("included", [])}
+        rows = []
+        for row in doc.get("data", []):
+            a, rel = row.get("attributes", {}), row.get("relationships", {})
+            ref = lambda key: (rel.get(key, {}).get("data") or {}).get("id")
+            p = included.get(("new_player", ref("new_player")), {})
+            duration = included.get(("duration", ref("duration")), {})
+            if (ref("league") != "9" or duration.get("name") != "Full"
+                    or p.get("combo") or a.get("is_promo")
+                    or a.get("odds_type") != "standard"
+                    or a.get("allowed_wager_types") != "under_or_over"
+                    or a.get("in_game") or a.get("is_live")
+                    or a.get("status") != "pre_game"):
+                continue
+            if a.get("stat_type") not in {*PRIZEPICKS_STATS, "Fantasy Score"}:
+                continue
+            rows.append({"player": p.get("name") or p.get("display_name"),
+                         "team": p.get("team"), "pos": p.get("position"),
+                         "stat_type": a.get("stat_type"), "line": a.get("line_score"),
+                         "start_time": a.get("start_time"), "odds_type": "standard"})
+        doc = {"league": "9", "importedAt": datetime.datetime.now(datetime.timezone.utc)
+               .isoformat(timespec="seconds"), "rows": rows}
+    # Older parser exports lacked the promotion/duration filters. Do not reuse them.
+    if not doc.get("importedAt") or str(doc.get("league")) != "9":
+        return {}, {}, {"available": False, "players": 0, "reason": "no validated import"}
+    index = player_name_index(players)
+    values, accepted, rejected, unmatched = {}, [], 0, set()
+    for row in doc.get("rows", []):
+        team = NFL_TEAM_ALIASES.get(row.get("team"), row.get("team"))
+        game = games.get(team) or {}
+        try:
+            kickoff = datetime.datetime.fromisoformat(row["start_time"])
+            expected = datetime.datetime.fromisoformat(game["kickoff"].replace("Z", "+00:00"))
+            line = float(row["line"])
+            valid = (kickoff == expected and math.isfinite(line) and line >= 0
+                     and row.get("odds_type") == "standard"
+                     and row.get("pos") in {"QB", "RB", "WR", "TE"})
+        except (KeyError, TypeError, ValueError):
+            valid = False
+        if not valid:
+            rejected += 1
+            continue
+        pid = resolve_player(index, players, row.get("player"), row.get("pos"), team)
+        if not pid:
+            unmatched.add(row.get("player"))
+            continue
+        # Player, position and team must all agree, including unique-name matches.
+        if players[pid].get("pos") != row.get("pos") or NFL_TEAM_ALIASES.get(
+                players[pid].get("team"), players[pid].get("team")) != team:
+            unmatched.add(row.get("player"))
+            continue
+        stat = PRIZEPICKS_STATS.get(row.get("stat_type"))
+        key = (pid, stat or row.get("stat_type"))
+        if key in values and values[key] != line:
+            raise ValueError(f"Conflicting PrizePicks lines for {row['player']} {key[1]}")
+        values[key] = line
+        accepted.append(row)
+    stats, fantasy = {}, {}
+    for (pid, stat), value in values.items():
+        if stat == "Fantasy Score":
+            fantasy[pid] = value
+        elif stat in SCORE_KEYS:
+            stats.setdefault(pid, {})[stat] = value
+    if from_file:
+        if not stats:
+            raise ValueError("PrizePicks import has no matching current-week stat lines")
+        doc["rows"] = accepted
+        doc["count"] = len(accepted)
+        doc["importReport"] = {"rejectedRows": rejected, "unmatched": sorted(unmatched)}
+        PRIZEPICKS_PATH.write_text(json.dumps(doc, ensure_ascii=False, indent=1) + "\n",
+                                  encoding="utf-8")
+    report = {} if from_file else doc.get("importReport", {})
+    return stats, fantasy, {"available": bool(stats), "players": len(stats),
+                            "fantasyPlayers": len(fantasy), "importedAt": doc.get("importedAt"),
+                            "rejectedRows": rejected + report.get("rejectedRows", 0),
+                            "unmatched": sorted(unmatched | set(report.get("unmatched", [])))}
+
+
+def vegas_projection(props, players, sleeper_stats, week, pp_stats=None, component_sources=None):
     index = player_name_index(players)
     market_stats = {}
     for prop in props:
@@ -260,16 +350,21 @@ def vegas_projection(props, players, sleeper_stats, week, pp_stats=None):
     projections, borrowed, borrowed_share, components = {}, {}, {}, {}
     for pid, stats in market_stats.items():
         filled = dict(stats)
+        origins = {key: "BettingPros" for key in stats}
         fills = []
         pp = (pp_stats or {}).get(pid) or {}
         for key in SCORE_KEYS:
             if key not in filled and pp.get(key) is not None:
                 filled[key] = pp[key]
+                origins[key] = "PrizePicks"
         sleeper = sleeper_stats.get((pid, week)) or {}
         for key in SCORE_KEYS:
             if key not in filled and sleeper.get(key) is not None:
                 filled[key] = sleeper[key]
                 fills.append(key)
+                origins[key] = "Sleeper"
+        if component_sources is not None:
+            component_sources[pid] = origins
         points = ppr_score(filled)
         if points is not None:
             # Market half of the total is consensus plus PrizePicks. Counting a
@@ -507,6 +602,7 @@ def self_check():
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--week", type=int)
+    parser.add_argument("--prizepicks-file", help="import a browser-saved NFL projections JSON")
     parser.add_argument("--self-check", action="store_true")
     args = parser.parse_args()
     if args.self_check:
@@ -526,10 +622,12 @@ def main():
 
     print(f"BettingPros props: week {current_week}")
     props = bettingpros_props(season, current_week)
+    pp_stats, pp_fantasy, pp_meta = prizepicks_weekly(players, games, args.prizepicks_file)
+    vegas_sources = {}
     vegas, vegas_borrowed, vegas_borrowed_share, vegas_components = vegas_projection(
-        props, players, stats, current_week)
+        props, players, stats, current_week, pp_stats, vegas_sources)
     print(f"  {len(props)} props, "
-          f"{len(vegas)} player point projections")
+          f"{len(vegas)} player point projections; PrizePicks stats for {len(pp_stats)} players")
 
     try:
         ecr, ecr_meta = fantasypros_rankings(season, current_week, players)
@@ -600,6 +698,8 @@ def main():
         # Per-stat expected values behind row["vegas"], so the table can show
         # the components and mark which of them were Sleeper fills.
         row["vegasStats"] = vegas_components.get(pid)
+        row["vegasStatSources"] = vegas_sources.get(pid, {})
+        row["prizepicksFantasy"] = pp_fantasy.get(pid)
         # Share of the Vegas projection that came from Sleeper fills, 0 to 1.
         row["vegasBorrowedShare"] = vegas_borrowed_share.get(pid)
         row["ecr"] = ecr.get(pid)
@@ -620,7 +720,7 @@ def main():
         "games": games,
         "sources": {
             "schedule": "nflverse current NFL schedule, kickoff converted from Eastern to UTC",
-            "vegas": "BettingPros consensus player props, price-adjusted; gaps filled from the PrizePicks weekly board (flat line, no vig to remove), then from Sleeper",
+            "vegas": "Full-PPR estimate from price-adjusted BettingPros consensus props; missing yardage/receptions use current-game standard PrizePicks lines, then Sleeper fills. PrizePicks fantasy-score lines are shown separately in the tooltip.",
             "sleeper": "Sleeper weekly pts_ppr",
             "ecr": "FantasyPros weekly expert consensus rankings",
             "gibbs": f"FantasyPros weekly {tracked_scoring.get('gibbs', 'PPR')} ranking for Jacob Gibbs, expert {GIBBS_EXPERT_ID}",
@@ -631,6 +731,7 @@ def main():
         "coverage": {
             "sleeperPlayers": len(output_players), "bettingProsProps": len(props),
             "vegasPlayers": len(vegas),
+            "prizepicks": pp_meta,
             "ecrPlayers": len(ecr), "gibbsPlayers": len(gibbs),
             "rosPlayers": len(ros), "gibbsRosPlayers": len(gibbs_ros),
             "ecr": ecr_meta, "gibbs": gibbs_meta, "ros": ros_meta, "gibbsRos": gibbs_ros_meta,
