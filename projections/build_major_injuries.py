@@ -47,8 +47,9 @@ def load_snaps() -> pd.DataFrame:
 
 
 def load_reports() -> dict:
-    """(gsis_id, season) -> {week: body part or None}, for any listing at all."""
-    cols = ["season", "week", "gsis_id", "report_primary_injury", "practice_primary_injury"]
+    """(gsis_id, season) -> {week: (body parts...) or None}, for any listing at all."""
+    cols = ["season", "week", "gsis_id", "report_primary_injury", "report_secondary_injury",
+            "practice_primary_injury", "practice_secondary_injury"]
     parts = []
     for y in range(FIRST, season_now() + 1):
         pq, csv = CACHE / f"injuries_{y}.parquet", INJ / f"{y}.csv"
@@ -58,8 +59,10 @@ def load_reports() -> dict:
             parts.append(pd.read_csv(csv, usecols=cols, dtype=str))
     out: dict = {}
     for r in pd.concat(parts, ignore_index=True).dropna(subset=["gsis_id"]).itertuples(index=False):
-        part = body_part(r.report_primary_injury) or body_part(r.practice_primary_injury)
-        out.setdefault((r.gsis_id, int(r.season)), {})[int(float(r.week))] = part
+        found = [body_part(x) for x in (r.report_primary_injury, r.report_secondary_injury,
+                                         r.practice_primary_injury, r.practice_secondary_injury)]
+        parts_ = tuple(dict.fromkeys(x for x in found if x))
+        out.setdefault((r.gsis_id, int(r.season)), {})[int(float(r.week))] = parts_ or None
     return out
 
 
@@ -77,10 +80,18 @@ def load_ids() -> dict:
 
 def injury_part(listings: dict, week: int):
     """(evidence, part): any body-part listing in the window proves an injury; only a
-    listing after the game names it."""
-    window = {w: p for w, p in listings.items() if week <= w <= week + EVIDENCE_WEEKS and p}
+    listing after the game names it. A part he was already listed with going into the
+    game is an old injury he played through, so a part new after the game wins: Jayden
+    Reed, 2025 week 2, was listed Foot before and Foot plus Shoulder (the broken
+    collarbone) after, and the absence is the shoulder's."""
+    norm = lambda p: (p,) if isinstance(p, str) else tuple(p or ())
+    window = {w: norm(p) for w, p in listings.items() if week <= w <= week + EVIDENCE_WEEKS and p}
+    before = {x for w, p in listings.items() if week - EVIDENCE_WEEKS <= w <= week for x in norm(p)}
     after = [window[w] for w in sorted(window) if w > week]
-    return bool(window), (after[0] if after else "")
+    if not after:
+        return bool(window), ""
+    new = [x for x in after[0] if x not in before]
+    return True, (new or after[0])[0]
 
 
 def absences(played: list, team_games: dict) -> list:
@@ -124,6 +135,8 @@ def self_check() -> None:
     assert injury_part({13: "Calf", 17: "Knee"}, 16) == (True, "Knee")
     assert injury_part({13: None}, 13) == (False, "")             # rest day is not an injury
     assert injury_part({20: "Knee"}, 13) == (False, "")           # too late to tie to that game
+    assert injury_part({1: ("Foot",), 2: None, 3: ("Foot", "Shoulder")}, 2) == (True, "Shoulder")  # Reed 2025
+    assert injury_part({3: ("Foot", "Shoulder")}, 2) == (True, "Foot")  # nothing before: first listed
     print("self-check ok")
 
 

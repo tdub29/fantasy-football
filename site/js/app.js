@@ -8083,6 +8083,7 @@
     return { series, totals, missing };
   }
 
+  const TCHART_PICK_TIP = 'A used pick is drawn as the player taken with it, from May 1 of that draft year, and joins its side total then. A side with one has no change %, because the pick had no KTC value at the trade.';
   function tradeValueChart(t, sf, sfNow) {
     const { series, totals, missing } = tradeChartSeries(t, sf);
     const wrap = h('div', { class:'tchart-wrap' });
@@ -8199,9 +8200,9 @@
         h('td', null, h('span', { class:`tchart-key tchart-${s.side}`, html: tchartSwatch(s) }),
           h('span', { class:'tchart-full' }, s.label),
           h('span', { class:'tchart-abbr' }, s.sid !== undefined && / /.test(s.label) ? s.label.replace(/^(\S)\S* /, '$1. ') : s.label),
-          typeof s.pick === 'string' ? h('span', { class:'tchart-pick' }, `${s.pick} pick`) : null),
+          typeof s.pick === 'string' ? h('span', { class:'tchart-pick', title:TCHART_PICK_TIP }, `${s.pick} pick`) : null),
         h('td', { class:'tnum' }, kNum(a)), h('td', { class:'tnum' }, kNum(n)),
-        h('td', { class:`tnum tchart-delta ${pct > 0 ? 'up' : pct < 0 ? 'down' : ''}` },
+        h('td', { class:`tnum tchart-delta ${pct > 0 ? 'up' : pct < 0 ? 'down' : ''}`, title: s.pick ? TCHART_PICK_TIP : null },
           pct == null ? '·' : `${pct > 0 ? '▲' : pct < 0 ? '▼' : ''}${Math.abs(pct)}%`));
     };
     for (const side of ['got', 'sent']) {
@@ -8218,10 +8219,8 @@
     if (injuries.length) notes.appendChild(h('ol', { class:'tchart-injuries' }, ...injuries.map(i =>
       h('li', null, h('span', { class:`tchart-num tchart-${i.s.side}` }, String(i.n)),
         `${i.s.label}: ${i.part || 'Injury'} in his last game on ${longDate(i.at)}, then missed ${i.missed} games${i.out ? ' and has not played since' : ''}.`))));
-    if (series.some(s => s.pick)) notes.appendChild(h('div', { class:'tchart-note' },
-      'A used pick is drawn as the player taken with it, from May 1 of that draft year, and joins its side total then. A side with one has no change %, because the pick had no KTC value at the trade.'));
-    if (missing.length) notes.appendChild(h('div', { class:'tchart-note' },
-      `No KTC history for ${missing.join(', ')}. KTC stops tracking a pick once it is used.`));
+    // Method notes live in tooltips, not as paragraphs under every trade (Trevor, 2026-10-21).
+    if (missing.length) table.title = `No KTC history for ${missing.join(', ')}. KTC stops tracking a pick once it is used.`;
 
     wrap.append(tabs, plate, table, notes);
     requestAnimationFrame(draw);
