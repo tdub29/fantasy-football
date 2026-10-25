@@ -34,6 +34,13 @@ OUT = ROOT / "site" / "data" / "major-injuries.js"
 FIRST = 2023  # first season with snap counts in the cache; KTC history starts 2023-03 too
 MIN_MISSED = 4
 EVIDENCE_WEEKS = 3
+# The weekly report only names a body part. Where verified reporting names the injury
+# itself, that wins, keyed (sleeper_id, last game YYYYMMDD). Cite the source per row.
+NAMED = {
+    # Report lists "Shoulder"; LaFleur confirmed a broken collarbone on the nullified TD
+    # catch, surgery Sep 16 with the foot (SI, CBS, Pro Football Rumors, Sep 2025).
+    ("10222", 20250911): "Broken collarbone",
+}
 
 
 def load_snaps() -> pd.DataFrame:
@@ -121,7 +128,7 @@ def build() -> dict:
                 continue
             ok, part = injury_part(reports.get((gsis, int(season)), {}), int(week))
             if ok:
-                rows.append([int(date), int(missed), part, int(out)])
+                rows.append([int(date), int(missed), NAMED.get((sid, int(date)), part), int(out)])
         if rows:
             players[sid] = rows
     return {"generated": dt.datetime.now().isoformat(timespec="seconds"), "players": players}
