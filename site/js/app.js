@@ -354,6 +354,8 @@
     _originSlotCache.clear();
     _stanceCache.clear();
     _mispriceIdx = null; _mispriceKey = null;
+    _rosPts = null;
+    _rosRankCache.clear();
   }
 
   // Mispricing: within each position, compare a player's SEASON-projection rank to
@@ -642,28 +644,216 @@
   // NFL week 18 is played after every fantasy season here is over: it put 19.9
   // phantom points on McCaffrey. With no league (a data-presence check) it runs
   // to the end of the feed. One map per last week, `_rosPts` holds them.
+  function rosSettings() {
+    try {
+      if (typeof state !== 'undefined' && state && state.settings) return state.settings;
+    } catch {}
+    try {
+      if (typeof window !== 'undefined' && window && window.state && window.state.settings) return window.state.settings;
+    } catch {}
+    return {};
+  }
+
+  function isFpRosEnabled(s) {
+    if (!s) return true;
+    if (s.rosSources && s.rosSources.fp !== undefined) return !!s.rosSources.fp;
+    if (s.enabledSources && (s.enabledSources['fantasypros'] === false || s.enabledSources['fp'] === false)) return false;
+    if (s.enabledExpertCols && (s.enabledExpertCols['fp-ros'] === false || s.enabledExpertCols['fantasypros'] === false)) return false;
+    return true;
+  }
+
+  function isGibbsRosEnabled(s) {
+    if (!s) return true;
+    if (s.rosSources && s.rosSources.gibbs !== undefined) return !!s.rosSources.gibbs;
+    if (s.enabledExpertCols) {
+      if (s.enabledExpertCols['gibbs-ppr-2026-08'] === false) return false;
+      if (s.enabledExpertCols['gibbsRos'] === false) return false;
+      if (!s.retiredGibbsHalfCol && s.enabledExpertCols['gibbs'] === false) return false;
+    }
+    if (s.enabledSources && s.enabledSources['gibbs'] === false) return false;
+    return true;
+  }
+
+  function rosSourceWeight(id, s) {
+    if (s && s.rosWeights && s.rosWeights[id] != null) {
+      const w = Number(s.rosWeights[id]);
+      return isNaN(w) ? 1 : Math.max(0, w);
+    }
+    return 1;
+  }
+
+  function rosExpertRank(pid, pos, lg) {
+    const s = rosSettings();
+    const ranks = [];
+    const details = [];
+
+    // 1. FantasyPros ROS
+    if (isFpRosEnabled(s)) {
+      const wp = (window.WEEKLY_RANKINGS?.players || []).find(p => String(p.id) === String(pid));
+      if (wp && wp.ros != null) {
+        const w = rosSourceWeight('fp', s);
+        ranks.push({ rank: wp.ros, weight: w });
+        details.push(`FantasyPros ${pos || wp.pos}${wp.ros}`);
+      }
+    }
+
+    // 2. Jacob Gibbs ROS
+    if (isGibbsRosEnabled(s)) {
+      const wp = (window.WEEKLY_RANKINGS?.players || []).find(p => String(p.id) === String(pid));
+      let gr = wp?.gibbsRos;
+      if (gr == null && typeof gibbsBoardRank === 'function') {
+        gr = gibbsBoardRank('GIBBS_PPR_ROS', pid)?.rank;
+      }
+      if (gr == null && window.GIBBS_PPR_ROS?.positions?.[pos]) {
+        const hit = window.GIBBS_PPR_ROS.positions[pos].find(r => String(r.sleeperId) === String(pid) || String(r.id) === String(pid));
+        if (hit) gr = hit.rank;
+      }
+      if (gr != null) {
+        const w = rosSourceWeight('gibbs', s);
+        ranks.push({ rank: gr, weight: w });
+        details.push(`Gibbs ${pos || wp?.pos || ''}${gr}`);
+      }
+    }
+
+    // 3. Custom or additional redraft boards from getAllSources()
+    if (typeof getAllSources === 'function') {
+      for (const src of getAllSources()) {
+        if (src.id === 'domain-dynasty') continue;
+        if (s.enabledSources && s.enabledSources[src.id] === false) continue;
+        for (const r of src.rankings || []) {
+          if (s.enabledRankings && s.enabledRankings[r.id] === false) continue;
+          if (r.format === 'redraft' || src.format === 'redraft' || /ros|redraft/i.test(r.id + ' ' + r.name + ' ' + src.name)) {
+            const players = r.players || [];
+            let pRank = null;
+            let pIdx = 0;
+            for (let i = 0; i < players.length; i++) {
+              const p = players[i];
+              const pPos = p.pos;
+              if (!pos || !pPos || pPos === pos) {
+                pIdx++;
+                const pPid = p._sleeperId || (typeof sleeperIdForFuzzy === 'function' ? sleeperIdForFuzzy(p.name, p.pos) : null);
+                if (String(pPid) === String(pid) || (p.sleeperId && String(p.sleeperId) === String(pid))) {
+                  pRank = p.posRank != null ? p.posRank : pIdx;
+                  break;
+                }
+              }
+            }
+            if (pRank != null) {
+              const w = rosSourceWeight(r.id || src.id, s);
+              ranks.push({ rank: pRank, weight: w });
+              details.push(`${r.name || src.name} ${pos || ''}${pRank}`);
+            }
+          }
+        }
+      }
+    }
+
+    if (!ranks.length) return null;
+    const totW = ranks.reduce((sum, x) => sum + x.weight, 0);
+    const avg = ranks.reduce((sum, x) => sum + x.rank * x.weight, 0) / (totW || 1);
+    return { rank: avg, details };
+  }
+
+  function interpCurve(curve, rank) {
+    if (!curve || !curve.length) return 0;
+    const idx = rank - 1;
+    if (idx <= 0) return curve[0];
+    if (idx >= curve.length - 1) return curve[curve.length - 1];
+    const i0 = Math.floor(idx);
+    const i1 = i0 + 1;
+    const frac = idx - i0;
+    return curve[i0] + (curve[i1] - curve[i0]) * frac;
+  }
+
+  function rosCacheKey(lg) {
+    const s = rosSettings();
+    let last = Infinity;
+    const isRedraft = lg && typeof isDynastyLeague === 'function' ? !isDynastyLeague(lg) : false;
+    try {
+      if (lg && typeof playoffSettings === 'function') last = playoffSettings(lg).lastWeek;
+    } catch {}
+    return JSON.stringify({
+      lgId: lg?.id || null,
+      isRedraft,
+      last,
+      ec: s.enabledExpertCols,
+      es: s.enabledSources,
+      er: s.enabledRankings,
+      rs: s.rosSources,
+      rw: s.rosWeights,
+    });
+  }
+
   let _rosPts = null;
   function rosPointsByPid(lg = null) {
     if (lg?.projection_unavailable) return new Map();
-    const last = lg ? playoffSettings(lg).lastWeek : Infinity;
+    const key = rosCacheKey(lg);
     _rosPts = _rosPts || new Map();
-    if (_rosPts.has(last)) return _rosPts.get(last);
+    if (_rosPts.has(key)) return _rosPts.get(key);
     const out = new Map();
-    _rosPts.set(last, out);
+    _rosPts.set(key, out);
     const wr = window.WEEKLY_RANKINGS;
     if (!wr || !wr.players) return out;
-    // `liveWeek`: the live Sleeper pull (below) rewrote the lines from that week.
+    let last = Infinity;
+    try {
+      if (lg && typeof playoffSettings === 'function') last = playoffSettings(lg).lastWeek;
+    } catch {}
     const from = Math.max(1, wr.liveWeek || wr.currentWeek || 1);
+    const isRedraft = lg && typeof isDynastyLeague === 'function' ? !isDynastyLeague(lg) : false;
+
+    const rawData = [];
+    const ppgByPos = {};
+    const maxExpertRankByPos = {};
+
     for (const p of wr.players) {
       const wk = p.sleeper || [];
-      // `away`: weeks from now before his first line, his known absence.
       let sum = 0, games = 0, away = 0;
       for (let w = from; w <= Math.min(wk.length, last); w++) {
         const v = wk[w - 1];
         if (v != null) { sum += v; games++; } else if (!games) away++;
       }
-      if (games) out.set(String(p.id), { pts: Math.round(sum * 10) / 10, games, pos: p.pos, out: away });
+      if (games) {
+        const rawPpg = sum / games;
+        rawData.push({ id: String(p.id), p, sum, games, away, rawPpg, pos: p.pos });
+        if (['QB', 'RB', 'WR', 'TE'].includes(p.pos)) {
+          (ppgByPos[p.pos] = ppgByPos[p.pos] || []).push(rawPpg);
+        }
+      }
     }
+
+    for (const pos in ppgByPos) {
+      ppgByPos[pos].sort((a, b) => b - a);
+    }
+
+    if (isRedraft) {
+      for (const item of rawData) {
+        if (['QB', 'RB', 'WR', 'TE'].includes(item.pos)) {
+          const exp = rosExpertRank(item.id, item.pos, lg);
+          if (exp && exp.rank != null) {
+            maxExpertRankByPos[item.pos] = Math.max(maxExpertRankByPos[item.pos] || 0, exp.rank);
+          }
+        }
+      }
+    }
+
+    for (const item of rawData) {
+      const isOffense = ['QB', 'RB', 'WR', 'TE'].includes(item.pos);
+      const curve = isOffense ? ppgByPos[item.pos] : null;
+      let ppg = item.rawPpg;
+
+      if (isRedraft && isOffense && curve && curve.length) {
+        const exp = rosExpertRank(item.id, item.pos, lg);
+        if (exp && exp.rank != null) {
+          ppg = interpCurve(curve, exp.rank);
+        } else {
+          const capRank = (maxExpertRankByPos[item.pos] || 0) + 1;
+          ppg = Math.min(item.rawPpg, interpCurve(curve, capRank));
+        }
+      }
+
+      out.set(item.id, { pts: Math.round(ppg * item.games * 10) / 10, games: item.games, pos: item.pos, out: item.away });
+    }
+
     return out;
   }
 
@@ -866,16 +1056,16 @@
   // when there is no next year.
   const _rosRankCache = new Map();
   function rosPosRank(pid, league) {
-    const key = String(league.id);
+    const key = String(league.id) + ':' + rosCacheKey(league);
     if (!_rosRankCache.has(key)) {
       const byPos = {};
       for (const [id, v] of rosPointsByPid(league)) {
         const g = projPosGroup(v.pos);
-        (byPos[g] = byPos[g] || []).push({ id, pts: v.pts });
+        (byPos[g] = byPos[g] || []).push({ id, pts: v.pts, ppg: v.games ? v.pts / v.games : 0 });
       }
       const ranks = new Map();
       for (const g in byPos) {
-        byPos[g].sort((a, b) => b.pts - a.pts);
+        byPos[g].sort((a, b) => b.pts - a.pts || b.ppg - a.ppg);
         byPos[g].forEach((x, i) => ranks.set(x.id, i + 1));
       }
       _rosRankCache.set(key, ranks);
@@ -891,8 +1081,19 @@
         ? { rank: entry._posRank, label: 'Dynasty position rank (consensus)' } : null;
     }
     const pid = entry && (entry._sleeperId != null ? entry._sleeperId : entry.sleeperId);
-    const r = pid != null ? rosPosRank(pid, league) : null;
-    return r ? { rank: r, label: 'Position rank by rest-of-season projected points' } : null;
+    const pos = (entry && entry.pos) || (pid != null ? (window.PLAYERS?.[pid]?.pos || (window.WEEKLY_RANKINGS?.players || []).find(p => String(p.id) === String(pid))?.pos) : '');
+    if (pid != null) {
+      const exp = rosExpertRank(pid, pos, league);
+      if (exp && exp.rank != null) {
+        return {
+          rank: Math.round(exp.rank),
+          label: `Position rank by expert consensus (${exp.details.join(', ')})`,
+        };
+      }
+      const r = rosPosRank(pid, league);
+      return r ? { rank: r, label: 'Position rank by rest-of-season projected points (Sleeper)' } : null;
+    }
+    return null;
   }
 
   // Any tier past a position's starter tiers gets the same baseline: the best body
@@ -5575,12 +5776,14 @@
     const ppgs = allBars.map(s => slotPPG(s.slot, lg));
     const maxPPG = Math.max(...ppgs, 1);
     const rankIdx = rankIndex();
-    const buildPosRankChip = (playerName) => {
+    const buildPosRankChip = (playerName, pid = null) => {
       if (!playerName || typeof playerName !== 'string') return null;
       const entry = rankIdx.byName.get(norm(playerName));
-      const pr = posRankFor(entry, lg);
+      const effectiveEntry = entry || (pid != null ? { _sleeperId: pid, pos: window.PLAYERS?.[pid]?.pos || (window.WEEKLY_RANKINGS?.players || []).find(p => String(p.id) === String(pid))?.pos || '' } : null);
+      const pr = posRankFor(effectiveEntry, lg);
       if (!pr) return null;
-      return h('span', { class:'slot-bar-posrank tnum', title: pr.label }, `${entry.pos}${pr.rank}`);
+      const pos = (effectiveEntry && effectiveEntry.pos) || (entry && entry.pos) || '';
+      return h('span', { class:'slot-bar-posrank tnum', title: pr.label }, `${pos}${pr.rank}`);
     };
 
     const anyVor = allBars.some(x => x.vor != null);
@@ -5624,7 +5827,7 @@
                       title: `${s.player} is listed ${s.injury}. He still holds this slot because he projects for the most points here.` },
             INJ_SHORT[s.injury] || String(s.injury).slice(0, 3).toUpperCase())
         : null;
-      const posRankChip = !Array.isArray(s.player) ? buildPosRankChip(s.player) : null;
+      const posRankChip = !Array.isArray(s.player) ? buildPosRankChip(s.player, s.pid) : null;
 
       return h('tr', {
         class: 'slot-row' + (isClickable ? ' clickable' : ''),
@@ -7368,6 +7571,7 @@
           h('input', { type:'checkbox', checked: on ? '' : null, onchange:(e)=>{
             state.settings.enabledExpertCols[src.id] = e.target.checked;
             saveSettings();
+            invalidateRankIndex();
           }}),
           h('span', { class:'slider' })
         ),
@@ -19418,7 +19622,7 @@
   }
 
   // Expose a couple things for console debugging
-  window.__app = { state, rankIndex, computeRosterStrength, sleeperIdFor };
+  window.__app = { state, rankIndex, computeRosterStrength, sleeperIdFor, invalidateRankIndex, route };
 
   document.addEventListener('DOMContentLoaded', boot);
 })();
