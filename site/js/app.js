@@ -356,6 +356,7 @@
     _mispriceIdx = null; _mispriceKey = null;
     _rosPts = null;
     _rosRankCache.clear();
+    if (typeof ODDS_CACHE !== 'undefined' && ODDS_CACHE) ODDS_CACHE.clear();
   }
 
   // Mispricing: within each position, compare a player's SEASON-projection rank to
@@ -845,8 +846,8 @@
         const exp = rosExpertRank(item.id, item.pos, lg);
         if (exp && exp.rank != null) {
           ppg = interpCurve(curve, exp.rank);
-        } else {
-          const capRank = (maxExpertRankByPos[item.pos] || 0) + 1;
+        } else if (maxExpertRankByPos[item.pos]) {
+          const capRank = maxExpertRankByPos[item.pos] + 1;
           ppg = Math.min(item.rawPpg, interpCurve(curve, capRank));
         }
       }
@@ -855,6 +856,68 @@
     }
 
     return out;
+  }
+
+  function rosBasisMode(s = rosSettings()) {
+    const fp = isFpRosEnabled(s);
+    const gibbs = isGibbsRosEnabled(s);
+    if (fp && gibbs) return 'blended';
+    if (gibbs) return 'gibbs';
+    if (fp) return 'fp';
+    return 'sleeper';
+  }
+
+  function setRosBasisMode(mode) {
+    state.settings.enabledExpertCols = state.settings.enabledExpertCols || {};
+    if (state.settings.rosSources) delete state.settings.rosSources;
+    if (mode === 'blended') {
+      state.settings.enabledExpertCols['fp-ros'] = true;
+      state.settings.enabledExpertCols['gibbs-ppr-2026-08'] = true;
+    } else if (mode === 'gibbs') {
+      state.settings.enabledExpertCols['fp-ros'] = false;
+      state.settings.enabledExpertCols['gibbs-ppr-2026-08'] = true;
+    } else if (mode === 'fp') {
+      state.settings.enabledExpertCols['fp-ros'] = true;
+      state.settings.enabledExpertCols['gibbs-ppr-2026-08'] = false;
+    } else if (mode === 'sleeper') {
+      state.settings.enabledExpertCols['fp-ros'] = false;
+      state.settings.enabledExpertCols['gibbs-ppr-2026-08'] = false;
+    }
+    saveSettings();
+    invalidateRankIndex();
+  }
+
+  function buildRosBasisBar(onUpdate, opts = {}) {
+    const cur = rosBasisMode();
+    const modes = [
+      { key: 'blended', label: 'Blended (FP + Gibbs)', short: 'Blended', tip: 'Average of FantasyPros ROS + Jacob Gibbs PPR ROS boards, scaled to Sleeper PPG curve' },
+      { key: 'gibbs',   label: 'Gibbs ROS',            short: 'Gibbs',   tip: 'Jacob Gibbs PPR ROS board only, scaled to Sleeper PPG curve' },
+      { key: 'fp',      label: 'FantasyPros ROS',      short: 'FantasyPros', tip: 'FantasyPros ROS consensus only, scaled to Sleeper PPG curve' },
+      { key: 'sleeper', label: 'Sleeper Only',         short: 'Sleeper', tip: 'Raw Sleeper weekly projections with no expert rank scaling' },
+    ];
+    return h('div', {
+      class: 'ros-basis-bar',
+      role: 'group',
+      'aria-label': 'Redraft ROS ranking basis',
+      style: { display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', margin: '6px 0 12px' },
+    },
+      h('span', { class: 'muted', style: { fontSize: '0.74rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' } }, 'ROS Basis'),
+      h('div', { class: 'toggle-group', style: { flexWrap: 'wrap' } },
+        ...modes.map(m => h('button', {
+          type: 'button',
+          class: `toggle${cur === m.key ? ' active' : ''}`,
+          dataset: { rosBasis: m.key },
+          'aria-pressed': String(cur === m.key),
+          title: m.tip,
+          onclick: () => {
+            setRosBasisMode(m.key);
+            if (typeof onUpdate === 'function') onUpdate();
+            else route();
+          },
+        }, opts.fullLabels ? m.label : m.short))
+      ),
+      opts.showLink === false ? null : h('a', { href: '#sources', class: 'muted', style: { fontSize: '0.75rem', marginLeft: '2px' } }, 'Sources & Experts →')
+    );
   }
 
   // ---- live sleeper
@@ -1393,11 +1456,10 @@
     { hash:'#stats',        label:'Stats Lab',        icon:'∑',  section:'Tools' },
     { hash:'#draft',        label:'Draft Room',       icon:'▣',  section:'Tools' },
     { hash:'#prospects',    label:'Prospects',        icon:'◈',  section:'Tools' },
-    { hash:'#rankings',     label:'My Rankings',      icon:'#',  section:'Reference' },
-    { hash:'#experts',      label:'Experts',          icon:'◎',  section:'Reference' },
-    { hash:'#strategy',     label:'Framework',        icon:'◇',  section:'Reference' },
-    { hash:'#sources',      label:'Sources',          icon:'▶',  section:'Reference' },
-    { hash:'#about',        label:'About',            icon:'?',  section:'Reference' },
+    { hash:'#rankings',     label:'My Rankings',       icon:'#',  section:'Reference' },
+    { hash:'#sources',      label:'Sources & Experts', icon:'▶',  section:'Reference' },
+    { hash:'#strategy',     label:'Framework',         icon:'◇',  section:'Reference' },
+    { hash:'#about',        label:'About',             icon:'?',  section:'Reference' },
   ];
 
   // 9x9 pixel icons for the nav and Cmd+K, drawn as rects so every one shares
@@ -1647,6 +1709,7 @@
         if (href === hash) return true;
         const hp = href.replace(/^#/, '').split('/');
         const cp = hash.replace(/^#/, '').split('/');
+        if (href === '#sources' && cp[0] === 'experts') return true;
         // every segment in href must equal the corresponding segment in hash
         for (let i = 0; i < hp.length; i++) {
           if (hp[i] !== cp[i]) return false;
@@ -3163,6 +3226,7 @@
     // Standings / Strength rankings
     const lgDynasty = isDynastyLeague(lg);
     main.appendChild(h('h2', { class:'page-title standings-heading' }, 'Team Strength Rankings'));
+    if (!lgDynasty) main.appendChild(buildRosBasisBar(() => viewLeague(leagueId, tabArg)));
 
     // Value outlook per team. Sparkline bars + the dedicated line chart both
     // read this trajectory: projected starting-lineup value for CURRENT_SEASON..+5
@@ -5544,6 +5608,9 @@
       if (lg.import_unmatched?.length) main.appendChild(h('p', { class:'source-note' }, `Unmatched roster entries: ${lg.import_unmatched.join(', ')}.`));
       return;
     }
+    if (!rosterDynasty) {
+      main.appendChild(buildRosBasisBar(() => viewRoster(leagueId, rosterId, tabArg)));
+    }
     const s = computeRosterStrength(r, lg);
     const myRank = rankInLeague(lg, r.roster_id);
     const lineupRank = lineupRankInLeague(lg, r.roster_id);
@@ -7018,12 +7085,21 @@
     return n ? { spread: sum / n, n } : null;
   }
 
+  function sourcesHubTabBar(activeKey) {
+    const d = fpData();
+    return tabBar([
+      { key: 'basis',   label: 'ROS & Dynasty Basis', icon: '▶' },
+      { key: 'experts', label: 'Weekly FP Analysts',  icon: '◎', count: d?.experts?.length ?? null },
+    ], activeKey, k => k === 'experts' ? '#experts' : '#sources');
+  }
+
   function viewExperts(arg) {
     const main = $('#main');
     main.innerHTML = '';
     const d = fpData();
     if (!d) {
       main.appendChild(pageHeader({ eyebrow: 'REFERENCE', title: 'Experts' }));
+      main.appendChild(sourcesHubTabBar('experts'));
       main.appendChild(h('div', { class: 'empty' },
         'No expert data yet. Run python projections/build_fantasypros_experts.py.'));
       return;
@@ -7035,6 +7111,7 @@
       sub: `Browse every FantasyPros board for ${d.season} week ${d.week}, PPR. Add analysts `
          + `to your rotation and their ranks appear as separate columns in Weekly Rankings.`,
     }));
+    main.appendChild(sourcesHubTabBar('experts'));
 
     // FantasyPros does not publish the week's boards all at once. On a Monday
     // ten analysts have filed and by Thursday it is about a hundred and
@@ -7537,11 +7614,56 @@
     main.innerHTML = '';
     main.appendChild(h('div', { class:'page-header' },
       h('div', null,
-        h('h1', { class:'page-title' }, 'Sources'),
-        h('p', { class:'page-sub' }, 'Choose which analysts inform your aggregated rankings. Toggle individual videos within each source.')
+        h('h1', { class:'page-title' }, 'Sources & Experts'),
+        h('p', { class:'page-sub' }, 'Configure your Redraft rest-of-season basis, Dynasty consensus channels, and table columns.')
       )
     ));
+    main.appendChild(sourcesHubTabBar('basis'));
 
+    // Redraft ROS Basis
+    main.appendChild(h('h2', { class:'page-title', style:{ fontSize:'1.1rem', marginTop:'16px' } }, 'Redraft Rest-of-Season Basis'));
+    main.appendChild(h('p', { class:'page-sub', style:{ marginTop:'-6px' } },
+      'Controls starter position ranks and scales rest-of-season projected points monotonically along Sleeper\'s positional PPG curve in redraft leagues (Washington Football League, Phi Kap Fantasy).'));
+    const rosCard = h('div', { class:'card', style:{ marginBottom:'20px' } });
+    rosCard.appendChild(buildRosBasisBar(() => viewSources(), { showLink: false, fullLabels: true }));
+    const rosSourcesList = [
+      {
+        id: 'fp-ros',
+        title: 'FantasyPros ROS Consensus',
+        desc: 'Aggregated rest-of-season PPR positional ranks across FantasyPros analysts.',
+        on: isFpRosEnabled(state.settings),
+      },
+      {
+        id: 'gibbs-ppr-2026-08',
+        title: 'Jacob Gibbs PPR ROS',
+        desc: 'Derived full-PPR rest-of-season positional ranks from Jacob Gibbs.',
+        on: isGibbsRosEnabled(state.settings),
+      },
+    ];
+    for (const item of rosSourcesList) {
+      rosCard.appendChild(h('div', { class:'row', style:{ display:'flex', alignItems:'center', gap:'12px', padding:'8px 0', borderTop:'1px solid var(--border)' } },
+        h('label', { class:'switch' },
+          h('input', { type:'checkbox', checked: item.on ? '' : null, onchange:(e)=>{
+            state.settings.enabledExpertCols = state.settings.enabledExpertCols || {};
+            if (state.settings.rosSources) delete state.settings.rosSources;
+            state.settings.enabledExpertCols[item.id] = e.target.checked;
+            saveSettings();
+            invalidateRankIndex();
+            viewSources();
+          }}),
+          h('span', { class:'slider' })
+        ),
+        h('div', { style:{ minWidth:0 } },
+          h('div', { style:{ fontWeight:600 } }, item.title),
+          h('div', { class:'desc muted', style:{ fontSize:'12px' } }, item.desc)
+        )
+      ));
+    }
+    main.appendChild(rosCard);
+
+    main.appendChild(h('h2', { class:'page-title', style:{ fontSize:'1.1rem', marginTop:'24px' } }, 'Dynasty Consensus Sources'));
+    main.appendChild(h('p', { class:'page-sub', style:{ marginTop:'-6px' } },
+      'Choose which analysts inform your aggregated dynasty rankings. Toggle individual videos within each source.'));
     const grid = h('div', { class:'card-grid cols-2' });
     for (const src of getAllSources()) {
       grid.appendChild(renderSourceCard(src));
@@ -13834,14 +13956,16 @@
   function oddsPrint(lg) {
     const ids = new Set((lg.rosters || []).flatMap(r => r.players || []).map(String)), P = window.PLAYERS || {};
     const wk = (window.WEEKLY_RANKINGS?.players || []).filter(p => ids.has(String(p.id)));
+    const rosKey = !isDynastyLeague(lg) ? rosCacheKey(lg) : null;
     const s = JSON.stringify([lg, [...ids].map(id => P[id] || null), wk, window.BUILD_INFO?.files,
-      document.querySelector('script[src*="js/app.js"]')?.getAttribute('src')]);
+      document.querySelector('script[src*="js/app.js"]')?.getAttribute('src'), rosKey]);
     return `${simKey(1, s)}.${simKey(2, s)}`;
   }
   // `async` runs a miss on championshipOddsAsync and returns a promise; a hit stays sync.
   // ponytail: a sync caller landing mid async run computes its own copy, add a pending map if that shows up.
   function oddsFor(lg, src, whatIf, sims, async = false) {
-    const key = `${lg.id}|${src}|${sims}|${[...whatIf].sort().join(',')}`;
+    const basisSuffix = !isDynastyLeague(lg) ? `|${rosBasisMode()}` : '';
+    const key = `${lg.id}|${src}|${sims}|${[...whatIf].sort().join(',')}${basisSuffix}`;
     if (ODDS_CACHE.has(key)) return ODDS_CACHE.get(key);
     const me = (lg.rosters || []).find(r => r.is_me);
     const wi = (whatIf.length && me) ? { [me.roster_id]: { add: whatIf, drop: [] } } : null;
@@ -19476,6 +19600,7 @@
     // Build searchable index of: routes, leagues, rosters, ranked players, all sleeper players
     const items = [];
     for (const r of ROUTES) items.push({ kind:'route', label:r.label, hint:r.section, icon:r.icon, hash:r.hash });
+    items.push({ kind:'route', label:'Weekly FP Analysts (Experts)', hint:'Reference · Sources & Experts', icon:'◎', hash:'#experts' });
     // The Gibbs tier board is a generated static page, not a hash route, so it
     // needs `url` rather than `hash`. Cmd+K is the front door; it belongs here.
     items.push({ kind:'route', label:'Gibbs Tier Board', hint:`Reference · ${gibbsBoardShape().text}, half-PPR redraft`,
