@@ -40,33 +40,36 @@ def nfl_week_final(season, week):
 
 def score_week(lg, matchups, week):
     """Mutates lg. Returns a one-line summary, or None when the week cannot be scored."""
-    pts = {m["roster_id"]: m.get("points") for m in matchups}
-    # Unplayed weeks come back as all zeros, not nulls.
-    if not pts or any(v is None for v in pts.values()) or not any(pts.values()):
-        return None
+    pts = {m.get("roster_id"): m.get("points") for m in matchups}
     sides = {}
     for m in matchups:
         if m.get("matchup_id") is not None:
-            sides.setdefault(m["matchup_id"], []).append(m["roster_id"])
+            sides.setdefault(m["matchup_id"], []).append(m.get("roster_id"))
     opp = {}
     for s in sides.values():
         if len(s) == 2:
             opp[s[0]], opp[s[1]] = s[1], s[0]
+    # All or nothing: every roster needs a numeric score and exactly one opponent, or
+    # the week is left unscored and last_scored_leg stays put for the next run. Scoring
+    # a partial week and advancing would drop the missing roster's game for good.
+    # Unplayed weeks come back as all zeros, not nulls.
+    expected = [r["roster_id"] for r in lg.get("rosters") or []]
+    if (not expected or set(pts) != set(expected) or len(matchups) != len(expected)
+            or any(not isinstance(pts[rid], (int, float)) for rid in expected)
+            or not any(pts.values()) or any(rid not in opp for rid in expected)):
+        return None
     med = statistics.median(pts.values()) if lg.get("league_average_match") else None
     for r in lg["rosters"]:
         rid = r["roster_id"]
-        mine = pts.get(rid)
-        if mine is None:
-            continue
-        games = [pts[opp[rid]]] if rid in opp else []
+        mine = pts[rid]
+        games = [pts[opp[rid]]]
         if med is not None:
             games.append(med)
         for theirs in games:
             key = "wins" if mine > theirs else "losses" if mine < theirs else "ties"
             r[key] = r.get(key, 0) + 1
         r["fpts"] = round((r.get("fpts") or 0) + mine, 2)
-        if rid in opp:
-            r["fpts_against"] = round((r.get("fpts_against") or 0) + pts[opp[rid]], 2)
+        r["fpts_against"] = round((r.get("fpts_against") or 0) + pts[opp[rid]], 2)
     lg["last_scored_leg"] = week
     lg["live_scored_week"] = week   # marks the records as ours, not Sleeper's, until it finalizes
     me = next((r for r in lg["rosters"] if r.get("is_me")), None)
@@ -82,6 +85,15 @@ def self_check():
     w = {r["roster_id"]: (r["wins"], r["losses"]) for r in lg["rosters"]}
     assert w == {1: (2, 0), 2: (0, 2), 3: (0, 2), 4: (2, 0)}, w   # median 95
     assert score_week({"name": "x", "rosters": []}, [{"roster_id": 1, "points": None}], 7) is None
+    # Regression: a roster missing from the matchup feed leaves the league untouched.
+    lg2 = {"name": "m", "last_scored_leg": 6, "rosters": [
+        {"roster_id": i, "wins": 3, "losses": 3, "ties": 0, "fpts": 600, "fpts_against": 600} for i in (1, 2, 3, 4)]}
+    import copy
+    before = copy.deepcopy(lg2)
+    assert score_week(lg2, m[:3], 7) is None and lg2 == before, lg2
+    # ...and so does a roster with no opponent, or a non-numeric score.
+    assert score_week(lg2, m[:2] + [dict(m[2], matchup_id=9), m[3]], 7) is None and lg2 == before
+    assert score_week(lg2, m[:3] + [dict(m[3], points="120")], 7) is None and lg2 == before
     assert score_week({"name": "x", "rosters": []}, [{"roster_id": 1, "points": 0}], 8) is None
     print("self-check ok")
 

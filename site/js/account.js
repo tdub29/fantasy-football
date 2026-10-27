@@ -130,22 +130,25 @@
     // week past last_scored_leg from its own matchup points (site/data/apply_live_week.py
     // does the same for the build). Max PF is left to Sleeper: it needs optimal lineups.
     let scored = Number(st.last_scored_leg) || 0;
-    for (let w = scored + 1; w < week && weeks.includes(w); w++) {
+    // Regular season only, as apply_live_week.py: playoff weeks never count toward W-L.
+    for (let w = scored + 1; w < Math.min(week, playoffStart) && weeks.includes(w); w++) {
       const rows = wkRows[weeks.indexOf(w)] || [], pts = {};
       for (const m of rows) if (m && m.roster_id != null) pts[m.roster_id] = m.points;
-      const vals = Object.values(pts);
-      if (!vals.length || vals.some(v => v == null) || !vals.some(Boolean)) break;
-      const { opp } = pairs(rows), sorted = vals.slice().sort((a, b) => a - b);
+      const vals = Object.values(pts), { opp } = pairs(rows);
+      // All or nothing, as apply_live_week.py: every roster scored and paired, or stop.
+      const ids = new Set(outRosters.map(r => r.roster_id));
+      if (!vals.some(Boolean) || !outRosters.length || rows.length !== outRosters.length || rows.some(m => !m || !ids.has(m.roster_id))
+        || outRosters.some(r => typeof pts[r.roster_id] !== 'number' || opp[r.roster_id] == null)) break;
+      const sorted = vals.slice().sort((a, b) => a - b);
       const med = st.league_average_match ? (sorted[(sorted.length - 1) >> 1] + sorted[sorted.length >> 1]) / 2 : null;
       for (const r of outRosters) {
         const mine = pts[r.roster_id];
-        if (mine == null) continue;
-        for (const theirs of [opp[r.roster_id] != null ? pts[opp[r.roster_id]] : null, med]) {
+        for (const theirs of [pts[opp[r.roster_id]], med]) {
           if (theirs == null) continue;
           if (mine > theirs) r.wins++; else if (mine < theirs) r.losses++; else r.ties++;
         }
-        r.fpts += mine;
-        if (opp[r.roster_id] != null) r.fpts_against += pts[opp[r.roster_id]];
+        r.fpts = Math.round((r.fpts + mine) * 100) / 100;
+        r.fpts_against = Math.round((r.fpts_against + pts[opp[r.roster_id]]) * 100) / 100;
       }
       scored = w;
     }

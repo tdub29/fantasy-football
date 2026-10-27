@@ -442,10 +442,14 @@ print(f"wrote leagues.js ({(SITE_DATA / 'leagues.js').stat().st_size:,} bytes)")
 
 # Sleeper stamps W-L and points-for a day or two after a week ends, so every refresh
 # scores the finished weeks it has not stamped yet (ESPN posts its own finals above).
-# Fail open: a network miss leaves Sleeper's own numbers, never a guessed record.
+# Fails closed: on any error leagues.js keeps Sleeper's own numbers and the step exits 2.
 try:
     import apply_live_week
     apply_live_week.main()
 except Exception as e:  # noqa: BLE001
-    print(f"apply_live_week skipped: {e}")
+    # leagues.js above is complete with Sleeper's own records; only the catch-up
+    # failed. Say so and fail the step, so the refresh reports PARTIAL, not success.
+    print(f"PARTIAL: finished-week catch-up failed ({type(e).__name__}: {e}); "
+          "leagues.js holds Sleeper's own records", file=sys.stderr)
+    sys.exit(2)
 print(f"wrote players.js ({(SITE_DATA / 'players.js').stat().st_size:,} bytes)")

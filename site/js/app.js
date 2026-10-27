@@ -4152,7 +4152,10 @@
           + ` · Gibbs ${gibbsCoverage.available ? `${coverage.gibbsPlayers || 0} as of ${gibbsCoverage.updated}` : 'unavailable'}${limitNote}`
           + ` · ROS ${rosMeta.available ? `${coverage.rosPlayers || 0} as of ${rosMeta.updated}` : 'unavailable'}`
           + `${rosStale ? ' (stale)' : ''}`
-          + `${hasGibbsRos ? ` · Gibbs ROS ${coverage.gibbsRosPlayers} as of ${(coverage.gibbsRos || {}).updated}` : ' · Gibbs ROS not published'}.`
+          // "Unavailable", never "not published": a failed pull and an unposted board
+          // look the same from here.
+          + `${hasGibbsRos ? ` · Gibbs ROS ${coverage.gibbsRosPlayers} as of ${(coverage.gibbsRos || {}).updated}` : ' · Gibbs ROS unavailable'}`
+          + `${gibbsWeekPosted ? '' : ` · Gibbs* week ${currentWeek} board unavailable${window.GIBBS_WEEK?.week && window.GIBBS_WEEK.week !== currentWeek ? ` (last pulled: week ${window.GIBBS_WEEK.week})` : window.GIBBS_WEEK ? ' (his PPR conversion has not caught up)' : ''}`}.`
           // A single expert's board is a SUBMISSION with a date, and he revises it after
           // he records. On 2026-09-16 his video showed McConkey WR14 while the board he
           // published at 23:18 that night reads WR20, which looks like a bug in this
