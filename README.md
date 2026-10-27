@@ -54,3 +54,7 @@ page download.
 ## License
 
 [MIT](LICENSE)
+
+## More projects
+
+More of my work and contact details are at [twhite.dev](https://twhite.dev).
