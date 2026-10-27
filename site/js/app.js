@@ -739,11 +739,14 @@
       for (const r of lg.rosters || []) {
         const x = L.rosters.find(y => y.id === r.roster_id), s = x?.s;
         if (!x) continue;
+        // The build may already hold a week Sleeper has not stamped yet (apply_live_week.py);
+        // a live record with fewer games is the stale one, so keep the build's.
+        const stale = (s.wins || 0) + (s.losses || 0) + (s.ties || 0) < (r.wins || 0) + (r.losses || 0) + (r.ties || 0);
         Object.assign(r, { players: x.players, starters: x.starters, taxi: x.taxi, reserve: x.reserve,
-          wins: s.wins || 0, losses: s.losses || 0, ties: s.ties || 0,
-          fpts: (s.fpts || 0) + (s.fpts_decimal || 0) / 100,
-          fpts_against: (s.fpts_against || 0) + (s.fpts_against_decimal || 0) / 100,
-          ppts: s.ppts == null ? null : s.ppts + (s.ppts_decimal || 0) / 100,
+          ...(stale ? {} : { wins: s.wins || 0, losses: s.losses || 0, ties: s.ties || 0,
+            fpts: (s.fpts || 0) + (s.fpts_decimal || 0) / 100,
+            fpts_against: (s.fpts_against || 0) + (s.fpts_against_decimal || 0) / 100,
+            ppts: s.ppts == null ? null : s.ppts + (s.ppts_decimal || 0) / 100 }),
           waiver_budget_used: s.waiver_budget_used || 0, waiver_position: s.waiver_position,
           opponent_roster_id: L.opp[r.roster_id] ?? null });
       }

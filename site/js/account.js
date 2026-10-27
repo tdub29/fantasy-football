@@ -125,6 +125,30 @@
         if (t && p.player_id && !t.players.includes(p.player_id)) t.players.push(p.player_id);
       }
     }
+    // Sleeper rolls state.week on Tuesday but stamps W-L and points-for a day or two later,
+    // so a finished week reads as unplayed and every record lags it. Score each finished
+    // week past last_scored_leg from its own matchup points (site/data/apply_live_week.py
+    // does the same for the build). Max PF is left to Sleeper: it needs optimal lineups.
+    let scored = Number(st.last_scored_leg) || 0;
+    for (let w = scored + 1; w < week && weeks.includes(w); w++) {
+      const rows = wkRows[weeks.indexOf(w)] || [], pts = {};
+      for (const m of rows) if (m && m.roster_id != null) pts[m.roster_id] = m.points;
+      const vals = Object.values(pts);
+      if (!vals.length || vals.some(v => v == null) || !vals.some(Boolean)) break;
+      const { opp } = pairs(rows), sorted = vals.slice().sort((a, b) => a - b);
+      const med = st.league_average_match ? (sorted[(sorted.length - 1) >> 1] + sorted[sorted.length >> 1]) / 2 : null;
+      for (const r of outRosters) {
+        const mine = pts[r.roster_id];
+        if (mine == null) continue;
+        for (const theirs of [opp[r.roster_id] != null ? pts[opp[r.roster_id]] : null, med]) {
+          if (theirs == null) continue;
+          if (mine > theirs) r.wins++; else if (mine < theirs) r.losses++; else r.ties++;
+        }
+        r.fpts += mine;
+        if (opp[r.roster_id] != null) r.fpts_against += pts[opp[r.roster_id]];
+      }
+      scored = w;
+    }
     const pos = lg.roster_positions || [];
     const scoringMismatch = weeklyMismatch(lg.scoring_settings || {}, lg.season);
     return {
@@ -133,7 +157,7 @@
         total_rosters: lg.total_rosters, roster_positions: pos, scoring: lg.scoring_settings || {},
         forecast_unavailable:scoringMismatch ? 'League scoring or season is not covered by the shared weekly projection model.' : null,
         projection_unavailable:st.type !== 2 && scoringMismatch,
-        last_scored_leg: st.last_scored_leg,
+        last_scored_leg: st.last_scored_leg == null ? st.last_scored_leg : scored,
         divisions: st.divisions || 0, playoff_seed_type: st.playoff_seed_type,
         playoff_round_type: st.playoff_round_type, start_week: st.start_week,
         league_average_match: st.league_average_match,
