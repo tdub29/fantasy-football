@@ -252,7 +252,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 1227.0,
         "fpts_against": 831.38,
-        "ppts": 1273.64,
+        "ppts": 1446.36,
         "waiver_budget_used": 37,
         "waiver_position": 7,
         "division": null
@@ -265,15 +265,15 @@ window.LEAGUES = [
         "is_me": false,
         "opponent_roster_id": 1,
         "starters": [
-          "12545",
+          "3257",
           "9221",
-          "4034",
+          "8155",
           "9493",
           "9488",
           "13330",
-          "12527",
+          "6865",
           "12512",
-          "11576",
+          "12514",
           "11586"
         ],
         "players": [
@@ -321,7 +321,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 1145.68,
         "fpts_against": 898.68,
-        "ppts": 1150.74,
+        "ppts": 1352.92,
         "waiver_budget_used": 0,
         "waiver_position": 4,
         "division": null
@@ -386,7 +386,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 660.58,
         "fpts_against": 1002.42,
-        "ppts": 642.06,
+        "ppts": 751.54,
         "waiver_budget_used": 45,
         "waiver_position": 1,
         "division": null
@@ -459,7 +459,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 816.4,
         "fpts_against": 949.04,
-        "ppts": 974.26,
+        "ppts": 1103.16,
         "waiver_budget_used": 52,
         "waiver_position": 3,
         "division": null
@@ -527,7 +527,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 970.62,
         "fpts_against": 996.56,
-        "ppts": 1000.94,
+        "ppts": 1192.62,
         "waiver_budget_used": 0,
         "waiver_position": 6,
         "division": null
@@ -601,7 +601,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 1039.28,
         "fpts_against": 1034.12,
-        "ppts": 1061.52,
+        "ppts": 1278.76,
         "waiver_budget_used": 26,
         "waiver_position": 8,
         "division": null
@@ -675,7 +675,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 803.9,
         "fpts_against": 732.44,
-        "ppts": 822.52,
+        "ppts": 955.1,
         "waiver_budget_used": 68,
         "waiver_position": 9,
         "division": null
@@ -684,16 +684,16 @@ window.LEAGUES = [
         "roster_id": 8,
         "owner_id": "604168016833351680",
         "owner_name": "djcomstock",
-        "team_name": "Breece’s Pieces",
+        "team_name": "Breece\u2019s Pieces",
         "is_me": false,
         "opponent_roster_id": 10,
         "starters": [
           "11559",
           "11237",
           "12543",
-          "11616",
+          "11625",
           "12499",
-          "5001",
+          "8172",
           "3634",
           "11629",
           "1479",
@@ -745,7 +745,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 618.02,
         "fpts_against": 977.2,
-        "ppts": 729.14,
+        "ppts": 825.36,
         "waiver_budget_used": 103,
         "waiver_position": 5,
         "division": null
@@ -815,7 +815,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 1029.68,
         "fpts_against": 891.9,
-        "ppts": 1028.52,
+        "ppts": 1178.7,
         "waiver_budget_used": 0,
         "waiver_position": 2,
         "division": null
@@ -829,15 +829,15 @@ window.LEAGUES = [
         "opponent_roster_id": 8,
         "starters": [
           "6804",
-          "10235",
-          "9757",
+          "4147",
+          "13287",
           "7526",
-          "12536",
+          "9500",
           "8130",
-          "7569",
+          "4039",
           "3271",
           "8167",
-          "7002"
+          "9757"
         ],
         "players": [
           "10235",
@@ -889,7 +889,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 897.12,
         "fpts_against": 894.54,
-        "ppts": 966.42,
+        "ppts": 1078.54,
         "waiver_budget_used": 197,
         "waiver_position": 10,
         "division": null
@@ -899,7 +899,7 @@ window.LEAGUES = [
       {
         "user_id": "604168016833351680",
         "display_name": "djcomstock",
-        "team_name": "Breece’s Pieces"
+        "team_name": "Breece\u2019s Pieces"
       },
       {
         "user_id": "726629031964975104",
@@ -1354,8 +1354,7 @@ window.LEAGUES = [
         "owner_id": 8,
         "previous_owner_id": 10
       }
-    ],
-    "live_scored_week": 7
+    ]
   },
   {
     "id": "1389722402430136320",
@@ -1495,7 +1494,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 800.98,
         "fpts_against": 1024.06,
-        "ppts": 781.88,
+        "ppts": 894.58,
         "waiver_budget_used": 100,
         "waiver_position": 7,
         "division": 1
@@ -1548,7 +1547,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 775.54,
         "fpts_against": 999.16,
-        "ppts": 788.26,
+        "ppts": 874.74,
         "waiver_budget_used": 96,
         "waiver_position": 12,
         "division": 2
@@ -1598,7 +1597,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 953.86,
         "fpts_against": 738.42,
-        "ppts": 921.04,
+        "ppts": 1106.16,
         "waiver_budget_used": 90,
         "waiver_position": 5,
         "division": 1
@@ -1651,7 +1650,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 825.06,
         "fpts_against": 923.4,
-        "ppts": 791.02,
+        "ppts": 934.06,
         "waiver_budget_used": 0,
         "waiver_position": 1,
         "division": 2
@@ -1704,7 +1703,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 861.5,
         "fpts_against": 875.96,
-        "ppts": 794.7,
+        "ppts": 919.22,
         "waiver_budget_used": 83,
         "waiver_position": 10,
         "division": 1
@@ -1754,7 +1753,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 878.88,
         "fpts_against": 918.32,
-        "ppts": 883.12,
+        "ppts": 1031.5,
         "waiver_budget_used": 15,
         "waiver_position": 4,
         "division": 2
@@ -1763,7 +1762,7 @@ window.LEAGUES = [
         "roster_id": 7,
         "owner_id": "726629031964975104",
         "owner_name": "tdub1329",
-        "team_name": "tuten browns🏆",
+        "team_name": "tuten browns\ud83c\udfc6",
         "is_me": true,
         "opponent_roster_id": 10,
         "starters": [
@@ -1807,7 +1806,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 917.04,
         "fpts_against": 880.24,
-        "ppts": 853.76,
+        "ppts": 1007.78,
         "waiver_budget_used": 41,
         "waiver_position": 9,
         "division": 1
@@ -1859,7 +1858,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 893.5,
         "fpts_against": 794.48,
-        "ppts": 863.5,
+        "ppts": 994.18,
         "waiver_budget_used": 0,
         "waiver_position": 2,
         "division": 2
@@ -1912,7 +1911,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 882.4,
         "fpts_against": 826.7,
-        "ppts": 927.06,
+        "ppts": 1029.38,
         "waiver_budget_used": 25,
         "waiver_position": 11,
         "division": 1
@@ -1965,7 +1964,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 860.66,
         "fpts_against": 969.34,
-        "ppts": 845.2,
+        "ppts": 990.76,
         "waiver_budget_used": 15,
         "waiver_position": 8,
         "division": 2
@@ -2018,7 +2017,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 1039.56,
         "fpts_against": 799.9,
-        "ppts": 1019.58,
+        "ppts": 1152.16,
         "waiver_budget_used": 0,
         "waiver_position": 3,
         "division": 1
@@ -2071,7 +2070,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 967.24,
         "fpts_against": 906.24,
-        "ppts": 949.82,
+        "ppts": 1112.8,
         "waiver_budget_used": 15,
         "waiver_position": 6,
         "division": 2
@@ -2086,7 +2085,7 @@ window.LEAGUES = [
       {
         "user_id": "726629031964975104",
         "display_name": "tdub1329",
-        "team_name": "tuten browns🏆"
+        "team_name": "tuten browns\ud83c\udfc6"
       },
       {
         "user_id": "1015040901544095744",
@@ -2195,8 +2194,7 @@ window.LEAGUES = [
         }
       }
     ],
-    "traded_picks": [],
-    "live_scored_week": 7
+    "traded_picks": []
   },
   {
     "id": "1314860638501076992",
@@ -2307,17 +2305,17 @@ window.LEAGUES = [
         "is_me": false,
         "opponent_roster_id": 5,
         "starters": [
-          "7083",
-          "5967",
+          "4881",
+          "12490",
           "6790",
           "7547",
           "6786",
           "3214",
           "11586",
-          "11576",
+          "5967",
           "13279",
           "10232",
-          "8119"
+          "7523"
         ],
         "players": [
           "10232",
@@ -2365,7 +2363,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 1226.82,
         "fpts_against": 1071.04,
-        "ppts": 1146.94,
+        "ppts": 1365.66,
         "waiver_budget_used": 80,
         "waiver_position": 4,
         "division": null
@@ -2441,7 +2439,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 1216.4,
         "fpts_against": 1112.56,
-        "ppts": 1336.22,
+        "ppts": 1557.34,
         "waiver_budget_used": 86,
         "waiver_position": 9,
         "division": null
@@ -2450,7 +2448,7 @@ window.LEAGUES = [
         "roster_id": 3,
         "owner_id": "999197164704350208",
         "owner_name": "GPaduke11",
-        "team_name": "Mother Shough’ers",
+        "team_name": "Mother Shough\u2019ers",
         "is_me": false,
         "opponent_roster_id": 6,
         "starters": [
@@ -2517,7 +2515,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 969.22,
         "fpts_against": 980.78,
-        "ppts": 1026.42,
+        "ppts": 1176.22,
         "waiver_budget_used": 7,
         "waiver_position": 10,
         "division": null
@@ -2593,7 +2591,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 879.2,
         "fpts_against": 1100.18,
-        "ppts": 997.99,
+        "ppts": 1163.02,
         "waiver_budget_used": 77,
         "waiver_position": 7,
         "division": null
@@ -2668,7 +2666,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 1014.7,
         "fpts_against": 996.68,
-        "ppts": 1003.82,
+        "ppts": 1180.2,
         "waiver_budget_used": 12,
         "waiver_position": 8,
         "division": null
@@ -2736,7 +2734,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 1213.3,
         "fpts_against": 1109.48,
-        "ppts": 1184.24,
+        "ppts": 1360.52,
         "waiver_budget_used": 96,
         "waiver_position": 6,
         "division": null
@@ -2800,7 +2798,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 1031.2,
         "fpts_against": 967.78,
-        "ppts": 975.06,
+        "ppts": 1123.2,
         "waiver_budget_used": 200,
         "waiver_position": 5,
         "division": null
@@ -2861,7 +2859,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 849.12,
         "fpts_against": 1103.2,
-        "ppts": 868.58,
+        "ppts": 1023.54,
         "waiver_budget_used": 10,
         "waiver_position": 2,
         "division": null
@@ -2924,8 +2922,8 @@ window.LEAGUES = [
         "losses": 5,
         "ties": 0,
         "fpts": 1192.1,
-        "fpts_against": 1119.0,
-        "ppts": 1195.1,
+        "fpts_against": 1118.99,
+        "ppts": 1391.2,
         "waiver_budget_used": 15,
         "waiver_position": 1,
         "division": null
@@ -2994,7 +2992,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 984.4,
         "fpts_against": 1015.76,
-        "ppts": 1012.12,
+        "ppts": 1138.68,
         "waiver_budget_used": 13,
         "waiver_position": 3,
         "division": null
@@ -3039,7 +3037,7 @@ window.LEAGUES = [
       {
         "user_id": "999197164704350208",
         "display_name": "GPaduke11",
-        "team_name": "Mother Shough’ers"
+        "team_name": "Mother Shough\u2019ers"
       },
       {
         "user_id": "999414407622897664",
@@ -3493,8 +3491,7 @@ window.LEAGUES = [
         "owner_id": 7,
         "previous_owner_id": 9
       }
-    ],
-    "live_scored_week": 7
+    ]
   },
   {
     "id": "1312276370583220224",
@@ -3687,7 +3684,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 1095.17,
         "fpts_against": 805.73,
-        "ppts": 1114.8,
+        "ppts": 1326.18,
         "waiver_budget_used": 0,
         "waiver_position": 3,
         "division": 1
@@ -3771,7 +3768,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 895.22,
         "fpts_against": 913.73,
-        "ppts": 961.26,
+        "ppts": 1109.28,
         "waiver_budget_used": 10,
         "waiver_position": 6,
         "division": 2
@@ -3846,7 +3843,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 1002.93,
         "fpts_against": 774.97,
-        "ppts": 1049.35,
+        "ppts": 1219.23,
         "waiver_budget_used": 10,
         "waiver_position": 10,
         "division": 2
@@ -3916,7 +3913,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 900.91,
         "fpts_against": 1004.67,
-        "ppts": 983.73,
+        "ppts": 1134.05,
         "waiver_budget_used": 15,
         "waiver_position": 4,
         "division": 2
@@ -4001,7 +3998,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 1079.28,
         "fpts_against": 903.92,
-        "ppts": 1136.76,
+        "ppts": 1345.6,
         "waiver_budget_used": 33,
         "waiver_position": 7,
         "division": 1
@@ -4073,7 +4070,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 948.94,
         "fpts_against": 958.54,
-        "ppts": 1004.86,
+        "ppts": 1159.74,
         "waiver_budget_used": 30,
         "waiver_position": 5,
         "division": 1
@@ -4149,7 +4146,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 933.69,
         "fpts_against": 956.62,
-        "ppts": 1030.06,
+        "ppts": 1173.76,
         "waiver_budget_used": 20,
         "waiver_position": 9,
         "division": 2
@@ -4208,7 +4205,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 703.58,
         "fpts_against": 911.02,
-        "ppts": 829.58,
+        "ppts": 953.58,
         "waiver_budget_used": 0,
         "waiver_position": 1,
         "division": 1
@@ -4269,7 +4266,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 962.84,
         "fpts_against": 995.39,
-        "ppts": 999.34,
+        "ppts": 1152.46,
         "waiver_budget_used": 0,
         "waiver_position": 2,
         "division": 2
@@ -4337,7 +4334,7 @@ window.LEAGUES = [
         "ties": 0,
         "fpts": 816.76,
         "fpts_against": 1114.73,
-        "ppts": 929.03,
+        "ppts": 1042.73,
         "waiver_budget_used": 0,
         "waiver_position": 8,
         "division": 1
@@ -4740,8 +4737,7 @@ window.LEAGUES = [
         "owner_id": 10,
         "previous_owner_id": 5
       }
-    ],
-    "live_scored_week": 7
+    ]
   },
   {
     "id": "1532688686",

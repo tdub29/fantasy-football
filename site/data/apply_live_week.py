@@ -27,6 +27,17 @@ def get(path):
         return json.load(r)
 
 
+def nfl_week_final(season, week):
+    """Every NFL game of the week is final (ESPN scoreboard). A fantasy week with any
+    game left is still moving, so it is never scored as a result."""
+    url = ("https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard"
+           f"?seasontype=2&week={week}&dates={season}")
+    req = urllib.request.Request(url, headers={"User-Agent": "fantasy-hub"})
+    with urllib.request.urlopen(req, timeout=30) as r:
+        events = json.load(r).get("events") or []
+    return bool(events) and all(e["status"]["type"]["completed"] for e in events)
+
+
 def score_week(lg, matchups, week):
     """Mutates lg. Returns a one-line summary, or None when the week cannot be scored."""
     pts = {m["roster_id"]: m.get("points") for m in matchups}
@@ -82,15 +93,24 @@ def main():
     head, rest = text.split("window.LEAGUES = ", 1)
     body, tail = rest.split(";\nwindow.MY_USER_ID", 1)
     leagues = json.loads(body)
-    week = int(get("/state/nfl")["week"])
+    state = get("/state/nfl")
+    week, season = int(state["week"]), state["season"]
+    finals = {}
     changed = False
     for lg in leagues:
         if lg.get("platform") not in (None, "sleeper"):
             continue
         # Sleeper rolls state.week forward on Tuesday before it finalizes the week just
         # played, so walk forward from the last week it scored rather than trusting state.
-        while (lg.get("last_scored_leg") or 0) < week:
+        # Regular season only: playoff weeks do not count toward W-L.
+        last = min(week, int(lg.get("playoff_week_start") or 15) - 1)
+        while (lg.get("last_scored_leg") or 0) < last:
             w = (lg.get("last_scored_leg") or 0) + 1
+            if w not in finals:
+                finals[w] = nfl_week_final(season, w)
+            if not finals[w]:
+                print(f"{lg['name']}: week {w} has NFL games left, left as is")
+                break
             line = score_week(lg, get(f"/league/{lg['id']}/matchups/{w}"), w)
             print(line or f"{lg['name']}: week {w} not played yet, left as is")
             if not line:
