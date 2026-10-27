@@ -13,7 +13,7 @@
       "id": "sleeper-idp-2026",
       "title": "Sleeper IDP Usage Rankings (2026)",
       "url": "https://sleeper.com/research",
-      "publishedAt": "2026-10-20",
+      "publishedAt": "2026-10-26",
       "format": "idp",
       "defaultEnabled": true,
       "players": [
@@ -117,7 +117,7 @@
           "note": "Sleeper: started 71.9%, owned 88.6%. LB5 by usage."
         },
         {
-          "name": "Will Anderson",
+          "name": "Will Anderson Jr.",
           "pos": "DL",
           "team": "HOU",
           "age": 25,
@@ -175,7 +175,7 @@
           "name": "Jordyn Brooks",
           "pos": "LB",
           "team": "MIA",
-          "age": 28,
+          "age": 29,
           "category": "cornerstone",
           "tier": "B",
           "ktcValue": 4912,
@@ -216,7 +216,7 @@
           "note": "Sleeper: started 59.3%, owned 71.4%. LB11 by usage."
         },
         {
-          "name": "Derwin James",
+          "name": "Derwin James Jr.",
           "pos": "DB",
           "team": "LAC",
           "age": 30,
@@ -329,7 +329,7 @@
           "name": "Nick Bosa",
           "pos": "DL",
           "team": "SF",
-          "age": 28,
+          "age": 29,
           "category": "foundational",
           "tier": "S",
           "ktcValue": 3128,
@@ -392,7 +392,7 @@
           "note": "Sleeper: started 33.1%, owned 43.6%. LB17 by usage."
         },
         {
-          "name": "Ernest Jones",
+          "name": "Ernest Jones IV",
           "pos": "LB",
           "team": "SEA",
           "age": 26,
@@ -590,7 +590,7 @@
           "note": "Sleeper: started 21.7%, owned 31.7%. LB25 by usage."
         },
         {
-          "name": "Kevin Byard",
+          "name": "Kevin Byard III",
           "pos": "DB",
           "team": "NE",
           "age": 33,
@@ -623,7 +623,7 @@
           "note": "Sleeper: started 19.7%, owned 28.2%. DB16 by usage."
         },
         {
-          "name": "Rueben Bain",
+          "name": "Rueben Bain Jr.",
           "pos": "DL",
           "team": "TB",
           "age": 22,
@@ -656,7 +656,7 @@
           "note": "Sleeper: started 16.4%, owned 24.3%. DB17 by usage."
         },
         {
-          "name": "Demetrius Knight",
+          "name": "Demetrius Knight Jr.",
           "pos": "LB",
           "team": "CIN",
           "age": 26,
@@ -700,7 +700,7 @@
           "note": "Sleeper: started 15.1%, owned 21.9%. LB29 by usage."
         },
         {
-          "name": "Jessie Bates",
+          "name": "Jessie Bates III",
           "pos": "DB",
           "team": "ATL",
           "age": 29,
@@ -711,7 +711,7 @@
           "note": "Sleeper: started 13.8%, owned 22.4%. DB20 by usage."
         },
         {
-          "name": "Antoine Winfield",
+          "name": "Antoine Winfield Jr.",
           "pos": "DB",
           "team": "TB",
           "age": 28,
@@ -868,7 +868,7 @@
           "name": "Cole Bishop",
           "pos": "DB",
           "team": "BUF",
-          "age": 23,
+          "age": 24,
           "category": "foundational",
           "tier": "C",
           "ktcValue": 832,
@@ -997,7 +997,7 @@
           "note": "Sleeper: started 7.4%, owned 31.1%. LB42 by usage."
         },
         {
-          "name": "Pat Surtain",
+          "name": "Pat Surtain II",
           "pos": "DB",
           "team": "DEN",
           "age": 26,
@@ -1132,7 +1132,7 @@
           "name": "Barrett Carter",
           "pos": "LB",
           "team": "CIN",
-          "age": 23,
+          "age": 24,
           "category": "foundational",
           "tier": "D",
           "ktcValue": 480,
@@ -1198,7 +1198,7 @@
           "name": "Marcus Jones",
           "pos": "DB",
           "team": "NE",
-          "age": 27,
+          "age": 28,
           "category": "foundational",
           "tier": "D",
           "ktcValue": 440,
@@ -1305,7 +1305,7 @@
           "note": "Sleeper: started 1.6%, owned 3.8%. CB56 by usage."
         },
         {
-          "name": "Will McDonald",
+          "name": "Will McDonald IV",
           "pos": "DL",
           "team": "NYJ",
           "age": 27,
@@ -1393,7 +1393,7 @@
           "note": "Sleeper: started 1.4%, owned 3.1%. DB59 by usage."
         },
         {
-          "name": "Derek Stingley",
+          "name": "Derek Stingley Jr.",
           "pos": "DB",
           "team": "HOU",
           "age": 25,
@@ -1470,7 +1470,7 @@
           "note": "Sleeper: started 0.8%, owned 2.5%. DT55 by usage."
         },
         {
-          "name": "James Pearce",
+          "name": "James Pearce Jr.",
           "pos": "DL",
           "team": "ATL",
           "age": 23,
@@ -1525,7 +1525,7 @@
           "note": "Sleeper: started 0.6%, owned 1.2%. DL60 by usage."
         },
         {
-          "name": "AJ Haulcy",
+          "name": "A.J. Haulcy",
           "pos": "DB",
           "team": "IND",
           "age": 22,
@@ -1539,7 +1539,7 @@
           "name": "Brian Branch",
           "pos": "DB",
           "team": "DET",
-          "age": 24,
+          "age": 25,
           "category": "upside_premier",
           "tier": "B",
           "ktcValue": 376,
@@ -1613,7 +1613,7 @@
           "note": "Sleeper: started 4.3%, owned 7.4%. DB40 by usage."
         },
         {
-          "name": "Anthony Hill",
+          "name": "Anthony Hill Jr.",
           "pos": "LB",
           "team": "TEN",
           "age": 21,
@@ -1635,7 +1635,7 @@
           "note": "Sleeper: started 3.9%, owned 48.5%. DT28 by usage."
         },
         {
-          "name": "Dexter Lawrence",
+          "name": "Dexter Lawrence II",
           "pos": "DL",
           "team": "CIN",
           "age": 28,
@@ -1690,7 +1690,7 @@
           "note": "Sleeper: started 3.9%, owned 6.4%. DB43 by usage."
         },
         {
-          "name": "Kevin Winston",
+          "name": "Kevin Winston Jr.",
           "pos": "DB",
           "team": "TEN",
           "age": 22,
@@ -1822,7 +1822,7 @@
           "note": "Sleeper: started 3.3%, owned 7.0%. DT34 by usage."
         },
         {
-          "name": "Byron Murphy",
+          "name": "Byron Murphy II",
           "pos": "DL",
           "team": "SEA",
           "age": 24,

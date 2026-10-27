@@ -1,5 +1,5 @@
 {
- "count": 660,
+ "count": 662,
  "players": [
   {
    "sleeper_id": "10217",
@@ -59,7 +59,7 @@
   },
   {
    "sleeper_id": "11559",
-   "name": "Michael Penix",
+   "name": "Michael Penix Jr.",
    "team": "ATL",
    "pos": "QB",
    "sleeper_stats": {
@@ -72,7 +72,7 @@
     "pass_2pt": 1.0
    },
    "pp_stats": {
-    "pass_yd": 2920.72,
+    "pass_yd": 2890.3,
     "pass_td": 13.0,
     "pass_int": 8.0,
     "rush_yd": 94.0,
@@ -226,8 +226,8 @@
     "fum_lost": 2.0
    },
    "pp_stats": {
-    "pass_td": 23.95,
-    "pass_yd": 3787.78,
+    "pass_td": 24.11,
+    "pass_yd": 3138.22,
     "pass_int": 3.0,
     "rush_yd": 6.0
    },
@@ -882,14 +882,16 @@
     "pass_2pt": 1.0
    },
    "pp_stats": {
-    "pass_yd": 3249.5,
-    "rush_yd": 565.98,
-    "pass_td": 24.63,
-    "rush_td": 3.72,
-    "pass_int": 8.0
+    "pass_yd": 213.5,
+    "rush_yd": 40.5,
+    "pass_td": 27.0,
+    "pass_int": 8.0,
+    "rush_td": 5.0
    },
    "pp_borrowed": [
-    "pass_int"
+    "pass_td",
+    "pass_int",
+    "rush_td"
    ]
   },
   {
@@ -1016,7 +1018,7 @@
     "pass_yd": 2989.49,
     "rush_yd": 375.5,
     "pass_td": 17.86,
-    "rush_td": 4.52,
+    "rush_td": 4.08,
     "pass_int": 10.0
    },
    "pp_borrowed": [
@@ -1050,7 +1052,7 @@
   },
   {
    "sleeper_id": "6011",
-   "name": "Gardner Minshew",
+   "name": "Gardner Minshew II",
    "team": "ARI",
    "pos": "QB",
    "sleeper_stats": {
@@ -1397,7 +1399,7 @@
   },
   {
    "sleeper_id": "9229",
-   "name": "Anthony Richardson",
+   "name": "Anthony Richardson Sr.",
    "team": "IND",
    "pos": "QB",
    "sleeper_stats": {
@@ -1501,7 +1503,7 @@
   },
   {
    "sleeper_id": "10219",
-   "name": "Chris Rodriguez",
+   "name": "Chris Rodriguez Jr.",
    "team": "JAX",
    "pos": "RB",
    "sleeper_stats": {
@@ -1693,7 +1695,7 @@
   },
   {
    "sleeper_id": "11573",
-   "name": "Frank Gore",
+   "name": "Frank Gore Jr.",
    "team": "BUF",
    "pos": "RB",
    "sleeper_stats": {
@@ -1938,7 +1940,7 @@
   },
   {
    "sleeper_id": "11655",
-   "name": "Tyrone Tracy",
+   "name": "Tyrone Tracy Jr.",
    "team": "NYG",
    "pos": "RB",
    "sleeper_stats": {
@@ -2106,7 +2108,7 @@
    "pp_stats": {
     "rush_yd": 28.5,
     "rec_yd": 10.5,
-    "rush_td": 6.58,
+    "rush_td": 7.13,
     "rec": 19.0,
     "rec_td": 1.0
    },
@@ -2170,7 +2172,7 @@
    "pp_stats": {
     "rush_yd": 27.5,
     "rec_yd": 19.5,
-    "rush_td": 4.48,
+    "rush_td": 4.86,
     "rec": 37.0,
     "rec_td": 2.0
    },
@@ -2206,7 +2208,7 @@
   },
   {
    "sleeper_id": "12495",
-   "name": "Ollie Gordon",
+   "name": "Ollie Gordon II",
    "team": "MIA",
    "pos": "RB",
    "sleeper_stats": {
@@ -2404,13 +2406,14 @@
     "fum_lost": 1.0
    },
    "pp_stats": {
-    "rush_yd": 650.5,
+    "rush_yd": 37.5,
     "rec_yd": 10.5,
-    "rush_td": 4.76,
+    "rush_td": 6.0,
     "rec": 23.0,
     "rec_td": 1.0
    },
    "pp_borrowed": [
+    "rush_td",
     "rec",
     "rec_td"
    ]
@@ -2431,7 +2434,7 @@
   },
   {
    "sleeper_id": "12544",
-   "name": "LeQuint Allen",
+   "name": "LeQuint Allen Jr.",
    "team": "JAX",
    "pos": "RB",
    "sleeper_stats": {
@@ -2535,13 +2538,14 @@
     "fum_lost": 1.0
    },
    "pp_stats": {
-    "rush_yd": 773.92,
+    "rush_yd": 37.5,
     "rec_yd": 16.5,
-    "rush_td": 5.84,
+    "rush_td": 5.0,
     "rec": 47.0,
     "rec_td": 2.0
    },
    "pp_borrowed": [
+    "rush_td",
     "rec",
     "rec_td"
    ]
@@ -2578,7 +2582,7 @@
   },
   {
    "sleeper_id": "13305",
-   "name": "Mike Washington",
+   "name": "Mike Washington Jr.",
    "team": "LV",
    "pos": "RB",
    "sleeper_stats": {
@@ -2590,7 +2594,7 @@
    },
    "pp_stats": {
     "rush_yd": 18.5,
-    "rush_td": 3.98,
+    "rush_td": 4.03,
     "rec": 16.0,
     "rec_yd": 117.0,
     "rec_td": 1.0
@@ -3006,7 +3010,7 @@
   },
   {
    "sleeper_id": "4199",
-   "name": "Aaron Jones",
+   "name": "Aaron Jones Sr.",
    "team": "MIN",
    "pos": "RB",
    "sleeper_stats": {
@@ -3129,10 +3133,10 @@
     "fum_lost": 1.0
    },
    "pp_stats": {
-    "rush_yd": 823.82,
+    "rush_yd": 63.5,
     "rec_yd": 11.5,
     "rec": 2,
-    "rush_td": 7.63,
+    "rush_td": 0.5,
     "rec_td": 1.0
    },
    "pp_borrowed": [
@@ -3380,7 +3384,7 @@
   {
    "sleeper_id": "7528",
    "name": "Najee Harris",
-   "team": "NYG",
+   "team": null,
    "pos": "RB",
    "sleeper_stats": {
     "rush_yd": 117.0,
@@ -3393,7 +3397,7 @@
   },
   {
    "sleeper_id": "7543",
-   "name": "Travis Etienne",
+   "name": "Travis Etienne Jr.",
    "team": "NO",
    "pos": "RB",
    "sleeper_stats": {
@@ -3420,7 +3424,7 @@
   {
    "sleeper_id": "7561",
    "name": "Elijah Mitchell",
-   "team": null,
+   "team": "PHI",
    "pos": "RB",
    "sleeper_stats": {
     "rush_yd": 59.0,
@@ -3446,7 +3450,7 @@
    "pp_stats": {
     "rush_yd": 26.5,
     "rec_yd": 12.5,
-    "rush_td": 4.04,
+    "rush_td": 3.87,
     "rec": 47.0,
     "rec_td": 2.0
    },
@@ -3541,7 +3545,7 @@
   },
   {
    "sleeper_id": "8116",
-   "name": "Pierre Strong",
+   "name": "Pierre Strong Jr.",
    "team": "GB",
    "pos": "RB",
    "sleeper_stats": {
@@ -3580,7 +3584,7 @@
    "pp_stats": {
     "rush_yd": 34.5,
     "rec_yd": 7.5,
-    "rush_td": 4.09,
+    "rush_td": 5.23,
     "rec": 9.0
    },
    "pp_borrowed": [
@@ -3614,7 +3618,7 @@
   },
   {
    "sleeper_id": "8138",
-   "name": "James Cook",
+   "name": "James Cook III",
    "team": "BUF",
    "pos": "RB",
    "sleeper_stats": {
@@ -3677,7 +3681,7 @@
   },
   {
    "sleeper_id": "8151",
-   "name": "Kenneth Walker",
+   "name": "Kenneth Walker III",
    "team": "KC",
    "pos": "RB",
    "sleeper_stats": {
@@ -3701,7 +3705,7 @@
   },
   {
    "sleeper_id": "8154",
-   "name": "Brian Robinson",
+   "name": "Brian Robinson Jr.",
    "team": "ATL",
    "pos": "RB",
    "sleeper_stats": {
@@ -3818,6 +3822,17 @@
     "rush_yd": 16.0,
     "rec": 4.0,
     "rec_yd": 28.0
+   },
+   "pp_stats": null,
+   "pp_borrowed": []
+  },
+  {
+   "sleeper_id": "8223",
+   "name": "Velus Jones Jr.",
+   "team": "SEA",
+   "pos": "WR",
+   "sleeper_stats": {
+    "rush_yd": 62.0
    },
    "pp_stats": null,
    "pp_borrowed": []
@@ -4097,19 +4112,8 @@
     "rec_td": 1.0,
     "fum_lost": 1.0
    },
-   "pp_stats": {
-    "rush_td": 6.17,
-    "rush_yd": 264.0,
-    "rec": 11.0,
-    "rec_yd": 78.0,
-    "rec_td": 1.0
-   },
-   "pp_borrowed": [
-    "rush_yd",
-    "rec",
-    "rec_yd",
-    "rec_td"
-   ]
+   "pp_stats": null,
+   "pp_borrowed": []
   },
   {
    "sleeper_id": "9757",
@@ -4225,13 +4229,14 @@
     "rec_2pt": 1.0
    },
    "pp_stats": {
-    "rec_yd": 975.5,
+    "rec_yd": 52.5,
     "rec": 5,
-    "rec_td": 8.22,
-    "rush_yd": 29.0
+    "rush_yd": 29.0,
+    "rec_td": 7.0
    },
    "pp_borrowed": [
-    "rush_yd"
+    "rush_yd",
+    "rec_td"
    ]
   },
   {
@@ -4581,7 +4586,7 @@
   },
   {
    "sleeper_id": "11628",
-   "name": "Marvin Harrison",
+   "name": "Marvin Harrison Jr.",
    "team": "HOU",
    "pos": "WR",
    "sleeper_stats": {
@@ -4640,7 +4645,7 @@
   },
   {
    "sleeper_id": "11631",
-   "name": "Brian Thomas",
+   "name": "Brian Thomas Jr.",
    "team": "JAX",
    "pos": "WR",
    "sleeper_stats": {
@@ -4850,7 +4855,7 @@
   },
   {
    "sleeper_id": "12475",
-   "name": "Ricky White",
+   "name": "Ricky White III",
    "team": "SEA",
    "pos": "WR",
    "sleeper_stats": {
@@ -5055,18 +5060,19 @@
     "rec_td": 7.0
    },
    "pp_stats": {
-    "rec_yd": 896.37,
+    "rec_yd": 52.5,
     "rec": 4,
-    "rec_td": 6.53,
-    "rush_yd": 21.0
+    "rush_yd": 21.0,
+    "rec_td": 7.0
    },
    "pp_borrowed": [
-    "rush_yd"
+    "rush_yd",
+    "rec_td"
    ]
   },
   {
    "sleeper_id": "12519",
-   "name": "Luther Burden",
+   "name": "Luther Burden III",
    "team": "CHI",
    "pos": "WR",
    "sleeper_stats": {
@@ -5100,7 +5106,7 @@
   },
   {
    "sleeper_id": "12523",
-   "name": "Jimmy Horn",
+   "name": "Jimmy Horn Jr.",
    "team": "CLE",
    "pos": "WR",
    "sleeper_stats": {
@@ -5214,7 +5220,7 @@
   },
   {
    "sleeper_id": "12541",
-   "name": "Dont'e Thornton",
+   "name": "Dont'e Thornton Jr.",
    "team": "LV",
    "pos": "WR",
    "sleeper_stats": {
@@ -5226,7 +5232,7 @@
   },
   {
    "sleeper_id": "12542",
-   "name": "Efton Chism",
+   "name": "Efton Chism III",
    "team": "NE",
    "pos": "WR",
    "sleeper_stats": {
@@ -5327,12 +5333,24 @@
   },
   {
    "sleeper_id": "12860",
-   "name": "Theo Wease",
+   "name": "Theo Wease Jr.",
    "team": "LAC",
    "pos": "WR",
    "sleeper_stats": {
     "rec": 4.0,
     "rec_yd": 49.0
+   },
+   "pp_stats": null,
+   "pp_borrowed": []
+  },
+  {
+   "sleeper_id": "12863",
+   "name": "Andrew Armstrong",
+   "team": "KC",
+   "pos": "WR",
+   "sleeper_stats": {
+    "rec": 16.0,
+    "rec_yd": 182.0
    },
    "pp_stats": null,
    "pp_borrowed": []
@@ -5438,7 +5456,7 @@
   },
   {
    "sleeper_id": "13276",
-   "name": "Omar Cooper",
+   "name": "Omar Cooper Jr.",
    "team": "NYJ",
    "pos": "WR",
    "sleeper_stats": {
@@ -5491,16 +5509,8 @@
     "rec_yd": 514.0,
     "rec_td": 3.0
    },
-   "pp_stats": {
-    "rec_yd": 770.58,
-    "rec_td": 4.55,
-    "rush_yd": 6.0,
-    "rec": 41.0
-   },
-   "pp_borrowed": [
-    "rush_yd",
-    "rec"
-   ]
+   "pp_stats": null,
+   "pp_borrowed": []
   },
   {
    "sleeper_id": "13285",
@@ -5594,7 +5604,7 @@
   },
   {
    "sleeper_id": "13298",
-   "name": "KC Concepcion",
+   "name": "KC Concepcion Jr.",
    "team": "CLE",
    "pos": "WR",
    "sleeper_stats": {
@@ -5673,7 +5683,7 @@
   },
   {
    "sleeper_id": "13316",
-   "name": "Eric Rivers",
+   "name": "Eric Rivers Jr.",
    "team": "TB",
    "pos": "WR",
    "sleeper_stats": {
@@ -5686,7 +5696,7 @@
   },
   {
    "sleeper_id": "13317",
-   "name": "Ted Hurst",
+   "name": "Ted Hurst III",
    "team": "TB",
    "pos": "WR",
    "sleeper_stats": {
@@ -5764,7 +5774,7 @@
   },
   {
    "sleeper_id": "13338",
-   "name": "Kevin Coleman",
+   "name": "Kevin Coleman Jr.",
    "team": "MIA",
    "pos": "WR",
    "sleeper_stats": {
@@ -6012,7 +6022,7 @@
   },
   {
    "sleeper_id": "2078",
-   "name": "Odell Beckham",
+   "name": "Odell Beckham Jr.",
    "team": "MIN",
    "pos": "WR",
    "sleeper_stats": {
@@ -6022,7 +6032,7 @@
    },
    "pp_stats": {
     "rec_yd": 5.5,
-    "rec_td": 0.98,
+    "rec_td": 0.95,
     "rec": 10.0
    },
    "pp_borrowed": [
@@ -6075,12 +6085,13 @@
     "rec_2pt": 1.0
    },
    "pp_stats": {
-    "rec_yd": 802.04,
-    "rec_td": 6.53,
-    "rec": 70.0
+    "rec_yd": 48.5,
+    "rec": 70.0,
+    "rec_td": 8.0
    },
    "pp_borrowed": [
-    "rec"
+    "rec",
+    "rec_td"
    ]
   },
   {
@@ -6218,7 +6229,7 @@
   },
   {
    "sleeper_id": "4037",
-   "name": "Chris Godwin",
+   "name": "Chris Godwin Jr.",
    "team": "TB",
    "pos": "WR",
    "sleeper_stats": {
@@ -6398,14 +6409,15 @@
     "rec_td": 2.0
    },
    "pp_stats": {
-    "rec_yd": 550.5,
-    "rec_td": 3.41,
+    "rec_yd": 19.5,
     "rush_yd": 6.0,
-    "rec": 27.0
+    "rec": 27.0,
+    "rec_td": 2.0
    },
    "pp_borrowed": [
     "rush_yd",
-    "rec"
+    "rec",
+    "rec_td"
    ]
   },
   {
@@ -6464,7 +6476,7 @@
   {
    "sleeper_id": "5086",
    "name": "Marquez Valdes-Scantling",
-   "team": null,
+   "team": "PIT",
    "pos": "WR",
    "sleeper_stats": {
     "rush_yd": 6.0,
@@ -6572,7 +6584,7 @@
   },
   {
    "sleeper_id": "5872",
-   "name": "Deebo Samuel",
+   "name": "Deebo Samuel Sr.",
    "team": "SF",
    "pos": "WR",
    "sleeper_stats": {
@@ -6584,14 +6596,15 @@
     "fum_lost": 1.0
    },
    "pp_stats": {
-    "rec_yd": 618.56,
+    "rec_yd": 33.5,
     "rush_yd": 5.5,
     "rec": 3,
-    "rec_td": 4.67,
-    "rush_td": 1.0
+    "rush_td": 1.0,
+    "rec_td": 4.0
    },
    "pp_borrowed": [
-    "rush_td"
+    "rush_td",
+    "rec_td"
    ]
   },
   {
@@ -6606,13 +6619,14 @@
     "rec_td": 6.0
    },
    "pp_stats": {
-    "rec_yd": 900.5,
+    "rec_yd": 53.5,
     "rec": 4,
-    "rec_td": 5.84,
-    "rush_yd": 7.0
+    "rush_yd": 7.0,
+    "rec_td": 6.0
    },
    "pp_borrowed": [
-    "rush_yd"
+    "rush_yd",
+    "rec_td"
    ]
   },
   {
@@ -6680,7 +6694,7 @@
   },
   {
    "sleeper_id": "6154",
-   "name": "David Sills",
+   "name": "David Sills V",
    "team": "TB",
    "pos": "WR",
    "sleeper_stats": {
@@ -6832,7 +6846,7 @@
   },
   {
    "sleeper_id": "6819",
-   "name": "Michael Pittman",
+   "name": "Michael Pittman Jr.",
    "team": "PIT",
    "pos": "WR",
    "sleeper_stats": {
@@ -6975,14 +6989,15 @@
     "rec_td": 7.0
    },
    "pp_stats": {
-    "rec_yd": 1055.32,
-    "rec_td": 5.67,
+    "rec_yd": 60.5,
     "rush_yd": 6.0,
-    "rec": 80.0
+    "rec": 80.0,
+    "rec_td": 7.0
    },
    "pp_borrowed": [
     "rush_yd",
-    "rec"
+    "rec",
+    "rec_td"
    ]
   },
   {
@@ -7400,7 +7415,7 @@
   },
   {
    "sleeper_id": "8147",
-   "name": "John Metchie",
+   "name": "John Metchie III",
    "team": "CAR",
    "pos": "WR",
    "sleeper_stats": {
@@ -7505,7 +7520,7 @@
   {
    "sleeper_id": "8200",
    "name": "Kevin Austin",
-   "team": "NO",
+   "team": null,
    "pos": "WR",
    "sleeper_stats": {
     "rush_yd": 1.0,
@@ -7590,7 +7605,7 @@
     "rec_td": 2.0
    },
    "pp_stats": {
-    "rec_yd": 599.5,
+    "rec_yd": 30.5,
     "rec": 2.5,
     "rush_yd": 8.0,
     "rec_td": 2.0
@@ -7669,7 +7684,7 @@
   },
   {
    "sleeper_id": "9494",
-   "name": "Marvin Mims",
+   "name": "Marvin Mims Jr.",
    "team": "DEN",
    "pos": "WR",
    "sleeper_stats": {
@@ -8130,7 +8145,7 @@
   {
    "sleeper_id": "11820",
    "name": "Devin Culp",
-   "team": "CLE",
+   "team": null,
    "pos": "TE",
    "sleeper_stats": {
     "rec": 4.0,
@@ -8241,7 +8256,7 @@
   },
   {
    "sleeper_id": "12506",
-   "name": "Harold Fannin",
+   "name": "Harold Fannin Jr.",
    "team": "CLE",
    "pos": "TE",
    "sleeper_stats": {
@@ -8293,14 +8308,15 @@
     "rec_td": 5.0
    },
    "pp_stats": {
-    "rec_yd": 760.5,
-    "rec_td": 4.67,
+    "rec_yd": 42.5,
     "rush_yd": 19.0,
-    "rec": 83.0
+    "rec": 83.0,
+    "rec_td": 5.0
    },
    "pp_borrowed": [
     "rush_yd",
-    "rec"
+    "rec",
+    "rec_td"
    ]
   },
   {
@@ -9261,7 +9277,7 @@
   },
   {
    "sleeper_id": "7553",
-   "name": "Kyle Pitts",
+   "name": "Kyle Pitts Sr.",
    "team": "ATL",
    "pos": "TE",
    "sleeper_stats": {
