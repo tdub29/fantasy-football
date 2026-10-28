@@ -3351,9 +3351,15 @@
         : 'Best legal starting lineup today (positions respected, taxi/IR/Out benched). Redraft, so there is no multi-year projection.'));
     standings.appendChild(h('details', { class:'standings-forecast-help' },
       h('summary', null, forecast.ok ? `Season forecast: W${forecast.firstRemaining}-${forecast.regularWeeks} · assumptions` : `Season forecast unavailable: ${forecast.reason}`),
-      h('p', { class:'tip' }, forecast.ok
-        ? `${forecast.sims.toLocaleString()} simulated seasons, seed 20260807. Completed W1-${forecast.completed} results preserved. Expected final W-L-T shown as fractional means; ties count half a win for seeding. Record, then points for, higher points against, and a seeded coin flip for exact ties. ${forecast.teams} playoff places, ${forecast.byes} first-round byes. ${forecast.median ? 'Includes the league median game each week. ' : ''}Same ${forecast.src === 'blend' ? 'league-scored season blend' : 'weekly ROS'} model as Projections, known weekly absences/byes (unfilled slots score zero) plus simulated injuries, player-season uncertainty and team/stack correlations. Forecast estimates are not historically calibrated probabilities. Roster changes and commissioner overrides are not modeled. Monte Carlo error alone is up to about 2 percentage points at 95% confidence. Weekly source: ${window.WEEKLY_RANKINGS?.liveWeek || window.WEEKLY_RANKINGS?.currentWeek || '?'}; roster/source freshness is in the data panel.`
-        : 'No numeric forecast is shown when rules, records, matchups or weekly lineup coverage are unsupported.')));
+      forecast.ok
+        ? h('ul', { class:'tip', style: { margin: '6px 0 4px 18px', padding: 0, lineHeight: '1.45', display: 'flex', flexDirection: 'column', gap: '4px' } },
+            h('li', null, h('strong', null, 'Simulations: '), `${forecast.sims.toLocaleString()} seasons (seed 20260807), preserving completed W1-${forecast.completed} results.`),
+            h('li', null, h('strong', null, 'Seeding & Byes: '), `${forecast.teams} playoff places, ${forecast.byes} first-round byes. Expected final W-L-T is the fractional mean (ties count half a win). Tiebreakers: record, then points for, higher points against, seeded coin flip. ${forecast.median ? 'Includes weekly league median game. ' : ''}`),
+            h('li', null, h('strong', null, 'Projections: '), `Same ${forecast.src === 'blend' ? 'league-scored season blend' : 'weekly ROS'} model as Projections with known weekly absences/byes, simulated injuries, player-season uncertainty, and team/stack correlations.`),
+            h('li', null, h('strong', null, 'Uncertainty: '), 'Monte Carlo error alone is up to about 2 percentage points at 95% confidence. Forecasts are estimates, not historically calibrated probabilities. Future roster changes and commissioner overrides are not modeled.'),
+            h('li', null, h('strong', null, 'Source: '), `Weekly source W${window.WEEKLY_RANKINGS?.liveWeek || window.WEEKLY_RANKINGS?.currentWeek || '?'}; see data panel for roster freshness.`)
+          )
+        : h('p', { class:'tip' }, 'No numeric forecast is shown when rules, records, matchups or weekly lineup coverage are unsupported.')));
     standings.appendChild(h('div', { class:'standings-table-wrap' }, h('p', { class:'standings-swipe' }, 'Swipe sideways for more columns ›'), h('table', { class:'standings-table' },
       h('thead', null, h('tr', null, h('th', null, '#'), h('th', { class:'team' }, 'Team'), lgDynasty ? h('th', { class:'standings-chart-head', title:'Selected chart metric, now through five years out' }, 'Trend') : null, ...tableCols.map(([label]) => h('th', null, label)))),
       tableBody)));
