@@ -4165,8 +4165,9 @@
         if (!game) return h('td', { class:'center muted weekly-opp' }, 'BYE');
         const rank = game.rank ?? null;
         const n = window.SOS_GRID?.n_def || 32;
+        const paoeText = game.paoe != null ? `, ${game.paoe >= 0 ? '+' : ''}${game.paoe} vs avg` : '';
         const title = rank != null
-          ? `Week ${currentWeek} ${game.home ? 'vs ' : '@ '}${game.opp}: D vs ${pos} #${rank}/${n} (${game.fpa ?? '?'} PPR/g allowed)`
+          ? `Week ${currentWeek} ${game.home ? 'vs ' : '@ '}${game.opp}: D vs ${pos} #${rank}/${n} (${game.fpa ?? '?'} PPR/g allowed${paoeText})`
           : `Week ${currentWeek} ${game.home ? 'vs ' : '@ '}${game.opp}; no defense-vs-position rank for ${pos || 'this position'}`;
         // Weather only for the week the forecast is for, and only when it
         // matters: a flag, never a temperature on every row.
@@ -11981,7 +11982,7 @@
       h('p', { class:'tip tw-note' },
         `Projection is the price-adjusted market number when a line exists, otherwise Sleeper's model. `
         + (idpLg ? `A defender has no weekly feed, so his is the season projection in ${idpLg.short_name || idpLg.name} scoring, per game. ` : '')
-        + `Defense-vs-position is ${sos ? sos.season : 'last season'} PPR allowed to ${pos || 'the position'}, `
+        + `Defense-vs-position is ${sos ? sos.season : 'last season'} opponent-adjusted PPR allowed to ${pos || 'the position'}, `
         + `1 = toughest, 32 = easiest.`));
   }
 
@@ -17615,7 +17616,7 @@
     main.appendChild(breadcrumbs([{ label: 'Tools' }, { label: 'Schedule Strength' }]));
     main.appendChild(h('div', { class: 'page-header' }, h('div', null,
       h('h1', { class: 'page-title' }, 'Season SOS by Position'),
-      h('p', { class: 'page-sub' }, `Each cell is the opponent and its defense rank vs ${pos}: 1 of ${n} allows the fewest PPR (toughest, red), ${n} the most (easiest, green). Defense data: ${G.season}.`))));
+      h('p', { class: 'page-sub' }, `Each cell is the opponent and its defense rank vs ${pos}: 1 of ${n} allows the fewest opponent-adjusted PPR (toughest, red), ${n} the most (easiest, green). Defense data: ${G.season}.`))));
     if (badPos) main.appendChild(h('div', { class:'tip', role:'status' }, `"${badPos}" is not a position here, so this shows ${pos}. Pick one of ${G.positions.join(', ')}.`));
 
     // position tabs
@@ -17682,7 +17683,8 @@
           const g = rd.wk[w], out = !inWin.has(w);
           if (rd.noSchedule) return h('td', { class: 'center muted', title: 'Schedule unavailable' }, '·');
           if (!g) return h('td', { class: `center muted sos-cell-note${out ? ' sos-out' : ''}` }, (G.bye_weeks?.[rd.team] || []).includes(w) ? 'BYE' : 'n/a');
-          return h('td', { title: `Wk${w} ${g.home ? 'vs ' : '@ '}${g.opp}: ` + (g.rank != null ? `D vs ${pos} #${g.rank}/${n} (${g.fpa ?? '?'} PPR/g allowed)` : `no defense rank vs ${pos}, unavailable`), class: `center${out ? ' sos-out' : ''}`, style: { color: out ? 'var(--fg-2)' : defRankColor(g.rank, n), lineHeight: 1.05 } },
+          const paoeStr = g.paoe != null ? `, ${g.paoe >= 0 ? '+' : ''}${g.paoe} vs avg` : '';
+          return h('td', { title: `Wk${w} ${g.home ? 'vs ' : '@ '}${g.opp}: ` + (g.rank != null ? `D vs ${pos} #${g.rank}/${n} (${g.fpa ?? '?'} PPR/g allowed${paoeStr})` : `no defense rank vs ${pos}, unavailable`), class: `center${out ? ' sos-out' : ''}`, style: { color: out ? 'var(--fg-2)' : defRankColor(g.rank, n), lineHeight: 1.05 } },
             h('a', { class: 'sos-game', href: `#game/${gameIdFor(season, w, rd.team, g.opp, g.home)}` },
               h('div', { style: { fontWeight: 700 } }, teamChip(g.opp, true)),
               h('div', { class: 'sos-cell-note' }, g.rank != null ? '#' + g.rank : 'n/a')));
@@ -17691,7 +17693,7 @@
     );
     main.appendChild(h('div', { class:'tbl-scroll' }, tbl));
     main.appendChild(h('div', { class: 'tip', style: { marginTop: '10px' } },
-      `Matchup colors: ${G.note || `${G.season} PPR allowed`}. SOS rank #1 = easiest selected window. SOS = average opponent rank over ${win.label}, higher = easier for ${pos}s; byes and unavailable games are left out. This ranks matchups, not expected points. Faded weeks are outside the window.`));
+      `Matchup colors: ${G.note || `${G.season} PPR allowed`}. SOS rank #1 = easiest selected window. SOS = average opponent rank over ${win.label}, higher = easier for ${pos}s; byes and unavailable games are left out. Rankings use opponent-adjusted points over expected, pooled 2025 plus 2026. Faded weeks are outside the window.`));
     // The defender's mirror of this grid: which offences feed IDP starters, in the
     // IDP league's own scoring. Null when no league starts defenders.
     const idp = idpMatchupBlock(contextLeagueFor('LB'));
