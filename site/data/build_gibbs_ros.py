@@ -39,6 +39,7 @@ OFFENSE = {"QB", "RB", "WR", "TE"}
 # wrong, so the mapping lives here rather than being "fixed" in a transcription.
 # CBS prints the formal version; Sleeper prints the short one.
 NAME_ALIASES = {
+    "Bam Knight": "Zonovan Knight",
     "Hollywood Brown": "Marquise Brown",
     "Christopher Brooks": "Chris Brooks",
     "Kenneth Gainwell": "Kenny Gainwell",
