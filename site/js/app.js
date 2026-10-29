@@ -4137,10 +4137,10 @@
       const rosTitle = `FantasyPros rest-of-season PPR expert consensus positional rank`
         + ` (${rosMeta.experts || '?'} experts, a much thinner pool than the weekly board).`
         + ` ${rosAsOf}.${rosStale ? ' Stale, treat as a prior and not as a current read.' : ''}`;
-      // He has no rest-of-season board today. Render the column only when one
-      // exists, so it appears by itself the week he starts publishing.
+      // Render the column only when a ROS board exists (gibbsRosPlayers > 0).
       const hasGibbsRos = ((weeklyData.coverage || {}).gibbsRosPlayers || 0) > 0;
-      // His ROS board, from his own FantasyPros board (build_gibbs_ros_fp.py).
+      // His ROS board: FantasyPros per position, or transcribed from a show
+      // (see sourceByPosition below; build_gibbs_ros_fp.py never overwrites a newer one).
       const gibbsRosPosted = window.GIBBS_ROS ? window.GIBBS_ROS.postedAt : null;
       // Hidden when it is another week's board: a refresh that failed on a
       // Tuesday would otherwise show week 3 ranks beside week 4 projections.
