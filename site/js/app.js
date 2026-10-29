@@ -4149,6 +4149,15 @@
         && window.GIBBS_PPR_WEEK?.week === window.GIBBS_WEEK.week
         ? window.GIBBS_WEEK.postedAt : null;
       const gibbsRosThrough = window.GIBBS_ROS ? window.GIBBS_ROS.rosUpdatedThrough : null;
+      // Per-position source as recorded in the payload: a board can mix his
+      // FantasyPros ranks with ranks transcribed from a show.
+      const gibbsRosSourceNote = (() => {
+        const by = window.GIBBS_ROS?.sourceByPosition;
+        if (!by) return 'source not recorded per position';
+        return Object.entries(by).map(([pos, s]) => s.kind === 'fantasypros'
+          ? `${pos} his FantasyPros board${s.stamp ? ` (${s.stamp})` : ''}`
+          : `${pos} transcribed from ${s.via}${s.stamp ? ` (${s.stamp})` : ''}`).join('; ');
+      })();
       const gibbsWeekUpdated = window.GIBBS_WEEK?.updatedLabel || null;
       const gibbsWeekDepth = window.GIBBS_WEEK
         ? Object.values(window.GIBBS_WEEK.positions || {}).reduce((n, r) => n + r.length, 0)
@@ -4219,7 +4228,7 @@
             // converted from half-PPR data, so the only thing a header has to
             // say is whether it was converted.
             gibbsRosPosted && window.GIBBS_PPR_ROS && isRosView ? sortHdr('weekly-gibbs-x', 'Gibbs*', { right:true,
-              title:`* = PPR converted by this site from Jacob Gibbs's half-PPR rest-of-season board (his FantasyPros board, expert 1576, the one his ROS cards label half-PPR). His order sets the value slots, then each player gets +0.5 per projected catch and the list is re-sorted within position, so a player who catches nothing never rises on his own. His unconverted half-PPR rank is in each cell's tooltip. Board ${gibbsRosPosted}${gibbsRosThrough ? `, updates through ${gibbsRosThrough}` : ''}.` }) : null,
+              title:`* = PPR converted by this site from Jacob Gibbs's half-PPR rest-of-season board. Source: ${gibbsRosSourceNote}. His order sets the value slots, then each player gets +0.5 per projected catch and the list is re-sorted within position, so a player who catches nothing never rises on his own. His unconverted half-PPR rank is in each cell's tooltip. Board ${gibbsRosPosted}${gibbsRosThrough ? `, updates through ${gibbsRosThrough}` : ''}.` }) : null,
             gibbsWeekPosted && !isRosView ? sortHdr('weekly-gibbs-wk', 'Gibbs*', { right:true,
               title:`* = PPR converted by this site from Jacob Gibbs's half-PPR week board, the start/sit list he posts to X `
                 + `(his FantasyPros board, expert 1576). His order sets the value slots, then each RB, WR and TE gets +0.5 per projected catch `
