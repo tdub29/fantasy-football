@@ -147,7 +147,7 @@ def stamp_date(stamp: str | None) -> str | None:
 
 def keep_newer_existing(data: dict, existing: dict | None, fp_dates: dict) -> list[str]:
     """Keep a position's existing rows when the file already holds a newer or
-    equal-dated board for it that did not come from this feed (a manual
+    equal-dated (or within a day) board for it that did not come from this feed (a manual
     transcription). A scheduled run must not overwrite it with an older FP
     board. A missing date on either side is ambiguous and keeps the existing
     rows. Returns the retained positions."""
@@ -156,7 +156,10 @@ def keep_newer_existing(data: dict, existing: dict | None, fp_dates: dict) -> li
         if old.get("kind") == "fantasypros" or pos not in data["positions"]:
             continue
         old_d, new_d = stamp_date(old.get("stamp")), fp_dates.get(pos)
-        if old_d and new_d and new_d > old_d:
+        # Two-day margin: FP's date is UTC and the stamp is a local day, so an
+        # adjacent date is ambiguous and keeps the existing rows.
+        if old_d and new_d and (dt.date.fromisoformat(new_d)
+                                - dt.date.fromisoformat(old_d)).days >= 2:
             continue
         data["positions"][pos] = existing["positions"][pos]
         data["formatByPosition"][pos] = existing["formatByPosition"][pos]
@@ -234,6 +237,7 @@ def self_check() -> int:
     assert run("10/28", "2026-10-23") == (["RB"], "OLD", "transcription")
     assert run("10/28", "2026-10-28") == (["RB"], "OLD", "transcription")
     assert run("10/28", "2026-10-30") == ([], "FP", "fantasypros")
+    assert run("10/28", "2026-10-29") == (["RB"], "OLD", "transcription")
     assert run("10/28", None) == (["RB"], "OLD", "transcription")
     assert run(None, "2026-10-30") == (["RB"], "OLD", "transcription")
     print("build_gibbs_ros_fp self-check ok")
