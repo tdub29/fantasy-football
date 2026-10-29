@@ -204,8 +204,8 @@ def main() -> int:
         "positions": positions,
     }
     data = build(src, sleeper_index())
-    data["fpStamps"] = stamps
-    data["fpScoring"] = SCORING
+    data["sourceByPosition"] = {p: {"kind": "fantasypros", "expert": EXPERT_ID, "stamp": s}
+                                for p, s in stamps.items() if s}
 
     body = json.dumps(data, ensure_ascii=False, separators=(",", ":"))
     a.output.write_text(
