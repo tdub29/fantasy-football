@@ -110,10 +110,10 @@ def opp_code(text: str | None) -> str | None:
     return f"@{team}" if text.lower().startswith("at") else team
 
 
-def collect(week: int = 0) -> tuple[dict, dict, str | None]:
+def collect(week: int = 0, dates: dict | None = None) -> tuple[dict, dict, str | None]:
     """Rows and FantasyPros "M/DD" stamps per position, plus the newest stamp as
     an ISO date from last_updated_ts (a text max() on "M/DD" puts 9/30 after
-    10/01)."""
+    10/01). `dates`, when given, is filled with each position's own ISO date."""
     positions, stamps, newest_ts = {}, {}, 0
     for pos in POSITIONS:
         payload = api(pos, week=week)
@@ -125,11 +125,67 @@ def collect(week: int = 0) -> tuple[dict, dict, str | None]:
             r["rank"] = i
         positions[pos] = rows
         stamps[pos] = payload.get("last_updated")
-        newest_ts = max(newest_ts, int(payload.get("last_updated_ts") or 0))
+        ts = int(payload.get("last_updated_ts") or 0)
+        newest_ts = max(newest_ts, ts)
+        if dates is not None:
+            dates[pos] = (dt.datetime.fromtimestamp(ts, dt.timezone.utc).date().isoformat()
+                          if ts else None)
         print(f"  {pos}: {len(rows)} ranked, FantasyPros stamp {stamps[pos]}")
     newest = (dt.datetime.fromtimestamp(newest_ts, dt.timezone.utc).date().isoformat()
               if newest_ts else None)
     return positions, stamps, newest
+
+
+def stamp_date(stamp: str | None) -> str | None:
+    """ISO date for a "M/DD" stamp in SEASON, or None when it is not one."""
+    try:
+        m, d = (stamp or "").split("/")
+        return dt.date(SEASON, int(m), int(d)).isoformat()
+    except ValueError:
+        return None
+
+
+def keep_newer_existing(data: dict, existing: dict | None, fp_dates: dict) -> list[str]:
+    """Keep a position's existing rows when the file already holds a newer or
+    equal-dated (or within a day) board for it that did not come from this feed (a manual
+    transcription). A scheduled run must not overwrite it with an older FP
+    board. A missing date on either side is ambiguous and keeps the existing
+    rows. Returns the retained positions."""
+    kept = []
+    for pos, old in ((existing or {}).get("sourceByPosition") or {}).items():
+        if old.get("kind") == "fantasypros" or pos not in data["positions"]:
+            continue
+        old_d, new_d = stamp_date(old.get("stamp")), fp_dates.get(pos)
+        # Two-day margin: FP's date is UTC and the stamp is a local day, so an
+        # adjacent date is ambiguous and keeps the existing rows.
+        if old_d and new_d and (dt.date.fromisoformat(new_d)
+                                - dt.date.fromisoformat(old_d)).days >= 2:
+            continue
+        data["positions"][pos] = existing["positions"][pos]
+        data["formatByPosition"][pos] = existing["formatByPosition"][pos]
+        data["sourceByPosition"][pos] = old
+        kept.append(pos)
+    if kept:
+        data["teamMismatches"] = (
+            [m for m in data["teamMismatches"] if m[:2] not in kept]
+            + [m for m in existing.get("teamMismatches", []) if m[:2] in kept])
+        data["postedAt"] = max([existing["postedAt"]] + [
+            d for p in data["sourceByPosition"] if p not in kept
+            and (d := stamp_date(data["sourceByPosition"][p].get("stamp")))]
+            + [d for p, d in fp_dates.items() if d and p not in kept])
+        data["provenance"] += (
+            f" Retained from the existing board, not overwritten by this pull: "
+            + ", ".join(f"{p} ({data['sourceByPosition'][p].get('stamp') or 'no stamp'}, "
+                        f"{data['sourceByPosition'][p]['kind']})" for p in kept) + ".")
+    return kept
+
+
+def load_existing(path: pathlib.Path) -> dict | None:
+    try:
+        raw = path.read_text(encoding="utf-8")
+        return json.loads(raw[raw.index("window.GIBBS_ROS=") + 17:].rstrip().rstrip(";"))
+    except (OSError, ValueError):
+        return None
 
 
 def self_check() -> int:
@@ -164,6 +220,26 @@ def self_check() -> int:
     assert odd[0]["bye"] is None, odd[0]
     assert opp_code("at WAS") == "@WAS" and opp_code("vs. NYJ") == "NYJ"
     assert opp_code(None) is None
+
+    # Old FP must not overwrite a newer transcription; a newer FP may; a
+    # missing date on either side keeps the transcription; same-day keeps it.
+    tr = {"kind": "transcription", "via": "show", "stamp": "10/28"}
+    def run(stamp, fp_date):
+        old_rows = [{"rank": 1, "name": "OLD"}]
+        existing = {"postedAt": "2026-10-28", "teamMismatches": [], "positions": {"RB": old_rows},
+                    "formatByPosition": {"RB": "half_ppr"},
+                    "sourceByPosition": {"RB": dict(tr, stamp=stamp)}}
+        data = {"positions": {"RB": [{"rank": 1, "name": "FP"}]}, "formatByPosition": {"RB": "half_ppr"},
+                "sourceByPosition": {"RB": {"kind": "fantasypros", "expert": 1576, "stamp": "x"}},
+                "teamMismatches": [], "postedAt": fp_date or "2026-10-23", "provenance": "p."}
+        kept = keep_newer_existing(data, existing, {"RB": fp_date})
+        return kept, data["positions"]["RB"][0]["name"], data["sourceByPosition"]["RB"]["kind"]
+    assert run("10/28", "2026-10-23") == (["RB"], "OLD", "transcription")
+    assert run("10/28", "2026-10-28") == (["RB"], "OLD", "transcription")
+    assert run("10/28", "2026-10-30") == ([], "FP", "fantasypros")
+    assert run("10/28", "2026-10-29") == (["RB"], "OLD", "transcription")
+    assert run("10/28", None) == (["RB"], "OLD", "transcription")
+    assert run(None, "2026-10-30") == (["RB"], "OLD", "transcription")
     print("build_gibbs_ros_fp self-check ok")
     return 0
 
@@ -181,7 +257,9 @@ def main() -> int:
     a.output = a.output or OUTPUT
 
     print(f"Jacob Gibbs (expert {EXPERT_ID}) rest-of-season, {SCORING}-PPR")
-    positions, stamps, newest = collect()
+    fp_dates: dict = {}
+    positions, stamps, newest = collect(dates=fp_dates)
+    existing = load_existing(a.output)
 
     src = {
         "source": "Jacob Gibbs (@jagibbs_23)",
@@ -206,6 +284,9 @@ def main() -> int:
     data = build(src, sleeper_index())
     data["sourceByPosition"] = {p: {"kind": "fantasypros", "expert": EXPERT_ID, "stamp": s}
                                 for p, s in stamps.items() if s}
+    for pos in keep_newer_existing(data, existing, fp_dates):
+        print(f"  {pos}: kept existing board ({data['sourceByPosition'][pos].get('stamp')}), "
+              f"FantasyPros date {fp_dates.get(pos)} is not newer")
 
     body = json.dumps(data, ensure_ascii=False, separators=(",", ":"))
     a.output.write_text(
