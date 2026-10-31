@@ -1,6 +1,6 @@
-# Fantasy Football Dynasty Hub (Work in Progress)
+# Fantasy Football Dynasty Hub
 
-> **Work in progress:** Current data covers three Sleeper dynasty leagues (1QB, Superflex, and IDP). A reusable demo dataset is planned.
+> **What works now:** Roster evaluation, multi-year aging projections and Monte Carlo trade simulation run on data from three Sleeper dynasty leagues (1QB, Superflex and IDP). The app previews locally with no credentials or build step; see [Local Preview](#local-preview).
 
 A static vanilla JavaScript web application and Python data pipeline for dynasty fantasy football roster evaluation, multi-year aging projections, and Monte Carlo trade simulations.
 
