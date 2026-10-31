@@ -1,6 +1,6 @@
 # Fantasy Football Dynasty Hub
 
-> **What works now:** Roster evaluation, multi-year aging projections and Monte Carlo trade simulation run on data from three Sleeper dynasty leagues (1QB, Superflex and IDP). The app previews locally with no credentials or build step; see [Local Preview](#local-preview).
+> **What works now:** Prospect scoring, roster evaluation, multi-year aging projections and Monte Carlo trade simulation run on data from three Sleeper dynasty leagues (1QB, Superflex and IDP). The app previews locally with no credentials or build step; see [Local Preview](#local-preview).
 
 A static vanilla JavaScript web application and Python data pipeline for dynasty fantasy football roster evaluation, multi-year aging projections, and Monte Carlo trade simulations.
 
@@ -13,6 +13,16 @@ The league hub brings roster evaluation and multi-year projections into one view
 ![Dynasty trade simulator comparing packages and championship odds](docs/images/fantasy-football-02.webp)
 
 Trade Finder compares candidate deals and simulated title-odds changes for both teams.
+
+## College-to-NFL prospect modeling
+
+The Prospects board combines NFL fantasy-success estimates with historical player comparisons and college production grades.
+
+- The Python pipeline links college careers with recruiting, draft and NFL performance data in SQLite.
+- The research compares position-specific regularized logistic models using college-production features, draft pick, or both. Pre-draft career-stage models use only the information available at that point in a player's college career.
+- Evaluation uses forward-chained backtests with an outcome-window embargo, alongside calibration checks and draft-class bootstrap comparisons. The serving backtest replays the same scoring path used by the app.
+
+[Model specification and results](notes/prospect-research/model-card.md) · [Scoring pipeline](projections/build_prospect_model.py) · [Serving backtest](projections/prospect_serving_backtest.py)
 
 ## Local Preview
 
