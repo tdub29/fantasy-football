@@ -24,6 +24,12 @@ import urllib.parse
 import urllib.request
 from zoneinfo import ZoneInfo
 
+try:
+    import truststore
+    truststore.inject_into_ssl()
+except ImportError:
+    pass
+
 import devig
 from fetch_season_props import KEY as BETTINGPROS_KEY
 
@@ -98,7 +104,7 @@ def load_dotenv():
         os.environ.setdefault(key.strip(), value.strip().strip('"').strip("'"))
 
 
-def get_json(url, headers=None, timeout=60):
+def get_json(url, headers=None, timeout=20):
     request_headers = {"User-Agent": "Mozilla/5.0 FantasyHub/1.0", "Accept": "application/json"}
     request_headers.update(headers or {})
     req = urllib.request.Request(url, headers=request_headers)
@@ -116,7 +122,7 @@ def weekly_games(season, week, source_text=None):
     """Current-week opponent and kickoff by team, normalized to site abbreviations."""
     if source_text is None:
         req = urllib.request.Request(NFL_SCHEDULE_URL, headers={"User-Agent": "Mozilla/5.0 FantasyHub/1.0"})
-        with urllib.request.urlopen(req, timeout=60) as response:
+        with urllib.request.urlopen(req, timeout=20) as response:
             source_text = response.read().decode("utf-8")
     games = {}
     eastern = ZoneInfo("America/New_York")
@@ -168,7 +174,7 @@ def sleeper_projections(season):
     players = {}
     current_stats = {}
     for week in WEEKS:
-        url = f"https://api.sleeper.com/projections/nfl/{season}/{week}?season_type=regular"
+        url = f"https://api.sleeper.app/projections/nfl/{season}/{week}?season_type=regular"
         rows = get_json(url)
         for row in rows if isinstance(rows, list) else []:
             player = row.get("player") or {}

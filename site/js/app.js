@@ -8874,8 +8874,8 @@
     if (!d || !d.rows.length) return null;
     const cap = Math.max(...d.rows.map(r => r.remaining || 0), 1);
     const card = h('div', { class:'card sos-panel' },
-      h('div', { class:'card-title' }, 'Schedule difficulty (opponent projected points)'),
-      h('p', { class:'tip sos-note' }, `W${d.curWeek}-${d.lastWeek} remaining opponents. Higher projected points = harder.`),
+      h('div', { class:'card-title' }, 'Schedule difficulty (opponents’ best-case weekly lineups)'),
+      h('p', { class:'tip sos-note' }, `W${d.curWeek}-${d.lastWeek} remaining opponents. Higher = harder. A ceiling for ranking schedules: no injuries and perfect start/sit, so it runs above every team's Pts/wk, which prices both.`),
       h('details', { class:'sos-method' }, h('summary', null, 'How difficulty is measured'),
         h('p', { class:'tip' }, 'Average of each opponent’s best legal weekly lineup, including bench replacements for players on bye. LEFT is remaining opponents; PLAYED is completed opponents. OPP BYE is gross starter production unavailable before replacement.'
           + (d.medianScoring ? ' The median game is additional to the head-to-head opponent.' : '') + ' Weekly projection freshness is shown in the data panel.')),

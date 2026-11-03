@@ -72,7 +72,7 @@
     "pass_2pt": 1.0
    },
    "pp_stats": {
-    "pass_yd": 2899.19,
+    "pass_yd": 3089.6,
     "pass_td": 13.0,
     "pass_int": 8.0,
     "rush_yd": 94.0,
@@ -227,7 +227,7 @@
    },
    "pp_stats": {
     "pass_td": 24.11,
-    "pass_yd": 2837.05,
+    "pass_yd": 4096.72,
     "pass_int": 3.0,
     "rush_yd": 6.0
    },
@@ -1016,7 +1016,7 @@
     "pass_yd": 2989.49,
     "rush_yd": 375.5,
     "pass_td": 17.86,
-    "rush_td": 4.08,
+    "rush_td": 3.91,
     "pass_int": 10.0
    },
    "pp_borrowed": [
@@ -1538,7 +1538,7 @@
   {
    "sleeper_id": "11199",
    "name": "Emari Demercado",
-   "team": "DAL",
+   "team": "HOU",
    "pos": "RB",
    "sleeper_stats": {
     "rush_yd": 171.0,
@@ -2169,11 +2169,12 @@
    "pp_stats": {
     "rush_yd": 27.5,
     "rec_yd": 19.5,
-    "rush_td": 4.86,
+    "rush_td": 3.0,
     "rec": 37.0,
     "rec_td": 2.0
    },
    "pp_borrowed": [
+    "rush_td",
     "rec",
     "rec_td"
    ]
@@ -2666,7 +2667,7 @@
     "fum_lost": 1.0
    },
    "pp_stats": {
-    "rush_td": 3.82,
+    "rush_td": 6.72,
     "rush_yd": 304.0,
     "rec": 10.0,
     "rec_yd": 75.0,
@@ -2938,7 +2939,7 @@
    "pp_stats": {
     "rush_yd": 16.5,
     "rec_yd": 12.5,
-    "rush_td": 6.91,
+    "rush_td": 4.85,
     "rec": 20.0,
     "rec_td": 1.0
    },
@@ -3019,7 +3020,7 @@
     "rush_yd": 477.87,
     "rec_yd": 15.5,
     "rec": 2.5,
-    "rush_td": 4.59,
+    "rush_td": 4.14,
     "rec_td": 1.0
    },
    "pp_borrowed": [
@@ -3404,16 +3405,13 @@
     "rush_2pt": 1.0
    },
    "pp_stats": {
-    "rush_yd": 41.5,
-    "rec_yd": 11.5,
+    "rush_yd": 825.5,
+    "rec_yd": 325.5,
     "rec": 2,
-    "rush_td": 6.0,
-    "rec_td": 2.0
+    "rush_td": 5.29,
+    "rec_td": 2.67
    },
-   "pp_borrowed": [
-    "rush_td",
-    "rec_td"
-   ]
+   "pp_borrowed": []
   },
   {
    "sleeper_id": "7561",
@@ -6043,7 +6041,7 @@
    },
    "pp_stats": {
     "rec_yd": 5.5,
-    "rec_td": 0.95,
+    "rec_td": 1.67,
     "rec": 10.0
    },
    "pp_borrowed": [
@@ -6062,12 +6060,13 @@
     "rec_2pt": 1.0
    },
    "pp_stats": {
-    "rec_yd": 771.94,
-    "rec_td": 9.34,
-    "rec": 63.0
+    "rec_yd": 45.5,
+    "rec": 63.0,
+    "rec_td": 8.0
    },
    "pp_borrowed": [
-    "rec"
+    "rec",
+    "rec_td"
    ]
   },
   {
@@ -6522,7 +6521,7 @@
   {
    "sleeper_id": "5773",
    "name": "KhaDarel Hodge",
-   "team": null,
+   "team": "SF",
    "pos": "WR",
    "sleeper_stats": {
     "rec": 8.0,
@@ -8151,7 +8150,7 @@
   {
    "sleeper_id": "11820",
    "name": "Devin Culp",
-   "team": null,
+   "team": "MIN",
    "pos": "TE",
    "sleeper_stats": {
     "rec": 4.0,
@@ -8674,7 +8673,7 @@
   {
    "sleeper_id": "13846",
    "name": "Jack Velling",
-   "team": "ATL",
+   "team": null,
    "pos": "TE",
    "sleeper_stats": {
     "rec": 4.0,

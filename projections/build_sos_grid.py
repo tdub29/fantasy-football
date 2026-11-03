@@ -26,6 +26,12 @@ import sys
 import urllib.request
 from collections import defaultdict
 
+try:
+    import truststore
+    truststore.inject_into_ssl()
+except ImportError:
+    pass
+
 HERE = pathlib.Path(__file__).parent
 ROOT = HERE.parent
 SITE = ROOT / "site" / "data"
