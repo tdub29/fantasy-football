@@ -29,6 +29,12 @@ import subprocess
 import sys
 import urllib.request
 
+try:
+    import truststore
+    truststore.inject_into_ssl()
+except ImportError:
+    pass
+
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 DATA = ROOT / "site" / "data"
 
@@ -66,7 +72,7 @@ def live_sleeper(season: int, week: int) -> dict:
     """pid -> {pts, inj} from Sleeper's weekly projections; {} if unreachable."""
     pos = "&".join(f"position%5B%5D={p}" for p in ("QB", "RB", "WR", "TE", "K", "DEF", "LB", "DB", "DL"))
     try:
-        rows = get_json(f"https://api.sleeper.com/projections/nfl/{season}/{week}?season_type=regular&{pos}")
+        rows = get_json(f"https://api.sleeper.app/projections/nfl/{season}/{week}?season_type=regular&{pos}")
     except Exception as e:  # noqa: BLE001 - a dead feed falls back to the build
         print(f"(live Sleeper read failed, using the build's numbers: {e})")
         return {}

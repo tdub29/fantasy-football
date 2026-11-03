@@ -163,6 +163,30 @@ def apply_xfp(plays: pd.DataFrame, tgt_tab: pd.Series, rush_tab: pd.Series) -> p
     rx = pd.Series(list(zip(p["yl"], p["down"]))).map(rush_tab.to_dict()).to_numpy()
     p["xfp"] = np.where(is_t, tx, np.where(is_r, rx, np.nan))
     p["pts"] = ppr_points(p)
+
+    # Don't double-count rushes at the goal line when the running back eventually scores it.
+    # On a drive where the same rusher has a goal-line rush touchdown (yardline <= 5),
+    # preceding goal-line rush attempts on that drive do not receive duplicate TD xFP.
+    drv = "fixed_drive" if "fixed_drive" in p.columns else ("drive" if "drive" in p.columns else None)
+    if drv is not None and "play_id" in p.columns and "rush_touchdown" in p.columns:
+        not_2pt = (p["two_point_attempt"] != 1) if "two_point_attempt" in p.columns else True
+        is_gl_rush = is_r & (p["yardline_100"] <= 5) & not_2pt
+        td_plays = (
+            p[is_gl_rush & (p["rush_touchdown"] == 1)][["game_id", drv, "rusher_player_id", "play_id"]]
+            .drop_duplicates(subset=["game_id", drv, "rusher_player_id"])
+            .rename(columns={"play_id": "td_play_id"})
+        )
+        if not td_plays.empty:
+            merged = p[["game_id", drv, "rusher_player_id", "play_id"]].merge(
+                td_plays, on=["game_id", drv, "rusher_player_id"], how="left"
+            )
+            pre_td = (
+                is_gl_rush.to_numpy()
+                & merged["td_play_id"].notna().to_numpy()
+                & (merged["play_id"].to_numpy() < merged["td_play_id"].to_numpy())
+            )
+            p.loc[pre_td, "xfp"] = 0.0
+
     return p
 
 
@@ -853,6 +877,32 @@ def self_check() -> int:
     assert abs(pts[2] - -2.0) < 1e-9, pts[2]       # a lost fumble costs the carrier
     # num() must never leak NaN into JSON, which would break the whole file.
     assert num(float("nan")) is None and num(float("inf")) is None and num(3.0) == 3
+    # Goal-line sequence double-counting check: preceding goal-line rushes on a drive
+    # where the running back eventually scores must have xfp set to 0.0, while non-scoring
+    # drives or scoring rushes retain their lookup xFP.
+    gl_plays = pd.DataFrame({
+        "game_id": ["g1", "g1", "g1", "g2", "g2"],
+        "fixed_drive": [1, 1, 1, 2, 2],
+        "play_id": [10, 20, 30, 40, 50],
+        "rusher_player_id": ["rb1", "rb1", "rb1", "rb2", "rb2"],
+        "rush_attempt": [1, 1, 1, 1, 1],
+        "pass_attempt": [0, 0, 0, 0, 0],
+        "receiver_player_id": [None, None, None, None, None],
+        "yardline_100": [3, 2, 1, 4, 2],
+        "down": [1.0, 2.0, 3.0, 1.0, 2.0],
+        "rush_touchdown": [0, 0, 1, 0, 0],
+        "complete_pass": [0, 0, 0, 0, 0],
+        "receiving_yards": [0, 0, 0, 0, 0],
+        "pass_touchdown": [0, 0, 0, 0, 0],
+        "rushing_yards": [1, 1, 1, 2, 1],
+        "fumble_lost": [0, 0, 0, 0, 0],
+        "air_yards": [0, 0, 0, 0, 0],
+    })
+    dummy_tgt = pd.Series(dtype=float)
+    dummy_rush = pd.Series({(0, 1.0): 2.3, (0, 2.0): 2.5, (0, 3.0): 2.8})
+    applied = apply_xfp(gl_plays, dummy_tgt, dummy_rush)
+    assert applied["xfp"].tolist() == [0.0, 0.0, 2.8, 2.3, 2.5], applied["xfp"].tolist()
+
     # Every estimate is flagged in its own description, so the UI can say so.
     for c in COLUMNS:
         if c["key"].endswith("_est"):

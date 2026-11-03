@@ -3,6 +3,12 @@ files. Run build_site_data.py + build_idp.py + build_player_info.py after this t
 regenerate the site data. Sleeper API is public, no auth."""
 import json, pathlib, urllib.request, time
 
+try:
+    import truststore
+    truststore.inject_into_ssl()
+except ImportError:
+    pass
+
 ROOT = pathlib.Path(__file__).parent.parent.parent  # Fantasy Football/
 LEAGUES = [
     ("Password is taco", "1341184676601028608"),

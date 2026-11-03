@@ -9,6 +9,12 @@ real lines drop. Grain: one row per team-game; rolled up to team-season PF/PA + 
 Emits site/data/sos.js (window.TEAM_SOS)."""
 import json, pathlib, urllib.request, csv, io
 
+try:
+    import truststore
+    truststore.inject_into_ssl()
+except ImportError:
+    pass
+
 HERE = pathlib.Path(__file__).parent
 SITE = HERE.parent / "site" / "data"
 GAMES_URL = "https://raw.githubusercontent.com/nflverse/nfldata/master/data/games.csv"
