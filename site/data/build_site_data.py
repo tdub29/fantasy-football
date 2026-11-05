@@ -1,6 +1,12 @@
 """Build site/data/leagues.js + players.js + sleeper-market.js from cached + live API."""
 import json, pathlib, re, urllib.request, sys, unicodedata
 
+try:
+    import truststore
+    truststore.inject_into_ssl()
+except ImportError:
+    pass
+
 ROOT = pathlib.Path(__file__).parent.parent.parent  # Fantasy Football/
 SITE_DATA = ROOT / "site" / "data"
 LEAGUES_DIR = ROOT / "Leagues"
