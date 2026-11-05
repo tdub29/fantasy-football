@@ -6675,3 +6675,10 @@ table.data.prm-table td.cf-bad { background-color: color-mix(in srgb, var(--red)
 }
 /* The demo never syncs and exists on no platform: no sync warning, no dead Sleeper link. */
 .demo-mode .acct-chip, .demo-mode a[href*="sleeper.com/leagues/"] { display: none; }
+
+/* Trade tendencies: a league min-to-max track per archetype, one gold marker per manager. */
+.tend-table th .tend-ends { display: block; font-size: 0.62rem; font-weight: 600; color: var(--fg-2); text-transform: none; letter-spacing: 0; }
+.tend-track { position: relative; display: block; min-width: 90px; height: 12px; border: 2px solid var(--ink); border-radius: 3px; background: var(--led-bg); box-shadow: var(--bevel-in); }
+.tend-dot { position: absolute; top: 50%; width: 10px; height: 10px; margin: -5px 0 0 -5px; border: 2px solid var(--ink); border-radius: 50%; background: var(--grad-gold); }
+.tend-table tr.tend-thin td { opacity: .55; }
+.tend-table tr.tend-partner td:first-child { font-weight: 800; }

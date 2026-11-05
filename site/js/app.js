@@ -9609,6 +9609,45 @@
     return Number.isInteger(Number(v)) ? String(Number(v)) : fmt.decimal(v, 1);
   }
 
+  // Trade tendency (data/trade-tendency.js, build_trade_tendency.py): where each manager sits,
+  // league min to league max, on what they have traded for versus away. Past behaviour from
+  // every completed league trade, valued on today's KTC; not a forecast of what they accept.
+  function tradeTendencyCard(lg) {
+    const card = h('div', { class:'card trade-tendency' },
+      h('div', { class:'card-title' }, 'Trade tendencies by manager'));
+    if (lg.platform === 'espn') {
+      card.appendChild(h('div', { class:'tip' }, 'Trade history comes from Sleeper, and this is an ESPN league.'));
+      return card;
+    }
+    loadSeasonScript('trade-tendency.js', () => window.TRADE_TENDENCY).then(() => {
+      const T = window.TRADE_TENDENCY, L = T.leagues?.[lg.id];
+      if (!L || !L.managers.some(m => m.n)) {
+        card.appendChild(h('div', { class:'tip' }, 'No completed trades in this league yet.'));
+        return;
+      }
+      card.appendChild(h('p', { class:'tip' },
+        `Each bar runs from the league's least to its most inclined manager, from ${L.trades} trades `
+        + `across ${L.seasons.length} season${L.seasons.length === 1 ? '' : 's'}, valued on today's KTC. `
+        + 'It describes what they have done, not what they will accept. Under 3 trades reads faint.'));
+      const sideB = (lg.rosters || []).find(r => r.roster_id === TRADE_STATE.sideB?.rosterId);
+      const cell = (a, m) => {
+        const v = m.arch[a.key];
+        if (v.score == null) return h('td', { class:'muted center' }, '·');
+        return h('td', { title:`${m.name}: ${a.label} ${v.score}/100 (${a.low} 0, ${a.high} 100), ${v.n} trade${v.n === 1 ? '' : 's'}` },
+          h('span', { class:'tend-track' }, h('i', { class:'tend-dot', style:{ left:`${v.score}%` } })));
+      };
+      card.appendChild(h('div', { style:{ overflowX:'auto' } }, h('table', { class:'data tend-table' },
+        h('thead', null, h('tr', null, h('th', null, 'Manager'), h('th', { class:'right' }, 'Trades'),
+          ...T.archetypes.map(a => h('th', { title:`0 = ${a.low}, 100 = ${a.high}` }, a.label,
+            h('span', { class:'tend-ends' }, `${a.low} · ${a.high}`))))),
+        h('tbody', null, ...L.managers.map(m => h('tr', {
+          class:[m.n < 3 ? 'tend-thin' : '', sideB && String(sideB.owner_id) === m.uid ? 'tend-partner' : ''].join(' ').trim() },
+          h('td', null, m.name), h('td', { class:'right tnum' }, String(m.n)),
+          ...T.archetypes.map(a => cell(a, m))))))));
+    }).catch(() => card.appendChild(h('div', { class:'tip' }, 'Trade tendencies are unavailable right now.')));
+    return card;
+  }
+
   function tradePartnersStrip(lg) {
     // Trade history is read from Sleeper; an ESPN league id is not a Sleeper one,
     // and asking for it logged a 404 on every Washington load.
@@ -9753,6 +9792,7 @@
     grid.appendChild(refs.middle.node);
     grid.appendChild(buildTradeSide('B', lg, TRADE_STATE.sideB, sideBRoster, refs));
     main.appendChild(tradePartnersStrip(lg));
+    main.appendChild(tradeTendencyCard(lg));
     main.appendChild(buildTradeSearch(lg));
     main.appendChild(grid);
 

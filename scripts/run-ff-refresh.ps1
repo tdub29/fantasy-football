@@ -17,6 +17,8 @@ Set-Location $ff
 Log 'refresh: start'
 python projections/analysis_refresh.py --quiet *>> $log
 Log "refresh: exit $LASTEXITCODE"
+python site/data/build_trade_tendency.py *>> $log   # not in build_all; trade-tendency.js
+Log "trade tendency: exit $LASTEXITCODE"
 
 # 2. Site checks. Ship at 95% or better: one or two load-timing flakes or an unposted expert
 #    board are routine; a real break fails dozens of features at once.
