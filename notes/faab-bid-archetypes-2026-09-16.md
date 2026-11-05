@@ -293,40 +293,39 @@ them. Do not hand-edit inside the markers.
 | Archetype | n | median | IQR | Q1 | Q3 | max | $0 claims | $0 share |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
 | starter left the team (cut or traded) | 4 | 20 | 23.8 | 17.8 | 41.5 | 100 | 4 | 50% |
-| breakout game | 29 | 17 | 24 | 6 | 30 | 114 | 22 | 43.1% |
-| starter long-term injury | 86 | 16 | 23.8 | 7 | 30.8 | 150 | 32 | 27.1% |
+| breakout game | 29 | 17 | 24 | 6 | 30 | 114 | 23 | 44.2% |
+| starter long-term injury | 94 | 16 | 23.8 | 7 | 30.8 | 150 | 36 | 27.7% |
 | rookie ramping into a role | 4 | 15 | 21.8 | 5.5 | 27.2 | 40 | 5 | 55.6% |
-| rotational piece, no role change | 20 | 13.5 | 25 | 3.8 | 28.8 | 95 | 13 | 39.4% |
-| one-week stream / roster filler | 10 | 13.5 | 8.5 | 8 | 16.5 | 36 | 5 | 33.3% |
+| one-week stream / roster filler | 12 | 14.5 | 13.5 | 10 | 23.5 | 36 | 7 | 36.8% |
 | offseason rookie claim | 61 | 12 | 22 | 3 | 25 | 160 | 35 | 36.5% |
 | returning starter from own absence | 3 | 12 | 13.5 | 11 | 24.5 | 37 | 2 | 40% |
-| starter short-term injury | 59 | 10 | 17 | 4.5 | 21.5 | 61 | 26 | 30.6% |
-| healthy handcuff / backup stash | 28 | 9.5 | 20.2 | 2.8 | 23 | 100 | 25 | 47.2% |
-| entrenched NFL starter, unrostered | 111 | 9 | 10 | 5 | 15 | 114 | 65 | 36.9% |
+| rotational piece, no role change | 20 | 11 | 25.8 | 3 | 28.8 | 95 | 15 | 42.9% |
+| starter short-term injury | 58 | 9.5 | 18.8 | 5 | 23.8 | 61 | 37 | 38.9% |
+| entrenched NFL starter, unrostered | 117 | 9 | 11 | 5 | 16 | 114 | 67 | 36.4% |
 | no NFL snaps that season | 1 | 9 | 0 | 9 | 9 | 9 | 1 | 50% |
 | preseason claim | 56 | 8.5 | 22.5 | 3 | 25.5 | 175 | 47 | 45.6% |
+| healthy handcuff / backup stash | 29 | 8 | 19 | 2 | 21 | 100 | 29 | 50% |
 | offseason veteran claim | 39 | 6 | 13 | 2 | 15 | 200 | 42 | 51.9% |
 | kicker or team defense | 53 | 6 | 16 | 1 | 17 | 143 | 17 | 24.3% |
-| speculative stash, minimal NFL role | 12 | 5 | 15 | 2 | 17 | 91 | 18 | 60% |
-| usage takeover, no big box score | 23 | 5 | 9.5 | 1.5 | 11 | 102 | 16 | 41% |
-| injured or unavailable stash | 1 | 2 | 0 | 2 | 2 | 2 | 2 | 66.7% |
+| speculative stash, minimal NFL role | 13 | 5 | 8 | 2 | 10 | 91 | 19 | 59.4% |
+| usage takeover, no big box score | 25 | 5 | 8 | 2 | 10 | 102 | 18 | 41.9% |
 
 ### Situation of emergence, redraft
 
 | Archetype | n | median | IQR | Q1 | Q3 | max | $0 claims | $0 share |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| rotational piece, no role change | 3 | 16 | 8.5 | 10.5 | 19 | 22 | 2 | 40% |
-| starter long-term injury | 14 | 15 | 18 | 7.2 | 25.2 | 80 | 1 | 6.7% |
-| usage takeover, no big box score | 3 | 11 | 8 | 7.5 | 15.5 | 20 | 2 | 40% |
-| starter short-term injury | 11 | 10 | 12 | 4 | 16 | 84 | 1 | 8.3% |
-| entrenched NFL starter, unrostered | 40 | 9 | 17 | 3 | 20 | 60 | 13 | 24.5% |
+| starter long-term injury | 17 | 15 | 20 | 7 | 27 | 84 | 1 | 5.6% |
+| healthy handcuff / backup stash | 8 | 13 | 23.8 | 3.5 | 27.2 | 35 | 3 | 27.3% |
+| starter short-term injury | 10 | 11 | 13.8 | 4.2 | 18 | 50 | 1 | 9.1% |
+| rotational piece, no role change | 2 | 10.5 | 5.5 | 7.8 | 13.2 | 16 | 2 | 50% |
+| entrenched NFL starter, unrostered | 41 | 8 | 17 | 3 | 20 | 60 | 13 | 24.1% |
 | breakout game | 17 | 8 | 9 | 5 | 14 | 25 | 1 | 5.6% |
 | no NFL snaps that season | 1 | 8 | 0 | 8 | 8 | 8 | 0 | 0% |
-| healthy handcuff / backup stash | 7 | 6 | 20 | 3 | 23 | 31 | 3 | 30% |
+| usage takeover, no big box score | 5 | 6 | 7 | 4 | 11 | 20 | 2 | 28.6% |
 | starter left the team (cut or traded) | 1 | 6 | 0 | 6 | 6 | 6 | 0 | 0% |
 | rookie ramping into a role | 4 | 4.5 | 6.8 | 2.5 | 9.2 | 19 | 0 | 0% |
-| one-week stream / roster filler | 4 | 3 | 4 | 2.8 | 6.8 | 18 | 0 | 0% |
-| kicker or team defense | 25 | 2 | 3 | 2 | 5 | 21 | 23 | 47.9% |
+| one-week stream / roster filler | 5 | 3 | 15 | 3 | 18 | 22 | 0 | 0% |
+| kicker or team defense | 28 | 2 | 2.5 | 1.8 | 4.2 | 21 | 25 | 47.2% |
 | returning starter from own absence | 2 | 1 | 0 | 1 | 1 | 1 | 1 | 33.3% |
 
 Three dynasty situations have no redraft row at all, and that is the format difference: offseason rookie claims, offseason veteran claims and preseason claims are a quarter of the priced dynasty volume and zero of the redraft volume. Phi Kap Fantasy only runs waivers in season.
@@ -335,11 +334,11 @@ Three dynasty situations have no redraft row at all, and that is the format diff
 
 | Archetype | n | median | IQR | Q1 | Q3 | max | $0 claims | $0 share |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| RB | 183 | 13 | 26.5 | 3.5 | 30 | 150 | 100 | 35.3% |
-| IDP | 7 | 11 | 15 | 2.5 | 17.5 | 26 | 15 | 68.2% |
-| WR | 188 | 10 | 19.2 | 4.8 | 24 | 175 | 123 | 39.5% |
-| QB | 72 | 10 | 15 | 5 | 20 | 106 | 56 | 43.8% |
-| TE | 96 | 9 | 13.8 | 3.8 | 17.5 | 200 | 68 | 41.5% |
+| RB | 191 | 13 | 26.5 | 3.5 | 30 | 150 | 113 | 37.2% |
+| IDP | 7 | 11 | 15 | 2.5 | 17.5 | 26 | 16 | 69.6% |
+| WR | 193 | 10 | 19 | 4 | 23 | 175 | 135 | 41.2% |
+| QB | 74 | 10 | 15 | 5 | 20 | 106 | 60 | 44.8% |
+| TE | 99 | 9 | 14 | 4 | 18 | 200 | 68 | 40.7% |
 | DEF | 23 | 7 | 17 | 3.5 | 20.5 | 143 | 0 | 0% |
 | K | 31 | 3 | 8.5 | 1 | 9.5 | 57 | 17 | 35.4% |
 
@@ -347,91 +346,94 @@ Three dynasty situations have no redraft row at all, and that is the format diff
 
 | Archetype | n | median | IQR | Q1 | Q3 | max | $0 claims | $0 share |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| RB | 35 | 12 | 19 | 4.5 | 23.5 | 84 | 4 | 10.3% |
-| WR | 45 | 8 | 15 | 5 | 20 | 60 | 10 | 18.2% |
+| RB | 37 | 15 | 20 | 5 | 25 | 84 | 4 | 9.8% |
+| WR | 49 | 8 | 15 | 5 | 20 | 60 | 10 | 16.9% |
 | TE | 18 | 7 | 8.5 | 3 | 11.5 | 20 | 3 | 14.3% |
 | QB | 9 | 3 | 8 | 2 | 10 | 27 | 7 | 43.8% |
-| DEF | 17 | 2 | 4 | 2 | 6 | 21 | 13 | 43.3% |
-| K | 8 | 2 | 1.5 | 2 | 3.5 | 5 | 10 | 55.6% |
+| DEF | 20 | 2 | 3.5 | 1 | 4.5 | 21 | 13 | 39.4% |
+| K | 8 | 2 | 1.5 | 2 | 3.5 | 5 | 12 | 60% |
 
 ### NFL experience at the pickup, dynasty
 
 | Archetype | n | median | IQR | Q1 | Q3 | max | $0 claims | $0 share |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| NFL year 1 (rookie) | 128 | 12.5 | 25.5 | 3 | 28.5 | 175 | 83 | 39.3% |
-| NFL years 2-3 | 135 | 11 | 20.5 | 4.5 | 25 | 125 | 96 | 41.6% |
-| NFL years 8+ | 102 | 10 | 11.8 | 5 | 16.8 | 200 | 87 | 46% |
-| NFL years 4-7 | 212 | 9 | 17 | 3 | 20 | 150 | 113 | 34.8% |
+| NFL year 1 (rookie) | 129 | 12 | 25 | 3 | 28 | 175 | 84 | 39.4% |
+| NFL years 2-3 | 137 | 11 | 21 | 4 | 25 | 125 | 105 | 43.4% |
+| NFL years 8+ | 107 | 10 | 12 | 4.5 | 16.5 | 200 | 93 | 46.5% |
+| NFL years 4-7 | 222 | 9.5 | 16.8 | 3.2 | 20 | 150 | 127 | 36.4% |
 | n/a (team defense) | 23 | 7 | 17 | 3.5 | 20.5 | 143 | 0 | 0% |
 
 ### NFL experience at the pickup, redraft
 
 | Archetype | n | median | IQR | Q1 | Q3 | max | $0 claims | $0 share |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| NFL years 2-3 | 29 | 11 | 15 | 5 | 20 | 84 | 10 | 25.6% |
-| NFL year 1 (rookie) | 23 | 8 | 16.5 | 3 | 19.5 | 80 | 2 | 8% |
-| NFL years 4-7 | 37 | 7 | 12 | 3 | 15 | 35 | 12 | 24.5% |
-| NFL years 8+ | 26 | 7 | 12.5 | 2.2 | 14.8 | 27 | 10 | 27.8% |
-| n/a (team defense) | 17 | 2 | 4 | 2 | 6 | 21 | 13 | 43.3% |
+| NFL years 2-3 | 30 | 11.5 | 15 | 5 | 20 | 84 | 10 | 25% |
+| NFL years 4-7 | 38 | 7 | 12 | 3 | 15 | 35 | 12 | 24% |
+| NFL years 8+ | 27 | 7 | 12.5 | 2 | 14.5 | 27 | 12 | 30.8% |
+| NFL year 1 (rookie) | 26 | 7 | 16.8 | 3 | 19.8 | 80 | 2 | 7.1% |
+| n/a (team defense) | 20 | 2 | 3.5 | 1 | 4.5 | 21 | 13 | 39.4% |
 
 ### Point-production profile, dynasty
 
 | Archetype | n | median | IQR | Q1 | Q3 | max | $0 claims | $0 share |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| upside play | 90 | 11 | 20 | 5 | 25 | 200 | 49 | 35.3% |
-| floor play | 72 | 10.5 | 22.8 | 5 | 27.8 | 143 | 28 | 28% |
-| low output, neither profile | 319 | 10 | 20 | 3 | 23 | 175 | 214 | 40.2% |
-| unknown (under 3 games after pickup) | 119 | 8 | 16 | 2 | 18 | 100 | 88 | 42.5% |
+| upside play | 94 | 12.5 | 20 | 5 | 25 | 200 | 57 | 37.7% |
+| low output, neither profile | 330 | 10 | 19 | 3 | 22 | 175 | 224 | 40.4% |
+| floor play | 75 | 10 | 23.5 | 5 | 28.5 | 143 | 29 | 27.9% |
+| unknown (under 3 games after pickup) | 119 | 8 | 18 | 2 | 20 | 100 | 99 | 45.4% |
 
 ### Point-production profile, redraft
 
 | Archetype | n | median | IQR | Q1 | Q3 | max | $0 claims | $0 share |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| unknown (under 3 games after pickup) | 17 | 16 | 13 | 8 | 21 | 84 | 6 | 26.1% |
-| low output, neither profile | 51 | 8 | 12.5 | 3 | 15.5 | 60 | 14 | 21.5% |
-| floor play | 27 | 5 | 15 | 2 | 17 | 27 | 9 | 25% |
-| upside play | 37 | 4 | 5 | 2 | 7 | 80 | 18 | 32.7% |
+| low output, neither profile | 56 | 8 | 13.8 | 3 | 16.8 | 60 | 15 | 21.1% |
+| unknown (under 3 games after pickup) | 13 | 8 | 18 | 3 | 21 | 35 | 3 | 18.8% |
+| floor play | 29 | 5 | 14 | 2 | 16 | 84 | 9 | 23.7% |
+| upside play | 43 | 4 | 7 | 2 | 9 | 80 | 22 | 33.8% |
 
 ### Full four-dimension archetype, dynasty, n >= 8
 
 | Archetype | n | median | IQR | Q1 | Q3 | max | $0 claims | $0 share |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
 | NFL year 1 (rookie) | offseason rookie claim | RB | low output, neither profile | 17 | 25 | 34 | 10 | 44 | 142 | 7 | 29.2% |
+| NFL years 4-7 | starter long-term injury | RB | low output, neither profile | 20 | 18.5 | 23.2 | 8.8 | 32 | 150 | 6 | 23.1% |
 | n/a (team defense) | kicker or team defense | DEF | upside play | 8 | 18 | 16.2 | 12.8 | 29 | 101 | 0 | 0% |
-| NFL years 4-7 | starter long-term injury | RB | low output, neither profile | 18 | 17.5 | 27.8 | 8.2 | 36 | 150 | 6 | 25% |
 | NFL years 2-3 | healthy handcuff / backup stash | RB | low output, neither profile | 9 | 17 | 35 | 6 | 41 | 52 | 9 | 50% |
-| NFL years 4-7 | entrenched NFL starter, unrostered | WR | low output, neither profile | 10 | 7.5 | 12.5 | 1.2 | 13.8 | 23 | 5 | 33.3% |
+| NFL years 4-7 | entrenched NFL starter, unrostered | TE | upside play | 8 | 10.5 | 21.5 | 5.8 | 27.2 | 69 | 7 | 46.7% |
+| NFL years 4-7 | entrenched NFL starter, unrostered | WR | low output, neither profile | 11 | 10 | 13.5 | 1.5 | 15 | 23 | 5 | 31.2% |
+| NFL years 8+ | entrenched NFL starter, unrostered | WR | low output, neither profile | 11 | 7 | 5.5 | 3 | 8.5 | 40 | 5 | 31.2% |
 | NFL years 2-3 | preseason claim | RB | low output, neither profile | 9 | 7 | 7 | 2 | 9 | 85 | 5 | 35.7% |
-| NFL years 8+ | entrenched NFL starter, unrostered | WR | low output, neither profile | 9 | 7 | 6 | 3 | 9 | 40 | 4 | 30.8% |
 | NFL years 4-7 | starter long-term injury | WR | low output, neither profile | 8 | 7 | 8.8 | 5 | 13.8 | 38 | 3 | 27.3% |
 | n/a (team defense) | kicker or team defense | DEF | floor play | 9 | 7 | 17 | 4 | 21 | 143 | 0 | 0% |
 | NFL year 1 (rookie) | offseason rookie claim | WR | low output, neither profile | 16 | 6.5 | 19.5 | 1.8 | 21.2 | 160 | 13 | 44.8% |
 
 ### Full four-dimension archetype, redraft, n >= 8
 
-No cell in this grouping reaches the minimum sample, so there is no table to draw. Read this format off the marginal dimensions instead; every cell, however thin, is in the CSV.
+| Archetype | n | median | IQR | Q1 | Q3 | max | $0 claims | $0 share |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| n/a (team defense) | kicker or team defense | DEF | upside play | 11 | 2 | 2 | 1 | 3 | 21 | 7 | 38.9% |
 
 ### Counts behind every table above
 
 | | Dynasty | Redraft |
 |---|---:|---:|
-| claims with a non-null bid | 1433 | 264 |
-| completed | 979 | 179 |
-| failed | 454 | 85 |
-| completed at $0 | 379 | 47 |
-| completed above $0 (the boxes) | 600 | 132 |
-| $0 share of completed | 38.7% | 26.3% |
+| claims with a non-null bid | 1508 | 288 |
+| completed | 1027 | 190 |
+| failed | 481 | 98 |
+| completed at $0 | 409 | 49 |
+| completed above $0 (the boxes) | 618 | 141 |
+| $0 share of completed | 39.8% | 25.8% |
 
 ### What is unknown, by dimension
 
 | Dimension | Dynasty | Redraft |
 |---|---:|---:|
 | experience unknown | 0% | 0% |
-| experience n/a (team defense) | 2.4% | 15.9% |
+| experience n/a (team defense) | 2.3% | 18.1% |
 | position unknown | 0% | 0% |
 | situation unclassified | 0% | 0% |
-| production profile unknown | 20.4% | 14.4% |
-| any dimension unknown | 20.4% | 14.4% |
+| production profile unknown | 20.6% | 10.8% |
+| any dimension unknown | 20.6% | 10.8% |
 
 The production profile is the only real gap and its cause is structural: it needs three games after the pickup, so week-16-and-later claims and all of 2026 to date cannot have one. Nothing was invented to fill it.
 <!-- FAAB-TABLES:END -->
