@@ -21,7 +21,7 @@ the column tooltip and Stats Lab footnote say so. Only one xFP is ever shown.
 | | Ours (lookup) | ffopportunity |
 |---|---|---|
 | What prices a target | league-average PPR of targets in the same air-yard band x yardline band | XGBoost on nflfastR play-by-play; inputs in `R/ep_preprocess.R` include air yards, yardline, down, distance, air yards relative to the sticks and the end zone, pass location, shotgun, no-huddle, QB hit, score differential, Vegas win probability and implied total, time left, roof and weather |
-| What prices a carry | league-average PPR of carries in the same yardline band x down | XGBoost; inputs include yardline, down, distance, run location and gap, shotgun, scramble flag, score differential, Vegas win probability, time left |
+| What prices a carry | league-average PPR of carries in the same yardline band x down; goal-line sequence double-counting prevented when rusher scores (pre-TD attempts inside the 5 on that drive do not receive duplicate TD xFP) | XGBoost; inputs include yardline, down, distance, run location and gap, shotgun, scramble flag, score differential, Vegas win probability, time left |
 | Fit on | last season plus the scored season | ffverse's trained model, as published in the `latest-data` release |
 | Fumbles | inside the average | not in expected points; actual points charge -2 per lost fumble, so FPOE absorbs them |
 | Source | `xfp_tables()` / `apply_xfp()` | `github.com/ffverse/ffopportunity/releases/tag/latest-data`, `ep_weekly_{season}.parquet` |
@@ -55,61 +55,61 @@ ever stops paying 1.0 per expected catch.
 
 | Target | Pos | Season | n | r ours | r ffo | r PPR/G | r blend | MAE ours | MAE ffo | MAE PPR/G | MAE blend |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| Next week | RB | 2024 | 846 | 0.552 | 0.559 | 0.580 | 0.579 | 5.360 | 5.321 | 5.271 | 5.262 |
-| Next week | RB | 2025 | 814 | 0.517 | 0.520 | 0.498 | 0.514 | 5.585 | 5.554 | 5.719 | 5.595 |
-| Next week | RB | both | 1660 | 0.535 | 0.539 | 0.539 | 0.546 | 5.470 | 5.435 | 5.490 | 5.425 |
+| Next week | RB | 2024 | 846 | 0.551 | 0.559 | 0.580 | 0.579 | 5.342 | 5.321 | 5.271 | 5.262 |
+| Next week | RB | 2025 | 814 | 0.516 | 0.520 | 0.498 | 0.514 | 5.565 | 5.554 | 5.719 | 5.595 |
+| Next week | RB | both | 1660 | 0.534 | 0.539 | 0.539 | 0.546 | 5.451 | 5.435 | 5.490 | 5.425 |
 | Next week | WR | 2024 | 934 | 0.359 | 0.377 | 0.383 | 0.398 | 6.044 | 5.981 | 5.963 | 5.911 |
 | Next week | WR | 2025 | 904 | 0.382 | 0.389 | 0.404 | 0.410 | 5.951 | 5.911 | 5.859 | 5.824 |
 | Next week | WR | both | 1838 | 0.370 | 0.381 | 0.394 | 0.403 | 5.998 | 5.947 | 5.911 | 5.868 |
 | Next week | TE | 2024 | 293 | 0.277 | 0.283 | 0.275 | 0.295 | 5.383 | 5.346 | 5.407 | 5.329 |
-| Next week | TE | 2025 | 342 | 0.301 | 0.292 | 0.282 | 0.295 | 5.253 | 5.310 | 5.390 | 5.312 |
-| Next week | TE | both | 635 | 0.288 | 0.286 | 0.275 | 0.292 | 5.313 | 5.327 | 5.398 | 5.320 |
-| Rest of season /G | RB | 2024 | 784 | 0.704 | 0.715 | 0.758 | 0.749 | 3.514 | 3.457 | 3.222 | 3.227 |
-| Rest of season /G | RB | 2025 | 710 | 0.732 | 0.730 | 0.700 | 0.723 | 3.161 | 3.166 | 3.436 | 3.238 |
-| Rest of season /G | RB | both | 1494 | 0.717 | 0.722 | 0.732 | 0.737 | 3.347 | 3.319 | 3.324 | 3.232 |
+| Next week | TE | 2025 | 342 | 0.301 | 0.292 | 0.282 | 0.295 | 5.252 | 5.310 | 5.390 | 5.312 |
+| Next week | TE | both | 635 | 0.289 | 0.286 | 0.275 | 0.292 | 5.313 | 5.327 | 5.398 | 5.320 |
+| Rest of season /G | RB | 2024 | 784 | 0.705 | 0.715 | 0.758 | 0.749 | 3.486 | 3.457 | 3.222 | 3.227 |
+| Rest of season /G | RB | 2025 | 710 | 0.733 | 0.730 | 0.700 | 0.723 | 3.137 | 3.166 | 3.436 | 3.238 |
+| Rest of season /G | RB | both | 1494 | 0.718 | 0.722 | 0.732 | 0.737 | 3.320 | 3.319 | 3.324 | 3.232 |
 | Rest of season /G | WR | 2024 | 867 | 0.519 | 0.546 | 0.606 | 0.606 | 3.657 | 3.574 | 3.390 | 3.384 |
 | Rest of season /G | WR | 2025 | 847 | 0.610 | 0.611 | 0.601 | 0.628 | 3.615 | 3.581 | 3.633 | 3.480 |
 | Rest of season /G | WR | both | 1714 | 0.552 | 0.564 | 0.599 | 0.608 | 3.637 | 3.577 | 3.510 | 3.432 |
 | Rest of season /G | TE | 2024 | 266 | 0.371 | 0.392 | 0.372 | 0.405 | 3.173 | 3.120 | 3.299 | 3.116 |
-| Rest of season /G | TE | 2025 | 315 | 0.535 | 0.496 | 0.490 | 0.510 | 2.789 | 2.873 | 3.012 | 2.887 |
-| Rest of season /G | TE | both | 581 | 0.459 | 0.445 | 0.429 | 0.457 | 2.965 | 2.986 | 3.144 | 2.992 |
+| Rest of season /G | TE | 2025 | 315 | 0.539 | 0.496 | 0.490 | 0.510 | 2.776 | 2.873 | 3.012 | 2.887 |
+| Rest of season /G | TE | both | 581 | 0.461 | 0.445 | 0.429 | 0.457 | 2.958 | 2.986 | 3.144 | 2.992 |
 
 ## Next week by cutoff window, both seasons
 
 | Pos | Cutoff weeks | n | r ours | r ffo | r PPR/G | r blend |
 |---|---|---|---|---|---|---|
-| RB | 3-6 | 403 | 0.532 | 0.538 | 0.493 | 0.525 |
+| RB | 3-6 | 403 | 0.526 | 0.538 | 0.493 | 0.525 |
 | RB | 7-17 | 1257 | 0.535 | 0.538 | 0.553 | 0.552 |
 | WR | 3-6 | 485 | 0.336 | 0.355 | 0.357 | 0.378 |
 | WR | 7-17 | 1353 | 0.382 | 0.391 | 0.410 | 0.413 |
-| TE | 3-6 | 157 | 0.248 | 0.257 | 0.205 | 0.242 |
-| TE | 7-17 | 478 | 0.302 | 0.297 | 0.299 | 0.310 |
+| TE | 3-6 | 157 | 0.245 | 0.257 | 0.205 | 0.242 |
+| TE | 7-17 | 478 | 0.303 | 0.297 | 0.299 | 0.310 |
 
 ## r(ffo) - r(ours), both seasons, 95% player-clustered bootstrap
 
 | Target | Pos | delta r | 95% CI | delta MAE (ffo - ours) |
 |---|---|---|---|---|
-| Next week | RB | +0.004 | -0.001 to +0.011 | -0.035 |
+| Next week | RB | +0.006 | -0.001 to +0.014 | -0.016 |
 | Next week | WR | +0.011 | -0.001 to +0.022 | -0.052 |
 | Next week | TE | -0.002 | -0.020 to +0.017 | +0.014 |
-| Next week | all | +0.007 | +0.001 to +0.013 | -0.035 |
-| Rest of season /G | RB | +0.005 | -0.008 to +0.018 | -0.028 |
+| Next week | all | +0.008 | +0.002 to +0.015 | -0.027 |
+| Rest of season /G | RB | +0.004 | -0.011 to +0.020 | -0.002 |
 | Rest of season /G | WR | +0.011 | -0.012 to +0.034 | -0.059 |
-| Rest of season /G | TE | -0.014 | -0.057 to +0.032 | +0.022 |
-| Rest of season /G | all | +0.007 | -0.005 to +0.018 | -0.034 |
+| Rest of season /G | TE | -0.016 | -0.061 to +0.031 | +0.028 |
+| Rest of season /G | all | +0.006 | -0.006 to +0.018 | -0.023 |
 
 ## Split-half stability (odd vs even weeks, r between halves)
 
 | Pos | n | xFP/G ours | xFP/G ffo | PPR/G | FPOE/G ours | FPOE/G ffo |
 |---|---|---|---|---|---|---|
-| RB | 146 | 0.853 | 0.856 | 0.813 | 0.065 | -0.020 |
+| RB | 146 | 0.858 | 0.856 | 0.813 | 0.123 | -0.020 |
 | WR | 152 | 0.705 | 0.731 | 0.615 | 0.149 | 0.057 |
-| TE | 58 | 0.647 | 0.640 | 0.379 | 0.210 | 0.188 |
-| all | 356 | 0.797 | 0.803 | 0.711 | 0.138 | 0.056 |
+| TE | 58 | 0.649 | 0.640 | 0.379 | 0.211 | 0.188 |
+| all | 356 | 0.799 | 0.803 | 0.711 | 0.157 | 0.056 |
 
 ## Calibration: mean per player-week (all RB/WR/TE rows)
 
-- RB: actual 7.66, ours 7.68, ffo 7.63
+- RB: actual 7.66, ours 7.57, ffo 7.63
 - WR: actual 7.06, ours 7.17, ffo 7.04
 - TE: actual 5.52, ours 5.26, ffo 5.32
 

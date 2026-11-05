@@ -36,7 +36,8 @@ ROS_MIN_GAMES = 3
 BOOT = 400
 PBP_COLS = ["game_id", "week", "season_type", "play_type", "complete_pass", "receiving_yards",
             "pass_touchdown", "rushing_yards", "rush_touchdown", "fumble_lost", "receiver_player_id",
-            "pass_attempt", "rusher_player_id", "rush_attempt", "yardline_100", "air_yards", "down"]
+            "pass_attempt", "rusher_player_id", "rush_attempt", "yardline_100", "air_yards", "down",
+            "fixed_drive", "play_id"]
 
 
 def pbp(season):
