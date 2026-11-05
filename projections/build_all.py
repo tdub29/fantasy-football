@@ -58,6 +58,12 @@ STEPS = [
     # per-player restatements from X layered on top of it.
     ("Gibbs ROS board (FantasyPros)", SITE_DATA / "build_gibbs_ros_fp.py", True),
     ("Gibbs ROS per-player updates (X)", SITE_DATA / "refresh_gibbs_ros.py", False),
+    # Full positional lists from his videos, filed via muse-hub. Inert per
+    # position once his FantasyPros stamp catches up to the video date.
+    # ponytail: runs after X, so an X post newer than the video loses; fine
+    # until he posts per-player restatements mid-week after a video.
+    ("Gibbs ROS video ranks (manual)", SITE_DATA / "refresh_gibbs_ros.py", False,
+     ["--manual", str(SITE_DATA / "_sources" / "gibbs-ros-manual.json")]),
     # Two independent publications of the same man's rankings. Agreement is
     # what proves the scrape is still pointed at HIM and at THIS week; a slug
     # that silently resolves to another analyst produces a perfectly healthy

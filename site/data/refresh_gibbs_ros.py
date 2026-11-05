@@ -265,7 +265,29 @@ def main() -> int:
 def write(a, updates: list[dict], source: str) -> int:
     raw = a.board.read_text(encoding="utf-8")
     board = json.loads(raw[raw.index("{"):raw.rindex("}") + 1])
+    if source == "manual":
+        # build_all re-applies the standing manual file after every FantasyPros
+        # rebuild. Once his published board is as new as the transcription, the
+        # published board wins and the file goes inert for that position.
+        by = board.get("sourceByPosition") or {}
+        def fp_date(pos, at):
+            s = (by.get(pos) or {})
+            if s.get("kind") != "fantasypros" or not s.get("stamp"):
+                return None
+            mo, d = (int(x) for x in s["stamp"].split("/")[:2])
+            return dt.date(int(at[:4]), mo, d)
+        stale = {u["pos"] for u in updates
+                 if (f := fp_date(u["pos"], u["at"])) and f >= dt.date.fromisoformat(u["at"][:10])}
+        for pos in sorted(stale):
+            print(f"  {pos}: FantasyPros board is as new as the manual ranks; manual skipped")
+        updates = [u for u in updates if u["pos"] not in stale]
     changed = apply(board, updates)
+    if source == "manual":
+        for pos in changed:
+            u = next(u for u in updates if u["pos"] == pos)
+            if u.get("via"):
+                board.setdefault("sourceByPosition", {})[pos] = {
+                    "kind": "transcribed", "via": u["via"], "stamp": u.get("stamp")}
     if not changed:
         print(f"{len(updates)} update(s) found, none for a position this board "
               f"carries ({', '.join(board['positions'])}); unchanged")
@@ -274,8 +296,9 @@ def write(a, updates: list[dict], source: str) -> int:
     newest = max(u["at"] or "" for u in updates)[:10]
     board["capturedAt"] = dt.date.today().isoformat()
     board["rosUpdatedThrough"] = newest
+    vias = sorted({u["via"] for u in updates if u.get("via")})
     how = ("the plain text of his \"Beyond the Box Score\" posts"
-           if source == "posts" else
+           if source == "posts" else "; ".join(vias) if vias else
            "a two-reader transcription of his live ranker, captured from his "
            "stream while the published board still trailed it")
     board["provenance"] = (
