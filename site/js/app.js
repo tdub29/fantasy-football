@@ -4441,8 +4441,9 @@
           // he records. On 2026-09-16 his video showed McConkey WR14 while the board he
           // published at 23:18 that night reads WR20, which looks like a bug in this
           // table until the date is on screen next to the number.
-          + ` A single-expert column is his latest FantasyPros submission, so it can`
-          + ` disagree with a video recorded earlier the same day.`;
+          + (window.GIBBS_WEEK?.sourceUrl
+            ? ` Gibbs week ranks use the supplied video transcription. WR 77-99 are reconstructed after the Jordan Watkins insertion; no Flex board was shown.`
+            : ` A single-expert column is his latest FantasyPros submission, so it can disagree with a video recorded earlier the same day.`);
         tableWrap.appendChild(h('div', { class:'tip rankings-source-note' }, sourceNote));
       } else if (filter.view === 'sleeper-weeks') {
         tableWrap.appendChild(h('div', { class:'tip rankings-source-note' },

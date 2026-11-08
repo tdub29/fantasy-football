@@ -314,6 +314,30 @@ def current_week() -> int:
 
 def main_week(output: pathlib.Path) -> int:
     week = current_week()
+    manual_path = ROOT / "site" / "data" / "_sources" / "gibbs-week-manual.json"
+    if manual_path.exists():
+        manual = json.loads(manual_path.read_text(encoding="utf-8"))
+        if manual.get("week") == week:
+            data = build(manual, sleeper_index())
+            data["week"] = week
+            data["sourceUrl"] = manual.get("sourceUrl")
+            data["updatedLabel"] = manual.get("updatedLabel")
+            data["sourceByPosition"] = {
+                pos: {"kind": "video-transcription", "stamp": manual["posted"],
+                      "url": manual.get("sourceUrl")}
+                for pos in manual["positions"]
+            }
+            for pos, rows in data["positions"].items():
+                for row, original in zip(rows, manual["positions"][pos]):
+                    row["flexRank"] = None
+                    if original.get("reconstructed"):
+                        row["reconstructed"] = True
+            body = json.dumps(data, ensure_ascii=False, separators=(",", ":"))
+            output.write_text(
+                "// Generated from _sources/gibbs-week-manual.json.\n"
+                f"window.GIBBS_WEEK={body};\n", encoding="utf-8")
+            print(f"wrote {output.name}: supplied Week {week} video lists; no Flex board")
+            return 0
     print(f"Jacob Gibbs (expert {EXPERT_ID}) week {week}, FantasyPros {SCORING} board")
     positions, stamps, newest = collect(week)
     # The flex board is the one he posts; it gives the cross-position order.
