@@ -343,6 +343,11 @@ def build(season: int) -> dict:
                         reason = "kickoff hour outside forecast range"
 
         flag = derive_flag(temp_f, wind_mph, gust_mph, precip_prob)
+        if roof_label == "retractable" and flag == "rain/snow":
+            # Retractable roof closes when precipitation is forecast,
+            # playing indoors so rain/snow does not reach the field.
+            flag = None
+            note = "retractable, roof closed for rain"
         if flag:
             n_flagged[flag] = n_flagged.get(flag, 0) + 1
 

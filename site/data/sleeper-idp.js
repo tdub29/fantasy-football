@@ -13,7 +13,7 @@
       "id": "sleeper-idp-2026",
       "title": "Sleeper IDP Usage Rankings (2026)",
       "url": "https://sleeper.com/research",
-      "publishedAt": "2026-11-03",
+      "publishedAt": "2026-11-08",
       "format": "idp",
       "defaultEnabled": true,
       "players": [
@@ -274,7 +274,7 @@
           "name": "Jared Verse",
           "pos": "DL",
           "team": "CLE",
-          "age": 25,
+          "age": 26,
           "category": "cornerstone",
           "tier": "C",
           "ktcValue": 3600,

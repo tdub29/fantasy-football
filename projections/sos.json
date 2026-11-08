@@ -1,7 +1,7 @@
 {
  "source": "nflverse game lines (actual Vegas spread+total) + environment fallback for unposted weeks",
  "definition": "off_sos = avg opponent implied points allowed (higher=easier to score). def_sos = avg opponent implied points scored (lower=easier for your defense/IDP).",
- "lines_through_week": 9,
+ "lines_through_week": 10,
  "posted_weeks": [
   1,
   2,
@@ -11,7 +11,8 @@
   6,
   7,
   8,
-  9
+  9,
+  10
  ],
  "teams": {
   "DAL": {
@@ -20,9 +21,9 @@
    "games": 17,
    "off_sos": 23.05,
    "def_sos": 23.41,
-   "actual_pf": 26.72,
-   "actual_pa": 23.67,
-   "posted_games": 9,
+   "actual_pf": 26.55,
+   "actual_pa": 24.15,
+   "posted_games": 10,
    "schedule": [
     {
      "week": 1,
@@ -100,9 +101,9 @@
      "week": 10,
      "opp": "SF",
      "home": true,
-     "posted": false,
-     "implied_pf": 24.57,
-     "implied_pa": 24.37
+     "posted": true,
+     "implied_pf": 25.0,
+     "implied_pa": 28.5
     },
     {
      "week": 11,
@@ -320,9 +321,9 @@
    "games": 17,
    "off_sos": 22.96,
    "def_sos": 23.28,
-   "actual_pf": 26.34,
-   "actual_pa": 21.54,
-   "posted_games": 9,
+   "actual_pf": 26.46,
+   "actual_pa": 21.39,
+   "posted_games": 10,
    "schedule": [
     {
      "week": 1,
@@ -400,9 +401,9 @@
      "week": 10,
      "opp": "ARI",
      "home": false,
-     "posted": false,
-     "implied_pf": 26.24,
-     "implied_pa": 20.79
+     "posted": true,
+     "implied_pf": 27.5,
+     "implied_pa": 20.0
     },
     {
      "week": 12,
@@ -470,9 +471,9 @@
    "games": 17,
    "off_sos": 23.35,
    "def_sos": 22.31,
-   "actual_pf": 27.74,
-   "actual_pa": 23.68,
-   "posted_games": 8,
+   "actual_pf": 27.32,
+   "actual_pa": 23.88,
+   "posted_games": 9,
    "schedule": [
     {
      "week": 1,
@@ -542,9 +543,9 @@
      "week": 10,
      "opp": "NE",
      "home": true,
-     "posted": false,
-     "implied_pf": 24.27,
-     "implied_pa": 22.65
+     "posted": true,
+     "implied_pf": 24.0,
+     "implied_pa": 25.5
     },
     {
      "week": 11,
@@ -620,9 +621,9 @@
    "games": 17,
    "off_sos": 22.45,
    "def_sos": 22.66,
-   "actual_pf": 27.41,
-   "actual_pa": 23.84,
-   "posted_games": 8,
+   "actual_pf": 27.58,
+   "actual_pa": 23.58,
+   "posted_games": 9,
    "schedule": [
     {
      "week": 1,
@@ -692,9 +693,9 @@
      "week": 10,
      "opp": "NYJ",
      "home": false,
-     "posted": false,
-     "implied_pf": 24.23,
-     "implied_pa": 21.06
+     "posted": true,
+     "implied_pf": 29.0,
+     "implied_pa": 21.5
     },
     {
      "week": 11,
@@ -770,9 +771,9 @@
    "games": 17,
    "off_sos": 22.98,
    "def_sos": 22.62,
-   "actual_pf": 24.78,
-   "actual_pa": 22.28,
-   "posted_games": 9,
+   "actual_pf": 24.3,
+   "actual_pa": 21.8,
+   "posted_games": 10,
    "schedule": [
     {
      "week": 1,
@@ -850,9 +851,9 @@
      "week": 10,
      "opp": "LAC",
      "home": true,
-     "posted": false,
-     "implied_pf": 24.25,
-     "implied_pa": 22.39
+     "posted": true,
+     "implied_pf": 20.0,
+     "implied_pa": 17.5
     },
     {
      "week": 11,
@@ -920,9 +921,9 @@
    "games": 17,
    "off_sos": 23.12,
    "def_sos": 22.76,
-   "actual_pf": 26.38,
-   "actual_pa": 21.75,
-   "posted_games": 8,
+   "actual_pf": 26.61,
+   "actual_pa": 22.11,
+   "posted_games": 9,
    "schedule": [
     {
      "week": 1,
@@ -992,9 +993,9 @@
      "week": 10,
      "opp": "DAL",
      "home": false,
-     "posted": false,
-     "implied_pf": 24.37,
-     "implied_pa": 24.57
+     "posted": true,
+     "implied_pf": 28.5,
+     "implied_pa": 25.0
     },
     {
      "week": 11,
@@ -1070,9 +1071,9 @@
    "games": 17,
    "off_sos": 22.94,
    "def_sos": 23.26,
-   "actual_pf": 23.73,
-   "actual_pa": 23.29,
-   "posted_games": 9,
+   "actual_pf": 23.54,
+   "actual_pa": 22.84,
+   "posted_games": 10,
    "schedule": [
     {
      "week": 1,
@@ -1150,9 +1151,9 @@
      "week": 10,
      "opp": "MIN",
      "home": true,
-     "posted": false,
-     "implied_pf": 24.24,
-     "implied_pa": 21.82
+     "posted": true,
+     "implied_pf": 21.75,
+     "implied_pa": 18.75
     },
     {
      "week": 12,
@@ -1370,9 +1371,9 @@
    "games": 17,
    "off_sos": 23.15,
    "def_sos": 23.42,
-   "actual_pf": 21.11,
-   "actual_pa": 24.32,
-   "posted_games": 8,
+   "actual_pf": 21.16,
+   "actual_pa": 24.18,
+   "posted_games": 9,
    "schedule": [
     {
      "week": 1,
@@ -1442,9 +1443,9 @@
      "week": 10,
      "opp": "NYG",
      "home": false,
-     "posted": false,
-     "implied_pf": 23.17,
-     "implied_pa": 23.93
+     "posted": true,
+     "implied_pf": 21.5,
+     "implied_pa": 23.0
     },
     {
      "week": 11,
@@ -1520,9 +1521,9 @@
    "games": 17,
    "off_sos": 22.84,
    "def_sos": 22.71,
-   "actual_pf": 21.33,
-   "actual_pa": 23.94,
-   "posted_games": 9,
+   "actual_pf": 21.5,
+   "actual_pa": 23.6,
+   "posted_games": 10,
    "schedule": [
     {
      "week": 1,
@@ -1600,9 +1601,9 @@
      "week": 10,
      "opp": "MIA",
      "home": true,
-     "posted": false,
-     "implied_pf": 24.62,
-     "implied_pa": 21.26
+     "posted": true,
+     "implied_pf": 23.0,
+     "implied_pa": 20.5
     },
     {
      "week": 11,
@@ -1970,9 +1971,9 @@
    "games": 17,
    "off_sos": 22.82,
    "def_sos": 23.02,
-   "actual_pf": 24.16,
-   "actual_pa": 21.22,
-   "posted_games": 8,
+   "actual_pf": 24.56,
+   "actual_pa": 20.83,
+   "posted_games": 9,
    "schedule": [
     {
      "week": 1,
@@ -2042,9 +2043,9 @@
      "week": 10,
      "opp": "TEN",
      "home": false,
-     "posted": false,
-     "implied_pf": 23.2,
-     "implied_pa": 22.27
+     "posted": true,
+     "implied_pf": 27.75,
+     "implied_pa": 17.75
     },
     {
      "week": 11,
@@ -2120,9 +2121,9 @@
    "games": 17,
    "off_sos": 22.64,
    "def_sos": 22.6,
-   "actual_pf": 23.37,
-   "actual_pa": 22.37,
-   "posted_games": 9,
+   "actual_pf": 23.59,
+   "actual_pa": 22.54,
+   "posted_games": 10,
    "schedule": [
     {
      "week": 1,
@@ -2200,9 +2201,9 @@
      "week": 10,
      "opp": "DET",
      "home": false,
-     "posted": false,
-     "implied_pf": 22.65,
-     "implied_pa": 24.27
+     "posted": true,
+     "implied_pf": 25.5,
+     "implied_pa": 24.0
     },
     {
      "week": 12,
@@ -2420,9 +2421,9 @@
    "games": 17,
    "off_sos": 22.48,
    "def_sos": 22.68,
-   "actual_pf": 20.95,
-   "actual_pa": 23.49,
-   "posted_games": 8,
+   "actual_pf": 20.57,
+   "actual_pa": 23.1,
+   "posted_games": 9,
    "schedule": [
     {
      "week": 1,
@@ -2492,9 +2493,9 @@
      "week": 10,
      "opp": "BAL",
      "home": false,
-     "posted": false,
-     "implied_pf": 22.39,
-     "implied_pa": 24.25
+     "posted": true,
+     "implied_pf": 17.5,
+     "implied_pa": 20.0
     },
     {
      "week": 11,
@@ -2720,9 +2721,9 @@
    "games": 17,
    "off_sos": 23.17,
    "def_sos": 23.39,
-   "actual_pf": 20.31,
-   "actual_pa": 23.19,
-   "posted_games": 8,
+   "actual_pf": 20.61,
+   "actual_pa": 23.0,
+   "posted_games": 9,
    "schedule": [
     {
      "week": 1,
@@ -2792,9 +2793,9 @@
      "week": 10,
      "opp": "WAS",
      "home": true,
-     "posted": false,
-     "implied_pf": 23.93,
-     "implied_pa": 23.17
+     "posted": true,
+     "implied_pf": 23.0,
+     "implied_pa": 21.5
     },
     {
      "week": 11,
@@ -2870,9 +2871,9 @@
    "games": 17,
    "off_sos": 23.15,
    "def_sos": 23.36,
-   "actual_pf": 22.59,
-   "actual_pa": 21.16,
-   "posted_games": 8,
+   "actual_pf": 22.17,
+   "actual_pa": 21.22,
+   "posted_games": 9,
    "schedule": [
     {
      "week": 1,
@@ -2942,9 +2943,9 @@
      "week": 10,
      "opp": "GB",
      "home": false,
-     "posted": false,
-     "implied_pf": 21.82,
-     "implied_pa": 24.24
+     "posted": true,
+     "implied_pf": 18.75,
+     "implied_pa": 21.75
     },
     {
      "week": 11,
@@ -3020,9 +3021,9 @@
    "games": 17,
    "off_sos": 23.33,
    "def_sos": 22.37,
-   "actual_pf": 21.78,
-   "actual_pa": 23.28,
-   "posted_games": 8,
+   "actual_pf": 21.92,
+   "actual_pa": 23.42,
+   "posted_games": 9,
    "schedule": [
     {
      "week": 1,
@@ -3092,9 +3093,9 @@
      "week": 10,
      "opp": "CAR",
      "home": true,
-     "posted": false,
-     "implied_pf": 22.85,
-     "implied_pa": 21.52
+     "posted": true,
+     "implied_pf": 23.0,
+     "implied_pa": 24.5
     },
     {
      "week": 11,
@@ -3320,9 +3321,9 @@
    "games": 17,
    "off_sos": 23.14,
    "def_sos": 23.32,
-   "actual_pf": 23.05,
-   "actual_pa": 20.07,
-   "posted_games": 8,
+   "actual_pf": 22.93,
+   "actual_pa": 19.79,
+   "posted_games": 9,
    "schedule": [
     {
      "week": 1,
@@ -3392,9 +3393,9 @@
      "week": 10,
      "opp": "CLE",
      "home": false,
-     "posted": false,
-     "implied_pf": 22.15,
-     "implied_pa": 20.23
+     "posted": true,
+     "implied_pf": 22.0,
+     "implied_pa": 17.5
     },
     {
      "week": 11,
@@ -3470,9 +3471,9 @@
    "games": 17,
    "off_sos": 22.95,
    "def_sos": 22.93,
-   "actual_pf": 17.28,
-   "actual_pa": 23.09,
-   "posted_games": 8,
+   "actual_pf": 17.33,
+   "actual_pa": 23.61,
+   "posted_games": 9,
    "schedule": [
     {
      "week": 1,
@@ -3542,9 +3543,9 @@
      "week": 10,
      "opp": "JAX",
      "home": true,
-     "posted": false,
-     "implied_pf": 22.27,
-     "implied_pa": 23.2
+     "posted": true,
+     "implied_pf": 17.75,
+     "implied_pa": 27.75
     },
     {
      "week": 11,
@@ -3770,9 +3771,9 @@
    "games": 17,
    "off_sos": 22.62,
    "def_sos": 23.14,
-   "actual_pf": 22.41,
-   "actual_pa": 22.72,
-   "posted_games": 8,
+   "actual_pf": 22.64,
+   "actual_pa": 22.75,
+   "posted_games": 9,
    "schedule": [
     {
      "week": 1,
@@ -3842,9 +3843,9 @@
      "week": 10,
      "opp": "NO",
      "home": false,
-     "posted": false,
-     "implied_pf": 21.52,
-     "implied_pa": 22.85
+     "posted": true,
+     "implied_pf": 24.5,
+     "implied_pa": 23.0
     },
     {
      "week": 11,
@@ -4070,9 +4071,9 @@
    "games": 17,
    "off_sos": 22.44,
    "def_sos": 23.74,
-   "actual_pf": 20.78,
-   "actual_pa": 27.17,
-   "posted_games": 9,
+   "actual_pf": 20.7,
+   "actual_pa": 27.2,
+   "posted_games": 10,
    "schedule": [
     {
      "week": 1,
@@ -4150,9 +4151,9 @@
      "week": 10,
      "opp": "LAR",
      "home": true,
-     "posted": false,
-     "implied_pf": 20.79,
-     "implied_pa": 26.24
+     "posted": true,
+     "implied_pf": 20.0,
+     "implied_pa": 27.5
     },
     {
      "week": 11,
@@ -4220,9 +4221,9 @@
    "games": 17,
    "off_sos": 22.49,
    "def_sos": 23.45,
-   "actual_pf": 17.8,
-   "actual_pa": 25.3,
-   "posted_games": 8,
+   "actual_pf": 18.1,
+   "actual_pa": 25.04,
+   "posted_games": 9,
    "schedule": [
     {
      "week": 1,
@@ -4292,9 +4293,9 @@
      "week": 10,
      "opp": "IND",
      "home": false,
-     "posted": false,
-     "implied_pf": 21.26,
-     "implied_pa": 24.62
+     "posted": true,
+     "implied_pf": 20.5,
+     "implied_pa": 23.0
     },
     {
      "week": 11,
@@ -4520,9 +4521,9 @@
    "games": 17,
    "off_sos": 22.88,
    "def_sos": 22.53,
-   "actual_pf": 20.11,
-   "actual_pa": 22.94,
-   "posted_games": 9,
+   "actual_pf": 20.25,
+   "actual_pa": 23.55,
+   "posted_games": 10,
    "schedule": [
     {
      "week": 1,
@@ -4600,9 +4601,9 @@
      "week": 10,
      "opp": "BUF",
      "home": true,
-     "posted": false,
-     "implied_pf": 21.06,
-     "implied_pa": 24.23
+     "posted": true,
+     "implied_pf": 21.5,
+     "implied_pa": 29.0
     },
     {
      "week": 11,
@@ -4670,9 +4671,9 @@
    "games": 17,
    "off_sos": 23.06,
    "def_sos": 22.53,
-   "actual_pf": 18.17,
-   "actual_pa": 21.72,
-   "posted_games": 9,
+   "actual_pf": 18.1,
+   "actual_pa": 21.75,
+   "posted_games": 10,
    "schedule": [
     {
      "week": 1,
@@ -4750,9 +4751,9 @@
      "week": 10,
      "opp": "HOU",
      "home": true,
-     "posted": false,
-     "implied_pf": 20.23,
-     "implied_pa": 22.15
+     "posted": true,
+     "implied_pf": 17.5,
+     "implied_pa": 22.0
     },
     {
      "week": 12,

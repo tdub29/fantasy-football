@@ -71,19 +71,8 @@
     "fum_lost": 3.0,
     "pass_2pt": 1.0
    },
-   "pp_stats": {
-    "pass_yd": 3089.6,
-    "pass_td": 13.0,
-    "pass_int": 8.0,
-    "rush_yd": 94.0,
-    "rush_td": 1.0
-   },
-   "pp_borrowed": [
-    "pass_td",
-    "pass_int",
-    "rush_yd",
-    "rush_td"
-   ]
+   "pp_stats": null,
+   "pp_borrowed": []
   },
   {
    "sleeper_id": "11560",
@@ -166,7 +155,7 @@
    "pp_stats": {
     "pass_yd": 3775.99,
     "rush_yd": 423.38,
-    "pass_td": 26.53,
+    "pass_td": 27.02,
     "rush_td": 3.6,
     "pass_int": 11.0
    },
@@ -227,7 +216,7 @@
    },
    "pp_stats": {
     "pass_td": 24.11,
-    "pass_yd": 4096.72,
+    "pass_yd": 192.5,
     "pass_int": 3.0,
     "rush_yd": 6.0
    },
@@ -350,7 +339,7 @@
    "pp_stats": {
     "pass_yd": 3262.93,
     "rush_yd": 11.5,
-    "pass_td": 19.61,
+    "pass_td": 19.67,
     "rush_td": 1.68,
     "pass_int": 13.0
    },
@@ -688,7 +677,7 @@
     "pass_2pt": 2.0
    },
    "pp_stats": {
-    "pass_yd": 4106.49,
+    "pass_yd": 4025.5,
     "pass_td": 29.82,
     "rush_td": 0.69,
     "pass_int": 10.0,
@@ -702,7 +691,7 @@
   {
    "sleeper_id": "3257",
    "name": "Jacoby Brissett",
-   "team": "ARI",
+   "team": "BAL",
    "pos": "QB",
    "sleeper_stats": {
     "pass_yd": 2400.0,
@@ -777,13 +766,14 @@
     "fum_lost": 2.0
    },
    "pp_stats": {
-    "pass_yd": 1476.61,
+    "pass_yd": 175.5,
     "rush_yd": 22.5,
-    "pass_td": 11.11,
+    "pass_td": 8.0,
     "pass_int": 6.0,
     "rush_td": 2.0
    },
    "pp_borrowed": [
+    "pass_td",
     "pass_int",
     "rush_td"
    ]
@@ -803,7 +793,7 @@
     "pass_2pt": 1.0
    },
    "pp_stats": {
-    "pass_yd": 3649.5,
+    "pass_yd": 3662.9,
     "pass_td": 25.47,
     "pass_int": 12.0,
     "rush_yd": 202.0,
@@ -882,14 +872,16 @@
     "pass_2pt": 1.0
    },
    "pp_stats": {
-    "pass_yd": 3249.5,
-    "rush_yd": 565.98,
-    "pass_td": 24.63,
-    "rush_td": 3.72,
-    "pass_int": 8.0
+    "pass_yd": 213.5,
+    "rush_yd": 40.5,
+    "pass_td": 27.0,
+    "pass_int": 8.0,
+    "rush_td": 5.0
    },
    "pp_borrowed": [
-    "pass_int"
+    "pass_td",
+    "pass_int",
+    "rush_td"
    ]
   },
   {
@@ -909,7 +901,7 @@
    "pp_stats": {
     "pass_yd": 3500.5,
     "rush_yd": 309.5,
-    "pass_td": 25.2,
+    "pass_td": 25.49,
     "rush_td": 1.68,
     "pass_int": 13.0
    },
@@ -931,18 +923,8 @@
     "fum_lost": 3.0,
     "pass_2pt": 1.0
    },
-   "pp_stats": {
-    "pass_yd": 3713.08,
-    "pass_td": 23.6,
-    "pass_int": 12.0,
-    "rush_yd": 157.0,
-    "rush_td": 2.0
-   },
-   "pp_borrowed": [
-    "pass_int",
-    "rush_yd",
-    "rush_td"
-   ]
+   "pp_stats": null,
+   "pp_borrowed": []
   },
   {
    "sleeper_id": "4972",
@@ -977,7 +959,7 @@
     "pass_yd": 3638.88,
     "rush_yd": 500.5,
     "pass_td": 24.73,
-    "rush_td": 10.4,
+    "rush_td": 10.67,
     "pass_int": 10.0
    },
    "pp_borrowed": [
@@ -1015,7 +997,7 @@
    "pp_stats": {
     "pass_yd": 2989.49,
     "rush_yd": 375.5,
-    "pass_td": 17.86,
+    "pass_td": 18.1,
     "rush_td": 3.91,
     "pass_int": 10.0
    },
@@ -1107,7 +1089,7 @@
     "pass_2pt": 2.0
    },
    "pp_stats": {
-    "pass_yd": 3959.87,
+    "pass_yd": 3880.69,
     "rush_yd": 8.5,
     "pass_td": 32.82,
     "pass_int": 10.0,
@@ -1135,7 +1117,7 @@
    "pp_stats": {
     "pass_yd": 3675.31,
     "rush_yd": 300.5,
-    "pass_td": 25.67,
+    "pass_td": 26.1,
     "rush_td": 2.67,
     "pass_int": 10.0
    },
@@ -1160,7 +1142,7 @@
    "pp_stats": {
     "pass_yd": 3471.68,
     "rush_yd": 174.5,
-    "pass_td": 25.53,
+    "pass_td": 25.82,
     "rush_td": 1.68,
     "pass_int": 10.0
    },
@@ -1307,8 +1289,8 @@
     "fum_lost": 2.0
    },
    "pp_stats": {
-    "pass_yd": 2949.5,
-    "rush_yd": 547.17,
+    "pass_yd": 2895.3,
+    "rush_yd": 549.5,
     "pass_td": 14.54,
     "rush_td": 4.1,
     "pass_int": 9.0
@@ -1770,7 +1752,7 @@
   {
    "sleeper_id": "11579",
    "name": "Audric Estime",
-   "team": "CLE",
+   "team": "NO",
    "pos": "RB",
    "sleeper_stats": {
     "rush_yd": 119.0,
@@ -2143,14 +2125,16 @@
     "fum_lost": 1.0
    },
    "pp_stats": {
-    "rush_yd": 799.5,
-    "rec_yd": 250.5,
-    "rush_td": 6.36,
-    "rec_td": 1.68,
-    "rec": 42.0
+    "rush_yd": 52.5,
+    "rec_yd": 11.5,
+    "rush_td": 6.0,
+    "rec": 42.0,
+    "rec_td": 1.0
    },
    "pp_borrowed": [
-    "rec"
+    "rush_td",
+    "rec",
+    "rec_td"
    ]
   },
   {
@@ -2270,7 +2254,7 @@
     "fum_lost": 1.0
    },
    "pp_stats": {
-    "rush_yd": 864.81,
+    "rush_yd": 874.5,
     "rec_yd": 9.5,
     "rec": 2,
     "rush_td": 6.59,
@@ -2340,13 +2324,14 @@
     "fum_lost": 1.0
    },
    "pp_stats": {
-    "rush_yd": 697.01,
+    "rush_yd": 36.5,
     "rec_yd": 7.5,
     "rec": 1.5,
-    "rush_td": 5.4,
+    "rush_td": 5.0,
     "rec_td": 1.0
    },
    "pp_borrowed": [
+    "rush_td",
     "rec_td"
    ]
   },
@@ -2534,13 +2519,14 @@
     "fum_lost": 1.0
    },
    "pp_stats": {
-    "rush_yd": 773.92,
+    "rush_yd": 37.5,
     "rec_yd": 16.5,
-    "rush_td": 5.84,
+    "rush_td": 5.0,
     "rec": 47.0,
     "rec_td": 2.0
    },
    "pp_borrowed": [
+    "rush_td",
     "rec",
     "rec_td"
    ]
@@ -2589,7 +2575,7 @@
    },
    "pp_stats": {
     "rush_yd": 18.5,
-    "rush_td": 4.03,
+    "rush_td": 3.91,
     "rec": 16.0,
     "rec_yd": 117.0,
     "rec_td": 1.0
@@ -2667,7 +2653,7 @@
     "fum_lost": 1.0
    },
    "pp_stats": {
-    "rush_td": 6.72,
+    "rush_td": 6.48,
     "rush_yd": 304.0,
     "rec": 10.0,
     "rec_yd": 75.0,
@@ -2891,7 +2877,7 @@
     "rush_2pt": 1.0
    },
    "pp_stats": {
-    "rush_yd": 1232.7,
+    "rush_yd": 1202.92,
     "rec_yd": 159.5,
     "rush_td": 12.53,
     "rec_td": 0.69,
@@ -2915,7 +2901,7 @@
     "fum_lost": 2.0
    },
    "pp_stats": {
-    "rush_yd": 949.5,
+    "rush_yd": 916.58,
     "rec_yd": 574.5,
     "rec": 5,
     "rush_td": 8.59,
@@ -2939,7 +2925,7 @@
    "pp_stats": {
     "rush_yd": 16.5,
     "rec_yd": 12.5,
-    "rush_td": 4.85,
+    "rush_td": 4.88,
     "rec": 20.0,
     "rec_td": 1.0
    },
@@ -3020,7 +3006,7 @@
     "rush_yd": 477.87,
     "rec_yd": 15.5,
     "rec": 2.5,
-    "rush_td": 4.14,
+    "rush_td": 3.91,
     "rec_td": 1.0
    },
    "pp_borrowed": [
@@ -3128,10 +3114,10 @@
     "fum_lost": 1.0
    },
    "pp_stats": {
-    "rush_yd": 823.82,
+    "rush_yd": 63.5,
     "rec_yd": 11.5,
     "rec": 2,
-    "rush_td": 7.63,
+    "rush_td": 0.5,
     "rec_td": 1.0
    },
    "pp_borrowed": [
@@ -3551,7 +3537,7 @@
   {
    "sleeper_id": "8129",
    "name": "Dameon Pierce",
-   "team": "PHI",
+   "team": null,
    "pos": "RB",
    "sleeper_stats": {
     "rush_yd": 27.0,
@@ -3574,9 +3560,9 @@
     "fum_lost": 1.0
    },
    "pp_stats": {
-    "rush_yd": 34.5,
+    "rush_yd": 736.78,
     "rec_yd": 7.5,
-    "rush_td": 5.23,
+    "rush_td": 4.76,
     "rec": 9.0
    },
    "pp_borrowed": [
@@ -3843,7 +3829,7 @@
     "fum_lost": 2.0
    },
    "pp_stats": {
-    "rush_yd": 607.15,
+    "rush_yd": 613.48,
     "rec_yd": 18.5,
     "rec": 3,
     "rush_td": 5.15,
@@ -4529,7 +4515,7 @@
     "rec_td": 3.0
    },
    "pp_stats": {
-    "rec_yd": 34.5,
+    "rec_yd": 691.82,
     "rush_yd": 10.0,
     "rec": 35.0,
     "rec_td": 3.0
@@ -4679,9 +4665,9 @@
     "rec_2pt": 1.0
    },
    "pp_stats": {
-    "rec_yd": 963.72,
+    "rec_yd": 973.67,
     "rec": 5.5,
-    "rec_td": 5.85,
+    "rec_td": 6.04,
     "rush_yd": 17.0
    },
    "pp_borrowed": [
@@ -5929,15 +5915,8 @@
     "rec_yd": 584.0,
     "rec_td": 4.0
    },
-   "pp_stats": {
-    "rec_yd": 644.97,
-    "rec": 46.0,
-    "rec_td": 4.0
-   },
-   "pp_borrowed": [
-    "rec",
-    "rec_td"
-   ]
+   "pp_stats": null,
+   "pp_borrowed": []
   },
   {
    "sleeper_id": "13420",
@@ -6041,7 +6020,7 @@
    },
    "pp_stats": {
     "rec_yd": 5.5,
-    "rec_td": 1.67,
+    "rec_td": 1.6,
     "rec": 10.0
    },
    "pp_borrowed": [
@@ -6094,12 +6073,13 @@
     "rec_2pt": 1.0
    },
    "pp_stats": {
-    "rec_yd": 802.04,
-    "rec_td": 6.53,
-    "rec": 70.0
+    "rec_yd": 48.5,
+    "rec": 70.0,
+    "rec_td": 8.0
    },
    "pp_borrowed": [
-    "rec"
+    "rec",
+    "rec_td"
    ]
   },
   {
@@ -6578,16 +6558,8 @@
     "rec_td": 5.0,
     "rec_2pt": 1.0
    },
-   "pp_stats": {
-    "rec_yd": 1124.5,
-    "rec_td": 7.3,
-    "rush_yd": 5.0,
-    "rec": 54.0
-   },
-   "pp_borrowed": [
-    "rush_yd",
-    "rec"
-   ]
+   "pp_stats": null,
+   "pp_borrowed": []
   },
   {
    "sleeper_id": "5872",
@@ -6603,14 +6575,15 @@
     "fum_lost": 1.0
    },
    "pp_stats": {
-    "rec_yd": 618.56,
+    "rec_yd": 33.5,
     "rush_yd": 5.5,
     "rec": 3,
-    "rec_td": 4.67,
-    "rush_td": 1.0
+    "rush_td": 1.0,
+    "rec_td": 4.0
    },
    "pp_borrowed": [
-    "rush_td"
+    "rush_td",
+    "rec_td"
    ]
   },
   {
@@ -6910,8 +6883,8 @@
   },
   {
    "sleeper_id": "6957",
-   "name": "James Proche",
-   "team": null,
+   "name": "James Proche II",
+   "team": "ARI",
    "pos": "WR",
    "sleeper_stats": {
     "rush_yd": 6.0
@@ -6995,14 +6968,15 @@
     "rec_td": 7.0
    },
    "pp_stats": {
-    "rec_yd": 1055.32,
-    "rec_td": 5.67,
+    "rec_yd": 60.5,
     "rush_yd": 6.0,
-    "rec": 80.0
+    "rec": 80.0,
+    "rec_td": 7.0
    },
    "pp_borrowed": [
     "rush_yd",
-    "rec"
+    "rec",
+    "rec_td"
    ]
   },
   {
@@ -7345,13 +7319,14 @@
     "rec_2pt": 1.0
    },
    "pp_stats": {
-    "rec_yd": 1005.09,
+    "rec_yd": 62.5,
     "rec": 4.5,
-    "rec_td": 6.42,
-    "rush_yd": 6.0
+    "rush_yd": 6.0,
+    "rec_td": 7.0
    },
    "pp_borrowed": [
-    "rush_yd"
+    "rush_yd",
+    "rec_td"
    ]
   },
   {
@@ -7409,13 +7384,14 @@
     "rec_td": 6.0
    },
    "pp_stats": {
-    "rec_yd": 983.79,
+    "rec_yd": 68.5,
     "rec": 6,
-    "rec_td": 5.14,
-    "rush_yd": 16.0
+    "rush_yd": 16.0,
+    "rec_td": 6.0
    },
    "pp_borrowed": [
-    "rush_yd"
+    "rush_yd",
+    "rec_td"
    ]
   },
   {
@@ -7573,13 +7549,14 @@
     "fum_lost": 1.0
    },
    "pp_stats": {
-    "rec_yd": 561.46,
+    "rec_yd": 24.5,
     "rec": 2,
-    "rec_td": 3.32,
-    "rush_yd": 46.0
+    "rush_yd": 46.0,
+    "rec_td": 4.0
    },
    "pp_borrowed": [
-    "rush_yd"
+    "rush_yd",
+    "rec_td"
    ]
   },
   {
@@ -7610,7 +7587,7 @@
     "rec_td": 2.0
    },
    "pp_stats": {
-    "rec_yd": 599.5,
+    "rec_yd": 30.5,
     "rec": 2.5,
     "rush_yd": 8.0,
     "rec_td": 2.0
@@ -7682,7 +7659,7 @@
     "rec_yd": 1324.5,
     "rec": 7,
     "rush_yd": 74.5,
-    "rec_td": 8.3,
+    "rec_td": 8.74,
     "rush_td": 0.69
    },
    "pp_borrowed": []
@@ -8314,7 +8291,7 @@
    },
    "pp_stats": {
     "rec_yd": 760.5,
-    "rec_td": 4.67,
+    "rec_td": 5.04,
     "rush_yd": 19.0,
     "rec": 83.0
    },
