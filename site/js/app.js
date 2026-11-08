@@ -4229,9 +4229,10 @@
             // say is whether it was converted.
             gibbsRosPosted && window.GIBBS_PPR_ROS && isRosView ? sortHdr('weekly-gibbs-x', 'Gibbs*', { right:true,
               title:`* = PPR converted by this site from Jacob Gibbs's half-PPR rest-of-season board. Source: ${gibbsRosSourceNote}. His order sets the value slots, then each player gets +0.5 per projected catch and the list is re-sorted within position, so a player who catches nothing never rises on his own. His unconverted half-PPR rank is in each cell's tooltip. Board ${gibbsRosPosted}${gibbsRosThrough ? `, updates through ${gibbsRosThrough}` : ''}.` }) : null,
-            gibbsWeekPosted && !isRosView ? sortHdr('weekly-gibbs-wk', 'Gibbs*', { right:true,
-              title:`* = PPR converted by this site from Jacob Gibbs's half-PPR week board, the start/sit list he posts to X `
-                + `(his FantasyPros board, expert 1576). His order sets the value slots, then each RB, WR and TE gets +0.5 per projected catch `
+            gibbsWeekPosted && !isRosView ? sortHdr('weekly-gibbs-wk', `Gibbs W${currentWeek}*`, { right:true,
+              title:`* = PPR converted by this site from Jacob Gibbs's half-PPR week board. `
+                + (window.GIBBS_WEEK?.sourceUrl ? `Source: supplied Week ${currentWeek} video transcription. WR 77-99 are reconstructed, not directly sighted in the final frame. ` : `Source: his FantasyPros board, expert 1576. `)
+                + `His order sets the value slots, then each RB, WR and TE gets +0.5 per projected catch `
                 + `and the list is re-sorted within position; QBs keep his order. His unconverted half-PPR rank is in each cell's tooltip. `
                 + `Pulled ${gibbsWeekPosted}${gibbsWeekUpdated ? ` (${gibbsWeekUpdated})` : ''}; `
                 + `${gibbsWeekDepth} players ranked. A blank means he has not ranked that player, not that nobody rosters him.` }) : null,
