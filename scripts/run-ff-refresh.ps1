@@ -40,7 +40,8 @@ Log 'deploy: done'
 Set-Location $ff
 $branch = (git rev-parse --abbrev-ref HEAD).Trim()
 if ($branch -ne 'main') { Log "git: on '$branch', not main; commit skipped"; exit 0 }
-git add -u site/data projections *>> $log
+git add -u site/data projections notes *>> $log
+git add site/data/games-*.js *>> $log
 git reset -q projections/analysis_refresh.py projections/test_analysis_refresh.py *>> $log
 git diff --cached --quiet
 if ($LASTEXITCODE -eq 0) { Log 'git: nothing to commit'; exit 0 }
