@@ -229,19 +229,33 @@
     return m;
   }
   function sleeperIdForFuzzy(name, pos) {
-    const direct = sleeperIdFor(name);
+    if (!name) return null;
+    const cleanName = String(name).replace(/^([A-Za-z])\./, '$1 ');
+    const direct = sleeperIdFor(cleanName) || sleeperIdFor(name);
     if (!pos) return direct;
     // The name map keeps the first player of a name, so the WR DJ Moore behind a
     // retired CB DJ Moore is only reachable by filtering namesakes on position,
     // and the KC Chris Jones behind a retired DT Chris Jones by his NFL team.
-    let namesakes = (_sleeperNamesakes.get(norm(name)) || []).filter(pid => fitsPos(pid, pos));
+    let namesakes = (_sleeperNamesakes.get(norm(cleanName)) || _sleeperNamesakes.get(norm(name)) || []).filter(pid => fitsPos(pid, pos));
     if (namesakes.length > 1) namesakes = namesakes.filter(pid => window.PLAYERS[pid].team !== 'FA');
     if (namesakes.length === 1) return namesakes[0];
     if (direct && fitsPos(direct, pos)) return direct;
-    const last = norm(name).split(' ').filter(Boolean).slice(-1)[0];
+    const parts = norm(cleanName).split(' ').filter(Boolean);
+    const last = parts.slice(-1)[0];
     if (!last || last.length < 3) return null;
     const found = sleeperByLastNamePos().get(`${last}|${posSlot(pos)}`);
-    return (found && found !== 'AMBIGUOUS') ? found : null;
+    if (found && found !== 'AMBIGUOUS') return found;
+    if (found === 'AMBIGUOUS') {
+      const initial = parts.length > 1 ? parts[0][0] : null;
+      let candidates = Object.values(window.PLAYERS || {}).filter(p => fitsPos(p.id, pos) && norm(p.last) === last);
+      if (initial) candidates = candidates.filter(p => (norm(p.first || p.name || '')[0] || '') === initial);
+      if (candidates.length > 1) {
+        const nonFa = candidates.filter(p => p.team && p.team !== 'FA');
+        if (nonFa.length === 1) return nonFa[0].id;
+      }
+      if (candidates.length === 1) return candidates[0].id;
+    }
+    return null;
   }
 
   // Build a unified ranking lookup from enabled sources
@@ -7447,7 +7461,8 @@
         // means the mean likes him more than the ceiling does, so he is a floor.
         const gap = k.rankCeiling - k.rankPoints;
         const shape = gap >= 4 ? 'floor' : gap <= -4 ? 'swing' : null;
-        return h('tr', { class: 'clickable', onclick: () => openPlayerDetail(k.name, k.id) },
+        const sId = sleeperIdForFuzzy(k.name, 'K');
+        return h('tr', { class: 'clickable', onclick: () => openPlayerDetail(k.name, sId || k.id) },
           h('td', { class: 'sr-slot' }, String(i + 1)),
           h('td', { class: 'sr-name' }, k.name,
             shape ? h('span', { class: `badge ${shape === 'floor' ? 'ok' : 'warn'}` },
@@ -11138,8 +11153,13 @@
   function kickerProjFor(pid) {
     if (!window.KICKER_MODEL) return null;
     if (!_kickerProj) {
-      _kickerProj = new Map((window.KICKER_MODEL.kickers || [])
-        .map(k => [String(k.id), Number(k.exp)]));
+      const m = new Map();
+      for (const k of (window.KICKER_MODEL.kickers || [])) {
+        if (k.id) m.set(String(k.id), Number(k.exp));
+        const sId = sleeperIdForFuzzy(k.name, 'K');
+        if (sId) m.set(String(sId), Number(k.exp));
+      }
+      _kickerProj = m;
     }
     const v = _kickerProj.get(String(pid));
     return Number.isFinite(v) ? v : null;
@@ -13941,13 +13961,17 @@
     if (!g) return null;
     const opp = g.home === team ? `vs ${g.away}` : `@ ${g.home}`;
     const when = g.kickoff ? new Date(g.kickoff).toLocaleString([], { weekday:'short', hour:'numeric', minute:'2-digit' }) : '';
+    const isRetractableClosed = g.roof === 'retractable' && (g.precip_prob >= 50 || (g.note && g.note.includes('closed')));
+    const flag = (g.roof === 'dome' || g.roof === 'closed' || isRetractableClosed) ? null : g.flag;
     const body = g.temp_f == null
       ? (g.reason === 'indoors' ? 'Indoors' : (g.reason || 'No forecast'))
-      : `${Math.round(g.temp_f)}\u00b0F, wind ${Math.round(g.wind_mph)} mph (gusts ${Math.round(g.gust_mph)}), ${Math.round(g.precip_prob || 0)}% precip`;
-    return h('div', { class:`card weather-line${g.flag ? ' weather-flag' : ''}` },
+      : isRetractableClosed
+        ? `Indoors (roof closed for rain; ${Math.round(g.temp_f)}\u00b0F outside)`
+        : `${Math.round(g.temp_f)}\u00b0F, wind ${Math.round(g.wind_mph)} mph (gusts ${Math.round(g.gust_mph)}), ${Math.round(g.precip_prob || 0)}% precip`;
+    return h('div', { class:`card weather-line${flag ? ' weather-flag' : ''}` },
       h('div', { class:'card-title' }, `Week ${W.week} weather`),
       h('div', null, `${opp}, ${when}, ${g.stadium}. ${body}.`,
-        g.flag ? h('strong', { style:{ marginLeft:'6px' } }, `Watch: ${g.flag}.`) : null,
+        flag ? h('strong', { style:{ marginLeft:'6px' } }, `Watch: ${flag}.`) : null,
         g.note ? h('span', { class:'tip', style:{ marginLeft:'6px' } }, g.note) : null),
       (g.total_line != null || g.spread_line != null) ? h('div', { class:'tip' },
         // nflverse spread_line is positive when the HOME team is favored.
@@ -19806,7 +19830,7 @@
   }
 
   // Expose a couple things for console debugging
-  window.__app = { state, rankIndex, computeRosterStrength, sleeperIdFor, invalidateRankIndex, route };
+  window.__app = { state, rankIndex, computeRosterStrength, sleeperIdFor, sleeperIdForFuzzy, kickerProjFor, invalidateRankIndex, route };
 
   document.addEventListener('DOMContentLoaded', boot);
 })();
