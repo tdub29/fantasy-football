@@ -13,7 +13,7 @@
       "id": "sleeper-idp-2026",
       "title": "Sleeper IDP Usage Rankings (2026)",
       "url": "https://sleeper.com/research",
-      "publishedAt": "2026-11-08",
+      "publishedAt": "2026-11-10",
       "format": "idp",
       "defaultEnabled": true,
       "players": [
@@ -702,7 +702,7 @@
         {
           "name": "Jessie Bates III",
           "pos": "DB",
-          "team": "ATL",
+          "team": "JAX",
           "age": 29,
           "category": "foundational",
           "tier": "C",
@@ -1406,7 +1406,7 @@
         {
           "name": "Jordan Davis",
           "pos": "DL",
-          "team": "PHI",
+          "team": "JAX",
           "age": 26,
           "category": "mainstay",
           "tier": "S",

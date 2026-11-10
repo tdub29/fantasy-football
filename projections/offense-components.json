@@ -629,7 +629,7 @@
   {
    "sleeper_id": "260",
    "name": "Josh Johnson",
-   "team": "CIN",
+   "team": "ARI",
    "pos": "QB",
    "sleeper_stats": {
     "pass_yd": 176.0,
@@ -766,14 +766,13 @@
     "fum_lost": 2.0
    },
    "pp_stats": {
-    "pass_yd": 175.5,
+    "pass_yd": 1476.61,
     "rush_yd": 22.5,
-    "pass_td": 8.0,
+    "pass_td": 11.11,
     "pass_int": 6.0,
     "rush_td": 2.0
    },
    "pp_borrowed": [
-    "pass_td",
     "pass_int",
     "rush_td"
    ]
@@ -2125,16 +2124,14 @@
     "fum_lost": 1.0
    },
    "pp_stats": {
-    "rush_yd": 52.5,
-    "rec_yd": 11.5,
-    "rush_td": 6.0,
-    "rec": 42.0,
-    "rec_td": 1.0
+    "rush_yd": 799.5,
+    "rec_yd": 250.5,
+    "rush_td": 6.36,
+    "rec_td": 1.68,
+    "rec": 42.0
    },
    "pp_borrowed": [
-    "rush_td",
-    "rec",
-    "rec_td"
+    "rec"
    ]
   },
   {
@@ -2324,14 +2321,13 @@
     "fum_lost": 1.0
    },
    "pp_stats": {
-    "rush_yd": 36.5,
+    "rush_yd": 697.01,
     "rec_yd": 7.5,
     "rec": 1.5,
-    "rush_td": 5.0,
+    "rush_td": 5.4,
     "rec_td": 1.0
    },
    "pp_borrowed": [
-    "rush_td",
     "rec_td"
    ]
   },
@@ -2653,7 +2649,7 @@
     "fum_lost": 1.0
    },
    "pp_stats": {
-    "rush_td": 6.48,
+    "rush_td": 6.44,
     "rush_yd": 304.0,
     "rec": 10.0,
     "rec_yd": 75.0,
@@ -3006,7 +3002,7 @@
     "rush_yd": 477.87,
     "rec_yd": 15.5,
     "rec": 2.5,
-    "rush_td": 3.91,
+    "rush_td": 4.03,
     "rec_td": 1.0
    },
    "pp_borrowed": [
@@ -3089,16 +3085,8 @@
     "fum_lost": 1.0,
     "rush_2pt": 1.0
    },
-   "pp_stats": {
-    "rush_yd": 977.48,
-    "rec_yd": 270.54,
-    "rush_td": 11.24,
-    "rec_td": 0.69,
-    "rec": 23.0
-   },
-   "pp_borrowed": [
-    "rec"
-   ]
+   "pp_stats": null,
+   "pp_borrowed": []
   },
   {
    "sleeper_id": "5892",
@@ -3114,10 +3102,10 @@
     "fum_lost": 1.0
    },
    "pp_stats": {
-    "rush_yd": 63.5,
+    "rush_yd": 823.82,
     "rec_yd": 11.5,
     "rec": 2,
-    "rush_td": 0.5,
+    "rush_td": 7.63,
     "rec_td": 1.0
    },
    "pp_borrowed": [
@@ -4107,7 +4095,7 @@
   {
    "sleeper_id": "9757",
    "name": "Kendre Miller",
-   "team": "NO",
+   "team": null,
    "pos": "RB",
    "sleeper_stats": {
     "rush_yd": 20.0,
@@ -4239,14 +4227,15 @@
     "rec_td": 5.0
    },
    "pp_stats": {
-    "rec_yd": 700.5,
-    "rec_td": 4.67,
+    "rec_yd": 37.5,
     "rush_yd": 6.0,
-    "rec": 59.0
+    "rec": 59.0,
+    "rec_td": 5.0
    },
    "pp_borrowed": [
     "rush_yd",
-    "rec"
+    "rec",
+    "rec_td"
    ]
   },
   {
@@ -5915,8 +5904,15 @@
     "rec_yd": 584.0,
     "rec_td": 4.0
    },
-   "pp_stats": null,
-   "pp_borrowed": []
+   "pp_stats": {
+    "rec_yd": 644.97,
+    "rec": 46.0,
+    "rec_td": 4.0
+   },
+   "pp_borrowed": [
+    "rec",
+    "rec_td"
+   ]
   },
   {
    "sleeper_id": "13420",
@@ -6020,7 +6016,7 @@
    },
    "pp_stats": {
     "rec_yd": 5.5,
-    "rec_td": 1.6,
+    "rec_td": 0.56,
     "rec": 10.0
    },
    "pp_borrowed": [
@@ -6073,13 +6069,12 @@
     "rec_2pt": 1.0
    },
    "pp_stats": {
-    "rec_yd": 48.5,
-    "rec": 70.0,
-    "rec_td": 8.0
+    "rec_yd": 802.04,
+    "rec_td": 6.53,
+    "rec": 70.0
    },
    "pp_borrowed": [
-    "rec",
-    "rec_td"
+    "rec"
    ]
   },
   {
@@ -6558,8 +6553,16 @@
     "rec_td": 5.0,
     "rec_2pt": 1.0
    },
-   "pp_stats": null,
-   "pp_borrowed": []
+   "pp_stats": {
+    "rec_yd": 1095.45,
+    "rec_td": 7.3,
+    "rush_yd": 5.0,
+    "rec": 54.0
+   },
+   "pp_borrowed": [
+    "rush_yd",
+    "rec"
+   ]
   },
   {
    "sleeper_id": "5872",
@@ -6575,15 +6578,14 @@
     "fum_lost": 1.0
    },
    "pp_stats": {
-    "rec_yd": 33.5,
+    "rec_yd": 618.56,
     "rush_yd": 5.5,
     "rec": 3,
-    "rush_td": 1.0,
-    "rec_td": 4.0
+    "rec_td": 4.67,
+    "rush_td": 1.0
    },
    "pp_borrowed": [
-    "rush_td",
-    "rec_td"
+    "rush_td"
    ]
   },
   {
@@ -6835,14 +6837,13 @@
     "rec_td": 4.0
    },
    "pp_stats": {
-    "rec_yd": 34.5,
+    "rec_yd": 725.5,
     "rec": 3.5,
-    "rush_yd": 7.0,
-    "rec_td": 4.0
+    "rec_td": 4.34,
+    "rush_yd": 7.0
    },
    "pp_borrowed": [
-    "rush_yd",
-    "rec_td"
+    "rush_yd"
    ]
   },
   {
@@ -6968,15 +6969,14 @@
     "rec_td": 7.0
    },
    "pp_stats": {
-    "rec_yd": 60.5,
+    "rec_yd": 1055.32,
+    "rec_td": 5.67,
     "rush_yd": 6.0,
-    "rec": 80.0,
-    "rec_td": 7.0
+    "rec": 80.0
    },
    "pp_borrowed": [
     "rush_yd",
-    "rec",
-    "rec_td"
+    "rec"
    ]
   },
   {
@@ -7319,14 +7319,13 @@
     "rec_2pt": 1.0
    },
    "pp_stats": {
-    "rec_yd": 62.5,
+    "rec_yd": 1005.09,
     "rec": 4.5,
-    "rush_yd": 6.0,
-    "rec_td": 7.0
+    "rec_td": 6.42,
+    "rush_yd": 6.0
    },
    "pp_borrowed": [
-    "rush_yd",
-    "rec_td"
+    "rush_yd"
    ]
   },
   {
@@ -7384,14 +7383,13 @@
     "rec_td": 6.0
    },
    "pp_stats": {
-    "rec_yd": 68.5,
+    "rec_yd": 983.79,
     "rec": 6,
-    "rush_yd": 16.0,
-    "rec_td": 6.0
+    "rec_td": 5.14,
+    "rush_yd": 16.0
    },
    "pp_borrowed": [
-    "rush_yd",
-    "rec_td"
+    "rush_yd"
    ]
   },
   {
@@ -7549,14 +7547,13 @@
     "fum_lost": 1.0
    },
    "pp_stats": {
-    "rec_yd": 24.5,
+    "rec_yd": 561.46,
     "rec": 2,
-    "rush_yd": 46.0,
-    "rec_td": 4.0
+    "rec_td": 3.32,
+    "rush_yd": 46.0
    },
    "pp_borrowed": [
-    "rush_yd",
-    "rec_td"
+    "rush_yd"
    ]
   },
   {
@@ -7587,7 +7584,7 @@
     "rec_td": 2.0
    },
    "pp_stats": {
-    "rec_yd": 30.5,
+    "rec_yd": 599.5,
     "rec": 2.5,
     "rush_yd": 8.0,
     "rec_td": 2.0
@@ -7656,13 +7653,14 @@
     "rec_2pt": 1.0
    },
    "pp_stats": {
-    "rec_yd": 1324.5,
+    "rec_yd": 84.5,
     "rec": 7,
-    "rush_yd": 74.5,
-    "rec_td": 8.74,
-    "rush_td": 0.69
+    "rush_yd": 0.5,
+    "rec_td": 10.0
    },
-   "pp_borrowed": []
+   "pp_borrowed": [
+    "rec_td"
+   ]
   },
   {
    "sleeper_id": "9494",
@@ -8139,7 +8137,7 @@
   {
    "sleeper_id": "12079",
    "name": "Treyton Welch",
-   "team": "NO",
+   "team": null,
    "pos": "TE",
    "sleeper_stats": {
     "rec": 2.0,
