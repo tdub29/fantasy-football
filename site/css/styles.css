@@ -6188,7 +6188,11 @@ button:disabled { cursor: wait; opacity: 0.7; }
 .stats-lab-season { background: var(--bg-1, #fff); padding: 4px 8px; border-radius: 8px; font-size: 0.8rem; }
 .weather-line { font-size: 0.85rem; }
 .weather-flag { border-color: var(--red); }
-.weekly-opp-wx { font-size: 0.55rem; font-weight: 800; letter-spacing: .04em; color: var(--red); }
+/* Weekly weather column: one pixel glyph, colored by meaning. */
+.weekly-wx .pixel-icon { color: var(--fg-2); }
+.weekly-wx.wx-clear .pixel-icon { color: var(--amber); }
+.weekly-wx.wx-rain .pixel-icon, .weekly-wx.wx-cold .pixel-icon { color: var(--blue); }
+.weekly-wx.wx-wind .pixel-icon { color: var(--red); }
 
 /* --- Stats Lab chart builder, compare and field maps --------------------- */
 /* One disclosure like Tools. The SVGs are drawn at the panel's own pixel
@@ -6682,3 +6686,6 @@ table.data.prm-table td.cf-bad { background-color: color-mix(in srgb, var(--red)
 .tend-dot { position: absolute; top: 50%; width: 10px; height: 10px; margin: -5px 0 0 -5px; border: 2px solid var(--ink); border-radius: 50%; background: var(--grad-gold); }
 .tend-table tr.tend-thin td { opacity: .55; }
 .tend-table tr.tend-partner td:first-child { font-weight: 800; }
+
+/* Trade Lab even-out shading: gold strength follows how close adding the row gets the trade to even. */
+.trade-pool-row.even-fit { background: color-mix(in oklch, var(--gold) calc(var(--even, 0) * 70%), transparent); box-shadow: inset 4px 0 0 color-mix(in oklch, var(--gold) calc(var(--even, 0) * 100%), transparent); }

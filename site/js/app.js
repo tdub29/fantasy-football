@@ -1511,6 +1511,15 @@
     '↑': ['000010000','000111000','001111100','011111110','000111000','000111000','000111000','000111000','000111000'],
     '↓': ['000111000','000111000','000111000','000111000','000111000','011111110','001111100','000111000','000010000'],
   };
+  // Weekly weather column, one glyph per state (build_game_weather.py flags plus the roof states).
+  Object.assign(PIXEL_ICONS, {
+    'wx:clear':   ['000010000','010000010','000111000','001111100','101111101','001111100','000111000','010000010','000010000'],
+    'wx:dome':    ['000000000','000111000','011111110','111111111','100000001','101101101','101101101','111111111','000000000'],
+    'wx:retract': ['000000000','011000110','111000111','100000001','101101101','101101101','111111111','000000000','000000000'],
+    'wx:wind':    ['000000000','111111100','000000010','111111100','000000000','111111110','000000001','111111110','000000000'],
+    'wx:rain':    ['001110000','011111100','111111110','111111111','000000000','010010010','100100100','010010010','000000000'],
+    'wx:cold':    ['000010000','100010001','010010010','001111100','111111111','001111100','010010010','100010001','000010000'],
+  });
   PIXEL_ICONS['⇄'] = PIXEL_ICONS['#trade'];
   PIXEL_ICONS['⬆'] = PIXEL_ICONS['↑'];
   PIXEL_ICONS['⌕'] = PIXEL_ICONS['#watch'];
@@ -4197,15 +4206,27 @@
         const title = rank != null
           ? `Week ${currentWeek} ${game.home ? 'vs ' : '@ '}${game.opp}: D vs ${pos} #${rank}/${n} (${game.fpa ?? '?'} PPR/g allowed${paoeText})`
           : `Week ${currentWeek} ${game.home ? 'vs ' : '@ '}${game.opp}; no defense-vs-position rank for ${pos || 'this position'}`;
-        // Weather only for the week the forecast is for, and only when it
-        // matters: a flag, never a temperature on every row.
-        const wx = window.WEATHER && window.WEATHER.week === currentWeek ? gameWeatherFor(team) : null;
-        const wxFlag = wx && wx.flag;
-        const wxTitle = wxFlag ? ` Weather: ${Math.round(wx.temp_f)}°F, wind ${Math.round(wx.wind_mph)} mph (gusts ${Math.round(wx.gust_mph)}), ${Math.round(wx.precip_prob || 0)}% precip.` : '';
-        return h('td', { class:'center weekly-opp', title: title + wxTitle, style:{ color:defRankColor(rank, n) } },
+        return h('td', { class:'center weekly-opp', title, style:{ color:defRankColor(rank, n) } },
           h('div', { class:'weekly-opp-team' }, teamChip(game.opp, true)),
-          h('div', { class:'weekly-opp-rank' }, rank != null ? `#${rank}` : '·'),
-          wxFlag ? h('div', { class:'weekly-opp-wx' }, wxFlag.toUpperCase()) : null);
+          h('div', { class:'weekly-opp-rank' }, rank != null ? `#${rank}` : '·'));
+      };
+      // One pixel glyph per game, only for the week the forecast is for; the numbers sit
+      // in the tooltip. A retractable roof shows its outdoor forecast but says it may close.
+      const WX_LABEL = { wind:'Windy', 'rain/snow':'Rain or snow', cold:'Cold' };
+      const weeklyWeatherCell = (p) => {
+        const team = teamOfP(p);
+        const game = team && team !== 'FA' ? weeklyMatchupFor(team, String(p.pos || '').toUpperCase(), currentWeek) : null;
+        const wx = game && window.WEATHER && window.WEATHER.week === currentWeek ? gameWeatherFor(team) : null;
+        if (!wx) return h('td', { class:'center muted weekly-wx' }, '·');
+        const indoor = wx.reason === 'indoors' || wx.roof === 'dome' || wx.roof === 'closed';
+        const kind = indoor ? 'dome' : wx.flag === 'wind' ? 'wind' : wx.flag === 'rain/snow' ? 'rain' : wx.flag === 'cold' ? 'cold'
+          : wx.roof === 'retractable' ? 'retract' : 'clear';
+        const label = indoor ? 'Indoors' : WX_LABEL[wx.flag] || (wx.roof === 'retractable' ? 'Retractable roof' : 'Clear');
+        const nums = indoor || wx.temp_f == null ? ''
+          : ` ${Math.round(wx.temp_f)}°F, wind ${Math.round(wx.wind_mph)} mph (gusts ${Math.round(wx.gust_mph)}), ${Math.round(wx.precip_prob || 0)}% precip.`;
+        const roof = wx.roof === 'retractable' ? ' Retractable roof, may be closed.' : '';
+        return h('td', { class:`center weekly-wx wx-${kind}`, title:`${label}.${nums}${wx.stadium ? ` ${wx.stadium}.` : ''}${roof}` },
+          pixelIcon(`wx:${kind}`, label));
       };
 
       // filter.pos only holds K or DEF when posOptions offers it on this view.
@@ -4222,6 +4243,7 @@
             h('th', { class:'right', style:{ width:'46px' } }, '#'),
             h('th', null, 'Player'), h('th', null, 'Pos'), h('th', null, 'Team'),
             h('th', { class:'center', title:`Week ${currentWeek} opponent and defense-vs-position rank` }, 'Opp'),
+            h('th', { class:'center', title:`Week ${currentWeek} game-day forecast; hover an icon for the numbers` }, 'Wx'),
             h('th', null, 'Owner'),
             ...(kickerOnly ? [
               sortHdr('weekly-sleeper', 'Sleeper pts', { right:true, title:'Sleeper weekly kicker projection.' }),
@@ -4263,7 +4285,7 @@
             return h('tr', { class:o.isMine ? 'you' : '', onclick:()=>openPlayerDetail(p.name, p._sleeperId) },
               h('td', { class:'right tnum muted' }, i + 1), weeklyNameCell(p),
               h('td', null, posChip(p.pos)), h('td', null, teamChip(teamOfP(p))),
-              weeklyOpponentCell(p), h('td', null, o.cell),
+              weeklyOpponentCell(p), weeklyWeatherCell(p), h('td', null, o.cell),
               ...(kickerOnly ? (() => {
                 const kicker = kickerProjectionFor(p);
                 return [
@@ -10077,6 +10099,42 @@
 
     // Preview vs committed visual
     refs.middle.node.classList.toggle('preview', !!(previewSide && previewKey));
+    if (previewSide && previewKey) return;
+    KT.shadeEvenOut(lg, aVal, bVal);
+    // Odds follow the trade (Trevor, 2026-11-10: "I shouldn't have to click run odds").
+    // Debounced so a burst of clicks runs once; a run already going aborts itself
+    // when the trade changes under it, and this one starts when it lets go.
+    clearTimeout(KT._oddsTimer);
+    if (aSet.size && bSet.size && !(m.title && m.title.key === oddsKey) && m.runOdds) {
+      const fire = (tries) => { if (tradeOddsKey() !== oddsKey) return;
+        if (!m.runOdds()) { if (tries < 40) KT._oddsTimer = setTimeout(() => fire(tries + 1), 250); } };
+      KT._oddsTimer = setTimeout(() => fire(0), 700);
+    }
+  };
+
+  // Even-out shading: each unpicked pool row on either side is shaded by how much adding it
+  // would close the current value gap, strongest for the closest-to-even result. A row that
+  // barely moves the gap or overshoots it worse than today stays plain.
+  KT.shadeEvenOut = function(lg, aVal, bVal) {
+    const refs = TRADE_STATE._refs; if (!refs) return;
+    const gap = bVal - aVal;
+    for (const side of ['A', 'B']) {
+      const picked = (side === 'A' ? TRADE_STATE.sideA : TRADE_STATE.sideB).picks;
+      for (const row of refs[side]?.card?.querySelectorAll('.trade-pool [data-trade-key]') || []) {
+        const k = row.dataset.tradeKey;
+        let fit = 0;
+        if (!picked.has(k) && Math.abs(gap) > 0 && (aVal || bVal)) {
+          const v = KT.assetValue(k, lg) || 0;
+          const after = side === 'A' ? gap - v : gap + v;
+          fit = Math.max(0, 1 - Math.abs(after) / Math.abs(gap));
+        }
+        const on = fit >= 0.15;
+        row.classList.toggle('even-fit', on);
+        if (on) { row.style.setProperty('--even', fit.toFixed(2));
+          row.title = `Adding this brings the trade ${Math.round(fit * 100)}% of the way to even.`; }
+        else { row.style.removeProperty('--even'); row.title = 'Drag to pile, or click to add.'; }
+      }
+    }
   };
 
   // Toggle a key in/out of a side. Animates the row in/out and updates middle.
@@ -11031,6 +11089,8 @@
     );
     const out = { node, aVal, bVal, verdict, fair, premiumNote, deltaA, deltaB, strengthNote, lineupA, lineupB,
       titleA, titleB, titleMeta, runTitleOdds, titleRows, title: null,
+      // Auto-run hook for KT.refreshMiddle; false while a run is still going.
+      runOdds: () => { if (runTitleOdds.disabled) return false; runTitleOdds.click(); return true; },
       // A Finder row's recheck, on this exact trade: the Lab's first season, same seed and sims.
       seed: ({ key, a, b }) => {
         showOdds(key, [{ a, b }], 'finder');
