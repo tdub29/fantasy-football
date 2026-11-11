@@ -1881,6 +1881,12 @@
       state.settings.enabledExpertCols.gibbs = false;
       saveSettings();
     }
+    if (!state.settings.retiredPreseasonBoards) {
+      state.settings.retiredPreseasonBoards = true;
+      state.settings.enabledExpertCols['gibbs-ppr-2026-08'] = false;
+      state.settings.enabledExpertCols['kiorkof-2026'] = false;
+      saveSettings();
+    }
     for (const s of expertSources()) {
       if (state.settings.enabledExpertCols[s.id] === undefined) {
         state.settings.enabledExpertCols[s.id] = s.defaultEnabled !== false;

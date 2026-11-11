@@ -60,6 +60,11 @@ BETTINGPROS_MARKETS = {
     101: "pass_int", 102: "pass_td", 103: "pass_yd", 104: "rec",
     105: "rec_yd", 107: "rush_yd",
 }
+# Players expected out Rest Of Season (ROS). Sleeper projection API often projects
+# phantom points in later weeks for players on IR. Overwrite to None from start_week onward.
+OUT_ROS_PLAYERS = {
+    "4881": 9,  # Lamar Jackson
+}
 GIBBS_EXPERT_ID = 1576
 # The analysts whose own board gets a column, kept separate from the consensus.
 # ECR is an average and an average cannot disagree with itself; these can. Add one
@@ -182,6 +187,8 @@ def sleeper_projections(season):
             pos = player.get("position") or row.get("position")
             stats = row.get("stats") or {}
             if not pid or pos not in OFF_POS or stats.get("pts_ppr") is None:
+                continue
+            if pid in OUT_ROS_PLAYERS and week >= OUT_ROS_PLAYERS[pid]:
                 continue
             entry = players.setdefault(pid, {
                 "id": pid,
