@@ -3853,12 +3853,17 @@
     // kicker model already carries each team's implied total for its week, so
     // it is reused only when that week is this week; a team it has no kicker
     // for stays blank.
+    const canonTeam = (t) => t === 'LA' ? 'LAR' : (t === 'LAR' ? 'LA' : t);
     const impliedByTeam = window.KICKER_MODEL?.week === currentWeek
-      ? new Map((window.KICKER_MODEL.kickers || []).map(k => [k.team, k.impliedTotal]))
+      ? new Map((window.KICKER_MODEL.kickers || []).flatMap(k => [
+          [k.team, k.impliedTotal],
+          [k.team === 'LA' ? 'LAR' : (k.team === 'LAR' ? 'LA' : k.team), k.impliedTotal]
+        ]))
       : new Map();
     const defOppImplied = (player) => {
-      const opp = (weeklyData.games || {})[teamOfP(player)]?.opp;
-      return opp ? impliedByTeam.get(opp) ?? null : null;
+      const pTeam = teamOfP(player);
+      const opp = (weeklyData.games || {})[pTeam]?.opp || (weeklyData.games || {})[canonTeam(pTeam)]?.opp;
+      return opp ? (impliedByTeam.get(opp) ?? impliedByTeam.get(canonTeam(opp)) ?? null) : null;
     };
 
     function render() {

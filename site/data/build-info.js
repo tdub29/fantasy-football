@@ -1,5 +1,5 @@
 window.BUILD_INFO = {
-  "generated": "2026-11-10T08:53:45",
+  "generated": "2026-11-10T22:19:57",
   "files": {
     "ktc.js": "2026-11-10T02:43:44",
     "players.js": "2026-11-10T02:44:15",
@@ -16,7 +16,7 @@ window.BUILD_INFO = {
     "fantasypros-experts.js": "2026-11-10T02:55:05",
     "alexandria.js": "2026-11-10T02:55:17",
     "idp-dvp.js": "2026-11-10T08:26:15",
-    "kickers.js": "2026-11-08T09:11:47",
+    "kickers.js": "2026-11-10T19:37:17",
     "gibbs-week.js": "2026-11-08T09:03:09",
     "gibbs-ros.js": "2026-11-10T02:55:54",
     "gibbs-ppr.js": "2026-11-10T02:55:56",
