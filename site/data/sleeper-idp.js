@@ -13,7 +13,7 @@
       "id": "sleeper-idp-2026",
       "title": "Sleeper IDP Usage Rankings (2026)",
       "url": "https://sleeper.com/research",
-      "publishedAt": "2026-11-10",
+      "publishedAt": "2026-11-12",
       "format": "idp",
       "defaultEnabled": true,
       "players": [
@@ -1638,7 +1638,7 @@
           "name": "Dexter Lawrence II",
           "pos": "DL",
           "team": "CIN",
-          "age": 28,
+          "age": 29,
           "category": "upside_premier",
           "tier": "B",
           "ktcValue": 312,

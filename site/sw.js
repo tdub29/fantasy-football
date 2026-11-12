@@ -4,11 +4,11 @@
    Design: runtime caching, NO hardcoded file list. Caches every successful
    same-origin GET (index.html + css/ + js/ + data/*.js) as it happens.
    Cross-origin requests (the live Sleeper API) are passed straight through
-   and are NEVER cached here — offline shows the last-rendered site with the
+   and are NEVER cached here: offline shows the last-rendered site with the
    baked rankings; live Sleeper data returns when back online.
 
    Bump the -vN suffix after a real change to force-refresh installed clients. */
-const CACHE = "fantasyhub-shell-v24";
+const CACHE = "fantasyhub-shell-v25";
 
 self.addEventListener("install", () => self.skipWaiting());
 

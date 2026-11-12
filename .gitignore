@@ -21,6 +21,7 @@ auth_state.json
 storage_state.json
 
 # Temporary working files
+projections/tasks/
 research.json
 tmp-*
 _audit.py

@@ -94,6 +94,7 @@ def train_and_predict():
         t_games = tf["games"] - 1
         t_opp_db = tf["opp_dropbacks"] - row["opp_dropbacks"]
         t_def_sacks = tf["def_sacks"] - row["def_sacks"]
+        t_def_pressures = tf["def_pressures"] - row["def_pressures"]
         t_def_to = tf["def_takeaways"] - row["def_takeaways"]
         
         o_games = of["games"] - 1
@@ -102,11 +103,13 @@ def train_and_predict():
         o_giveaways = of["off_giveaways"] - row["def_takeaways"]
         
         t_sack_rate = (t_def_sacks / t_opp_db) if t_opp_db > 0 else 0.065
+        t_press_rate = (t_def_pressures / t_opp_db) if t_opp_db > 0 else 0.22
         o_sack_rate_allowed = (o_sacks_suff / o_off_db) if o_off_db > 0 else 0.065
         t_to_rate = (t_def_to / t_games) if t_games > 0 else 1.2
         o_ga_rate = (o_giveaways / o_games) if o_games > 0 else 1.2
         
         rows.append({
+            "def_pressure_rate": t_press_rate,
             "def_sack_rate": t_sack_rate,
             "opp_sack_rate_allowed": o_sack_rate_allowed,
             "actual_sacks": row["def_sacks"],
@@ -117,10 +120,11 @@ def train_and_predict():
         
     hist_df = pd.DataFrame(rows)
     
-    m_sacks = PoissonRegressor(alpha=0.5)
-    m_sacks.fit(hist_df[["def_sack_rate", "opp_sack_rate_allowed"]], hist_df["actual_sacks"])
+    # Model configuration validated by Ralph autonomous loop (winner: round 3 iter 7, deviance=2.6148)
+    m_sacks = PoissonRegressor(alpha=0.0)
+    m_sacks.fit(hist_df[["def_pressure_rate", "def_sack_rate", "opp_sack_rate_allowed"]], hist_df["actual_sacks"])
     
-    m_to = PoissonRegressor(alpha=0.5)
+    m_to = PoissonRegressor(alpha=0.0)
     m_to.fit(hist_df[["takeaways_per_game", "giveaways_per_game"]], hist_df["actual_to"])
     
     current_team_stats = compute_team_stats(df)
@@ -135,7 +139,7 @@ def train_and_predict():
             "sack_rate_allowed": 0.065, "giveaways_per_game": 1.2
         })
         
-        pred_s = float(m_sacks.predict(pd.DataFrame([[t_stat["def_sack_rate"], opp_stat["sack_rate_allowed"]]], columns=["def_sack_rate", "opp_sack_rate_allowed"]))[0])
+        pred_s = float(m_sacks.predict(pd.DataFrame([[t_stat["def_pressure_rate"], t_stat["def_sack_rate"], opp_stat["sack_rate_allowed"]]], columns=["def_pressure_rate", "def_sack_rate", "opp_sack_rate_allowed"]))[0])
         pred_to = float(m_to.predict(pd.DataFrame([[t_stat["takeaways_per_game"], opp_stat["giveaways_per_game"]]], columns=["takeaways_per_game", "giveaways_per_game"]))[0])
         
         opp_implied = info.get("opp_implied", 21.0)

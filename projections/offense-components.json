@@ -71,8 +71,19 @@
     "fum_lost": 3.0,
     "pass_2pt": 1.0
    },
-   "pp_stats": null,
-   "pp_borrowed": []
+   "pp_stats": {
+    "pass_yd": 2861.44,
+    "pass_td": 13.0,
+    "pass_int": 8.0,
+    "rush_yd": 94.0,
+    "rush_td": 1.0
+   },
+   "pp_borrowed": [
+    "pass_td",
+    "pass_int",
+    "rush_yd",
+    "rush_td"
+   ]
   },
   {
    "sleeper_id": "11560",
@@ -205,7 +216,7 @@
   {
    "sleeper_id": "1166",
    "name": "Kirk Cousins",
-   "team": "LV",
+   "team": "MIN",
    "pos": "QB",
    "sleeper_stats": {
     "pass_yd": 639.0,
@@ -216,7 +227,7 @@
    },
    "pp_stats": {
     "pass_td": 24.11,
-    "pass_yd": 192.5,
+    "pass_yd": 4037.14,
     "pass_int": 3.0,
     "rush_yd": 6.0
    },
@@ -1288,14 +1299,16 @@
     "fum_lost": 2.0
    },
    "pp_stats": {
-    "pass_yd": 2895.3,
-    "rush_yd": 549.5,
-    "pass_td": 14.54,
-    "rush_td": 4.1,
-    "pass_int": 9.0
+    "pass_yd": 181.5,
+    "rush_yd": 36.5,
+    "pass_td": 17.0,
+    "pass_int": 9.0,
+    "rush_td": 5.0
    },
    "pp_borrowed": [
-    "pass_int"
+    "pass_td",
+    "pass_int",
+    "rush_td"
    ]
   },
   {
@@ -1634,7 +1647,7 @@
   {
    "sleeper_id": "11569",
    "name": "Jarquez Hunter",
-   "team": "NO",
+   "team": null,
    "pos": "RB",
    "sleeper_stats": {
     "rush_yd": 63.0,
@@ -1996,7 +2009,7 @@
   {
    "sleeper_id": "12457",
    "name": "Jaydon Blue",
-   "team": "PHI",
+   "team": null,
    "pos": "RB",
    "sleeper_stats": {
     "rush_yd": 289.0,
@@ -2084,9 +2097,9 @@
     "fum_lost": 1.0
    },
    "pp_stats": {
-    "rush_yd": 28.5,
+    "rush_yd": 680.11,
     "rec_yd": 10.5,
-    "rush_td": 7.13,
+    "rush_td": 4.71,
     "rec": 19.0,
     "rec_td": 1.0
    },
@@ -2649,7 +2662,7 @@
     "fum_lost": 1.0
    },
    "pp_stats": {
-    "rush_td": 6.44,
+    "rush_td": 7.43,
     "rush_yd": 304.0,
     "rec": 10.0,
     "rec_yd": 75.0,
@@ -2921,7 +2934,7 @@
    "pp_stats": {
     "rush_yd": 16.5,
     "rec_yd": 12.5,
-    "rush_td": 4.88,
+    "rush_td": 5.1,
     "rec": 20.0,
     "rec_td": 1.0
    },
@@ -3002,7 +3015,7 @@
     "rush_yd": 477.87,
     "rec_yd": 15.5,
     "rec": 2.5,
-    "rush_td": 4.03,
+    "rush_td": 3.97,
     "rec_td": 1.0
    },
    "pp_borrowed": [
@@ -3548,7 +3561,7 @@
     "fum_lost": 1.0
    },
    "pp_stats": {
-    "rush_yd": 736.78,
+    "rush_yd": 812.13,
     "rec_yd": 7.5,
     "rush_td": 4.76,
     "rec": 9.0
@@ -4095,7 +4108,7 @@
   {
    "sleeper_id": "9757",
    "name": "Kendre Miller",
-   "team": null,
+   "team": "DAL",
    "pos": "RB",
    "sleeper_stats": {
     "rush_yd": 20.0,
@@ -4301,7 +4314,7 @@
   {
    "sleeper_id": "11168",
    "name": "Xavier Smith",
-   "team": "SF",
+   "team": "LAR",
    "pos": "WR",
    "sleeper_stats": {
     "rush_yd": 16.0,
@@ -4315,7 +4328,7 @@
   {
    "sleeper_id": "11320",
    "name": "Nikko Remigio",
-   "team": "KC",
+   "team": null,
    "pos": "WR",
    "sleeper_stats": {
     "rush_yd": 6.0
@@ -4504,7 +4517,7 @@
     "rec_td": 3.0
    },
    "pp_stats": {
-    "rec_yd": 691.82,
+    "rec_yd": 728.98,
     "rush_yd": 10.0,
     "rec": 35.0,
     "rec_td": 3.0
@@ -5987,7 +6000,7 @@
   {
    "sleeper_id": "1479",
    "name": "Keenan Allen",
-   "team": "IND",
+   "team": "SF",
    "pos": "WR",
    "sleeper_stats": {
     "rec": 44.0,
@@ -6016,7 +6029,7 @@
    },
    "pp_stats": {
     "rec_yd": 5.5,
-    "rec_td": 0.56,
+    "rec_td": 1.6,
     "rec": 10.0
    },
    "pp_borrowed": [
@@ -6676,7 +6689,7 @@
   {
    "sleeper_id": "6154",
    "name": "David Sills V",
-   "team": "TB",
+   "team": null,
    "pos": "WR",
    "sleeper_stats": {
     "rush_yd": 6.0,
@@ -7016,8 +7029,8 @@
    },
    "pp_stats": {
     "rec_yd": 1237.86,
-    "rec_td": 9.71,
     "rush_yd": 12.5,
+    "rec_td": 9.71,
     "rec": 106.0
    },
    "pp_borrowed": [
@@ -7680,7 +7693,7 @@
   {
    "sleeper_id": "9500",
    "name": "Josh Downs",
-   "team": "IND",
+   "team": "KC",
    "pos": "WR",
    "sleeper_stats": {
     "rush_yd": 13.0,
@@ -8137,7 +8150,7 @@
   {
    "sleeper_id": "12079",
    "name": "Treyton Welch",
-   "team": null,
+   "team": "NO",
    "pos": "TE",
    "sleeper_stats": {
     "rec": 2.0,
