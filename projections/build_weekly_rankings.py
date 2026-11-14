@@ -65,6 +65,23 @@ BETTINGPROS_MARKETS = {
 OUT_ROS_PLAYERS = {
     "4881": 9,  # Lamar Jackson
 }
+
+
+def load_out_ros_players(current_week):
+    out_map = dict(OUT_ROS_PLAYERS)
+    if PLAYERS_PATH.exists():
+        try:
+            players_db = json.loads(PLAYERS_PATH.read_text(encoding="utf-8"))
+            for pid, pl in players_db.items():
+                if pl.get("injury_status") == "IR":
+                    part = (pl.get("injury_body_part") or "").lower()
+                    notes = (pl.get("injury_notes") or "").lower()
+                    if any(x in part for x in ("acl", "achilles", "fracture")) or "surgery" in notes or "season" in notes:
+                        if pid not in out_map:
+                            out_map[pid] = current_week
+        except Exception as exc:
+            print(f"Warning: could not inspect players-nfl.json for IR players: {exc}")
+    return out_map
 GIBBS_EXPERT_ID = 1576
 # The analysts whose own board gets a column, kept separate from the consensus.
 # ECR is an average and an average cannot disagree with itself; these can. Add one
@@ -175,9 +192,10 @@ def current_nfl_state():
     return season, week
 
 
-def sleeper_projections(season):
+def sleeper_projections(season, current_week=1):
     players = {}
     current_stats = {}
+    out_ros = load_out_ros_players(current_week)
     for week in WEEKS:
         url = f"https://api.sleeper.app/projections/nfl/{season}/{week}?season_type=regular"
         rows = get_json(url)
@@ -188,7 +206,7 @@ def sleeper_projections(season):
             stats = row.get("stats") or {}
             if not pid or pos not in OFF_POS or stats.get("pts_ppr") is None:
                 continue
-            if pid in OUT_ROS_PLAYERS and week >= OUT_ROS_PLAYERS[pid]:
+            if pid in out_ros and week >= out_ros[pid]:
                 continue
             entry = players.setdefault(pid, {
                 "id": pid,
@@ -630,7 +648,7 @@ def main():
     print(f"NFL schedule: week {current_week}, {len(games)} teams")
 
     print(f"Sleeper weekly projections: {season} weeks 1-18")
-    players, stats = sleeper_projections(season)
+    players, stats = sleeper_projections(season, current_week)
     print(f"  {len(players)} offensive players")
 
     print(f"BettingPros props: week {current_week}")

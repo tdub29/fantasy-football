@@ -986,8 +986,16 @@
     const have = new Set();
     for (const p of wr.players) {
       const l = live.lines[p.id] || {};
+      const wasNull = p.sleeper ? p.sleeper.slice(live.week - 1).every(v => v === null) : false;
+      const isIr = (players[p.id]?.injury_status === 'IR' || live.meta[p.id]?.inj === 'IR');
       p.sleeper = p.sleeper || Array(18).fill(null);
-      for (let w = live.week; w <= 18; w++) p.sleeper[w - 1] = l[w] ?? null;
+      for (let w = live.week; w <= 18; w++) {
+        if (isIr && (wasNull || (players[p.id]?.injury_notes || '').toLowerCase().includes('surgery'))) {
+          p.sleeper[w - 1] = null;
+        } else {
+          p.sleeper[w - 1] = l[w] ?? null;
+        }
+      }
       have.add(String(p.id));
     }
     for (const pid in live.lines) {
@@ -3191,16 +3199,82 @@
       : lg.is_idp
         ? 'This league has IDP_FLEX slots. Defensive players (LB/DB/DL) score, and LBs get a 1.10x multiplier in team strength.'
         : null;
+
+    const titleWrap = h('div', { class:'league-title-wrap' });
+    const titleEl = h('h1', {
+      class: 'page-title page-title-clickable',
+      title: 'Switch team',
+      role: 'button',
+      tabindex: '0',
+      'aria-haspopup': 'true',
+      'aria-expanded': 'false',
+    }, lg.name, h('span', { class: 'title-dropdown-arrow', 'aria-hidden': 'true' }, '▾'));
+
+    let menuEl = null;
+    const closeMenu = () => {
+      if (menuEl) {
+        menuEl.remove();
+        menuEl = null;
+        titleEl.setAttribute('aria-expanded', 'false');
+        document.removeEventListener('click', onDocClick);
+      }
+    };
+    const onDocClick = (e) => {
+      if (!titleWrap.contains(e.target)) closeMenu();
+    };
+    const toggleMenu = (e) => {
+      e.stopPropagation();
+      if (menuEl) {
+        closeMenu();
+        return;
+      }
+      titleEl.setAttribute('aria-expanded', 'true');
+      const rosters = (lg.rosters || []).slice().sort((a, b) => {
+        if (a.is_me) return -1;
+        if (b.is_me) return 1;
+        const aName = a.team_name || a.owner_name || `Team ${a.roster_id}`;
+        const bName = b.team_name || b.owner_name || `Team ${b.roster_id}`;
+        return aName.localeCompare(bName);
+      });
+      const list = h('div', { class: 'league-team-dropdown', role: 'menu' },
+        h('div', { class: 'league-team-dropdown-header' }, `${lg.name} · Teams (${rosters.length})`),
+        ...rosters.map(r => h('a', {
+          href: `#roster/${lg.id}/${r.roster_id}`,
+          class: `league-team-item${r.is_me ? ' is-me' : ''}`,
+          role: 'menuitem',
+          onclick: () => closeMenu(),
+        },
+          h('span', { class: 'team-item-name' }, r.team_name || r.owner_name || `Team ${r.roster_id}`),
+          r.owner_name && r.team_name ? h('span', { class: 'team-item-owner' }, r.owner_name) : null,
+          r.is_me ? h('span', { class: 'badge you' }, 'YOU') : null,
+        ))
+      );
+      menuEl = list;
+      titleWrap.appendChild(list);
+      setTimeout(() => document.addEventListener('click', onDocClick), 0);
+    };
+    titleEl.addEventListener('click', toggleMenu);
+    titleEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleMenu(e);
+      } else if (e.key === 'Escape' && menuEl) {
+        e.preventDefault();
+        closeMenu();
+        titleEl.focus();
+      }
+    });
+    titleWrap.appendChild(titleEl);
+
     main.appendChild(h('div', { class:'page-header' },
       h('div', null,
         h('div', { class:'page-eyebrow' },
           'LEAGUE',
           h('span', { class:'page-eyebrow-tag', title: formatRule, tabindex: formatRule ? '0' : null }, formatTag),
-          lg.platform === 'espn' ? h('span', { class:'page-eyebrow-tag' }, 'ESPN') : null,
           lg.status === 'pre_draft' ? h('span', { class:'page-eyebrow-tag' }, 'PRE-DRAFT') : null,
         ),
-        h('h1', { class:'page-title' }, lg.name),
-        h('p', { class:'page-sub' }, `${me?.team_name || ','} · ${lg.total_rosters}-team`)
+        titleWrap,
+        h('p', { class:'page-sub' }, `${me?.team_name || ''} · ${lg.total_rosters}-team`)
       ),
       h('div', { class:'page-actions' },
         me ? h('a', { href:`#roster/${lg.id}/${me.roster_id}` }, h('button', { class:'primary' }, 'My Roster →')) : null,
@@ -19901,7 +19975,7 @@
   }
 
   // Expose a couple things for console debugging
-  window.__app = { state, rankIndex, computeRosterStrength, sleeperIdFor, sleeperIdForFuzzy, kickerProjFor, invalidateRankIndex, route };
+  window.__app = { state, rankIndex, computeRosterStrength, sleeperIdFor, sleeperIdForFuzzy, kickerProjFor, invalidateRankIndex, route, championshipOdds };
 
   document.addEventListener('DOMContentLoaded', boot);
 })();
