@@ -1222,7 +1222,7 @@
     return v == null ? null : Math.round(v * REDRAFT_VOR_SCALE * 10) / 10;
   }
 
-  function tierValue(p, format, roster = null, tierOverride = null) {
+  function tierValue(p, format, roster = null, tierOverride = null, { skipKtc = false } = {}) {
     if (!p) return 0;
     // Redraft prices a season, not a career. VOR is the redraft currency: it is
     // rest-of-season points over replacement in THIS league, so it is
@@ -1249,7 +1249,7 @@
     let val;
     // Prefer KTC's actual market value when available; it captures the true
     // non-linear curve (one elite player > two mid). Normalize ~0-10000 to ~0-110.
-    if (p.ktcValue) {
+    if (p.ktcValue && !skipKtc) {
       val = p.ktcValue / 100;
     } else {
       const tbl = window.TIER_VALUES[p.category];
@@ -3331,8 +3331,8 @@
     main.appendChild(h('h2', { class:'page-title standings-heading' }, 'Team Strength Rankings'));
     if (!lgDynasty) main.appendChild(buildRosBasisBar(() => viewLeague(leagueId, tabArg)));
 
-    // Value outlook per team. Sparkline bars + the dedicated line chart both
-    // read this trajectory: projected starting-lineup value for CURRENT_SEASON..+5
+    // Value outlook per team. Sparkline bars read this trajectory:
+    // projected starting-lineup value for CURRENT_SEASON..+5
     // (position-aware aging, best-K re-picked each year, owned picks folded in once
     // they convert). year-0 == PV, year FV_YEARS == FV.
     const TRAJ_YEARS = 6;
@@ -3603,45 +3603,6 @@
         }
         odds=rows;
       })().finally(()=>{run=null;}));
-      // Every team on one line chart, the same series the Trend bars draw.
-      const linePlot=h('div',{class:'standings-lines-plot'}), lineTitle=h('div',{class:'card-title'});
-      main.appendChild(h('div',{class:'card standings-lines'},lineTitle,linePlot));
-      const lineColor=new Map(computed.map((c,i)=>[c.r.roster_id,c.r.is_me?'var(--gold-deep)':`oklch(62% 0.16 ${Math.round(i*360/computed.length)})`]));
-      const drawLines=(series,percentage,format,label)=>{
-        // Drawn at the plot's real width so 11px text stays 11px on a phone.
-        const ns='http://www.w3.org/2000/svg',W=Math.max(320,linePlot.clientWidth||720),H=320,L=48,T=12,B=26,R=Math.min(170,Math.round(W*.32));
-        const el=(tag,attrs,...kids)=>{const n=document.createElementNS(ns,tag);for(const k in attrs)n.setAttribute(k,attrs[k]);n.append(...kids);return n;};
-        const vals=[...series.values()].flat(),lo0=Math.min(...vals),hi0=Math.max(...vals);
-        // 1/2/2.5/5 steps over the data's own range, so the axis starts at the lowest line, not at zero.
-        const raw=(hi0-lo0)/4||hi0/4||1,mag=10**Math.floor(Math.log10(raw)),step=[1,2,2.5,5,10].find(m=>m*mag>=raw)*mag;
-        const lo=Math.max(0,Math.floor(lo0/step)*step),hi=Math.max(lo+step,Math.ceil(hi0/step)*step);
-        const x=y=>L+y*(W-L-R)/(trajYears-1),yv=v=>T+(1-(v-lo)/(hi-lo))*(H-T-B);
-        const tick=v=>percentage?`${+(v*100).toFixed(1)}%`:Math.round(v).toLocaleString();
-        const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':`${label} by season for every team`});
-        for(let i=0,n=Math.round((hi-lo)/step);i<=n;i++){const v=lo+i*step;svg.append(el('line',{x1:L,x2:W-R,y1:yv(v),y2:yv(v),class:'grid'}),el('text',{x:L-6,y:yv(v)+4,'text-anchor':'end'},tick(v)));}
-        trajLabels.forEach((t,y)=>svg.append(el('text',{x:x(y),y:H-8,'text-anchor':'middle'},t)));
-        // Series labels at each line's end, nudged apart so none overlap.
-        const ends=computed.map(c=>({c,y:yv(series.get(c.r.roster_id).at(-1))})).sort((a,b)=>a.y-b.y),gap=13;
-        for(let i=1;i<ends.length;i++)ends[i].y=Math.max(ends[i].y,ends[i-1].y+gap);
-        for(let i=ends.length-1;i>=0;i--)ends[i].y=Math.min(ends[i].y,i===ends.length-1?H-B:ends[i+1].y-gap);
-        const labelY=new Map(ends.map(e=>[e.c.r.roster_id,e.y])),maxChars=Math.floor((R-12)/6.5);
-        const lines=new Map();
-        const hot=id=>{svg.classList.toggle('focus',id!=null);lines.forEach((g,k)=>g.classList.toggle('hot',k===id));};
-        // Yours draws last so it sits on top.
-        for(const c of [...computed].sort((a,b)=>a.r.is_me-b.r.is_me)){
-          const id=c.r.roster_id,d=series.get(id),color=lineColor.get(id),name=c.r.team_name;
-          const g=el('g',{class:`team-line${c.r.is_me?' you':''}`,style:`stroke:${color};fill:${color}`},
-            el('title',{},`${name}: ${d.map((v,y)=>`${trajLabels[y]} ${format(v)}`).join(', ')}`),
-            el('polyline',{points:d.map((v,y)=>`${x(y)},${yv(v)}`).join(' ')}),
-            ...d.map((v,y)=>el('circle',{cx:x(y),cy:yv(v),r:c.r.is_me?4:3})),
-            el('text',{x:x(trajYears-1)+8,y:labelY.get(id)+4,class:'lbl',tabindex:'0',style:`fill:${color}`},name.length>maxChars?`${name.slice(0,maxChars-1)}…`:name));
-          g.addEventListener('mouseenter',()=>hot(id));g.addEventListener('mouseleave',()=>hot(null));
-          g.addEventListener('focusin',()=>hot(id));g.addEventListener('focusout',()=>hot(null));
-          svg.append(g);lines.set(id,g);
-        }
-        lineTitle.textContent=`${label}, every team, ${trajLabels[0]}-${trajLabels[trajYears-1]}`;
-        linePlot.replaceChildren(svg);
-      };
       const draw=async()=>{
         const metric=selected, percentage=metric==='title'||metric==='playoff'||metric==='bye';
         standings.querySelectorAll('.str-spark').forEach(el=>{el.style.visibility='hidden';});
@@ -3668,7 +3629,6 @@
           [...spark.children].forEach((wrap,y)=>{wrap.title=`${trajLabels[y]} ${metrics[metric].label}: ${format(data[y])}`;wrap.querySelector('.sp-bar-val').textContent=format(data[y]);const bar=wrap.querySelector('.sp-bar');bar.style.height=`${Math.max(0,data[y])/max*100}%`;bar.dataset.valueColor ||= bar.style.background;bar.style.background=metric==='value'?bar.dataset.valueColor:'var(--blue)';});
           spark.style.visibility='visible';
         }
-        drawLines(series,percentage,format,metrics[metric].label);
         const trend=standings.querySelector('.standings-chart-head');
         if(trend){trend.textContent=metrics[metric].label;trend.title=`${metrics[metric].label} by season, now through five years out.`;}
         note.textContent=`${metrics[metric].label}, ${trajLabels[0]}-${trajLabels[trajYears-1]}. ${percentage?'Scale 0-100%.':'Bars start at zero.'} ${metric==='value'?'Market-value aging scenario, not winning probability.':'Same season simulator as standings and Trade Lab; future years are age/pick scenarios, not known future rosters.'}`;
@@ -9313,26 +9273,28 @@
       h('div', { class: 'card-title' }, `Week ${week} waiver board`),
       h('p', { class: 'tip faab-note' },
         left != null
-          ? `You have $${faabMoney(left)} of $${faabMoney(budget)} left. `
-          : '',
-        hasBidHistory
-          ? `Bid is the median of the 30 in-season claims here, $0 adds included, on players at his position with the closest Sleeper projection for the claim week, last two seasons first; the small range is their middle half. `
-            + `Tested forward on 272 claims since 2025, half landed within about 3% of budget of it and the average miss was 6%; most of a bid is one manager's appetite, which no pre-claim fact predicts, so read the range as the answer. `
-            + `With no projection, the range falls back to his experience and position profile. `
-          : 'No priced-claim history for this league, so no bid range is shown. ',
-        'Hover a bid for the named comps. The line under each player sets a bid or a win chance and fills in the other; Chart opens the full curve.'));
+          ? `You have $${faabMoney(left)} of $${faabMoney(budget)} left.`
+          : (hasBidHistory ? `League FAAB budget: $${faabMoney(budget)}.` : 'No priced-claim history for this league, so no bid range is shown.'),
+        !hasBidHistory && left != null ? ' No priced-claim history for this league, so no bid range is shown.' : ''),
+      hasBidHistory ? h('details', { class: 'wb-how' },
+        h('summary', null, 'How bids work'),
+        h('p', { class: 'tip' },
+          'Bid is the median of the 30 in-season claims here, $0 adds included, on players at his position with the closest Sleeper projection for the claim week, last two seasons first; the small range is their middle half. '
+          + 'Tested forward on 272 claims since 2025, half landed within about 3% of budget of it and the average miss was 6%; most of a bid is one manager\'s appetite, which no pre-claim fact predicts, so read the range as the answer. '
+          + 'With no projection, the range falls back to his experience and position profile. Hover a player or bid for comps; tap Win% to adjust bid, open the Chart, or build a Bundle.')) : null);
 
     const head = h('thead', null, h('tr', null,
       h('th', null, '#'),
       h('th', null, 'Player'),
       h('th', null, 'Pos'),
       h('th', { class: 'wb-profile-head' }, 'Profile'),
-      h('th', { class: 'right', title: 'Projected points, rest of season' }, 'ROS'),
-      h('th', { class: 'right', title: `Projected points, week ${week}` }, 'Wk'),
+      h('th', { class: 'right wb-ros-head', title: 'Projected points, rest of season' }, 'ROS'),
+      h('th', { class: 'right', title: `Projected points, week ${week}` }, 'Proj'),
       h('th', { class: 'right', style: hideComparison, title: dynasty
         ? 'League-adjusted dynasty market value on the 0 to 110 scale'
         : 'Rest-of-season points above the last league-wide starter at the position' }, dynasty ? 'Value' : 'VOR'),
-      hasBidHistory ? h('th', { class: 'right', title: 'Suggested bid range from this league\'s matching historical claims' }, 'Bid') : null));
+      hasBidHistory ? h('th', { class: 'right', title: 'Suggested bid range from this league\'s matching historical claims' }, 'Bid') : null,
+      hasBidHistory ? h('th', { class: 'right', title: 'Win chance at this bid; tap to adjust, open Chart, or add to Bundle' }, 'Win%') : null));
 
     const season = Number(wr.season) || null;
     const compLine = b => b.comps.slice(0, 2).map(x => `${x.player} $${faabMoney(x.bid)}`).join(', ');
@@ -9345,8 +9307,9 @@
     // A spanning cell wider than the visible columns adds phantom columns, which
     // steal width from the fixed phone layout, so the span tracks what shows;
     // fitWaiverSpans redoes it when the page crosses the phone breakpoint.
-    const wideSpan = hideComparison ? 7 : 8;
-    const span = () => window.matchMedia(PHONE_Q).matches ? 5 : wideSpan;
+    const wideSpan = (hideComparison ? 6 : 7) + (hasBidHistory ? 2 : 0);
+    const phoneSpan = 4 + (hasBidHistory ? 2 : 0);
+    const span = () => window.matchMedia(PHONE_Q).matches ? phoneSpan : wideSpan;
     const rows = new Map();
     const bundle = new Set();
     let target = 0.9, solved = null;
@@ -9392,7 +9355,7 @@
     // Bid and win chance drive each other: drag or type the dollars and the
     // chance follows, type a chance and the bid moves to the cheapest that
     // reaches it.
-    const oddsControls = (c, b) => {
+    const oddsControls = (c, b, mainRow, bidAmt, winBtn) => {
       const ts = waiverThresholds(b.pcts, budget);
       let bid = Math.min(maxBid, b.mid), detail = null;
       const slider = h('input', { type: 'range', class: 'wb-odds-slider', min: 0, max: maxBid, step: 1, value: bid,
@@ -9408,7 +9371,10 @@
         bid = Math.max(0, Math.min(maxBid, Math.round(Number(v)) || 0));
         slider.value = bid;
         if (from !== 'dollars') dollars.value = bid;
-        if (from !== 'odds') { odds.value = Math.round(waiverWinOdds(ts, bid) * 100); note.textContent = ''; }
+        const winPct = Math.round(waiverWinOdds(ts, bid) * 100);
+        if (from !== 'odds') { odds.value = winPct; note.textContent = ''; }
+        if (bidAmt) bidAmt.textContent = `$${bid}`;
+        if (winBtn) winBtn.textContent = `${winPct}%`;
         detail?.update(bid);
       }
       function setOdds(v) {
@@ -9419,7 +9385,7 @@
       }
       const chartCell = h('td', { class: 'wb-sub', colspan: span() });
       const chartRow = h('tr', { class: 'wb-chart-row', hidden: '' }, chartCell);
-      const oddsRow = h('tr', { class: 'wb-odds-row' });
+      const oddsRow = h('tr', { class: 'wb-odds-row', hidden: '' });
       const toggle = h('button', { type: 'button', class: 'wb-chart-toggle', 'aria-expanded': 'false',
         'aria-label': `Odds chart for ${c.name}`, onClick: () => {
           const open = chartRow.hidden;
@@ -9435,6 +9401,7 @@
       const pick = h('label', { class: 'wb-pick' },
         h('input', { type: 'checkbox', 'aria-label': `Add ${c.name} to the bundle`, onChange: e => {
           if (e.target.checked) bundle.add(c.pid); else bundle.delete(c.pid);
+          winBtn?.classList.toggle('in-bundle', e.target.checked);
           renderBundle();
         } }), 'Bundle');
       oddsRow.appendChild(h('td', { class: 'wb-sub', colspan: span() },
@@ -9443,6 +9410,20 @@
           slider,
           h('span', { class: 'wb-odds-field' }, odds, '% to win'),
           note, toggle, pick)));
+      if (winBtn) {
+        winBtn.onclick = e => {
+          e.stopPropagation();
+          const open = oddsRow.hidden;
+          oddsRow.hidden = !open;
+          mainRow.classList.toggle('wb-row-open', open);
+          winBtn.setAttribute('aria-expanded', String(open));
+          if (!open) {
+            chartRow.hidden = true;
+            oddsRow.classList.remove('is-open');
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        };
+      }
       rows.set(c.pid, { c, ts, setBid });
       setBid(bid);
       return [oddsRow, chartRow];
@@ -9453,40 +9434,44 @@
       const overBudget = b && left != null && b.hi > left;
       const comparison = dynasty ? c.market : c.vor;
       const withOdds = hasBidHistory && b;
+      const bidAmt = withOdds ? h('span', { class: 'wb-bid-mid' }, `$${b.mid}`) : null;
+      const winBtn = withOdds ? h('button', { type: 'button', class: 'wb-win-toggle tnum', 'aria-expanded': 'false',
+        'aria-label': `Bid odds, chart and bundle for ${c.name}` }, '·') : null;
+      const nameTip = b?.comps ? compTip(b) : `${c.profile}${b ? ` (${b.exact ? 'exact profile' : b.source}, n=${b.n})` : ''}`;
       const main = h('tr', { class: 'clickable wb-main' + (withOdds ? ' wb-has-odds' : ''), 'data-player-id': c.pid, 'data-position': c.pos,
         onclick: () => openPlayerDetail(c.name, c.pid) },
         h('td', { class: 'sr-slot' }, `${i + 1}`),
-        h('td', { class: 'sr-name' },
+        h('td', { class: 'sr-name', title: nameTip },
           h('span', { class:'wb-player-line' },
             headshot(c.pid, 22),
             h('span', { class:'wb-player-name' }, c.name),
-            c.injury ? injuryChip(c.pid) : null),
-          h('span', { class:'wb-profile-mobile' }, b?.comps ? `Like ${compLine(b)}` : c.profile,
-            b && !b.comps ? h('span', { class:'wb-profile-mobile-sample' },
-              `${b.exact ? 'exact profile' : b.source}, n=${b.n}`) : null)),
+            c.injury ? injuryChip(c.pid) : null)),
         h('td', { class: 'sr-pos' }, posChip(c.pos)),
         h('td', { class: 'wb-profile', title: b?.comps ? compTip(b) : `${c.experience}; ${c.position}` }, c.profile,
           b ? h('span', { class: 'wb-profile-sample' },
             b.comps ? `like ${compLine(b)}` : `${b.exact ? 'exact profile' : b.source}, n=${b.n}`) : null),
-        h('td', { class: 'sr-num tnum' }, fmt.decimal(c.ros, 0)),
+        h('td', { class: 'sr-num wb-ros-col tnum' }, fmt.decimal(c.ros, 0)),
         h('td', { class: 'sr-num tnum' }, c.wk != null ? fmt.decimal(c.wk, 1) : '·'),
         h('td', { class: 'sr-num sr-vor tnum' + (comparison != null && comparison < 0 ? ' neg' : ''), style: hideComparison },
           comparison != null ? `${!dynasty && comparison > 0 ? '+' : ''}${fmt.decimal(comparison, 0)}` : '·'),
         hasBidHistory ? h('td', { class: 'sr-num wb-bid tnum' + (overBudget ? ' over' : ''),
                            title: b ? `Likely $${b.mid}: median of ${b.source}, n=${b.n}; middle half $${b.lo} to $${b.hi}${overBudget ? '. Range exceeds what you have left.' : ''}${b.comps ? `\n${compTip(b)}` : ''}` : '' },
-          b ? [`$${b.mid}`, h('span', { class: 'wb-bid-range' }, `${b.lo}-${b.hi}`)] : '·') : null);
+          b ? [bidAmt, h('span', { class: 'wb-bid-range' }, `${b.lo}-${b.hi}`)] : '·') : null,
+        hasBidHistory ? h('td', { class: 'sr-num wb-win' }, winBtn || '·') : null);
       // Each player is his own tbody so the stripe and hover cover his odds line.
-      return h('tbody', { class: 'wb-group' }, main, withOdds ? oddsControls(c, b) : null);
+      return h('tbody', { class: 'wb-group' }, main, withOdds ? oddsControls(c, b, main, bidAmt, winBtn) : null);
     });
 
-    card.appendChild(h('table', { class: 'data slot-table waiver-table', 'data-span': wideSpan }, head, ...groups));
+    card.appendChild(h('table', { class: 'data slot-table waiver-table', 'data-span': wideSpan, 'data-phone-span': phoneSpan }, head, ...groups));
     return card;
   }
 
   function fitWaiverSpans() {
     const phone = window.matchMedia(PHONE_Q).matches;
-    document.querySelectorAll('.waiver-table[data-span]').forEach(t =>
-      t.querySelectorAll('td.wb-sub').forEach(td => { td.colSpan = phone ? 5 : Number(t.dataset.span); }));
+    document.querySelectorAll('.waiver-table[data-span]').forEach(t => {
+      const col = phone ? Number(t.dataset.phoneSpan || 6) : Number(t.dataset.span);
+      t.querySelectorAll('td.wb-sub').forEach(td => { td.colSpan = col; });
+    });
   }
 
   // The detail behind a row's odds line: the bid each common target costs, and
@@ -10005,6 +9990,14 @@
     const sleeper = window.PLAYERS[pid]; if (!sleeper) return 0;
     const r = rankIndex().bySleeperId.get(pid) || rankIndex().byName.get(norm(sleeper.name));
     return r ? tierValue(r, lg) : 0;
+  }
+
+  // Trade Lab comparison value from user's dynasty tier rankings alone (ignoring KTC).
+  function playerRankValue(pid, lg) {
+    if (!isDynastyLeague(lg)) return playerValue(pid, lg);
+    const sleeper = window.PLAYERS[pid]; if (!sleeper) return 0;
+    const r = rankIndex().bySleeperId.get(pid) || rankIndex().byName.get(norm(sleeper.name));
+    return r ? tierValue(r, lg, null, null, { skipKtc: true }) : 0;
   }
 
   // Value of a single asset (player or pick) on a trade side.
@@ -10674,7 +10667,7 @@
     // Cached row factory for the pile (called when adding a row to pile).
     const makePileRow = (k) => {
       const isPickK = isPickKey(k);
-      let nameNode, val;
+      let nameNode, val, rankVal = null;
       if (isPickK) {
         const meta = pickByKey.get(k) || (() => {
           const { season, round, originRosterId } = parsePickKey(k);
@@ -10710,6 +10703,7 @@
           (() => { const vc = vorChip(k, lg, dyn ? 'blend' : 'ros'); return vc ? h('span', { class:'pile-vor', title:'VOR: projected points over a replacement starter at this position, the starting-lineup value you gain/lose' }, 'VOR ', vc) : null; })(),
         );
         val = playerValue(k, lg);
+        rankVal = dyn ? playerRankValue(k, lg) : null;
       }
       const row = h('div', {
         class:'trade-pile-row',
@@ -10726,7 +10720,8 @@
         },
       },
         nameNode,
-        h('span', { class:'tnum' }, fmt.decimal(val, 1)),
+        dyn ? h('span', { class:'tnum trade-val' }, fmt.decimal(val, 1)) : h('span', { class:'tnum' }, fmt.decimal(val, 1)),
+        dyn ? (rankVal ? h('span', { class:'tnum trade-val-rank' }, fmt.decimal(rankVal, 1)) : h('span', { class:'muted trade-val-rank' }, '·')) : null,
         h('span', { class:'trade-pile-x' }, '×'),
       );
       attachDrag(row);
@@ -10736,8 +10731,15 @@
     const totalSpan = h('span', { class:'tnum trade-pile-total' }, '0.0');
     const pileEmpty = h('div', { class:'tip trade-pile-empty' }, `Drag players${dyn ? ' or picks' : ''} here, or click below to add.`);
     const pile = h('div', { class:'trade-pile-rows' });
+    const tradeColHead = (withX) => dyn ? h('div', { class: withX ? 'trade-cols-head trade-cols-pile' : 'trade-cols-head' },
+      h('span', { class:'trade-col-name' }, ''),
+      h('span', { class:'trade-col-lbl', title:'Perceived market value (KTC)' }, 'Mkt'),
+      h('span', { class:'trade-col-lbl', title:'Value from your dynasty tier rankings (ignoring KTC)' }, 'Ranks'),
+      withX ? h('span', { class:'trade-col-x' }, '') : null,
+    ) : null;
     const pileWrap = h('div', { class:'trade-pile' },
       h('div', { class:'card-title' }, h('span', null, 'In Trade'), h('span', { style:{ float:'right' } }, totalSpan)),
+      tradeColHead(true),
       pileEmpty,
       pile,
     );
@@ -10754,10 +10756,11 @@
       const arr = (roster.players || []).map(pid => {
         const sleeper = window.PLAYERS[pid];
         const ranked = sleeper ? (rankIndex().bySleeperId.get(pid) || rankIndex().byName.get(norm(sleeper.name))) : null;
-        return { pid, sleeper, ranked, value: playerValue(pid, lg) };
+        return { pid, sleeper, ranked, value: playerValue(pid, lg), rankValue: dyn ? playerRankValue(pid, lg) : null };
       }).sort((a,b) => b.value - a.value || ros(b.pid) - ros(a.pid));
       pool = h('div', { class:'trade-pool' },
         h('div', { class:'card-title' }, `${roster.team_name} Roster`),
+        tradeColHead(false),
       );
       for (const p of arr) {
         const row = h('div', {
@@ -10782,7 +10785,8 @@
             // Tier letters are dynasty categories (cornerstone, mainstay...).
             p.ranked && dyn ? tierChip(p.ranked.tier, p.ranked.category) : null
           ),
-          p.value ? h('span', { class:'tnum' }, fmt.decimal(p.value,1)) : h('span', { class:'muted' }, '.')
+          p.value ? h('span', { class:'tnum' + (dyn ? ' trade-val' : '') }, fmt.decimal(p.value,1)) : h('span', { class:'muted' + (dyn ? ' trade-val' : '') }, dyn ? '·' : '.'),
+          dyn ? (p.rankValue ? h('span', { class:'tnum trade-val-rank' }, fmt.decimal(p.rankValue,1)) : h('span', { class:'muted trade-val-rank' }, '·')) : null,
         );
         attachDrag(row);
         pool.appendChild(row);
@@ -10794,6 +10798,7 @@
       if (ownedPicks.length) {
         const picksPool = h('div', { class:'trade-pool', style:{ marginTop:'12px' } },
           h('div', { class:'card-title' }, `${roster.team_name} Picks`),
+          tradeColHead(false),
         );
         for (const p of ownedPicks) {
           const k = pickKey(p.season, p.round, p.originRosterId);
@@ -10824,7 +10829,8 @@
               }, `+${Math.round(premiumPct*100)}%`) : null,
               (() => { const note = projectedPickNote(p.season, p.round, p.originRosterId, lg); return note ? h('span', { class:'badge pick-proj', title: note.title }, note.chip) : null; })(),
             ),
-            h('span', { class:'tnum' }, fmt.decimal(p.value, 1)),
+            h('span', { class:'tnum' + (dyn ? ' trade-val' : '') }, fmt.decimal(p.value, 1)),
+            dyn ? h('span', { class:'muted trade-val-rank', title:'Picks use market value only' }, '·') : null,
           );
           attachDrag(row);
           picksPool.appendChild(row);

@@ -2196,7 +2196,7 @@ textarea { resize: vertical; min-height: 80px; }
 .trade-pile-rows { display: flex; flex-direction: column; }
 .trade-pile-total { font-weight: 700; font-variant-numeric: tabular-nums; }
 .trade-pile-row {
-  display: flex; align-items: center; gap: 8px;
+  display: flex; align-items: center; gap: 6px;
   padding: 7px 4px;
   cursor: grab;
   border-top: 1px dashed var(--border);
@@ -2208,10 +2208,25 @@ textarea { resize: vertical; min-height: 80px; }
 .trade-pile-row:hover { background: rgba(var(--red-rgb),0.06); }
 .trade-pile-row .name-cell { flex: 1; min-width: 0; display: flex; align-items: center; gap: 6px; }
 .trade-pile-row .trade-pile-x {
+  width: 1rem; text-align: center; flex: 0 0 auto;
   color: var(--fg-3); font-size: 0.85rem;
   opacity: 0.5; transition: opacity 100ms;
 }
 .trade-pile-row:hover .trade-pile-x { opacity: 1; color: var(--red); }
+
+.trade-cols-head {
+  display: flex; align-items: center; gap: 6px;
+  padding: 2px 8px 4px;
+  color: var(--fg-3);
+  font-size: 0.62rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase;
+}
+.trade-cols-pile { display: none; padding: 2px 4px 4px; }
+.trade-pile:has(.trade-pile-row) .trade-cols-pile { display: flex; }
+.trade-col-name { flex: 1; min-width: 0; }
+.trade-col-lbl { width: 2.8rem; text-align: right; flex: 0 0 auto; }
+.trade-col-x { width: 1rem; flex: 0 0 auto; }
+.trade-val, .trade-val-rank { width: 2.8rem; text-align: right; flex: 0 0 auto; }
+.trade-val-rank { color: var(--fg-2); }
 
 .trade-pool {
   max-height: 480px; overflow-y: auto;
@@ -2223,7 +2238,7 @@ textarea { resize: vertical; min-height: 80px; }
   box-shadow: inset 0 0 0 1px var(--red);
 }
 .trade-pool-row {
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex; align-items: center; justify-content: space-between; gap: 6px;
   padding: 7px 8px;
   border-radius: 6px;
   cursor: grab;
@@ -2233,13 +2248,15 @@ textarea { resize: vertical; min-height: 80px; }
 .trade-pool-row .name-cell {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   flex: 1 1 auto;
   min-width: 0;
 }
 .trade-pool-row .name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .trade-pool-row > .tnum,
-.trade-pool-row > .muted { flex: 0 0 auto; margin-left: 12px; }
+.trade-pool-row > .muted { flex: 0 0 auto; }
+.trade-pool-row > .tnum:not(.trade-val):not(.trade-val-rank),
+.trade-pool-row > .muted:not(.trade-val):not(.trade-val-rank) { margin-left: 12px; }
 .trade-pool-row:active { cursor: grabbing; }
 .trade-pool-row:hover { background: var(--bg-2); }
 .trade-pool-row.selected {
@@ -5651,23 +5668,44 @@ table.data tbody td.tnum { font-weight: 600; }
 /* Waiver board reuses the slot table, plus a bid column that goes red when the
    low end of the range is already more than you have left. */
 .waiver-card { margin-bottom: 12px; }
+.waiver-card .faab-note { margin-bottom: 4px; }
+.wb-how { margin: 0 0 10px; }
+.wb-how summary {
+  display: inline-flex; align-items: center; gap: 4px;
+  cursor: pointer; list-style: none;
+  color: var(--fg-2); font-size: 0.75rem; font-weight: 700;
+}
+.wb-how summary::-webkit-details-marker { display: none; }
+.wb-how summary::before { content: '+'; font-weight: 800; color: var(--fg-3); }
+.wb-how[open] summary::before { content: '-'; }
+.wb-how .tip { margin: 6px 0 0; }
 .waiver-table .wb-profile { min-width: 9rem; color: var(--fg-2); font-weight: 700; }
 .waiver-table .wb-profile-sample { display: block; margin-top: 2px; color: var(--fg-3); font-size: 0.68rem; font-weight: 600; }
 .waiver-table .wb-player-line { display: flex; align-items: center; gap: 4px; min-width: 0; }
 .waiver-table .wb-player-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.waiver-table .wb-profile-mobile { display: none; }
 .waiver-table .wb-bid { font-weight: 800; color: var(--fg-0); white-space: nowrap; }
 .waiver-table .wb-bid.over { color: var(--red); }
-.waiver-table .wb-bid-range { display: block; margin-top: 2px; color: var(--fg-3); font-size: 0.68rem; font-weight: 600; }
+.waiver-table .wb-bid-range { display: block; margin-top: 1px; color: var(--fg-3); font-size: 0.66rem; font-weight: 600; }
+.waiver-table .wb-win { width: 52px; white-space: nowrap; }
+.wb-win-toggle {
+  padding: 3px 8px; border-radius: 999px;
+  font-size: 0.76rem; font-weight: 800;
+  border: 1px solid var(--border); background: var(--bg-2); color: var(--fg-1);
+  cursor: pointer;
+}
+.wb-win-toggle[aria-expanded="true"] { background: var(--grad-gold); color: var(--ink); border-color: var(--ink); }
+.wb-win-toggle.in-bundle { box-shadow: inset 0 0 0 1.5px var(--accent); }
 /* Each candidate is his own tbody (row, odds line, chart), so the stripe and
    the hover follow the player instead of the raw row count. */
 table.data.waiver-table tbody tr,
 table.data.waiver-table tbody tr:nth-child(even) { background: transparent; }
 table.data.waiver-table tbody:nth-of-type(even) tr { background: oklch(88% 0.04 285); }
 table.data.waiver-table tbody:hover tr { background: oklch(84% 0.06 285); }
-table.data.waiver-table tr.wb-has-odds td,
+table.data.waiver-table tr.wb-has-odds.wb-row-open td,
 table.data.waiver-table tr.wb-odds-row.is-open td { border-bottom: 0; }
-table.data.waiver-table td.wb-sub { padding-top: 0; }
+table.data.waiver-table tr.wb-odds-row[hidden],
+table.data.waiver-table tr.wb-chart-row[hidden] { display: none; }
+table.data.waiver-table td.wb-sub { padding-top: 4px; }
 .wb-odds { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
 .wb-odds-field { display: inline-flex; align-items: center; gap: 4px; font-weight: 700; color: var(--fg-2); white-space: nowrap; }
 .wb-odds-num { width: 4.2rem; padding: 4px 6px; text-align: right; font-variant-numeric: tabular-nums; }
@@ -5724,30 +5762,17 @@ table.data.waiver-table td.wb-sub { padding-top: 0; }
 @media (max-width: 720px) {
   .waiver-table { table-layout: fixed; }
   .waiver-table .wb-profile-head,
-  .waiver-table .wb-profile { display: none; }
+  .waiver-table .wb-profile,
+  .waiver-table .wb-ros-head,
+  .waiver-table .wb-ros-col { display: none; }
   .waiver-table th:nth-child(5), .waiver-table td:nth-child(5),
   .waiver-table th:nth-child(7), .waiver-table td:nth-child(7) { display: none; }
-  .waiver-table .wb-profile-mobile {
-    display: block;
-    margin-top: 3px;
-    overflow: hidden;
-    color: var(--fg-2);
-    font-size: 0.68rem;
-    font-weight: 700;
-    line-height: 1.2;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .waiver-table .wb-profile-mobile-sample {
-    display: block;
-    color: var(--fg-3);
-    font-size: 0.62rem;
-    font-weight: 600;
-  }
-  .waiver-table th:nth-child(1), .waiver-table td:nth-child(1) { width: 28px; }
-  .waiver-table th:nth-child(3), .waiver-table td:nth-child(3) { width: 50px; }
-  .waiver-table th:nth-child(6), .waiver-table td:nth-child(6) { width: 46px; }
-  .waiver-table th:nth-child(8), .waiver-table td:nth-child(8) { width: 62px; }
+  .waiver-table th:nth-child(1), .waiver-table td:nth-child(1) { width: 24px; }
+  .waiver-table th:nth-child(3), .waiver-table td:nth-child(3) { width: 42px; }
+  .waiver-table th:nth-child(6), .waiver-table td:nth-child(6) { width: 42px; }
+  .waiver-table th:nth-child(8), .waiver-table td:nth-child(8) { width: 52px; }
+  .waiver-table th:nth-child(9), .waiver-table td:nth-child(9) { width: 52px; }
+  .wb-win-toggle { padding: 3px 6px; font-size: 0.72rem; }
   .faab-head, .faab-row {
     grid-template-columns: minmax(0, 1fr) 3.6rem 3.3rem 2.7rem;
     gap: 4px;
@@ -6579,17 +6604,6 @@ table.data.prm-table .name-cell > * { display: block; max-width: 100%; overflow:
   .standings-table .str-spark { width: 92px; }
   .standings-table .str-spark .sp-bar { width: 10px; }
 }
-
-/* Every team by season: the line version of the Trend bars. */
-.standings-lines { margin-top: 16px; }
-.standings-lines svg { display: block; width: 100%; height: auto; }
-.standings-lines .grid { stroke: var(--fg-3); stroke-opacity: .35; }
-.standings-lines text { font-size: 11px; fill: var(--fg-2); stroke: none; }
-.standings-lines .team-line polyline { fill: none; stroke-width: 2; stroke-linejoin: round; }
-.standings-lines .team-line.you polyline { stroke-width: 4; }
-.standings-lines svg.focus .team-line:not(.hot) { opacity: .12; }
-.standings-lines .lbl { font-weight: 700; cursor: default; outline: none; }
-.standings-lines .team-line.you .lbl { font-weight: 800; }
 /* Headshots beside player names across views. */
 .hs-name { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
 .tx-player .headshot { align-self: center; margin-right: 2px; }
