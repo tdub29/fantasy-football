@@ -30,28 +30,35 @@ def current_nfl_week():
         print(f"  nfl state fetch failed ({e}), defaulting to week 1")
         return 1
 
-def sleeper_opponents(league_id, week):
-    """roster_id -> opposing roster_id for this week. Empty when the league has
-    no matchups posted yet (offseason, or a week Sleeper has not built)."""
+def sleeper_matchups(league_id, week):
+    """Return (opponents_by_roster, starters_by_roster) for this week.
+    Sleeper's /rosters endpoint can lag behind /matchups/{week} for active starters,
+    so callers should prefer starters_by_roster when present. Empty when the league
+    has no matchups posted yet (offseason, or a week Sleeper has not built)."""
     try:
         rows = fetch_json(f"https://api.sleeper.app/v1/league/{league_id}/matchups/{week}")
     except Exception as e:
         print(f"  matchups fetch failed for {league_id}: {e}")
-        return {}
+        return {}, {}
     by_matchup = {}
+    starters = {}
     for row in rows or []:
-        mid, rid = row.get("matchup_id"), row.get("roster_id")
-        if mid is None or rid is None:
+        rid = row.get("roster_id")
+        if rid is None:
             continue
-        by_matchup.setdefault(mid, []).append(rid)
-    out = {}
+        if row.get("starters"):
+            starters[rid] = list(row["starters"])
+        mid = row.get("matchup_id")
+        if mid is not None:
+            by_matchup.setdefault(mid, []).append(rid)
+    opponents = {}
     for sides in by_matchup.values():
         # A matchup is a pair. Anything else (a bye, a 3-way consolation bracket)
         # has no single opponent, so those rosters stay unmapped rather than
         # picking one arbitrarily.
         if len(sides) == 2:
-            out[sides[0]], out[sides[1]] = sides[1], sides[0]
-    return out
+            opponents[sides[0]], opponents[sides[1]] = sides[1], sides[0]
+    return opponents, starters
 
 NFL_WEEK = current_nfl_week()
 
@@ -328,7 +335,7 @@ for name, lid, buy_in in LEAGUES:
     picks    = json.loads((folder / "traded_picks.json").read_text())
 
     user_by_id = {u["user_id"]: u for u in users}
-    opponents = sleeper_opponents(lid, NFL_WEEK)
+    opponents, week_starters = sleeper_matchups(lid, NFL_WEEK)
 
     out_rosters = []
     for r in sorted(rosters, key=lambda x: x.get("roster_id", 0)):
@@ -342,7 +349,7 @@ for name, lid, buy_in in LEAGUES:
             "team_name": team_name,
             "is_me": r.get("owner_id") == USER_ID,
             "opponent_roster_id": opponents.get(r["roster_id"]),
-            "starters": r.get("starters") or [],
+            "starters": week_starters.get(r["roster_id"]) or r.get("starters") or [],
             "players":  r.get("players")  or [],
             "taxi":     r.get("taxi")     or [],
             "reserve":  r.get("reserve")  or [],
