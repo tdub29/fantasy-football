@@ -10,6 +10,7 @@ projections and injury tags, then checks every league where Trevor has a team:
   ZERO      a healthy starter Sleeper projects for 0 (inactive or buried)
   UPGRADE   a bench player who beats a starter on most sources AND by points
   WATCH     a Questionable starter, with the best bench pivot if he sits
+  IR        an active or Questionable player sitting in an IR/reserve slot
 
 Games that have kicked off are locked and skipped. Every rank source is
 positional, so a cross-position FLEX swap is judged on points only.
@@ -250,6 +251,16 @@ def check_league(lg: dict, board: Board, players: dict, now: dt.datetime) -> lis
         elif s["inj"] == "Questionable":
             pivot = f"; pivot {swap[0]['name']} ({swap[1]['b_pts']} pts) if he sits" if swap else "; no healthy bench pivot"
             flags.append(f"WATCH    {tag(s)} is Questionable{pivot}")
+    for pid in me.get("reserve") or []:
+        pid = str(pid)
+        if not pid or pid == "0":
+            continue
+        r = info(pid)
+        if r["inj"] in OUT_TAGS:
+            continue
+        pts = board.points(r["id"], r["pos"], r["team"], scoring).get("sleeper")
+        pts_note = f", {pts:.1f} pts" if pts is not None else ""
+        flags.append(f"IR       {tag(r)} is {r['inj'] or 'Active'}{pts_note} in an IR slot")
     return flags
 
 
@@ -287,6 +298,13 @@ def self_check() -> None:
     assert len(flags) == 1 and flags[0].startswith("UPGRADE") and "P2" in flags[0], flags
     players["1"]["injury_status"] = "Out"
     assert check_league(lg, board, players, dt.datetime.now(dt.timezone.utc))[0].startswith("OUT")
+    players["1"]["injury_status"] = "Questionable"
+    lg_ir = {"roster_positions": ["WR", "BN", "IR"],
+             "rosters": [{"is_me": True, "starters": ["2"], "players": ["1", "2"], "reserve": ["1"]}]}
+    ir_flags = check_league(lg_ir, board, players, dt.datetime.now(dt.timezone.utc))
+    assert len(ir_flags) == 1 and ir_flags[0].startswith("IR"), ir_flags
+    players["1"]["injury_status"] = "IR"
+    assert not check_league(lg_ir, board, players, dt.datetime.now(dt.timezone.utc))
     print("lineup_check self-check ok")
 
 
