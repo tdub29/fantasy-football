@@ -3619,7 +3619,7 @@
         }
         const trend=standings.querySelector('.standings-chart-head');
         if(trend){trend.textContent=metrics[metric].label;trend.title=`${metrics[metric].label} by season, now through five years out.`;}
-        note.textContent=`${metrics[metric].label}, ${trajLabels[0]}-${trajLabels[trajYears-1]}. ${percentage?'Scale 0-100%.':'Bars start at zero.'} ${metric==='value'?'Market-value aging scenario, not winning probability.':'Same season simulator as standings and Trade Lab; future years are age/pick scenarios, not known future rosters.'}`;
+        note.textContent='';
         sortState.key=metrics[metric].sort;sortState.dir='desc';sortSelect.value=sortState.key;applyStandingsSort();
       };
       select.onchange=()=>{selected=select.value;try{localStorage.setItem(key,selected);}catch{}draw();};
@@ -6111,9 +6111,6 @@
           ),
         ));
       });
-    const lineupNote = h('div', { class:'tip', style:{ marginTop:'6px' } },
-      `Startable thresholds use league-wide positional slots (1QB target = ${(targetStartersByPos(lg).QB).toFixed(1)} per team, RB ${(targetStartersByPos(lg).RB).toFixed(1)}, WR ${(targetStartersByPos(lg).WR).toFixed(1)}, TE ${(targetStartersByPos(lg).TE).toFixed(1)}). Surplus ≥ 1 means you have spare startable assets to trade.`
-    );
 
     if (r.is_me) {
       // Two-column: Lineup Composition (left) | Top Priorities (right).
@@ -6127,7 +6124,6 @@
         h('div', null,
           h('h2', { class:'section-title' }, 'Lineup Composition'),
           lineupCard,
-          lineupNote,
         ),
         h('div', null,
           h('h2', { class:'section-title' }, 'Top Priorities'),
@@ -6137,7 +6133,6 @@
     } else {
       main.appendChild(h('h2', { class:'section-title' }, 'Lineup Composition'));
       main.appendChild(lineupCard);
-      main.appendChild(lineupNote);
     }
     } // end snapshot tab
 
@@ -7722,8 +7717,8 @@
       { name: 'Sleeper Only',         desc: 'Raw Sleeper weekly projections with no expert rank scaling.' },
     ];
     main.appendChild(h('div', { class:'card', style:{ marginBottom:'16px' } },
-      h('div', { class:'card-title' }, 'Team Strength & Lineup Value'),
-      h('p', { class:'tip' }, 'Strength = projected points per remaining week, mean of the simulated seasons (weekly ROS projections, byes, injuries). Lineup value is the best legal starting lineup today (positions respected, taxi/IR/Out benched).'),
+      h('div', { class:'card-title' }, 'Team Strength, Startable Lineups & Weekly Boards'),
+      h('p', { class:'tip' }, 'Strength = projected points per remaining week, mean of the simulated seasons (weekly ROS projections, byes, injuries). Lineup value is the best legal starting lineup today (positions respected, taxi/IR/Out benched). Startable thresholds use league-wide positional slots; surplus >= 1 means spare startable trade depth. Single-expert weekly columns reflect the expert\'s latest submission, and Dynasty trajectory bars show modeled age/pick scenarios.'),
       h('div', { class:'card-title', style:{ marginTop:'14px' } }, 'Redraft ROS Basis Options'),
       h('ul', { class:'tip', style:{ margin:'6px 0 10px 18px', padding:0, display:'flex', flexDirection:'column', gap:'6px' } },
         ...bases.map(b => h('li', null, h('strong', null, `${b.name}: `), b.desc))),
