@@ -3881,17 +3881,15 @@
     const tableWrap = h('div', { class:'card', style:{ padding:0, overflow:'hidden' } });
     main.appendChild(tableWrap);
 
-    const kickerByPid = new Map((window.KICKER_MODEL?.kickers || []).map(kicker => {
-      const initialAndLast = String(kicker.name || '').replace(/^([A-Za-z])\./, '$1 ');
-      return [sleeperIdForFuzzy(initialAndLast, 'K'), kicker];
-    }).filter(([pid]) => pid));
-    const kickerProjectionFor = (player) => kickerByPid.get(String(player._sleeperId)) || null;
+    const kickerProjectionFor = (player) => kickerForecastFor(player._sleeperId,
+      currentWeek, lg, teamOfP(player));
     // Opponent's Vegas implied points, the main defense streaming signal. The
     // kicker model already carries each team's implied total for its week, so
     // it is reused only when that week is this week; a team it has no kicker
     // for stays blank.
     const canonTeam = (t) => t === 'LA' ? 'LAR' : (t === 'LAR' ? 'LA' : t);
-    const impliedByTeam = window.KICKER_MODEL?.week === currentWeek
+    const impliedByTeam = Number(window.KICKER_MODEL?.season) === Number(weeklyData.season)
+      && Number(window.KICKER_MODEL?.week) === Number(currentWeek)
       ? new Map((window.KICKER_MODEL.kickers || []).flatMap(k => [
           [k.team, k.impliedTotal],
           [k.team === 'LA' ? 'LAR' : (k.team === 'LAR' ? 'LA' : k.team), k.impliedTotal]
@@ -4287,7 +4285,7 @@
             h('th', null, 'Owner'),
             ...(kickerOnly ? [
               sortHdr('weekly-sleeper', 'Sleeper pts', { right:true, title:'Sleeper weekly kicker projection.' }),
-              sortHdr('kicker-exp', 'K Proj', { right:true, title:`Week ${window.KICKER_MODEL?.week || currentWeek} expected kicker points from the dedicated model.` }),
+              sortHdr('kicker-exp', 'K Ref', { right:true, title:`Week ${currentWeek} market-reference points under matching league scoring; practical ties below 0.5 points.` }),
               sortHdr('kicker-floor', 'Floor', { right:true, title:'20th-percentile kicker outcome.' }),
               sortHdr('kicker-ceil', 'Ceil', { right:true, title:'90th-percentile kicker outcome.' }),
               sortHdr('kicker-pGe15', '15+', { right:true, title:'Modelled chance of scoring 15 or more points.' }),
@@ -4330,7 +4328,7 @@
                 const kicker = kickerProjectionFor(p);
                 return [
                   pointCell(weekly.sleeper?.[currentWeek - 1], `Sleeper week ${currentWeek} kicker projection`),
-                  pointCell(kicker?.exp, 'Dedicated kicker model expected points'),
+                  pointCell(kicker?.exp, kicker?.reason || 'Market reference. Unavailable when week, team or league scoring differs.'),
                   pointCell(kicker?.floor, '20th-percentile outcome'),
                   pointCell(kicker?.ceil, '90th-percentile outcome'),
                   h('td', { class:'right tnum', title:'Modelled chance of 15 or more points' },
@@ -4504,7 +4502,7 @@
         const limitNote = ecrCoverage.limited && ecrCoverage.limitPerPosition
           ? ` · FantasyPros free API top ${ecrCoverage.limitPerPosition}/position` : '';
         const sourceNote = kickerOnly
-          ? `Week ${window.KICKER_MODEL?.week || currentWeek} kickers · ${rows.length} shown · K Proj is expected points from the dedicated model. Floor and Ceil are its 20th and 90th percentile outcomes. Blank means no current model match.`
+          ? `Week ${currentWeek} kickers · ${rows.length} shown · K Ref uses implied team points. Differences below 0.5 points are practical ties. Floor/Ceil and 15+ come from a separate experimental distribution. Blank means unavailable or unsupported league scoring.`
           : defOnly
           ? `Week ${currentWeek} team defenses · ${rows.length} shown · Sleeper pts is Sleeper's projection. Opp implied is the opponent's Vegas implied points; lower is better, blank means no line for that game.`
           : (filter.view === 'ros'
@@ -7469,135 +7467,59 @@
   }
 
   // ============================================================
-  // Kicker model: two boards, because they answer different questions
+  // Kicker market reference and explicitly experimental distribution.
+  // All consumers share KickerForecast's season/week/team/scoring gate.
   // ============================================================
-  // Built by the Kicker-Analysis repo and shipped as data/kickers.js. TWO models,
-  // each doing the job it measurably wins on an 8-fold season-forward backtest:
-  //
-  //   ordering      a ridge on 16 pre-kickoff features. Gains 0.434 points a week
-  //                 over starting a random one of two kickers, against 0.362 for
-  //                 ranking on the Vegas implied total alone (+0.072, p = 0.015)
-  //                 and 0.161 for a kicker's own career average.
-  //   probability   a two-stage count model. Worse at ordering, but its P(15+) is
-  //                 calibrated to 0.0838 predicted against 0.0841 realised.
-  //
-  // The ceiling board is shown because the probability is trustworthy, NOT
-  // because it beats the main board. An earlier version of this comment claimed
-  // ranking by the mean hits big weeks less often than random; that was true of
-  // a different model and is retracted. Measured here: random 8.2%, mean ranking
-  // 8.9%, P(15+) ranking 8.9%.
-  //
-  // Keep the size of the edge in mind. The oracle who always starts the better of
-  // two kickers gains 2.44 points a week, and this captures 17.8% of that.
-
-  function kickerBoard() {
+  function kickerBoard(league = primaryLeague()) {
     const d = window.KICKER_MODEL;
-    if (!d || !(d.kickers || []).length) return null;
-
-    const wrap = h('div');
-    let mode = 'exp';   // 'exp' = safe start, 'ceil' = swing
-
-    const card = h('div', { class: 'card' },
-      h('div', { class: 'card-title' }, `Week ${d.week} kickers`,
-        h('span', { class: 'faab-scope' }, `${d.kickers.length} starters, model-ranked`)));
-
-    const bar = h('div', { class: 'tab-bar', role: 'tablist' });
-    const host = h('div');
-
-    const draw = () => {
-      host.innerHTML = '';
-      const rows = d.kickers.slice().sort((a, b) => mode === 'exp'
-        ? b.exp - a.exp
-        : b.pGe15 - a.pGe15);
-      host.appendChild(h('p', { class: 'tip faab-note' }, mode === 'exp'
-        ? 'Ridge on 16 pre-kickoff features. The default board, and the one with '
-          + 'the measured edge over ranking by the betting line alone.'
-        : 'Highest calibrated chance of 15 or more. Not a better board, a '
-          + 'different question: it says how likely the big week is rather than '
-          + 'how big the average week is.'));
-      const body = h('tbody', null, ...rows.map((k, i) => {
-        // The gap between the two ranks is the shape of the player: positive
-        // means the mean likes him more than the ceiling does, so he is a floor.
-        const gap = k.rankCeiling - k.rankPoints;
-        const shape = gap >= 4 ? 'floor' : gap <= -4 ? 'swing' : null;
-        const sId = sleeperIdForFuzzy(k.name, 'K');
-        return h('tr', { class: 'clickable', onclick: () => openPlayerDetail(k.name, sId || k.id) },
-          h('td', { class: 'sr-slot' }, String(i + 1)),
-          h('td', { class: 'sr-name' }, k.name,
-            shape ? h('span', { class: `badge ${shape === 'floor' ? 'ok' : 'warn'}` },
-              shape === 'floor' ? 'FLOOR' : 'SWING') : null,
-            k.staleWeeks > 1 ? h('span', { class: 'badge' }, 'STALE') : null),
-          h('td', null, teamChip(k.team)),
-          h('td', null, h('span', { class: 'tip' }, `${k.home ? 'vs' : '@'} `, teamChip(k.opp, true))),
-          h('td', { class: 'sr-num tnum', title: 'Vegas implied team total, the single best input' },
-            k.impliedTotal != null ? fmt.decimal(k.impliedTotal, 1) : '·'),
-          h('td', { class: 'sr-num tnum' }, fmt.decimal(k.exp, 1)),
-          h('td', { class: 'sr-num tnum', title: '20th percentile outcome' }, fmt.decimal(k.floor, 0)),
-          h('td', { class: 'sr-num tnum', title: '90th percentile outcome' }, fmt.decimal(k.ceil, 0)),
-          h('td', { class: 'sr-num tnum', title: 'Modelled chance of 15 or more points' },
-            `${Math.round(k.pGe15 * 100)}%`),
-          h('td', { class: 'sr-num tnum', title: 'Expected field goal attempts' },
-            fmt.decimal(k.expFgAtt, 1)),
-          h('td', { class: 'sr-num tnum', title: 'Expected extra point attempts. This is the half of the target the model can actually predict.' },
-            fmt.decimal(k.expPatAtt, 1)));
-      }));
-      appendTable(host, h('table', { class: 'data slot-table' },
-        h('thead', null, h('tr', null,
-          h('th', null, '#'), h('th', null, 'Kicker'), h('th', null, 'Team'),
-          h('th', null, 'Opp'),
-          h('th', { class: 'right' }, 'Impl'),
-          h('th', { class: 'right' }, 'Exp'),
-          h('th', { class: 'right' }, 'Floor'),
-          h('th', { class: 'right' }, 'Ceil'),
-          h('th', { class: 'right' }, '15+'),
-          h('th', { class: 'right' }, 'FGA'),
-          h('th', { class: 'right' }, 'XPA'))),
-        body));
-      for (const b of bar.children) b.classList.toggle('active', b.dataset.mode === mode);
-    };
-
-    for (const [key, label] of [['exp', 'Safe start'], ['ceil', 'Ceiling swing']]) {
-      bar.appendChild(h('button', { class: 'tab', type: 'button', dataset: { mode: key },
-        onclick: () => { mode = key; draw(); } }, h('span', { class: 'tab-label' }, label)));
-    }
-    card.appendChild(bar);
-    card.appendChild(host);
-    draw();
-    wrap.appendChild(card);
-
-    wrap.appendChild(h('div', { class: 'card' },
-      h('div', { class: 'card-title' }, 'How this is built',
-        h('span', { class: 'faab-scope' }, 'and what it cannot do')),
-      h('p', { class: 'tip', style: { marginTop: 0 } }, d.method, '. ', d.scoring, '.'),
-      h('p', { class: 'tip' },
-        'The honest limit: weekly field goal attempts have NEGATIVE out-of-sample '
-        + 'skill, and they carry essentially all the variance in kicker scoring. '
-        + 'Extra point attempts are genuinely predictable. So the model is really '
-        + 'forecasting how many touchdowns an offence scores, and the field goals '
-        + 'are close to a coin flip. That is why every kicker here sits inside a '
-        + 'two point range, and why a confident-looking kicker projection from '
-        + 'anywhere else is overselling.'),
-      h('p', { class: 'tip' }, d.note),
-      h('p', { class: 'tip' },
-        'Full method, every number and the two claims that were retracted when the '
-        + 'backtest contradicted them: METHOD.md in the Kicker-Analysis repo.')));
-    return wrap;
+    const weekly = window.WEEKLY_RANKINGS || {};
+    if (!window.KickerForecast?.valid(d, weekly.season, weekly.currentWeek, league?.scoring)) return null;
+    const rows = (d.kickers || []).filter(k => {
+      const pid = sleeperIdForFuzzy(String(k.name).replace(/^([A-Za-z])\./, '$1 '), 'K');
+      return pid && kickerForecastFor(pid, weekly.currentWeek, league);
+    }).sort((a,b) => b.exp - a.exp);
+    const card = h('div', {class:'card'},
+      h('div', {class:'card-title'}, `Week ${d.week} kicker reference`),
+      h('p', {class:'tip'}, 'Market reference points, not a proven lineup edge. Gaps below 0.5 points are practical ties. Candidates are inferred from prior placekicking and current roster data; confirm availability before switching.'),
+      h('p', {class:'tip'}, `Scoring: FG bands ${d.scoring.fg_made.join('/')}; PAT ${d.scoring.pat_made}; missed FG ${d.scoring.fg_missed}; missed PAT ${d.scoring.pat_missed}.`));
+    const body = h('tbody', null, ...rows.map((k,i) => h('tr', null,
+      h('td', null, String(i+1)), h('td', {title:k.reason}, k.name),
+      h('td', null, teamChip(k.team)), h('td', null, teamChip(k.opp,true)),
+      h('td', {class:'sr-num tnum',title:k.reason}, fmt.decimal(k.exp,1)),
+      h('td', {class:'sr-num tnum',title:'Mean of the separate experimental count distribution'}, fmt.decimal(k.distributionMean,1)),
+      h('td', {class:'sr-num tnum'}, fmt.decimal(k.floor,0)),
+      h('td', {class:'sr-num tnum'}, fmt.decimal(k.ceil,0)),
+      h('td', {class:'sr-num tnum'}, `${Math.round(k.pGe15*100)}%`)
+    )));
+    appendTable(card, h('table', {class:'data slot-table'},
+      h('thead', null, h('tr', null, ...['#','Kicker','Team','Opp','Ref pts','Dist mean','P20','P90','15+'].map(label => h('th',null,label)))), body));
+    card.appendChild(h('p', {class:'tip'}, 'Distribution mean, P20, P90 and 15+ are experimental count-model outputs. They do not establish a better ceiling strategy.'));
+    card.appendChild(h('p', {class:'tip'}, d.method, ' ', d.note));
+    return card;
   }
 
   function viewKickers() {
     const main = $('#main');
     main.innerHTML = '';
-    const d = window.KICKER_MODEL;
-    main.appendChild(pageHeader({
-      eyebrow: 'REFERENCE',
-      title: 'Kickers',
-      badge: d ? `W${d.week}` : null,
-      sub: 'Two boards from one model: the safe start and the ceiling swing. They '
-         + 'are different lists on purpose.',
-    }));
-    const board = kickerBoard();
-    main.appendChild(board || h('div', { class: 'empty' },
-      'No kicker model yet. Run predict_week.py in the Kicker-Analysis repo.'));
+    main.appendChild(pageHeader({eyebrow:'REFERENCE',title:'Kickers',
+      sub:'Market baseline with separate experimental outcome ranges.'}));
+    const choices = (window.LEAGUES || []).filter(lg => (lg.roster_positions || []).includes('K'));
+    const weekly = window.WEEKLY_RANKINGS || {};
+    let league = choices.find(lg => window.KickerForecast?.valid(window.KICKER_MODEL,
+      weekly.season, weekly.currentWeek, lg.scoring)) || choices[0] || primaryLeague();
+    const host = h('div');
+    const selector = h('select', { 'aria-label':'Kicker league scoring', onchange:() => {
+      league = choices.find(lg => String(lg.id) === selector.value); draw();
+    }}, ...choices.map(lg => h('option', {value:String(lg.id)}, lg.short_name || lg.name)));
+    if (league) selector.value = String(league.id);
+    main.appendChild(h('label', null, 'League scoring ', selector));
+    main.appendChild(host);
+    function draw() {
+      host.innerHTML = '';
+      host.appendChild(kickerBoard(league) || h('div', {class:'empty'},
+        'Current kicker reference unavailable for this season, week or league scoring. No differently scored forecast is substituted.'));
+    }
+    draw();
   }
 
   // ============================================================
@@ -11327,23 +11249,19 @@
   // covers the current week's slate, and returns null for anyone not on it, so
   // a bye-week or just-signed kicker still falls through to `unpriced` instead
   // of being priced off a stale board.
-  let _kickerProj = null;
-  function kickerProjFor(pid) {
-    if (!window.KICKER_MODEL) return null;
-    if (!_kickerProj) {
-      const m = new Map();
-      for (const k of (window.KICKER_MODEL.kickers || [])) {
-        if (k.id) m.set(String(k.id), Number(k.exp));
-        const sId = sleeperIdForFuzzy(k.name, 'K');
-        if (sId) m.set(String(sId), Number(k.exp));
-      }
-      _kickerProj = m;
-    }
-    const v = _kickerProj.get(String(pid));
-    return Number.isFinite(v) ? v : null;
+  function kickerForecastFor(pid, week, lg, playerTeam) {
+    const player = window.PLAYERS?.[String(pid)];
+    return window.KickerForecast?.lookup(window.KICKER_MODEL, {
+      season: lg?.season || window.WEEKLY_RANKINGS?.season,
+      week, settings:lg?.scoring, pid, playerTeam:playerTeam || player?.team,
+      resolveId:name => sleeperIdForFuzzy(String(name).replace(/^([A-Za-z])\./, '$1 '), 'K')
+    }) || null;
+  }
+  function kickerProjFor(pid, week = window.WEEKLY_RANKINGS?.currentWeek, lg = primaryLeague(), playerTeam) {
+    return kickerForecastFor(pid, week, lg, playerTeam)?.exp ?? null;
   }
 
-  function weeklyProjFor(pid, week) {
+  function weeklyProjFor(pid, week, league) {
     if (!weeklyProjFor._map) {
       const rows = (window.WEEKLY_RANKINGS || {}).players || [];
       weeklyProjFor._map = new Map(rows.map(r => [String(r.id), r]));
@@ -11358,7 +11276,7 @@
     // used to price at exactly 0.0 and fall into the board's `unpriced` bucket.
     // In a league that starts a kicker that is a real slot scored as nothing.
     // The kicker model covers them, so use it rather than dropping the row.
-    const k = kickerProjFor(pid);
+    const k = kickerProjFor(pid, week, league);
     if (k != null) return { pts: k, source: 'kicker-model' };
     return { pts: 0, source: null };
   }
@@ -11406,7 +11324,7 @@
       const add = (pid, side) => {
         if (!pid || pid === '0') return;
         const key = String(pid);
-        const proj = weeklyProjFor(key, lgWeek);
+        const proj = weeklyProjFor(key, lgWeek, lg);
         let row = byPid.get(key);
         if (!row) { row = { pid: key, entries: [], index: 0, gross: 0, proj: proj.pts }; byPid.set(key, row); }
         row.proj = Math.max(row.proj, proj.pts);

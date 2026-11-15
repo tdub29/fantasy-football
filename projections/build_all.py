@@ -134,8 +134,12 @@ STEPS = [
     # how a board silently stays on last week beside freshly rebuilt columns,
     # which on a phone look identical. It needs the market lines, so it runs
     # after the odds steps.
+    ("kicker preparation (kicker-analysis)",
+     ROOT.parent / "kicker-analysis" / "src" / "kicker_analysis" / "prepare.py", False, ("--refresh",)),
     ("kicker board (kicker-analysis)",
-     ROOT.parent / "kicker-analysis" / "src" / "kicker_analysis" / "predict_week.py", False),
+     ROOT.parent / "kicker-analysis" / "src" / "kicker_analysis" / "predict_week.py", False,
+     ("--site-out", str(SITE_DATA / "kickers.js"),
+      "--scoring-settings", str(ROOT / "Leagues" / "Phi Kap Fantasy" / "league.json"))),
     ("team environment",           PROJ / "build_environment.py",         True),
     ("strength of schedule",       PROJ / "build_sos.py",                 True),
     ("SOS grid (DvP)",             PROJ / "build_sos_grid.py",            True),
