@@ -6218,6 +6218,40 @@ button:disabled { cursor: wait; opacity: 0.7; }
 .weekly-wx.wx-clear .pixel-icon { color: var(--amber); }
 .weekly-wx.wx-rain .pixel-icon, .weekly-wx.wx-cold .pixel-icon { color: var(--blue); }
 .weekly-wx.wx-wind .pixel-icon { color: var(--red); }
+.weekly-wx .wx-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 28px; min-height: 28px; padding: 2px;
+  background: transparent; border: 1px solid transparent; border-radius: 6px;
+  cursor: pointer;
+}
+.weekly-wx .wx-btn:hover { background: var(--bg-2); border-color: var(--border); }
+.wx-popover-backdrop {
+  position: fixed; inset: 0; z-index: 250;
+  background: rgba(0, 0, 0, .48);
+  display: grid; place-items: center;
+  padding: 16px;
+}
+.wx-popover {
+  width: min(420px, 100%);
+  padding: 14px 16px;
+  display: flex; flex-direction: column; gap: 8px;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, .45);
+}
+.wx-popover.wx-matters { border-color: var(--red); }
+.wx-popover-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.wx-verdict { font-size: 1rem; font-weight: 800; color: var(--fg-0); }
+.wx-verdict.is-matters { color: var(--red); }
+.wx-close {
+  border: 0; background: transparent; color: var(--fg-2);
+  font-size: 1.2rem; line-height: 1; padding: 2px 6px; cursor: pointer;
+}
+.wx-popover-meta { font-size: 0.84rem; font-weight: 700; color: var(--fg-1); }
+.wx-popover-body { font-size: 0.84rem; color: var(--fg-1); }
+.wx-popover-note { margin: 0; font-size: 0.78rem; }
+.wx-popover-vegas {
+  padding-top: 6px; border-top: 1px solid var(--border);
+  font-size: 0.84rem; font-weight: 800; color: var(--fg-0);
+}
 
 /* --- Stats Lab chart builder, compare and field maps --------------------- */
 /* One disclosure like Tools. The SVGs are drawn at the panel's own pixel
@@ -6571,7 +6605,16 @@ table.data.prm-table .name-cell > * { display: block; max-width: 100%; overflow:
 /* Standings: a table, one row per team, at every width. The cards stay in the
    DOM (sort and chart read them) but never show. Rank text comes from the sort. */
 .standings-list .strength-row { display: none; }
-.standings-table-wrap { overflow-x: auto; margin: 0 -4px; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; touch-action: pan-x pan-y; scrollbar-width: thin; }
+.standings-meta-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin: 6px 0 8px; }
+.standings-method-link {
+  margin-left: auto;
+  display: inline-flex; align-items: center;
+  padding: 4px 10px; border-radius: 999px;
+  background: var(--bg-1); color: var(--fg-0); border: 1px solid var(--border);
+  font-size: 0.72rem; font-weight: 700; text-decoration: none;
+}
+.standings-method-link:hover { background: var(--bg-2); }
+.standings-table-wrap { overflow-x: auto; margin: 0 -4px; padding-right: 12px; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; touch-action: pan-x pan-y; scrollbar-width: thin; }
 .standings-swipe { display: none; }
 .standings-table { border-collapse: collapse; width: 100%; font-size: .85rem; }
 .standings-table th { font-size: .62rem; text-transform: uppercase; letter-spacing: .04em; color: var(--fg-2); text-align: right; padding: 6px 8px; white-space: nowrap; }
@@ -6596,11 +6639,12 @@ table.data.prm-table .name-cell > * { display: block; max-width: 100%; overflow:
 .standings-table .str-spark .sp-bar-val { display: none; }
 .standings-table .str-spark .sp-bar { width: 12px; }
 @media (max-width: 600px) {
-  .standings-swipe { display: block; position: sticky; left: 0; margin: 0 0 4px; padding: 0 6px; font-size: .7rem; color: var(--fg-2); }
+  .standings-swipe { display: block; margin: 0; font-size: .7rem; color: var(--fg-1); background: var(--bg-1); padding: 3px 8px; border-radius: 999px; border: 1px solid var(--border); }
+  .standings-list { padding-bottom: max(28px, env(safe-area-inset-bottom)); }
   .standings-table { font-size: .8rem; }
-  .standings-table th { padding: 6px; }
-  .standings-table td { padding: 0 6px; }
-  .standings-table .team { max-width: 34vw; }
+  .standings-table th { padding: 6px 7px; }
+  .standings-table td { padding: 0 7px; }
+  .standings-table .team { max-width: 44vw; }
   .standings-table .str-spark { width: 92px; }
   .standings-table .str-spark .sp-bar { width: 10px; }
 }

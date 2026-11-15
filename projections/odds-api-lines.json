@@ -11,28 +11,28 @@
  "KC@ATL": {
   "home": "ATL",
   "away": "KC",
-  "total": 47.0,
+  "total": 47.5,
   "home_line": 3.0,
-  "implied_home": 22.0,
-  "implied_away": 25.0,
+  "implied_home": 22.25,
+  "implied_away": 25.25,
   "commence": "2026-11-15T18:00:00Z"
  },
  "BUF@NYJ": {
   "home": "NYJ",
   "away": "BUF",
   "total": 51.0,
-  "home_line": 8.0,
-  "implied_home": 21.5,
-  "implied_away": 29.5,
+  "home_line": 7.5,
+  "implied_home": 21.75,
+  "implied_away": 29.25,
   "commence": "2026-11-15T18:00:00Z"
  },
  "CAR@NO": {
   "home": "NO",
   "away": "CAR",
   "total": 49.0,
-  "home_line": -2.5,
-  "implied_home": 25.75,
-  "implied_away": 23.25,
+  "home_line": -1.5,
+  "implied_home": 25.25,
+  "implied_away": 23.75,
   "commence": "2026-11-15T18:00:00Z"
  },
  "HOU@CLE": {
@@ -57,9 +57,9 @@
   "home": "IND",
   "away": "MIA",
   "total": 37.5,
-  "home_line": -4.0,
-  "implied_home": 20.75,
-  "implied_away": 16.75,
+  "home_line": -4.5,
+  "implied_home": 21.0,
+  "implied_away": 16.5,
   "commence": "2026-11-15T18:00:00Z"
  },
  "JAX@TEN": {
@@ -74,10 +74,10 @@
  "LAR@ARI": {
   "home": "ARI",
   "away": "LAR",
-  "total": 39.5,
+  "total": 39.0,
   "home_line": 9.5,
-  "implied_home": 15.0,
-  "implied_away": 24.5,
+  "implied_home": 14.75,
+  "implied_away": 24.25,
   "commence": "2026-11-15T21:05:00Z"
  },
  "SEA@LV": {
@@ -174,9 +174,9 @@
   "home": "DET",
   "away": "TB",
   "total": 47.5,
-  "home_line": -3.5,
-  "implied_home": 25.5,
-  "implied_away": 22.0,
+  "home_line": -3.0,
+  "implied_home": 25.25,
+  "implied_away": 22.25,
   "commence": "2026-11-22T18:00:00Z"
  },
  "PIT@PHI": {

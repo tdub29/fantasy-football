@@ -1480,6 +1480,7 @@
     { hash:'#prospects',    label:'Prospects',        icon:'◈',  section:'Tools' },
     { hash:'#rankings',     label:'My Rankings',       icon:'#',  section:'Reference' },
     { hash:'#sources',      label:'Sources & Experts', icon:'▶',  section:'Reference' },
+    { hash:'#methodology',  label:'Methodology',       icon:'§',  section:'Reference' },
     { hash:'#strategy',     label:'Framework',         icon:'◇',  section:'Reference' },
     { hash:'#about',        label:'About',             icon:'?',  section:'Reference' },
   ];
@@ -1500,8 +1501,9 @@
     '#rankings':  ['000000000','000111000','000111000','111111000','111111000','111111111','111111111','111111111','111111111'],
     '#experts':   ['111111111','100000001','101111101','100000001','101110001','100000001','111111111','011000000','010000000'],
     '#strategy':  ['101000000','010000000','101000000','000100000','000010000','000001000','000000111','000000101','000000111'],
-    '#sources':   ['011111110','100000001','011111110','100000001','011111110','100000001','011111110','100000001','011111110'],
-    '#about':     ['001111100','011000110','000000110','000001100','000011000','000011000','000000000','000011000','000011000'],
+    '#sources':     ['011111110','100000001','011111110','100000001','011111110','100000001','011111110','100000001','011111110'],
+    '#methodology': ['111111111','100000001','101111101','100000001','101111101','100000001','101110001','100000001','111111111'],
+    '#about':       ['001111100','011000110','000000110','000001100','000011000','000011000','000000000','000011000','000011000'],
     // Tab glyphs, keyed by the glyph itself so tabBar callers keep passing text.
     '◆': ['000010000','000111000','001111100','011111110','111111111','011111110','001111100','000111000','000010000'],
     '◇': ['000010000','000101000','001000100','010000010','100000001','010000010','001000100','000101000','000010000'],
@@ -3203,7 +3205,7 @@
     const titleWrap = h('div', { class:'league-title-wrap' });
     const titleEl = h('h1', {
       class: 'page-title page-title-clickable',
-      title: 'Switch team',
+      title: 'Switch league',
       role: 'button',
       tabindex: '0',
       'aria-haspopup': 'true',
@@ -3229,25 +3231,25 @@
         return;
       }
       titleEl.setAttribute('aria-expanded', 'true');
-      const rosters = (lg.rosters || []).slice().sort((a, b) => {
-        if (a.is_me) return -1;
-        if (b.is_me) return 1;
-        const aName = a.team_name || a.owner_name || `Team ${a.roster_id}`;
-        const bName = b.team_name || b.owner_name || `Team ${b.roster_id}`;
-        return aName.localeCompare(bName);
-      });
+      const otherLeagues = (window.LEAGUES || []).filter(other => other.id !== lg.id && !isLeagueHidden(other));
       const list = h('div', { class: 'league-team-dropdown', role: 'menu' },
-        h('div', { class: 'league-team-dropdown-header' }, `${lg.name} · Teams (${rosters.length})`),
-        ...rosters.map(r => h('a', {
-          href: `#roster/${lg.id}/${r.roster_id}`,
-          class: `league-team-item${r.is_me ? ' is-me' : ''}`,
-          role: 'menuitem',
-          onclick: () => closeMenu(),
-        },
-          h('span', { class: 'team-item-name' }, r.team_name || r.owner_name || `Team ${r.roster_id}`),
-          r.owner_name && r.team_name ? h('span', { class: 'team-item-owner' }, r.owner_name) : null,
-          r.is_me ? h('span', { class: 'badge you' }, 'YOU') : null,
-        ))
+        h('div', { class: 'league-team-dropdown-header' }, `My Leagues (${otherLeagues.length})`),
+        otherLeagues.length
+          ? otherLeagues.map(other => {
+              const myRoster = (other.rosters || []).find(r => r.is_me);
+              const tag = other.type === 0 ? 'REDRAFT' : (other.is_superflex ? 'SF' : (other.is_idp ? 'IDP' : '1QB'));
+              return h('a', {
+                href: `#league/${other.id}`,
+                class: 'league-team-item',
+                role: 'menuitem',
+                onclick: () => closeMenu(),
+              },
+                h('span', { class: 'team-item-name' }, other.name),
+                myRoster?.team_name ? h('span', { class: 'team-item-owner' }, myRoster.team_name) : null,
+                h('span', { class: 'badge', style: { fontSize: '0.62rem' } }, tag),
+              );
+            })
+          : h('div', { class: 'tip', style: { padding: '8px 10px' } }, 'No other visible leagues.')
       );
       menuEl = list;
       titleWrap.appendChild(list);
@@ -3329,7 +3331,6 @@
     // Standings / Strength rankings
     const lgDynasty = isDynastyLeague(lg);
     main.appendChild(h('h2', { class:'page-title standings-heading' }, 'Team Strength Rankings'));
-    if (!lgDynasty) main.appendChild(buildRosBasisBar(() => viewLeague(leagueId, tabArg)));
 
     // Value outlook per team. Sparkline bars read this trajectory:
     // projected starting-lineup value for CURRENT_SEASON..+5
@@ -3447,23 +3448,10 @@
     sortBar.appendChild(dirButton);
     applyStandingsSort();
     standings.appendChild(sortBar);
-    standings.appendChild(h('p', { class:'tip standings-note' },
-      lgDynasty
-        ? 'Default rank is championship probability. Choose Charts to compare odds, projected points or dynasty market value. Future seasons are modeled scenarios.'
-        : byPts ? 'Strength = projected points per remaining week, mean of the simulated seasons (weekly ROS projections, byes, injuries). Lineup value, the best legal lineup today, is a sort option.'
-        : 'Best legal starting lineup today (positions respected, taxi/IR/Out benched). Redraft, so there is no multi-year projection.'));
-    standings.appendChild(h('details', { class:'standings-forecast-help' },
-      h('summary', null, forecast.ok ? `Season forecast: W${forecast.firstRemaining}-${forecast.regularWeeks} · assumptions` : `Season forecast unavailable: ${forecast.reason}`),
-      forecast.ok
-        ? h('ul', { class:'tip', style: { margin: '6px 0 4px 18px', padding: 0, lineHeight: '1.45', display: 'flex', flexDirection: 'column', gap: '4px' } },
-            h('li', null, h('strong', null, 'Simulations: '), `${forecast.sims.toLocaleString()} seasons (seed 20260807), preserving completed W1-${forecast.completed} results.`),
-            h('li', null, h('strong', null, 'Seeding & Byes: '), `${forecast.teams} playoff places, ${forecast.byes} first-round byes. Expected final W-L-T is the fractional mean (ties count half a win). Tiebreakers: record, then points for, higher points against, seeded coin flip. ${forecast.median ? 'Includes weekly league median game. ' : ''}`),
-            h('li', null, h('strong', null, 'Projections: '), `Same ${forecast.src === 'blend' ? 'league-scored season blend' : 'weekly ROS'} model as Projections with known weekly absences/byes, simulated injuries, player-season uncertainty, and team/stack correlations.`),
-            h('li', null, h('strong', null, 'Uncertainty: '), 'Monte Carlo error alone is up to about 2 percentage points at 95% confidence. Forecasts are estimates, not historically calibrated probabilities. Future roster changes and commissioner overrides are not modeled.'),
-            h('li', null, h('strong', null, 'Source: '), `Weekly source W${window.WEEKLY_RANKINGS?.liveWeek || window.WEEKLY_RANKINGS?.currentWeek || '?'}; see data panel for roster freshness.`)
-          )
-        : h('p', { class:'tip' }, 'No numeric forecast is shown when rules, records, matchups or weekly lineup coverage are unsupported.')));
-    standings.appendChild(h('div', { class:'standings-table-wrap' }, h('p', { class:'standings-swipe' }, 'Swipe sideways for more columns ›'), h('table', { class:'standings-table' },
+    standings.appendChild(h('div', { class:'standings-meta-row' },
+      h('p', { class:'standings-swipe' }, 'Swipe sideways for more columns ›'),
+      h('a', { href:'#methodology', class:'standings-method-link' }, 'Methodology & ROS basis →')));
+    standings.appendChild(h('div', { class:'standings-table-wrap' }, h('table', { class:'standings-table' },
       h('thead', null, h('tr', null, h('th', null, '#'), h('th', { class:'team' }, 'Team'), lgDynasty ? h('th', { class:'standings-chart-head', title:'Selected chart metric, now through five years out' }, 'Trend') : null, ...tableCols.map(([label]) => h('th', null, label)))),
       tableBody)));
     computed.forEach((row, i) => {
@@ -4259,14 +4247,26 @@
         const wx = game && window.WEATHER && window.WEATHER.week === currentWeek ? gameWeatherFor(team) : null;
         if (!wx) return h('td', { class:'center muted weekly-wx' }, '·');
         const indoor = wx.reason === 'indoors' || wx.roof === 'dome' || wx.roof === 'closed';
-        const kind = indoor ? 'dome' : wx.flag === 'wind' ? 'wind' : wx.flag === 'rain/snow' ? 'rain' : wx.flag === 'cold' ? 'cold'
+        const isRetractClosed = wx.roof === 'retractable' && (wx.precip_prob >= 50 || (wx.note && wx.note.includes('closed')));
+        const activeFlag = (indoor || isRetractClosed) ? null : wx.flag;
+        const kind = (indoor || isRetractClosed) ? 'dome' : activeFlag === 'wind' ? 'wind' : activeFlag === 'rain/snow' ? 'rain' : activeFlag === 'cold' ? 'cold'
           : wx.roof === 'retractable' ? 'retract' : 'clear';
-        const label = indoor ? 'Indoors' : WX_LABEL[wx.flag] || (wx.roof === 'retractable' ? 'Retractable roof' : 'Clear');
+        const label = (indoor || isRetractClosed) ? 'Indoors' : WX_LABEL[activeFlag] || (wx.roof === 'retractable' ? 'Retractable roof' : 'Clear');
         const nums = indoor || wx.temp_f == null ? ''
           : ` ${Math.round(wx.temp_f)}°F, wind ${Math.round(wx.wind_mph)} mph (gusts ${Math.round(wx.gust_mph)}), ${Math.round(wx.precip_prob || 0)}% precip.`;
         const roof = wx.roof === 'retractable' ? ' Retractable roof, may be closed.' : '';
-        return h('td', { class:`center weekly-wx wx-${kind}`, title:`${label}.${nums}${wx.stadium ? ` ${wx.stadium}.` : ''}${roof}` },
-          pixelIcon(`wx:${kind}`, label));
+        const tip = `${label}.${nums}${wx.stadium ? ` ${wx.stadium}.` : ''}${roof}`;
+        const btn = h('button', {
+          type: 'button',
+          class: 'wx-btn',
+          'aria-label': `Weather details for ${team}: ${label}`,
+          title: tip,
+          onclick: (e) => {
+            e.stopPropagation();
+            openWeatherDetailCard(wx, team, btn);
+          },
+        }, pixelIcon(`wx:${kind}`, label));
+        return h('td', { class:`center weekly-wx wx-${kind}`, title: tip }, btn);
       };
 
       // filter.pos only holds K or DEF when posOptions offers it on this view.
@@ -5706,9 +5706,6 @@
       }
       if (lg.import_unmatched?.length) main.appendChild(h('p', { class:'source-note' }, `Unmatched roster entries: ${lg.import_unmatched.join(', ')}.`));
       return;
-    }
-    if (!rosterDynasty) {
-      main.appendChild(buildRosBasisBar(() => viewRoster(leagueId, rosterId, tabArg)));
     }
     const s = computeRosterStrength(r, lg);
     const myRank = rankInLeague(lg, r.roster_id);
@@ -7707,6 +7704,41 @@
         + 'so they add nothing to these numbers.'));
     }
     return wrap;
+  }
+
+  function viewMethodology() {
+    const main = $('#main'); main.innerHTML = '';
+    main.appendChild(h('div', { class:'page-header' },
+      h('div', null,
+        h('div', { class:'page-eyebrow' }, 'REFERENCE'),
+        h('h1', { class:'page-title' }, 'Methodology & Assumptions'),
+        h('p', { class:'page-sub' }, 'How team strength, redraft ROS rankings, and season playoff simulations work.')
+      )
+    ));
+    const bases = [
+      { name: 'Blended (FP + Gibbs)', desc: 'Average of FantasyPros ROS + Jacob Gibbs PPR ROS boards, scaled to Sleeper PPG curve.' },
+      { name: 'Gibbs ROS',            desc: 'Jacob Gibbs PPR ROS board only, scaled to Sleeper PPG curve.' },
+      { name: 'FantasyPros ROS',      desc: 'FantasyPros ROS consensus only, scaled to Sleeper PPG curve.' },
+      { name: 'Sleeper Only',         desc: 'Raw Sleeper weekly projections with no expert rank scaling.' },
+    ];
+    main.appendChild(h('div', { class:'card', style:{ marginBottom:'16px' } },
+      h('div', { class:'card-title' }, 'Team Strength & Lineup Value'),
+      h('p', { class:'tip' }, 'Strength = projected points per remaining week, mean of the simulated seasons (weekly ROS projections, byes, injuries). Lineup value is the best legal starting lineup today (positions respected, taxi/IR/Out benched).'),
+      h('div', { class:'card-title', style:{ marginTop:'14px' } }, 'Redraft ROS Basis Options'),
+      h('ul', { class:'tip', style:{ margin:'6px 0 10px 18px', padding:0, display:'flex', flexDirection:'column', gap:'6px' } },
+        ...bases.map(b => h('li', null, h('strong', null, `${b.name}: `), b.desc))),
+      h('a', { href:'#sources', class:'btn btn-ghost' }, 'Change active ROS basis in Sources & Experts →')
+    ));
+    main.appendChild(h('div', { class:'card' },
+      h('div', { class:'card-title' }, 'Season Forecast Assumptions'),
+      h('ul', { class:'tip', style:{ margin:'6px 0 0 18px', padding:0, display:'flex', flexDirection:'column', gap:'6px' } },
+        h('li', null, h('strong', null, 'Simulations: '), 'Monte Carlo season runs (seed 20260807), preserving completed week results.'),
+        h('li', null, h('strong', null, 'Seeding & Byes: '), 'Uses league playoff places and first-round byes. Expected final W-L-T is the fractional mean (ties count half a win). Tiebreakers: record, then points for, higher points against, seeded coin flip.'),
+        h('li', null, h('strong', null, 'Projections: '), 'Uses the same weekly ROS / season-blend model as Projections with known weekly absences/byes, simulated injuries, player-season uncertainty, and team/stack correlations.'),
+        h('li', null, h('strong', null, 'Uncertainty: '), 'Monte Carlo error alone is up to about 2 percentage points at 95% confidence. Forecasts are estimates, not historically calibrated probabilities. Future roster changes and commissioner overrides are not modeled.'),
+        h('li', null, h('strong', null, 'Source: '), `Weekly source W${window.WEEKLY_RANKINGS?.liveWeek || window.WEEKLY_RANKINGS?.currentWeek || '?'}; see Sources & Experts for data freshness.`)
+      )
+    ));
   }
 
   function viewSources() {
@@ -14099,6 +14131,68 @@
   }
 
   // weather.js keys teams by nflverse code, which writes the Rams as LA.
+  function openWeatherDetailCard(wx, team, anchorEl) {
+    document.querySelectorAll('.wx-popover-backdrop').forEach(el => el.remove());
+    const W = window.WEATHER || {};
+    const code = team === 'LAR' ? 'LA' : team;
+    const opp = wx.home === code ? `vs ${wx.away}` : `@ ${wx.home}`;
+    const when = wx.kickoff ? new Date(wx.kickoff).toLocaleString([], { weekday:'short', hour:'numeric', minute:'2-digit' }) : '';
+    const isRetractClosed = wx.roof === 'retractable' && (wx.precip_prob >= 50 || (wx.note && wx.note.includes('closed')));
+    const indoor = wx.reason === 'indoors' || wx.roof === 'dome' || wx.roof === 'closed';
+    const flag = (indoor || isRetractClosed) ? null : wx.flag;
+
+    let verdict, matters = false;
+    if (indoor || isRetractClosed) {
+      verdict = isRetractClosed ? 'Non-factor: roof closed' : (wx.roof === 'dome' ? 'Non-factor: dome' : 'Non-factor: indoors');
+    } else if (flag) {
+      matters = true;
+      const reason = flag === 'wind'
+        ? `${Math.round(wx.gust_mph || wx.wind_mph)} mph gusts`
+        : flag === 'rain/snow'
+          ? `${Math.round(wx.precip_prob || 0)}% precip`
+          : `${Math.round(wx.temp_f)}°F cold`;
+      verdict = `Matters: ${flag} (${reason})`;
+    } else if (wx.temp_f != null) {
+      verdict = `Non-factor: ${Math.round(wx.temp_f)}°F, ${Math.round(wx.wind_mph || 0)} mph wind`;
+    } else {
+      verdict = 'Non-factor: clear conditions';
+    }
+
+    const body = wx.temp_f == null
+      ? (wx.reason === 'indoors' ? 'Indoors' : (wx.reason || 'No forecast'))
+      : isRetractClosed
+        ? `Indoors (roof closed for rain; ${Math.round(wx.temp_f)}°F outside)`
+        : `${Math.round(wx.temp_f)}°F, wind ${Math.round(wx.wind_mph)} mph (gusts ${Math.round(wx.gust_mph)}), ${Math.round(wx.precip_prob || 0)}% precip`;
+    const roofText = wx.roof === 'retractable' && !isRetractClosed ? 'Retractable roof (may close)' : (wx.roof || '');
+    const ouText = wx.total_line != null ? `O/U ${wx.total_line}` : null;
+    const spreadText = wx.spread_line == null ? null : wx.spread_line === 0 ? 'Pick em'
+      : `${wx.spread_line > 0 ? wx.home : wx.away} by ${Math.abs(wx.spread_line)}`;
+    const vegasText = [ouText, spreadText].filter(Boolean).join(' · ');
+
+    const close = () => {
+      backdrop.remove();
+      document.removeEventListener('keydown', onKey);
+    };
+    const onKey = (e) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        close();
+        anchorEl?.focus();
+      }
+    };
+    const card = h('div', { class: `card wx-popover${matters ? ' wx-matters' : ''}`, role: 'dialog', 'aria-label': `Week ${W.week || ''} weather for ${code}`, onclick: e => e.stopPropagation() },
+      h('div', { class: 'wx-popover-head' },
+        h('span', { class: `wx-verdict${matters ? ' is-matters' : ''}` }, verdict),
+        h('button', { type: 'button', class: 'wx-close', 'aria-label': 'Close weather card', onclick: close }, '×')),
+      h('div', { class: 'wx-popover-meta' }, `${code} ${opp}${when ? ` · ${when}` : ''}${wx.stadium ? ` · ${wx.stadium}` : ''}`),
+      h('div', { class: 'wx-popover-body' }, `${body}${roofText ? ` · ${roofText}` : ''}.`),
+      wx.note ? h('div', { class: 'tip wx-popover-note' }, wx.note) : null,
+      vegasText ? h('div', { class: 'wx-popover-vegas tnum' }, vegasText) : null);
+    const backdrop = h('div', { class: 'wx-popover-backdrop', onclick: close }, card);
+    document.body.appendChild(backdrop);
+    document.addEventListener('keydown', onKey);
+  }
+
   function gameWeatherFor(team) {
     const W = window.WEATHER;
     const code = team === 'LAR' ? 'LA' : team;
@@ -19812,9 +19906,10 @@
         case 'prospects':  return viewProspects(rest[0], rest[1]);
         case 'strategy':   return viewStrategy();
         case 'action':     return viewActionCenter();
-        case 'experts':    return viewExperts(rest[0], rest[1]);
-        case 'sources':    return viewSources();
-        case 'about':      return viewAbout();
+        case 'experts':     return viewExperts(rest[0], rest[1]);
+        case 'sources':     return viewSources();
+        case 'methodology': return viewMethodology();
+        case 'about':       return viewAbout();
         default:           return viewDashboard();
       }
     } catch (err) {
