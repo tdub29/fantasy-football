@@ -14065,18 +14065,93 @@
   }
 
   // weather.js keys teams by nflverse code, which writes the Rams as LA.
-  function openWeatherDetailCard(wx, team, anchorEl) {
-    document.querySelectorAll('.wx-popover-backdrop').forEach(el => el.remove());
-    const W = window.WEATHER || {};
+  let _wxSvgUid = 0;
+  const STADIUM_PROFILES = {
+    ARI: { name: 'State Farm Stadium',       city: 'Glendale, AZ',        arch: 'ari_barrel',    c1: '#97233f', c2: '#ffb612' },
+    ATL: { name: 'Mercedes-Benz Stadium',    city: 'Atlanta, GA',         arch: 'atl_oculus',    c1: '#a71930', c2: '#c6ced9' },
+    BAL: { name: 'M&T Bank Stadium',         city: 'Baltimore, MD',       arch: 'bal_wings',     c1: '#241773', c2: '#9e7c0c' },
+    BUF: { name: 'Highmark Stadium',         city: 'Orchard Park, NY',    arch: 'buf_bowl',      c1: '#00338d', c2: '#c60c30' },
+    CAR: { name: 'Bank of America Stadium',  city: 'Charlotte, NC',       arch: 'car_spires',    c1: '#0085ca', c2: '#bfc0bf' },
+    CHI: { name: 'Soldier Field',            city: 'Chicago, IL',         arch: 'chi_colonnade', c1: '#0b162a', c2: '#c83803' },
+    CIN: { name: 'Paycor Stadium',           city: 'Cincinnati, OH',      arch: 'cin_canopy',    c1: '#fb4f14', c2: '#12131f' },
+    CLE: { name: 'Huntington Bank Field',    city: 'Cleveland, OH',       arch: 'cle_lake',      c1: '#311d00', c2: '#ff3c00' },
+    DAL: { name: 'AT&T Stadium',             city: 'Arlington, TX',       arch: 'dal_arches',    c1: '#003594', c2: '#c6ced9' },
+    DEN: { name: 'Empower Field',            city: 'Denver, CO',          arch: 'den_rockies',   c1: '#fb4f14', c2: '#002244' },
+    DET: { name: 'Ford Field',               city: 'Detroit, MI',         arch: 'det_warehouse', c1: '#0076b6', c2: '#b0b7bc' },
+    GB:  { name: 'Lambeau Field',            city: 'Green Bay, WI',       arch: 'gb_lambeau',    c1: '#203731', c2: '#ffb612' },
+    HOU: { name: 'NRG Stadium',              city: 'Houston, TX',         arch: 'hou_truss',     c1: '#03202f', c2: '#a71930' },
+    IND: { name: 'Lucas Oil Stadium',        city: 'Indianapolis, IN',    arch: 'ind_fieldhouse',c1: '#002c5f', c2: '#a2aaad' },
+    JAX: { name: 'EverBank Stadium',         city: 'Jacksonville, FL',    arch: 'jax_cabanas',   c1: '#006778', c2: '#d7a22a' },
+    KC:  { name: 'Arrowhead Stadium',        city: 'Kansas City, MO',     arch: 'kc_arrowhead',  c1: '#e31837', c2: '#ffb81c' },
+    LA:  { name: 'SoFi Stadium',             city: 'Inglewood, CA',       arch: 'la_sofi',       c1: '#003594', c2: '#ffa300' },
+    LAC: { name: 'SoFi Stadium',             city: 'Inglewood, CA',       arch: 'la_sofi',       c1: '#0080c6', c2: '#ffc20e' },
+    LV:  { name: 'Allegiant Stadium',        city: 'Las Vegas, NV',       arch: 'lv_torch',      c1: '#12131f', c2: '#a5acaf' },
+    MIA: { name: 'Hard Rock Stadium',        city: 'Miami Gardens, FL',   arch: 'mia_canopy',    c1: '#008e97', c2: '#fc4c02' },
+    MIN: { name: 'U.S. Bank Stadium',        city: 'Minneapolis, MN',     arch: 'min_prow',      c1: '#4f2683', c2: '#ffc62f' },
+    NE:  { name: 'Gillette Stadium',         city: 'Foxborough, MA',      arch: 'ne_lighthouse', c1: '#002244', c2: '#c60c30' },
+    NO:  { name: 'Caesars Superdome',        city: 'New Orleans, LA',     arch: 'no_superdome',  c1: '#d3bc8d', c2: '#12131f' },
+    NYG: { name: 'MetLife Stadium',          city: 'East Rutherford, NJ', arch: 'ny_louver',     c1: '#0b2265', c2: '#a71930' },
+    NYJ: { name: 'MetLife Stadium',          city: 'East Rutherford, NJ', arch: 'ny_louver',     c1: '#125740', c2: '#ffffff' },
+    PHI: { name: 'Lincoln Financial Field',  city: 'Philadelphia, PA',    arch: 'phi_wings',     c1: '#004c54', c2: '#a5acaf' },
+    PIT: { name: 'Acrisure Stadium',         city: 'Pittsburgh, PA',      arch: 'pit_bridges',   c1: '#ffb612', c2: '#12131f' },
+    SEA: { name: 'Lumen Field',              city: 'Seattle, WA',         arch: 'sea_needle',    c1: '#002244', c2: '#69be28' },
+    SF:  { name: "Levi's Stadium",           city: 'Santa Clara, CA',     arch: 'sf_tower',      c1: '#aa0000', c2: '#b3995d' },
+    TB:  { name: 'Raymond James Stadium',    city: 'Tampa, FL',           arch: 'tb_pirate',     c1: '#d50a0a', c2: '#ff7900' },
+    TEN: { name: 'Nissan Stadium',           city: 'Nashville, TN',       arch: 'ten_cranes',    c1: '#0c2340', c2: '#4b92db' },
+    WAS: { name: 'Northwest Stadium',        city: 'Landover, MD',        arch: 'was_bowl',      c1: '#5a1414', c2: '#ffb612' },
+  };
+  const INTL_STADIUM_PROFILES = [
+    { key: 'banorte',       name: 'Estadio Banorte',          city: 'Mexico City, MX',   arch: 'intl_banorte' },
+    { key: 'azteca',        name: 'Estadio Azteca',           city: 'Mexico City, MX',   arch: 'intl_banorte' },
+    { key: 'wembley',       name: 'Wembley Stadium',          city: 'London, UK',        arch: 'intl_wembley' },
+    { key: 'tottenham',     name: 'Tottenham Hotspur Stadium',city: 'London, UK',        arch: 'intl_tottenham' },
+    { key: 'twickenham',    name: 'Twickenham Stadium',       city: 'London, UK',        arch: 'was_bowl' },
+    { key: 'allianz',       name: 'Allianz Arena',            city: 'Munich, DE',        arch: 'intl_allianz' },
+    { key: 'munich',        name: 'Allianz Arena',            city: 'Munich, DE',        arch: 'intl_allianz' },
+    { key: 'bernabeu',      name: 'Santiago Bernabeu',        city: 'Madrid, ES',        arch: 'intl_bernabeu' },
+    { key: 'frankfurt',     name: 'Deutsche Bank Park',       city: 'Frankfurt, DE',     arch: 'mia_canopy' },
+    { key: 'croke park',    name: 'Croke Park',               city: 'Dublin, IE',        arch: 'pit_bridges' },
+    { key: 'maracana',      name: 'Maracana Stadium',         city: 'Rio de Janeiro, BR',arch: 'intl_maracana' },
+    { key: 'corinthians',   name: 'Arena Corinthians',        city: 'Sao Paulo, BR',     arch: 'intl_allianz' },
+    { key: 'sao paulo',     name: 'Arena Corinthians',        city: 'Sao Paulo, BR',     arch: 'intl_allianz' },
+    { key: 'olympiastadion',name: 'Olympiastadion',           city: 'Berlin, DE',        arch: 'intl_wembley' },
+    { key: 'melbourne',     name: 'Melbourne Cricket Ground', city: 'Melbourne, AU',     arch: 'intl_maracana' },
+    { key: 'stade de france',name:'Stade de France',          city: 'Paris, FR',         arch: 'intl_maracana' },
+  ];
+
+  function resolveStadiumProfile(wx) {
+    const homeCode = wx?.home === 'LAR' ? 'LA' : wx?.home;
+    const awayCode = wx?.away === 'LAR' ? 'LA' : wx?.away;
+    const home = STADIUM_PROFILES[homeCode] || { name: wx?.stadium || 'Stadium', city: homeCode || 'NFL', arch: 'was_bowl', c1: '#4f4f96', c2: '#ffd42a' };
+    const away = STADIUM_PROFILES[awayCode] || { c1: '#6e69b5', c2: '#ffd42a' };
+    const rawName = String(wx?.stadium || '');
+    const lower = rawName.toLowerCase();
+    const intl = INTL_STADIUM_PROFILES.find(v => lower.includes(v.key));
+    if (intl) {
+      return { venue: rawName || intl.name, city: intl.city, arch: intl.arch, c1: home.c1, c2: home.c2, awayC1: away.c1 };
+    }
+    return { venue: rawName || home.name, city: home.city, arch: home.arch, c1: home.c1, c2: home.c2, awayC1: away.c1 };
+  }
+
+  function describeGameWeather(wx, team) {
     const code = team === 'LAR' ? 'LA' : team;
     const opp = wx.home === code ? `vs ${wx.away}` : `@ ${wx.home}`;
-    const when = wx.kickoff ? new Date(wx.kickoff).toLocaleString([], { weekday:'short', hour:'numeric', minute:'2-digit' }) : '';
+    const dtObj = wx.kickoff ? new Date(wx.kickoff) : null;
+    const when = dtObj && !Number.isNaN(dtObj.getTime())
+      ? dtObj.toLocaleString([], { weekday: 'short', hour: 'numeric', minute: '2-digit' })
+      : '';
+    // Derive local stadium time from kickoff ISO offset if present so night/sunset match kickoff.
+    const isoHourMatch = String(wx.kickoff || '').match(/T(\d{2}):/);
+    const etHour = isoHourMatch ? Number(isoHourMatch[1]) : (dtObj ? dtObj.getHours() : 13);
+    const timeOfDay = etHour >= 19 ? 'night' : etHour >= 16 ? 'twilight' : 'day';
+
     const isRetractClosed = wx.roof === 'retractable' && (wx.precip_prob >= 50 || (wx.note && wx.note.includes('closed')));
     const indoor = wx.reason === 'indoors' || wx.roof === 'dome' || wx.roof === 'closed';
-    const flag = (indoor || isRetractClosed) ? null : wx.flag;
+    const closedOrDome = indoor || isRetractClosed;
+    const flag = closedOrDome ? null : wx.flag;
 
     let verdict, matters = false;
-    if (indoor || isRetractClosed) {
+    if (closedOrDome) {
       verdict = isRetractClosed ? 'Non-factor: roof closed' : (wx.roof === 'dome' ? 'Non-factor: dome' : 'Non-factor: indoors');
     } else if (flag) {
       matters = true;
@@ -14092,37 +14167,485 @@
       verdict = 'Non-factor: clear conditions';
     }
 
+    const isRain = !closedOrDome && ((wx.precip_prob != null && wx.precip_prob >= 45) || (flag === 'rain/snow' && (wx.temp_f == null || wx.temp_f > 33)));
+    const isOutsideRain = closedOrDome && wx.precip_prob != null && wx.precip_prob >= 45;
+    const isSnow = (wx.temp_f != null && wx.temp_f <= 33 && ((wx.precip_prob != null && wx.precip_prob >= 30) || flag === 'rain/snow')) || flag === 'cold';
+    const isWindy = !closedOrDome && (flag === 'wind' || (wx.wind_mph != null && wx.wind_mph >= 14) || (wx.gust_mph != null && wx.gust_mph >= 22));
+    const kind = closedOrDome ? (isRetractClosed ? 'retract' : 'dome')
+      : isWindy ? 'wind'
+      : isSnow ? 'cold'
+      : isRain ? 'rain'
+      : wx.roof === 'retractable' ? 'retract' : 'clear';
+
     const body = wx.temp_f == null
       ? (wx.reason === 'indoors' ? 'Indoors' : (wx.reason || 'No forecast'))
       : isRetractClosed
         ? `Indoors (roof closed for rain; ${Math.round(wx.temp_f)}°F outside)`
-        : `${Math.round(wx.temp_f)}°F, wind ${Math.round(wx.wind_mph)} mph (gusts ${Math.round(wx.gust_mph)}), ${Math.round(wx.precip_prob || 0)}% precip`;
+        : `${Math.round(wx.temp_f)}°F, wind ${Math.round(wx.wind_mph || 0)} mph (gusts ${Math.round(wx.gust_mph || 0)}), ${Math.round(wx.precip_prob || 0)}% precip`;
     const roofText = wx.roof === 'retractable' && !isRetractClosed ? 'Retractable roof (may close)' : (wx.roof || '');
+
     const ouText = wx.total_line != null ? `O/U ${wx.total_line}` : null;
     const spreadText = wx.spread_line == null ? null : wx.spread_line === 0 ? 'Pick em'
       : `${wx.spread_line > 0 ? wx.home : wx.away} by ${Math.abs(wx.spread_line)}`;
+    // nflverse spread_line is positive when HOME is favored.
+    const impliedText = (wx.total_line != null && wx.spread_line != null)
+      ? `${wx.home} ${((wx.total_line + wx.spread_line) / 2).toFixed(1)} · ${wx.away} ${((wx.total_line - wx.spread_line) / 2).toFixed(1)}`
+      : null;
     const vegasText = [ouText, spreadText].filter(Boolean).join(' · ');
+    const hasTemp = wx.temp_f != null;
 
+    return {
+      code, opp, when, timeOfDay, indoor, isRetractClosed, closedOrDome, flag, kind, matters,
+      verdict, body, roofText, ouText, spreadText, impliedText, vegasText,
+      isRain: isRain || isOutsideRain, isSnow, isWindy,
+      tempMain: closedOrDome && !hasTemp ? '70° IN' : (hasTemp ? `${Math.round(wx.temp_f)}°F` : '--'),
+      tempLed: closedOrDome && !hasTemp ? '70°F IND' : (hasTemp ? `${Math.round(wx.temp_f)}°F` : '--'),
+      windLed: closedOrDome ? '0 MPH' : (wx.wind_mph != null ? `${Math.round(wx.wind_mph)}G${Math.round(wx.gust_mph || wx.wind_mph)}` : '--'),
+      precipLed: closedOrDome ? (wx.precip_prob != null ? `${Math.round(wx.precip_prob)}% OUT` : '0% IND') : (wx.precip_prob != null ? `${Math.round(wx.precip_prob)}%` : '--'),
+      roofBadge: isRetractClosed ? 'ROOF CLOSED' : wx.roof === 'dome' ? 'DOME' : wx.roof === 'retractable' ? 'RETRACT OPEN' : String(wx.surface || 'OUTDOORS').toUpperCase(),
+    };
+  }
+
+  function _wxSkyAndClouds(uid, st, sc) {
+    const night = sc.timeOfDay === 'night';
+    const twilight = sc.timeOfDay === 'twilight';
+    const gloomy = sc.isRain || sc.isSnow;
+    const skyTop = night ? '#12131f' : twilight ? '#4f4f96' : gloomy ? '#5e6b89' : '#3a84d6';
+    const skyBot = night ? '#273168' : twilight ? '#f09e54' : gloomy ? '#a8b7ce' : '#bfe2ff';
+    const stars = night
+      ? [[34, 24], [66, 48], [92, 18], [282, 22], [318, 44], [352, 20], [50, 70], [336, 68]]
+        .map(([x, y], i) => `<rect x="${x}" y="${y}" width="${i % 2 ? 2 : 3}" height="${i % 2 ? 2 : 3}" fill="#fff6c7" opacity="${i % 2 ? 0.7 : 0.95}"/>`).join('')
+      : '';
+    const celestial = night
+      ? '<circle cx="326" cy="40" r="14" fill="#ffd42a" stroke="#12131f" stroke-width="2.5"/><circle cx="332" cy="37" r="11" fill="#1b204a"/>'
+      : gloomy
+        ? ''
+        : twilight
+          ? '<circle cx="318" cy="96" r="24" fill="#ffd42a" stroke="#12131f" stroke-width="2.5"/><circle cx="318" cy="96" r="17" fill="#ff9f2e"/>'
+          : '<circle cx="322" cy="42" r="18" fill="#ffd42a" stroke="#12131f" stroke-width="2.5"/><circle cx="318" cy="38" r="11" fill="#fff29a"/>';
+    const cloudFill = sc.isRain ? '#697594' : '#ffffff';
+    const cloudShadow = sc.isRain ? '#4c5774' : '#d5d5f0';
+    const cloud = (x, y, s = 1) => `<g transform="translate(${x},${y}) scale(${s})">`
+      + `<path d="M10 22 H54 A9 9 0 0 0 53 6 A12 12 0 0 0 30 3 A10 10 0 0 0 12 8 A8 8 0 0 0 10 22 Z" fill="${cloudFill}" stroke="#12131f" stroke-width="2.4" stroke-linejoin="round"/>`
+      + `<path d="M12 18 H53 A7 7 0 0 1 51 21 H11 Z" fill="${cloudShadow}"/></g>`;
+    const clouds = gloomy
+      ? cloud(18, 16, 1.05) + cloud(278, 22, 1.0) + cloud(64, 52, 0.75)
+      : (sc.isWindy ? cloud(24, 24, 0.88) + cloud(290, 34, 0.8) : cloud(26, 26, 0.78));
+    return `
+      <defs>
+        <linearGradient id="${uid}-sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="${skyTop}"/>
+          <stop offset="100%" stop-color="${skyBot}"/>
+        </linearGradient>
+        <pattern id="${uid}-hm" width="6" height="6" patternUnits="userSpaceOnUse">
+          <circle cx="2" cy="2" r="1.15" fill="${night ? '#ffd42a' : '#ffffff'}" opacity="${night ? '0.12' : '0.22'}"/>
+        </pattern>
+        <linearGradient id="${uid}-beam" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#fff6b8" stop-opacity="0.45"/>
+          <stop offset="100%" stop-color="#fff6b8" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <rect width="380" height="236" fill="url(#${uid}-sky)"/>
+      <rect width="380" height="104" fill="url(#${uid}-hm)"/>
+      ${stars}${celestial}${clouds}`;
+  }
+
+  function _wxLandmarks(arch, st, sc) {
+    const night = sc.timeOfDay === 'night';
+    const cap = sc.isSnow ? '#ffffff' : null;
+    const hillFill = night ? '#1b2247' : '#536298';
+    const bldg = night ? '#252b59' : '#7379b2';
+    const cityBars = (xs) => xs.map(([x, w, h]) =>
+      `<rect x="${x}" y="${132 - h}" width="${w}" height="${h}" fill="${bldg}" stroke="#12131f" stroke-width="2"/>`).join('');
+    if (arch === 'sea_needle') {
+      return `
+        <polygon points="225,134 295,66 365,134" fill="${hillFill}" stroke="#12131f" stroke-width="2.2"/>
+        <polygon points="268,92 295,66 322,92 308,97 295,88 282,97" fill="#ffffff" stroke="#12131f" stroke-width="2"/>
+        <line x1="68" y1="130" x2="68" y2="46" stroke="#12131f" stroke-width="4.5"/>
+        <line x1="68" y1="130" x2="68" y2="48" stroke="#e9e9fa" stroke-width="2.2"/>
+        <ellipse cx="68" cy="74" rx="19" ry="5.5" fill="#e9e9fa" stroke="#12131f" stroke-width="2.2"/>
+        <rect x="63" y="69" width="10" height="4" fill="#69be28" stroke="#12131f" stroke-width="1.5"/>`;
+    }
+    if (arch === 'den_rockies' || arch === 'intl_banorte') {
+      const p = arch === 'intl_banorte'
+        ? '<polygon points="10,136 82,66 154,136" fill="#4f5686" stroke="#12131f" stroke-width="2.2"/><polygon points="240,136 312,62 378,136" fill="#5e6496" stroke="#12131f" stroke-width="2.2"/>'
+        : '<polygon points="4,136 58,72 114,136" fill="#4f5686" stroke="#12131f" stroke-width="2.2"/><polygon points="88,136 146,66 204,136" fill="#5e6496" stroke="#12131f" stroke-width="2.2"/><polygon points="246,136 314,68 378,136" fill="#4f5686" stroke="#12131f" stroke-width="2.2"/>';
+      const snowTips = arch === 'intl_banorte'
+        ? '<polygon points="62,85 82,66 102,85 82,81" fill="#ffffff" stroke="#12131f" stroke-width="1.8"/><polygon points="292,82 312,62 332,82 312,78" fill="#ffffff" stroke="#12131f" stroke-width="1.8"/>'
+        : '<polygon points="42,91 58,72 74,91 58,86" fill="#ffffff" stroke="#12131f" stroke-width="1.8"/><polygon points="295,88 314,68 333,88 314,83" fill="#ffffff" stroke="#12131f" stroke-width="1.8"/>';
+      return p + snowTips;
+    }
+    if (arch === 'ari_barrel') {
+      return `
+        <path d="M10 132 L26 98 H64 L78 132 Z" fill="#a8563c" stroke="#12131f" stroke-width="2"/>
+        <path d="M302 132 L322 92 H358 L372 132 Z" fill="#a8563c" stroke="#12131f" stroke-width="2"/>
+        <path d="M32 130 V96 M32 112 H24 V103 M32 116 H40 V106" fill="none" stroke="#2c7a31" stroke-width="4" stroke-linecap="round"/>
+        <path d="M338 130 V94 M338 110 H330 V102 M338 115 H346 V105" fill="none" stroke="#2c7a31" stroke-width="4" stroke-linecap="round"/>`;
+    }
+    if (arch === 'pit_bridges' || arch === 'cin_canopy') {
+      return `
+        <path d="M22 132 Q74 82 126 132" fill="none" stroke="#12131f" stroke-width="7"/>
+        <path d="M22 132 Q74 82 126 132" fill="none" stroke="${arch === 'pit_bridges' ? '#ffd42a' : '#4b92db'}" stroke-width="3.5"/>
+        <path d="M254 132 Q306 82 358 132" fill="none" stroke="#12131f" stroke-width="7"/>
+        <path d="M254 132 Q306 82 358 132" fill="none" stroke="${arch === 'pit_bridges' ? '#ffd42a' : '#4b92db'}" stroke-width="3.5"/>
+        ${cityBars([[286, 18, 44], [308, 22, 60], [334, 16, 36]])}`;
+    }
+    if (arch === 'ne_lighthouse') {
+      return `
+        <polygon points="312,130 318,62 332,62 338,130" fill="#ffffff" stroke="#12131f" stroke-width="2.2"/>
+        <polygon points="315,96 335,96 336,112 314,112" fill="#c60c30" stroke="#12131f" stroke-width="1.5"/>
+        <rect x="316" y="54" width="18" height="8" fill="#ffd42a" stroke="#12131f" stroke-width="2"/>
+        <polygon points="313,54 325,44 337,54" fill="#c60c30" stroke="#12131f" stroke-width="2"/>
+        ${night ? '<polygon points="316,58 180,26 180,82" fill="#ffd42a" opacity="0.22"/>' : ''}`;
+    }
+    if (arch === 'mia_canopy' || arch === 'tb_pirate' || arch === 'jax_cabanas' || arch === 'la_sofi' || arch === 'no_superdome') {
+      const palm = (x) => `<path d="M${x} 132 Q${x - 4} 112 ${x + 3} 96" stroke="#7a5a2e" stroke-width="3.5" fill="none"/>`
+        + `<path d="M${x + 3} 96 Q${x - 14} 90 ${x - 18} 102 M${x + 3} 96 Q${x + 19} 90 ${x + 22} 102 M${x + 3} 96 Q${x + 4} 80 ${x - 8} 84" stroke="#2c7a31" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+      return cityBars([[286, 16, 40], [306, 20, 52]]) + palm(36) + palm(348);
+    }
+    if (arch === 'chi_colonnade' || arch === 'ny_louver' || arch === 'phi_wings' || arch === 'ten_cranes') {
+      const baseCity = cityBars([[20, 18, 42], [42, 22, 62], [68, 16, 38], [292, 18, 46], [314, 24, 68], [342, 18, 38]]);
+      if (arch === 'phi_wings') {
+        return baseCity
+          + '<line x1="62" y1="130" x2="62" y2="74" stroke="#ffffff" stroke-width="3"/><circle cx="62" cy="74" r="3" fill="#12131f"/>'
+          + '<path d="M62 74 L52 62 M62 74 L76 72 M62 74 L58 88" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"/>';
+      }
+      return baseCity;
+    }
+    if (arch === 'cle_lake' || arch === 'buf_bowl' || arch === 'gb_lambeau' || arch === 'was_bowl') {
+      const trees = [22, 42, 64, 314, 336, 354].map(x =>
+        `<polygon points="${x},132 ${x + 9},98 ${x + 18},132" fill="${cap || '#2c7a31'}" stroke="#12131f" stroke-width="2"/>`).join('');
+      return trees + (arch === 'cle_lake' ? '<rect x="0" y="124" width="380" height="14" fill="#2c6db5" stroke="#12131f" stroke-width="2"/>' : '');
+    }
+    return cityBars([[24, 16, 34], [336, 18, 42]]);
+  }
+
+  function _wxBowlAndField(uid, st, sc) {
+    const frosty = sc.isSnow && !sc.closedOrDome;
+    const turfA = frosty ? '#7cb98a' : (sc.isRain && !sc.closedOrDome ? '#2e8433' : '#3f9f43');
+    const turfB = frosty ? '#96cea1' : (sc.isRain && !sc.closedOrDome ? '#256e2a' : '#358d39');
+    const windTilt = sc.isWindy ? 10 : 3;
+    const crowdDots = Array.from({ length: 18 }, (_, i) => {
+      const ang = (i / 18) * Math.PI * 2;
+      const cx = 190 + Math.cos(ang) * 116;
+      const cy = 148 + Math.sin(ang) * 40;
+      const fill = i % 3 === 0 ? st.awayC1 : (i % 2 === 0 ? st.c2 : st.c1);
+      return `<rect x="${cx.toFixed(1)}" y="${cy.toFixed(1)}" width="4" height="4" fill="${fill}" stroke="#12131f" stroke-width="0.9"/>`;
+    }).join('');
+    const floodLights = sc.timeOfDay === 'night'
+      ? '<polygon points="74,98 184,154 114,174" fill="url(#' + uid + '-beam)"/><polygon points="306,98 266,174 196,154" fill="url(#' + uid + '-beam)"/>'
+      : '';
+    return `
+      <!-- Isometric Turf & Concrete Diorama Plinth -->
+      <polygon points="30,174 190,126 350,174 190,224" fill="#12131f" transform="translate(0,7)"/>
+      <polygon points="30,174 190,224 190,213 30,163" fill="#256728" stroke="#12131f" stroke-width="2.5" stroke-linejoin="round"/>
+      <polygon points="190,224 350,174 350,163 190,213" fill="#1e5321" stroke="#12131f" stroke-width="2.5" stroke-linejoin="round"/>
+      <polygon points="30,163 190,114 350,163 190,213" fill="#3f9f43" stroke="#12131f" stroke-width="2.5" stroke-linejoin="round"/>
+
+      <!-- Stadium Exterior Bowl Wall -->
+      <path d="M52,144 L52,162 A138,48 0 0,0 328,162 L328,144 Z" fill="#b9b9e4" stroke="#12131f" stroke-width="2.8" stroke-linejoin="round"/>
+      <path d="M54,154 A136,46 0 0,0 326,154 L326,160 A136,46 0 0,1 54,160 Z" fill="${st.c1}" stroke="#12131f" stroke-width="1.8"/>
+      <ellipse cx="190" cy="144" rx="138" ry="48" fill="#e9e9fa" stroke="#12131f" stroke-width="2.8"/>
+      <ellipse cx="190" cy="146" rx="126" ry="42" fill="#8284b8" stroke="#12131f" stroke-width="2.2"/>
+      ${crowdDots}
+
+      <!-- Interior Field Turf -->
+      <ellipse cx="190" cy="152" rx="102" ry="30" fill="${turfA}" stroke="#12131f" stroke-width="2.4"/>
+      <rect x="114" y="136" width="152" height="32" rx="8" fill="${turfB}" stroke="#12131f" stroke-width="2"/>
+      <rect x="116" y="138" width="18" height="28" rx="4" fill="${st.c1}"/>
+      <rect x="246" y="138" width="18" height="28" rx="4" fill="${st.awayC1}"/>
+      <line x1="134" y1="138" x2="134" y2="166" stroke="#ffffff" stroke-width="2"/>
+      <line x1="246" y1="138" x2="246" y2="166" stroke="#ffffff" stroke-width="2"/>
+      <line x1="162" y1="138" x2="162" y2="166" stroke="#ffffff" stroke-width="1.3" opacity="0.85"/>
+      <line x1="190" y1="138" x2="190" y2="166" stroke="#ffffff" stroke-width="1.8"/>
+      <line x1="218" y1="138" x2="218" y2="166" stroke="#ffffff" stroke-width="1.3" opacity="0.85"/>
+      <circle cx="190" cy="152" r="5" fill="${st.c2}" stroke="#ffffff" stroke-width="1.2"/>
+
+      <!-- Backyard Gold Goalposts + Wind Ribbons -->
+      <g stroke="#12131f" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M122,155 V148 M116,148 H128 M116,148 V136 M128,148 V136" fill="none" stroke="#12131f" stroke-width="4.2"/>
+        <path d="M122,155 V148 M116,148 H128 M116,148 V136 M128,148 V136" fill="none" stroke="#ffd42a" stroke-width="2"/>
+        <path d="M258,155 V148 M252,148 H264 M252,148 V136 M264,148 V136" fill="none" stroke="#12131f" stroke-width="4.2"/>
+        <path d="M258,155 V148 M252,148 H264 M252,148 V136 M264,148 V136" fill="none" stroke="#ffd42a" stroke-width="2"/>
+        <line x1="128" y1="136" x2="${128 + windTilt}" y2="${sc.isWindy ? 137 : 141}" stroke="#d81f26" stroke-width="2"/>
+        <line x1="264" y1="136" x2="${264 + windTilt}" y2="${sc.isWindy ? 137 : 141}" stroke="#d81f26" stroke-width="2"/>
+      </g>
+      ${floodLights}`;
+  }
+
+  function _wxSuperstructure(st, sc) {
+    const a = st.arch;
+    const isClosed = sc.closedOrDome;
+    const snowRim = (sc.isSnow && !sc.indoor)
+      ? '<path d="M58,140 A132,44 0 0,1 322,140" fill="none" stroke="#ffffff" stroke-width="4" stroke-dasharray="14 6" stroke-linecap="round"/>'
+      : '';
+    // Full domes & closed retractable vaults draw their characteristic upper shell.
+    if (a === 'no_superdome') {
+      return '<path d="M58,144 C78,86 302,86 322,144 Z" fill="#e9dfc7" stroke="#12131f" stroke-width="2.8"/>'
+        + '<path d="M100,136 C125,94 255,94 280,136" fill="none" stroke="#12131f" stroke-width="2"/>'
+        + '<ellipse cx="190" cy="108" rx="46" ry="8" fill="#d3bc8d" stroke="#12131f" stroke-width="2"/>' + snowRim;
+    }
+    if (a === 'min_prow') {
+      return '<polygon points="56,144 196,80 326,136 270,152 110,152" fill="#2c3362" stroke="#12131f" stroke-width="2.8" stroke-linejoin="round"/>'
+        + '<polygon points="104,132 196,84 260,126 190,134" fill="#9bc9f5" stroke="#12131f" stroke-width="2.2"/>'
+        + '<line x1="56" y1="144" x2="196" y2="80" stroke="#ffc62f" stroke-width="3"/>' + snowRim;
+    }
+    if (a === 'lv_torch') {
+      return '<path d="M56,144 C74,98 306,98 324,144 Z" fill="#1a1d2b" stroke="#12131f" stroke-width="2.8"/>'
+        + '<path d="M110,128 C140,114 240,114 270,128" fill="none" stroke="#a5acaf" stroke-width="3.5"/>'
+        + '<ellipse cx="190" cy="117" rx="44" ry="7" fill="#5e76a6" stroke="#12131f" stroke-width="2"/>'
+        + '<rect x="186" y="128" width="8" height="12" fill="#ff7a18" stroke="#12131f" stroke-width="1.6"/>' + snowRim;
+    }
+    if (a === 'la_sofi') {
+      return '<path d="M40,132 Q190,82 340,132 Q310,146 190,144 Q70,146 40,132 Z" fill="#dff0ff" fill-opacity="0.82" stroke="#12131f" stroke-width="2.8"/>'
+        + '<ellipse cx="190" cy="128" rx="44" ry="9" fill="none" stroke="' + st.c1 + '" stroke-width="4"/>'
+        + '<ellipse cx="190" cy="128" rx="44" ry="9" fill="none" stroke="' + st.c2 + '" stroke-width="1.8"/>';
+    }
+    if (a === 'det_warehouse') {
+      return '<rect x="64" y="114" width="252" height="30" rx="10" fill="#a8493c" stroke="#12131f" stroke-width="2.6"/>'
+        + '<path d="M68,118 Q190,90 312,118 Z" fill="#e9e9fa" stroke="#12131f" stroke-width="2.6"/>'
+        + '<line x1="120" y1="106" x2="260" y2="106" stroke="#0076b6" stroke-width="3"/>' + snowRim;
+    }
+    if (a === 'dal_arches') {
+      const doors = isClosed
+        ? '<rect x="116" y="106" width="148" height="22" rx="6" fill="#d5d5f0" stroke="#12131f" stroke-width="2.4"/>'
+        : '<rect x="92" y="108" width="38" height="20" rx="4" fill="#d5d5f0" stroke="#12131f" stroke-width="2.2"/>'
+          + '<rect x="250" y="108" width="38" height="20" rx="4" fill="#d5d5f0" stroke="#12131f" stroke-width="2.2"/>';
+      return doors
+        + '<path d="M72,150 Q190,74 308,150" fill="none" stroke="#12131f" stroke-width="7"/>'
+        + '<path d="M72,150 Q190,74 308,150" fill="none" stroke="#e9e9fa" stroke-width="3.5"/>'
+        + '<path d="M88,154 Q190,82 292,154" fill="none" stroke="#12131f" stroke-width="6"/>'
+        + '<path d="M88,154 Q190,82 292,154" fill="none" stroke="#c6ced9" stroke-width="3"/>'
+        + '<rect x="170" y="122" width="40" height="14" rx="2" fill="#0a1a0e" stroke="#12131f" stroke-width="2"/>'
+        + '<rect x="173" y="125" width="34" height="8" fill="#4dff6a"/>' + snowRim;
+    }
+    if (a === 'atl_oculus') {
+      return `<path d="M58,144 C78,94 302,94 322,144 Z" fill="#d5d5f0" stroke="#12131f" stroke-width="2.8"/>`
+        + `<polygon points="150,116 190,104 230,116 218,132 162,132" fill="${isClosed ? '#8284b8' : '#3f9f43'}" stroke="#12131f" stroke-width="2.4"/>`
+        + `<line x1="150" y1="116" x2="218" y2="132" stroke="#a71930" stroke-width="2"/>`
+        + `<line x1="230" y1="116" x2="162" y2="132" stroke="#a71930" stroke-width="2"/>` + snowRim;
+    }
+    if (a === 'ind_fieldhouse') {
+      return '<polygon points="62,144 62,110 190,88 318,110 318,144" fill="#9c4234" stroke="#12131f" stroke-width="2.8" stroke-linejoin="round"/>'
+        + (isClosed
+          ? '<polygon points="104,116 190,96 276,116" fill="#c6ced9" stroke="#12131f" stroke-width="2.2"/>'
+          : '<rect x="134" y="106" width="112" height="14" fill="#63a9ee" stroke="#12131f" stroke-width="2"/>')
+        + '<rect x="266" y="114" width="38" height="22" fill="#89c4f4" stroke="#12131f" stroke-width="2"/>' + snowRim;
+    }
+    if (a === 'hou_truss' || a === 'ari_barrel') {
+      const truss = '<path d="M74,142 Q190,88 306,142" fill="none" stroke="#12131f" stroke-width="6.5"/>'
+        + `<path d="M74,142 Q190,88 306,142" fill="none" stroke="${a === 'hou_truss' ? st.c2 : '#c6ced9'}" stroke-width="3"/>`;
+      const lid = isClosed
+        ? '<rect x="114" y="108" width="152" height="20" rx="5" fill="#e9e9fa" stroke="#12131f" stroke-width="2.4"/>'
+        : '<rect x="86" y="110" width="42" height="16" rx="4" fill="#e9e9fa" stroke="#12131f" stroke-width="2"/><rect x="252" y="110" width="42" height="16" rx="4" fill="#e9e9fa" stroke="#12131f" stroke-width="2"/>';
+      return lid + truss + snowRim;
+    }
+    if (a === 'tb_pirate') {
+      return `
+        <path d="M150,118 L208,118 L198,132 L156,132 Z" fill="#4f2d18" stroke="#12131f" stroke-width="2.2"/>
+        <line x1="176" y1="118" x2="176" y2="88" stroke="#12131f" stroke-width="2.6"/>
+        <line x1="194" y1="118" x2="194" y2="94" stroke="#12131f" stroke-width="2.4"/>
+        <polygon points="176,90 158,110 176,110" fill="#d50a0a" stroke="#12131f" stroke-width="1.8"/>
+        <polygon points="194,95 212,112 194,112" fill="#d50a0a" stroke="#12131f" stroke-width="1.8"/>` + snowRim;
+    }
+    if (a === 'sea_needle') {
+      return '<path d="M62,140 Q190,94 318,140" fill="none" stroke="#12131f" stroke-width="6"/>'
+        + '<path d="M62,140 Q190,94 318,140" fill="none" stroke="#ffffff" stroke-width="3"/>'
+        + '<path d="M66,128 Q122,108 164,118" fill="none" stroke="#69be28" stroke-width="4" stroke-linecap="round"/>'
+        + '<path d="M216,118 Q258,108 314,128" fill="none" stroke="#69be28" stroke-width="4" stroke-linecap="round"/>' + snowRim;
+    }
+    if (a === 'chi_colonnade') {
+      const cols = Array.from({ length: 9 }, (_, i) =>
+        `<rect x="${112 + i * 20}" y="98" width="7" height="16" fill="#e9e9fa" stroke="#12131f" stroke-width="1.8"/>`).join('');
+      return `<rect x="104" y="92" width="172" height="8" fill="#d5d5f0" stroke="#12131f" stroke-width="2"/>${cols}` + snowRim;
+    }
+    if (a === 'gb_lambeau') {
+      return '<rect x="130" y="98" width="120" height="18" rx="3" fill="#8b3f2b" stroke="#12131f" stroke-width="2.2"/>'
+        + '<rect x="174" y="88" width="32" height="14" rx="2" fill="#ffb612" stroke="#12131f" stroke-width="2"/>' + snowRim;
+    }
+    if (a === 'mia_canopy') {
+      return '<path d="M72,118 H308 L292,132 H88 Z" fill="#ffffff" stroke="#12131f" stroke-width="2.4"/>'
+        + '<ellipse cx="190" cy="125" rx="68" ry="8" fill="#68b5f5" stroke="#12131f" stroke-width="2"/>'
+        + '<line x1="72" y1="118" x2="72" y2="96" stroke="#ffffff" stroke-width="3"/><line x1="308" y1="118" x2="308" y2="96" stroke="#ffffff" stroke-width="3"/>';
+    }
+    if (a === 'sf_tower') {
+      return '<rect x="118" y="88" width="144" height="24" rx="4" fill="#aa0000" stroke="#12131f" stroke-width="2.2"/>'
+        + '<rect x="124" y="93" width="132" height="10" fill="#8cc4f4" stroke="#12131f" stroke-width="1.6"/>' + snowRim;
+    }
+    if (a === 'jax_cabanas') {
+      return '<rect x="148" y="102" width="84" height="12" rx="3" fill="#00b4d8" stroke="#12131f" stroke-width="2"/>'
+        + '<rect x="126" y="96" width="128" height="7" fill="#d7a22a" stroke="#12131f" stroke-width="1.8"/>' + snowRim;
+    }
+    if (a === 'kc_arrowhead') {
+      return '<path d="M58,136 Q190,104 322,136" fill="none" stroke="#12131f" stroke-width="6"/>'
+        + '<path d="M58,136 Q190,104 322,136" fill="none" stroke="#e31837" stroke-width="3"/>'
+        + '<ellipse cx="190" cy="108" rx="28" ry="8" fill="#ffb81c" stroke="#12131f" stroke-width="2"/>' + snowRim;
+    }
+    if (a === 'phi_wings' || a === 'cin_canopy' || a === 'car_spires') {
+      const wingColor = a === 'car_spires' ? '#bfc0bf' : '#e9e9fa';
+      return `<path d="M62,130 Q106,96 154,114" fill="none" stroke="#12131f" stroke-width="7" stroke-linecap="round"/>`
+        + `<path d="M62,130 Q106,96 154,114" fill="none" stroke="${wingColor}" stroke-width="3.6" stroke-linecap="round"/>`
+        + `<path d="M318,130 Q274,96 226,114" fill="none" stroke="#12131f" stroke-width="7" stroke-linecap="round"/>`
+        + `<path d="M318,130 Q274,96 226,114" fill="none" stroke="${wingColor}" stroke-width="3.6" stroke-linecap="round"/>` + snowRim;
+    }
+    if (a === 'intl_allianz' || a === 'intl_tottenham' || a === 'intl_maracana') {
+      return `<path d="M54,136 A136,42 0 0,1 326,136" fill="none" stroke="#12131f" stroke-width="7"/>`
+        + `<path d="M54,136 A136,42 0 0,1 326,136" fill="none" stroke="${a === 'intl_allianz' ? st.c1 : '#ffffff'}" stroke-width="3.6"/>` + snowRim;
+    }
+    if (a === 'intl_wembley' || a === 'intl_bernabeu') {
+      return a === 'intl_wembley'
+        ? '<path d="M62,140 Q190,62 318,140" fill="none" stroke="#12131f" stroke-width="6.5"/><path d="M62,140 Q190,62 318,140" fill="none" stroke="#ffffff" stroke-width="3.2"/>'
+        : '<rect x="74" y="114" width="232" height="30" rx="14" fill="#c6ced9" stroke="#12131f" stroke-width="2.6"/>' + (isClosed ? '<rect x="132" y="110" width="116" height="16" fill="#e9e9fa" stroke="#12131f" stroke-width="2"/>' : '');
+    }
+    // Outdoor stadium floodlight stanchions on all open-air bowls
+    const tower = (x, s = 1) => `
+      <line x1="${x}" y1="126" x2="${x}" y2="${104}" stroke="#12131f" stroke-width="3"/>
+      <rect x="${x - 10 * s}" y="94" width="${20 * s}" height="10" rx="2" fill="#1f2450" stroke="#12131f" stroke-width="2"/>
+      <circle cx="${x - 4}" cy="99" r="1.8" fill="#ffd42a"/>
+      <circle cx="${x}" cy="99" r="1.8" fill="#fff"/>
+      <circle cx="${x + 4}" cy="99" r="1.8" fill="#ffd42a"/>`;
+    return tower(86) + tower(294) + snowRim;
+  }
+
+  function _wxWeatherParticles(sc) {
+    let out = '';
+    if (sc.isRain) {
+      const drops = Array.from({ length: 22 }, (_, i) => {
+        const x = 18 + (i * 17) % 344;
+        const y = 24 + ((i * 37) % 150);
+        return `<line x1="${x}" y1="${y}" x2="${x - 7}" y2="${y + 15}" stroke="#7cc7ff" stroke-width="2.2" stroke-linecap="round"/>`;
+      }).join('');
+      out += `<g class="wx-anim-rain">${drops}</g>`;
+    }
+    if (sc.isSnow) {
+      const flakes = Array.from({ length: 22 }, (_, i) => {
+        const x = 22 + (i * 23) % 336;
+        const y = 26 + ((i * 41) % 164);
+        const s = i % 3 === 0 ? 4 : 3;
+        return `<rect x="${x}" y="${y}" width="${s}" height="${s}" fill="#ffffff" stroke="#12131f" stroke-width="0.9"/>`;
+      }).join('');
+      out += `<g class="wx-anim-snow">${flakes}</g>`;
+    }
+    if (sc.isWindy) {
+      out += `<g class="wx-anim-wind" fill="none" stroke-linecap="round">
+        <path d="M28,118 Q94,108 148,118 T238,116" stroke="#12131f" stroke-width="4"/>
+        <path d="M28,118 Q94,108 148,118 T238,116" stroke="#ffffff" stroke-width="2"/>
+        <path d="M126,166 Q192,158 258,166 T348,162" stroke="#12131f" stroke-width="4"/>
+        <path d="M126,166 Q192,158 258,166 T348,162" stroke="#ffd42a" stroke-width="2"/>
+      </g>`;
+    }
+    return out;
+  }
+
+  function renderStadiumDiorama(wx, team, opts = {}) {
+    const uid = `wxs${++_wxSvgUid}`;
+    const st = resolveStadiumProfile(wx);
+    const sc = describeGameWeather(wx, team);
+    const svg = `<svg viewBox="0 0 380 236" class="wx-diorama-svg" aria-hidden="true">`
+      + _wxSkyAndClouds(uid, st, sc)
+      + _wxLandmarks(st.arch, st, sc)
+      + _wxBowlAndField(uid, st, sc)
+      + _wxSuperstructure(st, sc)
+      + _wxWeatherParticles(sc)
+      + `</svg>`;
+
+    if (opts.compact) {
+      return h('div', { class: 'wx-inline-thumb', title: `${st.venue} (${st.city})` },
+        h('div', { class: 'wx-diorama-art', html: svg }),
+        h('span', { class: 'wx-thumb-tag' }, st.city.split(',')[0]));
+    }
+
+    return h('div', { class: `wx-diorama-stage${sc.matters ? ' is-matters' : ''}` },
+      h('div', { class: 'wx-diorama-art', html: svg }),
+      h('div', { class: 'wx-diorama-overlay' },
+        h('div', { class: 'wx-ov-city' }, st.city),
+        h('div', { class: 'wx-ov-venue' }, st.venue),
+        h('div', { class: 'wx-ov-temp-row' },
+          pixelIcon(`wx:${sc.kind}`, ''),
+          h('span', { class: 'wx-ov-temp tnum' }, sc.tempMain))),
+      h('div', { class: 'wx-diorama-corner' }, sc.roofBadge));
+  }
+
+  function openWeatherDetailCard(wx, team, anchorEl) {
+    document.querySelectorAll('.wx-popover-backdrop').forEach(el => el.remove());
+    const W = window.WEATHER || {};
+    const games = Array.isArray(W.games) ? W.games : [wx];
+    let idx = Math.max(0, games.findIndex(g => g.game_id === wx.game_id));
+    let activeTeam = team;
+
+    const backdrop = h('div', { class: 'wx-popover-backdrop' });
     const close = () => {
       backdrop.remove();
       document.removeEventListener('keydown', onKey);
     };
+    const renderCard = (curWx, curTeam) => {
+      const sc = describeGameWeather(curWx, curTeam);
+      const stepGame = (delta) => {
+        if (games.length < 2) return;
+        idx = (idx + delta + games.length) % games.length;
+        const nextWx = games[idx];
+        activeTeam = nextWx.home;
+        renderCard(nextWx, activeTeam);
+      };
+      const prevBtn = games.length > 1
+        ? h('button', { type: 'button', class: 'wx-nav-btn', 'aria-label': 'Previous stadium', onclick: () => stepGame(-1) }, '◀')
+        : null;
+      const nextBtn = games.length > 1
+        ? h('button', { type: 'button', class: 'wx-nav-btn', 'aria-label': 'Next stadium', onclick: () => stepGame(1) }, '▶')
+        : null;
+
+      const ledCell = (label, val, tone) => h('div', { class: `wx-led-cell${tone ? ` tone-${tone}` : ''}` },
+        h('span', { class: 'wx-led-lbl' }, label),
+        h('span', { class: 'wx-led-val tnum' }, val));
+
+      const card = h('div', {
+        class: `card wx-popover${sc.matters ? ' wx-matters' : ''}`,
+        role: 'dialog',
+        'aria-label': `Week ${W.week || ''} stadium and weather for ${sc.code}`,
+        onclick: e => e.stopPropagation(),
+      },
+        h('div', { class: 'wx-popover-head' },
+          h('div', { class: 'wx-nav-group' },
+            prevBtn,
+            h('span', { class: 'wx-matchup-pill' },
+              `${curWx.away} @ ${curWx.home}${sc.when ? ` · ${sc.when}` : ''}`),
+            nextBtn),
+          h('button', { type: 'button', class: 'wx-close', 'aria-label': 'Close weather card', onclick: close }, '×')),
+        renderStadiumDiorama(curWx, curTeam),
+        h('div', { class: 'wx-led-strip' },
+          ledCell('TEMP', sc.tempLed, sc.isSnow ? 'cold' : null),
+          ledCell('WIND', sc.windLed, sc.isWindy ? 'hot' : null),
+          ledCell('PRECIP', sc.precipLed, sc.isRain ? 'cold' : null),
+          ledCell('SURFACE', String(curWx.surface || 'turf').toUpperCase(), null)),
+        h('div', { class: 'wx-popover-verdict-row' },
+          h('span', { class: `wx-verdict${sc.matters ? ' is-matters' : ''}` }, sc.verdict)),
+        h('div', { class: 'wx-popover-body' },
+          `${sc.body}${sc.roofText ? ` · ${sc.roofText}` : ''}.${curWx.note && !curWx.note.includes('closed') ? ` (${curWx.note})` : ''}`),
+        (sc.vegasText || sc.impliedText) ? h('div', { class: 'wx-popover-vegas tnum' },
+          h('span', null, sc.vegasText || ''),
+          sc.impliedText ? h('span', { class: 'wx-implied-pts' }, `Implied: ${sc.impliedText}`) : null) : null);
+
+      backdrop.replaceChildren(card);
+    };
+
     const onKey = (e) => {
       if (e.key === 'Escape') {
         e.preventDefault();
         close();
         anchorEl?.focus();
+      } else if (e.key === 'ArrowLeft' && games.length > 1) {
+        e.preventDefault();
+        idx = (idx - 1 + games.length) % games.length;
+        renderCard(games[idx], games[idx].home);
+      } else if (e.key === 'ArrowRight' && games.length > 1) {
+        e.preventDefault();
+        idx = (idx + 1) % games.length;
+        renderCard(games[idx], games[idx].home);
       }
     };
-    const card = h('div', { class: `card wx-popover${matters ? ' wx-matters' : ''}`, role: 'dialog', 'aria-label': `Week ${W.week || ''} weather for ${code}`, onclick: e => e.stopPropagation() },
-      h('div', { class: 'wx-popover-head' },
-        h('span', { class: `wx-verdict${matters ? ' is-matters' : ''}` }, verdict),
-        h('button', { type: 'button', class: 'wx-close', 'aria-label': 'Close weather card', onclick: close }, '×')),
-      h('div', { class: 'wx-popover-meta' }, `${code} ${opp}${when ? ` · ${when}` : ''}${wx.stadium ? ` · ${wx.stadium}` : ''}`),
-      h('div', { class: 'wx-popover-body' }, `${body}${roofText ? ` · ${roofText}` : ''}.`),
-      wx.note ? h('div', { class: 'tip wx-popover-note' }, wx.note) : null,
-      vegasText ? h('div', { class: 'wx-popover-vegas tnum' }, vegasText) : null);
-    const backdrop = h('div', { class: 'wx-popover-backdrop', onclick: close }, card);
+
+    backdrop.addEventListener('click', close);
+    renderCard(wx, activeTeam);
     document.body.appendChild(backdrop);
     document.addEventListener('keydown', onKey);
   }
@@ -14135,28 +14658,25 @@
   }
   function weatherLine(sleeper) {
     const W = window.WEATHER;
-    const team = sleeper && (sleeper.team === 'LAR' ? 'LA' : sleeper.team);
     const g = sleeper ? gameWeatherFor(sleeper.team) : null;
     if (!g) return null;
-    const opp = g.home === team ? `vs ${g.away}` : `@ ${g.home}`;
-    const when = g.kickoff ? new Date(g.kickoff).toLocaleString([], { weekday:'short', hour:'numeric', minute:'2-digit' }) : '';
-    const isRetractableClosed = g.roof === 'retractable' && (g.precip_prob >= 50 || (g.note && g.note.includes('closed')));
-    const flag = (g.roof === 'dome' || g.roof === 'closed' || isRetractableClosed) ? null : g.flag;
-    const body = g.temp_f == null
-      ? (g.reason === 'indoors' ? 'Indoors' : (g.reason || 'No forecast'))
-      : isRetractableClosed
-        ? `Indoors (roof closed for rain; ${Math.round(g.temp_f)}\u00b0F outside)`
-        : `${Math.round(g.temp_f)}\u00b0F, wind ${Math.round(g.wind_mph)} mph (gusts ${Math.round(g.gust_mph)}), ${Math.round(g.precip_prob || 0)}% precip`;
-    return h('div', { class:`card weather-line${flag ? ' weather-flag' : ''}` },
-      h('div', { class:'card-title' }, `Week ${W.week} weather`),
-      h('div', null, `${opp}, ${when}, ${g.stadium}. ${body}.`,
-        flag ? h('strong', { style:{ marginLeft:'6px' } }, `Watch: ${flag}.`) : null,
-        g.note ? h('span', { class:'tip', style:{ marginLeft:'6px' } }, g.note) : null),
-      (g.total_line != null || g.spread_line != null) ? h('div', { class:'tip' },
-        // nflverse spread_line is positive when the HOME team is favored.
-        [g.total_line != null ? `Vegas total ${g.total_line}` : null,
-         g.spread_line == null ? null : g.spread_line === 0 ? 'pick em'
-           : `${g.spread_line > 0 ? g.home : g.away} by ${Math.abs(g.spread_line)}`].filter(Boolean).join(', ') + '.') : null);
+    const sc = describeGameWeather(g, sleeper.team);
+    const previewBtn = h('button', {
+      type: 'button',
+      class: 'wx-inline-btn',
+      'aria-label': `Open stadium diorama and weather card for ${sc.code}`,
+      onclick: (e) => { e.stopPropagation(); openWeatherDetailCard(g, sleeper.team, previewBtn); },
+    }, renderStadiumDiorama(g, sleeper.team, { compact: true }));
+    return h('div', { class: `card weather-line${sc.flag ? ' weather-flag' : ''}` },
+      h('div', { class: 'card-title' }, `Week ${W.week} stadium & weather`),
+      h('div', { class: 'wx-inline-layout' },
+        previewBtn,
+        h('div', { class: 'wx-inline-copy' },
+          h('div', null, `${sc.opp}, ${sc.when}, ${g.stadium}. ${sc.body}.`,
+            sc.flag ? h('strong', { style: { marginLeft: '6px' } }, `Watch: ${sc.flag}.`) : null,
+            g.note ? h('span', { class: 'tip', style: { marginLeft: '6px' } }, g.note) : null),
+          (sc.vegasText || sc.impliedText) ? h('div', { class: 'tip' },
+            [sc.vegasText, sc.impliedText ? `Implied ${sc.impliedText}` : null].filter(Boolean).join(' · ') + '.') : null)));
   }
 
   function playerInfoBlock(name, sleeper) {
