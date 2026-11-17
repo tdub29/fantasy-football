@@ -39,9 +39,9 @@ const positionGrades = (r) => {
 };
 const heatGradeCell = (key, val, lg, pop) => ({ tag: 'cell', key, val, pop, children: pop ? [pop] : [] });
 const build = new Function('h', 'GRADE_KEYS', 'positionGrades', 'heatGradeCell', 'gradeColor', 'isDynastyLeague',
-  'playerValue', 'rosPointsByPid', 'rosPosRank', 'projPosGroup', 'fmt', 'navigate',
+  'playerValue', 'rosPointsByPid', 'rosPosRank', 'projPosGroup', 'fmt', 'navigate', 'headshot', 'gridRoles',
   `${src}; return buildTeamNeeds;`)(h, GRADE_KEYS, positionGrades, heatGradeCell, () => 'c', () => true,
-  worthOf, () => new Map(), () => null, (p) => p, { decimal: (v, d) => Number(v).toFixed(d) }, () => {});
+  worthOf, () => new Map(), () => null, (p) => p, { decimal: (v, d) => Number(v).toFixed(d) }, () => {}, () => null, () => {});
 
 const yuH = LEAGUES.find(l => l.short_name === 'yuH' || /yuh/i.test(l.name));
 assert(yuH, 'yuH league not found');

@@ -35,7 +35,8 @@ const loadModel = () => new Function('window',
      return (window.__TEST_PICKS && window.__TEST_PICKS[rosterId]) || [];
    }
    ${cut('function isDynastyLeague(lg)', '  // The league whose format defines VOR replacement')}
-   ${cut('  let _rosPts = null;', '  // Replacement level on the SAME rest-of-season basis')}
+   function rosSettings() { return {}; }
+   ${cut('  function rosCacheKey(lg) {', '  // Replacement level on the SAME rest-of-season basis')}
    ${cut('function offenseStarterCount', '  // Starting-lineup strength')}
    ${cut('  const ODDS_CACHE', '  const PROJ_SRC_LABEL')}
    ${cut('function projUnitData()', 'function buildWhatIfTray')}
@@ -247,7 +248,8 @@ assert(F.simPool({ ...me, taxi:[...(me.taxi || []), taxiStarter] }, lg, 'ros', n
   .every(a => String(a.pid) !== taxiStarter), 'moving an otherwise projected starter to taxi excludes him');
 const fw = F.forecastWeeks(forecastLeague);
 assert.equal(fw.ok, true, fw.reason);
-assert.deepEqual(fw.remaining, [5,6,7,8,9,10,11,12,13,14]);
+const expectedRemaining = Array.from({ length: 14 - forecastLeague.week + 1 }, (_, i) => forecastLeague.week + i);
+assert.deepEqual(fw.remaining, expectedRemaining);
 const finalOdds = F.championshipOdds(forecastLeague, { sims:64 });
 assert(Math.abs(finalOdds.reduce((a,o) => a + o.playoff,0) - 6) < 1e-9);
 assert(Math.abs(finalOdds.reduce((a,o) => a + o.bye,0) - 2) < 1e-9);
