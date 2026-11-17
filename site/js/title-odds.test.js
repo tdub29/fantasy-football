@@ -41,7 +41,7 @@ const loadModel = () => new Function('window',
    ${cut('  const ODDS_CACHE', '  const PROJ_SRC_LABEL')}
    ${cut('function projUnitData()', 'function buildWhatIfTray')}
    return { championshipOdds, titleEquity, simPool, injuryHazard, mulberry32, makeNormal, playoffSettings,
-            productionRetention, pickRookiePoints, projectLeagueForward, pickValueBySlot, CURRENT_SEASON,
+            productionRetention, playerArchetype, pickRookiePoints, projectLeagueForward, pickValueBySlot, CURRENT_SEASON,
             SIM, offenseStartingSlots, startableIds, forecastWeeks, standingsForecast };`
 )(ctx.window);
 const H = loadModel();
@@ -155,6 +155,12 @@ assert(pr('RB', 29, 2) < pr('WR', 29, 2), 'RBs fall off faster than WRs');
 assert(pr('QB', 30, 3) > pr('RB', 30, 3), 'QBs age best');
 assert(pr('WR', 27, 3) < pr('WR', 27, 1), 'decline compounds with time');
 assert(pr('WR', 34, 3) < pr('WR', 30, 3), 'older starts lower');
+assert(pr('WR', 29, 2, 'wr_separator') > pr('WR', 29, 2) && pr('WR', 29, 2) > pr('WR', 29, 2, 'wr_physical'),
+  'separator WRs retain more value past 28 than physical WRs');
+assert(pr('RB', 27, 2, 'rb_outlier') > pr('RB', 27, 2) && pr('RB', 27, 2) > pr('RB', 27, 2, 'rb_grinder'),
+  'athletic/pass-catching RBs hold shoulder longer than grinders');
+assert(pr('QB', 33, 3, 'qb_pocket') > pr('QB', 33, 3) && pr('QB', 33, 3) > pr('QB', 33, 3, 'qb_rusher'),
+  'pocket QBs age more gently than rushing QBs');
 for (const pos of ['QB', 'RB', 'WR', 'TE']) {
   for (const age of [21, 27, 33, 40]) {
     const f = pr(pos, age, 3);

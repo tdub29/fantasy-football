@@ -4957,7 +4957,7 @@
   //   - TEs peak 26-30, slow decline
   // Picks (no age) compound at 0.93x/year (rookie pick value decays as the
   // draft class approaches and the unknown shrinks).
-  function ageMultiplier(pos, age) {
+  function ageMultiplier(pos, age, archetype = null) {
     if (age == null || age < 19) return 1.00;
     const curves = {
       QB: [[24, 1.06], [27, 1.01], [33, 0.98], [35, 0.92], [37, 0.82], [40, 0.65]],
@@ -4981,6 +4981,8 @@
         mult *= Math.pow(0.85, extra);
       }
     }
+    const mod = archetype && typeof ARCHETYPE_CURVE_MOD !== 'undefined' ? ARCHETYPE_CURVE_MOD[archetype] : null;
+    if (mod && age >= mod.valAge) mult = Math.max(0.35, Math.min(1.08, mult + mod.valShift));
     return mult;
   }
 
@@ -5012,11 +5014,12 @@
     if (p.category === 'productive_vet')     { presentBias *= 1.08; futureBias *= 0.85; }
     if (p.category === 'short_term')         { presentBias *= 1.10; futureBias *= 0.50; }
 
+    const arch = typeof playerArchetype === 'function' ? playerArchetype(p.id || p.pid, p.pos) : null;
     for (let y = 0; y < yrs; y++) {
       // Compound through y years of aging.
       let mult = 1.0;
       for (let s = 1; s <= y; s++) {
-        mult *= ageMultiplier(p.pos, age + s);
+        mult *= ageMultiplier(p.pos, age + s, arch);
       }
       // Blend present/future biases: bias applies most strongly to its own
       // domain. Year 0 = pure present, last year = pure future.
@@ -14582,7 +14585,7 @@
       if (perGame) mean = line.pts / line.games;
       else {
         const season0 = projPoints(p, lg, dp && !dp.stats?.[src] ? 'blend' : src); if (season0 == null) continue;
-        const season = season0 * productionRetention(pos, sp.age, yearsOut);
+        const season = season0 * productionRetention(pos, sp.age, yearsOut, playerArchetype(pid, pos));
         if (season <= 0) continue;   // aged out of the league entirely
         mean = season / SIM.gamesPlayed;
       }
@@ -14790,6 +14793,56 @@
   // as a 25-year-old, because the 32-year-olds who lost a step already fell out
   // of the startable pool. That is survivorship, not durability. These are
   // longitudinal shapes, what happens to ONE player as he ages.
+  // Archetype aging modifiers: physical/contested WRs decline earlier than route
+  // separators; elite size-speed/pass-catching RBs hold their shoulder longer than
+  // low-athleticism grinders; rushing QBs fade earlier than pocket passers.
+  const ARCHETYPE_CURVE_MOD = {
+    wr_separator: { holdShift:  1, declineMult: 0.80, valShift:  0.02,  valAge: 29 },
+    wr_physical:  { holdShift: -1, declineMult: 1.25, valShift: -0.03,  valAge: 28 },
+    rb_outlier:   { holdShift:  1, declineMult: 0.80, valShift:  0.03,  valAge: 26 },
+    rb_grinder:   { holdShift:  0, declineMult: 1.15, valShift: -0.02,  valAge: 26 },
+    qb_rusher:    { holdShift: -2, declineMult: 1.30, valShift: -0.02,  valAge: 30 },
+    qb_pocket:    { holdShift:  1, declineMult: 0.80, valShift:  0.015, valAge: 33 },
+    te_move:      { holdShift:  1, declineMult: 0.85, valShift:  0.015, valAge: 29 },
+  };
+  function playerArchetype(pid, pos) {
+    if (!pid || typeof window === 'undefined') return null;
+    const pr = window.PROSPECT?.players?.[pid] || null;
+    const ad = window.ADVANCED?.players?.[pid] || null;
+    if (!pr && !ad) return null;
+    if (pos === 'WR') {
+      if ((pr?.weight_lb != null && pr.weight_lb >= 218) ||
+          (ad?.contested_rate != null && ad.contested_rate >= 0.25 && ad?.avg_separation != null && ad.avg_separation < 2.8)) {
+        return 'wr_physical';
+      }
+      if ((ad?.avg_separation != null && ad.avg_separation >= 3.1) ||
+          (pr?.weight_lb != null && pr.weight_lb <= 205 && (ad?.contested_rate == null || ad.contested_rate < 0.22))) {
+        return 'wr_separator';
+      }
+    } else if (pos === 'RB') {
+      if ((pr?.athl_pct != null && pr.athl_pct >= 80) ||
+          (pr?.speed_score != null && pr.speed_score >= 108) ||
+          (pr?.weight_lb != null && pr.weight_lb >= 225 && pr?.forty_pct != null && pr.forty_pct >= 80) ||
+          (ad?.target_share != null && ad.target_share >= 0.11 && (ad?.targets || 0) >= 25)) {
+        return 'rb_outlier';
+      }
+      if (pr?.athl_pct != null && pr.athl_pct < 45 && (ad?.target_share == null || ad.target_share < 0.08)) {
+        return 'rb_grinder';
+      }
+    } else if (pos === 'QB') {
+      if ((ad?.rush_share != null && ad.rush_share >= 0.18) || (ad?.designed_runs != null && ad.designed_runs >= 20)) {
+        return 'qb_rusher';
+      }
+      if (ad?.rush_share != null && ad.rush_share < 0.08) return 'qb_pocket';
+    } else if (pos === 'TE') {
+      if (ad?.target_share != null && ad.target_share >= 0.16 &&
+          ((pr?.weight_lb != null && pr.weight_lb <= 252) || (pr?.forty_pct != null && pr.forty_pct >= 75))) {
+        return 'te_move';
+      }
+    }
+    return null;
+  }
+
   const PROD_CURVE = {
     QB: { growTo: 27, holdTo: 33, decline: 0.06 },
     RB: { growTo: 24, holdTo: 26, decline: 0.13 },
@@ -14797,19 +14850,22 @@
     TE: { growTo: 26, holdTo: 29, decline: 0.07 },
   };
   const PROD_GROWTH = 0.07;   // per year for a player still climbing to his peak
-  function productionRetention(pos, age, yearsOut) {
+  function productionRetention(pos, age, yearsOut, archetype = null) {
     if (!yearsOut) return 1;
     const c = PROD_CURVE[pos] || PROD_CURVE.WR;
+    const mod = archetype ? ARCHETYPE_CURVE_MOD[archetype] : null;
+    const holdTo = c.holdTo + (mod ? mod.holdShift : 0);
+    const decline = c.decline * (mod ? mod.declineMult : 1);
     let f = 1, a = age || 25;
     for (let i = 0; i < yearsOut; i++) {
       a += 1;
       if (a <= c.growTo) f *= (1 + PROD_GROWTH);
-      else if (a <= c.holdTo) f *= 1;
+      else if (a <= holdTo) f *= 1;
       else {
         // Decline compounds, and accelerates the further past the shoulder you
         // get, the cliff is not linear.
-        const past = a - c.holdTo;
-        f *= Math.max(0, 1 - c.decline * (1 + 0.15 * (past - 1)));
+        const past = a - holdTo;
+        f *= Math.max(0, 1 - decline * (1 + 0.15 * (past - 1)));
       }
     }
     return Math.max(0, f);
