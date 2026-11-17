@@ -1383,20 +1383,27 @@
   //   futureAge > hard_sell_age         → 0.10  (replacement-level)
   //
   // Positions without a curve (defenders, K) decay 5% per year as a default.
-  function ageRetention(age, pos, yearsOut) {
-    if (!yearsOut) return 1;
+  function ageRetention(age, pos, yearsOut, archetype = null) {
+    if (!yearsOut || yearsOut <= 0) return 1;
     if (!age) return Math.pow(0.95, yearsOut); // unknown age → modest decay
     const futureAge = age + yearsOut;
     const curve = window.STRATEGY?.age_curve?.[pos];
     if (!curve) return Math.pow(0.95, yearsOut);
+    const mod = archetype && typeof ARCHETYPE_CURVE_MOD !== 'undefined' ? ARCHETYPE_CURVE_MOD[archetype] : null;
     const { peak_avg, sell_age, hard_sell_age } = curve;
+    const sellAge = sell_age + (mod ? mod.holdShift : 0);
+    const hardAge = Math.max(sellAge + 1, hard_sell_age + (mod ? mod.holdShift : 0));
+    const dMult = mod ? mod.declineMult : 1;
     if (futureAge <= peak_avg) return 1.0;
-    if (futureAge <= sell_age) return 0.92;
-    if (futureAge <= hard_sell_age) {
-      const t = (futureAge - sell_age) / Math.max(1, hard_sell_age - sell_age);
-      return 0.92 - 0.45 * t; // → 0.47 at hard-sell
+    let ret;
+    if (futureAge <= sellAge) ret = 0.92;
+    else if (futureAge <= hardAge) {
+      const t = (futureAge - sellAge) / Math.max(1, hardAge - sellAge);
+      ret = 0.92 - 0.45 * t; // → 0.47 at hard-sell
+    } else {
+      ret = 0.25;
     }
-    return 0.25;
+    return Math.max(0.15, Math.min(1.0, 1 - (1 - ret) * dMult));
   }
 
   // Value share: this roster's whole dynasty value, every rostered player plus
@@ -1408,7 +1415,12 @@
   function rosterValueAt(roster, lg, yearsOut = 0) {
     const s = computeRosterStrength(roster, lg);
     if (!yearsOut) return s.total;
-    return s.rankedPlayers.reduce((t, p) => t + p.value * ageRetention(p.sleeper.age, p.ranked.pos || p.sleeper.pos, yearsOut), s.picksValue);
+    return s.rankedPlayers.reduce((t, p) => {
+      const pos = p.ranked.pos || p.sleeper.pos;
+      const pid = p.sleeper?.id || p.pid || p.ranked?._sleeperId;
+      const arch = typeof playerArchetype === 'function' ? playerArchetype(pid, pos) : null;
+      return t + p.value * ageRetention(p.sleeper.age, pos, yearsOut, arch);
+    }, s.picksValue);
   }
   function leagueValueTotals(lg, yearsOut = 0) {
     const key = `${lg.id}::${yearsOut}::${JSON.stringify({ s: state.settings.enabledSources, r: state.settings.enabledRankings })}`;
@@ -3056,8 +3068,9 @@
       const r = idx.bySleeperId.get(pid) || idx.byName.get(norm(sp.name));
       if (r) {
         let v = tierValue(r, league);
-        if (yearsOut) v *= ageRetention(sp.age, r.pos || sp.pos, yearsOut);
-        vals.push({ v, pos: r.pos || sp.pos });
+        const pos = r.pos || sp.pos;
+        if (yearsOut) v *= ageRetention(sp.age, pos, yearsOut, typeof playerArchetype === 'function' ? playerArchetype(pid, pos) : null);
+        vals.push({ v, pos });
       }
     }
     // Future lineups only: fold in owned picks that have CONVERTED to players by
@@ -5014,7 +5027,8 @@
     if (p.category === 'productive_vet')     { presentBias *= 1.08; futureBias *= 0.85; }
     if (p.category === 'short_term')         { presentBias *= 1.10; futureBias *= 0.50; }
 
-    const arch = typeof playerArchetype === 'function' ? playerArchetype(p.id || p.pid, p.pos) : null;
+    const pid = p._sleeperId || p.id || p.pid || (typeof sleeperIdForFuzzy === 'function' ? sleeperIdForFuzzy(p.name, p.pos) : null);
+    const arch = typeof playerArchetype === 'function' ? playerArchetype(pid, p.pos) : null;
     for (let y = 0; y < yrs; y++) {
       // Compound through y years of aging.
       let mult = 1.0;
@@ -5251,7 +5265,9 @@
         : (refVal > 0 ? Math.min(10, (myVal / refVal) * 10) : (pick && myVal > 0 ? 5 : 0));
       // Future grade: age this player's value 3 seasons, re-grade against the same
       // slot reference. Drives the FV tick on the slot bar (present grade is the fill).
-      const myValFv = pick ? myVal * ageRetention(pick.sleeper?.age ?? pick.ranked?.age, pick.ranked?.pos || pick.sleeper?.pos, 3) : 0;
+      const pickPos = pick?.ranked?.pos || pick?.sleeper?.pos;
+      const pickArch = pick && typeof playerArchetype === 'function' ? playerArchetype(pickPid, pickPos) : null;
+      const myValFv = pick ? myVal * ageRetention(pick.sleeper?.age ?? pick.ranked?.age, pickPos, 3, pickArch) : 0;
       const fvGrade = dynasty
         ? (refVal > 0 ? Math.min(10, (myValFv / refVal) * 10) : (pick && myValFv > 0 ? 5 : 0))
         : grade;
@@ -6382,7 +6398,7 @@
               const v0 = ranked ? tierValue(ranked, lg) : 0;
               const yrCells = yrHorizons.map(n => {
                 if (!ranked || !v0) return h('td', { class:'right' }, h('span', { class:'muted' }, '.'));
-                const vN = projectAssetValue(v0, sp.age, ranked.pos, n);
+                const vN = projectAssetValue(v0, sp.age, ranked.pos, n, typeof playerArchetype === 'function' ? playerArchetype(pid, ranked.pos) : null);
                 const cls = n === 0 ? '' : retentionClass(vN / v0);
                 return h('td', { class:`right tnum val-cell ${cls}` }, fmt.decimal(vN, 1));
               });
@@ -8084,7 +8100,7 @@
   // by value SIM.finderFvYears out, aged on the site's curve (ageRetention).
   function finderCore(assets) {
     const players = assets.filter(a => a.pos !== 'PICK');
-    const aged = (a) => a.v * ageRetention(window.PLAYERS[a.k]?.age, a.pos, SIM.finderFvYears);
+    const aged = (a) => a.v * ageRetention(window.PLAYERS[a.k]?.age, a.pos, SIM.finderFvYears, typeof playerArchetype === 'function' ? playerArchetype(a.k, a.pos) : null);
     const core = new Set(players.slice().sort((a, b) => aged(b) - aged(a)).slice(0, SIM.finderCoreYoung).map(a => a.k));
     const best = players.reduce((b, a) => (!b || a.v > b.v ? a : b), null);
     if (best) core.add(best.k);
@@ -11147,23 +11163,25 @@
   // (28+ falls fast), WR/TE slower, QB slowest. Picks float at 1.0 (their
   // value is the discounted-rookie expectation; conversion gain/loss roughly
   // cancels within a few years).
-  function dynastyDecay(currentAge, pos) {
+  function dynastyDecay(currentAge, pos, archetype = null) {
     if (pos === 'PICK' || pos == null) return 1.0;
     const peaks = { QB: [26, 33], RB: [23, 27], WR: [24, 29], TE: [25, 30] };
-    const [lo, hi] = peaks[pos] || [24, 29];
+    const [lo, baseHi] = peaks[pos] || [24, 29];
+    const mod = archetype && typeof ARCHETYPE_CURVE_MOD !== 'undefined' ? ARCHETYPE_CURVE_MOD[archetype] : null;
+    const hi = baseHi + (mod ? mod.holdShift : 0);
     const next = currentAge + 1;
     if (next < lo) return 1.06;       // pre-peak, growing
     if (next <= hi) return 1.00;      // peak years
     const yearsPast = next - hi;
-    const decayPerYear = { RB: 0.22, WR: 0.10, TE: 0.10, QB: 0.05 }[pos] || 0.10;
+    const decayPerYear = ({ RB: 0.22, WR: 0.10, TE: 0.10, QB: 0.05 }[pos] || 0.10) * (mod ? mod.declineMult : 1);
     return Math.max(0.4, 1 - decayPerYear * yearsPast);
   }
 
-  function projectAssetValue(currentVal, age, pos, yearsOut) {
+  function projectAssetValue(currentVal, age, pos, yearsOut, archetype = null) {
     let v = currentVal;
     let a = age || 25; // unknown age → assume prime
     for (let i = 0; i < yearsOut; i++) {
-      v *= dynastyDecay(a + i, pos);
+      v *= dynastyDecay(a + i, pos, archetype);
     }
     return v;
   }
@@ -14810,32 +14828,34 @@
     const pr = window.PROSPECT?.players?.[pid] || null;
     const ad = window.ADVANCED?.players?.[pid] || null;
     if (!pr && !ad) return null;
+    const games = ad?.games || 0;
+    const targets = ad?.targets || 0;
     if (pos === 'WR') {
       if ((pr?.weight_lb != null && pr.weight_lb >= 218) ||
-          (ad?.contested_rate != null && ad.contested_rate >= 0.25 && ad?.avg_separation != null && ad.avg_separation < 2.8)) {
+          (targets >= 20 && ad?.contested_rate != null && ad.contested_rate >= 0.25 && ad?.avg_separation != null && ad.avg_separation < 2.8)) {
         return 'wr_physical';
       }
-      if ((ad?.avg_separation != null && ad.avg_separation >= 3.1) ||
-          (pr?.weight_lb != null && pr.weight_lb <= 205 && (ad?.contested_rate == null || ad.contested_rate < 0.22))) {
+      if ((targets >= 20 && ad?.avg_separation != null && ad.avg_separation >= 3.0) ||
+          (pr?.weight_lb != null && pr.weight_lb <= 205 && targets >= 25 && ad?.contested_rate != null && ad.contested_rate < 0.20)) {
         return 'wr_separator';
       }
     } else if (pos === 'RB') {
-      if ((pr?.athl_pct != null && pr.athl_pct >= 80) ||
-          (pr?.speed_score != null && pr.speed_score >= 108) ||
+      if ((pr?.athl_pct != null && pr.athl_pct >= 85) ||
+          (pr?.speed_score != null && pr.speed_score >= 113) ||
           (pr?.weight_lb != null && pr.weight_lb >= 225 && pr?.forty_pct != null && pr.forty_pct >= 80) ||
-          (ad?.target_share != null && ad.target_share >= 0.11 && (ad?.targets || 0) >= 25)) {
+          (games >= 4 && targets >= 25 && ad?.target_share != null && ad.target_share >= 0.11)) {
         return 'rb_outlier';
       }
       if (pr?.athl_pct != null && pr.athl_pct < 45 && (ad?.target_share == null || ad.target_share < 0.08)) {
         return 'rb_grinder';
       }
     } else if (pos === 'QB') {
-      if ((ad?.rush_share != null && ad.rush_share >= 0.18) || (ad?.designed_runs != null && ad.designed_runs >= 20)) {
+      if (games >= 4 && ((ad?.rush_share != null && ad.rush_share >= 0.13) || (ad?.designed_runs != null && (ad.designed_runs / games) >= 2.0))) {
         return 'qb_rusher';
       }
-      if (ad?.rush_share != null && ad.rush_share < 0.08) return 'qb_pocket';
+      if (games >= 4 && ad?.rush_share != null && ad.rush_share < 0.08) return 'qb_pocket';
     } else if (pos === 'TE') {
-      if (ad?.target_share != null && ad.target_share >= 0.16 &&
+      if (games >= 4 && targets >= 25 && ad?.target_share != null && ad.target_share >= 0.16 &&
           ((pr?.weight_lb != null && pr.weight_lb <= 252) || (pr?.forty_pct != null && pr.forty_pct >= 75))) {
         return 'te_move';
       }
@@ -14851,7 +14871,7 @@
   };
   const PROD_GROWTH = 0.07;   // per year for a player still climbing to his peak
   function productionRetention(pos, age, yearsOut, archetype = null) {
-    if (!yearsOut) return 1;
+    if (!yearsOut || yearsOut <= 0) return 1;
     const c = PROD_CURVE[pos] || PROD_CURVE.WR;
     const mod = archetype ? ARCHETYPE_CURVE_MOD[archetype] : null;
     const holdTo = c.holdTo + (mod ? mod.holdShift : 0);
