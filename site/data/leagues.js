@@ -468,10 +468,10 @@ window.LEAGUES = [
         "starters": [
           "7523",
           "7594",
-          "9509",
+          "4866",
           "7547",
           "8146",
-          "3214",
+          "4993",
           "7588",
           "5967",
           "8126",
@@ -1791,7 +1791,9 @@ window.LEAGUES = [
           "KC"
         ],
         "taxi": [],
-        "reserve": [],
+        "reserve": [
+          "5859"
+        ],
         "wins": 7,
         "losses": 3,
         "ties": 0,
@@ -1866,8 +1868,8 @@ window.LEAGUES = [
           "12526",
           "9487",
           "4217",
+          "12507",
           "11620",
-          "13301",
           "12185",
           "HOU"
         ],
@@ -2367,11 +2369,11 @@ window.LEAGUES = [
           "8183",
           "4034",
           "9224",
-          "6794",
-          "8146",
-          "4217",
           "7569",
           "12519",
+          "4217",
+          "6794",
+          "8146",
           "5892",
           "6801",
           "3257"
@@ -2517,12 +2519,12 @@ window.LEAGUES = [
           "9228",
           "13286",
           "12481",
-          "9756",
-          "13301",
-          "11604",
-          "12491",
-          "10213",
           "9502",
+          "13301",
+          "12493",
+          "13317",
+          "10213",
+          "12491",
           "11783",
           "12494"
         ],
@@ -4734,7 +4736,7 @@ window.LEAGUES = [
     "short_name": "Washington Football League",
     "season": "2026",
     "buy_in": 30,
-    "week": 10,
+    "week": 11,
     "status": "in_season",
     "total_rosters": 12,
     "roster_positions": [
@@ -4781,7 +4783,7 @@ window.LEAGUES = [
     "playoff_round_type": 0,
     "start_week": 1,
     "league_average_match": 0,
-    "last_scored_leg": 9,
+    "last_scored_leg": 10,
     "forecast_unavailable": null,
     "fantasy_schedule": {
       "playoffStart": 15,
@@ -4997,17 +4999,17 @@ window.LEAGUES = [
         "owner_name": "espn30782061",
         "team_name": "Hash Slinging Slashers",
         "is_me": false,
-        "opponent_roster_id": 4,
+        "opponent_roster_id": 8,
         "starters": [
           "7547",
           "12527",
-          "8150",
+          "12481",
           "9487",
           "1466",
           "3163",
-          "JAX",
           "11792",
-          "6813"
+          "6813",
+          "DEN"
         ],
         "players": [
           "7547",
@@ -5033,10 +5035,10 @@ window.LEAGUES = [
           "8142"
         ],
         "wins": 6,
-        "losses": 3,
+        "losses": 4,
         "ties": 0,
-        "fpts": 1090.46,
-        "fpts_against": 929.0800000000002,
+        "fpts": 1213.78,
+        "fpts_against": 1056.94,
         "division": null
       },
       {
@@ -5045,7 +5047,7 @@ window.LEAGUES = [
         "owner_name": "leitrim65",
         "team_name": "Lord of Flatbush",
         "is_me": false,
-        "opponent_roster_id": 8,
+        "opponent_roster_id": 3,
         "starters": [
           "8144",
           "7588",
@@ -5077,11 +5079,11 @@ window.LEAGUES = [
         ],
         "taxi": [],
         "reserve": [],
-        "wins": 6,
+        "wins": 7,
         "losses": 3,
         "ties": 0,
-        "fpts": 1145.2200000000003,
-        "fpts_against": 1084.54,
+        "fpts": 1281.7800000000002,
+        "fpts_against": 1217.08,
         "division": null
       },
       {
@@ -5090,17 +5092,17 @@ window.LEAGUES = [
         "owner_name": "ESPNfan1299424352",
         "team_name": "Joshsdawgs",
         "is_me": false,
-        "opponent_roster_id": 12,
+        "opponent_roster_id": 2,
         "starters": [
           "8138",
+          "12507",
           "10229",
-          "13286",
+          "13279",
           "9484",
           "8134",
-          "SEA",
+          "MIN",
           "12185",
-          "9758",
-          "9501"
+          "9758"
         ],
         "players": [
           "8138",
@@ -5118,18 +5120,15 @@ window.LEAGUES = [
           "9758",
           "13294",
           "9501",
-          "5854",
-          "2747"
+          "5854"
         ],
         "taxi": [],
-        "reserve": [
-          "13279"
-        ],
-        "wins": 4,
+        "reserve": [],
+        "wins": 5,
         "losses": 5,
         "ties": 0,
-        "fpts": 915.82,
-        "fpts_against": 947.8800000000001,
+        "fpts": 1015.36,
+        "fpts_against": 1046.16,
         "division": null
       },
       {
@@ -5138,7 +5137,7 @@ window.LEAGUES = [
         "owner_name": "ESPNFAN5512399465",
         "team_name": "Ratnam Finn Abrams",
         "is_me": false,
-        "opponent_roster_id": 1,
+        "opponent_roster_id": 5,
         "starters": [
           "4034",
           "6801",
@@ -5173,11 +5172,11 @@ window.LEAGUES = [
         "reserve": [
           "12489"
         ],
-        "wins": 3,
+        "wins": 4,
         "losses": 6,
         "ties": 0,
-        "fpts": 999.22,
-        "fpts_against": 1084.1,
+        "fpts": 1127.08,
+        "fpts_against": 1207.4199999999998,
         "division": null
       },
       {
@@ -5186,7 +5185,7 @@ window.LEAGUES = [
         "owner_name": "ESPNFAN9093367607",
         "team_name": "Carter's Competitive Team",
         "is_me": false,
-        "opponent_roster_id": 9,
+        "opponent_roster_id": 4,
         "starters": [
           "9221",
           "8112",
@@ -5219,10 +5218,10 @@ window.LEAGUES = [
         "taxi": [],
         "reserve": [],
         "wins": 2,
-        "losses": 7,
+        "losses": 8,
         "ties": 0,
-        "fpts": 900.7,
-        "fpts_against": 1082.62,
+        "fpts": 1050.76,
+        "fpts_against": 1244.04,
         "division": null
       },
       {
@@ -5231,7 +5230,7 @@ window.LEAGUES = [
         "owner_name": "bdpardo",
         "team_name": "Dix Drive-In",
         "is_me": false,
-        "opponent_roster_id": 10,
+        "opponent_roster_id": 13,
         "starters": [
           "7564",
           "8155",
@@ -5263,11 +5262,11 @@ window.LEAGUES = [
         ],
         "taxi": [],
         "reserve": [],
-        "wins": 4,
+        "wins": 5,
         "losses": 5,
         "ties": 0,
-        "fpts": 955.98,
-        "fpts_against": 969.7199999999999,
+        "fpts": 1093.4,
+        "fpts_against": 1053.54,
         "division": null
       },
       {
@@ -5276,7 +5275,7 @@ window.LEAGUES = [
         "owner_name": "ESPNfan8462081535",
         "team_name": "Matthew's Magnificent Team",
         "is_me": false,
-        "opponent_roster_id": 2,
+        "opponent_roster_id": 1,
         "starters": [
           "6786",
           "3198",
@@ -5284,7 +5283,7 @@ window.LEAGUES = [
           "12518",
           "5846",
           "7594",
-          "9756",
+          "1479",
           "7042",
           "BUF"
         ],
@@ -5312,10 +5311,10 @@ window.LEAGUES = [
           "2133"
         ],
         "wins": 6,
-        "losses": 3,
+        "losses": 4,
         "ties": 0,
-        "fpts": 1183.54,
-        "fpts_against": 1100.6200000000001,
+        "fpts": 1316.08,
+        "fpts_against": 1237.18,
         "division": null
       },
       {
@@ -5324,17 +5323,16 @@ window.LEAGUES = [
         "owner_name": "tdub1329",
         "team_name": "Daaaa bears",
         "is_me": true,
-        "opponent_roster_id": 5,
+        "opponent_roster_id": 10,
         "starters": [
-          "9509",
           "8137",
-          "13337",
-          "13301",
+          "12517",
+          "12519",
+          "11560",
+          "9753",
           "HOU",
           "12490",
-          "3271",
-          "1433",
-          "1373"
+          "1433"
         ],
         "players": [
           "9509",
@@ -5359,11 +5357,11 @@ window.LEAGUES = [
         "reserve": [
           "8151"
         ],
-        "wins": 6,
+        "wins": 7,
         "losses": 3,
         "ties": 0,
-        "fpts": 1172.26,
-        "fpts_against": 1055.58,
+        "fpts": 1333.68,
+        "fpts_against": 1205.6399999999999,
         "division": null
       },
       {
@@ -5372,7 +5370,7 @@ window.LEAGUES = [
         "owner_name": "IcyLatinoHellmund",
         "team_name": "Pretty Sure",
         "is_me": false,
-        "opponent_roster_id": 6,
+        "opponent_roster_id": 9,
         "starters": [
           "9224",
           "12526",
@@ -5408,10 +5406,10 @@ window.LEAGUES = [
           "13417"
         ],
         "wins": 7,
-        "losses": 2,
+        "losses": 3,
         "ties": 0,
-        "fpts": 1104.1,
-        "fpts_against": 1027.18,
+        "fpts": 1187.9199999999998,
+        "fpts_against": 1164.6000000000001,
         "division": null
       },
       {
@@ -5420,7 +5418,7 @@ window.LEAGUES = [
         "owner_name": "ESPNFAN1288689340",
         "team_name": "Seirin High School",
         "is_me": false,
-        "opponent_roster_id": 13,
+        "opponent_roster_id": 12,
         "starters": [
           "6794",
           "8148",
@@ -5452,11 +5450,11 @@ window.LEAGUES = [
         ],
         "taxi": [],
         "reserve": [],
-        "wins": 4,
+        "wins": 5,
         "losses": 5,
         "ties": 0,
-        "fpts": 872.0400000000001,
-        "fpts_against": 905.12,
+        "fpts": 994.6600000000001,
+        "fpts_against": 983.22,
         "division": null
       },
       {
@@ -5465,7 +5463,7 @@ window.LEAGUES = [
         "owner_name": "TheLukeHunt",
         "team_name": "Chewie Chicken Pants",
         "is_me": false,
-        "opponent_roster_id": 3,
+        "opponent_roster_id": 11,
         "starters": [
           "9488",
           "11632",
@@ -5501,10 +5499,10 @@ window.LEAGUES = [
           "13287"
         ],
         "wins": 4,
-        "losses": 5,
+        "losses": 6,
         "ties": 0,
-        "fpts": 1095.24,
-        "fpts_against": 1206.44,
+        "fpts": 1193.52,
+        "fpts_against": 1305.98,
         "division": null
       },
       {
@@ -5513,7 +5511,7 @@ window.LEAGUES = [
         "owner_name": "espnfan4679401506",
         "team_name": "Damier's Dangerous Team",
         "is_me": false,
-        "opponent_roster_id": 11,
+        "opponent_roster_id": 6,
         "starters": [
           "11604",
           "7543",
@@ -5546,10 +5544,10 @@ window.LEAGUES = [
         "taxi": [],
         "reserve": [],
         "wins": 2,
-        "losses": 7,
+        "losses": 8,
         "ties": 0,
-        "fpts": 1076.18,
-        "fpts_against": 1117.88,
+        "fpts": 1154.28,
+        "fpts_against": 1240.5,
         "division": null
       }
     ],
