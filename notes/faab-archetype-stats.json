@@ -1,33 +1,20 @@
 {
- "generated": "2026-11-12 08:01",
+ "generated": "2026-11-17 22:40",
  "dims": {
   "situation": {
    "dynasty": {
     "starter left the team (cut or traded)": {
-     "n": 4,
+     "n": 5,
      "min": 17,
-     "q1": 17.8,
-     "median": 20.0,
-     "q3": 41.5,
-     "iqr": 23.8,
+     "q1": 18.0,
+     "median": 22,
+     "q3": 64.0,
+     "iqr": 46.0,
      "max": 100,
-     "mean": 39.2,
-     "zero_claims": 4,
-     "all_claims": 8,
-     "zero_share": 50.0
-    },
-    "starter long-term injury": {
-     "n": 97,
-     "min": 1,
-     "q1": 7.0,
-     "median": 16,
-     "q3": 31.0,
-     "iqr": 24.0,
-     "max": 150,
-     "mean": 24.7,
-     "zero_claims": 42,
-     "all_claims": 139,
-     "zero_share": 30.2
+     "mean": 44.2,
+     "zero_claims": 6,
+     "all_claims": 11,
+     "zero_share": 54.5
     },
     "breakout game": {
      "n": 29,
@@ -38,9 +25,22 @@
      "iqr": 24.0,
      "max": 114,
      "mean": 23.0,
-     "zero_claims": 22,
-     "all_claims": 51,
-     "zero_share": 43.1
+     "zero_claims": 31,
+     "all_claims": 60,
+     "zero_share": 51.7
+    },
+    "starter long-term injury": {
+     "n": 98,
+     "min": 1,
+     "q1": 7.0,
+     "median": 15.5,
+     "q3": 30.8,
+     "iqr": 23.8,
+     "max": 150,
+     "mean": 24.6,
+     "zero_claims": 44,
+     "all_claims": 142,
+     "zero_share": 31.0
     },
     "one-week stream / roster filler": {
      "n": 12,
@@ -95,43 +95,30 @@
      "zero_share": 42.9
     },
     "healthy handcuff / backup stash": {
-     "n": 32,
+     "n": 33,
      "min": 1,
-     "q1": 2.8,
-     "median": 10.5,
-     "q3": 29.2,
-     "iqr": 26.5,
+     "q1": 3.0,
+     "median": 11,
+     "q3": 29.0,
+     "iqr": 26.0,
      "max": 100,
-     "mean": 20.2,
-     "zero_claims": 33,
+     "mean": 20.1,
+     "zero_claims": 32,
      "all_claims": 65,
-     "zero_share": 50.8
-    },
-    "starter short-term injury": {
-     "n": 62,
-     "min": 1,
-     "q1": 3.2,
-     "median": 10.5,
-     "q3": 23.8,
-     "iqr": 20.5,
-     "max": 64,
-     "mean": 15.6,
-     "zero_claims": 33,
-     "all_claims": 95,
-     "zero_share": 34.7
+     "zero_share": 49.2
     },
     "entrenched NFL starter, unrostered": {
-     "n": 118,
+     "n": 125,
      "min": 1,
      "q1": 5.0,
-     "median": 9.5,
-     "q3": 15.8,
-     "iqr": 10.8,
+     "median": 10,
+     "q3": 16.0,
+     "iqr": 11.0,
      "max": 114,
      "mean": 13.8,
-     "zero_claims": 68,
-     "all_claims": 186,
-     "zero_share": 36.6
+     "zero_claims": 78,
+     "all_claims": 203,
+     "zero_share": 38.4
     },
     "no NFL snaps that season": {
      "n": 1,
@@ -145,6 +132,19 @@
      "zero_claims": 1,
      "all_claims": 2,
      "zero_share": 50.0
+    },
+    "starter short-term injury": {
+     "n": 63,
+     "min": 1,
+     "q1": 3.0,
+     "median": 9,
+     "q3": 21.5,
+     "iqr": 18.5,
+     "max": 61,
+     "mean": 14.4,
+     "zero_claims": 30,
+     "all_claims": 93,
+     "zero_share": 32.3
     },
     "preseason claim": {
      "n": 56,
@@ -160,17 +160,17 @@
      "zero_share": 45.6
     },
     "usage takeover, no big box score": {
-     "n": 27,
+     "n": 29,
      "min": 1,
      "q1": 2.0,
      "median": 7,
-     "q3": 13.5,
-     "iqr": 11.5,
+     "q3": 15.0,
+     "iqr": 13.0,
      "max": 102,
-     "mean": 13.3,
+     "mean": 14.2,
      "zero_claims": 19,
-     "all_claims": 46,
-     "zero_share": 41.3
+     "all_claims": 48,
+     "zero_share": 39.6
     },
     "rookie ramping into a role": {
      "n": 5,
@@ -223,6 +223,19 @@
      "zero_claims": 20,
      "all_claims": 34,
      "zero_share": 58.8
+    },
+    "injured or unavailable stash": {
+     "n": 1,
+     "min": 2,
+     "q1": 2,
+     "median": 2,
+     "q3": 2,
+     "iqr": 0,
+     "max": 2,
+     "mean": 2,
+     "zero_claims": 3,
+     "all_claims": 4,
+     "zero_share": 75.0
     }
    },
    "redraft": {
@@ -239,6 +252,19 @@
      "all_claims": 18,
      "zero_share": 5.6
     },
+    "starter short-term injury": {
+     "n": 12,
+     "min": 1,
+     "q1": 4.5,
+     "median": 11.0,
+     "q3": 16.2,
+     "iqr": 11.8,
+     "max": 50,
+     "mean": 13.2,
+     "zero_claims": 1,
+     "all_claims": 13,
+     "zero_share": 7.7
+    },
     "rotational piece, no role change": {
      "n": 2,
      "min": 5,
@@ -251,19 +277,6 @@
      "zero_claims": 2,
      "all_claims": 4,
      "zero_share": 50.0
-    },
-    "starter short-term injury": {
-     "n": 13,
-     "min": 1,
-     "q1": 5.0,
-     "median": 10,
-     "q3": 15.0,
-     "iqr": 10.0,
-     "max": 50,
-     "mean": 12.6,
-     "zero_claims": 1,
-     "all_claims": 14,
-     "zero_share": 7.1
     },
     "entrenched NFL starter, unrostered": {
      "n": 41,
@@ -317,19 +330,6 @@
      "all_claims": 13,
      "zero_share": 23.1
     },
-    "starter left the team (cut or traded)": {
-     "n": 1,
-     "min": 6,
-     "q1": 6,
-     "median": 6,
-     "q3": 6,
-     "iqr": 0,
-     "max": 6,
-     "mean": 6,
-     "zero_claims": 0,
-     "all_claims": 1,
-     "zero_share": 0.0
-    },
     "usage takeover, no big box score": {
      "n": 6,
      "min": 1,
@@ -342,6 +342,19 @@
      "zero_claims": 2,
      "all_claims": 8,
      "zero_share": 25.0
+    },
+    "starter left the team (cut or traded)": {
+     "n": 2,
+     "min": 5,
+     "q1": 5.2,
+     "median": 5.5,
+     "q3": 5.8,
+     "iqr": 0.5,
+     "max": 6,
+     "mean": 5.5,
+     "zero_claims": 0,
+     "all_claims": 2,
+     "zero_share": 0.0
     },
     "rookie ramping into a role": {
      "n": 4,
@@ -400,56 +413,56 @@
   "position": {
    "dynasty": {
     "RB": {
-     "n": 197,
+     "n": 202,
      "min": 1,
-     "q1": 4.0,
-     "median": 13,
-     "q3": 31.0,
+     "q1": 3.0,
+     "median": 13.0,
+     "q3": 30.0,
      "iqr": 27.0,
      "max": 150,
-     "mean": 23.0,
-     "zero_claims": 118,
-     "all_claims": 315,
-     "zero_share": 37.5
+     "mean": 22.6,
+     "zero_claims": 119,
+     "all_claims": 321,
+     "zero_share": 37.1
     },
     "QB": {
-     "n": 79,
+     "n": 81,
      "min": 1,
      "q1": 5.0,
      "median": 11,
      "q3": 20.0,
      "iqr": 15.0,
      "max": 106,
-     "mean": 15.5,
-     "zero_claims": 61,
-     "all_claims": 140,
-     "zero_share": 43.6
+     "mean": 15.3,
+     "zero_claims": 65,
+     "all_claims": 146,
+     "zero_share": 44.5
     },
     "WR": {
-     "n": 195,
+     "n": 199,
      "min": 1,
      "q1": 4.0,
      "median": 10,
      "q3": 23.0,
      "iqr": 19.0,
      "max": 175,
-     "mean": 18.9,
-     "zero_claims": 135,
-     "all_claims": 330,
+     "mean": 19.0,
+     "zero_claims": 138,
+     "all_claims": 337,
      "zero_share": 40.9
     },
     "TE": {
-     "n": 100,
+     "n": 103,
      "min": 1,
      "q1": 4.0,
-     "median": 9.0,
-     "q3": 17.5,
-     "iqr": 13.5,
+     "median": 9,
+     "q3": 18.0,
+     "iqr": 14.0,
      "max": 200,
-     "mean": 17.1,
-     "zero_claims": 69,
-     "all_claims": 169,
-     "zero_share": 40.8
+     "mean": 17.2,
+     "zero_claims": 74,
+     "all_claims": 177,
+     "zero_share": 41.8
     },
     "DEF": {
      "n": 23,
@@ -473,9 +486,9 @@
      "iqr": 14.5,
      "max": 26,
      "mean": 9.9,
-     "zero_claims": 16,
-     "all_claims": 24,
-     "zero_share": 66.7
+     "zero_claims": 23,
+     "all_claims": 31,
+     "zero_share": 74.2
     },
     "K": {
      "n": 31,
@@ -575,7 +588,7 @@
   "experience": {
    "dynasty": {
     "NFL year 1 (rookie)": {
-     "n": 131,
+     "n": 135,
      "min": 1,
      "q1": 3.0,
      "median": 12,
@@ -583,48 +596,48 @@
      "iqr": 25.0,
      "max": 175,
      "mean": 21.8,
-     "zero_claims": 84,
-     "all_claims": 215,
-     "zero_share": 39.1
+     "zero_claims": 86,
+     "all_claims": 221,
+     "zero_share": 38.9
     },
     "NFL years 2-3": {
-     "n": 142,
+     "n": 146,
      "min": 1,
      "q1": 4.2,
      "median": 11.0,
-     "q3": 26.5,
-     "iqr": 22.2,
+     "q3": 25.0,
+     "iqr": 20.8,
      "max": 125,
-     "mean": 20.1,
-     "zero_claims": 109,
-     "all_claims": 251,
-     "zero_share": 43.4
+     "mean": 19.8,
+     "zero_claims": 118,
+     "all_claims": 264,
+     "zero_share": 44.7
     },
     "NFL years 8+": {
-     "n": 114,
+     "n": 116,
      "min": 1,
-     "q1": 5.0,
+     "q1": 4.8,
      "median": 10.0,
-     "q3": 16.8,
-     "iqr": 11.8,
+     "q3": 16.2,
+     "iqr": 11.5,
      "max": 200,
-     "mean": 18.3,
-     "zero_claims": 93,
-     "all_claims": 207,
-     "zero_share": 44.9
+     "mean": 18.1,
+     "zero_claims": 96,
+     "all_claims": 212,
+     "zero_share": 45.3
     },
     "NFL years 4-7": {
-     "n": 223,
+     "n": 227,
      "min": 1,
      "q1": 3.0,
      "median": 9,
      "q3": 20.0,
      "iqr": 17.0,
      "max": 150,
-     "mean": 16.7,
-     "zero_claims": 130,
-     "all_claims": 353,
-     "zero_share": 36.8
+     "mean": 16.6,
+     "zero_claims": 136,
+     "all_claims": 363,
+     "zero_share": 37.5
     },
     "n/a (team defense)": {
      "n": 23,
@@ -711,84 +724,84 @@
   "production": {
    "dynasty": {
     "upside play": {
-     "n": 93,
+     "n": 100,
+     "min": 1,
+     "q1": 5.0,
+     "median": 11.0,
+     "q3": 24.2,
+     "iqr": 19.2,
+     "max": 200,
+     "mean": 20.5,
+     "zero_claims": 63,
+     "all_claims": 163,
+     "zero_share": 38.7
+    },
+    "floor play": {
+     "n": 79,
      "min": 1,
      "q1": 5.0,
      "median": 11,
-     "q3": 25.0,
-     "iqr": 20.0,
-     "max": 200,
-     "mean": 21.1,
-     "zero_claims": 54,
-     "all_claims": 147,
-     "zero_share": 36.7
-    },
-    "floor play": {
-     "n": 76,
-     "min": 1,
-     "q1": 5.0,
-     "median": 10.5,
-     "q3": 27.8,
-     "iqr": 22.8,
+     "q3": 26.0,
+     "iqr": 21.0,
      "max": 143,
-     "mean": 20.7,
-     "zero_claims": 32,
-     "all_claims": 108,
-     "zero_share": 29.6
+     "mean": 20.6,
+     "zero_claims": 39,
+     "all_claims": 118,
+     "zero_share": 33.1
     },
     "low output, neither profile": {
-     "n": 336,
+     "n": 342,
      "min": 1,
      "q1": 3.0,
      "median": 10.0,
      "q3": 22.0,
      "iqr": 19.0,
      "max": 175,
-     "mean": 19.3,
-     "zero_claims": 236,
-     "all_claims": 572,
-     "zero_share": 41.3
+     "mean": 19.2,
+     "zero_claims": 243,
+     "all_claims": 585,
+     "zero_share": 41.5
     },
     "unknown (under 3 games after pickup)": {
-     "n": 128,
+     "n": 126,
      "min": 1,
      "q1": 2.0,
-     "median": 9.5,
-     "q3": 20.2,
-     "iqr": 18.2,
+     "median": 8.0,
+     "q3": 21.5,
+     "iqr": 19.5,
      "max": 100,
-     "mean": 15.5,
-     "zero_claims": 94,
-     "all_claims": 222,
-     "zero_share": 42.3
+     "mean": 15.6,
+     "zero_claims": 91,
+     "all_claims": 217,
+     "zero_share": 41.9
     }
    },
    "redraft": {
     "low output, neither profile": {
-     "n": 57,
+     "n": 60,
      "min": 1,
      "q1": 3.0,
-     "median": 8,
-     "q3": 16.0,
-     "iqr": 13.0,
+     "median": 8.0,
+     "q3": 16.8,
+     "iqr": 13.8,
      "max": 60,
-     "mean": 11.7,
-     "zero_claims": 15,
-     "all_claims": 72,
-     "zero_share": 20.8
+     "mean": 11.5,
+     "zero_claims": 16,
+     "all_claims": 76,
+     "zero_share": 21.1
     },
     "unknown (under 3 games after pickup)": {
-     "n": 19,
-     "min": 2,
-     "q1": 4.5,
-     "median": 6,
-     "q3": 12.5,
-     "iqr": 8.0,
+     "n": 17,
+     "min": 3,
+     "q1": 5.0,
+     "median": 8,
+     "q3": 15.0,
+     "iqr": 10.0,
      "max": 35,
-     "mean": 9.9,
-     "zero_claims": 4,
-     "all_claims": 23,
-     "zero_share": 17.4
+     "mean": 10.8,
+     "zero_claims": 3,
+     "all_claims": 20,
+     "zero_share": 15.0
     },
     "floor play": {
      "n": 30,
@@ -798,23 +811,23 @@
      "q3": 17.5,
      "iqr": 15.5,
      "max": 84,
-     "mean": 12.6,
+     "mean": 12.7,
      "zero_claims": 9,
      "all_claims": 39,
      "zero_share": 23.1
     },
     "upside play": {
-     "n": 44,
+     "n": 43,
      "min": 1,
      "q1": 2.0,
-     "median": 4.0,
-     "q3": 10.5,
-     "iqr": 8.5,
+     "median": 4,
+     "q3": 9.0,
+     "iqr": 7.0,
      "max": 80,
-     "mean": 9.0,
+     "mean": 8.7,
      "zero_claims": 22,
-     "all_claims": 66,
-     "zero_share": 33.3
+     "all_claims": 65,
+     "zero_share": 33.8
     }
    }
   },
@@ -872,18 +885,31 @@
      "all_claims": 8,
      "zero_share": 0.0
     },
-    "NFL years 2-3 | healthy handcuff / backup stash | RB | low output, neither profile": {
+    "NFL years 4-7 | entrenched NFL starter, unrostered | TE | upside play": {
      "n": 9,
      "min": 1,
-     "q1": 6.0,
+     "q1": 7.0,
      "median": 17,
-     "q3": 41.0,
-     "iqr": 35.0,
+     "q3": 25.0,
+     "iqr": 18.0,
+     "max": 69,
+     "mean": 20.3,
+     "zero_claims": 7,
+     "all_claims": 16,
+     "zero_share": 43.8
+    },
+    "NFL years 2-3 | healthy handcuff / backup stash | RB | low output, neither profile": {
+     "n": 10,
+     "min": 1,
+     "q1": 8.2,
+     "median": 16.0,
+     "q3": 38.0,
+     "iqr": 29.8,
      "max": 52,
-     "mean": 23.7,
+     "mean": 22.8,
      "zero_claims": 10,
-     "all_claims": 19,
-     "zero_share": 52.6
+     "all_claims": 20,
+     "zero_share": 50.0
     },
     "NFL years 4-7 | entrenched NFL starter, unrostered | WR | low output, neither profile": {
      "n": 11,
@@ -894,9 +920,9 @@
      "iqr": 13.5,
      "max": 23,
      "mean": 9.4,
-     "zero_claims": 5,
-     "all_claims": 16,
-     "zero_share": 31.2
+     "zero_claims": 6,
+     "all_claims": 17,
+     "zero_share": 35.3
     },
     "NFL years 8+ | entrenched NFL starter, unrostered | WR | low output, neither profile": {
      "n": 11,
@@ -983,12 +1009,12 @@
  },
  "counts": {
   "dynasty": {
-   "claims_with_bid": 1547,
-   "completed": 1049,
-   "failed": 498,
-   "completed_zero_dollar": 416,
-   "completed_priced": 633,
-   "zero_share_pct": 39.7,
+   "claims_with_bid": 1582,
+   "completed": 1083,
+   "failed": 499,
+   "completed_zero_dollar": 436,
+   "completed_priced": 647,
+   "zero_share_pct": 40.3,
    "leagues": [
     "Password is taco",
     "The League",
@@ -1022,19 +1048,19 @@
  "unknowns": {
   "dynasty": {
    "experience_unknown_pct": 0.0,
-   "experience_na_team_defense_pct": 2.3,
+   "experience_na_team_defense_pct": 2.2,
    "position_unknown_pct": 0.0,
-   "production_unknown_pct": 21.2,
+   "production_unknown_pct": 20.0,
    "situation_unresolved_pct": 0.0,
-   "any_dimension_unknown_pct": 21.2
+   "any_dimension_unknown_pct": 20.0
   },
   "redraft": {
    "experience_unknown_pct": 0.0,
    "experience_na_team_defense_pct": 18.2,
    "position_unknown_pct": 0.0,
-   "production_unknown_pct": 13.7,
+   "production_unknown_pct": 12.1,
    "situation_unresolved_pct": 0.0,
-   "any_dimension_unknown_pct": 13.7
+   "any_dimension_unknown_pct": 12.1
   }
  },
  "excluded": {

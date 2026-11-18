@@ -58,6 +58,13 @@ def load_site_leagues():
             if str(row.get("id", "")).isdigit() and row.get("platform") != "espn"]
 
 
+# Sleeper chains seasons with previous_league_id, but yuH 2024 pointed at an
+# empty 2023 offseason shell (1043796251647221760) instead of Woody Boys and Larry (922047920113897472).
+PREVIOUS_LEAGUE_BRIDGES = {
+    "1043796251647221760": "922047920113897472",
+}
+
+
 def chain_for(league_id: str):
     chain, seen, current = [], set(), league_id
     while current and current != "0" and current not in seen and len(chain) < 10:
@@ -68,7 +75,8 @@ def chain_for(league_id: str):
         )
         chain.append({"id": current, "season": str(meta.get("season", "")),
                       "sf": "SUPER_FLEX" in (meta.get("roster_positions") or [])})
-        current = str(meta.get("previous_league_id") or "")
+        prev = str(meta.get("previous_league_id") or "")
+        current = prev if prev and prev != "0" else PREVIOUS_LEAGUE_BRIDGES.get(current, "")
     return chain
 
 

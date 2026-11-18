@@ -47,9 +47,14 @@ CHAINS = {
     "The League": ["1314860638501076992", "1180542554655346688",
                    "1085114627396091904", "990856735038513152"],
     "yuH": ["1312276370583220224", "1183305370750713856",
-            "1072695681120444416", "1043796251647221760"],
+            "1072695681120444416", "1043796251647221760",
+            "922047920113897472"],
     "Phi Kap Fantasy": ["1389722402430136320", "1257103919633408000",
                         "1131298238423969792"],
+}
+# yuH 2024 pointed at an empty 2023 offseason shell; bridge it back to Woody Boys and Larry.
+PREVIOUS_LEAGUE_BRIDGES = {
+    "1043796251647221760": "922047920113897472",
 }
 # Sleeper settings.type: 0 = redraft, 1 = keeper, 2 = dynasty. Verified per
 # league-season rather than hardcoded, but this is the expected split.
@@ -185,7 +190,8 @@ def verify_chains() -> dict:
         while cur:
             m = league_meta(cur)
             walked.append(cur)
-            cur = m.get("previous_league_id")
+            prev = m.get("previous_league_id")
+            cur = prev if prev and str(prev) != "0" else PREVIOUS_LEAGUE_BRIDGES.get(str(cur))
         if walked != ids:
             raise SystemExit(
                 f"chain mismatch for {name}:\n  hardcoded {ids}\n  walked    {walked}")

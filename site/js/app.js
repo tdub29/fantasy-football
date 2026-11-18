@@ -8672,13 +8672,15 @@
       try { const r = await fetch(u); return r.ok ? await r.json() : null; } catch { return null; }
     };
     // Walk back through the seasons. Capped at 10 so a corrupt chain cannot loop.
+    const PREVIOUS_LEAGUE_BRIDGES = { '1043796251647221760': '922047920113897472' };
     const seasons = [];
     let id = lg.id;
     for (let i = 0; i < 10 && id && id !== '0'; i++) {
       const meta = await getJSON(`https://api.sleeper.app/v1/league/${id}`);
       if (!meta) break;
       seasons.push({ id, season: meta.season, sf: (meta.roster_positions || []).includes('SUPER_FLEX') });
-      id = meta.previous_league_id;
+      const prev = meta.previous_league_id;
+      id = (prev && prev !== '0') ? prev : PREVIOUS_LEAGUE_BRIDGES[String(id)];
     }
 
     const counts = new Map(), names = new Map(), usernames = new Map(), draftOutcomes = new Map();

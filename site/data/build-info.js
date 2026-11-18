@@ -1,5 +1,5 @@
 window.BUILD_INFO = {
-  "generated": "2026-11-17T10:28:46",
+  "generated": "2026-11-17T22:40:42",
   "files": {
     "ktc.js": "2026-11-17T06:00:09",
     "players.js": "2026-11-17T07:41:10",
@@ -32,8 +32,8 @@ window.BUILD_INFO = {
     "idp-advanced.js": "2026-11-17T06:12:13",
     "weekly-rankings.js": "2026-11-17T06:02:05",
     "sleeper-market.js": "2026-11-17T07:41:07",
-    "faab.js": "2026-11-17T06:01:16",
-    "trade-history.js": "2026-11-17T06:00:39",
+    "faab.js": "2026-11-17T22:40:24",
+    "trade-history.js": "2026-11-17T22:39:54",
     "context.js": "2026-11-17T06:12:53",
     "history.js": "2026-11-17T06:12:54"
   }
