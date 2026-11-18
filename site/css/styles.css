@@ -6389,10 +6389,10 @@ button:disabled { cursor: wait; opacity: 0.7; }
 .wx-diorama-fx-wrap { position: absolute; inset: 0; pointer-events: none; }
 .wx-diorama-overlay {
   position: absolute; top: 6px; left: 50%; transform: translateX(-50%);
-  background: #14172a;
+  background: var(--grad-band);
   border: 2px solid var(--ink);
   border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-1);
+  box-shadow: var(--bevel-out), var(--shadow-1);
   padding: 4px 10px;
   display: flex; flex-direction: column; align-items: center; gap: 1px;
   text-align: center; pointer-events: none;
@@ -6403,50 +6403,54 @@ button:disabled { cursor: wait; opacity: 0.7; }
   font-size: 0.82rem; font-weight: 800; letter-spacing: 0.08em;
   text-transform: uppercase; color: var(--gold); line-height: 1.05;
   white-space: nowrap;
+  text-shadow: 0 1px 0 var(--ink);
 }
 .wx-ov-venue {
-  font-size: 0.64rem; font-weight: 700; color: var(--bg-2); line-height: 1.15;
+  font-size: 0.64rem; font-weight: 700; color: var(--chalk); line-height: 1.15;
   white-space: nowrap; max-width: 220px; overflow: hidden; text-overflow: ellipsis;
 }
 .wx-ov-temp-row { display: flex; align-items: center; gap: 5px; margin-top: 2px; color: var(--chalk); }
 .wx-ov-temp-row .pixel-icon { color: var(--gold); }
 .wx-ov-temp-row .pixel-icon svg { width: 13px; height: 13px; }
 .wx-ov-temp {
-  font-family: var(--font-pixel); font-size: 1.02rem; line-height: 1;
-  letter-spacing: 0.04em; color: var(--chalk);
+  font-family: var(--font-display); font-weight: 800; font-size: 0.98rem; line-height: 1;
+  letter-spacing: 0.03em; color: var(--chalk);
+  text-shadow: 0 1px 0 var(--ink);
 }
 .wx-diorama-corner {
   position: absolute; right: 7px; bottom: 6px;
-  background: var(--ink); color: var(--chalk);
-  border: 1.5px solid var(--gold); border-radius: 4px;
+  background: var(--grad-gold); color: var(--ink);
+  border: 2px solid var(--ink); border-radius: 5px;
+  box-shadow: var(--shadow-1);
   padding: 1px 6px; pointer-events: none;
-  font-size: 0.56rem; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase;
+  font-size: 0.58rem; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase;
 }
 .wx-led-strip {
   display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px;
 }
 .wx-led-cell {
-  background: var(--led-bg);
-  background-image: radial-gradient(rgba(255, 255, 255, .14) 1px, transparent 1px);
-  background-size: 4px 4px;
+  background: var(--grad-btn);
   border: 2px solid var(--ink);
   border-radius: var(--radius-sm);
-  box-shadow: var(--bevel-in);
+  box-shadow: var(--bevel-out);
   padding: 5px 4px;
   display: flex; flex-direction: column; align-items: center; gap: 1px;
   text-align: center; min-width: 0;
 }
 .wx-led-lbl {
-  font-size: 0.54rem; font-weight: 800; letter-spacing: 0.08em;
-  color: oklch(68% 0.09 145); text-transform: uppercase;
+  font-size: 0.56rem; font-weight: 800; letter-spacing: 0.07em;
+  color: var(--fg-2); text-transform: uppercase;
 }
 .wx-led-val {
-  font-family: var(--font-pixel); font-size: 0.96rem; line-height: 1.05;
-  color: var(--led); letter-spacing: 0.03em;
+  font-family: var(--font-display); font-weight: 800; font-size: 0.92rem; line-height: 1.1;
+  color: var(--fg-0); letter-spacing: 0.02em;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
 }
-.wx-led-cell.tone-hot .wx-led-val { color: #ff7066; }
-.wx-led-cell.tone-cold .wx-led-val { color: #7cc7ff; }
+.wx-led-cell.tone-hot { background: var(--grad-gold); }
+.wx-led-cell.tone-hot .wx-led-lbl { color: var(--ink); }
+.wx-led-cell.tone-hot .wx-led-val { color: var(--red); }
+.wx-led-cell.tone-cold { background: linear-gradient(180deg, oklch(92% 0.045 235), oklch(84% 0.075 235)); }
+.wx-led-cell.tone-cold .wx-led-val { color: var(--blue); }
 .wx-popover-verdict-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .wx-verdict { font-size: 0.96rem; font-weight: 800; color: var(--fg-0); }
 .wx-verdict.is-matters { color: var(--red); }
@@ -6479,19 +6483,19 @@ button:disabled { cursor: wait; opacity: 0.7; }
 .wx-inline-thumb { position: relative; width: 132px; aspect-ratio: 3 / 2; display: block; }
 .wx-thumb-tag {
   position: absolute; left: 4px; bottom: 4px;
-  background: #12131f; color: var(--gold);
-  border: 1px solid var(--gold); border-radius: 3px;
+  background: var(--grad-band); color: var(--gold);
+  border: 1.5px solid var(--ink); border-radius: 4px;
   padding: 1px 5px; font-size: 0.58rem; font-weight: 800;
   letter-spacing: 0.06em; text-transform: uppercase;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
 }
 .wx-thumb-expand {
   position: absolute; right: 4px; top: 4px;
-  background: rgba(18, 19, 31, 0.88); color: var(--chalk);
-  border: 1px solid var(--gold); border-radius: 3px;
-  padding: 0 4px; font-size: 0.52rem; font-weight: 800;
+  background: var(--grad-gold); color: var(--ink);
+  border: 1.5px solid var(--ink); border-radius: 4px;
+  padding: 0 5px; font-size: 0.54rem; font-weight: 800;
   letter-spacing: 0.05em; pointer-events: none;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
 }
 .wx-inline-copy { display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1; }
 @media (max-width: 440px) {
