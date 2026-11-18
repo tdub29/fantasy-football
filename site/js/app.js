@@ -12665,6 +12665,147 @@
     return h('section', { class:'ctx-section' }, ...blocks);
   }
 
+  // Player-level transaction & multi-year trade history across Trevor's leagues.
+  function playerTxHistoryBlock(sleeper) {
+    if (!sleeper || !sleeper.id) return null;
+    const pid = String(sleeper.id);
+    const leagues = (window.LEAGUES || []).filter(lg => !isLeagueHidden(lg));
+    if (!leagues.length) return null;
+
+    const pName = (id) => window.PLAYERS?.[String(id)]?.name || `#${id}`;
+    const pickTxt = (pk) => `${pk.season} R${pk.round}${pk.outcome?.playerName ? ` (${pk.outcome.playerName})` : ''}`;
+    const fmtDate = (ms) => ms ? new Date(ms).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'2-digit' }) : '';
+
+    const collectEvents = () => {
+      const evs = [];
+      const seen = new Set();
+      // 1) Multi-season bridged trades from TRADE_HISTORY
+      const thLeagues = window.TRADE_HISTORY?.leagues || {};
+      for (const lg of leagues) {
+        const th = thLeagues[String(lg.id)];
+        if (!th || !th.partners) continue;
+        for (const p of th.partners) {
+          for (const tr of p.trades || []) {
+            const got = (tr.got || []).map(String);
+            const sent = (tr.sent || []).map(String);
+            if (!got.includes(pid) && !sent.includes(pid)) continue;
+            const at = Number(tr.at) || 0;
+            const k = `tr:${lg.id}:${tr.season}:${tr.week}:${at}`;
+            if (seen.has(k)) continue;
+            seen.add(k);
+            const dir = got.includes(pid) ? 'Acquired from' : 'Traded to';
+            const gotList = [...got.map(pName), ...(tr.gotPicks || []).map(pickTxt)].join(', ') || 'nothing';
+            const sentList = [...sent.map(pName), ...(tr.sentPicks || []).map(pickTxt)].join(', ') || 'nothing';
+            evs.push({
+              at,
+              badge: 'TRADE',
+              badgeCls: 'badge',
+              league: lg.short_name || lg.name,
+              when: `${tr.season} W${tr.week}${at ? ` · ${fmtDate(at)}` : ''}`,
+              summary: `${dir} ${p.name || 'partner'}`,
+              detail: `Got: ${gotList} · Sent: ${sentList}`,
+            });
+          }
+        }
+      }
+      // 2) Cached current-season Sleeper transactions (adds, drops, waivers, all trades)
+      for (const lg of leagues) {
+        if (lg.platform === 'espn') continue;
+        let txs = null;
+        try {
+          const raw = JSON.parse(localStorage.getItem(accountKey(`tier-sheet-timeline::${lg.id}`)) || 'null');
+          if (raw && Array.isArray(raw.txs)) txs = raw.txs;
+        } catch {}
+        if (!txs) continue;
+        const rName = (rid) => lg.rosters?.find(r => r.roster_id === rid)?.team_name || `Roster ${rid}`;
+        for (const t of txs) {
+          if (t.status && t.status !== 'complete') continue;
+          const adds = t.adds || {};
+          const drops = t.drops || {};
+          if (!adds[pid] && !drops[pid]) continue;
+          const at = Number(t.status_updated || t.created || 0);
+          if (t.type === 'trade' && [...seen].some(s => s.startsWith(`tr:${lg.id}:`) && Math.abs(Number(s.split(':').pop()) - at) < 5000)) continue;
+          const k = `sl:${lg.id}:${t.transaction_id || at}`;
+          if (seen.has(k)) continue;
+          seen.add(k);
+          const isWaiver = t.type === 'waiver';
+          const bid = t.settings?.waiver_bid;
+          const act = adds[pid] ? (isWaiver ? `WAIVER${bid != null ? ` $${bid}` : ''}` : 'ADD') : 'DROP';
+          const who = adds[pid] ? rName(adds[pid]) : rName(drops[pid]);
+          const sum = t.type === 'trade'
+            ? `Traded to ${rName(adds[pid])}${drops[pid] ? ` (from ${rName(drops[pid])})` : ''}`
+            : `${adds[pid] ? 'Added' : 'Dropped'} by ${who}`;
+          evs.push({
+            at,
+            badge: t.type === 'trade' ? 'TRADE' : act,
+            badgeCls: 'badge',
+            league: lg.short_name || lg.name,
+            when: `W${t.week || '?'}${at ? ` · ${fmtDate(at)}` : ''}`,
+            summary: sum,
+            detail: null,
+          });
+        }
+      }
+      return evs.sort((a, b) => (b.at || 0) - (a.at || 0));
+    };
+
+    const body = h('div', { class:'tx-hist-body' });
+    const card = h('div', { class:'card' },
+      h('div', { class:'card-title' }, 'Transactions & Trade History'),
+      body
+    );
+
+    const renderList = (loading) => {
+      const evs = collectEvents();
+      body.innerHTML = '';
+      if (!evs.length) {
+        body.appendChild(h('div', { class:'tip' },
+          loading ? 'Checking league transactions…' : 'No trades or current-season transactions recorded for this player.'));
+        return;
+      }
+      for (const ev of evs.slice(0, 20)) {
+        body.appendChild(h('div', { style:{ padding:'7px 0', borderTop:'1px solid var(--border)', display:'flex', flexDirection:'column', gap:'2px' } },
+          h('div', { style:{ display:'flex', alignItems:'center', gap:'6px', flexWrap:'wrap' } },
+            h('span', { class: ev.badgeCls, style:{ fontSize:'0.64rem' } }, ev.badge),
+            h('strong', { style:{ fontSize:'0.82rem' } }, ev.league),
+            h('span', { class:'tip', style:{ marginLeft:'auto', fontSize:'0.72rem' } }, ev.when)
+          ),
+          h('div', { style:{ fontSize:'0.8rem', fontWeight:600 } }, ev.summary),
+          ev.detail ? h('div', { class:'tip', style:{ fontSize:'0.74rem' } }, ev.detail) : null
+        ));
+      }
+    };
+
+    const staleLeagues = leagues.filter(lg => {
+      if (lg.platform === 'espn') return false;
+      try {
+        const raw = JSON.parse(localStorage.getItem(accountKey(`tier-sheet-timeline::${lg.id}`)) || 'null');
+        return !raw || (Date.now() - (raw.fetchedAt || 0) >= 30 * 60 * 1000);
+      } catch { return true; }
+    });
+
+    renderList(staleLeagues.length > 0);
+
+    if (staleLeagues.length) {
+      const curWk = Math.min(18, Math.max(1, Number(window.WEEKLY_RANKINGS?.liveWeek || window.WEEKLY_RANKINGS?.currentWeek || 11)));
+      const weeks = Array.from({ length: curWk }, (_, i) => i + 1);
+      Promise.all(staleLeagues.map(async (lg) => {
+        try {
+          const pages = await Promise.all(weeks.map(w =>
+            fetch(`https://api.sleeper.app/v1/league/${lg.id}/transactions/${w}`).then(r => r.ok ? r.json() : []).catch(() => [])));
+          const byId = new Map();
+          pages.forEach((arr, i) => {
+            for (const t of (arr || [])) byId.set(t.transaction_id, { ...t, week: i + 1 });
+          });
+          const txs = Array.from(byId.values()).sort((a, b) => (b.status_updated || b.created || 0) - (a.status_updated || a.created || 0));
+          try { localStorage.setItem(accountKey(`tier-sheet-timeline::${lg.id}`), JSON.stringify({ fetchedAt: Date.now(), txs })); } catch {}
+        } catch {}
+      })).then(() => { if (card.isConnected) renderList(false); });
+    }
+
+    return card;
+  }
+
   // ============================================================
   // Player card: the six numbers, the value chart, the tab shell
   // ============================================================
@@ -13100,6 +13241,7 @@
           { key:'context', label:'Context', items: [
             { jump:'Schedule',    node: scheduleStrip(sleeper) },
             { jump:'Injuries',    node: injuryHistoryBlock(sleeper) },
+            { jump:'History',     node: playerTxHistoryBlock(sleeper) },
             { jump:'Team',        node: contextBlock(sleeper) },
             { node: envInfoLine(sleeper) },
             { jump:'Draft & Bio', node: prospectBlock(sleeper) },
