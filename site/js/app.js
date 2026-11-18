@@ -12572,9 +12572,10 @@
       blocks.push(turnoverEl);
     }
 
-    // -- Per-player new-team transitions / contract --
-    if (playerCtx && playerCtx.transitions && playerCtx.transitions.length) {
-      const tx = playerCtx.transitions[0];
+    // -- Per-player new-team transitions / contract (only this season's move; a 2023 rookie entry is history, not news) --
+    const curTx = playerCtx && (playerCtx.transitions || []).find(t => Number(t.season) >= Number(curSeason));
+    if (curTx) {
+      const tx = curTx;
       const delta = (tx.cur_tgt || 0) - (tx.expected_tgt || 0);
       const rdelta = (tx.cur_rush || 0) - (tx.expected_rush || 0);
       blocks.push(h('div', { class:'ctx-block' },
