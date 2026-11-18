@@ -20753,6 +20753,7 @@
         case 'action':     return viewActionCenter();
         case 'experts':     return viewExperts(rest[0], rest[1]);
         case 'sources':     return viewSources();
+        case 'kickers':     return viewKickers();
         case 'methodology': return viewMethodology();
         case 'about':       return viewAbout();
         default:           return viewDashboard();
