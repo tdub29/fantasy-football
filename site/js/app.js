@@ -12665,12 +12665,16 @@
     return h('section', { class:'ctx-section' }, ...blocks);
   }
 
-  // Player-level transaction & multi-year trade history across Trevor's leagues.
+  // Player-level transaction & multi-year trade history, scoped to the league the player was opened within.
   function playerTxHistoryBlock(sleeper) {
     if (!sleeper || !sleeper.id) return null;
     const pid = String(sleeper.id);
-    const leagues = (window.LEAGUES || []).filter(lg => !isLeagueHidden(lg));
-    if (!leagues.length) return null;
+    const allLeagues = (window.LEAGUES || []).filter(lg => !isLeagueHidden(lg));
+    if (!allLeagues.length) return null;
+    const routeMatch = /^#(?:league|roster|trade|draft)\/([^/?#]+)/.exec(location.hash || '');
+    const routeLeague = routeMatch ? allLeagues.find(l => String(l.id) === routeMatch[1]) : null;
+    let activeLg = routeLeague || contextLeagueFor(sleeper.pos) || primaryLeague() || allLeagues[0];
+    const leagues = [activeLg];
 
     const pName = (id) => window.PLAYERS?.[String(id)]?.name || `#${id}`;
     const pickTxt = (pk) => `${pk.season} R${pk.round}${pk.outcome?.playerName ? ` (${pk.outcome.playerName})` : ''}`;
@@ -12681,7 +12685,7 @@
       const seen = new Set();
       // 1) Multi-season bridged trades from TRADE_HISTORY
       const thLeagues = window.TRADE_HISTORY?.leagues || {};
-      for (const lg of leagues) {
+      for (const lg of [activeLg]) {
         const th = thLeagues[String(lg.id)];
         if (!th || !th.partners) continue;
         for (const p of th.partners) {
@@ -12709,7 +12713,7 @@
         }
       }
       // 2) Cached multi-season Sleeper draft picks (including bridged 2023 Woody Boys and Larry -> yuH)
-      for (const lg of leagues) {
+      for (const lg of [activeLg]) {
         if (lg.platform === 'espn') continue;
         let dp = null;
         try {
@@ -12735,7 +12739,7 @@
         }
       }
       // 3) Cached current-season Sleeper transactions (adds, drops, waivers, all trades)
-      for (const lg of leagues) {
+      for (const lg of [activeLg]) {
         if (lg.platform === 'espn') continue;
         let txs = null;
         try {
@@ -12776,8 +12780,20 @@
     };
 
     const body = h('div', { class:'tx-hist-body' });
+    const titleEl = h('div', { class:'card-title', style:{ margin:0 } }, `Transactions & Trade History · ${activeLg.short_name || activeLg.name}`);
+    const lgSel = allLeagues.length > 1 ? h('select', {
+      'aria-label':'Transaction history league',
+      style:{ fontSize:'0.72rem', padding:'2px 6px', maxWidth:'160px' },
+      onchange: (e) => {
+        const picked = allLeagues.find(l => String(l.id) === e.target.value);
+        if (!picked) return;
+        activeLg = picked;
+        titleEl.textContent = `Transactions & Trade History · ${activeLg.short_name || activeLg.name}`;
+        syncLeague(activeLg);
+      },
+    }, ...allLeagues.map(l => h('option', { value:String(l.id), selected:String(l.id) === String(activeLg.id) ? '' : null }, l.short_name || l.name))) : null;
     const card = h('div', { class:'card' },
-      h('div', { class:'card-title' }, 'Transactions & Trade History'),
+      h('div', { style:{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:'8px', flexWrap:'wrap', marginBottom:'8px' } }, titleEl, lgSel),
       body
     );
 
@@ -12786,7 +12802,7 @@
       body.innerHTML = '';
       if (!evs.length) {
         body.appendChild(h('div', { class:'tip' },
-          loading ? 'Checking league transactions…' : 'No trades or current-season transactions recorded for this player.'));
+          loading ? `Checking ${activeLg.short_name || activeLg.name} history…` : `No trades or transactions recorded in ${activeLg.short_name || activeLg.name}.`));
         return;
       }
       for (const ev of evs.slice(0, 20)) {
@@ -12802,81 +12818,82 @@
       }
     };
 
-    const staleLeagues = leagues.filter(lg => {
-      if (lg.platform === 'espn') return false;
+    const syncLeague = (lg) => {
+      if (!lg || lg.platform === 'espn') { renderList(false); return; }
+      let txStale = true, draftStale = true;
       try {
         const raw = JSON.parse(localStorage.getItem(accountKey(`tier-sheet-timeline::${lg.id}`)) || 'null');
-        return !raw || (Date.now() - (raw.fetchedAt || 0) >= 30 * 60 * 1000);
-      } catch { return true; }
-    });
-
-    const staleDraftLeagues = leagues.filter(lg => {
-      if (lg.platform === 'espn') return false;
+        txStale = !raw || (Date.now() - (raw.fetchedAt || 0) >= 30 * 60 * 1000);
+      } catch {}
       try {
         const raw = JSON.parse(localStorage.getItem(accountKey(`tier-sheet-draft-picks-v1::${lg.id}`)) || 'null');
-        return !raw || (Date.now() - (raw.fetchedAt || 0) >= 24 * 60 * 60 * 1000);
-      } catch { return true; }
-    });
-
-    renderList(staleLeagues.length > 0 || staleDraftLeagues.length > 0);
-
-    if (staleLeagues.length || staleDraftLeagues.length) {
+        draftStale = !raw || (Date.now() - (raw.fetchedAt || 0) >= 24 * 60 * 60 * 1000);
+      } catch {}
+      renderList(txStale || draftStale);
+      if (!txStale && !draftStale) return;
       const curWk = Math.min(18, Math.max(1, Number(window.WEEKLY_RANKINGS?.liveWeek || window.WEEKLY_RANKINGS?.currentWeek || 11)));
       const weeks = Array.from({ length: curWk }, (_, i) => i + 1);
-      const txJobs = staleLeagues.map(async (lg) => {
-        try {
-          const pages = await Promise.all(weeks.map(w =>
-            fetch(`https://api.sleeper.app/v1/league/${lg.id}/transactions/${w}`).then(r => r.ok ? r.json() : []).catch(() => [])));
-          const byId = new Map();
-          pages.forEach((arr, i) => {
-            for (const t of (arr || [])) byId.set(t.transaction_id, { ...t, week: i + 1 });
-          });
-          const txs = Array.from(byId.values()).sort((a, b) => (b.status_updated || b.created || 0) - (a.status_updated || a.created || 0));
-          try { localStorage.setItem(accountKey(`tier-sheet-timeline::${lg.id}`), JSON.stringify({ fetchedAt: Date.now(), txs })); } catch {}
-        } catch {}
-      });
-      const BRIDGES = { '1043796251647221760': '922047920113897472' };
-      const getJ = (u) => fetch(u).then(r => r.ok ? r.json() : null).catch(() => null);
-      const draftJobs = staleDraftLeagues.map(async (lg) => {
-        try {
-          const myUid = String(leagueUserId(lg) || '');
-          const picksOut = [];
-          let curId = String(lg.id);
-          for (let step = 0; step < 10 && curId && curId !== '0'; step++) {
-            const meta = await getJ(`https://api.sleeper.app/v1/league/${curId}`);
-            if (!meta) break;
-            const [users, drafts] = await Promise.all([
-              getJ(`https://api.sleeper.app/v1/league/${curId}/users`),
-              getJ(`https://api.sleeper.app/v1/league/${curId}/drafts`),
-            ]);
-            const uMap = new Map((users || []).map(u => [String(u.user_id), u.metadata?.team_name || u.display_name || u.username]));
-            const doneDrafts = (drafts || []).filter(d => d.status === 'complete' || d.status === 'drafting');
-            const pickPages = await Promise.all(doneDrafts.map(d => getJ(`https://api.sleeper.app/v1/draft/${d.draft_id}/picks`)));
-            doneDrafts.forEach((d, idx) => {
-              const at = Number(d.start_time || d.last_picked || 0) || Date.UTC(Number(meta.season) || 2023, 7, 15);
-              for (const pk of (pickPages[idx] || [])) {
-                if (!pk.player_id) continue;
-                const uid = String(pk.picked_by || '');
-                picksOut.push({
-                  season: meta.season,
-                  round: pk.round,
-                  slot: pk.draft_slot,
-                  pickNo: pk.pick_no,
-                  pid: String(pk.player_id),
-                  teamName: uMap.get(uid) || (uid ? `User ${uid}` : 'Manager'),
-                  isMe: !!myUid && uid === myUid,
-                  at,
-                });
-              }
+      const jobs = [];
+      if (txStale) {
+        jobs.push((async () => {
+          try {
+            const pages = await Promise.all(weeks.map(w =>
+              fetch(`https://api.sleeper.app/v1/league/${lg.id}/transactions/${w}`).then(r => r.ok ? r.json() : []).catch(() => [])));
+            const byId = new Map();
+            pages.forEach((arr, i) => {
+              for (const t of (arr || [])) byId.set(t.transaction_id, { ...t, week: i + 1 });
             });
-            const prev = meta.previous_league_id;
-            curId = (prev && prev !== '0') ? String(prev) : BRIDGES[curId];
-          }
-          try { localStorage.setItem(accountKey(`tier-sheet-draft-picks-v1::${lg.id}`), JSON.stringify({ fetchedAt: Date.now(), picks: picksOut })); } catch {}
-        } catch {}
-      });
-      Promise.all([...txJobs, ...draftJobs]).then(() => { if (card.isConnected) renderList(false); });
-    }
+            const txs = Array.from(byId.values()).sort((a, b) => (b.status_updated || b.created || 0) - (a.status_updated || a.created || 0));
+            try { localStorage.setItem(accountKey(`tier-sheet-timeline::${lg.id}`), JSON.stringify({ fetchedAt: Date.now(), txs })); } catch {}
+          } catch {}
+        })());
+      }
+      if (draftStale) {
+        const BRIDGES = { '1043796251647221760': '922047920113897472' };
+        const getJ = (u) => fetch(u).then(r => r.ok ? r.json() : null).catch(() => null);
+        jobs.push((async () => {
+          try {
+            const myUid = String(leagueUserId(lg) || '');
+            const picksOut = [];
+            let curId = String(lg.id);
+            for (let step = 0; step < 10 && curId && curId !== '0'; step++) {
+              const meta = await getJ(`https://api.sleeper.app/v1/league/${curId}`);
+              if (!meta) break;
+              const [users, drafts] = await Promise.all([
+                getJ(`https://api.sleeper.app/v1/league/${curId}/users`),
+                getJ(`https://api.sleeper.app/v1/league/${curId}/drafts`),
+              ]);
+              const uMap = new Map((users || []).map(u => [String(u.user_id), u.metadata?.team_name || u.display_name || u.username]));
+              const doneDrafts = (drafts || []).filter(d => d.status === 'complete' || d.status === 'drafting');
+              const pickPages = await Promise.all(doneDrafts.map(d => getJ(`https://api.sleeper.app/v1/draft/${d.draft_id}/picks`)));
+              doneDrafts.forEach((d, idx) => {
+                const at = Number(d.start_time || d.last_picked || 0) || Date.UTC(Number(meta.season) || 2023, 7, 15);
+                for (const pk of (pickPages[idx] || [])) {
+                  if (!pk.player_id) continue;
+                  const uid = String(pk.picked_by || '');
+                  picksOut.push({
+                    season: meta.season,
+                    round: pk.round,
+                    slot: pk.draft_slot,
+                    pickNo: pk.pick_no,
+                    pid: String(pk.player_id),
+                    teamName: uMap.get(uid) || (uid ? `User ${uid}` : 'Manager'),
+                    isMe: !!myUid && uid === myUid,
+                    at,
+                  });
+                }
+              });
+              const prev = meta.previous_league_id;
+              curId = (prev && prev !== '0') ? String(prev) : BRIDGES[curId];
+            }
+            try { localStorage.setItem(accountKey(`tier-sheet-draft-picks-v1::${lg.id}`), JSON.stringify({ fetchedAt: Date.now(), picks: picksOut })); } catch {}
+          } catch {}
+        })());
+      }
+      Promise.all(jobs).then(() => { if (card.isConnected && activeLg.id === lg.id) renderList(false); });
+    };
+
+    syncLeague(activeLg);
 
     return card;
   }
