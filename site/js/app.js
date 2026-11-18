@@ -14100,23 +14100,24 @@
     TEN: { name: 'Nissan Stadium',           city: 'Nashville, TN',       arch: 'ten_cranes',    c1: '#0c2340', c2: '#4b92db' },
     WAS: { name: 'Northwest Stadium',        city: 'Landover, MD',        arch: 'was_bowl',      c1: '#5a1414', c2: '#ffb612' },
   };
+  const STADIUM_ART_KEYS = new Set(['banorte', 'chi', 'dal', 'den', 'det', 'kc', 'phi', 'sea']);
   const INTL_STADIUM_PROFILES = [
-    { key: 'banorte',       name: 'Estadio Banorte',          city: 'Mexico City, MX',   arch: 'intl_banorte' },
-    { key: 'azteca',        name: 'Estadio Azteca',           city: 'Mexico City, MX',   arch: 'intl_banorte' },
-    { key: 'wembley',       name: 'Wembley Stadium',          city: 'London, UK',        arch: 'intl_wembley' },
-    { key: 'tottenham',     name: 'Tottenham Hotspur Stadium',city: 'London, UK',        arch: 'intl_tottenham' },
-    { key: 'twickenham',    name: 'Twickenham Stadium',       city: 'London, UK',        arch: 'was_bowl' },
-    { key: 'allianz',       name: 'Allianz Arena',            city: 'Munich, DE',        arch: 'intl_allianz' },
-    { key: 'munich',        name: 'Allianz Arena',            city: 'Munich, DE',        arch: 'intl_allianz' },
-    { key: 'bernabeu',      name: 'Santiago Bernabeu',        city: 'Madrid, ES',        arch: 'intl_bernabeu' },
-    { key: 'frankfurt',     name: 'Deutsche Bank Park',       city: 'Frankfurt, DE',     arch: 'mia_canopy' },
-    { key: 'croke park',    name: 'Croke Park',               city: 'Dublin, IE',        arch: 'pit_bridges' },
-    { key: 'maracana',      name: 'Maracana Stadium',         city: 'Rio de Janeiro, BR',arch: 'intl_maracana' },
-    { key: 'corinthians',   name: 'Arena Corinthians',        city: 'Sao Paulo, BR',     arch: 'intl_allianz' },
-    { key: 'sao paulo',     name: 'Arena Corinthians',        city: 'Sao Paulo, BR',     arch: 'intl_allianz' },
-    { key: 'olympiastadion',name: 'Olympiastadion',           city: 'Berlin, DE',        arch: 'intl_wembley' },
-    { key: 'melbourne',     name: 'Melbourne Cricket Ground', city: 'Melbourne, AU',     arch: 'intl_maracana' },
-    { key: 'stade de france',name:'Stade de France',          city: 'Paris, FR',         arch: 'intl_maracana' },
+    { key: 'banorte',       artKey: 'banorte',  name: 'Estadio Banorte',          city: 'Mexico City, MX',   arch: 'intl_banorte' },
+    { key: 'azteca',        artKey: 'banorte',  name: 'Estadio Azteca',           city: 'Mexico City, MX',   arch: 'intl_banorte' },
+    { key: 'wembley',       artKey: 'wembley',  name: 'Wembley Stadium',          city: 'London, UK',        arch: 'intl_wembley' },
+    { key: 'tottenham',     artKey: 'tottenham',name: 'Tottenham Hotspur Stadium',city: 'London, UK',        arch: 'intl_tottenham' },
+    { key: 'twickenham',    artKey: 'twickenham',name:'Twickenham Stadium',       city: 'London, UK',        arch: 'was_bowl' },
+    { key: 'allianz',       artKey: 'allianz',  name: 'Allianz Arena',            city: 'Munich, DE',        arch: 'intl_allianz' },
+    { key: 'munich',        artKey: 'allianz',  name: 'Allianz Arena',            city: 'Munich, DE',        arch: 'intl_allianz' },
+    { key: 'bernabeu',      artKey: 'bernabeu', name: 'Santiago Bernabeu',        city: 'Madrid, ES',        arch: 'intl_bernabeu' },
+    { key: 'frankfurt',     artKey: 'frankfurt',name: 'Deutsche Bank Park',       city: 'Frankfurt, DE',     arch: 'mia_canopy' },
+    { key: 'croke park',    artKey: 'croke',    name: 'Croke Park',               city: 'Dublin, IE',        arch: 'pit_bridges' },
+    { key: 'maracana',      artKey: 'maracana', name: 'Maracana Stadium',         city: 'Rio de Janeiro, BR',arch: 'intl_maracana' },
+    { key: 'corinthians',   artKey: 'corinthians',name:'Arena Corinthians',       city: 'Sao Paulo, BR',     arch: 'intl_allianz' },
+    { key: 'sao paulo',     artKey: 'corinthians',name:'Arena Corinthians',       city: 'Sao Paulo, BR',     arch: 'intl_allianz' },
+    { key: 'olympiastadion',artKey: 'olympia',  name: 'Olympiastadion',           city: 'Berlin, DE',        arch: 'intl_wembley' },
+    { key: 'melbourne',     artKey: 'mcg',      name: 'Melbourne Cricket Ground', city: 'Melbourne, AU',     arch: 'intl_maracana' },
+    { key: 'stade de france',artKey:'stadefr',  name: 'Stade de France',          city: 'Paris, FR',         arch: 'intl_maracana' },
   ];
 
   function resolveStadiumProfile(wx) {
@@ -14128,9 +14129,12 @@
     const lower = rawName.toLowerCase();
     const intl = INTL_STADIUM_PROFILES.find(v => lower.includes(v.key));
     if (intl) {
-      return { venue: rawName || intl.name, city: intl.city, arch: intl.arch, c1: home.c1, c2: home.c2, awayC1: away.c1 };
+      return { artKey: intl.artKey, venue: rawName || intl.name, city: intl.city, arch: intl.arch, c1: home.c1, c2: home.c2, awayC1: away.c1 };
     }
-    return { venue: rawName || home.name, city: home.city, arch: home.arch, c1: home.c1, c2: home.c2, awayC1: away.c1 };
+    const artKey = (homeCode === 'LA' || homeCode === 'LAC') ? 'sofi'
+      : (homeCode === 'NYG' || homeCode === 'NYJ') ? 'metlife'
+      : String(homeCode || '').toLowerCase();
+    return { artKey, venue: rawName || home.name, city: home.city, arch: home.arch, c1: home.c1, c2: home.c2, awayC1: away.c1 };
   }
 
   function describeGameWeather(wx, team) {
@@ -14537,26 +14541,56 @@
     return out;
   }
 
+  function _wxWeatherOverlaySvg(uid, sc) {
+    const night = sc.timeOfDay === 'night';
+    const twilight = sc.timeOfDay === 'twilight';
+    const wash = night
+      ? `<linearGradient id="${uid}-wash" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0d112b" stop-opacity="0.68"/><stop offset="55%" stop-color="#18204f" stop-opacity="0.34"/><stop offset="100%" stop-color="#0d112b" stop-opacity="0.18"/></linearGradient>`
+      : twilight
+        ? `<linearGradient id="${uid}-wash" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#5d3880" stop-opacity="0.36"/><stop offset="52%" stop-color="#f28c38" stop-opacity="0.26"/><stop offset="100%" stop-color="#f28c38" stop-opacity="0"/></linearGradient>`
+        : (sc.isRain || sc.isSnow)
+          ? `<linearGradient id="${uid}-wash" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#44526e" stop-opacity="0.42"/><stop offset="100%" stop-color="#44526e" stop-opacity="0.12"/></linearGradient>`
+          : '';
+    const stars = night
+      ? [[28, 22], [58, 44], [88, 16], [292, 20], [326, 40], [354, 18], [42, 64], [344, 62]]
+        .map(([x, y], i) => `<rect x="${x}" y="${y}" width="${i % 2 ? 2 : 3}" height="${i % 2 ? 2 : 3}" fill="#fff6c7" opacity="${i % 2 ? 0.72 : 0.95}"/>`).join('')
+        + '<circle cx="332" cy="36" r="12" fill="#ffd42a" stroke="#12131f" stroke-width="2"/><circle cx="337" cy="33" r="9" fill="#181f4d"/>'
+      : '';
+    return `<svg viewBox="0 0 380 253" class="wx-diorama-fx" aria-hidden="true">`
+      + (wash ? `<defs>${wash}</defs><rect width="380" height="253" fill="url(#${uid}-wash)"/>` : '')
+      + stars
+      + _wxWeatherParticles(sc)
+      + `</svg>`;
+  }
+
   function renderStadiumDiorama(wx, team, opts = {}) {
     const uid = `wxs${++_wxSvgUid}`;
     const st = resolveStadiumProfile(wx);
     const sc = describeGameWeather(wx, team);
-    const svg = `<svg viewBox="0 0 380 236" class="wx-diorama-svg" aria-hidden="true">`
-      + _wxSkyAndClouds(uid, st, sc)
-      + _wxLandmarks(st.arch, st, sc)
-      + _wxBowlAndField(uid, st, sc)
-      + _wxSuperstructure(st, sc)
-      + _wxWeatherParticles(sc)
-      + `</svg>`;
+    const hasArt = STADIUM_ART_KEYS.has(st.artKey);
+    const artNode = hasArt
+      ? h('div', { class: 'wx-diorama-art' },
+          h('img', { class: 'wx-diorama-img', src: `img/stadiums/${st.artKey}.webp`, alt: '', decoding: 'async' }),
+          h('div', { class: 'wx-diorama-fx-wrap', html: _wxWeatherOverlaySvg(uid, sc) }))
+      : h('div', {
+          class: 'wx-diorama-art',
+          html: `<svg viewBox="0 0 380 253" class="wx-diorama-svg" aria-hidden="true">`
+            + _wxSkyAndClouds(uid, st, sc)
+            + _wxLandmarks(st.arch, st, sc)
+            + _wxBowlAndField(uid, st, sc)
+            + _wxSuperstructure(st, sc)
+            + _wxWeatherParticles(sc)
+            + `</svg>`,
+        });
 
     if (opts.compact) {
       return h('div', { class: 'wx-inline-thumb', title: `${st.venue} (${st.city})` },
-        h('div', { class: 'wx-diorama-art', html: svg }),
+        artNode,
         h('span', { class: 'wx-thumb-tag' }, st.city.split(',')[0]));
     }
 
     return h('div', { class: `wx-diorama-stage${sc.matters ? ' is-matters' : ''}` },
-      h('div', { class: 'wx-diorama-art', html: svg }),
+      artNode,
       h('div', { class: 'wx-diorama-overlay' },
         h('div', { class: 'wx-ov-city' }, st.city),
         h('div', { class: 'wx-ov-venue' }, st.venue),
