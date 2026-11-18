@@ -3402,43 +3402,38 @@
     // the turf above it.
     const standings = h('div', { class:'card standings-list' });
     const sortState = { key: lgDynasty && forecast.ok ? 'title' : byPts ? 'ppw' : 'pv', dir:'desc' };
-    const sortBar = h('div', { class:'standings-sort', role:'group', 'aria-label':'Sort standings' });
     // Redraft has no future lineup, so "future" would sort by the same number.
     // Max PF only matters where it sets the rookie draft order, so redraft hides it.
     const projMaxPf = lgDynasty && forecast.ok && [...forecast.rows.values()].every(f => Number.isFinite(f.maxPf));
-    const sortOptions = [
-      ...(lgDynasty ? [['pv', 'Lineup market value'], ['fv', 'Future market value']] : byPts ? [['ppw', 'Strength (proj pts/wk)'], ['pv', 'Lineup value']] : [['pv', 'Strength']]),
-      ['record', 'Record'], ...(forecast.ok ? [...(lgDynasty && ppwOf(lg.rosters[0].roster_id) != null ? [['ppw', 'Proj pts/wk']] : []), ['projected', 'Projected wins'], ['playoff', 'Playoff chance'], ...(forecast.byes ? [['bye', 'Bye chance']] : []), ['title', 'Champ chance'], ...(forecast.rookie ? [['first', '1.01 chance']] : []), ...(projMaxPf ? [['projMaxPf', 'Projected Max PF']] : [])] : []), ['pf', 'Points for'], ...(lgDynasty && lg.rosters.some(x => Number.isFinite(x.ppts)) ? [['maxPf', 'Max PF']] : []), ['diff', 'Point differential'], ['pa', 'Points against'],
-    ];
-    const sortSelect = h('select', { 'aria-label':'Sort teams by' }, ...sortOptions.map(([key, label]) =>
-      h('option', { value:key, selected:key === sortState.key ? '' : null }, label)));
-    const dirButton = h('button', { type:'button', class:'ghost standings-dir' });
     // Every width gets the teams as a table: one line each, aligned columns,
     // sideways scroll inside the table only. The cards stay hidden in the DOM
     // because the sort and the chart read their data.
     const fc = id => forecast.rows.get(id);
     const tableCols = [
-      ['W-L', r => `${r.wins ?? 0}-${r.losses ?? 0}${r.ties ? `-${r.ties}` : ''}`],
-      ['PF', r => fmt.decimal(r.fpts ?? 0, 0)],
-      ...(lgDynasty && lg.rosters.some(x => Number.isFinite(x.ppts)) ? [['Max PF', r => Number.isFinite(r.ppts) ? fmt.decimal(r.ppts, 0) : '-']] : []),
+      ['W-L', r => `${r.wins ?? 0}-${r.losses ?? 0}${r.ties ? `-${r.ties}` : ''}`, 'record'],
+      ['PF', r => fmt.decimal(r.fpts ?? 0, 0), 'pf'],
+      ...(lgDynasty && lg.rosters.some(x => Number.isFinite(x.ppts)) ? [['Max PF', r => Number.isFinite(r.ppts) ? fmt.decimal(r.ppts, 0) : '-', 'maxPf']] : []),
       ...(forecast.ok ? [
-        ...(ppwOf(lg.rosters[0].roster_id) != null ? [['Pts/wk', r => fmt.decimal(ppwOf(r.roster_id), 1)]] : []),
-        ['Proj', r => [fc(r.roster_id).expW, fc(r.roster_id).expL].map(x => x.toFixed(1)).join('-')],
-        ['Playoff', r => forecastPct(fc(r.roster_id).playoff)],
-        ...(forecast.byes ? [['Bye', r => forecastPct(fc(r.roster_id).bye)]] : []),
-        ['Champ', r => forecastPct(fc(r.roster_id).title)],
-        ...(projMaxPf ? [['Proj Max', r => fmt.decimal(fc(r.roster_id).maxPf, 0)]] : []),
-        ...(lgDynasty && forecast.rookie ? [['1.01', r => forecastPct(fc(r.roster_id).first)]] : []),
+        ...(ppwOf(lg.rosters[0].roster_id) != null ? [['Pts/wk', r => fmt.decimal(ppwOf(r.roster_id), 1), 'ppw']] : []),
+        ['Proj', r => [fc(r.roster_id).expW, fc(r.roster_id).expL].map(x => x.toFixed(1)).join('-'), 'projected'],
+        ['Playoff', r => forecastPct(fc(r.roster_id).playoff), 'playoff'],
+        ...(forecast.byes ? [['Bye', r => forecastPct(fc(r.roster_id).bye), 'bye']] : []),
+        ['Champ', r => forecastPct(fc(r.roster_id).title), 'title'],
+        ...(projMaxPf ? [['Proj Max', r => fmt.decimal(fc(r.roster_id).maxPf, 0), 'projMaxPf']] : []),
+        ...(lgDynasty && forecast.rookie ? [['1.01', r => forecastPct(fc(r.roster_id).first), 'first']] : []),
       ] : []),
-      ['PV', (r, st) => fmt.decimal(st, 1)],
-      ...(lgDynasty ? [['FV', (r, st, x) => fmt.decimal(x.fv, 1)]] : []),
-      [lgDynasty ? 'PV share' : 'Share', (r, st, x) => h('span', { style:{ color:x.pvCls.color } }, `${(x.pvShare*100).toFixed(1)}%`)],
+      ['PV', (r, st) => fmt.decimal(st, 1), 'pv'],
+      ...(lgDynasty ? [['FV', (r, st, x) => fmt.decimal(x.fv, 1), 'fv']] : []),
+      [lgDynasty ? 'PV share' : 'Share', (r, st, x) => h('span', { style:{ color:x.pvCls.color } }, `${(x.pvShare*100).toFixed(1)}%`), 'pv'],
       ...(lgDynasty ? [
-        ['FV share', (r, st, x) => h('span', { style:{ color:x.fvCls.color } }, `${(x.fvShare*100).toFixed(1)}%`)],
-        ['Outlook', (r, st, x) => h('span', { style:{ color:x.tColor } }, x.tLabel)],
+        ['FV share', (r, st, x) => h('span', { style:{ color:x.fvCls.color } }, `${(x.fvShare*100).toFixed(1)}%`), 'fv'],
+        ['Outlook', (r, st, x) => h('span', { style:{ color:x.tColor } }, x.tLabel), null],
       ] : []),
     ];
     const tableBody = h('tbody');
+    const sortHeaders = [];
+    let chartSortBtn = null;
+    let activeChartSortKey = forecast.ok ? 'title' : 'pv';
     const applyStandingsSort = () => {
       const update = (rows, parent) => {
         const ordered = sortStandingRows(rows, sortState.key, sortState.dir);
@@ -3452,20 +3447,40 @@
       };
       update(standings.querySelectorAll('.strength-row'),standings);
       update(tableBody.children,tableBody);
-      dirButton.textContent = sortState.dir === 'desc' ? 'High first ↓' : 'Low first ↑';
-      dirButton.setAttribute('aria-label', `Order ${dirButton.textContent.toLowerCase()}`);
+      const arrow = sortState.dir === 'desc' ? '▼' : '▲';
+      for (const sh of sortHeaders) {
+        const on = sh.key === sortState.key;
+        sh.th.classList.toggle('is-sorted', on);
+        sh.th.setAttribute('aria-sort', on ? (sortState.dir === 'desc' ? 'descending' : 'ascending') : 'none');
+        sh.icon.textContent = on ? arrow : '⇅';
+      }
+      if (chartSortBtn) {
+        const on = activeChartSortKey === sortState.key;
+        chartSortBtn.classList.toggle('is-sorted', on);
+        chartSortBtn.textContent = on ? arrow : '⇅';
+        chartSortBtn.title = on ? `Sorted ${sortState.dir === 'desc' ? 'high to low' : 'low to high'} (tap to flip)` : 'Sort by selected chart';
+      }
     };
-    sortSelect.onchange = () => { sortState.key = sortSelect.value; sortState.dir = standingDefaultDir(sortState.key); applyStandingsSort(); };
-    dirButton.onclick = () => { sortState.dir = sortState.dir === 'desc' ? 'asc' : 'desc'; applyStandingsSort(); };
-    sortBar.appendChild(h('label', { class:'standings-sort-label' }, h('span', null, 'Sort by'), sortSelect));
-    sortBar.appendChild(dirButton);
-    applyStandingsSort();
-    standings.appendChild(sortBar);
+    const toggleColSort = (key) => {
+      if (!key) return;
+      if (sortState.key === key) sortState.dir = sortState.dir === 'desc' ? 'asc' : 'desc';
+      else { sortState.key = key; sortState.dir = standingDefaultDir(key); }
+      applyStandingsSort();
+    };
+    const makeSortTh = (label, key, extraClass) => {
+      if (!key) return h('th', { class: extraClass || null }, label);
+      const icon = h('span', { class:'sort-dir-icon', 'aria-hidden':'true' }, '⇅');
+      const btn = h('button', { type:'button', class:'th-sort-btn', onclick:() => toggleColSort(key) },
+        h('span', null, label), icon);
+      const th = h('th', { class: extraClass ? `${extraClass} sortable-th` : 'sortable-th' }, btn);
+      sortHeaders.push({ th, key, icon });
+      return th;
+    };
     standings.appendChild(h('div', { class:'standings-meta-row' },
       h('p', { class:'standings-swipe' }, 'Swipe sideways for more columns ›'),
       h('a', { href:'#methodology', class:'standings-method-link' }, 'Methodology & ROS basis →')));
     standings.appendChild(h('div', { class:'standings-table-wrap' }, h('table', { class:'standings-table' },
-      h('thead', null, h('tr', null, h('th', null, '#'), h('th', { class:'team' }, 'Team'), lgDynasty ? h('th', { class:'standings-chart-head', title:'Selected chart metric, now through five years out' }, 'Trend') : null, ...tableCols.map(([label]) => h('th', null, label)))),
+      h('thead', null, h('tr', null, h('th', null, '#'), h('th', { class:'team' }, 'Team'), lgDynasty ? h('th', { class:'standings-chart-head', title:'Selected chart metric, now through five years out' }, 'Trend') : null, ...tableCols.map(([label, , sortKey]) => makeSortTh(label, sortKey)))),
       tableBody)));
     computed.forEach((row, i) => {
       const r = row.r, s = row.s, st = row.st;
@@ -3591,9 +3606,14 @@
       const pointsAvailable=forecast.ok&&[...forecast.rows.values()].every(r=>Number.isFinite(r.ppw));
       const available=id=>id==='value'||(forecast.ok&&(id!=='ppw'||pointsAvailable)&&(id!=='bye'||forecast.byes>0));
       try { const saved=localStorage.getItem(key); if(metrics[saved]&&available(saved)) selected=saved; } catch {}
-      const select=h('select',{'aria-label':'Rankings chart metric'},...Object.entries(metrics).map(([id,m])=>h('option',{value:id,selected:id===selected?'':null,disabled:!available(id)?'':null},m.label)));
+      const select=h('select',{class:'standings-chart-select','aria-label':'Rankings chart metric',onclick:e=>e.stopPropagation()},...Object.entries(metrics).map(([id,m])=>h('option',{value:id,selected:id===selected?'':null,disabled:!available(id)?'':null},m.label)));
       const note=h('p',{class:'tip standings-chart-note',role:'status','aria-live':'polite'});
-      sortBar.appendChild(h('label',{class:'standings-sort-label'},h('span',null,'Charts'),select));
+      const trendTh=standings.querySelector('.standings-chart-head');
+      if(trendTh){
+        trendTh.innerHTML='';
+        chartSortBtn=h('button',{type:'button',class:'th-sort-btn standings-chart-sort',onclick:()=>toggleColSort(activeChartSortKey)},'⇅');
+        trendTh.appendChild(h('div',{class:'standings-chart-th-inner'},select,chartSortBtn));
+      }
       standings.insertBefore(note,standings.querySelector('.standings-table-wrap'));
       const loadOdds=()=>run||(run=(async()=>{
         const rows=[], steps=titleOddsSteps(lg,{years:trajYears,sims:2500,currentSims:4000});
@@ -3606,8 +3626,9 @@
       })().finally(()=>{run=null;}));
       const draw=async()=>{
         const metric=selected, percentage=metric==='title'||metric==='playoff'||metric==='bye';
+        activeChartSortKey=metrics[metric].sort;
         standings.querySelectorAll('.str-spark').forEach(el=>{el.style.visibility='hidden';});
-        sortState.key=metrics[metric].sort;sortState.dir='desc';sortSelect.value=sortState.key;applyStandingsSort();
+        sortState.key=activeChartSortKey;sortState.dir='desc';applyStandingsSort();
         for(const row of standings.querySelectorAll('.strength-row')){
           const id=Number(row.dataset.rosterId),value=metric==='value'?Number(row.dataset.pv):forecast.rows.get(id)?.[metric];
           const score=row.querySelector('.score');
@@ -3630,13 +3651,14 @@
           [...spark.children].forEach((wrap,y)=>{wrap.title=`${trajLabels[y]} ${metrics[metric].label}: ${format(data[y])}`;wrap.querySelector('.sp-bar-val').textContent=format(data[y]);const bar=wrap.querySelector('.sp-bar');bar.style.height=`${Math.max(0,data[y])/max*100}%`;bar.dataset.valueColor ||= bar.style.background;bar.style.background=metric==='value'?bar.dataset.valueColor:'var(--blue)';});
           spark.style.visibility='visible';
         }
-        const trend=standings.querySelector('.standings-chart-head');
-        if(trend){trend.textContent=metrics[metric].label;trend.title=`${metrics[metric].label} by season, now through five years out.`;}
+        if(trendTh){trendTh.title=`${metrics[metric].label} by season, now through five years out.`;}
         note.textContent='';
-        sortState.key=metrics[metric].sort;sortState.dir='desc';sortSelect.value=sortState.key;applyStandingsSort();
+        sortState.key=activeChartSortKey;sortState.dir='desc';applyStandingsSort();
       };
       select.onchange=()=>{selected=select.value;try{localStorage.setItem(key,selected);}catch{}draw();};
       draw();
+    } else {
+      applyStandingsSort();
     }
     const sp = fantasySosPanel(lg);
     if (sp) main.appendChild(sp);
@@ -7675,6 +7697,13 @@
         h('li', null, h('strong', null, 'Source: '), `Weekly source W${window.WEEKLY_RANKINGS?.liveWeek || window.WEEKLY_RANKINGS?.currentWeek || '?'}; see Sources & Experts for data freshness.`)
       )
     ));
+    main.appendChild(h('div', { class:'card', style:{ marginTop:'16px' } },
+      h('div', { class:'card-title' }, 'Schedule Difficulty & Season SOS by Position'),
+      h('ul', { class:'tip', style:{ margin:'6px 0 0 18px', padding:0, display:'flex', flexDirection:'column', gap:'6px' } },
+        h('li', null, h('strong', null, 'Schedule Difficulty (Standings): '), 'Average of each remaining opponent\'s best legal weekly lineup, including bench replacements for players on bye (no injuries, perfect start/sit). LEFT = remaining opponents; PLAYED = completed opponents; OPP BYE = gross starter production unavailable before bench replacement. Median games are additional to the head-to-head opponent.'),
+        h('li', null, h('strong', null, 'Season SOS by Position (#sos): '), 'Each cell shows the opponent and its defense rank vs that position: 1 of 32 allows the fewest opponent-adjusted PPR (toughest, red), and 32 allows the most (easiest, green).')
+      )
+    ));
   }
 
   function viewSources() {
@@ -8928,12 +8957,10 @@
     if (!d || !d.rows.length) return null;
     const cap = Math.max(...d.rows.map(r => r.remaining || 0), 1);
     const card = h('div', { class:'card sos-panel' },
-      h('div', { class:'card-title' }, 'Schedule difficulty (opponents’ best-case weekly lineups)'),
-      h('p', { class:'tip sos-note' }, `W${d.curWeek}-${d.lastWeek} remaining opponents. Higher = harder. A ceiling for ranking schedules: no injuries and perfect start/sit, so it runs above every team's Pts/wk, which prices both.`),
-      h('details', { class:'sos-method' }, h('summary', null, 'How difficulty is measured'),
-        h('p', { class:'tip' }, 'Average of each opponent’s best legal weekly lineup, including bench replacements for players on bye. LEFT is remaining opponents; PLAYED is completed opponents. OPP BYE is gross starter production unavailable before replacement.'
-          + (d.medianScoring ? ' The median game is additional to the head-to-head opponent.' : '') + ' Weekly projection freshness is shown in the data panel.')),
-
+      h('div', { class:'sos-panel-head' },
+        h('div', { class:'card-title', style:{ margin:0 } }, `Schedule Difficulty (W${d.curWeek}-${d.lastWeek})`),
+        h('a', { href:'#methodology', class:'standings-method-link' }, 'How it works →')
+      ),
     );
     const list = h('div', { class:'sos-rows' });
     for (const r of d.rows) {
@@ -17216,7 +17243,7 @@
     saveStatsLabPrefs(prefs);
   }
 
-  // This week's opponent, as a defense-vs-position line for the player card.
+  // This week's opponent, as a scannable defense-vs-position matchup card.
   function matchupLine(sleeper) {
     const D = window.DEFENSE;
     if (!D || !sleeper || !['WR', 'TE', 'RB', 'QB'].includes(sleeper.pos)) return null;
@@ -17227,26 +17254,63 @@
     if (opp === 'LA') opp = 'LAR';
     const t = D.teams[opp];
     if (!t) return null;
-    const bits = [];
+    const tierForRank = (rk) => {
+      if (!Number.isFinite(rk)) return { cls:'neutral', label:'Neutral' };
+      if (rk <= 10) return { cls:'smash', label:'Soft' };
+      if (rk >= 23) return { cls:'tough', label:'Tough' };
+      return { cls:'neutral', label:'Mid' };
+    };
+    const tiles = [];
+    let curTier = null;
     for (const slice of ['cur', 'prior']) {
       const v = t[slice];
       if (!v) continue;
-      const tag = slice === 'cur' ? `${D.season} wk 1-${D.throughWeek}` : `${D.prior}`;
-      if (sleeper.pos === 'QB') bits.push(`${tag}: ${statFmt(v.pass.epa_per_dropback, 'dec2')} EPA/dropback allowed, ${statFmt(v.pass.pressure_rate, 'pct')} pressure`);
-      else {
+      const tag = slice === 'cur' ? `${D.season} W1-${D.throughWeek}` : `${D.prior} Season`;
+      if (sleeper.pos === 'QB') {
+        const epa = v.pass?.epa_per_dropback;
+        const press = v.pass?.pressure_rate;
+        tiles.push(h('div', { class:'mu-tile' },
+          h('div', { class:'mu-tile-top' }, h('span', { class:'mu-season' }, tag)),
+          h('div', { class:'mu-stat' }, `${statFmt(epa, 'dec2')} EPA/db`),
+          h('div', { class:'mu-sub' }, `${statFmt(press, 'pct')} pressure allowed`),
+        ));
+      } else {
         const b = v.byPos && v.byPos[sleeper.pos];
-        if (b) bits.push(`${tag}: ${Number(b.ppr_pg).toFixed(1)} PPR/G to ${sleeper.pos}s (#${b.rank} of 32 softest)`
-          + (sleeper.pos === 'RB' && v.rushRB ? `, ${Number(v.rushRB.ppr_pg).toFixed(1)} rushing` : ''));
+        if (!b) continue;
+        const rk = Number(b.rank);
+        const tr = tierForRank(rk);
+        if (slice === 'cur') curTier = tr;
+        const pct = Math.max(4, Math.min(100, Math.round(((33 - rk) / 32) * 100)));
+        tiles.push(h('div', { class:`mu-tile is-${tr.cls}` },
+          h('div', { class:'mu-tile-top' },
+            h('span', { class:'mu-season' }, tag),
+            h('span', { class:`mu-rank-pill is-${tr.cls}` }, `#${rk}/32 ${tr.label}`)
+          ),
+          h('div', { class:'mu-stat-row' },
+            h('span', { class:'mu-stat' }, `${Number(b.ppr_pg).toFixed(1)}`),
+            h('span', { class:'mu-unit' }, `PPR/G to ${sleeper.pos}s`)
+          ),
+          sleeper.pos === 'RB' && v.rushRB
+            ? h('div', { class:'mu-sub' }, `${Number(v.rushRB.ppr_pg).toFixed(1)} rushing PPR/G`)
+            : null,
+          h('div', { class:'mu-bar-track', title:`#${rk} of 32 softest (#1 = softest, #32 = toughest)` },
+            h('div', { class:`mu-bar-fill is-${tr.cls}`, style:{ width:`${pct}%` } }))
+        ));
       }
     }
-    if (!bits.length) return null;
-    return h('div', { class:'card weather-line' },
-      h('div', { class:'card-title' }, `Matchup: ${opp} defense`),
-      h('div', null, bits.join('. ') + '.'),
-      t.cur && t.cur.funnel ? h('div', { class:'tip' }, `${D.season}: ${t.cur.funnel}.`) : null,
+    if (!tiles.length) return null;
+    return h('div', { class:'card matchup-card' },
+      h('div', { class:'mu-head' },
+        h('div', { class:'card-title', style:{ margin:0 } }, `Matchup vs ${opp} D`),
+        h('div', { class:'mu-badges' },
+          curTier ? h('span', { class:`mu-tier-badge is-${curTier.cls}` }, curTier.label) : null,
+          t.cur && t.cur.funnel ? h('span', { class:'mu-funnel-pill' }, t.cur.funnel) : null
+        )
+      ),
+      h('div', { class:'mu-grid' }, ...tiles),
       // The card's own close button, so its key handlers go before the page changes.
-      h('a', { href:`#game/${g.game_id}`, class:'gm-card-link', onclick:() => document.querySelector('.modal-backdrop .close-btn')?.click() },
-        `${gameTeam(g.away)} @ ${gameTeam(g.home)} game page`));
+      h('a', { href:`#game/${g.game_id}`, class:'gm-card-link mu-game-link', onclick:() => document.querySelector('.modal-backdrop .close-btn')?.click() },
+        `${gameTeam(g.away)} @ ${gameTeam(g.home)} game page →`));
   }
 
   // Usage by week on the player card, from window.USAGE_WEEKLY.
@@ -18558,7 +18622,10 @@
     main.appendChild(breadcrumbs([{ label: 'Tools' }, { label: 'Schedule Strength' }]));
     main.appendChild(h('div', { class: 'page-header' }, h('div', null,
       h('h1', { class: 'page-title' }, 'Season SOS by Position'),
-      h('p', { class: 'page-sub' }, `Each cell is the opponent and its defense rank vs ${pos}: 1 of ${n} allows the fewest opponent-adjusted PPR (toughest, red), ${n} the most (easiest, green). Defense data: ${G.season}.`))));
+      h('div', { class: 'sos-grid-sub' },
+        h('span', { class: 'tip' }, `1 = toughest · ${n} = easiest · ${G.season}`),
+        h('a', { href: '#methodology', class: 'standings-method-link' }, 'Methodology →')
+      ))));
     if (badPos) main.appendChild(h('div', { class:'tip', role:'status' }, `"${badPos}" is not a position here, so this shows ${pos}. Pick one of ${G.positions.join(', ')}.`));
 
     // position tabs
