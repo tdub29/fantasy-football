@@ -13082,8 +13082,8 @@
             { node: expertsDrop },
           ] },
           { key:'production', label:'Production', items: [
-            { jump:'Usage',       node: advancedBlock(sleeper) },
             { jump:'Game Log',    node: usageWeeksBlock(sleeper) },
+            { jump:'Usage',       node: advancedBlock(sleeper) },
             { jump:'Field Map',   node: locationBlock(sleeper) },
             { jump:'Projections', node: projectionBlock(sleeper) },
             { jump:'Career',      node: historyBlock(sleeper) },
