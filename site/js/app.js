@@ -7517,13 +7517,17 @@
   function kickerBoard(league = primaryLeague()) {
     const d = window.KICKER_MODEL;
     const weekly = window.WEEKLY_RANKINGS || {};
-    if (!window.KickerForecast?.valid(d, weekly.season, weekly.currentWeek, league?.scoring)) return null;
+    const KF = window.KickerForecast;
+    const exactOk = KF?.valid(d, weekly.season, weekly.currentWeek, league?.scoring);
+    const nearOk = !exactOk && KF?.near && KF.near(d, weekly.season, weekly.currentWeek, league?.scoring);
+    if (!exactOk && !nearOk) return null;
     const rows = (d.kickers || []).filter(k => {
       const pid = sleeperIdForFuzzy(String(k.name).replace(/^([A-Za-z])\./, '$1 '), 'K');
       return pid && kickerForecastFor(pid, weekly.currentWeek, league);
     }).sort((a,b) => b.exp - a.exp);
     const card = h('div', {class:'card'},
       h('div', {class:'card-title'}, `Week ${d.week} kicker reference`),
+      nearOk ? h('p', {class:'tip'}, `${league?.short_name || league?.name || 'This league'} scores a few rare kicks differently (60+ yard makes, distance-banded misses). Same board, gap well under the 0.5-point tie line.`) : null,
       h('p', {class:'tip'}, 'Market reference points, not a proven lineup edge. Gaps below 0.5 points are practical ties. Candidates are inferred from prior placekicking and current roster data; confirm availability before switching.'),
       h('p', {class:'tip'}, `Scoring: FG bands ${d.scoring.fg_made.join('/')}; PAT ${d.scoring.pat_made}; missed FG ${d.scoring.fg_missed}; missed PAT ${d.scoring.pat_missed}.`));
     const body = h('tbody', null, ...rows.map((k,i) => h('tr', null,
@@ -7550,6 +7554,7 @@
     const choices = (window.LEAGUES || []).filter(lg => (lg.roster_positions || []).includes('K'));
     const weekly = window.WEEKLY_RANKINGS || {};
     let league = choices.find(lg => window.KickerForecast?.valid(window.KICKER_MODEL,
+      weekly.season, weekly.currentWeek, lg.scoring) || window.KickerForecast?.near?.(window.KICKER_MODEL,
       weekly.season, weekly.currentWeek, lg.scoring)) || choices[0] || primaryLeague();
     const host = h('div');
     const selector = h('select', { 'aria-label':'Kicker league scoring', onchange:() => {
@@ -11306,7 +11311,7 @@
     const player = window.PLAYERS?.[String(pid)];
     return window.KickerForecast?.lookup(window.KICKER_MODEL, {
       season: lg?.season || window.WEEKLY_RANKINGS?.season,
-      week, settings:lg?.scoring, pid, playerTeam:playerTeam || player?.team,
+      week, settings:lg?.scoring, pid, playerTeam:playerTeam || player?.team, allowNear:true,
       resolveId:name => sleeperIdForFuzzy(String(name).replace(/^([A-Za-z])\./, '$1 '), 'K')
     }) || null;
   }
@@ -12205,21 +12210,26 @@
     if (!sleeper || !wr) return null;
     const week = wr.currentWeek || 1;
     const row = (wr.players || []).find(p => String(p.id) === String(sleeper.id));
-    if (!row) return null;
+    const sos = window.SOS_GRID;
+    const pos = String(row?.pos || sleeper.pos || '').toUpperCase();
+    const isK = pos === 'K';
+    const kLg = isK ? ([contextLeagueFor('K'), ...(window.LEAGUES || []).filter(l => !isLeagueHidden(l) && (l.roster_positions || []).includes('K'))]
+      .find(l => l && (l.roster_positions || []).includes('K'))) : null;
+    const kForecast = isK ? kickerForecastFor(sleeper.id, week, kLg, sleeper.team) : null;
+    if (!row && !kForecast) return null;
 
     // The feed is Sleeper's offense PPR, which scores an LB1 at 0.5 a week. A
     // defender's week is his season projection in the IDP league's own scoring,
     // per game; a null in the feed still marks his bye or injury.
-    const feed = (row.sleeper || [])[week - 1];
-    const idpLg = isIdpPos(row.pos || sleeper.pos) ? contextLeagueFor(row.pos || sleeper.pos) : null;
+    const feed = row ? (row.sleeper || [])[week - 1] : null;
+    const idpLg = isIdpPos(pos) ? contextLeagueFor(pos) : null;
     const idpRec = idpLg && feed != null ? projByPid().get(String(sleeper.id)) : null;
     const idpSeason = idpRec ? projPoints(idpRec.p, idpLg, 'blend') : null;
-    const model = !idpLg ? feed : idpSeason == null ? null : idpSeason / SIM.gamesPlayed;
-    const market = row.vegas;
+    const model = isK ? (kForecast ? Number(kForecast.exp) : null)
+      : !idpLg ? feed : idpSeason == null ? null : idpSeason / SIM.gamesPlayed;
+    const market = row ? row.vegas : null;
     const noProjection = model == null && market == null;
 
-    const sos = window.SOS_GRID;
-    const pos = (row.pos || sleeper.pos || '').toUpperCase();
     const game = weeklyMatchupFor(sleeper.team, pos, week);
     // Missing projections also happen for injured and deep players with games.
     // Only a missing game on a known schedule means bye.
@@ -12240,7 +12250,12 @@
         noProjection ? cell('projected', '·') : cell('projected',
           fmt.decimal(market != null ? market : model, 1),
           h('div', { class:'tw-sub' }, market != null ? 'market'
+            : isK && kForecast ? 'kicker ref'
             : idpLg ? `${idpLg.short_name || idpLg.name} per game` : 'model')),
+        isK && kForecast && kForecast.floor != null && kForecast.ceil != null
+          ? cell('range', `${fmt.decimal(kForecast.floor, 0)}-${fmt.decimal(kForecast.ceil, 0)}`,
+              h('div', { class:'tw-sub' }, 'P20-P90 exp'))
+          : null,
         (market != null && model != null)
           ? cell('vs model', (market - model >= 0 ? '+' : '') + fmt.decimal(market - model, 1),
               h('div', { class:'tw-sub' }, market - model >= 0 ? 'market higher' : 'market lower'))

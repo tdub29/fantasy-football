@@ -89,6 +89,10 @@ ESPN_PRO_TEAMS = {
 ESPN_SCORING = {
     3:"pass_yd", 4:"pass_td", 20:"pass_int", 24:"rush_yd", 25:"rush_td",
     42:"rec_yd", 43:"rec_td", 53:"rec", 68:"fum_lost",
+    # Kicking, in Sleeper's distance-band vocabulary so the kicker gate can read it.
+    80:("fgm_0_19", "fgm_20_29", "fgm_30_39"), 77:"fgm_40_49", 198:"fgm_50_59", 201:"fgm_60p",
+    82:("fgmiss_0_19", "fgmiss_20_29", "fgmiss_30_39"), 79:"fgmiss_40_49",
+    200:"fgmiss_50_59", 203:"fgmiss_60p", 86:"xpm", 88:"xpmiss",
 }
 ESPN_POSITIONS = {1:"QB", 2:"RB", 3:"WR", 4:"TE", 5:"K", 16:"DEF"}
 
@@ -208,7 +212,8 @@ def build_espn_league(config):
     for item in ((settings.get("scoringSettings") or {}).get("scoringItems") or []):
         key = ESPN_SCORING.get(item.get("statId"))
         if key and item.get("points") is not None:
-            scoring[key] = item["points"]
+            for k in (key if isinstance(key, tuple) else (key,)):
+                scoring[k] = item["points"]
     acquisition = settings.get("acquisitionSettings") or {}
     status = raw.get("status") or {}
     users = [{
