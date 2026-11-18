@@ -14591,7 +14591,7 @@
         .map(([x, y], i) => `<rect x="${x}" y="${y}" width="${i % 2 ? 2 : 3}" height="${i % 2 ? 2 : 3}" fill="#fff6c7" opacity="${i % 2 ? 0.7 : 0.95}"/>`).join('')
       : '';
     const celestial = night
-      ? '<circle cx="326" cy="40" r="14" fill="#ffd42a" stroke="#12131f" stroke-width="2.5"/><circle cx="332" cy="37" r="11" fill="#1b204a"/>'
+      ? '<path d="M 325.17 27.03 A 13 13 0 1 0 338.61 43.16 A 10.5 10.5 0 0 1 325.17 27.03 Z" fill="#ffd42a" stroke="#12131f" stroke-width="2.2" stroke-linejoin="round"/>'
       : gloomy
         ? ''
         : twilight
@@ -14955,7 +14955,7 @@
         const r = i % 2 === 0 ? 2.2 : 1.6;
         return `<circle cx="${x}" cy="${y}" r="${r}" fill="#fff9d6" class="${cls}"/>`;
       }).join('');
-      const moon = `<circle cx="334" cy="34" r="11" fill="#fde047" stroke="#0f172a" stroke-width="1.8"/><circle cx="338" cy="31" r="8.5" fill="#11183c"/>`;
+      const moon = `<path d="M 333.66 23.01 A 11 11 0 1 0 344.65 36.74 A 8.8 8.8 0 0 1 333.66 23.01 Z" fill="#fde047" stroke="#0f172a" stroke-width="1.8" stroke-linejoin="round"/>`;
       const beams = `<polygon points="12,-4 92,253 175,253 48,-4" fill="url(#${uid}-beam-l)" class="wx-floodlight"/>
         <polygon points="368,-4 288,253 205,253 332,-4" fill="url(#${uid}-beam-r)" class="wx-floodlight" style="animation-delay:-1.7s"/>`;
       atmosphere = stars + moon + beams;
