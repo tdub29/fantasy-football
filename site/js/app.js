@@ -12077,20 +12077,74 @@
                   stroke-linecap="round" stroke-linejoin="round"/>
         ${dots}
       </svg>`;
+    const deltaLabelEl = h('span', { class:'cchart-deltalabel' }, `since ${first.y}`);
+    const nowEl = h('span', { class:'cchart-now tnum' }, fmtStat(last.v));
+    const crosshair = h('span', { class:'cchart-crosshair', hidden:true });
+    const cursorDot = h('span', { class:'cchart-cursor-dot', hidden:true });
+    const plotEl = h('div', {
+      class:'cchart-plot',
+      tabindex:'0',
+      role:'img',
+      'aria-label':`${unitLabel} chart, latest ${fmtStat(last.v)} on ${last.y}. Hover, drag, or use arrow keys to inspect.`,
+      html: svg,
+    }, crosshair, cursorDot);
+
+    let scrubIdx = -1;
+    const showPoint = (idx) => {
+      const i = Math.max(0, Math.min(pts.length - 1, idx));
+      scrubIdx = i;
+      const p = pts[i];
+      const pctX = (i / (pts.length - 1)) * 100;
+      const pctY = (y(p.v) / H) * 100;
+      crosshair.hidden = false;
+      crosshair.style.left = `${pctX.toFixed(2)}%`;
+      cursorDot.hidden = false;
+      cursorDot.style.left = `${pctX.toFixed(2)}%`;
+      cursorDot.style.top = `${pctY.toFixed(2)}%`;
+      deltaLabelEl.textContent = `${p.y}`;
+      deltaLabelEl.classList.add('is-scrub');
+      nowEl.textContent = fmtStat(p.v);
+      nowEl.classList.add('is-scrub');
+    };
+    const clearPoint = () => {
+      scrubIdx = -1;
+      crosshair.hidden = true;
+      cursorDot.hidden = true;
+      deltaLabelEl.textContent = `since ${first.y}`;
+      deltaLabelEl.classList.remove('is-scrub');
+      nowEl.textContent = fmtStat(last.v);
+      nowEl.classList.remove('is-scrub');
+    };
+    const scrubAtClientX = (clientX) => {
+      const rect = plotEl.getBoundingClientRect();
+      if (!rect.width) return;
+      const rel = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+      showPoint(Math.round(rel * (pts.length - 1)));
+    };
+    plotEl.addEventListener('pointerdown', (e) => { scrubAtClientX(e.clientX); });
+    plotEl.addEventListener('pointermove', (e) => { scrubAtClientX(e.clientX); });
+    plotEl.addEventListener('pointerleave', clearPoint);
+    plotEl.addEventListener('pointercancel', clearPoint);
+    plotEl.addEventListener('blur', clearPoint);
+    plotEl.addEventListener('keydown', (e) => {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      e.preventDefault();
+      const base = scrubIdx < 0 ? pts.length - 1 : scrubIdx;
+      showPoint(base + (e.key === 'ArrowRight' ? 1 : -1));
+    });
+
     return h('div', { class:'cchart' },
       h('div', { class:'cchart-head' },
         h('span', { class:'cchart-unit' }, unitLabel),
         h('span', { class:`cchart-delta ${delta > 0 ? 'up' : delta < 0 ? 'down' : 'flat'}` },
           `${delta > 0 ? '▲' : delta < 0 ? '▼' : '▬'} ${fmtStat(Math.abs(delta))}`),
-        h('span', { class:'cchart-deltalabel' }, `since ${first.y}`),
+        deltaLabelEl,
       ),
       h('div', { class:'cchart-body' },
-        h('div', { class:'cchart-plot', html: svg,
-                   title: (dense ? pts.slice(-12) : pts)
-                     .map(p => `${p.y}: ${fmtStat(p.v)}`).join(String.fromCharCode(10)) }),
+        plotEl,
         h('div', { class:'cchart-axis' },
           h('span', { class:'cchart-hi tnum' }, fmtStat(hi)),
-          h('span', { class:'cchart-now tnum' }, fmtStat(last.v)),
+          nowEl,
           h('span', { class:'cchart-lo tnum' }, fmtStat(lo)),
         ),
       ),
@@ -12785,14 +12839,25 @@
   // the 44px touch target and the mobile gutter handling the views already have,
   // instead of a second tab component that drifts from the first.
   let _pmTabSeq = 0;
-  function modalTabs(sections) {
+  function modalTabs(sections, scroller) {
     const live = (sections || [])
-      .map(sec => ({ key: sec.key, label: sec.label, nodes: (sec.nodes || []).filter(Boolean) }))
-      .filter(sec => sec.nodes.length);
+      .map(sec => {
+        const items = (sec.items || (sec.nodes || []).map(n => ({ node: n })))
+          .filter(it => it && it.node);
+        if (!items.length) return null;
+        const jumpable = items.filter(it => it.jump);
+        const jumpBar = jumpable.length > 1
+          ? h('div', { class: 'pm-jump-row', role: 'navigation', 'aria-label': `${sec.label} sections` },
+              ...jumpable.map(it => h('button', {
+                type: 'button', class: 'pm-jump-chip',
+                onclick: () => it.node.scrollIntoView({ behavior: 'smooth', block: 'start' }),
+              }, it.jump)))
+          : null;
+        items.forEach(it => { if (it.jump && it.node.classList) it.node.classList.add('pm-sec-anchor'); });
+        return { key: sec.key, label: sec.label, nodes: [jumpBar, ...items.map(it => it.node)].filter(Boolean) };
+      })
+      .filter(Boolean);
     if (!live.length) return null;
-    // One surviving group is not a tab bar, it is just content. An unmatched
-    // player with no projection and no history collapses to exactly that, and a
-    // single tab you cannot leave is worse than no tab at all.
     if (live.length === 1) return h('div', { class: 'pm-panel' }, ...live[0].nodes);
 
     const uid = 'pm-tabs-' + (++_pmTabSeq);
@@ -12810,6 +12875,7 @@
         btn.setAttribute('aria-selected', String(i === n));
         btn.tabIndex = i === n ? 0 : -1;
       });
+      if (scroller) scroller.scrollTop = 0;
       // A table inside a hidden panel measures zero wide, so the width classes
       // only resolve once the panel is shown. Re-wrap on every switch.
       wrapDataTables();
@@ -12894,104 +12960,115 @@
       }
     }
 
+    const myOwned = ownerRows.filter(o => o.roster.is_me).map(o => o.league.short_name || o.league.name);
+    const ownedSummary = myOwned.length
+      ? `You own in ${myOwned.join(', ')}`
+      : `Owned in ${ownerRows.length}/${(window.LEAGUES || []).length} leagues`;
+    const ownedDrop = ownerRows.length ? h('details', { class: 'pm-owned-drop' },
+      h('summary', { class: 'pm-owned-summary' },
+        h('span', { class: 'pm-owned-title' }, `Owned in your leagues (${ownerRows.length})`),
+        h('span', { class: 'pm-owned-meta' }, ownedSummary)),
+      h('div', { class: 'pm-owned-body tbl-scroll' },
+        h('table', { class: 'data owned-table' },
+          h('thead', null, h('tr', null,
+            h('th', null, 'League'), h('th', null, 'Team'), h('th', { class: 'owned-owner' }, 'Owner'), h('th', null, 'Slot'), h('th', null, 'Trade'))),
+          h('tbody', null, ...ownerRows.map(o => h('tr', { class: o.roster.is_me ? 'you' : '', onclick: () => { close(); navigate(`#roster/${o.league.id}/${o.roster.roster_id}`); } },
+            h('td', null, o.league.short_name),
+            h('td', null, o.roster.team_name, o.roster.is_me ? h('span', { class: 'badge you', style: { marginLeft: '6px' } }, 'YOU') : null),
+            h('td', { class: 'owned-owner' }, o.roster.owner_name),
+            h('td', null, o.isStarter ? h('span', { class: 'badge' }, 'STARTER') : o.isTaxi ? h('span', { class: 'badge' }, 'TAXI') : o.isReserve ? h('span', { class: 'badge' }, 'IR') : h('span', { class: 'badge' }, 'BENCH')),
+            h('td', null, sleeper?.id ? h('button', {
+              class: 'ghost owned-trade', 'aria-label': 'Trade',
+              title: o.roster.is_me ? 'Add to YOU SEND in the Trade Lab' : 'Add to YOU RECEIVE in the Trade Lab',
+              onclick: (e) => { e.stopPropagation(); close(); openTradeFor(sleeper.id, o.league.id, o.roster.roster_id); },
+            }, h('span', { class: 'owned-trade-word' }, 'Trade '), '⇄') : null))))))) : null;
+
+    const markRow = sleeper ? (() => {
+      const btns = (window.LEAGUES || [])
+        .filter(lg => (lg.rosters || []).some(r => r.is_me))
+        .map(lg => {
+          const b = markButton(lg.id, sleeper.id, sleeper.name);
+          return b ? h('span', { class: 'mark-cell' },
+            h('span', { class: 'mark-lg' }, lg.short_name || lg.name), b) : null;
+        }).filter(Boolean);
+      return btns.length ? h('div', { class: 'mark-row' }, ...btns) : null;
+    })() : null;
+
+    const expertsDrop = expertBadges.length ? h('details', { class: 'pm-owned-drop' },
+      h('summary', { class: 'pm-owned-summary' },
+        h('span', { class: 'pm-owned-title' }, `Expert ranks (${expertBadges.length})`),
+        h('span', { class: 'pm-owned-meta' }, expertBadges[0].textContent)),
+      h('div', { class: 'pm-experts-body row gap-4 wrap' }, ...expertBadges)) : null;
+
+    const verdictBanner = (() => {
+      const v = playerVerdict(ranked, sleeper);
+      if (!v) return null;
+      const c = v.tone === 'buy' ? 'var(--green)' : v.tone === 'sell' ? 'var(--red)' : 'var(--fg-2)';
+      return h('div', { class: 'verdict-banner', style: { borderColor: `color-mix(in oklab, ${c} 45%, var(--border))` } },
+        h('span', { class: 'verdict-label', style: { color: c } }, v.label),
+        h('span', { class: 'verdict-why' }, v.why));
+    })();
+
     backdrop = h('div', { class:'modal-backdrop', onclick: onBackdrop },
       modal = h('div', {
         class:'modal', style:{ position:'relative' }, role:'dialog', 'aria-modal':'true', 'aria-labelledby':titleId, tabindex:'-1'
       },
         h('button', { class:'close-btn', onclick: close, 'aria-label':'Close' }, '×'),
         h('div', { class:'pm-head' },
-          sleeper ? headshot(sleeper.id, 64) : playerShot(college, 64),
+          sleeper ? headshot(sleeper.id, 54) : playerShot(college, 54),
           h('div', { class:'pm-head-text' },
             h('h2', { id:titleId, style:{ marginTop:0, marginBottom:'4px' } }, name,
               sleeper ? injuryChip(sleeper.id) : null),
-            h('div', { class:'row gap-4 wrap', style:{ marginBottom:'12px' } },
+            h('div', { class:'row gap-4 wrap', style:{ marginBottom:'4px' } },
               ranked ? posChip(ranked.pos) : sleeper ? posChip(sleeper.pos) : college ? posChip(college.p) : null,
               ranked ? teamChip(ranked.team) : sleeper ? teamChip(sleeper.team) : college ? h('span', { class:'badge' }, college.sch) : null,
               sleeper?.status === 'Inactive' ? h('span', { class:'badge', title:'Sleeper lists him Inactive: retired or long unsigned' }, 'INACTIVE') : null,
               rookieBadge(ranked || {}),
               uncertainBadge(ranked || {}),
               depBadge(ranked || {}),
-              ...expertBadges,
             ))),
-        // Buy/sell/hold verdict, the synthesized "so what" for this player.
-        (() => { const v = playerVerdict(ranked, sleeper); if (!v) return null;
-          const c = v.tone === 'buy' ? 'var(--green)' : v.tone === 'sell' ? 'var(--red)' : 'var(--fg-2)';
-          return h('div', { class:'verdict-banner', style:{ borderColor:`color-mix(in oklab, ${c} 45%, var(--border))` } },
-            h('span', { class:'verdict-label', style:{ color:c } }, v.label),
-            h('span', { class:'verdict-why' }, v.why),
-          ); })(),
-        // The six numbers, directly under the verdict they justify.
-        numberBand(ranked, sleeper),
-        // Mark him, per league. A man not on your roster can be targeted; one of
-        // yours can be put on the block. Both feed the Action Center board.
-        sleeper ? (() => {
-          const btns = (window.LEAGUES || [])
-            .filter(lg => (lg.rosters || []).some(r => r.is_me))
-            .map(lg => {
-              const b = markButton(lg.id, sleeper.id, sleeper.name);
-              return b ? h('span', { class:'mark-cell' },
-                h('span', { class:'mark-lg' }, lg.short_name || lg.name), b) : null;
-            }).filter(Boolean);
-          return btns.length ? h('div', { class:'mark-row' }, ...btns) : null;
-        })() : null,
-        thisWeekBlock(sleeper),
-        alexandriaBlock(sleeper),
-        ownerRows.length ? h('div', null,
-          // No plate around this band, so no -4px side bleed: it ran out of the box.
-          h('div', { class:'card-title', style:{ margin:'-4px 0 6px' } }, 'Owned in your leagues'),
-          h('table', { class:'data owned-table' },
-            h('thead', null, h('tr', null,
-              h('th', null, 'League'), h('th', null, 'Team'), h('th', { class:'owned-owner' }, 'Owner'), h('th', null, 'Slot'), h('th', null, 'Trade')
-            )),
-            h('tbody', null, ...ownerRows.map(o => h('tr', { class: o.roster.is_me ? 'you' : '', onclick:()=>{ close(); navigate(`#roster/${o.league.id}/${o.roster.roster_id}`); } },
-              h('td', null, o.league.short_name),
-              h('td', null, o.roster.team_name, o.roster.is_me ? h('span', { class:'badge you', style:{ marginLeft:'6px' } }, 'YOU') : null),
-              h('td', { class:'owned-owner' }, o.roster.owner_name),
-              h('td', null, o.isStarter ? h('span', { class:'badge' }, 'STARTER') : o.isTaxi ? h('span', { class:'badge' }, 'TAXI') : o.isReserve ? h('span', { class:'badge' }, 'IR') : h('span', { class:'badge' }, 'BENCH')),
-              h('td', null, sleeper?.id ? h('button', {
-                class:'ghost owned-trade', 'aria-label':'Trade',
-                title: o.roster.is_me ? 'Add to YOU SEND in the Trade Lab' : 'Add to YOU RECEIVE in the Trade Lab',
-                onclick:(e) => { e.stopPropagation(); close(); openTradeFor(sleeper.id, o.league.id, o.roster.roster_id); },
-              }, h('span', { class:'owned-trade-word' }, 'Trade '), '⇄') : null),
-            )))
-          )
-        ) : null,
-        // Everything below is reference, so it goes behind three tabs. Value is
-        // what he is worth, Production is what he scores, Context is why. An
-        // empty group drops its own tab, so an unmatched player does not get a
-        // tab bar leading to three blank panels.
+        // Sticky tab bar sits directly under the header so every view is 1 tap away.
         modalTabs([
-          { key:'value', label:'Value', nodes: [
-            ktcValueChart(sleeper),
-            ranked?.note ? h('div', { class:'card', style:{ background:'var(--bg-2)', marginBottom:'12px' } },
+          { key:'overview', label:'Overview', items: [
+            { node: verdictBanner },
+            { node: numberBand(ranked, sleeper) },
+            { node: ownedDrop },
+            { node: thisWeekBlock(sleeper) },
+            { node: alexandriaBlock(sleeper) },
+            { node: matchupLine(sleeper) },
+            { node: weatherLine(sleeper) },
+            { node: markRow },
+            { node: expertsDrop },
+          ] },
+          { key:'production', label:'Production', items: [
+            { jump:'Usage',       node: advancedBlock(sleeper) },
+            { jump:'Game Log',    node: usageWeeksBlock(sleeper) },
+            { jump:'Field Map',   node: locationBlock(sleeper) },
+            { jump:'Projections', node: projectionBlock(sleeper) },
+            { jump:'Career',      node: historyBlock(sleeper) },
+          ] },
+          { key:'value', label:'Value', items: [
+            { jump:'KTC Curve',   node: ktcValueChart(sleeper) },
+            { jump:'Contract',    node: contractBlock(sleeper) },
+            { node: ranked?.note ? h('div', { class:'card', style:{ background:'var(--bg-2)', marginBottom:'12px' } },
               h('div', { class:'card-title' }, 'Source notes'),
               h('div', null, ranked.note),
               h('div', { class:'tip', style:{ marginTop:'6px' } }, `from ${ranked._src} / ${ranked._ranking}`)
-            ) : null,
+            ) : null },
           ] },
-          { key:'production', label:'Production', nodes: [
-            advancedBlock(sleeper),
-            locationBlock(sleeper),
-            usageWeeksBlock(sleeper),
-            projectionBlock(sleeper),
-            historyBlock(sleeper),
+          { key:'context', label:'Context', items: [
+            { jump:'Schedule',    node: scheduleStrip(sleeper) },
+            { jump:'Injuries',    node: injuryHistoryBlock(sleeper) },
+            { jump:'Team',        node: contextBlock(sleeper) },
+            { node: envInfoLine(sleeper) },
+            { jump:'Draft & Bio', node: prospectBlock(sleeper) },
+            { node: college ? collegeProspectBlock(college) : prospectModelBlock(sleeper) },
+            { node: college ? null : playerInfoBlock(name, sleeper) },
           ] },
-          { key:'context', label:'Context', nodes: [
-            matchupLine(sleeper),
-            weatherLine(sleeper),
-            envInfoLine(sleeper),
-            scheduleStrip(sleeper),
-            contextBlock(sleeper),
-            injuryHistoryBlock(sleeper),
-            contractBlock(sleeper),
-            prospectBlock(sleeper),
-            college ? collegeProspectBlock(college) : prospectModelBlock(sleeper),
-            college ? null : playerInfoBlock(name, sleeper),
-          ] },
-        ]),
-        sleeper ? h('div', { class:'tip', style:{ marginBottom:'12px' } },
+        ], modal),
+        sleeper ? h('div', { class:'tip', style:{ marginTop:'8px' } },
           [sleeper.college, (sleeper.exp != null ? `${sleeper.exp} yr exp` : null), `Sleeper #${sleeper.id}`].filter(Boolean).join('  ·  ')
-        ) : h('div', { class:'tip', style:{ marginBottom:'12px' } },
+        ) : h('div', { class:'tip', style:{ marginTop:'8px' } },
           college ? `College prospect at ${college.sch}, not in the NFL yet.` : 'Not matched to a Sleeper player.')
       )
     );
@@ -14887,7 +14964,7 @@
         h('td', null, h('span', { class: 'muted', style: { fontSize: '9px' } }, g.posted ? 'VEG' : 'proj')));
     };
     return h('div', { class: 'card', style: { background: 'var(--bg-2)', marginBottom: '12px' } },
-      h('div', { class: 'card-title' }, 'Game Log'),
+      h('div', { class: 'card-title' }, '2026 Schedule & Vegas'),
       h('div', { class: 'tip', style: { marginBottom: '6px' } },
         `Opponent colored by defense faced, green = weak D (smash), red = elite D (tough). Implied pts: actual Vegas thru wk ${window.TEAM_SOS.lines_through_week}, projected after.`),
       h('div', { class: 'tbl-scroll' },
