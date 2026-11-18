@@ -14884,28 +14884,45 @@
   function _wxWeatherParticles(sc) {
     let out = '';
     if (sc.isRain) {
-      const drops = Array.from({ length: 22 }, (_, i) => {
-        const x = 18 + (i * 17) % 344;
-        const y = 24 + ((i * 37) % 150);
-        return `<line x1="${x}" y1="${y}" x2="${x - 7}" y2="${y + 15}" stroke="#7cc7ff" stroke-width="2.2" stroke-linecap="round"/>`;
+      const drops1 = Array.from({ length: 14 }, (_, i) => {
+        const x = 20 + (i * 26) % 340;
+        const y = 10 + ((i * 39) % 160);
+        return `<line x1="${x}" y1="${y}" x2="${x - 7}" y2="${y + 16}" stroke="#93c5fd" stroke-width="2.2" stroke-linecap="round"/>`;
       }).join('');
-      out += `<g class="wx-anim-rain">${drops}</g>`;
+      const drops2 = Array.from({ length: 14 }, (_, i) => {
+        const x = 32 + (i * 24) % 340;
+        const y = 16 + ((i * 43) % 150);
+        return `<line x1="${x}" y1="${y}" x2="${x - 5}" y2="${y + 13}" stroke="#bfdbfe" stroke-width="1.6" stroke-linecap="round"/>`;
+      }).join('');
+      const splashes = [78, 142, 206, 268, 318].map((x, i) =>
+        `<ellipse cx="${x}" cy="${204 + (i % 3) * 8}" rx="4" ry="1.4" fill="none" stroke="#93c5fd" stroke-width="1.2" class="wx-rain-splash" style="animation-delay:${-0.2 * i}s"/>`
+      ).join('');
+      out += `<g class="wx-rain-s1">${drops1}</g><g class="wx-rain-s2">${drops2}</g><g class="wx-splashes">${splashes}</g>`;
     }
     if (sc.isSnow) {
-      const flakes = Array.from({ length: 22 }, (_, i) => {
-        const x = 22 + (i * 23) % 336;
-        const y = 26 + ((i * 41) % 164);
-        const s = i % 3 === 0 ? 4 : 3;
-        return `<rect x="${x}" y="${y}" width="${s}" height="${s}" fill="#ffffff" stroke="#12131f" stroke-width="0.9"/>`;
+      const flakes1 = Array.from({ length: 11 }, (_, i) => {
+        const x = 24 + (i * 31) % 336;
+        const y = 12 + ((i * 47) % 160);
+        return `<rect x="${x}" y="${y}" width="4" height="4" rx="1" fill="#ffffff" stroke="#12131f" stroke-width="0.8"/>`;
       }).join('');
-      out += `<g class="wx-anim-snow">${flakes}</g>`;
+      const flakes2 = Array.from({ length: 11 }, (_, i) => {
+        const x = 38 + (i * 29) % 336;
+        const y = 20 + ((i * 37) % 150);
+        return `<rect x="${x}" y="${y}" width="3" height="3" rx="0.8" fill="#f8fafc" stroke="#1e293b" stroke-width="0.6"/>`;
+      }).join('');
+      const flakes3 = Array.from({ length: 8 }, (_, i) => {
+        const x = 16 + (i * 41) % 340;
+        const y = 8 + ((i * 53) % 140);
+        return `<circle cx="${x}" cy="${y}" r="1.3" fill="#ffffff" opacity="0.85"/>`;
+      }).join('');
+      out += `<g class="wx-snow-f1">${flakes1}</g><g class="wx-snow-f2">${flakes2}</g><g class="wx-snow-f3">${flakes3}</g>`;
     }
     if (sc.isWindy) {
-      out += `<g class="wx-anim-wind" fill="none" stroke-linecap="round">
-        <path d="M28,118 Q94,108 148,118 T238,116" stroke="#12131f" stroke-width="4"/>
-        <path d="M28,118 Q94,108 148,118 T238,116" stroke="#ffffff" stroke-width="2"/>
-        <path d="M126,166 Q192,158 258,166 T348,162" stroke="#12131f" stroke-width="4"/>
-        <path d="M126,166 Q192,158 258,166 T348,162" stroke="#ffd42a" stroke-width="2"/>
+      out += `<g class="wx-wind-group" fill="none" stroke-linecap="round">
+        <path class="wx-wind-trail-1" d="M -30,96 Q 70,82 170,96 T 370,92" stroke="#ffffff" stroke-width="2.8"/>
+        <path class="wx-wind-trail-1" d="M -30,96 Q 70,82 170,96 T 370,92" stroke="#38bdf8" stroke-width="1.4"/>
+        <path class="wx-wind-trail-2" d="M 10,146 Q 120,132 230,144 T 410,138" stroke="#ffffff" stroke-width="2.4"/>
+        <path class="wx-wind-trail-2" d="M 10,146 Q 120,132 230,144 T 410,138" stroke="#ffd42a" stroke-width="1.3"/>
       </g>`;
     }
     return out;
@@ -14914,21 +14931,46 @@
   function _wxWeatherOverlaySvg(uid, sc) {
     const night = sc.timeOfDay === 'night';
     const twilight = sc.timeOfDay === 'twilight';
-    const wash = night
-      ? `<linearGradient id="${uid}-wash" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0d112b" stop-opacity="0.68"/><stop offset="55%" stop-color="#18204f" stop-opacity="0.34"/><stop offset="100%" stop-color="#0d112b" stop-opacity="0.18"/></linearGradient>`
-      : twilight
-        ? `<linearGradient id="${uid}-wash" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#5d3880" stop-opacity="0.36"/><stop offset="52%" stop-color="#f28c38" stop-opacity="0.26"/><stop offset="100%" stop-color="#f28c38" stop-opacity="0"/></linearGradient>`
-        : (sc.isRain || sc.isSnow)
-          ? `<linearGradient id="${uid}-wash" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#44526e" stop-opacity="0.42"/><stop offset="100%" stop-color="#44526e" stop-opacity="0.12"/></linearGradient>`
-          : '';
-    const stars = night
-      ? [[28, 22], [58, 44], [88, 16], [292, 20], [326, 40], [354, 18], [42, 64], [344, 62]]
-        .map(([x, y], i) => `<rect x="${x}" y="${y}" width="${i % 2 ? 2 : 3}" height="${i % 2 ? 2 : 3}" fill="#fff6c7" opacity="${i % 2 ? 0.72 : 0.95}"/>`).join('')
-        + '<circle cx="332" cy="36" r="12" fill="#ffd42a" stroke="#12131f" stroke-width="2"/><circle cx="337" cy="33" r="9" fill="#181f4d"/>'
-      : '';
+    const defs = [];
+
+    let wash = '';
+    if (night) {
+      defs.push(`<linearGradient id="${uid}-wash" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#070a1a" stop-opacity="0.75"/><stop offset="55%" stop-color="#11183c" stop-opacity="0.38"/><stop offset="100%" stop-color="#0a0d22" stop-opacity="0.22"/></linearGradient>`);
+      defs.push(`<linearGradient id="${uid}-beam-l" x1="0" y1="0" x2="0.65" y2="1"><stop offset="0%" stop-color="#fff8d6" stop-opacity="0.42"/><stop offset="50%" stop-color="#ffe89e" stop-opacity="0.14"/><stop offset="100%" stop-color="#ffd42a" stop-opacity="0"/></linearGradient>`);
+      defs.push(`<linearGradient id="${uid}-beam-r" x1="1" y1="0" x2="0.35" y2="1"><stop offset="0%" stop-color="#fff8d6" stop-opacity="0.42"/><stop offset="50%" stop-color="#ffe89e" stop-opacity="0.14"/><stop offset="100%" stop-color="#ffd42a" stop-opacity="0"/></linearGradient>`);
+      wash = `<rect width="380" height="253" fill="url(#${uid}-wash)"/>`;
+    } else if (twilight) {
+      defs.push(`<linearGradient id="${uid}-wash" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4c1d95" stop-opacity="0.42"/><stop offset="48%" stop-color="#e11d48" stop-opacity="0.28"/><stop offset="78%" stop-color="#f59e0b" stop-opacity="0.18"/><stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/></linearGradient>`);
+      wash = `<rect width="380" height="253" fill="url(#${uid}-wash)"/>`;
+    } else if (sc.isRain || sc.isSnow) {
+      defs.push(`<linearGradient id="${uid}-wash" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#334155" stop-opacity="0.42"/><stop offset="100%" stop-color="#1e293b" stop-opacity="0.15"/></linearGradient>`);
+      wash = `<rect width="380" height="253" fill="url(#${uid}-wash)"/>`;
+    }
+
+    let atmosphere = '';
+    if (night) {
+      const starCoords = [[24, 20], [52, 42], [84, 16], [122, 34], [258, 26], [292, 18], [328, 44], [356, 22], [40, 68], [342, 64]];
+      const stars = starCoords.map(([x, y], i) => {
+        const cls = i % 3 === 0 ? 'wx-star wx-star-d1' : (i % 3 === 1 ? 'wx-star wx-star-d2' : 'wx-star');
+        const r = i % 2 === 0 ? 2.2 : 1.6;
+        return `<circle cx="${x}" cy="${y}" r="${r}" fill="#fff9d6" class="${cls}"/>`;
+      }).join('');
+      const moon = `<circle cx="334" cy="34" r="11" fill="#fde047" stroke="#0f172a" stroke-width="1.8"/><circle cx="338" cy="31" r="8.5" fill="#11183c"/>`;
+      const beams = `<polygon points="12,-4 92,253 175,253 48,-4" fill="url(#${uid}-beam-l)" class="wx-floodlight"/>
+        <polygon points="368,-4 288,253 205,253 332,-4" fill="url(#${uid}-beam-r)" class="wx-floodlight" style="animation-delay:-1.7s"/>`;
+      atmosphere = stars + moon + beams;
+    }
+
+    let frost = '';
+    if (sc.isSnow || sc.flag === 'cold') {
+      frost = `<rect x="1" y="1" width="378" height="251" rx="4" fill="none" stroke="#38bdf8" stroke-width="2.2" opacity="0.32" class="wx-frost-rim"/>`;
+    }
+
     return `<svg viewBox="0 0 380 253" class="wx-diorama-fx" aria-hidden="true">`
-      + (wash ? `<defs>${wash}</defs><rect width="380" height="253" fill="url(#${uid}-wash)"/>` : '')
-      + stars
+      + (defs.length ? `<defs>${defs.join('')}</defs>` : '')
+      + wash
+      + atmosphere
+      + frost
       + _wxWeatherParticles(sc)
       + `</svg>`;
   }
@@ -14956,7 +14998,8 @@
     if (opts.compact) {
       return h('div', { class: 'wx-inline-thumb', title: `${st.venue} (${st.city})` },
         artNode,
-        h('span', { class: 'wx-thumb-tag' }, st.city.split(',')[0]));
+        h('span', { class: 'wx-thumb-tag' }, st.city.split(',')[0]),
+        h('span', { class: 'wx-thumb-expand' }, '3D ↗'));
     }
 
     return h('div', { class: `wx-diorama-stage${sc.matters ? ' is-matters' : ''}` },
