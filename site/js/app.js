@@ -3266,6 +3266,9 @@
       );
       menuEl = list;
       titleWrap.appendChild(list);
+      const ddRect = list.getBoundingClientRect();
+      const ddOverflow = ddRect.right - (window.innerWidth - 12);
+      if (ddOverflow > 0) list.style.left = `${Math.max(-ddRect.left + 12, -ddOverflow)}px`;
       setTimeout(() => document.addEventListener('click', onDocClick), 0);
     };
     titleEl.addEventListener('click', toggleMenu);
@@ -12987,39 +12990,50 @@
       }
     }
 
+    const myLeagues = (window.LEAGUES || []).filter(lg => !isLeagueHidden(lg) && (lg.rosters || []).some(r => r.is_me));
+    const tableLeagueRows = [...ownerRows];
+    if (sleeper) {
+      for (const lg of myLeagues) {
+        if (!ownerRows.some(o => o.league.id === lg.id)) {
+          tableLeagueRows.push({ league: lg, roster: null, isFa: true });
+        }
+      }
+    }
     const myOwned = ownerRows.filter(o => o.roster.is_me).map(o => o.league.short_name || o.league.name);
     const ownedSummary = myOwned.length
       ? `You own in ${myOwned.join(', ')}`
       : `Owned in ${ownerRows.length}/${(window.LEAGUES || []).length} leagues`;
-    const ownedDrop = ownerRows.length ? h('details', { class: 'pm-owned-drop' },
+    const ownedDrop = tableLeagueRows.length ? h('details', { class: 'pm-owned-drop' },
       h('summary', { class: 'pm-owned-summary' },
         h('span', { class: 'pm-owned-title' }, `Owned in your leagues (${ownerRows.length})`),
         h('span', { class: 'pm-owned-meta' }, ownedSummary)),
       h('div', { class: 'pm-owned-body tbl-scroll' },
         h('table', { class: 'data owned-table' },
           h('thead', null, h('tr', null,
-            h('th', null, 'League'), h('th', null, 'Team'), h('th', { class: 'owned-owner' }, 'Owner'), h('th', null, 'Slot'), h('th', null, 'Trade'))),
-          h('tbody', null, ...ownerRows.map(o => h('tr', { class: o.roster.is_me ? 'you' : '', onclick: () => { close(); navigate(`#roster/${o.league.id}/${o.roster.roster_id}`); } },
-            h('td', null, o.league.short_name),
-            h('td', null, o.roster.team_name, o.roster.is_me ? h('span', { class: 'badge you', style: { marginLeft: '6px' } }, 'YOU') : null),
-            h('td', { class: 'owned-owner' }, o.roster.owner_name),
-            h('td', null, o.isStarter ? h('span', { class: 'badge' }, 'STARTER') : o.isTaxi ? h('span', { class: 'badge' }, 'TAXI') : o.isReserve ? h('span', { class: 'badge' }, 'IR') : h('span', { class: 'badge' }, 'BENCH')),
-            h('td', null, sleeper?.id ? h('button', {
-              class: 'ghost owned-trade', 'aria-label': 'Trade',
-              title: o.roster.is_me ? 'Add to YOU SEND in the Trade Lab' : 'Add to YOU RECEIVE in the Trade Lab',
-              onclick: (e) => { e.stopPropagation(); close(); openTradeFor(sleeper.id, o.league.id, o.roster.roster_id); },
-            }, h('span', { class: 'owned-trade-word' }, 'Trade '), '⇄') : null))))))) : null;
-
-    const markRow = sleeper ? (() => {
-      const btns = (window.LEAGUES || [])
-        .filter(lg => (lg.rosters || []).some(r => r.is_me))
-        .map(lg => {
-          const b = markButton(lg.id, sleeper.id, sleeper.name);
-          return b ? h('span', { class: 'mark-cell' },
-            h('span', { class: 'mark-lg' }, lg.short_name || lg.name), b) : null;
-        }).filter(Boolean);
-      return btns.length ? h('div', { class: 'mark-row' }, ...btns) : null;
-    })() : null;
+            h('th', null, 'League'), h('th', null, 'Team'), h('th', { class: 'owned-owner' }, 'Owner'), h('th', null, 'Slot'), h('th', null, 'Mark'), h('th', null, 'Trade'))),
+          h('tbody', null, ...tableLeagueRows.map(o => {
+            const mk = sleeper?.id ? markButton(o.league.id, sleeper.id, sleeper.name) : null;
+            if (o.isFa) {
+              return h('tr', { class: 'fa-row', onclick: () => { close(); navigate(`#league/${o.league.id}`); } },
+                h('td', null, o.league.short_name || o.league.name),
+                h('td', { class: 'tip' }, 'Free Agent'),
+                h('td', { class: 'owned-owner tip' }, '-'),
+                h('td', null, h('span', { class: 'badge' }, 'FA')),
+                h('td', null, mk),
+                h('td', { class: 'tip' }, '-'));
+            }
+            return h('tr', { class: o.roster.is_me ? 'you' : '', onclick: () => { close(); navigate(`#roster/${o.league.id}/${o.roster.roster_id}`); } },
+              h('td', null, o.league.short_name),
+              h('td', null, o.roster.team_name, o.roster.is_me ? h('span', { class: 'badge you', style: { marginLeft: '6px' } }, 'YOU') : null),
+              h('td', { class: 'owned-owner' }, o.roster.owner_name),
+              h('td', null, o.isStarter ? h('span', { class: 'badge' }, 'STARTER') : o.isTaxi ? h('span', { class: 'badge' }, 'TAXI') : o.isReserve ? h('span', { class: 'badge' }, 'IR') : h('span', { class: 'badge' }, 'BENCH')),
+              h('td', null, mk),
+              h('td', null, sleeper?.id ? h('button', {
+                class: 'ghost owned-trade', 'aria-label': 'Trade',
+                title: o.roster.is_me ? 'Add to YOU SEND in the Trade Lab' : 'Add to YOU RECEIVE in the Trade Lab',
+                onclick: (e) => { e.stopPropagation(); close(); openTradeFor(sleeper.id, o.league.id, o.roster.roster_id); },
+              }, h('span', { class: 'owned-trade-word' }, 'Trade '), '⇄') : null));
+          }))))) : null;
 
     const expertsDrop = expertBadges.length ? h('details', { class: 'pm-owned-drop' },
       h('summary', { class: 'pm-owned-summary' },
@@ -13064,7 +13078,6 @@
             { node: alexandriaBlock(sleeper) },
             { node: matchupLine(sleeper) },
             { node: weatherLine(sleeper) },
-            { node: markRow },
             { node: expertsDrop },
           ] },
           { key:'production', label:'Production', items: [
