@@ -5507,28 +5507,65 @@ table.data tbody td.tnum { font-weight: 600; }
 .ktcv-callout.down strong { color: var(--red); }
 .ktcv-callout.flat strong { color: var(--fg-2); }
 
-/* ---- The three reference tabs ---- */
+/* ---- The four reference tabs ---- */
 .pm-tab-bar {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
   margin: 6px 0 12px;
   position: sticky;
   top: -16px;
-  padding-top: 6px;
+  padding: 6px 0 0;
   z-index: 4;
   background: var(--bg-1);
+  overflow: visible;
+  mask-image: none;
+  -webkit-mask-image: none;
 }
-.pm-tab-bar .tab { padding: 11px 13px; }
+.pm-tab-bar::before, .pm-tab-bar::after { display: none; }
+.pm-tab-bar .tab {
+  padding: 9px 2px;
+  font-size: 0.62rem;
+  letter-spacing: 0.02em;
+  text-align: center;
+  white-space: nowrap;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .pm-jump-row {
-  display: flex; flex-wrap: wrap; gap: 6px;
-  margin-bottom: 12px;
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  gap: 6px;
+  margin-bottom: 10px;
 }
+.pm-jump-row::-webkit-scrollbar { display: none; }
 .pm-jump-chip {
   padding: 4px 10px;
-  font-size: 0.72rem; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase;
+  font-size: 0.68rem; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase;
+  white-space: nowrap;
+  flex-shrink: 0;
   background: var(--grad-btn); color: var(--fg-0);
   border: 2px solid var(--ink); border-radius: 999px;
   box-shadow: var(--bevel), var(--shadow-1);
 }
 .pm-jump-chip:hover { background: var(--grad-gold); color: var(--ink); }
+.tw-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+@media (min-width: 560px) {
+  .tw-row { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+.tw-cell { min-width: 0; }
+.modal table.data th, .modal table.data td {
+  padding: 6px 5px;
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
 .pm-sec-anchor { scroll-margin-top: 56px; }
 .pm-owned-drop {
   margin: 8px 0 12px;

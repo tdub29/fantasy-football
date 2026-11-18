@@ -12252,12 +12252,7 @@
         game && game.implied_pf != null
           ? cell('team total', fmt.decimal(game.implied_pf, 1),
               h('div', { class:'tw-sub' }, game.posted ? 'Vegas' : 'projected')) : null,
-      ),
-      h('p', { class:'tip tw-note' },
-        `Projection is the price-adjusted market number when a line exists, otherwise Sleeper's model. `
-        + (idpLg ? `A defender has no weekly feed, so his is the season projection in ${idpLg.short_name || idpLg.name} scoring, per game. ` : '')
-        + `Defense-vs-position is ${sos ? sos.season : 'last season'} opponent-adjusted PPR allowed to ${pos || 'the position'}, `
-        + `1 = toughest, 32 = easiest.`));
+      ));
   }
 
   // Six outside weekly boards on one man (window.ALEXANDRIA, build_alexandria.py).
