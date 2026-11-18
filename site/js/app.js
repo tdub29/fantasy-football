@@ -12411,18 +12411,24 @@
     const teamCtx = teamAbbr && window.CONTEXT.teams ? window.CONTEXT.teams[teamAbbr] : null;
     if (!teamCtx && !playerCtx) return null;
 
+    const curSeason = window.CONTEXT.current_season || new Date().getFullYear();
+    const curWk = Number((window.WEEKLY_RANKINGS && (window.WEEKLY_RANKINGS.liveWeek || window.WEEKLY_RANKINGS.currentWeek))
+      || teamCtx?.turnover?.weeks_played || 0);
+    const midSeason = curWk >= 5;
+
     const blocks = [];
 
-    // -- Team market + QB context --
+    // -- Team market + QB context (hide prior-season tendencies once Week 5+ is underway) --
     if (teamCtx && (teamCtx.market || teamCtx.qb)) {
       const m = teamCtx.market;
+      const showMarket = m && (!midSeason || Number(m.season) >= Number(curSeason));
       const q = teamCtx.qb;
-      const proeColor = m
+      const proeColor = showMarket
         ? (m.proe >= 0.02 ? 'var(--blue)' : m.proe <= -0.02 ? 'var(--amber)' : 'var(--fg-2)')
         : 'var(--fg-2)';
-      blocks.push(h('div', { class:'ctx-block market-block' },
-        h('div', { class:'card-title' }, `${teamAbbr} ${m ? m.season : ''} Tendencies`),
-        m ? h('div', { class:'kpi-row' },
+      if (showMarket || q) blocks.push(h('div', { class:'ctx-block market-block' },
+        showMarket ? h('div', { class:'card-title' }, `${teamAbbr} ${m.season} Tendencies`) : null,
+        showMarket ? h('div', { class:'kpi-row' },
           h('div', { class:'mini-kpi' },
             h('div', { class:'mini-kpi-num tnum' }, m.avg_implied.toFixed(1)),
             h('div', { class:'mini-kpi-label' }, 'Avg implied'),
@@ -12507,8 +12513,8 @@
       ));
     }
 
-    // -- Team turnover --
-    if (teamCtx && teamCtx.turnover) {
+    // -- Team turnover (offseason / Weeks 1-4 only; irrelevant by mid-season) --
+    if (!midSeason && teamCtx && teamCtx.turnover) {
       const t = teamCtx.turnover;
       const turnoverEl = h('div', { class:'ctx-block' },
         h('div', { class:'card-title' }, `${teamAbbr} ${t.season} Turnover`,
