@@ -13224,6 +13224,7 @@
           ] },
           { key:'production', label:'Production', items: [
             { jump:'Game Log',    node: usageWeeksBlock(sleeper) },
+            { jump:'Schedule',    node: scheduleStrip(sleeper) },
             { jump:'Usage',       node: advancedBlock(sleeper) },
             { jump:'Field Map',   node: locationBlock(sleeper) },
             { jump:'Projections', node: projectionBlock(sleeper) },
@@ -13239,7 +13240,6 @@
             ) : null },
           ] },
           { key:'context', label:'Context', items: [
-            { jump:'Schedule',    node: scheduleStrip(sleeper) },
             { jump:'Injuries',    node: injuryHistoryBlock(sleeper) },
             { jump:'History',     node: playerTxHistoryBlock(sleeper) },
             { jump:'Team',        node: contextBlock(sleeper) },
