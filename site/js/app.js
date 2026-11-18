@@ -14890,7 +14890,7 @@
       h('div', { class: 'card-title' }, 'Game Log'),
       h('div', { class: 'tip', style: { marginBottom: '6px' } },
         `Opponent colored by defense faced, green = weak D (smash), red = elite D (tough). Implied pts: actual Vegas thru wk ${window.TEAM_SOS.lines_through_week}, projected after.`),
-      h('div', { style: { maxHeight: '260px', overflowY: 'auto' } },
+      h('div', { class: 'tbl-scroll' },
         h('table', { class: 'data snug', style: { fontSize: '12px' } },
           h('thead', null, h('tr', null,
             h('th', null, 'Wk'), h('th', null, 'Opp'),
