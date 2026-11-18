@@ -14574,7 +14574,7 @@
       isRain: isRain || isOutsideRain, isSnow, isWindy,
       tempMain: closedOrDome && !hasTemp ? '70° IN' : (hasTemp ? `${Math.round(wx.temp_f)}°F` : '--'),
       tempLed: closedOrDome && !hasTemp ? '70°F IND' : (hasTemp ? `${Math.round(wx.temp_f)}°F` : '--'),
-      windLed: closedOrDome ? '0 MPH' : (wx.wind_mph != null ? `${Math.round(wx.wind_mph)}G${Math.round(wx.gust_mph || wx.wind_mph)}` : '--'),
+      windLed: closedOrDome ? '0 MPH' : (wx.wind_mph != null ? (Math.round(wx.gust_mph || wx.wind_mph) > Math.round(wx.wind_mph) + 1 ? `${Math.round(wx.wind_mph)}-${Math.round(wx.gust_mph)} MPH` : `${Math.round(wx.wind_mph)} MPH`) : '--'),
       precipLed: closedOrDome ? (wx.precip_prob != null ? `${Math.round(wx.precip_prob)}% OUT` : '0% IND') : (wx.precip_prob != null ? `${Math.round(wx.precip_prob)}%` : '--'),
       roofBadge: isRetractClosed ? 'ROOF CLOSED' : wx.roof === 'dome' ? 'DOME' : wx.roof === 'retractable' ? 'RETRACT OPEN' : String(wx.surface || 'OUTDOORS').toUpperCase(),
     };
