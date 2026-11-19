@@ -14404,7 +14404,7 @@
     TEN: { name: 'Nissan Stadium',           city: 'Nashville, TN',       arch: 'ten_cranes',    c1: '#0c2340', c2: '#4b92db' },
     WAS: { name: 'Northwest Stadium',        city: 'Landover, MD',        arch: 'was_bowl',      c1: '#5a1414', c2: '#ffb612' },
   };
-  const STADIUM_ART_KEYS = new Set(['banorte', 'buf', 'car', 'chi', 'dal', 'den', 'det', 'gb', 'hou', 'kc', 'lv', 'metlife', 'mia', 'ne', 'phi', 'sea', 'sofi', 'was']);
+  const STADIUM_ART_KEYS = new Set(['ari', 'atl', 'banorte', 'buf', 'car', 'chi', 'dal', 'den', 'det', 'gb', 'hou', 'ind', 'kc', 'lv', 'metlife', 'mia', 'min', 'ne', 'no', 'phi', 'pit', 'sea', 'sofi', 'was']);
   const INTL_STADIUM_PROFILES = [
     { key: 'banorte',       artKey: 'banorte',  name: 'Estadio Banorte',          city: 'Mexico City, MX',   arch: 'intl_banorte' },
     { key: 'azteca',        artKey: 'banorte',  name: 'Estadio Azteca',           city: 'Mexico City, MX',   arch: 'intl_banorte' },
