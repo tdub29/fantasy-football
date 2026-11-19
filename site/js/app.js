@@ -100,10 +100,10 @@
   }
   function toggleLeagueHidden(lg) {
     const id = String(lg.id), hidden = state.settings.hiddenLeagues;
-    if (!hidden.includes(id) && !confirm(`Hide ${lg.name.trim()}? It leaves the menu and My Leagues. Show it again from Profile.`)) return;
+    if (!hidden.includes(id) && !confirm(`Hide ${lg.name.trim()}? Restore anytime in Profile.`)) return;
     state.settings.hiddenLeagues = hidden.includes(id) ? hidden.filter(x => x !== id) : [...hidden, id];
     saveSettings();
-    if (isLeagueHidden(lg)) toast(`${lg.name.trim()} hidden. Show it again from Profile, top of the menu.`);
+    if (isLeagueHidden(lg)) toast(`${lg.name.trim()} hidden (restore in Profile).`);
     route();
   }
   // The profile panel (account.js) lists hidden leagues so they stay findable.
@@ -421,13 +421,13 @@
     const aging = curve && age != null ? age >= (curve.sell_age ?? 99) : false;
     const nearPeak = curve && age != null ? age <= (curve.peak_avg ?? 0) : true;
     const gap = mp?.gap ?? 0;
-    const rk = mp ? `${ranked.pos}${mp.valRank} value vs ${ranked.pos}${mp.projRank} projection` : '';
-    if (gap <= -6 && aging) return { label: 'SELL HIGH', tone: 'sell', why: `Priced above production (${rk}) and past the ${ranked.pos} sell age (${age}). Move him for value before the market catches down.` };
-    if (gap <= -6) return { label: 'MARKET AHEAD', tone: 'hold', why: `Priced above this season’s projection (${rk}) but still young, so the price is paying for upside, not current output. Hold unless a buyer overpays.` };
-    if (gap >= 6 && !aging) return { label: 'BUY', tone: 'buy', why: `Outproduces his price (${rk}) and ${nearPeak ? 'at/before peak' : 'in his prime'}. Undervalued, buy the production.` };
-    if (gap >= 6 && aging) return { label: 'WIN-NOW BUY', tone: 'buy', why: `Outproduces his price now (${rk}) but aging: a cheap win-now piece for a contender, not a long-term hold.` };
-    if (aging) return { label: 'AGING HOLD', tone: 'hold', why: `Fairly priced but past the ${ranked.pos} sell age${age != null ? ` (${age})` : ''}; start planning an exit while value holds.` };
-    return { label: 'HOLD', tone: 'hold', why: mp ? `Fairly priced against projection (${rk}).` : 'No season projection to price against, judge on dynasty value + age.' };
+    const rk = mp ? `${ranked.pos}${mp.valRank} val vs ${ranked.pos}${mp.projRank} proj` : '';
+    if (gap <= -6 && aging) return { label: 'SELL HIGH', tone: 'sell', why: `Priced above output (${rk}) past ${ranked.pos} sell age (${age}); sell now.` };
+    if (gap <= -6) return { label: 'MARKET AHEAD', tone: 'hold', why: `Priced above projection (${rk}) for youth upside; hold unless overpaid.` };
+    if (gap >= 6 && !aging) return { label: 'BUY', tone: 'buy', why: `Outproduces price (${rk}) ${nearPeak ? 'near peak' : 'in prime'}; undervalued buy.` };
+    if (gap >= 6 && aging) return { label: 'WIN-NOW BUY', tone: 'buy', why: `Outproduces price (${rk}) while aging; cheap win-now rental.` };
+    if (aging) return { label: 'AGING HOLD', tone: 'hold', why: `Fair price past ${ranked.pos} sell age${age != null ? ` (${age})` : ''}; plan exit.` };
+    return { label: 'HOLD', tone: 'hold', why: mp ? `Fairly priced vs projection (${rk}).` : 'No projection; judge on dynasty value and age.' };
   }
   // ===== Value Over Replacement (VOR), league-aware =====
   // Replacement level at a position = the projected points of the LAST startable
@@ -522,7 +522,7 @@
     const d = r.diff;
     const color = d >= 4 ? 'var(--green)' : d <= -4 ? 'var(--red)' : 'var(--fg-3)';
     return h('span', { class: 'tnum', style: { color, fontWeight: 600 },
-      title: `PrizePicks ranks him ${r.pos}${r.ppRank}, Sleeper ranks him ${r.pos}${r.slpRank}, PP ${d > 0 ? 'higher' : d < 0 ? 'lower' : 'even'} by ${Math.abs(d)} spot${Math.abs(d) === 1 ? '' : 's'}. ${d > 0 ? 'Sharp market likes him more than the public model, undervalued lean.' : d < 0 ? 'Sleeper ranks him higher than the market, may overrate.' : 'Market and model agree.'}` },
+      title: `PrizePicks ${r.pos}${r.ppRank} vs Sleeper ${r.pos}${r.slpRank} (${d > 0 ? `+${d} sharp lean` : d < 0 ? `${d} model lean` : 'even'}).` },
       `${d > 0 ? '+' : ''}${d}`);
   }
   // Redraft leagues have no dynasty half. Rookie picks, future value, position
@@ -572,7 +572,7 @@
     const color = v >= 30 ? 'var(--green)' : v >= 0 ? 'var(--fg-1)' : 'var(--red)';
     const pos = ros ? rosPointsByPid(lg).get(String(pid))?.pos : projByPid().get(String(pid))?.p?.pos;
     return h('span', { class: 'tnum', style: { color, fontWeight: 600 },
-      title: `Value over replacement: ${v > 0 ? '+' : ''}${v} ${ros ? 'rest-of-season' : 'projected'} pts vs the ${ros ? 'best free' : 'last startable'} ${pos || ''} in ${lg.short_name || lg.name}. Cross-position comparable, higher = more lineup value.` },
+      title: `VOR: ${v > 0 ? '+' : ''}${v} ${ros ? 'ROS' : 'proj'} pts above ${ros ? 'top FA' : 'replacement'} ${pos || ''} in ${lg.short_name || lg.name}.` },
       `${v > 0 ? '+' : ''}${fmt.decimal(v, 0)}`);
   }
   // Small colored chip for the mispricing gap. +N green (produces above price),
@@ -583,7 +583,7 @@
     const g = mp.gap;
     const color = g >= 6 ? 'var(--green)' : g <= -6 ? 'var(--red)' : 'var(--fg-3)';
     return h('span', { class: 'tnum', style: { color, fontWeight: 700 },
-      title: `Season projection: ${mp.pos}${mp.projRank} · Dynasty value: ${mp.pos}${mp.valRank}. ${g > 0 ? 'Produces above its price (value lean)' : g < 0 ? 'Priced above production (sell lean)' : 'Fairly priced'}. Read with age.` },
+      title: `Proj ${mp.pos}${mp.projRank} vs Value ${mp.pos}${mp.valRank} (${g > 0 ? 'undervalued' : g < 0 ? 'overpriced' : 'fair'}).` },
       `${g > 0 ? '+' : ''}${g}`);
   }
 
@@ -904,10 +904,10 @@
   function buildRosBasisBar(onUpdate, opts = {}) {
     const cur = rosBasisMode();
     const modes = [
-      { key: 'blended', label: 'Blended (FP + Gibbs)', short: 'Blended', tip: 'Average of FantasyPros ROS + Jacob Gibbs PPR ROS boards, scaled to Sleeper PPG curve' },
-      { key: 'gibbs',   label: 'Gibbs ROS',            short: 'Gibbs',   tip: 'Jacob Gibbs PPR ROS board only, scaled to Sleeper PPG curve' },
-      { key: 'fp',      label: 'FantasyPros ROS',      short: 'FantasyPros', tip: 'FantasyPros ROS consensus only, scaled to Sleeper PPG curve' },
-      { key: 'sleeper', label: 'Sleeper Only',         short: 'Sleeper', tip: 'Raw Sleeper weekly projections with no expert rank scaling' },
+      { key: 'blended', label: 'Blended (FP + Gibbs)', short: 'Blended', tip: '50/50 FP + Gibbs ROS, scaled to Sleeper PPG' },
+      { key: 'gibbs',   label: 'Gibbs ROS',            short: 'Gibbs',   tip: 'Gibbs PPR ROS, scaled to Sleeper PPG' },
+      { key: 'fp',      label: 'FantasyPros ROS',      short: 'FantasyPros', tip: 'FantasyPros ROS, scaled to Sleeper PPG' },
+      { key: 'sleeper', label: 'Sleeper Only',         short: 'Sleeper', tip: 'Raw Sleeper weekly projections' },
     ];
     return h('div', {
       class: 'ros-basis-bar',
@@ -1163,7 +1163,7 @@
     const dyn = isDynastyLeague(league);
     if (dyn) {
       return entry && entry._posRank
-        ? { rank: entry._posRank, label: 'Dynasty position rank (consensus)' } : null;
+        ? { rank: entry._posRank, label: 'Dynasty consensus pos rank' } : null;
     }
     const pid = entry && (entry._sleeperId != null ? entry._sleeperId : entry.sleeperId);
     const pos = (entry && entry.pos) || (pid != null ? (window.PLAYERS?.[pid]?.pos || (window.WEEKLY_RANKINGS?.players || []).find(p => String(p.id) === String(pid))?.pos) : '');
@@ -1172,11 +1172,11 @@
       if (exp && exp.rank != null) {
         return {
           rank: Math.round(exp.rank),
-          label: `Position rank by expert consensus (${exp.details.join(', ')})`,
+          label: `Expert consensus (${exp.details.join(', ')})`,
         };
       }
       const r = rosPosRank(pid, league);
-      return r ? { rank: r, label: 'Position rank by rest-of-season projected points (Sleeper)' } : null;
+      return r ? { rank: r, label: 'Sleeper ROS pos rank' } : null;
     }
     return null;
   }
@@ -2025,7 +2025,7 @@
     if (tab === 'overview') {
       main.appendChild(h('h2', { class:'page-title', style:{ fontSize:'1.2rem', marginTop:'8px' } }, 'My Leagues'));
       leaguesComparison(main);
-      if ((window.LEAGUES || []).some(l => l.projection_unavailable)) main.appendChild(h('p', { class:'source-note' }, 'Leagues with unsupported scoring retain their rosters and current records. They are excluded from the grade heatmap and modeled comparisons.'));
+      if ((window.LEAGUES || []).some(l => l.projection_unavailable)) main.appendChild(h('p', { class:'source-note' }, 'Unsupported-scoring leagues keep rosters and records only.'));
     }
 
     const cornerstones = [];
@@ -2111,7 +2111,7 @@
       main.appendChild(h('h2', { class:'page-title', style:{ fontSize:'1.2rem', marginTop:'8px' } },
         'Roster Value Trajectory',
         h('span', { class:'tip', style:{ fontSize:'.78rem', fontWeight:400, marginLeft:'10px' } },
-          `${CURRENT_SEASON} through ${CURRENT_SEASON + PROJECTION_YEARS - 1}, projected with position-aware aging curves`)
+          `${CURRENT_SEASON}-${CURRENT_SEASON + PROJECTION_YEARS - 1} aging-curve outlook`)
       ));
 
       // Build year labels once
@@ -2155,8 +2155,7 @@
         ),
         pvFvBar,
         h('div', { class:'tip', style:{ marginTop:'8px' } },
-          'PV (Present Value) = ' + CURRENT_SEASON + ' projected value. FV (Future Value) = projected value in ' +
-          (CURRENT_SEASON + FV_YEARS) + ', ' + FV_YEARS + ' seasons out. Aging curves are position-specific (RBs cliff hard at 27, WRs gentler at 30, QBs longest peak, TEs slow decline).'
+          `PV = ${CURRENT_SEASON} value · FV = ${CURRENT_SEASON + FV_YEARS} projected value (position aging curves in #methodology).`
         ),
       ));
 
@@ -2235,7 +2234,7 @@
       if (watch.length) {
         main.appendChild(h('h2', { class:'page-title', style:{ fontSize:'1.1rem', marginTop:'20px' } }, 'Aging-Cliff Watchlist'));
         main.appendChild(h('div', { class:'tip', style:{ marginTop:'-4px', marginBottom:'8px' } },
-          `Ranked players whose ${CURRENT_SEASON}→${CURRENT_SEASON + PROJECTION_YEARS - 1} projected value falls the most. Lock in trade value before the cliff.`
+          `Largest ${CURRENT_SEASON}-${CURRENT_SEASON + PROJECTION_YEARS - 1} projected value drops.`
         ));
         const watchCard = h('div', { class:'card', style:{ padding:0, overflow:'hidden' } });
         const watchTbl = h('table', { class:'data snug' },
@@ -2364,9 +2363,9 @@
     const contendCount = stances.filter(s => s.stance === 'contend').length;
     const rebuildCount = stances.filter(s => s.stance === 'rebuild').length;
     if (contendCount && contendCount === stances.length) {
-      insights.push({ icon:'⚡', tone:'good', label:'All systems contending', body:'Every roster is in win-now mode. Trade futures for established starters.' });
+      insights.push({ icon:'⚡', tone:'good', label:'All systems contending', body:'Every roster is win-now; trade futures for starters.' });
     } else if (rebuildCount && rebuildCount === stances.length) {
-      insights.push({ icon:'⏳', tone:'neutral', label:'Full rebuild', body:'Every roster is rebuilding. Stack picks, sell aging vets, fade temptation to chase.' });
+      insights.push({ icon:'⏳', tone:'neutral', label:'Full rebuild', body:'Every roster is rebuilding; stack picks and sell vets.' });
     } else {
       const detail = stances.map(s => `${s.league}: ${s.tier}`).join(', ');
       insights.push({ icon:'◇', tone:'neutral', label:'Mixed stance', body: detail });
@@ -2526,8 +2525,8 @@
 
       const tbl = h('table', { class:'data' },
         h('thead', null, h('tr', null,
-          h('th', { class:'right', style:{ width:'64px' }, title:'Your saved rank. Click to type a number. In Mine order, drag this cell or use arrow keys.' }, 'Mine'),
-          h('th', { class:'right', style:{ width:'74px' }, title:'Rank from enabled sources' }, 'Consensus'),
+          h('th', { class:'right', style:{ width:'64px' }, title:'Saved rank (click to edit; drag or arrow keys in Mine sort).' }, 'Mine'),
+          h('th', { class:'right', style:{ width:'74px' }, title:'Enabled sources consensus' }, 'Consensus'),
           h('th', null, 'Player'),
           ...expertHeaders(),
           h('th', null, 'Pos'),
@@ -2535,11 +2534,11 @@
           h('th', { class:'right' }, 'Age'),
           h('th', null, 'Category'),
           h('th', { class:'center', style:{ width:'48px' } }, 'Tier'),
-          h('th', { class:'right', title:'Dynasty value (KTC market, ~0-110)' }, 'Value'),
-          h('th', { class:'right', title:'Value vs projection: positional value rank minus season-projection rank. + = produces above price (buy lean), − = priced above production (sell lean). Read with Age.' }, 'Gap'),
+          h('th', { class:'right', title:'Dynasty value (KTC, 0-110)' }, 'Value'),
+          h('th', { class:'right', title:'Value rank minus projection rank (+ buy, - sell).' }, 'Gap'),
           h('th', { class:'right' }, 'Own%'),
           h('th', { class:'right' }, 'Start%'),
-          h('th', { title:`Leagues where he is rostered. Gold = yours. ${(window.LEAGUES || []).map(l => `${leagueCode(l.short_name)} ${l.short_name}`).join(', ')}` }, 'Owners'),
+          h('th', { title:`Rostered leagues (gold = yours): ${(window.LEAGUES || []).map(l => `${leagueCode(l.short_name)} ${l.short_name}`).join(', ')}` }, 'Owners'),
         )),
         h('tbody', null, ...filtered.map((p, i) => {
           posCounters[p.pos] = (posCounters[p.pos] || 0) + 1;
@@ -2569,7 +2568,7 @@
               p.rookie ? h('span', { class:'badge rookie', style:{ marginLeft:'4px' } }, 'Rookie') : null,
               p.uncertain ? h('span', { class:'badge uncertain', style:{ marginLeft:'4px' } }, 'Verify') : null,
               p.subtype === 'depreciating_pillar' ? h('span', { class:'badge depreciating', style:{ marginLeft:'4px' } }, 'DP') : null,
-              isDepth ? h('span', { class:'badge depreciating', style:{ marginLeft:'4px' }, title:'Owned but rarely started; depth piece, not a starter.' }, 'DEPTH') : null,
+              isDepth ? h('span', { class:'badge depreciating', style:{ marginLeft:'4px' }, title:'Owned depth piece; rarely started.' }, 'DEPTH') : null,
             )),
             ...expertCells(p.name, sleeperId),
             h('td', null, h('div', { style:{ display:'flex', alignItems:'center', gap:'6px' } },
@@ -2607,8 +2606,8 @@
       if (RANKINGS_FILTER.order === 'mine') wireMyRankReorder(tbl.querySelector('tbody'), renderList);
       tableWrap.appendChild(h('div', { class:'tip', style:{ padding:'10px 14px', borderTop:'1px solid var(--border)' } },
         RANKINGS_FILTER.order === 'mine'
-          ? `Showing ${filtered.length} players. Drag Mine cells, use arrow keys, or click a rank to type. ${myRanks().order.length} ranks saved in this browser.`
-          : `Showing ${filtered.length} players ordered by enabled sources. Mine stays editable.`
+          ? `${filtered.length} players · ${myRanks().order.length} Mine ranks saved`
+          : `${filtered.length} players by enabled sources`
       ));
       if (focusPid) {
         const refocus = focusPid;
@@ -2771,20 +2770,19 @@
           .map(key => [key, h('td', { class:'right tnum' }, '…')]));
         return { lg, me, rank, pv, fv, dyn, format, stance: dyn ? rosterStance(me, lg) : null, need, needGrade: need ? pg[need] : null, rec, odds };
       });
-      main.appendChild(h('p', { class:'leagues-table-hint' }, 'Scroll sideways for championship, playoff and bye odds, projected record and points.'));
       main.appendChild(h('div', { class:'card leagues-table-card', role:'region', 'aria-label':'My leagues comparison, scroll for season forecasts', tabindex:'0' },
         h('table', { class:'data leagues-table fit-num' },
           h('thead', null, h('tr', null,
             h('th', null, 'League'), h('th', null, 'Format'), h('th', { class:'right' }, 'Record'),
-            h('th', { class:'right', title:'Lineup rank: your best legal starting lineup against the league, picks excluded. The roster Snapshot also shows roster value rank, picks included.' }, 'Rank'),
-            h('th', { class:'right', title:'Present Value: your best LEGAL starting lineup today (positions respected, taxi/IR/Out benched). Dynasty rows are KTC asset value (PV); redraft rows are season value over replacement (VOR), a different unit, so compare the rank, not the number.' }, 'PV / VOR'),
-            h('th', { class:'right', title:`Future Value: the same lineup ${FV_YEARS} years out, each player aged by his position curve, with owned picks folded in once they convert. A converted pick is discounted in its rookie year (0.75x, ramping to parity) because dynasty value prices a whole career, not one season.` }, 'FV'),
-            h('th', { class:'right', title:'Chance to make the playoffs, simulated on the real schedule and median games. Same numbers as the league Standings.' }, 'Playoff'),
-            h('th', { class:'right', title:'Chance to win the title.' }, 'Champ'),
-            h('th', { class:'right', title:'Chance to earn a first-round playoff bye. N/A when this league has no byes.' }, 'Bye'),
-            h('th', { class:'right', title:'Expected final regular-season wins, losses and ties, including completed games and league median games. Same simulation as Standings.' }, 'Proj W-L-T'),
-            h('th', { class:'right', title:'Projected points per remaining week from the same season simulation as Standings.' }, 'Pts/wk'),
-            h('th', { class:'right', title:'Chance your own pick lands 1.01 under the rookie-order rule of this league. Dynasty leagues only.' }, '1.01'),
+            h('th', { class:'right', title:'Best legal starting lineup rank (excludes picks).' }, 'Rank'),
+            h('th', { class:'right', title:'Best legal lineup value today (Dynasty = KTC PV; Redraft = VOR, compare ranks).' }, 'PV / VOR'),
+            h('th', { class:'right', title:`Projected lineup value in ${FV_YEARS} yrs + converted picks (aging curves).` }, 'FV'),
+            h('th', { class:'right', title:'Simulated playoff odds' }, 'Playoff'),
+            h('th', { class:'right', title:'Simulated championship odds' }, 'Champ'),
+            h('th', { class:'right', title:'First-round bye odds (N/A if none)' }, 'Bye'),
+            h('th', { class:'right', title:'Projected regular-season W-L-T' }, 'Proj W-L-T'),
+            h('th', { class:'right', title:'Projected remaining Pts/wk' }, 'Pts/wk'),
+            h('th', { class:'right', title:'1.01 pick odds (dynasty only)' }, '1.01'),
             h('th', null, 'Stance'), h('th', null, 'Biggest Need'), h('th', null, ''))),
           h('tbody', null, ...rowsData.map(d => h('tr', { style:{ cursor:'pointer' }, onclick:()=>navigate(`#league/${d.lg.id}`) },
             h('td', null, h('div', { class:'name-cell' },
@@ -2795,15 +2793,15 @@
             h('td', { class:'right tnum' }, d.rec),
             h('td', { class:'right tnum', style:{ fontWeight:700, color: d.rank == null ? 'var(--fg-3)' : d.rank <= Math.ceil(d.lg.total_rosters*0.3) ? 'var(--green)' : d.rank > Math.ceil(d.lg.total_rosters*0.6) ? 'var(--red)' : 'var(--fg-1)' } }, d.rank == null ? 'Unavailable' : `#${d.rank}`),
             h('td', { class:'right tnum', title: d.dyn
-              ? 'Dynasty PV: KTC asset value of your best legal starting lineup.'
-              : 'Redraft PV: season value over replacement of your best legal starting lineup. A different unit from the dynasty rows, so compare the rank, not the number.' },
+              ? 'Dynasty PV (KTC legal lineup value).'
+              : 'Redraft VOR (season replacement value; compare rank, not number).' },
               d.pv == null ? 'Unavailable' : fmt.decimal(d.pv, 0),
               d.dyn || d.pv == null ? null : h('span', { class:'badge unit-vor' }, 'VOR')),
-            h('td', { class:'right tnum', style:{ color:'var(--fg-3)' }, title: d.dyn ? null : 'Redraft league, no future value.' }, d.dyn ? fmt.decimal(d.fv, 0) : '·'),
+            h('td', { class:'right tnum', style:{ color:'var(--fg-3)' }, title: d.dyn ? null : 'Redraft (no FV)' }, d.dyn ? fmt.decimal(d.fv, 0) : '·'),
             d.odds.playoff, d.odds.title, d.odds.bye, d.odds.record, d.odds.ppw, d.odds.first,
             h('td', null, d.dyn
               ? h('span', { class:`badge stance-${d.stance}`, style:{ color: stanceTone[d.stance] } }, STANCE_LABEL[d.stance] || d.stance || 'Unavailable')
-              : h('span', { class:'muted', title:'Redraft league, no rebuild or contend stance.' }, '·')),
+              : h('span', { class:'muted', title:'Redraft (no dynasty stance)' }, '·')),
             h('td', { class:'tnum', style:{ color: d.need ? gradeColor(d.needGrade) : 'var(--fg-3)', fontWeight:600 },
               title: d.need ? `Weakest position grade: ${d.need} ${d.needGrade.toFixed(1)}/10.` : null },
               d.need ? `${d.need} ${d.needGrade.toFixed(1)}` : 'Unavailable'),
@@ -2829,7 +2827,7 @@
           else if (o && k === 'ppw' && Number.isFinite(o.ppw)) value = fmt.decimal(o.ppw, 1);
           else if (o && ['playoff', 'title', 'bye', 'first'].includes(k)) value = forecastPct(o[k]);
           el.textContent = value;
-          el.title = notApplicable ? (k === 'bye' ? 'This league has no playoff byes.' : 'No rookie-order rule modeled here.')
+          el.title = notApplicable ? (k === 'bye' ? 'No playoff byes' : 'Rookie order not modeled')
             : value === 'Unavailable' ? f.reason || 'Forecast data unavailable for this metric.' : '';
         }
       } })();
@@ -3210,9 +3208,9 @@
 
     const formatTag = lg.type === 0 ? 'REDRAFT' : (lg.is_superflex ? 'SUPERFLEX' : (lg.is_idp ? 'IDP' : '1QB'));
     const formatRule = lg.is_superflex
-      ? 'A second QB can start in the SUPER_FLEX slot. Top-12 QBs are treated as Cornerstone-tier and QB values get a 1.40x position multiplier in team strength.'
+      ? 'Superflex: 2nd QB slot; QBs weighted for 2-QB value.'
       : lg.is_idp
-        ? 'This league has IDP_FLEX slots. Defensive players (LB/DB/DL) score, and LBs get a 1.10x multiplier in team strength.'
+        ? 'IDP: LB/DB/DL flex scoring enabled.'
         : null;
 
     const titleWrap = h('div', { class:'league-title-wrap' });
@@ -3341,7 +3339,7 @@
           h('td', { class:'tnum' }, r.fpts == null ? 'Unavailable' : fmt.decimal(r.fpts, 1)), h('td', { class:'tnum' }, r.fpts_against == null ? 'Unavailable' : fmt.decimal(r.fpts_against, 1))
         )))
       )));
-      main.appendChild(h('p', { class:'source-note' }, 'Sorted by wins plus half of ties, then points for; missing records last. Commissioner seeding rules may differ. Strength grades, projected record, playoff odds, bye odds and schedule difficulty are unavailable for this scoring setup.'));
+      main.appendChild(h('p', { class:'source-note' }, 'Sorted by win%, then PF (missing records last). Scoring models unavailable here.'));
       return;
     }
     // Standings / Strength rankings
@@ -3572,25 +3570,25 @@
               h('span', { class:'tnum', style:{ color: pvCls.color, fontWeight:700 } }, `${(pvShare*100).toFixed(1)}%`),
               h('span', { style:{ color:'var(--fg-3)', marginLeft:'4px', fontSize:'0.7rem', textTransform:'uppercase', letterSpacing:'0.04em' } }, 'PV share'),
             ),
-            lgDynasty ? h('span', { class:'seg', title: `FV share: ${(fvShare*100).toFixed(1)}% of league dynasty value in ${trajLabels[FV_YEARS]}, players aged on the value curve plus picks (baseline ${(shareBaseline*100).toFixed(1)}%). ${fvCls.label} band.` },
+            lgDynasty ? h('span', { class:'seg', title: `FV share: ${(fvShare*100).toFixed(1)}% in ${trajLabels[FV_YEARS]} (baseline ${(shareBaseline*100).toFixed(1)}%, ${fvCls.label}).` },
               h('span', { class:'tnum', style:{ color: fvCls.color, fontWeight:700 } }, `${(fvShare*100).toFixed(1)}%`),
               h('span', { style:{ color:'var(--fg-3)', marginLeft:'4px', fontSize:'0.7rem', textTransform:'uppercase', letterSpacing:'0.04em' } }, 'FV share'),
             ) : null,
         ),
         h('div', { class:'score-cell' },
-          byPts ? h('div', { class:'score', title:'Projected points per remaining week, mean of the simulated seasons' }, fmt.decimal(ppwOf(r.roster_id), 1))
-            : h('div', { class:'score', title:'PV: present starting-lineup value (now)' }, fmt.decimal(st,1)),
-          lgDynasty ? (() => { const fv = row.fv, d = st > 0 ? (fv - st) / st * 100 : 0; const c = d >= 2 ? 'var(--green)' : d <= -8 ? 'var(--amber)' : 'var(--fg-2)'; return h('div', { class:'delta', style:{ color: c }, title:`FV: starting-lineup value in ${trajLabels[FV_YEARS]} (same scale as the ${trajLabels[FV_YEARS].slice(2)} bar)` }, `FV ${fmt.decimal(fv, 0)} · ${d >= 0 ? '+' : ''}${d.toFixed(0)}%`); })() : null,
+          byPts ? h('div', { class:'score', title:'Simulated Pts/wk remaining' }, fmt.decimal(ppwOf(r.roster_id), 1))
+            : h('div', { class:'score', title:'Present starting-lineup value' }, fmt.decimal(st,1)),
+          lgDynasty ? (() => { const fv = row.fv, d = st > 0 ? (fv - st) / st * 100 : 0; const c = d >= 2 ? 'var(--green)' : d <= -8 ? 'var(--amber)' : 'var(--fg-2)'; return h('div', { class:'delta', style:{ color: c }, title:`Starting-lineup value in ${trajLabels[FV_YEARS]}` }, `FV ${fmt.decimal(fv, 0)} · ${d >= 0 ? '+' : ''}${d.toFixed(0)}%`); })() : null,
           lgDynasty ? h('div', { class:'arch', style:{ color: tColor } }, tLabel) : null,
         ),
         lgDynasty ? h('div', { class:'str-traj' }, spark) : null,
         h('div', { class:'standings-forecast', 'aria-label':'Season forecast' },
-          ...[...(lgDynasty && forecast.ok && ppwOf(r.roster_id) != null ? [['Proj pts/wk', fmt.decimal(ppwOf(r.roster_id), 1), 'Projected points per remaining week, mean of the simulated seasons.']] : []),
+          ...[...(lgDynasty && forecast.ok && ppwOf(r.roster_id) != null ? [['Proj pts/wk', fmt.decimal(ppwOf(r.roster_id), 1), 'Simulated Pts/wk remaining']] : []),
             ['Projected W-L-T', forecast.ok ? (() => { const f = forecast.rows.get(r.roster_id); return [f.expW, f.expL, f.expT].map(x => x.toFixed(1)).join('-'); })() : 'Unavailable'],
             ['Playoff %', forecast.ok ? forecastPct(forecast.rows.get(r.roster_id).playoff) : 'Unavailable'],
             ['Bye %', forecast.ok ? (forecast.byes ? forecastPct(forecast.rows.get(r.roster_id).bye) : 'N/A') : 'Unavailable'],
-            ['Champ %', forecast.ok ? forecastPct(forecast.rows.get(r.roster_id).title) : 'Unavailable', 'Chance to win the title, same simulated seasons as Playoff %.'],
-            ...(projMaxPf ? [['Proj Max PF', fmt.decimal(forecast.rows.get(r.roster_id).maxPf, 0), 'Projected final Max PF: season-to-date Max PF plus the best possible lineup from the whole roster, bench included, in every remaining simulated week, scaled to the actual Max PF pace of this league so far (mean of the simulated seasons).']] : []),
+            ['Champ %', forecast.ok ? forecastPct(forecast.rows.get(r.roster_id).title) : 'Unavailable', 'Simulated title odds'],
+            ...(projMaxPf ? [['Proj Max PF', fmt.decimal(forecast.rows.get(r.roster_id).maxPf, 0), 'Projected regular-season final Max PF']] : []),
             ...(lgDynasty ? [['1.01 %', !forecast.ok ? 'Unavailable' : forecast.rookie ? forecastPct(forecast.rows.get(r.roster_id).first) : 'n/a', rookieOrderNote(lg, r, forecast.ok && forecast.rookie)]] : [])].map(([label, value, title]) =>
               h('div', { title }, h('span', { class:'forecast-label' }, label), h('span', { class:'forecast-value tnum' }, value))))
       );
@@ -4205,8 +4203,8 @@
         const source = weekly.vegasStatSources?.[c.k] || (filled ? 'Sleeper' : 'BettingPros');
         return h('td', { class:'right tnum', style: filled ? { color:'var(--fg-3)' } : null,
           title: filled
-            ? `${c.label} ${fmt.decimal(v, c.dp)} filled from Sleeper, no current market component.`
-            : `${c.label} ${fmt.decimal(v, c.dp)} from ${source === 'PrizePicks' ? 'a standard PrizePicks line' : 'a price-adjusted BettingPros line'}.` },
+            ? `${c.label} ${fmt.decimal(v, c.dp)} (Sleeper fill)`
+            : `${c.label} ${fmt.decimal(v, c.dp)} (${source === 'PrizePicks' ? 'PrizePicks' : 'BettingPros'})` },
           fmt.decimal(v, c.dp));
       };
       const pointCell = (value, title) => h('td', { class:'right tnum', title },
@@ -4224,11 +4222,9 @@
       const rosMeta = (weeklyData.coverage || {}).ros || {};
       const rosStale = rosMeta.staleDays != null && rosMeta.staleDays >= ROS_STALE_DAYS;
       const rosAsOf = rosMeta.updated
-        ? `Board as of ${rosMeta.updated}, ${Math.round(rosMeta.staleDays)}d old`
-        : 'Board date unknown';
-      const rosTitle = `FantasyPros rest-of-season PPR expert consensus positional rank`
-        + ` (${rosMeta.experts || '?'} experts, a much thinner pool than the weekly board).`
-        + ` ${rosAsOf}.${rosStale ? ' Stale, treat as a prior and not as a current read.' : ''}`;
+        ? `${rosMeta.updated} (${Math.round(rosMeta.staleDays)}d old)`
+        : 'Date unknown';
+      const rosTitle = `FP ROS PPR consensus (${rosMeta.experts || '?'} experts) · ${rosAsOf}${rosStale ? ' (stale)' : ''}`;
       // Render the column only when a ROS board exists (gibbsRosPlayers > 0).
       const hasGibbsRos = ((weeklyData.coverage || {}).gibbsRosPlayers || 0) > 0;
       // His ROS board: FantasyPros per position, or transcribed from a show
@@ -4245,10 +4241,10 @@
       // FantasyPros ranks with ranks transcribed from a show.
       const gibbsRosSourceNote = (() => {
         const by = window.GIBBS_ROS?.sourceByPosition;
-        if (!by) return 'source not recorded per position';
+        if (!by) return 'FP / show mix';
         return Object.entries(by).map(([pos, s]) => s.kind === 'fantasypros'
-          ? `${pos} his FantasyPros board${s.stamp ? ` (${s.stamp})` : ''}`
-          : `${pos} transcribed from ${s.via}${s.stamp ? ` (${s.stamp})` : ''}`).join('; ');
+          ? `${pos} FP${s.stamp ? ` (${s.stamp})` : ''}`
+          : `${pos} ${s.via}${s.stamp ? ` (${s.stamp})` : ''}`).join('; ');
       })();
       const gibbsWeekUpdated = window.GIBBS_WEEK?.updatedLabel || null;
       const gibbsWeekDepth = window.GIBBS_WEEK
@@ -4268,8 +4264,8 @@
         const n = window.SOS_GRID?.n_def || 32;
         const paoeText = game.paoe != null ? `, ${game.paoe >= 0 ? '+' : ''}${game.paoe} vs avg` : '';
         const title = rank != null
-          ? `Week ${currentWeek} ${game.home ? 'vs ' : '@ '}${game.opp}: D vs ${pos} #${rank}/${n} (${game.fpa ?? '?'} PPR/g allowed${paoeText})`
-          : `Week ${currentWeek} ${game.home ? 'vs ' : '@ '}${game.opp}; no defense-vs-position rank for ${pos || 'this position'}`;
+          ? `W${currentWeek} ${game.home ? 'vs ' : '@ '}${game.opp}: D vs ${pos} #${rank}/${n} (${game.fpa ?? '?'} PPR/g${paoeText})`
+          : `W${currentWeek} ${game.home ? 'vs ' : '@ '}${game.opp} (no D vs ${pos || 'pos'} rank)`;
         return h('td', { class:'center weekly-opp', title, style:{ color:defRankColor(rank, n) } },
           h('div', { class:'weekly-opp-team' }, teamChip(game.opp, true)),
           h('div', { class:'weekly-opp-rank' }, rank != null ? `#${rank}` : '·'));
@@ -4323,38 +4319,33 @@
             h('th', null, 'Owner'),
             ...(kickerOnly ? [
               sortHdr('weekly-sleeper', 'Sleeper pts', { right:true, title:'Sleeper weekly kicker projection.' }),
-              sortHdr('kicker-exp', 'K Ref', { right:true, title:`Week ${currentWeek} market-reference points under matching league scoring; practical ties below 0.5 points.` }),
-              sortHdr('kicker-floor', 'Floor', { right:true, title:'20th-percentile kicker outcome.' }),
-              sortHdr('kicker-ceil', 'Ceil', { right:true, title:'90th-percentile kicker outcome.' }),
-              sortHdr('kicker-pGe15', '15+', { right:true, title:'Modelled chance of scoring 15 or more points.' }),
+              sortHdr('kicker-exp', 'K Ref', { right:true, title:`Wk ${currentWeek} market reference (<0.5 pts = tie)` }),
+              sortHdr('kicker-floor', 'Floor', { right:true, title:'P20 outcome' }),
+              sortHdr('kicker-ceil', 'Ceil', { right:true, title:'P90 outcome' }),
+              sortHdr('kicker-pGe15', '15+', { right:true, title:'Chance of 15+ pts' }),
             ] : defOnly ? [
-              sortHdr('weekly-sleeper', 'Sleeper pts', { right:true, title:'Sleeper weekly team defense projection.' }),
-              sortHdr('def-oppImplied', 'Opp implied', { right:true, title:`Opponent's Vegas implied points for week ${currentWeek}. Lower is better for a defense.` }),
+              sortHdr('weekly-sleeper', 'Sleeper pts', { right:true, title:'Sleeper DEF projection' }),
+              sortHdr('def-oppImplied', 'Opp implied', { right:true, title:`Wk ${currentWeek} opponent implied team pts (lower = better)` }),
             ] : [
-              isRosView ? null : sortHdr('weekly-vegas', 'Vegas pts', { right:true, title:'Week full-PPR estimate from price-adjusted BettingPros props, then standard PrizePicks yardage/reception lines, then Sleeper fills. Component tooltips name each source.' }),
-              isRosView ? null : sortHdr('weekly-sleeper', 'Sleeper pts', { right:true, title:'Sleeper weekly PPR projection.' }),
-              isRosView ? null : sortHdr('weekly-vsdelta', 'V−S', { right:true, title:`Vegas minus Sleeper for week ${currentWeek}. Green = the market projects him above the model, red = below. Blank when either side has no number; blanks sort last both ways. An asterisk means most of the Vegas projection was filled in from Sleeper, so that delta is the model against itself, not market signal.` }),
-              isRosView ? null : sortHdr('weekly-ecr', 'FP ECR', { right:true, title:'FantasyPros weekly PPR expert consensus positional rank.' }),
+              isRosView ? null : sortHdr('weekly-vegas', 'Vegas pts', { right:true, title:'BettingPros / PrizePicks market composite (Sleeper-filled when missing)' }),
+              isRosView ? null : sortHdr('weekly-sleeper', 'Sleeper pts', { right:true, title:'Sleeper weekly PPR projection' }),
+              isRosView ? null : sortHdr('weekly-vsdelta', 'V−S', { right:true, title:`Wk ${currentWeek} Vegas minus Sleeper (+ = market higher; * = heavy Sleeper fill)` }),
+              isRosView ? null : sortHdr('weekly-ecr', 'FP ECR', { right:true, title:'FantasyPros weekly PPR consensus' }),
               // The view says Weekly or ROS, so no header repeats it: FP ECR
               // is the week's consensus on Weekly and the ROS consensus on ROS.
               isRosView ? sortHdr('weekly-ros', 'FP ECR', { right:true, title:rosTitle }) : null,
               ...trackedExperts.map(t => sortHdr(`weekly-x:${t.key}`, t.label, { right:true,
-                title:`${t.name} weekly PPR positional rank, isolated FantasyPros board ${t.id}. ${t.players} players ranked. Manage columns in Expert Rotation.` })),
+                title:`${t.name} (#${t.id}, ${t.players} ranked)` })),
 
             // Every rank on this table is PPR. An asterisk marks one this site
             // converted from half-PPR data, so the only thing a header has to
             // say is whether it was converted.
             gibbsRosPosted && window.GIBBS_PPR_ROS && isRosView ? sortHdr('weekly-gibbs-x', 'Gibbs*', { right:true,
-              title:`* = PPR converted by this site from Jacob Gibbs's half-PPR rest-of-season board. Source: ${gibbsRosSourceNote}. His order sets the value slots, then each player gets +0.5 per projected catch and the list is re-sorted within position, so a player who catches nothing never rises on his own. His unconverted half-PPR rank is in each cell's tooltip. Board ${gibbsRosPosted}${gibbsRosThrough ? `, updates through ${gibbsRosThrough}` : ''}.` }) : null,
+              title:`PPR-converted from Gibbs half-PPR ROS (${gibbsRosSourceNote}; ${gibbsRosPosted}${gibbsRosThrough ? ` thru ${gibbsRosThrough}` : ''}). Details in #methodology.` }) : null,
             gibbsWeekPosted && !isRosView ? sortHdr('weekly-gibbs-wk', `Gibbs W${currentWeek}*`, { right:true,
-              title:`* = PPR converted by this site from Jacob Gibbs's half-PPR week board. `
-                + (window.GIBBS_WEEK?.sourceUrl ? `Source: supplied Week ${currentWeek} video transcription. WR 77-99 are reconstructed, not directly sighted in the final frame. ` : `Source: his FantasyPros board, expert 1576. `)
-                + `His order sets the value slots, then each RB, WR and TE gets +0.5 per projected catch `
-                + `and the list is re-sorted within position; QBs keep his order. His unconverted half-PPR rank is in each cell's tooltip. `
-                + `Pulled ${gibbsWeekPosted}${gibbsWeekUpdated ? ` (${gibbsWeekUpdated})` : ''}; `
-                + `${gibbsWeekDepth} players ranked. A blank means he has not ranked that player, not that nobody rosters him.` }) : null,
+              title:`PPR-converted from Gibbs half-PPR W${currentWeek} (${window.GIBBS_WEEK?.sourceUrl ? 'video transcript' : 'FP #1576'}; ${gibbsWeekDepth} ranked; pulled ${gibbsWeekPosted}). Details in #methodology.` }) : null,
               ...(isRosView ? [] : VEGAS_COMPONENTS).map(c => sortHdr(`wc:${c.k}`, c.label, { right:true,
-                title:`Expected ${c.label} behind the Vegas points column. Greyed when that stat had no market line and was filled from Sleeper.` })),
+                title:`${c.label} market component (greyed = Sleeper fill)` })),
             ]))),
           h('tbody', null, ...rows.map((p, i) => {
             const o = ownerInfo(p._sleeperId), weekly = p._weekly;
@@ -4365,35 +4356,35 @@
               ...(kickerOnly ? (() => {
                 const kicker = kickerProjectionFor(p);
                 return [
-                  pointCell(weekly.sleeper?.[currentWeek - 1], `Sleeper week ${currentWeek} kicker projection`),
-                  pointCell(kicker?.exp, kicker?.reason || 'Market reference. Unavailable when week, team or league scoring differs.'),
-                  pointCell(kicker?.floor, '20th-percentile outcome'),
-                  pointCell(kicker?.ceil, '90th-percentile outcome'),
-                  h('td', { class:'right tnum', title:'Modelled chance of 15 or more points' },
+                  pointCell(weekly.sleeper?.[currentWeek - 1], `Sleeper W${currentWeek} K projection`),
+                  pointCell(kicker?.exp, kicker?.reason || 'Unavailable for this game/scoring'),
+                  pointCell(kicker?.floor, 'P20 outcome'),
+                  pointCell(kicker?.ceil, 'P90 outcome'),
+                  h('td', { class:'right tnum', title:'Chance of 15+ pts' },
                     kicker?.pGe15 == null ? emptyValue() : `${Math.round(kicker.pGe15 * 100)}%`),
                 ];
               })() : defOnly ? [
-                pointCell(weekly.sleeper?.[currentWeek - 1], `Sleeper week ${currentWeek} team defense projection`),
-                pointCell(defOppImplied(p), 'Opponent Vegas implied points (from the kicker model lines). Blank when no line.'),
+                pointCell(weekly.sleeper?.[currentWeek - 1], `Sleeper W${currentWeek} DEF projection`),
+                pointCell(defOppImplied(p), 'Opponent Vegas implied pts'),
               ] : [
                 isRosView ? null : pointCell(weekly.vegas,
-                  `${weeklyData.sources?.vegas || 'Market full-PPR estimate'}`
-                  + `${weekly.vegasBorrowed?.length ? ` Sleeper fills: ${weekly.vegasBorrowed.join(', ')}.` : ''}`
-                  + `${weekly.prizepicksFantasy != null ? ` PrizePicks posted full-PPR fantasy-score line: ${fmt.decimal(weekly.prizepicksFantasy, 1)}.` : ''}`),
-                isRosView ? null : pointCell(weekly.sleeper?.[currentWeek - 1], `Sleeper week ${currentWeek} PPR projection`),
+                  `${weeklyData.sources?.vegas || 'Market estimate'}`
+                  + `${weekly.vegasBorrowed?.length ? ` · Sleeper fill: ${weekly.vegasBorrowed.join(', ')}` : ''}`
+                  + `${weekly.prizepicksFantasy != null ? ` · PP line: ${fmt.decimal(weekly.prizepicksFantasy, 1)}` : ''}`),
+                isRosView ? null : pointCell(weekly.sleeper?.[currentWeek - 1], `Sleeper W${currentWeek} PPR`),
                 isRosView ? null : (() => {
                   const d = vsDelta(weekly);
                   if (d == null) {
                     return h('td', { class:'right tnum', title: weekly.vegas == null
-                      ? 'No BettingPros market line for this player.'
-                      : `No Sleeper projection for week ${currentWeek}.` }, emptyValue());
+                      ? 'No BettingPros line'
+                      : `No Sleeper W${currentWeek} projection` }, emptyValue());
                   }
                   const share = weekly.vegasBorrowedShare;
                   const heavy = share != null && share >= BORROWED_HEAVY;
                   const borrowedList = (weekly.vegasBorrowed || []).join(', ');
                   const title = heavy
-                    ? `Vegas ${fmt.decimal(weekly.vegas, 1)} minus Sleeper ${fmt.decimal(weekly.sleeper[currentWeek - 1], 1)}. ${Math.round(share * 100)}% of the Vegas number was filled from Sleeper (${borrowedList}), so read this delta as noise, not market signal.`
-                    : `Vegas ${fmt.decimal(weekly.vegas, 1)} minus Sleeper ${fmt.decimal(weekly.sleeper[currentWeek - 1], 1)}.${share != null ? ` ${Math.round(share * 100)}% filled from Sleeper${borrowedList ? ` (${borrowedList})` : ''}.` : ''}`;
+                    ? `Vegas ${fmt.decimal(weekly.vegas, 1)} vs Sleeper ${fmt.decimal(weekly.sleeper[currentWeek - 1], 1)} (${Math.round(share * 100)}% Sleeper-filled: ${borrowedList}; noise)`
+                    : `Vegas ${fmt.decimal(weekly.vegas, 1)} vs Sleeper ${fmt.decimal(weekly.sleeper[currentWeek - 1], 1)}${share != null ? ` (${Math.round(share * 100)}% Sleeper-filled${borrowedList ? `: ${borrowedList}` : ''})` : ''}`;
                   return h('td', { class:`right tnum${d > 0 ? ' delta-up' : d < 0 ? ' delta-down' : ''}`, title },
                     `${d > 0 ? '+' : ''}${fmt.decimal(d, 1)}`,
                     heavy ? h('span', { class:'vs-borrowed', title }, '*') : null);
@@ -4406,9 +4397,7 @@
                 const g = gibbsRosPprRank(p._sleeperId);
                 if (!g) return h('td', { class:'right tnum' }, emptyValue());
                 return h('td', { class:'right tnum', title:
-                  `${g.pos}${g.rank} in PPR, converted from his half-PPR board, where he is `
-                  + `${g.pos}${g.halfRank} (${g.rec} projected catches).`
-                  + (g.noProjection ? ' No projection, so he holds the slot Gibbs gave him.' : '') },
+                  `${g.pos}${g.rank} PPR (from ${g.pos}${g.halfRank} half-PPR, ${g.rec} rec)` },
                   `${g.pos}${g.rank}`);
               })() : null,
               gibbsWeekPosted && !isRosView ? (() => {
@@ -4422,14 +4411,11 @@
                 const moved = ros && ros.pos === g.pos ? ros.rank - g.rank : null;
                 const half = gibbsWeekHalfRank(p._sleeperId);
                 return h('td', { class:'right tnum', title:
-                  (g.pos === 'QB' ? `${g.pos}${g.rank} on his week board (QBs are not converted).`
-                    : `${g.pos}${g.rank} in PPR, converted from his half-PPR week board, where he is `
-                      + `${g.pos}${g.halfRank} (${g.rec} projected catches).`)
-                  + (g.noProjection ? ' No projection, so he holds the slot Gibbs gave him.' : '')
-                  + (half?.flexRank ? ` #${half.flexRank} on his half-PPR flex list.` : '')
-                  + (half?.opp ? ` Opponent ${half.opp}.` : '')
-                  + (moved ? ` ${Math.abs(moved)} spot${Math.abs(moved) === 1 ? '' : 's'} `
-                      + `${moved > 0 ? 'higher' : 'lower'} than on the converted rest-of-season board; both are this site's PPR conversions, so part of the gap can come from the catch projections.` : '') },
+                  (g.pos === 'QB' ? `${g.pos}${g.rank} (QB unconverted)`
+                    : `${g.pos}${g.rank} PPR (from ${g.pos}${g.halfRank} half-PPR, ${g.rec} rec)`)
+                  + (half?.flexRank ? ` · Flex #${half.flexRank}` : '')
+                  + (half?.opp ? ` · vs ${half.opp}` : '')
+                  + (moved ? ` · ${moved > 0 ? `+${moved}` : moved} vs ROS*` : '') },
                   `${g.pos}${g.rank}`,
                   moved ? h('span', { class: moved > 0 ? 'delta-up' : 'delta-down',
                     style:{ marginLeft:'4px', fontSize:'11px' } },
@@ -4494,11 +4480,11 @@
             sortHdr('age',  'Age', { right:true }),
             h('th', null, 'Category'),
             h('th', { class:'center', style:{ width:'40px' } }, 'Tier'),
-            leagueDynasty ? sortHdr('value','Value', { right:true, title:'KTC dynasty value in this league format.' }) : null,
-            hasProj ? sortHdr('proj', 'Proj', { right:true, title:'Season fantasy projection (selected Proj Src)' }) : null,
-            hasProj ? sortHdr('vor', 'VOR', { right:true, title:'Value over replacement: projected points above the last startable player at this position in THIS league. Cross-position comparable, higher = more starting-lineup value.' }) : null,
-            hasProj ? sortHdr('gap', 'Gap', { right:true, title:'Value vs projection: positional dynasty-value rank minus season-projection rank. + = produces above its price (buy lean), − = priced above production (sell lean). Read with Age.' }) : null,
-            hasProj ? sortHdr('ppslp', 'PP−Slp', { right:true, title:'PrizePicks vs Sleeper positional RANK difference. + = the Vegas market ranks him higher than the public model → undervalued lean. Offense only, needs both sources.' }) : null,
+            leagueDynasty ? sortHdr('value','Value', { right:true, title:'KTC dynasty value' }) : null,
+            hasProj ? sortHdr('proj', 'Proj', { right:true, title:'Season projection (Proj Src)' }) : null,
+            hasProj ? sortHdr('vor', 'VOR', { right:true, title:'Points above league replacement at position' }) : null,
+            hasProj ? sortHdr('gap', 'Gap', { right:true, title:'Value rank minus projection rank (+ buy, - sell)' }) : null,
+            hasProj ? sortHdr('ppslp', 'PP−Slp', { right:true, title:'PrizePicks minus Sleeper rank (+ = Vegas higher)' }) : null,
             h('th', null, 'Owner'),
             ...activeExpertSources().map(src => sortHdr('xr:' + src.id, expertColLabel(src),
               { right:true, title:`${src.expert || src.label} · ${src.title || 'rankings'}${src.updatedAt ? ', updated ' + src.updatedAt : ''}` })),
@@ -4538,38 +4524,29 @@
         const coverage = weeklyData.coverage || {};
         const ecrCoverage = coverage.ecr || {}, gibbsCoverage = coverage.gibbs || {};
         const limitNote = ecrCoverage.limited && ecrCoverage.limitPerPosition
-          ? ` · FantasyPros free API top ${ecrCoverage.limitPerPosition}/position` : '';
+          ? ` (FP top ${ecrCoverage.limitPerPosition}/pos)` : '';
         const sourceNote = kickerOnly
-          ? `Week ${currentWeek} kickers · ${rows.length} shown · K Ref uses implied team points. Differences below 0.5 points are practical ties. Floor/Ceil and 15+ come from a separate experimental distribution. Blank means unavailable or unsupported league scoring.`
+          ? `Week ${currentWeek} kickers · ${rows.length} shown · Full K Ref & experimental range notes in #methodology.`
           : defOnly
-          ? `Week ${currentWeek} team defenses · ${rows.length} shown · Sleeper pts is Sleeper's projection. Opp implied is the opponent's Vegas implied points; lower is better, blank means no line for that game.`
+          ? `Week ${currentWeek} D/ST · ${rows.length} shown · Sleeper pts vs Vegas opp implied pts.`
           : (filter.view === 'ros'
-            ? `Rest-of-season PPR, sorted by the FP ROS column · ${rosMeta.available ? `${coverage.rosPlayers || 0} ranked as of ${rosMeta.updated}` : 'board unavailable'}${rosStale ? ', stale' : ''} · the other columns are week ${currentWeek}. `
+            ? `ROS PPR (${rosMeta.available ? `${coverage.rosPlayers || 0} as of ${rosMeta.updated}` : 'unavailable'}${rosStale ? ', stale' : ''}); other cols W${currentWeek}. `
             : '')
-          + `Week ${currentWeek} PPR · ${rows.length} shown · Vegas ${coverage.vegasPlayers || 0}`
+          + `W${currentWeek} PPR · ${rows.length} shown · Vegas ${coverage.vegasPlayers || 0}`
           + ` · ECR ${ecrCoverage.available ? coverage.ecrPlayers || 0 : 'unavailable'}`
-          + ` · Gibbs ${gibbsCoverage.available ? `${coverage.gibbsPlayers || 0} as of ${gibbsCoverage.updated}` : 'unavailable'}${limitNote}`
-          + ` · ROS ${rosMeta.available ? `${coverage.rosPlayers || 0} as of ${rosMeta.updated}` : 'unavailable'}`
-          + `${rosStale ? ' (stale)' : ''}`
-          // "Unavailable", never "not published": a failed pull and an unposted board
-          // look the same from here.
-          + `${hasGibbsRos ? ` · Gibbs ROS ${coverage.gibbsRosPlayers} as of ${(coverage.gibbsRos || {}).updated}` : ' · Gibbs ROS unavailable'}`
-          + `${gibbsWeekPosted ? '' : ` · Gibbs* week ${currentWeek} board unavailable${window.GIBBS_WEEK?.week && window.GIBBS_WEEK.week !== currentWeek ? ` (last pulled: week ${window.GIBBS_WEEK.week})` : window.GIBBS_WEEK ? ' (his PPR conversion has not caught up)' : ''}`}.`
-          // A single expert's board is a SUBMISSION with a date, and he revises it after
-          // he records. On 2026-09-16 his video showed McConkey WR14 while the board he
-          // published at 23:18 that night reads WR20, which looks like a bug in this
-          // table until the date is on screen next to the number.
-          + (window.GIBBS_WEEK?.sourceUrl
-            ? ` Gibbs week ranks use the supplied video transcription. WR 77-99 are reconstructed after the Jordan Watkins insertion; no Flex board was shown.`
-            : ` A single-expert column is his latest FantasyPros submission, so it can disagree with a video recorded earlier the same day.`);
+          + ` · Gibbs ${gibbsCoverage.available ? `${coverage.gibbsPlayers || 0} (${gibbsCoverage.updated})` : 'unavailable'}${limitNote}`
+          + ` · ROS ${rosMeta.available ? `${coverage.rosPlayers || 0} (${rosMeta.updated})` : 'unavailable'}${rosStale ? ' stale' : ''}`
+          + `${hasGibbsRos ? ` · Gibbs ROS ${coverage.gibbsRosPlayers} (${(coverage.gibbsRos || {}).updated})` : ' · Gibbs ROS unavailable'}`
+          + `${gibbsWeekPosted ? '' : ` · Gibbs* W${currentWeek} unavailable${window.GIBBS_WEEK?.week && window.GIBBS_WEEK.week !== currentWeek ? ` (W${window.GIBBS_WEEK.week})` : ''}`}`
+          + ` · Details in #methodology.`;
         tableWrap.appendChild(h('div', { class:'tip rankings-source-note' }, sourceNote));
       } else if (filter.view === 'sleeper-weeks') {
         tableWrap.appendChild(h('div', { class:'tip rankings-source-note' },
-          `${rows.length} ${filter.pos === 'DEF' ? 'team defenses with Sleeper projections' : 'players with Sleeper PPR projections'} · Click week heading to sort.`));
+          `${rows.length} ${filter.pos === 'DEF' ? 'D/STs' : 'players'} · Click week heading to sort.`));
       }
       if (filtered.length > rows.length) {
         tableWrap.appendChild(h('div', { class:'tip', style:{ padding:'10px 14px' } },
-          `Showing ${rows.length} of ${filtered.length}. Refine filters to narrow.`));
+          `${rows.length} of ${filtered.length} shown`));
       }
     }
     render();
@@ -5369,7 +5346,7 @@
       h('span', { class:'heatmap-num tip' }, 'N/A'));
     const color = gradeColor(val);
     const title = pop ? null : !isDynastyLeague(league)
-      ? `${key}: ${val.toFixed(1)}/10. Redraft grade compares rest-of-season points with the matching lineup reference.`
+      ? `${key}: ${val.toFixed(1)}/10 (ROS pts vs lineup ref).`
       : `${key}: ${val.toFixed(1)}/10.`;
     return h('div', { class:'heatmap-cell heatmap-grade', dataset:{ gradeKey:key, grade:String(val) }, title,
       tabindex: pop ? '0' : null, onclick: pop ? (e) => e.stopPropagation() : null },
@@ -5529,7 +5506,7 @@
       } else if (curve && age && age >= curve.sell_age && p.ranked.category !== 'cornerstone') {
         sells.push({
           player: p.ranked, sleeper: p.sleeper, intensity: 'SELL',
-          reason: `${p.ranked.pos} sell window opens at ${curve.sell_age}. ${p.sleeper.name} is ${age}. Trade a year too early, not too late.`,
+          reason: `Age ${age} (past ${curve.sell_age} ${p.ranked.pos} sell window); move before decay.`,
         });
       }
     }
@@ -5544,13 +5521,13 @@
       .filter(p => !owned(p) && leagueFitsPos(lg, p.pos))
       .slice(0,4);
     for (const p of topUnowned) {
-      buys.push({ player: p, sleeper: window.PLAYERS[p._sleeperId] || null, intensity: 'SOFT BUY', reason: 'Cornerstone-A talent. Buy on any dip.' });
+      buys.push({ player: p, sleeper: window.PLAYERS[p._sleeperId] || null, intensity: 'SOFT BUY', reason: 'Cornerstone-A; buy on dips.' });
     }
     const rookieBuys = idx.all.filter(p => p.rookie && p.category === 'upside_premier' && p.tier === 'S')
       .filter(p => !owned(p) && leagueFitsPos(lg, p.pos))
       .slice(0,3);
     for (const p of rookieBuys) {
-      buys.push({ player: p, sleeper: window.PLAYERS[p._sleeperId] || null, intensity: 'BUY', reason: 'High-pedigree rookie with breakout path.' });
+      buys.push({ player: p, sleeper: window.PLAYERS[p._sleeperId] || null, intensity: 'BUY', reason: 'Top-pedigree rookie.' });
     }
     return { buys, sells: sells.slice(0,5) };
   }
@@ -5726,7 +5703,7 @@
     if (lg.projection_unavailable) {
       main.appendChild(h('div', { class:'card', role:'status' },
         h('h2', { class:'card-title' }, 'League-scored analysis unavailable'),
-        h('p', { class:'tip' }, 'This scoring setup is not covered by the shared projection model. Starter comparisons, grades and trade advice are unavailable; your linked roster is shown below.')
+        h('p', { class:'tip' }, 'Scoring not modeled here; roster shown below.')
       ));
       const sections = [
         ['Starters', r.starters || []],
@@ -5832,7 +5809,7 @@
           h('div', { class:'br-stat-num tnum', style:{ color: tone } }, `${pct}%`),
           h('div', { class:'br-eyebrow' }, 'Value Share'),
           h('div', { class:'br-stat-sub',
-            title:`Your % of league-wide dynasty value, players plus picks. Baseline ${basePct}%. ${cls.label} band per Dynasty Domain framework.`,
+            title:`Share of league dynasty value incl. picks (baseline ${basePct}%, ${cls.label}).`,
           },
             `${deltaPct >= 0 ? '+' : ''}${deltaPct.toFixed(1)}pp vs base`,
             h('span', { class:'br-stat-chip tnum', style:{ color: tone, marginLeft:'8px' } }, cls.label),
@@ -5849,10 +5826,10 @@
         // how many slots in the best legal ROS lineup beat the waiver wire.
         : (() => {
             const c = slotVorCount(slotResult.slots);
-            return h('div', { class:'br-stat', title:'Best legal rest-of-season lineup: graded slots whose VOR in the Starters table is +1 or better. K and DEF are not graded.' },
+            return h('div', { class:'br-stat', title:'Graded ROS starter slots with VOR >= +1 (excludes K/DEF).' },
               h('div', { class:'br-stat-num tnum' }, `${c.above} / ${c.total}`),
               h('div', { class:'br-eyebrow' }, 'Starters above replacement'),
-              h('div', { class:'br-stat-sub' }, c.unavailable ? `${c.unavailable} with no projection · ROS` : 'Best legal ROS lineup · excludes K/DEF'),
+              h('div', { class:'br-stat-sub' }, c.unavailable ? `${c.unavailable} unprojected · ROS` : 'Best legal ROS · ex K/DEF'),
             );
           })(),
       h('div', { class:'br-stat br-stat-grade' },
@@ -5861,7 +5838,7 @@
         h('div', { class:'br-grade-bar' },
           h('div', { class:'br-grade-fill', style:{ width: Math.max(2, overall*10) + '%', background: overallColor } }),
         ),
-        r.is_me && tab === 'snapshot' ? h('label', { class:'tank-meter', title:'How hard you are tanking here. What to Look For counts this league at (100 - N)% of its buy-in; 100% drops it.' },
+        r.is_me && tab === 'snapshot' ? h('label', { class:'tank-meter', title:'Tank weight: What to Look For counts league at (100 - N)% buy-in.' },
           'Tankometer',
           h('input', { type:'range', min:'0', max:'100', step:'5', value:String(tankOf(lg)), 'aria-label':'Tankometer percent',
             oninput:e => { e.target.nextSibling.textContent = `${e.target.value}%`; },
@@ -6029,7 +6006,7 @@
                           PUP: 'PUP', 'Injured Reserve': 'IR', Sus: 'SUS', COV: 'COV' };
       const injChip = s.injury
         ? h('span', { class: 'slot-bar-inj' + (s.injury === 'Questionable' ? ' is-q' : ''),
-                      title: `${s.player} is listed ${s.injury}. He still holds this slot because he projects for the most points here.` },
+                      title: `${s.player} (${s.injury}) still projects highest at slot.` },
             INJ_SHORT[s.injury] || String(s.injury).slice(0, 3).toUpperCase())
         : null;
       const posRankChip = !Array.isArray(s.player) ? buildPosRankChip(s.player, s.pid) : null;
@@ -6043,18 +6020,18 @@
         h('td', { class:'sr-name' }, !Array.isArray(s.player) ? headshot(s.pid, 20) : null, nameCol,
           injChip ? h('span', { class:'slot-bar-chips' }, injChip) : null),
         h('td', { class:'sr-pos' }, posRankChip),
-        h('td', { class:'sr-num tnum', title: s.pts != null ? 'Projected points, rest of season' : '' },
+        h('td', { class:'sr-num tnum', title: s.pts != null ? 'Projected ROS pts' : '' },
           s.pts != null ? fmt.decimal(s.pts, 0) : '·'),
         h('td', { class:'sr-num sr-age tnum', title: s.age != null ? 'Age' : '' },
           s.age != null ? fmt.decimal(s.age, 1) : '·'),
         anyVor ? h('td', { class:'sr-num sr-vor tnum' + (s.vor != null && s.vor < 0 ? ' neg' : ''),
-                  title: s.vor != null ? `Projected points ${s.vor < 0 ? 'BELOW' : 'above'} the best body available for free at this position` : '' },
+                  title: s.vor != null ? `ROS pts ${s.vor < 0 ? 'below' : 'above'} best waiver ${s.pos || 'player'}` : '' },
           s.vor != null ? `${s.vor > 0 ? '+' : ''}${fmt.decimal(s.vor, 0)}` : '·') : null,
         h('td', { class:'sr-bar' },
           h('span', { class:'slot-bar-track', style:{ width: trackPct + '%' },
                       title: rosterDynasty
-                        ? 'Bar length = how much this slot matters (points per game). Fill = how good your man is at it, 0 to 10. The faint mark at 70% is the line between an adequate starter and a hole. ◆ = the same grade three years from now.'
-                        : 'Bar length = how much this slot matters (points per game). Fill = how good your man is at it, 0 to 10. The faint mark at 70% is the line between an adequate starter and a hole.' },
+                        ? 'Length = slot PPG weight · Fill = grade 0-10 · 70% = starter bar · Diamond = 3-yr FV grade'
+                        : 'Length = slot PPG weight · Fill = grade 0-10 · 70% = starter bar' },
             h('span', { class:'slot-bar-fill', style:{ width: fillPct + '%', background: color } }),
             h('span', { class:'slot-bar-tick', style:{ left: '70%' } }),
             // Clamped so a 10.0 diamond sits inside the track instead of half past its end.
@@ -6071,11 +6048,11 @@
       h('th', null, 'Slot'),
       h('th', null, 'Player'),
       h('th', null, 'Rank'),
-      h('th', { class:'right', title:'Projected points, rest of season' }, 'Proj'),
+      h('th', { class:'right', title:'Projected ROS pts' }, 'Proj'),
       h('th', { class:'right' }, 'Age'),
-      anyVor ? h('th', { class:'right', title:'Projected points above or below the best freely available body at the position' }, 'VOR') : null,
+      anyVor ? h('th', { class:'right', title:'Pts above/below best free agent' }, 'VOR') : null,
       h('th', null, ''),
-      h('th', { class:'right', title:'Slot grade out of 10' }, 'Grade'),
+      h('th', { class:'right', title:'Slot grade / 10' }, 'Grade'),
     ));
     const panel = (title) => {
       const body = h('tbody');
@@ -6090,13 +6067,11 @@
     });
     main.appendChild(h('div', { class:'slot-bars-grid' }, starters.wrap, depth.wrap));
     main.appendChild(h('div', { class:'slot-bars-legend tip' },
-      h('span', null, 'Bar length = how much the slot matters (pts/game).'),
+      h('span', null, 'Width = slot PPG'),
       h('span', { class:'sep' }, '·'),
-      h('span', null, 'Fill = how good your man is at it, 0 to 10.'),
-      h('span', { class:'sep' }, '·'),
-      h('span', null, 'The faint mark at 70% is the starter/hole line.'),
+      h('span', null, 'Fill = 0-10 grade (70% starter line)'),
       rosterDynasty ? h('span', { class:'sep' }, '·') : null,
-      rosterDynasty ? h('span', null, h('span', { class:'slot-bar-fv', style:{ position:'relative', display:'inline-block', top:'1px', left:0, transform:'rotate(45deg)', width:'8px', height:'8px' } }), ' = grade in 3 yrs (FV): green rising, amber aging.') : null,
+      rosterDynasty ? h('span', null, h('span', { class:'slot-bar-fv', style:{ position:'relative', display:'inline-block', top:'1px', left:0, transform:'rotate(45deg)', width:'8px', height:'8px' } }), ' = 3-yr FV (green up, amber down)') : null,
     ));
 
     // ===== Owned draft picks =====
@@ -6232,7 +6207,7 @@
       const ssWeak = ts.surplus[ts.weakPos];
       const ssStrong = ts.surplus[ts.strongPos];
       main.appendChild(h('div', { class:'tip', style:{ marginTop:'8px' } },
-        `Pivot trades your ${ts.strongPos} surplus (${ssStrong.startables} startable, need ${ssStrong.need}, +${ssStrong.surplus}) for help at ${ts.weakPos} (${ssWeak.startables} of ${ssWeak.need} startable, ${ssWeak.surplus < 0 ? ssWeak.surplus : '+'+ssWeak.surplus}).`
+        `Pivot: deal ${ts.strongPos} (+${ssStrong.surplus}) for ${ts.weakPos} (${ssWeak.startables}/${ssWeak.need}).`
       ));
     }
 
@@ -6309,7 +6284,7 @@
         h('div', { class:'stat-num' }, `${dcSummary.totalAcquired - dcSummary.totalLost > 0 ? '+' : ''}${dcSummary.totalAcquired - dcSummary.totalLost}`),
         h('div', { class:'stat-label' }, `Acquired ${dcSummary.totalAcquired}, traded away ${dcSummary.totalLost}`),
         h('div', { style:{ marginTop:'10px' } },
-          h('div', { class:'tip' }, dcSummary.totalLost > dcSummary.totalAcquired ? 'Net pick seller, tilt back toward picks if rebuilding.' : 'Net pick buyer, strong rookie-draft ammo.'),
+          h('div', { class:'tip' }, dcSummary.totalLost > dcSummary.totalAcquired ? 'Net pick seller.' : 'Net pick buyer.'),
         ),
       ),
     ));
@@ -6339,25 +6314,25 @@
             angles.push({
               direction: 'send',
               pos,
-              text: `Send your spare ${pos} (you have ${mySurplus[pos].startables} startable, need ${mySurplus[pos].need}). They have ${theirSurplus[pos].startables} of ${theirSurplus[pos].need} ${pos}s. Ask for: ${(theirSurplus[Object.keys(theirSurplus).find(p2 => theirSurplus[p2].surplus >= 1) || pos]?.surplus >= 1 ? 'their surplus position' : 'a future 1st')}.`
+              text: `Send spare ${pos} (${mySurplus[pos].startables}/${mySurplus[pos].need} vs their ${theirSurplus[pos].startables}/${theirSurplus[pos].need}) for ${(theirSurplus[Object.keys(theirSurplus).find(p2 => theirSurplus[p2].surplus >= 1) || pos]?.surplus >= 1 ? 'their surplus' : 'a 1st')}.`
             });
           }
           if (theirSurplus[pos].surplus >= 1 && mySurplus[pos].surplus <= -1) {
             angles.push({
               direction: 'receive',
               pos,
-              text: `Target their spare ${pos} (they have ${theirSurplus[pos].startables} startable, need ${theirSurplus[pos].need}). You have ${mySurplus[pos].startables} of ${mySurplus[pos].need} ${pos}s. Offer: a player from your strongest position or a 1st.`
+              text: `Target spare ${pos} (${theirSurplus[pos].startables}/${theirSurplus[pos].need} vs your ${mySurplus[pos].startables}/${mySurplus[pos].need}); offer surplus or 1st.`
             });
           }
         }
 
         const stanceMessage = (myStance === 'contend' && theirStance === 'rebuild')
-          ? "They're rebuilding, you're contending. They want picks + youth; you have starters they can't get from contenders. CLASSIC ASYMMETRIC."
+          ? 'Asymmetric match: buy their starters with picks/youth.'
           : (myStance === 'rebuild' && theirStance === 'contend')
-            ? "They're contending, you're rebuilding. Their stars are stale to them; offer picks for their depth."
+            ? 'Asymmetric match: deal vets for picks/youth.'
             : (myStance === theirStance)
-              ? `Both ${myStance}. Hard to find asymmetric trades; only meaningful angle is positional surplus/shortage match.`
-              : `You: ${myStance}. Them: ${theirStance}. Mid-asymmetry; positional fit must do the work.`;
+              ? `Both ${myStance}: rely on positional surplus match.`
+              : `You ${myStance}, them ${theirStance}: use positional fit.`;
 
         main.appendChild(h('h2', { class:'section-title' }, `How to Trade With ${r.team_name}`));
         main.appendChild(h('div', { class:'card' },
@@ -6367,7 +6342,7 @@
                 h('div', { class:'priority-icon', style:{ color: a.direction === 'send' ? 'var(--green)' : 'var(--blue)' } }, a.direction === 'send' ? '→' : '←'),
                 h('div', { class:'priority-text' }, a.text)
               )))
-            : h('div', { class:'tip' }, 'No clean positional fit; trades will need to be value-for-value swaps within the same position.'),
+            : h('div', { class:'tip' }, 'No clean positional fit; swap within position.'),
           h('div', { style:{ marginTop:'12px', display:'flex', gap:'8px' } },
             h('a', { href:`#trade/${lg.id}` , onclick: () => {
               TRADE_STATE.leagueId = lg.id;
@@ -6797,12 +6772,12 @@
         if (theirs[pos].surplus >= 1 && mine[pos].surplus <= -1) {
           const matched = Math.min(theirs[pos].surplus, -mine[pos].surplus);
           fit += matched * 3;
-          notes.push(`Their ${pos} surplus (+${theirs[pos].surplus}) covers my need (${mine[pos].startables} of ${mine[pos].need} startable)`);
+          notes.push(`${pos} surplus (+${theirs[pos].surplus}) covers need (${mine[pos].startables}/${mine[pos].need})`);
         }
         if (mine[pos].surplus >= 1 && theirs[pos].surplus <= -1) {
           const matched = Math.min(mine[pos].surplus, -theirs[pos].surplus);
           fit += matched * 3;
-          notes.push(`My ${pos} surplus covers their need at ${pos}`);
+          notes.push(`My ${pos} surplus covers their need`);
         }
       }
 
@@ -6810,36 +6785,36 @@
       // stars for picks/youth; contenders the inverse. Reloaders sit between.
       if (myStance === 'contend' && theirStance === 'rebuild') {
         fit += 4;
-        notes.push(`They're rebuilding, more likely to deal stars for picks/youth`);
+        notes.push('Rebuilding: may sell stars for picks/youth');
       } else if (myStance === 'rebuild' && theirStance === 'contend') {
         fit += 4;
-        notes.push(`They're contending, more likely to deal picks/youth for stars`);
+        notes.push('Contending: may deal picks/youth for stars');
       } else if ((myStance === 'reload' && theirStance === 'rebuild') ||
                  (myStance === 'rebuild' && theirStance === 'reload')) {
         fit += 2;
         notes.push(theirStance === 'rebuild'
-          ? `They're rebuilding, possible source of underpriced stars`
-          : `They have mid-tier surplus to swap into your rebuild`);
+          ? 'Rebuilding: possible underpriced stars'
+          : 'Mid-tier surplus fits rebuild');
       } else if ((myStance === 'reload' && theirStance === 'contend') ||
                  (myStance === 'contend' && theirStance === 'reload')) {
         fit += 2;
         notes.push(theirStance === 'contend'
-          ? `They're chasing, open to overpaying for win-now help`
-          : `They have win-now reach, possible source of mid-tier value`);
+          ? 'Chasing: may overpay for win-now help'
+          : 'Win-now reach: mid-tier value source');
       } else if (myStance === 'contend' && theirStance === 'contend') {
         fit -= 1;
-        notes.push(`Both contending; harder to find asymmetric trades`);
+        notes.push('Both contending: low trade asymmetry');
       } else if (myStance === 'rebuild' && theirStance === 'rebuild') {
         fit -= 1;
-        notes.push(`Both rebuilding; neither side wants to give up youth`);
+        notes.push('Both rebuilding: youth swap needed');
       }
       // Age-trend asymmetry as a secondary signal
       if (myArchetype.tag === 'WIN-NOW' && theirArchetype.tag === 'FUTURE VALUE') {
         fit += 2;
-        notes.push(`Their roster trends young, open to win-now help`);
+        notes.push('Young roster: open to win-now help');
       } else if (myArchetype.tag === 'FUTURE VALUE' && theirArchetype.tag === 'WIN-NOW') {
         fit += 2;
-        notes.push(`Their roster trends old, open to selling for futures`);
+        notes.push('Older roster: open to selling for futures');
       }
 
       partners.push({
@@ -7115,7 +7090,7 @@
         ),
         h('div', { class:'dc-picks' },
           ...defaultRounds.map(rd => h('span', { class:'pick-chip', title: y.in_progress
-            ? `Your default R${rd} pick (current draft is in progress; the slot may already be used live)`
+            ? `Default R${rd} pick (draft live; slot may be used)`
             : `Your ${draftPickLabel(yr, rd, rosterId, lg)}` }, chipText(rd, rosterId))),
           ...y.mine.map(p => h('span', { class:'pick-chip acquired', title:`Acquired ${draftPickLabel(yr, p.round, p.from, lg, true)}` }, `${chipText(p.round, p.from)}+`)),
           ...y.lost.map(p => h('span', { class:'pick-chip lost', title:`Traded away ${draftPickLabel(yr, p.round, rosterId, lg)} to roster ${p.to}` }, `${chipText(p.round, rosterId)}×`)),
@@ -7241,8 +7216,7 @@
       eyebrow: 'REFERENCE',
       title: 'Expert Rotation',
       badge: String(d.experts.length),
-      sub: `Browse every FantasyPros board for ${d.season} week ${d.week}, PPR. Add analysts `
-         + `to your rotation and their ranks appear as separate columns in Weekly Rankings.`,
+      sub: `${d.season} Week ${d.week} PPR FantasyPros boards; add analysts to show columns in Weekly Rankings.`,
     }));
     main.appendChild(sourcesHubTabBar('experts'));
 
@@ -7253,9 +7227,7 @@
     // report: week 3 opened with 10 boards where week 2 had closed with 175.
     if (d.experts.length < 40) {
       main.appendChild(h('p', { class: 'tip faab-note' },
-        `${d.experts.length} analyst${d.experts.length === 1 ? ' has' : 's have'} filed a `
-        + `week ${d.week} board so far. Most file Wednesday and Thursday, and a full `
-        + `week runs to roughly 170, so this list grows as the week does.`));
+        `${d.experts.length} Week ${d.week} board${d.experts.length === 1 ? '' : 's'} filed so far (most arrive Wed-Thu, ~170 full week).`));
     }
 
     if (arg && fpExpertById().has(String(arg))) return fpExpertPage(main, String(arg));
@@ -7320,17 +7292,15 @@
     }, label);
     return h('div', { class: 'card' },
       h('div', { class: 'card-title' }, 'Available FantasyPros experts', rotationScope),
-      h('p', { class: 'tip faab-note' },
-        'Added experts become sortable columns in every league\'s Weekly Rankings. Depth is how many players each expert ranks.'),
       h('table', { class: 'data slot-table' },
         h('thead', null, h('tr', null,
           hdr('rotation', 'Rotation'),
           hdr('name', 'Expert', { asc: true }),
           h('th', null, 'Outlet'),
-          ...FP_POS.map(p => hdr(p, p, { right: true, title: `How many ${p}s he ranks` })),
+          ...FP_POS.map(p => hdr(p, p, { right: true, title: `${p}s ranked` })),
           hdr('total', 'Ranked', { right: true }),
           hdr('spread', 'Spread', { right: true,
-            title: 'Mean distance from consensus across every player he ranks. Higher = more contrarian.' }))),
+            title: 'Mean gap vs consensus (higher = more contrarian)' }))),
         body),
       (draw(), null));
   }
@@ -7364,8 +7334,8 @@
             FP_POS.map(p => `${p} ${e.depth[p] || 0}`).join(' · '))),
         c ? h('div', { class: 'faab-kpi' },
           h('div', { class: 'faab-kpi-num tnum' }, fmt.decimal(c.spread, 1)),
-          h('div', { class: 'faab-kpi-lab' }, 'mean gap to consensus'),
-          h('div', { class: 'faab-kpi-sub' }, `over ${c.n} ranked players`)) : null));
+          h('div', { class: 'faab-kpi-lab' }, 'mean vs ECR'),
+          h('div', { class: 'faab-kpi-sub' }, `${c.n} ranked`)) : null));
     if (e.siteLink) {
       head.appendChild(h('p', { class: 'tip faab-note' },
         h('a', { href: e.siteLink, target: '_blank', rel: 'noopener' }, e.siteLink)));
@@ -7390,9 +7360,9 @@
         h('table', { class: 'data slot-table' },
           h('thead', null, h('tr', null,
             h('th', null, 'Player'), h('th', null, 'Pos'),
-            h('th', { class: 'right', title: 'His rank at the position' }, 'Him'),
-            h('th', { class: 'right', title: 'Expert consensus rank at the position' }, 'ECR'),
-            h('th', { class: 'right', title: 'Positive = he is higher on the player than the room' }, 'Gap'))),
+            h('th', { class: 'right', title: 'His position rank' }, 'Him'),
+            h('th', { class: 'right', title: 'Position ECR' }, 'ECR'),
+            h('th', { class: 'right', title: '+ = higher than consensus' }, 'Gap'))),
           h('tbody', null, ...list.map(g => h('tr', {
             class: 'clickable', onclick: () => openPlayerDetail(g.name, g.pid),
           },
@@ -7404,12 +7374,12 @@
             h('td', { class: 'sr-num sr-vor tnum' + (g.delta < 0 ? ' neg' : '') },
               `${g.delta > 0 ? '+' : ''}${g.delta}`))))));
     };
-    main.appendChild(table('Where he breaks from the room',
-      'his twelve widest gaps, either direction',
+    main.appendChild(table('Widest consensus gaps',
+      'Top 12',
       gaps.slice().sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta)).slice(0, 12)));
-    main.appendChild(table('Highest on', 'he likes these more than the room does',
+    main.appendChild(table('Highest on', '',
       gaps.filter(g => g.delta > 0).sort((a, b) => b.delta - a.delta).slice(0, 10)));
-    main.appendChild(table('Lowest on', 'he is out on these',
+    main.appendChild(table('Lowest on', '',
       gaps.filter(g => g.delta < 0).sort((a, b) => a.delta - b.delta).slice(0, 10)));
   }
 
@@ -7452,7 +7422,7 @@
       const all = fpPlayerSpread(pos, idx, { minDepth });
       const kept = fpPlayerSpread(pos, idx, { omitting: omitIdx, minDepth });
       if (!all.length) {
-        host.appendChild(h('p', { class: 'tip' }, 'No board at this depth ranks him.'));
+        host.appendChild(h('p', { class: 'tip' }, 'Unranked at this board depth.'));
         return;
       }
       const ranks = kept.map(r => r.rank);
@@ -7462,33 +7432,31 @@
           h('div', { class: 'faab-kpi-num tnum' },
             med != null ? `${pos}${fmt.decimal(med, 0)}` : '·'),
           h('div', { class: 'faab-kpi-lab' },
-            omitIdx >= 0 ? 'median, filtered boards' : 'median of every board'),
+            omitIdx >= 0 ? 'filtered median' : 'median rank'),
           h('div', { class: 'faab-kpi-sub' }, ranks.length
-            ? `${ranks.length} boards, ${pos}${Math.min(...ranks)} to ${pos}${Math.max(...ranks)}`
-            : 'no board matches the filter')),
+            ? `${ranks.length} boards (${pos}${Math.min(...ranks)}-${pos}${Math.max(...ranks)})`
+            : 'no matching boards')),
         h('div', { class: 'faab-kpi' },
           h('div', { class: 'faab-kpi-num tnum' }, `${pos}${b.ecr[idx]}`),
-          h('div', { class: 'faab-kpi-lab' }, 'consensus'),
-          h('div', { class: 'faab-kpi-sub' }, `${all.length} boards rank him`)),
+          h('div', { class: 'faab-kpi-lab' }, 'ECR'),
+          h('div', { class: 'faab-kpi-sub' }, `${all.length} boards`)),
         (omitIdx >= 0 && med != null && medAll != null) ? h('div', { class: 'faab-kpi' },
           h('div', { class: 'faab-kpi-num tnum' },
             `${medAll - med > 0 ? '+' : ''}${fmt.decimal(medAll - med, 1)}`),
-          h('div', { class: 'faab-kpi-lab' }, 'spots the filter moves him'),
+          h('div', { class: 'faab-kpi-lab' }, 'filter delta'),
           h('div', { class: 'faab-kpi-sub' },
-            `against ${pos}${fmt.decimal(medAll, 0)} on every board`)) : null));
+            `vs ${pos}${fmt.decimal(medAll, 0)} all`)) : null));
 
       if (omitIdx >= 0) {
         host.appendChild(h('p', { class: 'tip faab-note' },
-          `Only boards that do not rank ${b.players[omitIdx]} anywhere. An omission is a `
-          + `judgement on a deep board and just a cutoff on a shallow one, so raise the `
-          + `depth floor before reading much into it.`));
+          `Excluding boards ranking ${b.players[omitIdx]} (raise depth floor to filter cutoffs).`));
       }
       appendTable(host, h('table', { class: 'data slot-table' },
         h('thead', null, h('tr', null,
           h('th', null, 'Expert'), h('th', null, 'Outlet'),
           h('th', { class: 'right' }, 'Rank'),
-          h('th', { class: 'right', title: 'Positive = higher than consensus' }, 'vs ECR'),
-          h('th', { class: 'right', title: 'How many players he ranks at this position' }, 'Depth'))),
+          h('th', { class: 'right', title: '+ = higher than consensus' }, 'vs ECR'),
+          h('th', { class: 'right', title: 'Position depth ranked' }, 'Depth'))),
         h('tbody', null, ...kept.map(r => h('tr', {
           class: 'clickable', onclick: () => navigate(`#experts/${r.eid}`),
         },
@@ -7501,8 +7469,7 @@
     }
 
     const card = h('div', { class: 'card' },
-      h('div', { class: 'card-title' }, 'One player, every board',
-        h('span', { class: 'faab-scope' }, 'the spread a consensus rank hides')),
+      h('div', { class: 'card-title' }, 'One player, every board'),
       h('div', { class: 'fp-controls' }, posSelect, nameSelect, omitSelect, depthSelect),
       host);
     fillNames();
@@ -7527,21 +7494,19 @@
     }).sort((a,b) => b.exp - a.exp);
     const card = h('div', {class:'card'},
       h('div', {class:'card-title'}, `Week ${d.week} kicker reference`),
-      nearOk ? h('p', {class:'tip'}, `${league?.short_name || league?.name || 'This league'} scores a few rare kicks differently (60+ yard makes, distance-banded misses). Same board, gap well under the 0.5-point tie line.`) : null,
-      h('p', {class:'tip'}, 'Market reference points, not a proven lineup edge. Gaps below 0.5 points are practical ties. Candidates are inferred from prior placekicking and current roster data; confirm availability before switching.'),
-      h('p', {class:'tip'}, `Scoring: FG bands ${d.scoring.fg_made.join('/')}; PAT ${d.scoring.pat_made}; missed FG ${d.scoring.fg_missed}; missed PAT ${d.scoring.pat_missed}.`));
+      nearOk ? h('p', {class:'tip'}, `${league?.short_name || league?.name || 'League'} rare-kick bonus gap <0.5 pts; verify availability.`) : null,
+      h('p', {class:'tip'}, `FG ${d.scoring.fg_made.join('/')} · PAT ${d.scoring.pat_made} · miss FG ${d.scoring.fg_missed} · miss PAT ${d.scoring.pat_missed} (gaps <0.5 pts = ties; P20/P90/15+ experimental).`));
     const body = h('tbody', null, ...rows.map((k,i) => h('tr', null,
       h('td', null, String(i+1)), h('td', {title:k.reason}, k.name),
       h('td', null, teamChip(k.team)), h('td', null, teamChip(k.opp,true)),
       h('td', {class:'sr-num tnum',title:k.reason}, fmt.decimal(k.exp,1)),
-      h('td', {class:'sr-num tnum',title:'Mean of the separate experimental count distribution'}, fmt.decimal(k.distributionMean,1)),
+      h('td', {class:'sr-num tnum',title:'Experimental count-model mean'}, fmt.decimal(k.distributionMean,1)),
       h('td', {class:'sr-num tnum'}, fmt.decimal(k.floor,0)),
       h('td', {class:'sr-num tnum'}, fmt.decimal(k.ceil,0)),
       h('td', {class:'sr-num tnum'}, `${Math.round(k.pGe15*100)}%`)
     )));
     appendTable(card, h('table', {class:'data slot-table'},
       h('thead', null, h('tr', null, ...['#','Kicker','Team','Opp','Ref pts','Dist mean','P20','P90','15+'].map(label => h('th',null,label)))), body));
-    card.appendChild(h('p', {class:'tip'}, 'Distribution mean, P20, P90 and 15+ are experimental count-model outputs. They do not establish a better ceiling strategy.'));
     card.appendChild(h('p', {class:'tip'}, d.method, ' ', d.note));
     return card;
   }
@@ -7550,7 +7515,7 @@
     const main = $('#main');
     main.innerHTML = '';
     main.appendChild(pageHeader({eyebrow:'REFERENCE',title:'Kickers',
-      sub:'Market baseline with separate experimental outcome ranges.'}));
+      sub:'Market baseline + outcome ranges.'}));
     const choices = (window.LEAGUES || []).filter(lg => (lg.roster_positions || []).includes('K'));
     const weekly = window.WEEKLY_RANKINGS || {};
     let league = choices.find(lg => window.KickerForecast?.valid(window.KICKER_MODEL,
@@ -7566,7 +7531,7 @@
     function draw() {
       host.innerHTML = '';
       host.appendChild(kickerBoard(league) || h('div', {class:'empty'},
-        'Current kicker reference unavailable for this season, week or league scoring. No differently scored forecast is substituted.'));
+        'Kicker reference unavailable for this week/scoring.'));
     }
     draw();
   }
@@ -7616,15 +7581,13 @@
         .sort((a, b) => b.ppg - a.ppg);
       const n = rows.length;
       host.appendChild(h('p', { class: 'tip faab-note' },
-        `Points a ${grp} scores against each offence, per game, in this league's `
-        + `scoring. Rank 1 is the offence you most want your ${grp} facing. `
-        + `Prior season pooled with completed ${D.season} games.`));
+        `${grp} PPG allowed per offense in this league's scoring (rank 1 = best matchup; prior + ${D.season}).`));
       appendTable(host, h('table', { class: 'data slot-table' },
         h('thead', null, h('tr', null,
           h('th', null, '#'), h('th', null, 'Offense faced'),
-          h('th', { class: 'right', title: `Fantasy points allowed to ${grp} per game` }, 'PPG'),
-          h('th', { class: 'right', title: 'Points above or below the median offence' }, 'vs med'),
-          h('th', { class: 'right', title: 'Games in the pooled sample' }, 'G'),
+          h('th', { class: 'right', title: `${grp} PPG allowed` }, 'PPG'),
+          h('th', { class: 'right', title: 'vs median offense' }, 'vs med'),
+          h('th', { class: 'right', title: 'Pooled games' }, 'G'),
           h('th', { class: 'right', title: 'Prior season only' }, 'Prior'),
           h('th', null, `Wk ${wk} opposing D`))),
         h('tbody', null, ...rows.map((r, i) => {
@@ -7642,7 +7605,7 @@
             h('td', { class: 'sr-num tnum' }, r.priorPpg != null ? fmt.decimal(r.priorPpg, 1) : '·'),
             h('td', null, facing.length
               ? facing.map(t => teamChip(t))
-              : h('span', { class: 'tip' }, 'bye or not scheduled')));
+              : h('span', { class: 'tip' }, 'bye')));
         }))));
       for (const b of bar.children) b.classList.toggle('active', b.dataset.grp === grp);
     };
@@ -7666,8 +7629,7 @@
       const statName = k => ({ idp_fum_rec: 'fumble recoveries', idp_fum_ret_yd: 'fumble return yards' })[k]
         || k.replace(/^idp_/, '').replace(/_/g, ' ');
       wrap.appendChild(h('p', { class: 'tip faab-note on-turf' },
-        `This league scores ${D.unmappedScoringKeys.map(statName).join(', ')}, which the source does not track, `
-        + 'so they add nothing to these numbers.'));
+        `Untracked here (score as 0): ${D.unmappedScoringKeys.map(statName).join(', ')}.`));
     }
     return wrap;
   }
@@ -7678,38 +7640,44 @@
       h('div', null,
         h('div', { class:'page-eyebrow' }, 'REFERENCE'),
         h('h1', { class:'page-title' }, 'Methodology & Assumptions'),
-        h('p', { class:'page-sub' }, 'How team strength, redraft ROS rankings, and season playoff simulations work.')
+        h('p', { class:'page-sub' }, 'How lineups, valuations, market boards, and season simulations work.')
       )
     ));
     const bases = [
-      { name: 'Blended (FP + Gibbs)', desc: 'Average of FantasyPros ROS + Jacob Gibbs PPR ROS boards, scaled to Sleeper PPG curve.' },
-      { name: 'Gibbs ROS',            desc: 'Jacob Gibbs PPR ROS board only, scaled to Sleeper PPG curve.' },
-      { name: 'FantasyPros ROS',      desc: 'FantasyPros ROS consensus only, scaled to Sleeper PPG curve.' },
-      { name: 'Sleeper Only',         desc: 'Raw Sleeper weekly projections with no expert rank scaling.' },
+      { name: 'Blended (FP + Gibbs)', desc: '50/50 FantasyPros ROS + Gibbs PPR ROS, scaled to Sleeper PPG.' },
+      { name: 'Gibbs ROS',            desc: 'Gibbs PPR ROS only, scaled to Sleeper PPG.' },
+      { name: 'FantasyPros ROS',      desc: 'FantasyPros ROS consensus only, scaled to Sleeper PPG.' },
+      { name: 'Sleeper Only',         desc: 'Raw Sleeper projections with no expert scaling.' },
     ];
     main.appendChild(h('div', { class:'card', style:{ marginBottom:'16px' } },
-      h('div', { class:'card-title' }, 'Team Strength, Startable Lineups & Weekly Boards'),
-      h('p', { class:'tip' }, 'Strength = projected points per remaining week, mean of the simulated seasons (weekly ROS projections, byes, injuries). Lineup value is the best legal starting lineup today (positions respected, taxi/IR/Out benched). Startable thresholds use league-wide positional slots; surplus >= 1 means spare startable trade depth. Single-expert weekly columns reflect the expert\'s latest submission, and Dynasty trajectory bars show modeled age/pick scenarios.'),
+      h('div', { class:'card-title' }, 'Lineups, Valuation & Dynasty Curves'),
+      h('ul', { class:'tip', style:{ margin:'6px 0 10px 18px', padding:0, display:'flex', flexDirection:'column', gap:'6px' } },
+        h('li', null, h('strong', null, 'Strength & Lineups: '), 'Team strength = simulated Pts/wk remaining. PV uses your best legal starting lineup today (IR/Out/taxi benched). Dynasty rows score KTC PV; redraft rows score VOR (points over top free agent) - compare league ranks rather than raw numbers across formats.'),
+        h('li', null, h('strong', null, 'Format Multipliers: '), 'Superflex gives QBs a 1.40x weight (top-12 QBs = Cornerstones). IDP gives LBs a 1.10x multiplier.'),
+        h('li', null, h('strong', null, 'Future Value (FV): '), `Projects rosters ${FV_YEARS} seasons out using position aging curves (RBs cliff ~27, WRs ~30, TEs gradual, QBs longest peak) plus converted rookie picks (discounted 0.75x in year one, ramping to parity). Startable surplus >= 1 indicates tradeable depth.`),
+        h('li', null, h('strong', null, 'Dynasty Domain Benchmarks: '), 'Value Share measures % of league players+picks value (baseline 1/N). Future 1st class premiums and Tankometer scaling ((100 - N)% league weight in Action Center) adjust trade/rebuild signals.'),
+      ),
+      h('div', { class:'card-title', style:{ marginTop:'14px' } }, 'Weekly, ROS & Position Boards'),
+      h('ul', { class:'tip', style:{ margin:'6px 0 10px 18px', padding:0, display:'flex', flexDirection:'column', gap:'6px' } },
+        h('li', null, h('strong', null, 'Vegas pts & V-S: '), 'Builds full-PPR expectations from price-adjusted BettingPros props, then PrizePicks lines, then Sleeper fills. An asterisk (*) flags heavy Sleeper fill where V-S reflects model-vs-model noise.'),
+        h('li', null, h('strong', null, 'Gibbs* Conversions: '), 'Adds +0.5/projected catch to Jacob Gibbs\'s half-PPR RB/WR/TE lists and re-sorts (QBs unchanged). Video transcription weeks reconstruct WR 77-99 around insertions; single-expert FP columns use latest submission timestamps and can differ from earlier video recordings.'),
+        h('li', null, h('strong', null, 'Freshness & Coverage: '), 'FantasyPros ROS boards dim as stale at 8+ days old; free API consensus caps at top-N per position.'),
+        h('li', null, h('strong', null, 'Kickers & IDP DVP: '), 'Kickers use implied team points (<0.5 pt differences are practical ties); Floor/Ceil/15+ come from a separate experimental count model. IDP matchups pool prior + current league scoring (untracked fumble stats score 0).'),
+      ),
       h('div', { class:'card-title', style:{ marginTop:'14px' } }, 'Redraft ROS Basis Options'),
       h('ul', { class:'tip', style:{ margin:'6px 0 10px 18px', padding:0, display:'flex', flexDirection:'column', gap:'6px' } },
         ...bases.map(b => h('li', null, h('strong', null, `${b.name}: `), b.desc))),
       h('a', { href:'#sources', class:'btn btn-ghost' }, 'Change active ROS basis in Sources & Experts →')
     ));
     main.appendChild(h('div', { class:'card' },
-      h('div', { class:'card-title' }, 'Season Forecast Assumptions'),
+      h('div', { class:'card-title' }, 'Season Forecast, Schedule & Market Tools'),
       h('ul', { class:'tip', style:{ margin:'6px 0 0 18px', padding:0, display:'flex', flexDirection:'column', gap:'6px' } },
-        h('li', null, h('strong', null, 'Simulations: '), 'Monte Carlo season runs (seed 20260807), preserving completed week results.'),
-        h('li', null, h('strong', null, 'Seeding & Byes: '), 'Uses league playoff places and first-round byes. Expected final W-L-T is the fractional mean (ties count half a win). Tiebreakers: record, then points for, higher points against, seeded coin flip.'),
-        h('li', null, h('strong', null, 'Projections: '), 'Uses the same weekly ROS / season-blend model as Projections with known weekly absences/byes, simulated injuries, player-season uncertainty, and team/stack correlations.'),
-        h('li', null, h('strong', null, 'Uncertainty: '), 'Monte Carlo error alone is up to about 2 percentage points at 95% confidence. Forecasts are estimates, not historically calibrated probabilities. Future roster changes and commissioner overrides are not modeled.'),
-        h('li', null, h('strong', null, 'Source: '), `Weekly source W${window.WEEKLY_RANKINGS?.liveWeek || window.WEEKLY_RANKINGS?.currentWeek || '?'}; see Sources & Experts for data freshness.`)
-      )
-    ));
-    main.appendChild(h('div', { class:'card', style:{ marginTop:'16px' } },
-      h('div', { class:'card-title' }, 'Schedule Difficulty & Season SOS by Position'),
-      h('ul', { class:'tip', style:{ margin:'6px 0 0 18px', padding:0, display:'flex', flexDirection:'column', gap:'6px' } },
-        h('li', null, h('strong', null, 'Schedule Difficulty (Standings): '), 'Average of each remaining opponent\'s best legal weekly lineup, including bench replacements for players on bye (no injuries, perfect start/sit). LEFT = remaining opponents; PLAYED = completed opponents; OPP BYE = gross starter production unavailable before bench replacement. Median games are additional to the head-to-head opponent.'),
-        h('li', null, h('strong', null, 'Season SOS by Position (#sos): '), 'Each cell shows the opponent and its defense rank vs that position: 1 of 32 allows the fewest opponent-adjusted PPR (toughest, red), and 32 allows the most (easiest, green).')
+        h('li', null, h('strong', null, 'Simulations: '), 'Monte Carlo runs (seed 20260807) keeping completed results. Expected W-L-T is fractional mean; tiebreakers use record, PF, PA, coin flip. Sampling noise is ~+-2pp (95% CI).'),
+        h('li', null, h('strong', null, 'Proj Max PF & Picks: '), 'Adds season-to-date Max PF to remaining simulated optimal whole-roster weeks scaled to current league Max PF pace. Projected rookie picks interpolate KTC early/mid/late anchors from simulated finish order.'),
+        h('li', null, h('strong', null, 'Schedule Difficulty & SOS: '), 'Schedule Difficulty averages remaining opponents\' best legal weekly lineups; OPP BYE counts gross starter points pre-bench. Positional SOS ranks 1 (toughest, red) to 32 (easiest, green) on opponent-adjusted PPR.'),
+        h('li', null, h('strong', null, 'Trade Finder & Lab: '), 'Scans 1-for-1, 2-for-1, and 2-for-2 deals, keeping trades where you gain playoff/title odds and the partner gains contender title odds or rebuilder FV. SOLID / LIKELY / INSIDE NOISE mark 3+ / 2 / <2 SEs over simulation noise.'),
+        h('li', null, h('strong', null, 'Waiver FAAB & Headliner Premium: '), 'Waiver bids take median/IQR of 30 projection-matched league claims since 2025 ($0 bids included), assuming independent claims. Headliner premiums credit sending the top single asset in uneven-count packages.'),
+        h('li', null, h('strong', null, 'Source: '), `Weekly source W${window.WEEKLY_RANKINGS?.liveWeek || window.WEEKLY_RANKINGS?.currentWeek || '?'}; check Sources & Experts for timestamps.`)
       )
     ));
   }
@@ -7720,7 +7688,7 @@
     main.appendChild(h('div', { class:'page-header' },
       h('div', null,
         h('h1', { class:'page-title' }, 'Sources & Experts'),
-        h('p', { class:'page-sub' }, 'Configure your Redraft rest-of-season basis, Dynasty consensus channels, and table columns.')
+        h('p', { class:'page-sub' }, 'Manage Redraft ROS basis, Dynasty consensus channels, and analyst columns.')
       )
     ));
     main.appendChild(sourcesHubTabBar('basis'));
@@ -7728,20 +7696,20 @@
     // Redraft ROS Basis
     main.appendChild(h('h2', { class:'page-title', style:{ fontSize:'1.1rem', marginTop:'16px' } }, 'Redraft Rest-of-Season Basis'));
     main.appendChild(h('p', { class:'page-sub', style:{ marginTop:'-6px' } },
-      'Controls starter position ranks and scales rest-of-season projected points monotonically along Sleeper\'s positional PPG curve in redraft leagues (Washington Football League, Phi Kap Fantasy).'));
+      'Sets starter ranks and scales ROS PPG curves across redraft leagues.'));
     const rosCard = h('div', { class:'card', style:{ marginBottom:'20px' } });
     rosCard.appendChild(buildRosBasisBar(() => viewSources(), { showLink: false, fullLabels: true }));
     const rosSourcesList = [
       {
         id: 'fp-ros',
         title: 'FantasyPros ROS Consensus',
-        desc: 'Aggregated rest-of-season PPR positional ranks across FantasyPros analysts.',
+        desc: 'PPR consensus across FantasyPros analysts.',
         on: isFpRosEnabled(state.settings),
       },
       {
         id: 'gibbs-ppr-2026-08',
         title: 'Jacob Gibbs PPR ROS',
-        desc: 'Derived full-PPR rest-of-season positional ranks from Jacob Gibbs.',
+        desc: 'Derived full-PPR ROS positional ranks from Jacob Gibbs.',
         on: isGibbsRosEnabled(state.settings),
       },
     ];
@@ -7768,7 +7736,7 @@
 
     main.appendChild(h('h2', { class:'page-title', style:{ fontSize:'1.1rem', marginTop:'24px' } }, 'Dynasty Consensus Sources'));
     main.appendChild(h('p', { class:'page-sub', style:{ marginTop:'-6px' } },
-      'Choose which analysts inform your aggregated dynasty rankings. Toggle individual videos within each source.'));
+      'Select analysts/videos included in aggregated dynasty ranks.'));
     const grid = h('div', { class:'card-grid cols-2' });
     for (const src of getAllSources()) {
       grid.appendChild(renderSourceCard(src));
@@ -7779,17 +7747,17 @@
     // (alongside the Vegas market / Sleeper context). Toggle which ones appear.
     main.appendChild(h('h2', { class:'page-title', style:{ fontSize:'1.1rem', marginTop:'24px' } }, 'Expert Ranking Columns'));
     main.appendChild(h('p', { class:'page-sub', style:{ marginTop:'-6px' } },
-      'Per-analyst rank columns shown beside players in every table, in addition to the Vegas market (PP−Slp) and Sleeper context. Toggle a source off to hide its column. Add more by appending to data/expert-rankings.js.'));
+      'Toggle analyst columns beside players across tables.'));
     // The Gibbs board is tiered; the column can only show a number, so the full
     // tier sheet lives on its own page (generated by _sources/build_gibbs_brief.py).
     main.appendChild(h('p', { class:'page-sub', style:{ marginTop:'-2px' } },
       h('a', { href:'gibbs-tiers.html', class:'on-turf' }, 'Open the Gibbs tier board'),
-      ` for all ${gibbsBoardShape().text}, movement since his previous board, and who you already roster.`));
+      ` (${gibbsBoardShape().text}, movement & ownership).`));
     // His Aug 22 board is a top 200 and only ranks 85-200 are sourced, so it lives on
     // its own delta page instead of replacing the complete Aug 14 board above.
     main.appendChild(h('p', { class:'page-sub', style:{ marginTop:'-2px' } },
-      h('a', { href:'gibbs-update-2026-08-22.html', class:'on-turf' }, 'Aug 22 update, ranks 85-200'),
-      ' for what he changed on the back half of the board, re-ranked so the extra 25 slots do not read as movement.'));
+      h('a', { href:'gibbs-update-2026-08-22.html', class:'on-turf' }, 'Aug 22 update (ranks 85-200)'),
+      ' back-half changes, re-ranked.'));
     const expGrid = h('div', { class:'card' });
     for (const src of expertSources()) {
       const on = state.settings.enabledExpertCols[src.id] !== false;
@@ -8244,7 +8212,7 @@
       pool.push(...res.cands);
     }
     pool = pool.sort((a, b) => b.meD - a.meD).slice(0, SIM.finderSimTop);
-    onProgress(`Simulating ${CURRENT_SEASON} title odds, no trade`);
+    onProgress(`${CURRENT_SEASON} baseline title odds`);
     await pause();
     // Same seed before and after (common random numbers), so a change is the
     // trade, not the dice. This season only: FV prices the years after it.
@@ -8395,10 +8363,10 @@
       const claim = !n ? 'No trade found.'
         : both === n ? `${n} ${s(n, 'trade helps', 'trades help')} both teams.`
         : `${n} ${s(n, 'trade raises', 'trades raise')} your ${CURRENT_SEASON} title odds; `
-          + (both ? `${both} ${s(both, 'helps', 'help')} both teams.` : `the partner's gain is inside the noise.`);
+          + (both ? `${both} ${s(both, 'helps', 'help')} both.` : 'partner gain within noise.');
       status.replaceChildren(h('strong', { class: 'tf-claim' }, claim), ' ',
-        h('span', { class: 'tf-meta' }, `${res.checked.toLocaleString()} packages checked, ${res.simulated} simulated, ${(res.ms / 1000).toFixed(1)} s.`));
-      if (!n) list.appendChild(h('div', { class: 'trade-finder-empty' }, 'No deal helps you and the partner right now. Build one by hand above.'));
+        h('span', { class: 'tf-meta' }, `${res.checked.toLocaleString()} checked · ${res.simulated} simmed · ${(res.ms / 1000).toFixed(1)}s`));
+      if (!n) list.appendChild(h('div', { class: 'trade-finder-empty' }, 'No win-win deal found right now.'));
       for (const p of res.proposals) list.appendChild(row(p));
     };
     const run = h('button', { type: 'button', class: 'tf-run', disabled: me ? null : '', onclick: async () => {
@@ -8414,7 +8382,7 @@
         show(res);
       } catch (err) {
         console.error('Trade Finder failed', err);
-        status.textContent = 'Could not finish the search. Try again.';
+        status.textContent = 'Could not finish search. Try again.';
       } finally {
         run.disabled = false;
         run.textContent = 'Find trades';
@@ -8423,10 +8391,7 @@
     if (me && FINDER_RESULTS.has(lg.id)) show(FINDER_RESULTS.get(lg.id));
     return h('div', { class: 'trade-finder' },
       h('h2', { class: 'section-title' }, 'Trade Finder'),
-      h('p', { class: 'trade-finder-note' }, `Searches 1-for-1, 2-for-1 and 2-for-2 deals with every team${dyn ? ', picks included' : ''}, `
-        + `then simulates the best in ${CURRENT_SEASON} title odds for both sides. A deal shows only if it helps you and the partner gains on what he plays for: `
-        + (dyn ? 'title odds if he contends, future value if he is rebuilding.' : 'his title odds.')
-        + ' SOLID, LIKELY and INSIDE NOISE say how far each change clears the simulation noise: 3 standard errors, 2, or less. Choose one to load it.'),
+      h('p', { class: 'trade-finder-note' }, `1-for-1, 2-for-1 & 2-for-2 scan across all teams${dyn ? ' + picks' : ''}, simulated for ${CURRENT_SEASON} title odds${dyn ? ' / rebuilder FV' : ''}. Tap to load (methodology in #methodology).`),
       run, status, list);
   }
   // ============================================================
@@ -8523,7 +8488,7 @@
     return { series, totals, missing };
   }
 
-  const TCHART_PICK_TIP = 'A used pick is drawn as the player taken with it, from May 1 of that draft year, and joins its side total then. A side with one has no change %, because the pick had no KTC value at the trade.';
+  const TCHART_PICK_TIP = 'Drafted picks join May 1 as the player taken (no change % on sides with picks).';
   function tradeValueChart(t, sf, sfNow) {
     const { series, totals, missing } = tradeChartSeries(t, sf);
     const wrap = h('div', { class:'tchart-wrap' });
@@ -8979,11 +8944,10 @@
         h('span', { class:'sos-team' }, r.team, r.isMe ? h('span', { class:'badge you' }, 'YOU') : null),
         h('span', { class:'sos-bar' }, h('i', { style:{ width: Math.round(((r.remaining || 0) / cap) * 100) + '%' } })),
         h('span', { class:'sos-val tnum' }, r.remaining != null ? fmt.decimal(r.remaining, 1) : '·'),
-        h('span', { class:'sos-played tnum', title:'Average of the opponents already played' },
+        h('span', { class:'sos-played tnum', title:'Avg played opponents' },
           r.played != null ? fmt.decimal(r.played, 1) : '·'),
         h('span', { class:'sos-bye tnum',
-                    title: `${r.opponentByeSlots} opposing starter bye${r.opponentByeSlots === 1 ? '' : 's'} ahead, `
-                         + `removing about ${fmt.decimal(r.opponentByePts, 0)} gross points before bench replacement` },
+                    title: `${r.opponentByeSlots} opp starter bye${r.opponentByeSlots === 1 ? '' : 's'} (~${fmt.decimal(r.opponentByePts, 0)} gross pts pre-bench)` },
           r.opponentByeSlots ? `${fmt.decimal(r.opponentByePts, 0)}` : '·',
           r.opponentByeSlots ? h('span', { class:'sos-bye-n' }, `${r.opponentByeSlots}`) : null),
       ));
@@ -9278,28 +9242,26 @@
       h('div', { class: 'card-title' }, `Week ${week} waiver board`),
       h('p', { class: 'tip faab-note' },
         left != null
-          ? `You have $${faabMoney(left)} of $${faabMoney(budget)} left.`
-          : (hasBidHistory ? `League FAAB budget: $${faabMoney(budget)}.` : 'No priced-claim history for this league, so no bid range is shown.'),
-        !hasBidHistory && left != null ? ' No priced-claim history for this league, so no bid range is shown.' : ''),
+          ? `$${faabMoney(left)} / $${faabMoney(budget)} left.`
+          : (hasBidHistory ? `FAAB budget: $${faabMoney(budget)}.` : 'No claim history here.'),
+        !hasBidHistory && left != null ? ' No claim history.' : ''),
       hasBidHistory ? h('details', { class: 'wb-how' },
         h('summary', null, 'How bids work'),
         h('p', { class: 'tip' },
-          'Bid is the median of the 30 in-season claims here, $0 adds included, on players at his position with the closest Sleeper projection for the claim week, last two seasons first; the small range is their middle half. '
-          + 'Tested forward on 272 claims since 2025, half landed within about 3% of budget of it and the average miss was 6%; most of a bid is one manager\'s appetite, which no pre-claim fact predicts, so read the range as the answer. '
-          + 'With no projection, the range falls back to his experience and position profile. Hover a player or bid for comps; tap Win% to adjust bid, open the Chart, or build a Bundle.')) : null);
+          'Median & IQR of 30 projection-matched claims here ($0 adds included; experience/pos fallback if unprojected). Hover for comps; tap Win% to adjust, chart, or bundle (details in #methodology).')) : null);
 
     const head = h('thead', null, h('tr', null,
       h('th', null, '#'),
       h('th', null, 'Player'),
       h('th', null, 'Pos'),
       h('th', { class: 'wb-profile-head' }, 'Profile'),
-      h('th', { class: 'right wb-ros-head', title: 'Projected points, rest of season' }, 'ROS'),
-      h('th', { class: 'right', title: `Projected points, week ${week}` }, 'Proj'),
+      h('th', { class: 'right wb-ros-head', title: 'Projected ROS pts' }, 'ROS'),
+      h('th', { class: 'right', title: `Projected W${week} pts` }, 'Proj'),
       h('th', { class: 'right', style: hideComparison, title: dynasty
-        ? 'League-adjusted dynasty market value on the 0 to 110 scale'
-        : 'Rest-of-season points above the last league-wide starter at the position' }, dynasty ? 'Value' : 'VOR'),
-      hasBidHistory ? h('th', { class: 'right', title: 'Suggested bid range from this league\'s matching historical claims' }, 'Bid') : null,
-      hasBidHistory ? h('th', { class: 'right', title: 'Win chance at this bid; tap to adjust, open Chart, or add to Bundle' }, 'Win%') : null));
+        ? 'KTC value (0-110)'
+        : 'ROS VOR vs top FA' }, dynasty ? 'Value' : 'VOR'),
+      hasBidHistory ? h('th', { class: 'right', title: 'Comp median bid range' }, 'Bid') : null,
+      hasBidHistory ? h('th', { class: 'right', title: 'Win odds at bid (tap to adjust)' }, 'Win%') : null));
 
     const season = Number(wr.season) || null;
     const compLine = b => b.comps.slice(0, 2).map(x => `${x.player} $${faabMoney(x.bid)}`).join(', ');
@@ -9332,7 +9294,7 @@
       bundleList, bundleSum,
       h('button', { type: 'button', class: 'wb-bundle-use',
         onClick: () => solved?.pids.forEach((pid, i) => rows.get(pid).setBid(solved.bids[i])) }, 'Use these bids'),
-      h('p', { class: 'tip' }, 'Treats each claim as independent, so a rival chasing the same players is not modeled. You pay every bid that wins, so the bids together stay inside what you have left.'));
+      h('p', { class: 'tip' }, 'Independent-claim estimate; total stays within budget.'));
     const renderBundle = () => {
       const picks = [...bundle].map(pid => rows.get(pid));
       bundlePanel.hidden = !picks.length;
@@ -9540,10 +9502,8 @@
       h('div', { class: 'wb-odds-ladder' },
         h('span', { class: 'wb-bundle-title' }, 'Bid to win'), ...steps,
         h('p', { class: 'tip' }, comps
-          ? `From ${ts.length} comps: each one's winning bid, scaled to this budget, stands in for the top rival bid. `
-            + 'Tested forward on 272 claims since 2025, the bid named for 90% beat the winning price 91% of the time, and for 50%, 55%.'
-          // The forward test only covered projection comps, so the fallback makes no accuracy claim.
-          : `No projection, so these odds come from ${ts.length} past claims on the same experience and position profile, a looser match than projection comps.`)),
+          ? `${ts.length} projection-matched comps (scaled to budget).`
+          : `${ts.length} experience/pos comps (no projection; looser match).`)),
       h('div', { class: 'wb-odds-plot' }, svg));
     return {
       el: wrap,
@@ -9624,9 +9584,7 @@
     if (kpis.children.length) card.appendChild(kpis);
 
     card.appendChild(h('p', { class: 'tip faab-note' },
-      'The market pays for news, not for role: a visible event costs about twice what an '
-      + 'existing full-time job costs. Box spans the middle half of bids, the line is the '
-      + 'median, the whisker reaches the most anyone paid.'));
+      'Market pays ~2x for visible news vs steady role (box = IQR, line = median, whisker = max).'));
 
     // Only decision-time dimensions: situation, position, and NFL experience.
     const host = h('div', { class: 'faab-host' });
@@ -9730,19 +9688,17 @@
     const card = h('div', { class:'card trade-tendency' },
       h('div', { class:'card-title' }, 'Trade tendencies by manager'));
     if (lg.platform === 'espn') {
-      card.appendChild(h('div', { class:'tip' }, 'Trade history comes from Sleeper, and this is an ESPN league.'));
+      card.appendChild(h('div', { class:'tip' }, 'Sleeper trade history unavailable for ESPN.'));
       return card;
     }
     loadSeasonScript('trade-tendency.js', () => window.TRADE_TENDENCY).then(() => {
       const T = window.TRADE_TENDENCY, L = T.leagues?.[lg.id];
       if (!L || !L.managers.some(m => m.n)) {
-        card.appendChild(h('div', { class:'tip' }, 'No completed trades in this league yet.'));
+        card.appendChild(h('div', { class:'tip' }, 'No completed trades yet.'));
         return;
       }
       card.appendChild(h('p', { class:'tip' },
-        `Each bar runs from the league's least to its most inclined manager, from ${L.trades} trades `
-        + `across ${L.seasons.length} season${L.seasons.length === 1 ? '' : 's'}, valued on today's KTC. `
-        + 'It describes what they have done, not what they will accept. Under 3 trades reads faint.'));
+        `${L.trades} trades across ${L.seasons.length} season${L.seasons.length === 1 ? '' : 's'} on today's KTC (past behavior; <3 faint).`));
       const sideB = (lg.rosters || []).find(r => r.roster_id === TRADE_STATE.sideB?.rosterId);
       const cell = (a, m) => {
         const v = m.arch[a.key];
@@ -9767,10 +9723,10 @@
     // and asking for it logged a 404 on every Washington load.
     if (lg.platform === 'espn') return h('div', { class:'card trade-partners' },
       h('div', { class:'card-title' }, 'Who you trade with'),
-      h('div', { class:'tip' }, 'Trade history comes from Sleeper, and this is an ESPN league.'));
+      h('div', { class:'tip' }, 'Sleeper trade history unavailable for ESPN.'));
     const wrap = h('div', { class:'card trade-partners' },
       h('div', { class:'card-title' }, 'Who you trade with'),
-      h('div', { class:'tip' }, 'Reading every season of this league from Sleeper...'));
+      h('div', { class:'tip' }, 'Loading Sleeper history...'));
     tradePartnerHistory(lg).then((data) => {
       wrap.innerHTML = '';
       wrap.appendChild(h('div', { class:'card-title' }, 'Who you trade with'));
@@ -9887,7 +9843,7 @@
     if (lg.projection_unavailable) {
       main.appendChild(h('div', { class:'card' },
         h('h2', { class:'card-title' }, 'Trade analysis unavailable'),
-        h('p', { class:'tip' }, 'This league scoring setup is not covered by the shared projection model.'),
+        h('p', { class:'tip' }, 'Scoring model unavailable for this league.'),
         h('a', { href:`#league/${lg.id}` }, 'Back to league')
       ));
       return;
@@ -9911,7 +9867,7 @@
     main.appendChild(grid);
 
     main.appendChild(h('div', { class:'tip', style:{ marginTop:'12px' } },
-      'Drag a row to its trade pile. Drop on the middle summary to wipe. Or click a row to toggle.'
+      'Drag to pile, drop center to clear, or click to toggle.'
     ));
 
     // Auto-proposed fair swaps, then league-wide positional needs.
@@ -10146,7 +10102,7 @@
     if (m.premiumNote) {
       if (v.premium) {
         const nm = v.premium.side === 'A' ? 'Side A' : 'Side B';
-        m.premiumNote.textContent = `+${(v.premium.pct * 100).toFixed(1)}% headliner premium to ${nm}, gave the better single asset, so a raw-even swap favors the receiver.`;
+        m.premiumNote.textContent = `+${(v.premium.pct * 100).toFixed(1)}% headliner premium to ${nm} (best single asset).`;
         m.premiumNote.style.display = '';
       } else {
         m.premiumNote.textContent = '';
@@ -10165,7 +10121,7 @@
     // tag is doing the work, or a one-week Doubtful reads as a verdict.
     const benched = isDynastyLeague(lg) ? [...aSet, ...bSet].filter(k => !isPickKey(k) && isSidelined(String(k)))
       .map(k => `${window.PLAYERS[k]?.name || k} (${window.PLAYERS[k]?.injury_status || 'IR'})`) : [];
-    m.strengthNote.textContent = benched.length ? `Benched this week: ${benched.join(', ')}. Strength counts only who starts now.` : '';
+    m.strengthNote.textContent = benched.length ? `Sidelined: ${benched.join(', ')}.` : '';
     m.strengthNote.style.display = benched.length ? '' : 'none';
 
     const setImp = (el, imp) => {
@@ -10430,9 +10386,7 @@
     const earlier = slot <= (1 + N) / 2;
     return {
       chip: `proj ${round}.${String(rounded).padStart(2, '0')}`,
-      title: `Projected ${round}.${String(rounded).padStart(2, '0')} from ${team}'s ${strength} roster. `
-        + `${earlier ? 'Earlier' : 'Later'} projected slot means a ${earlier ? 'higher' : 'lower'} value. `
-        + `Slot comes from ${season} projected finish; value interpolated between KTC early/mid/late anchors.`,
+      title: `Proj ${round}.${String(rounded).padStart(2, '0')} (${team}, ${strength} roster) · KTC anchor interpolation`,
     };
   }
   function pickValue(season, round, originRosterId, league) {
@@ -10589,9 +10543,9 @@
     const input = h('input', {
       type:'search',
       class:'trade-search-input',
-      placeholder:'Search any player by name. Send if he is yours, For if he is theirs.',
+      placeholder:'Search player...',
       autocomplete:'off',
-      'aria-label':'Search any player to add to the trade',
+      'aria-label':'Search player to add to trade',
     });
     const results = h('div', { class:'trade-search-results', role:'listbox', hidden:'' });
     const clear = () => { input.value = ''; results.innerHTML = ''; results.hidden = true; };
@@ -10632,10 +10586,10 @@
           h('div', { class:'trade-search-actions' },
             ownerRoster ? h('button', {
               class:'trade-search-add' + (mine ? ' is-send' : ' is-for'),
-              title: mine ? 'Add to You Send (left side)' : `Add to You Receive (right side) from ${from}`,
+              title: mine ? 'Add to You Send' : `Add from ${from}`,
               onclick: add,
             }, mine ? '+ Send' : '+ For')
-              : h('button', { class:'trade-search-add', disabled:'', title:'A free agent is claimed off waivers, not traded for.' }, 'Free agent'),
+              : h('button', { class:'trade-search-add', disabled:'', title:'Free agent (waiver claim)' }, 'Free agent'),
           ),
         ));
       }
@@ -10690,7 +10644,7 @@
           h('span', { class:'name' }, meta.label),
           premiumPct != null ? h('span', {
             class:'badge',
-            title: `Class premium: ${meta.season} ${slot} 1sts are ${(premiumPct*100).toFixed(0)}% above the historical baseline at this point in the cycle. Per Dynasty Domain.`,
+            title: `${meta.season} ${slot} 1sts: +${(premiumPct*100).toFixed(0)}% class premium vs historical baseline.`,
             style:{ background:'rgba(251,191,36,.12)', color:'var(--amber)', borderColor:'rgba(251,191,36,.4)', marginLeft:'4px' },
           }, `+${Math.round(premiumPct*100)}%`) : null,
           (() => { const note = projectedPickNote(meta.season, meta.round, meta.originRosterId, lg); return note ? h('span', { class:'badge pick-proj', title: note.title }, note.chip) : null; })(),
@@ -10705,7 +10659,7 @@
           h('span', { class:'name' }, sleeper ? sleeper.name : `[${k}]`),
           // Redraft: the chip is the value's own basis (rest-of-season points over
           // the best free body), so chip and value always agree in order.
-          (() => { const vc = vorChip(k, lg, dyn ? 'blend' : 'ros'); return vc ? h('span', { class:'pile-vor', title:'VOR: projected points over a replacement starter at this position, the starting-lineup value you gain/lose' }, 'VOR ', vc) : null; })(),
+          (() => { const vc = vorChip(k, lg, dyn ? 'blend' : 'ros'); return vc ? h('span', { class:'pile-vor', title:'Starting-lineup VOR delta' }, 'VOR ', vc) : null; })(),
         );
         val = playerValue(k, lg);
         rankVal = dyn ? playerRankValue(k, lg) : null;
@@ -11036,9 +10990,9 @@
         const band = SIM.titleBandZ * d.se;
         cell.textContent = `Champ ${(d.before * 100).toFixed(1)}% → ${(d.after * 100).toFixed(1)}%`;
         cell.style.color = tone(d.delta, band);
-        const rank = d.beforeRank == null ? 'Rank: run full outlook' : `Rank #${d.beforeRank} → #${d.afterRank}/${lg.rosters.length} (${d.beforeRank > d.afterRank ? `up ${d.beforeRank-d.afterRank}` : d.beforeRank < d.afterRank ? `down ${d.afterRank-d.beforeRank}` : 'unchanged'})`;
-        const playoff = d.playoffBefore == null ? 'Playoff: run full outlook' : `Playoff ${(d.playoffBefore*100).toFixed(1)}% → ${(d.playoffAfter*100).toFixed(1)}%`;
-        const bye = d.byeBefore == null ? (from==='finder'?'Bye: run full outlook':'Bye: N/A') : `Bye ${(d.byeBefore*100).toFixed(1)}% → ${(d.byeAfter*100).toFixed(1)}%`;
+        const rank = d.beforeRank == null ? 'Rank: ·' : `Rank #${d.beforeRank} → #${d.afterRank}/${lg.rosters.length} (${d.beforeRank > d.afterRank ? `up ${d.beforeRank-d.afterRank}` : d.beforeRank < d.afterRank ? `down ${d.afterRank-d.beforeRank}` : 'unchanged'})`;
+        const playoff = d.playoffBefore == null ? 'Playoff: ·' : `Playoff ${(d.playoffBefore*100).toFixed(1)}% → ${(d.playoffAfter*100).toFixed(1)}%`;
+        const bye = d.byeBefore == null ? (from==='finder'?'Bye: ·':'Bye: N/A') : `Bye ${(d.byeBefore*100).toFixed(1)}% → ${(d.byeAfter*100).toFixed(1)}%`;
         sub.textContent = `${rank}\n${playoff}\n${bye}\nTitle Δ ${d.delta>=0?'+':''}${d.delta.toFixed(1)} pp ±${band.toFixed(1)} pp`;
         return band;
       };
@@ -11067,7 +11021,7 @@
       const key = tradeOddsKey();
       runTitleOdds.disabled = true;
       runTitleOdds.textContent = 'Running...';
-      titleMeta.textContent = `Simulating ${dyn ? `${TITLE_YEARS} seasons` : `the rest of ${CURRENT_SEASON}`}: ${CURRENT_SIMS.toLocaleString()} current-season${dyn ? `, ${TITLE_SIMS.toLocaleString()} per future year` : ''}, before and after.`;
+      titleMeta.textContent = `Running ${dyn ? `${TITLE_YEARS} seasons` : CURRENT_SEASON} (${CURRENT_SIMS.toLocaleString()} sims)...`;
       await new Promise(resolve => setTimeout(resolve, 0));
         try {
           // Same seeds before and after (common random numbers): the draws
@@ -11079,7 +11033,7 @@
             if (key !== tradeOddsKey() || TRADE_STATE._refs?.middle !== out) { titleMeta.textContent='Trade changed. Run odds again.'; return; }
             before.push(baselineOdds ? baselineOdds[k] : baseSteps.next().value);
             after.push(afterSteps.next().value);
-            titleMeta.textContent=`Simulated ${CURRENT_SEASON+k}, ${k+1} of ${TITLE_YEARS} seasons.`;
+            titleMeta.textContent=`Simulated ${CURRENT_SEASON+k} (${k+1}/${TITLE_YEARS})...`;
             await new Promise(resolve=>setTimeout(resolve,0));
           }
           if (key !== tradeOddsKey()) { titleMeta.textContent='Trade changed. Run odds again.'; return; }
@@ -11091,9 +11045,8 @@
             ...pairedTitleDelta(baselineOdds[k].champions, after[k].champions, rid) });
           showOdds(key, after.map((_, k) => ({ a: side(k, aRosterId), b: side(k, bRosterId) })), 'lab');
           titleMeta.textContent = dyn
-            ? 'Title and playoff odds before/after trade, per season. '
-              + `${CURRENT_SIMS.toLocaleString()} current-season sims match standings; ${TITLE_SIMS.toLocaleString()} per future season. Rank is by title probability. Future years are scenarios using age curves and modeled rookie picks, not known future rosters. Grey title changes are inside the noise band.`
-            : `Change in ${CURRENT_SEASON} title odds, percentage points. ${TITLE_SIMS.toLocaleString()} simulations of the remaining schedule from the current records. Grey is inside the \u00b1 noise band.`;
+            ? `${CURRENT_SIMS.toLocaleString()} current / ${TITLE_SIMS.toLocaleString()} future sims (grey = inside noise; assumptions in #methodology).`
+            : `${TITLE_SIMS.toLocaleString()} sims from current records (grey = inside noise).`;
           KT.refreshMiddle(lg);
         } catch (err) {
           console.error('Trade title odds failed', err);
@@ -11140,7 +11093,7 @@
           strengthNote,
         ),
         h('div', { style:{ marginTop:'14px' } },
-          h('div', { class:'tip', style:{ marginBottom:'4px' }, title:`Your best starting lineup’s projected ${dyn ? 'season' : 'rest-of-season'} points, now vs after the trade. The lineup is re-optimized, so a starter you send is automatically replaced by your next-best at that position, the change is the real lineup impact of what you’re giving up vs getting.${dyn ? ' A slot the trade empties takes the best free agent.' : ' A slot the trade empties takes the best free agent; one nobody can fill scores 0.'}` }, `Starting Lineup (${dyn ? 'proj' : 'rest-of-season'} pts) · now → after`),
+          h('div', { class:'tip', style:{ marginBottom:'4px' }, title:`Re-optimized legal starting lineup ${dyn ? 'season' : 'ROS'} pts (next-best fills departed starter).` }, `Starting Lineup (${dyn ? 'proj' : 'ROS'} pts) · now → after`),
           h('div', { class:'trade-lineup-values' },
             h('div', { class:'trade-lineup-side' },
               h('span', { class:'trade-lineup-side-label' }, 'Side A'), lineupA),
@@ -11185,10 +11138,7 @@
       // A Finder row's recheck, on this exact trade: the Lab's first season, same seed and sims.
       seed: ({ key, a, b }) => {
         showOdds(key, [{ a, b }], 'finder');
-        titleMeta.textContent = `From the Trade Finder run on this trade: ${dyn ? `${CURRENT_SEASON} only, ` : ''}`
-          + `the Lab's own ${CURRENT_SIMS.toLocaleString()} current-season simulations and seed. `
-          + (dyn ? 'Run title odds for the later seasons.' : 'Run title odds to re-run it.')
-          + ' Grey is inside the ± noise band.';
+        titleMeta.textContent = `From Trade Finder (${dyn ? `${CURRENT_SEASON} only` : 'current season'}). Run odds for full view.`;
       } };
     return out;
   }
@@ -11438,8 +11388,8 @@
       eyebrow: 'OVERVIEW',
       title: 'What to Look For',
       sub: live.length
-        ? `Week ${board.week}, ${live.length} leagues, weighted by buy-in.`
-        : 'No matchups posted yet. Run refresh.ps1 once the week opens.',
+        ? `W${board.week} · ${live.length} buy-in-weighted leagues`
+        : 'No matchups posted yet (run refresh.ps1).',
       badge: live.length ? `$${fmt.num(Math.round(board.atStake))} live` : null,
     }));
 
@@ -11453,7 +11403,7 @@
     main.appendChild(h('details', { class:'watch-key-box', open: matchMedia('(min-width: 561px)').matches },
       h('summary', { class:'watch-key-sum' },
         h('span', { class:'watch-key-dots' }, ...live.map(l => h('span', { class:'watch-key-dot', style:{ '--lg':l.color } }))),
-        `${live.length} leagues, buy-ins and opponents`),
+        `${live.length} leagues (${live.length} buy-ins)`),
       h('div', { class:'watch-key' },
       ...live.map(l => h('a', { class:'watch-key-item', href:`#league/${l.id}`, style:{ '--lg':l.color } },
         h('span', { class:'watch-key-dot' }),
@@ -11461,9 +11411,8 @@
         h('span', { class:'watch-key-buyin tnum' }, l.tank ? `$${l.fullBuyIn}, ${l.tank}% tank` : `$${l.buyIn}`),
         h('span', { class:'watch-key-opp' }, `vs ${l.oppName}`),
       ))),
-      h('p', { class:'muted watch-key-note' }, 'Every starter in these leagues, weighted by what the league costs to play in.'),
-      board.tanking.length ? h('p', { class:'muted watch-key-note' }, `Left out, tanking: ${board.tanking.join(', ')}.`) : null,
-      board.unknown.length ? h('p', { class:'muted watch-key-note' }, `Left out, buy-in unknown: ${board.unknown.join(', ')}.`) : null,
+      board.tanking.length ? h('p', { class:'muted watch-key-note' }, `Excluded (tanking): ${board.tanking.join(', ')}.`) : null,
+      board.unknown.length ? h('p', { class:'muted watch-key-note' }, `Excluded (no buy-in): ${board.unknown.join(', ')}.`) : null,
     ));
 
     // One shared scale across all three panels, so a bar means the same number
@@ -12302,11 +12251,11 @@
       h('div', { class:'tw-sub' }, sub));
     return h('div', { class:'card tw-card alex-card' },
       h('div', { class:'card-title' }, `Week ${v.week} source ranks`,
-        stale ? h('span', { class:'ctx-stale', title:`Built for ${A.season}, week ${v.week}; active season ${season || "unknown"}, week ${cur || "unknown"}. A board is stale after 7 days or when the season/week differs.` }, 'stale') : null),
+        stale ? h('span', { class:'ctx-stale', title:`Built for ${A.season} W${v.week}; active ${season || '?'} W${cur || '?'} (>7d or mismatch).` }, 'stale') : null),
       h('div', { class:'tw-row' },
         cell('spread', v.spread == null ? '·' : v.spread,
           v.spread == null ? 'one source' : `${v.pos}${v.lo} to ${v.pos}${v.hi}`,
-          'Worst rank minus best rank across the sources that ranked him.'),
+          'Worst minus best rank across sources.'),
         ...v.cells.map(c => cell(c.name, c.rank == null ? '·' : `${v.pos}${c.rank}`,
           c.rank == null ? 'not ranked' : c.pts == null ? '' : `${fmt.decimal(c.pts, 1)} pts`, c.label))),
       h('p', { class:'tip tw-note' }, `Full PPR, ${A.season}. Updated ${A.fetched ? new Date(A.fetched).toLocaleDateString() : 'date unavailable'}. `,
@@ -12520,7 +12469,7 @@
         h('div', { class:'ctx-col' },
           h('div', { class:'card-title' }, `${teamAbbr} ${window.CONTEXT.current_season} Staff`,
             /projected/i.test(c.notes || '')
-              ? h('span', { class:'ctx-stale', title:'This staff row is a projection carried forward from last season, not a confirmed hire. Check it before trusting a coaching-change read.' }, 'projected')
+              ? h('span', { class:'ctx-stale', title:'Carried-forward projection; unconfirmed staff.' }, 'projected')
               : null),
           lineHC, lineOC, linePC, prevLine,
         ),
@@ -12540,9 +12489,9 @@
           // played for "games >= 1" to tell gone from inactive, so membership
           // came from the nflverse roster file and joiners have no share yet.
           (window.CONTEXT.current_season - t.season) >= 1
-            ? h('span', { class:'ctx-stale', title:`Turnover data covers the ${t.season} offseason. The ${window.CONTEXT.current_season} offseason has not been ingested, so joiners and leavers here are a year old.` }, 'a year behind')
+            ? h('span', { class:'ctx-stale', title:`${t.season} turnover (${window.CONTEXT.current_season} not yet ingested; 1 yr old).` }, 'a year behind')
             : t.basis === 'roster'
-              ? h('span', { class:'ctx-basis', title:`Built from the ${t.season} roster file, ${t.weeks_played === 1 ? 'one week' : `${t.weeks_played} weeks`} into the season. Vacated shares are what the leavers held in ${t.season - 1}; joiners show the share they held elsewhere last season, not a ${t.season} share.` }, 'roster-based')
+              ? h('span', { class:'ctx-basis', title:`${t.season} roster file (W${t.weeks_played}): shows prior-year shares.` }, 'roster-based')
               : null),
         h('div', { class:'kpi-row' },
           h('div', { class:'mini-kpi' },
@@ -12993,9 +12942,7 @@
     if (mp && mp.pts != null) {
       cells.push(cell('Proj pts', fmt.decimal(mp.pts, 0),
         mp.projRank ? mp.pos + mp.projRank + ' by points' : null,
-        { title: 'Blended season projection, and his ' + mp.pos + ' rank by those points. '
-          + 'Paired with Value rank this is the mispricing: a value rank well below '
-          + 'the points rank is the buy case.' }));
+        { title: 'Blended season pts & ' + mp.pos + ' rank (compare with Value rank).' }));
     }
 
     // 5. VOR, the only cell that answers "above what".
@@ -13004,8 +12951,7 @@
       const lbl = vor.league.short_name || vor.league.name;
       const color = vor.v >= 30 ? 'var(--green)' : vor.v >= 0 ? 'var(--fg-1)' : 'var(--red)';
       cells.push(cell('VOR', (vor.v > 0 ? '+' : '') + fmt.decimal(vor.v, 0), lbl,
-        { color, title: 'Value over replacement: projected points above the last '
-          + 'startable player at this position in ' + lbl + '.' }));
+        { color, title: 'Points over replacement starter in ' + lbl + '.' }));
     }
 
     // 6. Age against this position's sell age, the one cell that turns a number
@@ -13019,9 +12965,8 @@
         : age >= hard ? 'var(--red)' : age >= sell ? 'var(--amber)' : 'var(--green)';
       cells.push(cell('Age', fmt.decimal(age, 1),
         sell != null ? pos + ' sell ' + sell : 'no curve',
-        { color, title: sell == null ? 'No age curve for this position.'
-          : pos + ' peak ' + curve.peak_avg + ', sell window opens ' + sell + ', hard sell '
-            + hard + '. Amber means the sell window is open, red means past hard sell.' }));
+        { color, title: sell == null ? 'No age curve'
+          : `${pos} peak ${curve.peak_avg} · sell ${sell} · hard sell ${hard}` }));
     }
 
     if (!cells.length) return null;
@@ -13533,14 +13478,14 @@
         }, `${PROJ_SRC_LABEL[s] || s} ${rec[s] == null ? '·' : fmt.decimal(rec[s], 1)}`)),
         (() => { const e = ppEdge(rec); if (e == null) return null;
           const c = e >= 4 ? 'var(--green)' : e <= -4 ? 'var(--red)' : 'var(--fg-2)';
-          return h('span', { class: 'badge', style: { color: c, borderColor: 'currentColor', background: 'transparent' }, title: 'PrizePicks vs Sleeper positional rank difference. + = the Vegas market ranks him higher than the public model → undervalued.' }, `PP−Slp ${e > 0 ? '+' : ''}${e}`); })()),
+          return h('span', { class: 'badge', style: { color: c, borderColor: 'currentColor', background: 'transparent' }, title: 'PrizePicks minus Sleeper rank (+ = Vegas higher)' }, `PP−Slp ${e > 0 ? '+' : ''}${e}`); })()),
       // The positional rank and VOR that used to sit here are now band cells 2,
       // 4 and 5. The band is pinned above the tab bar, so this card and the band
       // were on screen together printing "RB1" and "VOR +138" twice each. The
       // band keeps them; this card keeps what the band does not carry, which is
       // the per-source spread and the projected stat line.
-      statStr ? h('div', { class: 'tip' }, `Blended line: ${statStr}`) : null,
-      unit === 'defense' ? h('div', { class: 'tip', style: { marginTop: '4px', opacity: .8 } }, 'PD/QB-hit best-estimated; no Vegas market for IDP.') : null,
+      statStr ? h('div', { class: 'tip' }, `Blended: ${statStr}`) : null,
+      unit === 'defense' ? h('div', { class: 'tip', style: { marginTop: '4px', opacity: .8 } }, 'PD/QB-hit estimated; no Vegas IDP market.') : null,
     );
   }
 
@@ -13557,7 +13502,7 @@
       .filter(([k]) => me[k] != null)
       .map(([k, label, dp]) => {
         const pct = me[`${k}_pct`];
-        return h('div', { class:'adv-stat', title:`${label}: ${me[k]}, ${pct != null ? Math.round(pct) + 'th percentile among combine ' + me.pos + 's' : 'no percentile'}` },
+        return h('div', { class:'adv-stat', title:`${label}: ${me[k]}, ${pct != null ? Math.round(pct) + 'th pct (' + me.pos + ')' : 'unranked'}` },
           h('div', { class:'adv-stat-label' }, label),
           h('div', { class:`adv-stat-value tnum${pct >= 80 ? ' delta-up' : pct != null && pct <= 20 ? ' delta-down' : ''}` },
             Number(me[k]).toFixed(dp)),
@@ -13569,15 +13514,15 @@
     const facts = [draft, me.college, [inches(me.height_in), me.weight_lb ? `${me.weight_lb} lb` : null].filter(Boolean).join(', '),
       me.age_at_draft ? `${Number(me.age_at_draft).toFixed(1)} at the draft` : null].filter(Boolean);
     const scores = [
-      me.speed_score != null ? h('div', { class:'adv-stat', title:'Speed score: weight x 200 / forty^4 (Barnwell). 100 is average for an NFL back.' },
+      me.speed_score != null ? h('div', { class:'adv-stat', title:'weight x 200 / 40^4 (100 = avg RB)' },
         h('div', { class:'adv-stat-label' }, 'Speed score'),
         h('div', { class:'adv-stat-value tnum' }, Number(me.speed_score).toFixed(1))) : null,
-      me.athl_pct != null ? h('div', { class:'adv-stat', title:'Our composite: mean of his drill percentiles vs every combine participant at his position, 3+ drills required. Not Relative Athletic Score.' },
+      me.athl_pct != null ? h('div', { class:'adv-stat', title:'Mean combine drill %ile (3+ drills; not RAS)' },
         h('div', { class:'adv-stat-label' }, 'Athletic %ile'),
         h('div', { class:`adv-stat-value tnum${me.athl_pct >= 80 ? ' delta-up' : me.athl_pct <= 20 ? ' delta-down' : ''}` }, String(Math.round(me.athl_pct)))) : null,
     ].filter(Boolean);
     return h('div', { class:'card adv-card' },
-      h('div', { class:'card-title' }, 'Draft and athletic profile'),
+      h('div', { class:'card-title' }, 'Draft & Combine'),
       h('div', { class:'tip', style:{ marginBottom:'8px' } }, facts.join('  \u00b7  ')),
       (scores.length || drills.length) ? h('div', { class:'adv-grid' }, ...scores, ...drills)
         : h('div', { class:'tip' }, 'No combine results on file.'));
@@ -13594,16 +13539,16 @@
     if (!sleeper || !C) return null;
     const c = C.players[String(sleeper.id)];
     const title = h('div', { class:'card-title' }, 'Contract');
-    const credit = h('div', { class:'tip ctr-credit', style:{ marginTop:'6px', opacity:.8 } }, 'Source: OverTheCap via nflverse.');
+    const credit = h('div', { class:'tip ctr-credit', style:{ marginTop:'6px', opacity:.8 } }, 'OverTheCap via nflverse');
     if (!c) return h('div', { class:'card adv-card ctr-card' }, title,
-      h('div', { class:'tip ctr-empty' }, 'No active NFL contract on file for him in the OverTheCap data.'), credit);
+      h('div', { class:'tip ctr-empty' }, 'No active contract on file.'), credit);
     const m = (v) => v == null ? '·' : `$${Number(v) >= 100 ? Math.round(v) : Number(v).toFixed(1)}M`;
     const s = C.season, rookie = c.type === 'Drafted' || c.type === 'UDFA';
     const left = c.gtd_after || 0;
     const flag = c.thru === s
-      ? ['Contract year', `His deal ends after the ${s} season: free agent in ${c.fa}${c.option ? ' unless his fifth-year option is picked up' : ''}.`]
+      ? ['Contract year', `Deal ends after ${s}; FA ${c.fa}${c.option ? ' (or 5th-yr option)' : ''}.`]
       : !rookie && c.apy >= 2 && left < Math.max(1, c.apy * 0.25)
-        ? [left ? `Only ${m(left)} guaranteed after ${s}` : `No guarantees after ${s}`, 'Little or no guaranteed salary is left past this league year, so he is cheap to cut.']
+        ? [left ? `Only ${m(left)} gtd after ${s}` : `No guarantees after ${s}`, 'Minimal guarantees left; cuttable.']
         : null;
     const tile = (label, value, sub, tip) => h('div', { class:'adv-stat', title:tip },
       h('div', { class:'adv-stat-label' }, label),
@@ -13615,15 +13560,14 @@
         flag ? h('span', { class:'badge ctr-flag', title:flag[1],
           style:{ color:'var(--red)', borderColor:'currentColor', background:'transparent' } }, flag[0]) : null),
       h('div', { class:'tip ctr-term', style:{ marginBottom:'8px' } },
-        `Through ${c.thru}, free agent ${c.fa}${c.option ? ' (fifth-year option could add a season)' : ''}. `
-        + `Signed ${c.signed} with ${c.team}, ${CTR_TYPE[c.type] || (c.type || 'contract').toLowerCase()}.`),
+        `Thru ${c.thru} (FA ${c.fa}${c.option ? ', 5th-yr opt' : ''}) · ${c.signed} ${c.team} ${CTR_TYPE[c.type] || (c.type || 'deal').toLowerCase()}`),
       h('div', { class:'adv-grid' },
         tile('APY', m(c.apy), null, 'Average per year'),
-        tile('Total', m(c.value), `${c.years} yr${c.years === 1 ? '' : 's'}`, c.type === 'Extension' ? 'Total value of the new years' : 'Total contract value'),
-        tile('Guaranteed', m(c.gtd), `${m(left)} after ${s}`, `Guaranteed at signing; ${m(left)} of guaranteed salary is still owed after the ${s} league year`),
-        tile('Cap %', c.cap_pct == null ? '·' : `${Number(c.cap_pct).toFixed(1)}%`, `in ${c.signed}`, 'APY as a share of the salary cap in the year he signed')),
+        tile('Total', m(c.value), `${c.years} yr${c.years === 1 ? '' : 's'}`, c.type === 'Extension' ? 'New-money value' : 'Total value'),
+        tile('Guaranteed', m(c.gtd), `${m(left)} after ${s}`, `At signing (${m(left)} owed after ${s})`),
+        tile('Cap %', c.cap_pct == null ? '·' : `${Number(c.cap_pct).toFixed(1)}%`, `in ${c.signed}`, 'APY % of cap when signed')),
       p ? h('div', { class:'tip ctr-prior', style:{ marginTop:'6px' } },
-        `Before this: ${p[2]} ${CTR_TYPE[p[1]] || (p[1] || 'deal').toLowerCase()} with ${p[0]}, ${p[3]} yr${p[3] === 1 ? '' : 's'} at ${m(p[4])} a year.`) : null,
+        `Prior: ${p[2]} ${p[0]} ${CTR_TYPE[p[1]] || (p[1] || 'deal').toLowerCase()} (${p[3]} yr${p[3] === 1 ? '' : 's'}, ${m(p[4])}/yr)`) : null,
       credit);
   }
 
@@ -13727,20 +13671,20 @@
   // The college stats each position's model actually uses: [key, label, format, meaning].
   function pmStatCols(pos) {
     if (pos === 'QB') return [
-      ['comp', 'Comp %', pmPct, 'Final-season completion %'],
-      ['rypg', 'Rush Y/G', pmNum(1), 'Best rushing yards per game in a season as the passer (sacks excluded)'],
-      ['aya', 'AY/A', pmNum(1), 'Final-season adjusted yards per attempt: (yards + 20 x TD - 45 x INT) / attempts'],
-      ['starts', 'Starts', pmNum(0), 'Seasons as the starter (a 150-attempt pace)'],
+      ['comp', 'Comp %', pmPct, 'Final-season comp %'],
+      ['rypg', 'Rush Y/G', pmNum(1), 'Best rush Y/G (ex sacks)'],
+      ['aya', 'AY/A', pmNum(1), 'Final (yds + 20*TD - 45*INT) / att'],
+      ['starts', 'Starts', pmNum(0), 'Starter seasons (150-att pace)'],
     ];
-    const thin = '. The model skips seasons on teams that threw under 15 passes a game';
-    const yp = { WR:['Career YPTPA', `Career receiving yards per team pass attempt${thin}`],
-                 TE:['Best YPTPA', `Best-season receiving yards per team pass attempt${thin}`],
-                 RB:['Final YPTPA', `Final-season receiving yards per team pass attempt${thin}`] }[pos];
+    const thin = ' (skips <15 pass att/g teams)';
+    const yp = { WR:['Career YPTPA', `Career rec yds / team pass att${thin}`],
+                 TE:['Best YPTPA', `Best rec yds / team pass att${thin}`],
+                 RB:['Final YPTPA', `Final rec yds / team pass att${thin}`] }[pos];
     return [
-      ['dom', 'Dominator', pmPct, `Best-season dominator: mean of his share of team ${pos === 'RB' ? 'scrimmage' : 'receiving'} yards and TDs`],
+      ['dom', 'Dominator', pmPct, `Best share of team ${pos === 'RB' ? 'scrimmage' : 'receiving'} yds & TDs`],
       ['yptpa', yp[0], pmNum(2), yp[1]],
-      pos === 'RB' ? ['sypg', 'Scrim Y/G', pmNum(1), 'Career scrimmage yards per game']
-        : ['share', 'Yds share', pmPct, 'Best-season share of team receiving yards'],
+      pos === 'RB' ? ['sypg', 'Scrim Y/G', pmNum(1), 'Career scrimmage Y/G']
+        : ['share', 'Yds share', pmPct, 'Best team receiving yds share'],
     ];
   }
   // The table's stat columns: only the college inputs that build each position's profile percentile
@@ -13748,18 +13692,18 @@
   // declare and draft age feed the profile too but are not in the client data.
   const pmVal = (v) => v == null || !Number.isFinite(+v) ? '·' : pmDec(v);
   function pmInputCols(pos, hist) {
-    const thin = '. Seasons on teams that threw under 15 passes a game are skipped';
-    const stars = ['stars', 'Stars', pmVal, 'Recruiting stars out of high school'];
+    const thin = ' (skips <15 pass att/g teams)';
+    const stars = ['stars', 'Stars', pmVal, 'HS recruiting stars'];
     // College rows have no combine, so the model fills their speed score in: drafted rows only.
-    const ss = hist ? ['ss', 'Speed score', pmVal, 'Combine speed score: weight x 200 / 40 time to the 4th. Drafted players only'] : null;
+    const ss = hist ? ['ss', 'Speed score', pmVal, 'Combine weight x 200 / 40^4 (drafted only)'] : null;
     return ({
-      QB: [['comp', 'Comp %', pmPct, 'Final-season completion %'],
-        ['rypg', 'Rush Y/G', pmVal, 'Best rushing yards per game in a season as the passer (sacks excluded)']],
-      RB: [['yptpa', 'Final YPTPA', pmVal, `Final-season receiving yards per team pass attempt${thin}`],
-        ['sypg', 'Scrim Y/G', pmVal, 'Career scrimmage yards per game'],
-        ['wt', 'Weight', pmVal, 'Weight in pounds: combine weight for drafted players, roster weight for college players'], ss, stars],
-      WR: [['yptpa', 'Career YPTPA', pmVal, `Career receiving yards per team pass attempt${thin}`], stars],
-      TE: [['yptpa', 'Best YPTPA', pmVal, `Best-season receiving yards per team pass attempt${thin}`], ss],
+      QB: [['comp', 'Comp %', pmPct, 'Final-season comp %'],
+        ['rypg', 'Rush Y/G', pmVal, 'Best rush Y/G (ex sacks)']],
+      RB: [['yptpa', 'Final YPTPA', pmVal, `Final rec yds / team pass att${thin}`],
+        ['sypg', 'Scrim Y/G', pmVal, 'Career scrimmage Y/G'],
+        ['wt', 'Weight', pmVal, 'Pounds (combine or roster)'], ss, stars],
+      WR: [['yptpa', 'Career YPTPA', pmVal, `Career rec yds / team pass att${thin}`], stars],
+      TE: [['yptpa', 'Best YPTPA', pmVal, `Best-season rec yds / team pass att${thin}`], ss],
     }[pos] || []).filter(Boolean);
   }
   // Prospects table conditional formatting: 1 higher is better, -1 lower is better. Stat columns (st.*) are all higher-better.
@@ -13906,19 +13850,19 @@
     const score = pmScore(r), mean = pmMean(r.p, pmFitPick(r), r.ts);
     const ranked = peers.map(x => pmMean(x.p, pmFitPick(x), x.ts)).filter(v => v != null);
     const rank = ranked.filter(v => v > mean).length + 1;
-    const how = r.y ? `with pick ${r.pk}` : pk ? `at mock pick ${pmDec(pk)}` : pmUfd(r) ? 'projected UFD, scored as the last pick (257)' : 'profile alone, if drafted';
+    const how = r.y ? `pick ${r.pk}` : pk ? `mock ${pmDec(pk)}` : pmUfd(r) ? 'UFD (pick 257)' : 'profile only';
     return h('div', { class:'prm-head' },
       h('div', { class:'prm-id' },
         logo ? h('img', { class:'prm-logo', src:logo, alt:`${r.sch} logo`, width:40, height:40, loading:'lazy' }) : null,
         h('div', { class:'prm-id-text' },
           h('div', { class:'prm-id-school' }, r.sch || 'School unknown'),
           h('div', { class:'prm-id-sub' }, idSub))),
-      score == null ? null : pmHeroBox('Prospect score', String(score), `of 100, vs every drafted ${r.p} since 2008`,
-        `One score from draft pick plus college profile: his average ${r.p}${cuts[0]} / ${r.p}${cuts[1]} chance as a percentile of every drafted ${r.p} since 2008. ${how[0].toUpperCase()}${how.slice(1)}`),
+      score == null ? null : pmHeroBox('Prospect score', String(score), `of 100 (vs drafted ${r.p}s)`,
+        `Avg ${r.p}${cuts[0]} / ${r.p}${cuts[1]} percentile vs drafted ${r.p}s since 2008 (${how})`),
       ...cuts.map((c, i) => mine[i] == null ? null : pmHeroBox(`${r.p}${c} chance`, pmPct(mine[i]), how,
-        `Chance of at least one top-${c} ${r.p} season by PPR points per game (8+ games) in NFL years ${pmWindow(r.p)}. One model: draft pick plus college profile`)),
-      mean != null ? pmHeroBox('Class rank', `${r.p}${rank}`, `of ${ranked.length} in the ${cls} class`,
-        `Ranked by prospect score among the ${ranked.length} ${cls} ${r.p}s ${r.y ? 'drafted' : 'listed'}. Not a consensus or draft rank`) : null,
+        `Top-${c} ${r.p} PPR/G season (8+ G) odds in yrs ${pmWindow(r.p)}`)),
+      mean != null ? pmHeroBox('Class rank', `${r.p}${rank}`, `of ${ranked.length} (${cls})`,
+        `Model rank in ${cls} ${r.p} class (not consensus rank)`) : null,
       ...boxes);
   }
   // Two-way players: draft capital priced a defensive role the model cannot see, and every input
@@ -13929,11 +13873,9 @@
     const d = PM_TWO_WAY[`${r.n}|${r.y}`], cuts = PM_CUTS[r.p];
     if (!d || !cuts) return null;
     const at = (pk) => cuts.map(c => pmPct(pmTopChance(r.p, c, pk, r.ts))).join(' / ');
-    return h('div', { class:'tip prm-line' }, h('b', null, `Two-way (${r.p}/${d}): role fork, not modeled. `),
-      `His pick also paid for ${d}, and the model sees offense only, so treat the chance above as the full-time ${r.p} case, not a forecast. `
-      + `${r.p}${cuts[0]} / ${r.p}${cuts[1]} chance by scenario: full-time ${r.p} at pick ${r.pk} ${at(r.pk)}; `
-      + `profile alone, no capital ${at(null)}; as if a ${r.p}-only pick 16 ${at(16)} or 48 ${at(48)}. `
-      + `Mostly ${d} or a split snap load: below all of these, no data to size it.`);
+    return h('div', { class:'tip prm-line' }, h('b', null, `Two-way (${r.p}/${d}) unmodeled: `),
+      `offense-only model. ${r.p}${cuts[0]}/${cuts[1]} scenarios: full-time at pick ${r.pk} (${at(r.pk)}), `
+      + `profile only (${at(null)}), or ${r.p}-only pick 16 (${at(16)}) / 48 (${at(48)}).`);
   }
   // The same chances at fixed picks, so a college player with no mock still reads against slot.
   function pmPickLine(r) {
@@ -13944,7 +13886,7 @@
   }
   const pmTargetLine = (p) => {
     const cuts = PM_CUTS[p] || [];
-    return `${p}${cuts[0]} / ${p}${cuts[1]} = at least one top-${cuts[0]} / top-${cuts[1]} ${p} season by PPR points per game (8+ games) in NFL years ${pmWindow(p)}.`;
+    return `${p}${cuts[0]} / ${p}${cuts[1]} = top-${cuts[0]} / top-${cuts[1]} ${p} PPR/G season (8+ G) in NFL yrs ${pmWindow(p)}.`;
   };
 
   // Projected slot from public mock drafts (site/data/build_mock_consensus.py), not from this model.
@@ -13956,7 +13898,7 @@
     const names = c.src.map(([id, pk]) => `${(m.sources.find(s => s.id === id) || { name:id }).name} ${pk}`).join(', ');
     return { pick: c.pick, round: `R${[32, 64, 101, 136, 180, 218].filter(b => c.pick > b).length + 1}`,
       sub: `${c.lo === c.hi ? `pick ${c.lo}` : `picks ${c.lo}-${c.hi}`}, ${mocks}`,
-      title: `Projected from public mock drafts, not this model: median pick ${c.pick} across ${mocks}, newest dated ${c.date}. Picks by source: ${names}` };
+      title: `Mock median ${c.pick} (${mocks}, ${c.date}): ${names}` };
   }
 
   // Did he hit, and how far: his best finish placed on the same rungs as the tier ladder.
@@ -13967,17 +13909,17 @@
     const at = rank ? lad.findIndex(t => rank <= t) : -1;
     const tone = hit ? 'hit' : 'miss';
     return h('section', { class:'prm-sec' },
-      h('div', { class:'prm-sec-title' }, h('span', null, 'NFL outcome'), h('span', null, `NFL years ${years}`)),
+      h('div', { class:'prm-sec-title' }, h('span', null, 'NFL outcome'), h('span', null, `NFL yrs ${years}`)),
       h('div', { class:'prm-outcome' },
         h('span', { class:`prm-verdict ${tone}` }, hit ? 'Hit' : 'Miss'),
-        pmHeroBox(`Best finish, yrs ${years}`, rank ? `${me.p}${rank}` : '·', `${Number(ppg).toFixed(1)} PPR points per game`,
-          `Best season in NFL years ${years}`),
+        pmHeroBox(`Best finish, yrs ${years}`, rank ? `${me.p}${rank}` : '·', `${Number(ppg).toFixed(1)} PPR/G`,
+          `Best season in NFL yrs ${years}`),
         // Late bloomers: his career peak, shown only when it beats the scored window. Display only, not a label.
-        me.cb && (!rank || me.cb[1] < rank) ? pmHeroBox('Career best', `${me.p}${me.cb[1]}`, `${pmDec(me.cb[0])} PPR points per game`,
-          'Best season of his NFL career so far, any year. Not part of the hit label') : null,
+        me.cb && (!rank || me.cb[1] < rank) ? pmHeroBox('Career best', `${me.p}${me.cb[1]}`, `${pmDec(me.cb[0])} PPR/G`,
+          'Career peak (all years)') : null,
         h('div', { class:'prm-buckets' },
-          ...lad.map((t, i) => h('span', { class:`prm-bucket${i === at ? ` on ${tone}` : ''}`, title:`Best season top ${t} at ${me.p}` }, `Top ${t}`)),
-          lad.length ? h('span', { class:`prm-bucket${at < 0 ? ` on ${tone}` : ''}`, title:`Best season outside the top ${lad[lad.length - 1]}` },
+          ...lad.map((t, i) => h('span', { class:`prm-bucket${i === at ? ` on ${tone}` : ''}`, title:`Top ${t} ${me.p}` }, `Top ${t}`)),
+          lad.length ? h('span', { class:`prm-bucket${at < 0 ? ` on ${tone}` : ''}`, title:`Outside top ${lad[lad.length - 1]}` },
             `Below top ${lad[lad.length - 1]}`) : null)));
   }
 
@@ -13993,11 +13935,11 @@
       h('div', { class:'prm-sec-title' }, h('span', null, 'Hit rate'), h('span', null, `${near.length} ${r.p}s at ${Math.max(0, s - 8)}-${Math.min(100, s + 8)}`)),
       h('div', { class:'prm-ladder' }, ...cuts.map(c => {
         const k = near.filter(x => x.out[2] && x.out[2] <= c).length, f = k / near.length;
-        return h('div', { class:'prm-rung', title:`${k} of ${near.length} drafted ${r.p}s with a prospect score within 8 of his had a top-${c} season in NFL years ${pmWindow(r.p)}` },
+        return h('div', { class:'prm-rung', title:`${k}/${near.length} (${Math.round(f*100)}%) within +-8 score hit ${r.p}${c} (yrs ${pmWindow(r.p)})` },
           h('div', { class:'prm-rung-label' }, `${r.p}${c}`),
           h('div', { class:'prm-rung-value tnum' }, pmPct(f)),
           h('span', { class:'seg-meter' }, h('i', { style:{ width:`${Math.round(f * 100)}%` } })),
-          h('div', { class:'tip' }, `${k} of ${near.length}`));
+          h('div', { class:'tip' }, `${k}/${near.length}`));
       })));
   }
 
@@ -14007,7 +13949,7 @@
     const peers = M.college.filter(x => x.p === r.p && x.cls === r.cls);
     const sz = ((window.COLLEGE_BIO || {}).players || {})[r.cid];
     const b = sz && pmBuild(r.p, sz.ht, sz.wt);
-    const sizeTitle = `ESPN roster listing, which runs above combine measurements${b ? `. Height ${b.hp}th and weight ${b.wp}th percentile against drafted ${r.p}s` : ''}`;
+    const sizeTitle = `ESPN roster listing${b ? ` (H ${b.hp}th / W ${b.wp}th %ile vs drafted ${r.p}s)` : ''}`;
     const mock = pmMock(r);
     return h('div', { class:'card adv-card prm-card' },
       h('div', { class:'card-title' }, 'Prospect profile'),
@@ -14015,18 +13957,18 @@
         [mock ? pmHeroBox('Proj. round', mock.round, mock.sub, mock.title) : null]),
       pmBio([
         pmBioCell('Draft age', r.age != null ? pmAge(r, r.age) : null,
-          `Age on draft day of his first eligible draft (${r.cls}). ${pmDobNote(r)}`),
+          `Age for ${r.cls} draft (${pmDobNote(r)})`),
         sz ? pmBioCell('Height', `${Math.floor(sz.ht / 12)}'${sz.ht % 12}"`, sizeTitle) : null,
         sz ? pmBioCell('Weight', `${sz.wt} lb`, sizeTitle) : null,
         b ? pmBioCell('Build', b.label, sizeTitle) : null,
-        pmBioCell('Archetype', pmArchetype(r, b), `Rule-based from size and college production percentiles against drafted ${r.p}s. A label, not a projection`),
+        pmBioCell('Archetype', pmArchetype(r, b), `Percentile label vs drafted ${r.p}s`),
         mock ? pmBioCell('Mock pick', pmDec(mock.pick), mock.title) : null,
-        r.st && r.st.stars != null ? pmBioCell('Recruit', `${r.st.stars}-star`, 'Recruiting stars out of high school') : null,
+        r.st && r.st.stars != null ? pmBioCell('Recruit', `${r.st.stars}-star`, 'HS recruiting stars') : null,
       ]),
       pmGrades(r.p, pmGradeRows(r.p, r, pmYpc('college', r.cid),
-        'Age on Sept 1 of the college season he first hit the dominator line. Profile only, no model uses it')),
+        'Breakout age (Sept 1 of first dominator season; profile only)')),
       pmLadder(r),
-      h('div', { class:'tip prm-line' }, `${pmTargetLine(r.p)} First eligible for the ${r.cls} draft.`),
+      h('div', { class:'tip prm-line' }, `${pmTargetLine(r.p)} (${r.cls} eligible)`),
       pmPickLine(r) ? h('div', { class:'tip prm-line' }, pmPickLine(r)) : null,
       r.ln ? h('div', { class:'tip prm-line' }, r.ln) : null,
       pmComps(r.cp));
@@ -14043,15 +13985,15 @@
       h('div', { class:'card-title' }, 'Prospect profile'),
       pmCardHead(me, me.y, peers, `${me.p} · drafted ${me.y}, pick ${me.pk}`, []),
       pmBio([
-        pmBioCell('Archetype', pmArchetype(me, null), `Rule-based from college production percentiles against drafted ${me.p}s. A label, not a projection`),
-        me.st && me.st.stars != null ? pmBioCell('Recruit', `${me.st.stars}-star`, 'Recruiting stars out of high school') : null,
+        pmBioCell('Archetype', pmArchetype(me, null), `Percentile label vs drafted ${me.p}s`),
+        me.st && me.st.stars != null ? pmBioCell('Recruit', `${me.st.stars}-star`, 'HS recruiting stars') : null,
       ]),
       pmTwoWay(me),
       pmOutcome(me, meta, years),
       pmGrades(me.p, pmGradeRows(me.p, me, pmYpc('nfl', String(sleeper.id)),
-        'Age on Sept 1 of the college season he first hit the dominator line (never broke out: a year after his final season)')),
+        'Breakout age (Sept 1 of first dominator season)')),
       h('div', { class:'tip prm-line' }, pmTargetLine(me.p)
-        + (me.out ? ' His own result is in the fit, so the chance is not a blind forecast.' : '')),
+        + (me.out ? ' (in-sample fit)' : '')),
       me.ln ? h('div', { class:'tip prm-line' }, me.ln) : null,
       pmComps(me.cp));
   }
@@ -14104,21 +14046,13 @@
     main.appendChild(pageHeader({
       eyebrow:'PROSPECT MODEL',
       title: hist ? 'Prospects' : 'College prospects',
-      sub: 'Prospect score 0-100 from draft pick plus college profile, with his chance of a top fantasy season early in his NFL career.',
+      sub: '0-100 prospect score & early-career hit odds from draft pick + college profile.',
     }));
-    main.appendChild(h('details', { class:'source-note' }, h('summary', null, 'How the score works and what it assumes'),
+    main.appendChild(h('details', { class:'source-note' }, h('summary', null, 'How the score works'),
       h('ul', { class:'source-note-list' }, ...[
-        'Score: his average chance across two finishing lines, as a percentile of every drafted player at his position since 2008.',
-        'Lines: at least one top-6 or top-12 season at QB and TE, top-12 or top-24 at RB and WR, by PPR points per game (8+ games) in NFL years 1-3 (QB and TE: 1-4).',
-        'One fit on every drafted class since 2008, so drafted rows include their own result and are not blind forecasts.',
-        'Careers ended off the field (Henry Ruggs) are left out of the fit and the list.',
-      ].map(s => h('li', null, s))),
-      h('p', null, h('strong', null, 'College rows'), ' have no real pick, so each uses a stand-in:'),
-      h('ul', { class:'source-note-list' }, ...[
-        'Next class: the mock-draft consensus pick.',
-        'Next class but in no mock: shown as UFD and scored as the last pick. An assumption, not a finding: missing from a mock does not mean undrafted, so those scores lean low.',
-        'Later classes, not mocked yet: college profile alone.',
-        'Inputs are offense only, so two-way players carry a note on their card. QBs have no breakout age.',
+        'Percentile of top-finish odds vs drafted peers since 2008 (QB/TE: top-6/12 yrs 1-4; RB/WR: top-12/24 yrs 1-3, 8+ G).',
+        'College rows use mock consensus pick, UFD (pick 257) if unmocked in next class, or profile-only for later classes.',
+        'Offense inputs only (no QB breakout age); Henry Ruggs omitted.',
       ].map(s => h('li', null, s)))));
 
     const filterBar = h('div', { class:'filters prm-filters' });
@@ -14152,14 +14086,14 @@
       ['n', 'Player', { asc:true }],
       one ? null : ['p', 'Pos', { asc:true, fit:true }],
       hist || cls === 'future' ? ['cls', 'Class', { right:true, asc:true, title:'Draft he went in, or the first one he is eligible for' }] : null,
-      hist || cls === 'future' || Number(cls) === next ? ['pk', 'Pick', { right:true, asc:true, title:'Overall pick he actually went at. Italic: projected, the median pick across public mock drafts (only the next class is mocked so far). UFD: next-class player in no mock (the mocks run all seven rounds), so projected undrafted. Blank: class not mocked yet' }] : null,
-      ['sc', 'Score', { right:true, title:'One 0-100 prospect score from draft pick plus college profile: his average top-finish chance across both cuts, as a percentile of every drafted player at his position since 2008. College rows use the mock-draft pick, or profile alone if no mock' }],
-      ['ts', 'Profile %ile', { right:true, title:'College profile percentile, 0-100: the no-draft-capital model on his college inputs (the stat columns when one position is picked), ranked among every drafted player at his position since 2008. With the pick, the only other input to the Score' }],
+      hist || cls === 'future' || Number(cls) === next ? ['pk', 'Pick', { right:true, asc:true, title:'Draft pick (italic = mock consensus; UFD = unmocked in next class)' }] : null,
+      ['sc', 'Score', { right:true, title:'0-100 prospect score (pick + college profile percentile vs drafted since 2008)' }],
+      ['ts', 'Profile %ile', { right:true, title:'College-only profile percentile vs drafted since 2008' }],
       ...[0, 1].map(i => [`t${i}`, one ? `${pos}${PM_CUTS[pos][i]} %` : ['Elite %', 'Starter %'][i], { right:true,
-        title:`Chance of at least one ${one ? `top-${PM_CUTS[pos][i]} ${pos}` : ['top-6 QB or TE, top-12 RB or WR', 'top-12 QB or TE, top-24 RB or WR'][i]} season by PPR points per game (8+ games) in NFL years ${one ? pmWindow(pos) : '1-3 (QB, TE 1-4)'}. Draft pick plus college profile. College rows use the mock-draft pick, or profile alone if no mock` }]),
-      hist ? ['best', one ? `Best, yrs ${pmWindow(pos)}` : 'Best, early yrs', { right:true, asc:true, title:'Best PPR points-per-game rank at his position in that window (8+ games). Blank: window still open' }] : null,
-      hist ? ['cb', 'Career best', { right:true, asc:true, title:'Best PPR points-per-game rank at his position in any NFL season so far (8+ games), late bloomers included. Display only, not part of the hit label' }] : null,
-      pos === 'QB' ? null : ['ba', 'Breakout age', { right:true, asc:true, title:'Age on Sept 1 of the college season he first hit the dominator line (blank: not yet; n/a for QBs, which the dominator line does not measure). From his birth date where one was found; muted numbers are estimates from class year. Profile only, no model uses it' }],
+        title:`${one ? `Top-${PM_CUTS[pos][i]} ${pos}` : ['QB/TE top-6, RB/WR top-12', 'QB/TE top-12, RB/WR top-24'][i]} odds (yrs ${one ? pmWindow(pos) : '1-3; QB/TE 1-4'})` }]),
+      hist ? ['best', one ? `Best, yrs ${pmWindow(pos)}` : 'Best, early yrs', { right:true, asc:true, title:'Best window PPR/G rank (8+ G)' }] : null,
+      hist ? ['cb', 'Career best', { right:true, asc:true, title:'Best career PPR/G rank (display only)' }] : null,
+      pos === 'QB' ? null : ['ba', 'Breakout age', { right:true, asc:true, title:'Sept 1 age at first dominator season (muted = class estimate)' }],
       ...stat.map(([k, label, , t]) => [`st.${k}`, label, { right:true, title:t }]),
     ].filter(Boolean);
     const get = (r, k) => k.startsWith('st.') ? pmInputVal(r, k.slice(3))
@@ -14178,13 +14112,13 @@
         r.sch || (hist && !r.id) ? h('span', { class:'muted prm-school' },
           hist && !r.id ? h('span', { class:'prm-future-tag' }, 'Future') : null, r.sch || '') : null));
       if (k.startsWith('st.')) return stat.find(s => `st.${s[0]}` === k)[2](v);
-      if (k === 'ba') return r.p === 'QB' ? h('span', { class:'muted', title:'No QB breakout age: the dominator line is a receiving and rushing share of team offense, which does not measure a passer' }, 'n/a') : pmAge(r, v);
-      if (k === 'cb') return v == null ? '·' : h('span', { title:`${pmDec(r.cb[0])} PPR points per game` }, `${r.p}${v}`);
+      if (k === 'ba') return r.p === 'QB' ? h('span', { class:'muted', title:'N/A for QBs' }, 'n/a') : pmAge(r, v);
+      if (k === 'cb') return v == null ? '·' : h('span', { title:`${pmDec(r.cb[0])} PPR/G` }, `${r.p}${v}`);
       if (k === 'best') return v == null ? '·' : v === 999 ? h('span', { class:'muted' }, 'none') : `${r.p}${v}`;
       if (v != null && !r.id && (k === 't0' || k === 't1')) return h('span', { class:'muted',
-        title:pmPick(r) ? `From mock pick ${pmDec(pmPick(r))}` : 'Projected UFD: scored as the last pick (257) plus college profile' }, pmPct(v));
-      if (k === 't0' || k === 't1') return v == null ? h('span', { class:'muted', title:'No mock draft yet: draft capital required for hit probability. Open card for pick scenarios' }, '·') : pmPct(v);
-      if (k === 'pk' && !r.y) return v == null ? '·' : v === 999 ? h('em', { class:'muted', title:'In no public mock draft: projected undrafted' }, 'UFD') : h('em', { title:'Projected: median mock-draft pick' }, pmDec(v));
+        title:pmPick(r) ? `Mock pick ${pmDec(pmPick(r))}` : 'Projected UFD (pick 257)' }, pmPct(v));
+      if (k === 't0' || k === 't1') return v == null ? h('span', { class:'muted', title:'Unmocked; open card for pick scenarios' }, '·') : pmPct(v);
+      if (k === 'pk' && !r.y) return v == null ? '·' : v === 999 ? h('em', { class:'muted', title:'Projected undrafted' }, 'UFD') : h('em', { title:'Median mock pick' }, pmDec(v));
       return v == null ? '·' : String(v);
     };
     const card = h('div', { class:'card' });
@@ -14243,13 +14177,13 @@
       // snug: the table hugs its columns, so fit-num cannot hand every spare pixel to the name.
       const tbl = h('table', { class:'data prm-table fit-num snug' },
         h('thead', null, h('tr', null, h('th', { class:'right' }, '#'), ...cols.map(sortHdr))),
-        h('tbody', null, ...rows.map((r, i) => h('tr', { class:`clickable${hist && !r.id ? ' prm-future' : ''}`, title: hist && !r.id ? 'Not drafted yet: college player in a future class' : null, onclick:() => openRow(r) },
+        h('tbody', null, ...rows.map((r, i) => h('tr', { class:`clickable${hist && !r.id ? ' prm-future' : ''}`, title: hist && !r.id ? 'Future class (undrafted)' : null, onclick:() => openRow(r) },
           h('td', { class:'right tnum' }, String(i + 1)),
           ...cols.map(([k, , o]) => { const cf = cfAttr(r, k);
             return h('td', { class:`${o.right ? 'right ' : ''}${o.fit ? 'fit ' : ''}tnum${cf ? cf.cls : ''}`, style: cf ? cf.style : null }, fmtCell(r, k)); })))));
-      if (hist && rows.some(r => !r.id)) card.appendChild(h('div', { class:'prm-legend muted' }, h('span', { class:'prm-future-key', 'aria-hidden':'true' }), 'Hatched row tagged Future: not drafted yet'));
+      if (hist && rows.some(r => !r.id)) card.appendChild(h('div', { class:'prm-legend muted' }, h('span', { class:'prm-future-key', 'aria-hidden':'true' }), 'Hatched = Future class'));
       card.appendChild(h('div', { class:'prm-legend muted' }, h('span', { class:'prm-cf-key', 'aria-hidden':'true' }),
-        'Shaded cells: green better, red worse than the others at his position in this list. Pick, finish ranks and breakout age count low as better'));
+        'Green = better, red = worse vs position peers here (lower = better for Pick, Finish, Breakout age).'));
       appendTable(card, tbl);
     }
     render();
@@ -14470,7 +14404,7 @@
     TEN: { name: 'Nissan Stadium',           city: 'Nashville, TN',       arch: 'ten_cranes',    c1: '#0c2340', c2: '#4b92db' },
     WAS: { name: 'Northwest Stadium',        city: 'Landover, MD',        arch: 'was_bowl',      c1: '#5a1414', c2: '#ffb612' },
   };
-  const STADIUM_ART_KEYS = new Set(['banorte', 'buf', 'car', 'chi', 'dal', 'den', 'det', 'gb', 'hou', 'kc', 'lv', 'metlife', 'mia', 'phi', 'sea', 'sofi', 'was']);
+  const STADIUM_ART_KEYS = new Set(['banorte', 'buf', 'car', 'chi', 'dal', 'den', 'det', 'gb', 'hou', 'kc', 'lv', 'metlife', 'mia', 'ne', 'phi', 'sea', 'sofi', 'was']);
   const INTL_STADIUM_PROFILES = [
     { key: 'banorte',       artKey: 'banorte',  name: 'Estadio Banorte',          city: 'Mexico City, MX',   arch: 'intl_banorte' },
     { key: 'azteca',        artKey: 'banorte',  name: 'Estadio Azteca',           city: 'Mexico City, MX',   arch: 'intl_banorte' },
@@ -15273,7 +15207,7 @@
       ? ` · SOS: offense #${s.off_sos_rank}/32, defense/IDP #${s.def_sos_rank}/32`
       : '';
     return h('div', { class: 'tip', style: { marginBottom: '12px' } },
-      `Team environment: #${e.env_rank}/${e.total} (${e.tier}) · ${e.implied_pf} implied pts/game (off #${e.pf_rank}, def allows #${e.pa_rank})${sosTxt}`);
+      `Team env #${e.env_rank}/${e.total} (${e.tier}) · ${e.implied_pf} implied pts/g (off #${e.pf_rank}, def allows #${e.pa_rank})${sosTxt}`);
   }
   // Opponent defense strength -> color for the game log (rank 1 = toughest D = red,
   // rank 32 = weakest D = green; easy matchups read green).
@@ -15300,7 +15234,7 @@
     return h('div', { class: 'card', style: { background: 'var(--bg-2)', marginBottom: '12px' } },
       h('div', { class: 'card-title' }, '2026 Schedule & Vegas'),
       h('div', { class: 'tip', style: { marginBottom: '6px' } },
-        `Opponent colored by defense faced, green = weak D (smash), red = elite D (tough). Implied pts: actual Vegas thru wk ${window.TEAM_SOS.lines_through_week}, projected after.`),
+        `Opponent green = soft D, red = tough D · Vegas lines thru W${window.TEAM_SOS.lines_through_week} (proj after).`),
       h('div', { class: 'tbl-scroll' },
         h('table', { class: 'data snug', style: { fontSize: '12px' } },
           h('thead', null, h('tr', null,
@@ -16218,12 +16152,12 @@
   function rookieOrderNote(lg, r, modeled) {
     const rule = rookieOrderRule(lg);
     const base = {
-      maxpf: 'League rule: lowest Max PF among non-playoff teams picks first. Max PF here is accrued potential points plus the best possible lineup, bench included, in every remaining simulated week, scaled to the actual Max PF pace of the league. Playoff spots come from the real schedule and median games. Ties and IR handling unconfirmed.',
-      lottery: 'League rule: bottom-four 40/30/20/10 lottery. Assumes the four non-playoff teams, weighted worst record first; weight assignment unconfirmed.',
-      record: 'No rookie-order rule on file for this league. Assumes worst record among non-playoff teams, then lowest points for.',
+      maxpf: 'Lowest Max PF among non-playoff teams picks first (accrued + simulated optimal weeks; ties/IR unconfirmed).',
+      lottery: 'Bottom-4 40/30/20/10 lottery weighted by worst record (weights unconfirmed).',
+      record: 'Default rule: worst non-playoff record, then lowest PF.',
     }[rule];
-    const why = modeled ? '' : rule === 'maxpf' ? ' Not shown: Max PF is missing from this data.'
-      : rule === 'lottery' ? ' Not shown: the lottery needs exactly four non-playoff teams.' : '';
+    const why = modeled ? '' : rule === 'maxpf' ? ' Unavailable: Max PF missing.'
+      : rule === 'lottery' ? ' Unavailable: needs 4 non-playoff teams.' : '';
     const next = String(Number(lg.season) + 1);
     const tp = (lg.traded_picks || []).find(p => String(p.season) === next && p.round === 1 && p.roster_id === r.roster_id && p.owner_id !== r.roster_id);
     const holder = tp && (lg.rosters.find(x => x.roster_id === tp.owner_id)?.team_name || `Roster ${tp.owner_id}`);
@@ -16344,8 +16278,8 @@
 
     const input = h('input', {
       type: 'search', class: 'trade-search-input', autocomplete: 'off',
-      placeholder: 'Add a player to your roster, hypothetically…',
-      'aria-label': 'Search a player to add to the what-if lineup',
+      placeholder: 'Add hypothetical player...',
+      'aria-label': 'Add hypothetical player to lineup',
     });
     const results = h('div', { class: 'trade-search-results', role: 'listbox', hidden: '' });
     const clear = () => { input.value = ''; results.innerHTML = ''; results.hidden = true; };
@@ -16420,12 +16354,12 @@
     main.appendChild(h('div', { class: 'page-header' },
       h('div', null,
         h('h1', { class: 'page-title' }, 'Player Projections'),
-        h('p', { class: 'page-sub' }, 'Season fantasy points + projected stat lines. Offense: PrizePicks / Sleeper / Blended. Defense: Clay / Sleeper / Blended (Vegas has no tackle market).')
+        h('p', { class: 'page-sub' }, 'Season pts + stat lines (Offense: PrizePicks/Sleeper/Blend · IDP: Clay/Sleeper/Blend).')
       ),
       h('div', { class: 'page-actions' }, leagueSelector(lg.id, (id) => { PROJ_STATE.leagueId = id; navigate(`#projections/${id}`); }))
     ));
     if (lg.projection_unavailable) {
-      main.appendChild(h('div', { class: 'empty' }, `League-scored projections and title odds are unavailable for ${lg.short_name || lg.name}: its scoring rules are not supported. Rosters and current records still show on the league pages.`));
+      main.appendChild(h('div', { class: 'empty' }, `Scoring rules unsupported for ${lg.short_name || lg.name}; rosters/records remain on league pages.`));
       return;
     }
 
@@ -16459,7 +16393,7 @@
     if (isDef && idpN === 0) {
       main.appendChild(h('div', { class: 'card', style: { marginBottom: '18px' } },
         h('div', { class: 'card-title' }, 'Team defense'),
-        h('div', { class: 'tip' }, `${lg.name} has no IDP starting slots, defense projections are informational only here.`)));
+        h('div', { class: 'tip' }, `${lg.name} has no IDP slots (informational only).`)));
     } else {
       // Baseline board (no hypotheticals) so every row can show its own delta
       // and its own rank change, not just mine.
@@ -16490,15 +16424,15 @@
           wi.length ? h('span', { class: 'badge whatif-on', style: { marginLeft: '8px' } }, `WHAT-IF +${wi.length}`) : null,
           isDef ? null : h('button', {
             class: 'ghost odds-btn',
-            title: oddsOn ? 'Re-run the season simulation' : 'Simulate the season and playoffs to get championship probability',
+            title: oddsOn ? 'Re-run season simulation' : 'Simulate season title odds',
             onclick: () => { PROJ_STATE.odds = PROJ_STATE.odds ? null : 4000; viewProjections(lg.id); },
           }, oddsOn ? 'Hide title odds' : 'Run title odds ⚄')),
         h('table', { class: 'data fill-last' },
           h('thead', null, h('tr', null, h('th', null, '#'), h('th', null, 'Team'),
             h('th', { style: { textAlign: 'right' } }, 'Proj Pts'),
             wi.length ? h('th', { style: { textAlign: 'right' } }, 'Δ') : null,
-            oddsOn ? h('th', { class: 'right', title: 'Championship probability from a simulated season + playoff bracket' }, 'Title%') : null,
-            oddsOn ? h('th', { class: 'right', title: 'Odds of making the 6-team playoff field' }, 'Playoff%') : null,
+            oddsOn ? h('th', { class: 'right', title: 'Simulated championship odds' }, 'Title%') : null,
+            oddsOn ? h('th', { class: 'right', title: 'Playoff odds' }, 'Playoff%') : null,
             oddsOn && wi.length ? h('th', { class: 'right' }, 'ΔTitle') : null,
             h('th', null, 'Core'))),
           h('tbody', null, ...teams.map((t, i) => {
@@ -16523,9 +16457,8 @@
           }))
         ),
         h('div', { class: 'tip', style: { marginTop: '8px' } },
-          `Best legal lineup for each roster (${(lg.roster_positions || []).filter(s => SLOT_TAKES[s] && SLOT_TAKES[s].some(isIdpPos) === isDef).join(' / ') || 'league slots'}), scored under this league's own settings. `,
-          `Taxi, IR, and players listed Out or Doubtful are benched.`,
-          oddsOn ? ` Title odds: ${PROJ_STATE.odds.toLocaleString()} simulated seasons with per-player projection error, weekly variance, byes, and an injury process. Points rank rosters; ${playoffSettings(lg).teams} of ${lg.total_rosters} make the playoffs and three single-week rounds decide the rest.` : '')));
+          `Best legal lineup (${(lg.roster_positions || []).filter(s => SLOT_TAKES[s] && SLOT_TAKES[s].some(isIdpPos) === isDef).join(' / ') || 'league slots'}), Out/Doubtful/IR/taxi benched.`,
+          oddsOn ? ` Title odds: ${PROJ_STATE.odds.toLocaleString()} sims (${playoffSettings(lg).teams}/${lg.total_rosters} playoff teams).` : '')));
     }
 
     // ---- position filter ----
@@ -16604,7 +16537,7 @@
             line[k] == null ? '·' : fmt.decimal(line[k], (k.endsWith('_td') || k === 'int' || k === 'pass_int' || k === 'ff' || k === 'fum_rec' || k === 'pass_def' || k === 'qb_hit' || k === 'sack') ? 1 : 0)));
           const ptsTd = data.sources.map(s => h('td', {
             class: 'tnum', style: { textAlign: 'right', ...(s === src ? { fontWeight: 700 } : { color: 'var(--fg-3)' }) },
-            title: (s === 'pp' && p.pp_partial) ? 'Includes Sleeper fill for props PrizePicks did not post (e.g. receptions)' : '',
+            title: (s === 'pp' && p.pp_partial) ? 'Sleeper fill for missing PrizePicks props' : '',
           }, p[s] == null ? '·' : (fmt.decimal(p[s], 1) + (s === 'pp' && p.pp_partial ? '*' : ''))));
           const pr = posRankMap.get(p.id);
           const vor = vorForPlayer(p, lg, PROJ_STATE.unit, src);
@@ -16624,8 +16557,8 @@
     );
     main.appendChild(table);
     main.appendChild(h('div', { class: 'tip', style: { marginTop: '10px' } },
-      `${rows.length} ${PROJ_STATE.unit} players · stat line shown for ${PROJ_SRC_LABEL[src]}. ` +
-      (isDef ? 'Defense: PD/QB-hit/return-yds are best-estimated (no source projects them); tackles/sacks/INT/FF from Clay & Sleeper.' : 'Offense pts: PrizePicks lines vs Sleeper model vs blend. PP * = missing props (e.g. receptions) filled from Sleeper so pass-catchers aren’t undercounted.')));
+      `${rows.length} ${PROJ_STATE.unit} players (${PROJ_SRC_LABEL[src]}) · ` +
+      (isDef ? 'PD/QB-hit/ret-yds estimated; tackles/sacks/INT/FF Clay+Sleeper.' : 'PP * = missing PrizePicks props Sleeper-filled.')));
   }
 
   // ============================================================
@@ -16873,7 +16806,7 @@
         h('select', { 'aria-label':'Defense sample', onchange:(e) => { prefs.defSlice = e.target.value; saveStatsLabPrefs(prefs); viewStats('Defense'); } },
           h('option', { value:'cur', selected:slice === 'cur' }, `${D.season} through week ${D.throughWeek}`),
           h('option', { value:'prior', selected:slice === 'prior' }, `${D.prior} full season`))),
-      h('span', { class:'muted' }, 'Rank 1 = softest (most PPR allowed). Green is a good matchup for your player.')));
+      h('span', { class:'muted' }, 'Rank 1 = softest (green = smash matchup).')));
     const rows = Object.entries(D.teams).map(([t, v]) => Object.assign({ _label: teamChip(t), _team: t }, v[slice] || {}));
     // A soft defense is green because it is good news for the player facing it.
     const rankTone = (r) => r == null ? '' : r <= 8 ? 'delta-up' : r >= 25 ? 'delta-down' : '';
@@ -16881,20 +16814,20 @@
     const cols = [];
     for (const P of ['WR', 'TE', 'RB']) {
       cols.push({ key:`${P}ppr`, label:`vs ${P} PPR/G`, get:pos(P, 'ppr_pg'), fmt:'dec1',
-        desc:`PPR points per game allowed to ${P}s ${P === 'RB' ? 'as receivers ' : ''}(${D.fields && D.fields.ppr_pg ? D.fields.ppr_pg : ''})`.trim(),
+        desc:`PPR/G allowed to ${P}s ${P === 'RB' ? 'receiving ' : ''}(${D.fields && D.fields.ppr_pg ? D.fields.ppr_pg : ''})`.trim(),
         show:(r) => { const v = pos(P, 'ppr_pg')(r), k = pos(P, 'rank')(r); return v == null ? '' : `${Number(v).toFixed(1)} #${k}`; },
         tone:(r) => rankTone(pos(P, 'rank')(r)) });
     }
     cols.push(
-      { key:'rbrush', label:'RB rush PPR/G', get:(r) => r.rushRB && r.rushRB.ppr_pg, fmt:'dec1', desc:'Rushing PPR allowed to running backs per game.' },
-      { key:'ypc', label:'YPC', get:(r) => r.rushRB && r.rushRB.ypc, fmt:'dec1', desc:'Yards per carry allowed to running backs.' },
-      { key:'epadb', label:'EPA/DB', get:(r) => r.pass && r.pass.epa_per_dropback, fmt:'dec2', desc:'EPA allowed per dropback. Higher is a softer pass defense.' },
-      { key:'press', label:'Pressure%', get:(r) => r.pass && r.pass.pressure_rate, fmt:'pct', lowerBetter:true, desc:'Share of dropbacks where PFR charted the passer as pressured (hurried, hit or sacked), once per play. High pressure is a bad matchup for a QB.' },
-      { key:'blitz', label:'Blitz%', get:(r) => r.pass && r.pass.blitz_rate, fmt:'pct', desc:'Share of dropbacks where PFR charted a blitz, once per play, not once per blitzer.' },
-      { key:'funnel', label:'Funnel', get:(r) => r.funnel || '', fmt:'text', desc:'Which position takes the largest share of targets against this defense, relative to league average.' });
+      { key:'rbrush', label:'RB rush PPR/G', get:(r) => r.rushRB && r.rushRB.ppr_pg, fmt:'dec1', desc:'RB rushing PPR/G allowed' },
+      { key:'ypc', label:'YPC', get:(r) => r.rushRB && r.rushRB.ypc, fmt:'dec1', desc:'RB yards per carry allowed' },
+      { key:'epadb', label:'EPA/DB', get:(r) => r.pass && r.pass.epa_per_dropback, fmt:'dec2', desc:'EPA/dropback allowed (higher = softer)' },
+      { key:'press', label:'Pressure%', get:(r) => r.pass && r.pass.pressure_rate, fmt:'pct', lowerBetter:true, desc:'% dropbacks pressured (PFR)' },
+      { key:'blitz', label:'Blitz%', get:(r) => r.pass && r.pass.blitz_rate, fmt:'pct', desc:'% dropbacks blitzed (PFR)' },
+      { key:'funnel', label:'Funnel', get:(r) => r.funnel || '', fmt:'text', desc:'Top target-funnel position vs league avg' });
     statsTable(main, prefs, 'Defense', rows, cols, { key:'WRppr', dir:'desc' }, 'Defense');
     main.appendChild(h('div', { class:'tip', style:{ marginTop:'10px' } },
-      `Early-season samples are two or three games; the ${D.prior} view is the prior to lean on until they grow. ${D.source}.`));
+      `Thin early-season sample? Use ${D.prior} prior. ${D.source}.`));
   }
 
   function statsTrends(main, prefs) {
@@ -16951,8 +16884,7 @@
     statsTable(main, prefs, 'Trends', rows, cols, { key:'tgt', dir:'desc' }, `Player, week ${U.throughWeek - 1} \u2192 ${U.throughWeek}`,
       (r) => openPlayerDetail(r._name, r._sid));
     main.appendChild(h('div', { class:'tip', style:{ marginTop:'10px' } },
-      `${rows.length} players. Each cell is last week versus the week before; the Tgt% column sorts by the size of the move either way. `
-      + 'Route% is estimated from snaps (public route data ends in 2025) and calibrated on 2025.'));
+      `${rows.length} players · last wk vs prior (Tgt% sorted by move size) · Route% est from snaps (2025 calibrated).`));
   }
 
   function statsIdp(main, prefs) {
@@ -16972,7 +16904,7 @@
       h('label', { class:'stats-lab-toggle' }, 'Min snap% ',
         h('select', { 'aria-label':'Minimum snap share', onchange:(e) => { prefs.idpMinSnap = Number(e.target.value); saveStatsLabPrefs(prefs); viewStats('IDP'); } },
           ...[0, 0.3, 0.5, 0.7].map(v => h('option', { value:String(v), selected:minSnap === v }, `${v * 100}%`)))),
-      h('span', { class:'muted' }, `Scored with ${I.league && I.league.name ? I.league.name : 'your IDP league'}'s own settings.`)));
+      h('span', { class:'muted' }, `${I.league && I.league.name ? I.league.name : 'IDP league'} scoring.`)));
     const rows = Object.entries(I.players).filter(([, v]) => v.p === grp && (v.snp_pct || 0) >= minSnap)
       .map(([sid, v]) => Object.assign({ _sid:sid, _mine:mine.has(sid), _label:`${v.n} ${v.t || ''}`, _name:v.n }, v));
     const cols = I.columns.filter(c => c.key !== 'rank').map(c => ({ key:c.key, label:c.label, fmt:c.fmt, desc:c.desc,
@@ -17103,52 +17035,52 @@
       // +/- all reads green or red once the gap is big enough to notice: 2 points of Tgt/DB, 0.05 EPA/DB.
       const big = isQB ? 0.05 : 0.02, gap = (r) => r.vsAll == null ? '' : r.vsAll >= big ? 'delta-up' : r.vsAll <= -big ? 'delta-down' : '';
       if (route) {
-        cols = [C_('tgt', 'Tgt', 'int', `Targets on ${splitName}.`),
-          C_('share', 'Share', 'pct', 'Share of his targets that came on this route. Targets only: participation charts no route for a receiver who was not thrown to.'),
-          C_('rec', 'Rec', 'int', 'Receptions.'), C_('catch', 'Catch%', 'pct', 'Receptions over targets.'),
-          C_('yds', 'Yds', 'int', 'Receiving yards.'), C_('ypt', 'Y/Tgt', 'dec1', 'Receiving yards per target.'),
-          C_('td', 'TD', 'int', 'Receiving touchdowns.'), C_('epa', 'EPA', 'dec1', 'Expected points added, summed over these targets.'),
-          C_('epat', 'EPA/Tgt', 'dec2', 'Expected points added per target.')];
+        cols = [C_('tgt', 'Tgt', 'int', `Targets on ${splitName}`),
+          C_('share', 'Share', 'pct', 'Share of targets on this route (targeted routes only)'),
+          C_('rec', 'Rec', 'int', 'Receptions'), C_('catch', 'Catch%', 'pct', 'Rec / Tgt'),
+          C_('yds', 'Yds', 'int', 'Receiving yards'), C_('ypt', 'Y/Tgt', 'dec1', 'Rec yds / Tgt'),
+          C_('td', 'TD', 'int', 'Receiving TDs'), C_('epa', 'EPA', 'dec1', 'Total EPA on targets'),
+          C_('epat', 'EPA/Tgt', 'dec2', 'EPA / Target')];
         defaultSort = { key:'tgt', dir:'desc' };
       } else if (isQB) {
-        cols = [C_('db', 'DB', 'int', `His dropbacks ${splitName}: sacks in, scrambles out, as in the season table.`),
-          C_('cmpPct', 'Cmp%', 'pct', 'Completions over attempts, sacks left out.'), C_('yds', 'Yds', 'int', 'Passing yards.'),
-          C_('ypa', 'Y/A', 'dec1', 'Passing yards per attempt, sacks counted as attempts.'), C_('td', 'TD', 'int', 'Passing touchdowns.'),
-          C_('int', 'INT', 'int', 'Interceptions.', true), C_('skPct', 'Sack%', 'pct', 'Sacks per dropback.', true),
-          C_('epadb', 'EPA/DB', 'dec2', 'Expected points added per dropback.'),
-          { ...C_('vsAll', '+/- all', 'dec2', 'EPA per dropback in this split minus his EPA per dropback on every dropback. Positive means better here than overall.'), tone:gap },
-          C_('adot', 'aDOT', 'dec1', 'Average depth of throw: air yards over attempts.')];
+        cols = [C_('db', 'DB', 'int', `Dropbacks ${splitName} (incl. sacks)`),
+          C_('cmpPct', 'Cmp%', 'pct', 'Comp / Att (ex sacks)'), C_('yds', 'Yds', 'int', 'Passing yards'),
+          C_('ypa', 'Y/A', 'dec1', 'Yds / Att (sacks incl.)'), C_('td', 'TD', 'int', 'Passing TDs'),
+          C_('int', 'INT', 'int', 'Interceptions', true), C_('skPct', 'Sack%', 'pct', 'Sacks / DB', true),
+          C_('epadb', 'EPA/DB', 'dec2', 'EPA / Dropback'),
+          { ...C_('vsAll', '+/- all', 'dec2', 'Split EPA/DB minus overall (+ = better)'), tone:gap },
+          C_('adot', 'aDOT', 'dec1', 'Air yards / Att')];
         defaultSort = { key:'epadb', dir:'desc' };
       } else {
-        cols = [C_('db', 'DB on field', 'int', `Team dropbacks ${splitName} with him on the field.`),
-          C_('tgt', 'Tgt', 'int', 'Targets.'),
-          C_('tpdb', 'Tgt/DB', 'pct', 'Targets per team dropback with him on the field: a charted stand-in for targets per route run.'),
-          { ...C_('vsAll', '+/- all', 'pct', 'Tgt/DB in this split minus his Tgt/DB on every dropback. Positive means he draws more of the looks here.'), tone:gap },
-          C_('rec', 'Rec', 'int', 'Receptions.'), C_('catch', 'Catch%', 'pct', 'Receptions over targets.'),
-          C_('yds', 'Yds', 'int', 'Receiving yards.'), C_('ypt', 'Y/Tgt', 'dec1', 'Receiving yards per target.'),
-          C_('td', 'TD', 'int', 'Receiving touchdowns.'), C_('epa', 'EPA', 'dec1', 'Expected points added, summed over his targets.'),
-          C_('epat', 'EPA/Tgt', 'dec2', 'Expected points added per target.'), C_('adot', 'aDOT', 'dec1', 'Average depth of target.')];
+        cols = [C_('db', 'DB on field', 'int', `Team dropbacks ${splitName} on field`),
+          C_('tgt', 'Tgt', 'int', 'Targets'),
+          C_('tpdb', 'Tgt/DB', 'pct', 'Targets / dropback on field'),
+          { ...C_('vsAll', '+/- all', 'pct', 'Split Tgt/DB minus overall (+ = more looks)'), tone:gap },
+          C_('rec', 'Rec', 'int', 'Receptions'), C_('catch', 'Catch%', 'pct', 'Rec / Tgt'),
+          C_('yds', 'Yds', 'int', 'Receiving yards'), C_('ypt', 'Y/Tgt', 'dec1', 'Rec yds / Tgt'),
+          C_('td', 'TD', 'int', 'Receiving TDs'), C_('epa', 'EPA', 'dec1', 'Total EPA on targets'),
+          C_('epat', 'EPA/Tgt', 'dec2', 'EPA / Target'), C_('adot', 'aDOT', 'dec1', 'Average depth of target')];
         defaultSort = { key:'tgt', dir:'desc' };
       }
       rowName = `${pos}, ${route ? `targeted ${covTitle(route)}` : C.splitLabels[sk]}, ${season}`;
       onRow = (r) => openPlayerDetail(r._name, r._sid);
       sample = route
-        ? 'Targeted routes, not routes run: participation charts the route only for the receiver the ball went to. Share is how many of his targets came on this route.'
-        : `${isQB ? 'Per dropback' : 'Tgt/DB counts only dropbacks with him on the field'}. Man, zone and shell come from participation charting; pressure is its was_pressure flag.`;
+        ? 'Targeted routes only (nflverse charts the targeted receiver).'
+        : `${isQB ? 'Per dropback' : 'On-field dropbacks'} · man/zone/shell/pressure from participation data.`;
     }
     // Sort is kept per tab, so a key the new position lacks falls back to its default.
     const kept = prefs.sort && prefs.sort.Coverage;
     if (kept && !cols.some(c => c.key === kept.key)) delete prefs.sort.Coverage;
     statsTable(main, prefs, 'Coverage', rows, cols, defaultSort, rowName, onRow);
     main.appendChild(h('div', { class:'tip', style:{ marginTop:'10px' } },
-      `${rows.length} ${isTeam ? 'teams' : 'players'}. ${sample ? sample + ' ' : ''}Regular season through week ${C.throughWeek}. Source: ${C.source}.`));
+      `${rows.length} ${isTeam ? 'teams' : 'players'} · ${sample ? sample + ' ' : ''}Thru W${C.throughWeek} (${C.source}).`));
   }
 
   // The Teams tab's shell columns: the man/zone and shell mix each defense
   // played, from the same coverage-YYYY.js as the Coverage tab.
   const COV_TEAM_KEYS = ['man', 'zone', 'c0', 'c1', 'c2', 'c2m', 'c3', 'c4', 'c6'];
   const teamCoverageCols = (C) => COV_TEAM_KEYS.map(k => ({ key:`cov_${k}`, label:COV_SHELL_LABELS[k], group:'Coverage (D)', fmt:'pct',
-    desc:`Share of charted dropbacks this defense played in ${C.splitLabels[k].replace(/^vs /, '')} (nflverse participation charting).` }));
+    desc:`Defensive ${C.splitLabels[k].replace(/^vs /, '')} share (nflverse participation).` }));
   function teamCoverageRow(C, t) {
     const v = C.teams[t], ix = (k) => C.teamFields.cov.indexOf(k);
     if (!v) return {};
@@ -17367,21 +17299,18 @@
       return t;
     });
     R.tiles = tiles;
-    main.appendChild(h('div', { class:'tip rt-span' }, h('strong', null, `Targeted routes, ${span} regular seasons. `),
-      later.length ? `${later.join(', ')} appears the first build after nflverse posts its participation charting. ` : '',
-      'Each tile picks its own player, season and metric: two players side by side, or one player in two seasons.'));
+    main.appendChild(h('div', { class:'tip rt-span' }, h('strong', null, `Targeted routes (${span}): `),
+      later.length ? `${later.join(', ')} updates after nflverse participation posts. ` : '',
+      'Compare two players or seasons side by side.'));
     main.appendChild(h('div', { class:'rt-tiles' }, ...tiles.map((t, i) => rtTile(i, t, have, got, (patch) => { Object.assign(t, patch); save(); }))));
     const res = tiles.map(t => { const C = got(t.season), v = C.players[t.sid], tree = C.targetedRoutes[t.sid]; return v && v.R && tree ? { t, C, v, tree } : null; });
     if (res.every(Boolean)) main.appendChild(rtCompare(res, RT_METRICS.some(m => m[0] === R.cmp) ? R.cmp : 'share', (m) => { R.cmp = m; save(); }));
     main.appendChild(h('div', { class:'tip rt-foot' },
-      `Targeted routes, not routes run: nflverse participation charts the route only for the receiver the ball went to. Target share is over all his targets, charted route or not. `
-      + `Arrow width is targets; color is the metric's percentile among players at his position with ${RT_POOL_MIN}+ targets that season (${LOC_LEGEND}). `
-      + `A rate needs ${RT_ROUTE_MIN}+ targets on the route or it reads DNQ. Out is quick out plus deep out. `
-      + `Not here: separation, route win rate and routes run by route (so route share, TPRR and YPRR by route), which need every route charted and only paid vendors chart that.`));
-    main.appendChild(statsColumnKey([['tgt', 'Targets: passes thrown his way.'], ['Y/Tgt', 'Receiving yards per target.'],
-      ['aDOT', 'Average depth of target: air yards per target.'], ['EPA/tgt', 'Expected points added per target.'],
-      ['DNQ', `Did not qualify: under ${RT_ROUTE_MIN} targets on the route, too few to rank.`],
-      ['TPRR', 'Targets per route run.'], ['YPRR', 'Yards per route run.']].map(([label, desc]) => ({ label, desc }))));
+      `Targeted routes only (nflverse charts targeted receivers; Out = quick + deep out). Width = targets; color = percentile (${RT_POOL_MIN}+ tgt; DNQ under ${RT_ROUTE_MIN}; ${LOC_LEGEND}). Paid-only full route rates (TPRR/YPRR/separation) omitted.`));
+    main.appendChild(statsColumnKey([['tgt', 'Targets'], ['Y/Tgt', 'Rec yds / Tgt'],
+      ['aDOT', 'Air yds / Tgt'], ['EPA/tgt', 'EPA / Tgt'],
+      ['DNQ', `<${RT_ROUTE_MIN} route tgts`],
+      ['TPRR', 'Targets / route run'], ['YPRR', 'Yards / route run']].map(([label, desc]) => ({ label, desc }))));
   }
 
   // The player card's link: tile A becomes this player, on his newest tree.
@@ -17484,14 +17413,13 @@
         main.appendChild(h('div', { class:'card oo-card', dataset:{ kind:key } }, h('div', { class:'card-title' }, `${title}, ${tm} ${season}`), h('div', { class:'tbl-scroll' }, tbl)));
       }
       main.appendChild(h('div', { class:'tip oo-foot' },
-        `Starting QB is the passer with the most dropbacks that game. Playcaller comes from the play-caller table, switched mid-season only where its notes name the week he was fired. `
-        + `PPR/G is full PPR over the games he played in that group; Tgt% is his share of the team's targets in those games. PROE is pass rate over expected in neutral situations (win probability 20-80%, outside the last two minutes of a half). `
-        + `Grey italic is a group under ${small} plays. Regular season through week ${F.splitsThroughWeek}, from nflverse play-by-play.`));
+        `QB = game dropback leader · Playcaller = noted mid-season changes · PROE = neutral pass rate over expected (20-80% WP). `
+        + `Grey italic <${small} plays (thru W${F.splitsThroughWeek}, nflverse).`));
       saveStatsLabPrefs(prefs);
       return;
     }
 
-    if (!pick) { main.appendChild(h('div', { class:'empty' }, `No player has ${F.minSnaps}+ offensive snaps in ${season} yet.`)); return; }
+    if (!pick) { main.appendChild(h('div', { class:'empty' }, `No player with ${F.minSnaps}+ snaps in ${season}.`)); return; }
     const find = (text, exact) => {
       const q = String(text || '').trim().toLowerCase(), has = (fn) => opts.find(o => fn(o.label.toLowerCase()));
       const o = q && (has(l => l === q) || (!exact && (has(l => l.startsWith(q)) || has(l => l.includes(q)))));
@@ -17501,13 +17429,13 @@
       oninput:(e) => find(e.target.value, true), onchange:(e) => find(e.target.value, false) }));
     ctl.appendChild(h('datalist', { id:'oo-players' }, ...opts.map(o => h('option', { value:o.label }))));
     const t = F.teams[pick.tm], v = pick.v, sp = ooSplit(t, v, F.T), offG = isGame ? t.games - v.g : null;
-    if (O.sid && O.sid !== pick.pid) ctl.appendChild(h('span', { class:'muted' }, `Your pick has under ${F.minSnaps} snaps for any team in ${season}, so this is ${nm(pick.pid)}.`));
+    if (O.sid && O.sid !== pick.pid) ctl.appendChild(h('span', { class:'muted' }, `Pick <${F.minSnaps} snaps in ${season}; showing ${nm(pick.pid)}.`));
     main.appendChild(h('div', { class:'card oo-head', dataset:{ sid:pick.pid, team:pick.tm, season:String(season), level:F.level } },
       h('div', { class:'rt-head' }, headshot(pick.pid, 36), h('span', { class:'rt-player' }, nm(pick.pid)), teamChip(pick.tm), h('span', { class:'muted' }, `${ps(pick.pid)}, ${season}`),
         isGame ? h('span', { class:'badge oo-level' }, 'Game level') : null),
-      h('div', null, isGame ? `${v.g} of ${t.games} games with him (${Math.round(F.gamePct * 100)}%+ of the offensive snaps), ${offG} without. ${v.s} offensive snaps.`
-        : `${v.s} team plays with him on the field, ${sp.off.plays} with him off, over ${t.games} games.`),
-      isGame ? h('div', { class:'tip' }, F.note, offG ? '' : ' No game without him yet, so the off side is empty until he misses one.') : null));
+      h('div', null, isGame ? `${v.g}/${t.games} games with him (${Math.round(F.gamePct * 100)}%+ snaps), ${offG} without · ${v.s} snaps`
+        : `${v.s} team plays on / ${sp.off.plays} off (${t.games} games)`),
+      isGame ? h('div', { class:'tip' }, F.note, offG ? '' : ' (0 games missed yet)') : null));
 
     const side = (label, s) => h('tr', { class:s.plays < small ? 'oo-small' : '' },
       h('th', { scope:'row' }, label, s.plays < small ? h('span', { class:'oo-flag' }, ` under ${small} plays`) : null),
@@ -17517,8 +17445,8 @@
     const tone = (x, big) => x == null ? '' : x >= big ? ' oo-up' : x <= -big ? ' oo-down' : '';
     main.appendChild(h('div', { class:'card oo-card' }, h('div', { class:'card-title' }, `${pick.tm} offense with ${nm(pick.pid)} on and off`),
       h('div', { class:'tbl-scroll' }, h('table', { class:'data oo-team' },
-        h('thead', null, h('tr', null, h('th', null, isGame ? 'Games' : 'Field'), ...[['Plays', 'Team plays on this side.'], ['EPA/play', 'Expected points added per play.'],
-          ['Pass rate', 'Pass attempts per play, sacks in and scrambles out, as the Teams tab.'], ['Success%', 'Share of plays with positive EPA.']]
+        h('thead', null, h('tr', null, h('th', null, isGame ? 'Games' : 'Field'), ...[['Plays', 'Team plays'], ['EPA/play', 'EPA per play'],
+          ['Pass rate', 'Pass att / play (incl. sacks)'], ['Success%', '% positive EPA plays']]
           .map(([l, desc]) => h('th', { class:'right', title:desc }, l)))),
         h('tbody', null, side(isGame ? `With him (${v.g} g)` : 'On the field', sp.on), side(isGame ? `Without him (${offG} g)` : 'Off the field', sp.off),
           h('tr', { class:'oo-diff' }, h('th', { scope:'row' }, 'On minus off'), h('td', { class:'right tnum muted' }, ''),
@@ -17527,26 +17455,24 @@
 
     const flag = (x) => x < small ? ' oo-small' : '';
     const gap = (x, big) => x == null ? '' : x >= big ? 'oo-up' : x <= -big ? 'oo-down' : '';
-    const who = nm(pick.pid), dbWord = isGame ? 'team dropbacks in the games both played' : 'dropbacks both were on the field for';
+    const who = nm(pick.pid), dbWord = isGame ? 'team DBs (games both played)' : 'shared on-field DBs';
     const rows = ooMates(t, v, F.T).map(r => ({ ...r, _label:`${nm(r.pid)} ${ps(r.pid)}`, _sid:r.pid,
       dShare:r.shareOn != null && r.shareOff != null ? r.shareOn - r.shareOff : null, dTpdb:r.tpdbOn != null && r.tpdbOff != null ? r.tpdbOn - r.tpdbOff : null }));
     const C = (key, label, fmt, desc, tone) => ({ key, label, get:(r) => r[key], fmt, desc, tone });
     const cols = [
-      C('shareOn', 'Tgt% on', 'pct', `His share of the team's targets with ${who} ${isGame ? 'playing' : 'on the field'}.`, () => flag(sp.on.plays).trim()),
-      C('shareOff', 'Tgt% off', 'pct', `His share of the team's targets with ${who} ${isGame ? 'out' : 'off the field'}.`, () => flag(sp.off.plays).trim()),
-      C('dShare', 'Tgt% +/-', 'pct', `Target share on minus off. Green means he draws more of the looks with ${who} on.`, (r) => `${gap(r.dShare, 0.02)}${flag(Math.min(sp.on.plays, sp.off.plays))}`),
-      C('tpdbOn', 'Tgt/DB on', 'pct', `Targets per ${dbWord.replace('both', `he and ${who}`)}: the charted stand-in for targets per route run.`, (r) => flag(r.dbOn).trim()),
-      C('tpdbOff', 'Tgt/DB off', 'pct', `Targets per dropback he played with ${who} ${isGame ? 'out' : 'off the field'}.`, (r) => flag(r.dbOff).trim()),
-      C('dTpdb', 'Tgt/DB +/-', 'pct', 'Targets per dropback on minus off.', (r) => `${gap(r.dTpdb, 0.02)}${flag(Math.min(r.dbOn, r.dbOff))}`),
-      C('tgtOn', 'Tgt on', 'int', `Targets with ${who} on.`), C('tgtOff', 'Tgt off', 'int', `Targets with ${who} off.`),
-      C('dbOn', 'DB on', 'int', `Sample: ${dbWord} with ${who} on.`), C('dbOff', 'DB off', 'int', `Sample: ${isGame ? 'team dropbacks in games he played' : 'dropbacks he was on the field for'} with ${who} off.`)];
+      C('shareOn', 'Tgt% on', 'pct', `Target share with ${who} ${isGame ? 'in' : 'on'}`, () => flag(sp.on.plays).trim()),
+      C('shareOff', 'Tgt% off', 'pct', `Target share with ${who} ${isGame ? 'out' : 'off'}`, () => flag(sp.off.plays).trim()),
+      C('dShare', 'Tgt% +/-', 'pct', `Tgt% on minus off (green = more with ${who})`, (r) => `${gap(r.dShare, 0.02)}${flag(Math.min(sp.on.plays, sp.off.plays))}`),
+      C('tpdbOn', 'Tgt/DB on', 'pct', `Targets per ${dbWord.replace('both', `he + ${who}`)}`, (r) => flag(r.dbOn).trim()),
+      C('tpdbOff', 'Tgt/DB off', 'pct', `Tgt/DB with ${who} ${isGame ? 'out' : 'off'}`, (r) => flag(r.dbOff).trim()),
+      C('dTpdb', 'Tgt/DB +/-', 'pct', 'Tgt/DB on minus off', (r) => `${gap(r.dTpdb, 0.02)}${flag(Math.min(r.dbOn, r.dbOff))}`),
+      C('tgtOn', 'Tgt on', 'int', `Targets (${who} on)`), C('tgtOff', 'Tgt off', 'int', `Targets (${who} off)`),
+      C('dbOn', 'DB on', 'int', `Sample ${dbWord} (on)`), C('dbOff', 'DB off', 'int', `Sample dropbacks (off)`)];
     const kept = prefs.sort && prefs.sort.OnOff;
     if (kept && !cols.some(c => c.key === kept.key)) delete prefs.sort.OnOff;
     statsTable(main, prefs, 'OnOff', rows, cols, { key:'tgtOn', dir:'desc' }, `Teammates, ${pick.tm} ${season}`, (r) => openPlayerDetail(nm(r.pid), r.pid));
     main.appendChild(h('div', { class:'tip oo-foot' },
-      `${rows.length} teammates with a target. Grey italic is a small sample: a side under ${small} plays (team rows and target share) or ${small} dropbacks (Tgt/DB). `
-      + (isGame ? `${F.note} ` : 'Every charted regular-season pass or run play is on one side or the other, so on plus off is the team total. ')
-      + `Players need ${F.minSnaps}+ offensive snaps for the team. Source: ${F.source}.`));
+      `${rows.length} targeted teammates (grey italic <${small} plays/DB; min ${F.minSnaps} snaps). ${isGame ? `${F.note} ` : ''}Source: ${F.source}.`));
     saveStatsLabPrefs(prefs);
   }
 
@@ -17763,7 +17689,7 @@
             tab.min = Object.assign({}, tab.min, { [minCol.value]:v }); save();
           })),
           h('div', { class:'stats-lab-row' }, ...Object.entries(tab.min || {}).map(([k, v]) => chip(`${labelOf(k)} ≥ ${v}`, () => { delete tab.min[k]; save(); }))),
-          h('div', { class:'muted' }, 'Type the value as the table shows it: 20 on a % column means 20%.')),
+          h('div', { class:'muted' }, 'Enter table units (e.g. 20 = 20%).')),
         section('Highlight',
           h('div', { class:'stats-lab-row' }, cfCol, cfOp, cfVal, btn('Add', () => {
             const v = readNum(cfVal);
@@ -17771,11 +17697,11 @@
             tab.cond = Object.assign({}, tab.cond, { [cfCol.value]:{ op:cfOp.value, v } }); save();
           })),
           h('div', { class:'stats-lab-row' }, ...Object.entries(tab.cond || {}).map(([k, r]) => chip(`${labelOf(k)} ${ruleText(r)}`, () => { delete tab.cond[k]; save(); }))),
-          h('div', { class:'muted' }, 'A highlight boxes the cell. The green and red text is still the top and bottom fifth.')),
+          h('div', { class:'muted' }, 'Boxes matching cells (text stays top/bottom 20%).')),
         section('Calculated column',
           h('div', { class:'stats-lab-row' }, calcName, calcExpr, btn('Add', addCalc)),
           calcErr,
-          h('div', { class:'muted' }, 'Column keys from the list, numbers, + - * / and parentheses. Dividing by zero leaves the cell blank.')),
+          h('div', { class:'muted' }, 'Use column keys, numbers, + - * /, parens.')),
         isTeams ? null : section('Bio filters',
           h('div', { class:'stats-lab-bio' }, h('span'), h('span', { class:'muted' }, 'Min'), h('span', { class:'muted' }, 'Max'),
             ...STATS_BIO.flatMap(([k, label]) => {
@@ -17783,7 +17709,7 @@
               return [h('span', null, label), numIn(`${label} minimum`, lo, { onchange:setBio(k, 0) }), numIn(`${label} maximum`, hi, { onchange:setBio(k, 1) })];
             })),
           h('div', { class:'stats-lab-row' }, btn('Clear bio filters', () => { delete tab.bio; save(); }, { class:'ghost' })),
-          h('div', { class:'muted' }, 'From players.js and prospect.js. A player with no value for a filter you set drops out.')),
+          h('div', { class:'muted' }, 'Players missing a filtered field are excluded.')),
         section('Saved views',
           h('div', { class:'stats-lab-row' }, viewName, btn('Save', () => {
             const name = viewName.value.trim();
@@ -17795,7 +17721,7 @@
             h('span', { class:'stats-lab-col-name' }, v.name),
             btn('Load', () => loadView(v)),
             btn('Delete', () => { saveStatsViews(statsViews().filter(x => !(x.pos === pos && x.name === v.name))); save(); }, { class:'ghost', 'aria-label':`Delete view ${v.name}` }))),
-          h('div', { class:'muted' }, `Saved in this browser, one list per tab. A view keeps columns, sort, minimums, highlights, custom columns${isTeams ? '' : ', bio filters and the split'}.`))));
+          h('div', { class:'muted' }, `Saved locally per tab (columns, sort, mins, highlights, formulas${isTeams ? '' : ', bio, split'}).`))));
   }
 
   // ---- Split engine: seasons, week range and situation for the player tabs.
@@ -17926,34 +17852,34 @@
     const REC = ['WR', 'TE', 'RB'], RUSH = ['RB', 'QB'], QB = ['QB'];
     const C = (key, label, group, pos, fmt, desc, lowerBetter = false) => ({ key, label, group, pos, fmt, desc, lowerBetter });
     return [
-      C('games', 'G', 'Split', SPLIT_POS, 'int', 'Games with an offensive snap in the chosen seasons and weeks.'),
-      C('sample', 'Sample', 'Split', SPLIT_POS, 'int', 'Plays in the split: dropbacks plus carries for a QB, targets plus carries for a RB, targets for a WR or TE. The smaller it is, the more every rate beside it is noise.'),
-      C('ppr', 'FP', 'Split', SPLIT_POS, 'dec1', 'Fantasy points from the plays in the split: full PPR, 4 per passing TD, -2 per interception and lost fumble. Return and defensive scores are not in it.'),
-      C('dropbacks', 'DB', 'Passing', QB, 'int', 'Dropbacks where he was the passer: sacks in, scrambles out, as in the season table.'),
-      C('pass_att', 'Att', 'Passing', QB, 'int', 'Pass attempts, sacks included (nflverse counts a sack as an attempt).'),
-      C('cmp', 'Cmp', 'Passing', QB, 'int', 'Completions.'),
-      C('pass_yds', 'Pass yds', 'Passing', QB, 'int', 'Passing yards.'),
-      C('pass_td', 'Pass TD', 'Passing', QB, 'int', 'Passing touchdowns.'),
-      C('ints', 'INT', 'Passing', QB, 'int', 'Interceptions.', true),
-      C('ypa', 'Y/A', 'Passing', QB, 'dec1', 'Passing yards per attempt, sacks counted as attempts.'),
-      C('db_epa', 'EPA/DB', 'Passing', QB, 'dec2', 'Expected points added per dropback.'),
-      C('pass_success', 'DB success%', 'Passing', QB, 'pct', 'Share of dropbacks with positive EPA.'),
-      C('targets', 'Tgt', 'Receiving', REC, 'int', 'Targets.'),
-      C('target_share', 'Tgt%', 'Receiving', REC, 'pct', "Share of his team's targets in the same seasons, weeks and situations."),
-      C('rec', 'Rec', 'Receiving', REC, 'int', 'Receptions.'),
-      C('rec_yds', 'Rec yds', 'Receiving', REC, 'int', 'Receiving yards.'),
-      C('rec_td', 'Rec TD', 'Receiving', REC, 'int', 'Receiving touchdowns.'),
-      C('air_yds', 'Air yds', 'Receiving', REC, 'int', 'Air yards on his targets.'),
-      C('catch_rate', 'Catch%', 'Receiving', REC, 'pct', 'Receptions over targets.'),
-      C('yds_per_target', 'Y/Tgt', 'Receiving', REC, 'dec1', 'Receiving yards per target.'),
-      C('epa_per_target', 'EPA/Tgt', 'Receiving', REC, 'dec2', 'Expected points added per target.'),
-      C('yprr_est', 'YPRR (est)', 'Receiving', REC, 'dec2', "Receiving yards per route. Each week's routes (measured on-field dropbacks for 2023-2025, snap share x the team's dropbacks for later seasons, calibrated on 2023-2025 participation) are scaled by the share of that week's team dropbacks inside the split. Blank under 5 routes."),
-      C('carries', 'Car', 'Rushing', RUSH, 'int', 'Carries.'),
-      C('rush_yds', 'Rush yds', 'Rushing', RUSH, 'int', 'Rushing yards.'),
-      C('rush_td', 'Rush TD', 'Rushing', RUSH, 'int', 'Rushing touchdowns.'),
-      C('ypc', 'YPC', 'Rushing', RUSH, 'dec1', 'Yards per carry.'),
-      C('epa_per_rush', 'EPA/Rush', 'Rushing', RUSH, 'dec2', 'Expected points added per carry.'),
-      C('rush_success', 'Rush success%', 'Rushing', RUSH, 'pct', 'Share of carries with positive EPA.'),
+      C('games', 'G', 'Split', SPLIT_POS, 'int', 'Games with offensive snap'),
+      C('sample', 'Sample', 'Split', SPLIT_POS, 'int', 'Plays in split (QB DB+car / RB tgt+car / WR+TE tgt)'),
+      C('ppr', 'FP', 'Split', SPLIT_POS, 'dec1', 'Full-PPR points (4/pass TD, -2 INT/fum; ex ret/def)'),
+      C('dropbacks', 'DB', 'Passing', QB, 'int', 'Passer dropbacks (incl. sacks, ex scrambles)'),
+      C('pass_att', 'Att', 'Passing', QB, 'int', 'Attempts (incl. sacks)'),
+      C('cmp', 'Cmp', 'Passing', QB, 'int', 'Completions'),
+      C('pass_yds', 'Pass yds', 'Passing', QB, 'int', 'Passing yards'),
+      C('pass_td', 'Pass TD', 'Passing', QB, 'int', 'Passing TDs'),
+      C('ints', 'INT', 'Passing', QB, 'int', 'Interceptions', true),
+      C('ypa', 'Y/A', 'Passing', QB, 'dec1', 'Yds / Att (incl. sacks)'),
+      C('db_epa', 'EPA/DB', 'Passing', QB, 'dec2', 'EPA / Dropback'),
+      C('pass_success', 'DB success%', 'Passing', QB, 'pct', '% positive EPA dropbacks'),
+      C('targets', 'Tgt', 'Receiving', REC, 'int', 'Targets'),
+      C('target_share', 'Tgt%', 'Receiving', REC, 'pct', 'Share of team targets in split'),
+      C('rec', 'Rec', 'Receiving', REC, 'int', 'Receptions'),
+      C('rec_yds', 'Rec yds', 'Receiving', REC, 'int', 'Receiving yards'),
+      C('rec_td', 'Rec TD', 'Receiving', REC, 'int', 'Receiving TDs'),
+      C('air_yds', 'Air yds', 'Receiving', REC, 'int', 'Air yards on targets'),
+      C('catch_rate', 'Catch%', 'Receiving', REC, 'pct', 'Rec / Tgt'),
+      C('yds_per_target', 'Y/Tgt', 'Receiving', REC, 'dec1', 'Rec yds / Tgt'),
+      C('epa_per_target', 'EPA/Tgt', 'Receiving', REC, 'dec2', 'EPA / Target'),
+      C('yprr_est', 'YPRR (est)', 'Receiving', REC, 'dec2', 'Est. receiving yds per route (blank <5 routes; snap-calibrated post-2025)'),
+      C('carries', 'Car', 'Rushing', RUSH, 'int', 'Carries'),
+      C('rush_yds', 'Rush yds', 'Rushing', RUSH, 'int', 'Rushing yards'),
+      C('rush_td', 'Rush TD', 'Rushing', RUSH, 'int', 'Rushing TDs'),
+      C('ypc', 'YPC', 'Rushing', RUSH, 'dec1', 'Yards / Carry'),
+      C('epa_per_rush', 'EPA/Rush', 'Rushing', RUSH, 'dec2', 'EPA / Carry'),
+      C('rush_success', 'Rush success%', 'Rushing', RUSH, 'pct', '% positive EPA carries'),
     ];
   })();
 
@@ -17995,9 +17921,9 @@
           wkSel('First week', split.from, 'from'), h('span', null, 'to'), wkSel('Last week', split.to, 'to')),
         h('div', { class:'stats-lab-tool-title' }, 'Situation'),
         h('div', { class:'stats-lab-split-dims' }, ...dims),
-        lag.length ? h('div', { class:'muted' }, lag.map(S => `FTN charting covers ${S.season} through week ${S.ftnThroughWeek}`).join('; ')
-          + '. Later plays drop out of the play action, motion, QB spot, blitz and box filters.') : null,
-        split.on ? h('div', { class:'muted' }, 'A split recomputes from play-by-play, so season-only columns (xFP, Next Gen, PFR, FTN rates) step aside until it is off.') : null,
+        lag.length ? h('div', { class:'muted' }, lag.map(S => `FTN thru ${S.season} W${S.ftnThroughWeek}`).join('; ')
+          + ' (later plays omitted from FTN filters).') : null,
+        split.on ? h('div', { class:'muted' }, 'Split uses play-by-play; season-only columns hidden until reset.') : null,
         split.on ? h('div', { class:'stats-lab-row' }, h('button', { type:'button', class:'stats-lab-split-reset',
           onclick:() => set({ seasons:[cur], from:1, to:18, sit:{} }) }, 'Reset split')) : null));
   }
