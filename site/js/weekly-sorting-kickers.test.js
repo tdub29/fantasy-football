@@ -30,7 +30,7 @@ assert.doesNotMatch(app, /hash:'#kickers'/, 'kickers must not remain in Referenc
 assert.doesNotMatch(app, /case 'kickers'/, 'standalone kicker route must be removed');
 // Behaviour (K only on Weekly, only when the lineup starts one) is pinned in def-position-filter.test.js.
 assert.match(app, /view === 'weekly' && starts\('K'\)\) options\.push\('K'\)/);
-for (const [key, label] of [['kicker-exp','K Proj'], ['kicker-floor','Floor'], ['kicker-ceil','Ceil'], ['kicker-pGe15','15+']]) {
+for (const [key, label] of [['kicker-exp','K Ref'], ['kicker-floor','Floor'], ['kicker-ceil','Ceil'], ['kicker-pGe15','15+']]) {
   assert.ok(app.includes(`sortHdr('${key}', '${label}'`), `${label} kicker column missing`);
 }
 
