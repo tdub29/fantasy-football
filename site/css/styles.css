@@ -1346,6 +1346,8 @@ textarea { resize: vertical; min-height: 80px; }
   .blueprint-row > .br-tier { grid-column: 1 / -1; }
   .blueprint-row > * + * { border-left: none; border-top: 1px solid var(--border); }
   .blueprint-row > *:nth-child(2) { border-top: none; }
+  /* A grade left alone on the last row (dynasty: four stats) takes the full width, no hollow cell beside it. */
+  .blueprint-row > .br-stat-grade:nth-child(odd) { grid-column: 1 / -1; border-left: none; }
 }
 @media (max-width: 700px) {
   .blueprint-row { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; margin-bottom: 12px; }
@@ -1362,6 +1364,12 @@ textarea { resize: vertical; min-height: 80px; }
   .br-stat-num { font-size: 1.4rem; }
   .br-eyebrow { font-size: 0.72rem; letter-spacing: 0.04em; }
   .br-stat-sub { line-height: 1.3; }
+  /* Fit the card to its content: center the paired cells so neither leaves a hollow, tighten gaps. */
+  .blueprint-row > .br-stat { justify-content: center; gap: 2px; padding: 8px 12px; }
+  .br-arch-line { margin-top: 6px; }
+  .br-grade-bar { margin-top: 4px; }
+  .tank-meter { flex-wrap: nowrap; margin-top: 6px; }
+  .tank-meter input { flex: 1; width: auto; min-height: 24px; }
 }
 
 /* ========== Positional / Slot Grades ========== */
@@ -6968,11 +6976,13 @@ table.data.prm-table .name-cell > * { display: block; max-width: 100%; overflow:
 .standings-table .str-spark .sp-bar { width: 12px; }
 @media (max-width: 600px) {
   .standings-swipe { display: block; margin: 0; font-size: .7rem; color: var(--fg-1); background: var(--bg-1); padding: 3px 8px; border-radius: 999px; border: 1px solid var(--border); }
-  .standings-list { padding-bottom: max(28px, env(safe-area-inset-bottom)); }
+  /* Floating phone browser bars sit over the page bottom; clear them so the last rows stay tappable. */
+  .standings-list { padding-bottom: max(72px, calc(env(safe-area-inset-bottom) + 56px)); }
   .standings-table { font-size: .8rem; }
   .standings-table th { padding: 6px 7px; }
   .standings-table td { padding: 0 7px; }
-  .standings-table .team { max-width: 44vw; }
+  /* Wrap long team names at word breaks instead of cutting them mid-word. */
+  .standings-table td.team { white-space: normal; overflow-wrap: normal; text-overflow: clip; min-width: 7.5rem; max-width: 40vw; line-height: 1.15; padding-top: 4px; padding-bottom: 4px; }
   .standings-table .str-spark { width: 92px; }
   .standings-table .str-spark .sp-bar { width: 10px; }
 }
