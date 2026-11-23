@@ -7506,7 +7506,7 @@
       h('td', {class:'sr-num tnum'}, `${Math.round(k.pGe15*100)}%`)
     )));
     appendTable(card, h('table', {class:'data slot-table'},
-      h('thead', null, h('tr', null, ...['#','Kicker','Team','Opp','Ref pts','Dist mean','P20','P90','15+'].map(label => h('th',null,label)))), body));
+      h('thead', null, h('tr', null, ...['#','Kicker','Team','Opp','Vegas','Model','P20','P90','15+'].map(label => h('th',null,label)))), body));
     card.appendChild(h('p', {class:'tip'}, d.method, ' ', d.note));
     return card;
   }
