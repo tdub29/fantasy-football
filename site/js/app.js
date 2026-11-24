@@ -13584,85 +13584,52 @@
   const pmNum = (d) => (v) => v == null ? '·' : Number(v).toFixed(d);
   // The one prospect target everywhere: chance of at least one PPR-per-game season inside these
   // finishes at his position in the window (Trevor, 2026-10-11: QB and TE 6 and 12, RB and WR 12 and 24).
-  // The second cut is the model's hit line. One logistic per position and cut on log(pick) plus college
-  // profile, fit on every drafted class whose window has closed; on holdout classes it matched or beat
-  // pick alone at most cuts. College rows use the mock-draft pick, or profile alone with no mock.
-  // ponytail: 24 small IRLS fits in the browser on first use. Profile is in-sample for the training
-  // classes, so its weight runs a little hot; move the fit into build_prospect_model.py if that matters.
+  // The second cut is the charter hit line. Served from a frozen file (data/prospect-cut-model.js): the
+  // charter's draft-only spline in log pick, tabulated by pick, no fitting in the browser. The pick +
+  // profile logistic shown from 2026-10-11 failed charter v2 at every position and cut, and so did a
+  // pick-only logistic (notes/prospect-research/experiments/M4.json; model card, "Displayed cut model").
+  // Only the hit line is shown. The first cut is not a charter target, and QB6 (slope 0.58) and WR12
+  // (0.69) fail the calibration band out of sample; RB12 (1.22, inside the band but 90% interval 1.07-1.52,
+  // under-predicting) and TE6 (1.03) are hidden with it. K0 is validated after the actual pick (population A) only, so
+  // college rows get no chance and no score: no pre-draft model on this target has passed.
   const PM_CUTS = { QB:[6, 12], TE:[6, 12], RB:[12, 24], WR:[12, 24] };
   const pmPick = (r) => r.y ? r.pk : ((((window.CAPITAL_RATINGS || {}).projected || {}).players || {})[r.cid] || {}).pick;
   // UFD: in the mocked class but in no mock, and the mocks run all seven rounds, so projected undrafted.
   const pmDec = (v) => Number.isInteger(+v) ? String(+v) : (+v).toFixed(1);
   const pmUfd = (r) => !r.y && !pmPick(r) && r.cls === ((window.CAPITAL_RATINGS || {}).projected || {}).class;
-  // The pick the fits score him at: a projected UFD goes in as the last pick of seven rounds.
-  const pmFitPick = (r) => pmPick(r) || (pmUfd(r) ? 257 : undefined);
+  // The pick the model scores him at: his actual slot. Drafted players only.
+  const pmFitPick = (r) => r.y ? r.pk : undefined;
+  const pmHit = (p) => (PM_CUTS[p] || [])[1];
+  const PM_NO_PREDRAFT = 'No validated pre-draft model: chances and the prospect score appear once he is drafted.';
   const pmWindow = (p) => ((window.PROSPECT_MODEL.pos[p] || {}).target || '').replace(/^.* in NFL years /, '');
-  let pmTopFits = null;
-  function pmTopChance(p, k, pk, ts) {
-    const M = window.PROSPECT_MODEL;
-    if (!M) return null;
-    if (!pmTopFits) {
-      const fit = (X, y) => {   // L2 (lambda 1) on everything but the intercept
-        const d = X[0].length; let w = new Array(d).fill(0);
-        for (let it = 0; it < 50; it++) {
-          const A = Array.from({ length:d }, () => new Array(d + 1).fill(0));
-          X.forEach((x, i) => {
-            const q = 1 / (1 + Math.exp(-x.reduce((s, v, j) => s + v * w[j], 0)));
-            for (let a = 0; a < d; a++) { A[a][d] += (q - y[i]) * x[a]; for (let b = 0; b < d; b++) A[a][b] += q * (1 - q) * x[a] * x[b]; }
-          });
-          for (let a = 1; a < d; a++) { A[a][d] += w[a]; A[a][a] += 1; }
-          for (let c = 0; c < d; c++) for (let r = 0; r < d; r++) if (r !== c) {
-            const f = A[r][c] / A[c][c]; for (let j = c; j <= d; j++) A[r][j] -= f * A[c][j];
-          }
-          const dx = A.map((row, i) => row[d] / row[i]);
-          w = w.map((v, i) => v - dx[i]);
-          if (Math.max(...dx.map(Math.abs)) < 1e-8) break;
-        }
-        return w;
-      };
-      const done = Object.values(M.nfl).filter(r => r.out && r.ts != null && r.pk);
-      pmTopFits = {};
-      for (const P of Object.keys(PM_CUTS)) for (const c of PM_CUTS[P]) {
-        const R = done.filter(r => r.p === P), y = R.map(r => r.out[2] && r.out[2] <= c ? 1 : 0);
-        pmTopFits[P + c] = { both:fit(R.map(r => [1, Math.log(r.pk), r.ts / 100]), y),
-          pick:fit(R.map(r => [1, Math.log(r.pk)]), y), prof:fit(R.map(r => [1, r.ts / 100]), y) };
-      }
-    }
-    const f = pmTopFits[p + k];
-    const x = !f ? null : pk && ts != null ? [1, Math.log(pk), ts / 100] : pk ? [1, Math.log(pk)] : ts != null ? [1, ts / 100] : null;
-    if (!x) return null;
-    const w = x.length === 3 ? f.both : pk ? f.pick : f.prof;
-    const v = 1 / (1 + Math.exp(-x.reduce((s, v1, j) => s + v1 * w[j], 0)));
-    // Separate fits can cross in the late-pick corner; a top-6 chance never tops the top-12 one.
-    const hi = PM_CUTS[p][1];
-    return k < hi ? Math.min(v, pmTopChance(p, hi, pk, ts)) : v;
-  }
-  // Both cuts for one row, high bar first.
-  const pmChances = (r) => (PM_CUTS[r.p] || []).map(c => pmTopChance(r.p, c, pmFitPick(r), r.ts));
-  // The one prospect score, 0-100: his average chance across both cuts, as a percentile of every
-  // drafted player at his position since 2008 scored on the same model (with pick when pick is
-  // available, profile-only when unmocked so future-class prospects are compared apples-to-apples).
-  const pmMean = (p, pk, ts) => {
-    const v = (PM_CUTS[p] || []).map(c => pmTopChance(p, c, pk, ts));
-    return v.length && !v.includes(null) ? (v[0] + v[1]) / 2 : null;
+  // Draft classes in the score's reference pool (the drafted rows in prospect-model.js).
+  const pmPoolYears = () => {
+    const y = Object.values((window.PROSPECT_MODEL || {}).nfl || {}).filter(r => r.pk).map(r => r.y);
+    return y.length ? `${Math.min(...y)}-${Math.max(...y)}` : '';
   };
+  function pmTopChance(p, k, pk) {
+    const t = ((window.PROSPECT_CUT_MODEL || {}).p || {})[p + k];
+    if (!t || !pk || k !== pmHit(p)) return null;   // first-cut chances are never served
+    // Table index i is pick i + 1; a fractional mock pick interpolates between its two picks.
+    const x = Math.min(Math.max(+pk, 1), t.length) - 1, i = Math.floor(x);
+    return i + 1 < t.length ? t[i] + (x - i) * (t[i + 1] - t[i]) : t[i];
+  }
+  // The one prospect score, 0-100: his hit-line chance as a percentile of every drafted player at his
+  // position in prospect-model.js (pmPoolYears) scored on the same model.
+  const pmMean = (p, pk) => pmTopChance(p, pmHit(p), pk);
   let pmScoreRef = null;
   function pmScore(r) {
     const M = window.PROSPECT_MODEL;
     if (!M) return null;
     if (!pmScoreRef) {
-      pmScoreRef = { both: {}, prof: {} };
+      pmScoreRef = {};
       for (const x of Object.values(M.nfl)) if (x.pk) {
-        const mb = pmMean(x.p, x.pk, x.ts);
-        if (mb != null) (pmScoreRef.both[x.p] = pmScoreRef.both[x.p] || []).push(mb);
-        const mp = pmMean(x.p, undefined, x.ts);
-        if (mp != null) (pmScoreRef.prof[x.p] = pmScoreRef.prof[x.p] || []).push(mp);
+        const mb = pmMean(x.p, x.pk);
+        if (mb != null) (pmScoreRef[x.p] = pmScoreRef[x.p] || []).push(mb);
       }
-      Object.values(pmScoreRef.both).forEach(a => a.sort((a1, b1) => a1 - b1));
-      Object.values(pmScoreRef.prof).forEach(a => a.sort((a1, b1) => a1 - b1));
+      Object.values(pmScoreRef).forEach(a => a.sort((a1, b1) => a1 - b1));
     }
-    const pk = pmFitPick(r);
-    const m = pmMean(r.p, pk, r.ts), ref = (pk ? pmScoreRef.both : pmScoreRef.prof)[r.p];
+    const m = pmMean(r.p, pmFitPick(r)), ref = pmScoreRef[r.p];
     if (m == null || !ref) return null;
     let i = 0, j = ref.length;
     while (i < j) { const k = (i + j) >> 1; if (ref[k] < m) i = k + 1; else j = k; }
@@ -13707,7 +13674,7 @@
     }[pos] || []).filter(Boolean);
   }
   // Prospects table conditional formatting: 1 higher is better, -1 lower is better. Stat columns (st.*) are all higher-better.
-  const CF_DIR = { pk:-1, sc:1, ts:1, t0:1, t1:1, best:-1, cb:-1, ba:-1 };
+  const CF_DIR = { pk:-1, sc:1, ts:1, t1:1, best:-1, cb:-1, ba:-1 };
   // Weight and speed score live in prospect.js and college-bio.js, the rest on the model row.
   const pmInputVal = (r, k) => k === 'wt' ? (r.id ? window.PROSPECT?.players?.[r.id]?.weight_lb : window.COLLEGE_BIO?.players?.[r.cid]?.wt)
     : k === 'ss' ? (r.id ? window.PROSPECT?.players?.[r.id]?.speed_score : null) : (r.st || {})[k];
@@ -13846,9 +13813,9 @@
   // peers: same position and class, ranked by the prospect score. Drafted rows carry y.
   function pmCardHead(r, cls, peers, idSub, boxes) {
     const logo = ((window.COLLEGE_BIO || {}).schools || {})[r.sch];
-    const cuts = PM_CUTS[r.p] || [], mine = pmFitPick(r) ? pmChances(r) : [], pk = pmPick(r);
-    const score = pmScore(r), mean = pmMean(r.p, pmFitPick(r), r.ts);
-    const ranked = peers.map(x => pmMean(x.p, pmFitPick(x), x.ts)).filter(v => v != null);
+    const hit = pmHit(r.p), mine = pmTopChance(r.p, hit, pmFitPick(r)), pk = pmPick(r);
+    const score = pmScore(r), mean = pmMean(r.p, pmFitPick(r));
+    const ranked = peers.map(x => pmMean(x.p, pmFitPick(x))).filter(v => v != null);
     const rank = ranked.filter(v => v > mean).length + 1;
     const how = r.y ? `pick ${r.pk}` : pk ? `mock ${pmDec(pk)}` : pmUfd(r) ? 'UFD (pick 257)' : 'profile only';
     return h('div', { class:'prm-head' },
@@ -13858,9 +13825,9 @@
           h('div', { class:'prm-id-school' }, r.sch || 'School unknown'),
           h('div', { class:'prm-id-sub' }, idSub))),
       score == null ? null : pmHeroBox('Prospect score', String(score), `of 100 (vs drafted ${r.p}s)`,
-        `Avg ${r.p}${cuts[0]} / ${r.p}${cuts[1]} percentile vs drafted ${r.p}s since 2008 (${how})`),
-      ...cuts.map((c, i) => mine[i] == null ? null : pmHeroBox(`${r.p}${c} chance`, pmPct(mine[i]), how,
-        `Top-${c} ${r.p} PPR/G season (8+ G) odds in yrs ${pmWindow(r.p)}`)),
+        `${r.p}${hit} chance as a percentile vs drafted ${r.p}s, ${pmPoolYears()} classes (${how})`),
+      mine == null ? null : pmHeroBox(`${r.p}${hit} chance`, pmPct(mine), how,
+        `Top-${hit} ${r.p} PPR/G season (8+ G) odds in yrs ${pmWindow(r.p)}`),
       mean != null ? pmHeroBox('Class rank', `${r.p}${rank}`, `of ${ranked.length} (${cls})`,
         `Model rank in ${cls} ${r.p} class (not consensus rank)`) : null,
       ...boxes);
@@ -13870,19 +13837,12 @@
   // role fork as scenarios instead of a silent point estimate. ponytail: hand list, one entry.
   const PM_TWO_WAY = { 'Travis Hunter|2025': 'CB' };
   function pmTwoWay(r) {
-    const d = PM_TWO_WAY[`${r.n}|${r.y}`], cuts = PM_CUTS[r.p];
-    if (!d || !cuts) return null;
-    const at = (pk) => cuts.map(c => pmPct(pmTopChance(r.p, c, pk, r.ts))).join(' / ');
+    const d = PM_TWO_WAY[`${r.n}|${r.y}`], hit = pmHit(r.p);
+    if (!d || !hit) return null;
+    const at = (pk) => pmPct(pmTopChance(r.p, hit, pk));
     return h('div', { class:'tip prm-line' }, h('b', null, `Two-way (${r.p}/${d}) unmodeled: `),
-      `offense-only model. ${r.p}${cuts[0]}/${cuts[1]} scenarios: full-time at pick ${r.pk} (${at(r.pk)}), `
-      + `profile only (${at(null)}), or ${r.p}-only pick 16 (${at(16)}) / 48 (${at(48)}).`);
-  }
-  // The same chances at fixed picks, so a college player with no mock still reads against slot.
-  function pmPickLine(r) {
-    const cuts = PM_CUTS[r.p];
-    if (!cuts) return null;
-    return `If drafted, ${r.p}${cuts[0]} / ${r.p}${cuts[1]} chance: ` + [16, 48, 83, 150].map(pk =>
-      `pick ${pk} ${cuts.map(c => pmPct(pmTopChance(r.p, c, pk, r.ts))).join(' / ')}`).join(', ');
+      `offense-only model. ${r.p}${hit} scenarios: full-time at pick ${r.pk} (${at(r.pk)}), `
+      + `or ${r.p}-only pick 16 (${at(16)}) / 48 (${at(48)}).`);
   }
   const pmTargetLine = (p) => {
     const cuts = PM_CUTS[p] || [];
@@ -13969,7 +13929,7 @@
         'Breakout age (Sept 1 of first dominator season; profile only)')),
       pmLadder(r),
       h('div', { class:'tip prm-line' }, `${pmTargetLine(r.p)} (${r.cls} eligible)`),
-      pmPickLine(r) ? h('div', { class:'tip prm-line' }, pmPickLine(r)) : null,
+      h('div', { class:'tip prm-line' }, PM_NO_PREDRAFT),
       r.ln ? h('div', { class:'tip prm-line' }, r.ln) : null,
       pmComps(r.cp));
   }
@@ -14046,12 +14006,14 @@
     main.appendChild(pageHeader({
       eyebrow:'PROSPECT MODEL',
       title: hist ? 'Prospects' : 'College prospects',
-      sub: '0-100 prospect score & early-career hit odds from draft pick + college profile.',
+      sub: 'Drafted players: 0-100 prospect score & early-career hit odds from draft pick. College players: profile only.',
     }));
     main.appendChild(h('details', { class:'source-note' }, h('summary', null, 'How the score works'),
       h('ul', { class:'source-note-list' }, ...[
-        'Percentile of top-finish odds vs drafted peers since 2008 (QB/TE: top-6/12 yrs 1-4; RB/WR: top-12/24 yrs 1-3, 8+ G).',
-        'College rows use mock consensus pick, UFD (pick 257) if unmocked in next class, or profile-only for later classes.',
+        `Percentile of hit-line odds vs drafted peers, ${pmPoolYears()} classes (QB/TE: top-12 yrs 1-4; RB/WR: top-24 yrs 1-3, 8+ G).`,
+        'Odds come from the actual draft pick alone: adding the college profile did not beat pick alone out of sample (model card).',
+        'Top-6 QB/TE and top-12 RB/WR odds are not shown: they are not a validated target, and at QB and WR they fail the calibration check out of sample.',
+        PM_NO_PREDRAFT,
         'Offense inputs only (no QB breakout age); Henry Ruggs omitted.',
       ].map(s => h('li', null, s)))));
 
@@ -14087,10 +14049,10 @@
       one ? null : ['p', 'Pos', { asc:true, fit:true }],
       hist || cls === 'future' ? ['cls', 'Class', { right:true, asc:true, title:'Draft he went in, or the first one he is eligible for' }] : null,
       hist || cls === 'future' || Number(cls) === next ? ['pk', 'Pick', { right:true, asc:true, title:'Draft pick (italic = mock consensus; UFD = unmocked in next class)' }] : null,
-      ['sc', 'Score', { right:true, title:'0-100 prospect score (pick + college profile percentile vs drafted since 2008)' }],
+      ['sc', 'Score', { right:true, title:`0-100 prospect score (draft-pick odds, percentile vs drafted ${pmPoolYears()})` }],
       ['ts', 'Profile %ile', { right:true, title:'College-only profile percentile vs drafted since 2008' }],
-      ...[0, 1].map(i => [`t${i}`, one ? `${pos}${PM_CUTS[pos][i]} %` : ['Elite %', 'Starter %'][i], { right:true,
-        title:`${one ? `Top-${PM_CUTS[pos][i]} ${pos}` : ['QB/TE top-6, RB/WR top-12', 'QB/TE top-12, RB/WR top-24'][i]} odds (yrs ${one ? pmWindow(pos) : '1-3; QB/TE 1-4'})` }]),
+      ['t1', one ? `${pos}${pmHit(pos)} %` : 'Starter %', { right:true,
+        title:`${one ? `Top-${pmHit(pos)} ${pos}` : 'QB/TE top-12, RB/WR top-24'} odds (yrs ${one ? pmWindow(pos) : '1-3; QB/TE 1-4'}), drafted players only` }],
       hist ? ['best', one ? `Best, yrs ${pmWindow(pos)}` : 'Best, early yrs', { right:true, asc:true, title:'Best window PPR/G rank (8+ G)' }] : null,
       hist ? ['cb', 'Career best', { right:true, asc:true, title:'Best career PPR/G rank (display only)' }] : null,
       pos === 'QB' ? null : ['ba', 'Breakout age', { right:true, asc:true, title:'Sept 1 age at first dominator season (muted = class estimate)' }],
@@ -14098,7 +14060,7 @@
     ].filter(Boolean);
     const get = (r, k) => k.startsWith('st.') ? pmInputVal(r, k.slice(3))
       : k === 'sc' ? pmScore(r)
-      : k === 't0' || k === 't1' ? (pmFitPick(r) ? pmTopChance(r.p, PM_CUTS[r.p][Number(k[1])], pmFitPick(r), r.ts) : null)
+      : k === 't1' ? pmTopChance(r.p, pmHit(r.p), pmFitPick(r))
       : k === 'best' ? (r.out ? r.out[2] || 999 : null)
       : k === 'cb' ? (r.cb ? r.cb[1] : null)
       : k === 'pk' ? (r.y ? r.pk : pmUfd(r) ? 999 : pmPick(r)) : r[k];
@@ -14115,9 +14077,7 @@
       if (k === 'ba') return r.p === 'QB' ? h('span', { class:'muted', title:'N/A for QBs' }, 'n/a') : pmAge(r, v);
       if (k === 'cb') return v == null ? '·' : h('span', { title:`${pmDec(r.cb[0])} PPR/G` }, `${r.p}${v}`);
       if (k === 'best') return v == null ? '·' : v === 999 ? h('span', { class:'muted' }, 'none') : `${r.p}${v}`;
-      if (v != null && !r.id && (k === 't0' || k === 't1')) return h('span', { class:'muted',
-        title:pmPick(r) ? `Mock pick ${pmDec(pmPick(r))}` : 'Projected UFD (pick 257)' }, pmPct(v));
-      if (k === 't0' || k === 't1') return v == null ? h('span', { class:'muted', title:'Unmocked; open card for pick scenarios' }, '·') : pmPct(v);
+      if (k === 't1' || k === 'sc') return v == null ? h('span', { class:'muted', title:r.y ? 'No pick on file' : PM_NO_PREDRAFT }, '·') : k === 't1' ? pmPct(v) : String(v);
       if (k === 'pk' && !r.y) return v == null ? '·' : v === 999 ? h('em', { class:'muted', title:'Projected undrafted' }, 'UFD') : h('em', { title:'Median mock pick' }, pmDec(v));
       return v == null ? '·' : String(v);
     };

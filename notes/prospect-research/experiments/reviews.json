@@ -195,6 +195,26 @@
   "F2 RB": {
    "verdict": "rejected by the coordinator: passes every preregistered gate but fragile (drop-5 support 77.6%, D1 slope 0.76 in band 54%) and the whole gain comes from 14 Alabama RB rows (without them -0.00006, 46%)",
    "by": "lanes/features/results.md"
+  },
+  "M4 QB": {
+   "verdict": "reject (confirmed); K0 stays",
+   "by": "review-m4-2026-11-24.md",
+   "reason": "cut model fails charter v2 numeric rules at both cuts; reproduction exact"
+  },
+  "M4 RB": {
+   "verdict": "reject (confirmed); K0 stays",
+   "by": "review-m4-2026-11-24.md",
+   "reason": "cut model fails charter v2 numeric rules at both cuts; reproduction exact"
+  },
+  "M4 WR": {
+   "verdict": "reject (confirmed); K0 stays",
+   "by": "review-m4-2026-11-24.md",
+   "reason": "cut model fails charter v2 numeric rules at both cuts; reproduction exact"
+  },
+  "M4 TE": {
+   "verdict": "reject (confirmed); K0 stays",
+   "by": "review-m4-2026-11-24.md",
+   "reason": "cut model fails charter v2 numeric rules at both cuts; reproduction exact"
   }
  }
 }
