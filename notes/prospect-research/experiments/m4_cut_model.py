@@ -211,7 +211,8 @@ def run(freeze=False, say=print):
                 f"{res['main']['rules_M4']['verdict']}, PICK {res['main']['rules_PICK']['verdict']}")
     rec = {"id": "M4", "model": "pmTopChance / pmScore (site/js/app.js), registry m4-prospect-score",
            "created_at_utc": stamp, "charter": pe.CHARTER, "git_head": pe.git_head(), "sources_sha256": src_hash,
-           "script_sha256": hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest(),
+           # LF-normalized, so a CRLF checkout hashes the same as the committed blob
+           "script_sha256": hashlib.sha256(pathlib.Path(__file__).read_bytes().replace(bytes([13, 10]), bytes([10]))).hexdigest(),
            "command": "python notes/prospect-research/experiments/m4_cut_model.py",
            "spec": {"M4": "IRLS L2 lambda 1 (no intercept penalty) on [1, log pick, ts/100]; ts rebuilt in fold",
                     "PICK": "IRLS L2 lambda 1 on [1, log pick]", "K0": "bpm.fit_baseline: RCS in log pick, C 0.1"},

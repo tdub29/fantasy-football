@@ -129,7 +129,7 @@ pre-registered, so it decides nothing.
 The site now reads `site/data/prospect-cut-model.js`, written by the same script with `--freeze`: K0
 at the hit line only (QB/TE top-12, RB/WR top-24), fit once on every mature class 2008+ per
 position, tabulated at picks 1-262. It carries the fit date, git head, source hash, the script's
-sha256 and a sha256 of its own object (compact JSON without the sha256 field). The browser fits
+sha256 (of its LF-normalized bytes, so a CRLF checkout and the committed blob hash alike) and a sha256 of its own object (compact JSON without the sha256 field). The browser fits
 nothing. The prospect score is the percentile of the hit-line chance among drafted players in
 `prospect-model.js` (classes 2014-2026), so it orders drafted players by pick alone.
 
@@ -150,7 +150,11 @@ reproduced `M4.json` results, the source hash and `M4-oof.csv` byte for byte.
 
 Owner: ops. Monitor: `python notes/prospect-research/experiments/m4_monitor.py` compares served picks
 with fit-era picks (quartiles, round-1 share, picks outside the table) and reports per-class and pooled
-calibration on each newly closed class (first: the 2024 RB/WR class after the 2026 NFL season). Kill
+calibration on each newly closed class (first: the 2024 RB/WR class after the 2026 NFL season). It
+takes picks and labels from the full drafted population in the prospect DB, the same rows
+`m4_cut_model.py` scores, not from `prospect-model.js`, which drops draftees with no Sleeper id (46 of
+708 closed 2014+ hit-line rows in the 2026-11-24 build, 47 in the 2026-11-17 one, all misses, so it would inflate the observed hit rate); its self-check
+asserts that its closed rows match `M4-oof.csv` row for row. Kill
 condition, matching charter rule 5: on a position's pooled newly closed classes with at least 10 hits, observed hits outside the 95% interval of the summed forecast, or a calibration slope whose 95% class-bootstrap interval lies entirely outside 0.75-1.25 (a point slope outside the band alone does not trip it), pulls that position's chances and score until a
 refit passes the charter rules. The two tests run at 95% each so a calibrated position trips about 10%
 of the time in all; the monitor's self-check asserts at most 10% false kills on simulated calibrated

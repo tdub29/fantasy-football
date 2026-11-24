@@ -1,7 +1,7 @@
 """Monitor for the served prospect chances (registry m4-prospect-score, frozen K0 hit line).
 
-Reads the frozen table (site/data/prospect-cut-model.js) and the drafted rows in
-site/data/prospect-model.js, then reports, per position:
+Reads the frozen table (site/data/prospect-cut-model.js) and the full drafted population from the
+prospect DB (bpm.prepare, the rows m4_cut_model.py scores), then reports, per position:
   inputs       served picks (drafted classes after the fit) against the fit-era picks in the same file:
                n, quartiles, round-1 share, and picks outside the table (above 262)
   calibration  per newly closed class (drafted after the fit, outcome window now closed): n, hits, mean
@@ -98,36 +98,65 @@ def check(y, p, g=None):
     return out
 
 
-def run():
+def population():
+    """The full drafted population m4_cut_model.py scores (bpm.prepare on the DB): every linked
+    QB/RB/WR/TE draftee 2008+, with or without a Sleeper id. prospect-model.js drops rows with no
+    Sleeper id, and those are almost all misses, so it cannot supply labels."""
+    import warnings
+    warnings.filterwarnings("ignore")
+    sys.path.insert(0, str(ROOT / "projections"))
+    import build_prospect_model as bpm
+    bpm.SOURCE = "db"
+    _, _, _, t, _ = bpm.prepare(say=lambda *a: None)
+    return t[t.gsis_id.notna()]
+
+
+def run(t=None):
     cm = load_js(ROOT / "site" / "data" / "prospect-cut-model.js")
-    pm = load_js(ROOT / "site" / "data" / "prospect-model.js")
-    rows = [r for r in pm["nfl"].values() if r.get("pk")]
-    report = {"frozen_at_utc": cm["frozen_at_utc"], "frozen_sha256": cm["sha256"], "data_generated": pm.get("generated"),
+    t = population() if t is None else t
+    report = {"frozen_at_utc": cm["frozen_at_utc"], "frozen_sha256": cm["sha256"],
+              "population": "drafted, linked college career, from the prospect DB (same rows as m4_cut_model.py)",
               "positions": {}}
+    q = lambda a: [float(v) for v in np.percentile(a, [25, 50, 75])] if len(a) else None   # noqa: E731
+    r1 = lambda a: round(float(np.mean(np.asarray(a) <= 32)), 3) if len(a) else None   # noqa: E731
     for pos, cut in cm["cuts"].items():
         table = cm["p"][f"{pos}{cut}"]
         lo, hi = cm["fit"][f"{pos}{cut}"]["classes"]
-        fit_pk = [r["pk"] for r in rows if r["p"] == pos and lo <= r["y"] <= hi]
-        new = [r for r in rows if r["p"] == pos and r["y"] > hi]
-        q = lambda a: [float(v) for v in np.percentile(a, [25, 50, 75])] if a else None   # noqa: E731
-        r1 = lambda a: round(float(np.mean(np.asarray(a) <= 32)), 3) if a else None   # noqa: E731
-        served = [r["pk"] for r in new]
-        closed = [r for r in new if r.get("out")]
-        y = [1.0 if r["out"][2] and r["out"][2] <= cut else 0.0 for r in closed]
-        p = [chance(table, r["pk"]) for r in closed]
-        per = {}
-        for r, yi, pi in zip(closed, y, p):
-            c = per.setdefault(r["y"], {"n": 0, "hits": 0, "sum_p": 0.0})
-            c["n"] += 1; c["hits"] += int(yi); c["sum_p"] += pi
+        tp = t[t.pos == pos]
+        fit_pk = tp.pick[tp.draft_year.between(lo, hi)].to_numpy(float)
+        new = tp[tp.draft_year > hi]
+        served = new.pick.to_numpy(float)
+        closed = new[new.hit.notna()]
+        y = (np.nan_to_num(closed.best_rank.to_numpy(float), nan=999) <= cut).astype(float)
+        pr = np.array([chance(table, pk) for pk in closed.pick], float)
+        g = closed.draft_year.to_numpy(int)
         report["positions"][pos] = {
             "cut": cut, "fit_classes": [lo, hi],
-            "inputs": {"fit_era_in_file": {"n": len(fit_pk), "pick_q25_q50_q75": q(fit_pk), "r1_share": r1(fit_pk)},
+            "inputs": {"fit_era": {"n": len(fit_pk), "pick_q25_q50_q75": q(fit_pk), "r1_share": r1(fit_pk)},
                        "served": {"n": len(served), "pick_q25_q50_q75": q(served), "r1_share": r1(served),
-                                  "outside_table": sum(pk > len(table) for pk in served)}},
-            "per_class": {str(k): {"n": v["n"], "hits": v["hits"], "mean_forecast": round(v["sum_p"] / v["n"], 3),
-                                   "observed": round(v["hits"] / v["n"], 3)} for k, v in sorted(per.items())},
-            "pooled": check(y, p, [r["y"] for r in closed]) if closed else "no newly closed class yet"}
+                                  "outside_table": int((served > len(table)).sum())}},
+            "per_class": {str(c): {"n": int((g == c).sum()), "hits": int(y[g == c].sum()),
+                                   "mean_forecast": round(float(pr[g == c].mean()), 3),
+                                   "observed": round(float(y[g == c].mean()), 3)} for c in sorted(set(g.tolist()))},
+            "pooled": check(y, pr, g) if len(closed) else "no newly closed class yet"}
     return report
+
+
+def population_check():
+    """The monitor's population equals the scored one: per position, closed fit-era rows here match the
+    hit-line rows in M4-oof.csv, and every frozen chance reproduces from the table at the same picks."""
+    import pandas as pd
+    cm = load_js(ROOT / "site" / "data" / "prospect-cut-model.js")
+    oof = pd.read_csv(pathlib.Path(__file__).with_name("M4-oof.csv"))
+    t = population()
+    for pos, cut in cm["cuts"].items():
+        lo, hi = cm["fit"][f"{pos}{cut}"]["classes"]
+        mine = t[(t.pos == pos) & t.draft_year.between(lo, hi) & t.hit.notna()]
+        ref = oof[(oof.pos == pos) & (oof.cut == cut)]
+        assert len(mine) == len(ref) == cm["fit"][f"{pos}{cut}"]["n"], (pos, len(mine), len(ref))
+        assert sorted(mine.gsis_id) == sorted(ref.gsis_id), f"{pos}: monitor rows differ from M4-oof.csv"
+        print(f"{pos}{cut}: {len(mine)} closed rows match M4-oof.csv")
+    return t
 
 
 def self_check():
@@ -157,6 +186,8 @@ if __name__ == "__main__":
     ap.add_argument("--self-check", action="store_true")
     if ap.parse_args().self_check:
         self_check()
+        run(population_check())
+        print("population check ok")
         sys.exit(0)
     rep = run()
     print(json.dumps(rep, indent=1))
