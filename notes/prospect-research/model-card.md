@@ -152,6 +152,13 @@ site shows the TE base rate instead, as a note: 41 of 203 drafted TEs (2008-2022
 had a top-12 PPR/G season in NFL years 1-4. The first cuts fail the same bar too (QB6 72.9%, WR12
 88.1%, TE6 86.8%; RB12 100%), and none of them is shown either.
 
+Draftees with no linked college record (2026-11-25, `experiments/d2_nocfb_k0.py` and `.json`): K0 is
+fit only on linked draftees, so the frozen chance was scored on the unlinked ones, all closed classes
+2008+. Pooled QB, RB and WR: 6 hits against 9.2 expected, n 80 (QB 1 vs 2.3, n 12; RB 3 vs 3.2, n 23;
+WR 2 vs 3.6, n 45). No position had the 10 hits a calibration slope needs. The slice is too small to
+validate or reject, so these rows keep their chance and score with a note on the card: pick-only, from
+the draft-only model, not validated for draftees without college data. TE shows no chance at all.
+
 What is not shown, and why:
 - **First-cut chances (QB/TE top-6, RB/WR top-12).** The first cut is not a charter target. Out of
   sample K0 fails the slope band at QB6 (0.58) and WR12 (0.69); worst slice WR12 round 1, n 45,

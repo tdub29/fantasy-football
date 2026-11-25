@@ -13933,6 +13933,10 @@
       ]),
       pmTwoWay(me),
       me.p === 'TE' ? h('div', { class:'tip prm-line' }, PM_TE_NOTE) : null,
+      // No linked college record: the chance is the draft-only curve at his pick, and that slice was
+      // not validated (d2_* experiments: 6 hits against 9.2 expected, n 80, QB/RB/WR pooled).
+      me.nocfb && me.p !== 'TE' && pmTopChance(me.p, pmHit(me.p), pmFitPick(me)) != null
+        ? h('div', { class:'tip prm-line' }, 'Pick-only chance from the draft-only model, not validated for draftees without college data.') : null,
       pmOutcome(me, meta, years),
       pmGrades(me.p, pmGradeRows(me.p, me, pmYpc('nfl', String(sleeper.id)),
         'Breakout age (Sept 1 of first dominator season)')),
@@ -14295,8 +14299,9 @@
       how:['Y: his best PPR points per game in NFL years 1-3 (QB and TE: 1-4), minus replacement.',
         `Replacement: the median best of players who finished near ${ps.map(p => `${p}${PM_CUTS[p][1]} (${pmDec(pmRepl(p))})`).join(', ')}.`,
         'No 8-game season counts as 0 PPG.',
-        'Left off: college players and classes whose window is still open. Future classes sit on the rail under the chart.'],
-      note:'Y: best early-career PPG above a replacement starter. No 8-game season counts as 0. Drafted classes with a closed window only.',
+        'Left off: college players and classes whose window is still open. Future classes sit on the rail under the chart.',
+        'Also left off: TE (no score) and draftees with no Sleeper id, who are misses, so the low end shows fewer players than really missed.'],
+      note:'Y: best early-career PPG above a replacement starter. No 8-game season counts as 0. Drafted classes with a closed window only; excludes TE and draftees with no Sleeper id (all misses).',
       yRef:{ v:0, label:'replacement', key:'Dotted: replacement level, 0 on Y',
         title:'Dotted line at 0: replacement level, the median best PPG of players who finished near the position cutoff. Above it beat a replacement starter' },
     });
