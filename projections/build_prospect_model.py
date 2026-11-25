@@ -35,6 +35,7 @@ import math
 import os
 import pathlib
 import re
+import sqlite3
 import sys
 import warnings
 
@@ -61,7 +62,31 @@ SLEEPER_DUMP = ROOT / "players-nfl.json"
 
 FIRST_CFB = 2004            # first sportsdataverse college season (2004 is thin, shares still valid)
 SEASON = 2026               # current college + NFL season (in progress)
-LAST_NFL = 2025             # last completed NFL season
+
+
+def last_completed_nfl(today: dt.date | None = None) -> int:
+    """Latest NFL regular season that has resolved (label-maturity rule 2: derived, not typed).
+    From the store: the newest season in which some player has a full schedule of games
+    (16 before 2021, 17 after; team-total rows have no player_id). Without a store (a fresh
+    worktree), from dates: a season's week 18 is done by Jan 15 of the next year."""
+    today = today or dt.date.today()
+    by_date = today.year - 1 if today >= dt.date(today.year, 1, 15) else today.year - 2
+    if not pdb.DB_PATH.exists():
+        return by_date
+    con = sqlite3.connect(f"file:{pdb.DB_PATH.as_posix()}?mode=ro", uri=True)
+    try:
+        rows = con.execute("SELECT season, MAX(games) FROM nfl_player_season "
+                           "WHERE player_id IS NOT NULL AND season_type = 'REG' GROUP BY season").fetchall()
+    finally:
+        con.close()
+    last = max(s for s, g in rows if g >= (17 if s >= 2021 else 16))
+    # No label may resolve after today: a season the calendar says is unfinished cannot count.
+    assert last <= by_date, f"store calls NFL {last} complete but its regular season ends after {today}"
+    return last
+
+
+LAST_NFL = last_completed_nfl()   # last completed NFL season (2025 as of 2026-11)
+assert LAST_NFL < SEASON, (LAST_NFL, SEASON)
 FIRST_CLASS = 2008          # first draft class with a full college career on file
 SCORE_FROM = 2014           # NFL draftees scored for the player card
 MIN_GAMES = 8               # an NFL season counts toward the target at 8+ games

@@ -1,0 +1,283 @@
+{
+ "what": "frozen K0 hit-line chance scored on drafted players outside its fit population",
+ "frozen_at_utc": "2026-11-25T09:34:22+00:00",
+ "frozen_sha256": "ae1f25096b8e96a98088a9039c396c951eaf4baad5ba44873b0cd1d824dd5fb2",
+ "db_sha256": "9f922f98b047a204d1720ac466b1fa00236e24fd54762ee64aef72bcd8fda803",
+ "script_sha256": "508f32abd5802e71203e3d4ba0122fe49f513d8bce3c53ce90020142eb4da80d",
+ "last_nfl": 2025,
+ "last_class": {
+  "WR": 2023,
+  "RB": 2023,
+  "QB": 2022,
+  "TE": 2022
+ },
+ "excluded_without_gsis_id_unscorable": 12,
+ "positions": {
+  "QB": {
+   "cut": 12,
+   "fit_population_rows": 158,
+   "excluded_rows": 12,
+   "excluded_closed": 12,
+   "excluded_pick_q25_q50_q75": [
+    51.0,
+    153.0,
+    173.5
+   ],
+   "fit_pick_q25_q50_q75": [
+    27.5,
+    103.5,
+    182.5
+   ],
+   "all_closed_2008plus": {
+    "n": 12,
+    "classes": 10,
+    "hits": 1,
+    "expected_hits": 2.3,
+    "o_over_e": 0.436,
+    "mean_chance": 0.1913,
+    "base_rate": 0.2025,
+    "logloss_k0": 0.2032,
+    "logloss_base": 0.3405,
+    "obs_minus_exp_90": [
+     -2.482,
+     -0.064
+    ],
+    "o_over_e_90": [
+     0.0,
+     0.975
+    ],
+    "logloss_gain_90": [
+     -0.047,
+     0.355
+    ],
+    "p_gain_gt_0": 0.876,
+    "slope": "not estimated: 1 hits < 10",
+    "by_round": {
+     "R1-2": {
+      "n": 4,
+      "hits": 1,
+      "expected": 1.8
+     },
+     "R3-4": {
+      "n": 1,
+      "hits": 0,
+      "expected": 0.1
+     },
+     "R5-7": {
+      "n": 7,
+      "hits": 0,
+      "expected": 0.4
+     }
+    }
+   },
+   "served_nocfb_closed_2014plus": {
+    "n": 5,
+    "classes": 5,
+    "hits": 1,
+    "expected_hits": 1.63,
+    "o_over_e": 0.612,
+    "mean_chance": 0.3266,
+    "base_rate": 0.2025,
+    "logloss_k0": 0.3396,
+    "logloss_base": 0.5004,
+    "obs_minus_exp_90": [
+     -1.675,
+     0.361
+    ],
+    "o_over_e_90": [
+     0.0,
+     1.22
+    ],
+    "logloss_gain_90": [
+     -0.257,
+     0.594
+    ],
+    "p_gain_gt_0": 0.646,
+    "slope": "not estimated: 1 hits < 10"
+   }
+  },
+  "RB": {
+   "cut": 24,
+   "fit_population_rows": 319,
+   "excluded_rows": 23,
+   "excluded_closed": 23,
+   "excluded_pick_q25_q50_q75": [
+    128.5,
+    179.0,
+    210.5
+   ],
+   "fit_pick_q25_q50_q75": [
+    73.0,
+    134.0,
+    194.0
+   ],
+   "all_closed_2008plus": {
+    "n": 23,
+    "classes": 11,
+    "hits": 3,
+    "expected_hits": 3.22,
+    "o_over_e": 0.932,
+    "mean_chance": 0.14,
+    "base_rate": 0.2821,
+    "logloss_k0": 0.3205,
+    "logloss_base": 0.4533,
+    "obs_minus_exp_90": [
+     -2.544,
+     2.164
+    ],
+    "o_over_e_90": [
+     0.273,
+     1.703
+    ],
+    "logloss_gain_90": [
+     0.075,
+     0.199
+    ],
+    "p_gain_gt_0": 1.0,
+    "slope": "not estimated: 3 hits < 10",
+    "by_round": {
+     "R3-4": {
+      "n": 8,
+      "hits": 2,
+      "expected": 1.87
+     },
+     "R5-7": {
+      "n": 15,
+      "hits": 1,
+      "expected": 1.35
+     }
+    }
+   },
+   "served_nocfb_closed_2014plus": {
+    "n": 9,
+    "classes": 5,
+    "hits": 2,
+    "expected_hits": 1.82,
+    "o_over_e": 1.097,
+    "mean_chance": 0.2026,
+    "base_rate": 0.2821,
+    "logloss_k0": 0.4559,
+    "logloss_base": 0.539,
+    "obs_minus_exp_90": [
+     -1.843,
+     2.488
+    ],
+    "o_over_e_90": [
+     0.0,
+     2.645
+    ],
+    "logloss_gain_90": [
+     0.028,
+     0.163
+    ],
+    "p_gain_gt_0": 0.996,
+    "slope": "not estimated: 2 hits < 10"
+   }
+  },
+  "WR": {
+   "cut": 24,
+   "fit_population_rows": 462,
+   "excluded_rows": 45,
+   "excluded_closed": 45,
+   "excluded_pick_q25_q50_q75": [
+    99.0,
+    180.0,
+    220.0
+   ],
+   "fit_pick_q25_q50_q75": [
+    57.0,
+    112.5,
+    186.0
+   ],
+   "all_closed_2008plus": {
+    "n": 45,
+    "classes": 15,
+    "hits": 2,
+    "expected_hits": 3.64,
+    "o_over_e": 0.55,
+    "mean_chance": 0.0808,
+    "base_rate": 0.1602,
+    "logloss_k0": 0.1703,
+    "logloss_base": 0.2482,
+    "obs_minus_exp_90": [
+     -3.787,
+     0.844
+    ],
+    "o_over_e_90": [
+     0.0,
+     1.265
+    ],
+    "logloss_gain_90": [
+     0.047,
+     0.106
+    ],
+    "p_gain_gt_0": 1.0,
+    "slope": "not estimated: 2 hits < 10",
+    "by_round": {
+     "R1-2": {
+      "n": 5,
+      "hits": 0,
+      "expected": 1.48
+     },
+     "R3-4": {
+      "n": 10,
+      "hits": 2,
+      "expected": 1.32
+     },
+     "R5-7": {
+      "n": 30,
+      "hits": 0,
+      "expected": 0.84
+     }
+    }
+   },
+   "served_nocfb_closed_2014plus": {
+    "n": 19,
+    "classes": 8,
+    "hits": 1,
+    "expected_hits": 1.49,
+    "o_over_e": 0.669,
+    "mean_chance": 0.0787,
+    "base_rate": 0.1602,
+    "logloss_k0": 0.1645,
+    "logloss_base": 0.2618,
+    "obs_minus_exp_90": [
+     -1.708,
+     1.034
+    ],
+    "o_over_e_90": [
+     0.0,
+     1.683
+    ],
+    "logloss_gain_90": [
+     0.064,
+     0.126
+    ],
+    "p_gain_gt_0": 1.0,
+    "slope": "not estimated: 1 hits < 10"
+   }
+  },
+  "TE": {
+   "cut": 12,
+   "fit_population_rows": 203,
+   "excluded_rows": 19,
+   "excluded_closed": 19,
+   "excluded_pick_q25_q50_q75": [
+    133.5,
+    168.0,
+    178.5
+   ],
+   "fit_pick_q25_q50_q75": [
+    85.0,
+    128.0,
+    192.0
+   ],
+   "k0": "no frozen table: chance not served at this position",
+   "observed": {
+    "n": 19,
+    "hits": 2
+   }
+  }
+ },
+ "served_nocfb_rows_all_classes": 53
+}
