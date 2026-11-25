@@ -51,6 +51,9 @@ LAMBDA = 1.0
 ROUNDS = (("R1", 1, 32), ("R2", 33, 64), ("R3", 65, 100), ("D3", 101, 999))
 SERVE_PICKS = 262          # largest pick in the training rows; 257 is the app's projected-UFD slot
 FREEZE = ROOT / "site" / "data" / "prospect-cut-model.js"
+# Positions whose K0 hit-line chance is served. TE is out: on forward folds K0 beat the fold-local TE
+# base rate in under 90% of class resamples (M4.json K0_vs_BASE), the reference-policy bar.
+SERVED = ("QB", "RB", "WR")
 
 
 def irls(X, y, lam=LAMBDA):
@@ -129,7 +132,13 @@ def predictors(tp, y, win, from_class=None):
         if y[tr].sum() < 3:
             return np.full(te.sum(), np.nan)
         return bpm.fit_baseline(lp[tr, None], y[tr], None).predict_proba(lp[te, None])[:, 1]
-    return {"M4": m4, "PICK": pick, "K0": k0}
+
+    def base(scheme, c, te):
+        tr = mask(scheme, c)
+        if y[tr].sum() < 3:
+            return np.full(te.sum(), np.nan)
+        return np.full(te.sum(), y[tr].mean())
+    return {"M4": m4, "PICK": pick, "K0": k0, "BASE": base}
 
 
 def interval(y, p, g, n=4000, seed=7):
@@ -184,10 +193,12 @@ def run(freeze=False, say=print):
                 configs += [f"{pos} cut{cut} {m} {s} train={'2008+' if not frm else '2014+'}" for m in pr for s in p]
                 blk = {}
                 for s in ("fwd", "loco"):
-                    k = ~np.isnan(p[s]["K0"]) & ~np.isnan(p[s]["M4"]) & ~np.isnan(p[s]["PICK"])
+                    k = ~np.isnan(p[s]["K0"]) & ~np.isnan(p[s]["M4"]) & ~np.isnan(p[s]["PICK"]) & ~np.isnan(p[s]["BASE"])
                     pk = {m: np.where(k, v, np.nan) for m, v in p[s].items()}
                     cmp_ = {c: compare(tp, y, pk["K0"], pk[c], s) for c in ("M4", "PICK")}
                     cmp_["M4_vs_PICK"] = compare(tp, y, pk["PICK"], pk["M4"], s)
+                    # Reference-policy check: does the served K0 beat the training base rate (fold-local)?
+                    cmp_["K0_vs_BASE"] = compare(tp, y, pk["BASE"], pk["K0"], s)
                     blk[s] = {"n": int(k.sum()), "events": int(y[k].sum()), "vs": cmp_,
                               "intervals": {m: interval(y[k], pk[m][k], g[k]) for m in pk}}
                     if s == "fwd":
@@ -236,7 +247,7 @@ def write_freeze(t, rec, results):
     class 2008+, tabulated at picks 1..SERVE_PICKS; index i holds pick i + 1."""
     table, meta = {}, {}
     picks = np.log(np.arange(1, SERVE_PICKS + 1, dtype=float))[:, None]
-    for pos in bpm.POS:
+    for pos in SERVED:
         tp = t[(t.pos == pos) & t.gsis_id.notna() & t.draft_year.between(bpm.FIRST_CLASS, bpm.LAST_CLASS[pos])
                & t.hit.notna()]
         rank = np.nan_to_num(tp.best_rank.to_numpy(float), nan=999)
@@ -250,7 +261,8 @@ def write_freeze(t, rec, results):
             "sources_sha256": rec["sources_sha256"], "script_sha256": rec["script_sha256"],
             "scoring": "notes/prospect-research/experiments/M4.json",
             "model": "draft-only restricted cubic spline in log pick, C 0.1 (charter v2 frozen baseline)",
-            "cuts": {p: bpm.TARGET[p][0] for p in bpm.POS}, "fit": meta, "p": table}
+            "cuts": {p: bpm.TARGET[p][0] for p in SERVED}, "fit": meta, "p": table,
+            "not_served": {"TE": "K0 did not beat the TE base rate in 90% of class resamples"}}
     js = json.dumps(body, separators=(",", ":"))
     body["sha256"] = hashlib.sha256(js.encode()).hexdigest()
     FREEZE.write_text("// Frozen by notes/prospect-research/experiments/m4_cut_model.py --freeze. Do not hand-edit;\n"

@@ -13601,6 +13601,10 @@
   const pmFitPick = (r) => r.y ? r.pk : undefined;
   const pmHit = (p) => (PM_CUTS[p] || [])[1];
   const PM_NO_PREDRAFT = 'No validated pre-draft model: chances and the prospect score appear once he is drafted.';
+  // TE gets no chance or score: out of sample the draft-pick curve did not beat the TE base rate in 90% of
+  // draft-class resamples (M4.json, K0_vs_BASE), so the frozen file holds no TE table. The base rate is the fallback.
+  const PM_TE_NOTE = 'TE odds not shown: the draft-pick model did not reliably beat the TE base rate out of sample. '
+    + 'Base rate: about 1 in 5 drafted TEs (41 of 203, 2008-2022 classes) had a top-12 PPR/G season in years 1-4.';
   const pmWindow = (p) => ((window.PROSPECT_MODEL.pos[p] || {}).target || '').replace(/^.* in NFL years /, '');
   // Draft classes in the score's reference pool (the drafted rows in prospect-model.js).
   const pmPoolYears = () => {
@@ -13883,26 +13887,6 @@
             `Below top ${lad[lad.length - 1]}`) : null)));
   }
 
-  // Hit ladder: drafted players (windows closed) whose prospect score sat within 8 of his, and the
-  // share that reached each cut. ponytail: fixed +-8 band, widen if n runs thin at the extremes.
-  function pmLadder(r) {
-    const M = window.PROSPECT_MODEL, s = pmScore(r), cuts = PM_CUTS[r.p];
-    if (s == null || !cuts || pmFitPick(r) == null) return null;
-    const near = Object.values(M.nfl).filter(x => x.p === r.p && x.out && x.pk && x !== r)
-      .filter(x => { const v = pmScore(x); return v != null && Math.abs(v - s) <= 8; });
-    if (near.length < 5) return null;
-    return h('section', { class:'prm-sec' },
-      h('div', { class:'prm-sec-title' }, h('span', null, 'Hit rate'), h('span', null, `${near.length} ${r.p}s at ${Math.max(0, s - 8)}-${Math.min(100, s + 8)}`)),
-      h('div', { class:'prm-ladder' }, ...cuts.map(c => {
-        const k = near.filter(x => x.out[2] && x.out[2] <= c).length, f = k / near.length;
-        return h('div', { class:'prm-rung', title:`${k}/${near.length} (${Math.round(f*100)}%) within +-8 score hit ${r.p}${c} (yrs ${pmWindow(r.p)})` },
-          h('div', { class:'prm-rung-label' }, `${r.p}${c}`),
-          h('div', { class:'prm-rung-value tnum' }, pmPct(f)),
-          h('span', { class:'seg-meter' }, h('i', { style:{ width:`${Math.round(f * 100)}%` } })),
-          h('div', { class:'tip' }, `${k}/${near.length}`));
-      })));
-  }
-
   function collegeProspectBlock(r) {
     const M = window.PROSPECT_MODEL;
     if (!M || !r) return null;
@@ -13927,7 +13911,6 @@
       ]),
       pmGrades(r.p, pmGradeRows(r.p, r, pmYpc('college', r.cid),
         'Breakout age (Sept 1 of first dominator season; profile only)')),
-      pmLadder(r),
       h('div', { class:'tip prm-line' }, `${pmTargetLine(r.p)} (${r.cls} eligible)`),
       h('div', { class:'tip prm-line' }, PM_NO_PREDRAFT),
       r.ln ? h('div', { class:'tip prm-line' }, r.ln) : null,
@@ -13949,6 +13932,7 @@
         me.st && me.st.stars != null ? pmBioCell('Recruit', `${me.st.stars}-star`, 'HS recruiting stars') : null,
       ]),
       pmTwoWay(me),
+      me.p === 'TE' ? h('div', { class:'tip prm-line' }, PM_TE_NOTE) : null,
       pmOutcome(me, meta, years),
       pmGrades(me.p, pmGradeRows(me.p, me, pmYpc('nfl', String(sleeper.id)),
         'Breakout age (Sept 1 of first dominator season)')),
@@ -14014,6 +13998,7 @@
         'Odds come from the actual draft pick alone: adding the college profile did not beat pick alone out of sample (model card).',
         'Top-6 QB/TE and top-12 RB/WR odds are not shown: they are not a validated target, and at QB and WR they fail the calibration check out of sample.',
         PM_NO_PREDRAFT,
+        PM_TE_NOTE,
         'Offense inputs only (no QB breakout age); Henry Ruggs omitted.',
       ].map(s => h('li', null, s)))));
 
@@ -14077,7 +14062,7 @@
       if (k === 'ba') return r.p === 'QB' ? h('span', { class:'muted', title:'N/A for QBs' }, 'n/a') : pmAge(r, v);
       if (k === 'cb') return v == null ? '·' : h('span', { title:`${pmDec(r.cb[0])} PPR/G` }, `${r.p}${v}`);
       if (k === 'best') return v == null ? '·' : v === 999 ? h('span', { class:'muted' }, 'none') : `${r.p}${v}`;
-      if (k === 't1' || k === 'sc') return v == null ? h('span', { class:'muted', title:r.y ? 'No pick on file' : PM_NO_PREDRAFT }, '·') : k === 't1' ? pmPct(v) : String(v);
+      if (k === 't1' || k === 'sc') return v == null ? h('span', { class:'muted', title:!r.y ? PM_NO_PREDRAFT : r.p === 'TE' ? PM_TE_NOTE : 'No pick on file' }, '·') : k === 't1' ? pmPct(v) : String(v);
       if (k === 'pk' && !r.y) return v == null ? '·' : v === 999 ? h('em', { class:'muted', title:'Projected undrafted' }, 'UFD') : h('em', { title:'Median mock pick' }, pmDec(v));
       return v == null ? '·' : String(v);
     };
