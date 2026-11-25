@@ -215,6 +215,11 @@
    "verdict": "reject (confirmed); K0 stays",
    "by": "review-m4-2026-11-24.md",
    "reason": "cut model fails charter v2 numeric rules at both cuts; reproduction exact"
+  },
+  "M4 K0 withdrawals 2026-11-25": {
+   "verdict": "FAIL (round 5)",
+   "by": "review-m4-2026-11-24.md",
+   "reason": "TE withdrawal follows the locked base-rate rule (88.6%); QB withdrawal rests on 2020+ (report-only) and a non-locked nested slope; WR kept although its 2020+ slope interval (1.30-3.29) trips the monitor kill rule; WR '1.07 holds on 2013-2019' false (0.85); registry m4 row stale"
   }
  }
 }
