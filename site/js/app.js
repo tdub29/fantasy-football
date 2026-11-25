@@ -13601,10 +13601,16 @@
   const pmFitPick = (r) => r.y ? r.pk : undefined;
   const pmHit = (p) => (PM_CUTS[p] || [])[1];
   const PM_NO_PREDRAFT = 'No validated pre-draft model: chances and the prospect score appear once he is drafted.';
-  // TE gets no chance or score: out of sample the draft-pick curve did not beat the TE base rate in 90% of
-  // draft-class resamples (M4.json, K0_vs_BASE), so the frozen file holds no TE table. The base rate is the fallback.
-  const PM_TE_NOTE = 'TE odds not shown: the draft-pick model did not reliably beat the TE base rate out of sample. '
-    + 'Base rate: about 1 in 5 drafted TEs (41 of 203, 2008-2022 classes) had a top-12 PPR/G season in years 1-4.';
+  // QB and TE get no chance or score; the frozen file holds tables for RB and WR only. TE: the draft-pick
+  // curve beat the TE base rate in under 90% of draft-class resamples (M4.json, K0_vs_BASE). QB: with the
+  // spec chosen inside each fold its calibration slope is 0.68, and on the 2020+ classes it beat the QB base
+  // rate in 85% of resamples (m5_k0_selection_optimism.json). The base rate is the fallback.
+  const PM_WITHHELD = {
+    QB: 'QB odds not shown: the draft-pick model was not reliably better than the QB base rate out of sample. '
+      + 'Base rate: about 1 in 5 drafted QBs (32 of 158, 2008-2022 classes) had a top-12 PPR/G season in years 1-4.',
+    TE: 'TE odds not shown: the draft-pick model did not reliably beat the TE base rate out of sample. '
+      + 'Base rate: about 1 in 5 drafted TEs (41 of 203, 2008-2022 classes) had a top-12 PPR/G season in years 1-4.',
+  };
   const pmWindow = (p) => ((window.PROSPECT_MODEL.pos[p] || {}).target || '').replace(/^.* in NFL years /, '');
   // Draft classes in the score's reference pool (the drafted rows in prospect-model.js).
   const pmPoolYears = () => {
@@ -13932,10 +13938,10 @@
         me.st && me.st.stars != null ? pmBioCell('Recruit', `${me.st.stars}-star`, 'HS recruiting stars') : null,
       ]),
       pmTwoWay(me),
-      me.p === 'TE' ? h('div', { class:'tip prm-line' }, PM_TE_NOTE) : null,
+      PM_WITHHELD[me.p] ? h('div', { class:'tip prm-line' }, PM_WITHHELD[me.p]) : null,
       // No linked college record: the chance is the draft-only curve at his pick, and that slice was
       // not validated (d2_* experiments: 6 hits against 9.2 expected, n 80, QB/RB/WR pooled).
-      me.nocfb && me.p !== 'TE' && pmTopChance(me.p, pmHit(me.p), pmFitPick(me)) != null
+      me.nocfb && !PM_WITHHELD[me.p] && pmTopChance(me.p, pmHit(me.p), pmFitPick(me)) != null
         ? h('div', { class:'tip prm-line' }, 'Pick-only chance from the draft-only model, not validated for draftees without college data.') : null,
       pmOutcome(me, meta, years),
       pmGrades(me.p, pmGradeRows(me.p, me, pmYpc('nfl', String(sleeper.id)),
@@ -14002,7 +14008,8 @@
         'Odds come from the actual draft pick alone: adding the college profile did not beat pick alone out of sample (model card).',
         'Top-6 QB/TE and top-12 RB/WR odds are not shown: they are not a validated target, and at QB and WR they fail the calibration check out of sample.',
         PM_NO_PREDRAFT,
-        PM_TE_NOTE,
+        PM_WITHHELD.QB,
+        PM_WITHHELD.TE,
         'Offense inputs only (no QB breakout age); Henry Ruggs omitted.',
       ].map(s => h('li', null, s)))));
 
@@ -14066,7 +14073,7 @@
       if (k === 'ba') return r.p === 'QB' ? h('span', { class:'muted', title:'N/A for QBs' }, 'n/a') : pmAge(r, v);
       if (k === 'cb') return v == null ? '·' : h('span', { title:`${pmDec(r.cb[0])} PPR/G` }, `${r.p}${v}`);
       if (k === 'best') return v == null ? '·' : v === 999 ? h('span', { class:'muted' }, 'none') : `${r.p}${v}`;
-      if (k === 't1' || k === 'sc') return v == null ? h('span', { class:'muted', title:!r.y ? PM_NO_PREDRAFT : r.p === 'TE' ? PM_TE_NOTE : 'No pick on file' }, '·') : k === 't1' ? pmPct(v) : String(v);
+      if (k === 't1' || k === 'sc') return v == null ? h('span', { class:'muted', title:!r.y ? PM_NO_PREDRAFT : PM_WITHHELD[r.p] || 'No pick on file' }, '·') : k === 't1' ? pmPct(v) : String(v);
       if (k === 'pk' && !r.y) return v == null ? '·' : v === 999 ? h('em', { class:'muted', title:'Projected undrafted' }, 'UFD') : h('em', { title:'Median mock pick' }, pmDec(v));
       return v == null ? '·' : String(v);
     };

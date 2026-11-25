@@ -13,7 +13,7 @@ its verified coverage: `data-sources.md`.
 
 **Every position now ships the draft-only hit probability.** Draft capital is the forecast; the
 college talent score is a pre-draft profile, not a forecast, at QB, RB, WR and TE alike.
-The site's prospect score and hit-line chance (QB top-12, RB/WR top-24; none for TE) use the same draft-only
+The site's prospect score and hit-line chance (RB/WR top-24; none for QB or TE) use the same draft-only
 spline, from a frozen file, for drafted players only; see "Displayed cut model" for the scoring that
 rejected the pick + profile cut model.
 
@@ -127,7 +127,7 @@ pre-registered, so it decides nothing.
 
 **Decision.** The cut model is rejected at every position and cut, and the charter baseline stays.
 The site now reads `site/data/prospect-cut-model.js`, written by the same script with `--freeze`: K0
-at the hit line only (QB top-12, RB/WR top-24; TE is not served, see below), fit once on every mature
+at the hit line only (RB/WR top-24; QB and TE are not served, see below), fit once on every mature
 class 2008+ per position, tabulated at picks 1-262. It carries the fit date, git head, source hash, the script's
 sha256 (of its LF-normalized bytes, so a CRLF checkout and the committed blob hash alike) and a sha256 of its own object (compact JSON without the sha256 field). The browser fits
 nothing. The prospect score is the percentile of the hit-line chance among drafted players in
@@ -151,6 +151,29 @@ clear the bar. Decision: **TE gets no chance and no score.** The frozen file hol
 site shows the TE base rate instead, as a note: 41 of 203 drafted TEs (2008-2022 classes, about 1 in 5)
 had a top-12 PPR/G season in NFL years 1-4. The first cuts fail the same bar too (QB6 72.9%, WR12
 88.1%, TE6 86.8%; RB12 100%), and none of them is shown either.
+
+Selection optimism (M5, 2026-11-25, `experiments/m5_k0_selection_optimism.py` and `.json`): the K0
+spec (restricted cubic spline, 4 knots, C 0.1) was settled on the 2008-2019 classes, which overlap the
+forward test classes, so the forward numbers above flatter it by an unknown amount. Two measures:
+(1) nested selection: inside each outer forward fold, pick the curve from a fixed grid of 9 specs
+(linear to 4-knot splines at several penalties) by inner leave-one-class-out log loss on that fold's
+training classes only, then score the outer class; optimism = nested minus fixed-K0 log loss on
+identical rows. (2) The 2020+ forward classes, which no spec choice saw. Nothing was tuned.
+
+| Hit line | Fwd log loss K0 / nested | Optimism | Nested slope | 2020+ n / hits | 2020+ K0 slope (90%) | 2020+ beats base |
+|---|---|---|---|---|---|---|
+| QB12 | 0.363 / 0.392 | +0.029 | 0.68 | 30 / 8 | 0.92 (0.24-1.70) | 85% |
+| RB24 | 0.464 / 0.457 | -0.007 | 0.95 | 77 / 20 | 0.97 (0.88-1.32) | 100% |
+| WR24 | 0.351 / 0.350 | -0.001 | 1.01 | 123 / 22 | 1.68 (1.34-3.19) | 100% |
+
+Verdict: **QB12 is withdrawn** like TE: the honest (nested) slope is outside 0.75-1.25 and on the
+untouched classes K0 does not clear the 90% base-rate bar. The frozen file no longer holds a QB table;
+QB cards show the QB base rate instead (32 of 158 drafted QBs, 2008-2022 classes, had a top-12 PPR/G
+season in years 1-4). **RB24 stays**: no optimism, calibrated on 2020+. **WR24 stays with a narrower
+claim**: its forward slope of 1.07 holds only on the 2013-2019 classes; on 2020+ the slope is 1.68
+(90% interval 1.34-3.19), so K0 is too timid for recent receivers (its high chances are too low and its
+low chances too high). The WR chance still beats the base rate in every resample on 2020+, but its
+calibration is not established for recent classes.
 
 Draftees with no linked college record (2026-11-25, `experiments/d2_nocfb_k0.py` and `.json`): K0 is
 fit only on linked draftees, so the frozen chance was scored on the unlinked ones, all closed classes
