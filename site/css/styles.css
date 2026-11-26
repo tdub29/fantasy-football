@@ -591,6 +591,17 @@ table.data .expert-rank-col { width: 76px; white-space: nowrap; }
 .filters label { font-size: 0.85rem; color: var(--fg-2); }
 .filters .spacer { flex: 1; }
 .filters input[type=search] { min-width: 220px; }
+.search-box { position: relative; display: inline-flex; align-items: center; max-width: 100%; }
+.search-box input[type=search] { padding-right: 30px; }
+.search-box input[type=search]::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; }
+.search-clear {
+  position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
+  width: 24px; height: 24px; padding: 0; border: 0; border-radius: 999px;
+  background: transparent; color: var(--fg-2); font-size: 1rem; line-height: 1; font-weight: 800;
+  display: inline-grid; place-items: center; cursor: pointer;
+}
+.search-clear[hidden] { display: none; }
+.search-clear:hover, .search-clear:focus-visible { background: var(--bg-3); color: var(--fg-0); }
 
 /* Position toggle pill group */
 .toggle-group { display: flex; gap: 4px; }
@@ -5676,8 +5687,9 @@ table.data tbody td.tnum { font-weight: 600; }
 .sr-age { width: 44px; color: var(--fg-3); }
 .sr-vor { width: 50px; font-weight: 700; color: var(--green); }
 .sr-vor.neg { color: var(--red); }
-.sr-bar { width: 14%; min-width: 60px; }
-.sr-bar .slot-bar-track { display: inline-block; vertical-align: middle; }
+.sr-bar { width: 20%; min-width: 96px; }
+.sr-bar-head { width: 20%; min-width: 96px; }
+.sr-bar .slot-bar-track { display: block; width: 100%; vertical-align: middle; }
 .sr-grade {
   width: 52px;
   text-align: right;
@@ -5688,7 +5700,7 @@ table.data tbody td.tnum { font-weight: 600; }
 /* Phone: the bar and age go, since both are comparative or available elsewhere,
    and the table stops being a table below the grid's own breakpoint. */
 @media (max-width: 720px) {
-  .slot-table .sr-bar, .slot-table .sr-age,
+  .slot-table .sr-bar, .slot-table .sr-bar-head, .slot-table .sr-age,
   .slot-table thead th:nth-child(5), .slot-table thead th:nth-child(7) { display: none; }
 
   .slot-table tbody td { padding: 6px 4px; font-size: 0.78rem; }
@@ -7304,14 +7316,124 @@ table.data.prm-table td.cf-bad { background-color: color-mix(in srgb, var(--red)
 .mu-unit { font-size: 0.72rem; font-weight: 700; color: var(--fg-2); }
 .mu-sub { font-size: 0.72rem; color: var(--fg-2); font-weight: 600; }
 .mu-bar-track {
-  height: 6px;
-  border-radius: 999px;
-  background: var(--bg-2);
-  overflow: hidden;
-  margin-top: 2px;
+  height: 18px;
+  border-radius: 0;
+  background: linear-gradient(var(--bg-3), var(--bg-3)) 0 50% / 100% 4px no-repeat;
+  overflow: visible;
+  margin-top: 6px;
 }
-.mu-bar-fill { height: 100%; border-radius: 999px; }
+.mu-bar-fill { height: 100%; border-radius: 2px; }
 .mu-bar-fill.is-smash { background: var(--green); }
 .mu-bar-fill.is-tough { background: var(--red); }
 .mu-bar-fill.is-neutral { background: var(--amber); }
 .mu-game-link { margin-top: 2px; align-self: flex-start; }
+
+/* ========== Baseball Savant percentile bars (reuses .prm-grade-bar) ========== */
+.savant-bar.prm-grade-bar {
+  position: relative;
+  height: 18px;
+  background: linear-gradient(var(--bg-3), var(--bg-3)) 0 50% / 100% 4px no-repeat;
+  border-radius: 0;
+  overflow: visible;
+}
+.savant-bar.prm-grade-bar > i {
+  position: static;
+  display: block;
+  height: 100%;
+  border-radius: 2px;
+  transition: width 360ms ease-out;
+}
+.savant-bar.prm-grade-bar > b {
+  min-width: 22px;
+  height: 22px;
+  font-size: 10px;
+}
+.br-grade-bar.savant-bar {
+  margin-top: 8px;
+  margin-bottom: 4px;
+}
+.slot-bar-track.savant-bar .slot-bar-tick {
+  top: -1px;
+  bottom: -1px;
+  z-index: 1;
+}
+.slot-bar-track.savant-bar .slot-bar-fv {
+  z-index: 2;
+}
+/* Savant vertical tracks + bubble caps on Team Strength 5-yr trajectory bars. */
+.str-spark .sp-bar-wrap {
+  background: linear-gradient(var(--bg-3), var(--bg-3)) 50% 100% / 3px calc(100% - 14px) no-repeat;
+}
+.str-spark .sp-bar {
+  position: relative;
+  border-radius: 3px 3px 0 0;
+}
+.str-spark .sp-bar::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: inherit;
+  border: 1.5px solid #fff;
+  box-shadow: 0 0 0 1px var(--ink);
+}
+.standings-table .str-spark .sp-bar-wrap {
+  background: linear-gradient(var(--bg-3), var(--bg-3)) 50% 100% / 2px 100% no-repeat;
+}
+.standings-table .str-spark .sp-bar::after {
+  width: 6px;
+  height: 6px;
+  top: -3px;
+  border-width: 1px;
+}
+.watch-bar {
+  position: relative;
+  height: 4px;
+  overflow: visible;
+}
+.watch-bar-fill {
+  position: relative;
+}
+.watch-bar-fill::after {
+  content: '';
+  position: absolute;
+  right: -3px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: inherit;
+  border: 1px solid #fff;
+  box-shadow: 0 0 0 1px var(--ink);
+}
+
+/* ========== Unified Game Log & 2026 Schedule timeline ========== */
+.adv-log tr.gl-bye td { color: var(--fg-3); background: var(--bg-2); font-style: italic; }
+.adv-log tr.gl-dnp td { color: var(--fg-3); }
+.adv-log tr.gl-future td { background: var(--bg-2); }
+.adv-log .gl-sched-cell {
+  text-align: left;
+  white-space: nowrap;
+  font-size: 0.78rem;
+  color: var(--fg-1);
+}
+.adv-log .gl-sched-imp { font-weight: 700; margin-right: 10px; }
+.adv-log .gl-sched-meta { color: var(--fg-2); margin-right: 10px; }
+.adv-log .gl-line-pill {
+  display: inline-block;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+.adv-log .gl-line-pill.is-veg { background: var(--bg-3); color: var(--fg-0); }
+.adv-log .gl-line-pill.is-proj { background: transparent; color: var(--fg-3); border: 1px solid var(--border); }
+.adv-log .gl-bye-cell, .adv-log .gl-dnp-cell { text-align: left; font-size: 0.78rem; color: var(--fg-3); }

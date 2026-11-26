@@ -45,6 +45,36 @@ NFL_TEAMS = {
 # nflverse occasionally carries a display-name typo in otherwise authoritative game data.
 COACH_NAME_FIXES = {"Klint Kubliak": "Klint Kubiak"}
 EXPECTED_CURRENT_CHANGES = {"head_coach": 10, "offensive_coordinator": 21, "play_caller": 19}
+# Coaches who already held an NFL OC (or offensive HC) role prior to play_callers.csv's
+# 2020 start window. Canonicalized without generational suffixes (Jr./Sr./II/III) so
+# "Pete Carmichael Jr." matches 2020-2023 "Pete Carmichael" and veterans like Frank Reich
+# (Chargers OC 2014-15, Eagles OC 2016-17) are never flagged as career first-time NFL OCs.
+PRIOR_NFL_OC = {
+    "Anthony Lynn",
+    "Ben McAdoo",
+    "Bill O'Brien",
+    "Chip Kelly",
+    "Frank Reich",
+    "Jim Bob Cooter",
+    "Joe Lombardi",
+    "John Morton",
+    "Kliff Kingsbury",
+    "Matt Nagy",
+    "Pep Hamilton",
+    "Pete Carmichael",
+    "Todd Monken",
+}
+NON_COACH_PLACEHOLDERS = {"", "no formal oc", "co-ocs"}
+
+
+def canon_coach_name(name: str) -> str:
+    """Normalize a coach name for cross-season first-time lookups."""
+    s = (name or "").split("(")[0].strip()
+    for suffix in (" Jr.", " Sr.", " III", " II", " IV", " Jr", " Sr"):
+        if s.endswith(suffix):
+            s = s[:-len(suffix)].strip()
+            break
+    return s
 
 
 def validate_current_staff(rows: list[dict]) -> None:
@@ -150,7 +180,8 @@ def main() -> int:
 
     rows.sort(key=lambda r: (r["team"], r["season"]))
 
-    # Build first-season indexes
+    # Build first-season indexes using canonical names so suffix variants
+    # ("Pete Carmichael" vs "Pete Carmichael Jr.") resolve to the same coach.
     hc_first: dict[str, int] = {}
     oc_first: dict[str, int] = {}
     pc_first: dict[str, int] = {}
@@ -158,8 +189,9 @@ def main() -> int:
         for name, idx in [(r["head_coach"], hc_first),
                           (r["offensive_coordinator"], oc_first),
                           (r["play_caller"], pc_first)]:
-            if name and (name not in idx or r["season"] < idx[name]):
-                idx[name] = r["season"]
+            cn = canon_coach_name(name)
+            if cn and cn.lower() not in NON_COACH_PLACEHOLDERS and (cn not in idx or r["season"] < idx[cn]):
+                idx[cn] = r["season"]
 
     # Year-over-year deltas by team
     out_rows: list[dict] = []
@@ -183,6 +215,9 @@ def main() -> int:
         streak_oc[key_oc] = 1 if is_new_oc else (streak_oc.get((team, p["offensive_coordinator"]) if p else key_oc, 0) + 1)
         streak_pc[key_pc] = 1 if is_new_pc else (streak_pc.get((team, p["play_caller"]) if p else key_pc, 0) + 1)
 
+        hc_key = canon_coach_name(r["head_coach"])
+        oc_key = canon_coach_name(r["offensive_coordinator"])
+        pc_key = canon_coach_name(r["play_caller"])
         out_rows.append({
             "season": r["season"],
             "team": team,
@@ -195,9 +230,9 @@ def main() -> int:
             "is_new_hc": is_new_hc,
             "is_new_oc": is_new_oc,
             "is_new_play_caller": is_new_pc,
-            "hc_first_season": hc_first.get(r["head_coach"]) == r["season"],
-            "oc_first_season": oc_first.get(r["offensive_coordinator"]) == r["season"],
-            "play_caller_first_season": pc_first.get(r["play_caller"]) == r["season"],
+            "hc_first_season": hc_first.get(hc_key) == r["season"],
+            "oc_first_season": oc_key not in PRIOR_NFL_OC and oc_first.get(oc_key) == r["season"],
+            "play_caller_first_season": pc_first.get(pc_key) == r["season"],
             "oc_tenure_yr": streak_oc[key_oc],
             "pc_tenure_yr": streak_pc[key_pc],
         })
