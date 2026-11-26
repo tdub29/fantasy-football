@@ -3647,9 +3647,11 @@
         const values=[...series.values()].flat();
         if(values.some(v=>!Number.isFinite(v))){note.textContent='Chart unavailable: projection coverage is incomplete.';return;}
         const max=percentage?1:Math.max(1,...values),format=v=>percentage?`${(v*100).toFixed(1)}%`:fmt.decimal(v,1);
+        const byYear=Array.from({length:trajYears},(_,y)=>[...series.values()].map(d=>d[y]).filter(Number.isFinite));
+        const pctFor=(v,y)=>{const arr=byYear[y];if(!arr.length)return 50;if(arr.length===1)return 100;const below=arr.filter(x=>x<v).length,eq=arr.filter(x=>x===v).length;return Math.round(((below+(eq-1)*0.5)/(arr.length-1))*100);};
         for(const spark of standings.querySelectorAll('.str-spark')){
           const data=series.get(Number(spark.dataset.rosterId));
-          [...spark.children].forEach((wrap,y)=>{wrap.title=`${trajLabels[y]} ${metrics[metric].label}: ${format(data[y])}`;wrap.querySelector('.sp-bar-val').textContent=format(data[y]);const bar=wrap.querySelector('.sp-bar');bar.style.height=`${Math.max(0,data[y])/max*100}%`;bar.dataset.valueColor ||= bar.style.background;bar.style.background=metric==='value'?bar.dataset.valueColor:'var(--blue)';});
+          [...spark.children].forEach((wrap,y)=>{const p=pctFor(data[y],y),c=gradeColor(p/10);wrap.title=`${trajLabels[y]} ${metrics[metric].label}: ${format(data[y])} (${p}th pct)`;wrap.querySelector('.sp-bar-val').textContent=format(data[y]);const bar=wrap.querySelector('.sp-bar');bar.style.height=`${Math.max(6,Math.max(0,data[y])/max*100)}%`;bar.style.background=c;bar.style.opacity='1';bar.dataset.pct=String(p);});
           spark.style.visibility='visible';
         }
         if(trendTh){trendTh.title=`${metrics[metric].label} by season, now through five years out.`;}
@@ -3807,9 +3809,30 @@
 
     // Filter bar
     const filterBar = h('div', { class:'filters' });
+    const searchClear = h('button', {
+      type:'button',
+      class:'search-clear',
+      'aria-label':'Clear player search',
+      title:'Clear search',
+      hidden: !filter.q,
+      onclick:() => {
+        search.value = '';
+        filter.q = '';
+        searchClear.hidden = true;
+        persist();
+        render();
+        search.focus();
+      },
+    }, '\u00D7');
     const search = h('input', { type:'search', placeholder:'Search players', value: filter.q,
-      oninput:(e) => { filter.q = e.target.value.trim(); persist(); render(); } });
-    filterBar.appendChild(h('div', { class:'group' }, h('label', null, 'Search'), search));
+      oninput:(e) => {
+        filter.q = e.target.value.trim();
+        searchClear.hidden = !e.target.value;
+        persist();
+        render();
+      } });
+    filterBar.appendChild(h('div', { class:'group' }, h('label', null, 'Search'),
+      h('span', { class:'search-box' }, search, searchClear)));
 
     const viewBtns = h('div', { class:'toggle-group player-table-views', role:'group', 'aria-label':'Player table view' });
     for (const [key, label, sort, dir] of [
@@ -5835,9 +5858,13 @@
       h('div', { class:'br-stat br-stat-grade' },
         h('div', { class:'br-stat-num tnum', style:{ color: overallColor } }, fmt.decimal(overall, 1) + '/10'),
         h('div', { class:'br-eyebrow' }, 'Overall Grade'),
-        h('div', { class:'br-grade-bar' },
-          h('div', { class:'br-grade-fill', style:{ width: Math.max(2, overall*10) + '%', background: overallColor } }),
-        ),
+        (() => {
+          const ovPct = Math.round(Math.max(0, Math.min(100, overall * 10)));
+          return h('div', { class:'prm-grade-bar br-grade-bar savant-bar', title:`Overall grade: ${ovPct}th percentile (${fmt.decimal(overall, 1)}/10)` },
+            h('i', { class:'br-grade-fill', style:{ width: `${Math.max(3, ovPct)}%`, background: overallColor } }),
+            h('b', { class:'tnum', style:{ left:`clamp(11px, ${ovPct}%, calc(100% - 11px))`, background: overallColor } }, String(ovPct)),
+          );
+        })(),
         r.is_me && tab === 'snapshot' ? h('label', { class:'tank-meter', title:'Tank weight: What to Look For counts league at (100 - N)% buy-in.' },
           'Tankometer',
           h('input', { type:'range', min:'0', max:'100', step:'5', value:String(tankOf(lg)), 'aria-label':'Tankometer percent',
@@ -6028,15 +6055,19 @@
                   title: s.vor != null ? `ROS pts ${s.vor < 0 ? 'below' : 'above'} best waiver ${s.pos || 'player'}` : '' },
           s.vor != null ? `${s.vor > 0 ? '+' : ''}${fmt.decimal(s.vor, 0)}` : '·') : null,
         h('td', { class:'sr-bar' },
-          h('span', { class:'slot-bar-track', style:{ width: trackPct + '%' },
-                      title: rosterDynasty
-                        ? 'Length = slot PPG weight · Fill = grade 0-10 · 70% = starter bar · Diamond = 3-yr FV grade'
-                        : 'Length = slot PPG weight · Fill = grade 0-10 · 70% = starter bar' },
-            h('span', { class:'slot-bar-fill', style:{ width: fillPct + '%', background: color } }),
-            h('span', { class:'slot-bar-tick', style:{ left: '70%' } }),
-            // Clamped so a 10.0 diamond sits inside the track instead of half past its end.
-            (rosterDynasty && s.fvGrade != null) ? h('span', { class:`slot-bar-fv ${fvDir}`, style:{ left: `clamp(7px, ${fvPct}%, calc(100% - 7px))` }, title:`FV (3-yr): ${s.fvGrade.toFixed(1)} (${fvDir})` }) : null,
-          ),
+          (() => {
+            const gradePct = Math.round(Math.max(0, Math.min(100, s.grade * 10)));
+            return h('span', { class:'prm-grade-bar slot-bar-track savant-bar',
+                        title: rosterDynasty
+                          ? `Grade ${s.grade.toFixed(1)}/10 (${gradePct} pct) · 70% = starter bar · Diamond = 3-yr FV grade`
+                          : `Grade ${s.grade.toFixed(1)}/10 (${gradePct} pct) · 70% = starter bar` },
+              h('i', { class:'slot-bar-fill', style:{ width: `${Math.max(3, gradePct)}%`, background: color } }),
+              h('span', { class:'slot-bar-tick', style:{ left: '70%' } }),
+              h('b', { class:'tnum', style:{ left:`clamp(10px, ${gradePct}%, calc(100% - 10px))`, background: color } }, String(gradePct)),
+              // Clamped so a 10.0 diamond sits inside the track instead of half past its end.
+              (rosterDynasty && s.fvGrade != null) ? h('span', { class:`slot-bar-fv ${fvDir}`, style:{ left: `clamp(7px, ${fvPct}%, calc(100% - 7px))` }, title:`FV (3-yr): ${s.fvGrade.toFixed(1)} (${fvDir})` }) : null,
+            );
+          })(),
         ),
         h('td', { class:'sr-grade tnum', style:{ color } }, s.grade.toFixed(1)),
       );
@@ -6051,7 +6082,8 @@
       h('th', { class:'right', title:'Projected ROS pts' }, 'Proj'),
       h('th', { class:'right' }, 'Age'),
       anyVor ? h('th', { class:'right', title:'Pts above/below best free agent' }, 'VOR') : null,
-      h('th', null, ''),
+      h('th', { class:'sr-bar-head' }, h('span', { class:'prm-grade-scale' },
+        h('span', null, 'Poor'), h('span', null, 'Avg'), h('span', null, 'Great'))),
       h('th', { class:'right', title:'Slot grade / 10' }, 'Grade'),
     ));
     const panel = (title) => {
@@ -6067,9 +6099,7 @@
     });
     main.appendChild(h('div', { class:'slot-bars-grid' }, starters.wrap, depth.wrap));
     main.appendChild(h('div', { class:'slot-bars-legend tip' },
-      h('span', null, 'Width = slot PPG'),
-      h('span', { class:'sep' }, '·'),
-      h('span', null, 'Fill = 0-10 grade (70% starter line)'),
+      h('span', null, 'Bar = 0-100 grade percentile (70% starter line)'),
       rosterDynasty ? h('span', { class:'sep' }, '·') : null,
       rosterDynasty ? h('span', null, h('span', { class:'slot-bar-fv', style:{ position:'relative', display:'inline-block', top:'1px', left:0, transform:'rotate(45deg)', width:'8px', height:'8px' } }), ' = 3-yr FV (green up, amber down)') : null,
     ));
@@ -12434,10 +12464,15 @@
       const prev = teamCtx.coach_prev;
       const flags = [];
       if (c.new_hc) flags.push(h('span', { class:'flag-pill new' }, 'NEW HC'));
-      if (c.new_oc) flags.push(h('span', { class:'flag-pill new' }, 'NEW OC'));
+      if (c.new_oc) flags.push(h('span', {
+        class:'flag-pill new',
+        title: c.oc_first_season
+          ? 'New OC for this team'
+          : '1st season as OC with this team (prior NFL OC experience)',
+      }, c.oc_first_season ? 'NEW OC' : 'NEW TEAM OC'));
       if (c.new_play_caller) flags.push(h('span', { class:'flag-pill new' }, 'NEW PLAY CALLER'));
-      if (c.play_caller_first_season) flags.push(h('span', { class:'flag-pill firstime' }, 'FIRST-TIME PLAY CALLER'));
-      if (c.oc_first_season) flags.push(h('span', { class:'flag-pill firstime' }, 'FIRST-TIME OC'));
+      if (c.play_caller_first_season) flags.push(h('span', { class:'flag-pill firstime', title:'First career season calling NFL plays' }, 'FIRST-TIME PLAY CALLER'));
+      if (c.oc_first_season) flags.push(h('span', { class:'flag-pill firstime', title:'First career season as an NFL offensive coordinator' }, 'FIRST-TIME NFL OC'));
 
       const lineHC = h('div', { class:'coach-line' },
         h('span', { class:'coach-role' }, 'HC'),
@@ -13276,9 +13311,8 @@
             { node: expertsDrop },
           ] },
           { key:'production', label:'Production', items: [
-            { jump:'Game Log',    node: usageWeeksBlock(sleeper) },
-            { jump:'Schedule',    node: scheduleStrip(sleeper) },
-            { jump:'Usage',       node: advancedBlock(sleeper) },
+            { jump:'Game Log',    node: advancedBlock(sleeper) },
+            { jump:'Usage',       node: usageWeeksBlock(sleeper) },
             { jump:'Field Map',   node: locationBlock(sleeper) },
             { jump:'Projections', node: projectionBlock(sleeper) },
             { jump:'Career',      node: historyBlock(sleeper) },
@@ -13338,22 +13372,73 @@
   };
   CARD_ADV_COLS.WR = CARD_ADV_COLS.TE = CARD_ADV_COLS.RB.slice(0, 7);
   let CARD_LOG_VIEW = 'box';
-  function cardAdvLog(U, uw, pos, oppOf) {
+  function cardAdvLog(U, uw, pos, oppOf, schedByWk, throughWeek) {
     const cols = CARD_ADV_COLS[pos] || CARD_ADV_COLS.RB, ix = (k) => U.fields.indexOf(k);
     const qBy = new Map((uw.q || []).map(r => [r[0], r]));
+    const advByWk = new Map((uw.w || []).map(r => [r[0], r]));
     const val = (row, [k, , , need]) => need && !row[ix(need)] ? null
       : k.startsWith('q.') ? (qBy.get(row[0]) || [])[U.qFields.indexOf(k.slice(2))] : row[ix(k)];
+    const renderOpp = (wk, fallbackOpp) => {
+      const g = schedByWk && schedByWk.get(wk);
+      const raw = fallbackOpp || (g && g.opp) || '';
+      const opp = String(raw).replace(/^@\s*|^vs\.?\s*/i, '').trim();
+      if (!opp) return h('td', null, '');
+      const e = teamEnv(opp);
+      const prefix = g ? (g.home ? 'vs ' : '@ ') : (/^@/.test(String(raw)) ? '@ ' : '');
+      return h('td', { title: e ? `${opp} defense: allows ${e.implied_pa}/g (#${e.pa_rank} of 32)` : '' },
+        prefix ? h('span', { class:'muted', style:{ fontSize:'10px' } }, prefix) : null,
+        h('span', { style:{ fontWeight:700, color: defColor(opp) } }, teamChip(opp, true)));
+    };
+    const renderFuture = (wk, g) => {
+      const ou = (g.implied_pf != null && g.implied_pa != null) ? (g.implied_pf + g.implied_pa).toFixed(1) : null;
+      const diff = (g.implied_pf != null && g.implied_pa != null) ? (g.implied_pf - g.implied_pa) : null;
+      const spr = diff == null ? null : Math.abs(diff) < 0.05 ? 'PK' : `${diff > 0 ? '-' : '+'}${Math.abs(diff).toFixed(1)}`;
+      return h('tr', { class:'gl-future' },
+        h('td', { class:'tnum muted' }, `W${wk}`),
+        renderOpp(wk, g.opp),
+        h('td', { class:'gl-sched-cell tnum', colspan: String(cols.length) },
+          h('span', { class:'gl-sched-imp' }, `Imp ${g.implied_pf ?? '·'}`),
+          ou ? h('span', { class:'gl-sched-meta' }, `O/U ${ou}`) : null,
+          spr ? h('span', { class:'gl-sched-meta' }, spr) : null,
+          h('span', { class:`gl-line-pill ${g.posted ? 'is-veg' : 'is-proj'}` }, g.posted ? 'VEG' : 'proj')));
+    };
+    const rows = [];
+    const hasSched = schedByWk && schedByWk.size > 0;
+    const weeks = hasSched ? Array.from({ length:18 }, (_, i) => i + 1) : [...advByWk.keys()].sort((a, b) => a - b);
+    for (const wk of weeks) {
+      const row = advByWk.get(wk);
+      const g = hasSched ? schedByWk.get(wk) : null;
+      if (row) {
+        rows.push(h('tr', null,
+          h('td', { class:'tnum' }, `W${wk}`),
+          renderOpp(wk, oppOf.get(wk)),
+          ...cols.map(c => h('td', { class:'right tnum' }, statFmt(val(row, c), c[2])))));
+      } else if (hasSched && !g) {
+        rows.push(h('tr', { class:'gl-bye' },
+          h('td', { class:'tnum muted' }, `W${wk}`),
+          h('td', { class:'muted' }, 'BYE'),
+          h('td', { class:'gl-bye-cell', colspan: String(cols.length) }, 'Bye week')));
+      } else if (g && wk > (throughWeek || 0)) {
+        rows.push(renderFuture(wk, g));
+      } else if (g) {
+        rows.push(h('tr', { class:'gl-dnp' },
+          h('td', { class:'tnum muted' }, `W${wk}`),
+          renderOpp(wk, g.opp),
+          h('td', { class:'gl-dnp-cell', colspan: String(cols.length) }, 'DNP / no stats')));
+      }
+    }
     return h('table', { class:'data adv-log adv-log-adv' },
       h('thead', null, h('tr', null, h('th', null, 'Wk'), h('th', null, 'Opp'),
         ...cols.map(([k, l]) => h('th', { class:'right', title:U.fieldDesc[k.replace('q.', '')] || '' }, l)))),
-      h('tbody', null, ...uw.w.map(row => h('tr', null,
-        h('td', { class:'tnum' }, String(row[0])), h('td', null, oppOf.get(row[0]) || ''),
-        ...cols.map(c => h('td', { class:'right tnum' }, statFmt(val(row, c), c[2])))))));
+      h('tbody', null, ...rows));
   }
   function advancedBlock(sleeper) {
     const A = window.ADVANCED;
     const me = sleeper && A && A.players[String(sleeper.id)];
-    if (!me) return null;
+    const sos = sleeper && teamSos(sleeper.team);
+    const schedList = (sos && sos.schedule) || [];
+    const schedByWk = new Map(schedList.map(g => [g.week, g]));
+    if (!me) return schedList.length ? scheduleStrip(sleeper) : null;
     const pos = me.p, keys = CARD_STAT_KEYS[pos] || [];
     const byKey = Object.fromEntries(A.columns.map(c => [c.key, c]));
     const pool = Object.values(A.players).filter(v => v.p === pos
@@ -13380,20 +13465,67 @@
       ? [['att', 'Att'], ['pass_yds', 'Yds'], ['pass_td', 'TD'], ['int', 'INT'], ['car', 'Car'], ['rush_yds', 'Ru yds'], ['ppr', 'PPR']]
       : [['snap_pct', 'Snap%'], ['tgt', 'Tgt'], ['rec', 'Rec'], ['rec_yds', 'Yds'], ['rec_td', 'TD'],
          ['car', 'Car'], ['rush_yds', 'Ru yds'], ['rush_td', 'Ru TD'], ['ppr', 'PPR']];
-    const log = (me.wk || []).length ? h('table', { class:'data adv-log' },
+    const boxByWk = new Map((me.wk || []).map(row => [row[idx('week')], row]));
+    const hasSched = schedByWk.size > 0;
+    const renderBoxOpp = (wk, fallbackOpp) => {
+      const g = schedByWk.get(wk);
+      const raw = fallbackOpp || (g && g.opp) || '';
+      const opp = String(raw).replace(/^@\s*|^vs\.?\s*/i, '').trim();
+      if (!opp) return h('td', null, '');
+      const e = teamEnv(opp);
+      const prefix = g ? (g.home ? 'vs ' : '@ ') : (/^@/.test(String(raw)) ? '@ ' : '');
+      return h('td', { title: e ? `${opp} defense: allows ${e.implied_pa}/g (#${e.pa_rank} of 32)` : '' },
+        prefix ? h('span', { class:'muted', style:{ fontSize:'10px' } }, prefix) : null,
+        h('span', { style:{ fontWeight:700, color: defColor(opp) } }, teamChip(opp, true)));
+    };
+    const renderBoxFuture = (wk, g) => {
+      const ou = (g.implied_pf != null && g.implied_pa != null) ? (g.implied_pf + g.implied_pa).toFixed(1) : null;
+      const diff = (g.implied_pf != null && g.implied_pa != null) ? (g.implied_pf - g.implied_pa) : null;
+      const spr = diff == null ? null : Math.abs(diff) < 0.05 ? 'PK' : `${diff > 0 ? '-' : '+'}${Math.abs(diff).toFixed(1)}`;
+      return h('tr', { class:'gl-future' },
+        h('td', { class:'tnum muted' }, `W${wk}`),
+        renderBoxOpp(wk, g.opp),
+        h('td', { class:'gl-sched-cell tnum', colspan: String(logCols.length) },
+          h('span', { class:'gl-sched-imp' }, `Imp ${g.implied_pf ?? '·'}`),
+          ou ? h('span', { class:'gl-sched-meta' }, `O/U ${ou}`) : null,
+          spr ? h('span', { class:'gl-sched-meta' }, spr) : null,
+          h('span', { class:`gl-line-pill ${g.posted ? 'is-veg' : 'is-proj'}` }, g.posted ? 'VEG' : 'proj')));
+    };
+    const boxRows = [];
+    const boxWeeks = hasSched ? Array.from({ length:18 }, (_, i) => i + 1) : [...boxByWk.keys()].sort((a, b) => a - b);
+    for (const wk of boxWeeks) {
+      const row = boxByWk.get(wk);
+      const g = hasSched ? schedByWk.get(wk) : null;
+      if (row) {
+        boxRows.push(h('tr', null,
+          h('td', { class:'tnum' }, `W${wk}`),
+          renderBoxOpp(wk, row[idx('opp')]),
+          ...logCols.map(([k]) => {
+            const v = row[idx(k)];
+            return h('td', { class:'right tnum' }, v == null ? '' : k === 'snap_pct' ? `${Math.round(v * 100)}%` : String(v));
+          })));
+      } else if (hasSched && !g) {
+        boxRows.push(h('tr', { class:'gl-bye' },
+          h('td', { class:'tnum muted' }, `W${wk}`),
+          h('td', { class:'muted' }, 'BYE'),
+          h('td', { class:'gl-bye-cell', colspan: String(logCols.length) }, 'Bye week')));
+      } else if (g && wk > (A.throughWeek || 0)) {
+        boxRows.push(renderBoxFuture(wk, g));
+      } else if (g) {
+        boxRows.push(h('tr', { class:'gl-dnp' },
+          h('td', { class:'tnum muted' }, `W${wk}`),
+          renderBoxOpp(wk, g.opp),
+          h('td', { class:'gl-dnp-cell', colspan: String(logCols.length) }, 'DNP / no stats')));
+      }
+    }
+    const log = boxRows.length ? h('table', { class:'data adv-log' },
       h('thead', null, h('tr', null, h('th', null, 'Wk'), h('th', null, 'Opp'),
         ...logCols.map(([, l]) => h('th', { class:'right' }, l)))),
-      h('tbody', null, ...me.wk.map(row => h('tr', null,
-        h('td', { class:'tnum' }, String(row[idx('week')])),
-        h('td', null, row[idx('opp')] || ''),
-        ...logCols.map(([k]) => {
-          const v = row[idx(k)];
-          return h('td', { class:'right tnum' }, v == null ? '' : k === 'snap_pct' ? `${Math.round(v * 100)}%` : String(v));
-        }))))) : null;
-    // Box score or Advanced. The advanced rows are usage-weekly.js, so only when it is this season.
+      h('tbody', null, ...boxRows)) : null;
+    // Box score or Advanced. Played weeks switch columns; bye and upcoming weeks stay inline.
     const U = window.USAGE_WEEKLY, uw = U && U.season === A.season && U.players[String(sleeper.id)];
     const oppOf = new Map((me.wk || []).map(row => [row[idx('week')], row[idx('opp')]]));
-    const views = { box:log, adv:uw && uw.w.length ? cardAdvLog(U, uw, pos, oppOf) : null };
+    const views = { box:log, adv:uw && uw.w.length ? cardAdvLog(U, uw, pos, oppOf, schedByWk, A.throughWeek) : null };
     const hold = h('div', { class:'tbl-scroll' });
     const viewBtns = views.box && views.adv ? h('span', { class:'sos-position-tabs adv-log-views', role:'group', 'aria-label':'Game log view' },
       ...[['box', 'Box score'], ['adv', 'Advanced']].map(([k, l]) => h('button', { type:'button', class:'ghost', dataset:{ view:k },
@@ -13410,7 +13542,9 @@
     return h('div', { class:'card adv-card' },
       h('div', { class:'card-title' }, `Advanced, ${A.season} through week ${A.throughWeek}`),
       cells.length ? h('div', { class:'adv-grid' }, ...cells) : null,
-      views.box || views.adv ? h('div', { class:'card-title', style:{ marginTop:'10px' } }, 'Game log') : null,
+      views.box || views.adv ? h('div', { class:'card-title', style:{ marginTop:'10px' } }, hasSched ? '2026 Game log & Schedule' : 'Game log') : null,
+      hasSched && (views.box || views.adv) ? h('div', { class:'tip', style:{ marginBottom:'6px' } },
+        `Weeks 1-18 · Opponent green = soft D, red = tough D · Vegas lines thru W${window.TEAM_SOS?.lines_through_week ?? A.throughWeek} (proj after).`) : null,
       viewBtns,
       views.box || views.adv ? hold : null,
       h('div', { class:'tip', style:{ marginTop:'6px' } },
@@ -17483,8 +17617,13 @@
           sleeper.pos === 'RB' && v.rushRB
             ? h('div', { class:'mu-sub' }, `${Number(v.rushRB.ppr_pg).toFixed(1)} rushing PPR/G`)
             : null,
-          h('div', { class:'mu-bar-track', title:`#${rk} of 32 softest (#1 = softest, #32 = toughest)` },
-            h('div', { class:`mu-bar-fill is-${tr.cls}`, style:{ width:`${pct}%` } }))
+          (() => {
+            const muPct = Math.round(Math.max(0, Math.min(100, pct)));
+            const muColor = gradeColor(muPct / 10);
+            return h('div', { class:'prm-grade-bar mu-bar-track savant-bar', title:`#${rk} of 32 softest (#1 = softest, #32 = toughest)` },
+              h('i', { class:`mu-bar-fill is-${tr.cls}`, style:{ width:`${Math.max(3, muPct)}%`, background: muColor } }),
+              h('b', { class:'tnum', style:{ left:`clamp(10px, ${muPct}%, calc(100% - 10px))`, background: muColor } }, String(muPct)));
+          })()
         ));
       }
     }

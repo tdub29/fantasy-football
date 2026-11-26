@@ -16,7 +16,7 @@ season,team,head_coach,offensive_coordinator,play_caller,play_caller_role,scheme
 2020,BAL,John Harbaugh,Greg Roman,Greg Roman,OC,RPO/Zone Read,,True,True,True,True,True,True,1,1
 2021,BAL,John Harbaugh,Greg Roman,Greg Roman,OC,RPO/Zone Read,,False,False,False,False,False,False,2,2
 2022,BAL,John Harbaugh,Greg Roman,Greg Roman,OC,RPO/Zone Read,,False,False,False,False,False,False,3,3
-2023,BAL,John Harbaugh,Todd Monken,Todd Monken,OC,Spread,first-time NFL OC since 2019,False,True,True,False,True,True,1,1
+2023,BAL,John Harbaugh,Todd Monken,Todd Monken,OC,Spread,first-time NFL OC since 2019,False,True,True,False,False,True,1,1
 2024,BAL,John Harbaugh,Todd Monken,Todd Monken,OC,Spread,,False,False,False,False,False,False,2,2
 2025,BAL,John Harbaugh,Todd Monken,Todd Monken,OC,Spread,,False,False,False,False,False,False,3,3
 2026,BAL,Jesse Minter,Declan Doyle,Declan Doyle,OC,Payton/West Coast,,True,True,True,True,False,True,1,1
@@ -26,10 +26,10 @@ season,team,head_coach,offensive_coordinator,play_caller,play_caller_role,scheme
 2023,BUF,Sean McDermott,Ken Dorsey,Ken Dorsey,OC,Erhardt-Perkins,Dorsey fired Week 11; Brady promoted,False,False,False,False,False,False,2,2
 2024,BUF,Sean McDermott,Joe Brady,Joe Brady,OC,Air Raid/Hybrid,first full-year as Bills OC,False,True,True,False,False,False,1,1
 2025,BUF,Sean McDermott,Joe Brady,Joe Brady,OC,Air Raid/Hybrid,,False,False,False,False,False,False,2,2
-2026,BUF,Joe Brady,Pete Carmichael Jr.,Joe Brady,HC,Brady/Spread,,True,True,False,True,True,False,1,3
+2026,BUF,Joe Brady,Pete Carmichael Jr.,Joe Brady,HC,Brady/Spread,,True,True,False,True,False,False,1,3
 2020,CAR,Matt Rhule,Joe Brady,Joe Brady,OC,Air Raid/Hybrid,,True,True,True,True,True,True,1,1
 2021,CAR,Matt Rhule,Joe Brady,Joe Brady,OC,Air Raid/Hybrid,Brady fired Week 12,False,False,False,False,False,False,2,2
-2022,CAR,Steve Wilks,Ben McAdoo,Ben McAdoo,OC,Coryell,Rhule fired Week 5,True,True,True,True,True,True,1,1
+2022,CAR,Steve Wilks,Ben McAdoo,Ben McAdoo,OC,Coryell,Rhule fired Week 5,True,True,True,True,False,True,1,1
 2023,CAR,Frank Reich,Thomas Brown,Frank Reich,HC,West Coast,Reich fired Week 13; first-year HC,True,True,True,False,True,False,1,1
 2024,CAR,Dave Canales,Brad Idzik,Dave Canales,HC,Hybrid,first-year HC,True,True,True,True,True,False,1,1
 2025,CAR,Dave Canales,Brad Idzik,Dave Canales,HC,Hybrid,,False,False,False,False,False,False,2,2
@@ -70,11 +70,11 @@ season,team,head_coach,offensive_coordinator,play_caller,play_caller_role,scheme
 2025,DEN,Sean Payton,Joe Lombardi,Sean Payton,HC,Payton system,,False,False,False,False,False,False,3,3
 2026,DEN,Sean Payton,Davis Webb,Davis Webb,OC,Payton system,,False,True,True,False,True,True,1,1
 2020,DET,Matt Patricia,Darrell Bevell,Darrell Bevell,OC,West Coast,Patricia fired Week 12,True,True,True,True,True,True,1,1
-2021,DET,Dan Campbell,Anthony Lynn,Anthony Lynn,OC,Coryell,first-year HC,True,True,True,True,True,True,1,1
+2021,DET,Dan Campbell,Anthony Lynn,Anthony Lynn,OC,Coryell,first-year HC,True,True,True,True,False,True,1,1
 2022,DET,Dan Campbell,Ben Johnson,Ben Johnson,OC,Wide Zone,first-time NFL OC,False,True,True,False,True,True,1,1
 2023,DET,Dan Campbell,Ben Johnson,Ben Johnson,OC,Wide Zone,,False,False,False,False,False,False,2,2
 2024,DET,Dan Campbell,Ben Johnson,Ben Johnson,OC,Wide Zone,,False,False,False,False,False,False,3,3
-2025,DET,Dan Campbell,John Morton,John Morton,OC,West Coast,Johnson left to be Bears HC,False,True,True,False,True,True,1,1
+2025,DET,Dan Campbell,John Morton,John Morton,OC,West Coast,Johnson left to be Bears HC,False,True,True,False,False,True,1,1
 2026,DET,Dan Campbell,Drew Petzing,Drew Petzing,OC,Petzing/West Coast,,False,True,True,False,False,False,1,1
 2020,GB,Matt LaFleur,Nathaniel Hackett,Matt LaFleur,HC,Shanahan tree,,True,True,True,True,True,True,1,1
 2021,GB,Matt LaFleur,Nathaniel Hackett,Matt LaFleur,HC,Shanahan tree,,False,False,False,False,False,False,2,2
@@ -85,7 +85,7 @@ season,team,head_coach,offensive_coordinator,play_caller,play_caller_role,scheme
 2026,GB,Matt LaFleur,Adam Stenavich,Matt LaFleur,HC,Shanahan tree,,False,False,False,False,False,False,5,7
 2020,HOU,Romeo Crennel,Tim Kelly,Tim Kelly,OC,Spread,O'Brien fired Week 5,True,True,True,True,True,True,1,1
 2021,HOU,David Culley,Tim Kelly,Tim Kelly,OC,Spread,,True,False,False,True,False,False,2,2
-2022,HOU,Lovie Smith,Pep Hamilton,Pep Hamilton,OC,Spread,first-year HC,True,True,True,True,True,True,1,1
+2022,HOU,Lovie Smith,Pep Hamilton,Pep Hamilton,OC,Spread,first-year HC,True,True,True,True,False,True,1,1
 2023,HOU,DeMeco Ryans,Bobby Slowik,Bobby Slowik,OC,Shanahan tree,first-year HC and first-time OC,True,True,True,True,True,True,1,1
 2024,HOU,DeMeco Ryans,Bobby Slowik,Bobby Slowik,OC,Shanahan tree,,False,False,False,False,False,False,2,2
 2025,HOU,DeMeco Ryans,Nick Caley,Nick Caley,OC,Erhardt-Perkins,first-time NFL OC; Slowik fired,False,True,True,False,True,True,1,1
@@ -93,7 +93,7 @@ season,team,head_coach,offensive_coordinator,play_caller,play_caller_role,scheme
 2020,IND,Frank Reich,Nick Sirianni,Frank Reich,HC,West Coast,,True,True,True,True,True,True,1,1
 2021,IND,Frank Reich,Marcus Brady,Frank Reich,HC,West Coast,,False,True,False,False,True,False,1,2
 2022,IND,Frank Reich,Marcus Brady,Frank Reich,HC,West Coast,Reich fired Week 9,False,False,False,False,False,False,2,3
-2023,IND,Shane Steichen,Jim Bob Cooter,Shane Steichen,HC,McVay/Reid hybrid,first-year HC,True,True,True,True,True,False,1,1
+2023,IND,Shane Steichen,Jim Bob Cooter,Shane Steichen,HC,McVay/Reid hybrid,first-year HC,True,True,True,True,False,False,1,1
 2024,IND,Shane Steichen,Jim Bob Cooter,Shane Steichen,HC,McVay/Reid hybrid,,False,False,False,False,False,False,2,2
 2025,IND,Shane Steichen,Jim Bob Cooter,Shane Steichen,HC,McVay/Reid hybrid,,False,False,False,False,False,False,3,3
 2026,IND,Shane Steichen,Jim Bob Cooter,Shane Steichen,HC,McVay/Reid hybrid,,False,False,False,False,False,False,4,4
@@ -107,7 +107,7 @@ season,team,head_coach,offensive_coordinator,play_caller,play_caller_role,scheme
 2020,KC,Andy Reid,Eric Bieniemy,Andy Reid,HC,Reid system,,True,True,True,True,True,True,1,1
 2021,KC,Andy Reid,Eric Bieniemy,Andy Reid,HC,Reid system,,False,False,False,False,False,False,2,2
 2022,KC,Andy Reid,Eric Bieniemy,Andy Reid,HC,Reid system,,False,False,False,False,False,False,3,3
-2023,KC,Andy Reid,Matt Nagy,Andy Reid,HC,Reid system,,False,True,False,False,True,False,1,4
+2023,KC,Andy Reid,Matt Nagy,Andy Reid,HC,Reid system,,False,True,False,False,False,False,1,4
 2024,KC,Andy Reid,Matt Nagy,Andy Reid,HC,Reid system,,False,False,False,False,False,False,2,5
 2025,KC,Andy Reid,Matt Nagy,Andy Reid,HC,Reid system,,False,False,False,False,False,False,3,6
 2026,KC,Andy Reid,Eric Bieniemy,Andy Reid,HC,Reid system,,False,True,False,False,False,False,1,7
@@ -119,7 +119,7 @@ season,team,head_coach,offensive_coordinator,play_caller,play_caller_role,scheme
 2025,LA,Sean McVay,Mike LaFleur,Sean McVay,HC,McVay system,,False,False,False,False,False,False,3,6
 2026,LA,Sean McVay,Nate Scheelhaase,Sean McVay,HC,McVay system,,False,True,False,False,True,False,1,7
 2020,LAC,Anthony Lynn,Shane Steichen,Shane Steichen,OC,McVay/Reid hybrid,,True,True,True,True,True,True,1,1
-2021,LAC,Brandon Staley,Joe Lombardi,Joe Lombardi,OC,Drew Brees Saints,first-year HC,True,True,True,True,True,True,1,1
+2021,LAC,Brandon Staley,Joe Lombardi,Joe Lombardi,OC,Drew Brees Saints,first-year HC,True,True,True,True,False,True,1,1
 2022,LAC,Brandon Staley,Joe Lombardi,Joe Lombardi,OC,Drew Brees Saints,,False,False,False,False,False,False,2,2
 2023,LAC,Brandon Staley,Kellen Moore,Kellen Moore,OC,Hybrid,Staley fired Week 15,False,True,True,False,False,False,1,1
 2024,LAC,Jim Harbaugh,Greg Roman,Greg Roman,OC,RPO/Zone Read,first-year HC,True,True,True,True,False,False,1,1
@@ -130,10 +130,10 @@ season,team,head_coach,offensive_coordinator,play_caller,play_caller_role,scheme
 2022,LV,Josh McDaniels,Mick Lombardi,Josh McDaniels,HC,Erhardt-Perkins,first-year HC,True,True,True,True,True,False,1,1
 2023,LV,Antonio Pierce,Mick Lombardi,,HC,Erhardt-Perkins,McDaniels fired Week 8,True,False,True,True,False,False,2,1
 2024,LV,Antonio Pierce,Luke Getsy,Luke Getsy,OC,Shanahan tree,first-year HC,False,True,True,False,False,False,1,1
-2025,LV,Pete Carroll,Chip Kelly,Chip Kelly,OC,Spread,first-year HC for Carroll; Kelly returns,True,True,True,False,True,True,1,1
+2025,LV,Pete Carroll,Chip Kelly,Chip Kelly,OC,Spread,first-year HC for Carroll; Kelly returns,True,True,True,False,False,True,1,1
 2026,LV,Klint Kubiak,Andrew Janocko,Klint Kubiak,HC,Shanahan/Kubiak system,,True,True,True,True,True,False,1,1
 2020,MIA,Brian Flores,Chan Gailey,Chan Gailey,OC,Run-and-Shoot,,True,True,True,True,True,True,1,1
-2021,MIA,Brian Flores,George Godsey,Co-OCs,OC,Hybrid,,False,True,True,False,True,True,1,1
+2021,MIA,Brian Flores,George Godsey,Co-OCs,OC,Hybrid,,False,True,True,False,True,False,1,1
 2022,MIA,Mike McDaniel,Frank Smith,Mike McDaniel,HC,Shanahan system,first-year HC,True,True,True,True,True,True,1,1
 2023,MIA,Mike McDaniel,Frank Smith,Mike McDaniel,HC,Shanahan system,,False,False,False,False,False,False,2,2
 2024,MIA,Mike McDaniel,Frank Smith,Mike McDaniel,HC,Shanahan system,,False,False,False,False,False,False,3,3
@@ -149,11 +149,11 @@ season,team,head_coach,offensive_coordinator,play_caller,play_caller_role,scheme
 2020,NE,Bill Belichick,Josh McDaniels,Josh McDaniels,OC,Erhardt-Perkins,,True,True,True,True,True,True,1,1
 2021,NE,Bill Belichick,Josh McDaniels,Josh McDaniels,OC,Erhardt-Perkins,,False,False,False,False,False,False,2,2
 2022,NE,Bill Belichick,Matt Patricia (de facto),Matt Patricia,OC,Erhardt-Perkins,non-OC titled play caller,False,True,True,False,True,True,1,1
-2023,NE,Bill Belichick,Bill O'Brien,Bill O'Brien,OC,Erhardt-Perkins,O'Brien returned to NE,False,True,True,False,True,True,1,1
+2023,NE,Bill Belichick,Bill O'Brien,Bill O'Brien,OC,Erhardt-Perkins,O'Brien returned to NE,False,True,True,False,False,True,1,1
 2024,NE,Jerod Mayo,Alex Van Pelt,Alex Van Pelt,OC,Shanahan tree,first-year HC,True,True,True,True,False,True,1,1
 2025,NE,Mike Vrabel,Josh McDaniels,Josh McDaniels,OC,Erhardt-Perkins,first-year HC for Vrabel,True,True,True,False,False,False,1,1
 2026,NE,Mike Vrabel,Josh McDaniels,Josh McDaniels,OC,Erhardt-Perkins,,False,False,False,False,False,False,2,2
-2020,NO,Sean Payton,Pete Carmichael,Sean Payton,HC,Payton system,,True,True,True,True,True,True,1,1
+2020,NO,Sean Payton,Pete Carmichael,Sean Payton,HC,Payton system,,True,True,True,True,False,True,1,1
 2021,NO,Sean Payton,Pete Carmichael,Sean Payton,HC,Payton system,,False,False,False,False,False,False,2,2
 2022,NO,Dennis Allen,Pete Carmichael,Pete Carmichael,OC,Payton system,first-year HC,True,False,True,True,False,True,3,1
 2023,NO,Dennis Allen,Pete Carmichael,Pete Carmichael,OC,Payton system,,False,False,False,False,False,False,4,2
@@ -173,7 +173,7 @@ season,team,head_coach,offensive_coordinator,play_caller,play_caller_role,scheme
 2023,NYJ,Robert Saleh,Nathaniel Hackett,Nathaniel Hackett,OC,Shanahan tree,,False,True,True,False,False,False,1,1
 2024,NYJ,Robert Saleh,Nathaniel Hackett,Todd Downing,OC,Shanahan tree,Saleh fired Week 5; Downing assumed PC late,False,False,True,False,False,False,2,1
 2025,NYJ,Aaron Glenn,Tanner Engstrand,Tanner Engstrand,OC,Lions tree,first-year HC and first-time NFL OC,True,True,True,True,True,True,1,1
-2026,NYJ,Aaron Glenn,Frank Reich,Frank Reich,OC,Reich/West Coast,,False,True,True,False,True,False,1,1
+2026,NYJ,Aaron Glenn,Frank Reich,Frank Reich,OC,Reich/West Coast,,False,True,True,False,False,False,1,1
 2020,PHI,Doug Pederson,Press Taylor,Doug Pederson,HC,Reid tree,,True,True,True,True,True,True,1,1
 2021,PHI,Nick Sirianni,Shane Steichen,Nick Sirianni,HC,McVay/Reid hybrid,first-year HC,True,True,True,True,False,True,1,1
 2022,PHI,Nick Sirianni,Shane Steichen,Shane Steichen,OC,McVay/Reid hybrid,,False,False,True,False,False,False,2,1
@@ -196,10 +196,10 @@ season,team,head_coach,offensive_coordinator,play_caller,play_caller_role,scheme
 2025,SEA,Mike Macdonald,Klint Kubiak,Klint Kubiak,OC,Shanahan/Kubiak system,Grubb fired; new OC,False,True,True,False,False,False,1,1
 2026,SEA,Mike Macdonald,Brian Fleury,Brian Fleury,OC,Shanahan/Kubiak system,,False,True,True,False,True,True,1,1
 2020,SF,Kyle Shanahan,Mike McDaniel (run game coord),Kyle Shanahan,HC,Shanahan system,,True,True,True,True,True,True,1,1
-2021,SF,Kyle Shanahan,Mike McDaniel,Kyle Shanahan,HC,Shanahan system,,False,True,False,False,True,False,1,2
+2021,SF,Kyle Shanahan,Mike McDaniel,Kyle Shanahan,HC,Shanahan system,,False,True,False,False,False,False,1,2
 2022,SF,Kyle Shanahan,Mike McDaniel,Kyle Shanahan,HC,Shanahan system,,False,False,False,False,False,False,2,3
 2023,SF,Kyle Shanahan,Bobby Slowik (departed),Kyle Shanahan,HC,Shanahan system,,False,True,False,False,True,False,1,4
-2024,SF,Kyle Shanahan,no formal OC,Kyle Shanahan,HC,Shanahan system,,False,True,False,False,True,False,1,5
+2024,SF,Kyle Shanahan,no formal OC,Kyle Shanahan,HC,Shanahan system,,False,True,False,False,False,False,1,5
 2025,SF,Kyle Shanahan,Klay Kubiak,Kyle Shanahan,HC,Shanahan system,,False,True,False,False,True,False,1,6
 2026,SF,Kyle Shanahan,Klay Kubiak,Kyle Shanahan,HC,Shanahan system,,False,False,False,False,False,False,2,7
 2020,TB,Bruce Arians,Byron Leftwich,Byron Leftwich,OC,Arians system,,True,True,True,True,True,True,1,1
@@ -220,6 +220,6 @@ season,team,head_coach,offensive_coordinator,play_caller,play_caller_role,scheme
 2021,WAS,Ron Rivera,Scott Turner,Scott Turner,OC,Coryell,,False,False,False,False,False,False,2,2
 2022,WAS,Ron Rivera,Scott Turner,Scott Turner,OC,Coryell,,False,False,False,False,False,False,3,3
 2023,WAS,Ron Rivera,Eric Bieniemy,Eric Bieniemy,OC,Reid system,first NFL play caller role,False,True,True,False,False,True,1,1
-2024,WAS,Dan Quinn,Kliff Kingsbury,Kliff Kingsbury,OC,Air Raid,first-year HC and new OC,True,True,True,True,True,False,1,1
+2024,WAS,Dan Quinn,Kliff Kingsbury,Kliff Kingsbury,OC,Air Raid,first-year HC and new OC,True,True,True,True,False,False,1,1
 2025,WAS,Dan Quinn,Kliff Kingsbury,Kliff Kingsbury,OC,Air Raid,,False,False,False,False,False,False,2,2
 2026,WAS,Dan Quinn,David Blough,David Blough,OC,Johnson/McVay,,False,True,True,False,True,True,1,1
