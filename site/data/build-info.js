@@ -1,5 +1,5 @@
 window.BUILD_INFO = {
-  "generated": "2026-11-26T14:40:23",
+  "generated": "2026-11-26T14:41:34",
   "files": {
     "ktc.js": "2026-11-26T13:38:00",
     "players.js": "2026-11-26T13:38:01",
@@ -33,7 +33,7 @@ window.BUILD_INFO = {
     "usage-weekly.js": "2026-11-26T13:38:02",
     "idp-advanced.js": "2026-11-26T13:38:00",
     "fumbles.js": "2026-11-26T13:37:58",
-    "weekly-rankings.js": "2026-11-26T14:03:44",
+    "weekly-rankings.js": "2026-11-26T14:41:31",
     "sleeper-market.js": "2026-11-26T13:38:02",
     "faab.js": "2026-11-26T13:37:57",
     "trade-history.js": "2026-11-26T13:38:02",
