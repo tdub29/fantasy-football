@@ -13312,6 +13312,7 @@
           ] },
           { key:'production', label:'Production', items: [
             { jump:'Game Log',    node: advancedBlock(sleeper) },
+            { jump:'Ball Sec.',   node: fumbleFaultBlock(sleeper) },
             { jump:'Usage',       node: usageWeeksBlock(sleeper) },
             { jump:'Field Map',   node: locationBlock(sleeper) },
             { jump:'Projections', node: projectionBlock(sleeper) },
@@ -13551,6 +13552,80 @@
         `Ranks are among ${pos}s with a real share of the work. (est) columns are estimates. `,
         h('a', { href:`#stats/${pos}` }, 'Open Stats Lab'),
         RT_POS.includes(pos) ? [' · ', h('a', { href:'#stats/Routes', class:'rt-card-link', onclick:() => rtOpenFor(sleeper.id) }, 'Targeted route tree')] : null));
+  }
+
+  function fumbleFaultBlock(sleeper) {
+    const F = window.FUMBLES;
+    if (!F || !sleeper) return null;
+    const sid = String(sleeper.id);
+    const rb = F.rb && F.rb[sid];
+    if (rb) {
+      const c = rb.cur || {}, p = rb.pool3 || {};
+      const tag = rb.tag || 'Normal';
+      const toneCls = tag === 'Multi-Yr Trend' ? 'is-trend'
+        : tag === '1-Yr Spike (Fluke?)' ? 'is-fluke'
+        : tag === 'Clean' ? 'is-clean' : '';
+      const fmtRate = (v) => v == null ? '-' : `${Number(v).toFixed(2)}%`;
+      const statTile = (label, val, sub, valCls) => h('div', { class:'adv-stat' },
+        h('div', { class:'adv-stat-label' }, label),
+        h('div', { class:`adv-stat-value tnum ${valCls || ''}` }, val),
+        sub ? h('div', { class:'adv-stat-rank tnum' }, sub) : null);
+      const luck = Number(c.lost_luck || 0);
+      const lostTone = luck > 0.7 ? 'delta-down' : luck < -0.7 ? 'delta-up' : '';
+      const curTone = (c.rate100 || 0) >= 1.6 && (c.t || 0) >= 40 ? 'delta-down' : ((c.rate100 || 0) < 0.5 && (c.t || 0) >= 80 ? 'delta-up' : '');
+      const p3Tone = (p.rate100 || 0) >= 1.25 && (p.t || 0) >= 250 ? 'delta-down' : ((p.rate100 || 0) < 0.6 && (p.t || 0) >= 250 ? 'delta-up' : '');
+      const cells = [
+        statTile(`${F.season} Fum%`, fmtRate(c.rate100), `${c.f || 0} / ${c.t || 0}t`, curTone),
+        statTile('3yr Fum%', fmtRate(p.rate100), `${p.f || 0} / ${p.t || 0}t (avg 0.80%)`, p3Tone),
+        statTile('EB True%', fmtRate(p.eb100), `M=3k shrunk`),
+        statTile('Lost / Exp', `${c.fl || 0} / ${(c.exp_lost || 0).toFixed(1)}`, luck >= 0 ? `+${luck.toFixed(1)} unlucky` : `${luck.toFixed(1)} lucky`, lostTone),
+        statTile('Forced / Unf', `${c.ff || 0} / ${c.uf || 0}`, `94% NFL marked forced`),
+        statTile('Rush / Rec F', `${c.f_rush || 0} / ${c.f_rec || 0}`, `Rec = 1.6x rush rate`),
+      ];
+      const logs = rb.log || [];
+      const logBox = logs.length ? h('details', { class:'inj-season', open: logs.length >= 3 },
+        h('summary', null, `${F.season} Fumble log (${logs.length})`),
+        h('div', { class:'tbl-scroll' },
+          h('table', { class:'data adv-log' },
+            h('thead', null, h('tr', null,
+              h('th', null, 'Wk'), h('th', null, 'Opp'), h('th', null, 'Play'),
+              h('th', null, 'Type'), h('th', null, 'Result'), h('th', null, 'Forced By'))),
+            h('tbody', null, ...logs.map(([wk, opp, ctx, ff, fl, fn, _fsid, fbc]) => h('tr', null,
+              h('td', { class:'tnum' }, `W${wk}`),
+              h('td', null, opp || '-'),
+              h('td', null, ctx || '-'),
+              h('td', null, ff ? 'Forced' : 'Unforced'),
+              h('td', { class: fl ? 'delta-down' : '' }, fl ? 'Lost' : 'Kept'),
+              h('td', null, ff ? (fbc != null && fbc >= 1.5 ? `${fn} (${Number(fbc).toFixed(1)}/1k)` : fn) : 'Self / Exchange'))))))) : null;
+      return h('div', { class:'card adv-card' },
+        h('div', { class:'fum-head' },
+          h('div', { class:'card-title', style:{ marginBottom:0 } }, `Ball Security · ${F.season} through week ${F.throughWeek}`),
+          h('span', { class:`fum-tag ${toneCls}` }, tag)),
+        h('div', { class:'fum-note' }, rb.note || ''),
+        h('div', { class:'adv-grid' }, ...cells),
+        logBox,
+        h('div', { class:'tip', style:{ marginTop:'6px' } },
+          'Reaction rule: judge 3-yr forced+total rate (need >=250 touches), not 1-yr spikes or coin-flip recovery luck (56.5% lost).'));
+    }
+
+    const df = F.def && F.def[sid];
+    if (!df) return null;
+    const c = df.cur || {}, p = df.pool3 || {};
+    const statTile = (label, val, sub, cls) => h('div', { class:'adv-stat' },
+      h('div', { class:'adv-stat-label' }, label),
+      h('div', { class:`adv-stat-value tnum ${cls || ''}` }, val),
+      sub ? h('div', { class:'adv-stat-rank tnum' }, sub) : null);
+    const bcTone = (c.bc_1k || 0) >= 2.0 ? 'delta-up' : '';
+    const p3Tone = (p.bc_1k || 0) >= 2.0 ? 'delta-up' : '';
+    return h('div', { class:'card adv-card' },
+      h('div', { class:'card-title' }, `Fumble Disruption · ${F.season} through week ${F.throughWeek}`),
+      h('div', { class:'adv-grid' },
+        statTile('2026 BC FF', String(c.ff_bc || 0), `${c.ff_rb || 0} vs RB (${c.snp || 0} snp)`, ''),
+        statTile('2026 BC/1k', c.bc_1k == null ? '-' : Number(c.bc_1k).toFixed(2), `3yr: ${p.bc_1k == null ? '-' : Number(p.bc_1k).toFixed(2)}/1k`, bcTone || p3Tone),
+        statTile('Strip-Sk FF', String(c.ff_sk || 0), `3yr: ${p.ff_sk || 0} (YOY r=0.40)`, ''),
+        statTile('Total FF', String(c.ff || 0), `3yr: ${p.ff || 0} (${p.ff_st || 0} ST)`, '')),
+      h('div', { class:'tip', style:{ marginTop:'6px' } },
+        'Splits sack strip-fumbles (sack=1) from ball-carrier punch/strip proxy (sack=0, LB/DB avg ~0.73 BC FF/1k snaps).'));
   }
 
   // Injury history on the Context tab, under career availability, from
@@ -18678,12 +18753,25 @@
     // Teams adds the defense's shell mix once that season's coverage file is on the page.
     const cov = isTeams ? (window.COVERAGE_BY_SEASON || {})[season] : null;
     const covOn = !!(cov && cov.published);
+    const RB_FUM_COLS = [
+      { key:'fum_f',    label:'Fum',      group:'Ball Security', fmt:'int',  lowerBetter:true, desc:'2026 scrimmage fumbles (resolved per fumbler slot from play-by-play).' },
+      { key:'fum_ff',   label:'Forced',   group:'Ball Security', fmt:'int',  lowerBetter:true, desc:'Fumbles credited as forced by a defender (~95% of RB fumbles).' },
+      { key:'fum_uf',   label:'Unforced', group:'Ball Security', fmt:'int',  lowerBetter:true, desc:'Unforced drops/exchanges on RB plays.' },
+      { key:'fum_fl',   label:'Lost',     group:'Ball Security', fmt:'int',  lowerBetter:true, desc:'Actual fumbles lost to the defense.' },
+      { key:'fum_exp',  label:'Exp lost', group:'Ball Security', fmt:'dec1', lowerBetter:true, desc:'Expected lost fumbles (fumbles x 56.5% league recovery rate).' },
+      { key:'fum_rate', label:'Fum/100t', group:'Ball Security', fmt:'dec2', lowerBetter:true, desc:'2026 fumbles per 100 touches (min 40 touches; NFL avg 0.80).' },
+      { key:'fum_3yr',  label:'3yr/100t', group:'Ball Security', fmt:'dec2', lowerBetter:true, desc:'3-year pooled fumbles per 100 touches (min 100 touches; strongest signal).' },
+      { key:'fum_eb',   label:'EB/100t',  group:'Ball Security', fmt:'dec2', lowerBetter:true, desc:'Empirical-Bayes shrunk rate toward 0.80% prior (M=3,000 touches).' },
+      { key:'fum_tag',  label:'Signal',   group:'Ball Security', fmt:'text', desc:'Fluke vs Multi-Yr Trend tag based on 3-yr volume and rate.' },
+    ];
+    const hasRbFum = pos === 'RB' && !splitOn && !!(window.FUMBLES && window.FUMBLES.rb);
     const cols = splitOn ? SPLIT_COLS.filter(c => c.pos.includes(pos))
-      : isTeams ? (covOn ? A.teamColumns.concat(teamCoverageCols(cov)) : A.teamColumns) : A.columns.filter(c => c.pos.includes(pos));
+      : isTeams ? (covOn ? A.teamColumns.concat(teamCoverageCols(cov)) : A.teamColumns)
+      : A.columns.filter(c => c.pos.includes(pos)).concat(hasRbFum ? RB_FUM_COLS : []);
     // A split has its own columns, so it keeps its own groups and sort.
     const gkey = splitOn ? `${pos} split` : pos;
     const groups = [...new Set(cols.map(c => c.group))];
-    const onGroups = (prefs.groups && prefs.groups[gkey]) || groups;
+    const onGroups = (prefs.groups && prefs.groups[gkey]) || groups.filter(g => g !== 'Ball Security');
     const estimates = splitOn ? new Set(['yprr_est']) : new Set(A.estimates || []);
 
     main.appendChild(breadcrumbs([{ label:'Tools' }, { label:'Stats Lab' }]));
@@ -18739,7 +18827,21 @@
         for (const pid of (me && me.players) || []) mine.add(String(pid));
       }
       rows = splitOn ? splitRows(loaded, pos, split, mine) : Object.entries(A.players).filter(([, v]) => v.p === pos)
-        .map(([sid, v]) => Object.assign({ _key:sid, _name:v.n, _team:v.t, _mine:mine.has(sid) }, v));
+        .map(([sid, v]) => {
+          const rf = hasRbFum ? window.FUMBLES.rb[sid] : null;
+          const fextra = rf ? {
+            fum_f: rf.cur.f,
+            fum_ff: rf.cur.ff,
+            fum_uf: rf.cur.uf,
+            fum_fl: rf.cur.fl,
+            fum_exp: rf.cur.exp_lost,
+            fum_rate: (rf.cur.t || 0) >= 40 ? rf.cur.rate100 : null,
+            fum_3yr: (rf.pool3.t || 0) >= 100 ? rf.pool3.rate100 : null,
+            fum_eb: rf.pool3.eb100,
+            fum_tag: rf.tag,
+          } : {};
+          return Object.assign({ _key:sid, _name:v.n, _team:v.t, _mine:mine.has(sid) }, v, fextra);
+        });
     }
 
     // Snapshots and calculated columns ride on the rows as plain fields, so

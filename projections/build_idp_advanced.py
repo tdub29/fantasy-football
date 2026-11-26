@@ -17,10 +17,12 @@ Run: python projections/build_idp_advanced.py [--self-check]
 import argparse
 import json
 import math
+import os
 import pathlib
 import re
 import sys
 import time
+import unicodedata
 import urllib.request
 from datetime import datetime, timezone
 
@@ -28,7 +30,7 @@ import pandas as pd
 
 HERE = pathlib.Path(__file__).parent
 ROOT = HERE.parent
-CACHE = HERE / "nflverse-cache"
+CACHE = pathlib.Path(os.environ.get("NFLVERSE_CACHE") or (HERE / "nflverse-cache"))
 SITE_DATA = ROOT / "site" / "data"
 LEAGUES_JS = SITE_DATA / "leagues.js"
 OUT_JS = SITE_DATA / "idp-advanced.js"
@@ -42,6 +44,7 @@ NFLVERSE_SOURCES = {
     f"stats_player_week_{SEASON}.parquet": ("player_stats", f"stats_player_week_{SEASON}.parquet"),
     f"snap_counts_{SEASON}.parquet": ("snap_counts", f"snap_counts_{SEASON}.parquet"),
     f"advstats_week_def_{SEASON}.parquet": ("pfr_advstats", f"advstats_week_def_{SEASON}.parquet"),
+    f"play_by_play_{SEASON}.parquet": ("pbp", f"play_by_play_{SEASON}.parquet"),
 }
 
 # DE/DT/NT/DL -> DL, OLB/ILB/MLB/LB -> LB, CB/S/FS/SS/DB -> DB
@@ -183,17 +186,71 @@ def build_dataframes():
     stats = pd.read_parquet(ensure_cached(f"stats_player_week_{SEASON}.parquet"))
     snaps = pd.read_parquet(ensure_cached(f"snap_counts_{SEASON}.parquet"))
     adv = pd.read_parquet(ensure_cached(f"advstats_week_def_{SEASON}.parquet"))
+    pbp = pd.read_parquet(
+        ensure_cached(f"play_by_play_{SEASON}.parquet"),
+        columns=[
+            "week", "season_type", "play_type", "special_teams_play",
+            "kickoff_attempt", "punt_attempt", "field_goal_attempt", "extra_point_attempt",
+            "sack", "two_point_attempt", "fumble", "fumble_forced",
+            "fumbled_1_player_id", "fumbled_2_player_id",
+            "forced_fumble_player_1_player_id", "forced_fumble_player_2_player_id",
+        ],
+    )
 
     print(f"roster_{SEASON}.parquet columns ({len(roster.columns)}): {list(roster.columns)}")
     print(f"stats_player_week_{SEASON}.parquet columns ({len(stats.columns)}): {list(stats.columns)}")
     print(f"snap_counts_{SEASON}.parquet columns ({len(snaps.columns)}): {list(snaps.columns)}")
     print(f"advstats_week_def_{SEASON}.parquet columns ({len(adv.columns)}): {list(adv.columns)}")
 
-    return roster, stats, snaps, adv
+    return roster, stats, snaps, adv, pbp
 
 
-def compute(roster, stats, snaps, adv):
-    roster = roster.copy()
+def _fill_missing_sleeper_ids(roster: pd.DataFrame, players_path: pathlib.Path | None) -> pd.DataFrame:
+    if players_path is None or not players_path.exists():
+        return roster
+    if not roster["sleeper_id"].isna().any():
+        return roster
+    players_nfl = json.loads(players_path.read_text(encoding="utf-8"))
+    def norm(s):
+        if not s or (isinstance(s, float) and math.isnan(s)):
+            return ""
+        s = unicodedata.normalize("NFKD", str(s)).encode("ascii", "ignore").decode()
+        s = re.sub(r"\b(jr|sr|ii|iii|iv|v)\b", "", s.lower())
+        return re.sub(r"[^a-z0-9]+", " ", s).strip()
+    by_bdate = {}
+    by_nt = {}
+    by_n = {}
+    for sid, info in players_nfl.items():
+        nm = norm(info.get("full_name") or f"{info.get('first_name', '')} {info.get('last_name', '')}")
+        tm = str(info.get("team") or "").upper()
+        bd = str(info.get("birth_date") or "")[:10]
+        if nm:
+            by_n.setdefault(nm, []).append(str(sid))
+            if tm:
+                by_nt[(nm, tm)] = str(sid)
+            if bd and bd != "None":
+                by_bdate[(bd, nm)] = str(sid)
+    out = roster.copy()
+    sids = out["sleeper_id"].tolist()
+    for i, row in enumerate(out.itertuples(index=False)):
+        if pd.notna(row.sleeper_id):
+            continue
+        nm = norm(getattr(row, "full_name", None))
+        bd = str(getattr(row, "birth_date", "") or "")[:10]
+        tm = str(getattr(row, "team", "") or "").upper()
+        if (bd, nm) in by_bdate:
+            sids[i] = by_bdate[(bd, nm)]
+        elif (nm, tm) in by_nt:
+            sids[i] = by_nt[(nm, tm)]
+        elif nm in by_n and len(by_n[nm]) == 1:
+            sids[i] = by_n[nm][0]
+    out["sleeper_id"] = sids
+    return out
+
+
+def compute(roster, stats, snaps, adv, pbp, players_path=None):
+    roster = _fill_missing_sleeper_ids(roster.copy(), players_path)
+    rb_gsis = set(roster[roster["position"] == "RB"]["gsis_id"].dropna().astype(str))
     roster["pos_bucket"] = roster["position"].map(bucket_pos)
     roster_def = roster[roster["pos_bucket"].notna() & roster["sleeper_id"].notna()].copy()
     roster_def = roster_def.drop_duplicates(subset=["sleeper_id"])
@@ -252,12 +309,51 @@ def compute(roster, stats, snaps, adv):
         if len(frame):
             through_week = max(through_week, int(frame[col].max()))
 
+    # -- PBP forced-fumble split (strip-sack vs non-sack ball-carrier vs special teams) --
+    pbp_reg = pbp[(pbp["season_type"] == "REG") & (pbp["two_point_attempt"] != 1) & (pbp["fumble"] == 1) & (pbp["fumble_forced"] == 1)].copy()
+    if through_week > 0:
+        pbp_reg = pbp_reg[pbp_reg["week"] <= through_week]
+    pbp_ff_map: dict[str, dict[str, int]] = {}
+    for prow in pbp_reg.itertuples(index=False):
+        play_st = (
+            str(prow.play_type or "") in ("kickoff", "punt", "field_goal", "extra_point")
+            or int(prow.special_teams_play or 0) == 1
+            or int(prow.kickoff_attempt or 0) == 1
+            or int(prow.punt_attempt or 0) == 1
+            or int(prow.field_goal_attempt or 0) == 1
+            or int(prow.extra_point_attempt or 0) == 1
+        )
+        play_sack = (not play_st) and (int(prow.sack or 0) == 1)
+        any_rb = (
+            (pd.notna(prow.fumbled_1_player_id) and str(prow.fumbled_1_player_id) in rb_gsis)
+            or (pd.notna(prow.fumbled_2_player_id) and str(prow.fumbled_2_player_id) in rb_gsis)
+        )
+        seen_f: set[str] = set()
+        for fcol in (prow.forced_fumble_player_1_player_id, prow.forced_fumble_player_2_player_id):
+            if pd.isna(fcol):
+                continue
+            fgid = str(fcol)
+            if fgid in seen_f:
+                continue
+            seen_f.add(fgid)
+            rec_d = pbp_ff_map.setdefault(fgid, {"ff_pbp": 0, "ff_sk": 0, "ff_bc": 0, "ff_st": 0, "ff_rb": 0})
+            rec_d["ff_pbp"] += 1
+            if play_st:
+                rec_d["ff_st"] += 1
+            elif play_sack:
+                rec_d["ff_sk"] += 1
+            else:
+                rec_d["ff_bc"] += 1
+                if any_rb:
+                    rec_d["ff_rb"] += 1
+
     rows = {}
     for rec in roster_def.itertuples(index=False):
-        sid = rec.sleeper_id
+        sid = str(rec.sleeper_id)
         b = box_agg.loc[rec.gsis_id] if rec.gsis_id in box_agg.index else None
         sn = snap_agg.loc[rec.pfr_id] if rec.pfr_id in snap_agg.index else None
         av = adv_agg.loc[rec.pfr_id] if rec.pfr_id in adv_agg.index else None
+        pf = pbp_ff_map.get(str(rec.gsis_id)) or {"ff_pbp": 0, "ff_sk": 0, "ff_bc": 0, "ff_st": 0, "ff_rb": 0}
 
         tkl_solo = float(b["def_tackles_solo"]) if b is not None else 0.0
         tkl_ast = float(b["def_tackle_assists"]) if b is not None else 0.0
@@ -309,7 +405,10 @@ def compute(roster, stats, snaps, adv):
             "n": rec.full_name, "p": rec.pos_bucket, "t": rec.team,
             "gp": games, "snp": defense_snaps, "snp_pct": snap_pct,
             "tkl_solo": tkl_solo, "tkl_ast": tkl_ast, "tkl": tkl, "tfl": tfl,
-            "ff": ff, "fr": fr, "mtkl": mtkl, "mtkl_pct": mtkl_pct,
+            "ff": ff, "ff_sk": float(pf["ff_sk"]), "ff_bc": float(pf["ff_bc"]),
+            "ff_rb": float(pf["ff_rb"]), "_ff_st": float(pf["ff_st"]), "_ff_pbp": float(pf["ff_pbp"]),
+            "ff_bc_1k": (pf["ff_bc"] / defense_snaps * 1000.0) if defense_snaps >= 100 else None,
+            "fr": fr, "mtkl": mtkl, "mtkl_pct": mtkl_pct,
             "sk": sk, "qbh": qbh, "prs": prs,
             "prs_per_snap": (prs / defense_snaps) if defense_snaps > 0 else None,
             "pbu": pbu, "intc": intc,
@@ -337,7 +436,13 @@ COLUMNS = [
     {"key": "tfl", "label": "TFL", "group": "Tackling", "fmt": "int",
      "desc": "Tackles for a loss."},
     {"key": "ff", "label": "FF", "group": "Tackling", "fmt": "int",
-     "desc": "Forced fumbles."},
+     "desc": "Total forced fumbles (sack + ball-carrier + special teams)."},
+    {"key": "ff_bc", "label": "BC FF", "group": "Tackling", "fmt": "int",
+     "desc": "Ball-carrier forced fumbles (sack == 0, non-ST scrimmage; public proxy for punch-outs/strips)."},
+    {"key": "ff_rb", "label": "FF vs RB", "group": "Tackling", "fmt": "int",
+     "desc": "Non-sack scrimmage forced fumbles specifically against running backs."},
+    {"key": "ff_bc_1k", "label": "BC FF/1k", "group": "Tackling", "fmt": "dec2",
+     "desc": "Ball-carrier forced fumbles per 1,000 defensive snaps (min 100 snaps; LB/DB avg ~0.73)."},
     {"key": "fr", "label": "FR", "group": "Tackling", "fmt": "int",
      "desc": "Fumble recoveries (own + opponent)."},
     {"key": "mtkl", "label": "Missed tkl", "group": "Tackling", "fmt": "int",
@@ -346,6 +451,8 @@ COLUMNS = [
      "desc": "Missed tackle rate: missed / (tackles + missed), PFR."},
     {"key": "sk", "label": "Sacks", "group": "Pass rush", "fmt": "dec1",
      "desc": "Sacks."},
+    {"key": "ff_sk", "label": "Strip-Sk FF", "group": "Pass rush", "fmt": "int",
+     "desc": "Forced fumbles on QB sacks (sack == 1, nflverse PBP)."},
     {"key": "qbh", "label": "QB hits", "group": "Pass rush", "fmt": "int",
      "desc": "QB hits."},
     {"key": "prs", "label": "Pressures", "group": "Pass rush", "fmt": "int",
@@ -396,18 +503,21 @@ def finalize(rows, scoring):
             row["rank"] = i
 
     numeric_keys = [
-        "snp", "snp_pct", "tkl_solo", "tkl_ast", "tkl", "tfl", "ff", "fr", "mtkl", "mtkl_pct",
+        "snp", "snp_pct", "tkl_solo", "tkl_ast", "tkl", "tfl",
+        "ff", "ff_sk", "ff_bc", "ff_rb", "ff_bc_1k", "fr", "mtkl", "mtkl_pct",
         "sk", "qbh", "prs", "prs_per_snap", "pbu", "intc", "tgt", "cmp", "yds_allow", "rat_allow",
         "pts", "ppg", "pts_per_snap", "tkl_per_snap",
     ]
     for row in rows.values():
+        row.pop("_ff_st", None)
+        row.pop("_ff_pbp", None)
         for k in numeric_keys:
             row[k] = r4(row.get(k))
 
     return rows
 
 
-def build_payload(self_check=False):
+def build_payload(self_check=False, players_path=None):
     league = load_idp_league()
     if league is not None:
         scoring = {k: v for k, v in (league.get("scoring") or {}).items() if k.startswith("idp_") and v}
@@ -425,8 +535,12 @@ def build_payload(self_check=False):
         league_info["unmappedScoringKeys"] = unmapped
         print(f"WARNING: idp_ scoring keys with no stat mapping (ignored): {unmapped}")
 
-    roster, stats, snaps, adv = build_dataframes()
-    rows, through_week, adv_pfr_seen, adv_pfr_matched = compute(roster, stats, snaps, adv)
+    roster, stats, snaps, adv, pbp = build_dataframes()
+    rows, through_week, adv_pfr_seen, adv_pfr_matched = compute(roster, stats, snaps, adv, pbp, players_path=players_path)
+    if self_check:
+        for sid, row in rows.items():
+            ff_split_sum = row["ff_sk"] + row["ff_bc"] + row["_ff_st"]
+            assert abs(ff_split_sum - row["_ff_pbp"]) < 1e-9, f"PBP FF split mismatch for {sid}: {ff_split_sum} != {row['_ff_pbp']}"
     rows = finalize(rows, scoring)
 
     if self_check:
@@ -439,7 +553,7 @@ def build_payload(self_check=False):
         "league": league_info,
         "source": (
             "nflverse stats_player_week (box score), snap_counts (usage), "
-            "PFR advstats_week_def (pressures/coverage/missed tackles) via roster sleeper_id/pfr_id/gsis_id crosswalk"
+            "PFR advstats_week_def (pressures/coverage/missed tackles), play_by_play (Strip-Sack vs Ball-Carrier FF) via roster crosswalk"
         ),
         "columns": COLUMNS,
         "players": {sid: row for sid, row in rows.items()},
@@ -499,11 +613,16 @@ def to_js(payload) -> str:
 
 
 def main():
+    global CACHE
     ap = argparse.ArgumentParser()
+    ap.add_argument("--cache", type=pathlib.Path, default=None, help="nflverse-cache folder")
+    ap.add_argument("--players", type=pathlib.Path, default=ROOT / "players-nfl.json", help="players-nfl.json path")
     ap.add_argument("--self-check", action="store_true", help="run internal asserts before writing output")
     args = ap.parse_args()
+    if args.cache is not None:
+        CACHE = args.cache
 
-    payload, match_rate = build_payload(self_check=args.self_check)
+    payload, match_rate = build_payload(self_check=args.self_check, players_path=args.players)
 
     js = to_js(payload)
     OUT_JS.write_text(js, encoding="utf-8")
