@@ -1,11 +1,14 @@
-"""Score IDP projections per SOURCE (Clay / Sleeper) independently, each completed
-with the same best-estimate fills (PD, QB-hit, return yds; TFL for Sleeper, fum-rec
-for Clay), so all three (clay/sleeper/blend) are directly comparable. yuH IDP scoring.
-Then emit the combined site file site/data/projections.js (offense + defense)."""
-import json, pathlib
+"""Score IDP projections per SOURCE (xStats / Clay / Sleeper) independently, each
+completed with the same best-estimate fills (PD, QB-hit, return yds; TFL for Sleeper,
+fum-rec for Clay), so all four (xstats/blend/clay/sleeper) are directly comparable under
+yuH IDP scoring. Then emit the combined site file site/data/projections.js (offense + defense)."""
+import argparse
+import json
+import pathlib
 
 HERE = pathlib.Path(__file__).parent
-SITE = HERE.parent / "site" / "data"
+ROOT = HERE.parent
+SITE = ROOT / "site" / "data"
 
 YUH = {"solo": 1.0, "ast": 0.5, "sack": 3.0, "tfl": 1.0, "int": 5.0, "ff": 3.0,
        "fum_rec": 3.0, "pass_def": 3.0, "qb_hit": 1.0,
@@ -30,37 +33,84 @@ def complete_score(st, pos):
                     "sack_yd": round(sack * 6.5, 1), "int_ret_yd": round(intc * 12, 1), "fum_ret_yd": round(fr * 6, 1)}
     pts = round(sum(scoring_line[k] * w for k, w in YUH.items()), 1)
     display = {"solo": round(solo, 1), "ast": round(ast, 1), "sack": round(sack, 1), "tfl": round(tfl, 1),
-               "int": round(intc, 1), "ff": round(ff, 1), "pass_def": pd, "qb_hit": qbh, "fum_rec": round(fr, 1)}
+               "int": round(intc, 1), "ff": round(ff, 1), "pass_def": pd, "qb_hit": qbh, "fum_rec": round(fr, 1),
+               "sack_yd": round(sack * 6.5, 1), "int_ret_yd": round(intc * 12, 1), "fum_ret_yd": round(fr * 6, 1)}
     return pts, display
 
 def load(n): return {p["sleeper_id"]: p for p in json.load(open(HERE / n, encoding="utf-8"))["players"] if p.get("sleeper_id")}
 
+
+def load_xstats():
+    p = SITE / "idp-xstats.js"
+    if not p.exists():
+        return {}
+    txt = p.read_text(encoding="utf-8")
+    return json.loads(txt[txt.index("{"):txt.rindex("}") + 1]).get("players", {})
+
+
+def xstats_season_entry(rec):
+    xstats_pts = round(float(rec["xNeut"]) * 17.0, 1)
+    xstats_line = {
+        "solo": round(float(rec["xSolo"]) * 17.0, 1),
+        "ast": round(float(rec["xAst"]) * 17.0, 1),
+        "sack": round(float(rec["xSk"]) * 17.0, 1),
+        "tfl": round(float(rec["xTFL"]) * 17.0, 1),
+        "int": round(float(rec["xINT"]) * 17.0, 1),
+        "ff": round(float(rec["xFF"]) * 17.0, 1),
+        "pass_def": round(float(rec["xPBU"]) * 17.0, 1),
+        "qb_hit": round(float(rec["xQBH"]) * 17.0, 1),
+        "fum_rec": round(float(rec["xFR"]) * 17.0, 1),
+        "sack_yd": round(float(rec["xSkYd"]) * 17.0, 1),
+        "int_ret_yd": round(float(rec["xINTYd"]) * 17.0, 1),
+        "fum_ret_yd": round(float(rec["xFRYd"]) * 17.0, 1),
+        "def_td": round(float(rec.get("xTD") or 0.0) * 17.0, 2),
+    }
+    return xstats_pts, xstats_line
+
+
 def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--self-check", action="store_true")
+    args = ap.parse_args()
+
     clay = load("clay-2026-idp-projections.json")
     slp = load("sleeper-2026-idp-projections.json")
+    xstats = load_xstats()
     DKEYS = ["solo", "ast", "sack", "tfl", "int", "ff", "pass_def", "qb_hit", "fum_rec"]
     def blend_line(a, b):
         a, b = a or {}, b or {}
         return {k: round(sum(v)/len(v), 1) for k in (set(a) | set(b))
                 if (v := [x[k] for x in (a, b) if k in x and x[k] is not None])}
     out = []
-    for pid in set(clay) | set(slp):
-        c, s = clay.get(pid), slp.get(pid)
-        pos = (c or {}).get("pos") or (s or {}).get("pos") or "LB"
-        name = (c or s)["name"]; team = (c or {}).get("team") or (s or {}).get("team")
+    for pid in set(clay) | set(slp) | set(xstats):
+        c, s, x = clay.get(pid), slp.get(pid), xstats.get(pid)
+        pos = (c or {}).get("pos") or (s or {}).get("pos") or (x or {}).get("p") or "LB"
+        name = (c or s)["name"] if (c or s) else x["n"]
+        team = (c or {}).get("team") or (s or {}).get("team") or (x or {}).get("t")
         clay_pts, clay_line = complete_score(c, pos) if c else (None, {})
         slp_pts, slp_line = complete_score(s, pos) if s else (None, {})
+        xstats_pts, xstats_line = xstats_season_entry(x) if x else (None, {})
         vals = [v for v in (clay_pts, slp_pts) if v is not None]
         blend = round(sum(vals) / len(vals), 1) if vals else None
-        if blend is None:
+        if blend is None and xstats_pts is None:
             continue
+        stats_map = {}
+        if xstats_line:
+            stats_map["xstats"] = xstats_line
+        if clay_line:
+            stats_map["clay"] = clay_line
+        if slp_line:
+            stats_map["sleeper"] = slp_line
+        b_line = blend_line(clay_line, slp_line)
+        if b_line:
+            stats_map["blend"] = b_line
         out.append({"id": pid, "name": name, "pos": pos, "team": team,
-                    "clay": clay_pts, "sleeper": slp_pts, "blend": blend,
-                    "stats": {"clay": clay_line, "sleeper": slp_line, "blend": blend_line(clay_line, slp_line)}})
-    out.sort(key=lambda x: -(x["blend"] or 0))
+                    "xstats": xstats_pts, "clay": clay_pts, "sleeper": slp_pts, "blend": blend,
+                    "stats": stats_map})
+    out.sort(key=lambda r: -(r["xstats"] or r["blend"] or 0))
     (HERE / "defense-projections.json").write_text(
-        json.dumps({"scoring": "yuH IDP, per-source best-est completion", "count": len(out),
-                    "sources": ["blend", "clay", "sleeper"], "default": "clay", "stat_keys": DKEYS, "players": out},
+        json.dumps({"scoring": "yuH IDP, per-source best-est completion + yuh-idp-xstats-v1", "count": len(out),
+                    "sources": ["xstats", "blend", "clay", "sleeper"], "default": "xstats", "stat_keys": DKEYS, "players": out},
                    ensure_ascii=False, indent=1), encoding="utf-8")
 
     # combine offense + defense into the site file (with per-source stat lines)
@@ -69,12 +119,12 @@ def main():
                  "pp": p["pp"], "sleeper": p["sleeper"], "blend": p["blend"], "stats": p.get("stats", {}),
                  "pp_partial": bool(p.get("pp_borrowed"))} for p in off]
     def_slim = [{"id": p["id"], "name": p["name"], "pos": p["pos"], "team": p["team"],
-                 "clay": p["clay"], "sleeper": p["sleeper"], "blend": p["blend"], "stats": p["stats"]} for p in out]
+                 "xstats": p["xstats"], "clay": p["clay"], "sleeper": p["sleeper"], "blend": p["blend"], "stats": p["stats"]} for p in out]
     payload = {
         "offense": {"default": "pp", "sources": ["blend", "pp", "sleeper"],
                     "stat_keys": ["pass_yd", "pass_td", "pass_int", "rush_yd", "rush_td", "rec", "rec_yd", "rec_td"],
                     "players": off_slim},
-        "defense": {"default": "clay", "sources": ["blend", "clay", "sleeper"],
+        "defense": {"default": "xstats", "sources": ["xstats", "blend", "clay", "sleeper"],
                     "stat_keys": ["solo", "ast", "sack", "tfl", "int", "ff", "pass_def", "qb_hit", "fum_rec"],
                     "players": def_slim},
     }
@@ -82,10 +132,18 @@ def main():
     (SITE / "projections.js").write_text(
         "window.OFFENSE_PROJ = " + json.dumps(payload, separators=(",", ":"), ensure_ascii=False) + ";\n",
         encoding="utf-8")
+    if args.self_check:
+        assert payload["defense"]["default"] == "xstats"
+        assert payload["defense"]["sources"] == ["xstats", "blend", "clay", "sleeper"]
+        names = {p["name"] for p in def_slim}
+        for req_nm in ("Blake Cashman", "Kamari Lassiter"):
+            assert req_nm in names, f"Missing expected IDP {req_nm}"
+        assert any("Reese" in n for n in names), "Missing Arvell Reese from xstats defense pool"
+        print("score_defense self-check ok")
     print(f"defense: {len(out)} IDP scored -> defense-projections.json; site file offense={len(off_slim)} defense={len(def_slim)}")
-    print("\nTop 10 IDP by Clay (default):")
-    for i, p in enumerate(sorted(out, key=lambda x: -(x["clay"] or 0))[:10], 1):
-        print(f"{i:2d}. {p['name']:22s} {p['team'] or '?':3s} {p['pos']:4s}  Clay {p['clay']}  Sleeper {p['sleeper']}  Blend {p['blend']}")
+    print("\nTop 10 IDP by xStats (default):")
+    for i, p in enumerate(sorted(out, key=lambda x: -(x["xstats"] or 0))[:10], 1):
+        print(f"{i:2d}. {p['name']:22s} {p['team'] or '?':3s} {p['pos']:4s}  xStats {p['xstats']}  Clay {p['clay']}  Sleeper {p['sleeper']}  Blend {p['blend']}")
 
 if __name__ == "__main__":
     main()

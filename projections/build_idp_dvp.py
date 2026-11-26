@@ -61,23 +61,23 @@ GROUPS = {
 }
 POS_TO_GROUP = {p: g for g, ps in GROUPS.items() for p in ps}
 
-# Sleeper scoring key -> nflverse weekly column. Only keys that exist on both
-# sides; anything unmapped is reported rather than silently scored as zero.
+# Sleeper scoring key -> nflverse weekly column. Only IDP keys (`idp_*`) so
+# D/ST keys (`sack`, `int`, `ff`) on leagues that share a JSON scoring_settings
+# never double-count onto individual defenders.
 STAT_MAP = {
     "idp_tkl_solo": "def_tackles_solo",
     "idp_tkl_ast": "def_tackle_assists",
     "idp_tkl": "def_tackles_solo",          # leagues that pay a flat tackle
     "idp_tkl_loss": "def_tackles_for_loss",
     "idp_sack": "def_sacks",
-    "sack": "def_sacks",
     "idp_sack_yd": "def_sack_yards",
     "idp_qb_hit": "def_qb_hits",
     "idp_int": "def_interceptions",
-    "int": "def_interceptions",
     "idp_int_ret_yd": "def_interception_yards",
     "idp_pass_def": "def_pass_defended",
     "idp_ff": "def_fumbles_forced",
-    "ff": "def_fumbles_forced",
+    "idp_fum_rec": "fumble_recovery_opp",
+    "idp_fum_ret_yd": "fumble_recovery_yards_opp",
     "idp_def_td": "def_tds",
     "idp_safe": "def_safeties",
     "idp_blk_kick": "def_fg_blocks",
@@ -154,15 +154,37 @@ def fetch_weekly(season):
     return list(csv.DictReader(io.TextIOWrapper(io.BytesIO(raw), encoding="utf-8")))
 
 
+def load_weekly(season, cache_dir=None):
+    if cache_dir:
+        pq = pathlib.Path(cache_dir) / f"stats_player_week_{season}.parquet"
+        if pq.exists():
+            import pandas as pd
+            df = pd.read_parquet(pq)
+            df = df[df["position"].fillna("").str.upper().isin(POS_TO_GROUP)].copy()
+            return df.to_dict("records")
+    return fetch_weekly(season)
+
+
+def _num(val):
+    if val in (None, ""):
+        return 0.0
+    try:
+        f = float(val)
+        return 0.0 if f != f else f
+    except (TypeError, ValueError):
+        return 0.0
+
+
 def score_row(row, weights):
     pts = 0.0
     for col, w in weights.items():
-        v = row.get(col)
-        if v not in (None, ""):
-            try:
-                pts += float(v) * w
-            except ValueError:
-                pass
+        if col == "def_sack_yards":
+            pts += abs(_num(row.get(col))) * w
+        elif col == "def_fg_blocks":
+            blk = _num(row.get("def_fg_blocks")) + _num(row.get("def_punt_blocks")) + _num(row.get("def_pat_blocks"))
+            pts += blk * w
+        else:
+            pts += _num(row.get(col)) * w
     return pts
 
 
@@ -194,7 +216,7 @@ def allowed_by_offense(rows, weights, cutoff_week=None):
             for k, v in totals.items()}
 
 
-def main():
+def main(cache_dir=None):
     leagues = load_js(SITE / "leagues.js", "LEAGUES")
     lgs = leagues.get("leagues", leagues) if isinstance(leagues, dict) else leagues
     weights, unmapped, lg = idp_scoring(lgs)
@@ -212,11 +234,15 @@ def main():
     season = int(lg.get("season") or 2026)
     week = int(lg.get("week") or 1)
     prior = season - 1
+    if cache_dir is None:
+        default_cache = HERE / "nflverse-cache"
+        if default_cache.exists():
+            cache_dir = default_cache
 
-    prior_rows = fetch_weekly(prior)
+    prior_rows = load_weekly(prior, cache_dir)
     print(f"  {prior}: {len(prior_rows):,} player-weeks")
     try:
-        cur_rows = fetch_weekly(season)
+        cur_rows = load_weekly(season, cache_dir)
         print(f"  {season}: {len(cur_rows):,} player-weeks, pooling through week {week - 1}")
     except Exception as exc:
         cur_rows = []
@@ -324,6 +350,18 @@ def self_check():
         obj = 'window.X = {"k": [1, 2]};\nwindow.Y = 1;\n'
         f.write_text(obj, encoding="utf-8")
         assert load_js(f, "X") == {"k": [1, 2]}
+    # Verify yuH scoring prevents D/ST double-counting and maps fumble recoveries
+    w_yuh, unm_yuh, _ = idp_scoring([{"is_idp": True, "scoring": {
+        "idp_sack": 3.0, "sack": 1.0, "idp_int": 5.0, "int": 2.0,
+        "idp_ff": 3.0, "ff": 1.0, "idp_fum_rec": 3.0, "idp_fum_ret_yd": 0.1,
+        "idp_sack_yd": 0.1, "idp_blk_kick": 3.0,
+    }}])
+    assert unm_yuh == [], unm_yuh
+    assert w_yuh["def_sacks"] == 3.0 and w_yuh["def_interceptions"] == 5.0, w_yuh
+    assert w_yuh["def_fumbles_forced"] == 3.0 and w_yuh["fumble_recovery_opp"] == 3.0, w_yuh
+    assert w_yuh["fumble_recovery_yards_opp"] == 0.1, w_yuh
+    assert round(score_row({"def_sack_yards": -10, "def_punt_blocks": 1}, w_yuh), 2) == 4.0
+
     print("build_idp_dvp self-check ok")
     return 0
 
@@ -331,5 +369,6 @@ def self_check():
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--self-check", action="store_true")
+    ap.add_argument("--cache", help="Directory containing nflverse stats_player_week_{season}.parquet")
     a = ap.parse_args()
-    sys.exit(self_check() if a.self_check else main())
+    sys.exit(self_check() if a.self_check else main(a.cache))

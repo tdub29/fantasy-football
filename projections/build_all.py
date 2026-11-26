@@ -42,8 +42,12 @@ STEPS = [
     ("season props (9-book market)", PROJ / "fetch_season_props.py",      True),
     ("offense components",         PROJ / "build_offense_components.py",  True),
     ("score offense",              PROJ / "score_offense.py",             True),
+    ("IDP xStats (yuH)",           PROJ / "build_idp_xstats.py",          True),
+    ("IDP xStats self-check",      PROJ / "build_idp_xstats.py",          True, ["--self-check"]),
     ("score defense",              PROJ / "score_defense.py",             True),
     ("weekly rankings",            PROJ / "build_weekly_rankings.py",     True),
+    ("D/ST weekly model",          PROJ / "build_defense_model.py",       True),
+    ("D/ST weekly self-check",     PROJ / "build_defense_model.py",       True, ["--self-check"]),
     ("FantasyPros expert boards",  PROJ / "build_fantasypros_experts.py", True),
     # Six-source weekly ranks + points (Draft Sharks, CBS, FFToday, FFC, StartWho,
     # FantasyData) and their spread, for the player card. Current week only.
@@ -131,6 +135,7 @@ STEPS = [
     ("fumble fault attribution",   PROJ / "build_fumbles.py",             True),
     ("fumbles self-check",         PROJ / "build_fumbles.py",             True, ["--self-check"]),
     ("IDP defense-vs-position",    PROJ / "build_idp_dvp.py",             True),
+    ("IDP DvP self-check",         PROJ / "build_idp_dvp.py",             True, ["--self-check"]),
     # The kicker board is modelled in a SEPARATE repo and written back into
     # site/data/kickers.js. It belongs in this list anyway: leaving it out is
     # how a board silently stays on last week beside freshly rebuilt columns,
@@ -156,7 +161,7 @@ TRACKED = [
     "ktc.js", "players.js", "leagues.js", "projections.js", "categories.js",
     "environment.js", "sos.js", "sos-grid.js", "sleeper-idp.js", "player-info.js",
     "jacob-gibbs.js", "expert-rankings.js", "fantasypros-experts.js", "alexandria.js",
-    "idp-dvp.js", "kickers.js", "gibbs-week.js", "gibbs-ros.js", "gibbs-ppr.js", "advanced.js", "prospect.js", "prospect-model.js", "capital-ratings.js", "mock-consensus.js", "contracts.js", "weather.js", "defense.js", "usage-weekly.js", "idp-advanced.js", "fumbles.js", "weekly-rankings.js", "sleeper-market.js", "faab.js", "trade-history.js", "context.js", "history.js",
+    "idp-dvp.js", "idp-xstats.js", "kickers.js", "gibbs-week.js", "gibbs-ros.js", "gibbs-ppr.js", "advanced.js", "prospect.js", "prospect-model.js", "capital-ratings.js", "mock-consensus.js", "contracts.js", "weather.js", "defense.js", "defense-weekly.js", "usage-weekly.js", "idp-advanced.js", "fumbles.js", "weekly-rankings.js", "sleeper-market.js", "faab.js", "trade-history.js", "context.js", "history.js",
 ]
 
 def run(label, script, timeout=600, args=()):

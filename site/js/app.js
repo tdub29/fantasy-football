@@ -1284,9 +1284,9 @@
       RB: rb + flex * 0.40,
       WR: wr + flex * 0.50,
       TE: te + flex * 0.10,
-      LB: lb + idp_flex * 0.55,
-      DB: db + idp_flex * 0.30,
-      DL: dl + idp_flex * 0.15,
+      LB: lb + idp_flex * 0.60,
+      DB: db + idp_flex * 0.18,
+      DL: dl + idp_flex * 0.22,
       // Only leagues that actually roster the slot get a target, so a dynasty
       // league keeps K and DST out of its asset views as before.
       K: k,
@@ -2881,7 +2881,7 @@
     QB: ['QB'], RB: ['RB'], WR: ['WR'], TE: ['TE'],
     FLEX: ['RB', 'WR', 'TE'], SUPER_FLEX: ['QB', 'RB', 'WR', 'TE'],
     K: ['K'], DEF: ['DEF', 'DST'],
-    LB: ['LB'], DB: ['DB'], DL: ['DL'], IDP_FLEX: ['LB', 'DB', 'DL'],
+    LB: ['LB'], DB: ['DB'], DL: ['DL'], IDP: ['LB', 'DB', 'DL'], IDP_FLEX: ['LB', 'DB', 'DL'],
   };
   // The slots a simulated week fills: offense plus, in an IDP league, the defender
   // slots, so yuH's title odds count the points its defenders actually score.
@@ -2946,6 +2946,8 @@
       pass_def: g('idp_pass_def', 1), qb_hit: g('idp_qb_hit', 0),
       fum_rec: g('idp_fum_rec', 3), def_td: g('idp_def_td', 6),
       safe: g('idp_safe', 3), blk_kick: g('idp_blk_kick', 3),
+      sack_yd: g('idp_sack_yd', 0), int_ret_yd: g('idp_int_ret_yd', 0),
+      fum_ret_yd: g('idp_fum_ret_yd', 0),
     };
     let pts = 0;
     for (const k in w) pts += (stats[k] || 0) * w[k];
@@ -3725,8 +3727,8 @@
   // assets, which never include special teams.
   function leaguePlayerPosOptions(lg, view) {
     const starts = (pos) => offenseStartingSlots(lg).some(slot => slot.pos === pos);
-    const options = lg.is_idp && !['weekly', 'ros', 'sleeper-weeks'].includes(view)
-      ? ['ALL','QB','RB','WR','TE','FLEX','LB','DB','DL']
+    const options = lg.is_idp
+      ? ['ALL','QB','RB','WR','TE','FLEX','IDP','LB','DB','DL']
       : ['ALL','QB','RB','WR','TE','FLEX'];
     if (view === 'weekly' && starts('K')) options.push('K');
     if ((view === 'weekly' || view === 'sleeper-weeks') && starts('DEF')) options.push('DEF');
@@ -3736,12 +3738,14 @@
   // Whether a row at `pos` belongs under button `filterPos`. Special teams only
   // show on their own board, never in ALL, so they cannot pollute the main
   // view; SLOT_TAKES maps the DST alias onto DEF and FLEX onto RB/WR/TE.
-  function leaguePlayerRowFits(lg, posOptions, filterPos, pos) {
+  function leaguePlayerRowFits(lg, posOptions, filterPos, pos, view = null) {
+    const gPos = isIdpPos(pos) ? projPosGroup(pos) : pos;
     const takes = SLOT_TAKES[filterPos] || [filterPos];
     if (pos === 'K' || SLOT_TAKES.DEF.includes(pos)) return posOptions.includes(filterPos) && takes.includes(pos);
     if (pos === 'P') return false;
     if (!lg.is_idp && isIdpPos(pos)) return false;
-    return filterPos === 'ALL' || takes.includes(pos);
+    if (isIdpPos(pos) && ['weekly', 'ros', 'sleeper-weeks'].includes(view) && filterPos === 'ALL') return false;
+    return filterPos === 'ALL' || takes.includes(pos) || takes.includes(gPos);
   }
 
   function renderLeaguePlayers(main, lg) {
@@ -3755,6 +3759,20 @@
       _sleeperId:String(player.id), _weekly:player,
       name:player.name, pos:player.pos, team:player.team,
     }));
+    if (lg.is_idp && window.IDP_XSTATS?.players) {
+      const seenWeekly = new Set(weeklyPlayers.map(p => p._sleeperId));
+      for (const [sid, x] of Object.entries(window.IDP_XSTATS.players)) {
+        if (seenWeekly.has(String(sid))) continue;
+        const rankedRec = rankedByPid.get(String(sid)) || {};
+        weeklyPlayers.push({
+          ...rankedRec,
+          _sleeperId: String(sid),
+          _weekly: { id: String(sid), name: x.n, pos: x.p, team: x.t, sleeper: Array(18).fill(null) },
+          name: x.n, pos: x.p, team: x.t,
+        });
+        seenWeekly.add(String(sid));
+      }
+    }
     const weeklyByPid = new Map(weeklyPlayers.map(p => [p._sleeperId, p._weekly]));
     // Mean Sleeper projection over the weeks still to play. The SOS view drops a
     // free agent under 5 a game: a matchup grid is a start/sit tool, and a
@@ -3865,6 +3883,7 @@
     const weeklyView = weeklyTable || filter.view === 'sleeper-weeks';
     const posOptions = leaguePlayerPosOptions(lg, filter.view);
     if (!posOptions.includes(filter.pos)) { filter.pos = 'ALL'; persist(); }
+    const isIdpPosFilter = (p) => ['IDP', 'LB', 'DB', 'DL'].includes(p);
     for (const p of posOptions) {
       posBtns.appendChild(h('button', {
         class:`toggle ${filter.pos===p?'active':''}`,
@@ -3873,7 +3892,11 @@
           if (p === 'K') { filter.sort = 'kicker-exp'; filter.dir = 'desc'; }
           // Sleeper weeks keeps its week sort; the Weekly DST board has no Vegas column.
           else if (p === 'DEF' && filter.view === 'weekly') { filter.sort = 'weekly-sleeper'; filter.dir = 'desc'; }
-          else if (/^(kicker-|def-)/.test(String(filter.sort))) { filter.sort = 'weekly-sleeper'; filter.dir = 'desc'; }
+          else if (isIdpPosFilter(p) && weeklyTable) { filter.sort = 'idp-xyuh'; filter.dir = 'desc'; }
+          else if (/^(kicker-|def-|idp-)/.test(String(filter.sort))) {
+            filter.sort = filter.view === 'ros' ? 'weekly-ros' : 'weekly-sleeper';
+            filter.dir = filter.view === 'ros' ? 'asc' : 'desc';
+          }
           persist();
           posBtns.querySelectorAll('.toggle').forEach(b => b.classList.toggle('active', b===e.target));
           render(); }
@@ -3924,10 +3947,13 @@
 
     if (hasProj && filter.view === 'stats') {
       const projBtns = h('div', { class:'toggle-group' });
-      for (const [k, lbl] of [['blend','Blended'],['pp','PP'],['sleeper','Sleeper'],['clay','Clay']]) {
+      const srcOpts = lg.is_idp
+        ? [['xstats','xStats'],['blend','Blended'],['pp','PP'],['sleeper','Sleeper'],['clay','Clay']]
+        : [['blend','Blended'],['pp','PP'],['sleeper','Sleeper'],['clay','Clay']];
+      for (const [k, lbl] of srcOpts) {
         projBtns.appendChild(h('button', {
           class:`toggle ${filter.proj===k?'active':''}`,
-          title: k==='pp' ? 'PrizePicks (offense only)' : k==='clay' ? 'Clay (IDP only)' : '',
+          title: k==='pp' ? 'PrizePicks (offense only)' : k==='clay' ? 'Clay (IDP only)' : k==='xstats' ? 'xStats (IDP only)' : '',
           onclick:(e) => { filter.proj = k; persist();
             projBtns.querySelectorAll('.toggle').forEach(b => b.classList.toggle('active', b===e.target));
             render(); }
@@ -3951,13 +3977,41 @@
       && Number(window.KICKER_MODEL?.week) === Number(currentWeek)
       ? new Map((window.KICKER_MODEL.kickers || []).flatMap(k => [
           [k.team, k.impliedTotal],
-          [k.team === 'LA' ? 'LAR' : (k.team === 'LAR' ? 'LA' : k.team), k.impliedTotal]
+          [canonTeam(k.team), k.impliedTotal]
         ]))
       : new Map();
+    const defWeeklyMap = Number(window.DEFENSE_WEEKLY?.season) === Number(weeklyData.season)
+      && Number(window.DEFENSE_WEEKLY?.week) === Number(currentWeek)
+      ? new Map((window.DEFENSE_WEEKLY.defenses || []).flatMap(d => [
+          [d.team, d],
+          [canonTeam(d.team), d]
+        ]))
+      : new Map();
+    const defWeeklyFor = (team) => team ? (defWeeklyMap.get(team) || defWeeklyMap.get(canonTeam(team)) || null) : null;
     const defOppImplied = (player) => {
       const pTeam = teamOfP(player);
+      const dw = defWeeklyFor(pTeam);
+      if (dw && dw.opp_implied != null) return dw.opp_implied;
       const opp = (weeklyData.games || {})[pTeam]?.opp || (weeklyData.games || {})[canonTeam(pTeam)]?.opp;
       return opp ? (impliedByTeam.get(opp) ?? impliedByTeam.get(canonTeam(opp)) ?? null) : null;
+    };
+    const defRowMetric = (player, key) => {
+      const pTeam = teamOfP(player);
+      const ds = player._weekly?.defStats;
+      if (key === 'def-oppImplied') return defOppImplied(player);
+      if (key === 'def-pa') return ds?.pts_allow ?? null;
+      if (key === 'def-sack') return ds?.sack ?? null;
+      if (key === 'def-int') return ds?.int ?? null;
+      if (key === 'def-fr') return ds?.fum_rec ?? null;
+      if (key === 'def-to') return ds && (ds.int != null || ds.fum_rec != null) ? (ds.int || 0) + (ds.fum_rec || 0) : null;
+      if (key === 'def-td') return ds && (ds.def_td != null || ds.st_td != null) ? (ds.def_td || 0) + (ds.st_td || 0) : null;
+      if (key === 'def-press') {
+        const dw = defWeeklyFor(pTeam);
+        if (dw?.pressure_rate != null) return dw.pressure_rate;
+        const dCur = (window.DEFENSE?.teams?.[pTeam] || window.DEFENSE?.teams?.[canonTeam(pTeam)])?.cur;
+        return dCur?.pass?.pressure_rate ?? null;
+      }
+      return null;
     };
 
     function render() {
@@ -3967,7 +4021,7 @@
         return;
       }
       const filtered = (weeklyView ? weeklyPlayers : idx.all).filter(p => {
-        if (!leaguePlayerRowFits(lg, posOptions, filter.pos, p.pos)) return false;
+        if (!leaguePlayerRowFits(lg, posOptions, filter.pos, p.pos, filter.view)) return false;
         if (filter.view === 'stats' && filter.cat !== 'ALL' && p.category !== filter.cat) return false;
         if (filter.team !== 'ALL' && teamOfP(p) !== filter.team) return false;
         if (filter.q && !norm(p.name).includes(norm(filter.q))) return false;
@@ -4023,13 +4077,22 @@
       if (filter.sort === 'weekly-gibbs-ros-ppr') {
         filter.sort = 'weekly-gibbs-x'; filter.dir = 'asc'; persist();
       }
+      const idpWeeklyOnly = weeklyTable && isIdpPosFilter(filter.pos);
+      const xstatOf = (pid) => window.IDP_XSTATS?.players?.[String(pid)] || null;
+      if (idpWeeklyOnly && !String(filter.sort).startsWith('idp-')) {
+        filter.sort = 'idp-xyuh'; filter.dir = 'desc'; persist();
+      } else if (!idpWeeklyOnly && String(filter.sort).startsWith('idp-')) {
+        filter.sort = filter.view === 'ros' ? 'weekly-ros' : 'weekly-sleeper';
+        filter.dir = filter.view === 'ros' ? 'asc' : 'desc';
+        persist();
+      }
       // A saved sort can name a column the other view hides; fall back to
       // that view's default rather than sorting by something off screen.
       const rosOnlySort = ['weekly-ros', 'weekly-gibbs-x'].includes(filter.sort);
       const weekOnlySort = ['weekly-vegas', 'weekly-sleeper', 'weekly-vsdelta', 'weekly-ecr',
         'weekly-gibbs-wk'].includes(filter.sort)
         || /^(weekly-x:|wc:)/.test(filter.sort || '');
-      if (filter.view === 'ros' ? weekOnlySort : rosOnlySort) {
+      if (!idpWeeklyOnly && (filter.view === 'ros' ? weekOnlySort : rosOnlySort)) {
         [filter.sort, filter.dir] = filter.view === 'ros' ? ['weekly-ros', 'asc'] : ['weekly-sleeper', 'desc'];
         persist();
       }
@@ -4042,6 +4105,25 @@
       const sortKey = projectionSortUnavailable ? 'rank' : filter.sort;
       const sortDir = projectionSortUnavailable ? 'asc' : filter.dir;
       const dir = sortDir === 'desc' ? -1 : 1;
+      const idpWeeklyValue = (player, key) => {
+        const x = xstatOf(player._sleeperId);
+        const isRos = filter.view === 'ros';
+        if (key === 'idp-xyuh') return isRos ? x?.xRos : x?.xWk;
+        if (key === 'idp-slp') return player._weekly?.sleeper?.[currentWeek - 1];
+        if (key === 'idp-ytd') return x?.ytd;
+        if (key === 'idp-luck') return x?.luck;
+        if (key === 'idp-fp') return isRos ? x?.fpDyn : x?.fpWk;
+        if (key === 'idp-dynrk') return x?.dynRk;
+        if (key === 'idp-snp') return x?.xSnp;
+        if (key === 'idp-tkl') return x?.xTkl;
+        if (key === 'idp-sk') return x?.xSk;
+        if (key === 'idp-qbh') return x?.xQBH;
+        if (key === 'idp-tfl') return x?.xTFL;
+        if (key === 'idp-pbu') return x?.xPBU;
+        if (key === 'idp-int') return x?.xINT;
+        if (key === 'idp-ff') return x?.xFF;
+        return null;
+      };
       const cmp = (a, b) => {
         let av, bv;
         if (filter.sort === 'weekly-vegas' || filter.sort === 'weekly-sleeper'
@@ -4054,11 +4136,14 @@
             || filter.sort === 'weekly-gibbs-x' || filter.sort === 'weekly-gibbs-wk'
             || (typeof filter.sort === 'string' && filter.sort.startsWith('weekly-x:'))
             || (typeof filter.sort === 'string' && filter.sort.startsWith('kicker-'))
-            || filter.sort === 'def-oppImplied'
+            || (typeof filter.sort === 'string' && filter.sort.startsWith('idp-'))
+            || (typeof filter.sort === 'string' && filter.sort.startsWith('def-'))
             || (typeof filter.sort === 'string' && filter.sort.startsWith('sw:'))
             || (typeof filter.sort === 'string' && filter.sort.startsWith('wc:'))) {
           const weeklyValue = (player) => {
             const row = player._weekly || {};
+            if (String(filter.sort).startsWith('idp-')) return idpWeeklyValue(player, filter.sort);
+            if (String(filter.sort).startsWith('def-')) return defRowMetric(player, filter.sort);
             // wc: = one expected stat behind the Vegas total. Absent stat sorts
             // as missing, not as zero, so a QB never outranks a WR on receptions.
             if (filter.sort.startsWith('wc:')) return row.vegasStats?.[filter.sort.slice(3)];
@@ -4075,13 +4160,6 @@
               const kicker = kickerProjectionFor(player);
               return kicker?.[String(filter.sort).slice(7)];
             }
-            if (filter.sort === 'def-oppImplied') return defOppImplied(player);
-            if (filter.sort === 'weekly-ros') return row.ros;
-            // `player`, not `p`. weeklyValue's parameter is named `player`, and
-            // `p` resolves to nothing here, so this threw ReferenceError and
-            // took the whole table render down with it. It never surfaced
-            // because the comparator was not routed to these keys either: two
-            // bugs that hid each other, and the column just looked inert.
             if (filter.sort === 'weekly-gibbs-x') return gibbsRosPprRank(player._sleeperId)?.rank ?? null;
             if (filter.sort === 'weekly-gibbs-wk') return gibbsWeekRank(player._sleeperId)?.rank ?? null;
             // Null either side means no comparison exists, so the row stays
@@ -4139,7 +4217,8 @@
             filter.dir = (key === 'rank' || key === 'age' || key === 'pos' || key === 'name'
               || key === 'weekly-ecr' || key === 'weekly-gibbs'
               || key === 'weekly-ros'
-              || key === 'def-oppImplied' // fewer points for the opponent is better for a defense
+              || key === 'idp-fp' || key === 'idp-dynrk'
+              || key === 'def-oppImplied' || key === 'def-pa' // fewer pts allowed/implied is better for a defense
               // Both Gibbs X columns are RANKS. They were missing here, so the
               // first click sorted them descending and put his worst-ranked
               // player on top, which reads as a broken column rather than a
@@ -4283,13 +4362,18 @@
         const game = weeklyMatchupFor(team, pos, currentWeek);
         if (!team || team === 'FA') return h('td', { class:'center muted weekly-opp' }, '·');
         if (!game) return h('td', { class:'center muted weekly-opp' }, 'BYE');
-        const rank = game.rank ?? null;
+        const idpGrp = isIdpPos(pos) ? projPosGroup(pos) : null;
+        const dvp = (game.rank == null && idpGrp) ? window.IDP_DVP?.offenses?.[game.opp]?.[idpGrp] : null;
+        const rank = game.rank ?? dvp?.rank ?? null;
         const n = window.SOS_GRID?.n_def || 32;
+        const colorRank = (rank != null && dvp) ? (n + 1 - rank) : rank;
         const paoeText = game.paoe != null ? `, ${game.paoe >= 0 ? '+' : ''}${game.paoe} vs avg` : '';
-        const title = rank != null
+        const title = dvp
+          ? `W${currentWeek} ${game.home ? 'vs ' : '@ '}${game.opp}: ${idpGrp} DvP #${rank}/${n} (${fmt.decimal(dvp.ppg, 1)} yuH PPG allowed)`
+          : rank != null
           ? `W${currentWeek} ${game.home ? 'vs ' : '@ '}${game.opp}: D vs ${pos} #${rank}/${n} (${game.fpa ?? '?'} PPR/g${paoeText})`
           : `W${currentWeek} ${game.home ? 'vs ' : '@ '}${game.opp} (no D vs ${pos || 'pos'} rank)`;
-        return h('td', { class:'center weekly-opp', title, style:{ color:defRankColor(rank, n) } },
+        return h('td', { class:'center weekly-opp', title, style:{ color:defRankColor(colorRank, n) } },
           h('div', { class:'weekly-opp-team' }, teamChip(game.opp, true)),
           h('div', { class:'weekly-opp-rank' }, rank != null ? `#${rank}` : '·'));
       };
@@ -4348,7 +4432,30 @@
               sortHdr('kicker-pGe15', '15+', { right:true, title:'Chance of 15+ pts' }),
             ] : defOnly ? [
               sortHdr('weekly-sleeper', 'Sleeper pts', { right:true, title:'Sleeper DEF projection' }),
-              sortHdr('def-oppImplied', 'Opp implied', { right:true, title:`Wk ${currentWeek} opponent implied team pts (lower = better)` }),
+              sortHdr('def-oppImplied', 'Opp impl', { right:true, title:`Wk ${currentWeek} opponent implied team pts (lower = better)` }),
+              sortHdr('def-pa', 'Proj PA', { right:true, title:'Sleeper projected points allowed (lower = better)' }),
+              sortHdr('def-sack', 'Proj Sack', { right:true, title:'Sleeper projected sacks' }),
+              sortHdr('def-int', 'Proj INT', { right:true, title:'Sleeper projected interceptions' }),
+              sortHdr('def-fr', 'Proj FR', { right:true, title:'Sleeper projected fumble recoveries' }),
+              sortHdr('def-to', 'Proj TO', { right:true, title:'Sleeper projected takeaways (INT + FR)' }),
+              sortHdr('def-td', 'Proj TD', { right:true, title:'Sleeper projected defense + ST TDs' }),
+              sortHdr('def-press', 'Press%', { right:true, title:'Season YTD defensive pressure rate (nflverse PBP)' }),
+            ] : idpWeeklyOnly ? [
+              sortHdr('idp-xyuh', isRosView ? 'xYuH ROS' : `xYuH W${currentWeek}`, { right:true,
+                title: isRosView ? 'yuh-idp-xstats-v1 rest-of-season schedule-adjusted PPG' : `yuh-idp-xstats-v1 W${currentWeek} matchup projection` }),
+              sortHdr('idp-slp', 'Slp yuH', { right:true, title:`Sleeper W${currentWeek} stats scored under yuH rules` }),
+              sortHdr('idp-ytd', 'YTD', { right:true, title:'2026 season YTD PPG in yuH scoring' }),
+              sortHdr('idp-luck', 'Luck', { right:true, title:'YTD PPG minus neutral xYuH PPG (negative = buy-low)' }),
+              sortHdr('idp-fp', isRosView ? 'FP Dyn' : 'FP ECR', { right:true, title: isRosView ? 'FantasyPros Dynasty IDP ECR' : `FantasyPros W${currentWeek} IDP ECR` }),
+              sortHdr('idp-dynrk', 'Dyn Rk', { right:true, title:'yuh-idp-xstats-v1 2 IDP_FLEX empirical age-curve Dynasty rank' }),
+              sortHdr('idp-snp', 'xSnaps', { right:true, title:'Expected defensive snaps/game' }),
+              sortHdr('idp-tkl', 'xTkl', { right:true, title:'Expected tackle pts/game (Solo + 0.5*Ast)' }),
+              sortHdr('idp-sk', 'xSack', { right:true, title:'Expected sacks/game' }),
+              sortHdr('idp-qbh', 'xQBH', { right:true, title:'Expected QB hits/game' }),
+              sortHdr('idp-tfl', 'xTFL', { right:true, title:'Expected tackles for loss/game' }),
+              sortHdr('idp-pbu', 'xPBU', { right:true, title:'Expected passes defended/game' }),
+              sortHdr('idp-int', 'xINT', { right:true, title:'Expected interceptions/game' }),
+              sortHdr('idp-ff', 'xFF', { right:true, title:'Expected forced fumbles/game' }),
             ] : [
               isRosView ? null : sortHdr('weekly-vegas', 'Vegas pts', { right:true, title:'BettingPros / PrizePicks market composite (Sleeper-filled when missing)' }),
               isRosView ? null : sortHdr('weekly-sleeper', 'Sleeper pts', { right:true, title:'Sleeper weekly PPR projection' }),
@@ -4386,10 +4493,50 @@
                   h('td', { class:'right tnum', title:'Chance of 15+ pts' },
                     kicker?.pGe15 == null ? emptyValue() : `${Math.round(kicker.pGe15 * 100)}%`),
                 ];
-              })() : defOnly ? [
-                pointCell(weekly.sleeper?.[currentWeek - 1], `Sleeper W${currentWeek} DEF projection`),
-                pointCell(defOppImplied(p), 'Opponent Vegas implied pts'),
-              ] : [
+              })() : defOnly ? (() => {
+                const dstNum = (k, dp, tip) => {
+                  const v = defRowMetric(p, k);
+                  return h('td', { class:'right tnum', title:tip }, v == null ? emptyValue() : fmt.decimal(v, dp));
+                };
+                const pr = defRowMetric(p, 'def-press');
+                const dw = defWeeklyFor(teamOfP(p));
+                return [
+                  pointCell(weekly.sleeper?.[currentWeek - 1], `Sleeper W${currentWeek} DEF projection`),
+                  pointCell(defOppImplied(p), dw ? `Opponent implied pts (team ${dw.team_implied})` : 'Opponent Vegas implied pts'),
+                  dstNum('def-pa', 1, 'Sleeper projected points allowed'),
+                  dstNum('def-sack', 2, 'Sleeper projected sacks'),
+                  dstNum('def-int', 2, 'Sleeper projected interceptions'),
+                  dstNum('def-fr', 2, 'Sleeper projected fumble recoveries'),
+                  dstNum('def-to', 2, 'Sleeper projected takeaways (INT + FR)'),
+                  dstNum('def-td', 2, 'Sleeper projected D/ST touchdowns'),
+                  h('td', { class:'right tnum', title: dw ? `YTD < W${currentWeek}: ${dw.sacks_pg} sacks/g, ${dw.to_pg} TO/g` : 'YTD pressure rate' },
+                    pr == null ? emptyValue() : `${fmt.decimal(pr * 100, 1)}%`),
+                ];
+              })() : idpWeeklyOnly ? (() => {
+                const x = xstatOf(p._sleeperId) || {};
+                const cell = (v, dp, tip) => h('td', { class:'right tnum', title:tip }, v == null ? emptyValue() : fmt.decimal(v, dp));
+                const rkCell = (v, tip) => h('td', { class:'right tnum', title:tip }, v == null ? emptyValue() : `#${Math.round(v)}`);
+                const lck = x.luck;
+                const lckCls = lck == null ? '' : lck <= -0.75 ? ' delta-up' : lck >= 0.75 ? ' delta-down' : '';
+                const fpVal = isRosView ? x.fpDyn : x.fpWk;
+                return [
+                  cell(isRosView ? x.xRos : x.xWk, 1, 'yuh-idp-xstats-v1 projection'),
+                  pointCell(weekly.sleeper?.[currentWeek - 1], `Sleeper W${currentWeek} in yuH scoring`),
+                  cell(x.ytd, 1, x.gp ? `${x.gp} games played` : 'YTD PPG'),
+                  h('td', { class:`right tnum${lckCls}`, title:'YTD minus expected PPG' },
+                    lck == null ? emptyValue() : `${lck > 0 ? '+' : ''}${fmt.decimal(lck, 2)}`),
+                  rkCell(fpVal, isRosView ? 'FantasyPros Dynasty IDP ECR' : `FantasyPros W${currentWeek} IDP ECR`),
+                  rkCell(x.dynRk, x.dyn != null ? `Dynasty score ${fmt.decimal(x.dyn, 1)}` : 'Dynasty rank'),
+                  cell(x.xSnp, 1, 'Expected snaps/game'),
+                  cell(x.xTkl, 1, 'Expected tackle pts/game'),
+                  cell(x.xSk, 2, 'Expected sacks/game'),
+                  cell(x.xQBH, 2, 'Expected QB hits/game'),
+                  cell(x.xTFL, 2, 'Expected TFL/game'),
+                  cell(x.xPBU, 2, 'Expected PBU/game'),
+                  cell(x.xINT, 2, 'Expected INT/game'),
+                  cell(x.xFF, 2, 'Expected FF/game'),
+                ];
+              })() : [
                 isRosView ? null : pointCell(weekly.vegas,
                   `${weeklyData.sources?.vegas || 'Market estimate'}`
                   + `${weekly.vegasBorrowed?.length ? ` · Sleeper fill: ${weekly.vegasBorrowed.join(', ')}` : ''}`
@@ -4551,7 +4698,9 @@
         const sourceNote = kickerOnly
           ? `Week ${currentWeek} kickers · ${rows.length} shown · Full K Ref & experimental range notes in #methodology.`
           : defOnly
-          ? `Week ${currentWeek} D/ST · ${rows.length} shown · Sleeper pts vs Vegas opp implied pts.`
+          ? `Week ${currentWeek} D/ST · ${rows.length} shown · Sleeper component projections + Vegas opp implied pts + YTD pressure%.`
+          : idpWeeklyOnly
+          ? `${isRosView ? 'ROS' : `W${currentWeek}`} yuH IDP xStats · ${rows.length} shown · Sleeper stats scored under yuH IDP settings; neg Luck = buy-low.`
           : (filter.view === 'ros'
             ? `ROS PPR (${rosMeta.available ? `${coverage.rosPlayers || 0} as of ${rosMeta.updated}` : 'unavailable'}${rosStale ? ', stale' : ''}); other cols W${currentWeek}. `
             : '')
@@ -13312,6 +13461,7 @@
           ] },
           { key:'production', label:'Production', items: [
             { jump:'Game Log',    node: advancedBlock(sleeper) },
+            { jump:'xStats',      node: idpXstatsBlock(sleeper) },
             { jump:'Ball Sec.',   node: fumbleFaultBlock(sleeper) },
             { jump:'Usage',       node: usageWeeksBlock(sleeper) },
             { jump:'Field Map',   node: locationBlock(sleeper) },
@@ -13662,6 +13812,42 @@
     return card;
   }
 
+  function idpXstatsBlock(sleeper) {
+    if (!sleeper || !window.IDP_XSTATS) return null;
+    const X = window.IDP_XSTATS;
+    const x = X.players && X.players[String(sleeper.id)];
+    if (!x) return null;
+    const tile = (label, val, sub, cls) => h('div', { class:'adv-stat' },
+      h('div', { class:'adv-stat-label' }, label),
+      h('div', { class:`adv-stat-value tnum ${cls || ''}` }, val),
+      sub ? h('div', { class:'adv-stat-rank tnum' }, sub) : null);
+    const luck = x.luck;
+    const luckCls = luck == null ? '' : luck <= -0.75 ? 'delta-up' : luck >= 0.75 ? 'delta-down' : '';
+    const luckStr = luck == null ? '-' : `${luck > 0 ? '+' : ''}${Number(luck).toFixed(2)}`;
+    const luckSub = luck == null
+      ? `${x.gp || 0} GP (need 4+)`
+      : (luck <= -0.75 ? 'Buy-low variance' : luck >= 0.75 ? 'Hot / sell-high' : 'Near expected');
+    const fpText = (x.fpWk != null || x.fpDyn != null)
+      ? `Wk #${x.fpWk ?? '-'} / Dyn #${x.fpDyn ?? '-'}`
+      : 'Unranked';
+    return h('div', { class:'card adv-card' },
+      h('div', { class:'fum-head' },
+        h('div', { class:'card-title', style:{ marginBottom:0 } }, `yuH IDP xStats · W${X.week}`),
+        x.rosRk ? h('span', { class:'badge' }, `ROS #${x.rosRk}`) : null),
+      h('div', { class:'adv-grid' },
+        tile(`xYuH W${X.week}`, x.xWk != null ? Number(x.xWk).toFixed(1) : '-', x.opp ? `vs ${x.opp}` : 'Neutral / BYE', ''),
+        tile('xYuH ROS', x.xRos != null ? Number(x.xRos).toFixed(1) : '-', x.rosRk ? `ROS #${x.rosRk}` : (x.inj || 'Inactive'), ''),
+        tile('Dynasty', `#${x.dynRk ?? '-'}`, `${Number(x.dyn || 0).toFixed(1)} pts · Age ${x.age ?? '-'}`, ''),
+        tile('YTD vs xYuH', x.ytd != null ? Number(x.ytd).toFixed(1) : '-', `${luckStr} (${luckSub})`, luckCls),
+        tile('FP ECR', fpText, `Repl #24: ${X.replPpg ?? '-'} PPG`, ''),
+        tile('xSnaps', Number(x.xSnp || 0).toFixed(1), x.snp_pg ? `YTD ${Number(x.snp_pg).toFixed(1)}/g` : '', ''),
+        tile('xTackle', `${Number(x.xSolo || 0).toFixed(1)} / ${Number(x.xAst || 0).toFixed(1)}`, `Solo / Ast (${Number(x.xTkl || 0).toFixed(1)} pts)`, ''),
+        tile('xSack / xQBH', `${Number(x.xSk || 0).toFixed(2)} / ${Number(x.xQBH || 0).toFixed(2)}`, `xTFL ${Number(x.xTFL || 0).toFixed(2)}`, ''),
+        tile('xPBU / xINT', `${Number(x.xPBU || 0).toFixed(2)} / ${Number(x.xINT || 0).toFixed(2)}`, `xFF ${Number(x.xFF || 0).toFixed(2)} · xFR ${Number(x.xFR || 0).toFixed(2)}`, '')),
+      h('div', { class:'tip', style:{ marginTop:'6px' } },
+        `2 IDP_FLEX yuH scoring thru W${X.throughWeek}. Positive Luck = YTD above expected; negative Luck = buy-low volume.`));
+  }
+
   // Season fantasy projection for the modal: pts from every source + the
   // projected stat line. Reuses window.OFFENSE_PROJ (offense + defense).
   function projectionBlock(sleeper) {
@@ -13673,7 +13859,8 @@
       if (r) { unit = u; rec = r; cfg = O[u]; break; }
     }
     if (!rec) return null;
-    const line = (rec.stats && rec.stats.blend) || {};
+    const lineSrc = (rec.stats && rec.stats[cfg.default]) ? cfg.default : 'blend';
+    const line = (rec.stats && rec.stats[lineSrc]) || {};
     const yd = (k) => k === 'pass_yd' || k === 'rush_yd' || k === 'rec_yd';
     const statStr = (cfg.stat_keys || []).filter(k => line[k] != null)
       .map(k => `${STAT_LABEL[k] || k} ${fmt.decimal(line[k], yd(k) ? 0 : 1)}`).join('  ·  ');
@@ -13693,8 +13880,8 @@
       // were on screen together printing "RB1" and "VOR +138" twice each. The
       // band keeps them; this card keeps what the band does not carry, which is
       // the per-source spread and the projected stat line.
-      statStr ? h('div', { class: 'tip' }, `Blended: ${statStr}`) : null,
-      unit === 'defense' ? h('div', { class: 'tip', style: { marginTop: '4px', opacity: .8 } }, 'PD/QB-hit estimated; no Vegas IDP market.') : null,
+      statStr ? h('div', { class: 'tip' }, `${PROJ_SRC_LABEL[lineSrc] || lineSrc}: ${statStr}`) : null,
+      unit === 'defense' ? h('div', { class: 'tip', style: { marginTop: '4px', opacity: .8 } }, 'xStats = yuh-idp-xstats-v1 annualized (x17); Clay/Sleeper fills for comparison.') : null,
     );
   }
 
@@ -15315,7 +15502,7 @@
     const opts = { sims, src, whatIf: wi, withMaxPf: isDynastyLeague(lg) };
     return async ? championshipOddsAsync(lg, opts).then(done) : done(championshipOdds(lg, opts));
   }
-  const PROJ_SRC_LABEL = { blend: 'Blended', pp: 'PrizePicks', sleeper: 'Sleeper', clay: 'Clay' };
+  const PROJ_SRC_LABEL = { xstats: 'xStats (yuH)', blend: 'Blended', pp: 'PrizePicks', sleeper: 'Sleeper', clay: 'Clay' };
   const STAT_LABEL = {
     pass_yd: 'Pa Yd', pass_td: 'Pa TD', pass_int: 'INT', rush_yd: 'Ru Yd', rush_td: 'Ru TD',
     rec: 'Rec', rec_yd: 'Re Yd', rec_td: 'Re TD',
@@ -16520,7 +16707,7 @@
     main.appendChild(h('div', { class: 'page-header' },
       h('div', null,
         h('h1', { class: 'page-title' }, 'Player Projections'),
-        h('p', { class: 'page-sub' }, 'Season pts + stat lines (Offense: PrizePicks/Sleeper/Blend · IDP: Clay/Sleeper/Blend).')
+        h('p', { class: 'page-sub' }, 'Season pts + stat lines (Offense: PrizePicks/Sleeper/Blend · IDP: xStats/Clay/Sleeper/Blend).')
       ),
       h('div', { class: 'page-actions' }, leagueSelector(lg.id, (id) => { PROJ_STATE.leagueId = id; navigate(`#projections/${id}`); }))
     ));
@@ -16724,7 +16911,7 @@
     main.appendChild(table);
     main.appendChild(h('div', { class: 'tip', style: { marginTop: '10px' } },
       `${rows.length} ${PROJ_STATE.unit} players (${PROJ_SRC_LABEL[src]}) · ` +
-      (isDef ? 'PD/QB-hit/ret-yds estimated; tackles/sacks/INT/FF Clay+Sleeper.' : 'PP * = missing PrizePicks props Sleeper-filled.')));
+      (isDef ? 'xStats = yuh-idp-xstats-v1 annualized (x17); Clay/Sleeper also scored under yuH rules.' : 'PP * = missing PrizePicks props Sleeper-filled.')));
   }
 
   // ============================================================
@@ -16967,17 +17154,52 @@
     const D = window.DEFENSE;
     if (!D) { main.appendChild(noData('Defense matchups', 'projections/build_defense_matchups.py')); return; }
     const slice = prefs.defSlice === 'prior' ? 'prior' : 'cur';
+    const wr = window.WEEKLY_RANKINGS;
+    const dw = window.DEFENSE_WEEKLY;
+    const canonDef = (t) => t === 'LA' ? 'LAR' : (t === 'LAR' ? 'LA' : t);
+    const curWk = wr?.currentWeek || dw?.week || (D.throughWeek + 1);
+    const wrDefMap = new Map();
+    if (slice === 'cur' && wr?.players) {
+      for (const pl of wr.players) {
+        if (pl.pos !== 'DEF') continue;
+        const t = String(pl.team || pl.id || '').toUpperCase();
+        const obj = { pts: pl.sleeper?.[curWk - 1] ?? null, st: pl.defStats || null };
+        wrDefMap.set(t, obj);
+        wrDefMap.set(canonDef(t), obj);
+      }
+    }
+    const dwMap = new Map();
+    if (slice === 'cur' && dw?.defenses && Number(dw.season) === Number(D.season)) {
+      for (const d of dw.defenses) {
+        dwMap.set(d.team, d);
+        dwMap.set(canonDef(d.team), d);
+      }
+    }
     main.appendChild(h('div', { class:'card stats-lab-filters' },
       h('label', { class:'stats-lab-toggle' }, 'Sample ',
         h('select', { 'aria-label':'Defense sample', onchange:(e) => { prefs.defSlice = e.target.value; saveStatsLabPrefs(prefs); viewStats('Defense'); } },
           h('option', { value:'cur', selected:slice === 'cur' }, `${D.season} through week ${D.throughWeek}`),
           h('option', { value:'prior', selected:slice === 'prior' }, `${D.prior} full season`))),
       h('span', { class:'muted' }, 'Rank 1 = softest (green = smash matchup).')));
-    const rows = Object.entries(D.teams).map(([t, v]) => Object.assign({ _label: teamChip(t), _team: t }, v[slice] || {}));
+    const rows = Object.entries(D.teams).map(([t, v]) => {
+      const wrHit = wrDefMap.get(t) || wrDefMap.get(canonDef(t)) || null;
+      const dwHit = dwMap.get(t) || dwMap.get(canonDef(t)) || null;
+      return Object.assign({ _label: teamChip(t), _team: t, _wrDef: wrHit, _dw: dwHit }, v[slice] || {});
+    });
     // A soft defense is green because it is good news for the player facing it.
     const rankTone = (r) => r == null ? '' : r <= 8 ? 'delta-up' : r >= 25 ? 'delta-down' : '';
     const pos = (P, k) => (r) => r.byPos && r.byPos[P] ? r.byPos[P][k] : null;
     const cols = [];
+    if (slice === 'cur' && (wrDefMap.size || dwMap.size)) {
+      cols.push(
+        { key:'wkOpp', label:`W${curWk} Opp`, get:(r) => r._dw?.opp ? `${r._dw.home ? 'vs ' : '@ '}${r._dw.opp}` : '', fmt:'text', lowerBetter:true, desc:`Week ${curWk} opponent` },
+        { key:'oppImpl', label:'Opp Impl', get:(r) => r._dw?.opp_implied ?? null, fmt:'dec1', lowerBetter:true, desc:`Week ${curWk} Vegas opponent implied points (lower = better)` },
+        { key:'slpDst', label:'Slp DST', get:(r) => r._wrDef?.pts ?? null, fmt:'dec1', desc:`Sleeper Week ${curWk} DEF fantasy projection` },
+        { key:'projPa', label:'Proj PA', get:(r) => r._wrDef?.st?.pts_allow ?? null, fmt:'dec1', lowerBetter:true, desc:`Sleeper Week ${curWk} projected points allowed` },
+        { key:'projSk', label:'Proj Sack', get:(r) => r._wrDef?.st?.sack ?? null, fmt:'dec2', desc:`Sleeper Week ${curWk} projected sacks` },
+        { key:'projTo', label:'Proj TO', get:(r) => { const s = r._wrDef?.st; return s && (s.int != null || s.fum_rec != null) ? ((s.int || 0) + (s.fum_rec || 0)) : null; }, fmt:'dec2', desc:`Sleeper Week ${curWk} projected takeaways (INT + FR)` },
+      );
+    }
     for (const P of ['WR', 'TE', 'RB']) {
       cols.push({ key:`${P}ppr`, label:`vs ${P} PPR/G`, get:pos(P, 'ppr_pg'), fmt:'dec1',
         desc:`PPR/G allowed to ${P}s ${P === 'RB' ? 'receiving ' : ''}(${D.fields && D.fields.ppr_pg ? D.fields.ppr_pg : ''})`.trim(),
@@ -17056,7 +17278,9 @@
   function statsIdp(main, prefs) {
     const I = window.IDP_ADVANCED;
     if (!I) { main.appendChild(noData('IDP stats', 'projections/build_idp_advanced.py')); return; }
-    const grp = ['DL', 'LB', 'DB'].includes(prefs.idpPos) ? prefs.idpPos : 'LB';
+    const X = window.IDP_XSTATS;
+    const xMap = X?.players || {};
+    const grp = ['ALL', 'DL', 'LB', 'DB'].includes(prefs.idpPos) ? prefs.idpPos : 'ALL';
     const minSnap = prefs.idpMinSnap ?? 0.3;
     const mine = new Set();
     for (const lg of window.LEAGUES || []) {
@@ -17065,17 +17289,47 @@
     }
     main.appendChild(h('div', { class:'card stats-lab-filters' },
       h('span', { class:'sos-position-tabs', role:'group', 'aria-label':'IDP position' },
-        ...['DL', 'LB', 'DB'].map(g => h('button', { class:`ghost${g === grp ? ' active' : ''}`, 'aria-pressed':String(g === grp),
-          onclick:() => { prefs.idpPos = g; saveStatsLabPrefs(prefs); viewStats('IDP'); } }, g))),
+        ...['ALL', 'DL', 'LB', 'DB'].map(g => h('button', { class:`ghost${g === grp ? ' active' : ''}`, 'aria-pressed':String(g === grp),
+          onclick:() => { prefs.idpPos = g; saveStatsLabPrefs(prefs); viewStats('IDP'); } }, g === 'ALL' ? 'ALL (IDP_FLEX)' : g))),
       h('label', { class:'stats-lab-toggle' }, 'Min snap% ',
         h('select', { 'aria-label':'Minimum snap share', onchange:(e) => { prefs.idpMinSnap = Number(e.target.value); saveStatsLabPrefs(prefs); viewStats('IDP'); } },
           ...[0, 0.3, 0.5, 0.7].map(v => h('option', { value:String(v), selected:minSnap === v }, `${v * 100}%`)))),
       h('span', { class:'muted' }, `${I.league && I.league.name ? I.league.name : 'IDP league'} scoring.`)));
-    const rows = Object.entries(I.players).filter(([, v]) => v.p === grp && (v.snp_pct || 0) >= minSnap)
-      .map(([sid, v]) => Object.assign({ _sid:sid, _mine:mine.has(sid), _label:`${v.n} ${v.t || ''}`, _name:v.n }, v));
-    const cols = I.columns.filter(c => c.key !== 'rank').map(c => ({ key:c.key, label:c.label, fmt:c.fmt, desc:c.desc,
-      get:(r) => r[c.key], lowerBetter:/allow|mtkl/.test(c.key) }));
-    statsTable(main, prefs, 'IDP', rows, cols, { key:'ppg', dir:'desc' }, `${grp}, ${I.season} through week ${I.throughWeek}`,
+    const rows = Object.entries(I.players).filter(([, v]) => (grp === 'ALL' || v.p === grp) && (v.snp_pct || 0) >= minSnap)
+      .map(([sid, v]) => {
+        const xs = xMap[sid] || null;
+        return Object.assign({
+          _sid: sid, _mine: mine.has(sid),
+          _label: `${v.n} ${grp === 'ALL' ? v.p + ' ' : ''}${v.t || ''}`.trim(),
+          _name: v.n,
+          xWk: xs?.xWk ?? null, xRos: xs?.xRos ?? null, xLuck: xs?.luck ?? null,
+          dynRk: xs?.dynRk ?? null, xSnp: xs?.xSnp ?? null, xTkl: xs?.xTkl ?? null,
+          xSk: xs?.xSk ?? null, xQBH: xs?.xQBH ?? null, xTFL: xs?.xTFL ?? null,
+          xPBU: xs?.xPBU ?? null, xINT: xs?.xINT ?? null, xFF: xs?.xFF ?? null,
+        }, v);
+      });
+    const xCols = X ? [
+      { key:'xWk', label:`xYuH W${X.week}`, fmt:'dec1', get:(r) => r.xWk, desc:`yuh-idp-xstats-v1 Week ${X.week} matchup projection` },
+      { key:'xRos', label:'xYuH ROS', fmt:'dec1', get:(r) => r.xRos, desc:'yuh-idp-xstats-v1 rest-of-season schedule-adjusted PPG' },
+      { key:'xLuck', label:'Luck', fmt:'dec2', get:(r) => r.xLuck, desc:'YTD PPG minus neutral xYuH PPG (negative = buy-low)',
+        tone:(r) => r.xLuck == null ? '' : r.xLuck <= -0.75 ? 'delta-up' : r.xLuck >= 0.75 ? 'delta-down' : '' },
+      { key:'dynRk', label:'Dyn Rk', fmt:'int', lowerBetter:true, get:(r) => r.dynRk, desc:'yuh-idp-xstats-v1 2 IDP_FLEX empirical age-curve Dynasty rank' },
+      { key:'xSnp', label:'xSnaps', fmt:'dec1', get:(r) => r.xSnp, desc:'Expected snaps/game' },
+      { key:'xTkl', label:'xTkl', fmt:'dec1', get:(r) => r.xTkl, desc:'Expected tackle pts/game (Solo + 0.5*Ast)' },
+      { key:'xSk', label:'xSack', fmt:'dec2', get:(r) => r.xSk, desc:'Expected sacks/game' },
+      { key:'xQBH', label:'xQBH', fmt:'dec2', get:(r) => r.xQBH, desc:'Expected QB hits/game' },
+      { key:'xTFL', label:'xTFL', fmt:'dec2', get:(r) => r.xTFL, desc:'Expected tackles for loss/game' },
+      { key:'xPBU', label:'xPBU', fmt:'dec2', get:(r) => r.xPBU, desc:'Expected passes defended/game' },
+      { key:'xINT', label:'xINT', fmt:'dec2', get:(r) => r.xINT, desc:'Expected interceptions/game' },
+      { key:'xFF', label:'xFF', fmt:'dec2', get:(r) => r.xFF, desc:'Expected forced fumbles/game' },
+    ] : [];
+    const cols = [
+      ...xCols,
+      ...I.columns.filter(c => c.key !== 'rank').map(c => ({ key:c.key, label:c.label, fmt:c.fmt, desc:c.desc,
+        get:(r) => r[c.key], lowerBetter:/allow|mtkl/.test(c.key) })),
+    ];
+    statsTable(main, prefs, 'IDP', rows, cols, { key: X ? 'xRos' : 'ppg', dir:'desc' },
+      `${grp === 'ALL' ? 'ALL (IDP_FLEX)' : grp}, ${I.season} through week ${I.throughWeek}`,
       (r) => openPlayerDetail(r._name, r._sid));
     main.appendChild(h('div', { class:'tip', style:{ marginTop:'10px' } }, `${rows.length} players. ${I.source}.`));
   }
