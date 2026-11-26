@@ -168,6 +168,15 @@ def weekly_games(season, week, source_text=None):
     return games
 
 
+def check_games(games, week):
+    """Refuse to publish a board whose matchups are empty or one-sided."""
+    assert games, f"no week {week} games in the nflverse schedule"
+    assert len(games) >= 24, f"week {week}: only {len(games)} teams scheduled"
+    for team, g in games.items():
+        back = games.get(g["opp"])
+        assert back and back["opp"] == team and back["home"] != g["home"],             f"week {week}: {team} vs {g['opp']} is not mirrored"
+
+
 def norm(value):
     value = unicodedata.normalize("NFKD", value or "").encode("ascii", "ignore").decode()
     value = re.sub(r"\b(jr|sr|ii|iii|iv|v)\b\.?", "", value, flags=re.I)
@@ -627,6 +636,11 @@ def self_check():
     games = weekly_games(2026, 2, sample)
     assert games["WAS"] == {"opp": "LAR", "home": False, "kickoff": "2026-09-20T17:00:00Z"}
     assert games["LAR"] == {"opp": "WAS", "home": True, "kickoff": "2026-09-20T17:00:00Z"}
+    try:
+        check_games({"WAS": games["WAS"]}, 2)
+        raise RuntimeError("check_games accepted a one-sided schedule")
+    except AssertionError:
+        pass
     print("weekly rankings self-check ok")
 
 
@@ -645,6 +659,7 @@ def main():
     if args.week is not None:
         current_week = max(1, min(18, args.week))
     games = weekly_games(season, current_week)
+    check_games(games, current_week)
     print(f"NFL schedule: week {current_week}, {len(games)} teams")
 
     print(f"Sleeper weekly projections: {season} weeks 1-18")
