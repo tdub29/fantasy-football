@@ -128,6 +128,8 @@ STEPS = [
     # Trade chart injury markers: snap-count absences of 4+ games tied to a report listing.
     ("major injuries",             PROJ / "build_major_injuries.py",      True),
     ("IDP advanced",               PROJ / "build_idp_advanced.py",        True),
+    ("fumble fault attribution",   PROJ / "build_fumbles.py",             True),
+    ("fumbles self-check",         PROJ / "build_fumbles.py",             True, ["--self-check"]),
     ("IDP defense-vs-position",    PROJ / "build_idp_dvp.py",             True),
     # The kicker board is modelled in a SEPARATE repo and written back into
     # site/data/kickers.js. It belongs in this list anyway: leaving it out is
@@ -154,7 +156,7 @@ TRACKED = [
     "ktc.js", "players.js", "leagues.js", "projections.js", "categories.js",
     "environment.js", "sos.js", "sos-grid.js", "sleeper-idp.js", "player-info.js",
     "jacob-gibbs.js", "expert-rankings.js", "fantasypros-experts.js", "alexandria.js",
-    "idp-dvp.js", "kickers.js", "gibbs-week.js", "gibbs-ros.js", "gibbs-ppr.js", "advanced.js", "prospect.js", "prospect-model.js", "capital-ratings.js", "mock-consensus.js", "contracts.js", "weather.js", "defense.js", "usage-weekly.js", "idp-advanced.js", "weekly-rankings.js", "sleeper-market.js", "faab.js", "trade-history.js", "context.js", "history.js",
+    "idp-dvp.js", "kickers.js", "gibbs-week.js", "gibbs-ros.js", "gibbs-ppr.js", "advanced.js", "prospect.js", "prospect-model.js", "capital-ratings.js", "mock-consensus.js", "contracts.js", "weather.js", "defense.js", "usage-weekly.js", "idp-advanced.js", "fumbles.js", "weekly-rankings.js", "sleeper-market.js", "faab.js", "trade-history.js", "context.js", "history.js",
 ]
 
 def run(label, script, timeout=600, args=()):
