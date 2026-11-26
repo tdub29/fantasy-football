@@ -51,6 +51,17 @@ PRIZEPICKS_STATS = {"Pass Yards": "pass_yd", "Rush Yards": "rush_yd",
 # (week 3 carried LB 110, DB 127, DL 63, DT 60, DE 35, CB 36).
 OFF_POS = {"QB", "RB", "WR", "TE", "K", "DEF",
            "LB", "DB", "DL", "CB", "S", "DT", "DE", "NT", "EDGE", "IDL"}
+IDP_POS = {"LB", "DB", "DL", "CB", "S", "DT", "DE", "NT", "EDGE", "IDL"}
+DEF_STAT_KEYS = ("pts_allow", "yds_allow", "sack", "int", "fum_rec",
+                 "ff", "def_td", "st_td", "safe", "blk_kick")
+DEFAULT_YUH_IDP_SCORING = {
+    "idp_tkl_solo": 1.0, "idp_tkl_ast": 0.5, "idp_tkl": 0.0,
+    "idp_tkl_loss": 1.0, "idp_qb_hit": 1.0, "idp_sack": 3.0,
+    "idp_sack_yd": 0.1, "idp_pass_def": 3.0, "idp_int": 5.0,
+    "idp_int_ret_yd": 0.1, "idp_ff": 3.0, "idp_fum_rec": 3.0,
+    "idp_fum_ret_yd": 0.1, "idp_def_td": 6.0, "idp_safe": 3.0,
+    "idp_blk_kick": 3.0,
+}
 WEEKS = range(1, 19)
 SCORE_KEYS = ("pass_yd", "pass_td", "pass_int", "rush_yd", "rush_td",
               "rec", "rec_yd", "rec_td", "fum_lost", "pass_2pt", "rush_2pt", "rec_2pt")
@@ -194,6 +205,42 @@ def ppr_score(stats):
     return round(total, 1)
 
 
+def load_yuh_idp_scoring():
+    """Read yuH IDP weights from Leagues/yuH/league.json, with locked fallback."""
+    scoring = dict(DEFAULT_YUH_IDP_SCORING)
+    lj = ROOT / "Leagues" / "yuH" / "league.json"
+    if lj.exists():
+        try:
+            raw = (json.loads(lj.read_text(encoding="utf-8")).get("scoring_settings") or {})
+            for k in DEFAULT_YUH_IDP_SCORING:
+                if raw.get(k) is not None:
+                    scoring[k] = float(raw[k])
+        except Exception as exc:
+            print(f"Warning: could not read yuH league scoring: {exc}")
+    return scoring
+
+
+def yuh_idp_score(stats, scoring=None):
+    """Score Sleeper IDP component stats under yuH rules; add any offense PPR."""
+    if not stats:
+        return None
+    weights = scoring or DEFAULT_YUH_IDP_SCORING
+    if not any(stats.get(k) is not None for k in weights):
+        return None
+    total = sum(float(stats.get(k) or 0.0) * float(w) for k, w in weights.items())
+    if any(stats.get(k) is not None for k in SCORE_KEYS):
+        total += ppr_score(stats) or 0.0
+    return round(total, 1)
+
+
+def extract_def_stats(stats):
+    """Capture Sleeper D/ST component stats (PA, YA, sacks, INT, FR, FF, TD, etc)."""
+    if not stats:
+        return None
+    out = {k: round(float(stats[k]), 2) for k in DEF_STAT_KEYS if stats.get(k) is not None}
+    return out or None
+
+
 def current_nfl_state():
     state = get_json("https://api.sleeper.app/v1/state/nfl")
     season = int(state.get("season") or datetime.date.today().year)
@@ -205,6 +252,7 @@ def sleeper_projections(season, current_week=1):
     players = {}
     current_stats = {}
     out_ros = load_out_ros_players(current_week)
+    yuh_scoring = load_yuh_idp_scoring()
     for week in WEEKS:
         url = f"https://api.sleeper.app/projections/nfl/{season}/{week}?season_type=regular"
         rows = get_json(url)
@@ -213,9 +261,17 @@ def sleeper_projections(season, current_week=1):
             pid = str(row.get("player_id") or player.get("player_id") or "")
             pos = player.get("position") or row.get("position")
             stats = row.get("stats") or {}
-            if not pid or pos not in OFF_POS or stats.get("pts_ppr") is None:
+            if not pid or pos not in OFF_POS:
                 continue
             if pid in out_ros and week >= out_ros[pid]:
+                continue
+            if pos in IDP_POS:
+                pts = yuh_idp_score(stats, yuh_scoring)
+                if pts is None and stats.get("pts_ppr") is not None:
+                    pts = round(float(stats["pts_ppr"]), 1)
+            else:
+                pts = round(float(stats["pts_ppr"]), 1) if stats.get("pts_ppr") is not None else None
+            if pts is None:
                 continue
             entry = players.setdefault(pid, {
                 "id": pid,
@@ -224,7 +280,11 @@ def sleeper_projections(season, current_week=1):
                 "team": row.get("team") or player.get("team"),
                 "sleeper": [None] * 18,
             })
-            entry["sleeper"][week - 1] = round(float(stats["pts_ppr"]), 1)
+            entry["sleeper"][week - 1] = pts
+            if pos == "DEF" and week == current_week:
+                def_stats = extract_def_stats(stats)
+                if def_stats:
+                    entry["defStats"] = def_stats
             current_stats[(pid, week)] = {key: stats[key] for key in SCORE_KEYS if stats.get(key) is not None}
         time.sleep(0.08)
     return players, current_stats
@@ -636,6 +696,17 @@ def self_check():
     games = weekly_games(2026, 2, sample)
     assert games["WAS"] == {"opp": "LAR", "home": False, "kickoff": "2026-09-20T17:00:00Z"}
     assert games["LAR"] == {"opp": "WAS", "home": True, "kickoff": "2026-09-20T17:00:00Z"}
+    # IDP scoring uses yuH settings instead of Sleeper's generic pts_ppr (~0.5),
+    # and DEF preserves component projections (pts_allow, sack, int, fum_rec).
+    cashman_stats = {
+        "idp_tkl_solo": 4.33, "idp_tkl_ast": 3.46, "idp_sack": 0.4,
+        "idp_sack_yd": 0.69, "idp_tkl_loss": 0.58, "idp_qb_hit": 0.29,
+        "idp_pass_def": 0.17, "idp_fum_rec": 0.06, "pts_ppr": 0.52,
+    }
+    assert yuh_idp_score(cashman_stats) == 8.9, yuh_idp_score(cashman_stats)
+    assert yuh_idp_score({"pts_ppr": 0.52}) is None
+    def_stats = extract_def_stats({"pts_allow": 17.5, "yds_allow": 294.4, "sack": 2.94, "int": 0.89, "fum_rec": 0.68, "def_td": 0.21})
+    assert def_stats == {"pts_allow": 17.5, "yds_allow": 294.4, "sack": 2.94, "int": 0.89, "fum_rec": 0.68, "def_td": 0.21}, def_stats
     try:
         check_games({"WAS": games["WAS"]}, 2)
         raise RuntimeError("check_games accepted a one-sided schedule")
@@ -767,7 +838,7 @@ def main():
         "sources": {
             "schedule": "nflverse current NFL schedule, kickoff converted from Eastern to UTC",
             "vegas": "Full-PPR estimate from price-adjusted BettingPros consensus props; missing yardage/receptions use current-game standard PrizePicks lines, then Sleeper fills. PrizePicks fantasy-score lines are shown separately in the tooltip.",
-            "sleeper": "Sleeper weekly pts_ppr",
+            "sleeper": "Sleeper weekly pts_ppr (offense/K/DEF), yuH IDP scoring (IDP), and D/ST component projections",
             "ecr": "FantasyPros weekly expert consensus rankings",
             "gibbs": f"FantasyPros weekly {tracked_scoring.get('gibbs', 'PPR')} ranking for Jacob Gibbs, expert {GIBBS_EXPERT_ID}",
             "experts": "FantasyPros weekly ranking, one isolated analyst board per tracked expert, each in the scoring that analyst keeps current",
