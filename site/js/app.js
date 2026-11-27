@@ -4160,6 +4160,7 @@
               const kicker = kickerProjectionFor(player);
               return kicker?.[String(filter.sort).slice(7)];
             }
+            if (filter.sort === 'weekly-ros') return row.ros;
             if (filter.sort === 'weekly-gibbs-x') return gibbsRosPprRank(player._sleeperId)?.rank ?? null;
             if (filter.sort === 'weekly-gibbs-wk') return gibbsWeekRank(player._sleeperId)?.rank ?? null;
             // Null either side means no comparison exists, so the row stays

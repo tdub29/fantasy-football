@@ -19,6 +19,7 @@ import pathlib
 import re
 import sys
 import unicodedata
+import urllib.request
 from typing import Any
 
 import numpy as np
@@ -29,14 +30,6 @@ ROOT = HERE.parent
 SITE = ROOT / "site" / "data"
 OUT_JS = SITE / "idp-xstats.js"
 
-
-def _find_review_dir(sub: str) -> pathlib.Path | None:
-    """Locate .agents/artifacts/yuh-idp-review-2026-11-26/<sub> from repo or worktree."""
-    for base in (ROOT, *ROOT.parents):
-        cand = base / ".agents" / "artifacts" / "yuh-idp-review-2026-11-26" / sub
-        if cand.exists():
-            return cand
-    return None
 
 # Hyperparameters locked strictly <= 2025 in yuh-idp-xstats-v1 evaluation
 BEST_PARAMS: dict[str, float] = {
@@ -85,11 +78,11 @@ POS_GROUP_MAP = {
 SUB_ROLES = ("EDGE", "IDL", "OBLB", "S", "CB")
 OFFSEASON_GAP_WEEKS = 4.0
 
-# Precomputed fallback 2015-2025 NPV age retention multipliers when historical CSVs absent
-FALLBACK_AGE_MULT: dict[str, dict[int, float]] = {
-    "DL": {21: 0.90, 22: 0.92, 23: 0.93, 24: 0.85, 25: 0.7622, 26: 0.7917, 27: 0.73, 28: 0.71, 29: 0.7088, 30: 0.6712, 31: 0.63, 32: 0.58, 33: 0.52, 34: 0.45},
-    "LB": {21: 0.881, 22: 0.9061, 23: 0.832, 24: 0.8151, 25: 0.7896, 26: 0.7732, 27: 0.723, 28: 0.68, 29: 0.6429, 30: 0.6233, 31: 0.58, 32: 0.52, 33: 0.46, 34: 0.40},
-    "DB": {21: 0.85, 22: 0.83, 23: 0.7966, 24: 0.77, 25: 0.75, 26: 0.73, 27: 0.7167, 28: 0.67, 29: 0.63, 30: 0.565, 31: 0.51, 32: 0.45, 33: 0.40, 34: 0.35},
+# Exact 2015-2025 non-survivor empirical NPV age-retention multipliers (yuH scoring)
+EMPIRICAL_AGE_MULT_2015_2025: dict[str, dict[int, float]] = {
+    "DL": {21: 0.8508, 22: 0.8552, 23: 0.8733, 24: 0.7983, 25: 0.7622, 26: 0.7917, 27: 0.792, 28: 0.7388, 29: 0.7088, 30: 0.6712, 31: 0.6772, 32: 0.5765, 33: 0.5259, 34: 0.6266},
+    "LB": {21: 0.881, 22: 0.9061, 23: 0.832, 24: 0.8151, 25: 0.7896, 26: 0.7732, 27: 0.723, 28: 0.6921, 29: 0.6429, 30: 0.6233, 31: 0.5921, 32: 0.5941, 33: 0.5656, 34: 0.7079},
+    "DB": {21: 0.9402, 22: 0.8285, 23: 0.7966, 24: 0.771, 25: 0.7491, 26: 0.7316, 27: 0.7167, 28: 0.6841, 29: 0.6377, 30: 0.5865, 31: 0.6148, 32: 0.6194, 33: 0.5787, 34: 0.5251},
 }
 
 
@@ -298,17 +291,47 @@ def resolve_name_team(name: Any, team: Any, cw: dict[str, Any]) -> str | None:
     return cands[0] if len(cands) == 1 else (cands[0] if cands else None)
 
 
-def find_advstats_file(yr: int, cache_dir: pathlib.Path, raw_dir: pathlib.Path | None) -> pathlib.Path | None:
+def find_advstats_file(yr: int, cache_dir: pathlib.Path, raw_dir: pathlib.Path | None, offline: bool = False) -> pathlib.Path | None:
     for d in (cache_dir, raw_dir):
         if d is None:
             continue
         p = pathlib.Path(d) / f"advstats_week_def_{yr}.parquet"
         if p.exists():
             return p
+    if not offline:
+        p = cache_dir / f"advstats_week_def_{yr}.parquet"
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        url = f"https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_def_{yr}.parquet"
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+            with urllib.request.urlopen(req, timeout=90) as r:
+                tmp = p.with_suffix(p.suffix + ".tmp")
+                tmp.write_bytes(r.read())
+                tmp.replace(p)
+            return p
+        except Exception:
+            return None
     return None
 
 
-def load_season_weekly(yr: int, cur_season: int, closed_max_week: int, cache_dir: pathlib.Path, hist_dir: pathlib.Path, raw_dir: pathlib.Path | None, weights: dict[str, float]) -> pd.DataFrame:
+def load_cur_games(cache_dir: pathlib.Path, cur_season: int, offline: bool = False) -> pd.DataFrame:
+    gpq = cache_dir / f"games_{cur_season}.parquet"
+    if gpq.exists():
+        return pd.read_parquet(gpq)
+    gcsv = cache_dir / "games.csv"
+    if not gcsv.exists() and not offline:
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        url = "https://raw.githubusercontent.com/nflverse/nfldata/master/data/games.csv"
+        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(req, timeout=90) as r:
+            tmp = gcsv.with_suffix(".csv.tmp")
+            tmp.write_bytes(r.read())
+            tmp.replace(gcsv)
+    df = pd.read_csv(gcsv)
+    return df[df["season"] == cur_season].copy()
+
+
+def load_season_weekly(yr: int, cur_season: int, closed_max_week: int, cache_dir: pathlib.Path, hist_dir: pathlib.Path | None, raw_dir: pathlib.Path | None, weights: dict[str, float], offline: bool = False) -> pd.DataFrame:
     roster = pd.read_parquet(cache_dir / f"roster_{yr}.parquet")
     roster = roster[roster["position"].isin(["DL", "LB", "DB"])].copy()
     roster = roster.sort_values("week" if "week" in roster.columns else "gsis_id").drop_duplicates("gsis_id", keep="first")
@@ -317,8 +340,9 @@ def load_season_weekly(yr: int, cur_season: int, closed_max_week: int, cache_dir
     r_map = roster[["gsis_id", "pfr_id", "full_name", "position", "depth_chart_position", "sub_role", "pos_group", "team"]].rename(
         columns={"gsis_id": "player_id", "team": "roster_team"}
     )
+    r_map["player_id"] = r_map["player_id"].astype(str).str.strip()
 
-    if yr == 2023 and (hist_dir / "week_2023.csv").exists():
+    if yr == 2023 and hist_dir is not None and (hist_dir / "week_2023.csv").exists():
         st = pd.read_csv(hist_dir / "week_2023.csv")
         st = st[st["season_type"] == "REG"].copy()
         st = st.rename(columns={
@@ -354,7 +378,7 @@ def load_season_weekly(yr: int, cur_season: int, closed_max_week: int, cache_dir
         "def_times_blitzed", "def_times_hurried", "def_times_hitqb", "def_pressures",
         "def_tackles_combined", "def_missed_tackles",
     ]
-    adv_path = find_advstats_file(yr, cache_dir, raw_dir)
+    adv_path = find_advstats_file(yr, cache_dir, raw_dir, offline=offline)
     if adv_path is not None:
         adv = pd.read_parquet(adv_path)
         adv = adv[adv["game_type"] == "REG"].copy()
@@ -374,7 +398,7 @@ def load_season_weekly(yr: int, cur_season: int, closed_max_week: int, cache_dir
         "fumble_recovery_yards_opp", "def_tds", "def_safeties",
         "def_punt_blocks", "def_pat_blocks", "def_fg_blocks",
     ]
-    box_df = pd.DataFrame({"season": int(yr), "week": st_sub["week"].astype(int), "player_id": st_sub["player_id"], "stat_team": st_sub["team"]})
+    box_df = pd.DataFrame({"season": int(yr), "week": st_sub["week"].astype(int), "player_id": st_sub["player_id"].astype(str).str.strip(), "stat_team": st_sub["team"]})
     for c in box_keep:
         box_df[c] = gcol(st_sub, c).values
     box_df["def_blk_kicks"] = box_df["def_punt_blocks"] + box_df["def_pat_blocks"] + box_df["def_fg_blocks"]
@@ -641,12 +665,13 @@ def predict_player(acc: PlayerAcc, sub_role: str, opp_factors: dict[str, float],
         "tkl": xs_solo + 0.5 * xs_ast, "tfl": xs_tfl, "sk": xs_sk, "sk_yd": xs_sk_yd,
         "qbh": xs_qbh, "pbu": xs_pbu, "int": xs_int, "int_yd": xs_int_yd,
         "ff": xs_ff, "fr": xs_fr, "fr_yd": xs_fr_yd, "td": xs_td,
+        "safe": xs_safe, "blk": xs_blk,
     }
 
 
-def compute_age_curves(cache_dir: pathlib.Path, hist_dir: pathlib.Path, weights: dict[str, float]) -> dict[str, dict[int, float]]:
-    if not (hist_dir / "season_2025_derived.csv").exists() or not (cache_dir / "roster_2015.parquet").exists():
-        return FALLBACK_AGE_MULT
+def compute_age_curves(cache_dir: pathlib.Path, hist_dir: pathlib.Path | None, weights: dict[str, float]) -> dict[str, dict[int, float]]:
+    if hist_dir is None or not (hist_dir / "season_2025_derived.csv").exists() or not (cache_dir / "roster_2015.parquet").exists():
+        return EMPIRICAL_AGE_MULT_2015_2025
     id_birth: dict[str, int] = {}
     id_pg: dict[str, str] = {}
     dfs: list[pd.DataFrame] = []
@@ -654,7 +679,7 @@ def compute_age_curves(cache_dir: pathlib.Path, hist_dir: pathlib.Path, weights:
         r = pd.read_parquet(cache_dir / f"roster_{yr}.parquet")
         r = r[r["position"].isin(["DL", "LB", "DB"]) & r["gsis_id"].notna()].drop_duplicates("gsis_id")
         for row in r.itertuples(index=False):
-            gid = str(row.gsis_id)
+            gid = str(row.gsis_id).strip()
             if pd.notna(row.birth_date):
                 try:
                     id_birth[gid] = int(str(row.birth_date)[:4])
@@ -685,7 +710,7 @@ def compute_age_curves(cache_dir: pathlib.Path, hist_dir: pathlib.Path, weights:
         )
         part = pd.DataFrame({
             "season": yr,
-            "player_id": sdf["player_id"].astype(str),
+            "player_id": sdf["player_id"].astype(str).str.strip(),
             "games": pd.to_numeric(sdf["games"], errors="coerce").fillna(0.0),
             "yuh_tot": yuh_tot,
         }).groupby(["season", "player_id"], as_index=False).agg(games=("games", "max"), yuh_tot=("yuh_tot", "sum"))
@@ -722,35 +747,36 @@ def compute_age_curves(cache_dir: pathlib.Path, hist_dir: pathlib.Path, weights:
     return table
 
 
-def load_fp_ranks(raw_dir: pathlib.Path | None, target_week: int, cw: dict[str, Any]) -> tuple[dict[str, int], dict[str, int]]:
+def load_fp_ranks(raw_dir: pathlib.Path | None, cache_dir: pathlib.Path, target_week: int, cw: dict[str, Any]) -> tuple[dict[str, int], dict[str, int]]:
     fp_wk: dict[str, int] = {}
     fp_dyn: dict[str, int] = {}
-    if raw_dir is None or not raw_dir.exists():
-        return fp_wk, fp_dyn
-    wk_file = raw_dir / f"fp_weekly_w{target_week:02d}_IDP.json"
-    if wk_file.exists():
-        doc = json.loads(wk_file.read_text(encoding="utf-8"))
-        for r in (doc.get("players") or []):
-            sid = resolve_name_team(r.get("player_name"), r.get("player_team_id"), cw)
-            if sid and sid not in fp_wk and r.get("rank_ecr") is not None:
-                fp_wk[sid] = int(round(float(r["rank_ecr"])))
-    dyn_file = raw_dir / "fp_dynasty_IDP.json"
-    if dyn_file.exists():
-        doc = json.loads(dyn_file.read_text(encoding="utf-8"))
-        for r in (doc.get("players") or []):
-            sid = resolve_name_team(r.get("player_name"), r.get("player_team_id"), cw)
-            if sid and sid not in fp_dyn and r.get("rank_ecr") is not None:
-                fp_dyn[sid] = int(round(float(r["rank_ecr"])))
+    search_dirs = [d for d in (raw_dir, cache_dir) if d is not None and d.exists()]
+    for d in search_dirs:
+        wk_file = d / f"fp_weekly_w{target_week:02d}_IDP.json"
+        if not fp_wk and wk_file.exists():
+            doc = json.loads(wk_file.read_text(encoding="utf-8"))
+            for r in (doc.get("players") or []):
+                sid = resolve_name_team(r.get("player_name"), r.get("player_team_id"), cw)
+                if sid and sid not in fp_wk and r.get("rank_ecr") is not None:
+                    fp_wk[sid] = int(round(float(r["rank_ecr"])))
+        dyn_file = d / "fp_dynasty_IDP.json"
+        if not fp_dyn and dyn_file.exists():
+            doc = json.loads(dyn_file.read_text(encoding="utf-8"))
+            for r in (doc.get("players") or []):
+                sid = resolve_name_team(r.get("player_name"), r.get("player_team_id"), cw)
+                if sid and sid not in fp_dyn and r.get("rank_ecr") is not None:
+                    fp_dyn[sid] = int(round(float(r["rank_ecr"])))
     return fp_wk, fp_dyn
 
 
-def load_slp_ytd_map(raw_dir: pathlib.Path | None, closed_max_week: int, weights: dict[str, float]) -> dict[str, dict[str, float]]:
-    if raw_dir is None or not raw_dir.exists():
+def load_slp_ytd_map(raw_dir: pathlib.Path | None, cache_dir: pathlib.Path, cur_season: int, closed_max_week: int, weights: dict[str, float]) -> dict[str, dict[str, float]]:
+    search_dirs = [d for d in (raw_dir, cache_dir) if d is not None and d.exists()]
+    if not search_dirs:
         return {}
     sums: dict[str, dict[str, float]] = {}
     for w in range(1, closed_max_week + 1):
-        p = raw_dir / f"sleeper_stats_2026_w{w:02d}.json"
-        if not p.exists():
+        p = next((d / f"sleeper_stats_{cur_season}_w{w:02d}.json" for d in search_dirs if (d / f"sleeper_stats_{cur_season}_w{w:02d}.json").exists()), None)
+        if p is None:
             continue
         arr = json.loads(p.read_text(encoding="utf-8"))
         seen: set[str] = set()
@@ -771,18 +797,18 @@ def load_slp_ytd_map(raw_dir: pathlib.Path | None, closed_max_week: int, weights
     return sums
 
 
-def build(cache_dir: pathlib.Path, players_path: pathlib.Path, hist_dir: pathlib.Path, raw_dir: pathlib.Path | None, week_override: int | None) -> dict[str, Any]:
+def build(cache_dir: pathlib.Path, players_path: pathlib.Path, hist_dir: pathlib.Path | None, raw_dir: pathlib.Path | None, week_override: int | None, offline: bool = False) -> dict[str, Any]:
     weights, cur_season, detected_week = load_yuh_scoring_and_week(ROOT)
     target_week = week_override if week_override is not None else detected_week
     closed_max_week = max(0, target_week - 1)
     train_seasons = (cur_season - 3, cur_season - 2, cur_season - 1)
 
     cw = build_sleeper_crosswalk(players_path, cache_dir, cur_season)
-    hist_panels = [load_season_weekly(yr, cur_season, closed_max_week, cache_dir, hist_dir, raw_dir, weights) for yr in train_seasons]
+    hist_panels = [load_season_weekly(yr, cur_season, closed_max_week, cache_dir, hist_dir, raw_dir, weights, offline=offline) for yr in train_seasons]
     hist_df = pd.concat(hist_panels, ignore_index=True)
     priors = compute_role_priors(hist_df)
 
-    cur_panel = load_season_weekly(cur_season, cur_season, closed_max_week, cache_dir, hist_dir, raw_dir, weights)
+    cur_panel = load_season_weekly(cur_season, cur_season, closed_max_week, cache_dir, hist_dir, raw_dir, weights, offline=offline)
     full_panel = pd.concat([hist_df, cur_panel], ignore_index=True).sort_values(["season", "week", "player_id"]).reset_index(drop=True)
 
     accs: dict[str, PlayerAcc] = {}
@@ -801,10 +827,10 @@ def build(cache_dir: pathlib.Path, players_path: pathlib.Path, hist_dir: pathlib
         pbu_tot=("def_pass_defended", "sum"),
         int_tot=("def_interceptions", "sum"),
     ).set_index("player_id").to_dict("index")
-    slp_ytd = load_slp_ytd_map(raw_dir, closed_max_week, weights)
+    slp_ytd = load_slp_ytd_map(raw_dir, cache_dir, cur_season, closed_max_week, weights)
 
     opp_factors = compute_opp_factors(train_seasons + (cur_season,), cur_season, closed_max_week, target_week, cache_dir)
-    games_cur = pd.read_parquet(cache_dir / f"games_{cur_season}.parquet")
+    games_cur = load_cur_games(cache_dir, cur_season, offline=offline)
     rem_games = games_cur[(games_cur["game_type"] == "REG") & (games_cur["week"] >= target_week)]
     team_rem_opps: dict[str, dict[int, str]] = {}
     for g in rem_games.itertuples(index=False):
@@ -813,7 +839,7 @@ def build(cache_dir: pathlib.Path, players_path: pathlib.Path, hist_dir: pathlib
         team_rem_opps.setdefault(at, {})[wk] = ht
 
     age_table = compute_age_curves(cache_dir, hist_dir, weights)
-    fp_wk, fp_dyn = load_fp_ranks(raw_dir, target_week, cw)
+    fp_wk, fp_dyn = load_fp_ranks(raw_dir, cache_dir, target_week, cw)
 
     r_cur_sr = cur_panel.sort_values("week").drop_duplicates("player_id", keep="last").set_index("player_id")["sub_role"].to_dict()
     p_prev = hist_panels[-1]
@@ -902,6 +928,8 @@ def build(cache_dir: pathlib.Path, players_path: pathlib.Path, hist_dir: pathlib
             "xFR": round(p_neut["fr"], 3),
             "xFRYd": round(p_neut["fr_yd"], 2),
             "xTD": round(p_neut["td"], 3),
+            "xSafe": round(p_neut["safe"], 4),
+            "xBlk": round(p_neut["blk"], 4),
             "xWk": round(p_wk["pts"], 2) if ros_elig else 0.0,
             "xRos": round(ros_ppg, 2) if ros_elig else None,
             "xNeut": round(p_neut["pts"], 2),
@@ -953,10 +981,12 @@ def build(cache_dir: pathlib.Path, players_path: pathlib.Path, hist_dir: pathlib
 def run_self_check(payload: dict[str, Any], freeze_dir: pathlib.Path | None) -> None:
     players = payload["players"]
     assert len(players) >= 600, f"Too few IDP xStats players: {len(players)}"
+    assert payload["throughWeek"] == payload["week"] - 1, f"throughWeek={payload['throughWeek']} vs week={payload['week']}"
     sc = payload["scoring"]
     assert abs(sc["idp_pass_def"] - 3.0) < 1e-6 and abs(sc["idp_sack"] - 3.0) < 1e-6 and abs(sc["idp_int"] - 5.0) < 1e-6
     for sid, r in players.items():
-        for k in ("xSnp", "xSolo", "xAst", "xTkl", "xTFL", "xSk", "xQBH", "xPBU", "xINT", "xFF", "xFR", "xNeut", "dyn"):
+        assert sid == sid.strip(), f"Unstripped SID: {sid!r}"
+        for k in ("xSnp", "xSolo", "xAst", "xTkl", "xTFL", "xSk", "xQBH", "xPBU", "xINT", "xFF", "xFR", "xSafe", "xBlk", "xNeut", "dyn"):
             v = r.get(k)
             assert v is not None and np.isfinite(float(v)), f"NaN/missing {k} on {sid} ({r.get('n')})"
 
@@ -987,9 +1017,9 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--cache", type=pathlib.Path, default=HERE / "nflverse-cache")
     ap.add_argument("--players", type=pathlib.Path, default=ROOT / "players-nfl.json")
-    ap.add_argument("--hist-dir", type=pathlib.Path, default=ROOT / "historical" / "idp_stats")
-    ap.add_argument("--raw-dir", type=pathlib.Path, default=_find_review_dir("raw"))
-    ap.add_argument("--freeze-dir", type=pathlib.Path, default=_find_review_dir("out"))
+    ap.add_argument("--hist-dir", type=pathlib.Path, default=ROOT / "historical" / "idp_stats", help="Optional historical/idp_stats folder")
+    ap.add_argument("--raw-dir", type=pathlib.Path, default=None, help="Optional snapshot directory for FP/Sleeper JSON")
+    ap.add_argument("--freeze-dir", type=pathlib.Path, default=None, help="Optional prospective freeze directory for --self-check")
     ap.add_argument("--week", type=int, default=None)
     ap.add_argument("--offline", action="store_true")
     ap.add_argument("--self-check", action="store_true")
@@ -997,7 +1027,7 @@ def main() -> int:
 
     raw_dir = args.raw_dir if args.raw_dir and args.raw_dir.exists() else None
     freeze_dir = args.freeze_dir if args.freeze_dir and args.freeze_dir.exists() else None
-    payload = build(args.cache, args.players, args.hist_dir, raw_dir, args.week)
+    payload = build(args.cache, args.players, args.hist_dir, raw_dir, args.week, offline=args.offline)
 
     if args.self_check:
         run_self_check(payload, freeze_dir)
