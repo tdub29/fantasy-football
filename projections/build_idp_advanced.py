@@ -37,11 +37,12 @@ OUT_JS = SITE_DATA / "idp-advanced.js"
 
 SEASON = 2026
 MAX_AGE_H = 6.0
+OFFLINE = False
 
 # (release tag, asset filename) on nflverse-data, for cache misses / staleness.
 NFLVERSE_SOURCES = {
     f"roster_{SEASON}.parquet": ("rosters", f"roster_{SEASON}.parquet"),
-    f"stats_player_week_{SEASON}.parquet": ("player_stats", f"stats_player_week_{SEASON}.parquet"),
+    f"stats_player_week_{SEASON}.parquet": ("stats_player", f"stats_player_week_{SEASON}.parquet"),
     f"snap_counts_{SEASON}.parquet": ("snap_counts", f"snap_counts_{SEASON}.parquet"),
     f"advstats_week_def_{SEASON}.parquet": ("pfr_advstats", f"advstats_week_def_{SEASON}.parquet"),
     f"play_by_play_{SEASON}.parquet": ("pbp", f"play_by_play_{SEASON}.parquet"),
@@ -63,6 +64,10 @@ def bucket_pos(pos):
 
 def ensure_cached(filename: str) -> pathlib.Path:
     path = CACHE / filename
+    if OFFLINE:
+        if not path.exists():
+            raise SystemExit(f"Missing {filename} in {CACHE} with --offline set")
+        return path
     if path.exists():
         age_h = (time.time() - path.stat().st_mtime) / 3600.0
         if age_h < MAX_AGE_H:
@@ -71,10 +76,17 @@ def ensure_cached(filename: str) -> pathlib.Path:
     url = f"https://github.com/nflverse/nflverse-data/releases/download/{tag}/{remote_name}"
     print(f"  downloading {filename} <- {url}")
     tmp = path.with_suffix(path.suffix + ".tmp")
-    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    with urllib.request.urlopen(req, timeout=90) as r, open(tmp, "wb") as f:
-        f.write(r.read())
-    tmp.replace(path)
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(req, timeout=90) as r, open(tmp, "wb") as f:
+            f.write(r.read())
+        tmp.replace(path)
+    except Exception as exc:
+        if tmp.exists():
+            tmp.unlink()
+        if not path.exists():
+            raise SystemExit(f"Failed downloading {filename}: {exc}")
+        print(f"  warning: refresh failed ({exc}); using cached {filename}")
     return path
 
 
@@ -189,7 +201,7 @@ def build_dataframes():
     pbp = pd.read_parquet(
         ensure_cached(f"play_by_play_{SEASON}.parquet"),
         columns=[
-            "week", "season_type", "play_type", "special_teams_play",
+            "game_id", "week", "season_type", "play_type", "special_teams_play",
             "kickoff_attempt", "punt_attempt", "field_goal_attempt", "extra_point_attempt",
             "sack", "two_point_attempt", "fumble", "fumble_forced",
             "fumbled_1_player_id", "fumbled_2_player_id",
@@ -217,10 +229,14 @@ def _fill_missing_sleeper_ids(roster: pd.DataFrame, players_path: pathlib.Path |
         s = unicodedata.normalize("NFKD", str(s)).encode("ascii", "ignore").decode()
         s = re.sub(r"\b(jr|sr|ii|iii|iv|v)\b", "", s.lower())
         return re.sub(r"[^a-z0-9]+", " ", s).strip()
+    by_gsis = {}
     by_bdate = {}
     by_nt = {}
     by_n = {}
     for sid, info in players_nfl.items():
+        gsis = str(info.get("gsis_id") or "").strip()
+        if gsis:
+            by_gsis[gsis] = str(sid)
         nm = norm(info.get("full_name") or f"{info.get('first_name', '')} {info.get('last_name', '')}")
         tm = str(info.get("team") or "").upper()
         bd = str(info.get("birth_date") or "")[:10]
@@ -235,10 +251,13 @@ def _fill_missing_sleeper_ids(roster: pd.DataFrame, players_path: pathlib.Path |
     for i, row in enumerate(out.itertuples(index=False)):
         if pd.notna(row.sleeper_id):
             continue
+        gsis_raw = str(getattr(row, "gsis_id", "") or "").strip()
         nm = norm(getattr(row, "full_name", None))
         bd = str(getattr(row, "birth_date", "") or "")[:10]
         tm = str(getattr(row, "team", "") or "").upper()
-        if (bd, nm) in by_bdate:
+        if gsis_raw and gsis_raw in by_gsis:
+            sids[i] = by_gsis[gsis_raw]
+        elif (bd, nm) in by_bdate:
             sids[i] = by_bdate[(bd, nm)]
         elif (nm, tm) in by_nt:
             sids[i] = by_nt[(nm, tm)]
@@ -248,8 +267,34 @@ def _fill_missing_sleeper_ids(roster: pd.DataFrame, players_path: pathlib.Path |
     return out
 
 
-def compute(roster, stats, snaps, adv, pbp, players_path=None):
+def detect_closed_max_week(root_dir: pathlib.Path, pbp_cur: pd.DataFrame, max_week_override: int | None = None) -> int:
+    """Return latest completed regular-season week, excluding partial/in-progress weeks."""
+    if max_week_override is not None:
+        return int(max_week_override)
+    site_closed = None
+    wr = root_dir / "site" / "data" / "weekly-rankings.js"
+    if wr.exists():
+        m = re.search(r'"currentWeek"\s*:\s*(\d+)', wr.read_text(encoding="utf-8")[:600])
+        if m:
+            site_closed = max(0, int(m.group(1)) - 1)
+    if site_closed is None and LEAGUES_JS.exists():
+        m = re.search(r'"week"\s*:\s*(\d+)', LEAGUES_JS.read_text(encoding="utf-8")[:1200])
+        if m:
+            site_closed = max(0, int(m.group(1)) - 1)
+    if len(pbp_cur):
+        wk_games = pbp_cur.groupby("week")["game_id"].nunique()
+        complete_wks = [int(w) for w, gcnt in wk_games.items() if gcnt >= 10]
+        pbp_closed = max(complete_wks) if complete_wks else int(pbp_cur["week"].max())
+    else:
+        pbp_closed = 0
+    if site_closed is not None and pbp_closed > 0:
+        return min(site_closed, pbp_closed)
+    return site_closed if site_closed is not None else pbp_closed
+
+
+def compute(roster, stats, snaps, adv, pbp, players_path=None, max_week=None):
     roster = _fill_missing_sleeper_ids(roster.copy(), players_path)
+    roster["gsis_id"] = roster["gsis_id"].map(lambda x: str(x).strip() if pd.notna(x) else x)
     rb_gsis = set(roster[roster["position"] == "RB"]["gsis_id"].dropna().astype(str))
     roster["pos_bucket"] = roster["position"].map(bucket_pos)
     roster_def = roster[roster["pos_bucket"].notna() & roster["sleeper_id"].notna()].copy()
@@ -257,6 +302,25 @@ def compute(roster, stats, snaps, adv, pbp, players_path=None):
     roster_def = roster_def[["sleeper_id", "full_name", "team", "pos_bucket", "gsis_id", "pfr_id"]]
 
     pfr_ids = set(roster_def["pfr_id"].dropna())
+    pbp_base = pbp[pbp["season_type"] == "REG"].copy()
+    closed_max = detect_closed_max_week(ROOT, pbp_base, max_week)
+
+    stats = stats.copy()
+    stats["player_id"] = stats["player_id"].map(lambda x: str(x).strip() if pd.notna(x) else x)
+    if "season_type" in stats.columns:
+        stats = stats[stats["season_type"] == "REG"].copy()
+    if closed_max > 0:
+        stats = stats[stats["week"] <= closed_max].copy()
+    snaps = snaps.copy()
+    if "game_type" in snaps.columns:
+        snaps = snaps[snaps["game_type"] == "REG"].copy()
+    if closed_max > 0:
+        snaps = snaps[snaps["week"] <= closed_max].copy()
+    adv = adv.copy()
+    if "game_type" in adv.columns:
+        adv = adv[adv["game_type"] == "REG"].copy()
+    if closed_max > 0:
+        adv = adv[adv["week"] <= closed_max].copy()
 
     # -- weekly box-score defensive stats, keyed by gsis_id (stats.player_id) --
     box_cols = [
@@ -311,7 +375,9 @@ def compute(roster, stats, snaps, adv, pbp, players_path=None):
 
     # -- PBP forced-fumble split (strip-sack vs non-sack ball-carrier vs special teams) --
     pbp_reg = pbp[(pbp["season_type"] == "REG") & (pbp["two_point_attempt"] != 1) & (pbp["fumble"] == 1) & (pbp["fumble_forced"] == 1)].copy()
-    if through_week > 0:
+    if closed_max > 0:
+        pbp_reg = pbp_reg[pbp_reg["week"] <= closed_max]
+    elif through_week > 0:
         pbp_reg = pbp_reg[pbp_reg["week"] <= through_week]
     pbp_ff_map: dict[str, dict[str, int]] = {}
     for prow in pbp_reg.itertuples(index=False):
@@ -325,14 +391,14 @@ def compute(roster, stats, snaps, adv, pbp, players_path=None):
         )
         play_sack = (not play_st) and (int(prow.sack or 0) == 1)
         any_rb = (
-            (pd.notna(prow.fumbled_1_player_id) and str(prow.fumbled_1_player_id) in rb_gsis)
-            or (pd.notna(prow.fumbled_2_player_id) and str(prow.fumbled_2_player_id) in rb_gsis)
+            (pd.notna(prow.fumbled_1_player_id) and str(prow.fumbled_1_player_id).strip() in rb_gsis)
+            or (pd.notna(prow.fumbled_2_player_id) and str(prow.fumbled_2_player_id).strip() in rb_gsis)
         )
         seen_f: set[str] = set()
         for fcol in (prow.forced_fumble_player_1_player_id, prow.forced_fumble_player_2_player_id):
             if pd.isna(fcol):
                 continue
-            fgid = str(fcol)
+            fgid = str(fcol).strip()
             if fgid in seen_f:
                 continue
             seen_f.add(fgid)
@@ -517,7 +583,7 @@ def finalize(rows, scoring):
     return rows
 
 
-def build_payload(self_check=False, players_path=None):
+def build_payload(self_check=False, players_path=None, max_week=None):
     league = load_idp_league()
     if league is not None:
         scoring = {k: v for k, v in (league.get("scoring") or {}).items() if k.startswith("idp_") and v}
@@ -536,7 +602,8 @@ def build_payload(self_check=False, players_path=None):
         print(f"WARNING: idp_ scoring keys with no stat mapping (ignored): {unmapped}")
 
     roster, stats, snaps, adv, pbp = build_dataframes()
-    rows, through_week, adv_pfr_seen, adv_pfr_matched = compute(roster, stats, snaps, adv, pbp, players_path=players_path)
+    closed_max = detect_closed_max_week(ROOT, pbp[pbp["season_type"] == "REG"], max_week)
+    rows, through_week, adv_pfr_seen, adv_pfr_matched = compute(roster, stats, snaps, adv, pbp, players_path=players_path, max_week=max_week)
     if self_check:
         for sid, row in rows.items():
             ff_split_sum = row["ff_sk"] + row["ff_bc"] + row["_ff_st"]
@@ -544,7 +611,7 @@ def build_payload(self_check=False, players_path=None):
     rows = finalize(rows, scoring)
 
     if self_check:
-        run_self_checks(rows, scoring)
+        run_self_checks(rows, scoring, through_week, closed_max)
 
     payload = {
         "generated": datetime.now(timezone.utc).isoformat(timespec="seconds"),
@@ -563,8 +630,11 @@ def build_payload(self_check=False, players_path=None):
     return payload, match_rate
 
 
-def run_self_checks(rows, scoring):
+def run_self_checks(rows, scoring, through_week=None, closed_max=None):
     print("\n--- self-check ---")
+    if closed_max is not None and through_week is not None and closed_max > 0:
+        assert through_week == closed_max, f"throughWeek {through_week} != closed_max {closed_max}"
+        print(f"  OK  closed-week maturity: throughWeek={through_week}")
 
     # 1. scoring function on a hand-built stat line
     hand = {
@@ -613,16 +683,19 @@ def to_js(payload) -> str:
 
 
 def main():
-    global CACHE
+    global CACHE, OFFLINE
     ap = argparse.ArgumentParser()
     ap.add_argument("--cache", type=pathlib.Path, default=None, help="nflverse-cache folder")
     ap.add_argument("--players", type=pathlib.Path, default=ROOT / "players-nfl.json", help="players-nfl.json path")
+    ap.add_argument("--max-week", type=int, default=None, help="Override latest completed 2026 week")
+    ap.add_argument("--offline", action="store_true", help="never download; fail if cache file missing")
     ap.add_argument("--self-check", action="store_true", help="run internal asserts before writing output")
     args = ap.parse_args()
     if args.cache is not None:
         CACHE = args.cache
+    OFFLINE = bool(args.offline)
 
-    payload, match_rate = build_payload(self_check=args.self_check, players_path=args.players)
+    payload, match_rate = build_payload(self_check=args.self_check, players_path=args.players, max_week=args.max_week)
 
     js = to_js(payload)
     OUT_JS.write_text(js, encoding="utf-8")

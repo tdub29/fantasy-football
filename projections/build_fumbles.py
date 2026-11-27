@@ -110,7 +110,7 @@ def build_crosswalk(cache_dir: pathlib.Path, players_path: pathlib.Path, offline
             "name": nm_full,
             "pos": pos,
             "team": tm,
-            "gsis_id": str(info.get("gsis_id")) if info.get("gsis_id") else None,
+            "gsis_id": str(info.get("gsis_id")).strip() if info.get("gsis_id") else None,
         }
         if nm:
             name_to_sids.setdefault(nm, []).append(sid)
@@ -141,7 +141,7 @@ def build_crosswalk(cache_dir: pathlib.Path, players_path: pathlib.Path, offline
         )
         r = r[r["gsis_id"].notna()].drop_duplicates("gsis_id", keep="last")
         for row in r.itertuples(index=False):
-            gid = str(row.gsis_id)
+            gid = str(row.gsis_id).strip()
             pos = str(row.position or "")
             gsis_pos[gid] = pos or gsis_pos.get(gid, "")
             if pd.notna(row.full_name):
@@ -199,15 +199,15 @@ def _short_match(pbp_token: str | None, name1: str | None, name2: str | None) ->
 
 def resolve_slot_event(row, slot: int, st_lookup: dict[tuple[int, str], tuple[int, int, int]]) -> tuple[int, int, str | None, str | None]:
     """Return (is_forced, is_lost, forcer_gid, forcer_name) for slot 1 or 2 on a fumble row."""
-    fum_gid = str(row.fumbled_1_player_id) if slot == 1 else str(row.fumbled_2_player_id)
+    fum_gid = str(row.fumbled_1_player_id if slot == 1 else row.fumbled_2_player_id).strip()
     wk = int(row.week)
     f_forced_flag = int(row.fumble_forced or 0)
     f_unforced_flag = int(row.fumble_not_forced or 0)
     f_lost_flag = int(row.fumble_lost or 0)
 
-    ff1_id = str(row.forced_fumble_player_1_player_id) if pd.notna(row.forced_fumble_player_1_player_id) else None
+    ff1_id = str(row.forced_fumble_player_1_player_id).strip() if pd.notna(row.forced_fumble_player_1_player_id) else None
     ff1_nm = str(row.forced_fumble_player_1_player_name) if pd.notna(row.forced_fumble_player_1_player_name) else None
-    ff2_id = str(row.forced_fumble_player_2_player_id) if pd.notna(row.forced_fumble_player_2_player_id) else None
+    ff2_id = str(row.forced_fumble_player_2_player_id).strip() if pd.notna(row.forced_fumble_player_2_player_id) else None
     ff2_nm = str(row.forced_fumble_player_2_player_name) if pd.notna(row.forced_fumble_player_2_player_name) else None
 
     clauses = list(RE_FUM_CLAUSE.finditer(str(row.desc or "")))
@@ -301,7 +301,34 @@ def classify_rb_tag(cur: dict, pool3: dict) -> tuple[str, str]:
     return ("Low Sample", f"Fewer than 25 tracked 3-yr touches ({pt}t).")
 
 
-def build_payload(cache_dir: pathlib.Path, players_path: pathlib.Path, offline: bool, self_check: bool) -> dict:
+def detect_closed_max_week(root_dir: pathlib.Path, pbp_cur: pd.DataFrame, max_week_override: int | None = None) -> int:
+    """Return latest completed regular-season week, excluding partial/in-progress weeks."""
+    if max_week_override is not None:
+        return int(max_week_override)
+    site_closed = None
+    wr = root_dir / "site" / "data" / "weekly-rankings.js"
+    if wr.exists():
+        m = re.search(r'"currentWeek"\s*:\s*(\d+)', wr.read_text(encoding="utf-8")[:600])
+        if m:
+            site_closed = max(0, int(m.group(1)) - 1)
+    if site_closed is None:
+        lg = root_dir / "site" / "data" / "leagues.js"
+        if lg.exists():
+            m = re.search(r'"week"\s*:\s*(\d+)', lg.read_text(encoding="utf-8")[:1200])
+            if m:
+                site_closed = max(0, int(m.group(1)) - 1)
+    if len(pbp_cur):
+        wk_games = pbp_cur.groupby("week")["game_id"].nunique()
+        complete_wks = [int(w) for w, gcnt in wk_games.items() if gcnt >= 10]
+        pbp_closed = max(complete_wks) if complete_wks else int(pbp_cur["week"].max())
+    else:
+        pbp_closed = 0
+    if site_closed is not None and pbp_closed > 0:
+        return min(site_closed, pbp_closed)
+    return site_closed if site_closed is not None else pbp_closed
+
+
+def build_payload(cache_dir: pathlib.Path, players_path: pathlib.Path, offline: bool, self_check: bool, max_week: int | None = None) -> dict:
     cw = build_crosswalk(cache_dir, players_path, offline)
     gsis_to_sid = cw["gsis_to_sid"]
     pfr_to_sid = cw["pfr_to_sid"]
@@ -309,7 +336,7 @@ def build_payload(cache_dir: pathlib.Path, players_path: pathlib.Path, offline: 
     sid_info = cw["sid_info"]
 
     pbp_cols = [
-        "week", "season_type", "play_type", "special_teams_play",
+        "game_id", "week", "season_type", "play_type", "special_teams_play",
         "kickoff_attempt", "punt_attempt", "field_goal_attempt", "extra_point_attempt",
         "posteam", "defteam", "sack", "two_point_attempt", "aborted_play",
         "rush_attempt", "complete_pass", "rusher_player_id", "receiver_player_id",
@@ -324,6 +351,7 @@ def build_payload(cache_dir: pathlib.Path, players_path: pathlib.Path, offline: 
     def_seasons: dict[int, dict[str, dict]] = {y: {} for y in POOLED_SEASONS}
     rb_logs_2026: dict[str, list] = {}
     through_week = 0
+    closed_max_week = None
 
     def ensure_rb(bucket: dict, sid: str) -> dict:
         if sid not in bucket:
@@ -341,11 +369,13 @@ def build_payload(cache_dir: pathlib.Path, players_path: pathlib.Path, offline: 
         pbp = pd.read_parquet(ensure_file(cache_dir, "pbp", f"play_by_play_{yr}.parquet", yr < SEASON, offline), columns=pbp_cols)
         pbp = pbp[(pbp["season_type"] == "REG") & (pbp["two_point_attempt"] != 1)].copy()
         if yr == SEASON and len(pbp):
-            through_week = int(pbp["week"].max())
+            closed_max_week = detect_closed_max_week(ROOT, pbp, max_week)
+            pbp = pbp[pbp["week"] <= closed_max_week].copy()
+            through_week = int(pbp["week"].max()) if len(pbp) else 0
 
         # Stats player week lookup for exact per-player multi-fumble reconciliation
         spw = pd.read_parquet(
-            ensure_file(cache_dir, "player_stats", f"stats_player_week_{yr}.parquet", yr < SEASON, offline),
+            ensure_file(cache_dir, "stats_player", f"stats_player_week_{yr}.parquet", yr < SEASON, offline),
             columns=[
                 "season_type", "week", "player_id", "position",
                 "fumbles_forced_by_opp", "fumbles_not_forced",
@@ -354,9 +384,11 @@ def build_payload(cache_dir: pathlib.Path, players_path: pathlib.Path, offline: 
             ],
         )
         spw = spw[spw["season_type"] == "REG"].copy()
+        if yr == SEASON and closed_max_week is not None:
+            spw = spw[spw["week"] <= closed_max_week].copy()
         st_lookup: dict[tuple[int, str], tuple[int, int, int]] = {}
         for r in spw.itertuples(index=False):
-            gid = str(r.player_id)
+            gid = str(r.player_id).strip()
             wk = int(r.week)
             ff_s = int(pd.to_numeric(r.fumbles_forced_by_opp, errors="coerce") or 0)
             uf_s = int(pd.to_numeric(r.fumbles_not_forced, errors="coerce") or 0)
@@ -368,7 +400,7 @@ def build_payload(cache_dir: pathlib.Path, players_path: pathlib.Path, offline: 
             st_lookup[(wk, gid)] = (ff_s, uf_s, fl_s)
 
         if yr == SEASON:
-            rb_spw = spw[spw["player_id"].isin(rb_gsis)]
+            rb_spw = spw[spw["player_id"].astype(str).str.strip().isin(rb_gsis)]
             reconcile_2026["spw_scrim_sum"] = int(
                 (pd.to_numeric(rb_spw["rushing_fumbles"], errors="coerce").fillna(0)
                  + pd.to_numeric(rb_spw["receiving_fumbles"], errors="coerce").fillna(0)).sum()
@@ -378,13 +410,15 @@ def build_payload(cache_dir: pathlib.Path, players_path: pathlib.Path, offline: 
         # Defensive snaps (from snap_counts)
         sn = pd.read_parquet(
             ensure_file(cache_dir, "snap_counts", f"snap_counts_{yr}.parquet", yr < SEASON, offline),
-            columns=["game_type", "pfr_player_id", "defense_snaps"],
+            columns=["game_type", "week", "pfr_player_id", "defense_snaps"],
         )
         sn = sn[sn["game_type"] == "REG"].copy()
+        if yr == SEASON and closed_max_week is not None:
+            sn = sn[sn["week"] <= closed_max_week].copy()
         sn["defense_snaps"] = pd.to_numeric(sn["defense_snaps"], errors="coerce").fillna(0.0)
         sn = sn[sn["defense_snaps"] > 0]
         for pfr_id, tot_sn in sn.groupby("pfr_player_id")["defense_snaps"].sum().items():
-            sid = pfr_to_sid.get(str(pfr_id))
+            sid = pfr_to_sid.get(str(pfr_id).strip())
             if sid:
                 ensure_def(def_seasons[yr], sid)["snp"] += int(round(float(tot_sn)))
 
@@ -400,17 +434,17 @@ def build_payload(cache_dir: pathlib.Path, players_path: pathlib.Path, offline: 
         scrim = pbp[~is_st].copy()
 
         # RB carries & receptions
-        car_df = scrim[(scrim["rush_attempt"] == 1) & scrim["rusher_player_id"].isin(rb_gsis)]
+        car_df = scrim[(scrim["rush_attempt"] == 1) & scrim["rusher_player_id"].astype(str).str.strip().isin(rb_gsis)]
         for gid, cnt in car_df.groupby("rusher_player_id").size().items():
-            sid = gsis_to_sid.get(str(gid))
+            sid = gsis_to_sid.get(str(gid).strip())
             if sid:
                 rec = ensure_rb(rb_seasons[yr], sid)
                 rec["car"] += int(cnt)
                 rec["t"] += int(cnt)
 
-        rec_df = scrim[(scrim["complete_pass"] == 1) & scrim["receiver_player_id"].isin(rb_gsis)]
+        rec_df = scrim[(scrim["complete_pass"] == 1) & scrim["receiver_player_id"].astype(str).str.strip().isin(rb_gsis)]
         for gid, cnt in rec_df.groupby("receiver_player_id").size().items():
-            sid = gsis_to_sid.get(str(gid))
+            sid = gsis_to_sid.get(str(gid).strip())
             if sid:
                 rec = ensure_rb(rb_seasons[yr], sid)
                 rec["rec"] += int(cnt)
@@ -420,10 +454,13 @@ def build_payload(cache_dir: pathlib.Path, players_path: pathlib.Path, offline: 
         fum_scrim = scrim[scrim["fumble"] == 1]
         for row in fum_scrim.itertuples(index=False):
             for slot in (1, 2):
-                fgid = row.fumbled_1_player_id if slot == 1 else row.fumbled_2_player_id
-                if pd.isna(fgid) or str(fgid) not in rb_gsis:
+                fgid_raw = row.fumbled_1_player_id if slot == 1 else row.fumbled_2_player_id
+                if pd.isna(fgid_raw):
                     continue
-                sid = gsis_to_sid.get(str(fgid))
+                fgid = str(fgid_raw).strip()
+                if fgid not in rb_gsis:
+                    continue
+                sid = gsis_to_sid.get(fgid)
                 if not sid:
                     continue
                 is_forced, is_lost, forcer_gid, forcer_nm = resolve_slot_event(row, slot, st_lookup)
@@ -437,7 +474,7 @@ def build_payload(cache_dir: pathlib.Path, players_path: pathlib.Path, offline: 
                     rrec["fl"] += 1
                 if int(row.fumble_out_of_bounds or 0) == 1:
                     rrec["oob"] += 1
-                if row.complete_pass == 1 or (pd.notna(row.receiver_player_id) and str(row.receiver_player_id) == str(fgid)):
+                if row.complete_pass == 1 or (pd.notna(row.receiver_player_id) and str(row.receiver_player_id).strip() == fgid):
                     rrec["f_rec"] += 1
                     ctx = "rec"
                 elif int(row.aborted_play or 0) == 1 or row.rush_attempt != 1:
@@ -470,15 +507,15 @@ def build_payload(cache_dir: pathlib.Path, players_path: pathlib.Path, offline: 
                 or int(row.extra_point_attempt or 0) == 1
             )
             play_sack = (not play_st) and (int(row.sack or 0) == 1)
-            f1_rb = pd.notna(row.fumbled_1_player_id) and str(row.fumbled_1_player_id) in rb_gsis
-            f2_rb = pd.notna(row.fumbled_2_player_id) and str(row.fumbled_2_player_id) in rb_gsis
+            f1_rb = pd.notna(row.fumbled_1_player_id) and str(row.fumbled_1_player_id).strip() in rb_gsis
+            f2_rb = pd.notna(row.fumbled_2_player_id) and str(row.fumbled_2_player_id).strip() in rb_gsis
             any_rb = f1_rb or f2_rb
 
             seen_forcers: set[str] = set()
             for fcol in (row.forced_fumble_player_1_player_id, row.forced_fumble_player_2_player_id):
                 if pd.isna(fcol):
                     continue
-                fgid = str(fcol)
+                fgid = str(fcol).strip()
                 if fgid in seen_forcers:
                     continue
                 seen_forcers.add(fgid)
@@ -570,7 +607,7 @@ def build_payload(cache_dir: pathlib.Path, players_path: pathlib.Path, offline: 
         }
 
     if self_check:
-        run_self_checks(rb_out, def_out, sid_info, reconcile_2026)
+        run_self_checks(rb_out, def_out, sid_info, reconcile_2026, gsis_to_sid, through_week, closed_max_week)
 
     return {
         "generated": datetime.now(timezone.utc).isoformat(timespec="seconds"),
@@ -588,8 +625,20 @@ def build_payload(cache_dir: pathlib.Path, players_path: pathlib.Path, offline: 
     }
 
 
-def run_self_checks(rb_out: dict, def_out: dict, sid_info: dict, reconcile_2026: dict) -> None:
+def run_self_checks(
+    rb_out: dict,
+    def_out: dict,
+    sid_info: dict,
+    reconcile_2026: dict,
+    gsis_to_sid: dict,
+    through_week: int,
+    closed_max_week: int | None,
+) -> None:
     print("\n--- build_fumbles self-check ---")
+    assert closed_max_week is not None and through_week == closed_max_week, (
+        f"Closed-week maturity mismatch: through_week={through_week} vs closed_max_week={closed_max_week}"
+    )
+    assert all(k == k.strip() and v == v.strip() for k, v in gsis_to_sid.items()), "Unstripped IDs in crosswalk"
     for sid, r in rb_out.items():
         for span in ("cur", "pool3"):
             d = r[span]
@@ -629,11 +678,12 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--cache", type=pathlib.Path, default=DEFAULT_CACHE, help="nflverse-cache folder")
     ap.add_argument("--players", type=pathlib.Path, default=DEFAULT_PLAYERS, help="players-nfl.json path")
+    ap.add_argument("--max-week", type=int, default=None, help="Override latest completed 2026 week")
     ap.add_argument("--offline", action="store_true", help="never download; fail if cache file missing")
     ap.add_argument("--self-check", action="store_true", help="run consistency asserts before writing")
     args = ap.parse_args()
 
-    payload = build_payload(args.cache, args.players, args.offline, args.self_check)
+    payload = build_payload(args.cache, args.players, args.offline, args.self_check, max_week=args.max_week)
     body = json.dumps(payload, ensure_ascii=False, separators=(",", ":"), allow_nan=False)
     js = f"window.FUMBLES={body};\n"
     OUT_JS.write_text(js, encoding="utf-8")

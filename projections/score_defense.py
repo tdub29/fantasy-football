@@ -11,7 +11,8 @@ ROOT = HERE.parent
 SITE = ROOT / "site" / "data"
 
 YUH = {"solo": 1.0, "ast": 0.5, "sack": 3.0, "tfl": 1.0, "int": 5.0, "ff": 3.0,
-       "fum_rec": 3.0, "pass_def": 3.0, "qb_hit": 1.0,
+       "fum_rec": 3.0, "pass_def": 3.0, "qb_hit": 1.0, "def_td": 6.0,
+       "safe": 3.0, "blk_kick": 3.0,
        "sack_yd": 0.1, "int_ret_yd": 0.1, "fum_ret_yd": 0.1}
 PD_BASE = {"CB": 12, "S": 7, "DB": 9, "LB": 4.5, "EDGE": 2, "DE": 2, "DL": 1.5, "DT": 1.2, "IDL": 1.2, "NT": 1.0}
 QBHIT = {"DL": 2.0, "DE": 2.0, "DT": 2.0, "NT": 2.0, "IDL": 2.0, "EDGE": 2.0, "LB": 0.6, "CB": 0.3, "S": 0.3, "DB": 0.3}
@@ -31,7 +32,7 @@ def complete_score(st, pos):
     scoring_line = {"solo": solo, "ast": ast, "sack": sack, "tfl": tfl, "int": intc, "ff": ff,
                     "fum_rec": fr, "pass_def": pd, "qb_hit": qbh,
                     "sack_yd": round(sack * 6.5, 1), "int_ret_yd": round(intc * 12, 1), "fum_ret_yd": round(fr * 6, 1)}
-    pts = round(sum(scoring_line[k] * w for k, w in YUH.items()), 1)
+    pts = round(sum(scoring_line.get(k, 0.0) * w for k, w in YUH.items()), 1)
     display = {"solo": round(solo, 1), "ast": round(ast, 1), "sack": round(sack, 1), "tfl": round(tfl, 1),
                "int": round(intc, 1), "ff": round(ff, 1), "pass_def": pd, "qb_hit": qbh, "fum_rec": round(fr, 1),
                "sack_yd": round(sack * 6.5, 1), "int_ret_yd": round(intc * 12, 1), "fum_ret_yd": round(fr * 6, 1)}
@@ -51,19 +52,21 @@ def load_xstats():
 def xstats_season_entry(rec):
     xstats_pts = round(float(rec["xNeut"]) * 17.0, 1)
     xstats_line = {
-        "solo": round(float(rec["xSolo"]) * 17.0, 1),
-        "ast": round(float(rec["xAst"]) * 17.0, 1),
-        "sack": round(float(rec["xSk"]) * 17.0, 1),
-        "tfl": round(float(rec["xTFL"]) * 17.0, 1),
-        "int": round(float(rec["xINT"]) * 17.0, 1),
-        "ff": round(float(rec["xFF"]) * 17.0, 1),
-        "pass_def": round(float(rec["xPBU"]) * 17.0, 1),
-        "qb_hit": round(float(rec["xQBH"]) * 17.0, 1),
-        "fum_rec": round(float(rec["xFR"]) * 17.0, 1),
-        "sack_yd": round(float(rec["xSkYd"]) * 17.0, 1),
-        "int_ret_yd": round(float(rec["xINTYd"]) * 17.0, 1),
-        "fum_ret_yd": round(float(rec["xFRYd"]) * 17.0, 1),
+        "solo": round(float(rec["xSolo"]) * 17.0, 2),
+        "ast": round(float(rec["xAst"]) * 17.0, 2),
+        "sack": round(float(rec["xSk"]) * 17.0, 2),
+        "tfl": round(float(rec["xTFL"]) * 17.0, 2),
+        "int": round(float(rec["xINT"]) * 17.0, 2),
+        "ff": round(float(rec["xFF"]) * 17.0, 2),
+        "pass_def": round(float(rec["xPBU"]) * 17.0, 2),
+        "qb_hit": round(float(rec["xQBH"]) * 17.0, 2),
+        "fum_rec": round(float(rec["xFR"]) * 17.0, 2),
+        "sack_yd": round(float(rec["xSkYd"]) * 17.0, 2),
+        "int_ret_yd": round(float(rec["xINTYd"]) * 17.0, 2),
+        "fum_ret_yd": round(float(rec["xFRYd"]) * 17.0, 2),
         "def_td": round(float(rec.get("xTD") or 0.0) * 17.0, 2),
+        "safe": round(float(rec.get("xSafe") or 0.0) * 17.0, 2),
+        "blk_kick": round(float(rec.get("xBlk") or 0.0) * 17.0, 2),
     }
     return xstats_pts, xstats_line
 
@@ -79,10 +82,10 @@ def main():
     DKEYS = ["solo", "ast", "sack", "tfl", "int", "ff", "pass_def", "qb_hit", "fum_rec"]
     def blend_line(a, b):
         a, b = a or {}, b or {}
-        return {k: round(sum(v)/len(v), 1) for k in (set(a) | set(b))
+        return {k: round(sum(v)/len(v), 1) for k in sorted(set(a) | set(b))
                 if (v := [x[k] for x in (a, b) if k in x and x[k] is not None])}
     out = []
-    for pid in set(clay) | set(slp) | set(xstats):
+    for pid in sorted(set(clay) | set(slp) | set(xstats)):
         c, s, x = clay.get(pid), slp.get(pid), xstats.get(pid)
         pos = (c or {}).get("pos") or (s or {}).get("pos") or (x or {}).get("p") or "LB"
         name = (c or s)["name"] if (c or s) else x["n"]
@@ -107,7 +110,7 @@ def main():
         out.append({"id": pid, "name": name, "pos": pos, "team": team,
                     "xstats": xstats_pts, "clay": clay_pts, "sleeper": slp_pts, "blend": blend,
                     "stats": stats_map})
-    out.sort(key=lambda r: -(r["xstats"] or r["blend"] or 0))
+    out.sort(key=lambda r: (-(r["xstats"] or r["blend"] or 0), str(r["id"])))
     (HERE / "defense-projections.json").write_text(
         json.dumps({"scoring": "yuH IDP, per-source best-est completion + yuh-idp-xstats-v1", "count": len(out),
                     "sources": ["xstats", "blend", "clay", "sleeper"], "default": "xstats", "stat_keys": DKEYS, "players": out},
@@ -139,7 +142,15 @@ def main():
         for req_nm in ("Blake Cashman", "Kamari Lassiter"):
             assert req_nm in names, f"Missing expected IDP {req_nm}"
         assert any("Reese" in n for n in names), "Missing Arvell Reese from xstats defense pool"
-        print("score_defense self-check ok")
+        x_signed = [
+            p["xstats"] - sum(p["stats"]["xstats"].get(k, 0.0) * w for k, w in YUH.items())
+            for p in def_slim if p.get("xstats") is not None and (p.get("stats") or {}).get("xstats")
+        ]
+        x_diffs = [abs(d) for d in x_signed]
+        assert x_diffs and max(x_diffs) <= 0.60, f"xstats scoring parity drift: max_diff={max(x_diffs):.4f}"
+        mean_bias = sum(x_signed) / len(x_signed)
+        assert abs(mean_bias) <= 0.05, f"xstats systematic bias drift: mean_diff={mean_bias:.4f}"
+        print(f"score_defense self-check ok (xstats parity max_diff={max(x_diffs):.3f}, mean_diff={mean_bias:+.4f})")
     print(f"defense: {len(out)} IDP scored -> defense-projections.json; site file offense={len(off_slim)} defense={len(def_slim)}")
     print("\nTop 10 IDP by xStats (default):")
     for i, p in enumerate(sorted(out, key=lambda x: -(x["xstats"] or 0))[:10], 1):
