@@ -1000,16 +1000,18 @@ def run_self_check(payload: dict[str, Any], freeze_dir: pathlib.Path | None) -> 
             d = abs(float(players[sid]["xRos"]) - float(row["xYuH_ROS_PPG"]))
             diffs.append((row["name"], d))
             assert d <= 0.05, f"ROS mismatch for {row['name']}: got {players[sid]['xRos']} vs frozen {row['xYuH_ROS_PPG']}"
-        print(f"  OK  Top-25 ROS parity check vs frozen CSV: max_diff={max(d for _, d in diffs):.4f}")
+        print(f"  OK  Top-25 ROS parity check vs frozen CSV: max_diff={max(d for _, d in diffs):.4f} (limit <= 0.05)")
 
         with (freeze_dir / "rankings_2026_dynasty.csv").open(encoding="utf-8") as f:
             top20_dyn = list(csv.DictReader(f))[:20]
+        dyn_diffs = []
         for row in top20_dyn:
             sid = row["sleeper_id"]
             assert sid in players, f"Frozen top-20 Dyn SID {sid} missing!"
             d = abs(float(players[sid]["dyn"]) - float(row["dyn_yuh_score"]))
+            dyn_diffs.append((row["name"], d))
             assert d <= 0.15, f"Dynasty score mismatch for {row['name']}: got {players[sid]['dyn']} vs {row['dyn_yuh_score']}"
-        print("  OK  Top-20 Dynasty parity check vs frozen CSV passed")
+        print(f"  OK  Top-20 Dynasty parity check vs frozen CSV: max_diff={max(d for _, d in dyn_diffs):.4f} (limit <= 0.15)")
     print(f"  OK  invariant checks passed across {len(players)} IDPs (replPpg={payload['replPpg']})")
 
 
