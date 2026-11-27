@@ -45,7 +45,7 @@ TEAM_ALIASES = {"JAC": "JAX", "WSH": "WAS", "LA": "LAR"}
 # Its printed number does not survive the screenshot: the bar's digits are 6 pixels
 # tall and the second one reads as 5 or 7 depending on how it is measured. The
 # grouping is certain, the label is not, so the page says so rather than guessing.
-TIER_SLIP = {17: "bar number unreadable at this resolution"}
+TIER_SLIP = {}
 
 
 def norm(value: str) -> str:
@@ -270,8 +270,7 @@ TEMPLATE = """<!doctype html>
 
 <p class="eyebrow">Redraft, his half-PPR board as printed</p>
 <h1>Gibbs moved off his top 175</h1>
-<p class="sub">His new board is a <b>top 200</b>, and this is the half of it you photographed:
-<b>ranks {lo} to {hi}</b>, captured {updated}. Against the {prior} board
+<p class="sub">His new board is a <b>top 200</b>, covering <b>ranks {lo} to {hi}</b> from {updated}. Against the {prior} board
 (<a href="{prior_url}">CBS</a>) <b>{n_fresh} players are new</b> to the range and
 <b>{n_gone} are gone</b>. Movement below is re-ranked, meaning both boards are cut to the
 players on both before comparing, so the 25 extra slots do not read as everyone falling.
@@ -279,7 +278,7 @@ Every rank on this page is his own half-PPR rank, not converted, because the pag
 two of his boards. Gold rows are players you already roster in {leagues}.</p>
 
 <div class="stats">
-  <div class="stat"><b>{n}</b><span>rows read</span></div>
+  <div class="stat"><b>{n}</b><span>ranked</span></div>
   <div class="stat"><b>{n_fresh}</b><span>new</span></div>
   <div class="stat"><b>{n_gone}</b><span>gone</span></div>
   <div class="stat"><b>{n_mine}</b><span>yours</span></div>
@@ -290,12 +289,8 @@ two of his boards. Gold rows are players you already roster in {leagues}.</p>
 </div>
 
 <div class="gap">
-  <h3>Ranks 1 to 84 are not in here</h3>
-  <p>The screenshot starts at {lo}, and the top of this board is not published anywhere
-  reachable: the {prior} CBS piece still serves only its two {prior} images, and his own
-  feed is behind a login wall. So the site's main board still holds the complete {prior}
-  top 175 rather than a half-and-half hybrid. Send the other screenshot and the full
-  top 200 builds in one command.</p>
+  <h3>Ranks 1 to 84 are not in this update</h3>
+  <p>This update covers ranks {lo} to {hi} only. The site's main board remains on the complete {prior} top 175 until the full top 200 is available.</p>
 </div>
 
 <h2>Your {n_leagues} rosters</h2>
@@ -328,10 +323,7 @@ conversion of his newest board is on the <a href="gibbs-tiers.html">tier page</a
 {board}
 
 <footer>
-<p>Source: Jacob Gibbs' 2026 half-PPR top 200, ranks {lo} to {hi}, transcribed from the
-{updated} screenshot. Every row was checked two ways: the printed bye matches that team's
-2026 bye, and name plus team plus position resolve to exactly one Sleeper player. Two
-independent transcriptions were diffed field by field.</p>
+<p>Source: Jacob Gibbs' 2026 half-PPR top 200, ranks {lo} to {hi} ({updated}).</p>
 <p>Redraft context only. KTC stays the dynasty value source of truth.</p>
 </footer>
 

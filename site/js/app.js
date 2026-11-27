@@ -269,12 +269,23 @@
   // Plain-English names for each data file (used in freshness UI, no jargon).
   const DATA_LABEL = {
     'ktc.js': 'Player values', 'players.js': 'Rosters & players', 'leagues.js': 'Leagues',
-    'projections.js': 'Projections', 'categories.js': 'Tiers & categories',
-    'environment.js': 'Team offenses', 'sos.js': 'Schedule strength', 'sos-grid.js': 'Matchup grid',
-    'faab.js': 'Waiver prices',
-    'sleeper-idp.js': 'Defense rankings', 'player-info.js': 'Player info', 'jacob-gibbs.js': 'Gibbs ranks',
-    'expert-rankings.js': 'Expert ranks',
-    'sleeper-market.js': 'Trending adds/drops', 'context.js': 'Player context', 'history.js': 'Player history',
+    'projections.js': 'Projections', 'weekly-rankings.js': 'Weekly rankings',
+    'categories.js': 'Tiers & categories', 'environment.js': 'Team offenses',
+    'sos.js': 'Schedule strength', 'sos-grid.js': 'Matchup grid', 'faab.js': 'Waiver prices',
+    'sleeper-idp.js': 'Defense rankings', 'player-info.js': 'Player info',
+    'jacob-gibbs.js': 'Gibbs ranks', 'gibbs-week.js': 'Gibbs weekly',
+    'gibbs-ros.js': 'Gibbs rest of season', 'gibbs-ppr.js': 'Gibbs full PPR',
+    'expert-rankings.js': 'Expert ranks', 'fantasypros-experts.js': 'FantasyPros analysts',
+    'alexandria.js': 'Source rank comparison', 'idp-dvp.js': 'IDP matchups',
+    'idp-xstats.js': 'IDP expected stats', 'idp-advanced.js': 'IDP advanced stats',
+    'kickers.js': 'Kicker projections', 'advanced.js': 'Advanced stats',
+    'prospect.js': 'Prospect profiles', 'prospect-model.js': 'Prospect scores',
+    'capital-ratings.js': 'Draft capital ratings', 'mock-consensus.js': 'Mock draft consensus',
+    'contracts.js': 'NFL contracts', 'weather.js': 'Game weather',
+    'defense.js': 'Defense matchups', 'defense-weekly.js': 'Weekly defense stats',
+    'usage-weekly.js': 'Weekly usage trends', 'fumbles.js': 'Ball security',
+    'sleeper-market.js': 'Trending adds/drops', 'trade-history.js': 'Trade history',
+    'context.js': 'Player context', 'history.js': 'Player history',
   };
   function dataFreshness() {
     const info = window.BUILD_INFO;
@@ -2155,7 +2166,7 @@
         ),
         pvFvBar,
         h('div', { class:'tip', style:{ marginTop:'8px' } },
-          `PV = ${CURRENT_SEASON} value · FV = ${CURRENT_SEASON + FV_YEARS} projected value (position aging curves in #methodology).`
+          `PV = ${CURRENT_SEASON} value · FV = ${CURRENT_SEASON + FV_YEARS} projected value (see Methodology for aging curves).`
         ),
       ));
 
@@ -2270,7 +2281,7 @@
     main.appendChild(h('h2', { class:'page-title', style:{ fontSize:'1.2rem', marginTop:'8px' } }, 'Your Cornerstones'));
     cornerstones.sort((a,b) => b.value - a.value);
     if (!cornerstones.length) {
-      main.appendChild(h('div', { class:'empty' }, 'No Cornerstones detected yet, check your roster mappings.'));
+      main.appendChild(h('div', { class:'empty' }, 'No Cornerstones on your rosters yet.'));
     } else {
       const cs = h('div', { class:'card' });
       const tbl = h('table', { class:'data snug' },
@@ -2410,7 +2421,7 @@
     main.appendChild(h('div', { class:'page-header' },
       h('div', null,
         h('h1', { class:'page-title' }, 'My Rankings'),
-        h('p', { class:'page-sub' }, 'Your saved player order, seeded from Gibbs full-PPR. Edit ranks here without starting a draft.')
+        h('p', { class:'page-sub' }, 'Your saved player order, starting from Gibbs full-PPR. Edit ranks here without starting a draft.')
       ),
       h('div', { class:'page-actions' },
         h('a', { href:'#sources' }, h('button', { class:'ghost' }, 'Manage Sources'))
@@ -2438,7 +2449,7 @@
     filterBar.appendChild(h('div', { class:'group' }, h('label', null, 'My board'),
       undoButton,
       h('button', {
-        title: `Throw away your edits and re-seed from the full-PPR Gibbs board (${myRanks().order.length} players).`,
+        title: `Discard your edits and reset to the full-PPR Gibbs board (${myRanks().order.length} players).`,
         onclick: () => {
           if (!confirm('Reset your rankings to the full-PPR Gibbs board? Your edits are lost.')) return;
           resetMyRanks(); toast('Rankings reset to the Gibbs full-PPR board'); viewRankings();
@@ -4440,15 +4451,15 @@
               sortHdr('def-fr', 'Proj FR', { right:true, title:'Sleeper projected fumble recoveries' }),
               sortHdr('def-to', 'Proj TO', { right:true, title:'Sleeper projected takeaways (INT + FR)' }),
               sortHdr('def-td', 'Proj TD', { right:true, title:'Sleeper projected defense + ST TDs' }),
-              sortHdr('def-press', 'Press%', { right:true, title:'Season YTD defensive pressure rate (nflverse PBP)' }),
+              sortHdr('def-press', 'Press%', { right:true, title:'Season YTD defensive pressure rate' }),
             ] : idpWeeklyOnly ? [
               sortHdr('idp-xyuh', isRosView ? 'xYuH ROS' : `xYuH W${currentWeek}`, { right:true,
-                title: isRosView ? 'yuh-idp-xstats-v1 rest-of-season schedule-adjusted PPG' : `yuh-idp-xstats-v1 W${currentWeek} matchup projection` }),
+                title: isRosView ? 'IDP xStats rest-of-season schedule-adjusted PPG' : `IDP xStats Week ${currentWeek} matchup projection` }),
               sortHdr('idp-slp', 'Slp yuH', { right:true, title:`Sleeper W${currentWeek} stats scored under yuH rules` }),
               sortHdr('idp-ytd', 'YTD', { right:true, title:'2026 season YTD PPG in yuH scoring' }),
               sortHdr('idp-luck', 'Luck', { right:true, title:'YTD PPG minus neutral xYuH PPG (negative = buy-low)' }),
               sortHdr('idp-fp', isRosView ? 'FP Dyn' : 'FP ECR', { right:true, title: isRosView ? 'FantasyPros Dynasty IDP ECR' : `FantasyPros W${currentWeek} IDP ECR` }),
-              sortHdr('idp-dynrk', 'Dyn Rk', { right:true, title:'yuh-idp-xstats-v1 2 IDP_FLEX empirical age-curve Dynasty rank' }),
+              sortHdr('idp-dynrk', 'Dyn Rk', { right:true, title:'IDP xStats Dynasty rank (yuH 2-IDP-Flex scoring and age curve)' }),
               sortHdr('idp-snp', 'xSnaps', { right:true, title:'Expected defensive snaps/game' }),
               sortHdr('idp-tkl', 'xTkl', { right:true, title:'Expected tackle pts/game (Solo + 0.5*Ast)' }),
               sortHdr('idp-sk', 'xSack', { right:true, title:'Expected sacks/game' }),
@@ -4472,11 +4483,11 @@
             // converted from half-PPR data, so the only thing a header has to
             // say is whether it was converted.
             gibbsRosPosted && window.GIBBS_PPR_ROS && isRosView ? sortHdr('weekly-gibbs-x', 'Gibbs*', { right:true,
-              title:`PPR-converted from Gibbs half-PPR ROS (${gibbsRosSourceNote}; ${gibbsRosPosted}${gibbsRosThrough ? ` thru ${gibbsRosThrough}` : ''}). Details in #methodology.` }) : null,
+              title:`PPR-converted from Gibbs half-PPR ROS (${gibbsRosPosted}${gibbsRosThrough ? ` thru ${gibbsRosThrough}` : ''}). See Methodology for details.` }) : null,
             gibbsWeekPosted && !isRosView ? sortHdr('weekly-gibbs-wk', `Gibbs W${currentWeek}*`, { right:true,
-              title:`PPR-converted from Gibbs half-PPR W${currentWeek} (${window.GIBBS_WEEK?.sourceUrl ? 'video transcript' : 'FP #1576'}; ${gibbsWeekDepth} ranked; pulled ${gibbsWeekPosted}). Details in #methodology.` }) : null,
+              title:`PPR-converted from Gibbs half-PPR W${currentWeek} (${gibbsWeekDepth} ranked; updated ${gibbsWeekPosted}). See Methodology for details.` }) : null,
               ...(isRosView ? [] : VEGAS_COMPONENTS).map(c => sortHdr(`wc:${c.k}`, c.label, { right:true,
-                title:`${c.label} market component (greyed = Sleeper fill)` })),
+                title:`${c.label} market projection (greyed = Sleeper fill)` })),
             ]))),
           h('tbody', null, ...rows.map((p, i) => {
             const o = ownerInfo(p._sleeperId), weekly = p._weekly;
@@ -4554,7 +4565,7 @@
                   const heavy = share != null && share >= BORROWED_HEAVY;
                   const borrowedList = (weekly.vegasBorrowed || []).join(', ');
                   const title = heavy
-                    ? `Vegas ${fmt.decimal(weekly.vegas, 1)} vs Sleeper ${fmt.decimal(weekly.sleeper[currentWeek - 1], 1)} (${Math.round(share * 100)}% Sleeper-filled: ${borrowedList}; noise)`
+                    ? `Vegas ${fmt.decimal(weekly.vegas, 1)} vs Sleeper ${fmt.decimal(weekly.sleeper[currentWeek - 1], 1)} (${Math.round(share * 100)}% Sleeper-filled: ${borrowedList})`
                     : `Vegas ${fmt.decimal(weekly.vegas, 1)} vs Sleeper ${fmt.decimal(weekly.sleeper[currentWeek - 1], 1)}${share != null ? ` (${Math.round(share * 100)}% Sleeper-filled${borrowedList ? `: ${borrowedList}` : ''})` : ''}`;
                   return h('td', { class:`right tnum${d > 0 ? ' delta-up' : d < 0 ? ' delta-down' : ''}`, title },
                     `${d > 0 ? '+' : ''}${fmt.decimal(d, 1)}`,
@@ -4697,7 +4708,7 @@
         const limitNote = ecrCoverage.limited && ecrCoverage.limitPerPosition
           ? ` (FP top ${ecrCoverage.limitPerPosition}/pos)` : '';
         const sourceNote = kickerOnly
-          ? `Week ${currentWeek} kickers · ${rows.length} shown · Full K Ref & experimental range notes in #methodology.`
+          ? `Week ${currentWeek} kickers · ${rows.length} shown · See Methodology for scoring and range details.`
           : defOnly
           ? `Week ${currentWeek} D/ST · ${rows.length} shown · Sleeper component projections + Vegas opp implied pts + YTD pressure%.`
           : idpWeeklyOnly
@@ -4711,7 +4722,7 @@
           + ` · ROS ${rosMeta.available ? `${coverage.rosPlayers || 0} (${rosMeta.updated})` : 'unavailable'}${rosStale ? ' stale' : ''}`
           + `${hasGibbsRos ? ` · Gibbs ROS ${coverage.gibbsRosPlayers} (${(coverage.gibbsRos || {}).updated})` : ' · Gibbs ROS unavailable'}`
           + `${gibbsWeekPosted ? '' : ` · Gibbs* W${currentWeek} unavailable${window.GIBBS_WEEK?.week && window.GIBBS_WEEK.week !== currentWeek ? ` (W${window.GIBBS_WEEK.week})` : ''}`}`
-          + ` · Details in #methodology.`;
+          + ` · See Methodology for details.`;
         tableWrap.appendChild(h('div', { class:'tip rankings-source-note' }, sourceNote));
       } else if (filter.view === 'sleeper-weeks') {
         tableWrap.appendChild(h('div', { class:'tip rankings-source-note' },
@@ -4902,7 +4913,7 @@
         feed.appendChild(renderItem(item));
       }
       wrap.appendChild(feed);
-      const cacheNote = cached ? `Cached ${Math.floor((Date.now() - cached.fetchedAt)/60000)}m ago` : 'Live';
+      const cacheNote = cached ? `Updated ${Math.floor((Date.now() - cached.fetchedAt)/60000)}m ago` : 'Live';
       wrap.appendChild(h('div', { class:'tip', style:{ marginTop:'12px', textAlign:'center' } },
         `${items.length} of ${txs.length + drafts.length} events shown · ${cacheNote}`));
     };
@@ -7388,8 +7399,9 @@
     if (!d) {
       main.appendChild(pageHeader({ eyebrow: 'REFERENCE', title: 'Experts' }));
       main.appendChild(sourcesHubTabBar('experts'));
+      console.warn('No expert data: run python projections/build_fantasypros_experts.py');
       main.appendChild(h('div', { class: 'empty' },
-        'No expert data yet. Run python projections/build_fantasypros_experts.py.'));
+        'No expert rankings are available right now.'));
       return;
     }
     main.appendChild(pageHeader({
@@ -7675,12 +7687,12 @@
     const card = h('div', {class:'card'},
       h('div', {class:'card-title'}, `Week ${d.week} kicker reference`),
       nearOk ? h('p', {class:'tip'}, `${league?.short_name || league?.name || 'League'} rare-kick bonus gap <0.5 pts; verify availability.`) : null,
-      h('p', {class:'tip'}, `FG ${d.scoring.fg_made.join('/')} · PAT ${d.scoring.pat_made} · miss FG ${d.scoring.fg_missed} · miss PAT ${d.scoring.pat_missed} (gaps <0.5 pts = ties; P20/P90/15+ experimental).`));
+      h('p', {class:'tip'}, `FG ${d.scoring.fg_made.join('/')} · PAT ${d.scoring.pat_made} · miss FG ${d.scoring.fg_missed} · miss PAT ${d.scoring.pat_missed} (gaps <0.5 pts are ties; Floor/Ceil/15+ are range estimates).`));
     const body = h('tbody', null, ...rows.map((k,i) => h('tr', null,
       h('td', null, String(i+1)), h('td', {title:k.reason}, k.name),
       h('td', null, teamChip(k.team)), h('td', null, teamChip(k.opp,true)),
       h('td', {class:'sr-num tnum',title:k.reason}, fmt.decimal(k.exp,1)),
-      h('td', {class:'sr-num tnum',title:'Experimental count-model mean'}, fmt.decimal(k.distributionMean,1)),
+      h('td', {class:'sr-num tnum',title:'Range-model projected mean'}, fmt.decimal(k.distributionMean,1)),
       h('td', {class:'sr-num tnum'}, fmt.decimal(k.floor,0)),
       h('td', {class:'sr-num tnum'}, fmt.decimal(k.ceil,0)),
       h('td', {class:'sr-num tnum'}, `${Math.round(k.pGe15*100)}%`)
@@ -7809,7 +7821,7 @@
       const statName = k => ({ idp_fum_rec: 'fumble recoveries', idp_fum_ret_yd: 'fumble return yards' })[k]
         || k.replace(/^idp_/, '').replace(/_/g, ' ');
       wrap.appendChild(h('p', { class: 'tip faab-note on-turf' },
-        `Untracked here (score as 0): ${D.unmappedScoringKeys.map(statName).join(', ')}.`));
+        `Not included in matchup totals: ${D.unmappedScoringKeys.map(statName).join(', ')}.`));
     }
     return wrap;
   }
@@ -7839,10 +7851,10 @@
       ),
       h('div', { class:'card-title', style:{ marginTop:'14px' } }, 'Weekly, ROS & Position Boards'),
       h('ul', { class:'tip', style:{ margin:'6px 0 10px 18px', padding:0, display:'flex', flexDirection:'column', gap:'6px' } },
-        h('li', null, h('strong', null, 'Vegas pts & V-S: '), 'Builds full-PPR expectations from price-adjusted BettingPros props, then PrizePicks lines, then Sleeper fills. An asterisk (*) flags heavy Sleeper fill where V-S reflects model-vs-model noise.'),
-        h('li', null, h('strong', null, 'Gibbs* Conversions: '), 'Adds +0.5/projected catch to Jacob Gibbs\'s half-PPR RB/WR/TE lists and re-sorts (QBs unchanged). Video transcription weeks reconstruct WR 77-99 around insertions; single-expert FP columns use latest submission timestamps and can differ from earlier video recordings.'),
-        h('li', null, h('strong', null, 'Freshness & Coverage: '), 'FantasyPros ROS boards dim as stale at 8+ days old; free API consensus caps at top-N per position.'),
-        h('li', null, h('strong', null, 'Kickers & IDP DVP: '), 'Kickers use implied team points (<0.5 pt differences are practical ties); Floor/Ceil/15+ come from a separate experimental count model. IDP matchups pool prior + current league scoring (untracked fumble stats score 0).'),
+        h('li', null, h('strong', null, 'Vegas pts & V-S: '), 'Builds full-PPR expectations from BettingPros props, then PrizePicks lines, then Sleeper projections. An asterisk (*) marks heavy Sleeper fill where V-S is less market-driven.'),
+        h('li', null, h('strong', null, 'Gibbs* Conversions: '), 'Adds +0.5 per projected catch to Jacob Gibbs\'s half-PPR RB, WR, and TE boards and re-sorts (QBs unchanged). FantasyPros expert columns reflect each analyst\'s latest update.'),
+        h('li', null, h('strong', null, 'Freshness & Coverage: '), 'FantasyPros ROS boards dim as stale at 8+ days old and cover the top ranked players at each position.'),
+        h('li', null, h('strong', null, 'Kickers & IDP DVP: '), 'Kickers use implied team points (<0.5 pt gaps are practical ties); Floor, Ceiling, and 15+ use a separate kicker scoring range estimate. IDP matchups blend prior and current league scoring.'),
       ),
       h('div', { class:'card-title', style:{ marginTop:'14px' } }, 'Redraft ROS Basis Options'),
       h('ul', { class:'tip', style:{ margin:'6px 0 10px 18px', padding:0, display:'flex', flexDirection:'column', gap:'6px' } },
@@ -7852,12 +7864,12 @@
     main.appendChild(h('div', { class:'card' },
       h('div', { class:'card-title' }, 'Season Forecast, Schedule & Market Tools'),
       h('ul', { class:'tip', style:{ margin:'6px 0 0 18px', padding:0, display:'flex', flexDirection:'column', gap:'6px' } },
-        h('li', null, h('strong', null, 'Simulations: '), 'Monte Carlo runs (seed 20260807) keeping completed results. Expected W-L-T is fractional mean; tiebreakers use record, PF, PA, coin flip. Sampling noise is ~+-2pp (95% CI).'),
-        h('li', null, h('strong', null, 'Proj Max PF & Picks: '), 'Adds season-to-date Max PF to remaining simulated optimal whole-roster weeks scaled to current league Max PF pace. Projected rookie picks interpolate KTC early/mid/late anchors from simulated finish order.'),
+        h('li', null, h('strong', null, 'Simulations: '), 'Simulates the remaining schedule keeping completed results. Expected W-L-T is the average finish; tiebreakers use record, PF, PA, then a coin flip. Odds carry about a +-2pp simulation margin.'),
+        h('li', null, h('strong', null, 'Proj Max PF & Picks: '), 'Adds season-to-date Max PF to remaining projected optimal weeks on current league pace. Projected rookie picks map simulated finish order onto KTC early, mid, and late pick values.'),
         h('li', null, h('strong', null, 'Schedule Difficulty & SOS: '), 'Schedule Difficulty averages remaining opponents\' best legal weekly lineups; OPP BYE counts gross starter points pre-bench. Positional SOS ranks 1 (toughest, red) to 32 (easiest, green) on opponent-adjusted PPR.'),
-        h('li', null, h('strong', null, 'Trade Finder & Lab: '), 'Scans 1-for-1, 2-for-1, and 2-for-2 deals, keeping trades where you gain playoff/title odds and the partner gains contender title odds or rebuilder FV. SOLID / LIKELY / INSIDE NOISE mark 3+ / 2 / <2 SEs over simulation noise.'),
-        h('li', null, h('strong', null, 'Waiver FAAB & Headliner Premium: '), 'Waiver bids take median/IQR of 30 projection-matched league claims since 2025 ($0 bids included), assuming independent claims. Headliner premiums credit sending the top single asset in uneven-count packages.'),
-        h('li', null, h('strong', null, 'Source: '), `Weekly source W${window.WEEKLY_RANKINGS?.liveWeek || window.WEEKLY_RANKINGS?.currentWeek || '?'}; check Sources & Experts for timestamps.`)
+        h('li', null, h('strong', null, 'Trade Finder & Lab: '), 'Scans 1-for-1, 2-for-1, and 2-for-2 deals, keeping trades where you gain playoff or title odds and your partner gains contender title odds or rebuilder future value. SOLID, LIKELY, and INSIDE NOISE show how clearly a gain clears normal simulation swing.'),
+        h('li', null, h('strong', null, 'Waiver FAAB & Headliner Premium: '), 'Waiver bids use the median and middle range of 30 comparable league claims since 2025 ($0 adds included). Headliner premiums credit sending the top single asset in uneven packages.'),
+        h('li', null, h('strong', null, 'Source: '), `Weekly rankings W${window.WEEKLY_RANKINGS?.liveWeek || window.WEEKLY_RANKINGS?.currentWeek || '?'}; see Sources & Experts for update times.`)
       )
     ));
   }
@@ -8571,7 +8583,7 @@
     if (me && FINDER_RESULTS.has(lg.id)) show(FINDER_RESULTS.get(lg.id));
     return h('div', { class: 'trade-finder' },
       h('h2', { class: 'section-title' }, 'Trade Finder'),
-      h('p', { class: 'trade-finder-note' }, `1-for-1, 2-for-1 & 2-for-2 scan across all teams${dyn ? ' + picks' : ''}, simulated for ${CURRENT_SEASON} title odds${dyn ? ' / rebuilder FV' : ''}. Tap to load (methodology in #methodology).`),
+      h('p', { class: 'trade-finder-note' }, `1-for-1, 2-for-1 & 2-for-2 scan across all teams${dyn ? ' + picks' : ''}, simulated for ${CURRENT_SEASON} title odds${dyn ? ' / rebuilder FV' : ''}. Tap to load (see Methodology).`),
       run, status, list);
   }
   // ============================================================
@@ -9428,7 +9440,7 @@
       hasBidHistory ? h('details', { class: 'wb-how' },
         h('summary', null, 'How bids work'),
         h('p', { class: 'tip' },
-          'Median & IQR of 30 projection-matched claims here ($0 adds included; experience/pos fallback if unprojected). Hover for comps; tap Win% to adjust, chart, or bundle (details in #methodology).')) : null);
+          'Median and typical range of 30 comparable claims here ($0 adds included). Hover for comps; tap Win% to adjust, chart, or bundle (see Methodology).')) : null);
 
     const head = h('thead', null, h('tr', null,
       h('th', null, '#'),
@@ -10566,7 +10578,7 @@
     const earlier = slot <= (1 + N) / 2;
     return {
       chip: `proj ${round}.${String(rounded).padStart(2, '0')}`,
-      title: `Proj ${round}.${String(rounded).padStart(2, '0')} (${team}, ${strength} roster) · KTC anchor interpolation`,
+      title: `Proj ${round}.${String(rounded).padStart(2, '0')} (${team}, ${strength} roster)`,
     };
   }
   function pickValue(season, round, originRosterId, league) {
@@ -11225,8 +11237,8 @@
             ...pairedTitleDelta(baselineOdds[k].champions, after[k].champions, rid) });
           showOdds(key, after.map((_, k) => ({ a: side(k, aRosterId), b: side(k, bRosterId) })), 'lab');
           titleMeta.textContent = dyn
-            ? `${CURRENT_SIMS.toLocaleString()} current / ${TITLE_SIMS.toLocaleString()} future sims (grey = inside noise; assumptions in #methodology).`
-            : `${TITLE_SIMS.toLocaleString()} sims from current records (grey = inside noise).`;
+            ? `${CURRENT_SIMS.toLocaleString()} current / ${TITLE_SIMS.toLocaleString()} future sims (grey = within normal swing; see Methodology).`
+            : `${TITLE_SIMS.toLocaleString()} sims from current records (grey = within normal swing).`;
           KT.refreshMiddle(lg);
         } catch (err) {
           console.error('Trade title odds failed', err);
@@ -11569,7 +11581,7 @@
       title: 'What to Look For',
       sub: live.length
         ? `W${board.week} · ${live.length} buy-in-weighted leagues`
-        : 'No matchups posted yet (run refresh.ps1).',
+        : 'No matchups posted yet for this week.',
       badge: live.length ? `$${fmt.num(Math.round(board.atStake))} live` : null,
     }));
 
@@ -11695,7 +11707,7 @@
         h('div', { class:'card-title' }, 'Not ranked',
           h('span', { class:'watch-panel-count tnum' }, String(board.unpriced.length))),
         h('p', { class:'watch-panel-sub', style:{ margin:'0' } },
-          'Starting somewhere this week with no weekly projection in the feed, which is every kicker, defense and IDP. '
+          'Starting in one of your leagues without a weekly point projection (kickers, defenses, and IDPs). '
           + 'They would all score exactly 0.0, so they sit here rather than padding the panels: ' + names.join(', ') + '.'),
       ));
     }
@@ -12084,21 +12096,21 @@
         h('strong', null, 'PV'), ' is that value now; ', h('strong', null, 'FV'), ' ages each starter forward and folds in owned picks as they convert, so you see where the roster is heading.'),
       h('p', null, h('strong', null, 'Format multipliers:'),
         ' Superflex leagues apply a 1.40× position multiplier to QB values. IDP leagues apply 1.10× to LB values.'),
-      h('p', null, 'Overall rank is the average of a player’s rank across every enabled source (players in more sources sort first). The value number itself comes from KTC’s market curve, so source order never changes it; categories and tiers are our own k-means model, not any single source’s labels.'),
+      h('p', null, 'Overall rank is the average of a player’s rank across every enabled source (players in more sources sort first). The value number itself comes from KTC’s market curve, so source order never changes it; categories and tiers are grouped by dynasty value and age, not any single source’s labels.'),
     ));
     // Data freshness table (from window.BUILD_INFO / build_all.py).
     const fr = dataFreshness();
     main.appendChild(h('div', { class:'card' },
       h('h3', null, 'Data Freshness'),
-      h('p', null, 'Refresh everything with ', h('code', null, 'python projections/build_all.py'), ' (add ', h('code', null, '--core'), ' to skip the slow bio/history scrapes). Amber = older than 3 days.'),
+      h('p', null, 'Last update time for each dataset on the site. Amber marks data older than 3 days.'),
       fr ? h('div', { style:{ overflowX:'auto' } }, h('table', { class:'data fill-last' },
-        h('thead', null, h('tr', null, h('th', null, 'Dataset'), h('th', { class:'right' }, 'Age'), h('th', null, 'Built'))),
+        h('thead', null, h('tr', null, h('th', null, 'Dataset'), h('th', { class:'right' }, 'Age'), h('th', null, 'Updated'))),
         h('tbody', null, ...fr.rows.sort((a,b)=>b.ageH-a.ageH).map(r => h('tr', null,
           h('td', null, DATA_LABEL[r.name] || r.name.replace('.js','')),
           h('td', { class:'right tnum', style:{ color: r.ageH > 72 ? 'var(--amber)' : 'var(--fg-1)' } }, r.ageLabel + ' ago'),
           h('td', { class:'tnum', style:{ color:'var(--fg-3)' } }, r.iso.replace('T',' ')),
         ))),
-      )) : h('p', { class:'tip' }, 'No build-info.js yet. Run the pipeline to generate it.'),
+      )) : h('p', { class:'tip' }, 'Update times are not available yet.'),
     ));
   }
 
@@ -12431,7 +12443,7 @@
       h('div', { class:'tw-sub' }, sub));
     return h('div', { class:'card tw-card alex-card' },
       h('div', { class:'card-title' }, `Week ${v.week} source ranks`,
-        stale ? h('span', { class:'ctx-stale', title:`Built for ${A.season} W${v.week}; active ${season || '?'} W${cur || '?'} (>7d or mismatch).` }, 'stale') : null),
+        stale ? h('span', { class:'ctx-stale', title:`From ${A.season} Week ${v.week} (current week is ${season || '?'} W${cur || '?'}).` }, 'stale') : null),
       h('div', { class:'tw-row' },
         cell('spread', v.spread == null ? '·' : v.spread,
           v.spread == null ? 'one source' : `${v.pos}${v.lo} to ${v.pos}${v.hi}`,
@@ -12674,9 +12686,9 @@
           // played for "games >= 1" to tell gone from inactive, so membership
           // came from the nflverse roster file and joiners have no share yet.
           (window.CONTEXT.current_season - t.season) >= 1
-            ? h('span', { class:'ctx-stale', title:`${t.season} turnover (${window.CONTEXT.current_season} not yet ingested; 1 yr old).` }, 'a year behind')
+            ? h('span', { class:'ctx-stale', title:`${t.season} roster turnover (${window.CONTEXT.current_season} data not posted yet).` }, 'a year behind')
             : t.basis === 'roster'
-              ? h('span', { class:'ctx-basis', title:`${t.season} roster file (W${t.weeks_played}): shows prior-year shares.` }, 'roster-based')
+              ? h('span', { class:'ctx-basis', title:`Based on ${t.season} rosters through week ${t.weeks_played} using prior-year target shares.` }, 'roster-based')
               : null),
         h('div', { class:'kpi-row' },
           h('div', { class:'mini-kpi' },
@@ -13773,10 +13785,10 @@
       h('div', { class:'adv-grid' },
         statTile('2026 BC FF', String(c.ff_bc || 0), `${c.ff_rb || 0} vs RB (${c.snp || 0} snp)`, ''),
         statTile('2026 BC/1k', c.bc_1k == null ? '-' : Number(c.bc_1k).toFixed(2), `3yr: ${p.bc_1k == null ? '-' : Number(p.bc_1k).toFixed(2)}/1k`, bcTone || p3Tone),
-        statTile('Strip-Sk FF', String(c.ff_sk || 0), `3yr: ${p.ff_sk || 0} (YOY r=0.40)`, ''),
+        statTile('Strip-Sk FF', String(c.ff_sk || 0), `3yr: ${p.ff_sk || 0}`, ''),
         statTile('Total FF', String(c.ff || 0), `3yr: ${p.ff || 0} (${p.ff_st || 0} ST)`, '')),
       h('div', { class:'tip', style:{ marginTop:'6px' } },
-        'Splits sack strip-fumbles (sack=1) from ball-carrier punch/strip proxy (sack=0, LB/DB avg ~0.73 BC FF/1k snaps).'));
+        'Splits strip-sacks from forced fumbles against ball carriers (LB/DB average ~0.73 per 1,000 snaps).'));
   }
 
   // Injury history on the Context tab, under career availability, from
@@ -13846,7 +13858,7 @@
         tile('xSack / xQBH', `${Number(x.xSk || 0).toFixed(2)} / ${Number(x.xQBH || 0).toFixed(2)}`, `xTFL ${Number(x.xTFL || 0).toFixed(2)}`, ''),
         tile('xPBU / xINT', `${Number(x.xPBU || 0).toFixed(2)} / ${Number(x.xINT || 0).toFixed(2)}`, `xFF ${Number(x.xFF || 0).toFixed(2)} · xFR ${Number(x.xFR || 0).toFixed(2)}`, '')),
       h('div', { class:'tip', style:{ marginTop:'6px' } },
-        `2 IDP_FLEX yuH scoring thru W${X.throughWeek}. Positive Luck = YTD above expected; negative Luck = buy-low volume.`));
+        `2 IDP Flex yuH scoring thru W${X.throughWeek}. Positive Luck = YTD above expected; negative Luck = buy-low volume.`));
   }
 
   // Season fantasy projection for the modal: pts from every source + the
@@ -13882,7 +13894,7 @@
       // band keeps them; this card keeps what the band does not carry, which is
       // the per-source spread and the projected stat line.
       statStr ? h('div', { class: 'tip' }, `${PROJ_SRC_LABEL[lineSrc] || lineSrc}: ${statStr}`) : null,
-      unit === 'defense' ? h('div', { class: 'tip', style: { marginTop: '4px', opacity: .8 } }, 'xStats = yuh-idp-xstats-v1 annualized (x17); Clay/Sleeper fills for comparison.') : null,
+      unit === 'defense' ? h('div', { class: 'tip', style: { marginTop: '4px', opacity: .8 } }, 'xStats = IDP expected stats annualized (x17); Clay and Sleeper shown for comparison.') : null,
     );
   }
 
@@ -13936,7 +13948,7 @@
     if (!sleeper || !C) return null;
     const c = C.players[String(sleeper.id)];
     const title = h('div', { class:'card-title' }, 'Contract');
-    const credit = h('div', { class:'tip ctr-credit', style:{ marginTop:'6px', opacity:.8 } }, 'OverTheCap via nflverse');
+    const credit = h('div', { class:'tip ctr-credit', style:{ marginTop:'6px', opacity:.8 } }, 'OverTheCap');
     if (!c) return h('div', { class:'card adv-card ctr-card' }, title,
       h('div', { class:'tip ctr-empty' }, 'No active contract on file.'), credit);
     const m = (v) => v == null ? '·' : `$${Number(v) >= 100 ? Math.round(v) : Number(v).toFixed(1)}M`;
@@ -14003,10 +14015,10 @@
   // spec chosen inside each fold its calibration slope is 0.68, and on the 2020+ classes it beat the QB base
   // rate in 85% of resamples (m5_k0_selection_optimism.json). The base rate is the fallback.
   const PM_WITHHELD = {
-    QB: 'QB odds not shown: the draft-pick model was not reliably better than the QB base rate out of sample. '
-      + 'Base rate: about 1 in 5 drafted QBs (32 of 158, 2008-2022 classes) had a top-12 PPR/G season in years 1-4.',
-    TE: 'TE odds not shown: the draft-pick model did not reliably beat the TE base rate out of sample. '
-      + 'Base rate: about 1 in 5 drafted TEs (41 of 203, 2008-2022 classes) had a top-12 PPR/G season in years 1-4.',
+    QB: 'QB odds are not shown because draft pick alone is not reliably more accurate than the historical QB hit rate. '
+      + 'Historical rate: about 1 in 5 drafted QBs (32 of 158, 2008-2022 classes) had a top-12 PPR/G season in years 1-4.',
+    TE: 'TE odds are not shown because draft pick alone is not reliably more accurate than the historical TE hit rate. '
+      + 'Historical rate: about 1 in 5 drafted TEs (41 of 203, 2008-2022 classes) had a top-12 PPR/G season in years 1-4.',
   };
   const pmWindow = (p) => ((window.PROSPECT_MODEL.pos[p] || {}).target || '').replace(/^.* in NFL years /, '');
   // Draft classes in the score's reference pool (the drafted rows in prospect-model.js).
@@ -14339,12 +14351,12 @@
       // No linked college record: the chance is the draft-only curve at his pick, and that slice was
       // not validated (d2_* experiments: 6 hits against 9.2 expected, n 80, QB/RB/WR pooled).
       me.nocfb && !PM_WITHHELD[me.p] && pmTopChance(me.p, pmHit(me.p), pmFitPick(me)) != null
-        ? h('div', { class:'tip prm-line' }, 'Pick-only chance from the draft-only model, not validated for draftees without college data.') : null,
+        ? h('div', { class:'tip prm-line' }, 'Estimated from draft pick only (college data unavailable).') : null,
       pmOutcome(me, meta, years),
       pmGrades(me.p, pmGradeRows(me.p, me, pmYpc('nfl', String(sleeper.id)),
         'Breakout age (Sept 1 of first dominator season)')),
       h('div', { class:'tip prm-line' }, pmTargetLine(me.p)
-        + (me.out ? ' (in-sample fit)' : '')),
+        + (me.out ? ' (historical class)' : '')),
       me.ln ? h('div', { class:'tip prm-line' }, me.ln) : null,
       pmComps(me.cp));
   }
@@ -14402,12 +14414,12 @@
     main.appendChild(h('details', { class:'source-note' }, h('summary', null, 'How the score works'),
       h('ul', { class:'source-note-list' }, ...[
         `Percentile of hit-line odds vs drafted peers, ${pmPoolYears()} classes (QB/TE: top-12 yrs 1-4; RB/WR: top-24 yrs 1-3, 8+ G).`,
-        'Odds come from the actual draft pick alone: adding the college profile did not beat pick alone out of sample (model card).',
-        'Top-6 QB/TE and top-12 RB/WR odds are not shown: they are not a validated target, and at QB and WR they fail the calibration check out of sample.',
+        'Hit odds are based on NFL draft pick; college metrics are shown for scouting context.',
+        'Top-6 QB/TE and top-12 RB/WR odds are not shown because historical hit rates at those cutoffs are too small a sample to estimate reliably.',
         PM_NO_PREDRAFT,
         PM_WITHHELD.QB,
         PM_WITHHELD.TE,
-        'Offense inputs only (no QB breakout age); Henry Ruggs omitted.',
+        'Offense only (no QB breakout age).',
       ].map(s => h('li', null, s)))));
 
     const filterBar = h('div', { class:'filters prm-filters' });
@@ -14704,8 +14716,8 @@
         `Replacement: the median best of players who finished near ${ps.map(p => `${p}${PM_CUTS[p][1]} (${pmDec(pmRepl(p))})`).join(', ')}.`,
         'No 8-game season counts as 0 PPG.',
         'Left off: college players and classes whose window is still open. Future classes sit on the rail under the chart.',
-        'Also left off: TE (no score) and draftees with no Sleeper id, who are misses, so the low end shows fewer players than really missed.'],
-      note:'Y: best early-career PPG above a replacement starter. No 8-game season counts as 0. Drafted classes with a closed window only; excludes TE and draftees with no Sleeper id (all misses).',
+        'Also excluded: TEs (unscored) and early-exit draftees missing NFL roster records, so the bottom end understates total misses.'],
+      note:'Y: best early-career PPG above a replacement starter. No 8-game season counts as 0. Completed drafted classes only; excludes TEs and unlinked early-exit draftees.',
       yRef:{ v:0, label:'replacement', key:'Dotted: replacement level, 0 on Y',
         title:'Dotted line at 0: replacement level, the median best PPG of players who finished near the position cutoff. Above it beat a replacement starter' },
     });
@@ -16506,8 +16518,8 @@
   function rookieOrderNote(lg, r, modeled) {
     const rule = rookieOrderRule(lg);
     const base = {
-      maxpf: 'Lowest Max PF among non-playoff teams picks first (accrued + simulated optimal weeks; ties/IR unconfirmed).',
-      lottery: 'Bottom-4 40/30/20/10 lottery weighted by worst record (weights unconfirmed).',
+      maxpf: 'Lowest Max PF among non-playoff teams picks first (season total plus projected optimal remaining weeks).',
+      lottery: 'Bottom-4 40/30/20/10 lottery weighted by worst record.',
       record: 'Default rule: worst non-playoff record, then lowest PF.',
     }[rule];
     const why = modeled ? '' : rule === 'maxpf' ? ' Unavailable: Max PF missing.'
@@ -16912,7 +16924,7 @@
     main.appendChild(table);
     main.appendChild(h('div', { class: 'tip', style: { marginTop: '10px' } },
       `${rows.length} ${PROJ_STATE.unit} players (${PROJ_SRC_LABEL[src]}) · ` +
-      (isDef ? 'xStats = yuh-idp-xstats-v1 annualized (x17); Clay/Sleeper also scored under yuH rules.' : 'PP * = missing PrizePicks props Sleeper-filled.')));
+      (isDef ? 'xStats = IDP expected stats annualized (x17); Clay and Sleeper scored under yuH rules.' : 'PP * = missing PrizePicks props filled from Sleeper.')));
   }
 
   // ============================================================
@@ -17216,7 +17228,7 @@
       { key:'funnel', label:'Funnel', get:(r) => r.funnel || '', fmt:'text', desc:'Top target-funnel position vs league avg' });
     statsTable(main, prefs, 'Defense', rows, cols, { key:'WRppr', dir:'desc' }, 'Defense');
     main.appendChild(h('div', { class:'tip', style:{ marginTop:'10px' } },
-      `Thin early-season sample? Use ${D.prior} prior. ${D.source}.`));
+      `Thin early-season sample? Use ${D.prior} prior. Based on NFL play-by-play, charting, and pass-rush stats.`));
   }
 
   function statsTrends(main, prefs) {
@@ -17273,7 +17285,7 @@
     statsTable(main, prefs, 'Trends', rows, cols, { key:'tgt', dir:'desc' }, `Player, week ${U.throughWeek - 1} \u2192 ${U.throughWeek}`,
       (r) => openPlayerDetail(r._name, r._sid));
     main.appendChild(h('div', { class:'tip', style:{ marginTop:'10px' } },
-      `${rows.length} players · last wk vs prior (Tgt% sorted by move size) · Route% est from snaps (2025 calibrated).`));
+      `${rows.length} players · last wk vs prior (Tgt% sorted by move size) · Route% estimated from snaps.`));
   }
 
   function statsIdp(main, prefs) {
@@ -17291,7 +17303,7 @@
     main.appendChild(h('div', { class:'card stats-lab-filters' },
       h('span', { class:'sos-position-tabs', role:'group', 'aria-label':'IDP position' },
         ...['ALL', 'DL', 'LB', 'DB'].map(g => h('button', { class:`ghost${g === grp ? ' active' : ''}`, 'aria-pressed':String(g === grp),
-          onclick:() => { prefs.idpPos = g; saveStatsLabPrefs(prefs); viewStats('IDP'); } }, g === 'ALL' ? 'ALL (IDP_FLEX)' : g))),
+          onclick:() => { prefs.idpPos = g; saveStatsLabPrefs(prefs); viewStats('IDP'); } }, g === 'ALL' ? 'ALL (IDP Flex)' : g))),
       h('label', { class:'stats-lab-toggle' }, 'Min snap% ',
         h('select', { 'aria-label':'Minimum snap share', onchange:(e) => { prefs.idpMinSnap = Number(e.target.value); saveStatsLabPrefs(prefs); viewStats('IDP'); } },
           ...[0, 0.3, 0.5, 0.7].map(v => h('option', { value:String(v), selected:minSnap === v }, `${v * 100}%`)))),
@@ -17310,11 +17322,11 @@
         }, v);
       });
     const xCols = X ? [
-      { key:'xWk', label:`xYuH W${X.week}`, fmt:'dec1', get:(r) => r.xWk, desc:`yuh-idp-xstats-v1 Week ${X.week} matchup projection` },
-      { key:'xRos', label:'xYuH ROS', fmt:'dec1', get:(r) => r.xRos, desc:'yuh-idp-xstats-v1 rest-of-season schedule-adjusted PPG' },
+      { key:'xWk', label:`xYuH W${X.week}`, fmt:'dec1', get:(r) => r.xWk, desc:`IDP xStats Week ${X.week} matchup projection` },
+      { key:'xRos', label:'xYuH ROS', fmt:'dec1', get:(r) => r.xRos, desc:'IDP xStats rest-of-season schedule-adjusted PPG' },
       { key:'xLuck', label:'Luck', fmt:'dec2', get:(r) => r.xLuck, desc:'YTD PPG minus neutral xYuH PPG (negative = buy-low)',
         tone:(r) => r.xLuck == null ? '' : r.xLuck <= -0.75 ? 'delta-up' : r.xLuck >= 0.75 ? 'delta-down' : '' },
-      { key:'dynRk', label:'Dyn Rk', fmt:'int', lowerBetter:true, get:(r) => r.dynRk, desc:'yuh-idp-xstats-v1 2 IDP_FLEX empirical age-curve Dynasty rank' },
+      { key:'dynRk', label:'Dyn Rk', fmt:'int', lowerBetter:true, get:(r) => r.dynRk, desc:'IDP xStats Dynasty rank (yuH 2-IDP-Flex scoring and age curve)' },
       { key:'xSnp', label:'xSnaps', fmt:'dec1', get:(r) => r.xSnp, desc:'Expected snaps/game' },
       { key:'xTkl', label:'xTkl', fmt:'dec1', get:(r) => r.xTkl, desc:'Expected tackle pts/game (Solo + 0.5*Ast)' },
       { key:'xSk', label:'xSack', fmt:'dec2', get:(r) => r.xSk, desc:'Expected sacks/game' },
@@ -17330,9 +17342,9 @@
         get:(r) => r[c.key], lowerBetter:/allow|mtkl/.test(c.key) })),
     ];
     statsTable(main, prefs, 'IDP', rows, cols, { key: X ? 'xRos' : 'ppg', dir:'desc' },
-      `${grp === 'ALL' ? 'ALL (IDP_FLEX)' : grp}, ${I.season} through week ${I.throughWeek}`,
+      `${grp === 'ALL' ? 'ALL (IDP Flex)' : grp}, ${I.season} through week ${I.throughWeek}`,
       (r) => openPlayerDetail(r._name, r._sid));
-    main.appendChild(h('div', { class:'tip', style:{ marginTop:'10px' } }, `${rows.length} players. ${I.source}.`));
+    main.appendChild(h('div', { class:'tip', style:{ marginTop:'10px' } }, `${rows.length} players. Based on NFL defensive box-score, snap, and play-by-play stats.`));
   }
 
   // ---- Coverage tab: man vs zone, shells, pressure, personnel and formation.
@@ -17486,7 +17498,7 @@
       rowName = `${pos}, ${route ? `targeted ${covTitle(route)}` : C.splitLabels[sk]}, ${season}`;
       onRow = (r) => openPlayerDetail(r._name, r._sid);
       sample = route
-        ? 'Targeted routes only (nflverse charts the targeted receiver).'
+        ? 'Targeted routes only (charts the targeted receiver).'
         : `${isQB ? 'Per dropback' : 'On-field dropbacks'} · man/zone/shell/pressure from participation data.`;
     }
     // Sort is kept per tab, so a key the new position lacks falls back to its default.
@@ -17494,14 +17506,14 @@
     if (kept && !cols.some(c => c.key === kept.key)) delete prefs.sort.Coverage;
     statsTable(main, prefs, 'Coverage', rows, cols, defaultSort, rowName, onRow);
     main.appendChild(h('div', { class:'tip', style:{ marginTop:'10px' } },
-      `${rows.length} ${isTeam ? 'teams' : 'players'} · ${sample ? sample + ' ' : ''}Thru W${C.throughWeek} (${C.source}).`));
+      `${rows.length} ${isTeam ? 'teams' : 'players'} · ${sample ? sample + ' ' : ''}Thru W${C.throughWeek}.`));
   }
 
   // The Teams tab's shell columns: the man/zone and shell mix each defense
   // played, from the same coverage-YYYY.js as the Coverage tab.
   const COV_TEAM_KEYS = ['man', 'zone', 'c0', 'c1', 'c2', 'c2m', 'c3', 'c4', 'c6'];
   const teamCoverageCols = (C) => COV_TEAM_KEYS.map(k => ({ key:`cov_${k}`, label:COV_SHELL_LABELS[k], group:'Coverage (D)', fmt:'pct',
-    desc:`Defensive ${C.splitLabels[k].replace(/^vs /, '')} share (nflverse participation).` }));
+    desc:`Defensive ${C.splitLabels[k].replace(/^vs /, '')} share.` }));
   function teamCoverageRow(C, t) {
     const v = C.teams[t], ix = (k) => C.teamFields.cov.indexOf(k);
     if (!v) return {};
@@ -17569,8 +17581,8 @@
   }
   // ---- end route tree math
   // Not in any public data: they need every route charted, which only paid vendors do.
-  const RT_UNAVAILABLE = [['sep', 'Separation', 'no public per-route tracking'],
-    ['win', 'Win rate', 'paid hand-charting only'], ['rr', 'Routes run', 'only targeted routes are public']];
+  const RT_UNAVAILABLE = [['sep', 'Separation', 'tracking data unavailable'],
+    ['win', 'Win rate', 'charting data unavailable'], ['rr', 'Routes run', 'targeted routes only']];
   const RT_POS = ['WR', 'TE', 'RB'];
   const rtFmt = (v, m) => v == null ? '·' : m === 'share' ? `${(v * 100).toFixed(1)}%` : m === 'catch' ? `${Math.round(v * 100)}%`
     : m === 'epa' ? (v >= 0 ? '+' : '') + v.toFixed(2) : m === 'ypt' || m === 'air' ? v.toFixed(1) : String(v);
@@ -17651,11 +17663,11 @@
         h('span', { class:'sos-position-tabs rt-seasons', role:'group', 'aria-label':`Tile ${ab} season` }, ...seasons.map(y => {
           const on = got(y).published;
           return h('button', { type:'button', class:`ghost${y === t.season ? ' active' : ''}`, 'aria-pressed':String(y === t.season), disabled:on ? null : '',
-            title:on ? null : `nflverse has not posted ${y} participation charting yet`, onclick:() => set({ season:y }) }, String(y));
+            title:on ? null : `${y} participation charting is not available yet`, onclick:() => set({ season:y }) }, String(y));
         })),
         h('label', { class:'stats-lab-toggle' }, 'Metric ', h('select', { 'aria-label':`Tile ${ab} metric`, onchange:(e) => set({ metric:e.target.value }) },
           ...RT_METRICS.map(([k, l]) => h('option', { value:k, selected:k === t.metric }, l)),
-          h('optgroup', { label:'Needs paid charting' }, ...RT_UNAVAILABLE.map(([k, l, why]) => h('option', { value:k, disabled:'' }, `${l}: unavailable, ${why}`)))))));
+          h('optgroup', { label:'Unavailable metrics' }, ...RT_UNAVAILABLE.map(([k, l, why]) => h('option', { value:k, disabled:'' }, `${l}: unavailable, ${why}`)))))));
     if (v && v.R && tree) card.appendChild(rtTree(C, t.sid, v, tree, t.metric, t.season));
     else {
       const known = seasons.map(got).find(c => c.players && c.players[t.sid]);
@@ -17721,13 +17733,13 @@
     });
     R.tiles = tiles;
     main.appendChild(h('div', { class:'tip rt-span' }, h('strong', null, `Targeted routes (${span}): `),
-      later.length ? `${later.join(', ')} updates after nflverse participation posts. ` : '',
+      later.length ? `${later.join(', ')} updates once participation charting is available. ` : '',
       'Compare two players or seasons side by side.'));
     main.appendChild(h('div', { class:'rt-tiles' }, ...tiles.map((t, i) => rtTile(i, t, have, got, (patch) => { Object.assign(t, patch); save(); }))));
     const res = tiles.map(t => { const C = got(t.season), v = C.players[t.sid], tree = C.targetedRoutes[t.sid]; return v && v.R && tree ? { t, C, v, tree } : null; });
     if (res.every(Boolean)) main.appendChild(rtCompare(res, RT_METRICS.some(m => m[0] === R.cmp) ? R.cmp : 'share', (m) => { R.cmp = m; save(); }));
     main.appendChild(h('div', { class:'tip rt-foot' },
-      `Targeted routes only (nflverse charts targeted receivers; Out = quick + deep out). Width = targets; color = percentile (${RT_POOL_MIN}+ tgt; DNQ under ${RT_ROUTE_MIN}; ${LOC_LEGEND}). Paid-only full route rates (TPRR/YPRR/separation) omitted.`));
+      `Targeted routes only (Out = quick + deep out). Width = targets; color = percentile (${RT_POOL_MIN}+ tgt; DNQ under ${RT_ROUTE_MIN}; ${LOC_LEGEND}).`));
     main.appendChild(statsColumnKey([['tgt', 'Targets'], ['Y/Tgt', 'Rec yds / Tgt'],
       ['aDOT', 'Air yds / Tgt'], ['EPA/tgt', 'EPA / Tgt'],
       ['DNQ', `<${RT_ROUTE_MIN} route tgts`],
@@ -17835,7 +17847,7 @@
       }
       main.appendChild(h('div', { class:'tip oo-foot' },
         `QB = game dropback leader · Playcaller = noted mid-season changes · PROE = neutral pass rate over expected (20-80% WP). `
-        + `Grey italic <${small} plays (thru W${F.splitsThroughWeek}, nflverse).`));
+        + `Grey italic <${small} plays (thru W${F.splitsThroughWeek}).`));
       saveStatsLabPrefs(prefs);
       return;
     }
@@ -17893,7 +17905,7 @@
     if (kept && !cols.some(c => c.key === kept.key)) delete prefs.sort.OnOff;
     statsTable(main, prefs, 'OnOff', rows, cols, { key:'tgtOn', dir:'desc' }, `Teammates, ${pick.tm} ${season}`, (r) => openPlayerDetail(nm(r.pid), r.pid));
     main.appendChild(h('div', { class:'tip oo-foot' },
-      `${rows.length} targeted teammates (grey italic <${small} plays/DB; min ${F.minSnaps} snaps). ${isGame ? `${F.note} ` : ''}Source: ${F.source}.`));
+      `${rows.length} targeted teammates (grey italic <${small} plays/DB; min ${F.minSnaps} snaps).${isGame ? ' Game-level splits: a game counts as without him when he was inactive or played under 10% of offensive snaps.' : ''}`));
     saveStatsLabPrefs(prefs);
   }
 
@@ -18299,7 +18311,7 @@
       C('catch_rate', 'Catch%', 'Receiving', REC, 'pct', 'Rec / Tgt'),
       C('yds_per_target', 'Y/Tgt', 'Receiving', REC, 'dec1', 'Rec yds / Tgt'),
       C('epa_per_target', 'EPA/Tgt', 'Receiving', REC, 'dec2', 'EPA / Target'),
-      C('yprr_est', 'YPRR (est)', 'Receiving', REC, 'dec2', 'Est. receiving yds per route (blank <5 routes; snap-calibrated post-2025)'),
+      C('yprr_est', 'YPRR (est)', 'Receiving', REC, 'dec2', 'Est. receiving yds per route (blank <5 routes)'),
       C('carries', 'Car', 'Rushing', RUSH, 'int', 'Carries'),
       C('rush_yds', 'Rush yds', 'Rushing', RUSH, 'int', 'Rushing yards'),
       C('rush_td', 'Rush TD', 'Rushing', RUSH, 'int', 'Rushing TDs'),
@@ -18347,8 +18359,8 @@
           wkSel('First week', split.from, 'from'), h('span', null, 'to'), wkSel('Last week', split.to, 'to')),
         h('div', { class:'stats-lab-tool-title' }, 'Situation'),
         h('div', { class:'stats-lab-split-dims' }, ...dims),
-        lag.length ? h('div', { class:'muted' }, lag.map(S => `FTN thru ${S.season} W${S.ftnThroughWeek}`).join('; ')
-          + ' (later plays omitted from FTN filters).') : null,
+        lag.length ? h('div', { class:'muted' }, lag.map(S => `Charting thru ${S.season} W${S.ftnThroughWeek}`).join('; ')
+          + ' (later plays excluded from charting filters).') : null,
         split.on ? h('div', { class:'muted' }, 'Split uses play-by-play; season-only columns hidden until reset.') : null,
         split.on ? h('div', { class:'stats-lab-row' }, h('button', { type:'button', class:'stats-lab-split-reset',
           onclick:() => set({ seasons:[cur], from:1, to:18, sit:{} }) }, 'Reset split')) : null));
@@ -18539,7 +18551,7 @@
       const clipY = (v) => Math.max(ya, Math.min(yb, v));
       const xs = [xa, xb].map(x => ({ x, y:fit.m * x + fit.b }));
       if (fit.m) for (const p of xs) if (p.y !== clipY(p.y)) { p.y = clipY(p.y); p.x = (p.y - fit.b) / fit.m; }
-      s += `<line class="trend" x1="${X(xs[0].x)}" y1="${Y(xs[0].y)}" x2="${X(xs[1].x)}" y2="${Y(xs[1].y)}"><title>Trend: least-squares fit of ${chartEsc(yc.label)} on ${chartEsc(xc.label)}</title></line>`;
+      s += `<line class="trend" x1="${X(xs[0].x)}" y1="${Y(xs[0].y)}" x2="${X(xs[1].x)}" y2="${Y(xs[1].y)}"><title>Trend line: ${chartEsc(yc.label)} vs ${chartEsc(xc.label)}</title></line>`;
     }
     // o.yRef: a fixed reference value on Y (the prospect chart's replacement level, 0), dotted.
     if (o.yRef && inD(o.yRef.v, ya, yb)) s += `<line class="ref" x1="${PL}" x2="${W - PR}" y1="${Y(o.yRef.v)}" y2="${Y(o.yRef.v)}"><title>${chartEsc(o.yRef.title)}</title></line>`
@@ -18594,8 +18606,8 @@
         h('ul', { class:'source-note-list' }, ...[...o.how,
           `Dashed lines: plain averages of the ${pts.length} plotted. Vertical is the average ${xc.label}, horizontal the average ${yc.label}.`,
           o.yRef ? `${o.yRef.title}.` : null,
-          'Solid line: the least-squares trend.',
-          `r: their correlation on this filter. Not a validation, since drafted players' own results are in the fit that makes the score.`,
+          'Solid line: overall trend.',
+          `r: correlation across the players shown. Past drafted classes are included in the historical reference pool.`,
         ].filter(Boolean).map(s => h('li', null, s)))) : null,
       wrap);
   }
@@ -18776,9 +18788,9 @@
         `${locFmt(locValue(t, 'ypa'), 'ypa')} ${role === 'Q' ? 'Y/A' : 'Y/Tgt'}`, `${locFmt(locValue(t, 'epa'), 'epa')} EPA/${unit}`].join(' · ')),
       grid,
       h('div', { class:'tip loc-foot' },
-        `Small print: ${metric === 'att' ? '' : `${metric === 'catch' ? `FTN-charted ${unit}` : unit}, then `}percentile among ${pos}s with ${LOC_MIN[role]}+ to that zone (${LOC_LEGEND}). `
+        `Note: ${metric === 'att' ? '' : `${metric === 'catch' ? `charted ${unit}` : unit}, then `}percentile among ${pos}s with ${LOC_MIN[role]}+ to that zone (${LOC_LEGEND}). `
         + `Depth is air yards. ${unk || sk ? `${[unk ? `${unk} ${unit} with no charted spot` : null, sk ? `${sk} sacks` : null].filter(Boolean).join(' and ')} are left off. ` : ''}`
-        + `Catchable% counts only plays FTN charted: ${t.ftn} of these ${t.n}${lag.length ? ` (FTN covers ${lag.join(', ')})` : ''}.`));
+        + `Catchable% covers charted plays: ${t.ftn} of these ${t.n}${lag.length ? ` (charting covers ${lag.join(', ')})` : ''}.`));
   }
 
   // Run gaps: seven arrows fan out of the back through the line. Width is
@@ -18815,7 +18827,7 @@
         `${locFmt(locValue(t, 'succ'), 'succ')} success`].join(' · ')),
       h('div', { class:'chart-wrap', html:s }),
       h('div', { class:'tip loc-foot' }, `Arrow width is carries; color is the percentile among RBs with ${LOC_MIN.U}+ carries to that gap (${LOC_LEGEND}). `
-        + `Gaps are play-by-play run_location x run_gap: end runs go outside the tackle, MID is up the middle.${unk ? ` ${unk} carries with no charted gap are left off.` : ''}`));
+        + `End runs go outside the tackle; MID is up the middle.${unk ? ` ${unk} carries with no charted gap are left off.` : ''}`));
   }
 
   const locGraphic = (list, sid, role, pos) => role === 'U' ? locRunGap(list, sid, pos) : locFieldMap(list, sid, role, pos);
@@ -19009,14 +19021,14 @@
     const cov = isTeams ? (window.COVERAGE_BY_SEASON || {})[season] : null;
     const covOn = !!(cov && cov.published);
     const RB_FUM_COLS = [
-      { key:'fum_f',    label:'Fum',      group:'Ball Security', fmt:'int',  lowerBetter:true, desc:'2026 scrimmage fumbles (resolved per fumbler slot from play-by-play).' },
+      { key:'fum_f',    label:'Fum',      group:'Ball Security', fmt:'int',  lowerBetter:true, desc:'2026 scrimmage fumbles credited to this player.' },
       { key:'fum_ff',   label:'Forced',   group:'Ball Security', fmt:'int',  lowerBetter:true, desc:'Fumbles credited as forced by a defender (~95% of RB fumbles).' },
       { key:'fum_uf',   label:'Unforced', group:'Ball Security', fmt:'int',  lowerBetter:true, desc:'Unforced drops/exchanges on RB plays.' },
       { key:'fum_fl',   label:'Lost',     group:'Ball Security', fmt:'int',  lowerBetter:true, desc:'Actual fumbles lost to the defense.' },
       { key:'fum_exp',  label:'Exp lost', group:'Ball Security', fmt:'dec1', lowerBetter:true, desc:'Expected lost fumbles (fumbles x 56.5% league recovery rate).' },
       { key:'fum_rate', label:'Fum/100t', group:'Ball Security', fmt:'dec2', lowerBetter:true, desc:'2026 fumbles per 100 touches (min 40 touches; NFL avg 0.80).' },
       { key:'fum_3yr',  label:'3yr/100t', group:'Ball Security', fmt:'dec2', lowerBetter:true, desc:'3-year pooled fumbles per 100 touches (min 100 touches; strongest signal).' },
-      { key:'fum_eb',   label:'EB/100t',  group:'Ball Security', fmt:'dec2', lowerBetter:true, desc:'Empirical-Bayes shrunk rate toward 0.80% prior (M=3,000 touches).' },
+      { key:'fum_eb',   label:'EB/100t',  group:'Ball Security', fmt:'dec2', lowerBetter:true, desc:'Sample-adjusted fumble rate blended toward the 0.80% NFL RB average.' },
       { key:'fum_tag',  label:'Signal',   group:'Ball Security', fmt:'text', desc:'Fluke vs Multi-Yr Trend tag based on 3-yr volume and rate.' },
     ];
     const hasRbFum = pos === 'RB' && !splitOn && !!(window.FUMBLES && window.FUMBLES.rb);
@@ -19034,8 +19046,8 @@
       eyebrow:'STATS LAB',
       title:'Advanced stats',
       sub:[splitOn ? `${split.label}. Counts summed over the split, rates recomputed from them. (est) marks an estimate.`
-        : pos === 'Coverage' ? 'Man vs zone, coverage shells, pressure, personnel and formation from nflverse participation charting.'
-        : pos === 'Routes' ? 'Route trees from nflverse participation charting: the route each pass was thrown on, by receiver.'
+        : pos === 'Coverage' ? 'Man vs zone, coverage shells, pressure, personnel and formation splits.'
+        : pos === 'Routes' ? 'Targeted route trees: the route each pass was thrown on, by receiver.'
         : pos === 'OnOff' ? 'Team and teammate splits with a player on and off the field, and game splits by starting QB and playcaller.'
         : `${A.season} regular season through week ${A.throughWeek}. (est) marks an estimate.`,
         h('span', { class:'stats-lab-sub-more' }, ' Open the Column key above a table for what each header means.')],
@@ -19259,20 +19271,17 @@
     main.appendChild(statsColumnKey(shown, estimates));
     appendTable(main, tbl);
     main.appendChild(h('div', { class:'tip', style:{ marginTop:'10px' } }, splitOn
-      ? `Source: ${loaded[0].source}. Every play in the split is counted and the rates are recomputed from those counts. `
+      ? 'Every play in the split is counted and rates are recomputed from those counts. '
         + 'Green is the top fifth of the players shown and red the bottom fifth, flipped where lower is better. '
-        + "YPRR is an estimate: each week's estimated routes are scaled by the share of team dropbacks inside the split."
-      : `Source: ${A.source}. `
-      + 'Green is the top fifth of the players shown and red the bottom fifth, flipped where lower is better. '
+        + 'YPRR is an estimate based on dropback share inside the split.'
+      : 'Green is the top fifth of the players shown and red the bottom fifth, flipped where lower is better. '
       + ((A.estimates || []).includes('route_rate_est')
-        ? 'Route% and TPRR/YPRR are estimates because public route data stops after 2025. '
-        : `Routes are measured for ${A.season}: the team dropbacks he was on the field for (nflverse participation), so a pass-block counts as a route. `)
-      + (A.xfpSource === 'lookup' ? 'xFP prices each target and carry at the league average for plays like it'
-        : 'xFP is what ffopportunity\'s play-by-play model expects his targets and carries to score')
-      + '; FPOE is what he did beyond that.'));
+        ? 'Route%, TPRR, and YPRR are estimated from snap and dropback rates. '
+        : `Routes for ${A.season} count offensive dropbacks the player was on the field for. `)
+      + 'xFP is expected fantasy points based on target and carry value; FPOE is production above or below expectation.'));
     if (isTeams && !covOn) {
       const note = h('div', { class:'tip', style:{ marginTop:'10px' } }, cov
-        ? `The coverage shell columns (Man%, Cover 0-6) need nflverse participation charting, which is not published for ${season} yet. Pick ${season - 1} in Season to see them.`
+        ? `Coverage shell columns (Man%, Cover 0-6) are not available for ${season} yet. Pick ${season - 1} in Season to view them.`
         : `Loading ${season} coverage shells...`);
       main.appendChild(note);
       if (!cov) loadCoverageSeason(season).then(() => { if (note.isConnected) viewStats('Teams'); })
@@ -19576,7 +19585,7 @@
     });
     main.appendChild(h('div', { class:'gm-pair' }, ...cards));
     main.appendChild(h('div', { class:'tip gm-foot on-turf' },
-      `Season to date from nflverse play-by-play, FTN charting and PFR pressure. #N ranks the 32 teams from highest (#1) to lowest. Route% is an estimate: public route data ends in 2025. Skill players are ${away} and ${home} players with 20%+ of the snaps or 4+ targets and carries.`));
+      `Season to date. #N ranks the 32 teams from highest (#1) to lowest. Route% is estimated from snap and dropback rates. Skill players are ${away} and ${home} players with 20%+ of snaps or 4+ targets and carries.`));
   }
 
   function gamePostgame(main, G, W, id) {
@@ -19643,7 +19652,7 @@
     main.appendChild(h('div', { class:'card gm-card' }, h('div', { class:'card-title' }, 'Play-by-play'),
       tbl('gm-pbp', [['Situation'], ['Play'], ['EPA', 'Expected points added by the offense.', true],
         ['WP', 'The offense\'s win probability before the snap.', true], ['WPA', 'Win probability points the offense gained on the play.', true]], rows)));
-    main.appendChild(h('div', { class:'tip gm-foot on-turf' }, `nflverse play-by-play: EPA and win probability from nflfastR's models. WP and WPA are the offense's.`));
+    main.appendChild(h('div', { class:'tip gm-foot on-turf' }, `Play-by-play EPA and win probability (WP and WPA are from the offense's perspective).`));
   }
 
   function viewGame(id, tab) {
@@ -19653,7 +19662,7 @@
     const crumbs = (label) => main.appendChild(breadcrumbs([{ label:'Tools' }, { label:'Games', hash:'#games' }, { label }]));
     if (!m || !window.ADVANCED) {
       crumbs('Game');
-      main.appendChild(h('div', { class:'empty' }, window.ADVANCED ? `"${id || ''}" is not a game id. They read like 2026_03_DAL_NYG.` : noData('Advanced stats', 'projections/build_nflverse_suite.py')));
+      main.appendChild(h('div', { class:'empty' }, window.ADVANCED ? `Game "${id || ''}" was not found. Pick a game from the Games page.` : noData('Advanced stats', 'projections/build_nflverse_suite.py')));
       return;
     }
     const season = Number(m[1]), week = Number(m[2]), away = gameTeam(m[3]), home = gameTeam(m[4]), now = gameNow();
@@ -20099,7 +20108,7 @@
         h('button', { class:'primary', onclick: go }, 'Open'),
       ),
       h('div', { class:'tip', style:{ marginTop:'8px' } },
-        'A mock works the same as a real draft. Mocks carry no league id, so they never appear in the list below and have to be pasted.'),
+        'Mock drafts work the same as league drafts. Paste the Sleeper draft link or ID above to open one.'),
     ));
 
     const recent = draftRecent();
@@ -20274,7 +20283,7 @@
       main.appendChild(h('div', { class:'tip' },
         `Scoring comes from this draft's own "${(d.metadata || {}).scoring_type || 'ppr'}" setting. `
         + 'It belongs to no league loaded here, so per-league tweaks (an INT at -2, TE premium) are not applied. '
-        + 'Kickers and defenses have no projection in this repo, so they never appear on the board.'));
+        + 'Kickers and defenses are not included on this draft board.'));
     }
 
     // Above the drawer: the board only. Everything you act on lives in the tray.
@@ -20872,7 +20881,7 @@
             onclick: () => { if (undoMyRanks()) { toast('Reverted'); paint(); } },
           }, 'Undo'),
           h('button', {
-            title: `Throw away your edits and re-seed from the full-PPR Gibbs board (${myRanks().order.length} players).`,
+            title: `Discard your edits and reset to the full-PPR Gibbs board (${myRanks().order.length} players).`,
             onclick: () => {
               if (!confirm('Reset your rankings to the full-PPR Gibbs board? Your edits are lost.')) return;
               resetMyRanks(); toast('Rankings reset to the Gibbs full-PPR board'); paint();
@@ -20958,7 +20967,7 @@
         tbl = h('table', { class:'data data-sticky' },
           h('thead', null, h('tr', null,
             h('th', { class:'right', style:{ width:'38px' }, title:'Position in current sort' }, '#'),
-            sortHdr('mine', 'Mine', { right:true, title:'Your own ranking. Click the number to type a new one; sort by this column to drag rows. Seeded from the full-PPR Gibbs board and saved in this browser.' }),
+            sortHdr('mine', 'Mine', { right:true, title:'Your own ranking. Click the number to type a new one; sort by this column to drag rows. Starts from the full-PPR Gibbs board and saves in this browser.' }),
             sortHdr('name', 'Player'),
             sortHdr('pos', 'Pos', { title:'Position, with rank among players still available' }),
             h('th', null, 'Team'),
@@ -21407,7 +21416,8 @@
   // ============================================================
   function boot() {
     if (!window.RANKINGS_SOURCES || !window.PLAYERS || !window.LEAGUES) {
-      document.body.innerHTML = '<div style="padding:40px;color:#fbbf24;background:#11141b;font-family:monospace">Missing data files. Run <code>python site/data/build_site_data.py</code> first.</div>';
+      console.warn('Missing data files: run python site/data/build_site_data.py');
+      document.body.innerHTML = '<div style="padding:40px;color:#fbbf24;background:#11141b;font-family:system-ui,sans-serif">Site data did not load. Please reload the page.</div>';
       return;
     }
     ensureSourceDefaults();
