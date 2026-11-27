@@ -556,7 +556,7 @@ TEMPLATE = """<!doctype html>
 
 <div class="eyebrow">Redraft context, full PPR by default, 1QB</div>
 <h1>Jacob Gibbs, 2026 Top {board_size}</h1>
-<p class="sub">Updated {updated} by {source}, transcribed from his own board.
+<p class="sub">Updated {updated} by {source}.
 <a href="{strategy_url}">His strategy write-up</a>.
 He ranks for <b>half PPR</b> and {ppr_note}, so this opens on a full-PPR adaptation.
 <b>That is a derived board, not his.</b> A rank marked * is converted; hover it for his own

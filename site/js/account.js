@@ -498,8 +498,8 @@
       }
       const sources = win.BUILD_INFO?.files || {};
       const sourceTime = sources['rankings.js'] || sources['ktc.js'];
-      if (sourceTime) meta.append(el('dt', {}, 'Shared sources built'), el('dd', { class: 'tnum' }, new Date(sourceTime).toLocaleString()));
-      if (snap?.leagues.some(l => l.account_source === 'imported')) meta.append(el('dt', {}, 'Imported ESPN data'), el('dd', {}, built ? `Snapshot built ${new Date(built).toLocaleString()}. Not refreshed by Sleeper.` : 'Saved snapshot. Not refreshed by Sleeper.'));
+      if (sourceTime) meta.append(el('dt', {}, 'Rankings & projections updated'), el('dd', { class: 'tnum' }, new Date(sourceTime).toLocaleString()));
+      if (snap?.leagues.some(l => l.account_source === 'imported')) meta.append(el('dt', {}, 'Imported ESPN data'), el('dd', {}, built ? `Updated ${new Date(built).toLocaleString()}. Not refreshed automatically by Sleeper.` : 'Saved copy. Not refreshed automatically by Sleeper.'));
       const msg = S.error?.kind === 'storage' ? S.error.message : S.status === 'loading' ? 'Loading from Sleeper...'
         : S.status === 'error' && S.error ? (MESSAGES[S.error.kind] || MESSAGES.network)(S.error)
         : S.status === 'no_leagues' ? 'No Sleeper NFL leagues this season on this account.'
@@ -543,7 +543,7 @@
       for (const item of E?.links || []) section.append(el('div', { class:'acct-espn-linked' },
         el('div', {}, el('strong', {}, item.snapshot.league.name),
           el('p', { class:'acct-note' }, `${item.season}. ${item.snapshot.league.rosters.find(r => r.is_me)?.team_name || 'Team unavailable'}. Synced ${new Date(item.snapshot.syncedAt).toLocaleString()}.`),
-          item.error ? el('p', { class:'acct-status err', role:'status' }, `${item.error} Showing the last successful snapshot.`) : null,
+          item.error ? el('p', { class:'acct-status err', role:'status' }, `${item.error} Showing your last saved update.`) : null,
           item.snapshot.league.import_limitations.length ? el('p', { class:'acct-note' }, item.snapshot.league.import_limitations.join('. ')) : null),
         el('button', { type:'button', onclick:() => E.unlink(item.id) }, 'Unlink')));
       if (!a && E?.links.length) section.append(el('button', { type:'button', onclick:() => E.refresh(true) }, 'Refresh ESPN'));

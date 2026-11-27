@@ -528,6 +528,7 @@ the highlighted result row in gold with ink text.
   press, background swaps) runs 80 to 120ms; a data bar may grow once on load at 240 to 360ms
   ease-out. The reference has snap.
 - **Don't** use em dashes anywhere. Use commas, colons, or periods.
+- **Don't** put developer notes in user-facing copy. No RNG seeds, CLI/script/file/repo commands, internal model IDs, scraping/transcription/API-cap caveats, raw dataset/column slugs, or simulation-noise/SE/CI internals on the page. Keep technical provenance in code comments, docs, or console logs, and write clean product copy for a fantasy football manager.
 - **Don't** copy, trace, or approximate anything owned from the reference: the Backyard Football
   and BFU marks, the kid characters, the NFL shield, any team logo, or the italic
   "BACKYARD FOOTBALL" strip. The grammar is takeable, the assets are not. See
