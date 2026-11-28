@@ -14651,8 +14651,8 @@
         `Replacement: the median best of players who finished near ${ps.map(p => `${p}${PM_CUTS[p][1]} (${pmDec(pmRepl(p))})`).join(', ')}.`,
         'No 8-game season counts as 0 PPG.',
         'Left off: college players and classes whose window is still open. Future classes sit on the rail under the chart.',
-        'Also excluded: TEs (unscored) and early-exit draftees missing NFL roster records, so the bottom end understates total misses.'],
-      note:'Y: best early-career PPG above a replacement starter. No 8-game season counts as 0. Completed drafted classes only; excludes TEs and unlinked early-exit draftees.',
+        'Also excluded: WRs and TEs (unscored) and early-exit draftees missing NFL roster records, so the bottom end understates total misses.'],
+      note:'Y: best early-career PPG above a replacement starter. No 8-game season counts as 0. Completed drafted classes only; excludes WRs, TEs and unlinked early-exit draftees.',
       yRef:{ v:0, label:'replacement', key:'Dotted: replacement level, 0 on Y',
         title:'Dotted line at 0: replacement level, the median best PPG of players who finished near the position cutoff. Above it beat a replacement starter' },
     });
