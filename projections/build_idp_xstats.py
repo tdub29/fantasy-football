@@ -29,6 +29,10 @@ HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parent
 SITE = ROOT / "site" / "data"
 OUT_JS = SITE / "idp-xstats.js"
+# yuh-idp-xstats-v1 is research only (FP ECR beats it on rank order; registry). The full
+# model payload goes to a non-site file; the site file keeps only what app.js reads.
+RESEARCH_JSON = HERE / "idp-xstats-research.json"
+SITE_PLAYER_FIELDS = ("n", "p", "t", "opp", "gp", "ytd", "fpWk", "fpDyn")
 
 
 # Hyperparameters locked strictly <= 2025 in yuh-idp-xstats-v1 evaluation
@@ -395,7 +399,7 @@ def load_season_weekly(yr: int, cur_season: int, closed_max_week: int, cache_dir
         "def_tackles_solo", "def_tackle_assists", "def_tackles_for_loss", "def_sacks",
         "def_sack_yards", "def_qb_hits", "def_pass_defended", "def_interceptions",
         "def_interception_yards", "def_fumbles_forced", "fumble_recovery_opp",
-        "fumble_recovery_yards_opp", "def_tds", "def_safeties",
+        "fumble_recovery_yards_opp", "def_tds", "fumble_recovery_tds", "def_safeties",
         "def_punt_blocks", "def_pat_blocks", "def_fg_blocks",
     ]
     box_df = pd.DataFrame({"season": int(yr), "week": st_sub["week"].astype(int), "player_id": st_sub["player_id"].astype(str).str.strip(), "stat_team": st_sub["team"]})
@@ -412,6 +416,9 @@ def load_season_weekly(yr: int, cur_season: int, closed_max_week: int, cache_dir
     panel["opponent"] = panel["opponent"].map(norm_team)
     for c in box_keep + ["def_blk_kicks"]:
         panel[c] = panel[c].fillna(0.0)
+    # nflverse books fumble-return TDs in fumble_recovery_tds, not def_tds; every
+    # downstream TD use (label, td_rate, YTD) reads def_tds, so fold them in once here.
+    panel["def_tds"] = panel["def_tds"] + panel["fumble_recovery_tds"]
 
     panel["yuh_pts_nfl"] = score_components(
         panel["def_tackles_solo"], panel["def_tackle_assists"], panel["def_tackles_for_loss"],
@@ -1034,9 +1041,21 @@ def main() -> int:
     if args.self_check:
         run_self_check(payload, freeze_dir)
 
+    RESEARCH_JSON.write_text(json.dumps(payload, separators=(",", ":"), ensure_ascii=False), encoding="utf-8")
+    site_payload = {
+        "generated": payload["generated"], "season": payload["season"], "week": payload["week"],
+        "throughWeek": payload["throughWeek"], "league": payload["league"],
+        # Sorted by id, not by model rank, so the file order leaks nothing either.
+        "players": {sid: {k: r[k] for k in SITE_PLAYER_FIELDS if r.get(k) is not None}
+                    for sid, r in sorted(payload["players"].items())},
+    }
+    leaked = {k for r in site_payload["players"].values() for k in r} - set(SITE_PLAYER_FIELDS)
+    if leaked:
+        raise RuntimeError(f"model fields leaked into {OUT_JS.name}: {sorted(leaked)}")
     OUT_JS.parent.mkdir(parents=True, exist_ok=True)
-    OUT_JS.write_text("window.IDP_XSTATS = " + json.dumps(payload, separators=(",", ":"), ensure_ascii=False) + ";\n", encoding="utf-8")
+    OUT_JS.write_text("window.IDP_XSTATS = " + json.dumps(site_payload, separators=(",", ":"), ensure_ascii=False) + ";\n", encoding="utf-8")
     sz = OUT_JS.stat().st_size / 1024.0
+    print(f"Wrote {RESEARCH_JSON.relative_to(ROOT)} (research only)")
     print(f"Wrote {OUT_JS.relative_to(ROOT)} ({sz:.1f} KB, {len(payload['players'])} IDPs, season={payload['season']} W{payload['week']}, throughWeek={payload['throughWeek']})")
     return 0
 

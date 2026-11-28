@@ -329,7 +329,7 @@ def compute(roster, stats, snaps, adv, pbp, players_path=None, max_week=None):
         "def_pass_defended", "def_tds", "def_safeties",
         "def_punt_blocks", "def_pat_blocks", "def_fg_blocks",
         "fumble_recovery_own", "fumble_recovery_opp",
-        "fumble_recovery_yards_own", "fumble_recovery_yards_opp",
+        "fumble_recovery_yards_own", "fumble_recovery_yards_opp", "fumble_recovery_tds",
     ]
     stats_def = stats[stats["player_id"].isin(roster_def["gsis_id"])].copy()
     for c in box_cols:
@@ -431,7 +431,8 @@ def compute(roster, stats, snaps, adv, pbp, players_path=None, max_week=None):
         intc = float(b["def_interceptions"]) if b is not None else 0.0
         int_ret_yds = float(b["def_interception_yards"]) if b is not None else 0.0
         pbu = float(b["def_pass_defended"]) if b is not None else 0.0
-        def_td = float(b["def_tds"]) if b is not None else 0.0
+        # nflverse books fumble-return TDs in fumble_recovery_tds, not def_tds.
+        def_td = (float(b["def_tds"]) + float(b["fumble_recovery_tds"])) if b is not None else 0.0
         safety = float(b["def_safeties"]) if b is not None else 0.0
         blk_kick = (float(b["def_punt_blocks"]) + float(b["def_pat_blocks"]) + float(b["def_fg_blocks"])) if b is not None else 0.0
         fr = (float(b["fumble_recovery_own"]) + float(b["fumble_recovery_opp"])) if b is not None else 0.0

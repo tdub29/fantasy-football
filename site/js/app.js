@@ -13711,13 +13711,13 @@
             h('thead', null, h('tr', null,
               h('th', null, 'Wk'), h('th', null, 'Opp'), h('th', null, 'Play'),
               h('th', null, 'Type'), h('th', null, 'Result'), h('th', null, 'Forced By'))),
-            h('tbody', null, ...logs.map(([wk, opp, ctx, ff, fl, fn, _fsid, fbc]) => h('tr', null,
+            h('tbody', null, ...logs.map(([wk, opp, ctx, ff, fl, fn]) => h('tr', null,
               h('td', { class:'tnum' }, `W${wk}`),
               h('td', null, opp || '-'),
               h('td', null, ctx || '-'),
               h('td', null, ff ? 'Forced' : 'Unforced'),
               h('td', { class: fl ? 'delta-down' : '' }, fl ? 'Lost' : 'Kept'),
-              h('td', null, ff ? (fbc != null && fbc >= 1.5 ? `${fn} (${Number(fbc).toFixed(1)}/1k)` : fn) : 'Self / Exchange'))))))) : null;
+              h('td', null, ff ? fn : 'Self / Exchange'))))))) : null;
       return h('div', { class:'card adv-card' },
         h('div', { class:'card-title' }, `Ball Security · ${F.season} through week ${F.throughWeek}`),
         h('div', { class:'adv-grid' }, ...cells),
@@ -13731,13 +13731,11 @@
       h('div', { class:'adv-stat-label' }, label),
       h('div', { class:`adv-stat-value tnum ${cls || ''}` }, val),
       sub ? h('div', { class:'adv-stat-rank tnum' }, sub) : null);
-    const bcTone = (c.bc_1k || 0) >= 2.0 ? 'delta-up' : '';
-    const p3Tone = (p.bc_1k || 0) >= 2.0 ? 'delta-up' : '';
     return h('div', { class:'card adv-card' },
       h('div', { class:'card-title' }, `Fumble Disruption · ${F.season} through week ${F.throughWeek}`),
       h('div', { class:'adv-grid' },
         statTile('2026 BC FF', String(c.ff_bc || 0), `${c.ff_rb || 0} vs RB (${c.snp || 0} snp)`, ''),
-        statTile('2026 BC/1k', c.bc_1k == null ? '-' : Number(c.bc_1k).toFixed(2), `3yr: ${p.bc_1k == null ? '-' : Number(p.bc_1k).toFixed(2)}/1k`, bcTone || p3Tone),
+        statTile('2026 BC/1k', c.bc_1k == null ? '-' : Number(c.bc_1k).toFixed(2), `3yr: ${p.bc_1k == null ? '-' : Number(p.bc_1k).toFixed(2)}/1k`, ''),
         statTile('Strip-Sk FF', String(c.ff_sk || 0), `3yr: ${p.ff_sk || 0}`, ''),
         statTile('Total FF', String(c.ff || 0), `3yr: ${p.ff || 0} (${p.ff_st || 0} ST)`, '')),
       h('div', { class:'tip', style:{ marginTop:'6px' } },

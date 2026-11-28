@@ -42,11 +42,11 @@ def load(n): return {p["sleeper_id"]: p for p in json.load(open(HERE / n, encodi
 
 
 def load_xstats():
-    p = SITE / "idp-xstats.js"
+    # Full model output lives off the site (build_idp_xstats.RESEARCH_JSON).
+    p = HERE / "idp-xstats-research.json"
     if not p.exists():
         return {}
-    txt = p.read_text(encoding="utf-8")
-    return json.loads(txt[txt.index("{"):txt.rindex("}") + 1]).get("players", {})
+    return json.loads(p.read_text(encoding="utf-8")).get("players", {})
 
 
 def xstats_season_entry(rec):
@@ -126,7 +126,7 @@ def main():
     def_slim = [{"id": p["id"], "name": p["name"], "pos": p["pos"], "team": p["team"],
                  "clay": p["clay"], "sleeper": p["sleeper"], "blend": p["blend"],
                  "stats": {k: v for k, v in p["stats"].items() if k != "xstats"}}
-                for p in out if p["blend"] is not None]
+                for p in sorted(out, key=lambda r: (-(r["blend"] or 0), str(r["id"]))) if p["blend"] is not None]  # blend order: xstats order would leak its ranking
     payload = {
         "offense": {"default": "pp", "sources": ["blend", "pp", "sleeper"],
                     "stat_keys": ["pass_yd", "pass_td", "pass_int", "rush_yd", "rush_td", "rec", "rec_yd", "rec_td"],

@@ -44,9 +44,8 @@ OUT_JS = ROOT / "site" / "data" / "fumbles.js"
 BASE = "https://github.com/nflverse/nflverse-data/releases/download"
 SEASON = 2026
 POOLED_SEASONS = (2024, 2025, 2026)
-P0_RB_RATE = 0.00799
-P_LOST = 0.565
-PRIOR_M = 3000.0
+# fumble-fault-v1 (EB shrink M=3000 toward p0=0.799%, expected-lost at 56.5%, fluke/trend
+# tags) is withdrawn from display (registry), so this builder emits observed counts only.
 MAX_AGE_H = 6.0
 FINISHED_AGE_H = 24.0 * 365.0
 
@@ -267,40 +266,6 @@ def resolve_slot_event(row, slot: int, st_lookup: dict[tuple[int, str], tuple[in
     return int(is_forced), int(is_lost), (forcer_id if is_forced else None), (forcer_nm if is_forced else None)
 
 
-def classify_rb_tag(cur: dict, pool3: dict) -> tuple[str, str]:
-    pt = pool3["t"]
-    p_rt = pool3["rate100"] or 0.0
-    ct = cur["t"]
-    cf = cur["f"]
-    c_rt = cur["rate100"] or 0.0
-    if pt >= 250 and p_rt >= 1.25:
-        return (
-            "Multi-Yr Trend",
-            f"3-yr fumble rate {p_rt:.2f}/100t across {pt} touches tracks above the 0.80% NFL RB norm (pooled forced rate persists r=+0.292).",
-        )
-    if pt >= 250 and p_rt < 1.25 and ct >= 40 and cf >= 2 and c_rt >= 1.60:
-        return (
-            "1-Yr Spike (Fluke?)",
-            f"2026 rate ({c_rt:.2f}/100t) spikes above a normal 3-yr baseline ({p_rt:.2f}/100t across {pt}t); thin single-year fumble samples usually regress.",
-        )
-    if pt < 250 and cf >= 2:
-        return (
-            "Small Sample",
-            f"Only {pt} 3-yr touches; single-season fumbles need 250+ touches to separate ball-security skill from noise (watch snap share, not panic-sell).",
-        )
-    if pt >= 250 and p_rt < 0.60 and cf <= 2:
-        return (
-            "Clean",
-            f"Only {pool3['f']} fumbles across {pt} 3-yr touches ({p_rt:.2f}/100t vs 0.80% avg).",
-        )
-    if pt >= 25:
-        return (
-            "Normal",
-            f"{pool3['f']} fumbles on {pt} 3-yr touches ({p_rt:.2f}/100t), within normal NFL RB variance around 0.80%.",
-        )
-    return ("Low Sample", f"Fewer than 25 tracked 3-yr touches ({pt}t).")
-
-
 SCHEDULE_CSV_URL = "https://raw.githubusercontent.com/nflverse/nfldata/master/data/games.csv"
 
 
@@ -433,8 +398,7 @@ def build_payload(cache_dir: pathlib.Path, players_path: pathlib.Path, offline: 
             closed_max_week = detect_closed_max_week(ROOT, pbp, sched, max_week)
             pbp = pbp[pbp["week"] <= closed_max_week].copy()
             through_week = int(pbp["week"].max()) if len(pbp) else 0
-            if max_week is None:
-                check_closed(pbp, sched, through_week)
+            check_closed(pbp, sched, through_week)
 
         # Stats player week lookup for exact per-player multi-fumble reconciliation
         spw = pd.read_parquet(
@@ -637,23 +601,9 @@ def build_payload(cache_dir: pathlib.Path, players_path: pathlib.Path, offline: 
             continue
 
         cur_rate = round(c["f"] / c["t"] * 100.0, 2) if c["t"] > 0 else None
-        cur_exp_lost = round(c["f"] * P_LOST, 2)
-        cur_lost_luck = round(c["fl"] - cur_exp_lost, 2)
         p3_rate = round(p3["f"] / p3["t"] * 100.0, 2) if p3["t"] > 0 else None
-        eb_rate = round((p3["f"] + PRIOR_M * P0_RB_RATE) / (p3["t"] + PRIOR_M) * 100.0, 2)
-
-        cur_pkg = {
-            **c,
-            "rate100": cur_rate,
-            "exp_lost": cur_exp_lost,
-            "lost_luck": cur_lost_luck,
-        }
-        p3_pkg = {
-            **p3,
-            "rate100": p3_rate,
-            "eb100": eb_rate,
-        }
-        tag, note = classify_rb_tag(cur_pkg, p3_pkg)
+        cur_pkg = {**c, "rate100": cur_rate}
+        p3_pkg = {**p3, "rate100": p3_rate}
 
         log_rows = []
         for ev in sorted(rb_logs_2026.get(sid, []), key=lambda x: x["wk"]):
@@ -664,8 +614,6 @@ def build_payload(cache_dir: pathlib.Path, players_path: pathlib.Path, offline: 
         rb_out[sid] = {
             "cur": cur_pkg,
             "pool3": p3_pkg,
-            "tag": tag,
-            "note": note,
             "log": log_rows,
         }
 
@@ -678,9 +626,6 @@ def build_payload(cache_dir: pathlib.Path, players_path: pathlib.Path, offline: 
         "throughWeek": through_week,
         "pooledSeasons": list(POOLED_SEASONS),
         "meta": {
-            "p0_rb_rate": round(P0_RB_RATE * 100.0, 3),
-            "p_lost": P_LOST,
-            "prior_M": int(PRIOR_M),
             "source": "nflverse play_by_play + stats_player_week + snap_counts (2024-2026 REG, excl. 2-pt)",
         },
         "rb": rb_out,
