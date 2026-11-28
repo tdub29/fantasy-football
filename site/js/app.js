@@ -19076,7 +19076,9 @@
     const shown = ordered.filter(isVis);
 
     const defaultSort = splitOn ? 'ppr' : isTeams ? 'epa_play' : pos === 'QB' ? 'db_epa' : 'xfp_pg';
-    const sort = (prefs.sort && prefs.sort[gkey]) || { key: defaultSort, dir: 'desc' };
+    // A saved sort on a removed column (e.g. withdrawn fumble model) falls back to the default.
+    const savedSort = prefs.sort && prefs.sort[gkey];
+    const sort = savedSort && allCols.some(c => c.key === savedSort.key) ? savedSort : { key: defaultSort, dir: 'desc' };
     rows.sort((a, b) => {
       const av = a[sort.key], bv = b[sort.key];
       if (av == null && bv == null) return 0;
