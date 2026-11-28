@@ -4221,7 +4221,7 @@
             filter.dir = (key === 'rank' || key === 'age' || key === 'pos' || key === 'name'
               || key === 'weekly-ecr' || key === 'weekly-gibbs'
               || key === 'weekly-ros'
-              || key === 'idp-fp' || key === 'idp-dynrk'
+              || key === 'idp-fp'
               || key === 'def-oppImplied' || key === 'def-pa' // fewer pts allowed/implied is better for a defense
               // Both Gibbs X columns are RANKS. They were missing here, so the
               // first click sorted them descending and put his worst-ranked
@@ -17067,7 +17067,9 @@
   // Shared sortable table for the Defense and Trends tabs: columns are
   // {key, label, get(row), fmt, desc, lowerBetter, tone(row)}.
   function statsTable(main, prefs, tabKey, rows, cols, defaultSort, rowName, onRow) {
-    const sort = (prefs.sort && prefs.sort[tabKey]) || defaultSort;
+    // A saved sort on a column that no longer exists falls back to the tab's default, direction included.
+    const saved = prefs.sort && prefs.sort[tabKey];
+    const sort = saved && cols.some(c => c.key === saved.key) ? saved : defaultSort;
     const col = cols.find(c => c.key === sort.key) || cols[0];
     rows.sort((a, b) => {
       const av = col.get(a), bv = col.get(b);

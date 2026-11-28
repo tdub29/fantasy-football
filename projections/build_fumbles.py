@@ -301,7 +301,74 @@ def classify_rb_tag(cur: dict, pool3: dict) -> tuple[str, str]:
     return ("Low Sample", f"Fewer than 25 tracked 3-yr touches ({pt}t).")
 
 
-def detect_closed_max_week(root_dir: pathlib.Path, pbp_cur: pd.DataFrame, max_week_override: int | None = None) -> int:
+SCHEDULE_CSV_URL = "https://raw.githubusercontent.com/nflverse/nfldata/master/data/games.csv"
+
+
+def scheduled_game_counts(cache_dir: pathlib.Path, season: int, offline: bool) -> dict[int, int]:
+    """REG games scheduled per week, from the nflverse schedule (same source as
+    build_weekly_rankings.check_games): cached games_{season}.parquet, else games.csv."""
+    pq = cache_dir / f"games_{season}.parquet"
+    if pq.exists():
+        g = pd.read_parquet(pq, columns=["season", "game_type", "week", "game_id"])
+    else:
+        csv = cache_dir / "games.csv"
+        if not csv.exists():
+            if offline:
+                raise RuntimeError(f"No nflverse schedule in {cache_dir} (games_{season}.parquet or games.csv) with --offline set")
+            cache_dir.mkdir(parents=True, exist_ok=True)
+            req = urllib.request.Request(SCHEDULE_CSV_URL, headers={"User-Agent": "Mozilla/5.0"})
+            with urllib.request.urlopen(req, timeout=120) as r:
+                tmp = csv.with_suffix(".csv.tmp")
+                tmp.write_bytes(r.read())
+                tmp.replace(csv)
+        g = pd.read_csv(csv, usecols=["season", "game_type", "week", "game_id"])
+    g = g[(g["season"] == season) & (g["game_type"] == "REG")]
+    counts = {int(w): int(n) for w, n in g.groupby("week")["game_id"].nunique().items()}
+    if not counts:
+        raise RuntimeError(f"nflverse schedule has no {season} REG games")
+    return counts
+
+
+def closed_weeks(pbp_cur: pd.DataFrame, sched: dict[int, int]) -> int:
+    """Last week W such that every week 1..W has all its scheduled games in play_by_play.
+    A week with any scheduled game missing (SNF/MNF still to play) is not closed."""
+    played = pbp_cur.groupby("week")["game_id"].nunique().to_dict() if len(pbp_cur) else {}
+    closed = 0
+    for wk in sorted(sched):
+        if int(played.get(wk, 0)) != sched[wk]:
+            break
+        closed = wk
+    return closed
+
+
+def check_closed(pbp_cur: pd.DataFrame, sched: dict[int, int], through_week: int) -> None:
+    """Closed-week guard, always on: every counted week must be fully played."""
+    played = pbp_cur.groupby("week")["game_id"].nunique().to_dict() if len(pbp_cur) else {}
+    for wk in range(1, through_week + 1):
+        if int(played.get(wk, 0)) != sched.get(wk, -1):
+            raise RuntimeError(
+                f"Partial week counted: W{wk} has {played.get(wk, 0)} games in play_by_play, "
+                f"{sched.get(wk, 'none')} scheduled")
+    if any(int(w) > through_week for w in played):
+        raise RuntimeError(f"play_by_play has rows after through_week={through_week}")
+
+
+def guard_self_check() -> None:
+    sched = {1: 16, 2: 14}
+    full = pd.DataFrame({"week": [1] * 16 + [2] * 14, "game_id": [f"a{i}" for i in range(16)] + [f"b{i}" for i in range(14)]})
+    partial = full[~full["game_id"].isin(["b12", "b13"])]  # W2 waiting on SNF and MNF
+    assert closed_weeks(full, sched) == 2 and closed_weeks(partial, sched) == 1
+    check_closed(full, sched, 2)
+    try:
+        check_closed(partial, sched, 2)
+    except RuntimeError:
+        pass
+    else:
+        raise RuntimeError("guard self-check: 12-of-14 game week was accepted as closed")
+    print("  OK  closed-week guard rejects a partial week and accepts a full one")
+
+
+def detect_closed_max_week(root_dir: pathlib.Path, pbp_cur: pd.DataFrame, sched: dict[int, int], max_week_override: int | None = None) -> int:
     """Return latest completed regular-season week, excluding partial/in-progress weeks."""
     if max_week_override is not None:
         return int(max_week_override)
@@ -317,13 +384,7 @@ def detect_closed_max_week(root_dir: pathlib.Path, pbp_cur: pd.DataFrame, max_we
             m = re.search(r'"week"\s*:\s*(\d+)', lg.read_text(encoding="utf-8")[:1200])
             if m:
                 site_closed = max(0, int(m.group(1)) - 1)
-    if len(pbp_cur):
-        wk_games = pbp_cur.groupby("week")["game_id"].nunique()
-        complete_wks = [int(w) for w, gcnt in wk_games.items() if gcnt >= 10]
-        # No fully played week means none counts; never fall back to a partial week.
-        pbp_closed = max(complete_wks) if complete_wks else 0
-    else:
-        pbp_closed = 0
+    pbp_closed = closed_weeks(pbp_cur, sched)
     return min(site_closed, pbp_closed) if site_closed is not None else pbp_closed
 
 
@@ -368,14 +429,12 @@ def build_payload(cache_dir: pathlib.Path, players_path: pathlib.Path, offline: 
         pbp = pd.read_parquet(ensure_file(cache_dir, "pbp", f"play_by_play_{yr}.parquet", yr < SEASON, offline), columns=pbp_cols)
         pbp = pbp[(pbp["season_type"] == "REG") & (pbp["two_point_attempt"] != 1)].copy()
         if yr == SEASON and len(pbp):
-            closed_max_week = detect_closed_max_week(ROOT, pbp, max_week)
+            sched = scheduled_game_counts(cache_dir, SEASON, offline)
+            closed_max_week = detect_closed_max_week(ROOT, pbp, sched, max_week)
             pbp = pbp[pbp["week"] <= closed_max_week].copy()
             through_week = int(pbp["week"].max()) if len(pbp) else 0
-            # Closed-week guard, always on (not only under --self-check): a partial
-            # in-progress week must never reach the displayed 2026 counts.
-            last_wk_games = pbp.loc[pbp["week"] == through_week, "game_id"].nunique() if through_week else 0
-            assert max_week is not None or through_week == 0 or last_wk_games >= 10, (
-                f"Partial week leaked: W{through_week} has only {last_wk_games} games in play_by_play")
+            if max_week is None:
+                check_closed(pbp, sched, through_week)
 
         # Stats player week lookup for exact per-player multi-fumble reconciliation
         spw = pd.read_parquet(
@@ -639,6 +698,7 @@ def run_self_checks(
     closed_max_week: int | None,
 ) -> None:
     print("\n--- build_fumbles self-check ---")
+    guard_self_check()
     assert closed_max_week is not None and through_week == closed_max_week, (
         f"Closed-week maturity mismatch: through_week={through_week} vs closed_max_week={closed_max_week}"
     )
