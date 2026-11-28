@@ -13943,13 +13943,13 @@
   const pmFitPick = (r) => r.y ? r.pk : undefined;
   const pmHit = (p) => (PM_CUTS[p] || [])[1];
   const PM_NO_PREDRAFT = 'No validated pre-draft model: chances and the prospect score appear once he is drafted.';
-  // WR and TE get no chance or score; the frozen file holds tables for QB and RB only. Only locked rules
-  // withdraw a cut. TE: the draft-pick curve beat the TE base rate in under 90% of draft-class resamples
-  // (M4.json, K0_vs_BASE). WR: the monitor kill rule fires on the 2020+ forward classes (slope 1.68, 95%
-  // interval 1.30-3.29, wholly outside 0.75-1.25). The base rate is the fallback.
+  // TE gets no chance or score; the frozen file holds QB, RB and WR tables. Only locked rules withdraw a
+  // cut: the TE draft-pick curve beat the TE base rate in under 90% of draft-class resamples (M4.json,
+  // K0_vs_BASE). WR is served with a reported regime warning (2020+ slope, a seen check, not a kill rule).
+  const PM_WARN = {
+    WR: 'WR caution: for the 2020-2023 draft classes this pick-based curve was too cautious for WRs (calibration slope 1.69, 95% interval 1.30-3.29), so high chances ran low and low chances ran high. Its first fresh check comes when the 2024 class finishes its three seasons (about 2027-01).',
+  };
   const PM_WITHHELD = {
-    WR: 'WR odds are not shown because on recent draft classes the draft-pick model failed its calibration check. '
-      + 'Historical rate: about 1 in 6 drafted WRs (74 of 462, 2008-2023 classes) had a top-24 PPR/G season in years 1-3.',
     TE: 'TE odds are not shown because draft pick alone is not reliably more accurate than the historical TE hit rate. '
       + 'Historical rate: about 1 in 5 drafted TEs (41 of 203, 2008-2022 classes) had a top-12 PPR/G season in years 1-4.',
   };
@@ -14280,7 +14280,7 @@
         me.st && me.st.stars != null ? pmBioCell('Recruit', `${me.st.stars}-star`, 'HS recruiting stars') : null,
       ]),
       pmTwoWay(me),
-      PM_WITHHELD[me.p] ? h('div', { class:'tip prm-line' }, PM_WITHHELD[me.p]) : null,
+      PM_WITHHELD[me.p] || PM_WARN[me.p] ? h('div', { class:'tip prm-line' }, PM_WITHHELD[me.p] || PM_WARN[me.p]) : null,
       // No linked college record: the chance is the draft-only curve at his pick, and that slice was
       // not validated (d2_* experiments: 6 hits against 9.2 expected, n 80, QB/RB/WR pooled).
       me.nocfb && !PM_WITHHELD[me.p] && pmTopChance(me.p, pmHit(me.p), pmFitPick(me)) != null
@@ -14350,7 +14350,7 @@
         'Hit odds are based on NFL draft pick; college metrics are shown for scouting context.',
         'Top-6 QB/TE and top-12 RB/WR odds are not shown because historical hit rates at those cutoffs are too small a sample to estimate reliably.',
         PM_NO_PREDRAFT,
-        PM_WITHHELD.WR,
+        PM_WARN.WR,
         PM_WITHHELD.TE,
         'Offense only (no QB breakout age).',
       ].map(s => h('li', null, s)))));
@@ -14649,8 +14649,8 @@
         `Replacement: the median best of players who finished near ${ps.map(p => `${p}${PM_CUTS[p][1]} (${pmDec(pmRepl(p))})`).join(', ')}.`,
         'No 8-game season counts as 0 PPG.',
         'Left off: college players and classes whose window is still open. Future classes sit on the rail under the chart.',
-        'Also excluded: WRs and TEs (unscored) and early-exit draftees missing NFL roster records, so the bottom end understates total misses.'],
-      note:'Y: best early-career PPG above a replacement starter. No 8-game season counts as 0. Completed drafted classes only; excludes WRs, TEs and unlinked early-exit draftees.',
+        'Also excluded: TEs (unscored) and early-exit draftees missing NFL roster records, so the bottom end understates total misses.'],
+      note:'Y: best early-career PPG above a replacement starter. No 8-game season counts as 0. Completed drafted classes only; excludes TEs and unlinked early-exit draftees.',
       yRef:{ v:0, label:'replacement', key:'Dotted: replacement level, 0 on Y',
         title:'Dotted line at 0: replacement level, the median best PPG of players who finished near the position cutoff. Above it beat a replacement starter' },
     });

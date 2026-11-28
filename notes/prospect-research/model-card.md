@@ -13,7 +13,7 @@ its verified coverage: `data-sources.md`.
 
 **Every position now ships the draft-only hit probability.** Draft capital is the forecast; the
 college talent score is a pre-draft profile, not a forecast, at QB, RB, WR and TE alike.
-The site's prospect score and hit-line chance (QB top-12, RB top-24; none for WR or TE) use the same draft-only
+The site's prospect score and hit-line chance (QB top-12, RB/WR top-24; none for TE) use the same draft-only
 spline, from a frozen file, for drafted players only; see "Displayed cut model" for the scoring that
 rejected the pick + profile cut model.
 
@@ -127,7 +127,7 @@ pre-registered, so it decides nothing.
 
 **Decision.** The cut model is rejected at every position and cut, and the charter baseline stays.
 The site now reads `site/data/prospect-cut-model.js`, written by the same script with `--freeze`: K0
-at the hit line only (QB top-12, RB top-24; WR and TE are not served, see below), fit once on every mature
+at the hit line only (QB top-12, RB/WR top-24; TE is not served, see below), fit once on every mature
 class 2008+ per position, tabulated at picks 1-262. It carries the fit date, git head, source hash, the script's
 sha256 (of its LF-normalized bytes, so a CRLF checkout and the committed blob hash alike) and a sha256 of its own object (compact JSON without the sha256 field). The browser fits
 nothing. The prospect score is the percentile of the hit-line chance among drafted players in
@@ -174,12 +174,20 @@ never decisive by itself.
   85% of resamples. Confound: QB's earliest forward fold (2013) has under 3 training classes, so the
   nested run falls back to a linear curve there. The nested-slope test was never a locked rule.
 - **RB24 is served**: no optimism, slope 0.97 on 2020+.
-- **WR24 is withdrawn** under the locked monitor kill rule (`m4_monitor.check`) applied to the 2020+
-  forward classes: 22 hits, slope 1.68, 95% class-bootstrap interval 1.30-3.29, wholly above 1.25
-  (kill = True; QB on the same rule: 8 hits, below the 10-hit floor, kill = False). WR's forward slope
-  is 1.07 over all folds and 0.85 on 2013-2019 alone; on 2020+ K0 is too timid for receivers (high
-  chances too low, low chances too high). Nothing refit. WR cards show the WR base rate instead: 74 of
-  462 drafted WRs (2008-2023 classes, about 1 in 6) had a top-24 PPR/G season in years 1-3.
+- **WR24 is served** (round 7, 2026-11-28). It passes the locked rules: base-rate support 99.98%,
+  forward slope 1.07 over all folds, inside 0.75-1.25. The round 5 withdrawal applied the monitor kill
+  rule to the 2020+ forward classes, but that rule acts only on classes drafted after the fit
+  (draft_year > fit end), and none exist yet; 2020+ is a seen regime check (charter rule 4), reported
+  only. Applied that way it would also have killed the served RB24 on 2013-2019. Reported regime
+  checks, `m4_monitor.check` on forward out-of-fold K0, not kills:
+  - WR24 2020+: 22 hits vs 20.0 forecast, slope 1.69 (95% class-bootstrap 1.30-3.29): K0 is too timid
+    for recent receivers (high chances too low, low chances too high). WR 2013-2019: slope 0.85
+    (0.45-1.49), 32 hits vs 30.5. WR cards carry this as a caution note.
+  - RB24 2013-2019: 44 hits vs 34.2 forecast, outside the 95% interval 26.0-42.4 (K0 under-predicted RB
+    hits then), slope 0.92 (0.70-1.49). RB 2020+: 20 hits vs 21.0, slope 0.97.
+  - QB12 2013-2019: 12 hits vs 12.7, slope 0.88; 2020+: 8 hits vs 5.9, under the 10-hit floor.
+  The monitor first judges WR (and RB) when the 2024 class closes after the 2026 NFL season (about
+  2027-01), QB a year later. Nothing refit; the WR table is the same K0 spec as every other cut.
 
 Draftees with no linked college record (2026-11-25, `experiments/d2_nocfb_k0.py` and `.json`): K0 is
 fit only on linked draftees, so the frozen chance was scored on the unlinked ones, all closed classes
@@ -207,7 +215,7 @@ What is not shown, and why:
   scoring; none is shown until then.
 
 Rule 6 (independent review): passed 2026-11-24, `experiments/review-m4-2026-11-24.md`; the reviewer
-reproduced `M4.json` results, the source hash and `M4-oof.csv` byte for byte. The round 5 review (FF 988ed06) FAILED on the QB and WR withdrawals; the fixes above (QB restored, WR withdrawn by the locked kill rule) await re-review.
+reproduced `M4.json` results, the source hash and `M4-oof.csv` byte for byte. The round 5 review (FF 988ed06) FAILED on the QB and WR withdrawals, and round 7 (FF 7fcf9ab) FAILED the WR withdrawal as a judgment labelled a locked rule; the fixes above (QB restored, then WR restored with a reported regime warning) await re-review.
 
 Owner: ops. Monitor: `python notes/prospect-research/experiments/m4_monitor.py` compares served picks
 with fit-era picks (quartiles, round-1 share, picks outside the table) and reports per-class and pooled
