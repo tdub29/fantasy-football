@@ -78,7 +78,7 @@ STAT_MAP = {
     "idp_ff": "def_fumbles_forced",
     "idp_fum_rec": "fumble_recovery_opp",
     "idp_fum_ret_yd": "fumble_recovery_yards_opp",
-    "idp_def_td": "def_tds",
+    "idp_def_td": "def_tds",                # + fumble_recovery_tds in score_row
     "idp_safe": "def_safeties",
     "idp_blk_kick": "def_fg_blocks",
 }
@@ -183,6 +183,9 @@ def score_row(row, weights):
         elif col == "def_fg_blocks":
             blk = _num(row.get("def_fg_blocks")) + _num(row.get("def_punt_blocks")) + _num(row.get("def_pat_blocks"))
             pts += blk * w
+        elif col == "def_tds":
+            # nflverse books fumble-return TDs in fumble_recovery_tds, not def_tds.
+            pts += (_num(row.get("def_tds")) + _num(row.get("fumble_recovery_tds"))) * w
         else:
             pts += _num(row.get(col)) * w
     return pts
