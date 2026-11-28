@@ -94,3 +94,16 @@ Scope: the fixes for pipeline findings F1-F4 and L1-L5 (run at FF 17942e4, regis
   - the `2026 BC/1k` tile with its 3yr rate (app.js:13738).
   - Fix: remove those two fields from the withdrawn list, or state that they render as observed rates with no tone or shrinkage.
 - Confirmed: the card Status lines read `withdrawn-from-display` and `research-only`; row 194 is marked withdrawn; the fumble interval reads 95% bootstrap; the W12 freeze is kept as historical with the 0.38 Dynasty Top-20 drift recorded.
+
+## Re-review 2026-11-28 (3): harness agent/gemini-model-fixes e66a5951
+
+### Verdict: PASS
+
+- **R3 fixed.** `.agents/artifacts/ff-pipeline-audit-2026-11-26/yuh-idp-gate10-value.json` is now on the branch. Its blob (9bfc00d2) is identical to the one at 34ddebfd. Its LF SHA-256 is `a54ee2a0a539268ab55b3320c4e8b0477c802c518b831d30d36b00297f3c96bc`, which matches the registry's yuh-idp-xstats-v1 freeze entry. Every artifact the two rows cite now exists at the branch head with a matching hash.
+- **R4 fixed.** Claim register row 196 now separates what was withdrawn from what is still shown:
+  - withdrawn: EB True%, Lost / Exp, the fluke/trend tag and the BC/1k tone;
+  - still shown as plain observed rates with no shrinkage, tone or tag: RB 3yr Fum% and defender Strip-Sack vs Ball-Carrier FF / 1k.
+  - This matches the site at FF f85c176 (app.js:13700-13701, 13738, 18952). The original row text is kept as history.
+- The e66a5951 diff touches only those two items (1 file added, 1 registry line changed), so nothing else moved.
+
+With the FF code PASS at f85c176, the Gemini model fixes pass review.
