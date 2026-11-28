@@ -60,3 +60,37 @@ One correction to my first review: the RB position table does not go through sta
 **Registry (Big Projects harness, agent/gemini-model-fixes at 1c43eaf9, `.agents/model-records/fantasy-football/MODEL-REGISTRY.md`):** status, reasons and re-promotion conditions match the code for both rows. Two lines are stale and must change before the branch merges:
 - R1 :175 (fumble-fault-v1 Status, reason 5) still says the guard "asserts the last counted week was fully played (FF `bc5c2db`)". That is the guard this review failed. Change it to: closes a week only when every scheduled nflverse game is in pbp and raises RuntimeError otherwise (FF `2a98e80`), with the offline self-check passing at throughWeek 11.
 - R2 :168 (yuh-idp-xstats-v1 Open findings) still says "FP ranks shown alongside `xYuH` in UI". Since 47871db, xYuH is not shown. Change it to: ECR shown in place of xYuH; Material #1 open as the re-promotion gate.
+
+## Re-review 2026-11-28 (2): FF f85c176, harness agent/gemini-model-fixes b179e5b5
+
+### Verdict: FAIL. All FF code checks pass. The registry branch has 2 defects.
+
+Scope: the fixes for pipeline findings F1-F4 and L1-L5 (run at FF 17942e4, registry 85333a21). I did not review 73a9800 (WR prospect odds restored); it is a separate model change.
+
+### FF code (f85c176): PASS
+
+- **No double-counted TDs.** `build_idp_advanced.py:435` and `build_idp_xstats.py:421` add `fumble_recovery_tds` to `def_tds` once. Nothing downstream adds it again: score_components takes only `def_tds` (`build_idp_xstats.py:428`), and idp-advanced scores `_def_td` (:148, :467). My earlier nflverse check (2023-2026) found the two fields disjoint except Isaiah Rodgers 2025 W3, who scored two separate TDs. Jessie Bates in the committed `idp-advanced.js` shows 88.1 pts / 8.81 ppg, which matches F3's recomputation.
+- **No withdrawn field in site data.** I loaded `idp-xstats.js`, `fumbles.js` and `projections.js` in a vm and grepped them.
+  - `idp-xstats.js` player keys: n, p, t, opp, gp, ytd, fpWk, fpDyn (892 players).
+  - `fumbles.js` RB `cur` keys: car, rec, t, f, ff, uf, fl, oob, f_rush, f_rec, rate100. The fields tag, note, eb100, exp_lost, lost_luck and the p0/M/p_lost meta are gone.
+  - No xstats field appears in any of the three files.
+  - `build_idp_xstats.py` raises if a non-allowlisted field reaches the site file.
+- **No blank columns.**
+  - Every `IDP_XSTATS` read in `app.js` (3773-3785, 4123-4130, 4508-4515, 13781-13800, 17229-17256) uses only n, p, t, opp, gp, ytd, fpWk, fpDyn, week and throughWeek, and all are present.
+  - The fumble card and Stats Lab read c/p f, t, fl, ff, uf, f_rush, f_rec, rate100, snp, ff_bc, ff_rb, ff_sk, ff_st and bc_1k, and all are present in `rb.cur`, `rb.pool3`, `def.cur` and `def.pool3`.
+  - `node --check` passes.
+- **Defense ordering shows no model number.** `score_defense.py:129` sorts by blend descending, then id. The committed `projections.js` has 498 rows in blend order, default `clay`, and no xstats. `idp-xstats.js` is sorted by id, so neither file order leaks the model rank.
+- **The defender card judgment tone is gone (L4).** The 2.0/1k tone and the 1.5/1k forcer annotation are removed (app.js:13714, :13738). The observed BC/1k rate is still shown, without tone.
+- **--max-week is guarded (L1).** `check_closed` now runs whether or not `--max-week` is passed (`build_fumbles.py:401`), so an override past a partial week raises.
+- **RB Stats Lab sort fallback** (my earlier note) is fixed at app.js:19077-19079.
+- Minor, not blocking: `build_idp_xstats.py:716` (the historical season CSV path behind the dynasty layer) still scores `def_tds` alone. It is research-only and not displayed. It is worth folding in for parity before any v2.
+
+### Registry (b179e5b5): FAIL
+
+- **R3: a cited artifact is missing.** `MODEL-REGISTRY.md` (yuh-idp-xstats-v1 freeze entry) cites `yuh-idp-gate10-value.json` LF `a54ee2a0…`. That file is not in the b179e5b5 tree. It exists only at `.agents/artifacts/ff-pipeline-audit-2026-11-26/yuh-idp-gate10-value.json` on unpushed local master (commit 07ae7bfe, not an ancestor of b179e5b5). Its hash there matches the registry. Fix: port that file too.
+  - All other cited files exist at b179e5b5, with LF SHA-256 equal to the registry values: `eval_fumble_fault.json` 33b4eeef, `prospective_freeze_2026_w12.json` 1ca007fd, `benchmark_2026_w1_w11.json` 9fbdeedb, `rankings_2026_w12_ros.csv` f1a47686, `rankings_2026_dynasty.csv` 9e8b2357. Both model cards and both Gate ledgers are present.
+- **R4: claim register row 196 overstates the withdrawal.** It lists RB `3yr Fum%` and defender `Ball-Carrier FF / 1k` (`ff_bc_1k`) as "WITHDRAWN, not displayed". Both still render as observed rates, by design:
+  - the `3yr Fum%` tile and `3yr/100t` Stats Lab column (app.js:13700-13701, 18952);
+  - the `2026 BC/1k` tile with its 3yr rate (app.js:13738).
+  - Fix: remove those two fields from the withdrawn list, or state that they render as observed rates with no tone or shrinkage.
+- Confirmed: the card Status lines read `withdrawn-from-display` and `research-only`; row 194 is marked withdrawn; the fumble interval reads 95% bootstrap; the W12 freeze is kept as historical with the 0.38 Dynasty Top-20 drift recorded.
