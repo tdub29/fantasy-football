@@ -13945,13 +13945,13 @@
   const pmFitPick = (r) => r.y ? r.pk : undefined;
   const pmHit = (p) => (PM_CUTS[p] || [])[1];
   const PM_NO_PREDRAFT = 'No validated pre-draft model: chances and the prospect score appear once he is drafted.';
-  // QB and TE get no chance or score; the frozen file holds tables for RB and WR only. TE: the draft-pick
-  // curve beat the TE base rate in under 90% of draft-class resamples (M4.json, K0_vs_BASE). QB: with the
-  // spec chosen inside each fold its calibration slope is 0.68, and on the 2020+ classes it beat the QB base
-  // rate in 85% of resamples (m5_k0_selection_optimism.json). The base rate is the fallback.
+  // WR and TE get no chance or score; the frozen file holds tables for QB and RB only. Only locked rules
+  // withdraw a cut. TE: the draft-pick curve beat the TE base rate in under 90% of draft-class resamples
+  // (M4.json, K0_vs_BASE). WR: the monitor kill rule fires on the 2020+ forward classes (slope 1.68, 95%
+  // interval 1.30-3.29, wholly outside 0.75-1.25). The base rate is the fallback.
   const PM_WITHHELD = {
-    QB: 'QB odds are not shown because draft pick alone is not reliably more accurate than the historical QB hit rate. '
-      + 'Historical rate: about 1 in 5 drafted QBs (32 of 158, 2008-2022 classes) had a top-12 PPR/G season in years 1-4.',
+    WR: 'WR odds are not shown because on recent draft classes the draft-pick model failed its calibration check. '
+      + 'Historical rate: about 1 in 6 drafted WRs (74 of 462, 2008-2023 classes) had a top-24 PPR/G season in years 1-3.',
     TE: 'TE odds are not shown because draft pick alone is not reliably more accurate than the historical TE hit rate. '
       + 'Historical rate: about 1 in 5 drafted TEs (41 of 203, 2008-2022 classes) had a top-12 PPR/G season in years 1-4.',
   };
@@ -14352,7 +14352,7 @@
         'Hit odds are based on NFL draft pick; college metrics are shown for scouting context.',
         'Top-6 QB/TE and top-12 RB/WR odds are not shown because historical hit rates at those cutoffs are too small a sample to estimate reliably.',
         PM_NO_PREDRAFT,
-        PM_WITHHELD.QB,
+        PM_WITHHELD.WR,
         PM_WITHHELD.TE,
         'Offense only (no QB breakout age).',
       ].map(s => h('li', null, s)))));

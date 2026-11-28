@@ -1,11 +1,11 @@
 {
  "id": "M4",
  "model": "pmTopChance / pmScore (site/js/app.js), registry m4-prospect-score",
- "created_at_utc": "2026-11-25T10:13:38+00:00",
+ "created_at_utc": "2026-11-25T10:38:06+00:00",
  "charter": "notes/prospect-research/validation-charter-v2.md",
- "git_head": "5168ce80eeb7fe54b3e5e9c7a71a0ff2d4241a84",
+ "git_head": "988ed06524178cd1ede0c606e48d8e5167b40dfe",
  "sources_sha256": "397b77edfba661aa9691220344e41dcc849c6b6c84257ffe4b822b87465877ca",
- "script_sha256": "fd24a8c5f1768ceb3ca8ddf07e209ace6964c00bc699756b8d0419ff09a78637",
+ "script_sha256": "7838ec0dcd5232e838a5c1ee2fa03525bcb0f3bc01aa7b0666b9b403709ce63f",
  "command": "python notes/prospect-research/experiments/m4_cut_model.py",
  "spec": {
   "M4": "IRLS L2 lambda 1 (no intercept penalty) on [1, log pick, ts/100]; ts rebuilt in fold",

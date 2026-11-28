@@ -52,10 +52,10 @@ ROUNDS = (("R1", 1, 32), ("R2", 33, 64), ("R3", 65, 100), ("D3", 101, 999))
 SERVE_PICKS = 262          # largest pick in the training rows; 257 is the app's projected-UFD slot
 FREEZE = ROOT / "site" / "data" / "prospect-cut-model.js"
 # Positions whose K0 hit-line chance is served. TE is out: on forward folds K0 beat the fold-local TE
-# base rate in under 90% of class resamples (M4.json K0_vs_BASE), the reference-policy bar. QB is out
-# on M5 (m5_k0_selection_optimism.json): nested spec choice gives slope 0.68, outside 0.75-1.25, and on
-# the untouched 2020+ classes K0 beats the QB base rate in 85% of resamples.
-SERVED = ("RB", "WR")
+# base rate in under 90% of class resamples (M4.json K0_vs_BASE), the reference-policy bar. WR is out
+# under the locked monitor kill rule (m4_monitor.check on the 2020+ forward classes): slope 1.68, 95%
+# class-bootstrap interval 1.30-3.29, wholly outside 0.75-1.25. Only locked rules withdraw a cut.
+SERVED = ("QB", "RB")
 
 
 def irls(X, y, lam=LAMBDA):
@@ -265,7 +265,7 @@ def write_freeze(t, rec, results):
             "model": "draft-only restricted cubic spline in log pick, C 0.1 (charter v2 frozen baseline)",
             "cuts": {p: bpm.TARGET[p][0] for p in SERVED}, "fit": meta, "p": table,
             "not_served": {"TE": "K0 did not beat the TE base rate in 90% of class resamples",
-                           "QB": "M5: nested calibration slope 0.68; beats the base rate on 2020+ in 85% of resamples"}}
+                           "WR": "monitor kill rule on 2020+ forward classes: slope 1.68, 95% interval 1.30-3.29"}}
     js = json.dumps(body, separators=(",", ":"))
     body["sha256"] = hashlib.sha256(js.encode()).hexdigest()
     FREEZE.write_text("// Frozen by notes/prospect-research/experiments/m4_cut_model.py --freeze. Do not hand-edit;\n"
