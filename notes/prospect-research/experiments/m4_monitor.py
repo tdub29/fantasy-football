@@ -120,6 +120,11 @@ def run(t=None):
               "positions": {}}
     q = lambda a: [float(v) for v in np.percentile(a, [25, 50, 75])] if len(a) else None   # noqa: E731
     r1 = lambda a: round(float(np.mean(np.asarray(a) <= 32)), 3) if len(a) else None   # noqa: E731
+    m6 = (cm.get("m6") or {}).get("players", {})
+    if m6:   # the served model: its frozen per-player chances, keyed by Sleeper id
+        sys.path.insert(0, str(ROOT / "projections"))
+        import build_prospect_model as bpm
+        gsis_map = bpm.sleeper_maps()[0]
     for pos, cut in cm["cuts"].items():
         table = cm["p"][f"{pos}{cut}"]
         lo, hi = cm["fit"][f"{pos}{cut}"]["classes"]
@@ -140,6 +145,11 @@ def run(t=None):
                                    "mean_forecast": round(float(pr[g == c].mean()), 3),
                                    "observed": round(float(y[g == c].mean()), 3)} for c in sorted(set(g.tolist()))},
             "pooled": check(y, pr, g) if len(closed) else "no newly closed class yet"}
+        if m6:   # same kill rule on M6, over the newly closed players it served
+            p6 = np.array([(m6.get(gsis_map.get(str(gid))) or [None, np.nan])[1] for gid in closed.gsis_id], float)
+            k6 = ~np.isnan(p6)
+            report["positions"][pos]["m6"] = (check(y[k6], p6[k6], g[k6]) if k6.any()
+                                              else "no newly closed class yet")
     return report
 
 
