@@ -13,7 +13,7 @@ its verified coverage: `data-sources.md`.
 
 **Every position now ships the draft-only hit probability.** Draft capital is the forecast; the
 college talent score is a pre-draft profile, not a forecast, at QB, RB, WR and TE alike.
-The site's prospect score and hit-line chance (QB top-12, RB/WR top-24; none for TE) use the same draft-only
+The site's prospect score and hit-line chance (QB/TE top-12, RB/WR top-24; TE below the charter bar by owner decision) use the same draft-only
 spline, from a frozen file, for drafted players only; see "Displayed cut model" for the scoring that
 rejected the pick + profile cut model.
 
@@ -127,7 +127,7 @@ pre-registered, so it decides nothing.
 
 **Decision.** The cut model is rejected at every position and cut, and the charter baseline stays.
 The site now reads `site/data/prospect-cut-model.js`, written by the same script with `--freeze`: K0
-at the hit line only (QB top-12, RB/WR top-24; TE is not served, see below), fit once on every mature
+at the hit line only (QB/TE top-12, RB/WR top-24; TE served below the charter bar, see below), fit once on every mature
 class 2008+ per position, tabulated at picks 1-262. It carries the fit date, git head, source hash, the script's
 sha256 (of its LF-normalized bytes, so a CRLF checkout and the committed blob hash alike) and a sha256 of its own object (compact JSON without the sha256 field). The browser fits
 nothing. The prospect score is the percentile of the hit-line chance among drafted players in
@@ -147,9 +147,13 @@ training classes' base rate (fold-local, a constant per fold). Bar: K0 beats the
 TE12 misses the bar. One class drives it (2014: n 10, 0 hits; the reviewer found dropping it gives
 100%), and the point gain and leave-one-class-out gain are positive, so this does not show K0 is worse
 than the base rate at TE; it shows the advantage is not established. Nothing was refit or re-tuned to
-clear the bar. Decision: **TE gets no chance and no score.** The frozen file holds no TE table, and the
-site shows the TE base rate instead, as a note: 41 of 203 drafted TEs (2008-2022 classes, about 1 in 5)
-had a top-12 PPR/G season in NFL years 1-4. The first cuts fail the same bar too (QB6 72.9%, WR12
+clear the bar. Decision (2026-11-25): TE withheld, base-rate note shown. **Superseded 2026-11-28: TE12 is
+served below the charter bar by owner decision** (Trevor: every position must have a prospect score).
+Same frozen K0 spec, no tuning. Its record, recomputed from `M4-oof.csv` forward K0 rows (n 130, 25
+hits): beats the fold-local base rate in 88.6% of class resamples (bar 90%); calibration slope 0.79,
+inside 0.75-1.25, but its 90% class-bootstrap interval is 0.41-1.54 and the slope sits in the band in
+only 40% of resamples; forecast 31.3 hits where 25 happened (inside the 95% interval 23.3-39.2). TE
+cards carry these numbers in a caution note. The first cuts fail the same bar too (QB6 72.9%, WR12
 88.1%, TE6 86.8%; RB12 100%), and none of them is shown either.
 
 Selection optimism (M5, 2026-11-25, `experiments/m5_k0_selection_optimism.py` and `.json`): the K0
@@ -194,7 +198,7 @@ fit only on linked draftees, so the frozen chance was scored on the unlinked one
 2008+. Pooled QB, RB and WR: 6 hits against 9.2 expected, n 80 (QB 1 vs 2.3, n 12; RB 3 vs 3.2, n 23;
 WR 2 vs 3.6, n 45). No position had the 10 hits a calibration slope needs. The slice is too small to
 validate or reject, so these rows keep their chance and score with a note on the card: pick-only, from
-the draft-only model, not validated for draftees without college data. TE shows no chance at all.
+the draft-only model, not validated for draftees without college data. TE rows carry the same note; the TE unlinked slice was not scored.
 
 What is not shown, and why:
 - **First-cut chances (QB/TE top-6, RB/WR top-12).** The first cut is not a charter target. Out of

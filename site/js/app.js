@@ -13943,15 +13943,11 @@
   const pmFitPick = (r) => r.y ? r.pk : undefined;
   const pmHit = (p) => (PM_CUTS[p] || [])[1];
   const PM_NO_PREDRAFT = 'No validated pre-draft model: chances and the prospect score appear once he is drafted.';
-  // TE gets no chance or score; the frozen file holds QB, RB and WR tables. Only locked rules withdraw a
-  // cut: the TE draft-pick curve beat the TE base rate in under 90% of draft-class resamples (M4.json,
-  // K0_vs_BASE). WR is served with a reported regime warning (2020+ slope, a seen check, not a kill rule).
+  // The frozen file holds all four positions. TE is served below the charter's 90% base-rate bar by owner
+  // decision (2026-11-28); WR carries a reported 2020+ regime warning (a seen check, not a kill rule).
   const PM_WARN = {
+    TE: 'TE caution: this pick-based curve beat the historical TE hit rate in only 88.6% of draft-class resamples, under the 90% bar the other positions clear, so treat TE odds as rough. Its calibration slope is 0.79 (90% interval 0.41-1.54), and on past classes it forecast 31 top-12 TEs where 25 happened.',
     WR: 'WR caution: for the 2020-2023 draft classes this pick-based curve was too cautious for WRs (calibration slope 1.69, 95% interval 1.30-3.29), so high chances ran low and low chances ran high. Its first fresh check comes when the 2024 class finishes its three seasons (about 2027-01).',
-  };
-  const PM_WITHHELD = {
-    TE: 'TE odds are not shown because draft pick alone is not reliably more accurate than the historical TE hit rate. '
-      + 'Historical rate: about 1 in 5 drafted TEs (41 of 203, 2008-2022 classes) had a top-12 PPR/G season in years 1-4.',
   };
   const pmWindow = (p) => ((window.PROSPECT_MODEL.pos[p] || {}).target || '').replace(/^.* in NFL years /, '');
   // Draft classes in the score's reference pool (the drafted rows in prospect-model.js).
@@ -14280,10 +14276,10 @@
         me.st && me.st.stars != null ? pmBioCell('Recruit', `${me.st.stars}-star`, 'HS recruiting stars') : null,
       ]),
       pmTwoWay(me),
-      PM_WITHHELD[me.p] || PM_WARN[me.p] ? h('div', { class:'tip prm-line' }, PM_WITHHELD[me.p] || PM_WARN[me.p]) : null,
+      PM_WARN[me.p] ? h('div', { class:'tip prm-line' }, PM_WARN[me.p]) : null,
       // No linked college record: the chance is the draft-only curve at his pick, and that slice was
       // not validated (d2_* experiments: 6 hits against 9.2 expected, n 80, QB/RB/WR pooled).
-      me.nocfb && !PM_WITHHELD[me.p] && pmTopChance(me.p, pmHit(me.p), pmFitPick(me)) != null
+      me.nocfb && pmTopChance(me.p, pmHit(me.p), pmFitPick(me)) != null
         ? h('div', { class:'tip prm-line' }, 'Estimated from draft pick only (college data unavailable).') : null,
       pmOutcome(me, meta, years),
       pmGrades(me.p, pmGradeRows(me.p, me, pmYpc('nfl', String(sleeper.id)),
@@ -14351,7 +14347,7 @@
         'Top-6 QB/TE and top-12 RB/WR odds are not shown because historical hit rates at those cutoffs are too small a sample to estimate reliably.',
         PM_NO_PREDRAFT,
         PM_WARN.WR,
-        PM_WITHHELD.TE,
+        PM_WARN.TE,
         'Offense only (no QB breakout age).',
       ].map(s => h('li', null, s)))));
 
@@ -14415,7 +14411,7 @@
       if (k === 'ba') return r.p === 'QB' ? h('span', { class:'muted', title:'N/A for QBs' }, 'n/a') : pmAge(r, v);
       if (k === 'cb') return v == null ? '·' : h('span', { title:`${pmDec(r.cb[0])} PPR/G` }, `${r.p}${v}`);
       if (k === 'best') return v == null ? '·' : v === 999 ? h('span', { class:'muted' }, 'none') : `${r.p}${v}`;
-      if (k === 't1' || k === 'sc') return v == null ? h('span', { class:'muted', title:!r.y ? PM_NO_PREDRAFT : PM_WITHHELD[r.p] || 'No pick on file' }, '·') : k === 't1' ? pmPct(v) : String(v);
+      if (k === 't1' || k === 'sc') return v == null ? h('span', { class:'muted', title:!r.y ? PM_NO_PREDRAFT : 'No pick on file' }, '·') : k === 't1' ? pmPct(v) : String(v);
       if (k === 'pk' && !r.y) return v == null ? '·' : v === 999 ? h('em', { class:'muted', title:'Projected undrafted' }, 'UFD') : h('em', { title:'Median mock pick' }, pmDec(v));
       return v == null ? '·' : String(v);
     };
@@ -14649,8 +14645,8 @@
         `Replacement: the median best of players who finished near ${ps.map(p => `${p}${PM_CUTS[p][1]} (${pmDec(pmRepl(p))})`).join(', ')}.`,
         'No 8-game season counts as 0 PPG.',
         'Left off: college players and classes whose window is still open. Future classes sit on the rail under the chart.',
-        'Also excluded: TEs (unscored) and early-exit draftees missing NFL roster records, so the bottom end understates total misses.'],
-      note:'Y: best early-career PPG above a replacement starter. No 8-game season counts as 0. Completed drafted classes only; excludes TEs and unlinked early-exit draftees.',
+        'Also excluded: early-exit draftees missing NFL roster records, so the bottom end understates total misses.'],
+      note:'Y: best early-career PPG above a replacement starter. No 8-game season counts as 0. Completed drafted classes only; excludes unlinked early-exit draftees.',
       yRef:{ v:0, label:'replacement', key:'Dotted: replacement level, 0 on Y',
         title:'Dotted line at 0: replacement level, the median best PPG of players who finished near the position cutoff. Above it beat a replacement starter' },
     });

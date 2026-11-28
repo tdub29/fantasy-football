@@ -51,11 +51,11 @@ LAMBDA = 1.0
 ROUNDS = (("R1", 1, 32), ("R2", 33, 64), ("R3", 65, 100), ("D3", 101, 999))
 SERVE_PICKS = 262          # largest pick in the training rows; 257 is the app's projected-UFD slot
 FREEZE = ROOT / "site" / "data" / "prospect-cut-model.js"
-# Positions whose K0 hit-line chance is served. TE is out: on forward folds K0 beat the fold-local TE
-# base rate in under 90% of class resamples (M4.json K0_vs_BASE), the reference-policy bar. Only locked
-# rules withdraw a cut. WR is served: its 2020+ slope (1.69) is a seen regime check (charter rule 4),
-# reported on the card; the monitor kill rule acts only on classes drafted after the fit (WR: 2024 on).
-SERVED = ("QB", "RB", "WR")
+# Positions whose K0 hit-line chance is served: all four. TE is served below the charter bar by owner
+# decision 2026-11-28: on forward folds K0 beat the fold-local TE base rate in 88.6% of class resamples
+# (M4.json K0_vs_BASE; bar 90%). WR's 2020+ slope (1.69) is a seen regime check (charter rule 4), reported
+# on the card; the monitor kill rule acts only on classes drafted after the fit (RB/WR: 2024 on).
+SERVED = ("QB", "RB", "WR", "TE")
 
 
 def irls(X, y, lam=LAMBDA):
@@ -264,7 +264,8 @@ def write_freeze(t, rec, results):
             "scoring": "notes/prospect-research/experiments/M4.json",
             "model": "draft-only restricted cubic spline in log pick, C 0.1 (charter v2 frozen baseline)",
             "cuts": {p: bpm.TARGET[p][0] for p in SERVED}, "fit": meta, "p": table,
-            "not_served": {"TE": "K0 did not beat the TE base rate in 90% of class resamples"}}
+            "not_served": {},
+            "below_bar": {"TE": "served by owner decision 2026-11-28: beats the TE base rate in 88.6% of class resamples (bar 90%)"}}
     js = json.dumps(body, separators=(",", ":"))
     body["sha256"] = hashlib.sha256(js.encode()).hexdigest()
     FREEZE.write_text("// Frozen by notes/prospect-research/experiments/m4_cut_model.py --freeze. Do not hand-edit;\n"
