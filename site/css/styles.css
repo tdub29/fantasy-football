@@ -6334,11 +6334,6 @@ button:disabled { cursor: wait; opacity: 0.7; }
 .inj-card .adv-log :is(th, td) { padding: 5px 8px; }
 .inj-card td.inj-name { white-space: normal; min-width: 7em; }
 .fum-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 6px; }
-.fum-tag { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; border: 1px solid var(--border); background: var(--bg-3); color: var(--fg-1); }
-.fum-tag.is-trend { background: rgba(var(--red-rgb), .14); border-color: rgba(var(--red-rgb), .45); color: var(--red); }
-.fum-tag.is-fluke { background: rgba(var(--amber-rgb), .14); border-color: rgba(var(--amber-rgb), .45); color: var(--amber); }
-.fum-tag.is-clean { background: rgba(var(--green-rgb), .14); border-color: rgba(var(--green-rgb), .45); color: var(--green); }
-.fum-note { font-size: 0.78rem; color: var(--fg-1); line-height: 1.35; margin: 0 0 8px; }
 .stats-lab-season { background: var(--bg-1, #fff); padding: 4px 8px; border-radius: 8px; font-size: 0.8rem; }
 .weather-line { font-size: 0.85rem; }
 .weather-flag { border-color: var(--red); }

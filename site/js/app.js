@@ -277,7 +277,7 @@
     'gibbs-ros.js': 'Gibbs rest of season', 'gibbs-ppr.js': 'Gibbs full PPR',
     'expert-rankings.js': 'Expert ranks', 'fantasypros-experts.js': 'FantasyPros analysts',
     'alexandria.js': 'Source rank comparison', 'idp-dvp.js': 'IDP matchups',
-    'idp-xstats.js': 'IDP expected stats', 'idp-advanced.js': 'IDP advanced stats',
+    'idp-xstats.js': 'IDP rankings (FP ECR)', 'idp-advanced.js': 'IDP advanced stats',
     'kickers.js': 'Kicker projections', 'advanced.js': 'Advanced stats',
     'prospect.js': 'Prospect profiles', 'prospect-model.js': 'Prospect scores',
     'capital-ratings.js': 'Draft capital ratings', 'mock-consensus.js': 'Mock draft consensus',
@@ -3820,6 +3820,7 @@
     );
     if (!Array.isArray(filter.scopes)) filter.scopes = [filter.scope || 'all'];
     delete filter.scope;
+    if (filter.proj === 'xstats') filter.proj = 'blend';   // xStats source withdrawn from display
     // A redraft filter persisted from before the gate could still name a column
     // that no longer renders. Fall back to the view's natural sort.
     if (!leagueDynasty && filter.sort === 'value') {
@@ -3903,7 +3904,7 @@
           if (p === 'K') { filter.sort = 'kicker-exp'; filter.dir = 'desc'; }
           // Sleeper weeks keeps its week sort; the Weekly DST board has no Vegas column.
           else if (p === 'DEF' && filter.view === 'weekly') { filter.sort = 'weekly-sleeper'; filter.dir = 'desc'; }
-          else if (isIdpPosFilter(p) && weeklyTable) { filter.sort = 'idp-xyuh'; filter.dir = 'desc'; }
+          else if (isIdpPosFilter(p) && weeklyTable) { filter.sort = 'idp-fp'; filter.dir = 'asc'; }
           else if (/^(kicker-|def-|idp-)/.test(String(filter.sort))) {
             filter.sort = filter.view === 'ros' ? 'weekly-ros' : 'weekly-sleeper';
             filter.dir = filter.view === 'ros' ? 'asc' : 'desc';
@@ -3959,12 +3960,12 @@
     if (hasProj && filter.view === 'stats') {
       const projBtns = h('div', { class:'toggle-group' });
       const srcOpts = lg.is_idp
-        ? [['xstats','xStats'],['blend','Blended'],['pp','PP'],['sleeper','Sleeper'],['clay','Clay']]
+        ? [['blend','Blended'],['pp','PP'],['sleeper','Sleeper'],['clay','Clay']]
         : [['blend','Blended'],['pp','PP'],['sleeper','Sleeper'],['clay','Clay']];
       for (const [k, lbl] of srcOpts) {
         projBtns.appendChild(h('button', {
           class:`toggle ${filter.proj===k?'active':''}`,
-          title: k==='pp' ? 'PrizePicks (offense only)' : k==='clay' ? 'Clay (IDP only)' : k==='xstats' ? 'xStats (IDP only)' : '',
+          title: k==='pp' ? 'PrizePicks (offense only)' : k==='clay' ? 'Clay (IDP only)' : '',
           onclick:(e) => { filter.proj = k; persist();
             projBtns.querySelectorAll('.toggle').forEach(b => b.classList.toggle('active', b===e.target));
             render(); }
@@ -4090,8 +4091,10 @@
       }
       const idpWeeklyOnly = weeklyTable && isIdpPosFilter(filter.pos);
       const xstatOf = (pid) => window.IDP_XSTATS?.players?.[String(pid)] || null;
-      if (idpWeeklyOnly && !String(filter.sort).startsWith('idp-')) {
-        filter.sort = 'idp-xyuh'; filter.dir = 'desc'; persist();
+      // yuh-idp-xstats-v1 is research only (FP ECR beats it on rank order), so a
+      // saved sort on one of its old columns falls back to ECR.
+      if (idpWeeklyOnly && !['idp-fp', 'idp-slp', 'idp-ytd'].includes(filter.sort)) {
+        filter.sort = 'idp-fp'; filter.dir = 'asc'; persist();
       } else if (!idpWeeklyOnly && String(filter.sort).startsWith('idp-')) {
         filter.sort = filter.view === 'ros' ? 'weekly-ros' : 'weekly-sleeper';
         filter.dir = filter.view === 'ros' ? 'asc' : 'desc';
@@ -4119,20 +4122,9 @@
       const idpWeeklyValue = (player, key) => {
         const x = xstatOf(player._sleeperId);
         const isRos = filter.view === 'ros';
-        if (key === 'idp-xyuh') return isRos ? x?.xRos : x?.xWk;
         if (key === 'idp-slp') return player._weekly?.sleeper?.[currentWeek - 1];
         if (key === 'idp-ytd') return x?.ytd;
-        if (key === 'idp-luck') return x?.luck;
         if (key === 'idp-fp') return isRos ? x?.fpDyn : x?.fpWk;
-        if (key === 'idp-dynrk') return x?.dynRk;
-        if (key === 'idp-snp') return x?.xSnp;
-        if (key === 'idp-tkl') return x?.xTkl;
-        if (key === 'idp-sk') return x?.xSk;
-        if (key === 'idp-qbh') return x?.xQBH;
-        if (key === 'idp-tfl') return x?.xTFL;
-        if (key === 'idp-pbu') return x?.xPBU;
-        if (key === 'idp-int') return x?.xINT;
-        if (key === 'idp-ff') return x?.xFF;
         return null;
       };
       const cmp = (a, b) => {
@@ -4453,21 +4445,9 @@
               sortHdr('def-td', 'Proj TD', { right:true, title:'Sleeper projected defense + ST TDs' }),
               sortHdr('def-press', 'Press%', { right:true, title:'Season YTD defensive pressure rate' }),
             ] : idpWeeklyOnly ? [
-              sortHdr('idp-xyuh', isRosView ? 'xYuH ROS' : `xYuH W${currentWeek}`, { right:true,
-                title: isRosView ? 'IDP xStats rest-of-season schedule-adjusted PPG' : `IDP xStats Week ${currentWeek} matchup projection` }),
-              sortHdr('idp-slp', 'Slp yuH', { right:true, title:`Sleeper W${currentWeek} stats scored under yuH rules` }),
-              sortHdr('idp-ytd', 'YTD', { right:true, title:'2026 season YTD PPG in yuH scoring' }),
-              sortHdr('idp-luck', 'Luck', { right:true, title:'YTD PPG minus neutral xYuH PPG (negative = buy-low)' }),
               sortHdr('idp-fp', isRosView ? 'FP Dyn' : 'FP ECR', { right:true, title: isRosView ? 'FantasyPros Dynasty IDP ECR' : `FantasyPros W${currentWeek} IDP ECR` }),
-              sortHdr('idp-dynrk', 'Dyn Rk', { right:true, title:'IDP xStats Dynasty rank (yuH 2-IDP-Flex scoring and age curve)' }),
-              sortHdr('idp-snp', 'xSnaps', { right:true, title:'Expected defensive snaps/game' }),
-              sortHdr('idp-tkl', 'xTkl', { right:true, title:'Expected tackle pts/game (Solo + 0.5*Ast)' }),
-              sortHdr('idp-sk', 'xSack', { right:true, title:'Expected sacks/game' }),
-              sortHdr('idp-qbh', 'xQBH', { right:true, title:'Expected QB hits/game' }),
-              sortHdr('idp-tfl', 'xTFL', { right:true, title:'Expected tackles for loss/game' }),
-              sortHdr('idp-pbu', 'xPBU', { right:true, title:'Expected passes defended/game' }),
-              sortHdr('idp-int', 'xINT', { right:true, title:'Expected interceptions/game' }),
-              sortHdr('idp-ff', 'xFF', { right:true, title:'Expected forced fumbles/game' }),
+              sortHdr('idp-slp', 'Slp yuH', { right:true, title:`Sleeper W${currentWeek} projection scored under yuH rules` }),
+              sortHdr('idp-ytd', 'YTD', { right:true, title:'2026 season YTD PPG in yuH scoring' }),
             ] : [
               isRosView ? null : sortHdr('weekly-vegas', 'Vegas pts', { right:true, title:'BettingPros / PrizePicks market composite (Sleeper-filled when missing)' }),
               isRosView ? null : sortHdr('weekly-sleeper', 'Sleeper pts', { right:true, title:'Sleeper weekly PPR projection' }),
@@ -4526,27 +4506,12 @@
                 ];
               })() : idpWeeklyOnly ? (() => {
                 const x = xstatOf(p._sleeperId) || {};
-                const cell = (v, dp, tip) => h('td', { class:'right tnum', title:tip }, v == null ? emptyValue() : fmt.decimal(v, dp));
-                const rkCell = (v, tip) => h('td', { class:'right tnum', title:tip }, v == null ? emptyValue() : `#${Math.round(v)}`);
-                const lck = x.luck;
-                const lckCls = lck == null ? '' : lck <= -0.75 ? ' delta-up' : lck >= 0.75 ? ' delta-down' : '';
                 const fpVal = isRosView ? x.fpDyn : x.fpWk;
                 return [
-                  cell(isRosView ? x.xRos : x.xWk, 1, 'yuh-idp-xstats-v1 projection'),
+                  h('td', { class:'right tnum', title: isRosView ? 'FantasyPros Dynasty IDP ECR' : `FantasyPros W${currentWeek} IDP ECR` },
+                    fpVal == null ? emptyValue() : `#${Math.round(fpVal)}`),
                   pointCell(weekly.sleeper?.[currentWeek - 1], `Sleeper W${currentWeek} in yuH scoring`),
-                  cell(x.ytd, 1, x.gp ? `${x.gp} games played` : 'YTD PPG'),
-                  h('td', { class:`right tnum${lckCls}`, title:'YTD minus expected PPG' },
-                    lck == null ? emptyValue() : `${lck > 0 ? '+' : ''}${fmt.decimal(lck, 2)}`),
-                  rkCell(fpVal, isRosView ? 'FantasyPros Dynasty IDP ECR' : `FantasyPros W${currentWeek} IDP ECR`),
-                  rkCell(x.dynRk, x.dyn != null ? `Dynasty score ${fmt.decimal(x.dyn, 1)}` : 'Dynasty rank'),
-                  cell(x.xSnp, 1, 'Expected snaps/game'),
-                  cell(x.xTkl, 1, 'Expected tackle pts/game'),
-                  cell(x.xSk, 2, 'Expected sacks/game'),
-                  cell(x.xQBH, 2, 'Expected QB hits/game'),
-                  cell(x.xTFL, 2, 'Expected TFL/game'),
-                  cell(x.xPBU, 2, 'Expected PBU/game'),
-                  cell(x.xINT, 2, 'Expected INT/game'),
-                  cell(x.xFF, 2, 'Expected FF/game'),
+                  h('td', { class:'right tnum', title: x.gp ? `${x.gp} games played` : 'YTD PPG' }, x.ytd == null ? emptyValue() : fmt.decimal(x.ytd, 1)),
                 ];
               })() : [
                 isRosView ? null : pointCell(weekly.vegas,
@@ -4712,7 +4677,7 @@
           : defOnly
           ? `Week ${currentWeek} D/ST · ${rows.length} shown · Sleeper component projections + Vegas opp implied pts + YTD pressure%.`
           : idpWeeklyOnly
-          ? `${isRosView ? 'ROS' : `W${currentWeek}`} yuH IDP xStats · ${rows.length} shown · Sleeper stats scored under yuH IDP settings; neg Luck = buy-low.`
+          ? `${isRosView ? 'Dynasty' : `W${currentWeek}`} IDP · ${rows.length} shown · FantasyPros IDP ECR; Sleeper scored under yuH IDP settings.`
           : (filter.view === 'ros'
             ? `ROS PPR (${rosMeta.available ? `${coverage.rosPlayers || 0} as of ${rosMeta.updated}` : 'unavailable'}${rosStale ? ', stale' : ''}); other cols W${currentWeek}. `
             : '')
@@ -13474,7 +13439,7 @@
           ] },
           { key:'production', label:'Production', items: [
             { jump:'Game Log',    node: advancedBlock(sleeper) },
-            { jump:'xStats',      node: idpXstatsBlock(sleeper) },
+            { jump:'IDP ECR',     node: idpEcrBlock(sleeper) },
             { jump:'Ball Sec.',   node: fumbleFaultBlock(sleeper) },
             { jump:'Usage',       node: usageWeeksBlock(sleeper) },
             { jump:'Field Map',   node: locationBlock(sleeper) },
@@ -13723,27 +13688,20 @@
     const sid = String(sleeper.id);
     const rb = F.rb && F.rb[sid];
     if (rb) {
+      // fumble-fault-v1 is withdrawn from display (registry): no shrunk rate,
+      // expected-lost, tags or tone. Observed counts and rates only.
       const c = rb.cur || {}, p = rb.pool3 || {};
-      const tag = rb.tag || 'Normal';
-      const toneCls = tag === 'Multi-Yr Trend' ? 'is-trend'
-        : tag === '1-Yr Spike (Fluke?)' ? 'is-fluke'
-        : tag === 'Clean' ? 'is-clean' : '';
       const fmtRate = (v) => v == null ? '-' : `${Number(v).toFixed(2)}%`;
-      const statTile = (label, val, sub, valCls) => h('div', { class:'adv-stat' },
+      const statTile = (label, val, sub) => h('div', { class:'adv-stat' },
         h('div', { class:'adv-stat-label' }, label),
-        h('div', { class:`adv-stat-value tnum ${valCls || ''}` }, val),
+        h('div', { class:'adv-stat-value tnum' }, val),
         sub ? h('div', { class:'adv-stat-rank tnum' }, sub) : null);
-      const luck = Number(c.lost_luck || 0);
-      const lostTone = luck > 0.7 ? 'delta-down' : luck < -0.7 ? 'delta-up' : '';
-      const curTone = (c.rate100 || 0) >= 1.6 && (c.t || 0) >= 40 ? 'delta-down' : ((c.rate100 || 0) < 0.5 && (c.t || 0) >= 80 ? 'delta-up' : '');
-      const p3Tone = (p.rate100 || 0) >= 1.25 && (p.t || 0) >= 250 ? 'delta-down' : ((p.rate100 || 0) < 0.6 && (p.t || 0) >= 250 ? 'delta-up' : '');
       const cells = [
-        statTile(`${F.season} Fum%`, fmtRate(c.rate100), `${c.f || 0} / ${c.t || 0}t`, curTone),
-        statTile('3yr Fum%', fmtRate(p.rate100), `${p.f || 0} / ${p.t || 0}t (avg 0.80%)`, p3Tone),
-        statTile('EB True%', fmtRate(p.eb100), `M=3k shrunk`),
-        statTile('Lost / Exp', `${c.fl || 0} / ${(c.exp_lost || 0).toFixed(1)}`, luck >= 0 ? `+${luck.toFixed(1)} unlucky` : `${luck.toFixed(1)} lucky`, lostTone),
-        statTile('Forced / Unf', `${c.ff || 0} / ${c.uf || 0}`, `94% NFL marked forced`),
-        statTile('Rush / Rec F', `${c.f_rush || 0} / ${c.f_rec || 0}`, `Rec = 1.6x rush rate`),
+        statTile(`${F.season} Fum%`, fmtRate(c.rate100), `${c.f || 0} / ${c.t || 0}t`),
+        statTile('3yr Fum%', fmtRate(p.rate100), `${p.f || 0} / ${p.t || 0}t`),
+        statTile('Lost', String(c.fl || 0), `of ${c.f || 0} fumbles`),
+        statTile('Forced / Unf', `${c.ff || 0} / ${c.uf || 0}`, ''),
+        statTile('Rush / Rec F', `${c.f_rush || 0} / ${c.f_rec || 0}`, ''),
       ];
       const logs = rb.log || [];
       const logBox = logs.length ? h('details', { class:'inj-season', open: logs.length >= 3 },
@@ -13761,14 +13719,9 @@
               h('td', { class: fl ? 'delta-down' : '' }, fl ? 'Lost' : 'Kept'),
               h('td', null, ff ? (fbc != null && fbc >= 1.5 ? `${fn} (${Number(fbc).toFixed(1)}/1k)` : fn) : 'Self / Exchange'))))))) : null;
       return h('div', { class:'card adv-card' },
-        h('div', { class:'fum-head' },
-          h('div', { class:'card-title', style:{ marginBottom:0 } }, `Ball Security · ${F.season} through week ${F.throughWeek}`),
-          h('span', { class:`fum-tag ${toneCls}` }, tag)),
-        h('div', { class:'fum-note' }, rb.note || ''),
+        h('div', { class:'card-title' }, `Ball Security · ${F.season} through week ${F.throughWeek}`),
         h('div', { class:'adv-grid' }, ...cells),
-        logBox,
-        h('div', { class:'tip', style:{ marginTop:'6px' } },
-          'Reaction rule: judge 3-yr forced+total rate (need >=250 touches), not 1-yr spikes or coin-flip recovery luck (56.5% lost).'));
+        logBox);
     }
 
     const df = F.def && F.def[sid];
@@ -13825,40 +13778,23 @@
     return card;
   }
 
-  function idpXstatsBlock(sleeper) {
-    if (!sleeper || !window.IDP_XSTATS) return null;
+  // yuh-idp-xstats-v1 stays research only: FantasyPros ECR beat it on rank
+  // order (registry), so the card shows ECR and observed YTD, no model numbers.
+  function idpEcrBlock(sleeper) {
     const X = window.IDP_XSTATS;
-    const x = X.players && X.players[String(sleeper.id)];
-    if (!x) return null;
-    const tile = (label, val, sub, cls) => h('div', { class:'adv-stat' },
+    const x = sleeper && X?.players?.[String(sleeper.id)];
+    if (!x || (x.fpWk == null && x.fpDyn == null && x.ytd == null)) return null;
+    const tile = (label, val, sub) => h('div', { class:'adv-stat' },
       h('div', { class:'adv-stat-label' }, label),
-      h('div', { class:`adv-stat-value tnum ${cls || ''}` }, val),
+      h('div', { class:'adv-stat-value tnum' }, val),
       sub ? h('div', { class:'adv-stat-rank tnum' }, sub) : null);
-    const luck = x.luck;
-    const luckCls = luck == null ? '' : luck <= -0.75 ? 'delta-up' : luck >= 0.75 ? 'delta-down' : '';
-    const luckStr = luck == null ? '-' : `${luck > 0 ? '+' : ''}${Number(luck).toFixed(2)}`;
-    const luckSub = luck == null
-      ? `${x.gp || 0} GP (need 4+)`
-      : (luck <= -0.75 ? 'Buy-low variance' : luck >= 0.75 ? 'Hot / sell-high' : 'Near expected');
-    const fpText = (x.fpWk != null || x.fpDyn != null)
-      ? `Wk #${x.fpWk ?? '-'} / Dyn #${x.fpDyn ?? '-'}`
-      : 'Unranked';
     return h('div', { class:'card adv-card' },
-      h('div', { class:'fum-head' },
-        h('div', { class:'card-title', style:{ marginBottom:0 } }, `yuH IDP xStats · W${X.week}`),
-        x.rosRk ? h('span', { class:'badge' }, `ROS #${x.rosRk}`) : null),
+      h('div', { class:'card-title' }, `IDP rankings · W${X.week}`),
       h('div', { class:'adv-grid' },
-        tile(`xYuH W${X.week}`, x.xWk != null ? Number(x.xWk).toFixed(1) : '-', x.opp ? `vs ${x.opp}` : 'Neutral / BYE', ''),
-        tile('xYuH ROS', x.xRos != null ? Number(x.xRos).toFixed(1) : '-', x.rosRk ? `ROS #${x.rosRk}` : (x.inj || 'Inactive'), ''),
-        tile('Dynasty', `#${x.dynRk ?? '-'}`, `${Number(x.dyn || 0).toFixed(1)} pts · Age ${x.age ?? '-'}`, ''),
-        tile('YTD vs xYuH', x.ytd != null ? Number(x.ytd).toFixed(1) : '-', `${luckStr} (${luckSub})`, luckCls),
-        tile('FP ECR', fpText, `Repl #24: ${X.replPpg ?? '-'} PPG`, ''),
-        tile('xSnaps', Number(x.xSnp || 0).toFixed(1), x.snp_pg ? `YTD ${Number(x.snp_pg).toFixed(1)}/g` : '', ''),
-        tile('xTackle', `${Number(x.xSolo || 0).toFixed(1)} / ${Number(x.xAst || 0).toFixed(1)}`, `Solo / Ast (${Number(x.xTkl || 0).toFixed(1)} pts)`, ''),
-        tile('xSack / xQBH', `${Number(x.xSk || 0).toFixed(2)} / ${Number(x.xQBH || 0).toFixed(2)}`, `xTFL ${Number(x.xTFL || 0).toFixed(2)}`, ''),
-        tile('xPBU / xINT', `${Number(x.xPBU || 0).toFixed(2)} / ${Number(x.xINT || 0).toFixed(2)}`, `xFF ${Number(x.xFF || 0).toFixed(2)} · xFR ${Number(x.xFR || 0).toFixed(2)}`, '')),
-      h('div', { class:'tip', style:{ marginTop:'6px' } },
-        `2 IDP Flex yuH scoring thru W${X.throughWeek}. Positive Luck = YTD above expected; negative Luck = buy-low volume.`));
+        tile(`FP W${X.week} ECR`, x.fpWk != null ? `#${x.fpWk}` : '-', x.opp ? `vs ${x.opp}` : 'Unranked or BYE'),
+        tile('FP Dynasty ECR', x.fpDyn != null ? `#${x.fpDyn}` : '-', 'IDP'),
+        tile('YTD PPG', x.ytd != null ? Number(x.ytd).toFixed(1) : '-', `${x.gp || 0} GP · yuH scoring`)),
+      h('div', { class:'tip', style:{ marginTop:'6px' } }, `FantasyPros IDP consensus. YTD thru W${X.throughWeek}.`));
   }
 
   // Season fantasy projection for the modal: pts from every source + the
@@ -13894,7 +13830,6 @@
       // band keeps them; this card keeps what the band does not carry, which is
       // the per-source spread and the projected stat line.
       statStr ? h('div', { class: 'tip' }, `${PROJ_SRC_LABEL[lineSrc] || lineSrc}: ${statStr}`) : null,
-      unit === 'defense' ? h('div', { class: 'tip', style: { marginTop: '4px', opacity: .8 } }, 'xStats = IDP expected stats annualized (x17); Clay and Sleeper shown for comparison.') : null,
     );
   }
 
@@ -15515,7 +15450,7 @@
     const opts = { sims, src, whatIf: wi, withMaxPf: isDynastyLeague(lg) };
     return async ? championshipOddsAsync(lg, opts).then(done) : done(championshipOdds(lg, opts));
   }
-  const PROJ_SRC_LABEL = { xstats: 'xStats (yuH)', blend: 'Blended', pp: 'PrizePicks', sleeper: 'Sleeper', clay: 'Clay' };
+  const PROJ_SRC_LABEL = { blend: 'Blended', pp: 'PrizePicks', sleeper: 'Sleeper', clay: 'Clay' };
   const STAT_LABEL = {
     pass_yd: 'Pa Yd', pass_td: 'Pa TD', pass_int: 'INT', rush_yd: 'Ru Yd', rush_td: 'Ru TD',
     rec: 'Rec', rec_yd: 'Re Yd', rec_td: 'Re TD',
@@ -16720,7 +16655,7 @@
     main.appendChild(h('div', { class: 'page-header' },
       h('div', null,
         h('h1', { class: 'page-title' }, 'Player Projections'),
-        h('p', { class: 'page-sub' }, 'Season pts + stat lines (Offense: PrizePicks/Sleeper/Blend · IDP: xStats/Clay/Sleeper/Blend).')
+        h('p', { class: 'page-sub' }, 'Season pts + stat lines (Offense: PrizePicks/Sleeper/Blend · IDP: Clay/Sleeper/Blend).')
       ),
       h('div', { class: 'page-actions' }, leagueSelector(lg.id, (id) => { PROJ_STATE.leagueId = id; navigate(`#projections/${id}`); }))
     ));
@@ -16924,7 +16859,7 @@
     main.appendChild(table);
     main.appendChild(h('div', { class: 'tip', style: { marginTop: '10px' } },
       `${rows.length} ${PROJ_STATE.unit} players (${PROJ_SRC_LABEL[src]}) · ` +
-      (isDef ? 'xStats = IDP expected stats annualized (x17); Clay and Sleeper scored under yuH rules.' : 'PP * = missing PrizePicks props filled from Sleeper.')));
+      (isDef ? 'Clay and Sleeper scored under yuH rules.' : 'PP * = missing PrizePicks props filled from Sleeper.')));
   }
 
   // ============================================================
@@ -17315,33 +17250,19 @@
           _sid: sid, _mine: mine.has(sid),
           _label: `${v.n} ${grp === 'ALL' ? v.p + ' ' : ''}${v.t || ''}`.trim(),
           _name: v.n,
-          xWk: xs?.xWk ?? null, xRos: xs?.xRos ?? null, xLuck: xs?.luck ?? null,
-          dynRk: xs?.dynRk ?? null, xSnp: xs?.xSnp ?? null, xTkl: xs?.xTkl ?? null,
-          xSk: xs?.xSk ?? null, xQBH: xs?.xQBH ?? null, xTFL: xs?.xTFL ?? null,
-          xPBU: xs?.xPBU ?? null, xINT: xs?.xINT ?? null, xFF: xs?.xFF ?? null,
+          fpWk: xs?.fpWk ?? null, fpDyn: xs?.fpDyn ?? null,
         }, v);
       });
     const xCols = X ? [
-      { key:'xWk', label:`xYuH W${X.week}`, fmt:'dec1', get:(r) => r.xWk, desc:`IDP xStats Week ${X.week} matchup projection` },
-      { key:'xRos', label:'xYuH ROS', fmt:'dec1', get:(r) => r.xRos, desc:'IDP xStats rest-of-season schedule-adjusted PPG' },
-      { key:'xLuck', label:'Luck', fmt:'dec2', get:(r) => r.xLuck, desc:'YTD PPG minus neutral xYuH PPG (negative = buy-low)',
-        tone:(r) => r.xLuck == null ? '' : r.xLuck <= -0.75 ? 'delta-up' : r.xLuck >= 0.75 ? 'delta-down' : '' },
-      { key:'dynRk', label:'Dyn Rk', fmt:'int', lowerBetter:true, get:(r) => r.dynRk, desc:'IDP xStats Dynasty rank (yuH 2-IDP-Flex scoring and age curve)' },
-      { key:'xSnp', label:'xSnaps', fmt:'dec1', get:(r) => r.xSnp, desc:'Expected snaps/game' },
-      { key:'xTkl', label:'xTkl', fmt:'dec1', get:(r) => r.xTkl, desc:'Expected tackle pts/game (Solo + 0.5*Ast)' },
-      { key:'xSk', label:'xSack', fmt:'dec2', get:(r) => r.xSk, desc:'Expected sacks/game' },
-      { key:'xQBH', label:'xQBH', fmt:'dec2', get:(r) => r.xQBH, desc:'Expected QB hits/game' },
-      { key:'xTFL', label:'xTFL', fmt:'dec2', get:(r) => r.xTFL, desc:'Expected tackles for loss/game' },
-      { key:'xPBU', label:'xPBU', fmt:'dec2', get:(r) => r.xPBU, desc:'Expected passes defended/game' },
-      { key:'xINT', label:'xINT', fmt:'dec2', get:(r) => r.xINT, desc:'Expected interceptions/game' },
-      { key:'xFF', label:'xFF', fmt:'dec2', get:(r) => r.xFF, desc:'Expected forced fumbles/game' },
+      { key:'fpWk', label:`FP W${X.week}`, fmt:'int', lowerBetter:true, get:(r) => r.fpWk, desc:`FantasyPros Week ${X.week} IDP ECR` },
+      { key:'fpDyn', label:'FP Dyn', fmt:'int', lowerBetter:true, get:(r) => r.fpDyn, desc:'FantasyPros Dynasty IDP ECR' },
     ] : [];
     const cols = [
       ...xCols,
       ...I.columns.filter(c => c.key !== 'rank').map(c => ({ key:c.key, label:c.label, fmt:c.fmt, desc:c.desc,
         get:(r) => r[c.key], lowerBetter:/allow|mtkl/.test(c.key) })),
     ];
-    statsTable(main, prefs, 'IDP', rows, cols, { key: X ? 'xRos' : 'ppg', dir:'desc' },
+    statsTable(main, prefs, 'IDP', rows, cols, { key:'ppg', dir:'desc' },
       `${grp === 'ALL' ? 'ALL (IDP Flex)' : grp}, ${I.season} through week ${I.throughWeek}`,
       (r) => openPlayerDetail(r._name, r._sid));
     main.appendChild(h('div', { class:'tip', style:{ marginTop:'10px' } }, `${rows.length} players. Based on NFL defensive box-score, snap, and play-by-play stats.`));
@@ -19025,11 +18946,8 @@
       { key:'fum_ff',   label:'Forced',   group:'Ball Security', fmt:'int',  lowerBetter:true, desc:'Fumbles credited as forced by a defender (~95% of RB fumbles).' },
       { key:'fum_uf',   label:'Unforced', group:'Ball Security', fmt:'int',  lowerBetter:true, desc:'Unforced drops/exchanges on RB plays.' },
       { key:'fum_fl',   label:'Lost',     group:'Ball Security', fmt:'int',  lowerBetter:true, desc:'Actual fumbles lost to the defense.' },
-      { key:'fum_exp',  label:'Exp lost', group:'Ball Security', fmt:'dec1', lowerBetter:true, desc:'Expected lost fumbles (fumbles x 56.5% league recovery rate).' },
-      { key:'fum_rate', label:'Fum/100t', group:'Ball Security', fmt:'dec2', lowerBetter:true, desc:'2026 fumbles per 100 touches (min 40 touches; NFL avg 0.80).' },
-      { key:'fum_3yr',  label:'3yr/100t', group:'Ball Security', fmt:'dec2', lowerBetter:true, desc:'3-year pooled fumbles per 100 touches (min 100 touches; strongest signal).' },
-      { key:'fum_eb',   label:'EB/100t',  group:'Ball Security', fmt:'dec2', lowerBetter:true, desc:'Sample-adjusted fumble rate blended toward the 0.80% NFL RB average.' },
-      { key:'fum_tag',  label:'Signal',   group:'Ball Security', fmt:'text', desc:'Fluke vs Multi-Yr Trend tag based on 3-yr volume and rate.' },
+      { key:'fum_rate', label:'Fum/100t', group:'Ball Security', fmt:'dec2', lowerBetter:true, desc:'2026 fumbles per 100 touches (min 40 touches).' },
+      { key:'fum_3yr',  label:'3yr/100t', group:'Ball Security', fmt:'dec2', lowerBetter:true, desc:'3-year pooled fumbles per 100 touches (min 100 touches).' },
     ];
     const hasRbFum = pos === 'RB' && !splitOn && !!(window.FUMBLES && window.FUMBLES.rb);
     const cols = splitOn ? SPLIT_COLS.filter(c => c.pos.includes(pos))
@@ -19101,11 +19019,8 @@
             fum_ff: rf.cur.ff,
             fum_uf: rf.cur.uf,
             fum_fl: rf.cur.fl,
-            fum_exp: rf.cur.exp_lost,
             fum_rate: (rf.cur.t || 0) >= 40 ? rf.cur.rate100 : null,
             fum_3yr: (rf.pool3.t || 0) >= 100 ? rf.pool3.rate100 : null,
-            fum_eb: rf.pool3.eb100,
-            fum_tag: rf.tag,
           } : {};
           return Object.assign({ _key:sid, _name:v.n, _team:v.t, _mine:mine.has(sid) }, v, fextra);
         });

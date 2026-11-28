@@ -121,13 +121,17 @@ def main():
     off_slim = [{"id": p["id"], "name": p["name"], "pos": p["pos"], "team": p["team"],
                  "pp": p["pp"], "sleeper": p["sleeper"], "blend": p["blend"], "stats": p.get("stats", {}),
                  "pp_partial": bool(p.get("pp_borrowed"))} for p in off]
+    # yuh-idp-xstats-v1 is research only (FP ECR beats it on rank order; registry), so
+    # its season line stays in defense-projections.json and off the site file.
     def_slim = [{"id": p["id"], "name": p["name"], "pos": p["pos"], "team": p["team"],
-                 "xstats": p["xstats"], "clay": p["clay"], "sleeper": p["sleeper"], "blend": p["blend"], "stats": p["stats"]} for p in out]
+                 "clay": p["clay"], "sleeper": p["sleeper"], "blend": p["blend"],
+                 "stats": {k: v for k, v in p["stats"].items() if k != "xstats"}}
+                for p in out if p["blend"] is not None]
     payload = {
         "offense": {"default": "pp", "sources": ["blend", "pp", "sleeper"],
                     "stat_keys": ["pass_yd", "pass_td", "pass_int", "rush_yd", "rush_td", "rec", "rec_yd", "rec_td"],
                     "players": off_slim},
-        "defense": {"default": "xstats", "sources": ["xstats", "blend", "clay", "sleeper"],
+        "defense": {"default": "clay", "sources": ["blend", "clay", "sleeper"],
                     "stat_keys": ["solo", "ast", "sack", "tfl", "int", "ff", "pass_def", "qb_hit", "fum_rec"],
                     "players": def_slim},
     }
@@ -136,15 +140,15 @@ def main():
         "window.OFFENSE_PROJ = " + json.dumps(payload, separators=(",", ":"), ensure_ascii=False) + ";\n",
         encoding="utf-8")
     if args.self_check:
-        assert payload["defense"]["default"] == "xstats"
-        assert payload["defense"]["sources"] == ["xstats", "blend", "clay", "sleeper"]
+        assert payload["defense"]["default"] == "clay"
+        assert payload["defense"]["sources"] == ["blend", "clay", "sleeper"]
+        assert not any("xstats" in p or "xstats" in p["stats"] for p in def_slim), "xstats leaked into site file"
         names = {p["name"] for p in def_slim}
         for req_nm in ("Blake Cashman", "Kamari Lassiter"):
             assert req_nm in names, f"Missing expected IDP {req_nm}"
-        assert any("Reese" in n for n in names), "Missing Arvell Reese from xstats defense pool"
         x_signed = [
             p["xstats"] - sum(p["stats"]["xstats"].get(k, 0.0) * w for k, w in YUH.items())
-            for p in def_slim if p.get("xstats") is not None and (p.get("stats") or {}).get("xstats")
+            for p in out if p.get("xstats") is not None and (p.get("stats") or {}).get("xstats")
         ]
         x_diffs = [abs(d) for d in x_signed]
         assert x_diffs and max(x_diffs) <= 0.60, f"xstats scoring parity drift: max_diff={max(x_diffs):.4f}"
@@ -152,7 +156,7 @@ def main():
         assert abs(mean_bias) <= 0.05, f"xstats systematic bias drift: mean_diff={mean_bias:.4f}"
         print(f"score_defense self-check ok (xstats parity max_diff={max(x_diffs):.3f}, mean_diff={mean_bias:+.4f})")
     print(f"defense: {len(out)} IDP scored -> defense-projections.json; site file offense={len(off_slim)} defense={len(def_slim)}")
-    print("\nTop 10 IDP by xStats (default):")
+    print("\nTop 10 IDP by xStats (research only, not on the site):")
     for i, p in enumerate(sorted(out, key=lambda x: -(x["xstats"] or 0))[:10], 1):
         print(f"{i:2d}. {p['name']:22s} {p['team'] or '?':3s} {p['pos']:4s}  xStats {p['xstats']}  Clay {p['clay']}  Sleeper {p['sleeper']}  Blend {p['blend']}")
 
