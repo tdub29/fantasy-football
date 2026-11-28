@@ -13943,12 +13943,34 @@
   const pmFitPick = (r) => r.y ? r.pk : undefined;
   const pmHit = (p) => (PM_CUTS[p] || [])[1];
   const PM_NO_PREDRAFT = 'No validated pre-draft model: chances and the prospect score appear once he is drafted.';
-  // The frozen file holds all four positions. TE is served below the charter's 90% base-rate bar by owner
-  // decision (2026-11-28); WR carries a reported 2020+ regime warning (a seen check, not a kill rule).
-  const PM_WARN = {
-    TE: 'TE caution: this pick-based curve beat the historical TE hit rate in only 88.6% of draft-class resamples, under the 90% bar the other positions clear, so treat TE odds as rough. Its calibration slope is 0.79 (90% interval 0.41-1.54), and on past classes it forecast 31 top-12 TEs where 25 happened.',
-    WR: 'WR caution: for the 2020-2023 draft classes this pick-based curve was too cautious for WRs (calibration slope 1.69, 95% interval 1.30-3.29), so high chances ran low and low chances ran high. Its first fresh check comes when the 2024 class finishes its three seasons (about 2027-01).',
+  // Drafted players are scored by M6 (prospect-cut-model.js m6.players, frozen per player): draft slot plus
+  // production, athleticism/size, age and landing spot. Served at every position by owner decision
+  // (2026-11-28) whatever its score; PM_EVIDENCE states how it did on past classes (M6.json, forward folds).
+  // A drafted player with no linked college record falls back to the draft-slot curve, labelled.
+  const PM_EVIDENCE = {
+    QB: 'QB model check: on past draft classes these odds forecast worse than draft slot alone (error 0.399 vs 0.363) and ran overconfident (calibration slope 0.71). Landing spot hurt most.',
+    RB: 'RB model check: on past draft classes these odds forecast slightly worse than draft slot alone (error 0.472 vs 0.464); calibration slope 0.79. Production was the only family that helped.',
+    WR: 'WR model check: on past draft classes these odds forecast slightly worse than draft slot alone (error 0.362 vs 0.351); calibration slope 0.90. Age was the only family that did not hurt.',
+    TE: 'TE model check: on past draft classes these odds tied draft slot alone (error 0.404 vs 0.404) and ran overconfident (calibration slope 0.73). Athleticism and landing spot helped.',
   };
+  const PM_FAM = { capital:'draft slot', production:'production', athleticism:'athleticism/size', age:'age', landing:'landing spot' };
+  const PM_FEAT = { aya_final:'final-year passing efficiency', comp_final:'completion %', rush_ypg_best:'rushing yards',
+    starts:'starts', scrim_ypg:'scrimmage yards', ryptpa_final:'yards per team pass', ryptpa_best:'yards per team pass',
+    ryptpa_career:'yards per team pass', dom_best:'dominator', breakout_age:'breakout age', weight:'weight',
+    speed_score:'speed score (no forty)', draft_age:'draft age', tm_pass_att_prev:'team pass volume',
+    tm_pos_ppr_prev:'team points at his position' };
+  const pmM6 = (r) => r && r.y && r.id ? (((window.PROSPECT_CUT_MODEL || {}).m6 || {}).players || {})[r.id] : null;
+  // The chance a card or table shows: M6 when he has a frozen M6 row, else the draft-slot curve.
+  const pmChance = (r) => { const m = pmM6(r); return m ? m[1] : pmTopChance(r.p, pmHit(r.p), pmFitPick(r)); };
+  function pmWhy(r) {
+    const m = pmM6(r);
+    if (!m) return r.y && pmChance(r) != null ? 'Pick-only, no profile data.' : null;
+    const parts = ['capital', 'production', 'athleticism', 'age', 'landing'].filter(f => m[2][f] != null)
+      .map(f => `${PM_FAM[f]} ${m[2][f] >= 0 ? '+' : ''}${m[2][f]} pts`);
+    const miss = [...new Set(m[3].map(c => PM_FEAT[c] || c))];
+    return `Why: ${parts.join(', ')} (each vs an average draftee on that input).`
+      + (miss.length ? ` No data, set to average: ${miss.join(', ')}.` : '');
+  }
   const pmWindow = (p) => ((window.PROSPECT_MODEL.pos[p] || {}).target || '').replace(/^.* in NFL years /, '');
   // Draft classes in the score's reference pool (the drafted rows in prospect-model.js).
   const pmPoolYears = () => {
@@ -13971,13 +13993,14 @@
     if (!M) return null;
     if (!pmScoreRef) {
       pmScoreRef = {};
-      for (const x of Object.values(M.nfl)) if (x.pk) {
-        const mb = pmMean(x.p, x.pk);
+      for (const [id, x0] of Object.entries(M.nfl)) if (x0.pk) {
+        const x = { ...x0, id };
+        const mb = pmChance(x);
         if (mb != null) (pmScoreRef[x.p] = pmScoreRef[x.p] || []).push(mb);
       }
       Object.values(pmScoreRef).forEach(a => a.sort((a1, b1) => a1 - b1));
     }
-    const m = pmMean(r.p, pmFitPick(r)), ref = pmScoreRef[r.p];
+    const m = pmChance(r), ref = pmScoreRef[r.p];
     if (m == null || !ref) return null;
     let i = 0, j = ref.length;
     while (i < j) { const k = (i + j) >> 1; if (ref[k] < m) i = k + 1; else j = k; }
@@ -14161,9 +14184,9 @@
   // peers: same position and class, ranked by the prospect score. Drafted rows carry y.
   function pmCardHead(r, cls, peers, idSub, boxes) {
     const logo = ((window.COLLEGE_BIO || {}).schools || {})[r.sch];
-    const hit = pmHit(r.p), mine = pmTopChance(r.p, hit, pmFitPick(r)), pk = pmPick(r);
-    const score = pmScore(r), mean = pmMean(r.p, pmFitPick(r));
-    const ranked = peers.map(x => pmMean(x.p, pmFitPick(x))).filter(v => v != null);
+    const hit = pmHit(r.p), mine = r.y ? pmChance(r) : null, pk = pmPick(r);
+    const score = pmScore(r), mean = r.y ? pmChance(r) : null;
+    const ranked = peers.map(x => x.y ? pmChance(x) : null).filter(v => v != null);
     const rank = ranked.filter(v => v > mean).length + 1;
     const how = r.y ? `pick ${r.pk}` : pk ? `mock ${pmDec(pk)}` : pmUfd(r) ? 'UFD (pick 257)' : 'profile only';
     return h('div', { class:'prm-head' },
@@ -14263,11 +14286,12 @@
 
   function prospectModelBlock(sleeper) {
     const M = window.PROSPECT_MODEL;
-    const me = sleeper && M && M.nfl && M.nfl[String(sleeper.id)];
-    if (!me) return null;
+    const me0 = sleeper && M && M.nfl && M.nfl[String(sleeper.id)];
+    if (!me0) return null;
+    const me = { ...me0, id:String(sleeper.id) };
     const meta = M.pos[me.p] || {};
     const years = pmWindow(me.p);
-    const peers = Object.values(M.nfl).filter(x => x.p === me.p && x.y === me.y);
+    const peers = Object.entries(M.nfl).filter(([, x]) => x.p === me.p && x.y === me.y).map(([id, x]) => ({ ...x, id }));
     return h('div', { class:'card adv-card prm-card' },
       h('div', { class:'card-title' }, 'Prospect profile'),
       pmCardHead(me, me.y, peers, `${me.p} · drafted ${me.y}, pick ${me.pk}`, []),
@@ -14276,11 +14300,10 @@
         me.st && me.st.stars != null ? pmBioCell('Recruit', `${me.st.stars}-star`, 'HS recruiting stars') : null,
       ]),
       pmTwoWay(me),
-      PM_WARN[me.p] ? h('div', { class:'tip prm-line' }, PM_WARN[me.p]) : null,
+      pmWhy(me) ? h('div', { class:'tip prm-line' }, pmWhy(me)) : null,
+      PM_EVIDENCE[me.p] ? h('div', { class:'tip prm-line' }, PM_EVIDENCE[me.p]) : null,
       // No linked college record: the chance is the draft-only curve at his pick, and that slice was
       // not validated (d2_* experiments: 6 hits against 9.2 expected, n 80, QB/RB/WR pooled).
-      me.nocfb && pmTopChance(me.p, pmHit(me.p), pmFitPick(me)) != null
-        ? h('div', { class:'tip prm-line' }, 'Estimated from draft pick only (college data unavailable).') : null,
       pmOutcome(me, meta, years),
       pmGrades(me.p, pmGradeRows(me.p, me, pmYpc('nfl', String(sleeper.id)),
         'Breakout age (Sept 1 of first dominator season)')),
@@ -14338,16 +14361,15 @@
     main.appendChild(pageHeader({
       eyebrow:'PROSPECT MODEL',
       title: hist ? 'Prospects' : 'College prospects',
-      sub: 'Drafted players: 0-100 prospect score & early-career hit odds from draft pick. College players: profile only.',
+      sub: 'Drafted players: 0-100 prospect score & early-career hit odds from draft slot, production, athleticism, age and landing spot. College players: profile only.',
     }));
     main.appendChild(h('details', { class:'source-note' }, h('summary', null, 'How the score works'),
       h('ul', { class:'source-note-list' }, ...[
         `Percentile of hit-line odds vs drafted peers, ${pmPoolYears()} classes (QB/TE: top-12 yrs 1-4; RB/WR: top-24 yrs 1-3, 8+ G).`,
-        'Hit odds are based on NFL draft pick; college metrics are shown for scouting context.',
-        'Top-6 QB/TE and top-12 RB/WR odds are not shown because historical hit rates at those cutoffs are too small a sample to estimate reliably.',
+        'Hit odds combine draft slot, college production, athleticism/size, age and landing spot; each card shows how much each added. Players with no college record use draft slot only.',
+        'Top-6 QB/TE and top-12 RB/WR odds are not shown: that cutoff is not one the model was validated on, and at QB and WR its odds were miscalibrated on past classes.',
         PM_NO_PREDRAFT,
-        PM_WARN.WR,
-        PM_WARN.TE,
+        'On past draft classes these odds did not beat draft slot alone at any position; each card shows its position\'s check.',
         'Offense only (no QB breakout age).',
       ].map(s => h('li', null, s)))));
 
@@ -14394,7 +14416,7 @@
     ].filter(Boolean);
     const get = (r, k) => k.startsWith('st.') ? pmInputVal(r, k.slice(3))
       : k === 'sc' ? pmScore(r)
-      : k === 't1' ? pmTopChance(r.p, pmHit(r.p), pmFitPick(r))
+      : k === 't1' ? (r.y ? pmChance(r) : null)
       : k === 'best' ? (r.out ? r.out[2] || 999 : null)
       : k === 'cb' ? (r.cb ? r.cb[1] : null)
       : k === 'pk' ? (r.y ? r.pk : pmUfd(r) ? 999 : pmPick(r)) : r[k];

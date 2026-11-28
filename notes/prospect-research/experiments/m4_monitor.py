@@ -9,7 +9,8 @@ prospect DB (bpm.prepare, the rows m4_cut_model.py scores), then reports, per po
                of the summed forecast
 Kill rule (model card, charter rule 5): on the pooled newly closed classes of a position, with at least
 10 hits, observed hits outside the 95% interval of the summed forecast, or a calibration slope whose
-95% class-bootstrap interval lies entirely outside 0.75-1.25, pulls that position's chances and score.
+95% class-bootstrap interval lies entirely outside 0.75-1.25, flags that position: its cards are labelled
+and Trevor is asked. Only Trevor withholds a score.
 A point slope outside the band alone does not: at n=30 it trips on about half of calibrated classes.
 Exit 1 when any position trips it, else 0.
 

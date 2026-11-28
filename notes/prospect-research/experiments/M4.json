@@ -1,9 +1,9 @@
 {
  "id": "M4",
  "model": "pmTopChance / pmScore (site/js/app.js), registry m4-prospect-score",
- "created_at_utc": "2026-11-28T17:54:56+00:00",
+ "created_at_utc": "2026-11-28T18:16:48+00:00",
  "charter": "notes/prospect-research/validation-charter-v2.md",
- "git_head": "73a9800eebe590f34faf8cd44708bad7acf075d3",
+ "git_head": "387720976e55421449b41e8dd28d6d019494ff90",
  "sources_sha256": "577774dcb35dff785a442df44666f58686b3495c35c1d2b26bb784cd7834ddc1",
  "script_sha256": "3bbac983fade035ee3a7e4bf9742f7573928b3cae25539f3df3a222ad42dd4c3",
  "command": "python notes/prospect-research/experiments/m4_cut_model.py",

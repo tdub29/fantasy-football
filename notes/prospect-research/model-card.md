@@ -13,9 +13,11 @@ its verified coverage: `data-sources.md`.
 
 **Every position now ships the draft-only hit probability.** Draft capital is the forecast; the
 college talent score is a pre-draft profile, not a forecast, at QB, RB, WR and TE alike.
-The site's prospect score and hit-line chance (QB/TE top-12, RB/WR top-24; TE below the charter bar by owner decision) use the same draft-only
-spline, from a frozen file, for drafted players only; see "Displayed cut model" for the scoring that
-rejected the pick + profile cut model.
+**Since 2026-11-28 the site's prospect score and hit-line chance (QB/TE top-12, RB/WR top-24) come from
+M6**, a five-family model served at every position by owner decision although it did not beat draft
+slot alone on past classes (section "M6: feature-family model"). Drafted players only; a player with no
+linked college record falls back to the draft-only spline, labelled. The sections below record how the
+draft-only spline (K0) and the pick + profile cut model (M4) were scored.
 
 - **WR and RB** changed. On the 2008-2019 development classes, talent + capital beats the spline
   draft-only curve clearly (WR log loss 0.3459 to 0.3200, RB 0.4397 to 0.4206, 99% and 98% of
@@ -193,6 +195,42 @@ never decisive by itself.
   The monitor first judges WR (and RB) when the 2024 class closes after the 2026 NFL season (about
   2027-01), QB a year later. Nothing refit; the WR table is the same K0 spec as every other cut.
 
+## M6: feature-family model, served by owner decision (2026-11-28)
+
+Trevor's decision: the prospect score must visibly use several kinds of evidence at every position, and
+cards label the evidence rather than withhold. M6 is a regularized logistic (C 0.1, fold-local imputation
+and scaling) on five families: draft capital (the K0 spline in log pick), college production (QB
+aya_final, comp_final, rush_ypg_best, starts; RB scrim_ypg, ryptpa_final, dom_best; WR ryptpa_career,
+dom_best, breakout_age; TE ryptpa_best, dom_best, breakout_age), athleticism and size (weight,
+speed_score), age (draft_age) and landing spot (the drafting team's prior-season pass attempts and PPR
+at his position, final before the draft). The spec was fixed in `experiments/ledger-m6.md` before any
+score was read; nothing was tuned. Every family had data at every position (30% coverage rule). Missing
+from the DB: depth charts, snaps and transactions (so no vacated targets or touches; landing spot is team
+volume only) and any composite athleticism score (the combine table gives speed score and weight).
+
+Scored by `experiments/m6_feature_families.py` (`M6.json`) on the charter forward folds, identical rows
+to K0, M4 and the base rate from `M4-oof.csv`. Lift = log loss without the family minus log loss with it
+(positive = the family helped):
+
+| Hit line | n / hits | Log loss K0 / M4 / M6 | M6 beats K0 | M6 beats base rate | M6 slope | Lift: production / athleticism / age / landing |
+|---|---|---|---|---|---|---|
+| QB12 | 105 / 20 | 0.3634 / 0.3772 / 0.3991 | 2% | 90% | 0.71 | -0.0041 / -0.0021 / -0.0039 / -0.0233 |
+| RB24 | 223 / 64 | 0.4640 / 0.4538 / 0.4722 | 30% | 100% | 0.79 | +0.0038 / -0.0011 / -0.0054 / -0.0072 |
+| WR24 | 323 / 54 | 0.3510 / 0.3491 / 0.3617 | 28% | 100% | 0.90 | -0.0090 / -0.0016 / +0.0003 / -0.0019 |
+| TE12 | 130 / 25 | 0.4035 / 0.3883 / 0.4039 | 47% | 87% | 0.73 | -0.0078 / +0.0054 / -0.0068 / +0.0011 |
+
+**M6 forecast worse than draft slot alone at QB, RB and WR and tied it at TE**; QB and TE are
+overconfident (slopes 0.71 and 0.73, outside 0.75-1.25). The only families that helped were production at
+RB, athleticism and landing spot at TE, and age at WR (by 0.0003). It still beats the base rate at RB and
+WR in every resample, at QB in 90% and at TE in 87%. Served anyway, at all four positions, by owner
+decision: each drafted card shows that position's check in plain words and a per-player breakdown of how
+much each family moved his chance (his chance minus his chance with that family at the training average,
+in percentage points), and lists every input he lacks (set to the training median). A drafted player with
+no linked college record gets the K0 draft-slot chance, labelled "Pick-only, no profile data". Frozen per
+player in `site/data/prospect-cut-model.js` (`m6`); final fit on every mature class 2008+, so historical
+cards are in-sample. K0 tables stay in the file for that fallback. The monitor (`m4_monitor.py`) still scores the K0 hit
+line; M6 itself is not monitored yet.
+
 Draftees with no linked college record (2026-11-25, `experiments/d2_nocfb_k0.py` and `.json`): K0 is
 fit only on linked draftees, so the frozen chance was scored on the unlinked ones, all closed classes
 2008+. Pooled QB, RB and WR: 6 hits against 9.2 expected, n 80 (QB 1 vs 2.3, n 12; RB 3 vs 3.2, n 23;
@@ -228,8 +266,8 @@ takes picks and labels from the full drafted population in the prospect DB, the 
 `m4_cut_model.py` scores, not from `prospect-model.js`, which drops draftees with no Sleeper id (46 of
 708 closed 2014+ hit-line rows in the 2026-11-24 build, 47 in the 2026-11-17 one, all misses, so it would inflate the observed hit rate); its self-check
 asserts that its closed rows match `M4-oof.csv` row for row. Kill
-condition, matching charter rule 5: on a position's pooled newly closed classes with at least 10 hits, observed hits outside the 95% interval of the summed forecast, or a calibration slope whose 95% class-bootstrap interval lies entirely outside 0.75-1.25 (a point slope outside the band alone does not trip it), pulls that position's chances and score until a
-refit passes the charter rules. The two tests run at 95% each so a calibrated position trips about 10%
+condition, matching charter rule 5: on a position's pooled newly closed classes with at least 10 hits, observed hits outside the 95% interval of the summed forecast, or a calibration slope whose 95% class-bootstrap interval lies entirely outside 0.75-1.25 (a point slope outside the band alone does not trip it), flags that position: its cards are labelled
+and Trevor is asked. Only Trevor withholds a score; a refit still has to pass the charter rules. The two tests run at 95% each so a calibrated position trips about 10%
 of the time in all; the monitor's self-check asserts at most 10% false kills on simulated calibrated
 classes (1 x 30, 2 x 40, 5 x 60 players). The monitor exits 1 when the rule trips. A refit is a new version through the script, ledger, card and registry.
 
