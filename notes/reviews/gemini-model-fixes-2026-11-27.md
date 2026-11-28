@@ -30,3 +30,33 @@ Not a defect, noted for the record: `site/data/idp-xstats.js` and `site/data/fum
 ## Out of scope, still open from wf_18d6be3a-86d
 
 F2 is still open: the weekly IDP scoring change in `build_weekly_rankings.py` has had no independent review, and the "Slp yuH" column relies on it. F4, F6, F7 and F13 are research-record issues. The withdrawal makes them moot for the site.
+
+## Re-review 2026-11-28: fixes at 2a98e80
+
+### Verdict: PASS (FF code). Registry: 2 text fixes required before agent/gemini-model-fixes merges.
+
+D1, m1 and m2 are fixed. I scoped this re-review to 624e256..2a98e80 for `projections/build_fumbles.py` and `site/js/app.js` (statsTable and the sort list). 96d385e (QB prospect odds restored, WR withdrawn) is a separate model change in the same range. I did not review it.
+
+**D1 closed-week guard: fixed.**
+- `closed_weeks` (build_fumbles.py:333) counts a week as closed only when its pbp game count equals the nflverse schedule count, for every week from 1 up to that week.
+- `check_closed` (:345) raises `RuntimeError`, not `assert`, so `python -O` cannot strip it. It also rejects pbp rows after `through_week`.
+- I checked this against the real cache with my own harness, not the maker's self-check.
+  - 2026 schedule: W10 has 14 games, W11 13, W12 16. pbp has W10 14, W11 13, W12 1 (Thanksgiving).
+  - `closed_weeks` returns 11, so the current partial Week 12 is excluded.
+  - A simulated Sunday night of W12 (14 of 16 games in, with W11 data) returns 11. `check_closed(…, 12)` raises "W12 has 14 games in play_by_play, 16 scheduled". The old rule (10 or more games) would have accepted this week.
+  - The same frame with all 16 W12 games returns 12.
+  - With no weekly-rankings.js or leagues.js present, `detect_closed_max_week` still returns 11. The pbp-only path no longer leaks.
+- `python projections/build_fumbles.py --offline --self-check` from a 2a98e80 worktree passes: guard self-check OK, invariants across 218 RBs and 1392 defenders, `throughWeek` 11. Apart from the `generated` timestamp, the rebuilt `fumbles.js` is identical to the committed file.
+- A game rescheduled into another week is handled, because the nflverse `week` field moves with the game. Counts are compared, not game_id sets. A pbp game booked to the wrong week could therefore offset a missing one. I judge that unlikely, and the error only makes the guard exclude a week it should count, never include a partial one.
+
+**m1 sort fallback: fixed for statsTable.** app.js:17071-17073 keeps a saved sort only if its key is still a column. Otherwise it uses the tab's `defaultSort`, key and direction. The IDP default `ppg` is a real `IDP_ADVANCED` column. A saved `xRos desc` now sorts `ppg desc`, not FP rank descending.
+
+One correction to my first review: the RB position table does not go through statsTable. app.js:19079 sorts on `row[sort.key]`, so a saved `fum_eb`, `fum_exp` or `fum_tag` sort is all-null, rows stay in input order and no header shows as active. It shows no model number. It is minor and does not block. Fix: apply the same "key still in `allCols`" check at :19079.
+
+**m2: fixed.** `idp-dynrk` is removed from app.js:4224.
+
+`node --check site/js/app.js` passes at 2a98e80.
+
+**Registry (Big Projects harness, agent/gemini-model-fixes at 1c43eaf9, `.agents/model-records/fantasy-football/MODEL-REGISTRY.md`):** status, reasons and re-promotion conditions match the code for both rows. Two lines are stale and must change before the branch merges:
+- R1 :175 (fumble-fault-v1 Status, reason 5) still says the guard "asserts the last counted week was fully played (FF `bc5c2db`)". That is the guard this review failed. Change it to: closes a week only when every scheduled nflverse game is in pbp and raises RuntimeError otherwise (FF `2a98e80`), with the offline self-check passing at throughWeek 11.
+- R2 :168 (yuh-idp-xstats-v1 Open findings) still says "FP ranks shown alongside `xYuH` in UI". Since 47871db, xYuH is not shown. Change it to: ECR shown in place of xYuH; Material #1 open as the re-promotion gate.
