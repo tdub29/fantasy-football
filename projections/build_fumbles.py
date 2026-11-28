@@ -320,12 +320,11 @@ def detect_closed_max_week(root_dir: pathlib.Path, pbp_cur: pd.DataFrame, max_we
     if len(pbp_cur):
         wk_games = pbp_cur.groupby("week")["game_id"].nunique()
         complete_wks = [int(w) for w, gcnt in wk_games.items() if gcnt >= 10]
-        pbp_closed = max(complete_wks) if complete_wks else int(pbp_cur["week"].max())
+        # No fully played week means none counts; never fall back to a partial week.
+        pbp_closed = max(complete_wks) if complete_wks else 0
     else:
         pbp_closed = 0
-    if site_closed is not None and pbp_closed > 0:
-        return min(site_closed, pbp_closed)
-    return site_closed if site_closed is not None else pbp_closed
+    return min(site_closed, pbp_closed) if site_closed is not None else pbp_closed
 
 
 def build_payload(cache_dir: pathlib.Path, players_path: pathlib.Path, offline: bool, self_check: bool, max_week: int | None = None) -> dict:
@@ -372,6 +371,11 @@ def build_payload(cache_dir: pathlib.Path, players_path: pathlib.Path, offline: 
             closed_max_week = detect_closed_max_week(ROOT, pbp, max_week)
             pbp = pbp[pbp["week"] <= closed_max_week].copy()
             through_week = int(pbp["week"].max()) if len(pbp) else 0
+            # Closed-week guard, always on (not only under --self-check): a partial
+            # in-progress week must never reach the displayed 2026 counts.
+            last_wk_games = pbp.loc[pbp["week"] == through_week, "game_id"].nunique() if through_week else 0
+            assert max_week is not None or through_week == 0 or last_wk_games >= 10, (
+                f"Partial week leaked: W{through_week} has only {last_wk_games} games in play_by_play")
 
         # Stats player week lookup for exact per-player multi-fumble reconciliation
         spw = pd.read_parquet(

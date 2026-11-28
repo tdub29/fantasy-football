@@ -1,5 +1,7 @@
 # Fumble Fault Attribution & RB Fluke-vs-Trend Guide (2026-11-26)
 
+> **Withdrawn from display (2026-11-27), research record only.** `fumble-fault-v1` was shipped in PR #15 before any charter. Its hyperparameters were selected on test data: `M = 3,000` and `p0 = 0.799%` come from 2020-2025, which includes the fold-1 test season (2025). The fold-2 (2026 W1-11) out-of-sample calibration slope is 1.90, outside the model's own monitor band [0.65, 1.65], and the 90% interval of its gain over the Null spans zero. The site no longer shows `EB True%`, expected lost fumbles or the fluke/trend tags; only observed counts and rates remain. Nothing was refit or tuned. The causal "fault" framing and sell/hold advice below have no identification design and should not be acted on.
+
 **Bottom line.** When an RB starts fumbling mid-season, your default reaction should be **do not panic-sell or bake a single-year fumble spike into projections** unless **2-to-3-season volume (`>=250` touches)** shows a persistently elevated rate (`>=1.25%`) or his snaps drop immediately after the mistakes. Across `2020-2026` REG (`4,065` fumble plays), **93.5% to 95.8%** of RB scrimmage fumbles are marked `fumble_forced == 1` by official scorers (`unforced_rate` has `r = -0.062` YOY signal), recovery is a coin flip (**56.5% lost**, `r = +0.004` YOY), and real RB ball-security separation only emerges over **2+ pooled seasons (`r = +0.292`, `p = 0.001`)**.
 
 ---
